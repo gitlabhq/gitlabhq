@@ -7,12 +7,16 @@ module Backup
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.path_with_namespace} ... "
+        progress.print " * #{display_repo_path(project)} ... "
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
-        # Create namespace dir if missing
-        FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+        # Create namespace dir or hashed path if missing
+        if project.hashed_storage?(:repository)
+          FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
+        else
+          FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+        end
 
         if empty_repo?(project)
           progress.puts "[SKIPPED]".color(:cyan)
@@ -42,7 +46,8 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_repo)
-          progress.print " * #{wiki.path_with_namespace} ... "
+          progress.print " * #{display_repo_path(wiki)} ... "
+
           if empty_repo?(wiki)
             progress.puts " [SKIPPED]".color(:cyan)
           else
@@ -60,7 +65,7 @@ module Backup
 
     def restore
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        path = repository_storage['path']
+        path = repository_storage.legacy_disk_path
         next unless File.exist?(path)
 
         # Move repos dir to 'repositories.old' dir
@@ -71,14 +76,14 @@ module Backup
       end
 
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.path_with_namespace} ... "
+        progress.print " * #{display_repo_path(project)} ... "
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
-        project.ensure_dir_exist
+        project.ensure_storage_path_exists
 
         cmd = if File.exist?(path_to_project_bundle)
-                %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})
+                %W(#{Gitlab.config.git.bin_path} clone --bare --mirror #{path_to_project_bundle} #{path_to_project_repo})
               else
                 %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
               end
@@ -104,7 +109,7 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_bundle)
-          progress.print " * #{wiki.path_with_namespace} ... "
+          progress.print " * #{display_repo_path(wiki)} ... "
 
           # If a wiki bundle exists, first remove the empty repo
           # that was initialized with ProjectWiki.new() and then
@@ -142,11 +147,11 @@ module Backup
     end
 
     def path_to_bundle(project)
-      File.join(backup_repos_path, project.path_with_namespace + '.bundle')
+      File.join(backup_repos_path, project.disk_path + '.bundle')
     end
 
     def path_to_tars(project, dir = nil)
-      path = File.join(backup_repos_path, project.path_with_namespace)
+      path = File.join(backup_repos_path, project.disk_path)
 
       if dir
         File.join(path, "#{dir}.tar")
@@ -185,23 +190,25 @@ module Backup
 
     def progress_warn(project, cmd, output)
       progress.puts "[WARNING] Executing #{cmd}".color(:orange)
-      progress.puts "Ignoring error on #{project.path_with_namespace} - #{output}".color(:orange)
+      progress.puts "Ignoring error on #{display_repo_path(project)} - #{output}".color(:orange)
     end
 
     def empty_repo?(project_or_wiki)
-      project_or_wiki.repository.empty_repo?
-    rescue => e
-      progress.puts "Ignoring repository error and continuing backing up project: #{project_or_wiki.path_with_namespace} - #{e.message}".color(:orange)
-
-      false
+      # Protect against stale caches
+      project_or_wiki.repository.expire_emptiness_caches
+      project_or_wiki.repository.empty?
     end
 
     def repository_storage_paths_args
-      Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
+      Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }
     end
 
     def progress
       $progress
+    end
+
+    def display_repo_path(project)
+      project.hashed_storage?(:repository) ? "#{project.full_path} (#{project.disk_path})" : project.full_path
     end
   end
 end

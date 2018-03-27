@@ -1,33 +1,56 @@
 <script>
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
+  import popover from '../../vue_shared/directives/popover';
 
-export default {
-  props: {
-    pipeline: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      userAvatarLink,
     },
-  },
-  components: {
-    userAvatarLink,
-  },
-  directives: {
-    tooltip,
-  },
-  computed: {
-    user() {
-      return this.pipeline.user;
+    directives: {
+      tooltip,
+      popover,
     },
-  },
-};
+    props: {
+      pipeline: {
+        type: Object,
+        required: true,
+      },
+      autoDevopsHelpPath: {
+        type: String,
+        required: true,
+      },
+    },
+    computed: {
+      user() {
+        return this.pipeline.user;
+      },
+      popoverOptions() {
+        return {
+          html: true,
+          trigger: 'focus',
+          placement: 'top',
+          title: `<div class="autodevops-title">
+            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+          </div>`,
+          content: `<a
+            class="autodevops-link"
+            href="${this.autoDevopsHelpPath}"
+            target="_blank"
+            rel="noopener noreferrer nofollow">
+            Learn more about Auto DevOps
+          </a>`,
+        };
+      },
+    },
+  };
 </script>
 <template>
-  <div class="table-section section-15 hidden-xs hidden-sm">
+  <div class="table-section section-15 hidden-xs hidden-sm pipeline-tags">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
-      <span class="pipeline-id">#{{pipeline.id}}</span>
+      <span class="pipeline-id">#{{ pipeline.id }}</span>
     </a>
     <span>by</span>
     <user-avatar-link
@@ -57,6 +80,21 @@ export default {
         :title="pipeline.yaml_errors">
         yaml invalid
       </span>
+      <span
+        v-if="pipeline.flags.failure_reason"
+        v-tooltip
+        class="js-pipeline-url-failure label label-danger"
+        :title="pipeline.failure_reason">
+        error
+      </span>
+      <a
+        v-if="pipeline.flags.auto_devops"
+        tabindex="0"
+        class="js-pipeline-url-autodevops label label-info autodevops-badge"
+        v-popover="popoverOptions"
+        role="button">
+        Auto DevOps
+      </a>
       <span
         v-if="pipeline.flags.stuck"
         class="js-pipeline-url-stuck label label-warning">

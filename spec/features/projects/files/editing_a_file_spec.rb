@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'User wants to edit a file', feature: true do
-  let(:project) { create(:project) }
+feature 'User wants to edit a file' do
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:commit_params) do
     {
@@ -16,9 +16,9 @@ feature 'User wants to edit a file', feature: true do
   end
 
   background do
-    project.team << [user, :master]
-    gitlab_sign_in user
-    visit namespace_project_edit_blob_path(project.namespace, project,
+    project.add_master(user)
+    sign_in user
+    visit project_edit_blob_path(project,
                                            File.join(project.default_branch, '.gitignore'))
   end
 

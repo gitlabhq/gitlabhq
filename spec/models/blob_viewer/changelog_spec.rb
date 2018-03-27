@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobViewer::Changelog, model: true do
+describe BlobViewer::Changelog do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

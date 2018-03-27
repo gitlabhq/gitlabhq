@@ -1,7 +1,7 @@
 .js-pipeline-schedule-form {
   .dropdown-select,
   .dropdown-menu-toggle {
-    width: 100%!important;
+    width: 100% !important;
   }
 
   .gl-field-error {
@@ -12,7 +12,7 @@
 .interval-pattern-form-group {
   label {
     margin-right: 10px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
 
     &[for='custom'] {
       margin-right: 0;
@@ -39,6 +39,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 
   .next-run-cell {

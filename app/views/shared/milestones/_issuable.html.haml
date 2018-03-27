@@ -1,32 +1,31 @@
 -# @project is present when viewing Project's milestone
 - project = @project || issuable.project
 - namespace = @project_namespace || project.namespace.becomes(Namespace)
+- labels = issuable.labels
 - assignees = issuable.assignees
-- issuable_type = issuable.class.table_name
 - base_url_args = [namespace, project]
-- issuable_type_args = base_url_args + [issuable_type]
+- issuable_type_args = base_url_args + [issuable.class.table_name]
 - issuable_url_args = base_url_args + [issuable]
-- can_update = can?(current_user, :"update_#{issuable.to_ability_name}", issuable)
 
-%li{ id: dom_id(issuable, 'sortable'),  class: "issuable-row #{'is-disabled' unless can_update}", 'data-iid' => issuable.iid, 'data-id' => issuable.id, 'data-url' => polymorphic_path(issuable_url_args) }
+%li.issuable-row
   %span
     - if show_project_name
       %strong #{project.name} &middot;
     - elsif show_full_project_name
-      %strong #{project.name_with_namespace} &middot;
+      %strong #{project.full_name} &middot;
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
     = link_to issuable.title, issuable_url_args, title: issuable.title
   .issuable-detail
-    = link_to [project.namespace.becomes(Namespace), project, issuable] do
+    = link_to [namespace, project, issuable], class: 'issue-link' do
       %span.issuable-number= issuable.to_reference
 
-    - issuable.labels.each do |label|
+    - labels.each do |label|
       = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }) do
         - render_colored_label(label)
 
     %span.assignee-icon
       - assignees.each do |assignee|
-        = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, assignee_id: assignee.id, state: 'all' }),
+        = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, assignee_id: assignee.id, state: 'all' }),
                   class: 'has-tooltip', title: "Assigned to #{assignee.name}", data: { container: 'body' } do
-          - image_tag(avatar_icon(assignee, 16), class: "avatar s16", alt: '')
+          - image_tag(avatar_icon_for_user(assignee, 16), class: "avatar s16", alt: '')

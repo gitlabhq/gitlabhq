@@ -1,0 +1,8 @@
+- anchors = local_assigns.fetch(:anchors, [])
+
+- return unless anchors.any?
+%ul.nav
+  - anchors.each do |anchor|
+    %li
+      = link_to_if anchor.link, anchor.label, anchor.link, class: anchor.enabled ? 'stat-link' : "btn btn-#{anchor.class_modifier || 'missing'}" do
+        %span.stat-text= anchor.label

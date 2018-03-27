@@ -231,7 +231,7 @@ $solarized-dark-il: #2aa198;
   .gi { color: $solarized-dark-gi; } /* Generic.Inserted */
   .go { color: $solarized-dark-go; } /* Generic.Output */
   .gp { color: $solarized-dark-gp; } /* Generic.Prompt */
-  .gs { color: $solarized-dark-gs; font-weight: bold; } /* Generic.Strong */
+  .gs { color: $solarized-dark-gs; font-weight: $gl-font-weight-bold; } /* Generic.Strong */
   .gu { color: $solarized-dark-gu; } /* Generic.Subheading */
   .gt { color: $solarized-dark-gt; } /* Generic.Traceback */
   .kc { color: $solarized-dark-kc; } /* Keyword.Constant */

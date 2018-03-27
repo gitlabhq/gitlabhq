@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :chat_name, class: ChatName do
     user factory: :user
     service factory: :service

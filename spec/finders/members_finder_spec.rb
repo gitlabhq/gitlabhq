@@ -17,6 +17,6 @@ describe MembersFinder, '#execute' do
 
     result = described_class.new(project, user2).execute
 
-    expect(result.to_a).to eq([member3, member2, member1])
+    expect(result.to_a).to match_array([member1, member2, member3])
   end
 end

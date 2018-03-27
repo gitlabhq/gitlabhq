@@ -51,36 +51,34 @@ Feature: Project Issues
   @javascript
   Scenario: Visiting Issues after being sorted the list
     Given I visit project "Shop" issues page
-    And I sort the list by "Oldest updated"
+    And I sort the list by "Last updated"
     And I visit my project's home page
     And I visit project "Shop" issues page
-    Then The list should be sorted by "Oldest updated"
+    Then The list should be sorted by "Last updated"
 
   @javascript
   Scenario: Visiting Merge Requests after being sorted the list
     Given project "Shop" has a "Bugfix MR" merge request open
     And I visit project "Shop" issues page
-    And I sort the list by "Oldest updated"
+    And I sort the list by "Last updated"
     And I visit project "Shop" merge requests page
-    Then The list should be sorted by "Oldest updated"
+    Then The list should be sorted by "Last updated"
 
   @javascript
   Scenario: Visiting Merge Requests from a differente Project after sorting
     Given project "Shop" has a "Bugfix MR" merge request open
     And I visit project "Shop" merge requests page
-    And I sort the list by "Oldest updated"
+    And I sort the list by "Last updated"
     And I visit dashboard merge requests page
-    Then The list should be sorted by "Oldest updated"
+    Then The list should be sorted by "Last updated"
 
   @javascript
   Scenario: Sort issues by upvotes/downvotes
     Given project "Shop" have "Bugfix" open issue
     And issue "Release 0.4" have 2 upvotes and 1 downvote
     And issue "Tweet control" have 1 upvote and 2 downvotes
-    And I sort the list by "Most popular"
-    Then The list should be sorted by "Most popular"
-    And I sort the list by "Least popular"
-    Then The list should be sorted by "Least popular"
+    And I sort the list by "Popularity"
+    Then The list should be sorted by "Popularity"
 
   # Markdown
 
@@ -166,7 +164,7 @@ Feature: Project Issues
     Given project "Shop" have "Release 0.4" open issue
     When I visit issue page "Release 0.4"
     Then I should see that I am subscribed
-    When I click button "Unsubscribe"
+    When I click the subscription toggle
     Then I should see that I am unsubscribed
 
   @javascript

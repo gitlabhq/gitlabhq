@@ -19,15 +19,13 @@ Example response:
   {
     "id": 1,
     "title": "Public key",
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "can_push": false,
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",    
     "created_at": "2013-10-02T10:12:29Z"
   },
   {
     "id": 3,
     "title": "Another Public key",
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "can_push": true,
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",    
     "created_at": "2013-10-02T11:12:29Z"
   }
 ]
@@ -57,15 +55,15 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "can_push": false,
-    "created_at": "2013-10-02T10:12:29Z"
+    "created_at": "2013-10-02T10:12:29Z",
+    "can_push": false
   },
   {
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "can_push": false,
-    "created_at": "2013-10-02T11:12:29Z"
+    "created_at": "2013-10-02T11:12:29Z",
+    "can_push": false
   }
 ]
 ```
@@ -96,8 +94,8 @@ Example response:
   "id": 1,
   "title": "Public key",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-  "can_push": false,
-  "created_at": "2013-10-02T10:12:29Z"
+  "created_at": "2013-10-02T10:12:29Z",
+  "can_push": false
 }
 ```
 
@@ -106,7 +104,7 @@ Example response:
 Creates a new deploy key for a project.
 
 If the deploy key already exists in another project, it will be joined to current
-project only if original one was is accessible by the same user.
+project only if original one is accessible by the same user.
 
 ```
 POST /projects/:id/deploy_keys
@@ -132,6 +130,36 @@ Example response:
    "title" : "My deploy key",
    "can_push": true,
    "created_at" : "2015-08-29T12:44:31.550Z"
+}
+```
+
+## Update deploy key
+
+Updates a deploy key for a project.
+
+```
+PUT /projects/:id/deploy_keys/:key_id
+```
+
+| Attribute  | Type | Required | Description |
+| ---------  | ---- | -------- | ----------- |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `title`    | string  | no | New deploy key's title |
+| `can_push` | boolean | no  | Can deploy key push to the project's repository |
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"title": "New deploy key", "can_push": true}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+```
+
+Example response:
+
+```json
+{
+   "id": 11,
+   "title": "New deploy key",
+   "key": "ssh-rsa AAAA...",
+   "created_at": "2015-08-29T12:44:31.550Z",
+   "can_push": true
 }
 ```
 

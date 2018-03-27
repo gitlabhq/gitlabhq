@@ -1,69 +1,85 @@
 import Vue from 'vue';
-import conflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts';
-
-const path = '/conflicts';
-const createComponent = () => {
-  const Component = Vue.extend(conflictsComponent);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: {
-      mr: {
-        canMerge: true,
-        conflictResolutionPath: path,
-      },
-    },
-  });
-};
+import conflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetConflicts', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { mr } = conflictsComponent.props;
+  let Component;
+  let vm;
+  const path = '/conflicts';
 
-      expect(mr.type instanceof Object).toBeTruthy();
-      expect(mr.required).toBeTruthy();
+  beforeEach(() => {
+    Component = Vue.extend(conflictsComponent);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  describe('when allowed to merge', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        mr: {
+          canMerge: true,
+          conflictResolutionPath: path,
+        },
+      });
+    });
+
+    it('should tell you about conflicts without bothering other people', () => {
+      expect(vm.$el.textContent).toContain('There are merge conflicts');
+      expect(vm.$el.textContent).not.toContain('ask someone with write access');
+    });
+
+    it('should allow you to resolve the conflicts', () => {
+      const resolveButton = vm.$el.querySelector('.js-resolve-conflicts-button');
+
+      expect(resolveButton.textContent).toContain('Resolve conflicts');
+      expect(resolveButton.getAttribute('href')).toEqual(path);
+    });
+
+    it('should have merge buttons', () => {
+      const mergeButton = vm.$el.querySelector('.js-disabled-merge-button');
+      const mergeLocallyButton = vm.$el.querySelector('.js-merge-locally-button');
+
+      expect(mergeButton.textContent).toContain('Merge');
+      expect(mergeButton.disabled).toBeTruthy();
+      expect(mergeButton.classList.contains('btn-success')).toEqual(true);
+      expect(mergeLocallyButton.textContent).toContain('Merge locally');
     });
   });
 
-  describe('template', () => {
-    it('should have correct elements', () => {
-      const el = createComponent().$el;
-      const resolveButton = el.querySelectorAll('.btn-group .btn')[0];
-      const mergeLocallyButton = el.querySelectorAll('.btn-group .btn')[1];
-
-      expect(el.textContent).toContain('There are merge conflicts.');
-      expect(el.textContent).not.toContain('ask someone with write access');
-      expect(el.querySelector('.btn-success').disabled).toBeTruthy();
-      expect(el.querySelectorAll('.btn-group .btn').length).toBe(2);
-      expect(resolveButton.textContent).toContain('Resolve conflicts');
-      expect(resolveButton.getAttribute('href')).toEqual(path);
-      expect(mergeLocallyButton.textContent).toContain('Merge locally');
+  describe('when user does not have permission to merge', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        mr: {
+          canMerge: false,
+        },
+      });
     });
 
-    describe('when user does not have permission to merge', () => {
-      let vm;
+    it('should show proper message', () => {
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain('ask someone with write access');
+    });
 
-      beforeEach(() => {
-        vm = createComponent();
-        vm.mr.canMerge = false;
-      });
+    it('should not have action buttons', () => {
+      expect(vm.$el.querySelector('.js-disabled-merge-button')).toBeDefined();
+      expect(vm.$el.querySelector('.js-resolve-conflicts-button')).toBeNull();
+      expect(vm.$el.querySelector('.js-merge-locally-button')).toBeNull();
+    });
+  });
 
-      it('should show proper message', (done) => {
-        Vue.nextTick(() => {
-          expect(vm.$el.textContent).toContain('ask someone with write access');
-          done();
-        });
+  describe('when fast-forward or semi-linear merge enabled', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        mr: {
+          shouldBeRebased: true,
+        },
       });
+    });
 
-      it('should not have action buttons', (done) => {
-        Vue.nextTick(() => {
-          expect(vm.$el.querySelectorAll('.btn').length).toBe(1);
-          expect(vm.$el.querySelector('a.js-resolve-conflicts-button')).toEqual(null);
-          expect(vm.$el.querySelector('a.js-merge-locally-button')).toEqual(null);
-          done();
-        });
-      });
+    it('should tell you to rebase locally', () => {
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain('Fast-forward merge is not possible.');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain('To merge this request, first rebase locally');
     });
   });
 });

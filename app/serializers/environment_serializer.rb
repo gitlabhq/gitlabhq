@@ -1,4 +1,6 @@
 class EnvironmentSerializer < BaseSerializer
+  include WithPagination
+
   Item = Struct.new(:name, :size, :latest)
 
   entity EnvironmentEntity
@@ -7,16 +9,8 @@ class EnvironmentSerializer < BaseSerializer
     tap { @itemize = true }
   end
 
-  def with_pagination(request, response)
-    tap { @paginator = Gitlab::Serializer::Pagination.new(request, response) }
-  end
-
   def itemized?
     @itemize
-  end
-
-  def paginated?
-    @paginator.present?
   end
 
   def represent(resource, opts = {})
@@ -27,8 +21,6 @@ class EnvironmentSerializer < BaseSerializer
           latest: super(item.latest, opts) }
       end
     else
-      resource = @paginator.paginate(resource) if paginated?
-
       super(resource, opts)
     end
   end
@@ -36,9 +28,9 @@ class EnvironmentSerializer < BaseSerializer
   private
 
   def itemize(resource)
-    items = resource.order('folder_name ASC')
+    items = resource.order('folder ASC')
       .group('COALESCE(environment_type, name)')
-      .select('COALESCE(environment_type, name) AS folder_name',
+      .select('COALESCE(environment_type, name) AS folder',
               'COUNT(*) AS size', 'MAX(id) AS last_id')
 
     # It makes a difference when you call `paginate` method, because
@@ -49,7 +41,7 @@ class EnvironmentSerializer < BaseSerializer
     environments = resource.where(id: items.map(&:last_id)).index_by(&:id)
 
     items.map do |item|
-      Item.new(item.folder_name, item.size, environments[item.last_id])
+      Item.new(item.folder, item.size, environments[item.last_id])
     end
   end
 end

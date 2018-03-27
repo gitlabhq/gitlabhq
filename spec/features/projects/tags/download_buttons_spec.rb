@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Download buttons in tags page', feature: true do
+feature 'Download buttons in tags page' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }
   given(:tag) { 'v1.0.0' }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   given(:pipeline) do
     create(:ci_pipeline,
@@ -23,20 +23,18 @@ feature 'Download buttons in tags page', feature: true do
   end
 
   background do
-    gitlab_sign_in(user)
-    project.team << [user, role]
+    sign_in(user)
+    project.add_role(user, role)
   end
 
   describe 'when checking tags' do
     context 'with artifacts' do
       before do
-        visit namespace_project_tags_path(project.namespace, project)
+        visit project_tags_path(project)
       end
 
       scenario 'shows download artifacts button' do
-        href = latest_succeeded_namespace_project_artifacts_path(
-          project.namespace, project, "#{tag}/download",
-          job: 'build')
+        href = latest_succeeded_project_artifacts_path(project, "#{tag}/download", job: 'build')
 
         expect(page).to have_link "Download '#{build.name}'", href: href
       end

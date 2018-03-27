@@ -1,5 +1,5 @@
 - if can?(current_user, :create_deployment, environment) && environment.stop_action?
   .inline
-    = link_to stop_namespace_project_environment_path(@project.namespace, @project, environment), method: :post,
+    = link_to stop_project_environment_path(@project, environment), method: :post,
       class: 'btn stop-env-link', rel: 'nofollow', data: { confirm: 'Are you sure you want to stop this environment?' } do
       = icon('stop', class: 'stop-env-icon')

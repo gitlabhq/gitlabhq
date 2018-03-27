@@ -2,4 +2,4 @@
   - groups.each do |group|
     = link_to group, class: 'profile-groups-avatars inline', title: group.name do
       .avatar-container.s40
-        = image_tag group_icon(group), class: 'avatar group-avatar s40'
+        = group_icon(group, class: 'avatar group-avatar s40')

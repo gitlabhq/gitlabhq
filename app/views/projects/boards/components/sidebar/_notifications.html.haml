@@ -1,7 +1,0 @@
-- if current_user
-  .block.light.subscription{ ":data-url" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '/toggle_subscription'" }
-    %span.issuable-header-text.hide-collapsed.pull-left
-      Notifications
-    %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
-      %span
-        {{issue.subscribed ? 'Unsubscribe' : 'Subscribe'}}

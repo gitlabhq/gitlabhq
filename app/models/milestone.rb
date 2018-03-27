@@ -8,27 +8,43 @@ class Milestone < ActiveRecord::Base
   Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
-  include InternalId
+  include NonatomicInternalId
   include Sortable
   include Referable
   include StripAttribute
   include Milestoneish
+  include Gitlab::SQL::Pattern
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
 
   belongs_to :project
+  belongs_to :group
+
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :of_groups, ->(ids) { where(group_id: ids) }
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
-  scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :for_projects, -> { where(group: nil).includes(:project) }
 
-  validates :title, presence: true, uniqueness: { scope: :project_id }
-  validates :project, presence: true
+  scope :for_projects_and_groups, -> (project_ids, group_ids) do
+    conditions = []
+    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
+
+    where(conditions.reduce(:or))
+  end
+
+  validates :group, presence: true, unless: :project
+  validates :project, presence: true, unless: :group
+
+  validate :uniqueness_of_title, if: :title_changed?
+  validate :milestone_type_check
   validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
@@ -58,10 +74,22 @@ class Milestone < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
+      fuzzy_search(query, [:title, :description])
+    end
 
-      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+    def filter_by_state(milestones, state)
+      case state
+      when 'closed' then milestones.closed
+      when 'all' then milestones
+      else milestones.active
+      end
+    end
+
+    def predefined?(milestone)
+      milestone == Any ||
+        milestone == None ||
+        milestone == Upcoming ||
+        milestone == Started
     end
   end
 
@@ -126,7 +154,9 @@ class Milestone < ActiveRecord::Base
   end
 
   ##
-  # Returns the String necessary to reference this Milestone in Markdown
+  # Returns the String necessary to reference this Milestone in Markdown. Group
+  # milestones only support name references, and do not support cross-project
+  # references.
   #
   # format - Symbol format to use (default: :iid, optional: :name)
   #
@@ -137,19 +167,27 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
-  def to_reference(from_project = nil, format: :iid, full: false)
+  def to_reference(from = nil, format: :name, full: false)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    "#{project.to_reference(from_project, full: full)}#{reference}"
+    if project
+      "#{project.to_reference(from, full: full)}#{reference}"
+    else
+      reference
+    end
   end
 
-  def reference_link_text(from_project = nil)
+  def reference_link_text(from = nil)
     self.title
   end
 
   def milestoneish_ids
     id
+  end
+
+  def for_display
+    self
   end
 
   def can_be_closed?
@@ -164,10 +202,51 @@ class Milestone < ActiveRecord::Base
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
+  def safe_title
+    title.to_slug.normalize.to_s
+  end
+
+  def parent
+    group || project
+  end
+
+  def group_milestone?
+    group_id.present?
+  end
+
+  def project_milestone?
+    project_id.present?
+  end
+
   private
+
+  # Milestone titles must be unique across project milestones and group milestones
+  def uniqueness_of_title
+    if project
+      relation = Milestone.for_projects_and_groups([project_id], [project.group&.id])
+    elsif group
+      project_ids = group.projects.map(&:id)
+      relation = Milestone.for_projects_and_groups(project_ids, [group.id])
+    end
+
+    title_exists = relation.find_by_title(title)
+    errors.add(:title, "already being used for another group or project milestone.") if title_exists
+  end
+
+  # Milestone should be either a project milestone or a group milestone
+  def milestone_type_check
+    if group_id && project_id
+      field = project_id_changed? ? :project_id : :group_id
+      errors.add(field, "milestone should belong either to a project or a group.")
+    end
+  end
 
   def milestone_format_reference(format = :iid)
     raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
+
+    if group_milestone? && format == :iid
+      raise ArgumentError, 'Cannot refer to a group milestone by an internal id!'
+    end
 
     if format == :name && !name.include?('"')
       %("#{name}")
@@ -182,7 +261,7 @@ class Milestone < ActiveRecord::Base
 
   def start_date_should_be_less_than_due_date
     if due_date <= start_date
-      errors.add(:start_date, "Can't be greater than due date")
+      errors.add(:due_date, "must be greater than start date")
     end
   end
 

@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe "Container Registry" do
+describe "Container Registry", :js do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:container_repository) do
     create(:container_repository, name: 'my/image')
   end
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
@@ -41,21 +41,23 @@ describe "Container Registry" do
       expect_any_instance_of(ContainerRepository)
         .to receive(:delete_tags!).and_return(true)
 
-      click_on 'Remove repository'
+      click_on(class: 'js-remove-repo')
     end
 
     scenario 'user removes a specific tag from container repository' do
       visit_container_registry
 
+      find('.js-toggle-repo').click
+      wait_for_requests
+
       expect_any_instance_of(ContainerRegistry::Tag)
         .to receive(:delete).and_return(true)
 
-      click_on 'Remove tag'
+      click_on(class: 'js-delete-registry')
     end
   end
 
   def visit_container_registry
-    visit namespace_project_container_registry_index_path(
-      project.namespace, project)
+    visit project_container_registry_index_path(project)
   end
 end

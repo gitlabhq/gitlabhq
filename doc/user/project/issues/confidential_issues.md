@@ -9,7 +9,7 @@ keep security vulnerabilities private or prevent surprises from leaking out.
 
 ## Making an issue confidential
 
-You can make an issue confidential either by creating a new issue or editing
+You can make an issue confidential during issue creation or by editing
 an existing one.
 
 When you create a new issue, a checkbox right below the text area is available
@@ -19,11 +19,19 @@ confidential checkbox and hit **Save changes**.
 
 ![Creating a new confidential issue](img/confidential_issues_create.png)
 
-## Making an issue non-confidential
+## Modifying issue confidentiality
 
-To make an issue non-confidential, all you have to do is edit it and unmark
-the confidential checkbox. Once you save the issue, it will gain the default
-visibility level you have chosen for your project.
+There are two ways to change an issue's confidentiality.
+
+The first way is to edit the issue and mark/unmark the confidential checkbox.
+Once you save the issue, it will change the confidentiality of the issue.
+
+The second way is to locate the Confidentiality section in the sidebar and click
+**Edit**. A popup should appear and give you the option to turn on or turn off confidentiality.
+
+| Turn off confidentiality | Turn on confidentiality |
+| :-----------: | :----------: |
+| ![Turn off confidentiality](img/turn_off_confidentiality.png) | ![Turn on confidentiality](img/turn_on_confidentiality.png) |
 
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the issue's comments.
@@ -48,6 +56,12 @@ the issue number, but there is also an indicator in the comment area that the
 issue you are commenting on is confidential.
 
 ![Confidential issue page](img/confidential_issues_issue_page.png)
+
+There is also an indicator on the sidebar denoting confidentiality.
+
+| Confidential issue | Not confidential issue |
+| :-----------: | :----------: |
+| ![Sidebar confidential issue](img/sidebar_confidential_issue.png) | ![Sidebar not confidential issue](img/sidebar_not_confidential_issue.png) |
 
 ## Permissions and access to confidential issues
 

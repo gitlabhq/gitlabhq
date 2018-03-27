@@ -13,8 +13,12 @@ describe Projects::BlobController, '(JavaScript fixtures)', type: :controller do
     clean_frontend_fixtures('blob/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   it 'blob/show.html.raw' do |example|

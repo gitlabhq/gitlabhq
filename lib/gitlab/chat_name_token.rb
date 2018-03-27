@@ -12,23 +12,23 @@ module Gitlab
     end
 
     def get
-      Gitlab::Redis.with do |redis|
-        data = redis.get(redis_key)
+      Gitlab::Redis::SharedState.with do |redis|
+        data = redis.get(redis_shared_state_key)
         JSON.parse(data, symbolize_names: true) if data
       end
     end
 
     def store!(params)
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         params = params.to_json
-        redis.set(redis_key, params, ex: EXPIRY_TIME)
+        redis.set(redis_shared_state_key, params, ex: EXPIRY_TIME)
         token
       end
     end
 
     def delete
-      Gitlab::Redis.with do |redis|
-        redis.del(redis_key)
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.del(redis_shared_state_key)
       end
     end
 
@@ -38,7 +38,7 @@ module Gitlab
       Devise.friendly_token(TOKEN_LENGTH)
     end
 
-    def redis_key
+    def redis_shared_state_key
       "gitlab:chat_names:#{token}"
     end
   end

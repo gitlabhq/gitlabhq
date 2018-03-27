@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab Flow
 
 - A simplified branching strategy

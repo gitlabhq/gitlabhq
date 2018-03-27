@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe MergeRequests::Conflicts::ResolveService do
+  include ProjectForksHelper
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :public, :repository) }
 
-  let(:fork_project) do
-    create(:forked_project_with_submodules) do |fork_project|
-      fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-      fork_project.save
-    end
+  let(:forked_project) do
+    fork_project_with_submodules(project, user)
   end
 
   let(:merge_request) do
@@ -19,7 +17,7 @@ describe MergeRequests::Conflicts::ResolveService do
 
   let(:merge_request_from_fork) do
     create(:merge_request,
-           source_branch: 'conflict-resolvable-fork', source_project: fork_project,
+           source_branch: 'conflict-resolvable-fork', source_project: forked_project,
            target_branch: 'conflict-start', target_project: project)
   end
 
@@ -109,28 +107,32 @@ describe MergeRequests::Conflicts::ResolveService do
             branch_name: 'conflict-start')
         end
 
-        def resolve_conflicts
+        subject do
           described_class.new(merge_request_from_fork).execute(user, params)
         end
 
-        it 'gets conflicts from the source project' do
-          expect(fork_project.repository.rugged).to receive(:merge_commits).and_call_original
-          expect(project.repository.rugged).not_to receive(:merge_commits)
-
-          resolve_conflicts
-        end
-
         it 'creates a commit with the message' do
-          resolve_conflicts
+          subject
 
           expect(merge_request_from_fork.source_branch_head.message).to eq(params[:commit_message])
         end
 
         it 'creates a commit with the correct parents' do
-          resolve_conflicts
+          subject
 
           expect(merge_request_from_fork.source_branch_head.parents.map(&:id))
             .to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813', target_head])
+        end
+
+        context 'when gitaly is disabled', :skip_gitaly_mock do
+          it 'gets conflicts from the source project' do
+            # REFACTOR NOTE: We used to test that `project.repository.rugged` wasn't
+            # used in this case, but since the refactor, for simplification,
+            # we always use that repository for read only operations.
+            expect(forked_project.repository.rugged).to receive(:merge_commits).and_call_original
+
+            subject
+          end
         end
       end
     end
@@ -202,14 +204,19 @@ describe MergeRequests::Conflicts::ResolveService do
         }
       end
 
-      it 'raises a MissingResolution error' do
+      it 'raises a ResolutionError error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(Gitlab::Conflict::File::MissingResolution)
+          .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
       end
     end
 
     context 'when the content of a file is unchanged' do
-      let(:list_service) { MergeRequests::Conflicts::ListService.new(merge_request) }
+      let(:resolver) do
+        MergeRequests::Conflicts::ListService.new(merge_request).conflicts.resolver
+      end
+      let(:regex_conflict) do
+        resolver.conflict_for_path(resolver.conflicts, 'files/ruby/regex.rb', 'files/ruby/regex.rb')
+      end
 
       let(:invalid_params) do
         {
@@ -221,16 +228,16 @@ describe MergeRequests::Conflicts::ResolveService do
             }, {
               old_path: 'files/ruby/regex.rb',
               new_path: 'files/ruby/regex.rb',
-              content: list_service.conflicts.file_for_path('files/ruby/regex.rb', 'files/ruby/regex.rb').content
+              content: regex_conflict.content
             }
           ],
           commit_message: 'This is a commit message!'
         }
       end
 
-      it 'raises a MissingResolution error' do
+      it 'raises a ResolutionError error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(Gitlab::Conflict::File::MissingResolution)
+          .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
       end
     end
 
@@ -248,9 +255,9 @@ describe MergeRequests::Conflicts::ResolveService do
         }
       end
 
-      it 'raises a MissingFiles error' do
+      it 'raises a ResolutionError error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(described_class::MissingFiles)
+          .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
       end
     end
   end

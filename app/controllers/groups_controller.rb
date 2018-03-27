@@ -2,6 +2,7 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
   include ParamsBackwardCompatibility
+  include PreviewMarkdown
 
   respond_to :html
 
@@ -9,14 +10,19 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
-  before_action :authorize_create_group!, only: [:new, :create]
+  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer]
+  before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
-  before_action :group_merge_requests, only: [:merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show, :subgroups]
+
+  skip_cross_project_access_check :index, :new, :create, :edit, :update,
+                                  :destroy, :projects
+  # When loading show as an atom feed, we render events that could leak cross
+  # project information
+  skip_cross_project_access_check :show, if: -> { request.format.html? }
 
   layout :determine_layout
 
@@ -25,7 +31,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
-    @group = Group.new
+    @group = Group.new(params.permit(:parent_id))
   end
 
   def create
@@ -45,15 +51,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    setup_projects
-
     respond_to do |format|
-      format.html
-
-      format.json do
-        render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
-        }
+      format.html do
+        @has_children = GroupDescendantsFinder.new(current_user: current_user,
+                                                   parent_group: @group,
+                                                   params: params).has_children?
       end
 
       format.atom do
@@ -61,13 +63,6 @@ class GroupsController < Groups::ApplicationController
         render layout: 'xml.atom'
       end
     end
-  end
-
-  def subgroups
-    return not_found unless Group.supports_nested_groups?
-
-    @nested_groups = GroupsFinder.new(current_user, parent: group).execute
-    @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
 
   def activity
@@ -104,26 +99,30 @@ class GroupsController < Groups::ApplicationController
     redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
-  protected
+  def transfer
+    parent_group = Group.find_by(id: params[:new_parent_group_id])
+    service = ::Groups::TransferService.new(@group, current_user)
 
-  def setup_projects
-    set_non_archived_param
-    params[:sort] ||= 'latest_activity_desc'
-    @sort = params[:sort]
-
-    options = {}
-    options[:only_owned] = true if params[:shared] == '0'
-    options[:only_shared] = true if params[:shared] == '1'
-
-    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user).execute
-    @projects = @projects.includes(:namespace)
-    @projects = @projects.page(params[:page]) if params[:name].blank?
+    if service.execute(parent_group)
+      flash[:notice] = "Group '#{@group.name}' was successfully transferred."
+      redirect_to group_path(@group)
+    else
+      flash.now[:alert] = service.error
+      render :edit
+    end
   end
 
+  protected
+
   def authorize_create_group!
-    unless can?(current_user, :create_group)
-      return render_404
-    end
+    allowed = if params[:parent_id].present?
+                parent = Group.find_by(id: params[:parent_id])
+                can?(current_user, :create_subgroup, parent)
+              else
+                can?(current_user, :create_group)
+              end
+
+    render_404 unless allowed
   end
 
   def determine_layout
@@ -137,10 +136,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce)
+    params.require(:group).permit(group_params_attributes)
   end
 
-  def group_params_ce
+  def group_params_attributes
     [
       :avatar,
       :description,
@@ -160,9 +159,21 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(@projects)
-    @events = event_filter.apply_filter(@events).with_associations
-    @events = @events.limit(20).offset(params[:offset] || 0)
+    params[:sort] ||= 'latest_activity_desc'
+
+    options = {}
+    options[:only_owned] = true if params[:shared] == '0'
+    options[:only_shared] = true if params[:shared] == '1'
+
+    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
+                  .execute
+                  .includes(:namespace)
+
+    @events = EventCollection
+      .new(@projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 
   def user_actions

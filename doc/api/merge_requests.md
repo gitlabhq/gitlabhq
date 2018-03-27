@@ -1,33 +1,57 @@
 # Merge requests API
 
+Every API call to merge requests must be authenticated.
+
 ## List merge requests
 
-Get all merge requests for this project.
-The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+> [Introduced][ce-13060] in GitLab 9.5.
+
+Get all merge requests the authenticated user has access to. By
+default it returns only merge requests created by the current user. To
+get all merge requests, use parameter `scope=all`.
+
+The `state` parameter can be used to get only merge requests with a
+given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to
+restrict the list of merge requests.
+
+**Note**: the `changes_count` value in the response is a string, not an
+integer. This is because when an MR has too many changes to display and store,
+it will be capped at 1,000. In that case, the API will return the string
+`"1000+"` for the changes count.
 
 ```
-GET /projects/:id/merge_requests
-GET /projects/:id/merge_requests?state=opened
-GET /projects/:id/merge_requests?state=all
-GET /projects/:id/merge_requests?iids[]=42&iids[]=43
-GET /projects/:id/merge_requests?milestone=release
-GET /projects/:id/merge_requests?labels=bug,reproduced
+GET /merge_requests
+GET /merge_requests?state=opened
+GET /merge_requests?state=all
+GET /merge_requests?milestone=release
+GET /merge_requests?labels=bug,reproduced
+GET /merge_requests?author_id=5
+GET /merge_requests?my_reaction_emoji=star
+GET /merge_requests?scope=assigned-to-me
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `iids` | Array[integer] | no | Return the request having the given `iid` |
-| `state`   | string  | no    | Return all merge requests or just those that are `opened`, `closed`, or `merged`|
-| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
-| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
-| `milestone`  | string  | no | Return merge requests for a specific milestone |
-| `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
-| `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
-| `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
+| Attribute           | Type     | Required | Description                                                                                                            |
+| ------------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `state`             | string   | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                       |
+| `order_by`          | string   | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                |
+| `sort`              | string   | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
+| `milestone`         | string   | no       | Return merge requests for a specific milestone                                                                         |
+| `view`              | string   | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
+| `labels`            | string   | no       | Return merge requests matching a comma separated list of labels                                                        |
+| `created_after`     | datetime | no       | Return merge requests created on or after the given time                                                               |
+| `created_before`    | datetime | no       | Return merge requests created on or before the given time                                                              |
+| `updated_after`     | datetime | no       | Return merge requests updated on or after the given time                                                               |
+| `updated_before`    | datetime | no       | Return merge requests updated on or before the given time                                                              |
+| `scope`             | string   | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me`     |
+| `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
+| `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
+| `my_reaction_emoji` | string   | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
+| `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
 
 ```json
 [
@@ -39,6 +63,8 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
+    "created_at": "2017-04-29T08:46:00Z",
+    "updated_at": "2017-04-29T08:46:00Z",
     "upvotes": 0,
     "downvotes": 0,
     "author": {
@@ -78,9 +104,136 @@ Parameters:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
+    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
+    "web_url": "http://example.com/example/example/merge_requests/1",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+## List project merge requests
+
+Get all merge requests for this project.
+The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+
+```
+GET /projects/:id/merge_requests
+GET /projects/:id/merge_requests?state=opened
+GET /projects/:id/merge_requests?state=all
+GET /projects/:id/merge_requests?iids[]=42&iids[]=43
+GET /projects/:id/merge_requests?milestone=release
+GET /projects/:id/merge_requests?labels=bug,reproduced
+GET /projects/:id/merge_requests?my_reaction_emoji=star
+```
+
+`project_id` represents the ID of the project where the MR resides.
+`project_id` will always equal `target_project_id`.
+
+In the case of a merge request from the same project,
+`source_project_id`, `target_project_id` and `project_id`
+will be the same. In the case of a merge request from a fork,
+`target_project_id` and `project_id` will be the same and
+`source_project_id` will be the fork project's ID.
+
+**Note**: the `changes_count` value in the response is a string, not an
+integer. This is because when an MR has too many changes to display and store,
+it will be capped at 1,000. In that case, the API will return the string
+`"1000+"` for the changes count.
+
+Parameters:
+
+| Attribute           | Type           | Required | Description                                                                                                                    |
+| ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                | integer        | yes      | The ID of a project                                                                                                            |
+| `iids[]`            | Array[integer] | no       | Return the request having the given `iid`                                                                                      |
+| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                               |
+| `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
+| `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
+| `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
+| `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
+| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
+| `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
+| `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
+| `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
+| `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
+| `scope`             | string         | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
+| `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
+| `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
+| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
+| `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
+
+```json
+[
+  {
+    "id": 1,
+    "iid": 1,
+    "target_branch": "master",
+    "source_branch": "test1",
+    "project_id": 3,
+    "title": "test1",
+    "state": "opened",
+    "created_at": "2017-04-29T08:46:00Z",
+    "updated_at": "2017-04-29T08:46:00Z",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
+    },
+    "assignee": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
+    },
+    "source_project_id": 2,
+    "target_project_id": 3,
+    "labels": [ ],
+    "description": "fixed login page css paddings",
+    "work_in_progress": false,
+    "milestone": {
+      "id": 5,
+      "iid": 1,
+      "project_id": 3,
+      "title": "v2.0",
+      "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+      "state": "closed",
+      "created_at": "2015-02-02T19:49:26.013Z",
+      "updated_at": "2015-02-02T19:49:26.013Z",
+      "due_date": null
+    },
+    "merge_when_pipeline_succeeds": true,
+    "merge_status": "can_be_merged",
+    "sha": "8888888888888888888888888888888888888888",
+    "merge_commit_sha": null,
+    "user_notes_count": 1,
+    "changes_count": "1",
+    "should_remove_source_branch": true,
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1",
+    "discussion_locked": false,
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
   }
 ]
 ```
@@ -107,23 +260,25 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
+  "created_at": "2017-04-29T08:46:00Z",
+  "updated_at": "2017-04-29T08:46:00Z",
   "upvotes": 0,
   "downvotes": 0,
   "author": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "state" : "active",
+    "web_url" : "https://gitlab.example.com/root",
+    "avatar_url" : null,
+    "username" : "root",
+    "id" : 1,
+    "name" : "Administrator"
   },
   "assignee": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "state" : "active",
+    "web_url" : "https://gitlab.example.com/root",
+    "avatar_url" : null,
+    "username" : "root",
+    "id" : 1,
+    "name" : "Administrator"
   },
   "source_project_id": 2,
   "target_project_id": 3,
@@ -147,10 +302,73 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  },
+  "closed_at": "2018-01-19T14:36:11.086Z",
+  "latest_build_started_at": null,
+  "latest_build_finished_at": null,
+  "first_deployed_to_production_at": null,
+  "pipeline": {
+    "id": 8,
+    "ref": "master",
+    "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0",
+    "status": "created"
+  },
+  "merged_by": null,
+  "merged_at": null,
+  "closed_by": {
+    "state" : "active",
+    "web_url" : "https://gitlab.example.com/root",
+    "avatar_url" : null,
+    "username" : "root",
+    "id" : 1,
+    "name" : "Administrator"
+  }
 }
+```
+
+## Get single MR participants
+
+Get a list of merge request participants.
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/participants
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
+
+
+```json
+[
+  {
+    "id": 1,
+    "name": "John Doe1",
+    "username": "user1",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+    "web_url": "http://localhost/user1"
+  },
+  {
+    "id": 2,
+    "name": "John Doe2",
+    "username": "user2",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/10fc7f102be8de7657fb4d80898bbfe3?s=80&d=identicon",
+    "web_url": "http://localhost/user2"
+  },
+]
 ```
 
 ## Get single MR commits
@@ -252,9 +470,17 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
   "changes": [
     {
     "old_path": "VERSION",
@@ -270,6 +496,32 @@ Parameters:
 }
 ```
 
+## List MR pipelines
+
+> [Introduced][ce-15454] in GitLab 10.5.0.
+
+Get a list of merge request pipelines.
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/pipelines
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
+
+```json
+[
+  {
+    "id": 77,
+    "sha": "959e04d7c7a30600c894bd3c0cd0e1ce7f42c11d",
+    "ref": "master",
+    "status": "success"
+  }
+]
+```
+
 ## Create MR
 
 Creates a new merge request.
@@ -277,18 +529,19 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-| Attribute              | Type    | Required | Description                                                                     |
-| ---------              | ----    | -------- | -----------                                                                     |
-| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `source_branch`        | string  | yes      | The source branch                                                               |
-| `target_branch`        | string  | yes      | The target branch                                                               |
-| `title`                | string  | yes      | Title of MR                                                                     |
-| `assignee_id`          | integer | no       | Assignee user ID                                                                |
-| `description`          | string  | no       | Description of MR                                                               |
-| `target_project_id`    | integer | no       | The target project (numeric id)                                                 |
-| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
-| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| Attribute                  | Type    | Required | Description                                                                     |
+| ---------                  | ----    | -------- | -----------                                                                     |
+| `id`                       | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `source_branch`            | string  | yes      | The source branch                                                               |
+| `target_branch`            | string  | yes      | The target branch                                                               |
+| `title`                    | string  | yes      | Title of MR                                                                     |
+| `assignee_id`              | integer | no       | Assignee user ID                                                                |
+| `description`              | string  | no       | Description of MR                                                               |
+| `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
+| `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
+| `milestone_id`             | integer | no       | The ID of a milestone                                                           |
+| `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
 ```json
 {
@@ -296,7 +549,7 @@ POST /projects/:id/merge_requests
   "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
-  "project_id": 3,
+  "project_id": 4,
   "title": "test1",
   "state": "opened",
   "upvotes": 0,
@@ -317,7 +570,7 @@ POST /projects/:id/merge_requests
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": 4,
+  "source_project_id": 3,
   "target_project_id": 4,
   "labels": [ ],
   "description": "fixed login page css paddings",
@@ -339,9 +592,18 @@ POST /projects/:id/merge_requests
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 0,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
+  "allow_maintainer_to_push": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -353,18 +615,20 @@ Updates an existing merge request. You can change the target branch, title, or e
 PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
-| Attribute              | Type    | Required | Description                                                                     |
-| ---------              | ----    | -------- | -----------                                                                     |
-| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `merge_request_iid`    | integer | yes      | The ID of a merge request                                                       |
-| `target_branch`        | string  | no       | The target branch                                                               |
-| `title`                | string  | no       | Title of MR                                                                     |
-| `assignee_id`          | integer | no       | Assignee user ID                                                                |
-| `description`          | string  | no       | Description of MR                                                               |
-| `state_event`          | string  | no       | New state (close/reopen)                                                        |
-| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
-| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| Attribute                  | Type    | Required | Description                                                                     |
+| ---------                  | ----    | -------- | -----------                                                                     |
+| `id`                       | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `merge_request_iid`        | integer | yes      | The ID of a merge request                                                       |
+| `target_branch`            | string  | no       | The target branch                                                               |
+| `title`                    | string  | no       | Title of MR                                                                     |
+| `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `milestone_id`             | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
+| `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
+| `description`              | string  | no       | Description of MR                                                               |
+| `state_event`              | string  | no       | New state (close/reopen)                                                        |
+| `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
 
 Must include at least one non-required attribute from above.
 
@@ -373,7 +637,7 @@ Must include at least one non-required attribute from above.
   "id": 1,
   "iid": 1,
   "target_branch": "master",
-  "project_id": 3,
+  "project_id": 4,
   "title": "test1",
   "state": "opened",
   "upvotes": 0,
@@ -394,7 +658,7 @@ Must include at least one non-required attribute from above.
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": 4,
+  "source_project_id": 3,
   "target_project_id": 4,
   "labels": [ ],
   "description": "description1",
@@ -416,9 +680,18 @@ Must include at least one non-required attribute from above.
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
+  "allow_maintainer_to_push": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -514,9 +787,17 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -584,9 +865,17 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -652,7 +941,8 @@ Example response when the GitLab issue tracker is used:
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
       "labels" : [],
-      "user_notes_count": 1
+      "user_notes_count": 1,
+      "changes_count": "1"
    },
 ]
 ```
@@ -875,7 +1165,8 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/francisca"
+      "web_url": "https://gitlab.example.com/francisca",
+      "discussion_locked": false
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",
@@ -906,6 +1197,7 @@ Example response:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 7,
+    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://example.com/example/example/merge_requests/1"
@@ -1164,3 +1456,7 @@ Example response:
   "total_time_spent": 3600
 }
 ```
+
+[ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
+[ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454

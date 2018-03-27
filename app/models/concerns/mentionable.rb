@@ -31,11 +31,11 @@ module Mentionable
   #
   # By default this will be the class name and the result of calling
   # `to_reference` on the object.
-  def gfm_reference(from_project = nil)
+  def gfm_reference(from = nil)
     # "MergeRequest" > "merge_request" > "Merge request" > "merge request"
     friendly_name = self.class.to_s.underscore.humanize.downcase
 
-    "#{friendly_name} #{to_reference(from_project)}"
+    "#{friendly_name} #{to_reference(from)}"
   end
 
   # The GFM reference to this Mentionable, which shouldn't be included in its #references.
@@ -44,19 +44,17 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
-    @extractors ||= {}
-
     # Use custom extractor if it's passed in the function parameters.
     if extractor
-      @extractors[current_user] = extractor
+      extractors[current_user] = extractor
     else
-      extractor = @extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
+      extractor = extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
 
       extractor.reset_memoized_values
     end
 
     self.class.mentionable_attrs.each do |attr, options|
-      text    = __send__(attr)
+      text    = __send__(attr) # rubocop:disable GitlabSecurity/PublicSend
       options = options.merge(
         cache_key: [self, attr],
         author: author,
@@ -67,6 +65,10 @@ module Mentionable
     end
 
     extractor
+  end
+
+  def extractors
+    @extractors ||= {}
   end
 
   def mentioned_users(current_user = nil)
@@ -100,7 +102,7 @@ module Mentionable
                         end
 
     self.class.mentionable_attrs.any? do |attr, _|
-      __send__(attr) =~ reference_pattern
+      __send__(attr) =~ reference_pattern # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

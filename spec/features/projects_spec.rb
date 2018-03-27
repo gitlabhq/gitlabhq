@@ -1,12 +1,54 @@
 require 'spec_helper'
 
-feature 'Project', feature: true do
-  describe 'description' do
-    let(:project) { create(:project, :repository) }
-    let(:path)    { namespace_project_path(project.namespace, project) }
+feature 'Project' do
+  include ProjectForksHelper
+
+  describe 'creating from template' do
+    let(:user)    { create(:user) }
+    let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
-      gitlab_sign_in(:admin)
+      sign_in user
+      visit new_project_path
+    end
+
+    it "allows creation from templates", :js do
+      find('#create-from-template-tab').click
+      find("label[for=#{template.name}]").click
+      fill_in("project_path", with: template.name)
+
+      page.within '#content-body' do
+        click_button "Create project"
+      end
+
+      expect(page).to have_content template.name
+    end
+  end
+
+  describe 'shows tip about push to create git command' do
+    let(:user)    { create(:user) }
+
+    before do
+      sign_in user
+      visit new_project_path
+    end
+
+    it 'shows the command in a popover', :js do
+      page.within '.profile-settings-sidebar' do
+        click_link 'Show command'
+      end
+
+      expect(page).to have_css('.popover .push-to-create-popover #push_to_create_tip')
+      expect(page).to have_content 'Private projects can be created in your personal namespace with:'
+    end
+  end
+
+  describe 'description' do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
     end
 
     it 'parses Markdown' do
@@ -34,14 +76,13 @@ feature 'Project', feature: true do
     end
   end
 
-  describe 'remove forked relationship', js: true do
+  describe 'remove forked relationship', :js do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { fork_project(create(:project, :public), user, namespace_id: user.namespace) }
 
     before do
-      gitlab_sign_in user
-      create(:forked_project_link, forked_to_project: project)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in user
+      visit edit_project_path(project)
     end
 
     it 'removes fork' do
@@ -50,70 +91,76 @@ feature 'Project', feature: true do
       remove_with_confirm('Remove fork relationship', project.path)
 
       expect(page).to have_content 'The fork relationship has been removed.'
-      expect(project.forked?).to be_falsey
+      expect(project.reload.forked?).to be_falsey
       expect(page).not_to have_content 'Remove fork relationship'
     end
   end
 
-  describe 'removal', js: true do
-    let(:user)    { create(:user, username: 'test', name: 'test') }
-    let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
+  describe 'showing information about source of a project fork' do
+    let(:user) { create(:user) }
+    let(:base_project)  { create(:project, :public, :repository) }
+    let(:forked_project) { fork_project(base_project, user, repository: true) }
 
     before do
-      gitlab_sign_in(user)
-      project.team << [user, :master]
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in user
+    end
+
+    it 'shows a link to the source project when it is available' do
+      visit project_path(forked_project)
+
+      expect(page).to have_content('Forked from')
+      expect(page).to have_link(base_project.full_name)
+    end
+
+    it 'does not contain fork network information for the root project' do
+      forked_project
+
+      visit project_path(base_project)
+
+      expect(page).not_to have_content('In fork network of')
+      expect(page).not_to have_content('Forked from')
+    end
+
+    it 'shows the name of the deleted project when the source was deleted' do
+      forked_project
+      Projects::DestroyService.new(base_project, base_project.owner).execute
+
+      visit project_path(forked_project)
+
+      expect(page).to have_content("Forked from #{base_project.full_name} (deleted)")
+    end
+
+    context 'a fork of a fork' do
+      let(:fork_of_fork) { fork_project(forked_project, user, repository: true) }
+
+      it 'links to the base project if the source project is removed' do
+        fork_of_fork
+        Projects::DestroyService.new(forked_project, user).execute
+
+        visit project_path(fork_of_fork)
+
+        expect(page).to have_content("Forked from")
+        expect(page).to have_link(base_project.full_name)
+      end
+    end
+  end
+
+  describe 'removal', :js do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, namespace: user.namespace) }
+
+    before do
+      sign_in(user)
+      project.add_master(user)
+      visit edit_project_path(project)
     end
 
     it 'removes a project' do
-      expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
-      expect(page).to have_content "Project 'test / project1' will be deleted."
+      expect { remove_with_confirm('Remove project', project.path) }.to change { Project.count }.by(-1)
+      expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty
-    end
-  end
-
-  describe 'project title' do
-    let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
-
-    before do
-      gitlab_sign_in(user)
-      project.add_user(user, Gitlab::Access::MASTER)
-      visit namespace_project_path(project.namespace, project)
-    end
-
-    it 'clicks toggle and shows dropdown', js: true do
-      find('.js-projects-dropdown-toggle').click
-      expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 1)
-    end
-  end
-
-  describe 'project title' do
-    let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
-    let(:project2) { create(:empty_project, namespace: user.namespace, path: 'test') }
-    let(:issue) { create(:issue, project: project) }
-
-    context 'on issues page', js: true do
-      before do
-        gitlab_sign_in(user)
-        project.add_user(user, Gitlab::Access::MASTER)
-        project2.add_user(user, Gitlab::Access::MASTER)
-        visit namespace_project_issue_path(project.namespace, project, issue)
-      end
-
-      it 'clicks toggle and shows dropdown' do
-        find('.js-projects-dropdown-toggle').click
-        expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 2)
-
-        page.within '.dropdown-menu-projects' do
-          click_link project.name_with_namespace
-        end
-
-        expect(page).to have_content project.name
-      end
     end
   end
 
@@ -122,9 +169,9 @@ feature 'Project', feature: true do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      project.team << [user, :master]
-      gitlab_sign_in user
-      visit namespace_project_path(project.namespace, project)
+      project.add_master(user)
+      sign_in user
+      visit project_path(project)
     end
 
     it 'has working links to files' do
@@ -143,6 +190,21 @@ feature 'Project', feature: true do
       click_link('645f6c4c')
 
       expect(page.status_code).to eq(200)
+    end
+  end
+
+  describe 'activity view' do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    before do
+      project.add_master(user)
+      sign_in user
+      visit project_path(project)
+    end
+
+    it 'loads activity', :js do
+      expect(page).to have_selector('.event-item')
     end
   end
 

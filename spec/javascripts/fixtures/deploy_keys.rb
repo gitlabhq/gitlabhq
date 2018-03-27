@@ -6,14 +6,18 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'todos-project') }
-  let(:project2) { create(:empty_project, :internal)}
+  let(:project2) { create(:project, :internal)}
 
   before(:all) do
     clean_frontend_fixtures('deploy_keys/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   render_views

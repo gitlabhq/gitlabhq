@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::MergeRequestParser, lib: true do
+describe Banzai::ReferenceParser::MergeRequestParser do
   include ReferenceParserHelpers
 
   let(:user) { create(:user) }

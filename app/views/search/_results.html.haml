@@ -2,10 +2,11 @@
   = render partial: "search/results/empty"
 - else
   .row-content-block
-    = search_entries_info(@search_objects, @scope, @search_term)
+    - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
+      = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
-        in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
+        in project #{link_to @project.full_name, [@project.namespace.becomes(Namespace), @project]}
       - elsif @group
         in group #{link_to @group.name, @group}
 
@@ -22,4 +23,4 @@
           = render partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
     - if @scope != 'projects'
-      = paginate(@search_objects, theme: 'gitlab')
+      = paginate_collection(@search_objects)

@@ -1,0 +1,51 @@
+# This file uses Test Kitchen with the kitchen-dokken driver to
+# perform functional testing. Doing so requires that your runner be a
+# Docker runner configured for privileged mode. Please see
+# https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode
+# for help configuring your runner properly, or, if you want to switch
+# to a different driver, see http://kitchen.ci/docs/drivers
+
+image: "chef/chefdk"
+services:
+  - docker:dind
+
+variables:
+  DOCKER_HOST: "tcp://docker:2375"
+  KITCHEN_LOCAL_YAML: ".kitchen.dokken.yml"
+
+stages:
+  - lint
+  - unit
+  - functional
+
+foodcritic:
+  stage: lint
+  script:
+  - chef exec foodcritic .
+
+cookstyle:
+  stage: lint
+  script:
+  - chef exec cookstyle .
+
+chefspec:
+  stage: unit
+  script:
+  - chef exec rspec spec
+
+# Set up your test matrix here. Example:
+#verify-centos-6:
+#  stage: functional
+#  before_script:
+#  - apt-get update
+#  - apt-get -y install rsync
+#  script:
+#  - kitchen verify default-centos-6 --destroy=always
+#  
+#verify-centos-7:
+#  stage: functional
+#  before_script:
+#  - apt-get update
+#  - apt-get -y install rsync
+#  script:
+#  - kitchen verify default-centos-7 --destroy=always

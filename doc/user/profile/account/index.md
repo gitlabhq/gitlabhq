@@ -1,5 +1,2 @@
-# Profile settings
 
-## Account
-
-Set up [two-factor authentication](two_factor_authentication.md).
+This document was moved to [../index.md#profile-settings](../index.md#profile-settings).

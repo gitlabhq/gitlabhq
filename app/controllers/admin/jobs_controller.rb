@@ -20,6 +20,6 @@ class Admin::JobsController < Admin::ApplicationController
   def cancel_all
     Ci::Build.running_or_pending.each(&:cancel)
 
-    redirect_to admin_jobs_path
+    redirect_to admin_jobs_path, status: 303
   end
 end

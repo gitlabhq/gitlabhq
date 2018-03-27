@@ -46,7 +46,7 @@ describe Gitlab::Ci::Status::Build::Play do
   end
 
   describe '#action_icon' do
-    it { expect(subject.action_icon).to eq 'icon_action_play' }
+    it { expect(subject.action_icon).to eq 'play' }
   end
 
   describe '#action_title' do

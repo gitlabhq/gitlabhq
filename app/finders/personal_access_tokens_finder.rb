@@ -18,6 +18,7 @@ class PersonalAccessTokensFinder
 
   def by_user(tokens)
     return tokens unless @params[:user]
+
     tokens.where(user: @params[:user])
   end
 

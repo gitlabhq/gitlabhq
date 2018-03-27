@@ -1,10 +1,8 @@
 require 'spec_helper'
 
-describe Ci::Pipeline, models: true do
-  include EmailHelpers
-
+describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  set(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -17,6 +15,7 @@ describe Ci::Pipeline, models: true do
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
@@ -27,6 +26,14 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+  it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
+
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:pipelines)
+      expect(Project.reflect_on_association(:pipelines).has_inverse?).to eq(:project)
+    end
+  end
 
   describe '#source' do
     context 'when creating new pipeline' do
@@ -92,7 +99,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "coverage" do
-    let(:project) { create(:empty_project, build_coverage_regex: "/.*/") }
+    let(:project) { create(:project, build_coverage_regex: "/.*/") }
     let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
     it "calculates average when there are two builds with coverage" do
@@ -116,7 +123,7 @@ describe Ci::Pipeline, models: true do
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create(:ci_build, pipeline: pipeline)
+      FactoryBot.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end
@@ -157,6 +164,16 @@ describe Ci::Pipeline, models: true do
 
     def create_build(name, status)
       create(:ci_build, name: name, status: status, pipeline: pipeline)
+    end
+  end
+
+  describe '#predefined_variables' do
+    subject { pipeline.predefined_variables }
+
+    it 'includes all predefined variables in a valid order' do
+      keys = subject.map { |variable| variable[:key] }
+
+      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
     end
   end
 
@@ -226,12 +243,20 @@ describe Ci::Pipeline, models: true do
 
     describe '#stage_seeds' do
       let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: { script: 'rake' } })
+        build(:ci_pipeline, config: { rspec: { script: 'rake' } })
       end
 
       it 'returns preseeded stage seeds object' do
         expect(pipeline.stage_seeds).to all(be_a Gitlab::Ci::Stage::Seed)
         expect(pipeline.stage_seeds.count).to eq 1
+      end
+    end
+
+    describe '#seeds_size' do
+      let(:pipeline) { build(:ci_pipeline_with_one_job) }
+
+      it 'returns number of jobs in stage seeds' do
+        expect(pipeline.seeds_size).to eq 1
       end
     end
 
@@ -415,7 +440,7 @@ describe Ci::Pipeline, models: true do
 
     describe 'merge request metrics' do
       let(:project) { create(:project, :repository) }
-      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let(:pipeline) { FactoryBot.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
       before do
@@ -535,6 +560,35 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#has_kubernetes_active?' do
+    context 'when kubernetes is active' do
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns true' do
+          expect(pipeline).to have_kubernetes_active
+        end
+      end
+
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+    end
+
+    context 'when kubernetes is not active' do
+      it 'returns false' do
+        expect(pipeline).not_to have_kubernetes_active
+      end
+    end
+  end
+
   describe '#has_stage_seeds?' do
     context 'when pipeline has stage seeds' do
       subject { build(:ci_pipeline_with_one_job) }
@@ -589,38 +643,29 @@ describe Ci::Pipeline, models: true do
 
   shared_context 'with some outdated pipelines' do
     before do
-      create_pipeline(:canceled, 'ref', 'A')
-      create_pipeline(:success, 'ref', 'A')
-      create_pipeline(:failed, 'ref', 'B')
-      create_pipeline(:skipped, 'feature', 'C')
+      create_pipeline(:canceled, 'ref', 'A', project)
+      create_pipeline(:success, 'ref', 'A', project)
+      create_pipeline(:failed, 'ref', 'B', project)
+      create_pipeline(:skipped, 'feature', 'C', project)
     end
 
-    def create_pipeline(status, ref, sha)
-      create(:ci_empty_pipeline, status: status, ref: ref, sha: sha)
+    def create_pipeline(status, ref, sha, project)
+      create(
+        :ci_empty_pipeline,
+        status: status,
+        ref: ref,
+        sha: sha,
+        project: project
+      )
     end
   end
 
-  describe '.latest' do
+  describe '.newest_first' do
     include_context 'with some outdated pipelines'
 
-    context 'when no ref is specified' do
-      let(:pipelines) { described_class.latest.all }
-
-      it 'returns the latest pipeline for the same ref and different sha' do
-        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
-        expect(pipelines.map(&:status))
-          .to contain_exactly('success', 'failed', 'skipped')
-      end
-    end
-
-    context 'when ref is specified' do
-      let(:pipelines) { described_class.latest('ref').all }
-
-      it 'returns the latest pipeline for ref and different sha' do
-        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
-        expect(pipelines.map(&:status))
-          .to contain_exactly('success', 'failed')
-      end
+    it 'returns the pipelines from new to old' do
+      expect(described_class.newest_first.pluck(:status))
+        .to eq(%w[skipped failed success canceled])
     end
   end
 
@@ -628,20 +673,14 @@ describe Ci::Pipeline, models: true do
     include_context 'with some outdated pipelines'
 
     context 'when no ref is specified' do
-      let(:latest_status) { described_class.latest_status }
-
-      it 'returns the latest status for the same ref and different sha' do
-        expect(latest_status).to eq(described_class.latest.status)
-        expect(latest_status).to eq('failed')
+      it 'returns the status of the latest pipeline' do
+        expect(described_class.latest_status).to eq('skipped')
       end
     end
 
     context 'when ref is specified' do
-      let(:latest_status) { described_class.latest_status('ref') }
-
-      it 'returns the latest status for ref and different sha' do
-        expect(latest_status).to eq(described_class.latest_status('ref'))
-        expect(latest_status).to eq('failed')
+      it 'returns the status of the latest pipeline for the given ref' do
+        expect(described_class.latest_status('ref')).to eq('failed')
       end
     end
   end
@@ -650,7 +689,7 @@ describe Ci::Pipeline, models: true do
     include_context 'with some outdated pipelines'
 
     let!(:latest_successful_pipeline) do
-      create_pipeline(:success, 'ref', 'D')
+      create_pipeline(:success, 'ref', 'D', project)
     end
 
     it 'returns the latest successful pipeline' do
@@ -662,14 +701,81 @@ describe Ci::Pipeline, models: true do
   describe '.latest_successful_for_refs' do
     include_context 'with some outdated pipelines'
 
-    let!(:latest_successful_pipeline1) { create_pipeline(:success, 'ref1', 'D') }
-    let!(:latest_successful_pipeline2) { create_pipeline(:success, 'ref2', 'D') }
+    let!(:latest_successful_pipeline1) do
+      create_pipeline(:success, 'ref1', 'D', project)
+    end
+
+    let!(:latest_successful_pipeline2) do
+      create_pipeline(:success, 'ref2', 'D', project)
+    end
 
     it 'returns the latest successful pipeline for both refs' do
       refs = %w(ref1 ref2 ref3)
 
       expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
     end
+  end
+
+  describe '.latest_status_per_commit' do
+    let(:project) { create(:project) }
+
+    before do
+      pairs = [
+        %w[success ref1 123],
+        %w[manual master 123],
+        %w[failed ref 456]
+      ]
+
+      pairs.each do |(status, ref, sha)|
+        create(
+          :ci_empty_pipeline,
+          status: status,
+          ref: ref,
+          sha: sha,
+          project: project
+        )
+      end
+    end
+
+    context 'without a ref' do
+      it 'returns a Hash containing the latest status per commit for all refs' do
+        expect(described_class.latest_status_per_commit(%w[123 456]))
+          .to eq({ '123' => 'manual', '456' => 'failed' })
+      end
+
+      it 'only includes the status of the given commit SHAs' do
+        expect(described_class.latest_status_per_commit(%w[123]))
+          .to eq({ '123' => 'manual' })
+      end
+
+      context 'when there are two pipelines for a ref and SHA' do
+        it 'returns the status of the latest pipeline' do
+          create(
+            :ci_empty_pipeline,
+            status: 'failed',
+            ref: 'master',
+            sha: '123',
+            project: project
+          )
+
+          expect(described_class.latest_status_per_commit(%w[123]))
+            .to eq({ '123' => 'failed' })
+        end
+      end
+    end
+
+    context 'with a ref' do
+      it 'only includes the pipelines for the given ref' do
+        expect(described_class.latest_status_per_commit(%w[123 456], 'master'))
+          .to eq({ '123' => 'manual' })
+      end
+    end
+  end
+
+  describe '.internal_sources' do
+    subject { described_class.internal_sources }
+
+    it { is_expected.to be_an(Array) }
   end
 
   describe '#status' do
@@ -728,6 +834,8 @@ describe Ci::Pipeline, models: true do
 
     context 'on failure and build retry' do
       before do
+        stub_not_protect_default_branch
+
         build.drop
         project.add_developer(user)
 
@@ -739,6 +847,140 @@ describe Ci::Pipeline, models: true do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
+    end
+  end
+
+  describe '#ci_yaml_file_path' do
+    subject { pipeline.ci_yaml_file_path }
+
+    it 'returns the path from project' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
+
+      is_expected.to eq('custom/path')
+    end
+
+    it 'returns default when custom path is nil' do
+      allow(pipeline.project).to receive(:ci_config_path) { nil }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns default when custom path is empty' do
+      allow(pipeline.project).to receive(:ci_config_path) { '' }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+  end
+
+  describe '#set_config_source' do
+    context 'when pipelines does not contain needed data' do
+      it 'defines source to be unknown' do
+        pipeline.set_config_source
+
+        expect(pipeline).to be_unknown_source
+      end
+    end
+
+    context 'when pipeline contains all needed data' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: '1234',
+                             ref: 'master',
+                             source: :push)
+      end
+
+      context 'when the repository has a config file' do
+        before do
+          allow(project.repository).to receive(:gitlab_ci_yml_for)
+            .and_return('config')
+        end
+
+        it 'defines source to be from repository' do
+          pipeline.set_config_source
+
+          expect(pipeline).to be_repository_source
+        end
+
+        context 'when loading an object' do
+          let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
+
+          it 'does not redefine the source' do
+            # force to overwrite the source
+            pipeline.unknown_source!
+
+            expect(new_pipeline).to be_unknown_source
+          end
+        end
+      end
+
+      context 'when the repository does not have a config file' do
+        let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
+
+        context 'auto devops enabled' do
+          before do
+            stub_application_setting(auto_devops_enabled: true)
+            allow(project).to receive(:ci_config_path) { 'custom' }
+          end
+
+          it 'defines source to be auto devops' do
+            pipeline.set_config_source
+
+            expect(pipeline).to be_auto_devops_source
+          end
+        end
+      end
+    end
+  end
+
+  describe '#ci_yaml_file' do
+    let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
+
+    context 'the source is unknown' do
+      before do
+        pipeline.unknown_source!
+      end
+
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+
+      it 'sets yaml errors if not found' do
+        expect(pipeline.ci_yaml_file).to be_nil
+        expect(pipeline.yaml_errors)
+            .to start_with('Failed to load CI/CD config file')
+      end
+    end
+
+    context 'the source is the repository' do
+      before do
+        pipeline.repository_source!
+      end
+
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+    end
+
+    context 'when the source is auto_devops_source' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+        pipeline.auto_devops_source!
+      end
+
+      it 'finds the implied config' do
+        expect(pipeline.ci_yaml_file).to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
     end
   end
 
@@ -960,6 +1202,8 @@ describe Ci::Pipeline, models: true do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
     before do
+      stub_not_protect_default_branch
+
       project.add_developer(user)
     end
 
@@ -1005,7 +1249,7 @@ describe Ci::Pipeline, models: true do
 
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
-    let!(:build_b) { create_build('b', 1) }
+    let!(:build_b) { create_build('b', 0) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -1061,6 +1305,8 @@ describe Ci::Pipeline, models: true do
         end
 
         context 'when stage one failed' do
+          let!(:build_b) { create_build('b', 1) }
+
           before do
             build_a.drop
           end
@@ -1103,7 +1349,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
@@ -1128,7 +1374,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#all_merge_requests" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
 
     it "returns all merge requests having the same source branch" do
@@ -1199,12 +1445,10 @@ describe Ci::Pipeline, models: true do
     end
 
     before do
-      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+      project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
-
-      reset_delivered_emails!
 
       perform_enqueued_jobs do
         pipeline.enqueue
@@ -1265,6 +1509,42 @@ describe Ci::Pipeline, models: true do
       end
 
       it_behaves_like 'not sending any notification'
+    end
+  end
+
+  describe '#latest_builds_with_artifacts' do
+    let!(:pipeline) { create(:ci_pipeline, :success) }
+
+    let!(:build) do
+      create(:ci_build, :success, :artifacts, pipeline: pipeline)
+    end
+
+    it 'returns an Array' do
+      expect(pipeline.latest_builds_with_artifacts).to be_an_instance_of(Array)
+    end
+
+    it 'returns the latest builds' do
+      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    end
+
+    it 'memoizes the returned relation' do
+      query_count = ActiveRecord::QueryRecorder
+        .new { 2.times { pipeline.latest_builds_with_artifacts.to_a } }
+        .count
+
+      expect(query_count).to eq(1)
+    end
+  end
+
+  describe '#total_size' do
+    let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
+    let!(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
+    let!(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
+
+    it 'returns all jobs (including failed and retried)' do
+      expect(pipeline.total_size).to eq(5)
     end
   end
 end

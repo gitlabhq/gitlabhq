@@ -1,5 +1,4 @@
 - page_title 'Integrations'
-= render 'projects/settings/head'
 
 .row.prepend-top-default
   .col-lg-3
@@ -9,14 +8,13 @@
       #{link_to 'Webhooks', help_page_path('user/project/integrations/webhooks')} can be
       used for binding events when something is happening within the project.
   .col-lg-9.append-bottom-default
-    = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: namespace_project_hook_path do |f|
+    = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: project_hook_path(@project, @hook) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
       = f.submit 'Save changes', class: 'btn btn-create'
-      = link_to 'Test hook', test_namespace_project_hook_path(@project.namespace, @project, @hook), class: 'btn btn-default'
-      = link_to 'Remove', namespace_project_hook_path(@project.namespace, @project, @hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
+      = render 'shared/web_hooks/test_button', triggers: ProjectHook.triggers, hook: @hook
+      = link_to 'Remove', project_hook_path(@project, @hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
 
 %hr
 
 = render partial: 'projects/hook_logs/index', locals: { hook: @hook, hook_logs: @hook_logs, project: @project }
-

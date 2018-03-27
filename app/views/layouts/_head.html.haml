@@ -11,6 +11,8 @@
   %meta{ property: 'og:title',       content: page_title }
   %meta{ property: 'og:description', content: page_description }
   %meta{ property: 'og:image',       content: page_image }
+  %meta{ property: 'og:image:width', content: '64' }
+  %meta{ property: 'og:image:height', content: '64' }
   %meta{ property: 'og:url',         content: request.base_url + request.fullpath }
 
   -# Twitter Card - https://dev.twitter.com/cards/types/summary
@@ -28,23 +30,23 @@
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
   = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
-  = stylesheet_link_tag 'peek' if peek_enabled?
-
-  - if show_new_nav?
-    = stylesheet_link_tag "new_nav", media: "all"
+  = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
   = Gon::Base.render_data
 
-  = webpack_bundle_tag "runtime"
+  - if content_for?(:library_javascripts)
+    = yield :library_javascripts
+
+  = javascript_include_tag locale_path unless I18n.locale == :en
+  = webpack_bundle_tag "webpack_runtime"
   = webpack_bundle_tag "common"
-  = webpack_bundle_tag "locale"
   = webpack_bundle_tag "main"
-  = webpack_bundle_tag "raven" if current_application_settings.clientside_sentry_enabled
-  = webpack_bundle_tag "test" if Rails.env.test?
-  = webpack_bundle_tag 'peek' if peek_enabled?
+  = webpack_bundle_tag "raven" if Gitlab::CurrentSettings.clientside_sentry_enabled
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
+
+  = webpack_controller_bundle_tags
 
   = yield :project_javascripts
 
@@ -70,4 +72,3 @@
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
-  = render 'layouts/bootlint' if Rails.env.development?

@@ -1,0 +1,15 @@
+- project_meta = { id: @project.id, name: @project.name, namespace: @project.full_name, web_url: project_path(@project), avatar_url: @project.avatar_url } if @project&.persisted?
+.projects-dropdown-container
+  .project-dropdown-sidebar.qa-projects-dropdown-sidebar
+    %ul
+      = nav_link(path: 'dashboard/projects#index') do
+        = link_to dashboard_projects_path, class: 'qa-your-projects-link' do
+          = _('Your projects')
+      = nav_link(path: 'projects#starred') do
+        = link_to starred_dashboard_projects_path do
+          = _('Starred projects')
+      = nav_link(path: 'projects#trending') do
+        = link_to explore_root_path do
+          = _('Explore projects')
+  .project-dropdown-content
+    #js-projects-dropdown{ data: { user_name: current_user.username, project: project_meta } }

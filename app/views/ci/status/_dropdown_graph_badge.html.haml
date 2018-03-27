@@ -6,14 +6,14 @@
 - tooltip = "#{subject.name} - #{status.label}"
 
 - if status.has_details?
-  = link_to status.details_path, class: 'mini-pipeline-graph-dropdown-item', data: { toggle: 'tooltip', title: tooltip }  do
-    %span{ class: klass }= custom_icon(status.icon)
+  = link_to status.details_path, class: 'mini-pipeline-graph-dropdown-item', data: { toggle: 'tooltip', title: tooltip, container: 'body' }  do
+    %span{ class: klass }= sprite_icon(status.icon)
     %span.ci-build-text= subject.name
 - else
-  .mini-pipeline-graph-dropdown-item{ data: { toggle: 'tooltip', title: tooltip } }
-    %span{ class: klass }= custom_icon(status.icon)
+  .menu-item.mini-pipeline-graph-dropdown-item{ data: { toggle: 'tooltip', title: tooltip, container: 'body' } }
+    %span{ class: klass }= sprite_icon(status.icon)
     %span.ci-build-text= subject.name
 
 - if status.has_action?
-  = link_to status.action_path, class: 'ci-action-icon-wrapper js-ci-action-icon', method: status.action_method, data: { toggle: 'tooltip', title: status.action_title }  do
-    = custom_icon(status.action_icon)
+  = link_to status.action_path, class: "ci-action-icon-wrapper js-ci-action-icon", method: status.action_method, data: { toggle: 'tooltip', title: status.action_title, container: 'body' }  do
+    = sprite_icon(status.action_icon, css_class: "icon-action-#{status.action_icon}")

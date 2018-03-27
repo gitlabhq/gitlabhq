@@ -1,6 +1,9 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
+      BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
+
       # Adds `created_at` and `updated_at` columns with timezone information.
       #
       # This method is an improved version of Rails' built-in method `add_timestamps`.
@@ -56,6 +59,11 @@ module Gitlab
           disable_statement_timeout
         end
 
+        if index_exists?(table_name, column_name, options)
+          Rails.logger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+          return
+        end
+
         add_index(table_name, column_name, options)
       end
 
@@ -80,6 +88,11 @@ module Gitlab
           disable_statement_timeout
         end
 
+        unless index_exists?(table_name, column_name, options)
+          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+          return
+        end
+
         remove_index(table_name, options.merge({ column: column_name }))
       end
 
@@ -102,6 +115,11 @@ module Gitlab
         if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
           disable_statement_timeout
+        end
+
+        unless index_exists_by_name?(table_name, index_name)
+          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}"
+          return
         end
 
         remove_index(table_name, options.merge({ name: index_name }))
@@ -137,32 +155,59 @@ module Gitlab
         # of PostgreSQL's "VALIDATE CONSTRAINT". As a result we'll just fall
         # back to the normal foreign key procedure.
         if Database.mysql?
+          if foreign_key_exists?(source, target, column: column)
+            Rails.logger.warn "Foreign key not created because it exists already " \
+              "(this may be due to an aborted migration or similar): " \
+              "source: #{source}, target: #{target}, column: #{column}"
+            return
+          end
+
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
+        else
+          on_delete = 'SET NULL' if on_delete == :nullify
         end
 
         disable_statement_timeout
 
         key_name = concurrent_foreign_key_name(source, column)
 
-        # Using NOT VALID allows us to create a key without immediately
-        # validating it. This means we keep the ALTER TABLE lock only for a
-        # short period of time. The key _is_ enforced for any newly created
-        # data.
-        execute <<-EOF.strip_heredoc
-        ALTER TABLE #{source}
-        ADD CONSTRAINT #{key_name}
-        FOREIGN KEY (#{column})
-        REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete}" : ''}
-        NOT VALID;
-        EOF
+        unless foreign_key_exists?(source, target, column: column)
+          Rails.logger.warn "Foreign key not created because it exists already " \
+            "(this may be due to an aborted migration or similar): " \
+            "source: #{source}, target: #{target}, column: #{column}"
+
+          # Using NOT VALID allows us to create a key without immediately
+          # validating it. This means we keep the ALTER TABLE lock only for a
+          # short period of time. The key _is_ enforced for any newly created
+          # data.
+          execute <<-EOF.strip_heredoc
+          ALTER TABLE #{source}
+          ADD CONSTRAINT #{key_name}
+          FOREIGN KEY (#{column})
+          REFERENCES #{target} (id)
+          #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
+          NOT VALID;
+          EOF
+        end
 
         # Validate the existing constraint. This can potentially take a very
         # long time to complete, but fortunately does not lock the source table
         # while running.
+        #
+        # Note this is a no-op in case the constraint is VALID already
         execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+      end
+
+      def foreign_key_exists?(source, target = nil, column: nil)
+        foreign_keys(source).any? do |key|
+          if column
+            key.options[:column].to_s == column.to_s
+          else
+            key.to_table.to_s == target.to_s
+          end
+        end
       end
 
       # Returns the name for a concurrent foreign key.
@@ -214,6 +259,15 @@ module Gitlab
       # table - The name of the table.
       # column - The name of the column to update.
       # value - The value for the column.
+      #
+      # The `value` argument is typically a literal. To perform a computed
+      # update, an Arel literal can be used instead:
+      #
+      #     update_value = Arel.sql('bar * baz')
+      #
+      #     update_column_in_batches(:projects, :foo, update_value) do |table, query|
+      #       query.where(table[:some_column].eq('hello'))
+      #     end
       #
       # Rubocop's Metrics/AbcSize metric is disabled for this method as Rubocop
       # determines this method to be too complex while there's no way to make it
@@ -356,6 +410,8 @@ module Gitlab
           raise 'rename_column_concurrently can not be run inside a transaction'
         end
 
+        check_trigger_permissions!(table)
+
         old_col = column_for(table, old)
         new_type = type || old_col.type
 
@@ -369,10 +425,27 @@ module Gitlab
         # necessary since we copy over old values further down.
         change_column_default(table, new, old_col.default) if old_col.default
 
-        trigger_name = rename_trigger_name(table, old, new)
+        install_rename_triggers(table, old, new)
+
+        update_column_in_batches(table, new, Arel::Table.new(table)[old])
+
+        change_column_null(table, new, false) unless old_col.null
+
+        copy_indexes(table, old, new)
+        copy_foreign_keys(table, old, new)
+      end
+
+      # Installs triggers in a table that keep a new column in sync with an old
+      # one.
+      #
+      # table - The name of the table to install the trigger in.
+      # old_column - The name of the old column.
+      # new_column - The name of the new column.
+      def install_rename_triggers(table, old_column, new_column)
+        trigger_name = rename_trigger_name(table, old_column, new_column)
         quoted_table = quote_table_name(table)
-        quoted_old = quote_column_name(old)
-        quoted_new = quote_column_name(new)
+        quoted_old = quote_column_name(old_column)
+        quoted_new = quote_column_name(new_column)
 
         if Database.postgresql?
           install_rename_triggers_for_postgresql(trigger_name, quoted_table,
@@ -381,13 +454,6 @@ module Gitlab
           install_rename_triggers_for_mysql(trigger_name, quoted_table,
                                             quoted_old, quoted_new)
         end
-
-        update_column_in_batches(table, new, Arel::Table.new(table)[old])
-
-        change_column_null(table, new, false) unless old_col.null
-
-        copy_indexes(table, old, new)
-        copy_foreign_keys(table, old, new)
       end
 
       # Changes the type of a column concurrently.
@@ -428,6 +494,8 @@ module Gitlab
       def cleanup_concurrent_column_rename(table, old, new)
         trigger_name = rename_trigger_name(table, old, new)
 
+        check_trigger_permissions!(table)
+
         if Database.postgresql?
           remove_rename_triggers_for_postgresql(table, trigger_name)
         else
@@ -435,6 +503,99 @@ module Gitlab
         end
 
         remove_column(table, old)
+      end
+
+      # Changes the column type of a table using a background migration.
+      #
+      # Because this method uses a background migration it's more suitable for
+      # large tables. For small tables it's better to use
+      # `change_column_type_concurrently` since it can complete its work in a
+      # much shorter amount of time and doesn't rely on Sidekiq.
+      #
+      # Example usage:
+      #
+      #     class Issue < ActiveRecord::Base
+      #       self.table_name = 'issues'
+      #
+      #       include EachBatch
+      #
+      #       def self.to_migrate
+      #         where('closed_at IS NOT NULL')
+      #       end
+      #     end
+      #
+      #     change_column_type_using_background_migration(
+      #       Issue.to_migrate,
+      #       :closed_at,
+      #       :datetime_with_timezone
+      #     )
+      #
+      # Reverting a migration like this is done exactly the same way, just with
+      # a different type to migrate to (e.g. `:datetime` in the above example).
+      #
+      # relation - An ActiveRecord relation to use for scheduling jobs and
+      #            figuring out what table we're modifying. This relation _must_
+      #            have the EachBatch module included.
+      #
+      # column - The name of the column for which the type will be changed.
+      #
+      # new_type - The new type of the column.
+      #
+      # batch_size - The number of rows to schedule in a single background
+      #              migration.
+      #
+      # interval - The time interval between every background migration.
+      def change_column_type_using_background_migration(
+        relation,
+        column,
+        new_type,
+        batch_size: 10_000,
+        interval: 10.minutes
+      )
+
+        unless relation.model < EachBatch
+          raise TypeError, 'The relation must include the EachBatch module'
+        end
+
+        temp_column = "#{column}_for_type_change"
+        table = relation.table_name
+        max_index = 0
+
+        add_column(table, temp_column, new_type)
+        install_rename_triggers(table, column, temp_column)
+
+        # Schedule the jobs that will copy the data from the old column to the
+        # new one. Rows with NULL values in our source column are skipped since
+        # the target column is already NULL at this point.
+        relation.where.not(column => nil).each_batch(of: batch_size) do |batch, index|
+          start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
+          max_index = index
+
+          BackgroundMigrationWorker.perform_in(
+            index * interval,
+            'CopyColumn',
+            [table, column, temp_column, start_id, end_id]
+          )
+        end
+
+        # Schedule the renaming of the column to happen (initially) 1 hour after
+        # the last batch finished.
+        BackgroundMigrationWorker.perform_in(
+          (max_index * interval) + 1.hour,
+          'CleanupConcurrentTypeChange',
+          [table, column, temp_column]
+        )
+
+        if perform_background_migration_inline?
+          # To ensure the schema is up to date immediately we perform the
+          # migration inline in dev / test environments.
+          Gitlab::BackgroundMigration.steal('CopyColumn')
+          Gitlab::BackgroundMigration.steal('CleanupConcurrentTypeChange')
+        end
+      end
+
+      def perform_background_migration_inline?
+        Rails.env.test? || Rails.env.development?
       end
 
       # Performs a concurrent column rename when using PostgreSQL.
@@ -483,14 +644,14 @@ module Gitlab
 
       # Removes the triggers used for renaming a PostgreSQL column concurrently.
       def remove_rename_triggers_for_postgresql(table, trigger)
-        execute("DROP TRIGGER #{trigger} ON #{table}")
-        execute("DROP FUNCTION #{trigger}()")
+        execute("DROP TRIGGER IF EXISTS #{trigger} ON #{table}")
+        execute("DROP FUNCTION IF EXISTS #{trigger}()")
       end
 
       # Removes the triggers used for renaming a MySQL column concurrently.
       def remove_rename_triggers_for_mysql(trigger)
-        execute("DROP TRIGGER #{trigger}_insert")
-        execute("DROP TRIGGER #{trigger}_update")
+        execute("DROP TRIGGER IF EXISTS #{trigger}_insert")
+        execute("DROP TRIGGER IF EXISTS #{trigger}_update")
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
@@ -603,6 +764,147 @@ module Gitlab
             .new("regexp_replace", [column, quoted_pattern, quoted_replacement])
           Arel::Nodes::SqlLiteral.new(replace.to_sql)
         end
+      end
+
+      def remove_foreign_key_without_error(*args)
+        remove_foreign_key(*args)
+      rescue ArgumentError
+      end
+
+      def sidekiq_queue_migrate(queue_from, to:)
+        while sidekiq_queue_length(queue_from) > 0
+          Sidekiq.redis do |conn|
+            conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
+          end
+        end
+      end
+
+      def sidekiq_queue_length(queue_name)
+        Sidekiq.redis do |conn|
+          conn.llen("queue:#{queue_name}")
+        end
+      end
+
+      def check_trigger_permissions!(table)
+        unless Grant.create_and_execute_trigger?(table)
+          dbname = Database.database_name
+          user = Database.username
+
+          raise <<-EOF
+Your database user is not allowed to create, drop, or execute triggers on the
+table #{table}.
+
+If you are using PostgreSQL you can solve this by logging in to the GitLab
+database (#{dbname}) using a super user and running:
+
+    ALTER #{user} WITH SUPERUSER
+
+For MySQL you instead need to run:
+
+    GRANT ALL PRIVILEGES ON *.* TO #{user}@'%'
+
+Both queries will grant the user super user permissions, ensuring you don't run
+into similar problems in the future (e.g. when new tables are created).
+          EOF
+        end
+      end
+
+      # Bulk queues background migration jobs for an entire table, batched by ID range.
+      # "Bulk" meaning many jobs will be pushed at a time for efficiency.
+      # If you need a delay interval per job, then use `queue_background_migration_jobs_by_range_at_intervals`.
+      #
+      # model_class - The table being iterated over
+      # job_class_name - The background migration job class as a string
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     bulk_queue_background_migration_jobs_by_range(Route, 'ProcessRoutes')
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(start_id, end_id)
+      #         # do something
+      #       end
+      #     end
+      def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        jobs = []
+
+        model_class.each_batch(of: batch_size) do |relation|
+          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+          if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
+            # Note: This code path generally only helps with many millions of rows
+            # We push multiple jobs at a time to reduce the time spent in
+            # Sidekiq/Redis operations. We're using this buffer based approach so we
+            # don't need to run additional queries for every range.
+            BackgroundMigrationWorker.bulk_perform_async(jobs)
+            jobs.clear
+          end
+
+          jobs << [job_class_name, [start_id, end_id]]
+        end
+
+        BackgroundMigrationWorker.bulk_perform_async(jobs) unless jobs.empty?
+      end
+
+      # Queues background migration jobs for an entire table, batched by ID range.
+      # Each job is scheduled with a `delay_interval` in between.
+      # If you use a small interval, then some jobs may run at the same time.
+      #
+      # model_class - The table being iterated over
+      # job_class_name - The background migration job class as a string
+      # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     queue_background_migration_jobs_by_range_at_intervals(Route, 'ProcessRoutes', 1.minute)
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(start_id, end_id)
+      #         # do something
+      #       end
+      #     end
+      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        # To not overload the worker too much we enforce a minimum interval both
+        # when scheduling and performing jobs.
+        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
+          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        end
+
+        model_class.each_batch(of: batch_size) do |relation, index|
+          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+          # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
+          # the same time, which is not helpful in most cases where we wish to
+          # spread the work over time.
+          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
+        end
+      end
+
+      # Rails' index_exists? doesn't work when you only give it a table and index
+      # name. As such we have to use some extra code to check if an index exists for
+      # a given name.
+      def index_exists_by_name?(table, index)
+        indexes(table).map(&:name).include?(index)
       end
     end
   end

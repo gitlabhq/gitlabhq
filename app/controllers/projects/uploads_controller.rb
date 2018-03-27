@@ -1,6 +1,7 @@
 class Projects::UploadsController < Projects::ApplicationController
   include UploadsActions
 
+  # These will kick you out if you don't have access.
   skip_before_action :project, :repository,
     if: -> { action_name == 'show' && image_or_video? }
 
@@ -8,32 +9,20 @@ class Projects::UploadsController < Projects::ApplicationController
 
   private
 
-  def uploader
-    return @uploader if defined?(@uploader)
-
-    namespace = params[:namespace_id]
-    id = params[:project_id]
-
-    file_project = Project.find_by_full_path("#{namespace}/#{id}")
-
-    if file_project.nil?
-      @uploader = nil
-      return
-    end
-
-    @uploader = FileUploader.new(file_project, params[:secret])
-    @uploader.retrieve_from_store!(params[:filename])
-
-    @uploader
-  end
-
-  def image_or_video?
-    uploader && uploader.file.exists? && uploader.image_or_video?
+  def upload_model_class
+    Project
   end
 
   def uploader_class
     FileUploader
   end
 
-  alias_method :model, :project
+  def find_model
+    return @project if @project
+
+    namespace = params[:namespace_id]
+    id = params[:project_id]
+
+    Project.find_by_full_path("#{namespace}/#{id}")
+  end
 end

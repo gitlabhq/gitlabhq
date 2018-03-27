@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::UpdateService, services: true do
+describe Groups::UpdateService do
   let!(:user) { create(:user) }
   let!(:private_group) { create(:group, :private) }
   let!(:internal_group) { create(:group, :internal) }
@@ -13,7 +13,7 @@ describe Groups::UpdateService, services: true do
 
         before do
           public_group.add_user(user, Gitlab::Access::MASTER)
-          create(:empty_project, :public, group: public_group)
+          create(:project, :public, group: public_group)
         end
 
         it "does not change permission level" do
@@ -27,7 +27,7 @@ describe Groups::UpdateService, services: true do
 
         before do
           internal_group.add_user(user, Gitlab::Access::MASTER)
-          create(:empty_project, :internal, group: internal_group)
+          create(:project, :internal, group: internal_group)
         end
 
         it "does not change permission level" do
@@ -69,7 +69,7 @@ describe Groups::UpdateService, services: true do
 
     before do
       internal_group.add_user(user, Gitlab::Access::MASTER)
-      create(:empty_project, :internal, group: internal_group)
+      create(:project, :internal, group: internal_group)
     end
 
     it 'returns true' do
@@ -97,6 +97,40 @@ describe Groups::UpdateService, services: true do
 
       it "hasn't changed the path" do
         expect { service.execute}.not_to change { internal_group.reload.path}
+      end
+    end
+  end
+
+  context 'for a subgroup', :nested_groups do
+    let(:subgroup) { create(:group, :private, parent: private_group) }
+
+    context 'when the parent group share_with_group_lock is enabled' do
+      before do
+        private_group.update_column(:share_with_group_lock, true)
+      end
+
+      context 'for the parent group owner' do
+        it 'allows disabling share_with_group_lock' do
+          private_group.add_owner(user)
+
+          result = described_class.new(subgroup, user, share_with_group_lock: false).execute
+
+          expect(result).to be_truthy
+          expect(subgroup.reload.share_with_group_lock).to be_falsey
+        end
+      end
+
+      context 'for a subgroup owner (who does not own the parent)' do
+        it 'does not allow disabling share_with_group_lock' do
+          subgroup_owner = create(:user)
+          subgroup.add_owner(subgroup_owner)
+
+          result = described_class.new(subgroup, subgroup_owner, share_with_group_lock: false).execute
+
+          expect(result).to be_falsey
+          expect(subgroup.errors.full_messages.first).to match(/cannot be disabled when the parent group "Share with group lock" is enabled, except by the owner of the parent group/)
+          expect(subgroup.reload.share_with_group_lock).to be_truthy
+        end
       end
     end
   end

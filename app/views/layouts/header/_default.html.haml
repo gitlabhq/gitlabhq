@@ -1,68 +1,57 @@
-%header.navbar.navbar-gitlab{ class: nav_header_class }
-  .navbar-border
+%header.navbar.navbar-gitlab.qa-navbar
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
-      .dropdown.global-dropdown
-        %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-          %span.sr-only Toggle navigation
-          = icon('bars')
-        .dropdown-menu-nav.global-dropdown-menu
-          - if current_user
-            = render 'layouts/nav/dashboard'
-          - else
-            = render 'layouts/nav/explore'
-
-      .header-logo
-        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
-          = brand_header_logo
-
       .title-container
-        %h1.title{ class: ('initializing' if @has_group_title) }= title
+        %h1.title
+          = link_to root_path, title: 'Dashboard', id: 'logo' do
+            = brand_header_logo
+            - logo_text = brand_header_logo_type
+            - if logo_text.present?
+              %span.logo-text.hidden-xs
+                = logo_text
+
+        - if current_user
+          = render "layouts/nav/dashboard"
+        - else
+          = render "layouts/nav/explore"
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
-          %li.hidden-sm.hidden-xs
-            = render 'layouts/search' unless current_controller?(:search)
-          %li.visible-sm-inline-block.visible-xs-inline-block
-            = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-              = icon('search')
           - if current_user
-            - if session[:impersonator_id]
-              %li.impersonation
-                = link_to admin_impersonation_path, method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                  = icon('user-secret fw')
-            - if current_user.admin?
-              %li
-                = link_to admin_root_path, title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                  = icon('wrench fw')
             = render 'layouts/header/new_dropdown'
-            - if Gitlab::Sherlock.enabled?
-              %li
-                = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
-                  data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                  = icon('tachometer fw')
-            %li
-              = link_to assigned_issues_dashboard_path, title: 'Issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('hashtag fw')
+          - if header_link?(:search)
+            %li.hidden-sm.hidden-xs
+              = render 'layouts/search' unless current_controller?(:search)
+            %li.visible-sm-inline-block.visible-xs-inline-block
+              = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = sprite_icon('search', size: 16)
+
+          - if header_link?(:issues)
+            = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
+              = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = sprite_icon('issues', size: 16)
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
-            %li
-              = link_to assigned_mrs_dashboard_path, title: 'Merge requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = custom_icon('mr_bold')
+          - if header_link?(:merge_requests)
+            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
+              = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = sprite_icon('git-merge', size: 16)
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
                   = number_with_delimiter(merge_requests_count)
-            %li
+          - if header_link?(:todos)
+            = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('check-circle fw')
+                = sprite_icon('todo-done', size: 16)
                 %span.badge.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)
+          - if header_link?(:user_dropdown)
             %li.header-user.dropdown
-              = link_to current_user, class: "header-user-dropdown-toggle", data: { toggle: "dropdown" } do
-                = image_tag avatar_icon(current_user, 26), width: 26, height: 26, class: "header-user-avatar"
-                = icon('caret-down')
+              = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
+                = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
+                = sprite_icon('angle-down', css_class: 'caret-down')
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
                   %li.current-user
@@ -74,26 +63,22 @@
                     = link_to "Profile", current_user, class: 'profile-link', data: { user: current_user.username }
                   %li
                     = link_to "Settings", profile_path
-                  - if can_toggle_new_nav?
+                  - if current_user
                     %li
-                      = link_to "Turn on new nav", profile_preferences_path(anchor: "new-navigation")
+                      = link_to "Help", help_path
                   %li.divider
                   %li
-                    = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
-          - else
+                    = link_to "Sign out", destroy_user_session_path, class: "sign-out-link"
+          - if header_link?(:admin_impersonation)
+            %li.impersonation
+              = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+                = icon('user-secret')
+          - if header_link?(:sign_in)
             %li
               %div
-                = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
+                = link_to "Sign in / Register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
 
-      %button.navbar-toggle{ type: 'button' }
+      %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
         %span.sr-only Toggle navigation
-        = icon('ellipsis-v')
-
-      = yield :header_content
-
-= render 'shared/outdated_browser'
-
-- if @project && !@project.empty_repo?
-  - if ref = @ref || @project.repository.root_ref
-    :javascript
-      var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, ref)}";
+        = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
+        = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')

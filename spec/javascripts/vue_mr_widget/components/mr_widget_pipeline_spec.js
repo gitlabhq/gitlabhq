@@ -1,161 +1,148 @@
 import Vue from 'vue';
-import { statusIconEntityMap } from '~/vue_shared/ci_status_icons';
-import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline';
+import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from '../mock_data';
 
-const createComponent = (mr) => {
-  const Component = Vue.extend(pipelineComponent);
-  return new Component({
-    el: document.createElement('div'),
-    propsData: { mr },
-  });
-};
-
 describe('MRWidgetPipeline', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { mr } = pipelineComponent.props;
+  let vm;
+  let Component;
 
-      expect(mr.type instanceof Object).toBeTruthy();
-      expect(mr.required).toBeTruthy();
-    });
+  beforeEach(() => {
+    Component = Vue.extend(pipelineComponent);
   });
 
-  describe('components', () => {
-    it('should have components added', () => {
-      expect(pipelineComponent.components['pipeline-stage']).toBeDefined();
-      expect(pipelineComponent.components.ciIcon).toBeDefined();
-    });
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('computed', () => {
-    describe('svg', () => {
-      it('should have the proper SVG icon', () => {
-        const vm = createComponent({ pipeline: mockData.pipeline });
+    describe('hasPipeline', () => {
+      it('should return true when there is a pipeline', () => {
+        vm = mountComponent(Component, {
+          pipeline: mockData.pipeline,
+          ciStatus: 'success',
+          hasCi: true,
+        });
 
-        expect(vm.svg).toEqual(statusIconEntityMap.icon_status_failed);
+        expect(vm.hasPipeline).toEqual(true);
+      });
+
+      it('should return false when there is no pipeline', () => {
+        vm = mountComponent(Component, {
+          pipeline: {},
+        });
+
+        expect(vm.hasPipeline).toEqual(false);
       });
     });
 
     describe('hasCIError', () => {
       it('should return false when there is no CI error', () => {
-        const vm = createComponent({
+        vm = mountComponent(Component, {
           pipeline: mockData.pipeline,
-          hasCI: true,
+          hasCi: true,
           ciStatus: 'success',
         });
 
-        expect(vm.hasCIError).toBeFalsy();
+        expect(vm.hasCIError).toEqual(false);
       });
 
       it('should return true when there is a CI error', () => {
-        const vm = createComponent({
+        vm = mountComponent(Component, {
           pipeline: mockData.pipeline,
-          hasCI: true,
+          hasCi: true,
           ciStatus: null,
         });
 
-        expect(vm.hasCIError).toBeTruthy();
+        expect(vm.hasCIError).toEqual(true);
       });
     });
   });
 
-  describe('template', () => {
-    let vm;
-    let el;
-    const { pipeline } = mockData;
-    const mr = {
-      hasCI: true,
-      ciStatus: 'success',
-      pipelineDetailedStatus: pipeline.details.status,
-      pipeline,
-    };
+  describe('rendered output', () => {
+    it('should render CI error', () => {
+      vm = mountComponent(Component, {
+        pipeline: mockData.pipeline,
+        hasCi: true,
+        ciStatus: null,
+      });
 
-    beforeEach(() => {
-      vm = createComponent(mr);
-      el = vm.$el;
+      expect(
+        vm.$el.querySelector('.media-body').textContent.trim(),
+      ).toEqual('Could not connect to the CI server. Please check your settings and try again');
     });
 
-    afterEach(() => {
-      vm.$destroy();
-    });
-
-    describe('without a pipeline', () => {
+    describe('with a pipeline', () => {
       beforeEach(() => {
-        vm.mr = { pipeline: null };
+        vm = mountComponent(Component, {
+          pipeline: mockData.pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+        });
       });
 
-      it('should render message with spinner', (done) => {
-        Vue.nextTick()
-          .then(() => {
-            expect(el.querySelector('.pipeline-id')).toBe(null);
-            expect(el.innerText.trim()).toBe('Waiting for pipeline...');
-            expect(el.querySelectorAll('i.fa.fa-spinner.fa-spin').length).toBe(1);
-            done();
-          })
-          .then(done)
-          .catch(done.fail);
+      it('should render pipeline ID', () => {
+        expect(
+          vm.$el.querySelector('.pipeline-id').textContent.trim(),
+        ).toEqual(`#${mockData.pipeline.id}`);
+      });
+
+      it('should render pipeline status and commit id', () => {
+        expect(
+          vm.$el.querySelector('.media-body').textContent.trim(),
+        ).toContain(mockData.pipeline.details.status.label);
+
+        expect(
+          vm.$el.querySelector('.js-commit-link').textContent.trim(),
+        ).toEqual(mockData.pipeline.commit.short_id);
+
+        expect(
+          vm.$el.querySelector('.js-commit-link').getAttribute('href'),
+        ).toEqual(mockData.pipeline.commit.commit_path);
+      });
+
+      it('should render pipeline graph', () => {
+        expect(vm.$el.querySelector('.mr-widget-pipeline-graph')).toBeDefined();
+        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(mockData.pipeline.details.stages.length);
+      });
+
+      it('should render coverage information', () => {
+        expect(
+          vm.$el.querySelector('.media-body').textContent,
+        ).toContain(`Coverage ${mockData.pipeline.coverage}`);
       });
     });
 
-    it('should render template elements correctly', () => {
-      expect(el.classList.contains('mr-widget-heading')).toBeTruthy();
-      expect(el.querySelectorAll('.ci-status-icon.ci-status-icon-success').length).toEqual(1);
-      expect(el.querySelector('.pipeline-id').textContent).toContain(`#${pipeline.id}`);
-      expect(el.innerText).toContain('passed');
-      expect(el.innerText).toContain('with stages');
-      expect(el.querySelector('.pipeline-id').getAttribute('href')).toEqual(pipeline.path);
-      expect(el.querySelectorAll('.stage-container').length).toEqual(2);
-      expect(el.querySelector('.js-ci-error')).toEqual(null);
-      expect(el.querySelector('.js-commit-link').getAttribute('href')).toEqual(pipeline.commit.commit_path);
-      expect(el.querySelector('.js-commit-link').textContent).toContain(pipeline.commit.short_id);
-      expect(el.querySelector('.js-mr-coverage').textContent).toContain(`Coverage ${pipeline.coverage}%.`);
+    describe('without coverage', () => {
+      it('should not render a coverage', () => {
+        const mockCopy = Object.assign({}, mockData);
+        delete mockCopy.pipeline.coverage;
+
+        vm = mountComponent(Component, {
+          pipeline: mockCopy.pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+        });
+
+        expect(
+          vm.$el.querySelector('.media-body').textContent,
+        ).not.toContain('Coverage');
+      });
     });
 
-    it('should list single stage', (done) => {
-      pipeline.details.stages.splice(0, 1);
+    describe('without a pipeline graph', () => {
+      it('should not render a pipeline graph', () => {
+        const mockCopy = Object.assign({}, mockData);
+        delete mockCopy.pipeline.details.stages;
 
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelectorAll('.stage-container button').length).toEqual(1);
-          expect(el.innerText).toContain('with stage');
-        })
-        .then(done)
-        .catch(done.fail);
-    });
+        vm = mountComponent(Component, {
+          pipeline: mockCopy.pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+        });
 
-    it('should not have stages when there is no stage', (done) => {
-      vm.mr.pipeline.details.stages = [];
-
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelectorAll('.stage-container button').length).toEqual(0);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('should not have coverage text when pipeline has no coverage info', (done) => {
-      vm.mr.pipeline.coverage = null;
-
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelector('.js-mr-coverage')).toEqual(null);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('should show CI error when there is a CI error', (done) => {
-      vm.mr.ciStatus = null;
-
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelectorAll('.js-ci-error').length).toEqual(1);
-          expect(el.innerText).toContain('Could not connect to the CI server');
-        })
-        .then(done)
-        .catch(done.fail);
+        expect(vm.$el.querySelector('.js-mini-pipeline-graph')).toEqual(null);
+      });
     });
   });
 });

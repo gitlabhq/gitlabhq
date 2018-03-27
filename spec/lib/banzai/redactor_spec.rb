@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Banzai::Redactor do
-  let(:user) { build(:user) }
-  let(:project) { build(:empty_project) }
+  let(:user) { create(:user) }
+  let(:project) { build(:project) }
   let(:redactor) { described_class.new(project, user) }
 
   describe '#redact' do
@@ -39,6 +39,16 @@ describe Banzai::Redactor do
           redactor.redact([doc])
           expect(doc.to_html).to eq(original_content)
         end
+      end
+
+      it 'returns <a> tag with original href if it is originally a link reference' do
+        href = 'http://localhost:3000'
+        doc = Nokogiri::HTML
+          .fragment("<a class='gfm' data-reference-type='issue' data-original=#{href} data-link-reference='true'>#{href}</a>")
+
+        redactor.redact([doc])
+
+        expect(doc.to_html).to eq('<a href="http://localhost:3000">http://localhost:3000</a>')
       end
     end
 
@@ -85,6 +95,55 @@ describe Banzai::Redactor do
         expect(doc1.to_html).to eq(doc1_html)
         expect(doc2.to_html).to eq(doc2_html)
       end
+    end
+  end
+
+  context 'when the user cannot read cross project' do
+    include ActionView::Helpers::UrlHelper
+    let(:project) { create(:project) }
+    let(:other_project) { create(:project, :public) }
+
+    def create_link(issuable)
+      type = issuable.class.name.underscore.downcase
+      link_to(issuable.to_reference, '',
+              class: 'gfm has-tooltip',
+              title: issuable.title,
+              data: {
+                reference_type: type,
+                "#{type}": issuable.id
+              })
+    end
+
+    before do
+      project.add_developer(user)
+
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global) { false }
+      allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+    end
+
+    it 'skips links to issues within the same project' do
+      issue = create(:issue, project: project)
+      link = create_link(issue)
+      doc = Nokogiri::HTML.fragment(link)
+
+      redactor.redact([doc])
+      result = doc.css('a').last
+
+      expect(result['class']).to include('has-tooltip')
+      expect(result['title']).to eq(issue.title)
+    end
+
+    it 'removes info from a cross project reference' do
+      issue = create(:issue, project: other_project)
+      link = create_link(issue)
+      doc = Nokogiri::HTML.fragment(link)
+
+      redactor.redact([doc])
+      result = doc.css('a').last
+
+      expect(result['class']).not_to include('has-tooltip')
+      expect(result['title']).to be_empty
     end
   end
 

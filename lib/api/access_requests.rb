@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
+      resource source_type.pluralize, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         desc "Gets a list of access requests for a #{source_type}." do
           detail 'This feature was introduced in GitLab 8.11.'
           success Entities::AccessRequester
@@ -24,7 +24,7 @@ module API
           access_requesters = AccessRequestsFinder.new(source).execute!(current_user)
           access_requesters = paginate(access_requesters.includes(:user))
 
-          present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
+          present access_requesters, with: Entities::AccessRequester
         end
 
         desc "Requests access for the authenticated user to a #{source_type}." do
@@ -36,7 +36,7 @@ module API
           access_requester = source.request_access(current_user)
 
           if access_requester.persisted?
-            present access_requester.user, with: Entities::AccessRequester, access_requester: access_requester
+            present access_requester, with: Entities::AccessRequester
           else
             render_validation_error!(access_requester)
           end
@@ -53,10 +53,13 @@ module API
         put ':id/access_requests/:user_id/approve' do
           source = find_source(source_type, params[:id])
 
-          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared_params).execute
+          access_requester = source.requesters.find_by!(user_id: params[:user_id])
+          member = ::Members::ApproveAccessRequestService
+            .new(current_user, declared_params)
+            .execute(access_requester)
 
           status :created
-          present member.user, with: Entities::Member, member: member
+          present member, with: Entities::Member
         end
 
         desc 'Denies an access request for the given user.' do
@@ -67,9 +70,11 @@ module API
         end
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
+          member = source.requesters.find_by!(user_id: params[:user_id])
 
-          ::Members::DestroyService.new(source, current_user, params)
-            .execute(:requesters)
+          destroy_conditionally!(member) do
+            ::Members::DestroyService.new(current_user).execute(member)
+          end
         end
       end
     end

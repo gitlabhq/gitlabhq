@@ -8,8 +8,8 @@
       - if runner.locked?
         = icon('lock', class: 'has-tooltip', title: 'Locked to current projects')
 
-      %small
-        = link_to edit_namespace_project_runner_path(@project.namespace, @project, runner) do
+      %small.edit-runner
+        = link_to edit_project_runner_path(@project, runner) do
           %i.fa.fa-edit.btn
     - else
       %span.commit-sha
@@ -17,11 +17,15 @@
 
     .pull-right
       - if @project_runners.include?(runner)
+        - if runner.active?
+          = link_to 'Pause', pause_project_runner_path(@project, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: "Are you sure?" }
+        - else
+          = link_to 'Resume', resume_project_runner_path(@project, runner), method: :post, class: 'btn btn-success btn-sm'
         - if runner.belongs_to_one_project?
           = link_to 'Remove Runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
-          = link_to 'Disable for this project', namespace_project_runner_project_path(@project.namespace, @project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to 'Disable for this project', project_runner_project_path(@project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
       - elsif runner.specific?
         = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id

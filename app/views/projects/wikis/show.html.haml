@@ -1,28 +1,28 @@
 - @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
-- page_title @page.title.capitalize, "Wiki"
+- breadcrumb_title @page.title.capitalize
+- wiki_breadcrumb_dropdown_links(@page.slug)
+- page_title @page.title.capitalize, _("Wiki")
+- add_to_breadcrumbs _("Wiki"), get_project_wiki_path(@project)
 
 .wiki-page-header.has-sidebar-toggle
   %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
     = icon('angle-double-left')
 
-  .wiki-breadcrumb
-    %span= breadcrumb(@page.slug)
-
   .nav-text
     %h2.wiki-page-title= @page.title.capitalize
     %span.wiki-last-edit-by
-      Last edited by
-      %strong
-        #{@page.commit.author.name}
-      #{time_ago_with_tooltip(@page.commit.authored_date)}
+      = (_("Last edited by %{name}") % { name: "<strong>#{@page.last_version.author_name}</strong>" }).html_safe
+      #{time_ago_with_tooltip(@page.last_version.authored_date)}
 
   .nav-controls
     = render 'main_links'
 
 - if @page.historical?
   .warning_message
-    This is an old version of this page.
-    You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
+    = s_("WikiHistoricalPage|This is an old version of this page.")
+    - most_recent_link = link_to s_("WikiHistoricalPage|most recent version"), project_wiki_path(@project, @page)
+    - history_link = link_to s_("WikiHistoricalPage|history"), project_wiki_history_path(@project, @page)
+    = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
 .wiki-holder.prepend-top-default.append-bottom-default
   .wiki

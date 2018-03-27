@@ -7,22 +7,24 @@
       = f.label :default_branch_protection, class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_group_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
-        - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+        - checkbox_name = 'application_setting[restricted_visibility_levels][]'
+        = hidden_field_tag(checkbox_name)
+        - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
           .checkbox
             = level
         %span.help-block#restricted-visibility-help
@@ -40,12 +42,27 @@
           = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
           = link_to "(?)", help_page_path("integration/gitlab")
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :project_export_enabled do
+            = f.check_box :project_export_enabled
+            Project export enabled
+
     .form-group
       %label.control-label.col-sm-2 Enabled Git access protocols
       .col-sm-10
         = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
         %span.help-block#clone-protocol-help
           Allow only the selected protocols to be used for Git access.
+
+    - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+      - field_name = :"#{type}_key_restriction"
+      .form-group
+        = f.label field_name, "#{type.upcase} SSH keys", class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 
   %fieldset
     %legend Account and Limit Settings
@@ -143,9 +160,22 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
-          = f.label :signin_enabled do
-            = f.check_box :signin_enabled
-            Sign-in enabled
+          = f.label :password_authentication_enabled_for_web do
+            = f.check_box :password_authentication_enabled_for_web
+            Password authentication enabled for web interface
+            .help-block
+              When disabled, an external authentication provider must be used.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :password_authentication_enabled_for_git do
+            = f.check_box :password_authentication_enabled_for_git
+            Password authentication enabled for Git over HTTP(S)
+            .help-block
+              When disabled, a Personal Access Token
+              - if Gitlab::Auth::LDAP::Config.enabled?
+                or LDAP password
+              must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
@@ -207,9 +237,35 @@
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
         .help-block 0 for unlimited
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :pages_domain_verification_enabled do
+            = f.check_box :pages_domain_verification_enabled
+            Require users to prove ownership of custom domains
+        .help-block
+          Domain verification is an essential security measure for public GitLab
+          sites. Users are required to demonstrate they control a domain before
+          it is enabled
+          = link_to icon('question-circle'), help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
 
   %fieldset
-    %legend Continuous Integration
+    %legend Continuous Integration and Deployment
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :auto_devops_enabled do
+            = f.check_box :auto_devops_enabled
+            Enabled Auto DevOps (Beta) for projects by default
+        .help-block
+          It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
+          = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
+    .form-group
+      = f.label :auto_devops_domain, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
+        .help-block
+          = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -313,27 +369,50 @@
   %fieldset
     %legend Metrics - Prometheus
     %p
-      Enable a Prometheus metrics endpoint at `#{metrics_path}` to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
+      Enable a Prometheus metrics endpoint at
+      %code= metrics_path
+      to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
       = link_to 'here', admin_health_check_path
       \. This setting requires a
       = link_to 'restart', help_page_path('administration/restart_gitlab')
       to take effect.
-      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/index')
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
-            - unless Gitlab::Metrics.metrics_folder_present?
-              .help-block
-                %strong.cred WARNING:
-                Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
+          - unless Gitlab::Metrics.metrics_folder_present?
+            .help-block
+              %strong.cred WARNING:
+              Environment variable
+              %code prometheus_multiproc_dir
+              does not exist or is not pointing to a valid directory.
+              = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+
+  %fieldset
+    %legend Profiling - Performance Bar
+    %p
+      Enable the Performance Bar for a given group.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :performance_bar_enabled do
+            = f.check_box :performance_bar_enabled
+            Enable the Performance Bar
+    .form-group
+      = f.label :performance_bar_allowed_group_id, 'Allowed group', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :performance_bar_allowed_group_id, class: 'form-control', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path
 
   %fieldset
     %legend Background Jobs
     %p
-      These settings require a restart to take effect.
+      These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -462,13 +541,57 @@
   %fieldset
     %legend Repository Storage
     .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :hashed_storage_enabled do
+            = f.check_box :hashed_storage_enabled
+            Create new projects using hashed storage paths
+          .help-block
+            Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
+            repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
+            %em (EXPERIMENTAL)
+    .form-group
       = f.label :repository_storages, 'Storage paths for new projects', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.select :repository_storages, repository_storages_options_for_select, {include_hidden: false}, multiple: true, class: 'form-control'
+        = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
+          {include_hidden: false}, multiple: true, class: 'form-control'
         .help-block
           Manage repository storage paths. Learn more in the
           = succeed "." do
             = link_to "repository storages documentation", help_page_path("administration/repository_storages")
+
+  %fieldset
+    %legend Git Storage Circuitbreaker settings
+    .form-group
+      = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_check_interval, class: 'form-control'
+        .help-block
+          = circuitbreaker_check_interval_help_text
+    .form-group
+      = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_access_retries, class: 'form-control'
+        .help-block
+          = circuitbreaker_access_retries_help_text
+    .form-group
+      = f.label :circuitbreaker_storage_timeout, _('Seconds to wait for a storage access attempt'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
+        .help-block
+          = circuitbreaker_storage_timeout_help_text
+    .form-group
+      = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_failure_count_threshold, class: 'form-control'
+        .help-block
+          = circuitbreaker_failure_count_help_text
+    .form-group
+      = f.label :circuitbreaker_failure_reset_time, _('Seconds before reseting failure information'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_failure_reset_time, class: 'form-control'
+        .help-block
+          = circuitbreaker_failure_reset_time_help_text
 
   %fieldset
     %legend Repository Checks
@@ -488,24 +611,27 @@
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
-  %fieldset
-    %legend Koding
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :koding_enabled do
-            = f.check_box :koding_enabled
-            Enable Koding
-    .form-group
-      = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
-        .help-block
-          Koding has integration enabled out of the box for the
-          %strong gitlab
-          team, and you need to provide that team's URL here. Learn more in the
-          = succeed "." do
-            = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
+  - if koding_enabled?
+    %fieldset
+      %legend Koding
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :koding_enabled do
+              = f.check_box :koding_enabled
+              Enable Koding
+          .help-block
+            Koding integration has been deprecated since GitLab 10.0. If you disable your Koding integration, you will not be able to enable it again.
+      .form-group
+        = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
+          .help-block
+            Koding has integration enabled out of the box for the
+            %strong gitlab
+            team, and you need to provide that team's URL here. Learn more in the
+            = succeed "." do
+              = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
 
   %fieldset
     %legend PlantUML
@@ -531,24 +657,26 @@
         .checkbox
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
-            Version check enabled
+            Enable version check
           .help-block
-            Let GitLab inform you when an update is available.
+            GitLab will inform you if a new version is available.
+            = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
+            about what information is shared with GitLab Inc.
     .form-group
       .col-sm-offset-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
         .checkbox
           = f.label :usage_ping_enabled do
             = f.check_box :usage_ping_enabled, disabled: !can_be_configured
-            Usage ping enabled
-            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+            Enable usage ping
           .help-block
             - if can_be_configured
-              Every week GitLab will report license usage back to GitLab, Inc.
-              Disable this option if you do not want this to occur. To see the
-              JSON payload that will be sent, visit the
-              = succeed '.' do
-                = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
+              To help improve GitLab and its user experience, GitLab will
+              periodically collect usage information.
+              = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+              about what information is shared with GitLab Inc. Visit
+              = link_to 'Cohorts', admin_cohorts_path(anchor: 'usage-ping')
+              to see the JSON payload sent.
             - else
               The usage ping is disabled, and cannot be configured through this
               form. For more information, see the documentation on
@@ -617,6 +745,30 @@
           Number of Git pushes after which 'git gc' is run.
 
   %fieldset
+    %legend Gitaly Timeouts
+    .form-group
+      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_default, class: 'form-control'
+        .help-block
+          Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
+          for git fetch/push operations or Sidekiq jobs.
+    .form-group
+      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_fast, class: 'form-control'
+        .help-block
+          Fast operation timeout (in seconds). Some Gitaly operations are expected to be fast.
+          If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
+          can help maintain the stability of the GitLab instance.
+    .form-group
+      = f.label :gitaly_timeout_medium, 'Medium Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_medium, class: 'form-control'
+        .help-block
+          Medium operation timeout (in seconds). This should be a value between the Fast and the Default timeout.
+
+  %fieldset
     %legend Web terminal
     .form-group
       = f.label :terminal_max_session_time, 'Max session time', class: 'control-label col-sm-2'
@@ -640,6 +792,82 @@
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
           = link_to icon('question-circle'), help_page_path('administration/polling')
+
+  %fieldset
+    %legend Performance optimization
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :authorized_keys_enabled do
+            = f.check_box :authorized_keys_enabled
+            Write to "authorized_keys" file
+          .help-block
+            By default, we write to the "authorized_keys" file to support Git
+            over SSH without additional configuration. GitLab can be optimized
+            to authenticate SSH keys via the database file. Only uncheck this
+            if you have configured your OpenSSH server to use the
+            AuthorizedKeysCommand. Click on the help icon for more details.
+            = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
+
+  %fieldset
+    %legend User and IP Rate Limits
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_unauthenticated_enabled do
+            = f.check_box :throttle_unauthenticated_enabled
+            Enable unauthenticated request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_unauthenticated_requests_per_period, 'Max requests per period per IP', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_unauthenticated_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_authenticated_api_enabled do
+            = f.check_box :throttle_authenticated_api_enabled
+            Enable authenticated API request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_authenticated_api_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_authenticated_api_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_authenticated_web_enabled do
+            = f.check_box :throttle_authenticated_web_enabled
+            Enable authenticated web request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_authenticated_web_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_authenticated_web_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
+
+  %fieldset
+    %legend Outbound requests
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :allow_local_requests_from_hooks_and_services do
+            = f.check_box :allow_local_requests_from_hooks_and_services
+            Allow requests to the local network from hooks and services
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

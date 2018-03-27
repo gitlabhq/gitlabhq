@@ -1,3 +1,4 @@
+- @hide_top_links = true
 - page_title    "Groups"
 - header_title  "Groups", dashboard_groups_path
 
@@ -16,7 +17,7 @@
       %p Below you will find all the groups that are public.
       %p You can easily contribute to them by requesting to join these groups.
 
-- if @groups.present?
-  = render 'groups'
-- else
+- if params[:filter].blank? && @groups.empty?
   .nothing-here-block No public groups
+- else
+  = render 'groups'

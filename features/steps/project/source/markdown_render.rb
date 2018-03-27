@@ -10,11 +10,11 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   step 'I own project "Delta"' do
     @project = ::Project.find_by(name: "Delta")
     @project ||= create(:project, :repository, name: "Delta", namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step 'I should see files from repository in markdown' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown")
+    expect(current_path).to eq project_tree_path(@project, "markdown")
     expect(page).to have_content "README.md"
     expect(page).to have_content "CHANGELOG"
   end
@@ -34,7 +34,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct document rendered' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/README.md")
     wait_for_requests
     expect(page).to have_content "All API requests require authentication"
   end
@@ -44,7 +44,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct directory rendered' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
+    expect(current_path).to eq project_tree_path(@project, "markdown/doc/raketasks")
     expect(page).to have_content "backup_restore.md"
     expect(page).to have_content "maintenance.md"
   end
@@ -54,7 +54,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct doc/api directory rendered' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
+    expect(current_path).to eq project_tree_path(@project, "markdown/doc/api")
     expect(page).to have_content "README.md"
     expect(page).to have_content "users.md"
   end
@@ -64,7 +64,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct maintenance file rendered' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/raketasks/maintenance.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/raketasks/maintenance.md")
     wait_for_requests
     expect(page).to have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
@@ -98,7 +98,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see correct file rendered' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/README.md")
     wait_for_requests
     expect(page).to have_content "Contents"
     expect(page).to have_link "Users"
@@ -110,7 +110,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see the correct document file' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/users.md")
     expect(page).to have_content "Get a list of users."
   end
 
@@ -121,30 +121,30 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   # Markdown branch
 
   When 'I visit markdown branch' do
-    visit namespace_project_tree_path(@project.namespace, @project, "markdown")
+    visit project_tree_path(@project, "markdown")
     wait_for_requests
   end
 
   When 'I visit markdown branch "README.md" blob' do
-    visit namespace_project_blob_path(@project.namespace, @project, "markdown/README.md")
+    visit project_blob_path(@project, "markdown/README.md")
   end
 
   When 'I visit markdown branch "d" tree' do
-    visit namespace_project_tree_path(@project.namespace, @project, "markdown/d")
+    visit project_tree_path(@project, "markdown/d")
   end
 
   When 'I visit markdown branch "d/README.md" blob' do
-    visit namespace_project_blob_path(@project.namespace, @project, "markdown/d/README.md")
+    visit project_blob_path(@project, "markdown/d/README.md")
   end
 
   step 'I should see files from repository in markdown branch' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown")
+    expect(current_path).to eq project_tree_path(@project, "markdown")
     expect(page).to have_content "README.md"
     expect(page).to have_content "CHANGELOG"
   end
 
   step 'I see correct file rendered in markdown branch' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/README.md")
     wait_for_requests
     expect(page).to have_content "Contents"
     expect(page).to have_link "Users"
@@ -152,19 +152,19 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct document rendered for markdown branch' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/README.md")
     wait_for_requests
     expect(page).to have_content "All API requests require authentication"
   end
 
   step 'I should see correct directory rendered for markdown branch' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
+    expect(current_path).to eq project_tree_path(@project, "markdown/doc/raketasks")
     expect(page).to have_content "backup_restore.md"
     expect(page).to have_content "maintenance.md"
   end
 
   step 'I should see the users document file in markdown branch' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/users.md")
     expect(page).to have_content "Get a list of users."
   end
 
@@ -172,54 +172,54 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'The link with text "empty" should have url "tree/markdown"' do
     wait_for_requests
-    find('a', text: /^empty$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown")
+    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown")
   end
 
   step 'The link with text "empty" should have url "blob/markdown/README.md"' do
-    find('a', text: /^empty$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md")
+    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md")
   end
 
   step 'The link with text "empty" should have url "tree/markdown/d"' do
-    find('a', text: /^empty$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown/d")
+    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown/d")
   end
 
   step 'The link with text "empty" should have '\
        'url "blob/markdown/d/README.md"' do
-    find('a', text: /^empty$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/d/README.md")
+    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/d/README.md")
   end
 
   step 'The link with text "ID" should have url "tree/markdownID"' do
-    find('a', text: /^#id$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown") + '#id'
+    find('a', text: /^#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
   end
 
   step 'The link with text "/ID" should have url "tree/markdownID"' do
-    find('a', text: /^\/#id$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown") + '#id'
+    find('a', text: %r{^/#id$})['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
   end
 
   step 'The link with text "README.mdID" '\
        'should have url "blob/markdown/README.mdID"' do
-    find('a', text: /^README.md#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
+    find('a', text: /^README.md#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
   end
 
   step 'The link with text "d/README.mdID" should have '\
        'url "blob/markdown/d/README.mdID"' do
-    find('a', text: /^d\/README.md#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "d/markdown/README.md") + '#id'
+    find('a', text: %r{^d/README.md#id$})['href'] == current_host + project_blob_path(@project, "d/markdown/README.md") + '#id'
   end
 
   step 'The link with text "ID" should have url "blob/markdown/README.mdID"' do
     wait_for_requests
-    find('a', text: /^#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
+    find('a', text: /^#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
   end
 
   step 'The link with text "/ID" should have url "blob/markdown/README.mdID"' do
-    find('a', text: /^\/#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
+    find('a', text: %r{^/#id$})['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
   end
 
   # Wiki
 
   step 'I go to wiki page' do
-    click_link "Wiki"
-    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "home")
+    first(:link, "Wiki").click
+    expect(current_path).to eq project_wiki_path(@project, "home")
   end
 
   step 'I add various links to the wiki page' do
@@ -231,7 +231,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'Wiki page should have added links' do
-    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "home")
+    expect(current_path).to eq project_wiki_path(@project, "home")
     expect(page).to have_content "test GitLab API doc Rake tasks"
   end
 
@@ -252,7 +252,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see new wiki page named test' do
-    expect(current_path).to eq  namespace_project_wiki_path(@project.namespace, @project, "test")
+    expect(current_path).to eq  project_wiki_path(@project, "test")
 
     page.within(:css, ".nav-text") do
       expect(page).to have_content "Test"
@@ -261,8 +261,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   When 'I go back to wiki page home' do
-    visit namespace_project_wiki_path(@project.namespace, @project, "home")
-    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "home")
+    visit project_wiki_path(@project, "home")
+    expect(current_path).to eq project_wiki_path(@project, "home")
   end
 
   step 'I click on GitLab API doc link' do
@@ -270,7 +270,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see Gitlab API document' do
-    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "api")
+    expect(current_path).to eq project_wiki_path(@project, "api")
 
     page.within(:css, ".nav-text") do
       expect(page).to have_content "Create"
@@ -283,7 +283,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see Rake tasks directory' do
-    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "raketasks")
+    expect(current_path).to eq project_wiki_path(@project, "raketasks")
 
     page.within(:css, ".nav-text") do
       expect(page).to have_content "Create"
@@ -292,8 +292,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I go directory which contains README file' do
-    visit namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
+    visit project_tree_path(@project, "markdown/doc/api")
+    expect(current_path).to eq project_tree_path(@project, "markdown/doc/api")
   end
 
   step 'I click on a relative link in README' do
@@ -301,7 +301,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see the correct markdown' do
-    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
+    expect(current_path).to eq project_blob_path(@project, "markdown/doc/api/users.md")
     wait_for_requests
     expect(page).to have_content "List users"
   end

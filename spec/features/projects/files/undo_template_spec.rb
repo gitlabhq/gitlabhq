@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'Template Undo Button', js: true do
-  let(:project) { create(:project) }
+feature 'Template Undo Button', :js do
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in user
+    project.add_master(user)
+    sign_in user
   end
 
   context 'editing a matching file and applying a template' do
     before do
-      visit namespace_project_edit_blob_path(project.namespace, project, File.join(project.default_branch, "LICENSE"))
+      visit project_edit_blob_path(project, File.join(project.default_branch, "LICENSE"))
       select_file_template('.js-license-selector', 'Apache License 2.0')
     end
 
@@ -20,9 +20,9 @@ feature 'Template Undo Button', js: true do
     end
   end
 
-  context 'creating a non-matching file' do 
+  context 'creating a non-matching file' do
     before do
-      visit namespace_project_new_blob_path(project.namespace, project, 'master')
+      visit project_new_blob_path(project, 'master')
       select_file_template_type('LICENSE')
       select_file_template('.js-license-selector', 'Apache License 2.0')
     end

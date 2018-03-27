@@ -1,17 +1,11 @@
 - @no_container = true
 - page_title "Environments"
-= render "projects/pipelines/head"
-
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag("environments")
+- add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
   "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
   "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
-  "project-environments-path" => project_environments_path(@project),
-  "project-stopped-environments-path" => project_environments_path(@project, scope: :stopped),
-  "new-environment-path" => new_namespace_project_environment_path(@project.namespace, @project),
+  "new-environment-path" => new_project_environment_path(@project),
   "help-page-path" => help_page_path("ci/environments"),
   "css-class" => container_class } }

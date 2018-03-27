@@ -19,7 +19,7 @@
   .form-actions
     - if @milestone.new_record?
       = f.submit 'Create milestone', class: "btn-create btn"
-      = link_to "Cancel", namespace_project_milestones_path(@project.namespace, @project), class: "btn btn-cancel"
+      = link_to "Cancel", project_milestones_path(@project), class: "btn btn-cancel"
     - else
       = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-cancel"
+      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn btn-cancel"

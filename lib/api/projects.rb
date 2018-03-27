@@ -1,19 +1,23 @@
+require_dependency 'declarative_policy'
+
 module API
-  # Projects API
   class Projects < Grape::API
     include PaginationParams
+    include Helpers::CustomAttributes
 
     before { authenticate_non_get! }
 
     helpers do
       params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the project'
+        optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
         optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
         optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'
         optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
         optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
@@ -33,60 +37,92 @@ module API
       params :statistics_params do
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
+
+      params :collection_params do
+        use :sort_params
+        use :filter_params
+        use :pagination
+
+        optional :simple, type: Boolean, default: false,
+                          desc: 'Return only the ID, URL, name, and path of each project'
+      end
+
+      params :sort_params do
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+                            default: 'created_at', desc: 'Return projects ordered by field'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return projects sorted in ascending and descending order'
+      end
+
+      params :filter_params do
+        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'Limit by visibility'
+        optional :search, type: String, desc: 'Return list of projects matching the search criteria'
+        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
+        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+        optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
+      end
+
+      params :create_params do
+        optional :namespace_id, type: Integer, desc: 'Namespace ID for the new project. Default to the user namespace.'
+        optional :import_url, type: String, desc: 'URL from which the project is imported'
+      end
+
+      def load_projects
+        ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+      end
+
+      def present_projects(projects, options = {})
+        projects = reorder_projects(projects)
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
+        projects = paginate(projects)
+        projects, options = with_custom_attributes(projects, options)
+
+        if current_user
+          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
+          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
+        end
+
+        options = options.reverse_merge(
+          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+          statistics: params[:statistics],
+          project_members: project_members,
+          group_members: group_members,
+          current_user: current_user
+        )
+        options[:with] = Entities::BasicProjectDetails if params[:simple]
+
+        present options[:with].prepare_relation(projects, options), options
+      end
+    end
+
+    resource :users, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      desc 'Get a user projects' do
+        success Entities::BasicProjectDetails
+      end
+      params do
+        requires :user_id, type: String, desc: 'The ID or username of the user'
+        use :collection_params
+        use :statistics_params
+        use :with_custom_attributes
+      end
+      get ":user_id/projects" do
+        user = find_user(params[:user_id])
+        not_found!('User') unless user
+
+        params[:user] = user
+
+        present_projects load_projects
+      end
     end
 
     resource :projects do
-      helpers do
-        params :collection_params do
-          use :sort_params
-          use :filter_params
-          use :pagination
-
-          optional :simple, type: Boolean, default: false,
-                            desc: 'Return only the ID, URL, name, and path of each project'
-        end
-
-        params :sort_params do
-          optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
-                              default: 'created_at', desc: 'Return projects ordered by field'
-          optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                          desc: 'Return projects sorted in ascending and descending order'
-        end
-
-        params :filter_params do
-          optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
-          optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-                                desc: 'Limit by visibility'
-          optional :search, type: String, desc: 'Return list of projects matching the search criteria'
-          optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
-          optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
-          optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
-          optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
-          optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
-        end
-
-        params :create_params do
-          optional :namespace_id, type: Integer, desc: 'Namespace ID for the new project. Default to the user namespace.'
-          optional :import_url, type: String, desc: 'URL from which the project is imported'
-        end
-
-        def present_projects(options = {})
-          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
-          projects = reorder_projects(projects)
-          projects = projects.with_statistics if params[:statistics]
-          projects = projects.with_issues_enabled if params[:with_issues_enabled]
-          projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
-
-          options = options.reverse_merge(
-            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
-            statistics: params[:statistics],
-            current_user: current_user
-          )
-          options[:with] = Entities::BasicProjectDetails if params[:simple]
-
-          present paginate(projects), options
-        end
-      end
+      include CustomAttributesEndpoints
 
       desc 'Get a list of visible projects for authenticated user' do
         success Entities::BasicProjectDetails
@@ -94,9 +130,10 @@ module API
       params do
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get do
-        present_projects
+        present_projects load_projects
       end
 
       desc 'Create new project' do
@@ -121,6 +158,7 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
           render_validation_error!(project)
         end
       end
@@ -156,17 +194,25 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a single project' do
         success Entities::ProjectWithAccess
       end
       params do
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":id" do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present user_project, with: entity, current_user: current_user,
-                              user_can_admin_project: can?(current_user, :admin_project, user_project), statistics: params[:statistics]
+        options = {
+          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+          current_user: current_user,
+          user_can_admin_project: can?(current_user, :admin_project, user_project),
+          statistics: params[:statistics]
+        }
+
+        project, options = with_custom_attributes(user_project, options)
+
+        present project, options
       end
 
       desc 'Fork new project for the current user or provided namespace.' do
@@ -176,15 +222,13 @@ module API
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
       end
       post ':id/fork' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
+
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
 
         if namespace_id.present?
-          fork_params[:namespace] = if namespace_id =~ /^\d+$/
-                                      Namespace.find_by(id: namespace_id)
-                                    else
-                                      Namespace.find_by_path_or_name(namespace_id)
-                                    end
+          fork_params[:namespace] = find_namespace(namespace_id)
 
           unless fork_params[:namespace] && can?(current_user, :create_projects, fork_params[:namespace])
             not_found!('Target Namespace')
@@ -201,6 +245,19 @@ module API
         end
       end
 
+      desc 'List forks of this project' do
+        success Entities::Project
+      end
+      params do
+        use :collection_params
+        use :with_custom_attributes
+      end
+      get ':id/forks' do
+        forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
+
+        present_projects forks
+      end
+
       desc 'Update an existing project' do
         success Entities::Project
       end
@@ -209,6 +266,8 @@ module API
         at_least_one_of_ce =
           [
             :jobs_enabled,
+            :resolve_outdated_diff_discussions,
+            :ci_config_path,
             :container_registry_enabled,
             :default_branch,
             :description,
@@ -306,7 +365,10 @@ module API
       desc 'Remove a project'
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+
+        destroy_conditionally!(user_project) do
+          ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+        end
 
         accepted!
       end
@@ -318,13 +380,16 @@ module API
       post ":id/fork/:forked_from_id" do
         authenticated_as_admin!
 
-        forked_from_project = find_project!(params[:forked_from_id])
-        not_found!("Source Project") unless forked_from_project
+        fork_from_project = find_project!(params[:forked_from_id])
 
-        if user_project.forked_from_project.nil?
-          user_project.create_forked_project_link(forked_to_project_id: user_project.id, forked_from_project_id: forked_from_project.id)
+        not_found!("Source Project") unless fork_from_project
+
+        result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
+
+        if result
+          present user_project.reload, with: Entities::Project
         else
-          render_api_error!("Project already forked", 409)
+          render_api_error!("Project already forked", 409) if user_project.forked?
         end
       end
 
@@ -332,11 +397,11 @@ module API
       delete ":id/fork" do
         authorize! :remove_fork_project, user_project
 
-        if user_project.forked?
-          user_project.forked_project_link.destroy
-        else
-          not_modified!
+        result = destroy_conditionally!(user_project) do
+          ::Projects::UnlinkForkService.new(user_project, current_user).execute
         end
+
+        result ? status(204) : not_modified!
       end
 
       desc 'Share the project with a group' do
@@ -377,7 +442,7 @@ module API
         link = user_project.project_group_links.find_by(group_id: params[:group_id])
         not_found!('Group Link') unless link
 
-        link.destroy
+        destroy_conditionally!(link)
       end
 
       desc 'Upload a file'
@@ -396,7 +461,7 @@ module API
         use :pagination
       end
       get ':id/users' do
-        users = user_project.team.users
+        users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
 
         present paginate(users), with: Entities::UserBasic

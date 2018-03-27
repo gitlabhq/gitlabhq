@@ -5,11 +5,11 @@ module SystemCheck
       set_check_pass -> { "yes (#{self.current_version})" }
 
       def self.required_version
-        @required_version ||= Gitlab::VersionInfo.new(2, 7, 3)
+        @required_version ||= Gitlab::VersionInfo.new(2, 9, 5)
       end
 
       def self.current_version
-        @current_version ||= Gitlab::VersionInfo.parse(run_command(%W(#{Gitlab.config.git.bin_path} --version)))
+        @current_version ||= Gitlab::VersionInfo.parse(Gitlab::TaskHelpers.run_command(%W(#{Gitlab.config.git.bin_path} --version)))
       end
 
       def check?

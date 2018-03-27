@@ -1,17 +1,19 @@
 - @no_container = true
-- page_title "Pages", "Wiki"
+- add_to_breadcrumbs "Wiki", get_project_wiki_path(@project)
+- breadcrumb_title s_("Wiki|Pages")
+- page_title s_("Wiki|Pages"), _("Wiki")
 
 %div{ class: container_class }
   .wiki-page-header
 
     .nav-text
       %h2.wiki-page-title
-        Wiki Pages
+        = s_("Wiki|Wiki Pages")
 
     .nav-controls
-      = link_to namespace_project_wikis_git_access_path(@project.namespace, @project), class: 'btn' do
+      = link_to project_wikis_git_access_path(@project), class: 'btn' do
         = icon('cloud-download')
-        Clone repository
+        = _("Clone repository")
 
   %ul.wiki-pages-list.content-list
     = render @wiki_entries, context: 'pages'

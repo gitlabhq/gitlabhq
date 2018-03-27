@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title "Jobs"
-= render "projects/pipelines/head"
 
 %div{ class: container_class }
   .top-area
@@ -9,8 +8,8 @@
 
     .nav-controls
       - if can?(current_user, :update_build, @project)
-        - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel running', cancel_all_namespace_project_jobs_path(@project.namespace, @project),
+        - if @all_builds.running_or_pending.limit(1).any?
+          = link_to 'Cancel running', cancel_all_project_jobs_path(@project),
             data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
         - unless @repository.gitlab_ci_yml

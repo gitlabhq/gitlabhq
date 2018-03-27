@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-feature 'Project member activity', feature: true, js: true do
+feature 'Project member activity', :js do
   let(:user)            { create(:user) }
-  let(:project)         { create(:empty_project, :public, name: 'x', namespace: user.namespace) }
+  let(:project)         { create(:project, :public, name: 'x', namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   def visit_activities_and_wait_with_event(event_type)
     Event.create(project: project, author_id: user.id, action: event_type)
-    visit activity_namespace_project_path(project.namespace, project)
+    visit activity_project_path(project)
     wait_for_requests
   end
 

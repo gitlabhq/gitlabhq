@@ -35,7 +35,7 @@
           %td
             = link_to project.import_source, "https://bitbucket.org/#{project.import_source}", target: '_blank', rel: 'noopener noreferrer'
           %td
-            = link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
+            = link_to project.full_path, [project.namespace.becomes(Namespace), project]
           %td.job-status
             - if project.import_status == 'finished'
               %span

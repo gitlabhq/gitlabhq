@@ -5,7 +5,7 @@ describe MoveUploadsToSystemDir do
   let(:migration) { described_class.new }
   let(:test_dir) { File.join(Rails.root, "tmp", "move_uploads_test") }
   let(:uploads_dir) { File.join(test_dir, "public", "uploads") }
-  let(:new_uploads_dir) { File.join(uploads_dir, "system") }
+  let(:new_uploads_dir) { File.join(uploads_dir, "-", "system") }
 
   before do
     FileUtils.remove_dir(test_dir) if File.directory?(test_dir)

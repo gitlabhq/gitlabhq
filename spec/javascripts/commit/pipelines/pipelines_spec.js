@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 
@@ -9,9 +10,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    PipelinesTable = Vue.extend(pipelinesTable);
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
+
+    PipelinesTable = Vue.extend(pipelinesTable);
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
   });
 
   describe('successful request', () => {
@@ -29,6 +31,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
+            autoDevopsHelpPath: 'foo',
           },
         }).$mount();
       });
@@ -64,6 +69,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
+            autoDevopsHelpPath: 'foo',
           },
         }).$mount();
       });
@@ -85,6 +93,44 @@ describe('Pipelines table in Commits and Merge requests', () => {
         }, 0);
       });
     });
+
+    describe('pipeline badge counts', () => {
+      const pipelinesResponse = (request, next) => {
+        next(request.respondWith(JSON.stringify([pipeline]), {
+          status: 200,
+        }));
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(pipelinesResponse);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, pipelinesResponse);
+        this.component.$destroy();
+      });
+
+      it('should receive update-pipelines-count event', (done) => {
+        const element = document.createElement('div');
+        document.body.appendChild(element);
+
+        element.addEventListener('update-pipelines-count', (event) => {
+          expect(event.detail.pipelines).toEqual([pipeline]);
+          done();
+        });
+
+        this.component = new PipelinesTable({
+          propsData: {
+            endpoint: 'endpoint',
+            helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
+            autoDevopsHelpPath: 'foo',
+          },
+        }).$mount();
+        element.appendChild(this.component.$el);
+      });
+    });
   });
 
   describe('unsuccessfull request', () => {
@@ -101,6 +147,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
         propsData: {
           endpoint: 'endpoint',
           helpPagePath: 'foo',
+          emptyStateSvgPath: 'foo',
+          errorStateSvgPath: 'foo',
+          autoDevopsHelpPath: 'foo',
         },
       }).$mount();
     });

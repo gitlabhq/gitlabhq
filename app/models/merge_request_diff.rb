@@ -1,19 +1,20 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
-  include Gitlab::EncodingHelper
+  include ManualInverseAssociation
+  include IgnorableColumn
 
-  # Prevent store of diff if commits amount more then 500
+  # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
 
-  # Valid types of serialized diffs allowed by Gitlab::Git::Diff
-  VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta].freeze
+  ignore_column :st_commits,
+                :st_diffs
 
   belongs_to :merge_request
-  has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
+  manual_inverse_association :merge_request, :merge_request_diff
 
-  serialize :st_commits # rubocop:disable Cop/ActiverecordSerialize
-  serialize :st_diffs # rubocop:disable Cop/ActiverecordSerialize
+  has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
+  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
 
   state_machine :state, initial: :empty do
     state :collected
@@ -27,6 +28,11 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   scope :viewable, -> { without_state(:empty) }
+  scope :by_commit_sha, ->(sha) do
+    joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
+  end
+
+  scope :recent, -> { order(id: :desc).limit(100) }
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
@@ -36,37 +42,31 @@ class MergeRequestDiff < ActiveRecord::Base
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
   end
 
-  def self.select_without_diff
-    select(column_names - ['st_diffs'])
-  end
-
-  def st_commits
-    super || []
-  end
-
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
-    ensure_commits_sha
+    MergeRequest
+      .where('id = ? AND COALESCE(latest_merge_request_diff_id, 0) < ?', self.merge_request_id, self.id)
+      .update_all(latest_merge_request_diff_id: self.id)
+
+    ensure_commit_shas
     save_commits
-    reload_commits
     save_diffs
+    save
     keep_around_commits
   end
 
-  def ensure_commits_sha
-    merge_request.fetch_ref
+  def ensure_commit_shas
     self.start_commit_sha ||= merge_request.target_branch_sha
     self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
-    save
   end
 
   # Override head_commit_sha to keep compatibility with merge request diff
   # created before version 8.4 that does not store head_commit_sha in separate db field.
   def head_commit_sha
     if persisted? && super.nil?
-      last_commit.try(:sha)
+      last_commit_sha
     else
       super
     end
@@ -85,11 +85,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def raw_diffs(options = {})
     if options[:ignore_whitespace_change]
-      @diffs_no_whitespace ||=
-        Gitlab::Git::Compare.new(
-          repository.raw_repository,
-          safe_start_commit_sha,
-          head_commit_sha).diffs(options)
+      @diffs_no_whitespace ||= compare.diffs(options)
     else
       @raw_diffs ||= {}
       @raw_diffs[options] ||= load_diffs(options)
@@ -97,16 +93,11 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits
-    @commits ||= load_commits(st_commits)
+    @commits ||= load_commits
   end
 
-  def reload_commits
-    @commits = nil
-    commits
-  end
-
-  def last_commit
-    commits.first
+  def last_commit_sha
+    commit_shas.first
   end
 
   def first_commit
@@ -116,23 +107,23 @@ class MergeRequestDiff < ActiveRecord::Base
   def base_commit
     return unless base_commit_sha
 
-    project.commit(base_commit_sha)
+    project.commit_by(oid: base_commit_sha)
   end
 
   def start_commit
     return unless start_commit_sha
 
-    project.commit(start_commit_sha)
+    project.commit_by(oid: start_commit_sha)
   end
 
   def head_commit
     return unless head_commit_sha
 
-    project.commit(head_commit_sha)
+    project.commit_by(oid: head_commit_sha)
   end
 
-  def commits_sha
-    st_commits.map { |commit| commit[:id] }
+  def commit_shas
+    merge_request_diff_commits.map(&:sha)
   end
 
   def diff_refs=(new_diff_refs)
@@ -196,7 +187,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def latest?
-    self == merge_request.merge_request_diff
+    self.id == merge_request.latest_merge_request_diff_id
   end
 
   def compare_with(sha)
@@ -207,68 +198,35 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits_count
-    st_commits.count
-  end
-
-  def utf8_st_diffs
-    return [] if st_diffs.blank?
-
-    st_diffs.map do |diff|
-      diff.each do |k, v|
-        diff[k] = encode_utf8(v) if v.respond_to?(:encoding)
-      end
-    end
+    super || merge_request_diff_commits.size
   end
 
   private
 
-  # Old GitLab implementations may have generated diffs as ["--broken-diff"].
-  # Avoid an error 500 by ignoring bad elements. See:
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/20776
-  def valid_raw_diff?(raw)
-    return false unless raw.respond_to?(:each)
-
-    raw.any? { |element| VALID_CLASSES.include?(element.class) }
-  end
-
-  def dump_commits(commits)
-    commits.map(&:to_hash)
-  end
-
-  def load_commits(array)
-    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash), merge_request.source_project) }
-  end
-
-  # Load all commits related to current merge request diff from repo
-  # and save it as array of hashes in st_commits db field
-  def save_commits
-    new_attributes = {}
-
-    commits = compare.commits
-
-    if commits.present?
-      commits = Commit.decorate(commits, merge_request.source_project).reverse
-      new_attributes[:st_commits] = dump_commits(commits)
-    end
-
-    update_columns_serialized(new_attributes)
-  end
-
   def create_merge_request_diff_files(diffs)
     rows = diffs.map.with_index do |diff, index|
-      diff.to_hash.merge(
+      diff_hash = diff.to_hash.merge(
+        binary: false,
         merge_request_diff_id: self.id,
         relative_order: index
       )
+
+      # Compatibility with old diffs created with Psych.
+      diff_hash.tap do |hash|
+        diff_text = hash[:diff]
+
+        if diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?
+          hash[:binary] = true
+          hash[:diff] = [diff_text].pack('m0')
+        end
+      end
     end
 
     Gitlab::Database.bulk_insert('merge_request_diff_files', rows)
   end
 
   def load_diffs(options)
-    return Gitlab::Git::DiffCollection.new([]) unless diffs_from_database
-
-    raw = diffs_from_database
+    raw = merge_request_diff_files.map(&:to_hash)
 
     if paths = options[:paths]
       raw = raw.select do |diff|
@@ -279,27 +237,17 @@ class MergeRequestDiff < ActiveRecord::Base
     Gitlab::Git::DiffCollection.new(raw, options)
   end
 
-  def diffs_from_database
-    return @diffs_from_database if defined?(@diffs_from_database)
+  def load_commits
+    commits = merge_request_diff_commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
 
-    @diffs_from_database =
-      if st_diffs.present?
-        if valid_raw_diff?(st_diffs)
-          st_diffs
-        end
-      elsif merge_request_diff_files.present?
-        merge_request_diff_files
-          .as_json(only: Gitlab::Git::Diff::SERIALIZE_KEYS)
-          .map(&:with_indifferent_access)
-      end
+    CommitCollection
+      .new(merge_request.source_project, commits, merge_request.source_branch)
   end
 
-  # Load diffs between branches related to current merge request diff from repo
-  # and save it as array of hashes in st_diffs db field
   def save_diffs
     new_attributes = {}
 
-    if commits.size.zero?
+    if compare.commits.size.zero?
       new_attributes[:state] = :empty
     else
       diff_collection = compare.diffs(Commit.max_diff_options)
@@ -319,7 +267,16 @@ class MergeRequestDiff < ActiveRecord::Base
       new_attributes[:state] = :overflow if diff_collection.overflow?
     end
 
-    update_columns_serialized(new_attributes)
+    assign_attributes(new_attributes)
+  end
+
+  def save_commits
+    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
+
+    # merge_request_diff_commits.reload is preferred way to reload associated
+    # objects but it returns cached result for some reason in this case
+    commits = merge_request_diff_commits(true)
+    self.commits_count = commits.size
   end
 
   def repository
@@ -332,31 +289,8 @@ class MergeRequestDiff < ActiveRecord::Base
     project.merge_base_commit(head_commit_sha, start_commit_sha).try(:sha)
   end
 
-  #
-  # #save or #update_attributes providing changes on serialized attributes do a lot of
-  # serialization and deserialization calls resulting in bad performance.
-  # Using #update_columns solves the problem with just one YAML.dump per serialized attribute that we provide.
-  # As a tradeoff we need to reload the current instance to properly manage time objects on those serialized
-  # attributes. So to keep the same behaviour as the attribute assignment we reload the instance.
-  # The difference is in the usage of
-  # #write_attribute= (#update_attributes) and #raw_write_attribute= (#update_columns)
-  #
-  # Ex:
-  #
-  #   new_attributes[:st_commits].first.slice(:committed_date)
-  #   => {:committed_date=>2014-02-27 11:01:38 +0200}
-  #   YAML.load(YAML.dump(new_attributes[:st_commits].first.slice(:committed_date)))
-  #   => {:committed_date=>2014-02-27 10:01:38 +0100}
-  #
-  def update_columns_serialized(new_attributes)
-    return unless new_attributes.any?
-
-    update_columns(new_attributes.merge(updated_at: current_time_from_proper_timezone))
-    reload
-  end
-
   def keep_around_commits
-    [repository, merge_request.source_project.repository].each do |repo|
+    [repository, merge_request.source_project.repository].uniq.each do |repo|
       repo.keep_around(start_commit_sha)
       repo.keep_around(head_commit_sha)
       repo.keep_around(base_commit_sha)

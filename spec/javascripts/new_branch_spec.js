@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-return-assign, quotes, max-len */
-/* global NewBranchForm */
 
-import '~/new_branch_form';
+import $ from 'jquery';
+import NewBranchForm from '~/new_branch_form';
 
 (function() {
   describe('Branch', function() {

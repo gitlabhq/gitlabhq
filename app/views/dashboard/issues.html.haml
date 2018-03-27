@@ -1,3 +1,4 @@
+- @hide_top_links = true
 - page_title "Issues"
 - header_title  "Issues", issues_dashboard_path(assignee_id: current_user.id)
 = content_for :meta_tags do
@@ -6,9 +7,9 @@
 .top-area
   = render 'shared/issuable/nav', type: :issues
   .nav-controls
-    = link_to params.merge(rss_url_options), class: 'btn has-tooltip', title: 'Subscribe' do
+    = link_to params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: 'Subscribe' do
       = icon('rss')
-    = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues'
+    = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
 
 = render 'shared/issuable/filter', type: :issues
 = render 'shared/issues'

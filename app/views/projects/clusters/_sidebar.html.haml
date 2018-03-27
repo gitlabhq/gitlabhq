@@ -1,0 +1,7 @@
+%h4.prepend-top-0
+  = s_('ClusterIntegration|Kubernetes cluster integration')
+%p
+  = s_('ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
+%p
+  - link = link_to(_('Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+  = s_('ClusterIntegration|Learn more about %{link_to_documentation}').html_safe % { link_to_documentation: link }

@@ -35,7 +35,7 @@ class Projects::TagsController < Projects::ApplicationController
     if result[:status] == :success
       @tag = result[:tag]
 
-      redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
+      redirect_to project_tag_path(@project, @tag.name)
     else
       @error = result[:message]
       @message = params[:message]
@@ -50,7 +50,7 @@ class Projects::TagsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         format.html do
-          redirect_to namespace_project_tags_path(@project.namespace, @project), status: 303
+          redirect_to project_tags_path(@project), status: 303
         end
 
         format.js
@@ -58,7 +58,7 @@ class Projects::TagsController < Projects::ApplicationController
         @error = result[:message]
 
         format.html do
-          redirect_to namespace_project_tags_path(@project.namespace, @project),
+          redirect_to project_tags_path(@project),
             alert: @error, status: 303
         end
 

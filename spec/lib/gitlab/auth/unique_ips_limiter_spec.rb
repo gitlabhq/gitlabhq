@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Auth::UniqueIpsLimiter, :redis, lib: true do
+describe Gitlab::Auth::UniqueIpsLimiter, :clean_gitlab_redis_shared_state do
   include_context 'unique ips sign in limit'
   let(:user) { create(:user) }
 
@@ -41,7 +41,7 @@ describe Gitlab::Auth::UniqueIpsLimiter, :redis, lib: true do
 
     context 'allow 2 unique ips' do
       before do
-        current_application_settings.update!(unique_ips_limit_per_user: 2)
+        Gitlab::CurrentSettings.current_application_settings.update!(unique_ips_limit_per_user: 2)
       end
 
       it 'blocks user trying to login from third ip' do

@@ -1,14 +1,19 @@
 image: golang:latest
 
+variables:
+  # Please edit to your GitLab project
+  REPO_NAME: gitlab.com/namespace/project
+
 # The problem is that to be able to use go get, one needs to put
 # the repository in the $GOPATH. So for example if your gitlab domain
-# is mydomainperso.com, and that your repository is repos/projectname, and
+# is gitlab.com, and that your repository is namespace/project, and
 # the default GOPATH being /go, then you'd need to have your
-# repository in /go/src/mydomainperso.com/repos/projectname 
+# repository in /go/src/gitlab.com/namespace/project
 # Thus, making a symbolic link corrects this.
 before_script:
-    - ln -s /builds /go/src/mydomainperso.com
-    - cd /go/src/mydomainperso.com/repos/projectname
+  - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+  - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+  - cd $GOPATH/src/$REPO_NAME
 
 stages:
     - test
@@ -17,21 +22,14 @@ stages:
 format:
     stage: test
     script:
-        # Add here all the dependencies, or use glide/govendor to get
-        # them automatically.
-        # - curl https://glide.sh/get | sh
-        - go get github.com/alecthomas/kingpin
-        - go tool vet -composites=false -shadow=true *.go
-        - go test -race $(go list ./... | grep -v /vendor/)
+      - go fmt $(go list ./... | grep -v /vendor/)
+      - go vet $(go list ./... | grep -v /vendor/)
+      - go test -race $(go list ./... | grep -v /vendor/)
 
 compile:
     stage: build
     script:
-        # Add here all the dependencies, or use glide/govendor/...
-        # to get them automatically.
-        - go get github.com/alecthomas/kingpin
-        # Better put this in a Makefile
-        - go build -race -ldflags "-extldflags '-static'" -o mybinary
+      - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
     artifacts:
-        paths:
-            - mybinary
+      paths:
+        - mybinary

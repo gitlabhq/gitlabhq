@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::LineMapper, lib: true do
+describe Gitlab::Diff::LineMapper do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

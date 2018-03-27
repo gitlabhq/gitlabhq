@@ -1,5 +1,6 @@
 module ResolvableDiscussion
   extend ActiveSupport::Concern
+  include ::Gitlab::Utils::StrongMemoize
 
   included do
     # A number of properties of this `Discussion`, like `first_note` and `resolvable?`, are memoized.
@@ -24,37 +25,44 @@ module ResolvableDiscussion
 
     delegate  :resolved_at,
               :resolved_by,
+              :resolved_by_push?,
 
               to: :last_resolved_note,
               allow_nil: true
   end
 
   def resolvable?
-    return @resolvable if @resolvable.present?
-
-    @resolvable = potentially_resolvable? && notes.any?(&:resolvable?)
+    strong_memoize(:resolvable) do
+      potentially_resolvable? && notes.any?(&:resolvable?)
+    end
   end
 
   def resolved?
-    return @resolved if @resolved.present?
-
-    @resolved = resolvable? && notes.none?(&:to_be_resolved?)
+    strong_memoize(:resolved) do
+      resolvable? && notes.none?(&:to_be_resolved?)
+    end
   end
 
   def first_note
-    @first_note ||= notes.first
+    strong_memoize(:first_note) do
+      notes.first
+    end
   end
 
   def first_note_to_resolve
     return unless resolvable?
 
-    @first_note_to_resolve ||= notes.find(&:to_be_resolved?)
+    strong_memoize(:first_note_to_resolve) do
+      notes.find(&:to_be_resolved?)
+    end
   end
 
   def last_resolved_note
     return unless resolved?
 
-    @last_resolved_note ||= resolved_notes.sort_by(&:resolved_at).last
+    strong_memoize(:last_resolved_note) do
+      resolved_notes.sort_by(&:resolved_at).last
+    end
   end
 
   def resolved_notes
@@ -94,10 +102,10 @@ module ResolvableDiscussion
     yield(notes_relation)
 
     # Set the notes array to the updated notes
-    @notes = notes_relation.fresh.to_a
+    @notes = notes_relation.fresh.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    self.class.memoized_values.each do |var|
-      instance_variable_set(:"@#{var}", nil)
+    self.class.memoized_values.each do |name|
+      clear_memoization(name)
     end
   end
 end

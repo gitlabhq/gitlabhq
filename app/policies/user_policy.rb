@@ -1,19 +1,13 @@
 class UserPolicy < BasePolicy
-  include Gitlab::CurrentSettings
+  desc "The current user is the user in question"
+  condition(:user_is_self, score: 0) { @subject == @user }
 
-  def rules
-    can! :read_user if @user || !restricted_public_level?
+  desc "This is the ghost user"
+  condition(:subject_ghost, scope: :subject, score: 0) { @subject.ghost? }
 
-    if @user
-      if @user.admin? || @subject == @user
-        can! :destroy_user
-      end
+  rule { ~restricted_public_level }.enable :read_user
+  rule { ~anonymous }.enable :read_user
 
-      cannot! :destroy_user if @subject.ghost?
-    end
-  end
-
-  def restricted_public_level?
-    current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
-  end
+  rule { user_is_self | admin }.enable :destroy_user
+  rule { subject_ghost }.prevent :destroy_user
 end

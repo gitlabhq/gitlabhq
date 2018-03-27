@@ -13,7 +13,7 @@ module Gitlab
       def restore
         return true unless File.exist?(@path_to_bundle)
 
-        gitlab_shell.import_repository(@project.repository_storage_path, @project.path_with_namespace, @path_to_bundle)
+        @project.repository.create_from_bundle(@path_to_bundle)
       rescue => e
         @shared.error(e)
         false

@@ -9,11 +9,12 @@ module MergeRequests
       close_issues(merge_request)
       todo_service.merge_merge_request(merge_request, current_user)
       merge_request.mark_as_merged
-      create_merge_event(merge_request, current_user)
+      create_event(merge_request)
       create_note(merge_request)
       notification_service.merge_mr(merge_request, current_user)
       execute_hooks(merge_request, 'merge')
-      invalidate_cache_counts(merge_request.assignees, merge_request)
+      invalidate_cache_counts(merge_request, users: merge_request.assignees)
+      merge_request.update_project_counter_caches
     end
 
     private
@@ -32,6 +33,15 @@ module MergeRequests
 
     def create_merge_event(merge_request, current_user)
       EventCreateService.new.merge_mr(merge_request, current_user)
+    end
+
+    def create_event(merge_request)
+      # Making sure MergeRequest::Metrics updates are in sync with
+      # Event creation.
+      Event.transaction do
+        merge_event = create_merge_event(merge_request, current_user)
+        merge_request_metrics_service(merge_request).merge(merge_event)
+      end
     end
   end
 end

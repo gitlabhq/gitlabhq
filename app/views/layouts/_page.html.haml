@@ -1,15 +1,16 @@
-.page-with-sidebar{ class: page_gutter_class }
+.layout-page{ class: page_with_sidebar_class }
   - if defined?(nav) && nav
-    .layout-nav
-      .container-fluid
-        = render "layouts/nav/#{nav}"
-  - if content_for?(:sub_nav)
-    = yield :sub_nav
-  .content-wrapper{ class: layout_nav_class }
+    = render "layouts/nav/sidebar/#{nav}"
+  .content-wrapper{ class: "#{@content_wrapper_class}" }
+    = render 'shared/outdated_browser'
+    .mobile-overlay
     .alert-wrapper
       = render "layouts/broadcast"
-      = render "layouts/flash"
+      = render 'layouts/header/read_only_banner'
       = yield :flash_message
+      - unless @hide_breadcrumbs
+        = render "layouts/nav/breadcrumbs"
+      = render "layouts/flash"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield

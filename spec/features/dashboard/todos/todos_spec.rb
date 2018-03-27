@@ -13,11 +13,11 @@ feature 'Dashboard Todos' do
     end
 
     it 'shows "All done" message' do
-      expect(page).to have_content 'Todos let you see what you should do next.'
+      expect(page).to have_content 'Todos let you see what you should do next'
     end
   end
 
-  context 'User has a todo', js: true do
+  context 'User has a todo', :js do
     before do
       create(:todo, :mentioned, user: user, project: project, target: issue, author: author)
       sign_in(user)
@@ -52,7 +52,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Todos 0'
         expect(page).to have_content 'Done 1'
       end
 
@@ -81,7 +81,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 1'
+        expect(page).to have_content 'Todos 1'
         expect(page).to have_content 'Done 0'
       end
     end
@@ -177,7 +177,7 @@ feature 'Dashboard Todos' do
     end
   end
 
-  context 'User has done todos', js: true do
+  context 'User has done todos', :js do
     before do
       create(:todo, :mentioned, :done, user: user, project: project, target: issue, author: author)
       sign_in(user)
@@ -200,7 +200,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 1'
+        expect(page).to have_content 'Todos 1'
         expect(page).to have_content 'Done 0'
       end
     end
@@ -249,14 +249,14 @@ feature 'Dashboard Todos' do
       expect(page).to have_selector('.gl-pagination .page', count: 2)
     end
 
-    describe 'mark all as done', js: true do
+    describe 'mark all as done', :js do
       before do
         visit dashboard_todos_path
-        find('.js-todos-mark-all').trigger('click')
+        find('.js-todos-mark-all').click
       end
 
       it 'shows "All done" message!' do
-        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Todos 0'
         expect(page).to have_content "You're all done!"
         expect(page).not_to have_selector('.gl-pagination')
       end
@@ -267,7 +267,7 @@ feature 'Dashboard Todos' do
       end
     end
 
-    describe 'undo mark all as done', js: true do
+    describe 'undo mark all as done', :js do
       before do
         visit dashboard_todos_path
       end
@@ -283,7 +283,7 @@ feature 'Dashboard Todos' do
       it 'updates todo count' do
         mark_all_and_undo
 
-        expect(page).to have_content 'To do 2'
+        expect(page).to have_content 'Todos 2'
         expect(page).to have_content 'Done 0'
       end
 
@@ -309,28 +309,11 @@ feature 'Dashboard Todos' do
       end
 
       def mark_all_and_undo
-        find('.js-todos-mark-all').trigger('click')
+        find('.js-todos-mark-all').click
         wait_for_requests
-        find('.js-todos-undo-all').trigger('click')
+        find('.js-todos-undo-all').click
         wait_for_requests
       end
-    end
-  end
-
-  context 'User has a Todo in a project pending deletion' do
-    before do
-      deleted_project = create(:project, :public, pending_delete: true)
-      create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author)
-      create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author, state: :done)
-      sign_in(user)
-      visit dashboard_todos_path
-    end
-
-    it 'shows "All done" message' do
-      within('.todos-count') { expect(page).to have_content '0' }
-      expect(page).to have_content 'To do 0'
-      expect(page).to have_content 'Done 0'
-      expect(page).to have_selector('.todos-all-done', count: 1)
     end
   end
 
@@ -347,7 +330,7 @@ feature 'Dashboard Todos' do
     end
 
     it 'links to the pipelines for the merge request' do
-      href = pipelines_namespace_project_merge_request_path(project.namespace, project, todo.target)
+      href = pipelines_project_merge_request_path(project, todo.target)
 
       expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href
     end

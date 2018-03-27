@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ProjectFeature do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '.quoted_access_level_column' do
@@ -37,7 +37,7 @@ describe ProjectFeature do
       end
 
       it "returns true when user is a team member" do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         features.each do |feature|
           project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::PRIVATE)
@@ -47,7 +47,7 @@ describe ProjectFeature do
 
       it "returns true when user is a member of project group" do
         group = create(:group)
-        project = create(:empty_project, namespace: group)
+        project = create(:project, namespace: group)
         group.add_developer(user)
 
         features.each do |feature|

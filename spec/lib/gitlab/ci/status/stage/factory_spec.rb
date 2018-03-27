@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Factory do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:stage) do
@@ -18,7 +18,7 @@ describe Gitlab::Ci::Status::Stage::Factory do
   end
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'when stage has a core status' do

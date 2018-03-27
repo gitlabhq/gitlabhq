@@ -2,8 +2,7 @@ require 'json'
 require 'socket'
 
 class IrkerWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(project_id, chans, colors, push_data, settings)
     project = Project.find(project_id)
@@ -66,7 +65,7 @@ class IrkerWorker
   end
 
   def send_new_branch(project, repo_name, committer, branch)
-    repo_path = project.path_with_namespace
+    repo_path = project.full_path
     newbranch = "#{Gitlab.config.gitlab.url}/#{repo_path}/branches"
     newbranch = "\x0302\x1f#{newbranch}\x0f" if @colors
 
@@ -104,12 +103,13 @@ class IrkerWorker
     parents = commit.parents
     # Return old value if there's no new one
     return push_data['before'] if parents.empty?
+
     # Or return the first parent-commit
     parents[0].id
   end
 
   def send_commits_count(data, project, repo, committer, branch)
-    url = compare_url data, project.path_with_namespace
+    url = compare_url data, project.full_path
     commits = colorize_commits data['total_commits_count']
 
     new_commits = 'new commit'

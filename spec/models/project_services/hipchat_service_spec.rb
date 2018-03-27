@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HipchatService, models: true do
+describe HipchatService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -25,18 +25,18 @@ describe HipchatService, models: true do
   end
 
   describe "Execute" do
-    let(:hipchat) { HipchatService.new }
+    let(:hipchat) { described_class.new }
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }
-    let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
+    let(:project_name) { project.full_name.gsub(/\s/, '') }
     let(:token) { 'verySecret' }
     let(:server_url) { 'https://hipchat.example.com'}
     let(:push_sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
 
-    before(:each) do
+    before do
       allow(hipchat).to receive_messages(
         project_id: project.id,
         project: project,
@@ -303,7 +303,7 @@ describe HipchatService, models: true do
           message = hipchat.__send__(:create_pipeline_message, data)
 
           project_url = project.web_url
-          project_name = project.name_with_namespace.gsub(/\s/, '')
+          project_name = project.full_name.gsub(/\s/, '')
           pipeline_attributes = data[:object_attributes]
           ref = pipeline_attributes[:ref]
           ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'

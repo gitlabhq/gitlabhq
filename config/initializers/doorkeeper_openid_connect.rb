@@ -1,7 +1,7 @@
 Doorkeeper::OpenidConnect.configure do
   issuer Gitlab.config.gitlab.url
 
-  jws_private_key Rails.application.secrets.jws_private_key
+  signing_key Rails.application.secrets.openid_connect_signing_key
 
   resource_owner_from_access_token do |access_token|
     User.active.find_by(id: access_token.resource_owner_id)
@@ -29,8 +29,9 @@ Doorkeeper::OpenidConnect.configure do
       o.claim(:email)          { |user| user.public_email  }
       o.claim(:email_verified) { |user| true if user.public_email? }
       o.claim(:website)        { |user| user.full_website_url if user.website_url? }
-      o.claim(:profile)        { |user| Rails.application.routes.url_helpers.user_url user }
+      o.claim(:profile)        { |user| Gitlab::Routing.url_helpers.user_url user }
       o.claim(:picture)        { |user| user.avatar_url(only_path: false) }
+      o.claim(:groups)         { |user| user.membership_groups.map(&:full_path) }
     end
   end
 end

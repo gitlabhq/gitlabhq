@@ -8,6 +8,9 @@
    *  - Dropdown badge components
    */
   export default {
+    components: {
+      ciIcon,
+    },
     props: {
       name: {
         type: String,
@@ -19,19 +22,14 @@
         required: true,
       },
     },
-
-    components: {
-      ciIcon,
-    },
   };
 </script>
 <template>
-  <span>
-    <ci-icon
-      :status="status" />
+  <span class="ci-job-name-component">
+    <ci-icon :status="status" />
 
     <span class="ci-status-text">
-      {{name}}
+      {{ name }}
     </span>
   </span>
 </template>

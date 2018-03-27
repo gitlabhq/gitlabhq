@@ -14,6 +14,14 @@ module Gitlab
             end
           end
 
+          class AllowedValuesValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              unless options[:in].include?(value.to_s)
+                record.errors.add(attribute, "unknown value: #{value}")
+              end
+            end
+          end
+
           class ArrayOfStringsValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 
@@ -56,8 +64,22 @@ module Gitlab
             include LegacyValidationHelpers
 
             def validate_each(record, attribute, value)
-              unless validate_string(value)
+              if validate_string(value)
+                validate_path(record, attribute, value)
+              else
                 record.errors.add(attribute, 'should be a string or symbol')
+              end
+            end
+
+            private
+
+            def validate_path(record, attribute, value)
+              path = CGI.unescape(value.to_s)
+
+              if path.include?('/')
+                record.errors.add(attribute, 'cannot contain the "/" character')
+              elsif path == '.' || path == '..'
+                record.errors.add(attribute, 'cannot be "." or ".."')
               end
             end
           end
@@ -103,6 +125,7 @@ module Gitlab
             def validate_string_or_regexp(value)
               return false unless value.is_a?(String)
               return validate_regexp(value) if look_like_regexp?(value)
+
               true
             end
           end

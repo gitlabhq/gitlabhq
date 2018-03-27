@@ -5,42 +5,45 @@ particular group or project. If a user is both in a group's project and the
 project itself, the highest permission level is used.
 
 On public and internal projects the Guest role is not enforced. All users will
-be able to create issues, leave comments, and pull or download the project code.
+be able to create issues, leave comments, and clone or download the project code.
 
-When a member leaves the team the all assigned Issues and Merge Requests
+When a member leaves the team all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
 will be unassigned automatically.
 
-GitLab administrators receive all permissions.
+GitLab [administrators](../README.md#administrator-documentation) receive all permissions.
 
-To add or import a user, you can follow the [project users and members
-documentation](../workflow/add-user/add-user.md).
+To add or import a user, you can follow the
+[project members documentation](../user/project/members/index.md).
 
-## Project
+## Project members permissions
 
 The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
-| Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Create confidential issue             | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues              | (✓) [^1] | ✓          | ✓           | ✓        | ✓      |
-| Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of jobs                    | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| See a job   log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| Download and browse job artifacts     | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| View wiki pages                       | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
-| Download project                      |         | ✓          | ✓           | ✓        | ✓      |
+| Create new issue                      | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
+| Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
+| Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
+| See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
+| Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
+| Assign issues and merge requests      |         | ✓          | ✓           | ✓        | ✓      |
+| Label issues and merge requests       |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
-| Create new environments               |         |            | ✓           | ✓        | ✓      |
-| Use environment terminals             |         |            |             | ✓        | ✓      |
-| Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
+| Create new environments               |         |            | ✓           | ✓        | ✓      |
+| Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests          |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
@@ -53,11 +56,12 @@ The following table depicts the various user permission levels in a project.
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
-| Create new milestones                 |         |            |             | ✓        | ✓      |
+| Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
+| Use environment terminals             |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
-| Turn on/off protected branch push for devs|         |            |             | ✓        | ✓      |
+| Turn on/off protected branch push for devs|     |            |             | ✓        | ✓      |
 | Enable/disable tag protections        |         |            |             | ✓        | ✓      |
 | Rewrite/remove Git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
@@ -68,14 +72,70 @@ The following table depicts the various user permission levels in a project.
 | Manage variables                      |         |            |             | ✓        | ✓      |
 | Manage pages                          |         |            |             | ✓        | ✓      |
 | Manage pages domains and certificates |         |            |             | ✓        | ✓      |
+| Manage clusters                       |         |            |             | ✓        | ✓      |
+| Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
-| Force push to protected branches [^3] |         |            |             |          |        |
-| Remove protected branches [^3]        |         |            |             |          |        |
+| Delete issues                         |         |            |             |          | ✓      |
 | Remove pages                          |         |            |             |          | ✓      |
+| Force push to protected branches [^4] |         |            |             |          |        |
+| Remove protected branches [^4]        |         |            |             |          |        |
 
-## Group
+## Project features permissions
+
+### Wiki and issues
+
+Project features like wiki and issues can be hidden from users depending on
+which visibility level you select on project settings.
+
+- Disabled: disabled for everyone
+- Only team members: only team members will see even if your project is public or internal
+- Everyone with access: everyone can see depending on your project visibility level
+
+### Protected branches
+
+To prevent people from messing with history or pushing code without
+review, we've created protected branches. Read through the documentation on
+[protected branches](project/protected_branches.md)
+to learn more.
+
+Additionally, you can allow or forbid users with Master and/or
+Developer permissions to push to a protected branch. Read through the documentation on
+[Allowed to Merge and Allowed to Push settings](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
+to learn more.
+
+### Cycle Analytics permissions
+
+Find the current permissions on the Cycle Analytics dashboard on
+the [documentation on Cycle Analytics permissions](project/cycle_analytics.md#permissions).
+
+### Issue Board permissions
+
+Developers and users with higher permission level can use all
+the functionality of the Issue Board, that is create/delete lists
+and drag issues around. Read though the
+[documentation on Issue Boards permissions](project/issue_board.md#permissions)
+to learn more.
+
+### File Locking permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
+
+The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
+
+Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
+
+File Locking is available in
+[GitLab Premium](https://about.gitlab.com/products/) only.
+
+### Confidential Issues permissions
+
+Confidential issues can be accessed by reporters and higher permission levels,
+as well as by guest users that create a confidential issue. To learn more,
+read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
+
+## Group members permissions
 
 Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
@@ -90,8 +150,18 @@ group.
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
 
-## External Users
+### Subgroup permissions
+
+When you add a member to a subgroup, they inherit the membership and
+permission level from the parent group. This model allows access to
+nested groups if you have membership in one of its parents.
+
+To learn more, read through the documentation on
+[subgroups memberships](group/subgroups/index.md#membership).
+
+## External users permissions
 
 In cases where it is desired that a user has access only to some internal or
 private projects, there is the option of creating **External Users**. This
@@ -115,18 +185,9 @@ will find the option to flag the user as external.
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
 
-## Project features
+## GitLab CI/CD permissions
 
-Project features like wiki and issues can be hidden from users depending on
-which visibility level you select on project settings.
-
-- Disabled: disabled for everyone
-- Only team members: only team members will see even if your project is public or internal
-- Everyone with access: everyone can see depending on your project visibility level
-
-## GitLab CI
-
-GitLab CI permissions rely on the role the user has in GitLab. There are four
+GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
 
 - admin
@@ -134,7 +195,7 @@ permission levels in total:
 - developer
 - guest/reporter
 
-The admin user can perform any action on GitLab CI in scope of the GitLab
+The admin user can perform any action on GitLab CI/CD in scope of the GitLab
 instance and project. In addition, all admins can use the admin interface under
 `/admin/runners`.
 
@@ -142,6 +203,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^5]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -150,7 +212,7 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-### Jobs permissions
+### Job permissions
 
 >**Note:**
 GitLab 8.12 has a completely redesigned job permissions system.
@@ -164,20 +226,51 @@ users:
 | Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^4]      | ✓ [^4]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^5]      | ✓ [^5]   | ✓ [^5] |
+| Clone source and LFS from internal projects |                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
 | Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^4]      | ✓ [^4]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^5]      | ✓ [^5]   | ✓ [^5] |
+| Pull container images from internal projects|                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
 
-[^1]: Guest users can only view the confidential issues they created themselves
-[^2]: If **Public pipelines** is enabled in **Project Settings > Pipelines**
-[^3]: Not allowed for Guest, Reporter, Developer, Master, or Owner
-[^4]: Only if user is not external one.
-[^5]: Only if user is a member of the project.
+### New CI job permissions model
+
+GitLab 8.12 has a completely redesigned job permissions system. To learn more,
+read through the documentation on the [new CI/CD permissions model](project/new_ci_build_permissions_model.md#new-ci-job-permissions-model).
+
+## Running pipelines on protected branches
+
+The permission to merge or push to protected branches is used to define if a user can
+run CI/CD pipelines and execute actions on jobs that are related to those branches.
+
+See [Security on protected branches](../ci/pipelines.md#security-on-protected-branches)
+for details about the pipelines security model.
+
+## LDAP users permissions
+
+Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
+Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/index.html#updating-user-permissions-new-feature) to learn more.
+
+## Auditor users permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
+
+An Auditor user should be able to access all projects and groups of a GitLab instance
+with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
+
+Auditor users are available in [GitLab Premium](https://about.gitlab.com/products/)
+only.
+
+[^1]: On public and internal projects, all users are able to perform this action
+[^2]: Guest users can only view the confidential issues they created themselves
+[^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
+[^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
+[^5]: Only if the job was triggered by the user
+[^6]: Only if user is not external one
+[^7]: Only if user is a member of the project
+
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md

@@ -1,0 +1,26 @@
+- avatar = namespace_icon(namespace, 100)
+- can_create_project = current_user.can?(:create_projects, namespace)
+
+- if forked_project = namespace.find_fork_of(@project)
+  .bordered-box.fork-thumbnail.text-center.prepend-left-default.append-right-default.prepend-top-default.append-bottom-default.forked
+    = link_to project_path(forked_project) do
+      - if /no_((\w*)_)*avatar/.match(avatar)
+        = project_identicon(namespace, class: "avatar s100 identicon")
+      - else
+        .avatar-container.s100
+          = image_tag(avatar, class: "avatar s100")
+      %h5.prepend-top-default
+        = namespace.human_name
+- else
+  .bordered-box.fork-thumbnail.text-center.prepend-left-default.append-right-default.prepend-top-default.append-bottom-default{ class: ("disabled" unless can_create_project) }
+    = link_to project_forks_path(@project, namespace_key: namespace.id),
+        method: "POST",
+        class: ("disabled has-tooltip" unless can_create_project),
+        title: (_('You have reached your project limit') unless can_create_project) do
+      - if /no_((\w*)_)*avatar/.match(avatar)
+        = project_identicon(namespace, class: "avatar s100 identicon")
+      - else
+        .avatar-container.s100
+          = image_tag(avatar, class: "avatar s100")
+      %h5.prepend-top-default
+        = namespace.human_name

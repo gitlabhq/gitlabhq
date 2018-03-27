@@ -28,6 +28,14 @@ The `after` hook will migrate the database **up** and reinstitutes the latest
 schema version, so that the process does not affect subsequent specs and
 ensures proper isolation.
 
+## Testing a class that is not an ActiveRecord::Migration
+
+In order to test a class that is not a migration itself, you will need to
+manually provide a required schema version. Please add a `schema` tag to a
+context that you want to switch the database schema within.
+
+Example: `describe SomeClass, :migration, schema: 20170608152748`.
+
 ## Available helpers
 
 Use `table` helper to create a temporary `ActiveRecord::Base` derived model
@@ -80,8 +88,6 @@ end
 
 ## Best practices
 
-1. Use only one test example per migration unless there is a good reason to
-use more.
 1. Note that this type of tests do not run within the transaction, we use
-a truncation database cleanup strategy. Do not depend on transaction being
+a deletion database cleanup strategy. Do not depend on transaction being
 present.

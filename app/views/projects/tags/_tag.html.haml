@@ -2,13 +2,12 @@
 - release = @releases.find { |release| release.tag == tag.name }
 %li.flex-row
   .row-main-content.str-truncated
-    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'item-title ref-name' do
-      = icon('tag')
-      = tag.name
+    = icon('tag')
+    = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name prepend-left-4'
 
     - if protected_tag?(@project, tag)
-      %span.label.label-success
-        protected
+      %span.label.label-success.prepend-left-4
+        = s_('TagsPage|protected')
 
     - if tag.message.present?
       &nbsp;
@@ -19,19 +18,19 @@
         = render 'projects/branches/commit', commit: commit, project: @project
     - else
       %p
-        Cant find HEAD commit for this tag
+        = s_("TagsPage|Can't find HEAD commit for this tag")
     - if release && release.description.present?
       .description.prepend-top-default
         .wiki
           = markdown_field(release, :description)
 
-  .row-fixed-content.controls
+  .row-fixed-content.controls.flex-row
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :push_code, @project)
-      = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn has-tooltip', title: "Edit release notes", data: { container: "body" } do
+      = link_to edit_project_tag_release_path(@project, tag.name), class: 'btn has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
         = icon("pencil")
 
     - if can?(current_user, :admin_project, @project)
-      = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, tag) ? 'disabled' : ''}", title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{tag.name}' tag cannot be undone. Are you sure?", container: 'body' }, remote: true do
+      = link_to project_tag_path(@project, tag.name), class: "btn btn-remove remove-row has-tooltip prepend-left-10 #{protected_tag?(@project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: tag.name }, container: 'body' }, remote: true do
         = icon("trash-o")

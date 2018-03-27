@@ -1,11 +1,11 @@
-## Install GitLab under a relative URL
+# Install GitLab under a relative URL
 
-_**Note:**
+NOTE: **Note:**
 This document describes how to run GitLab under a relative URL for installations
 from source. If you are using an Omnibus package,
 [the steps are different][omnibus-rel]. Use this guide along with the
 [installation guide](installation.md) if you are installing GitLab for the
-first time._
+first time.
 
 ---
 
@@ -33,7 +33,7 @@ serve GitLab under a relative URL is:
 
 After all the changes you need to recompile the assets and [restart GitLab].
 
-### Relative URL requirements
+## Relative URL requirements
 
 If you configure GitLab with a relative URL, the assets (JavaScript, CSS, fonts,
 images, etc.) will need to be recompiled, which is a task which consumes a lot
@@ -43,11 +43,11 @@ least 2GB of RAM available on your system, while we recommend 4GB RAM, and 4 or
 
 See the [requirements](requirements.md) document for more information.
 
-### Enable relative URL in GitLab
+## Enable relative URL in GitLab
 
-_**Note:**
+NOTE: **Note:**
 Do not make any changes to your web server configuration file regarding
-relative URL. The relative URL support is implemented by GitLab Workhorse._
+relative URL. The relative URL support is implemented by GitLab Workhorse.
 
 ---
 
@@ -115,7 +115,7 @@ Make sure to follow all steps below:
 
 1. [Restart GitLab][] for the changes to take effect.
 
-### Disable relative URL in GitLab
+## Disable relative URL in GitLab
 
 To disable the relative URL:
 

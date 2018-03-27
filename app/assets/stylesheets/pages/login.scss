@@ -22,7 +22,7 @@
     }
 
     h1:first-child {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       margin-bottom: 0.68em;
       margin-top: 0;
       font-size: 34px;
@@ -38,7 +38,7 @@
     }
 
     a {
-      font-weight: bold;
+      font-weight: $gl-font-weight-bold;
     }
   }
 
@@ -54,7 +54,7 @@
     padding: 15px;
 
     .login-heading h3 {
-      font-weight: 300;
+      font-weight: $gl-font-weight-normal;
       line-height: 1.5;
       margin: 0 0 10px;
     }
@@ -95,6 +95,8 @@
   }
 
   .omniauth-container {
+    font-size: 13px;
+
     p {
       margin: 0;
     }
@@ -107,13 +109,37 @@
     border-top-right-radius: $border-radius-default;
     border-top-left-radius: $border-radius-default;
 
+    // Ldap configurations may need more tabs & the tab labels are user generated (arbitrarily long).
+    // These styles prevent this from breaking the layout, and only applied when providers are configured.
+    &.custom-provider-tabs {
+      flex-wrap: wrap;
+
+      li {
+        min-width: 85px;
+        flex-basis: auto;
+
+        // This styles tab elements that have wrapped to a second line. We cannot easily predict when this will happen.
+        // We are making somewhat of an assumption about the configuration here: that users do not have more than
+        // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
+        // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
+        // above one of the bottom row elements. If you know a better way, please implement it!
+        &:nth-child(n+5) {
+          border-top: 1px solid $border-color;
+        }
+      }
+
+      a {
+        font-size: 16px;
+      }
+    }
+
     li {
       flex: 1;
       text-align: center;
       border-left: 1px solid $border-color;
 
       &:first-of-type {
-        border-left: none;
+        border-left: 0;
         border-top-left-radius: $border-radius-default;
       }
 
@@ -139,7 +165,7 @@
         border-bottom: 1px solid $border-color;
 
         a {
-          border: none;
+          border: 0;
           border-bottom: 2px solid $link-underline-blue;
           margin-right: 0;
           color: $black;
@@ -152,32 +178,6 @@
     }
   }
 
-  // Ldap configurations may need more tabs & the tab labels are user generated (arbitrarily long).
-  // These styles prevent this from breaking the layout, and only applied when providers are configured.
-
-  .new-session-tabs.custom-provider-tabs {
-    flex-wrap: wrap;
-
-    li {
-      min-width: 85px;
-      flex-basis: auto;
-
-      // This styles tab elements that have wrapped to a second line. We cannot easily predict when this will happen.
-      // We are making somewhat of an assumption about the configuration here: that users do not have more than
-      // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
-      // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
-      // above one of the bottom row elements. If you know a better way, please implement it!
-      &:nth-child(n+5) {
-        border-top: 1px solid $border-color;
-      }
-    }
-
-    a {
-      font-size: 16px;
-    }
-  }
-
-
   .form-control {
     &:active,
     &:focus {
@@ -186,7 +186,7 @@
   }
 
   label {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   .submit-container {
@@ -229,35 +229,39 @@
   margin: 0;
   padding: 0;
   height: 100%;
-}
 
-// Fixes footer container to bottom of viewport
-.devise-layout-html body {
-  // offset height of fixed header + 1 to avoid scroll
-  height: calc(100% - 51px);
-  margin: 0;
-  padding: 0;
+  // Fixes footer container to bottom of viewport
+  body {
+    // offset height of fixed header + 1 to avoid scroll
+    height: calc(100% - 51px);
+    margin: 0;
+    padding: 0;
 
-  .page-wrap {
-    min-height: 100%;
-    position: relative;
-  }
+    .page-wrap {
+      min-height: 100%;
+      position: relative;
+    }
 
-  .footer-container,
-  hr.footer-fixed {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: $white-light;
-  }
+    .footer-container,
+    hr.footer-fixed {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: $white-light;
+    }
 
-  .navless-container {
-    padding: 65px 15px; // height of footer + bottom padding of email confirmation link
+    .login-page-broadcast {
+      margin-top: 50px;
+    }
 
-    @media (max-width: $screen-xs-max) {
-      padding: 0 15px 65px;
+    .navless-container {
+      padding: 65px 15px; // height of footer + bottom padding of email confirmation link
+
+      @media (max-width: $screen-xs-max) {
+        padding: 0 15px 65px;
+      }
     }
   }
 }

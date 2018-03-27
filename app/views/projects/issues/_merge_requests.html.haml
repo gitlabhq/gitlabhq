@@ -2,13 +2,13 @@
   %h2.merge-requests-title
     = pluralize(@merge_requests.count, 'Related Merge Request')
   %ul.unstyled-list.related-merge-requests
-    - has_any_ci = @merge_requests.any?(&:head_pipeline)
+    - has_any_head_pipeline = @merge_requests.any?(&:head_pipeline_id)
     - @merge_requests.each do |merge_request|
       %li
         %span.merge-request-ci-status
           - if merge_request.head_pipeline
             = render_pipeline_status(merge_request.head_pipeline)
-          - elsif has_any_ci
+          - elsif has_any_head_pipeline
             = icon('blank fw')
         %span.merge-request-id
           = merge_request.to_reference
@@ -18,7 +18,7 @@
           - unless @issue.project.id == merge_request.target_project.id
             in
             - project = merge_request.target_project
-            = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
+            = link_to project.full_name, project_path(project)
 
         - if merge_request.merged?
           %span.merge-request-status.prepend-left-10.merged

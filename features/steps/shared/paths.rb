@@ -201,67 +201,67 @@ module SharedPaths
   # ----------------------------------------
 
   step "I visit my project's home page" do
-    visit namespace_project_path(@project.namespace, @project)
+    visit project_path(@project)
   end
 
   step "I visit my project's settings page" do
-    visit edit_namespace_project_path(@project.namespace, @project)
+    visit edit_project_path(@project)
   end
 
   step "I visit my project's files page" do
-    visit namespace_project_tree_path(@project.namespace, @project, root_ref)
+    visit project_tree_path(@project, root_ref)
   end
 
   step 'I visit a binary file in the repo' do
-    visit namespace_project_blob_path(@project.namespace, @project,
+    visit project_blob_path(@project,
       File.join(root_ref, 'files/images/logo-black.png'))
   end
 
   step "I visit my project's commits page" do
-    visit namespace_project_commits_path(@project.namespace, @project, root_ref, { limit: 5 })
+    visit project_commits_path(@project, root_ref, { limit: 5 })
   end
 
   step "I visit my project's commits page for a specific path" do
-    visit namespace_project_commits_path(@project.namespace, @project, root_ref + "/app/models/project.rb", { limit: 5 })
+    visit project_commits_path(@project, root_ref + "/files/ruby/regex.rb", { limit: 5 })
   end
 
   step 'I visit my project\'s commits stats page' do
-    visit stats_namespace_project_repository_path(@project.namespace, @project)
+    visit stats_project_repository_path(@project)
   end
 
   step "I visit my project's graph page" do
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     Network::Graph.stub(max_count: 10)
 
-    visit namespace_project_network_path(@project.namespace, @project, root_ref)
+    visit project_network_path(@project, root_ref)
   end
 
   step "I visit my project's issues page" do
-    visit namespace_project_issues_path(@project.namespace, @project)
+    visit project_issues_path(@project)
   end
 
   step "I visit my project's merge requests page" do
-    visit namespace_project_merge_requests_path(@project.namespace, @project)
+    visit project_merge_requests_path(@project)
   end
 
   step "I visit my project's members page" do
-    visit namespace_project_project_members_path(@project.namespace, @project)
+    visit project_project_members_path(@project)
   end
 
   step "I visit my project's wiki page" do
-    visit namespace_project_wiki_path(@project.namespace, @project, :home)
+    visit project_wiki_path(@project, :home)
   end
 
   step 'I visit project hooks page' do
-    visit namespace_project_settings_integrations_path(@project.namespace, @project)
+    visit project_settings_integrations_path(@project)
   end
 
   step 'I visit project deploy keys page' do
-    visit namespace_project_deploy_keys_path(@project.namespace, @project)
+    visit project_deploy_keys_path(@project)
   end
 
   step 'I visit project find file page' do
-    visit namespace_project_find_file_path(@project.namespace, @project, root_ref)
+    visit project_find_file_path(@project, root_ref)
   end
 
   # ----------------------------------------
@@ -269,107 +269,103 @@ module SharedPaths
   # ----------------------------------------
 
   step 'I visit project "Shop" page' do
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I visit project "Shop" activity page' do
-    visit activity_namespace_project_path(project.namespace, project)
+    visit activity_project_path(project)
   end
 
   step 'I visit project "Forked Shop" merge requests page' do
-    visit namespace_project_merge_requests_path(@forked_project.namespace, @forked_project)
+    visit project_merge_requests_path(@forked_project)
   end
 
   step 'I visit edit project "Shop" page' do
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   step 'I visit project branches page' do
-    visit namespace_project_branches_path(@project.namespace, @project)
+    visit project_branches_path(@project)
   end
 
   step 'I visit project protected branches page' do
-    visit namespace_project_protected_branches_path(@project.namespace, @project)
+    visit project_protected_branches_path(@project)
   end
 
   step 'I visit compare refs page' do
-    visit namespace_project_compare_index_path(@project.namespace, @project)
+    visit project_compare_index_path(@project)
   end
 
   step 'I visit project commits page' do
-    visit namespace_project_commits_path(@project.namespace, @project, root_ref, { limit: 5 })
+    visit project_commits_path(@project, root_ref, { limit: 5 })
   end
 
   step 'I visit project commits page for stable branch' do
-    visit namespace_project_commits_path(@project.namespace, @project, 'stable', { limit: 5 })
-  end
-
-  step 'I visit project source page' do
-    visit namespace_project_tree_path(@project.namespace, @project, root_ref)
+    visit project_commits_path(@project, 'stable', { limit: 5 })
   end
 
   step 'I visit blob file from repo' do
-    visit namespace_project_blob_path(@project.namespace, @project, File.join(sample_commit.id, sample_blob.path))
+    visit project_blob_path(@project, File.join(sample_commit.id, sample_blob.path))
   end
 
   step 'I visit ".gitignore" file in repo' do
-    visit namespace_project_blob_path(@project.namespace, @project, File.join(root_ref, '.gitignore'))
+    visit project_blob_path(@project, File.join(root_ref, '.gitignore'))
   end
 
   step 'I am on the new file page' do
-    expect(current_path).to eq(namespace_project_create_blob_path(@project.namespace, @project, root_ref))
+    expect(current_path).to eq(project_create_blob_path(@project, root_ref))
   end
 
   step 'I am on the ".gitignore" edit file page' do
     expect(current_path).to eq(
-      namespace_project_edit_blob_path(@project.namespace, @project, File.join(root_ref, '.gitignore')))
+      project_edit_blob_path(@project, File.join(root_ref, '.gitignore')))
   end
 
   step 'I visit project source page for "6d39438"' do
-    visit namespace_project_tree_path(@project.namespace, @project, "6d39438")
+    visit project_tree_path(@project, "6d39438")
   end
 
   step 'I visit project source page for' \
        ' "6d394385cf567f80a8fd85055db1ab4c5295806f"' do
-    visit namespace_project_tree_path(@project.namespace, @project,
+    visit project_tree_path(@project,
                             '6d394385cf567f80a8fd85055db1ab4c5295806f')
   end
 
   step 'I visit project tags page' do
-    visit namespace_project_tags_path(@project.namespace, @project)
+    visit project_tags_path(@project)
   end
 
   step 'I visit project commit page' do
-    visit namespace_project_commit_path(@project.namespace, @project, sample_commit.id)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   step 'I visit project "Shop" issues page' do
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   step 'I visit issue page "Release 0.4"' do
     issue = Issue.find_by(title: "Release 0.4")
-    visit namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    visit project_issue_path(issue.project, issue)
   end
 
   step 'I visit project "Shop" labels page' do
     project = Project.find_by(name: 'Shop')
-    visit namespace_project_labels_path(project.namespace, project)
+    visit project_labels_path(project)
   end
 
   step 'I visit project "Forum" labels page' do
     project = Project.find_by(name: 'Forum')
-    visit namespace_project_labels_path(project.namespace, project)
+    visit project_labels_path(project)
   end
 
   step 'I visit project "Shop" new label page' do
     project = Project.find_by(name: 'Shop')
-    visit new_namespace_project_label_path(project.namespace, project)
+    visit new_project_label_path(project)
   end
 
   step 'I visit project "Forum" new label page' do
     project = Project.find_by(name: 'Forum')
-    visit new_namespace_project_label_path(project.namespace, project)
+    visit new_project_label_path(project)
   end
 
   step 'I visit merge request page "Bug NS-04"' do
@@ -394,28 +390,28 @@ module SharedPaths
 
   step 'I visit merge request page "Bug CO-01"' do
     mr = MergeRequest.find_by(title: "Bug CO-01")
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
     wait_for_requests
   end
 
   step 'I visit project "Shop" merge requests page' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   step 'I visit forked project "Shop" merge requests page' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   step 'I visit project "Shop" milestones page' do
-    visit namespace_project_milestones_path(project.namespace, project)
+    visit project_milestones_path(project)
   end
 
   step 'I visit project "Shop" team page' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
   end
 
   step 'I visit project wiki page' do
-    visit namespace_project_wiki_path(@project.namespace, @project, :home)
+    visit project_wiki_path(@project, :home)
   end
 
   # ----------------------------------------
@@ -424,22 +420,22 @@ module SharedPaths
 
   step 'I visit project "Community" page' do
     project = Project.find_by(name: "Community")
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I visit project "Community" source page' do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_tree_path(project.namespace, project, root_ref)
+    visit project_tree_path(project, root_ref)
   end
 
   step 'I visit project "Internal" page' do
     project = Project.find_by(name: "Internal")
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I visit project "Enterprise" page' do
     project = Project.find_by(name: "Enterprise")
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   # ----------------------------------------
@@ -448,7 +444,7 @@ module SharedPaths
 
   step "I visit empty project page" do
     project = Project.find_by(name: "Empty Public Project")
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step "I should not see command line instructions" do
@@ -458,19 +454,6 @@ module SharedPaths
   # ----------------------------------------
   # Public Projects
   # ----------------------------------------
-
-  step 'I visit the public projects area' do
-    visit explore_projects_path
-  end
-
-  step 'I visit the explore trending projects' do
-    visit trending_explore_projects_path
-  end
-
-  step 'I visit the explore starred projects' do
-    visit starred_explore_projects_path
-  end
-
   step 'I visit the public groups area' do
     visit explore_groups_path
   end
@@ -480,15 +463,11 @@ module SharedPaths
   # ----------------------------------------
 
   step 'I visit project "Shop" snippets page' do
-    visit namespace_project_snippets_path(project.namespace, project)
+    visit project_snippets_path(project)
   end
 
   step 'I visit snippets page' do
     visit explore_snippets_path
-  end
-
-  step 'I visit new snippet page' do
-    visit new_snippet_path
   end
 
   def root_ref
@@ -501,7 +480,7 @@ module SharedPaths
 
   def merge_request_path(title)
     mr = MergeRequest.find_by(title: title)
-    namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    project_merge_request_path(mr.target_project, mr)
   end
 
   # ----------------------------------------

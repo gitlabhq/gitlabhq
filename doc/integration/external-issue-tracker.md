@@ -4,10 +4,11 @@ GitLab has a great issue tracker but you can also use an external one such as
 Jira, Redmine, or Bugzilla. Issue trackers are configurable per GitLab project and allow
 you to do the following:
 
-- the **Issues** link on the GitLab project pages takes you to the appropriate
-  issue index of the external tracker
-- clicking **New issue** on the project dashboard creates a new issue on the
-  external tracker
+- you can reference these external issues inside GitLab interface
+  (merge requests, commits, comments) and they will be automatically converted
+  into links
+
+You can have enabled both external and internal GitLab issue trackers in parallel. The **Issues** link always opens the internal issue tracker and in case the internal issue tracker is disabled the link is not visible in the menu.
 
 ## Configuration
 
@@ -21,6 +22,7 @@ Visit the links below for details:
 - [Redmine](../user/project/integrations/redmine.md)
 - [Jira](../user/project/integrations/jira.md)
 - [Bugzilla](../user/project/integrations/bugzilla.md)
+- [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
 
 ### Service Template
 

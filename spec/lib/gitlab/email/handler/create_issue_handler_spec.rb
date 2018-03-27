@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../email_shared_blocks'
 
-describe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
+describe Gitlab::Email::Handler::CreateIssueHandler do
   include_context :email_shared_context
   it_behaves_like :reply_processing_shared_examples
 
@@ -13,7 +13,7 @@ describe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
   let(:email_raw) { fixture_file('emails/valid_new_issue.eml') }
   let(:namespace) { create(:namespace, path: 'gitlabhq') }
 
-  let!(:project)  { create(:project, :public, :repository, namespace: namespace) }
+  let!(:project)  { create(:project, :public, namespace: namespace, path: 'gitlabhq') }
   let!(:user) do
     create(
       :user,

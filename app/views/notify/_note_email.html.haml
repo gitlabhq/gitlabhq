@@ -1,10 +1,15 @@
 - discussion = @note.discussion if @note.part_of_discussion?
+- diff_discussion = discussion&.diff_discussion?
+- on_image = discussion.on_image? if diff_discussion
+
 - if discussion
+  - phrase_end_char = on_image ? "." : ":"
+
   %p.details
-    = succeed ':' do
+    = succeed phrase_end_char do
       = link_to @note.author_name, user_url(@note.author)
 
-      - if discussion.diff_discussion?
+      - if diff_discussion
         - if discussion.new_discussion?
           started a new discussion
         - else
@@ -17,11 +22,11 @@
         - else
           commented on a #{link_to 'discussion', @target_url}
 
-- elsif current_application_settings.email_author_in_body
+- elsif Gitlab::CurrentSettings.email_author_in_body
   %p.details
     #{link_to @note.author_name, user_url(@note.author)} commented:
 
-- if discussion&.diff_discussion?
+- if diff_discussion && !on_image
   = content_for :head do
     = stylesheet_link_tag 'mailers/highlighted_diff_email'
 

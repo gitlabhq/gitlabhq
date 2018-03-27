@@ -1,8 +1,10 @@
+- issues_accessible = milestone.is_a?(GlobalMilestone) || can?(current_user, :read_issue, @project)
+
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
   %ul.nav-links.scrolling-tabs.js-milestone-tabs
-    - if milestone.is_a?(GlobalMilestone) || can?(current_user, :read_issue, @project)
+    - if issues_accessible
       %li.active
         = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
           Issues
@@ -25,13 +27,14 @@
         Labels
         %span.badge= milestone.labels.count
 
+- issues = milestone.sorted_issues(current_user)
 - show_project_name = local_assigns.fetch(:show_project_name, false)
 - show_full_project_name = local_assigns.fetch(:show_full_project_name, false)
 
 .tab-content.milestone-content
-  - if milestone.is_a?(GlobalMilestone) || can?(current_user, :read_issue, @project)
-    .tab-pane.active#tab-issues{ data: { sort_endpoint: (sort_issues_namespace_project_milestone_path(@project.namespace, @project, @milestone) if @project && current_user) } }
-      = render 'shared/milestones/issues_tab', issues: milestone.sorted_issues(current_user), show_project_name: show_project_name, show_full_project_name: show_full_project_name
+  - if issues_accessible
+    .tab-pane.active#tab-issues{ data: { sort_endpoint: (sort_issues_project_milestone_path(@project, @milestone) if @project && current_user) } }
+      = render 'shared/milestones/issues_tab', issues: issues, show_project_name: show_project_name, show_full_project_name: show_full_project_name
     .tab-pane#tab-merge-requests
       -# loaded async
       = render "shared/milestones/tab_loading"

@@ -36,7 +36,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on deploy keys page' do
-    expect(current_path).to eq namespace_project_settings_repository_path(@project.namespace, @project)
+    expect(current_path).to eq project_settings_repository_path(@project)
   end
 
   step 'I should see newly created deploy key' do
@@ -47,12 +47,12 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'other projects have deploy keys' do
-    @second_project = create(:empty_project, namespace: create(:group))
-    @second_project.team << [current_user, :master]
+    @second_project = create(:project, namespace: create(:group))
+    @second_project.add_master(current_user)
     create(:deploy_keys_project, project: @second_project)
 
-    @third_project = create(:empty_project, namespace: create(:group))
-    @third_project.team << [current_user, :master]
+    @third_project = create(:project, namespace: create(:group))
+    @third_project.add_master(current_user)
     create(:deploy_keys_project, project: @third_project, deploy_key: @second_project.deploy_keys.first)
   end
 

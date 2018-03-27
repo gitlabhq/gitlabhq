@@ -1,28 +1,37 @@
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
-    'commit' => 'icon_commit',
-    'description' => 'icon_edit',
-    'merge' => 'icon_merge',
-    'merged' => 'icon_merged',
-    'opened' => 'icon_status_open',
-    'closed' => 'icon_status_closed',
-    'time_tracking' => 'icon_stopwatch',
-    'assignee' => 'icon_user',
-    'title' => 'icon_edit',
-    'task' => 'icon_check_square_o',
-    'label' => 'icon_tags',
-    'cross_reference' => 'icon_random',
-    'branch' => 'icon_code_fork',
-    'confidential' => 'icon_eye_slash',
-    'visible' => 'icon_eye',
-    'milestone' => 'icon_clock_o',
-    'discussion' => 'icon_comment_o',
-    'moved' => 'icon_arrow_circle_o_right',
-    'outdated' => 'icon_edit'
+    'commit' => 'commit',
+    'description' => 'pencil',
+    'merge' => 'git-merge',
+    'merged' => 'git-merge',
+    'opened' => 'issue-open',
+    'closed' => 'issue-close',
+    'time_tracking' => 'timer',
+    'assignee' => 'user',
+    'title' => 'pencil',
+    'task' => 'task-done',
+    'label' => 'label',
+    'cross_reference' => 'comment-dots',
+    'branch' => 'fork',
+    'confidential' => 'eye-slash',
+    'visible' => 'eye',
+    'milestone' => 'clock',
+    'discussion' => 'comment',
+    'moved' => 'arrow-right',
+    'outdated' => 'pencil',
+    'duplicate' => 'issue-duplicate',
+    'locked' => 'lock',
+    'unlocked' => 'lock-open'
   }.freeze
 
-  def icon_for_system_note(note)
-    icon_name = ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
-    custom_icon(icon_name) if icon_name
+  def system_note_icon_name(note)
+    ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
   end
+
+  def icon_for_system_note(note)
+    icon_name = system_note_icon_name(note)
+    sprite_icon(icon_name) if icon_name
+  end
+
+  extend self
 end

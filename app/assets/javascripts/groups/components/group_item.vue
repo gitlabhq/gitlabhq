@@ -1,46 +1,34 @@
 <script>
+import { visitUrl } from '../../lib/utils/url_utility';
+import tooltip from '../../vue_shared/directives/tooltip';
+import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
 
+import itemCaret from './item_caret.vue';
+import itemTypeIcon from './item_type_icon.vue';
+import itemStats from './item_stats.vue';
+import itemActions from './item_actions.vue';
+
 export default {
+  directives: {
+    tooltip,
+  },
+  components: {
+    identicon,
+    itemCaret,
+    itemTypeIcon,
+    itemStats,
+    itemActions,
+  },
   props: {
+    parentGroup: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     group: {
       type: Object,
       required: true,
-    },
-    baseGroup: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    collection: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-  },
-  methods: {
-    onClickRowGroup(e) {
-      e.stopPropagation();
-
-      // Skip for buttons
-      if (!(e.target.tagName === 'A') && !(e.target.tagName === 'I' && e.target.parentElement.tagName === 'A')) {
-        if (this.group.hasSubgroups) {
-          eventHub.$emit('toggleSubGroups', this.group);
-        } else {
-          window.location.href = this.group.groupPath;
-        }
-      }
-    },
-    onLeaveGroup(e) {
-      e.preventDefault();
-
-      // eslint-disable-next-line no-alert
-      if (confirm(`Are you sure you want to leave the "${this.group.fullName}" group?`)) {
-        this.leaveGroup();
-      }
-    },
-    leaveGroup() {
-      eventHub.$emit('leaveGroup', this.group, this.collection);
     },
   },
   computed: {
@@ -49,48 +37,33 @@ export default {
     },
     rowClass() {
       return {
-        'group-row': true,
         'is-open': this.group.isOpen,
-        'has-subgroups': this.group.hasSubgroups,
-        'no-description': !this.group.description,
+        'has-children': this.hasChildren,
+        'has-description': this.group.description,
+        'being-removed': this.group.isBeingRemoved,
       };
     },
-    visibilityIcon() {
-      return {
-        fa: true,
-        'fa-globe': this.group.visibility === 'public',
-        'fa-shield': this.group.visibility === 'internal',
-        'fa-lock': this.group.visibility === 'private',
-      };
+    hasChildren() {
+      return this.group.childrenCount > 0;
     },
-    fullPath() {
-      let fullPath = '';
-
-      if (this.group.isOrphan) {
-        // check if current group is baseGroup
-        if (Object.keys(this.baseGroup).length > 0 && this.baseGroup !== this.group) {
-          // Remove baseGroup prefix from our current group.fullName. e.g:
-          // baseGroup.fullName: `level1`
-          // group.fullName: `level1 / level2 / level3`
-          // Result: `level2 / level3`
-          const gfn = this.group.fullName;
-          const bfn = this.baseGroup.fullName;
-          const length = bfn.length;
-          const start = gfn.indexOf(bfn);
-          const extraPrefixChars = 3;
-
-          fullPath = gfn.substr(start + length + extraPrefixChars);
+    hasAvatar() {
+      return this.group.avatarUrl !== null;
+    },
+    isGroup() {
+      return this.group.type === 'group';
+    },
+  },
+  methods: {
+    onClickRowGroup(e) {
+      const NO_EXPAND_CLS = 'no-expand';
+      if (!(e.target.classList.contains(NO_EXPAND_CLS) ||
+            e.target.parentElement.classList.contains(NO_EXPAND_CLS))) {
+        if (this.hasChildren) {
+          eventHub.$emit('toggleChildren', this.group);
         } else {
-          fullPath = this.group.fullName;
+          visitUrl(this.group.relativePath);
         }
-      } else {
-        fullPath = this.group.name;
       }
-
-      return fullPath;
-    },
-    hasGroups() {
-      return Object.keys(this.group.subGroups).length > 0;
     },
   },
 };
@@ -101,120 +74,83 @@ export default {
     @click.stop="onClickRowGroup"
     :id="groupDomId"
     :class="rowClass"
-    >
+    class="group-row"
+  >
     <div
-      class="group-row-contents">
+      class="group-row-contents"
+      :class="{ 'project-row-contents': !isGroup }">
+      <item-actions
+        v-if="isGroup"
+        :group="group"
+        :parent-group="parentGroup"
+      />
+      <item-stats
+        :item="group"
+      />
       <div
-        class="controls">
-        <a
-          v-if="group.canEdit"
-          class="edit-group btn"
-          :href="group.editPath">
-          <i
-            class="fa fa-cogs"
-            aria-hidden="true"
-          >
-          </i>
-        </a>
-        <a
-          @click="onLeaveGroup"
-          :href="group.leavePath"
-          class="leave-group btn"
-          title="Leave this group">
-          <i
-            class="fa fa-sign-out"
-            aria-hidden="true"
-          >
-          </i>
-        </a>
+        class="folder-toggle-wrap"
+      >
+        <item-caret
+          :is-group-open="group.isOpen"
+        />
+        <item-type-icon
+          :item-type="group.type"
+          :is-group-open="group.isOpen"
+        />
       </div>
       <div
-        class="stats">
-        <span
-          class="number-projects">
-          <i
-            class="fa fa-bookmark"
-            aria-hidden="true"
-          >
-          </i>
-          {{group.numberProjects}}
-        </span>
-        <span
-          class="number-users">
-          <i
-            class="fa fa-users"
-            aria-hidden="true"
-          >
-          </i>
-          {{group.numberUsers}}
-        </span>
-        <span
-          class="group-visibility">
-          <i
-            :class="visibilityIcon"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
-      </div>
-      <div
-        class="folder-toggle-wrap">
-        <span
-          class="folder-caret"
-          v-if="group.hasSubgroups">
-          <i
-            v-if="group.isOpen"
-            class="fa fa-caret-down"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-if="!group.isOpen"
-            class="fa fa-caret-right"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
-        <span class="folder-icon">
-          <i
-            v-if="group.isOpen"
-            class="fa fa-folder-open"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-if="!group.isOpen"
-            class="fa fa-folder"
-            aria-hidden="true">
-          </i>
-        </span>
-      </div>
-      <div
-        class="avatar-container s40 hidden-xs">
+        class="avatar-container prepend-top-8 prepend-left-5 s24 hidden-xs"
+        :class="{ 'content-loading': group.isChildrenLoading }"
+      >
         <a
-          :href="group.groupPath">
+          :href="group.relativePath"
+          class="no-expand"
+        >
           <img
-            class="avatar s40"
+            v-if="hasAvatar"
+            class="avatar s24"
             :src="group.avatarUrl"
+          />
+          <identicon
+            v-else
+            size-class="s24"
+            :entity-id="group.id"
+            :entity-name="group.name"
           />
         </a>
       </div>
       <div
-        class="title">
+        class="title namespace-title"
+      >
         <a
-          :href="group.groupPath">{{fullPath}}</a>
-        <template v-if="group.permissions.humanGroupAccess">
-        as
-        <span class="access-type">{{group.permissions.humanGroupAccess}}</span>
-        </template>
+          v-tooltip
+          :href="group.relativePath"
+          :title="group.fullName"
+          class="no-expand"
+          data-placement="bottom"
+        >{{
+          // ending bracket must be by closing tag to prevent
+          // link hover text-decoration from over-extending
+          group.name
+        }}</a>
+        <span
+          v-if="group.permission"
+          class="user-access-role"
+        >
+          {{ group.permission }}
+        </span>
       </div>
       <div
-        class="description">{{group.description}}</div>
+        v-if="group.description"
+        class="description">
+        <span v-html="group.description">
+        </span>
+      </div>
     </div>
     <group-folder
-      v-if="group.isOpen && hasGroups"
-      :groups="group.subGroups"
-      :baseGroup="group"
+      v-if="group.isOpen && hasChildren"
+      :parent-group="group"
+      :groups="group.children"
     />
   </li>
 </template>

@@ -6,10 +6,11 @@ class DeleteMergedBranchesService < BaseService
   def execute
     raise Gitlab::Access::AccessDeniedError unless can?(current_user, :push_code, project)
 
-    branches = project.repository.branch_names
-    branches = branches.select { |branch| project.repository.merged_to_root_ref?(branch) }
+    branches = project.repository.merged_branch_names
     # Prevent deletion of branches relevant to open merge requests
     branches -= merge_request_branch_names
+    # Prevent deletion of protected branches
+    branches = branches.reject { |branch| ProtectedBranch.protected?(project, branch) }
 
     branches.each do |branch|
       DeleteBranchService.new(project, current_user).execute(branch)

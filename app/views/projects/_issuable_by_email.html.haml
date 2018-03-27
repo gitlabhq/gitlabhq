@@ -1,0 +1,37 @@
+- name = issuable_type == 'issue' ? 'issue' : 'merge request'
+
+.issuable-footer.text-center
+  %button.issuable-email-modal-btn{ type: "button", data: { toggle: "modal", target: "#issuable-email-modal" } }
+    Email a new #{name} to this project
+
+#issuable-email-modal.modal.fade{ tabindex: "-1", role: "dialog" }
+  .modal-dialog{ role: "document" }
+    .modal-content
+      .modal-header
+        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
+          %span{ aria: { hidden: "true" } }= icon("times")
+        %h4.modal-title
+          Create new #{name} by email
+      .modal-body
+        %p
+          You can create a new #{name} inside this project by sending an email to the following email address:
+        .email-modal-input-group.input-group
+          = text_field_tag :issuable_email, email, class: "monospace js-select-on-focus form-control", readonly: true
+          .input-group-btn
+            = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard btn-transparent hidden-xs')
+            = mail_to email, class: 'btn btn-clipboard btn-transparent',
+              subject: _("Enter the #{name} title"),
+              body: _("Enter the #{name} description"),
+              title: _('Send email'),
+              data: { toggle: 'tooltip', placement: 'bottom' } do
+              = sprite_icon('mail')
+
+        %p
+          = render 'by_email_description'
+        %p
+          This is a private email address, generated just for you.
+
+          Anyone who gets ahold of it can create issues or merge requests as if they were you.
+          You should
+          = link_to 'reset it', new_issuable_address_project_path(@project, issuable_type: issuable_type), class: 'incoming-email-token-reset'
+          if that ever happens.

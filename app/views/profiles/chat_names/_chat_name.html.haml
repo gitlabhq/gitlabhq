@@ -4,13 +4,13 @@
   %td
     %strong
       - if can?(current_user, :read_project, project)
-        = link_to project.name_with_namespace, project_path(project)
+        = link_to project.full_name, project_path(project)
       - else
         .light N/A
   %td
     %strong
       - if can?(current_user, :admin_project, project)
-        = link_to service.title, edit_namespace_project_service_path(project.namespace, project, service)
+        = link_to service.title, edit_project_service_path(project, service)
       - else
         = service.title
   %td

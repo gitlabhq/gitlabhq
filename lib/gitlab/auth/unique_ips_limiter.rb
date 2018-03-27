@@ -27,7 +27,7 @@ module Gitlab
           time = Time.now.utc.to_i
           key = "#{USER_UNIQUE_IPS_PREFIX}:#{user_id}"
 
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             unique_ips_count = nil
             redis.multi do |r|
               r.zadd(key, time, ip)

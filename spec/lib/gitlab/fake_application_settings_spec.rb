@@ -1,25 +1,25 @@
 require 'spec_helper'
 
 describe Gitlab::FakeApplicationSettings do
-  let(:defaults) { { signin_enabled: false, foobar: 'asdf', signup_enabled: true, 'test?' => 123 } }
+  let(:defaults) { { password_authentication_enabled_for_web: false, foobar: 'asdf', signup_enabled: true, 'test?' => 123 } }
 
   subject { described_class.new(defaults) }
 
   it 'wraps OpenStruct variables properly' do
-    expect(subject.signin_enabled).to be_falsey
+    expect(subject.password_authentication_enabled_for_web).to be_falsey
     expect(subject.signup_enabled).to be_truthy
     expect(subject.foobar).to eq('asdf')
   end
 
   it 'defines predicate methods' do
-    expect(subject.signin_enabled?).to be_falsey
+    expect(subject.password_authentication_enabled_for_web?).to be_falsey
     expect(subject.signup_enabled?).to be_truthy
   end
 
   it 'predicate method changes when value is updated' do
-    subject.signin_enabled = true
+    subject.password_authentication_enabled_for_web = true
 
-    expect(subject.signin_enabled?).to be_truthy
+    expect(subject.password_authentication_enabled_for_web?).to be_truthy
   end
 
   it 'does not define a predicate method' do

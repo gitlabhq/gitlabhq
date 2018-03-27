@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/diffs/_viewer.html.haml', :view do
+describe 'projects/diffs/_viewer.html.haml' do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

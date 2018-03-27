@@ -38,7 +38,7 @@ module Gitlab
         # - The first diff line with a higher line number, if it falls between diff contexts
         # - The last known diff line, if it falls after the last diff context
         diff_line = diff_lines.find do |diff_line|
-          diff_from_line = diff_line.send(from)
+          diff_from_line = diff_line.public_send(from) # rubocop:disable GitlabSecurity/PublicSend
           diff_from_line && diff_from_line >= from_line
         end
         diff_line ||= diff_lines.last
@@ -47,8 +47,8 @@ module Gitlab
         # mapped line number is the same as the specified line number.
         return from_line unless diff_line
 
-        diff_from_line = diff_line.send(from)
-        diff_to_line = diff_line.send(to)
+        diff_from_line = diff_line.public_send(from) # rubocop:disable GitlabSecurity/PublicSend
+        diff_to_line = diff_line.public_send(to) # rubocop:disable GitlabSecurity/PublicSend
 
         # If the line was removed, there is no mapped line number.
         return unless diff_to_line

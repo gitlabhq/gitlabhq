@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dashboard > label filter', feature: true, js: true do
+describe 'Dashboard > label filter', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:project2) { create(:project, name: 'test2', path: 'test2', namespace: user.namespace) }
@@ -11,7 +11,7 @@ describe 'Dashboard > label filter', feature: true, js: true do
     project.labels << label
     project2.labels << label2
 
-    gitlab_sign_in(user)
+    sign_in(user)
     visit issues_dashboard_path
   end
 

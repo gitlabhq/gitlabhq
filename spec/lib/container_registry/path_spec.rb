@@ -86,11 +86,29 @@ describe ContainerRegistry::Path do
 
       it { is_expected.to be_valid }
     end
+
+    context 'when path contains double underscore' do
+      let(:path) { 'my/repository__name' }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when path contains invalid separator with dot' do
+      let(:path) { 'some/registry-.name' }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when path contains invalid separator with underscore' do
+      let(:path) { 'some/registry._name' }
+
+      it { is_expected.not_to be_valid }
+    end
   end
 
   describe '#has_repository?' do
     context 'when project exists' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:path) { "#{project.full_path}/my/image" }
 
       context 'when path already has matching repository' do
@@ -123,8 +141,8 @@ describe ContainerRegistry::Path do
       let(:path) { 'some_group/some_project' }
 
       before do
-        create(:empty_project, group: group, name: 'some_project')
-        create(:empty_project, name: 'some_project')
+        create(:project, group: group, name: 'some_project')
+        create(:project, name: 'some_project')
       end
 
       it 'returns a correct project' do
@@ -142,7 +160,7 @@ describe ContainerRegistry::Path do
 
     context 'when matching multi-level path' do
       let(:project) do
-        create(:empty_project, group: group, name: 'some_project')
+        create(:project, group: group, name: 'some_project')
       end
 
       context 'when using the zero-level path' do
@@ -192,7 +210,7 @@ describe ContainerRegistry::Path do
       let(:group) { create(:group, path: 'Some_Group') }
 
       before do
-        create(:empty_project, group: group, name: 'some_project')
+        create(:project, group: group, name: 'some_project')
       end
 
       context 'when project path equal repository path' do
@@ -235,7 +253,7 @@ describe ContainerRegistry::Path do
       let(:group) { create(:group, path: 'SomeGroup') }
 
       before do
-        create(:empty_project, group: group, name: 'MyProject')
+        create(:project, group: group, name: 'MyProject')
       end
 
       it 'returns downcased project path' do

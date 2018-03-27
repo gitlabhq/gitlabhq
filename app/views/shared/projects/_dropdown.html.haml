@@ -1,5 +1,5 @@
 - @sort ||= sort_value_latest_activity
-.dropdown
+.dropdown.js-project-filter-dropdown-wrap
   - toggle_text = projects_sort_options_hash[@sort]
   = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { id: 'sort-projects-dropdown' })
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
@@ -15,8 +15,11 @@
       = link_to filter_projects_path(archived: nil), class: ("is-active" unless params[:archived].present?) do
         Hide archived projects
     %li
-      = link_to filter_projects_path(archived: true), class: ("is-active" if params[:archived].present?) do
+      = link_to filter_projects_path(archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
         Show archived projects
+    %li
+      = link_to filter_projects_path(archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
+        Show archived projects only
     - if current_user
       %li.divider
       %li

@@ -22,4 +22,4 @@
 
       = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, pipeline_link: true, stage: true, allow_retry: true, admin: admin }
 
-  = paginate builds, theme: 'gitlab'
+  = paginate_collection(builds)

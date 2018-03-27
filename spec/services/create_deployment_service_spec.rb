@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateDeploymentService, services: true do
+describe CreateDeploymentService do
   let(:user) { create(:user) }
   let(:options) { nil }
 
@@ -19,6 +19,10 @@ describe CreateDeploymentService, services: true do
   end
 
   let(:service) { described_class.new(job) }
+
+  before do
+    allow_any_instance_of(Deployment).to receive(:create_ref)
+  end
 
   describe '#execute' do
     subject { service.execute }
@@ -244,6 +248,8 @@ describe CreateDeploymentService, services: true do
       context 'when job is retried' do
         it_behaves_like 'creates deployment' do
           before do
+            stub_not_protect_default_branch
+
             project.add_developer(user)
           end
 
@@ -260,7 +266,7 @@ describe CreateDeploymentService, services: true do
 
     context "while updating the 'first_deployed_to_production_at' time" do
       before do
-        merge_request.mark_as_merged
+        merge_request.metrics.update!(merged_at: Time.now)
       end
 
       context "for merge requests merged before the current deploy" do

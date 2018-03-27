@@ -1,6 +1,8 @@
 class ExpireJobCacheWorker
-  include Sidekiq::Worker
-  include BuildQueue
+  include ApplicationWorker
+  include PipelineQueue
+
+  queue_namespace :pipeline_cache
 
   def perform(job_id)
     job = CommitStatus.joins(:pipeline, :project).find_by(id: job_id)
@@ -18,18 +20,10 @@ class ExpireJobCacheWorker
   private
 
   def project_pipeline_path(project, pipeline)
-    Gitlab::Routing.url_helpers.namespace_project_pipeline_path(
-      project.namespace,
-      project,
-      pipeline,
-      format: :json)
+    Gitlab::Routing.url_helpers.project_pipeline_path(project, pipeline, format: :json)
   end
 
   def project_job_path(project, job)
-    Gitlab::Routing.url_helpers.namespace_project_build_path(
-      project.namespace,
-      project,
-      job.id,
-      format: :json)
+    Gitlab::Routing.url_helpers.project_build_path(project, job.id, format: :json)
   end
 end

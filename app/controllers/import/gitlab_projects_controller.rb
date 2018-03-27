@@ -1,9 +1,11 @@
 class Import::GitlabProjectsController < Import::BaseController
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_gitlab_project_import_enabled
 
   def new
     @namespace = Namespace.find(project_params[:namespace_id])
     return render_404 unless current_user.can?(:create_projects, @namespace)
+
     @path = project_params[:path]
   end
 
@@ -12,15 +14,7 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
-    import_upload_path = Gitlab::ImportExport.import_upload_path(filename: project_params[:file].original_filename)
-
-    FileUtils.mkdir_p(File.dirname(import_upload_path))
-    FileUtils.copy_entry(project_params[:file].path, import_upload_path)
-
-    @project = Gitlab::ImportExport::ProjectCreator.new(project_params[:namespace_id],
-                                                        current_user,
-                                                        import_upload_path,
-                                                        project_params[:path]).execute
+    @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
 
     if @project.saved?
       redirect_to(
@@ -46,5 +40,9 @@ class Import::GitlabProjectsController < Import::BaseController
     params.permit(
       :path, :namespace_id, :file
     )
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42437')
   end
 end

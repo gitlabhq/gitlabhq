@@ -1,24 +1,21 @@
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" } }
-  .block.wiki-sidebar-header.append-bottom-default
-    %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-wiki-toggle{ href: "#" }
-      = icon('angle-double-right')
+  .sidebar-container
+    .block.wiki-sidebar-header.append-bottom-default
+      %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-wiki-toggle{ href: "#" }
+        = icon('angle-double-right')
 
-    - git_access_url = namespace_project_wikis_git_access_path(@project.namespace, @project)
-    = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
-      = succeed '&nbsp;' do
-        = icon('cloud-download')
-      Clone repository
+      - git_access_url = project_wikis_git_access_path(@project)
+      = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
+        = icon('cloud-download', class: 'append-right-5')
+        %span= _("Clone repository")
 
-  .blocks-container
-    .block.block-first
-      %ul.wiki-pages
-        = render @sidebar_wiki_entries, context: 'sidebar'
+    .blocks-container
+      .block.block-first
+        %ul.wiki-pages
+          = render @sidebar_wiki_entries, context: 'sidebar'
 
-    .block
-      = link_to namespace_project_wikis_pages_path(@project.namespace, @project), class: 'btn btn-block' do
-        More Pages
+      .block
+        = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
+          = s_("Wiki|More Pages")
 
 = render 'projects/wikis/new'
-
-:javascript
-  new Sidebar();

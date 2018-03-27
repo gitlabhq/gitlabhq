@@ -1,14 +1,17 @@
+- show_create = local_assigns.fetch(:show_create, false)
+
 - dropdown_toggle_text = @ref || @project.default_branch
-= form_tag switch_namespace_project_refs_path(@project.namespace, @project), method: :get, class: "project-refs-form" do
+= form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
   = hidden_field_tag :destination, destination
   - if defined?(path)
     = hidden_field_tag :path, path
   - @options && @options.each do |key, value|
     = hidden_field_tag key, value, id: nil
   .dropdown
-    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_namespace_project_path(@project.namespace, @project), field_name: 'ref', submit_form_on_click: true }, { toggle_class: "js-project-refs-dropdown" }
-    .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown{ class: ("dropdown-menu-align-right" if local_assigns[:align_right]) }
-      = dropdown_title _("Switch branch/tag")
-      = dropdown_filter _("Search branches and tags")
-      = dropdown_content
-      = dropdown_loading
+    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: 'ref', submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown" }
+    .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown.dropdown-menu-paging{ class: ("dropdown-menu-align-right" if local_assigns[:align_right]) }
+      .dropdown-page-one
+        = dropdown_title _("Switch branch/tag")
+        = dropdown_filter _("Search branches and tags")
+        = dropdown_content
+        = dropdown_loading

@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Archived Project', feature: true do
+RSpec.describe 'Dashboard Archived Project' do
   let(:user) { create :user }
   let(:project) { create :project}
   let(:archived_project) { create(:project, :archived) }
 
   before do
-    project.team << [user, :master]
-    archived_project.team << [user, :master]
+    project.add_master(user)
+    archived_project.add_master(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit dashboard_projects_path
   end
@@ -24,6 +24,13 @@ RSpec.describe 'Dashboard Archived Project', feature: true do
 
     expect(page).to have_link(project.name)
     expect(page).to have_link(archived_project.name)
+  end
+
+  it 'renders only archived projects' do
+    click_link 'Show archived projects only'
+
+    expect(page).to have_content(archived_project.name)
+    expect(page).not_to have_content(project.name)
   end
 
   it 'searchs archived projects', :js do

@@ -5,24 +5,26 @@
 - forks = false unless local_assigns[:forks] == true
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
+- user = local_assigns[:user]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 - remote = false unless local_assigns[:remote] == true
-- load_pipeline_status(projects)
 
 .js-projects-list-holder
-  - if projects.any?
+  - if any_projects?(projects)
+    - load_pipeline_status(projects)
+
     %ul.projects-list
       - projects.each_with_index do |project, i|
-        - css_class = (i >= projects_limit) ? 'hide' : nil
+        - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
           avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
-          forks: forks, show_last_commit_as_description: show_last_commit_as_description
+          forks: forks, show_last_commit_as_description: show_last_commit_as_description, user: user
 
       - if @private_forks_count && @private_forks_count > 0
         %li.project-row.private-forks-notice
           = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
           %strong= pluralize(@private_forks_count, 'private fork')
-          %span you have no access to.
-    = paginate(projects, remote: remote, theme: "gitlab") if projects.respond_to? :total_pages
+          %span &nbsp;you have no access to.
+    = paginate_collection(projects, remote: remote)
   - else
     .nothing-here-block No projects found

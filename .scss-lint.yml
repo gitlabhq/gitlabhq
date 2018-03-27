@@ -10,11 +10,11 @@ linters:
   # Reports when you use improper spacing around ! (the "bang") in !default,
   # !global, !important, and !optional flags.
   BangFormat:
-    enabled: false
+    enabled: true
 
   # Whether or not to prefer `border: 0` over `border: none`.
   BorderZero:
-    enabled: false
+    enabled: true
 
   # Reports when you define a rule set using a selector with chained classes
   # (a.k.a. adjoining classes).
@@ -43,10 +43,11 @@ linters:
   # Rule sets should be ordered as follows:
   # - @extend declarations
   # - @include declarations without inner @content
-  # - properties, @include declarations with inner @content
+  # - properties
+  # - @include declarations with inner @content
   # - nested rule sets.
   DeclarationOrder:
-    enabled: false
+    enabled: true
 
   # `scss-lint:disable` control comments should be preceded by a comment
   # explaining why these linters are being disabled for this file.
@@ -93,7 +94,7 @@ linters:
   # The basenames of @imported SCSS partials should not begin with an
   # underscore and should not include the filename extension.
   ImportPath:
-    enabled: false
+    enabled: true
 
   # Avoid using !important in properties. It is usually indicative of a
   # misunderstanding of CSS specificity and can lead to brittle code.
@@ -111,7 +112,7 @@ linters:
 
   # Reports when you define the same selector twice in a single sheet.
   MergeableSelector:
-    enabled: false
+    enabled: true
 
   # Functions, mixins, variables, and placeholders should be declared
   # with all lowercase letters and hyphens instead of underscores.
@@ -120,7 +121,8 @@ linters:
 
   # Avoid nesting selectors too deeply.
   NestingDepth:
-    enabled: false
+    enabled: true
+    max_depth: 6
 
   # Always use placeholder selectors in @extend.
   PlaceholderInExtend:
@@ -133,7 +135,7 @@ linters:
   # Reports when you use an unknown or disabled CSS property
   # (ignoring vendor-prefixed properties).
   PropertySpelling:
-    enabled: false
+    enabled: true
 
   # Configure which units are allowed for property values.
   PropertyUnits:
@@ -176,6 +178,10 @@ linters:
 
   # Commas in lists should be followed by a space.
   SpaceAfterComma:
+    enabled: true
+
+  # Comment literals should be followed by a space.
+  SpaceAfterComment:
     enabled: false
 
   # Properties should be formatted with a single space separating the colon
@@ -235,12 +241,12 @@ linters:
 
   # Numeric values should not contain unnecessary fractional portions.
   UnnecessaryMantissa:
-    enabled: false
+    enabled: true
 
   # Do not use parent selector references (&) when they would otherwise
   # be unnecessary.
   UnnecessaryParentReference:
-    enabled: false
+    enabled: true
 
   # URLs should be valid and not contain protocols or domain names.
   UrlFormat:

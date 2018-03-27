@@ -1,20 +1,21 @@
 #js-register-u2f
 
+-# haml-lint:disable InlineJavaScript
 %script#js-register-u2f-not-supported{ type: "text/template" }
   %p Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer).
 
 %script#js-register-u2f-setup{ type: "text/template" }
   - if current_user.two_factor_otp_enabled?
     .row.append-bottom-10
-      .col-md-3
-        %button#js-setup-u2f-device.btn.btn-info Setup new U2F device
-      .col-md-9
+      .col-md-4
+        %button#js-setup-u2f-device.btn.btn-info.btn-block Setup new U2F device
+      .col-md-8
         %p Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left.
   - else
     .row.append-bottom-10
-      .col-md-3
-        %button#js-setup-u2f-device.btn.btn-info{ disabled: true } Setup new U2F device
-      .col-md-9
+      .col-md-4
+        %button#js-setup-u2f-device.btn.btn-info.btn-block{ disabled: true } Setup new U2F device
+      .col-md-8
         %p.text-warning You need to register a two-factor authentication app before you can set up a U2F device.
 
 %script#js-register-u2f-in-progress{ type: "text/template" }
@@ -37,7 +38,3 @@
           .col-md-3
             = hidden_field_tag 'u2f_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
             = submit_tag "Register U2F device", class: "btn btn-success"
-
-:javascript
-  var u2fRegister = new U2FRegister($("#js-register-u2f"), gon.u2f);
-  u2fRegister.start();

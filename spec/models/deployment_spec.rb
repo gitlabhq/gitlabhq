@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Deployment, models: true do
+describe Deployment do
   subject { build(:deployment) }
 
   it { is_expected.to belong_to(:project) }
@@ -64,6 +64,7 @@ describe Deployment, models: true do
 
   describe '#metrics' do
     let(:deployment) { create(:deployment) }
+    let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
     subject { deployment.metrics }
 
@@ -76,22 +77,21 @@ describe Deployment, models: true do
         {
           success: true,
           metrics: {},
-          last_update: 42,
-          deployment_time: 1494408956
+          last_update: 42
         }
       end
 
       before do
-        allow(deployment.project).to receive_message_chain(:monitoring_service, :deployment_metrics)
-                                       .with(any_args).and_return(simple_metrics)
+        allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(prometheus_adapter).to receive(:query).with(:deployment, deployment).and_return(simple_metrics)
       end
 
-      it { is_expected.to eq(simple_metrics) }
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
     end
   end
 
   describe '#additional_metrics' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:deployment) { create(:deployment, project: project) }
 
     subject { deployment.additional_metrics }
@@ -109,11 +109,11 @@ describe Deployment, models: true do
         }
       end
 
-      let(:prometheus_service) { double('prometheus_service') }
+      let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
       before do
-        allow(project).to receive(:prometheus_service).and_return(prometheus_service)
-        allow(prometheus_service).to receive(:additional_deployment_metrics).and_return(simple_metrics)
+        allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(prometheus_adapter).to receive(:query).with(:additional_metrics_deployment, deployment).and_return(simple_metrics)
       end
 
       it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
@@ -126,7 +126,7 @@ describe Deployment, models: true do
     subject { deployment.stop_action }
 
     context 'when no other actions' do
-      let(:deployment) { FactoryGirl.build(:deployment, deployable: build) }
+      let(:deployment) { FactoryBot.build(:deployment, deployable: build) }
 
       it { is_expected.to be_nil }
     end
@@ -135,13 +135,13 @@ describe Deployment, models: true do
       let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       context 'when matching action is defined' do
-        let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_other_app') }
+        let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_other_app') }
 
         it { is_expected.to be_nil }
       end
 
       context 'when no matching action is defined' do
-        let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_app') }
+        let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_app') }
 
         it { is_expected.to eq(close_action) }
       end
@@ -159,7 +159,7 @@ describe Deployment, models: true do
 
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
-      let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_app') }
+      let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_app') }
       let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       it { is_expected.to be_truthy }

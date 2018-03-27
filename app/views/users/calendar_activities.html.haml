@@ -1,6 +1,6 @@
 %h4.prepend-top-20
   Contributions for
-  %strong= @calendar_date.to_s(:short)
+  %strong= @calendar_date.to_s(:medium)
 
 - if @events.any?
   %ul.bordered-list
@@ -8,11 +8,11 @@
       %li
         %span.light
           %i.fa.fa-clock-o
-          = event.created_at.to_s(:time)
+          = event.created_at.strftime('%-I:%M%P')
         - if event.push?
           #{event.action_name} #{event.ref_type}
           %strong
-            - commits_path = namespace_project_commits_path(event.project.namespace, event.project, event.ref_name)
+            - commits_path = project_commits_path(event.project, event.ref_name)
             = link_to_if event.project.repository.branch_exists?(event.ref_name), event.ref_name, commits_path
         - else
           = event_action_name(event)
@@ -30,4 +30,4 @@
             = event.project_name
 - else
   %p
-    No contributions found for #{@calendar_date.to_s(:short)}
+    No contributions found for #{@calendar_date.to_s(:medium)}

@@ -3,9 +3,10 @@ module Issues
     include SpamCheckService
 
     def execute(issue)
-      handle_move_between_iids(issue)
+      handle_move_between_ids(issue)
       filter_spam_check_params
-      update(issue)
+      change_issue_duplicate(issue)
+      move_issue_to_new_project(issue) || update(issue)
     end
 
     def before_update(issue)
@@ -13,9 +14,10 @@ module Issues
     end
 
     def handle_changes(issue, options)
-      old_labels = options[:old_labels] || []
-      old_mentioned_users = options[:old_mentioned_users] || []
-      old_assignees = options[:old_assignees] || []
+      old_associations = options.fetch(:old_associations, {})
+      old_labels = old_associations.fetch(:labels, [])
+      old_mentioned_users = old_associations.fetch(:mentioned_users, [])
+      old_assignees = old_associations.fetch(:assignees, [])
 
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(issue, current_user)
@@ -26,14 +28,10 @@ module Issues
         todo_service.update_issue(issue, current_user, old_mentioned_users)
       end
 
-      if issue.previous_changes.include?('milestone_id')
-        create_milestone_note(issue)
-      end
-
       if issue.assignees != old_assignees
         create_assignee_note(issue, old_assignees)
         notification_service.reassigned_issue(issue, current_user, old_assignees)
-        todo_service.reassigned_issue(issue, current_user)
+        todo_service.reassigned_issue(issue, current_user, old_assignees)
       end
 
       if issue.previous_changes.include?('confidential')
@@ -53,29 +51,41 @@ module Issues
       end
     end
 
-    def reopen_service
-      Issues::ReopenService
-    end
+    def handle_move_between_ids(issue)
+      return unless params[:move_between_ids]
 
-    def close_service
-      Issues::CloseService
-    end
+      after_id, before_id = params.delete(:move_between_ids)
 
-    def handle_move_between_iids(issue)
-      return unless params[:move_between_iids]
-
-      after_iid, before_iid = params.delete(:move_between_iids)
-
-      issue_before = get_issue_if_allowed(issue.project, before_iid) if before_iid
-      issue_after = get_issue_if_allowed(issue.project, after_iid) if after_iid
+      issue_before = get_issue_if_allowed(issue.project, before_id) if before_id
+      issue_after = get_issue_if_allowed(issue.project, after_id) if after_id
 
       issue.move_between(issue_before, issue_after)
     end
 
+    def change_issue_duplicate(issue)
+      canonical_issue_id = params.delete(:canonical_issue_id)
+      canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
+
+      if canonical_issue
+        Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
+      end
+    end
+
+    def move_issue_to_new_project(issue)
+      target_project = params.delete(:target_project)
+
+      return unless target_project &&
+          issue.can_move?(current_user, target_project) &&
+          target_project != issue.project
+
+      update(issue)
+      Issues::MoveService.new(project, current_user).execute(issue, target_project)
+    end
+
     private
 
-    def get_issue_if_allowed(project, iid)
-      issue = project.issues.find_by(iid: iid)
+    def get_issue_if_allowed(project, id)
+      issue = project.issues.find(id)
       issue if can?(current_user, :update_issue, issue)
     end
 

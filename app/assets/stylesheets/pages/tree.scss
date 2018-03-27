@@ -2,6 +2,11 @@
   .nav-block {
     margin: 10px 0;
 
+    .btn .fa,
+    .btn svg {
+      color: $gl-text-color-secondary;
+    }
+
     @media (min-width: $screen-sm-min) {
       display: flex;
 
@@ -15,11 +20,20 @@
         .btn-group {
           margin-left: 10px;
         }
+
+        .control {
+          float: left;
+          margin-left: 10px;
+        }
       }
 
       .tree-ref-holder {
         float: left;
         margin-right: 15px;
+      }
+
+      .tree-ref-target-holder {
+        display: inline-block;
       }
 
       .repo-breadcrumb {
@@ -70,7 +84,8 @@
   }
 
   .file-finder {
-    width: 50%;
+    max-width: 500px;
+    width: 100%;
 
     .file-finder-input {
       width: 95%;
@@ -80,7 +95,11 @@
 
   .add-to-tree {
     vertical-align: top;
-    padding: 6px 10px;
+    padding: 8px;
+
+    svg {
+      top: 0;
+    }
   }
 
   .tree-table {
@@ -113,7 +132,7 @@
         color: $white-normal;
       }
 
-      &:hover {
+      &:hover:not(.tree-truncated-warning) {
         td {
           background-color: $row-hover;
           border-top: 1px solid $row-hover-border;
@@ -157,6 +176,14 @@
       }
     }
 
+    .tree-item-file-external-link {
+      margin-right: 4px;
+
+      span {
+        text-decoration: inherit;
+      }
+    }
+
     .tree_commit {
       max-width: 320px;
 
@@ -176,6 +203,11 @@
     .commit-author-name {
       color: $gl-text-color;
     }
+  }
+
+  .tree-truncated-warning {
+    color: $orange-600;
+    background-color: $orange-100;
   }
 
   .tree-time-ago {
@@ -208,6 +240,9 @@
 }
 
 .blob-upload-dropzone-previews {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border: 2px;
   border-style: dashed;
@@ -216,7 +251,7 @@
 }
 
 .upload-link {
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   color: $md-link-color;
 }
 
@@ -229,7 +264,7 @@
     margin-top: 20px;
     padding: 0;
     border-top: 1px solid $white-dark;
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   .commit-stats li {

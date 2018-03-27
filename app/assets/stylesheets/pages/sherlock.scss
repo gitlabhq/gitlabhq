@@ -5,10 +5,10 @@ table .sherlock-code {
 .sherlock-code {
   pre {
     word-wrap: normal;
-  }
 
-  pre code {
-    white-space: pre;
+    code {
+      white-space: pre;
+    }
   }
 }
 
@@ -21,13 +21,13 @@ table .sherlock-code {
     text-align: right;
     padding: 0 10px !important;
   }
+
+  .slow {
+    color: $red-500;
+    font-weight: $gl-font-weight-bold;
+  }
 }
 
 .sherlock-file-sample pre {
   padding-top: 28px !important;
-}
-
-.sherlock-line-samples-table .slow {
-  color: $red-500;
-  font-weight: bold;
 }

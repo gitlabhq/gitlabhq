@@ -1,4 +1,0 @@
----
-title: Replace 'dashboard/merge_requests' spinach with rspec
-merge_request: 12440
-author: Alexander Randa (@randaalex)

@@ -1,31 +1,10 @@
 class Dashboard::GroupsController < Dashboard::ApplicationController
+  include GroupTree
+
+  skip_cross_project_access_check :index
+
   def index
-    @groups =
-      if params[:parent_id] && Group.supports_nested_groups?
-        parent = Group.find_by(id: params[:parent_id])
-
-        if can?(current_user, :read_group, parent)
-          GroupsFinder.new(current_user, parent: parent).execute
-        else
-          Group.none
-        end
-      else
-        current_user.groups
-      end
-
-    @groups = @groups.search(params[:filter_groups]) if params[:filter_groups].present?
-    @groups = @groups.includes(:route)
-    @groups = @groups.sort(@sort = params[:sort])
-    @groups = @groups.page(params[:page])
-
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: GroupSerializer
-          .new(current_user: @current_user)
-          .with_pagination(request, response)
-          .represent(@groups)
-      end
-    end
+    groups = GroupsFinder.new(current_user, all_available: false).execute
+    render_group_tree(groups)
   end
 end

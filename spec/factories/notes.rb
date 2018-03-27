@@ -2,11 +2,11 @@ require_relative '../support/repo_helpers'
 
 include ActionDispatch::TestProcess
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :note do
-    project factory: :empty_project
+    project
     note { generate(:title) }
-    author
+    author { project&.creator || create(:user) }
     on_issue
 
     factory :note_on_commit,             traits: [:on_commit]
@@ -15,6 +15,8 @@ FactoryGirl.define do
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :system_note,                traits: [:system]
+
+    factory :discussion_note, class: DiscussionNote
 
     factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: DiscussionNote do
       association :project, :repository
@@ -30,6 +32,8 @@ FactoryGirl.define do
     factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote
 
     factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: DiscussionNote
+
+    factory :discussion_note_on_snippet, traits: [:on_snippet], class: DiscussionNote
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
 
@@ -63,13 +67,19 @@ FactoryGirl.define do
 
     factory :diff_note_on_commit, traits: [:on_commit], class: DiffNote do
       association :project, :repository
+
+      transient do
+        line_number 14
+        diff_refs { project.commit(commit_id).try(:diff_refs) }
+      end
+
       position do
         Gitlab::Diff::Position.new(
           old_path: "files/ruby/popen.rb",
           new_path: "files/ruby/popen.rb",
           old_line: nil,
-          new_line: 14,
-          diff_refs: project.commit(commit_id).try(:diff_refs)
+          new_line: line_number,
+          diff_refs: diff_refs
         )
       end
     end
@@ -88,6 +98,10 @@ FactoryGirl.define do
 
     trait :on_issue do
       noteable { create(:issue, project: project) }
+    end
+
+    trait :on_snippet do
+      noteable { create(:snippet, project: project) }
     end
 
     trait :on_merge_request do
@@ -116,11 +130,11 @@ FactoryGirl.define do
     end
 
     trait :with_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png") }
+      attachment { fixture_file_upload(Rails.root.join( "spec/fixtures/dk.png"), "image/png") }
     end
 
     trait :with_svg_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/unsanitized.svg", "image/svg+xml") }
+      attachment { fixture_file_upload(Rails.root.join("spec/fixtures/unsanitized.svg"), "image/svg+xml") }
     end
 
     transient do
@@ -130,6 +144,7 @@ FactoryGirl.define do
     before(:create) do |note, evaluator|
       discussion = evaluator.in_reply_to
       next unless discussion
+
       discussion = discussion.to_discussion if discussion.is_a?(Note)
       next unless discussion
 

@@ -1,100 +1,100 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-new, max-len */
-/* global GitLab */
-/* global DropzoneInput */
-/* global autosize */
-
+import $ from 'jquery';
+import autosize from 'autosize';
 import GfmAutoComplete from './gfm_auto_complete';
+import dropzoneInput from './dropzone_input';
+import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
 
-window.gl = window.gl || {};
-
-function GLForm(form, enableGFM = false) {
-  this.form = form;
-  this.textarea = this.form.find('textarea.js-gfm-input');
-  this.enableGFM = enableGFM;
-  // Before we start, we should clean up any previous data for this form
-  this.destroy();
-  // Setup the form
-  this.setupForm();
-  this.form.data('gl-form', this);
-}
-
-GLForm.prototype.destroy = function() {
-  // Clean form listeners
-  this.clearEventListeners();
-  return this.form.data('gl-form', null);
-};
-
-GLForm.prototype.setupForm = function() {
-  var isNewForm;
-  isNewForm = this.form.is(':not(.gfm-form)');
-  this.form.removeClass('js-new-note-form');
-  if (isNewForm) {
-    this.form.find('.div-dropzone').remove();
-    this.form.addClass('gfm-form');
-    // remove notify commit author checkbox for non-commit notes
-    gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
-    new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup(this.form.find('.js-gfm-input'), {
-      emojis: true,
-      members: this.enableGFM,
-      issues: this.enableGFM,
-      milestones: this.enableGFM,
-      mergeRequests: this.enableGFM,
-      labels: this.enableGFM,
-    });
-    new DropzoneInput(this.form);
-    autosize(this.textarea);
+export default class GLForm {
+  constructor(form, enableGFM = false) {
+    this.form = form;
+    this.textarea = this.form.find('textarea.js-gfm-input');
+    this.enableGFM = enableGFM;
+    // Before we start, we should clean up any previous data for this form
+    this.destroy();
+    // Setup the form
+    this.setupForm();
+    this.form.data('glForm', this);
   }
-  // form and textarea event listeners
-  this.addEventListeners();
-  gl.text.init(this.form);
-  // hide discard button
-  this.form.find('.js-note-discard').hide();
-  this.form.show();
-  if (this.isAutosizeable) this.setupAutosize();
-};
 
-GLForm.prototype.setupAutosize = function () {
-  this.textarea.off('autosize:resized')
-    .on('autosize:resized', this.setHeightData.bind(this));
+  destroy() {
+    // Clean form listeners
+    this.clearEventListeners();
+    if (this.autoComplete) {
+      this.autoComplete.destroy();
+    }
+    this.form.data('glForm', null);
+  }
 
-  this.textarea.off('mouseup.autosize')
-    .on('mouseup.autosize', this.destroyAutosize.bind(this));
+  setupForm() {
+    const isNewForm = this.form.is(':not(.gfm-form)');
+    this.form.removeClass('js-new-note-form');
+    if (isNewForm) {
+      this.form.find('.div-dropzone').remove();
+      this.form.addClass('gfm-form');
+      // remove notify commit author checkbox for non-commit notes
+      gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
+      this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+      this.autoComplete.setup(this.form.find('.js-gfm-input'), {
+        emojis: true,
+        members: this.enableGFM,
+        issues: this.enableGFM,
+        milestones: this.enableGFM,
+        mergeRequests: this.enableGFM,
+        labels: this.enableGFM,
+      });
+      dropzoneInput(this.form);
+      autosize(this.textarea);
+    }
+    // form and textarea event listeners
+    this.addEventListeners();
+    addMarkdownListeners(this.form);
+    // hide discard button
+    this.form.find('.js-note-discard').hide();
+    this.form.show();
+    if (this.isAutosizeable) this.setupAutosize();
+  }
 
-  setTimeout(() => {
-    autosize(this.textarea);
-    this.textarea.css('resize', 'vertical');
-  }, 0);
-};
+  setupAutosize() {
+    this.textarea.off('autosize:resized')
+      .on('autosize:resized', this.setHeightData.bind(this));
 
-GLForm.prototype.setHeightData = function () {
-  this.textarea.data('height', this.textarea.outerHeight());
-};
+    this.textarea.off('mouseup.autosize')
+      .on('mouseup.autosize', this.destroyAutosize.bind(this));
 
-GLForm.prototype.destroyAutosize = function () {
-  const outerHeight = this.textarea.outerHeight();
+    setTimeout(() => {
+      autosize(this.textarea);
+      this.textarea.css('resize', 'vertical');
+    }, 0);
+  }
 
-  if (this.textarea.data('height') === outerHeight) return;
+  setHeightData() {
+    this.textarea.data('height', this.textarea.outerHeight());
+  }
 
-  autosize.destroy(this.textarea);
+  destroyAutosize() {
+    const outerHeight = this.textarea.outerHeight();
 
-  this.textarea.data('height', outerHeight);
-  this.textarea.outerHeight(outerHeight);
-  this.textarea.css('max-height', window.outerHeight);
-};
+    if (this.textarea.data('height') === outerHeight) return;
 
-GLForm.prototype.clearEventListeners = function() {
-  this.textarea.off('focus');
-  this.textarea.off('blur');
-  return gl.text.removeListeners(this.form);
-};
+    autosize.destroy(this.textarea);
 
-GLForm.prototype.addEventListeners = function() {
-  this.textarea.on('focus', function() {
-    return $(this).closest('.md-area').addClass('is-focused');
-  });
-  return this.textarea.on('blur', function() {
-    return $(this).closest('.md-area').removeClass('is-focused');
-  });
-};
+    this.textarea.data('height', outerHeight);
+    this.textarea.outerHeight(outerHeight);
+    this.textarea.css('max-height', window.outerHeight);
+  }
 
-window.gl.GLForm = GLForm;
+  clearEventListeners() {
+    this.textarea.off('focus');
+    this.textarea.off('blur');
+    removeMarkdownListeners(this.form);
+  }
+
+  addEventListeners() {
+    this.textarea.on('focus', function focusTextArea() {
+      $(this).closest('.md-area').addClass('is-focused');
+    });
+    this.textarea.on('blur', function blurTextArea() {
+      $(this).closest('.md-area').removeClass('is-focused');
+    });
+  }
+}

@@ -2,17 +2,15 @@ require 'gon'
 require 'fogbugz'
 
 class ApplicationController < ActionController::Base
-  include Gitlab::CurrentSettings
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
-  include Peek::Rblineprof::CustomControllerHelpers
+  include WithPerformanceBar
 
-  before_action :authenticate_user_from_private_token!
-  before_action :authenticate_user_from_rss_token!
+  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -25,9 +23,11 @@ class ApplicationController < ActionController::Base
 
   around_action :set_locale
 
+  after_action :set_page_title_header, if: -> { request.format == :json }
+
   protect_from_forgery with: :exception
 
-  helper_method :can?, :current_application_settings
+  helper_method :can?
   helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
@@ -52,6 +52,15 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
+  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
+    Raven.capture_exception(exception) if sentry_enabled?
+    log_exception(exception)
+
+    headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)
+
+    render_503
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
   end
@@ -68,50 +77,40 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def peek_enabled?
-    return false unless Gitlab::PerformanceBar.enabled?
-    return false unless current_user
+  protected
 
-    if RequestStore.active?
-      if RequestStore.store.key?(:peek_enabled)
-        RequestStore.store[:peek_enabled]
-      else
-        RequestStore.store[:peek_enabled] = cookies[:perf_bar_enabled].present?
-      end
-    else
-      cookies[:perf_bar_enabled].present?
+  def append_info_to_payload(payload)
+    super
+    payload[:remote_ip] = request.remote_ip
+
+    logged_user = auth_user
+
+    if logged_user.present?
+      payload[:user_id] = logged_user.try(:id)
+      payload[:username] = logged_user.try(:username)
     end
   end
 
-  protected
+  # Controllers such as GitHttpController may use alternative methods
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  def auth_user
+    return current_user if current_user.present?
 
-  # This filter handles both private tokens and personal access tokens
-  def authenticate_user_from_private_token!
-    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
-
-    return unless token.present?
-
-    user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
-
-    sessionless_sign_in(user)
+    return try(:authenticated_user)
   end
 
-  # This filter handles authentication for atom request with an rss_token
-  def authenticate_user_from_rss_token!
-    return unless request.format.atom?
+  # This filter handles personal access tokens, and atom requests with rss tokens
+  def authenticate_sessionless_user!
+    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 
-    token = params[:rss_token].presence
-
-    return unless token.present?
-
-    user = User.find_by_rss_token(token)
-
-    sessionless_sign_in(user)
+    sessionless_sign_in(user) if user
   end
 
   def log_exception(exception)
+    Raven.capture_exception(exception) if sentry_enabled?
+
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
-    application_trace.map!{ |t| "  #{t}\n" }
+    application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 
@@ -120,17 +119,22 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path.presence || new_user_session_path
+    Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
   end
 
   def can?(object, action, subject = :global)
     Ability.allowed?(object, action, subject)
   end
 
-  def access_denied!
+  def access_denied!(message = nil)
     respond_to do |format|
-      format.json { head :not_found }
-      format.any { render "errors/access_denied", layout: "errors", status: 404 }
+      format.any { head :not_found }
+      format.html do
+        render "errors/access_denied",
+               layout: "errors",
+               status: 404,
+               locals: { message: message }
+      end
     end
   end
 
@@ -147,12 +151,27 @@ class ApplicationController < ActionController::Base
       format.html do
         render file: Rails.root.join("public", "404"), layout: false, status: "404"
       end
+      # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
+      format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
     end
   end
 
   def respond_422
     head :unprocessable_entity
+  end
+
+  def render_503
+    respond_to do |format|
+      format.html do
+        render(
+          file: Rails.root.join("public", "503"),
+          layout: false,
+          status: :service_unavailable
+        )
+      end
+      format.any { head :service_unavailable }
+    end
   end
 
   def no_cache_headers
@@ -172,7 +191,7 @@ class ApplicationController < ActionController::Base
     return unless signed_in? && session[:service_tickets]
 
     valid = session[:service_tickets].all? do |provider, ticket|
-      Gitlab::OAuth::Session.valid?(provider, ticket)
+      Gitlab::Auth::OAuth::Session.valid?(provider, ticket)
     end
 
     unless valid
@@ -183,7 +202,11 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    return if session[:impersonator_id] || !current_user&.allow_password_authentication?
+
+    password_expires_at = current_user&.password_expires_at
+
+    if password_expires_at && password_expires_at < Time.now
       return redirect_to new_profile_password_path
     end
   end
@@ -192,7 +215,7 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.requires_ldap_check?
       return unless current_user.try_obtain_ldap_lease
 
-      unless Gitlab::LDAP::Access.allowed?(current_user)
+      unless Gitlab::Auth::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."
         redirect_to new_user_session_path
@@ -207,7 +230,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_ldap_access(&block)
-    Gitlab::LDAP::Access.open { |access| yield(access) }
+    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
   end
 
   # JSON for infinite scroll via Pager object
@@ -249,51 +272,51 @@ class ApplicationController < ActionController::Base
   end
 
   def import_sources_enabled?
-    !current_application_settings.import_sources.empty?
+    !Gitlab::CurrentSettings.import_sources.empty?
   end
 
   def github_import_enabled?
-    current_application_settings.import_sources.include?('github')
+    Gitlab::CurrentSettings.import_sources.include?('github')
   end
 
   def gitea_import_enabled?
-    current_application_settings.import_sources.include?('gitea')
+    Gitlab::CurrentSettings.import_sources.include?('gitea')
   end
 
   def github_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:github)
+    Gitlab::Auth::OAuth::Provider.enabled?(:github)
   end
 
   def gitlab_import_enabled?
-    request.host != 'gitlab.com' && current_application_settings.import_sources.include?('gitlab')
+    request.host != 'gitlab.com' && Gitlab::CurrentSettings.import_sources.include?('gitlab')
   end
 
   def gitlab_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:gitlab)
+    Gitlab::Auth::OAuth::Provider.enabled?(:gitlab)
   end
 
   def bitbucket_import_enabled?
-    current_application_settings.import_sources.include?('bitbucket')
+    Gitlab::CurrentSettings.import_sources.include?('bitbucket')
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket)
+    Gitlab::Auth::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?
-    current_application_settings.import_sources.include?('google_code')
+    Gitlab::CurrentSettings.import_sources.include?('google_code')
   end
 
   def fogbugz_import_enabled?
-    current_application_settings.import_sources.include?('fogbugz')
+    Gitlab::CurrentSettings.import_sources.include?('fogbugz')
   end
 
   def git_import_enabled?
-    current_application_settings.import_sources.include?('git')
+    Gitlab::CurrentSettings.import_sources.include?('git')
   end
 
   def gitlab_project_import_enabled?
-    current_application_settings.import_sources.include?('gitlab_project')
+    Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application
@@ -315,5 +338,10 @@ class ApplicationController < ActionController::Base
       # sign in token, you can simply remove store: false.
       sign_in user, store: false
     end
+  end
+
+  def set_page_title_header
+    # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
+    response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
   end
 end

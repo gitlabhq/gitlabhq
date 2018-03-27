@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-describe 'Dashboard > User filters projects', :feature do
+describe 'Dashboard > User filters projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace) }
   let(:user2) { create(:user) }
   let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'filtering personal projects' do
     before do
-      project2.team << [user, :developer]
+      project2.add_developer(user)
 
       visit dashboard_projects_path
     end

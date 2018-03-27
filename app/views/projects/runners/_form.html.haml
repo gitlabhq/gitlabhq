@@ -7,6 +7,12 @@
         = f.check_box :active
         %span.light Paused Runners don't accept new jobs
   .form-group
+    = label :protected, "Protected", class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :access_level, {}, 'ref_protected', 'not_protected'
+        %span.light This runner will only run on pipelines triggered on protected branches
+  .form-group
     = label :run_untagged, 'Run untagged jobs', class: 'control-label'
     .col-sm-10
       .checkbox
@@ -24,6 +30,11 @@
     .col-sm-10
       = f.text_field :token, class: 'form-control', readonly: true
   .form-group
+    = label_tag :ip_address, class: 'control-label' do
+      IP Address
+    .col-sm-10
+      = f.text_field :ip_address, class: 'form-control', readonly: true
+  .form-group
     = label_tag :description, class: 'control-label' do
       Description
     .col-sm-10
@@ -33,6 +44,6 @@
       Tags
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
-      .help-block You can setup jobs to only use Runners with specific tags
+      .help-block You can setup jobs to only use Runners with specific tags. Separate tags with commas.
   .form-actions
     = f.submit 'Save changes', class: 'btn btn-save'

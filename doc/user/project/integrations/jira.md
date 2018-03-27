@@ -1,17 +1,26 @@
 # GitLab JIRA integration
 
-GitLab can be configured to interact with JIRA. Configuration happens via
-user name and password. Connecting to a JIRA server via CAS is not possible.
+GitLab can be configured to interact with [JIRA], a project management platform.
 
-Each project can be configured to connect to a different JIRA instance, see the
-[configuration](#configuration) section. If you have one JIRA instance you can
-pre-fill the settings page with a default template. To configure the template
-see the [Services Templates][services-templates] document.
+Once your GitLab project is connected to JIRA, you can reference and close the
+issues in JIRA directly from GitLab.
 
-Once the project is connected to JIRA, you can reference and close the issues
-in JIRA directly from GitLab.
+For a use case, check out this article of [How and why to integrate GitLab with
+JIRA](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
 
 ## Configuration
+
+Each GitLab project can be configured to connect to a different JIRA instance. That
+means one GitLab project maps to _all_ JIRA projects in that JIRA instance once
+the configuration is set up. Therefore, you don't have to explicitly associate 
+one GitLab project to any JIRA project. Once the configuration is set up, any JIRA
+projects in the JIRA instance are already mapped to the GitLab project.
+
+If you have one JIRA instance you can pre-fill the settings page with a default
+template, see the [Services Templates][services-templates] docs.
+
+Configuration happens via user name and password. Connecting to a JIRA server
+via CAS is not possible.
 
 In order to enable the JIRA service in GitLab, you need to first configure the
 project in JIRA and then enter the correct values in GitLab.
@@ -89,6 +98,9 @@ password as they will be needed when configuring GitLab in the next section.
 - GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
   the configuration options you have to enter. If you are using an older version,
   [follow this documentation][jira-repo-old-docs].
+- In order to support Oracle's Access Manager, GitLab will send additional cookies
+  to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
+  a value of `fromDialog`.
 
 To enable JIRA integration in a project, navigate to the
 [Integrations page](project_services.md#accessing-the-project-services), click
@@ -98,14 +110,13 @@ in the table below.
 | Field | Description |
 | ----- | ----------- |
 | `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
-| `JIRA API URL` | The base URL to the JIRA instance API. E.g., `https://jira-api.example.com`. This is optional. If not entered, the Web URL value be used. |
-| `Project key` | Put a JIRA project key (in uppercase), e.g. `MARS` in this field. This is only for testing the configuration settings. JIRA integration in GitLab works with _all_ JIRA projects in your JIRA instance. This field will be removed in a future release. |
+| `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
+| `Transition ID` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 After saving the configuration, your GitLab project will be able to interact
-with all JIRA projects in your JIRA instance.
+with all JIRA projects in your JIRA instance and you'll see the JIRA link on the GitLab project pages that takes you to the appropriate JIRA project.
 
 ![JIRA service page](img/jira_service_page.png)
 
@@ -162,6 +173,7 @@ where `PROJECT-1` is the issue ID of the JIRA project.
 - Only commits and merges into the project's default branch (usually **master**) will
   close an issue in Jira. You can change your projects default branch under
   [project settings](img/jira_project_settings.png).
+- The JIRA issue will not be transitioned if it has a resolution.
 
 ### JIRA issue closing example
 
@@ -211,5 +223,10 @@ JIRA issue references and update comments will not work if the GitLab issue trac
 Make sure the `Transition ID` you set within the JIRA settings matches the one
 your project needs to close a ticket.
 
+Make sure that the JIRA issue is not already marked as resolved, in other words that
+the JIRA issue resolution field is not set. (It should not be struck through in
+JIRA lists.)
+
 [services-templates]: services_templates.md
 [jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/project_services/jira.md
+[jira]: https://www.atlassian.com/software/jira

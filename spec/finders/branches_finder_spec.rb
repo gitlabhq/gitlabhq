@@ -46,6 +46,15 @@ describe BranchesFinder do
         expect(result.count).to eq(1)
       end
 
+      it 'filters branches by name ignoring letter case' do
+        branches_finder = described_class.new(repository, { search: 'FiX' })
+
+        result = branches_finder.execute
+
+        expect(result.first.name).to eq('fix')
+        expect(result.count).to eq(1)
+      end
+
       it 'does not find any branch with that name' do
         branches_finder = described_class.new(repository, { search: 'random' })
 

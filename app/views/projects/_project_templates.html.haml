@@ -1,0 +1,24 @@
+.project-templates-buttons.import-buttons
+  - Gitlab::ProjectTemplate.all.each do |template|
+    .template-option
+      = custom_icon(template.logo)
+      .template-title= template.title
+      .template-description= template.description
+      %label.btn.btn-success.template-button.choose-template.append-right-10{ for: template.name }
+        %input{ type: "radio",  autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name }
+        %span Use template
+      %a.btn.btn-default{ href: template.preview, rel: 'noopener noreferrer', target: '_blank' } Preview
+
+  .project-fields-form
+    .form-group
+      %label.label-light
+        Template
+      .input-group.template-input-group
+        .input-group-addon
+          .selected-icon
+            - Gitlab::ProjectTemplate.all.each do |template|
+              = custom_icon(template.logo)
+          .selected-template
+        %button.btn.btn-default.change-template{ type: "button" } Change template
+
+    = render 'new_project_fields', f: f, project_name_id: "template-project-name"

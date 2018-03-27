@@ -12,7 +12,7 @@ describe EnvironmentsFinder do
 
     context 'tagged deployment' do
       before do
-        create(:deployment, environment: environment, ref: '1.0', tag: true, sha: project.commit.id)
+        create(:deployment, environment: environment, ref: 'v1.1.0', tag: true, sha: project.commit.id)
       end
 
       it 'returns environment when with_tags is set' do

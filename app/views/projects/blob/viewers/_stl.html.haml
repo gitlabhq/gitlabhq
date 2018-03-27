@@ -1,8 +1,5 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('stl_viewer')
-
 .file-content.is-stl-loading
-  .text-center#js-stl-viewer{ data: { endpoint: blob_raw_url } }
+  .text-center#js-stl-viewer{ data: { endpoint: blob_raw_path } }
     = icon('spinner spin 2x', class: 'prepend-top-default append-bottom-default', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
   .text-center.prepend-top-default.append-bottom-default.stl-controls
     .btn-group

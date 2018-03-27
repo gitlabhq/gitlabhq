@@ -51,9 +51,11 @@ class HipchatService < Service
 
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
+
     message = create_message(data)
     return unless message.present?
-    gate[room].send('GitLab', message, message_options(data))
+
+    gate[room].send('GitLab', message, message_options(data)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def test(data)
@@ -85,9 +87,9 @@ class HipchatService < Service
     when "push", "tag_push"
       create_push_message(data)
     when "issue"
-      create_issue_message(data) unless is_update?(data)
+      create_issue_message(data) unless update?(data)
     when "merge_request"
-      create_merge_request_message(data) unless is_update?(data)
+      create_merge_request_message(data) unless update?(data)
     when "note"
       create_note_message(data)
     when "pipeline"
@@ -108,6 +110,7 @@ class HipchatService < Service
 
     message = ""
     message << "#{push[:user_name]} "
+
     if Gitlab::Git.blank_ref?(before)
       message << "pushed new #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"\
@@ -117,7 +120,7 @@ class HipchatService < Service
     else
       message << "pushed to #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{CGI.escape(ref)}\">#{ref}</a> "
-      message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/, '')}</a> "
+      message << "of <a href=\"#{project.web_url}\">#{project.full_name.gsub!(/\s/, '')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|
@@ -271,7 +274,7 @@ class HipchatService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url
@@ -282,7 +285,7 @@ class HipchatService < Service
     "<a href=\"#{project_url}\">#{project_name}</a>"
   end
 
-  def is_update?(data)
+  def update?(data)
     data[:object_attributes][:action] == 'update'
   end
 

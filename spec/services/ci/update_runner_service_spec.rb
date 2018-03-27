@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::UpdateRunnerService, :services do
+describe Ci::UpdateRunnerService do
   let(:runner) { create(:ci_runner) }
 
   describe '#update' do

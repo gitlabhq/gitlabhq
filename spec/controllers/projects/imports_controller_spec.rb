@@ -5,11 +5,11 @@ describe Projects::ImportsController do
 
   describe 'GET #show' do
     context 'when repository does not exists' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'renders template' do
@@ -30,7 +30,7 @@ describe Projects::ImportsController do
 
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       context 'when import is in progress' do
@@ -59,7 +59,7 @@ describe Projects::ImportsController do
         it 'redirects to new_namespace_project_import_path' do
           get :show, namespace_id: project.namespace.to_param, project_id: project
 
-          expect(response).to redirect_to new_namespace_project_import_path(project.namespace, project)
+          expect(response).to redirect_to new_project_import_path(project)
         end
       end
 
@@ -75,7 +75,7 @@ describe Projects::ImportsController do
             get :show, namespace_id: project.namespace.to_param, project_id: project
 
             expect(flash[:notice]).to eq 'The project was successfully forked.'
-            expect(response).to redirect_to namespace_project_path(project.namespace, project)
+            expect(response).to redirect_to project_path(project)
           end
         end
 
@@ -84,14 +84,14 @@ describe Projects::ImportsController do
             get :show, namespace_id: project.namespace.to_param, project_id: project
 
             expect(flash[:notice]).to eq 'The project was successfully imported.'
-            expect(response).to redirect_to namespace_project_path(project.namespace, project)
+            expect(response).to redirect_to project_path(project)
           end
         end
 
         context 'when continue params is present' do
           let(:params) do
             {
-              to: namespace_project_path(project.namespace, project),
+              to: project_path(project),
               notice: 'Finished'
             }
           end
@@ -120,7 +120,7 @@ describe Projects::ImportsController do
         it 'redirects to namespace_project_path' do
           get :show, namespace_id: project.namespace.to_param, project_id: project
 
-          expect(response).to redirect_to namespace_project_path(project.namespace, project)
+          expect(response).to redirect_to project_path(project)
         end
       end
     end

@@ -2,9 +2,11 @@ module API
   module V3
     class Users < Grape::API
       include PaginationParams
+      include APIGuard
+
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
       before do
-        allow_access_with_scope :read_user if request.get?
         authenticate!
       end
 

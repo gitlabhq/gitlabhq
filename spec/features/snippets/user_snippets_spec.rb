@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-feature 'User Snippets', feature: true do
+feature 'User Snippets' do
   let(:author) { create(:user) }
   let!(:public_snippet) { create(:personal_snippet, :public, author: author, title: "This is a public snippet") }
   let!(:internal_snippet) { create(:personal_snippet, :internal, author: author, title: "This is an internal snippet") }
   let!(:private_snippet) { create(:personal_snippet, :private, author: author, title: "This is a private snippet") }
 
   background do
-    gitlab_sign_in author
+    sign_in author
     visit dashboard_snippets_path
   end
 

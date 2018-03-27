@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiscussionOnDiff, model: true do
+describe DiscussionOnDiff do
   subject { create(:diff_note_on_merge_request).to_discussion }
 
   describe "#truncated_diff_lines" do
@@ -18,6 +18,16 @@ describe DiscussionOnDiff, model: true do
       it "returns no meta lines"  do
         expect(subject.diff_lines).to include(be_meta)
         expect(truncated_lines).not_to include(be_meta)
+      end
+    end
+
+    context "when the diff line does not exist on a legacy diff note" do
+      it "returns an empty array" do
+        legacy_note = LegacyDiffNote.new
+
+        allow(subject).to receive(:first_note).and_return(legacy_note)
+
+        expect(truncated_lines).to eq([])
       end
     end
   end

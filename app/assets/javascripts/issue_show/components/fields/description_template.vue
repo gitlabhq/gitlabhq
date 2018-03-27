@@ -1,4 +1,7 @@
 <script>
+  import $ from 'jquery';
+  import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
+
   export default {
     props: {
       formState: {
@@ -32,7 +35,7 @@
       };
       editor.getValue = () => this.formState.description;
 
-      this.issuableTemplate = new gl.IssuableTemplateSelectors({
+      this.issuableTemplate = new IssuableTemplateSelectors({
         $dropdowns: $(this.$refs.toggle),
         editor,
       });

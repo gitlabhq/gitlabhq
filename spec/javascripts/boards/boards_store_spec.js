@@ -1,26 +1,27 @@
 /* eslint-disable comma-dangle, one-var, no-unused-vars */
 /* global BoardService */
-/* global boardsMockInterceptor */
-/* global listObj */
-/* global listObjDuplicate */
 /* global ListIssue */
 
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 
-import '~/lib/utils/url_utility';
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('Store', () => {
+  let mock;
+
   beforeEach(() => {
-    Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
     spyOn(gl.boardService, 'moveIssue').and.callFake(() => new Promise((resolve) => {
@@ -34,7 +35,7 @@ describe('Store', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+    mock.restore();
   });
 
   it('starts with a blank state', () => {
@@ -78,7 +79,7 @@ describe('Store', () => {
     it('persists new list', (done) => {
       gl.issueBoards.BoardsStore.new({
         title: 'Test',
-        type: 'label',
+        list_type: 'label',
         label: {
           id: 1,
           title: 'Testing',
@@ -210,6 +211,7 @@ describe('Store', () => {
     it('moves issue in list', (done) => {
       const issue = new ListIssue({
         title: 'Testing',
+        id: 2,
         iid: 2,
         confidential: false,
         labels: [],

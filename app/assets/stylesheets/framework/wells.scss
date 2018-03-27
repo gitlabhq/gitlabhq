@@ -3,6 +3,7 @@
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  margin-bottom: $gl-padding;
 
   .well-segment {
     padding: $gl-padding;
@@ -15,11 +16,25 @@
       .commit-sha,
       .commit-info {
         margin-left: 4px;
+
+        .fork-svg {
+          margin-right: 4px;
+        }
       }
 
       .ref-name {
         font-size: 12px;
+
+        &:hover {
+          text-decoration: underline;
+          color: $gl-text-color;
+        }
       }
+    }
+
+    &.admin-well h4 {
+      border-bottom: 1px solid $border-color;
+      padding-bottom: 8px;
     }
   }
 
@@ -46,6 +61,37 @@
   .label.label-gray {
     background-color: $well-expand-item;
   }
+
+  .branches {
+    display: inline;
+  }
+
+  .branch-link {
+    margin-bottom: 2px;
+  }
+
+  .limit-box {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    background-color: $red-100;
+    border-radius: $border-radius-default;
+    text-align: center;
+
+    &:hover {
+      background-color: $red-200;
+    }
+
+    .limit-icon {
+      margin: 0 4px;
+    }
+
+    .limit-message {
+      line-height: 16px;
+      margin-right: 8px;
+      font-size: 12px;
+    }
+  }
 }
 
 .light-well {
@@ -53,9 +99,17 @@
   padding: 15px;
 }
 
+.dark-well {
+  background-color: $gray-normal;
+
+  .btn {
+    width: 100%;
+  }
+}
+
 .well-centered {
   h1 {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     text-align: center;
     font-size: 48px;
   }

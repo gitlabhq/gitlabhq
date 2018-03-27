@@ -1,18 +1,18 @@
 - failed_builds = @pipeline.statuses.latest.failed
 
 .tabs-holder
-  %ul.pipelines-tabs.nav-links.no-top.no-bottom
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator
     %li.js-pipeline-tab-link
-      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
-        Pipeline
+      = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
+        = _("Pipeline")
     %li.js-builds-tab-link
-      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
-        Jobs
-        %span.badge.js-builds-counter= pipeline.statuses.count
+      = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
+        = _("Jobs")
+        %span.badge.js-builds-counter= pipeline.total_size
     - if failed_builds.present?
       %li.js-failures-tab-link
-        = link_to failures_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
-          Failed Jobs
+        = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
+          = _("Failed Jobs")
           %span.badge.js-failures-counter= failed_builds.count
 
 .tab-content

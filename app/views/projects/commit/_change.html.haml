@@ -4,6 +4,7 @@
   - branch_label = s_('ChangeTypeActionLabel|Revert in branch')
   - revert_merge_request = _('Revert this merge request')
   - revert_commit = _('Revert this commit')
+  - description = s_('ChangeTypeAction|This will create a new commit in order to revert the existing changes.')
   - title = commit.merged_merge_request(current_user) ? revert_merge_request : revert_commit
 - when 'cherry-pick'
   - label = s_('ChangeTypeAction|Cherry-pick')
@@ -17,12 +18,14 @@
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= title
       .modal-body
+        - if description
+          %p.append-bottom-20= description
         = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
             = label_tag 'start_branch', branch_label, class: 'control-label'
             .col-sm-10
               = hidden_field_tag :start_branch, @project.default_branch, id: 'start_branch'
-              = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: namespace_project_branches_path(@project.namespace, @project), submit_form_on_click: false } })
+              = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: project_branches_path(@project), submit_form_on_click: false } })
 
               - if can?(current_user, :push_code, @project)
                 = render 'shared/new_merge_request_checkbox'
@@ -32,6 +35,4 @@
             = submit_tag label, class: 'btn btn-create'
             = link_to _("Cancel"), '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
-            - unless can?(current_user, :push_code, @project)
-              .inline.prepend-left-10
-                = commit_in_fork_help
+            = render 'shared/projects/edit_information'

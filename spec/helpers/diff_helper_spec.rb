@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DiffHelper do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }
@@ -12,19 +12,32 @@ describe DiffHelper do
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   describe 'diff_view' do
+    it 'uses the view param over the cookie' do
+      controller.params[:view] = 'parallel'
+      helper.request.cookies[:diff_view] = 'inline'
+
+      expect(helper.diff_view).to eq :parallel
+    end
+
+    it 'returns the default value when the view param is invalid' do
+      controller.params[:view] = 'invalid'
+
+      expect(helper.diff_view).to eq :inline
+    end
+
     it 'returns a valid value when cookie is set' do
       helper.request.cookies[:diff_view] = 'parallel'
 
       expect(helper.diff_view).to eq :parallel
     end
 
-    it 'returns a default value when cookie is invalid' do
+    it 'returns the default value when cookie is invalid' do
       helper.request.cookies[:diff_view] = 'invalid'
 
       expect(helper.diff_view).to eq :inline
     end
 
-    it 'returns a default value when cookie is nil' do
+    it 'returns the default value when cookie is nil' do
       expect(helper.request.cookies).to be_empty
 
       expect(helper.diff_view).to eq :inline
@@ -122,9 +135,9 @@ describe DiffHelper do
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">&#39;def&#39;</span>})
+      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">'def'</span>})
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">&quot;def&quot;</span>})
+      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">"def"</span>})
       expect(marked_new_line).to be_html_safe
     end
   end
@@ -251,6 +264,16 @@ describe DiffHelper do
       it 'includes a "view the blob" link' do
         expect(helper.diff_render_error_options(viewer)).to include(/view the blob/)
       end
+    end
+  end
+
+  context '#diff_file_path_text' do
+    it 'returns full path by default' do
+      expect(diff_file_path_text(diff_file)).to eq(diff_file.new_path)
+    end
+
+    it 'returns truncated path' do
+      expect(diff_file_path_text(diff_file, max: 10)).to eq("...open.rb")
     end
   end
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin Builds' do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe 'GET /admin/builds' do
@@ -21,7 +21,7 @@ describe 'Admin Builds' do
           expect(page).to have_selector('.nav-links li.active', text: 'All')
           expect(page).to have_selector('.row-content-block', text: 'All jobs')
           expect(page.all('.build-link').size).to eq(4)
-          expect(page).to have_link 'Cancel all'
+          expect(page).to have_button 'Stop all jobs'
         end
       end
 
@@ -31,7 +31,7 @@ describe 'Admin Builds' do
 
           expect(page).to have_selector('.nav-links li.active', text: 'All')
           expect(page).to have_content 'No jobs to show'
-          expect(page).not_to have_link 'Cancel all'
+          expect(page).not_to have_button 'Stop all jobs'
         end
       end
     end
@@ -51,7 +51,7 @@ describe 'Admin Builds' do
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).not_to have_content(build3.id)
           expect(page.find('.build-link')).not_to have_content(build4.id)
-          expect(page).to have_link 'Cancel all'
+          expect(page).to have_button 'Stop all jobs'
         end
       end
 
@@ -63,7 +63,7 @@ describe 'Admin Builds' do
 
           expect(page).to have_selector('.nav-links li.active', text: 'Pending')
           expect(page).to have_content 'No jobs to show'
-          expect(page).not_to have_link 'Cancel all'
+          expect(page).not_to have_button 'Stop all jobs'
         end
       end
     end
@@ -83,7 +83,7 @@ describe 'Admin Builds' do
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).not_to have_content(build3.id)
           expect(page.find('.build-link')).not_to have_content(build4.id)
-          expect(page).to have_link 'Cancel all'
+          expect(page).to have_button 'Stop all jobs'
         end
       end
 
@@ -95,7 +95,7 @@ describe 'Admin Builds' do
 
           expect(page).to have_selector('.nav-links li.active', text: 'Running')
           expect(page).to have_content 'No jobs to show'
-          expect(page).not_to have_link 'Cancel all'
+          expect(page).not_to have_button 'Stop all jobs'
         end
       end
     end
@@ -113,7 +113,7 @@ describe 'Admin Builds' do
           expect(page.find('.build-link')).not_to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).to have_content(build3.id)
-          expect(page).to have_link 'Cancel all'
+          expect(page).to have_button 'Stop all jobs'
         end
       end
 
@@ -125,7 +125,7 @@ describe 'Admin Builds' do
 
           expect(page).to have_selector('.nav-links li.active', text: 'Finished')
           expect(page).to have_content 'No jobs to show'
-          expect(page).to have_link 'Cancel all'
+          expect(page).to have_button 'Stop all jobs'
         end
       end
     end

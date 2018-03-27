@@ -1,16 +1,17 @@
-/* global Flash */
-
 import Vue from 'vue';
+import Translate from '../vue_shared/translate';
 import GroupFilterableList from './groups_filterable_list';
-import GroupsComponent from './components/groups.vue';
-import GroupFolder from './components/group_folder.vue';
-import GroupItem from './components/group_item.vue';
-import GroupsStore from './stores/groups_store';
-import GroupsService from './services/groups_service';
-import eventHub from './event_hub';
+import GroupsStore from './store/groups_store';
+import GroupsService from './service/groups_service';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const el = document.getElementById('dashboard-group-app');
+import groupsApp from './components/app.vue';
+import groupFolderComponent from './components/group_folder.vue';
+import groupItemComponent from './components/group_item.vue';
+
+Vue.use(Translate);
+
+export default () => {
+  const el = document.getElementById('js-groups-tree');
 
   // Don't do anything if element doesn't exist (No groups)
   // This is for when the user enters directly to the page via URL
@@ -18,173 +19,56 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  Vue.component('groups-component', GroupsComponent);
-  Vue.component('group-folder', GroupFolder);
-  Vue.component('group-item', GroupItem);
+  Vue.component('group-folder', groupFolderComponent);
+  Vue.component('group-item', groupItemComponent);
 
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    components: {
+      groupsApp,
+    },
     data() {
-      this.store = new GroupsStore();
-      this.service = new GroupsService(el.dataset.endpoint);
+      const dataset = this.$options.el.dataset;
+      const hideProjects = dataset.hideProjects === 'true';
+      const store = new GroupsStore(hideProjects);
+      const service = new GroupsService(dataset.endpoint);
 
       return {
-        store: this.store,
-        isLoading: true,
-        state: this.store.state,
+        store,
+        service,
+        hideProjects,
         loading: true,
       };
     },
-    computed: {
-      isEmpty() {
-        return Object.keys(this.state.groups).length === 0;
-      },
-    },
-    methods: {
-      fetchGroups(parentGroup) {
-        let parentId = null;
-        let getGroups = null;
-        let page = null;
-        let sort = null;
-        let pageParam = null;
-        let sortParam = null;
-        let filterGroups = null;
-        let filterGroupsParam = null;
-
-        if (parentGroup) {
-          parentId = parentGroup.id;
-        } else {
-          this.isLoading = true;
-        }
-
-        pageParam = gl.utils.getParameterByName('page');
-        if (pageParam) {
-          page = pageParam;
-        }
-
-        filterGroupsParam = gl.utils.getParameterByName('filter_groups');
-        if (filterGroupsParam) {
-          filterGroups = filterGroupsParam;
-        }
-
-        sortParam = gl.utils.getParameterByName('sort');
-        if (sortParam) {
-          sort = sortParam;
-        }
-
-        getGroups = this.service.getGroups(parentId, page, filterGroups, sort);
-        getGroups
-          .then(response => response.json())
-          .then((response) => {
-            this.isLoading = false;
-
-            this.updateGroups(response, parentGroup);
-          })
-          .catch(this.handleErrorResponse);
-
-        return getGroups;
-      },
-      fetchPage(page, filterGroups, sort) {
-        this.isLoading = true;
-
-        return this.service
-          .getGroups(null, page, filterGroups, sort)
-          .then((response) => {
-            this.isLoading = false;
-            $.scrollTo(0);
-
-            const currentPath = gl.utils.mergeUrlParams({ page }, window.location.href);
-            window.history.replaceState({
-              page: currentPath,
-            }, document.title, currentPath);
-
-            this.updateGroups(response.json());
-            this.updatePagination(response.headers);
-          })
-          .catch(this.handleErrorResponse);
-      },
-      toggleSubGroups(parentGroup = null) {
-        if (!parentGroup.isOpen) {
-          this.store.resetGroups(parentGroup);
-          this.fetchGroups(parentGroup);
-        }
-
-        this.store.toggleSubGroups(parentGroup);
-      },
-      leaveGroup(group, collection) {
-        this.service.leaveGroup(group.leavePath)
-          .then((response) => {
-            $.scrollTo(0);
-
-            this.store.removeGroup(group, collection);
-
-            // eslint-disable-next-line no-new
-            new Flash(response.json().notice, 'notice');
-          })
-          .catch((response) => {
-            let message = 'An error occurred. Please try again.';
-
-            if (response.status === 403) {
-              message = 'Failed to leave the group. Please make sure you are not the only owner';
-            }
-
-            // eslint-disable-next-line no-new
-            new Flash(message);
-          });
-      },
-      updateGroups(groups, parentGroup) {
-        this.store.setGroups(groups, parentGroup);
-      },
-      updatePagination(headers) {
-        this.store.storePagination(headers);
-      },
-      handleErrorResponse() {
-        this.isLoading = false;
-        $.scrollTo(0);
-
-        // eslint-disable-next-line no-new
-        new Flash('An error occurred. Please try again.');
-      },
-    },
-    created() {
-      eventHub.$on('fetchPage', this.fetchPage);
-      eventHub.$on('toggleSubGroups', this.toggleSubGroups);
-      eventHub.$on('leaveGroup', this.leaveGroup);
-      eventHub.$on('updateGroups', this.updateGroups);
-      eventHub.$on('updatePagination', this.updatePagination);
-    },
     beforeMount() {
+      const dataset = this.$options.el.dataset;
       let groupFilterList = null;
-      const form = document.querySelector('form#group-filter-form');
-      const filter = document.querySelector('.js-groups-list-filter');
-      const holder = document.querySelector('.js-groups-list-holder');
+      const form = document.querySelector(dataset.formSel);
+      const filter = document.querySelector(dataset.filterSel);
+      const holder = document.querySelector(dataset.holderSel);
 
       const opts = {
         form,
         filter,
         holder,
-        filterEndpoint: el.dataset.endpoint,
-        pagePath: el.dataset.path,
+        filterEndpoint: dataset.endpoint,
+        pagePath: dataset.path,
+        dropdownSel: dataset.dropdownSel,
+        filterInputField: 'filter',
       };
 
       groupFilterList = new GroupFilterableList(opts);
       groupFilterList.initSearch();
     },
-    mounted() {
-      this.fetchGroups()
-        .then((response) => {
-          this.updatePagination(response.headers);
-          this.isLoading = false;
-        })
-        .catch(this.handleErrorResponse);
-    },
-    beforeDestroy() {
-      eventHub.$off('fetchPage', this.fetchPage);
-      eventHub.$off('toggleSubGroups', this.toggleSubGroups);
-      eventHub.$off('leaveGroup', this.leaveGroup);
-      eventHub.$off('updateGroups', this.updateGroups);
-      eventHub.$off('updatePagination', this.updatePagination);
+    render(createElement) {
+      return createElement('groups-app', {
+        props: {
+          store: this.store,
+          service: this.service,
+          hideProjects: this.hideProjects,
+        },
+      });
     },
   });
-});
+};

@@ -1,0 +1,15 @@
+= f.hidden_field(:name)
+
+= dropdown_tag('Select tag or create wildcard',
+               options: { toggle_class: 'js-protected-tag-select js-filter-submit wide git-revision-dropdown-toggle',
+                          filter: true, dropdown_class: "dropdown-menu-selectable capitalize-header git-revision-dropdown", placeholder: "Search protected tags",
+                          footer_content: true,
+                          data: { show_no: true, show_any: true, show_upcoming: true,
+                                  selected: params[:protected_tag_name],
+                                  project_id: @project.try(:id) } }) do
+
+  %ul.dropdown-footer-list
+    %li
+      %button{ class: "dropdown-create-new-item-button js-dropdown-create-new-item", title: "New Protected Tag" }
+        Create wildcard
+        %code

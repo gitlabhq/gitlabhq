@@ -1,0 +1,48 @@
+.board{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded }',
+  ":data-id" => "list.id" }
+  .board-inner
+    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
+      %h3.board-title.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset) }' }
+        %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
+          ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
+          "aria-hidden": "true" }
+
+        %span.board-title-text.has-tooltip{ "v-if": "list.type !== \"label\"",
+          ":title" => '(list.label ? list.label.description : "")', data: { container: "body" } }
+          {{ list.title }}
+
+        %span.has-tooltip{ "v-if": "list.type === \"label\"",
+          ":title" => '(list.label ? list.label.description : "")',
+          data: { container: "body", placement: "bottom" },
+          class: "label color-label title board-title-text",
+          ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.color ? list.label.text_color : \"#2e2e2e\") }" }
+          {{ list.title }}
+        - if can?(current_user, :admin_list, current_board_parent)
+          %board-delete{ "inline-template" => true,
+            ":list" => "list",
+            "v-if" => "!list.preset && list.id" }
+            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+              = icon("trash")
+        .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank"' }
+          %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
+            {{ list.issuesSize }}
+          - if can?(current_user, :admin_list, current_board_parent)
+            %button.issue-count-badge-add-button.btn.btn-sm.btn-default.has-tooltip.js-no-trigger-collapse{ type: "button",
+              "@click" => "showNewIssueForm",
+              "v-if" => 'list.type !== "closed"',
+              "aria-label" => "New issue",
+              "title" => "New issue",
+              data: { placement: "top", container: "body" } }
+              = icon("plus", class: "js-no-trigger-collapse")
+
+    %board-list{ "v-if" => 'list.type !== "blank"',
+      ":list" => "list",
+      ":issues" => "list.issues",
+      ":loading" => "list.loading",
+      ":disabled" => "disabled",
+      ":issue-link-base" => "issueLinkBase",
+      ":root-path" => "rootPath",
+      ":groupId" => ((current_board_parent.id if @group) || 'null'),
+      "ref" => "board-list" }
+    - if can?(current_user, :admin_list, current_board_parent)
+      %board-blank-state{ "v-if" => 'list.id == "blank"' }

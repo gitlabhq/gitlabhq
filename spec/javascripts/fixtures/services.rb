@@ -7,7 +7,6 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
   let!(:service)  { create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker') }
-  
 
   render_views
 
@@ -15,8 +14,12 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     clean_frontend_fixtures('services/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   it 'services/edit_service.html.raw' do |example|

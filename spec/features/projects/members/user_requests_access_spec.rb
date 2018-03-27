@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-feature 'Projects > Members > User requests access', feature: true do
+feature 'Projects > Members > User requests access', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable, :repository) }
   let(:master) { project.owner }
 
   background do
-    gitlab_sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(user)
+    visit project_path(project)
   end
 
   scenario 'request access feature is disabled' do
     project.update_attributes(request_access_enabled: false)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
 
     expect(page).not_to have_content 'Request Access'
   end
@@ -21,7 +21,7 @@ feature 'Projects > Members > User requests access', feature: true do
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [master.notification_email]
-    expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.name_with_namespace} project"
+    expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
     expect(page).to have_content 'Your request for access has been queued for review.'
@@ -35,7 +35,7 @@ feature 'Projects > Members > User requests access', feature: true do
       project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
                                       builds_access_level: ProjectFeature::PRIVATE,
                                       merge_requests_access_level: ProjectFeature::PRIVATE)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).to have_content 'Request Access'
     end
@@ -46,10 +46,10 @@ feature 'Projects > Members > User requests access', feature: true do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    open_project_settings_menu
-    click_link 'Members'
+    page.within('.nav-sidebar') do
+      click_link('Members')
+    end
 
-    visit namespace_project_settings_members_path(project.namespace, project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end
@@ -60,7 +60,7 @@ feature 'Projects > Members > User requests access', feature: true do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    click_link 'Withdraw Access Request'
+    accept_confirm { click_link 'Withdraw Access Request' }
 
     expect(project.requesters.exists?(user_id: user)).to be_falsey
     expect(page).to have_content 'Your access request to the project has been withdrawn.'

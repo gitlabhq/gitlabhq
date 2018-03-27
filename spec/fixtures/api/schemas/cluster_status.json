@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required" : [
+    "status",
+    "applications"
+  ],
+  "properties" : {
+    "status": { "type": "string" },
+    "status_reason": { "type": ["string", "null"] },
+    "applications": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/application_status" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "application_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties" : {
+        "name": { "type": "string" },
+        "status": {
+          "type": {
+            "enum": [
+              "installable",
+              "scheduled",
+              "installing",
+              "installed",
+              "errored"
+            ]
+          }
+        },
+        "status_reason": { "type": ["string", "null"] },
+        "external_ip": { "type": ["string", "null"] }
+      },
+      "required" : [ "name", "status" ]
+    }
+  }
+}

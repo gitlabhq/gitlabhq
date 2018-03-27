@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Ci::Trigger, models: true do
-  let(:project) { create :empty_project }
+describe Ci::Trigger do
+  let(:project) { create :project }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -69,7 +69,7 @@ describe Ci::Trigger, models: true do
 
       context 'and is member of the project' do
         before do
-          project.team << [owner, :developer]
+          project.add_developer(owner)
         end
 
         it { is_expected.to eq(true) }

@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
-  let(:project) { create(:project) }
+  include ProjectForksHelper
+
+  let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
@@ -12,53 +14,6 @@ describe Projects::MergeRequestsController do
 
   before do
     sign_in(user)
-  end
-
-  describe 'GET new' do
-    context 'merge request that removes a submodule' do
-      render_views
-
-      let(:fork_project) { create(:forked_project_with_submodules) }
-
-      before do
-        fork_project.team << [user, :master]
-      end
-
-      context 'when rendering HTML response' do
-        it 'renders new merge request widget template' do
-          submit_new_merge_request
-
-          expect(response).to be_success
-        end
-      end
-
-      context 'when rendering JSON response' do
-        before do
-          create(:ci_pipeline, sha: fork_project.commit('remove-submodule').id,
-                               ref: 'remove-submodule',
-                               project: fork_project)
-        end
-
-        it 'renders JSON including serialized pipelines' do
-          submit_new_merge_request(format: :json)
-
-          expect(response).to be_ok
-          expect(json_response).to have_key 'pipelines'
-          expect(json_response['pipelines']).not_to be_empty
-        end
-      end
-    end
-
-    def submit_new_merge_request(format: :html)
-      get :new,
-          namespace_id: fork_project.namespace.to_param,
-          project_id: fork_project,
-          merge_request: {
-            source_branch: 'remove-submodule',
-            target_branch: 'master'
-          },
-          format: format
-    end
   end
 
   describe 'GET commit_change_content' do
@@ -103,34 +58,52 @@ describe Projects::MergeRequestsController do
 
         expect(response).to be_success
       end
+
+      context "loads notes" do
+        let(:first_contributor) { create(:user) }
+        let(:contributor) { create(:user) }
+        let(:merge_request) { create(:merge_request, author: first_contributor, target_project: project, source_project: project) }
+        let(:contributor_merge_request) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+        # the order here is important
+        # as the controller reloads these from DB, references doesn't correspond after
+        let!(:first_contributor_note) { create(:note, author: first_contributor, noteable: merge_request, project: project) }
+        let!(:contributor_note) { create(:note, author: contributor, noteable: merge_request, project: project) }
+        let!(:owner_note) { create(:note, author: user, noteable: merge_request, project: project) }
+
+        it "with special_role FIRST_TIME_CONTRIBUTOR" do
+          go(format: :html)
+
+          notes = assigns(:notes)
+          expect(notes).to match(a_collection_containing_exactly(an_object_having_attributes(special_role: Note::SpecialRole::FIRST_TIME_CONTRIBUTOR),
+                                                                 an_object_having_attributes(special_role: nil),
+                                                                 an_object_having_attributes(special_role: nil)
+                                                                ))
+        end
+      end
     end
 
     describe 'as json' do
-      context 'with basic param' do
+      context 'with basic serializer param' do
         it 'renders basic MR entity as json' do
-          go(basic: true, format: :json)
+          go(serializer: 'basic', format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_basic')
         end
       end
 
-      context 'without basic param' do
-        it 'renders the merge request in the json format' do
-          go(format: :json)
+      context 'with widget serializer param' do
+        it 'renders widget MR entity as json' do
+          go(serializer: 'widget', format: :json)
 
-          expect(response).to match_response_schema('entities/merge_request')
+          expect(response).to match_response_schema('entities/merge_request_widget')
         end
       end
 
-      context 'number of queries', :request_store do
-        it 'verifies number of queries' do
-          # pre-create objects
-          merge_request
+      context 'when no serialiser was passed' do
+        it 'renders widget MR entity as json' do
+          go(serializer: nil, format: :json)
 
-          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
-
-          expect(recorded.count).to be_within(5).of(30)
-          expect(recorded.cached_count).to eq(0)
+          expect(response).to match_response_schema('entities/merge_request_widget')
         end
       end
     end
@@ -153,7 +126,7 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET index' do
-    let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+    let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
     def get_merge_requests(page = nil)
       get :index,
@@ -178,7 +151,7 @@ describe Projects::MergeRequestsController do
         get_merge_requests(last_page)
 
         expect(assigns(:merge_requests).current_page).to eq(last_page)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'does not redirect to external sites when provided a host field' do
@@ -197,6 +170,8 @@ describe Projects::MergeRequestsController do
     context 'when filtering by opened state' do
       context 'with opened merge requests' do
         it 'lists those merge requests' do
+          expect(merge_request).to be_persisted
+
           get_merge_requests
 
           expect(assigns(:merge_requests)).to include(merge_request)
@@ -219,17 +194,23 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'PUT update' do
+    def update_merge_request(mr_params, additional_params = {})
+      params = {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: merge_request.iid,
+        merge_request: mr_params
+      }.merge(additional_params)
+
+      put :update, params
+    end
+
     context 'changing the assignee' do
       it 'limits the attributes exposed on the assignee' do
         assignee = create(:user)
         project.add_developer(assignee)
 
-        put :update,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
-          merge_request: { assignee_id: assignee.id },
-          format: :json
+        update_merge_request({ assignee_id: assignee.id }, format: :json)
         body = JSON.parse(response.body)
 
         expect(body['assignee'].keys)
@@ -237,26 +218,31 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'when user does not have access to update issue' do
+      before do
+        reporter = create(:user)
+        project.add_reporter(reporter)
+        sign_in(reporter)
+      end
+
+      it 'responds with 404' do
+        update_merge_request(title: 'New title')
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
     context 'there is no source project' do
-      let(:project)       { create(:project) }
-      let(:fork_project)  { create(:forked_project_with_submodules) }
-      let(:merge_request) { create(:merge_request, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
+      let(:project)       { create(:project, :repository) }
+      let(:forked_project)  { fork_project_with_submodules(project) }
+      let!(:merge_request) { create(:merge_request, source_project: forked_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
       before do
-        fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-        fork_project.save
-        merge_request.reload
-        fork_project.destroy
+        forked_project.destroy
       end
 
       it 'closes MR without errors' do
-        post :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              state_event: 'close'
-            }
+        update_merge_request(state_event: 'close')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
@@ -265,13 +251,7 @@ describe Projects::MergeRequestsController do
       it 'allows editing of a closed merge request' do
         merge_request.close!
 
-        put :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              title: 'New title'
-            }
+        update_merge_request(title: 'New title')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.title).to eq 'New title'
@@ -280,13 +260,7 @@ describe Projects::MergeRequestsController do
       it 'does not allow to update target branch closed merge request' do
         merge_request.close!
 
-        put :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              target_branch: 'new_branch'
-            }
+        update_merge_request(target_branch: 'new_branch')
 
         expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
       end
@@ -314,7 +288,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -358,12 +332,12 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when the pipeline succeeds is passed' do
-        def merge_when_pipeline_succeeds
-          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
+        let!(:head_pipeline) do
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
-        before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
+        def merge_when_pipeline_succeeds
+          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -386,6 +360,18 @@ describe Projects::MergeRequestsController do
         context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do
           before do
             project.update_column(:only_allow_merge_if_pipeline_succeeds, true)
+          end
+
+          context 'and head pipeline is not the current one' do
+            before do
+              head_pipeline.update(sha: 'not_current_sha')
+            end
+
+            it 'returns :failed' do
+              merge_when_pipeline_succeeds
+
+              expect(json_response).to eq('status' => 'failed')
+            end
           end
 
           it 'returns :merge_when_pipeline_succeeds' do
@@ -470,13 +456,13 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context "when the user is owner" do
       let(:owner)     { create(:user) }
       let(:namespace) { create(:namespace, owner: owner) }
-      let(:project)   { create(:project, namespace: namespace) }
+      let(:project)   { create(:project, :repository, namespace: namespace) }
 
       before do
         sign_in owner
@@ -485,242 +471,14 @@ describe Projects::MergeRequestsController do
       it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
-        expect(response).to have_http_status(302)
-        expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
+        expect(response).to have_gitlab_http_status(302)
+        expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_target).with(merge_request).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
-      end
-    end
-  end
-
-  describe 'GET diffs' do
-    def go(extra_params = {})
-      params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid
-      }
-
-      get :diffs, params.merge(extra_params)
-    end
-
-    it_behaves_like "loads labels", :diffs
-
-    context 'with default params' do
-      context 'as html' do
-        before do
-          go(format: 'html')
-        end
-
-        it 'renders the diff template' do
-          expect(response).to render_template('diffs')
-        end
-      end
-
-      context 'as json' do
-        before do
-          go(format: 'json')
-        end
-
-        it 'renders the diffs template to a string' do
-          expect(response).to render_template('projects/merge_requests/show/_diffs')
-          expect(json_response).to have_key('html')
-        end
-      end
-
-      context 'with forked projects with submodules' do
-        render_views
-
-        let(:project) { create(:project) }
-        let(:fork_project) { create(:forked_project_with_submodules) }
-        let(:merge_request) { create(:merge_request_with_diffs, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
-
-        before do
-          fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-          fork_project.save
-          merge_request.reload
-          go(format: 'json')
-        end
-
-        it 'renders' do
-          expect(response).to be_success
-          expect(response.body).to have_content('Subproject commit')
-        end
-      end
-    end
-
-    context 'with ignore_whitespace_change' do
-      context 'as html' do
-        before do
-          go(format: 'html', w: 1)
-        end
-
-        it 'renders the diff template' do
-          expect(response).to render_template('diffs')
-        end
-      end
-
-      context 'as json' do
-        before do
-          go(format: 'json', w: 1)
-        end
-
-        it 'renders the diffs template to a string' do
-          expect(response).to render_template('projects/merge_requests/show/_diffs')
-          expect(json_response).to have_key('html')
-        end
-      end
-    end
-
-    context 'with view' do
-      before do
-        go(view: 'parallel')
-      end
-
-      it 'saves the preferred diff view in a cookie' do
-        expect(response.cookies['diff_view']).to eq('parallel')
-      end
-    end
-  end
-
-  describe 'GET diff_for_path' do
-    def diff_for_path(extra_params = {})
-      params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project
-      }
-
-      get :diff_for_path, params.merge(extra_params)
-    end
-
-    context 'when an ID param is passed' do
-      let(:existing_path) { 'files/ruby/popen.rb' }
-
-      context 'when the merge request exists' do
-        context 'when the user can view the merge request' do
-          context 'when the path exists in the diff' do
-            it 'enables diff notes' do
-              diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
-
-              expect(assigns(:diff_notes_disabled)).to be_falsey
-              expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'MergeRequest',
-                                                          noteable_id: merge_request.id)
-            end
-
-            it 'only renders the diffs for the path given' do
-              expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
-                expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-                meth.call(diffs)
-              end
-
-              diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
-            end
-          end
-
-          context 'when the path does not exist in the diff' do
-            before do
-              diff_for_path(id: merge_request.iid, old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb')
-            end
-
-            it 'returns a 404' do
-              expect(response).to have_http_status(404)
-            end
-          end
-        end
-
-        context 'when the user cannot view the merge request' do
-          before do
-            project.team.truncate
-            diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
-          end
-
-          it 'returns a 404' do
-            expect(response).to have_http_status(404)
-          end
-        end
-      end
-
-      context 'when the merge request does not exist' do
-        before do
-          diff_for_path(id: merge_request.iid.succ, old_path: existing_path, new_path: existing_path)
-        end
-
-        it 'returns a 404' do
-          expect(response).to have_http_status(404)
-        end
-      end
-
-      context 'when the merge request belongs to a different project' do
-        let(:other_project) { create(:empty_project) }
-
-        before do
-          other_project.team << [user, :master]
-          diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path, project_id: other_project)
-        end
-
-        it 'returns a 404' do
-          expect(response).to have_http_status(404)
-        end
-      end
-    end
-
-    context 'when source and target params are passed' do
-      let(:existing_path) { 'files/ruby/feature.rb' }
-
-      context 'when both branches are in the same project' do
-        it 'disables diff notes' do
-          diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
-
-          expect(assigns(:diff_notes_disabled)).to be_truthy
-        end
-
-        it 'only renders the diffs for the path given' do
-          expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
-            expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-            meth.call(diffs)
-          end
-
-          diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
-        end
-      end
-
-      context 'when the source branch is in a different project to the target' do
-        let(:other_project) { create(:project) }
-
-        before do
-          other_project.team << [user, :master]
-        end
-
-        context 'when the path exists in the diff' do
-          it 'disables diff notes' do
-            diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
-
-            expect(assigns(:diff_notes_disabled)).to be_truthy
-          end
-
-          it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
-              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(diffs)
-            end
-
-            diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
-          end
-        end
-
-        context 'when the path does not exist in the diff' do
-          before do
-            diff_for_path(old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb', merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
-          end
-
-          it 'returns a 404' do
-            expect(response).to have_http_status(404)
-          end
-        end
       end
     end
   end
@@ -734,23 +492,11 @@ describe Projects::MergeRequestsController do
           format: format
     end
 
-    it_behaves_like "loads labels", :commits
+    it 'renders the commits template to a string' do
+      go format: 'json'
 
-    context 'as html' do
-      it 'renders the show template' do
-        go
-
-        expect(response).to render_template('show')
-      end
-    end
-
-    context 'as json' do
-      it 'renders the commits template to a string' do
-        go format: 'json'
-
-        expect(response).to render_template('projects/merge_requests/show/_commits')
-        expect(json_response).to have_key('html')
-      end
+      expect(response).to render_template('projects/merge_requests/_commits')
+      expect(json_response).to have_key('html')
     end
   end
 
@@ -759,106 +505,17 @@ describe Projects::MergeRequestsController do
       create(:ci_pipeline, project: merge_request.source_project,
                            ref: merge_request.source_branch,
                            sha: merge_request.diff_head_sha)
+
+      get :pipelines,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid,
+          format: :json
     end
 
-    context 'when using HTML format' do
-      it_behaves_like "loads labels", :pipelines
-    end
-
-    context 'when using JSON format' do
-      before do
-        get :pipelines,
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            format: :json
-      end
-
-      it 'responds with serialized pipelines' do
-        expect(json_response).not_to be_empty
-      end
-    end
-  end
-
-  describe 'GET conflicts' do
-    context 'when the conflicts cannot be resolved in the UI' do
-      before do
-        allow_any_instance_of(Gitlab::Conflict::Parser)
-          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
-
-        get :conflicts,
-            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-            project_id: merge_request_with_conflicts.project,
-            id: merge_request_with_conflicts.iid,
-            format: 'json'
-      end
-
-      it 'returns a 200 status code' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'returns JSON with a message' do
-        expect(json_response.keys).to contain_exactly('message', 'type')
-      end
-    end
-
-    context 'with valid conflicts' do
-      before do
-        get :conflicts,
-            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-            project_id: merge_request_with_conflicts.project,
-            id: merge_request_with_conflicts.iid,
-            format: 'json'
-      end
-
-      it 'matches the schema' do
-        expect(response).to match_response_schema('conflicts')
-      end
-
-      it 'includes meta info about the MR' do
-        expect(json_response['commit_message']).to include('Merge branch')
-        expect(json_response['commit_sha']).to match(/\h{40}/)
-        expect(json_response['source_branch']).to eq(merge_request_with_conflicts.source_branch)
-        expect(json_response['target_branch']).to eq(merge_request_with_conflicts.target_branch)
-      end
-
-      it 'includes each file that has conflicts' do
-        filenames = json_response['files'].map { |file| file['new_path'] }
-
-        expect(filenames).to contain_exactly('files/ruby/popen.rb', 'files/ruby/regex.rb')
-      end
-
-      it 'splits files into sections with lines' do
-        json_response['files'].each do |file|
-          file['sections'].each do |section|
-            expect(section).to include('conflict', 'lines')
-
-            section['lines'].each do |line|
-              if section['conflict']
-                expect(line['type']).to be_in(%w(old new))
-                expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
-              else
-                if line['type'].nil?
-                  expect(line['old_line']).not_to eq(nil)
-                  expect(line['new_line']).not_to eq(nil)
-                else
-                  expect(line['type']).to eq('match')
-                  expect(line['old_line']).to eq(nil)
-                  expect(line['new_line']).to eq(nil)
-                end
-              end
-            end
-          end
-        end
-      end
-
-      it 'has unique section IDs across files' do
-        section_ids = json_response['files'].flat_map do |file|
-          file['sections'].map { |section| section['id'] }.compact
-        end
-
-        expect(section_ids.uniq).to eq(section_ids)
-      end
+    it 'responds with serialized pipelines' do
+      expect(json_response['pipelines']).not_to be_empty
+      expect(json_response['count']['all']).to eq 1
     end
   end
 
@@ -904,221 +561,12 @@ describe Projects::MergeRequestsController do
       subject
     end
 
-    it { is_expected.to have_http_status(:success) }
+    it { is_expected.to have_gitlab_http_status(:success) }
 
     it 'renders MergeRequest as JSON' do
       subject
 
       expect(json_response.keys).to include('id', 'iid', 'description')
-    end
-  end
-
-  describe 'GET conflict_for_path' do
-    def conflict_for_path(path)
-      get :conflict_for_path,
-          namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-          project_id: merge_request_with_conflicts.project,
-          id: merge_request_with_conflicts.iid,
-          old_path: path,
-          new_path: path,
-          format: 'json'
-    end
-
-    context 'when the conflicts cannot be resolved in the UI' do
-      before do
-        allow_any_instance_of(Gitlab::Conflict::Parser)
-          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
-
-        conflict_for_path('files/ruby/regex.rb')
-      end
-
-      it 'returns a 404 status code' do
-        expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    context 'when the file does not exist cannot be resolved in the UI' do
-      before do
-        conflict_for_path('files/ruby/regexp.rb')
-      end
-
-      it 'returns a 404 status code' do
-        expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    context 'with an existing file' do
-      let(:path) { 'files/ruby/regex.rb' }
-
-      before do
-        conflict_for_path(path)
-      end
-
-      it 'returns a 200 status code' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'returns the file in JSON format' do
-        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts)
-                    .file_for_path(path, path)
-                    .content
-
-        expect(json_response).to include('old_path' => path,
-                                         'new_path' => path,
-                                         'blob_icon' => 'file-text-o',
-                                         'blob_path' => a_string_ending_with(path),
-                                         'blob_ace_mode' => 'ruby',
-                                         'content' => content)
-      end
-    end
-  end
-
-  context 'POST resolve_conflicts' do
-    let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }
-
-    def resolve_conflicts(files)
-      post :resolve_conflicts,
-           namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-           project_id: merge_request_with_conflicts.project,
-           id: merge_request_with_conflicts.iid,
-           format: 'json',
-           files: files,
-           commit_message: 'Commit message'
-    end
-
-    context 'with valid params' do
-      before do
-        resolved_files = [
-          {
-            'new_path' => 'files/ruby/popen.rb',
-            'old_path' => 'files/ruby/popen.rb',
-            'sections' => {
-              '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head'
-            }
-          }, {
-            'new_path' => 'files/ruby/regex.rb',
-            'old_path' => 'files/ruby/regex.rb',
-            'sections' => {
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
-            }
-          }
-        ]
-
-        resolve_conflicts(resolved_files)
-      end
-
-      it 'creates a new commit on the branch' do
-        expect(original_head_sha).not_to eq(merge_request_with_conflicts.source_branch_head.sha)
-        expect(merge_request_with_conflicts.source_branch_head.message).to include('Commit message')
-      end
-
-      it 'returns an OK response' do
-        expect(response).to have_http_status(:ok)
-      end
-    end
-
-    context 'when sections are missing' do
-      before do
-        resolved_files = [
-          {
-            'new_path' => 'files/ruby/popen.rb',
-            'old_path' => 'files/ruby/popen.rb',
-            'sections' => {
-              '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head'
-            }
-          }, {
-            'new_path' => 'files/ruby/regex.rb',
-            'old_path' => 'files/ruby/regex.rb',
-            'sections' => {
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head'
-            }
-          }
-        ]
-
-        resolve_conflicts(resolved_files)
-      end
-
-      it 'returns a 400 error' do
-        expect(response).to have_http_status(:bad_request)
-      end
-
-      it 'has a message with the name of the first missing section' do
-        expect(json_response['message']).to include('6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21')
-      end
-
-      it 'does not create a new commit' do
-        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
-      end
-    end
-
-    context 'when files are missing' do
-      before do
-        resolved_files = [
-          {
-            'new_path' => 'files/ruby/regex.rb',
-            'old_path' => 'files/ruby/regex.rb',
-            'sections' => {
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
-            }
-          }
-        ]
-
-        resolve_conflicts(resolved_files)
-      end
-
-      it 'returns a 400 error' do
-        expect(response).to have_http_status(:bad_request)
-      end
-
-      it 'has a message with the name of the missing file' do
-        expect(json_response['message']).to include('files/ruby/popen.rb')
-      end
-
-      it 'does not create a new commit' do
-        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
-      end
-    end
-
-    context 'when a file has identical content to the conflict' do
-      before do
-        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts)
-                    .file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb')
-                    .content
-
-        resolved_files = [
-          {
-            'new_path' => 'files/ruby/popen.rb',
-            'old_path' => 'files/ruby/popen.rb',
-            'content' => content
-          }, {
-            'new_path' => 'files/ruby/regex.rb',
-            'old_path' => 'files/ruby/regex.rb',
-            'sections' => {
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
-              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
-            }
-          }
-        ]
-
-        resolve_conflicts(resolved_files)
-      end
-
-      it 'returns a 400 error' do
-        expect(response).to have_http_status(:bad_request)
-      end
-
-      it 'has a message with the path of the problem file' do
-        expect(json_response['message']).to include('files/ruby/popen.rb')
-      end
-
-      it 'does not create a new commit' do
-        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
-      end
     end
   end
 
@@ -1172,21 +620,16 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)       { create(:project) }
+      let!(:forked)       { fork_project(project, user, repository: true) }
       let!(:environment)  { create(:environment, project: forked) }
       let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
       let(:admin)         { create(:admin) }
 
       let(:merge_request) do
-        create(:forked_project_link, forked_to_project: forked,
-                                     forked_from_project: project)
-
         create(:merge_request, source_project: forked, target_project: project)
       end
 
       before do
-        forked.team << [user, :master]
-
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
@@ -1194,7 +637,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'links to the environment on that project' do
-        expect(json_response.first['url']).to match /#{forked.path_with_namespace}/
+        expect(json_response.first['url']).to match /#{forked.full_path}/
       end
     end
   end
@@ -1215,11 +658,11 @@ describe Projects::MergeRequestsController do
       end
 
       it 'return a detailed head_pipeline status in json' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
       end
     end
 
@@ -1229,7 +672,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'return empty' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
       end
     end
@@ -1239,6 +682,64 @@ describe Projects::MergeRequestsController do
                             project_id: project,
                             id: merge_request.iid,
                             format: :json
+    end
+  end
+
+  describe 'POST #rebase' do
+    let(:viewer)        { user }
+
+    def post_rebase
+      post :rebase, namespace_id: project.namespace, project_id: project, id: merge_request
+    end
+
+    def expect_rebase_worker_for(user)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id)
+    end
+
+    context 'successfully' do
+      it 'enqeues a RebaseWorker' do
+        expect_rebase_worker_for(viewer)
+
+        post_rebase
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'with a forked project' do
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+      let(:fork_owner) { fork_project.owner }
+
+      before do
+        merge_request.update!(source_project: fork_project)
+        fork_project.add_reporter(user)
+      end
+
+      context 'user cannot push to source branch' do
+        it 'returns 404' do
+          expect_rebase_worker_for(viewer).never
+
+          post_rebase
+
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'user can push to source branch' do
+        before do
+          project.add_reporter(fork_owner)
+
+          sign_in(fork_owner)
+        end
+
+        it 'returns 200' do
+          expect_rebase_worker_for(fork_owner)
+
+          post_rebase
+
+          expect(response.status).to eq(200)
+        end
+      end
     end
   end
 end

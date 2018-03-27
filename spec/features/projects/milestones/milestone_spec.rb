@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'Project milestone', :feature do
+feature 'Project milestone' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when project has enabled issues' do
     before do
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
     end
 
     it 'shows issues tab' do
@@ -38,7 +38,7 @@ feature 'Project milestone', :feature do
   context 'when project has disabled issues' do
     before do
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
     end
 
     it 'hides issues tab' do
@@ -68,7 +68,7 @@ feature 'Project milestone', :feature do
     before do
       create(:issue, project: project, milestone: milestone)
 
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
     end
 
     describe 'the collapsed sidebar' do

@@ -58,7 +58,9 @@ Runs the following rake tasks:
 
 It will check that each component was setup according to the installation guide and suggest fixes for issues found.
 
-You may also have a look at our [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide).
+You may also have a look at our Trouble Shooting Guides:
+- [Trouble Shooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)
+- [Trouble Shooting Guide (Omnibus Gitlab)](http://docs.gitlab.com/omnibus/README.html#troubleshooting)
 
 **Omnibus Installation**
 
@@ -218,4 +220,51 @@ sudo gitlab-rake gitlab:shell:create_hooks
 ```
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:create_hooks RAILS_ENV=production
+```
+
+## Check TCP connectivity to a remote site
+
+Sometimes you need to know if your GitLab installation can connect to a TCP
+service on another machine - perhaps a PostgreSQL or HTTPS server. A rake task
+is included to help you with this:
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake gitlab:tcp_check[example.com,80]
+```
+
+**Source Installation**
+
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
+```
+
+## Clear exclusive lease (DANGER)
+
+GitLab uses a shared lock mechanism: `ExclusiveLease` to prevent simultaneous operations
+in a shared resource. An example is running periodic garbage collection on repositories.
+
+In very specific situations, a operation locked by an Exclusive Lease can fail without
+releasing the lock. If you can't wait for it to expire, you can run this task to manually
+clear it.
+
+To clear all exclusive leases:
+
+DANGER: **DANGER**: 
+Don't run it while GitLab or Sidekiq is running
+
+```bash
+sudo gitlab-rake gitlab:exclusive_lease:clear
+```
+
+To specify a lease `type` or lease `type + id`, specify a scope:
+
+```bash
+# to clear all leases for repository garbage collection:
+sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:*]
+
+# to clear a lease for repository garbage collection in a specific project: (id=4)
+sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:4]
 ```

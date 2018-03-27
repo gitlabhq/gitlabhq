@@ -1,27 +1,8 @@
 %div
   %p.light
-    Commit duration in minutes for last 30 commits
+    = _("Commit duration in minutes for last 30 commits")
 
   %canvas#build_timesChart{ height: 200 }
 
-:javascript
-  var data = {
-    labels : #{@charts[:pipeline_times].labels.to_json},
-    datasets : [
-      {
-        fillColor : "rgba(220,220,220,0.5)",
-        strokeColor : "rgba(220,220,220,1)",
-        barStrokeWidth: 1,
-        barValueSpacing: 1,
-        barDatasetSpacing: 1,
-        data : #{@charts[:pipeline_times].pipeline_times.to_json}
-      }
-    ]
-  }
-  var ctx = $("#build_timesChart").get(0).getContext("2d");
-  var options = { scaleOverlay: true, responsive: true, maintainAspectRatio: false };
-  if (window.innerWidth < 768) {
-    // Scale fonts if window width lower than 768px (iPad portrait)
-    options.scaleFontSize = 8
-  }
-  new Chart(ctx).Bar(data, options);
+-# haml-lint:disable InlineJavaScript
+%script#pipelinesTimesChartsData{ type: "application/json" }= { :labels => @charts[:pipeline_times].labels, :values => @charts[:pipeline_times].pipeline_times }.to_json.html_safe

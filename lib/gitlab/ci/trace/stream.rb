@@ -56,25 +56,26 @@ module Gitlab
         end
 
         def html_with_state(state = nil)
-          ::Ci::Ansi2html.convert(stream, state)
+          ::Gitlab::Ci::Ansi2html.convert(stream, state)
         end
 
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
           buffer = StringIO.new(text)
-          ::Ci::Ansi2html.convert(buffer).html
+          ::Gitlab::Ci::Ansi2html.convert(buffer).html
         end
 
         def extract_coverage(regex)
           return unless valid?
-          return unless regex
+          return unless regex.present?
 
-          regex = Regexp.new(regex)
+          regex = Gitlab::UntrustedRegexp.new(regex)
 
           match = ""
 
           reverse_line do |line|
-            matches = line.scan(regex)
+            line.chomp!
+            matches = regex.scan(line)
             next unless matches.is_a?(Array)
             next if matches.empty?
 
@@ -89,7 +90,24 @@ module Gitlab
           # so we just silently ignore error for now
         end
 
+        def extract_sections
+          return [] unless valid?
+
+          lines = to_enum(:each_line_with_pos)
+          parser = SectionParser.new(lines)
+
+          parser.parse!
+          parser.sections
+        end
+
         private
+
+        def each_line_with_pos
+          stream.seek(0, IO::SEEK_SET)
+          stream.each_line do |line|
+            yield [line, stream.pos - line.bytesize]
+          end
+        end
 
         def read_last_lines(limit)
           to_enum(:reverse_line).first(limit).reverse.join

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Projects::ParticipantsService, services: true do
+describe Projects::ParticipantsService do
   describe '#groups' do
     describe 'avatar_url' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png')) }
       let(:user) { create(:user) }
       let!(:group_member) { create(:group_member, group: group, user: user) }
@@ -13,7 +13,7 @@ describe Projects::ParticipantsService, services: true do
         groups = participants.groups
 
         expect(groups.size).to eq 1
-        expect(groups.first[:avatar_url]).to eq("/uploads/system/group/avatar/#{group.id}/dk.png")
+        expect(groups.first[:avatar_url]).to eq("/uploads/-/system/group/avatar/#{group.id}/dk.png")
       end
 
       it 'should return an url for the avatar with relative url' do
@@ -24,7 +24,7 @@ describe Projects::ParticipantsService, services: true do
         groups = participants.groups
 
         expect(groups.size).to eq 1
-        expect(groups.first[:avatar_url]).to eq("/gitlab/uploads/system/group/avatar/#{group.id}/dk.png")
+        expect(groups.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
       end
     end
   end

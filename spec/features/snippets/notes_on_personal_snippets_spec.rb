@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Comments on personal snippets', :js, feature: true do
+describe 'Comments on personal snippets', :js do
   include NoteInteractionHelpers
 
   let!(:user)    { create(:user) }
@@ -14,7 +14,7 @@ describe 'Comments on personal snippets', :js, feature: true do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    gitlab_sign_in user
+    sign_in user
     visit snippet_path(snippet)
   end
 
@@ -33,6 +33,7 @@ describe 'Comments on personal snippets', :js, feature: true do
         expect(page).to have_selector('.note-emoji-button')
       end
 
+      find('body').click # close dropdown
       open_more_actions_dropdown(snippet_notes[1])
 
       page.within("#notes-list li#note_#{snippet_notes[1].id}") do
@@ -73,28 +74,21 @@ describe 'Comments on personal snippets', :js, feature: true do
 
     it 'should not have autocomplete' do
       wait_for_requests
-      request_count_before = page.driver.network_traffic.count
 
       find('#note_note').native.send_keys('')
       fill_in 'note[note]', with: '@'
 
       wait_for_requests
-      request_count_after = page.driver.network_traffic.count
 
       # This selector probably won't be in place even if autocomplete was enabled
       # but we want to make sure
       expect(page).not_to have_selector('.atwho-view')
-      expect(request_count_before).to eq(request_count_after)
     end
   end
 
   context 'when editing a note' do
     it 'changes the text' do
-      open_more_actions_dropdown(snippet_notes[0])
-
-      page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Edit comment'
-      end
+      find('.js-note-edit').click
 
       page.within('.current-note-edit-form') do
         fill_in 'note[note]', with: 'new content'
@@ -116,7 +110,7 @@ describe 'Comments on personal snippets', :js, feature: true do
       open_more_actions_dropdown(snippet_notes[0])
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Delete comment'
+        accept_confirm { click_on 'Delete comment' }
       end
 
       wait_for_requests

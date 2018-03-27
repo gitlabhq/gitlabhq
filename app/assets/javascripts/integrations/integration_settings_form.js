@@ -1,12 +1,14 @@
-/* global Flash */
+import $ from 'jquery';
+import axios from '../lib/utils/axios_utils';
+import flash from '../flash';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
     this.$form = $(formSelector);
 
     // Form Metadata
-    this.canTestService = this.$form.data('can-test');
-    this.testEndPoint = this.$form.data('test-url');
+    this.canTestService = this.$form.data('canTest');
+    this.testEndPoint = this.$form.data('testUrl');
 
     // Form Child Elements
     this.$serviceToggle = this.$form.find('#service_active');
@@ -95,29 +97,26 @@ export default class IntegrationSettingsForm {
    */
   testSettings(formData) {
     this.toggleSubmitBtnState(true);
-    $.ajax({
-      type: 'PUT',
-      url: this.testEndPoint,
-      data: formData,
-    })
-    .done((res) => {
-      if (res.error) {
-        new Flash(res.message, null, null, {
-          title: 'Save anyway',
-          clickHandler: (e) => {
-            e.preventDefault();
-            this.$form.submit();
-          },
-        });
-      } else {
-        this.$form.submit();
-      }
-    })
-    .fail(() => {
-      new Flash('Something went wrong on our end.');
-    })
-    .always(() => {
-      this.toggleSubmitBtnState(false);
-    });
+
+    return axios.put(this.testEndPoint, formData)
+      .then(({ data }) => {
+        if (data.error) {
+          flash(`${data.message} ${data.service_response}`, 'alert', document, {
+            title: 'Save anyway',
+            clickHandler: (e) => {
+              e.preventDefault();
+              this.$form.submit();
+            },
+          });
+        } else {
+          this.$form.submit();
+        }
+
+        this.toggleSubmitBtnState(false);
+      })
+      .catch(() => {
+        flash('Something went wrong on our end.');
+        this.toggleSubmitBtnState(false);
+      });
   }
 }

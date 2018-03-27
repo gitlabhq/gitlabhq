@@ -2,12 +2,11 @@
   %ul.nav-links
     = nav_link(page: dashboard_snippets_path, html_options: {class: 'home'}) do
       = link_to dashboard_snippets_path, title: 'Your snippets', data: {placement: 'right'} do
-        Your Snippets
+        Your snippets
     = nav_link(page: explore_snippets_path) do
       = link_to explore_snippets_path, title: 'Explore snippets', data: {placement: 'right'} do
-        Explore Snippets
+        Explore snippets
 
   - if current_user
     .nav-controls.hidden-xs
-      = link_to new_snippet_path, class: "btn btn-new", title: "New snippet" do
-        New snippet
+      = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"

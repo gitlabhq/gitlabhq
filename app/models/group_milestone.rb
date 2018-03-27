@@ -16,4 +16,8 @@ class GroupMilestone < GlobalMilestone
   def issues_finder_params
     { group_id: group.id }
   end
+
+  def legacy_group_milestone?
+    true
+  end
 end

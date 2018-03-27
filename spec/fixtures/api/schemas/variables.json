@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["variables"],
+  "properties": {
+    "variables": {
+      "type": "array",
+      "items": { "$ref": "variable.json" }
+    }
+  },
+  "additionalProperties": false
+}

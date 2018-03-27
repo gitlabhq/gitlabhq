@@ -11,6 +11,7 @@ class Discussion
             :author,
 
             :noteable,
+            :commit_id,
             :for_commit?,
             :for_merge_request?,
 
@@ -66,6 +67,10 @@ class Discussion
     @context_noteable = context_noteable
   end
 
+  def on_image?
+    false
+  end
+
   def ==(other)
     other.class == self.class &&
       other.context_noteable == self.context_noteable &&
@@ -79,6 +84,10 @@ class Discussion
 
   def last_updated_by
     last_note.author
+  end
+
+  def updated?
+    last_updated_at != created_at
   end
 
   def id

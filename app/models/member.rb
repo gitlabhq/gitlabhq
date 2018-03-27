@@ -1,8 +1,10 @@
 class Member < ActiveRecord::Base
+  include AfterCommitQueue
   include Sortable
   include Importable
   include Expirable
   include Gitlab::Access
+  include Presentable
 
   attr_accessor :raw_invite_token
 
@@ -41,9 +43,20 @@ class Member < ActiveRecord::Base
     is_external_invite = arel_table[:user_id].eq(nil).and(arel_table[:invite_token].not_eq(nil))
     user_is_active = User.arel_table[:state].eq(:active)
 
-    includes(:user).references(:users)
-      .where(is_external_invite.or(user_is_active))
+    user_ok = Arel::Nodes::Grouping.new(is_external_invite).or(user_is_active)
+
+    left_join_users
+      .where(user_ok)
       .where(requested_at: nil)
+      .reorder(nil)
+  end
+
+  # Like active, but without invites. For when a User is required.
+  scope :active_without_invites_and_requests, -> do
+    left_join_users
+      .where(users: { state: 'active' })
+      .non_request
+      .reorder(nil)
   end
 
   scope :invite, -> { where.not(invite_token: nil) }
@@ -72,6 +85,7 @@ class Member < ActiveRecord::Base
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
   after_update :post_update_hook, unless: [:pending?, :importing?]
+  after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?
   after_commit :refresh_member_authorized_projects
 
@@ -115,19 +129,10 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-    def add_user(source, user, access_level, current_user: nil, expires_at: nil)
-      user = retrieve_user(user)
+    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
+      # `user` can be either a User object, User ID or an email to be invited
+      member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
-
-      # `user` can be either a User object or an email to be invited
-      member =
-        if user.is_a?(User)
-          source.members.find_by(user_id: user.id) ||
-            source.requesters.find_by(user_id: user.id) ||
-            source.members.build(user_id: user.id)
-        else
-          source.members.build(invite_email: user)
-        end
 
       return member unless can_update_member?(current_user, member)
 
@@ -139,11 +144,13 @@ class Member < ActiveRecord::Base
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
-          source,
           current_user,
-          id: member.id,
           access_level: access_level
-        ).execute
+        ).execute(
+          member,
+          skip_authorization: ldap,
+          skip_log_audit_event: ldap
+        )
       else
         member.save
       end
@@ -154,17 +161,15 @@ class Member < ActiveRecord::Base
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
       return [] unless users.present?
 
-      # Collect all user ids into separate array
-      # so we can use single sql query to get user objects
-      user_ids = users.select { |user| user =~ /\A\d+\Z/ }
-      users = users - user_ids + User.where(id: user_ids)
+      emails, users, existing_members = parse_users_list(source, users)
 
       self.transaction do
-        users.map do |user|
+        (emails + users).map! do |user|
           add_user(
             source,
             user,
             access_level,
+            existing_members: existing_members,
             current_user: current_user,
             expires_at: expires_at
           )
@@ -178,12 +183,51 @@ class Member < ActiveRecord::Base
 
     private
 
+    def parse_users_list(source, list)
+      emails, user_ids, users = [], [], []
+      existing_members = {}
+
+      list.each do |item|
+        case item
+        when User
+          users << item
+        when Integer
+          user_ids << item
+        when /\A\d+\Z/
+          user_ids << item.to_i
+        when Devise.email_regexp
+          emails << item
+        end
+      end
+
+      if user_ids.present?
+        users.concat(User.where(id: user_ids))
+        existing_members = source.members_and_requesters.where(user_id: user_ids).index_by(&:user_id)
+      end
+
+      [emails, users, existing_members]
+    end
+
     # This method is used to find users that have been entered into the "Add members" field.
     # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
     def retrieve_user(user)
       return user if user.is_a?(User)
 
       User.find_by(id: user) || User.find_by(email: user) || user
+    end
+
+    def retrieve_member(source, user, existing_members)
+      user = retrieve_user(user)
+
+      if user.is_a?(User)
+        if existing_members
+          existing_members[user.id] || source.members.build(user_id: user.id)
+        else
+          source.members_and_requesters.find_or_initialize_by(user_id: user.id)
+        end
+      else
+        source.members.build(invite_email: user)
+      end
     end
 
     def retrieve_access_level(access_level)
@@ -272,8 +316,19 @@ class Member < ActiveRecord::Base
     user.notification_settings.find_or_create_for(source)
   end
 
+  def destroy_notification_setting
+    notification_setting&.destroy
+  end
+
   def notification_setting
-    @notification_setting ||= user.notification_settings_for(source)
+    @notification_setting ||= user&.notification_settings_for(source)
+  end
+
+  def notifiable?(type, opts = {})
+    # always notify when there isn't a user yet
+    return true if user.blank?
+
+    NotificationRecipientService.notifiable?(user, type, notifiable_options.merge(opts))
   end
 
   private
@@ -331,5 +386,9 @@ class Member < ActiveRecord::Base
 
   def notification_service
     NotificationService.new
+  end
+
+  def notifiable_options
+    {}
   end
 end

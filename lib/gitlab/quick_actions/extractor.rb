@@ -29,7 +29,7 @@ module Gitlab
       # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
       # msg #=> "hello\nworld"
       # ```
-      def extract_commands(content, opts = {})
+      def extract_commands(content)
         return [content, []] unless content
 
         content = content.dup
@@ -37,7 +37,7 @@ module Gitlab
         commands = []
 
         content.delete!("\r")
-        content.gsub!(commands_regex(opts)) do
+        content.gsub!(commands_regex) do
           if $~[:cmd]
             commands << [$~[:cmd], $~[:arg]].reject(&:blank?)
             ''
@@ -45,6 +45,8 @@ module Gitlab
             $~[0]
           end
         end
+
+        content, commands = perform_substitutions(content, commands)
 
         [content.strip, commands]
       end
@@ -58,8 +60,8 @@ module Gitlab
       # It looks something like:
       #
       #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<arg>[^\/\n]*)(?:\n|$)/
-      def commands_regex(opts)
-        names = command_names(opts).map(&:to_s)
+      def commands_regex
+        names = command_names.map(&:to_s)
 
         @commands_regex ||= %r{
             (?<code>
@@ -110,7 +112,28 @@ module Gitlab
         }mx
       end
 
-      def command_names(opts)
+      def perform_substitutions(content, commands)
+        return unless content
+
+        substitution_definitions = self.command_definitions.select do |definition|
+          definition.is_a?(Gitlab::QuickActions::SubstitutionDefinition)
+        end
+
+        substitution_definitions.each do |substitution|
+          match_data = substitution.match(content)
+          if match_data
+            command = [substitution.name.to_s]
+            command << match_data[1] unless match_data[1].empty?
+            commands << command
+          end
+
+          content = substitution.perform_substitution(self, content)
+        end
+
+        [content, commands]
+      end
+
+      def command_names
         command_definitions.flat_map do |command|
           next if command.noop?
 

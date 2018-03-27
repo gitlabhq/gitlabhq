@@ -3,7 +3,7 @@
 > **Notes:**
 > - This feature was [introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
-> - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
+> - GitLab Pages [was ported][ce-14605] to Community Edition in GitLab 8.17.
 > - This document is about the user guide. To learn how to enable GitLab Pages
 >   across your GitLab instance, visit the [administrator documentation](../../../administration/pages/index.md).
 
@@ -28,7 +28,8 @@ In general there are two types of pages one might create:
 - Pages per project (`username.example.io/projectname` or `groupname.example.io/projectname`)
 
 In GitLab, usernames and groupnames are unique and we often refer to them
-as namespaces. There can be only one namespace in a GitLab instance. Below you
+as [namespaces](../../group/index.md#namespaces). There can be only one namespace
+in a GitLab instance. Below you
 can see the connection between the type of GitLab Pages, what the project name
 that is created on GitLab looks like and the website URL it will be ultimately
 be served on.
@@ -98,6 +99,9 @@ The steps to create a project page for a user or a group are identical:
 A user's project will be served under `http(s)://username.example.io/projectname`
 whereas a group's project under `http(s)://groupname.example.io/projectname`.
 
+For practical examples for group and project Pages, read through the guide
+[GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages domains](getting_started_part_one.md#practical-examples).
+
 ## Quick Start
 
 Read through [GitLab Pages Quick Start Guide][pages-quick] or watch the video tutorial on
@@ -110,6 +114,9 @@ See also [All you Need to Know About GitLab Pages][pages-index-guide] for a list
 The key thing about GitLab Pages is the `.gitlab-ci.yml` file, something that
 gives you absolute control over the build process. You can actually watch your
 website being built live by following the CI job traces.
+
+For a simplified user guide on setting up GitLab CI/CD for Pages, read through
+the article [GitLab Pages from A to Z: Part 4 - Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md#creating-and-tweaking-gitlab-ci-yml-for-gitlab-pages)
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI
@@ -167,7 +174,7 @@ job, the contents of the `public` directory will be served by GitLab Pages.
 
 #### How `.gitlab-ci.yml` looks like when the static content is in your repository
 
-Supposedly your repository contained the following files:
+Supposed your repository contained the following files:
 
 ```
 ├── index.html
@@ -309,7 +316,51 @@ or various static site generators. Contributions are very welcome.
 Visit the GitLab Pages group for a full list of example projects:
 <https://gitlab.com/groups/pages>.
 
+### Serving compressed assets
+
+Most modern browsers support downloading files in a compressed format. This
+speeds up downloads by reducing the size of files.
+
+Before serving an uncompressed file, Pages will check whether the same file
+exists with a `.gz` extension. If it does, and the browser supports receiving
+compressed files, it will serve that version instead of the uncompressed one.
+
+To take advantage of this feature, the artifact you upload to the Pages should
+have this structure:
+
+```
+public/
+├─┬ index.html
+│ └ index.html.gz
+│
+├── css/
+│   └─┬ main.css
+│     └ main.css.gz
+│
+└── js/
+    └─┬ main.js
+      └ main.js.gz
+```
+
+This can be achieved by including a `script:` command like this in your
+`.gitlab-ci.yml` pages job:
+
+```yaml
+pages:
+  # Other directives
+  script:
+    - # build the public/ directory first
+    - find public -type f -iregex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -execdir gzip -f --keep {} \;
+```
+
+By pre-compressing the files and including both versions in the artifact, Pages
+can serve requests for both compressed and uncompressed content without
+needing to compress files on-demand.
+
 ### Add a custom domain to your Pages website
+
+For a complete guide on Pages domains, read through the article
+[GitLab Pages from A to Z: Part 3 - Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md#setting-up-custom-domains-dns-records-and-ssl-tls-certificates)
 
 If this setting is enabled by your GitLab administrator, you should be able to
 see the **New Domain** button when visiting your project's settings through the
@@ -349,6 +400,9 @@ private key when adding a new domain.
 
 ![Pages upload cert](img/pages_upload_cert.png)
 
+For a complete guide on Pages domains, read through the article
+[GitLab Pages from A to Z: Part 3 - Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md#setting-up-custom-domains-dns-records-and-ssl-tls-certificates)
+
 ### Custom error codes pages
 
 You can provide your own 403 and 404 error pages by creating the `403.html` and
@@ -360,7 +414,7 @@ configuration.
 If the case of `404.html`, there are different scenarios. For example:
 
 - If you use project Pages (served under `/projectname/`) and try to access
-  `/projectname/non/exsiting_file`, GitLab Pages will try to serve first
+  `/projectname/non/existing_file`, GitLab Pages will try to serve first
   `/projectname/404.html`, and then `/404.html`.
 - If you use user/group Pages (served under `/`) and try to access
   `/non/existing_file` GitLab Pages will try to serve `/404.html`.
@@ -387,6 +441,8 @@ If you are using GitLab.com to host your website, then:
 
 The rest of the guide still applies.
 
+See also: [GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages domains](getting_started_part_one.md#gitlab-pages-domain).
+
 ## Limitations
 
 When using Pages under the general domain of a GitLab instance (`*.example.io`),
@@ -398,10 +454,13 @@ don't redirect HTTP to HTTPS.
 
 [rfc]: https://tools.ietf.org/html/rfc2818#section-3.1 "HTTP Over TLS RFC"
 
+GitLab Pages [does **not** support subgroups](../../group/subgroups/index.md#limitations).
+You can only create the highest level group website.
+
 ## Redirects in GitLab Pages
 
 Since you cannot use any custom server configuration files, like `.htaccess` or
-any `.conf` file for that matter, if you want to redirect a web page to another
+any `.conf` file, if you want to redirect a page to another
 location, you can use the [HTTP meta refresh tag][metarefresh].
 
 Some static site generators provide plugins for that functionality so that you
@@ -416,7 +475,7 @@ Sure. All you need to do is download the artifacts archive from the job page.
 
 ### Can I use GitLab Pages if my project is private?
 
-Yes. GitLab Pages don't care whether you set your project's visibility level
+Yes. GitLab Pages doesn't care whether you set your project's visibility level
 to private, internal or public.
 
 ### Do I need to create a user/group website before creating a project website?

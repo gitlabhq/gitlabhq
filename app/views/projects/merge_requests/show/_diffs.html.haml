@@ -1,5 +1,0 @@
-- if @merge_request_diff.collected? || @merge_request_diff.overflow?
-  = render 'projects/merge_requests/show/versions'
-  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment
-- elsif @merge_request_diff.empty?
-  .nothing-here-block Nothing to merge from #{@merge_request.source_branch} into #{@merge_request.target_branch}

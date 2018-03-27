@@ -1,5 +1,8 @@
 /* eslint-disable no-new */
-/* global Flash */
+
+import $ from 'jquery';
+import flash from './flash';
+import axios from './lib/utils/axios_utils';
 
 /**
  * In each pipelines table we have a mini pipeline graph for each pipeline.
@@ -78,27 +81,22 @@ export default class MiniPipelineGraph {
     const button = e.relatedTarget;
     const endpoint = button.dataset.stageEndpoint;
 
-    return $.ajax({
-      dataType: 'json',
-      type: 'GET',
-      url: endpoint,
-      beforeSend: () => {
-        this.renderBuildsList(button, '');
-        this.toggleLoading(button);
-      },
-      success: (data) => {
+    this.renderBuildsList(button, '');
+    this.toggleLoading(button);
+
+    axios.get(endpoint)
+      .then(({ data }) => {
         this.toggleLoading(button);
         this.renderBuildsList(button, data.html);
         this.stopDropdownClickPropagation();
-      },
-      error: () => {
+      })
+      .catch(() => {
         this.toggleLoading(button);
         if ($(button).parent().hasClass('open')) {
           $(button).dropdown('toggle');
         }
-        new Flash('An error occurred while fetching the builds.', 'alert');
-      },
-    });
+        flash('An error occurred while fetching the builds.', 'alert');
+      });
   }
 
   /**

@@ -1,0 +1,86 @@
+# The following script will work for any project that can be built from command line by msbuild
+# It uses powershell shell executor, so you need to add the following line to your config.toml file
+# (located in gitlab-runner.exe directory):
+#   shell = "powershell"
+#
+# The script is composed of 3 stages: build, test and deploy.  
+#
+# The build stage restores NuGet packages and uses msbuild to build the exe and msi
+# One major issue you'll find is that you can't build msi projects from command line
+# if you use vdproj.  There are workarounds building msi via devenv, but they rarely work
+# The best solution is migrating your vdproj projects to WiX, as it can be build directly 
+# by msbuild.
+#
+# The test stage runs nunit from command line against Test project inside your solution
+# It also saves the resulting TestResult.xml file
+#
+# The deploy stage copies the exe and msi from build stage to a network drive
+# You need to have the network drive mapped as Local System user for gitlab-runner service to see it
+# The best way to persist the mapping is via a scheduled task (see: https://stackoverflow.com/a/7867064/1288473),
+# running the following batch command: net use P: \\x.x.x.x\Projects /u:your_user your_pass /persistent:yes
+
+
+# place project specific paths in variables to make the rest of the script more generic
+variables:
+  EXE_RELEASE_FOLDER: 'YourApp\bin\Release'
+  MSI_RELEASE_FOLDER: 'Setup\bin\Release'
+  TEST_FOLDER: 'Tests\bin\Release'
+  DEPLOY_FOLDER: 'P:\Projects\YourApp\Builds'
+  
+  NUGET_PATH: 'C:\NuGet\nuget.exe'
+  MSBUILD_PATH: 'C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe'
+  NUNIT_PATH: 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe'
+
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  only:
+    - tags # the build process will only be started by git tag commits
+  script:
+    - '& "$env:NUGET_PATH" restore' # restore Nuget dependencies
+    - '& "$env:MSBUILD_PATH" /p:Configuration=Release' # build the project
+  artifacts:
+    expire_in: 1 week # save gitlab server space, we copy the files we need to deploy folder later on
+    paths:
+      - '$env:EXE_RELEASE_FOLDER\YourApp.exe' # saving exe to copy to deploy folder
+      - '$env:MSI_RELEASE_FOLDER\YourApp Setup.msi' # saving msi to copy to deploy folder
+      - '$env:TEST_FOLDER\' # saving entire Test project so NUnit can run tests 
+
+test_job:
+  stage: test
+  only:
+    - tags
+  script:
+    - '& "$env:NUNIT_PATH" ".\$env:TEST_FOLDER\Tests.dll"' # running NUnit tests
+  artifacts:
+    expire_in: 1 week # save gitlab server space, we copy the files we need to deploy folder later on
+    paths:
+      - '.\TestResult.xml' # saving NUnit results to copy to deploy folder
+  dependencies:
+    - build_job
+
+deploy_job:
+  stage: deploy
+  only:
+    - tags
+  script:
+    # Compose a folder for each release based on commit tag.
+    # Assuming your tag is Rev1.0.0.1, and your last commit message is 'First commit'
+    # the artifact files will be copied to:
+    # P:\Projects\YourApp\Builds\Rev1.0.0.1 - First commit\
+    - '$commitSubject = git log -1 --pretty=%s'
+    - '$deployFolder = $($env:DEPLOY_FOLDER) + "\" + $($env:CI_BUILD_TAG) + " - " + $commitSubject + "\"'
+
+    # xcopy takes care of recursively creating required folders
+    - 'xcopy /y ".\$env:EXE_RELEASE_FOLDER\YourApp.exe" "$deployFolder"'
+    - 'xcopy /y ".\$env:MSI_RELEASE_FOLDER\YourApp Setup.msi" "$deployFolder"'
+    - 'xcopy /y ".\TestResult.xml" "$deployFolder"'
+
+  dependencies:
+    - build_job
+    - test_job
+  

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe PipelineNotificationWorker do
-  include EmailHelpers
-
+describe PipelineNotificationWorker, :mailer do
   let(:pipeline) { create(:ci_pipeline) }
 
   describe '#execute' do

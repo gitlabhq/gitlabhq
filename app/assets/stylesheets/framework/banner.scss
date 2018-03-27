@@ -1,0 +1,25 @@
+.banner-callout {
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+
+  .banner-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 1;
+
+    .dismiss-icon {
+      color: $gl-text-color;
+      font-size: $gl-font-size;
+    }
+  }
+
+  .banner-graphic {
+    margin: 20px auto;
+  }
+
+  &.banner-non-empty-state {
+    border-bottom: 1px solid $border-color;
+  }
+}

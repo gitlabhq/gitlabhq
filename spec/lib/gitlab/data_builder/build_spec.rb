@@ -16,7 +16,7 @@ describe Gitlab::DataBuilder::Build do
     it { expect(data[:build_status]).to eq(build.status) }
     it { expect(data[:build_allow_failure]).to eq(false) }
     it { expect(data[:project_id]).to eq(build.project.id) }
-    it { expect(data[:project_name]).to eq(build.project.name_with_namespace) }
+    it { expect(data[:project_name]).to eq(build.project.full_name) }
 
     context 'commit author_url' do
       context 'when no commit present' do

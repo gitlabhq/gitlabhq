@@ -9,3 +9,65 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.svg-content {
+  text-align: center;
+  padding: $gl-padding;
+
+  svg,
+  img {
+    max-width: 425px;
+    width: 100%;
+  }
+
+  $image-widths: 80 250 306 394 430;
+  @each $width in $image-widths {
+    &.svg-#{$width} {
+      img,
+      svg {
+        width: #{$width + 'px'};
+      }
+    }
+  }
+}
+
+@mixin svg-size($size) {
+  width: $size;
+  height: $size;
+}
+
+svg {
+  fill: currentColor;
+
+  &.s8 {
+    @include svg-size(8px);
+  }
+
+  &.s12 {
+    @include svg-size(12px);
+  }
+
+  &.s16 {
+    @include svg-size(16px);
+  }
+
+  &.s18 {
+    @include svg-size(18px);
+  }
+
+  &.s24 {
+    @include svg-size(24px);
+  }
+
+  &.s32 {
+    @include svg-size(32px);
+  }
+
+  &.s48 {
+    @include svg-size(48px);
+  }
+
+  &.s72 {
+    @include svg-size(72px);
+  }
+}

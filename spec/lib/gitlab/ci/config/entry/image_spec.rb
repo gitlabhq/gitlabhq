@@ -38,7 +38,7 @@ describe Gitlab::Ci::Config::Entry::Image do
   end
 
   context 'when configuration is a hash' do
-    let(:config) { { name: 'ruby:2.2', entrypoint: '/bin/sh' } }
+    let(:config) { { name: 'ruby:2.2', entrypoint: %w(/bin/sh run) } }
 
     describe '#value' do
       it 'returns image hash' do
@@ -66,7 +66,7 @@ describe Gitlab::Ci::Config::Entry::Image do
 
     describe '#entrypoint' do
       it "returns image's entrypoint" do
-        expect(entry.entrypoint).to eq '/bin/sh'
+        expect(entry.entrypoint).to eq %w(/bin/sh run)
       end
     end
   end

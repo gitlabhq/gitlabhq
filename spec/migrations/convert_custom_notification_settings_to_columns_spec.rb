@@ -2,6 +2,8 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170607121233_convert_custom_notification_settings_to_columns')
 
 describe ConvertCustomNotificationSettingsToColumns, :migration do
+  let(:user_class) { table(:users) }
+
   let(:settings_params) do
     [
       { level: 0, events: [:new_note] }, # disabled, single event
@@ -19,7 +21,7 @@ describe ConvertCustomNotificationSettingsToColumns, :migration do
         events[event] = true
       end
 
-      user = create(:user)
+      user = user_class.create!(email: "user-#{SecureRandom.hex}@example.org", username: "user-#{SecureRandom.hex}", encrypted_password: '12345678')
       create_params = { user_id: user.id, level: params[:level], events: events }
       notification_setting = described_class::NotificationSetting.create(create_params)
 
@@ -35,7 +37,7 @@ describe ConvertCustomNotificationSettingsToColumns, :migration do
         events[event] = true
       end
 
-      user = create(:user)
+      user = user_class.create!(email: "user-#{SecureRandom.hex}@example.org", username: "user-#{SecureRandom.hex}", encrypted_password: '12345678')
       create_params = events.merge(user_id: user.id, level: params[:level])
       notification_setting = described_class::NotificationSetting.create(create_params)
 

@@ -1,6 +1,7 @@
 Rails.application.configure do
   # Make sure the middleware is inserted first in middleware chain
   config.middleware.insert_before('ActionDispatch::Static', 'Gitlab::Testing::RequestBlockerMiddleware')
+  config.middleware.insert_before('ActionDispatch::Static', 'Gitlab::Testing::RequestInspectorMiddleware')
 
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -16,8 +17,14 @@ Rails.application.configure do
   config.cache_classes = ENV['CACHE_CLASSES'] == 'true'
 
   # Configure static asset server for tests with Cache-Control for performance
-  config.assets.digest = false
-  config.serve_static_files = true
+  config.assets.compile = false if ENV['CI']
+
+  if Gitlab.rails5?
+    config.public_file_server.enabled = true
+  else
+    config.serve_static_files = true
+  end
+
   config.static_cache_control = "public, max-age=3600"
 
   # Show full error reports and disable caching
@@ -43,4 +50,9 @@ Rails.application.configure do
   config.cache_store = :null_store
 
   config.active_job.queue_adapter = :test
+
+  if ENV['CI'] && !ENV['RAILS_ENABLE_TEST_LOG']
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(nil))
+    config.log_level = :fatal
+  end
 end

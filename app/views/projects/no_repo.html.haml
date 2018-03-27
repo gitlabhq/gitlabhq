@@ -9,12 +9,12 @@
 %hr
 
 .no-repo-actions
-  = link_to namespace_project_repository_path(@project.namespace, @project), method: :post, class: 'btn btn-primary' do
+  = link_to project_repository_path(@project), method: :post, class: 'btn btn-primary' do
     #{ _('Create empty bare repository') }
 
   %strong.prepend-left-10.append-right-10 or
 
-  = link_to new_namespace_project_import_path(@project.namespace, @project), class: 'btn' do
+  = link_to new_project_import_path(@project), class: 'btn' do
     #{ _('Import repository') }
 
 - if can? current_user, :remove_project, @project

@@ -1,27 +1,7 @@
+- breadcrumb_title "Runners"
 - @no_container = true
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
-
-  %p.prepend-top-default
-    %span
-      To register a new Runner you should enter the following registration
-      token.
-      With this token the Runner will request a unique Runner token and use
-      that for future communication.
-      %br
-      Registration token is
-      %code#runners-token= current_application_settings.runners_registration_token
-
-  .bs-callout.clearfix
-    .pull-left
-      %p
-        You can reset runners registration token by pressing a button below.
-      .prepend-top-10
-        = button_to "Reset runners registration token", reset_runners_token_admin_application_settings_path,
-          method: :put, class: 'btn btn-default',
-          data: { confirm: 'Are you sure you want to reset registration token?' }
-
   .bs-callout
     %p
       A 'Runner' is a process which runs a job.
@@ -46,6 +26,18 @@
           %span.label.label-danger paused
           \- Runner will not receive any new jobs
 
+  .bs-callout.clearfix
+    .pull-left
+      %p
+        You can reset runners registration token by pressing a button below.
+      .prepend-top-10
+        = button_to _("Reset runners registration token"), reset_runners_token_admin_application_settings_path,
+          method: :put, class: 'btn btn-default',
+          data: { confirm: _("Are you sure you want to reset registration token?") }
+
+  = render partial: 'ci/runner/how_to_setup_shared_runner',
+           locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
+
   .append-bottom-20.clearfix
     .pull-left
       = form_tag admin_runners_path, id: 'runners-search', class: 'form-inline', method: :get do
@@ -59,22 +51,24 @@
   %br
 
   - if @runners.any?
-    .table-holder
-      %table.table
-        %thead
-          %tr
-            %th Type
-            %th Runner token
-            %th Description
-            %th Version
-            %th Projects
-            %th Jobs
-            %th Tags
-            %th Last contact
-            %th
+    .runners-content
+      .table-holder
+        %table.table
+          %thead
+            %tr
+              %th Type
+              %th Runner token
+              %th Description
+              %th Version
+              %th IP Address
+              %th Projects
+              %th Jobs
+              %th Tags
+              %th= link_to 'Last contact', admin_runners_path(params.slice(:search).merge(sort: 'contacted_asc'))
+              %th
 
-        - @runners.each do |runner|
-          = render "admin/runners/runner", runner: runner
-    = paginate @runners, theme: "gitlab"
+          - @runners.each do |runner|
+            = render "admin/runners/runner", runner: runner
+      = paginate @runners, theme: "gitlab"
   - else
     .nothing-here-block No runners found

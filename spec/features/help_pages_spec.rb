@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Help Pages', feature: true do
+describe 'Help Pages' do
   describe 'Get the main help page' do
     shared_examples_for 'help page' do |prefix: ''|
       it 'prefixes links correctly' do
@@ -32,15 +32,33 @@ describe 'Help Pages', feature: true do
 
       it_behaves_like 'help page', prefix: '/gitlab'
     end
+
+    context 'quick link shortcuts', :js do
+      before do
+        visit help_path
+      end
+
+      it 'focuses search bar' do
+        find('.js-trigger-search-bar').click
+
+        expect(page).to have_selector('#search:focus')
+      end
+
+      it 'opens shortcuts help dialog' do
+        find('.js-trigger-shortcut').click
+
+        expect(page).to have_selector('#modal-shortcuts')
+      end
+    end
   end
 
   context 'in a production environment with version check enabled', :js do
     before do
       allow(Rails.env).to receive(:production?) { true }
-      allow_any_instance_of(ApplicationSetting).to receive(:version_check_enabled) { true }
+      stub_application_setting(version_check_enabled: true)
       allow_any_instance_of(VersionCheck).to receive(:url) { '/version-check-url' }
 
-      gitlab_sign_in :user
+      sign_in(create(:user))
       visit help_path
     end
 
@@ -50,17 +68,17 @@ describe 'Help Pages', feature: true do
 
     it 'hides the version check image if the image request fails' do
       # We use '--load-images=yes' with poltergeist so the image fails to load
-      expect(find('.js-version-status-badge', visible: false)).not_to be_visible
+      expect(page).to have_selector('.js-version-status-badge', visible: false)
     end
   end
 
   describe 'when help page is customized' do
     before do
-      allow_any_instance_of(ApplicationSetting).to receive(:help_page_hide_commercial_content?) { true }
-      allow_any_instance_of(ApplicationSetting).to receive(:help_page_text) { "My Custom Text" }
-      allow_any_instance_of(ApplicationSetting).to receive(:help_page_support_url) { "http://example.com/help" }
+      stub_application_setting(help_page_hide_commercial_content: true,
+                               help_page_text: 'My Custom Text',
+                               help_page_support_url: 'http://example.com/help')
 
-      gitlab_sign_in(:user)
+      sign_in(create(:user))
       visit help_path
     end
 

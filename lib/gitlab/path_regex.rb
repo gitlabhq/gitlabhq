@@ -14,45 +14,43 @@ module Gitlab
     TOP_LEVEL_ROUTES = %w[
       -
       .well-known
+      404.html
+      422.html
+      500.html
+      502.html
+      503.html
       abuse_reports
       admin
-      all
       api
+      apple-touch-icon-precomposed.png
+      apple-touch-icon.png
       assets
       autocomplete
       ci
       dashboard
+      deploy.html
       explore
+      favicon.ico
       files
       groups
       health_check
       help
-      hooks
       import
       invites
-      issues
       jwt
       koding
-      member
-      merge_requests
-      new
-      notes
       notification_settings
       oauth
       profile
       projects
       public
-      repository
       robots.txt
       s
       search
       sent_notifications
-      services
+      slash-command-logo.png
       snippets
-      system
-      teams
       u
-      unicorn_test
       unsubscribes
       uploads
       users
@@ -112,23 +110,7 @@ module Gitlab
     # this group would not be accessible through `/groups/parent/activity` since
     # this would map to the activity-page of its parent.
     GROUP_ROUTES = %w[
-      activity
-      analytics
-      audit_events
-      avatar
-      edit
-      group_members
-      hooks
-      issues
-      labels
-      ldap
-      ldap_group_links
-      merge_requests
-      milestones
-      notification_setting
-      pipeline_quota
-      projects
-      subgroups
+      -
     ].freeze
 
     ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES
@@ -189,24 +171,16 @@ module Gitlab
       @project_git_route_regex ||= /#{project_route_regex}\.git/.freeze
     end
 
-    def root_namespace_path_regex
-      @root_namespace_path_regex ||= %r{\A#{root_namespace_route_regex}/\z}
-    end
-
     def full_namespace_path_regex
       @full_namespace_path_regex ||= %r{\A#{full_namespace_route_regex}/\z}
-    end
-
-    def project_path_regex
-      @project_path_regex ||= %r{\A#{project_route_regex}/\z}
     end
 
     def full_project_path_regex
       @full_project_path_regex ||= %r{\A#{full_namespace_route_regex}/#{project_route_regex}/\z}
     end
 
-    def full_namespace_format_regex
-      @namespace_format_regex ||= /A#{FULL_NAMESPACE_FORMAT_REGEX}\z/.freeze
+    def full_project_git_path_regex
+      @full_project_git_path_regex ||= %r{\A\/?(?<namespace_path>#{full_namespace_route_regex})\/(?<project_path>#{project_route_regex})\.git\z}
     end
 
     def namespace_format_regex

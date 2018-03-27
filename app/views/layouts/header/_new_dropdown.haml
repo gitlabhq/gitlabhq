@@ -1,11 +1,7 @@
 %li.header-new.dropdown
-  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body' } do
-    - if show_new_nav?
-      = icon('plus')
-      = icon('chevron-down')
-    - else
-      = icon('plus fw')
-      = icon('caret-down')
+  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body' } do
+    = sprite_icon('plus-square', size: 16)
+    = sprite_icon('angle-down', css_class: 'caret-down')
   .dropdown-menu-nav.dropdown-menu-align-right
     %ul
       - if @group&.persisted?
@@ -30,13 +26,13 @@
           %li.dropdown-bold-header This project
           - if create_project_issue
             %li
-              = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project)
+              = link_to 'New issue', new_project_issue_path(@project)
           - if merge_project
             %li
-              = link_to 'New merge request', new_namespace_project_merge_request_path(merge_project.namespace, merge_project)
+              = link_to 'New merge request', project_new_merge_request_path(merge_project)
           - if create_project_snippet
             %li.header-new-project-snippet
-              = link_to 'New snippet', new_namespace_project_snippet_path(@project.namespace, @project)
+              = link_to 'New snippet', new_project_snippet_path(@project)
           %li.divider
           %li.dropdown-bold-header GitLab
       - if current_user.can_create_project?

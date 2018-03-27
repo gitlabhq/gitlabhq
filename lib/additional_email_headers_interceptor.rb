@@ -1,8 +1,6 @@
 class AdditionalEmailHeadersInterceptor
   def self.delivering_email(message)
-    message.headers(
-      'Auto-Submitted' => 'auto-generated',
-      'X-Auto-Response-Suppress' => 'All'
-    )
+    message.header['Auto-Submitted'] ||= 'auto-generated'
+    message.header['X-Auto-Response-Suppress'] ||= 'All'
   end
 end

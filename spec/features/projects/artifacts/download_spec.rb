@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Download artifact', :js, feature: true do
+feature 'Download artifact' do
   let(:project) { create(:project, :public) }
-  let(:pipeline) { create(:ci_empty_pipeline, status: :success, project: project, sha: project.commit.sha, ref: 'master') }
+  let(:pipeline) { create(:ci_empty_pipeline, status: :success, project: project) }
   let(:job) { create(:ci_build, :artifacts, :success, pipeline: pipeline) }
 
   shared_examples 'downloading' do
@@ -22,7 +22,7 @@ feature 'Download artifact', :js, feature: true do
 
     context 'via job id' do
       let(:download_url) do
-        download_namespace_project_job_artifacts_path(project.namespace, project, job)
+        download_project_job_artifacts_path(project, job)
       end
 
       it_behaves_like 'downloading'
@@ -30,7 +30,7 @@ feature 'Download artifact', :js, feature: true do
 
     context 'via branch name and job name' do
       let(:download_url) do
-        latest_succeeded_namespace_project_artifacts_path(project.namespace, project, "#{pipeline.ref}/download", job: job.name)
+        latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: job.name)
       end
 
       it_behaves_like 'downloading'
@@ -44,7 +44,7 @@ feature 'Download artifact', :js, feature: true do
 
     context 'via job id' do
       let(:download_url) do
-        download_namespace_project_job_artifacts_path(project.namespace, project, job)
+        download_project_job_artifacts_path(project, job)
       end
 
       it_behaves_like 'downloading'
@@ -52,7 +52,7 @@ feature 'Download artifact', :js, feature: true do
 
     context 'via branch name and job name' do
       let(:download_url) do
-        latest_succeeded_namespace_project_artifacts_path(project.namespace, project, "#{pipeline.ref}/download", job: job.name)
+        latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: job.name)
       end
 
       it_behaves_like 'downloading'

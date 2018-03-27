@@ -1,11 +1,13 @@
+import _ from 'underscore';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 
-import '~/filtered_search/filtered_search_visual_tokens';
+import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
+import DropdownUtils from '~/filtered_search//dropdown_utils';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
-  const subject = gl.FilteredSearchVisualTokens;
+  const subject = FilteredSearchVisualTokens;
 
   const findElements = (tokenElement) => {
     const tokenNameElement = tokenElement.querySelector('.name');
@@ -123,6 +125,24 @@ describe('Filtered Search Visual Tokens', () => {
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
       });
+    });
+  });
+
+  describe('getEndpointWithQueryParams', () => {
+    it('returns `endpoint` string as is when second param `endpointQueryParams` is undefined, null or empty string', () => {
+      const endpoint = 'foo/bar/labels.json';
+      expect(subject.getEndpointWithQueryParams(endpoint)).toBe(endpoint);
+      expect(subject.getEndpointWithQueryParams(endpoint, null)).toBe(endpoint);
+      expect(subject.getEndpointWithQueryParams(endpoint, '')).toBe(endpoint);
+    });
+
+    it('returns `endpoint` string with values of `endpointQueryParams`', () => {
+      const endpoint = 'foo/bar/labels.json';
+      const singleQueryParams = '{"foo":"true"}';
+      const multipleQueryParams = '{"foo":"true","bar":"true"}';
+
+      expect(subject.getEndpointWithQueryParams(endpoint, singleQueryParams)).toBe(`${endpoint}?foo=true`);
+      expect(subject.getEndpointWithQueryParams(endpoint, multipleQueryParams)).toBe(`${endpoint}?foo=true&bar=true`);
     });
   });
 
@@ -791,9 +811,95 @@ describe('Filtered Search Visual Tokens', () => {
         expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
         const avatar = tokenValueElement.querySelector('img.avatar');
         expect(avatar.src).toBe(dummyUser.avatar_url);
+        expect(avatar.alt).toBe('');
       })
       .then(done)
       .catch(done.fail);
+    });
+
+    it('escapes user name when creating token', (done) => {
+      const dummyUser = {
+        name: '<script>',
+        avatar_url: `${gl.TEST_HOST}/mypics/avatar.png`,
+      };
+      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
+      const tokenValue = tokenValueElement.innerText;
+      usersCacheSpy = (username) => {
+        expect(`@${username}`).toBe(tokenValue);
+        return Promise.resolve(dummyUser);
+      };
+
+      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+      .then(() => {
+        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+        tokenValueElement.querySelector('.avatar').remove();
+        expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
+      })
+      .then(done)
+      .catch(done.fail);
+    });
+  });
+
+  describe('setTokenStyle', () => {
+    let originalTextColor;
+
+    beforeEach(() => {
+      originalTextColor = bugLabelToken.style.color;
+    });
+
+    it('should set backgroundColor', () => {
+      const originalBackgroundColor = bugLabelToken.style.backgroundColor;
+      const token = subject.setTokenStyle(bugLabelToken, 'blue', 'white');
+      expect(token.style.backgroundColor).toEqual('blue');
+      expect(token.style.backgroundColor).not.toEqual(originalBackgroundColor);
+    });
+
+    it('should not set backgroundColor when it is a linear-gradient', () => {
+      const token = subject.setTokenStyle(bugLabelToken, 'linear-gradient(135deg, red, blue)', 'white');
+      expect(token.style.backgroundColor).toEqual(bugLabelToken.style.backgroundColor);
+    });
+
+    it('should set textColor', () => {
+      const token = subject.setTokenStyle(bugLabelToken, 'white', 'black');
+      expect(token.style.color).toEqual('black');
+      expect(token.style.color).not.toEqual(originalTextColor);
+    });
+
+    it('should add inverted class when textColor is #FFFFFF', () => {
+      const token = subject.setTokenStyle(bugLabelToken, 'black', '#FFFFFF');
+      expect(token.style.color).toEqual('rgb(255, 255, 255)');
+      expect(token.style.color).not.toEqual(originalTextColor);
+      expect(token.querySelector('.remove-token').classList.contains('inverted')).toEqual(true);
+    });
+  });
+
+  describe('preprocessLabel', () => {
+    const endpoint = 'endpoint';
+
+    it('does not preprocess more than once', () => {
+      let labels = [];
+
+      spyOn(DropdownUtils, 'duplicateLabelPreprocessing').and.callFake(() => []);
+
+      labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+      FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+
+      expect(DropdownUtils.duplicateLabelPreprocessing.calls.count()).toEqual(1);
+    });
+
+    describe('not preprocessed before', () => {
+      it('returns preprocessed labels', () => {
+        let labels = [];
+        expect(labels.preprocessed).not.toEqual(true);
+        labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+        expect(labels.preprocessed).toEqual(true);
+      });
+
+      it('overrides AjaxCache with preprocessed results', () => {
+        spyOn(AjaxCache, 'override').and.callFake(() => {});
+        FilteredSearchVisualTokens.preprocessLabel(endpoint, []);
+        expect(AjaxCache.override.calls.count()).toEqual(1);
+      });
     });
   });
 
@@ -839,7 +945,7 @@ describe('Filtered Search Visual Tokens', () => {
     };
 
     const findLabel = tokenValue => labelData.find(
-      label => tokenValue === `~${gl.DropdownUtils.getEscapedText(label.title)}`,
+      label => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`,
     );
 
     it('updates the color of a label token', (done) => {

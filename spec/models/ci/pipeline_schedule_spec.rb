@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe Ci::PipelineSchedule, models: true do
+describe Ci::PipelineSchedule do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
 
   it { is_expected.to have_many(:pipelines) }
+  it { is_expected.to have_many(:variables) }
 
   it { is_expected.to respond_to(:ref) }
   it { is_expected.to respond_to(:cron) }
   it { is_expected.to respond_to(:cron_timezone) }
   it { is_expected.to respond_to(:description) }
   it { is_expected.to respond_to(:next_run_at) }
-  it { is_expected.to respond_to(:deleted_at) }
 
   describe 'validations' do
     it 'does not allow invalid cron patters' do
@@ -45,7 +45,7 @@ describe Ci::PipelineSchedule, models: true do
       end
 
       it 'updates next_run_at automatically' do
-        expect(Ci::PipelineSchedule.last.next_run_at).to eq(expected_next_run_at)
+        expect(described_class.last.next_run_at).to eq(expected_next_run_at)
       end
     end
 
@@ -60,7 +60,7 @@ describe Ci::PipelineSchedule, models: true do
       it 'updates next_run_at automatically' do
         pipeline_schedule.update!(cron: new_cron)
 
-        expect(Ci::PipelineSchedule.last.next_run_at).to eq(expected_next_run_at)
+        expect(described_class.last.next_run_at).to eq(expected_next_run_at)
       end
     end
   end
@@ -116,5 +116,21 @@ describe Ci::PipelineSchedule, models: true do
         end
       end
     end
+  end
+
+  describe '#job_variables' do
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule) }
+
+    let!(:pipeline_schedule_variables) do
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
+    end
+
+    subject { pipeline_schedule.job_variables }
+
+    before do
+      pipeline_schedule.reload
+    end
+
+    it { is_expected.to contain_exactly(*pipeline_schedule_variables.map(&:to_runner_variable)) }
   end
 end

@@ -3,19 +3,34 @@ module Projects
     class TagsController < ::Projects::Registry::ApplicationController
       before_action :authorize_update_container_image!, only: [:destroy]
 
+      def index
+        respond_to do |format|
+          format.json do
+            render json: ContainerTagsSerializer
+              .new(project: @project, current_user: @current_user)
+              .with_pagination(request, response)
+              .represent(tags)
+          end
+        end
+      end
+
       def destroy
         if tag.delete
-          redirect_to project_container_registry_path(@project),
-                      status: 302,
-                      notice: 'Registry tag has been removed successfully!'
+          respond_to do |format|
+            format.json { head :no_content }
+          end
         else
-          redirect_to project_container_registry_path(@project),
-                      status: 302,
-                      alert: 'Failed to remove registry tag!'
+          respond_to do |format|
+            format.json { head :bad_request }
+          end
         end
       end
 
       private
+
+      def tags
+        Kaminari::PaginatableArray.new(image.tags, limit: 15)
+      end
 
       def image
         @image ||= project.container_repositories

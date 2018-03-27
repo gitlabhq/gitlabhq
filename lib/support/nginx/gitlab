@@ -17,12 +17,47 @@
 ## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab-workhorse {
+  # Gitlab socket file,
+  # for Omnibus this would be: unix:/var/opt/gitlab/gitlab-workhorse/socket
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 
 map $http_upgrade $connection_upgrade_gitlab {
     default upgrade;
     ''      close;
+}
+
+## NGINX 'combined' log format with filtered query strings
+log_format gitlab_access $remote_addr - $remote_user [$time_local] "$request_method $gitlab_filtered_request_uri $server_protocol" $status $body_bytes_sent "$gitlab_filtered_http_referer" "$http_user_agent";
+
+## Remove private_token from the request URI
+# In:  /foo?private_token=unfiltered&authenticity_token=unfiltered&rss_token=unfiltered&...
+# Out: /foo?private_token=[FILTERED]&authenticity_token=unfiltered&rss_token=unfiltered&...
+map $request_uri $gitlab_temp_request_uri_1 {
+  default $request_uri;
+  ~(?i)^(?<start>.*)(?<temp>[\?&]private[\-_]token)=[^&]*(?<rest>.*)$ "$start$temp=[FILTERED]$rest";
+}
+
+## Remove authenticity_token from the request URI
+# In:  /foo?private_token=[FILTERED]&authenticity_token=unfiltered&rss_token=unfiltered&...
+# Out: /foo?private_token=[FILTERED]&authenticity_token=[FILTERED]&rss_token=unfiltered&...
+map $gitlab_temp_request_uri_1 $gitlab_temp_request_uri_2 {
+  default $gitlab_temp_request_uri_1;
+  ~(?i)^(?<start>.*)(?<temp>[\?&]authenticity[\-_]token)=[^&]*(?<rest>.*)$ "$start$temp=[FILTERED]$rest";
+}
+
+## Remove rss_token from the request URI
+# In:  /foo?private_token=[FILTERED]&authenticity_token=[FILTERED]&rss_token=unfiltered&...
+# Out: /foo?private_token=[FILTERED]&authenticity_token=[FILTERED]&rss_token=[FILTERED]&...
+map $gitlab_temp_request_uri_2 $gitlab_filtered_request_uri {
+  default $gitlab_temp_request_uri_2;
+  ~(?i)^(?<start>.*)(?<temp>[\?&]rss[\-_]token)=[^&]*(?<rest>.*)$ "$start$temp=[FILTERED]$rest";
+}
+
+## A version of the referer without the query string
+map $http_referer $gitlab_filtered_http_referer {
+  default $http_referer;
+  ~^(?<temp>.*)\? $temp;
 }
 
 ## Normal HTTP host
@@ -46,7 +81,7 @@ server {
   # set_real_ip_from YOUR_TRUSTED_ADDRESS; ## Replace this with something like 192.168.1.0/24
 
   ## Individual nginx logs for this GitLab vhost
-  access_log  /var/log/nginx/gitlab_access.log;
+  access_log  /var/log/nginx/gitlab_access.log gitlab_access;
   error_log   /var/log/nginx/gitlab_error.log;
 
   location / {
@@ -77,6 +112,8 @@ server {
   error_page 502 /502.html;
   error_page 503 /503.html;
   location ~ ^/(404|422|500|502|503)\.html$ {
+    # Location to the Gitlab's public directory,
+    # for Omnibus this would be: /opt/gitlab/embedded/service/gitlab-rails/public.
     root /home/git/gitlab/public;
     internal;
   }

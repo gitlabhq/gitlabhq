@@ -1,7 +1,10 @@
 - return unless note.author
 - return if note.cross_reference_not_visible_for?(current_user)
 
+- show_image_comment_badge = local_assigns.fetch(:show_image_comment_badge, false)
 - note_editable = note_editable?(note)
+- note_counter = local_assigns.fetch(:note_counter, 0)
+
 %li.timeline-entry{ id: dom_id(note),
   class: ["note", "note-row-#{note.id}", ('system-note' if note.system)],
   data: { author_id: note.author.id,
@@ -12,14 +15,23 @@
       - if note.system
         = icon_for_system_note(note)
       - else
-        %a{ href: user_path(note.author) }
-          = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
+        %a.image-diff-avatar-link{ href: user_path(note.author) }
+          = image_tag avatar_icon_for_user(note.author), alt: '', class: 'avatar s40'
+          - if note.is_a?(DiffNote) && note.on_image?
+            - if show_image_comment_badge && note_counter == 0
+              -# Only show this for the first comment in the discussion
+              %span.image-comment-badge
+                = sprite_icon('image-comment-dark')
+            - elsif note_counter == 0
+              - counter = badge_counter if local_assigns[:badge_counter]
+              - badge_class = "hidden" if @fresh_discussion || counter.nil?
+              %span.badge{ class: badge_class }
+                = counter
     .timeline-content
       .note-header
         .note-header-info
           %a{ href: user_path(note.author) }
-            %span.note-header-author-name
-              = sanitize(note.author.name)
+            %span.note-header-author-name= sanitize(note.author.name)
             %span.note-headline-light
               = note.author.to_reference
           %span.note-headline-light
@@ -28,7 +40,7 @@
                 commented
               - if note.system
                 %span.system-note-message
-                  = note.redacted_note_html
+                  = markdown_field(note, :note)
               %a{ href: "##{dom_id(note)}" }
                 = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
@@ -39,7 +51,7 @@
               = render 'projects/notes/actions', note: note, note_editable: note_editable
       .note-body{ class: note_editable ? 'js-task-list-container' : '' }
         .note-text.md
-          = note.redacted_note_html
+          = markdown_field(note, :note)
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago')
         .original-note-content.hidden{ data: { post_url: note_url(note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }
           #{note.note}
@@ -60,6 +72,6 @@
             = link_to note.attachment.url, target: '_blank' do
               = icon('paperclip')
               = note.attachment_identifier
-              = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
+              = link_to delete_attachment_project_note_path(note.project, note),
                 title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
                 = icon('trash-o', class: 'cred')

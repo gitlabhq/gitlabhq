@@ -1,21 +1,20 @@
 - page_title @path, 'Artifacts', "#{@build.name} (##{@build.id})", 'Jobs'
-= render "projects/pipelines/head"
 
 = render "projects/jobs/header", show_controls: false
 
-#tree-holder.tree-holder
+.tree-holder
   .nav-block
     %ul.breadcrumb.repo-breadcrumb
       %li
-        = link_to 'Artifacts', browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build)
+        = link_to 'Artifacts', browse_project_job_artifacts_path(@project, @build)
       - path_breadcrumbs do |title, path|
         - title = truncate(title, length: 40)
         %li
           - if path == @path
-            = link_to file_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path) do
+            = link_to file_project_job_artifacts_path(@project, @build, path) do
               %strong= title
           - else
-            = link_to title, browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path)
+            = link_to title, browse_project_job_artifacts_path(@project, @build, path)
 
 
   %article.file-holder

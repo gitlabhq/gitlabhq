@@ -1,6 +1,9 @@
 - access = note_max_access_for_user(note)
-- if access
-  %span.note-role= access
+- if note.has_special_role?(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
+  %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project.") }
+    = issuable_first_contribution_icon
+- if access.nonzero?
+  %span.note-role.user-access-role= Gitlab::Access.human_access(access)
 
 - if note.resolvable?
   - can_resolve = can?(current_user, :resolve_note, note)
@@ -17,24 +20,36 @@
       "inline-template" => true,
       "ref" => "note_#{note.id}" }
 
-    %button.note-action-button.line-resolve-btn{ type: "button",
-        class: ("is-disabled" unless can_resolve),
-        ":class" => "{ 'is-active': isResolved }",
-        ":aria-label" => "buttonText",
-        "@click" => "resolve",
-        ":title" => "buttonText",
-        ":ref" => "'button'" }
+    .note-actions-item
+      %button.note-action-button.line-resolve-btn{ type: "button",
+          class: ("is-disabled" unless can_resolve),
+          ":class" => "{ 'is-active': isResolved }",
+          ":aria-label" => "buttonText",
+          "@click" => "resolve",
+          ":title" => "buttonText",
+          ":ref" => "'button'" }
 
-      = icon('spin spinner', 'v-show' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
-      %div{ 'v-show' => '!loading' }= render 'shared/icons/icon_status_success.svg'
+        = icon('spin spinner', 'v-if' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
+        %div{ 'v-else' => '' }
+          %template{ 'v-if' => 'isResolved' }
+            = render 'shared/icons/icon_status_success_solid.svg'
+          %template{ 'v-else' => '' }
+            = render 'shared/icons/icon_resolve_discussion.svg'
 
 - if current_user
   - if note.emoji_awardable?
     - user_authored = note.user_authored?(current_user)
-    = link_to '#', title: 'Add reaction', class: "note-action-button note-emoji-button js-add-award js-note-emoji #{'js-user-authored' if user_authored} has-tooltip", data: { position: 'right' } do
-      = icon('spinner spin')
-      %span{ class: 'link-highlight award-control-icon-neutral' }= custom_icon('emoji_slightly_smiling_face')
-      %span{ class: 'link-highlight award-control-icon-positive' }= custom_icon('emoji_smiley')
-      %span{ class: 'link-highlight award-control-icon-super-positive' }= custom_icon('emoji_smile')
+    .note-actions-item
+      = button_tag title: 'Add reaction', class: "note-action-button note-emoji-button js-add-award js-note-emoji #{'js-user-authored' if user_authored} has-tooltip btn btn-transparent", data: { position: 'right', container: 'body' } do
+        = icon('spinner spin')
+        %span{ class: 'link-highlight award-control-icon-neutral' }= custom_icon('emoji_slightly_smiling_face')
+        %span{ class: 'link-highlight award-control-icon-positive' }= custom_icon('emoji_smiley')
+        %span{ class: 'link-highlight award-control-icon-super-positive' }= custom_icon('emoji_smile')
 
-    = render 'projects/notes/more_actions_dropdown', note: note, note_editable: note_editable
+  - if note_editable
+    .note-actions-item
+      = button_tag title: 'Edit comment', class: 'note-action-button js-note-edit has-tooltip btn btn-transparent', data: { container: 'body' } do
+        %span.link-highlight
+          = custom_icon('icon_pencil')
+
+  = render 'projects/notes/more_actions_dropdown', note: note, note_editable: note_editable

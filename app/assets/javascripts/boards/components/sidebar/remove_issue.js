@@ -1,7 +1,6 @@
-/* eslint-disable no-new */
-/* global Flash */
-
 import Vue from 'vue';
+import Flash from '../../../flash';
+import { __ } from '../../../locale';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -18,18 +17,38 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       type: Object,
       required: true,
     },
+    issueUpdate: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    updateUrl() {
+      return this.issueUpdate.replace(':project_path', this.issue.project.path);
+    },
   },
   methods: {
     removeIssue() {
       const issue = this.issue;
       const lists = issue.getLists();
-      const labelIds = lists.map(list => list.label.id);
+      const listLabelIds = lists.map(list => list.label.id);
+
+      let labelIds = issue.labels
+        .map(label => label.id)
+        .filter(id => !listLabelIds.includes(id));
+      if (labelIds.length === 0) {
+        labelIds = [''];
+      }
+
+      const data = {
+        issue: {
+          label_ids: labelIds,
+        },
+      };
 
       // Post the remove data
-      gl.boardService.bulkUpdate([issue.globalId], {
-        remove_label_ids: labelIds,
-      }).catch(() => {
-        new Flash('Failed to remove issue from board, please try again.', 'alert');
+      Vue.http.patch(this.updateUrl, data).catch(() => {
+        Flash(__('Failed to remove issue from board, please try again.'));
 
         lists.forEach((list) => {
           list.addIssue(issue);
@@ -46,8 +65,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
   },
   template: `
     <div
-      class="block list"
-      v-if="list.type !== 'closed'">
+      class="block list">
       <button
         class="btn btn-default btn-block"
         type="button"

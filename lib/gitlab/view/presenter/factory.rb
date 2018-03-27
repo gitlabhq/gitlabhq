@@ -16,7 +16,7 @@ module Gitlab
         attr_reader :subject, :attributes
 
         def presenter_class
-          "#{subject.class.name}Presenter".constantize
+          attributes.delete(:presenter_class) { "#{subject.class.name}Presenter".constantize }
         end
       end
     end

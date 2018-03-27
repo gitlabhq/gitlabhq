@@ -20,7 +20,7 @@ describe Snippets::NotesController do
       end
 
       it "returns status 200" do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it "returns not empty array of notes" do
@@ -37,7 +37,7 @@ describe Snippets::NotesController do
         it "returns status 404" do
           get :index, { snippet_id: internal_snippet }
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -49,7 +49,7 @@ describe Snippets::NotesController do
         it "returns status 200" do
           get :index, { snippet_id: internal_snippet }
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end
@@ -63,7 +63,7 @@ describe Snippets::NotesController do
         it "returns status 404" do
           get :index, { snippet_id: private_snippet }
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -75,7 +75,7 @@ describe Snippets::NotesController do
         it "returns status 404" do
           get :index, { snippet_id: private_snippet }
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -89,7 +89,7 @@ describe Snippets::NotesController do
         it "returns status 200" do
           get :index, { snippet_id: private_snippet }
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it "returns 1 note" do
@@ -134,11 +134,11 @@ describe Snippets::NotesController do
       it "returns status 200" do
         delete :destroy, request_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it "deletes the note" do
-        expect{ delete :destroy, request_params }.to change{ Note.count }.from(1).to(0)
+        expect { delete :destroy, request_params }.to change { Note.count }.from(1).to(0)
       end
 
       context 'system note' do
@@ -147,7 +147,7 @@ describe Snippets::NotesController do
         end
 
         it "does not delete the note" do
-          expect{ delete :destroy, request_params }.not_to change{ Note.count }
+          expect { delete :destroy, request_params }.not_to change { Note.count }
         end
       end
     end
@@ -162,11 +162,11 @@ describe Snippets::NotesController do
       it "returns status 404" do
         delete :destroy, request_params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not update the note" do
-        expect{ delete :destroy, request_params }.not_to change{ Note.count }
+        expect { delete :destroy, request_params }.not_to change { Note.count }
       end
     end
   end
@@ -182,7 +182,7 @@ describe Snippets::NotesController do
     it "toggles the award emoji" do
       expect { subject }.to change { note.award_emoji.count }.by(1)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it "removes the already awarded emoji when it exists" do
@@ -190,7 +190,7 @@ describe Snippets::NotesController do
 
       expect { subject }.to change { AwardEmoji.count }.by(-1)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 end

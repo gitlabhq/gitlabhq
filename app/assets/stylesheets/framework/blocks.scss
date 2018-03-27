@@ -8,9 +8,8 @@
   text-align: center;
   padding: 20px;
   color: $gl-text-color;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   font-size: 14px;
-  line-height: 36px;
 
   &.diff-collapsed {
     padding: 5px;
@@ -39,7 +38,11 @@
   }
 
   &.top-block {
-    border-top: none;
+    border-top: 0;
+
+    .container-fluid {
+      background-color: inherit;
+    }
   }
 
   &.middle-block {
@@ -59,7 +62,7 @@
 
   &.footer-block {
     margin-top: 0;
-    border-bottom: none;
+    border-bottom: 0;
     margin-bottom: -$gl-padding;
   }
 
@@ -96,11 +99,7 @@
 
   &.build-content {
     background-color: $white-light;
-    border-top: none;
-  }
-
-  &.top-block .container-fluid {
-    background-color: inherit;
+    border-top: 0;
   }
 }
 
@@ -207,13 +206,30 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+
+    .nav-links {
+      width: 100%;
+      float: none;
+
+      &.scrolling-tabs {
+        float: none;
+      }
+    }
+
+    li:first-child {
+      margin-left: auto;
+    }
+
+    li:last-child {
+      margin-right: auto;
+    }
   }
 
   .group-info {
 
     h1 {
       display: inline;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       font-size: 24px;
       color: $gl-text-color;
     }
@@ -260,7 +276,7 @@
   position: relative;
   border: 1px solid $blue-300;
   border-radius: $border-radius-default;
-  background-color: $blue-25;
+  background-color: $blue-50;
   justify-content: center;
 
   .dismiss-button {
@@ -270,12 +286,12 @@
     cursor: pointer;
     color: $blue-300;
     z-index: 1;
-    border: none;
+    border: 0;
     background-color: transparent;
 
     &:hover,
     &:focus {
-      border: none;
+      border: 0;
       color: $blue-400;
     }
   }
@@ -319,16 +335,6 @@
     padding: $gl-padding;
   }
 
-  .svg-content {
-    text-align: center;
-
-    svg {
-      max-width: 425px;
-      width: 100%;
-      padding: $gl-padding;
-    }
-  }
-
   .emoji-icon {
     display: inline-block;
   }
@@ -345,4 +351,8 @@
 .flex-container-block {
   display: -webkit-flex;
   display: flex;
+}
+
+.flex-right {
+  margin-left: auto;
 }

@@ -4,8 +4,8 @@
       = link_to 'Close merge request', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "btn btn-nr btn-comment btn-close close-mr-link js-note-target-close", title: "Close merge request", data: { original_text: "Close merge request", alternative_text: "Comment & close merge request"}
     - if @merge_request.reopenable?
       = link_to 'Reopen merge request', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, class: "btn btn-nr btn-comment btn-reopen reopen-mr-link js-note-target-close js-note-target-reopen", title: "Reopen merge request", data: { original_text: "Reopen merge request", alternative_text: "Comment & reopen merge request"}
-  %comment-and-resolve-btn{ "inline-template" => true, ":discussion-id" => "" }
-    %button.btn.btn-nr.btn-default.append-right-10.js-comment-resolve-button{ "v-if" => "showButton", type: "submit", data: { project_path: "#{project_path(@merge_request.project)}" } }
-      {{ buttonText }}
+    %comment-and-resolve-btn{ "inline-template" => true }
+      %button.btn.btn-nr.btn-default.append-right-10.js-comment-resolve-button{ "v-if" => "showButton", type: "submit", data: { project_path: "#{project_path(@merge_request.project)}" } }
+        {{ buttonText }}
 
 #notes= render "shared/notes/notes_with_form", :autocomplete => true

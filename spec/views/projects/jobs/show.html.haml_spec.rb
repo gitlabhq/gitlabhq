@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/jobs/show', :view do
+describe 'projects/jobs/show' do
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -185,6 +185,31 @@ describe 'projects/jobs/show', :view do
     end
   end
 
+  context 'when incomplete trigger_request is used' do
+    before do
+      build.trigger_request = FactoryBot.build(:ci_trigger_request, trigger: nil)
+    end
+
+    it 'test should not render token block' do
+      render
+
+      expect(rendered).not_to have_content('Token')
+    end
+  end
+
+  context 'when complete trigger_request is used' do
+    before do
+      build.trigger_request = FactoryBot.build(:ci_trigger_request)
+    end
+
+    it 'should render token' do
+      render
+
+      expect(rendered).to have_content('Token')
+      expect(rendered).to have_content(build.trigger_request.trigger.short_token)
+    end
+  end
+
   describe 'commit title in sidebar' do
     let(:commit_title) { project.commit.title }
 
@@ -193,22 +218,6 @@ describe 'projects/jobs/show', :view do
 
       expect(rendered).to have_css('p.build-light-text.append-bottom-0',
         text: /\A\n#{Regexp.escape(commit_title)}\n\Z/)
-    end
-  end
-
-  describe 'shows trigger variables in sidebar' do
-    let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline) }
-
-    before do
-      build.trigger_request = trigger_request
-      render
-    end
-
-    it 'shows trigger variables in separate lines' do
-      expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_1')
-      expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_2')
-      expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_1')
-      expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_2')
     end
   end
 end

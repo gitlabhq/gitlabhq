@@ -1,85 +1,32 @@
 module Gitlab
   module Conflict
     class File
-      include Gitlab::Routing.url_helpers
+      include Gitlab::Routing
       include IconsHelper
-
-      MissingResolution = Class.new(ResolutionError)
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file_result, :their_path, :our_path, :our_mode, :merge_request, :repository
+      attr_reader :merge_request
 
-      def initialize(merge_file_result, conflict, merge_request:)
-        @merge_file_result = merge_file_result
-        @their_path = conflict[:theirs][:path]
-        @our_path = conflict[:ours][:path]
-        @our_mode = conflict[:ours][:mode]
+      # 'raw' holds the Gitlab::Git::Conflict::File that this instance wraps
+      attr_reader :raw
+
+      delegate :type, :content, :their_path, :our_path, :our_mode, :our_blob, :repository, to: :raw
+
+      def initialize(raw, merge_request:)
+        @raw = raw
         @merge_request = merge_request
-        @repository = merge_request.project.repository
         @match_line_headers = {}
       end
 
-      def content
-        merge_file_result[:data]
-      end
-
-      def our_blob
-        @our_blob ||= repository.blob_at(merge_request.diff_refs.head_sha, our_path)
-      end
-
-      def type
-        lines unless @type
-
-        @type.inquiry
-      end
-
-      # Array of Gitlab::Diff::Line objects
       def lines
         return @lines if defined?(@lines)
 
-        begin
-          @type = 'text'
-          @lines = Gitlab::Conflict::Parser.new.parse(content,
-                                                      our_path: our_path,
-                                                      their_path: their_path,
-                                                      parent_file: self)
-        rescue Gitlab::Conflict::Parser::ParserError
-          @type = 'text-editor'
-          @lines = nil
-        end
+        @lines = raw.lines.nil? ? nil : map_raw_lines(raw.lines)
       end
 
       def resolve_lines(resolution)
-        section_id = nil
-
-        lines.map do |line|
-          unless line.type
-            section_id = nil
-            next line
-          end
-
-          section_id ||= line_code(line)
-
-          case resolution[section_id]
-          when 'head'
-            next unless line.type == 'new'
-          when 'origin'
-            next unless line.type == 'old'
-          else
-            raise MissingResolution, "Missing resolution for section ID: #{section_id}"
-          end
-
-          line
-        end.compact
-      end
-
-      def resolve_content(resolution)
-        if resolution == content
-          raise MissingResolution, "Resolved content has no changes for file #{our_path}"
-        end
-
-        resolution
+        map_raw_lines(raw.resolve_lines(resolution))
       end
 
       def highlight_lines!
@@ -163,7 +110,7 @@ module Gitlab
       end
 
       def line_code(line)
-        Gitlab::Diff::LineCode.generate(our_path, line.new_pos, line.old_pos)
+        Gitlab::Git.diff_line_code(our_path, line.new_pos, line.old_pos)
       end
 
       def create_match_line(line)
@@ -205,9 +152,7 @@ module Gitlab
           old_path: their_path,
           new_path: our_path,
           blob_icon: file_type_icon_class('file', our_mode, our_path),
-          blob_path: namespace_project_blob_path(merge_request.project.namespace,
-                                                 merge_request.project,
-                                                 ::File.join(merge_request.diff_refs.head_sha, our_path))
+          blob_path: project_blob_path(merge_request.project, ::File.join(merge_request.diff_refs.head_sha, our_path))
         }
 
         json_hash.tap do |json_hash|
@@ -223,22 +168,20 @@ module Gitlab
       end
 
       def content_path
-        conflict_for_path_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                               merge_request.project,
-                                                               merge_request,
-                                                               old_path: their_path,
-                                                               new_path: our_path)
+        conflict_for_path_project_merge_request_path(merge_request.project,
+                                                     merge_request,
+                                                     old_path: their_path,
+                                                     new_path: our_path)
       end
 
-      # Don't try to print merge_request or repository.
-      def inspect
-        instance_variables = [:merge_file_result, :their_path, :our_path, :our_mode, :type].map do |instance_variable|
-          value = instance_variable_get("@#{instance_variable}")
+      private
 
-          "#{instance_variable}=\"#{value}\""
+      def map_raw_lines(raw_lines)
+        raw_lines.map do |raw_line|
+          Gitlab::Diff::Line.new(raw_line[:full_line], raw_line[:type],
+            raw_line[:line_obj_index], raw_line[:line_old],
+            raw_line[:line_new], parent_file: self)
         end
-
-        "#<#{self.class} #{instance_variables.join(' ')}>"
       end
     end
   end

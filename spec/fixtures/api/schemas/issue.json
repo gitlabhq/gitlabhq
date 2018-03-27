@@ -8,37 +8,20 @@
   "properties" : {
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
+    "project_id": { "type": ["integer", "null"] },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
     "due_date": { "type": ["date", "null"] },
     "relative_position": { "type": "integer" },
+    "issue_sidebar_endpoint": { "type": "string" },
+    "toggle_subscription_endpoint": { "type": "string" },
+    "project": {
+      "id": { "type": "integer" },
+      "path": { "type": "string" }
+    },
     "labels": {
       "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "id",
-          "color",
-          "description",
-          "title",
-          "priority"
-        ],
-        "properties": {
-          "id": { "type": "integer" },
-          "color": {
-            "type": "string",
-            "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
-          },
-          "description": { "type": ["string", "null"] },
-          "text_color": {
-            "type": "string",
-            "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
-          },
-          "title": { "type": "string" },
-          "priority": { "type": ["integer", "null"] }
-        },
-        "additionalProperties": false
-      }
+      "items": { "$ref": "entities/label.json" }
     },
     "assignee": {
       "id": { "type": "integet" },

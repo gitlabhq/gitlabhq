@@ -4,6 +4,21 @@ module QuickActions
 
     attr_reader :issuable
 
+    SHRUG = '¯\\＿(ツ)＿/¯'.freeze
+    TABLEFLIP = '(╯°□°)╯︵ ┻━┻'.freeze
+
+    # Takes an issuable and returns an array of all the available commands
+    # represented with .to_h
+    def available_commands(issuable)
+      @issuable = issuable
+
+      self.class.command_definitions.map do |definition|
+        next unless definition.available?(self)
+
+        definition.to_h(self)
+      end.compact
+    end
+
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
@@ -12,8 +27,9 @@ module QuickActions
       @issuable = issuable
       @updates = {}
 
-      content, commands = extractor.extract_commands(content, context)
-      extract_updates(commands, context)
+      content, commands = extractor.extract_commands(content)
+      extract_updates(commands)
+
       [content, @updates]
     end
 
@@ -24,8 +40,8 @@ module QuickActions
 
       @issuable = issuable
 
-      content, commands = extractor.extract_commands(content, context)
-      commands = explain_commands(commands, context)
+      content, commands = extractor.extract_commands(content)
+      commands = explain_commands(commands)
       [content, commands]
     end
 
@@ -92,9 +108,12 @@ module QuickActions
 
     desc 'Assign'
     explanation do |users|
-      "Assigns #{users.first.to_reference}." if users.any?
+      users = issuable.allows_multiple_assignees? ? users : users.take(1)
+      "Assigns #{users.map(&:to_reference).to_sentence}."
     end
-    params '@user'
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
+    end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -104,28 +123,43 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = [users.last.id]
-      else
-        @updates[:assignee_id] = users.last.id
-      end
+      @updates[:assignee_ids] =
+        if issuable.allows_multiple_assignees?
+          issuable.assignees.pluck(:id) + users.map(&:id)
+        else
+          [users.first.id]
+        end
     end
 
-    desc 'Remove assignee'
+    desc do
+      if issuable.allows_multiple_assignees?
+        'Remove all or specific assignee(s)'
+      else
+        'Remove assignee'
+      end
+    end
     explanation do
-      "Removes assignee #{issuable.assignees.first.to_reference}."
+      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
+    end
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = []
-      else
-        @updates[:assignee_id] = nil
-      end
+    parse_params do |unassign_param|
+      # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
+      extract_users(unassign_param) if issuable.allows_multiple_assignees?
+    end
+    command :unassign do |users = nil|
+      @updates[:assignee_ids] =
+        if users&.any?
+          issuable.assignees.pluck(:id) - users.map(&:id)
+        else
+          []
+        end
     end
 
     desc 'Set milestone'
@@ -135,11 +169,11 @@ module QuickActions
     params '%"milestone"'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
-        project.milestones.active.any?
+        find_milestones(project, state: 'active').any?
     end
     parse_params do |milestone_param|
       extract_references(milestone_param, :milestone).first ||
-        project.milestones.find_by(title: milestone_param.strip)
+        find_milestones(project, title: milestone_param.strip).first
     end
     command :milestone do |milestone|
       @updates[:milestone_id] = milestone.id if milestone
@@ -313,9 +347,9 @@ module QuickActions
       "#{verb} this #{noun} as Work In Progress."
     end
     condition do
-      issuable.persisted? &&
-        issuable.respond_to?(:work_in_progress?) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      issuable.respond_to?(:work_in_progress?) &&
+        # Allow it to mark as WIP on MR creation page _or_ through MR notes.
+        (issuable.new_record? || current_user.can?(:"update_#{issuable.to_ability_name}", issuable))
     end
     command :wip do
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
@@ -359,7 +393,7 @@ module QuickActions
     end
 
     desc 'Add or substract spent time'
-    explanation do |time_spent|
+    explanation do |time_spent, time_spent_date|
       if time_spent
         if time_spent > 0
           verb = 'Adds'
@@ -372,16 +406,20 @@ module QuickActions
         "#{verb} #{Gitlab::TimeTrackingFormatter.output(value)} spent time."
       end
     end
-    params '<1h 30m | -1h 30m>'
+    params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
-    parse_params do |raw_duration|
-      Gitlab::TimeTrackingFormatter.parse(raw_duration)
+    parse_params do |raw_time_date|
+      Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
     end
-    command :spend do |time_spent|
+    command :spend do |time_spent, time_spent_date|
       if time_spent
-        @updates[:spend_time] = { duration: time_spent, user: current_user }
+        @updates[:spend_time] = {
+          duration: time_spent,
+          user_id: current_user.id,
+          spent_at: time_spent_date
+        }
       end
     end
 
@@ -402,7 +440,19 @@ module QuickActions
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_time_spent do
-      @updates[:spend_time] = { duration: :reset, user: current_user }
+      @updates[:spend_time] = { duration: :reset, user_id: current_user.id }
+    end
+
+    desc "Append the comment with #{SHRUG}"
+    params '<Comment>'
+    substitution :shrug do |comment|
+      "#{comment} #{SHRUG}"
+    end
+
+    desc "Append the comment with #{TABLEFLIP}"
+    params '<Comment>'
+    substitution :tableflip do |comment|
+      "#{comment} #{TABLEFLIP}"
     end
 
     # This is a dummy command, so that it appears in the autocomplete commands
@@ -424,7 +474,7 @@ module QuickActions
       target_branch_param.strip
     end
     command :target_branch do |branch_name|
-      @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
+      @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
     end
 
     desc 'Move issue from one column of the board to another'
@@ -453,16 +503,61 @@ module QuickActions
       end
     end
 
+    desc 'Mark this issue as a duplicate of another issue'
+    explanation do |duplicate_reference|
+      "Marks this issue as a duplicate of #{duplicate_reference}."
+    end
+    params '#issue'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :duplicate do |duplicate_param|
+      canonical_issue = extract_references(duplicate_param, :issue).first
+
+      if canonical_issue.present?
+        @updates[:canonical_issue_id] = canonical_issue.id
+      end
+    end
+
+    desc 'Move this issue to another project.'
+    explanation do |path_to_project|
+      "Moves this issue to #{path_to_project}."
+    end
+    params 'path/to/project'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :move do |target_project_path|
+      target_project = Project.find_by_full_path(target_project_path)
+
+      if target_project.present?
+        @updates[:target_project] = target_project
+      end
+    end
+
     def extract_users(params)
       return [] if params.nil?
 
       users = extract_references(params, :user)
 
       if users.empty?
-        users = User.where(username: params.split(' ').map(&:strip))
+        users =
+          if params == 'me'
+            [current_user]
+          else
+            User.where(username: params.split(' ').map(&:strip))
+          end
       end
 
       users
+    end
+
+    def find_milestones(project, params = {})
+      MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: [project.group&.id])).execute
     end
 
     def find_labels(labels_param)
@@ -478,21 +573,21 @@ module QuickActions
       find_labels(labels_param).map(&:id)
     end
 
-    def explain_commands(commands, opts)
+    def explain_commands(commands)
       commands.map do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition
 
-        definition.explain(self, opts, arg)
+        definition.explain(self, arg)
       end.compact
     end
 
-    def extract_updates(commands, opts)
+    def extract_updates(commands)
       commands.each do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition
 
-        definition.execute(self, opts, arg)
+        definition.execute(self, arg)
       end
     end
 
@@ -501,15 +596,6 @@ module QuickActions
       ext.analyze(arg, author: current_user)
 
       ext.references(type)
-    end
-
-    def context
-      {
-        issuable: issuable,
-        current_user: current_user,
-        project: project,
-        params: params
-      }
     end
   end
 end

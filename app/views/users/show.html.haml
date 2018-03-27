@@ -1,8 +1,7 @@
+- @hide_top_links = true
+- @hide_breadcrumbs = true
 - page_title       @user.name
 - page_description @user.bio
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('users')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
@@ -10,7 +9,7 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block.layout-nav
+  .cover-block.user-cover-block.top-area
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
@@ -33,8 +32,8 @@
 
     .profile-header
       .avatar-holder
-        = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
+        = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
+          = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: ''
 
       .user-info
         .cover-title
@@ -49,22 +48,22 @@
         .cover-desc
           - unless @user.public_email.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.public_email, "mailto:#{@user.public_email}"
+              = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
           - unless @user.skype.blank?
             .profile-link-holder.middle-dot-divider
               = link_to "skype:#{@user.skype}", title: "Skype" do
                 = icon('skype')
           - unless @user.linkedin.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to linkedin_url(@user), title: "LinkedIn" do
+              = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
                 = icon('linkedin-square')
           - unless @user.twitter.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to twitter_url(@user), title: "Twitter" do
+              = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.short_website_url, @user.full_website_url
+              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'noopener noreferrer nofollow'
           - unless @user.location.blank?
             .profile-link-holder.middle-dot-divider
               = icon('map-marker')
@@ -83,56 +82,58 @@
       .fade-left= icon('angle-left')
       .fade-right= icon('angle-right')
       %ul.nav-links.user-profile-nav.scrolling-tabs
-        %li.js-activity-tab
-          = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
-            Activity
-        %li.js-groups-tab
-          = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-            Groups
-        %li.js-contributed-tab
-          = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-            Contributed projects
-        %li.js-projects-tab
-          = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-            Personal projects
-        %li.js-snippets-tab
-          = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-            Snippets
+        - if profile_tab?(:activity)
+          %li.js-activity-tab
+            = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+              Activity
+        - if profile_tab?(:groups)
+          %li.js-groups-tab
+            = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+              Groups
+        - if profile_tab?(:contributed)
+          %li.js-contributed-tab
+            = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+              Contributed projects
+        - if profile_tab?(:projects)
+          %li.js-projects-tab
+            = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+              Personal projects
+        - if profile_tab?(:snippets)
+          %li.js-snippets-tab
+            = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+              Snippets
 
   %div{ class: container_class }
-    - if @user == current_user && show_callout?('user_callout_dismissed')
-      = render 'shared/user_callout'
     .tab-content
-      #activity.tab-pane
-        .row-content-block.calender-block.white.second-block.hidden-xs
-          .user-calendar{ data: { href: user_calendar_path } }
-            %h4.center.light
-              %i.fa.fa-spinner.fa-spin
-          .user-calendar-activities
+      - if profile_tab?(:activity)
+        #activity.tab-pane
+          .row-content-block.calender-block.white.second-block.hidden-xs
+            .user-calendar{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
+              %h4.center.light
+                %i.fa.fa-spinner.fa-spin
+            .user-calendar-activities
 
-        %h4.prepend-top-20
-          Most Recent Activity
-        .content_list{ data: { href: user_path } }
-        = spinner
+          - if can?(current_user, :read_cross_project)
+            %h4.prepend-top-20
+              Most Recent Activity
+            .content_list{ data: { href: user_path } }
+            = spinner
 
-      #groups.tab-pane
-        -# This tab is always loaded via AJAX
+      - if profile_tab?(:groups)
+        #groups.tab-pane
+          -# This tab is always loaded via AJAX
 
-      #contributed.tab-pane
-        -# This tab is always loaded via AJAX
+      - if profile_tab?(:contributed)
+        #contributed.tab-pane
+          -# This tab is always loaded via AJAX
 
-      #projects.tab-pane
-        -# This tab is always loaded via AJAX
+      - if profile_tab?(:projects)
+        #projects.tab-pane
+          -# This tab is always loaded via AJAX
 
-      #snippets.tab-pane
-        -# This tab is always loaded via AJAX
+      - if profile_tab?(:snippets)
+        #snippets.tab-pane
+          -# This tab is always loaded via AJAX
 
     .loading-status
       = spinner
-
-:javascript
-  var userProfile;
-
-  userProfile = new gl.User({
-    action: "#{controller.action_name}"
-  });

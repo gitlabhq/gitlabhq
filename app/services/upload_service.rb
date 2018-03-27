@@ -15,6 +15,6 @@ class UploadService
   private
 
   def max_attachment_size
-    current_application_settings.max_attachment_size.megabytes.to_i
+    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 end

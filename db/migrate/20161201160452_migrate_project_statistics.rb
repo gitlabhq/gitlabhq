@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 class MigrateProjectStatistics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

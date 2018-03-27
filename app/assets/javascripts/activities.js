@@ -1,9 +1,11 @@
 /* eslint-disable no-param-reassign, class-methods-use-this */
-/* global Pager */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
+import Pager from './pager';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 
-class Activities {
+export default class Activities {
   constructor() {
     Pager.init(20, true, false, data => data, this.updateTooltips);
 
@@ -15,7 +17,7 @@ class Activities {
   }
 
   updateTooltips() {
-    gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
+    localTimeAgo($('.js-timeago', '.content_list'));
   }
 
   reloadActivities() {
@@ -33,6 +35,3 @@ class Activities {
     $sender.closest('li').toggleClass('active');
   }
 }
-
-window.gl = window.gl || {};
-window.gl.Activities = Activities;

@@ -1,7 +1,7 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :project_member do
     user
-    project factory: :empty_project
+    project
     master
 
     trait(:guest)     { access_level ProjectMember::GUEST }

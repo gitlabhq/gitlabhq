@@ -2,7 +2,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :load_autocomplete_service, except: [:members]
 
   def members
-    render json: ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)
+    render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
   end
 
   def issues
@@ -14,7 +14,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def labels
-    render json: @autocomplete_service.labels
+    render json: @autocomplete_service.labels(target)
   end
 
   def milestones
@@ -22,7 +22,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def commands
-    render json: @autocomplete_service.commands(noteable, params[:type])
+    render json: @autocomplete_service.commands(target, params[:type])
   end
 
   private
@@ -31,13 +31,13 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     @autocomplete_service = ::Projects::AutocompleteService.new(@project, current_user)
   end
 
-  def noteable
-    case params[:type]
-    when 'Issue'
-      IssuesFinder.new(current_user, project_id: @project.id).execute.find_by(iid: params[:type_id])
-    when 'MergeRequest'
-      MergeRequestsFinder.new(current_user, project_id: @project.id).execute.find_by(iid: params[:type_id])
-    when 'Commit'
+  def target
+    case params[:type]&.downcase
+    when 'issue'
+      IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
+    when 'mergerequest'
+      MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
+    when 'commit'
       @project.commit(params[:type_id])
     end
   end

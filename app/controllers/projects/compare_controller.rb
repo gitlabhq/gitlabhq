@@ -3,6 +3,7 @@ require 'addressable/uri'
 class Projects::CompareController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
+  include RendersCommits
 
   # Authorize
   before_action :require_non_empty_project
@@ -16,6 +17,8 @@ class Projects::CompareController < Projects::ApplicationController
 
   def show
     apply_diff_view_cookie!
+
+    render
   end
 
   def diff_for_path
@@ -26,14 +29,14 @@ class Projects::CompareController < Projects::ApplicationController
 
   def create
     if params[:from].blank? || params[:to].blank?
-      flash[:alert] = "You must select from and to branches"
+      flash[:alert] = "You must select a Source and a Target revision"
       from_to_vars = {
         from: params[:from].presence,
         to: params[:to].presence
       }
-      redirect_to namespace_project_compare_index_path(@project.namespace, @project, from_to_vars)
+      redirect_to project_compare_index_path(@project, from_to_vars)
     else
-      redirect_to namespace_project_compare_path(@project.namespace, @project,
+      redirect_to project_compare_path(@project,
                                                params[:from], params[:to])
     end
   end
@@ -50,7 +53,7 @@ class Projects::CompareController < Projects::ApplicationController
       .execute(@project, @start_ref)
 
     if @compare
-      @commits = @compare.commits
+      @commits = prepare_commits_for_rendering(@compare.commits)
       @diffs = @compare.diffs(diff_options)
 
       environment_params = @repository.branch_exists?(@head_ref) ? { ref: @head_ref } : { commit: @compare.commit }

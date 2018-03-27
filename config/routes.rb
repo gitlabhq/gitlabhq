@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
+  get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
 
   # Search
   get 'search' => 'search#show'
@@ -41,8 +42,28 @@ Rails.application.routes.draw do
   scope path: '-' do
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
+    post 'storage_check' => 'health#storage_check'
     resources :metrics, only: [:index]
-    mount Peek::Railtie => '/peek'
+    mount Peek::Railtie => '/peek', as: 'peek_routes'
+
+    # Boards resources shared between group and projects
+    resources :boards, only: [] do
+      resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
+        collection do
+          post :generate
+        end
+
+        resources :issues, only: [:index, :create, :update]
+      end
+
+      resources :issues, module: :boards, only: [:index, :update]
+    end
+
+    # UserCallouts
+    resources :user_callouts, only: [:create]
+
+    get 'ide' => 'ide#index'
+    get 'ide/*vueroute' => 'ide#index', format: false
   end
 
   # Koding route
@@ -73,6 +94,7 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
+  draw :google_api
   draw :import
   draw :uploads
   draw :explore
@@ -84,8 +106,6 @@ Rails.application.routes.draw do
   draw :project
 
   root to: "root#index"
-
-  draw :test if Rails.env.test?
 
   get '*unmatched_route', to: 'application#route_not_found'
 end

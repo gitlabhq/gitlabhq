@@ -1,5 +1,28 @@
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
+
+  task aliases: ['yarn:check', 'environment'] do
+    require 'json'
+
+    aliases = {}
+
+    index_file = File.join(Rails.root, 'fixtures', 'emojis', 'index.json')
+    index = JSON.parse(File.read(index_file))
+
+    index.each_pair do |key, data|
+      data['aliases'].each do |a|
+        a.tr!(':', '')
+
+        aliases[a] = key
+      end
+    end
+
+    out = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
+    File.open(out, 'w') do |handle|
+      handle.write(JSON.pretty_generate(aliases, indent: '   ', space: '', space_before: ''))
+    end
+  end
+
   task digests: ['yarn:check', 'environment'] do
     require 'digest/sha2'
     require 'json'
@@ -16,8 +39,13 @@ namespace :gemojione do
         fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
         hash_digest = Digest::SHA256.file(fpath).hexdigest
 
+        category = emoji_hash['category']
+        if name == 'gay_pride_flag'
+          category = 'flags'
+        end
+
         entry = {
-          category: emoji_hash['category'],
+          category: category,
           moji: emoji_hash['moji'],
           description: emoji_hash['description'],
           unicodeVersion: Gitlab::Emoji.emoji_unicode_version(name),
@@ -29,7 +57,6 @@ namespace :gemojione do
     end
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
-
     File.open(out, 'w') do |handle|
       handle.write(JSON.pretty_generate(resultant_emoji_map))
     end
@@ -88,7 +115,7 @@ namespace :gemojione do
         end
       end
 
-      style_path = Rails.root.join(*%w(app assets stylesheets framework emoji-sprites.scss))
+      style_path = Rails.root.join(*%w(app assets stylesheets framework emoji_sprites.scss))
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
       SpriteFactory.cssurl = "image-url('$IMAGE')"

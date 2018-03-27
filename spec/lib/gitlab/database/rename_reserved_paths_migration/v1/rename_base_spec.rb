@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :truncate do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :delete do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
 
   before do
     allow(migration).to receive(:say)
+    TestEnv.clean_test_path
   end
 
   def migration_namespace(namespace)
@@ -28,7 +29,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
   end
 
   describe '#remove_cached_html_for_projects' do
-    let(:project) { create(:empty_project, description_html: 'Project description') }
+    let(:project) { create(:project, description_html: 'Project description') }
 
     it 'removes description_html from projects' do
       subject.remove_cached_html_for_projects([project.id])
@@ -93,7 +94,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       end
 
       it "renames the route for projects of the namespace" do
-        project = create(:project, path: "project-path", namespace: namespace)
+        project = create(:project, :repository, path: "project-path", namespace: namespace)
 
         subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -109,7 +110,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
       it "doesn't rename routes that start with a similar name" do
         other_namespace = create(:namespace, path: 'the-path-but-not-really')
-        project = create(:empty_project, path: 'the-project', namespace: other_namespace)
+        project = create(:project, path: 'the-project', namespace: other_namespace)
 
         subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -119,7 +120,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       context "the-path namespace -> subgroup -> the-path0 project" do
         it "updates the route of the project correctly" do
           subgroup = create(:group, path: "subgroup", parent: namespace)
-          project = create(:project, path: "the-path0", namespace: subgroup)
+          project = create(:project, :repository, path: "the-path0", namespace: subgroup)
 
           subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -130,7 +131,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
     context 'for projects' do
       let(:parent) { create(:namespace, path: 'the-parent') }
-      let(:project) { create(:empty_project, path: 'the-path', namespace: parent) }
+      let(:project) { create(:project, path: 'the-path', namespace: parent) }
 
       it 'renames the project called `the-path`' do
         subject.rename_path_for_routable(migration_project(project))
@@ -149,6 +150,30 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
         expect(old_path).to eq('the-parent/the-path')
         expect(new_path).to eq('the-parent/the-path0')
+      end
+    end
+  end
+
+  describe '#perform_rename' do
+    describe 'for namespaces' do
+      let(:namespace) { create(:namespace, path: 'the-path') }
+      it 'renames the path' do
+        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
+
+        expect(namespace.reload.path).to eq('renamed')
+      end
+
+      it 'renames all the routes for the namespace' do
+        child = create(:group, path: 'child', parent: namespace)
+        project = create(:project, :repository, namespace: child, path: 'the-project')
+        other_one = create(:namespace, path: 'the-path-is-similar')
+
+        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
+
+        expect(namespace.reload.route.path).to eq('renamed')
+        expect(child.reload.route.path).to eq('renamed/child')
+        expect(project.reload.route.path).to eq('renamed/child/the-project')
+        expect(other_one.reload.route.path).to eq('the-path-is-similar')
       end
     end
   end
@@ -201,6 +226,55 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       subject.move_folders(uploads_dir, File.join('parent-group', 'sub-group'), File.join('parent-group', 'moved-group'))
 
       expect(File.exist?(expected_file)).to be(true)
+    end
+  end
+
+  describe '#track_rename', :redis do
+    it 'tracks a rename in redis' do
+      key = 'rename:FakeRenameReservedPathMigrationV1:namespace'
+
+      subject.track_rename('namespace', 'path/to/namespace', 'path/to/renamed')
+
+      old_path, new_path = [nil, nil]
+      Gitlab::Redis::SharedState.with do |redis|
+        rename_info = redis.lpop(key)
+        old_path, new_path = JSON.parse(rename_info)
+      end
+
+      expect(old_path).to eq('path/to/namespace')
+      expect(new_path).to eq('path/to/renamed')
+    end
+  end
+
+  describe '#reverts_for_type', :redis do
+    it 'yields for each tracked rename' do
+      subject.track_rename('project', 'old_path', 'new_path')
+      subject.track_rename('project', 'old_path2', 'new_path2')
+      subject.track_rename('namespace', 'namespace_path', 'new_namespace_path')
+
+      expect { |b| subject.reverts_for_type('project', &b) }
+        .to yield_successive_args(%w(old_path2 new_path2), %w(old_path new_path))
+      expect { |b| subject.reverts_for_type('namespace', &b) }
+        .to yield_with_args('namespace_path', 'new_namespace_path')
+    end
+
+    it 'keeps the revert in redis if it failed' do
+      subject.track_rename('project', 'old_path', 'new_path')
+
+      subject.reverts_for_type('project') do
+        raise 'whatever happens, keep going!'
+      end
+
+      key = 'rename:FakeRenameReservedPathMigrationV1:project'
+      stored_renames = nil
+      rename_count = 0
+      Gitlab::Redis::SharedState.with do |redis|
+        stored_renames = redis.lrange(key, 0, 1)
+        rename_count = redis.llen(key)
+      end
+
+      expect(rename_count).to eq(1)
+      expect(JSON.parse(stored_renames.first)).to eq(%w(old_path new_path))
     end
   end
 end

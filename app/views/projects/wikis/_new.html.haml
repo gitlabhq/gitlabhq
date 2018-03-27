@@ -3,16 +3,15 @@
     .modal-content
       .modal-header
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h3.page-title New Wiki Page
+        %h3.page-title= s_("WikiNewPageTitle|New Wiki Page")
       .modal-body
         %form.new-wiki-page
           .form-group
             = label_tag :new_wiki_path do
-              %span Page slug
-            = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => namespace_project_wikis_path(@project.namespace, @project), autofocus: true
+              %span= s_("WikiPage|Page slug")
+            = text_field_tag :new_wiki_path, nil, placeholder: s_("WikiNewPagePlaceholder|how-to-setup"), class: 'form-control', required: true, :'data-wikis-path' => project_wikis_path(@project), autofocus: true
             %span.new-wiki-page-slug-tip
               = icon('lightbulb-o')
-              Tip: You can specify the full path for the new file.
-              We will automatically create any missing directories.
+              = s_("WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories.")
           .form-actions
-            = button_tag 'Create page', class: 'build-new-wiki btn btn-create'
+            = button_tag s_("Wiki|Create page"), class: "build-new-wiki btn btn-create"

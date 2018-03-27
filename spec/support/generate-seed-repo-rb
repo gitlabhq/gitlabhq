@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
-# 
+#
 # # generate-seed-repo-rb
-# 
+#
 # This script generates the seed_repo.rb file used by lib/gitlab/git
 # tests. The seed_repo.rb file needs to be updated anytime there is a
 # Git push to https://gitlab.com/gitlab-org/gitlab-git-test.
-# 
+#
 # Usage:
-# 
+#
 #   ./spec/support/generate-seed-repo-rb > spec/support/seed_repo.rb
-# 
-# 
+#
+#
 
 require 'erb'
 require 'tempfile'
 
-SOURCE = 'https://gitlab.com/gitlab-org/gitlab-git-test.git'.freeze
+SOURCE = File.expand_path('../gitlab-git-test.git', __FILE__).freeze
 SCRIPT_NAME = 'generate-seed-repo-rb'.freeze
 REPO_NAME = 'gitlab-git-test.git'.freeze
 
@@ -24,6 +24,7 @@ def main
     unless system(*%W[git clone --bare #{SOURCE} #{REPO_NAME}], chdir: dir)
       abort "git clone failed"
     end
+
     repo = File.join(dir, REPO_NAME)
     erb = ERB.new(DATA.read)
     erb.run(binding)
@@ -33,6 +34,7 @@ end
 def capture!(cmd, dir)
   output = IO.popen(cmd, 'r', chdir: dir) { |io| io.read }
   raise "command failed with #{$?}: #{cmd.join(' ')}" unless $?.success?
+
   output.chomp
 end
 

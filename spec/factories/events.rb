@@ -1,7 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :event do
-    project factory: :empty_project
-    author factory: :user
+    project
+    author(factory: :user) { project.creator }
+    action Event::JOINED
 
     trait(:created)   { action Event::CREATED }
     trait(:updated)   { action Event::UPDATED }
@@ -19,5 +20,20 @@ FactoryGirl.define do
       action { Event::CLOSED }
       target factory: :closed_issue
     end
+  end
+
+  factory :push_event, class: PushEvent do
+    project factory: :project_empty_repo
+    author factory: :user
+    action Event::PUSHED
+  end
+
+  factory :push_event_payload do
+    event
+    commit_count 1
+    action :pushed
+    ref_type :branch
+    ref 'master'
+    commit_to '3cdce97ed87c91368561584e7358f4d46e3e173c'
   end
 end

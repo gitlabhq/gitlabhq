@@ -1,11 +1,15 @@
-## Contributor license agreement
+## Developer Certificate of Origin + License
 
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+By contributing to GitLab B.V., You accept and agree to the following terms and
+conditions for Your present and future Contributions submitted to GitLab B.V.
+Except for the license granted herein to GitLab B.V. and recipients of software
+distributed by GitLab B.V., You reserve all right, title, and interest in and to
+Your Contributions. All Contributions are subject to the following DCO + License
+terms.
 
-_This notice should stay as the first item in the CONTRIBUTING.MD file._
+[DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
+
+_This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ---
 
@@ -21,17 +25,17 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
-  - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
+  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
+  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#priority-labels-deliverable-stretch-next-patch-release)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
-- [Implement design & UI elements](#implement-design--ui-elements)
+- [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
   - [Issue triaging](#issue-triaging)
   - [Feature proposals](#feature-proposals)
   - [Issue tracker guidelines](#issue-tracker-guidelines)
   - [Issue weight](#issue-weight)
   - [Regression issues](#regression-issues)
-  - [Technical debt](#technical-debt)
+  - [Technical and UX debt](#technical-and-ux-debt)
   - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
   - [Merge request guidelines](#merge-request-guidelines)
@@ -46,10 +50,13 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 
 ## Contribute to GitLab
 
+For a first-time step-by-step guide to the contribution process, see
+["Contributing to GitLab"](https://about.gitlab.com/contributing/).
+
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
 
-Looking for something to work on? Look for the label [Accepting Merge Requests](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
 
 GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
@@ -91,8 +98,8 @@ coach is going to finish the merge request we assign the
 
 ## Helping others
 
-Please help other GitLab users when you can. The channels people will reach out
-on can be found on the [getting help page][getting-help].
+Please help other GitLab users when you can.
+The methods people will use to seek help can be found on the [getting help page][getting-help].
 
 Sign up for the mailing list, answer GitLab questions on StackOverflow or
 respond in the IRC channel. You can also sign up on [CodeTriage][codetriage] to help with
@@ -100,10 +107,13 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
-These issues will be of reasonable size and challenge, for anyone to start
-contributing to GitLab.
+If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
+is a great place to start. Issues with a lower weight (1 or 2) are deemed
+suitable for beginners. These issues will be of reasonable size and challenge,
+for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
+please consider we favor 
+[asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
 
@@ -114,9 +124,9 @@ scheduling into milestones. Labelling is a task for everyone.
 Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
-- Subject: ~wiki, ~"container registry", ~ldap, ~api, etc.
-- Team: ~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.
-- Priority: ~Deliverable, ~Stretch
+- Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
+- Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
+- Priority: ~Deliverable, ~Stretch, ~"Next Patch Release"
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -157,14 +167,14 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)
+### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
-~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
+~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -175,7 +185,7 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable and ~Stretch)
+### Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")
 
 Priority labels help us clearly communicate expectations of the work for the
 release. There are two levels of priority labels:
@@ -185,6 +195,24 @@ release. There are two levels of priority labels:
 - ~Stretch: Issues that are a stretch goal for delivering in the current
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
+- ~"Next Patch Release": Issues to put in the next patch release. Work on these 
+  first, and add the "Pick Into X" label to the merge request, along with the
+  appropriate milestone.
+
+Each issue scheduled for the current milestone should be labeled ~Deliverable
+or ~"Stretch". Any open issue for a previous milestone should be labeled 
+~"Next Patch Release", or otherwise rescheduled to a different milestone.
+
+### Severity labels (~S1, ~S2, etc.)
+
+Severity labels help us clearly communicate the impact of a ~bug on users.
+
+| Label | Meaning                                  | Example |
+|-------|------------------------------------------|---------|
+| ~S1   | Feature broken, no workaround            | Unable to create an issue |
+| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
+| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
+| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
@@ -209,19 +237,29 @@ We add the ~"Accepting Merge Requests" label to:
 
 - Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
 solve in the ~"Next Patch Release")
-- Small ~"feature proposal" that do not need ~UX / ~"Product work", or for which
-the ~UX / ~"Product work" is already done
+- Small ~"feature proposal"
 - Small ~"technical debt" issues
 
 After adding the ~"Accepting Merge Requests" label, we try to estimate the
 [weight](#issue-weight) of the issue. We use issue weight to let contributors
 know how difficult the issue is. Additionally:
 
-- We advertise [~"Accepting Merge Requests" issues with weight < 5][up-for-grabs]
+- We advertise ["Accepting Merge Requests" issues with weight < 5][up-for-grabs]
   as suitable for people that have never contributed to GitLab before on the
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
-  look for [~"Accepting Merge Requests" issues with a weight of 1][firt-timers]
+  look for ["Accepting Merge Requests" issues with a weight of 1][firt-timers]
+
+If you've decided that you would like to work on an issue, please @-mention
+the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
+as soon as possible. The product manager will then pull in appropriate GitLab team
+members to further discuss scope, design, and technical considerations. This will
+ensure that that your contribution is aligned with the GitLab product and minimize
+any rework and delay in getting it merged into master.
+
+GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
+should update the issue description with a responsible product manager, inviting
+any potential community contributor to @-mention per above.
 
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
@@ -278,7 +316,7 @@ For feature proposals for EE, open an issue on the
 In order to help track the feature proposals, we have created a
 [`feature proposal`][fpl] label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team]
-members to add the label `feature proposal` to the issue or add the following
+members to add the label ~"feature proposal" to the issue or add the following
 code snippet right after your description in a new line: `~"feature proposal"`.
 
 Please keep feature proposals as small and simple as possible, complex ones
@@ -286,7 +324,10 @@ might be edited to make them small and simple.
 
 Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
-For changes in the interface, it can be helpful to create a mockup first.
+For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
+be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
+need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself.
+
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
 
@@ -344,27 +385,29 @@ addressed.
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
-### Technical debt
+### Technical and UX debt
 
-In order to track things that can be improved in GitLab's codebase, we created
-the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+In order to track things that can be improved in GitLab's codebase,
+we use the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+For user experience improvements, we use the ~"UX debt" label.
 
-This label should be added to issues that describe things that can be improved,
-shortcuts that have been taken, code that needs refactoring, features that need
-additional attention, and all other things that have been left behind due to
-high velocity of development.
+These labels should be added to issues that describe things that can be improved,
+shortcuts that have been taken, features that need additional attention, and all
+other things that have been left behind due to high velocity of development.
+For example, code that needs refactoring should use the ~"technical debt" label,
+user experience refinements should use the ~"UX debt" label.
 
 Everyone can create an issue, though you may need to ask for adding a specific
 label, if you do not have permissions to do it by yourself. Additional labels
-can be combined with the `technical debt` label, to make it easier to schedule
+can be combined with these labels, to make it easier to schedule
 the improvements for a release.
 
-Issues tagged with the `technical debt` label have the same priority like issues
+Issues tagged with these labels have the same priority like issues
 that describe a new feature to be introduced in GitLab, and should be scheduled
 for a release by the appropriate person.
 
-Make sure to mention the merge request that the `technical debt` issue is
-associated with in the description of the issue.
+Make sure to mention the merge request that the ~"technical debt" issue or
+~"UX debt" issue is associated with in the description of the issue.
 
 ### Stewardship
 
@@ -372,9 +415,9 @@ For issues related to the open source stewardship of GitLab,
 there is the ~"stewardship" label.
 
 This label is to be used for issues in which the stewardship of GitLab
-is a topic of discussion. For instance if GitLab Inc. is planning to remove
-features from GitLab CE to make exclusive in GitLab EE, related issues
-would be labelled with ~"stewardship".
+is a topic of discussion. For instance if GitLab Inc. is planning to add
+features from GitLab EE to GitLab CE, related issues would be labelled with
+~"stewardship".
 
 A recent example of this was the issue for
 [bringing the time tracking API to GitLab CE][time-tracking-issue].
@@ -419,7 +462,7 @@ request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch, branch away from `master`
-1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
+1. Write [tests](https://docs.gitlab.com/ee/development/rake_tasks.html#run-tests) and code
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]
@@ -525,6 +568,7 @@ When having your code reviewed and when reviewing merge requests please take the
    etc.), they should conform to our [Licensing guidelines][license-finder-doc].
    See the instructions in that document for help if your MR fails the
    "license-finder" test with a "Dependencies that need approval" error.
+1. The merge request meets the [definition of done](#definition-of-done).
 
 ## Definition of done
 
@@ -534,7 +578,7 @@ the feature you contribute through all of these steps.
 
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
-1. [Unit and system tests][testing] that pass on the CI server
+1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
@@ -579,6 +623,7 @@ merge request:
     present time and never use past tense (has been/was). For example instead
     of _prohibited this user from being saved due to the following errors:_ the
     text should be _sorry, we could not create your account because:_
+1.  Code should be written in [US English][us-english]
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop),
@@ -643,7 +688,9 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [license-finder-doc]: doc/development/licensing.md
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
-[testing]: doc/development/testing.md
+[testing]: doc/development/testing_guide/index.md
+[us-english]: https://en.wikipedia.org/wiki/American_English
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.
+      

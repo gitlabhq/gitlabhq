@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true, js: true do
+feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
   include TreeHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -13,14 +13,14 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
     end
 
     def visit_blob(fragment = nil)
-      visit namespace_project_blob_path(project.namespace, project, tree_join('master', path), anchor: fragment)
+      visit project_blob_path(project, tree_join('master', path), anchor: fragment)
     end
 
     describe 'Click "Permalink" button' do
       it 'works with no initial line number fragment hash' do
         visit_blob
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(namespace_project_blob_path(project.namespace, project, tree_join(sha, path))))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path))))
       end
 
       it 'maintains intitial fragment hash' do
@@ -28,7 +28,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
 
         visit_blob(fragment)
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(namespace_project_blob_path(project.namespace, project, tree_join(sha, path), anchor: fragment)))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: fragment)))
       end
 
       it 'changes fragment hash if line number clicked' do
@@ -39,7 +39,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
         find('#L3').click
         find("##{ending_fragment}").click
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(namespace_project_blob_path(project.namespace, project, tree_join(sha, path), anchor: ending_fragment)))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: ending_fragment)))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
@@ -51,7 +51,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
         find('#L3').click
         find("##{ending_fragment}").click
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(namespace_project_blob_path(project.namespace, project, tree_join(sha, path), anchor: ending_fragment)))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: ending_fragment)))
       end
     end
 
@@ -59,7 +59,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
       it 'works with no initial line number fragment hash' do
         visit_blob
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(namespace_project_blame_path(project.namespace, project, tree_join('master', path))))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path))))
       end
 
       it 'maintains intitial fragment hash' do
@@ -67,7 +67,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
 
         visit_blob(fragment)
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(namespace_project_blame_path(project.namespace, project, tree_join('master', path), anchor: fragment)))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: fragment)))
       end
 
       it 'changes fragment hash if line number clicked' do
@@ -78,7 +78,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
         find('#L3').click
         find("##{ending_fragment}").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(namespace_project_blame_path(project.namespace, project, tree_join('master', path), anchor: ending_fragment)))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: ending_fragment)))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
@@ -90,7 +90,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
         find('#L3').click
         find("##{ending_fragment}").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(namespace_project_blame_path(project.namespace, project, tree_join('master', path), anchor: ending_fragment)))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: ending_fragment)))
       end
     end
   end

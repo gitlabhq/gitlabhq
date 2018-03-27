@@ -1,11 +1,9 @@
+- @hide_top_links = true
 - page_title "Groups"
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
-= webpack_bundle_tag 'common_vue'
-= webpack_bundle_tag 'groups'
-
-- if @groups.empty?
-  = render 'empty_state'
+- if params[:filter].blank? && @groups.empty?
+  = render 'shared/groups/empty_state'
 - else
   = render 'groups'

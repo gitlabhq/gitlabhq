@@ -76,7 +76,7 @@ Content-Transfer-Encoding: 7bit
         <img src="https://meta-discourse.global.ssl.fastly.net/user_avatar/meta.discourse.org/techapj/45/3281.png" title="techAPJ" style="max-width:100%;" width="45" height="45">
       </td>
       <td>
-        <a href="https://meta.discourse.org/users/techapj" target="_blank" style="text-decoration: none; font-weight: bold; color: #006699;; font-size:13px;font-family:'lucida grande',tahoma,verdana,arial,sans-serif;color:#3b5998;text-decoration:none;font-weight:bold">techAPJ</a><br>
+        <a href="https://meta.discourse.org/users/techapj" target="_blank" style="text-decoration: none; font-weight: 600; color: #006699;; font-size:13px;font-family:'lucida grande',tahoma,verdana,arial,sans-serif;color:#3b5998;text-decoration:none;font-weight:bold">techAPJ</a><br>
         <span style="text-align:right;color:#999999;padding-right:5px;font-family:'lucida grande',tahoma,verdana,arial,sans-serif;font-size:11px">November 28</span>
       </td>
     </tr>
@@ -94,7 +94,7 @@ Content-Transfer-Encoding: 7bit
 
 
   <div style="color:#666;">
-    <p>To respond, reply to this email or visit <a href="https://meta.discourse.org/t/testing-default-email-replies/22638/3" style="text-decoration: none; font-weight: bold; color: #006699;; color:#666;">https://meta.discourse.org/t/testing-default-email-replies/22638/3</a> in your browser.</p>
+    <p>To respond, reply to this email or visit <a href="https://meta.discourse.org/t/testing-default-email-replies/22638/3" style="text-decoration: none; font-weight: 600; color: #006699;; color:#666;">https://meta.discourse.org/t/testing-default-email-replies/22638/3</a> in your browser.</p>
   </div>
   <hr style="background-color: #ddd; height: 1px; border: 1px;; background-color: #ddd; height: 1px; border: 1px;">
   <h4>Previous Replies</h4>
@@ -106,7 +106,7 @@ Content-Transfer-Encoding: 7bit
         <img src="https://meta-discourse.global.ssl.fastly.net/user_avatar/meta.discourse.org/codinghorror/45/5297.png" title="codinghorror" style="max-width:100%;" width="45" height="45">
       </td>
       <td>
-        <a href="https://meta.discourse.org/users/codinghorror" target="_blank" style="text-decoration: none; font-weight: bold; color: #006699;; font-size:13px;font-family:'lucida grande',tahoma,verdana,arial,sans-serif;color:#3b5998;text-decoration:none;font-weight:bold">codinghorror</a><br>
+        <a href="https://meta.discourse.org/users/codinghorror" target="_blank" style="text-decoration: none; font-weight: 600; color: #006699;; font-size:13px;font-family:'lucida grande',tahoma,verdana,arial,sans-serif;color:#3b5998;text-decoration:none;font-weight:bold">codinghorror</a><br>
         <span style="text-align:right;color:#999999;padding-right:5px;font-family:'lucida grande',tahoma,verdana,arial,sans-serif;font-size:11px">November 28</span>
       </td>
     </tr>
@@ -114,7 +114,7 @@ Content-Transfer-Encoding: 7bit
       <td style="padding-top:5px;" colspan="2">
 <p style="margin-top:0; border: 0;">We're testing the latest GitHub email processing library which we are integrating now.</p>
 
-<p style="margin-top:0; border: 0;"><a href="https://github.com/github/email_reply_parser" target="_blank" style="text-decoration: none; font-weight: bold; color: #006699;">https://github.com/github/email_reply_parser</a></p>
+<p style="margin-top:0; border: 0;"><a href="https://github.com/github/email_reply_parser" target="_blank" style="text-decoration: none; font-weight: 600; color: #006699;">https://github.com/github/email_reply_parser</a></p>
 
 <p style="margin-top:0; border: 0;">Go ahead and reply to this topic and I'll reply from various email clients for testing.</p>
 </td>
@@ -126,10 +126,10 @@ Content-Transfer-Encoding: 7bit
 <hr style="background-color: #ddd; height: 1px; border: 1px;; background-color: #ddd; height: 1px; border: 1px;">
 
 <div style="color:#666;">
-<p>To respond, reply to this email or visit <a href="https://meta.discourse.org/t/testing-default-email-replies/22638/3" style="text-decoration: none; font-weight: bold; color: #006699;; color:#666;">https://meta.discourse.org/t/testing-default-email-replies/22638/3</a> in your browser.</p>
+<p>To respond, reply to this email or visit <a href="https://meta.discourse.org/t/testing-default-email-replies/22638/3" style="text-decoration: none; font-weight: 600; color: #006699;; color:#666;">https://meta.discourse.org/t/testing-default-email-replies/22638/3</a> in your browser.</p>
 </div>
 <div style="color:#666;">
-<p>To unsubscribe from these emails, visit your <a href="https://meta.discourse.org/my/preferences" style="text-decoration: none; font-weight: bold; color: #006699;; color:#666;">user preferences</a>.</p>
+<p>To unsubscribe from these emails, visit your <a href="https://meta.discourse.org/my/preferences" style="text-decoration: none; font-weight: 600; color: #006699;; color:#666;">user preferences</a>.</p>
 </div>
 </div>
 </div></blockquote></body></html>

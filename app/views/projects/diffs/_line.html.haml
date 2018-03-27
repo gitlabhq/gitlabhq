@@ -19,6 +19,7 @@
       - if plain
         = link_text
       - else
+        = add_diff_note_button(line_code, diff_file.position(line), type)
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
       - discussion = line_discussions.try(:first)
       - if discussion && discussion.resolvable? && !plain
@@ -29,7 +30,7 @@
         = link_text
       - else
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
-    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }<
+    %td.line_content.noteable_line{ class: type }<
       - if email
         %pre= line.text
       - else

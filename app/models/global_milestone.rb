@@ -2,6 +2,7 @@ class GlobalMilestone
   include Milestoneish
 
   EPOCH = DateTime.parse('1970-01-01')
+  STATE_COUNT_HASH = { opened: 0, closed: 0, all: 0 }.freeze
 
   attr_accessor :title, :milestones
   alias_attribute :name, :title
@@ -11,7 +12,10 @@ class GlobalMilestone
   end
 
   def self.build_collection(projects, params)
-    child_milestones = MilestonesFinder.new.execute(projects, params)
+    params =
+      { project_ids: projects.map(&:id), state: params[:state] }
+
+    child_milestones = MilestonesFinder.new(params).execute
 
     milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
       milestones_relation = Milestone.where(id: grouped.map(&:id))
@@ -28,13 +32,42 @@ class GlobalMilestone
     new(title, child_milestones)
   end
 
-  def self.states_count(projects)
-    relation = MilestonesFinder.new.execute(projects, state: 'all')
-    milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
+  def self.states_count(projects, group = nil)
+    legacy_group_milestones_count = legacy_group_milestone_states_count(projects)
+    group_milestones_count = group_milestones_states_count(group)
 
-    opened = count_by_state(milestones_by_state_and_title, 'active')
-    closed = count_by_state(milestones_by_state_and_title, 'closed')
-    all = milestones_by_state_and_title.map { |(_, title), _| title }.uniq.count
+    legacy_group_milestones_count.merge(group_milestones_count) do |k, legacy_group_milestones_count, group_milestones_count|
+      legacy_group_milestones_count + group_milestones_count
+    end
+  end
+
+  def self.group_milestones_states_count(group)
+    return STATE_COUNT_HASH unless group
+
+    params = { group_ids: [group.id], state: 'all' }
+
+    relation = MilestonesFinder.new(params).execute
+    grouped_by_state = relation.reorder(nil).group(:state).count
+
+    {
+      opened: grouped_by_state['active'] || 0,
+      closed: grouped_by_state['closed'] || 0,
+      all: grouped_by_state.values.sum
+    }
+  end
+
+  # Counts the legacy group milestones which must be grouped by title
+  def self.legacy_group_milestone_states_count(projects)
+    return STATE_COUNT_HASH unless projects
+
+    params = { project_ids: projects.map(&:id), state: 'all' }
+
+    relation = MilestonesFinder.new(params).execute
+    project_milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
+
+    opened = count_by_state(project_milestones_by_state_and_title, 'active')
+    closed = count_by_state(project_milestones_by_state_and_title, 'closed')
+    all = project_milestones_by_state_and_title.map { |(_, title), _| title }.uniq.count
 
     {
       opened: opened,

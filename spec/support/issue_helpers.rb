@@ -1,6 +1,6 @@
 module IssueHelpers
   def visit_issues(project, opts = {})
-    visit namespace_project_issues_path project.namespace, project, opts
+    visit project_issues_path project, opts
   end
 
   def first_issue

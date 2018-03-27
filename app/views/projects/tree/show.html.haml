@@ -1,11 +1,11 @@
 - @no_container = true
+- breadcrumb_title _("Repository")
+- @content_class = "limit-container-width" unless fluid_layout
 
 - page_title @path.presence || _("Files"), @ref
 = content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
-= render "projects/commits/head"
+  = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
-= render 'projects/last_push'
-
-%div{ class: container_class }
-  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref
+%div{ class: [(container_class), ("limit-container-width" unless fluid_layout)] }
+  = render 'projects/last_push'
+  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)

@@ -1,7 +1,5 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
-    include Gitlab::CurrentSettings
-
     AUDIENCE = 'container_registry'.freeze
 
     def execute(authentication_abilities:)
@@ -32,7 +30,7 @@ module Auth
     end
 
     def self.token_expire_at
-      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
+      Time.now + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
     private
@@ -56,11 +54,22 @@ module Auth
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
-      path = ContainerRegistry::Path.new(name)
 
-      return unless type == 'repository'
+      case type
+      when 'registry'
+        process_registry_access(type, name, actions)
+      when 'repository'
+        path = ContainerRegistry::Path.new(name)
+        process_repository_access(type, path, actions)
+      end
+    end
 
-      process_repository_access(type, path, actions)
+    def process_registry_access(type, name, actions)
+      return unless current_user&.admin?
+      return unless name == 'catalog'
+      return unless actions == ['*']
+
+      { type: type, name: name, actions: ['*'] }
     end
 
     def process_repository_access(type, path, actions)
@@ -103,6 +112,8 @@ module Auth
         build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
+      when '*'
+        user_can_admin?(requested_project)
       else
         false
       end
@@ -118,6 +129,11 @@ module Auth
       # 2. read images from dependent projects if creator of build is a team member
       has_authentication_ability?(:build_read_container_image) &&
         (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
+    end
+
+    def user_can_admin?(requested_project)
+      has_authentication_ability?(:admin_container_image) &&
+        can?(current_user, :admin_container_image, requested_project)
     end
 
     def user_can_pull?(requested_project)

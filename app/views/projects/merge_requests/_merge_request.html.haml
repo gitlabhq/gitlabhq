@@ -4,58 +4,60 @@
       = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected_issue"
 
   .issue-info-container
-    .merge-request-title.title
-      %span.merge-request-title-text
-        = link_to merge_request.title, merge_request_path(merge_request)
+    .issue-main-info
+      .merge-request-title.title
+        %span.merge-request-title-text
+          = link_to merge_request.title, merge_request_path(merge_request)
+        - if merge_request.tasks?
+          %span.task-status.hidden-xs
+            &nbsp;
+            = merge_request.task_status
+
+      .issuable-info
+        %span.issuable-reference
+          #{issuable_reference(merge_request)}
+        %span.issuable-authored.hidden-xs
+          &middot;
+          opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
+          by #{link_to_member(@project, merge_request.author, avatar: false)}
+        - if merge_request.milestone
+          %span.issuable-milestone.hidden-xs
+            &nbsp;
+            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: 1, toggle: 'tooltip', title: issuable_milestone_tooltip_title(merge_request) } do
+              = icon('clock-o')
+              = merge_request.milestone.title
+        - if merge_request.target_project.default_branch != merge_request.target_branch
+          %span.project-ref-path.has-tooltip{ title: _('Target branch') }
+            &nbsp;
+            = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name' do
+              = sprite_icon('fork', size: 12, css_class: 'fork-sprite')
+              = merge_request.target_branch
+        - if merge_request.labels.any?
+          &nbsp;
+          - merge_request.labels.each do |label|
+            = link_to_label(label, subject: merge_request.project, type: :merge_request, css_class: 'label-link')
+
+    .issuable-meta
       %ul.controls
         - if merge_request.merged?
-          %li
+          %li.issuable-status.hidden-xs
             MERGED
         - elsif merge_request.closed?
-          %li
+          %li.issuable-status.hidden-xs
             = icon('ban')
             CLOSED
-
         - if merge_request.head_pipeline
-          %li
+          %li.issuable-pipeline-status.hidden-xs
             = render_pipeline_status(merge_request.head_pipeline)
-
         - if merge_request.open? && merge_request.broken?
-          %li
-            = link_to merge_request_path(merge_request), class: "has-tooltip", title: "Cannot be merged automatically", data: { container: 'body' } do
+          %li.issuable-pipeline-broken.hidden-xs
+            = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
               = icon('exclamation-triangle')
-
         - if merge_request.assignee
           %li
-            = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
+            = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: _('Assigned to :name'))
 
         = render 'shared/issuable_meta_data', issuable: merge_request
 
-    .merge-request-info
-      #{issuable_reference(merge_request)} &middot;
-      opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
-      by #{link_to_member(@project, merge_request.author, avatar: false)}
-      - if merge_request.target_project.default_branch != merge_request.target_branch
-        &nbsp;
-        = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name' do
-          = icon('code-fork')
-          = merge_request.target_branch
-
-      - if merge_request.milestone
-        &nbsp;
-        = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, milestone_title: merge_request.milestone.title) do
-          = icon('clock-o')
-          = merge_request.milestone.title
-
-      - if merge_request.labels.any?
-        &nbsp;
-        - merge_request.labels.each do |label|
-          = link_to_label(label, subject: merge_request.project, type: :merge_request, css_class: 'label-link')
-
-      - if merge_request.tasks?
-        &nbsp;
-        %span.task-status
-          = merge_request.task_status
-
-      .pull-right.hidden-xs
+      .pull-right.issuable-updated-at.hidden-xs
         %span updated #{time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago')}

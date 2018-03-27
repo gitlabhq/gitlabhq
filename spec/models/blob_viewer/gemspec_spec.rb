@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BlobViewer::Gemspec, model: true do
+describe BlobViewer::Gemspec do
   include FakeBlobHelpers
 
-  let(:project) { build(:project) }
+  let(:project) { build_stubbed(:project) }
   let(:data) do
     <<-SPEC.strip_heredoc
       Gem::Specification.new do |s|

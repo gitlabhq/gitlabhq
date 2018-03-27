@@ -45,19 +45,20 @@
   margin-top: -23px;
   float: right;
   font-size: 12px;
+  direction: ltr;
 }
 
 .pika-single.gitlab-theme {
   .pika-label {
     color: $gl-text-color-secondary;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   th {
     padding: 2px 0;
     color: $note-disabled-comment-color;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     text-transform: lowercase;
     border-top: 1px solid $calendar-border-color;
   }
@@ -87,15 +88,15 @@
   .is-today {
     .pika-day {
       color: inherit;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
   }
 
   .is-selected .pika-day,
   .pika-day:hover,
-  .is-today .pika-day:hover {
-    background: $gl-primary;
-    color: $white-light;
+  .is-today .pika-day {
+    background: $gray-darker;
+    color: $gl-text-color;
     box-shadow: none;
   }
 }

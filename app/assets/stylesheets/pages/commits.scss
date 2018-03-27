@@ -1,6 +1,6 @@
 .commit-description {
   background: none;
-  border: none;
+  border: 0;
   padding: 0;
   margin-top: 10px;
   word-break: normal;
@@ -54,7 +54,14 @@
   .mr-widget-pipeline-graph {
     display: inline-block;
     vertical-align: middle;
-    margin: 0 -6px 0 0;
+
+    .stage-cell .stage-container {
+      margin: 3px 3px 3px 0;
+    }
+
+    .stage-container:last-child {
+      margin-right: 0;
+    }
 
     .dropdown-menu {
       margin-top: 11px;
@@ -137,17 +144,17 @@
   display: inline-block;
   background: $white-light;
   color: $gl-text-color-secondary;
-  padding: 0 5px;
+  padding: 0 4px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
   margin-left: 5px;
-  font-size: $gl-font-size;
+  font-size: 12px;
   line-height: $gl-font-size;
   outline: none;
 
   &.open {
-    background: $gray-light;
+    background-color: darken($gray-light, 10%);
     box-shadow: inset 0 0 2px rgba($black, 0.2);
   }
 
@@ -182,17 +189,20 @@
 
 .commit-content {
   padding-right: 10px;
+  white-space: normal;
 }
 
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    font-size: 0;
+    .fa-spinner {
+      font-size: 12px;
+    }
   }
 
   .ci-status-link {
     display: inline-block;
     position: relative;
-    top: 1px;
+    top: 2px;
   }
 
   .btn-clipboard,
@@ -209,7 +219,12 @@
 
   .commit-sha {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .ci-status-icon {
+    position: relative;
+    top: 2px;
   }
 }
 
@@ -222,6 +237,14 @@
     vertical-align: baseline;
   }
 
+  a.autodevops-badge {
+    color: $white-light;
+  }
+
+  a.autodevops-link {
+    color: $gl-link-color;
+  }
+
   .commit-row-description {
     font-size: 14px;
     padding: 10px 15px;
@@ -232,7 +255,7 @@
     word-break: normal;
 
     pre {
-      border: none;
+      border: 0;
       background: inherit;
       padding: 0;
       margin: 0;
@@ -250,8 +273,8 @@
     }
 
     .committed_ago {
-      float: right;
       @extend .cgray;
+      float: right;
     }
   }
 }
@@ -278,4 +301,69 @@
   .commit-row-message {
     color: $gl-text-color;
   }
+}
+
+
+.gpg-status-box {
+  padding: 2px 10px;
+  margin-right: $gl-padding;
+
+  &:empty {
+    display: none;
+  }
+
+  &.valid {
+    @include green-status-color;
+  }
+
+  &.invalid {
+    @include status-color($gray-dark, $gray, $gray-darkest);
+    border-color: $gray-darkest;
+  }
+}
+
+.gpg-popover-status {
+  display: flex;
+  align-items: center;
+  font-weight: $gl-font-weight-normal;
+  line-height: 1.5;
+}
+
+.gpg-popover-icon {
+  // same margin as .s32.avatar
+  margin-right: $btn-side-margin;
+
+  &.valid {
+    svg {
+      border: 1px solid $brand-success;
+      fill: $brand-success;
+    }
+  }
+
+  &.invalid {
+    svg {
+      border: 1px solid $gray-darkest;
+      fill: $gray-darkest;
+    }
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+}
+
+.gpg-popover-user-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: $gl-padding / 2;
+  text-decoration: none;
+  color: $gl-text-color;
+}
+
+.commit .gpg-popover-help-link {
+  display: block;
+  color: $link-color;
 }

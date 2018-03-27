@@ -1,31 +1,30 @@
-/* eslint-disable no-new, comma-dangle, class-methods-use-this, no-param-reassign */
+/* eslint-disable no-new, class-methods-use-this */
 
-((global) => {
-  class IssuableTemplateSelectors {
-    constructor({ $dropdowns, editor } = {}) {
-      this.$dropdowns = $dropdowns || $('.js-issuable-selector');
-      this.editor = editor || this.initEditor();
+import $ from 'jquery';
+import IssuableTemplateSelector from './issuable_template_selector';
 
-      this.$dropdowns.each((i, dropdown) => {
-        const $dropdown = $(dropdown);
-        new gl.IssuableTemplateSelector({
-          pattern: /(\.md)/,
-          data: $dropdown.data('data'),
-          wrapper: $dropdown.closest('.js-issuable-selector-wrap'),
-          dropdown: $dropdown,
-          editor: this.editor
-        });
+export default class IssuableTemplateSelectors {
+  constructor({ $dropdowns, editor } = {}) {
+    this.$dropdowns = $dropdowns || $('.js-issuable-selector');
+    this.editor = editor || this.initEditor();
+
+    this.$dropdowns.each((i, dropdown) => {
+      const $dropdown = $(dropdown);
+      new IssuableTemplateSelector({
+        pattern: /(\.md)/,
+        data: $dropdown.data('data'),
+        wrapper: $dropdown.closest('.js-issuable-selector-wrap'),
+        dropdown: $dropdown,
+        editor: this.editor,
       });
-    }
-
-    initEditor() {
-      const editor = $('.markdown-area');
-      // Proxy ace-editor's .setValue to jQuery's .val
-      editor.setValue = editor.val;
-      editor.getValue = editor.val;
-      return editor;
-    }
+    });
   }
 
-  global.IssuableTemplateSelectors = IssuableTemplateSelectors;
-})(window.gl || (window.gl = {}));
+  initEditor() {
+    const editor = $('.markdown-area');
+    // Proxy ace-editor's .setValue to jQuery's .val
+    editor.setValue = editor.val;
+    editor.getValue = editor.val;
+    return editor;
+  }
+}

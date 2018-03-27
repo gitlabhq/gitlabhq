@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
+describe 'Admin > Users > Impersonation Tokens', :js do
   let(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 
@@ -8,12 +8,12 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
     find(".table.active-tokens")
   end
 
-  def inactive_impersonation_tokens
-    find(".table.inactive-tokens")
+  def no_personal_access_tokens_message
+    find(".settings-message")
   end
 
   before do
-    gitlab_sign_in(admin)
+    sign_in(admin)
   end
 
   describe "token creation" do
@@ -24,7 +24,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       fill_in "Name", with: name
 
       # Set date to 1st of next month
-      find_field("Expires at").trigger('focus')
+      find_field("Expires at").click
       find(".pika-next").click
       click_on "1"
 
@@ -32,11 +32,13 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      expect { click_on "Create impersonation token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
+      click_on "Create impersonation token"
+
       expect(active_impersonation_tokens).to have_text(name)
       expect(active_impersonation_tokens).to have_text('In')
       expect(active_impersonation_tokens).to have_text('api')
       expect(active_impersonation_tokens).to have_text('read_user')
+      expect(PersonalAccessTokensFinder.new(impersonation: true).execute.count).to equal(1)
     end
   end
 
@@ -58,17 +60,19 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
     it "allows revocation of an active impersonation token" do
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      click_on "Revoke"
+      accept_confirm { click_on "Revoke" }
 
-      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
 
-    it "moves expired tokens to the 'inactive' section" do
+    it "removes expired tokens from 'active' section" do
       impersonation_token.update(expires_at: 5.days.ago)
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
   end
 end

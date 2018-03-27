@@ -1,80 +1,23 @@
 - @no_container = true
 - page_title "Metrics for environment", @environment.name
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('monitoring')
-= render "projects/pipelines/head"
 
-#js-metrics.prometheus-container{ class: container_class, data: { has_metrics: "#{@environment.has_metrics?}", deployment_endpoint: namespace_project_environment_deployments_path(@project.namespace, @project, @environment, format: :json) } }
+.prometheus-container{ class: container_class }
   .top-area
     .row
       .col-sm-6
-        %h3.page-title
+        %h3
           Environment:
           = link_to @environment.name, environment_path(@environment)
 
-  .prometheus-state
-    .js-getting-started.hidden
-      .row
-        .col-md-4.col-md-offset-4.state-svg
-          = render "shared/empty_states/monitoring/getting_started.svg"
-      .row
-        .col-md-6.col-md-offset-3
-          %h4.text-center.state-title
-            Get started with performance monitoring
-      .row
-        .col-md-6.col-md-offset-3
-          .description-text.text-center.state-description
-            Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments.
-            = link_to help_page_path('administration/monitoring/prometheus/index.md') do
-              Learn more about performance monitoring
-      .row.state-button-section
-        .col-md-4.col-md-offset-4.text-center.state-button
-          = link_to edit_namespace_project_service_path(@project.namespace, @project, 'prometheus'), class: 'btn btn-success' do
-            Configure Prometheus
-    .js-loading.hidden
-      .row
-        .col-md-4.col-md-offset-4.state-svg
-          = render "shared/empty_states/monitoring/loading.svg"
-      .row
-        .col-md-6.col-md-offset-3
-          %h4.text-center.state-title
-            Waiting for performance data
-      .row
-        .col-md-6.col-md-offset-3
-          .description-text.text-center.state-description
-            Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available.
-      .row.state-button-section
-        .col-md-4.col-md-offset-4.text-center.state-button
-          = link_to help_page_path('administration/monitoring/prometheus/index.md'), class: 'btn btn-success' do
-            View documentation
-    .js-unable-to-connect.hidden
-      .row
-        .col-md-4.col-md-offset-4.state-svg
-          = render "shared/empty_states/monitoring/unable_to_connect.svg"
-      .row
-        .col-md-6.col-md-offset-3
-          %h4.text-center.state-title
-            Unable to connect to Prometheus server
-      .row
-        .col-md-6.col-md-offset-3
-          .description-text.text-center.state-description
-            Ensure connectivity is available from the GitLab server to the
-            = link_to edit_namespace_project_service_path(@project.namespace, @project, 'prometheus') do
-              Prometheus server
-      .row.state-button-section
-        .col-md-4.col-md-offset-4.text-center.state-button
-          = link_to help_page_path('administration/monitoring/prometheus/index.md'), class:'btn btn-success' do
-            View documentation
-
-  .prometheus-graphs
-    .row
-      .col-sm-12
-        %h4
-          CPU utilization
-        %svg.prometheus-graph{ 'graph-type' => 'cpu_values' }
-    .row
-      .col-sm-12
-        %h4
-          Memory usage
-        %svg.prometheus-graph{ 'graph-type' => 'memory_values' }
+  #prometheus-graphs{ data: { "settings-path": edit_project_service_path(@project, 'prometheus'),
+    "clusters-path": project_clusters_path(@project),
+    "documentation-path": help_page_path('administration/monitoring/prometheus/index.md'),
+    "empty-getting-started-svg-path": image_path('illustrations/monitoring/getting_started.svg'),
+    "empty-loading-svg-path": image_path('illustrations/monitoring/loading.svg'),
+    "empty-no-data-svg-path": image_path('illustrations/monitoring/no_data.svg'),
+    "empty-unable-to-connect-svg-path": image_path('illustrations/monitoring/unable_to_connect.svg'),
+    "metrics-endpoint": additional_metrics_project_environment_path(@project, @environment, format: :json),
+    "deployment-endpoint": project_environment_deployments_path(@project, @environment, format: :json),
+    "project-path": project_path(@project),
+    "tags-path": project_tags_path(@project),
+    "has-metrics": "#{@environment.has_metrics?}" } }

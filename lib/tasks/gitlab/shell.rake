@@ -1,7 +1,7 @@
 namespace :gitlab do
   namespace :shell do
     desc "GitLab | Install or upgrade gitlab-shell"
-    task :install, [:repo] => :environment do |t, args|
+    task :install, [:repo] => :gitlab_environment do |t, args|
       warn_user_is_not_gitlab
 
       default_version = Gitlab::Shell.version_required
@@ -54,33 +54,23 @@ namespace :gitlab do
       # (Re)create hooks
       Rake::Task['gitlab:shell:create_hooks'].invoke
 
-      # Required for debian packaging with PKGR: Setup .ssh/environment with
-      # the current PATH, so that the correct ruby version gets loaded
-      # Requires to set "PermitUserEnvironment yes" in sshd config (should not
-      # be an issue since it is more than likely that there are no "normal"
-      # user accounts on a gitlab server). The alternative is for the admin to
-      # install a ruby (1.9.3+) in the global path.
-      File.open(File.join(user_home, ".ssh", "environment"), "w+") do |f|
-        f.puts "PATH=#{ENV['PATH']}"
-      end
-
       Gitlab::Shell.ensure_secret_token!
     end
 
     desc "GitLab | Setup gitlab-shell"
-    task setup: :environment do
+    task setup: :gitlab_environment do
       setup
     end
 
     desc "GitLab | Build missing projects"
-    task build_missing_projects: :environment do
+    task build_missing_projects: :gitlab_environment do
       Project.find_each(batch_size: 1000) do |project|
         path_to_repo = project.repository.path_to_repo
         if File.exist?(path_to_repo)
           print '-'
         else
-          if Gitlab::Shell.new.add_repository(project.repository_storage_path,
-                                              project.path_with_namespace)
+          if Gitlab::Shell.new.create_repository(project.repository_storage,
+                                              project.disk_path)
             print '.'
           else
             print 'F'
@@ -90,7 +80,7 @@ namespace :gitlab do
     end
 
     desc 'Create or repair repository hooks symlink'
-    task create_hooks: :environment do
+    task create_hooks: :gitlab_environment do
       warn_user_is_not_gitlab
 
       puts 'Creating/Repairing hooks symlinks for all repositories'

@@ -1,5 +1,5 @@
 - page_title "Notifications"
-= render 'profiles/head'
+- @content_class = "limit-container-width" unless fluid_layout
 
 %div
   - if @user.errors.any?
@@ -9,16 +9,16 @@
           %li= msg
 
   = hidden_field_tag :notification_type, 'global'
-  .row
-    .col-lg-3.profile-settings-sidebar
-      %h4
+  .row.prepend-top-default
+    .col-lg-4.profile-settings-sidebar
+      %h4.prepend-top-0
         = page_title
       %p
         You can specify notification level per group or per project.
       %p
         By default, all projects and groups will use the global notifications setting.
-    .col-lg-9
-      %h5
+    .col-lg-8
+      %h5.prepend-top-0
         Global notification settings
 
       = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|

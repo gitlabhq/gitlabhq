@@ -1,4 +1,4 @@
 Issue was <%= @issue_status %> by <%= @updated_by.name %>
 
-Issue <%= @issue.iid %>: <%= url_for(namespace_project_issue_url(@issue.project.namespace, @issue.project, @issue)) %>
+Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
 

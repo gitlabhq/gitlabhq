@@ -1,3 +1,4 @@
+- add_to_breadcrumbs "System Hooks", admin_hooks_path
 - page_title 'Edit System Hook'
 %h3.page-title
   Edit System Hook
@@ -12,7 +13,7 @@
   = render partial: 'form', locals: { form: f, hook: @hook }
   .form-actions
     = f.submit 'Save changes', class: 'btn btn-create'
-    = link_to 'Test hook', test_admin_hook_path(@hook), class: 'btn btn-default'
+    = render 'shared/web_hooks/test_button', triggers: SystemHook.triggers, hook: @hook
     = link_to 'Remove', admin_hook_path(@hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
 
 %hr

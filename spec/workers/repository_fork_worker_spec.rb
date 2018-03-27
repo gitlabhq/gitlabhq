@@ -1,39 +1,62 @@
 require 'spec_helper'
 
 describe RepositoryForkWorker do
-  let(:project) { create(:project, :repository, :import_scheduled) }
-  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-  let(:shell) { Gitlab::Shell.new }
-
-  subject { described_class.new }
-
-  before do
-    allow(subject).to receive(:gitlab_shell).and_return(shell)
+  describe 'modules' do
+    it 'includes ProjectImportOptions' do
+      expect(described_class).to include_module(ProjectImportOptions)
+    end
   end
 
   describe "#perform" do
-    it "creates a new repository from a fork" do
+    let(:project) { create(:project, :repository) }
+    let(:fork_project) { create(:project, :repository, :import_scheduled, forked_from_project: project) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(subject).to receive(:gitlab_shell).and_return(shell)
+    end
+
+    def perform!
+      subject.perform(fork_project.id, '/test/path', project.disk_path)
+    end
+
+    def expect_fork_repository
       expect(shell).to receive(:fork_repository).with(
         '/test/path',
-        project.full_path,
-        project.repository_storage_path,
-        fork_project.namespace.full_path
-      ).and_return(true)
+        project.disk_path,
+        fork_project.repository_storage_path,
+        fork_project.disk_path
+      )
+    end
 
-      subject.perform(
-        project.id,
-        '/test/path',
-        project.full_path,
-        fork_project.namespace.full_path)
+    describe 'when a worker was reset without cleanup' do
+      let(:jid) { '12345678' }
+
+      it 'creates a new repository from a fork' do
+        allow(subject).to receive(:jid).and_return(jid)
+
+        expect_fork_repository.and_return(true)
+
+        perform!
+      end
+    end
+
+    it "creates a new repository from a fork" do
+      expect_fork_repository.and_return(true)
+
+      perform!
+    end
+
+    it 'protects the default branch' do
+      expect_fork_repository.and_return(true)
+
+      perform!
+
+      expect(fork_project.protected_branches.first.name).to eq(fork_project.default_branch)
     end
 
     it 'flushes various caches' do
-      expect(shell).to receive(:fork_repository).with(
-        '/test/path',
-        project.full_path,
-        project.repository_storage_path,
-        fork_project.namespace.full_path
-      ).and_return(true)
+      expect_fork_repository.and_return(true)
 
       expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
         .and_call_original
@@ -41,32 +64,15 @@ describe RepositoryForkWorker do
       expect_any_instance_of(Repository).to receive(:expire_exists_cache)
         .and_call_original
 
-      subject.perform(project.id, '/test/path', project.full_path,
-                      fork_project.namespace.full_path)
+      perform!
     end
 
     it "handles bad fork" do
-      source_path = project.full_path
-      target_path = fork_project.namespace.full_path
-      error_message = "Unable to fork project #{project.id} for repository #{source_path} -> #{target_path}"
+      error_message = "Unable to fork project #{fork_project.id} for repository #{project.disk_path} -> #{fork_project.disk_path}"
 
-      expect(shell).to receive(:fork_repository).and_return(false)
+      expect_fork_repository.and_return(false)
 
-      expect do
-        subject.perform(project.id, '/test/path', source_path, target_path)
-      end.to raise_error(RepositoryForkWorker::ForkError, error_message)
-    end
-
-    it 'handles unexpected error' do
-      source_path = project.full_path
-      target_path = fork_project.namespace.full_path
-
-      allow_any_instance_of(Gitlab::Shell).to receive(:fork_repository).and_raise(RuntimeError)
-
-      expect do
-        subject.perform(project.id, '/test/path', source_path, target_path)
-      end.to raise_error(RepositoryForkWorker::ForkError)
-      expect(project.reload.import_status).to eq('failed')
+      expect { perform! }.to raise_error(StandardError, error_message)
     end
   end
 end

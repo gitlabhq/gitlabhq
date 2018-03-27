@@ -224,3 +224,23 @@ By default Sign In is enabled via all the OAuth Providers that have been configu
 In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings -> Sign-in Restrictions section -> Enabled OAuth Sign-In sources and select the providers you want to enable or disable.
 
 ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
+
+
+## Keep OmniAuth user profiles up to date
+
+You can enable profile syncing from selected OmniAuth providers and for all or for specific user information.
+
+When authenticating using LDAP, the user's email is always synced.
+
+ ```ruby
+   gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
+   gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
+ ```
+
+ **For installations from source**
+
+ ```yaml
+   omniauth:
+     sync_profile_from_provider: ['twitter', 'google_oauth2']
+     sync_profile_attributes: ['email', 'location']
+ ```

@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get all pipeline schedules' do
         success Entities::PipelineSchedule
       end
@@ -31,10 +31,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :read_pipeline_schedule, user_project
-
-        not_found!('PipelineSchedule') unless pipeline_schedule
-
         present pipeline_schedule, with: Entities::PipelineScheduleDetails
       end
 
@@ -74,9 +70,7 @@ module API
         optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :update_pipeline_schedule, user_project
-
-        not_found!('PipelineSchedule') unless pipeline_schedule
+        authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
           present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -92,9 +86,7 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-        authorize! :update_pipeline_schedule, user_project
-
-        not_found!('PipelineSchedule') unless pipeline_schedule
+        authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
           present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -110,21 +102,84 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :admin_pipeline_schedule, user_project
+        authorize! :admin_pipeline_schedule, pipeline_schedule
 
-        not_found!('PipelineSchedule') unless pipeline_schedule
+        destroy_conditionally!(pipeline_schedule)
+      end
+
+      desc 'Create a new pipeline schedule variable' do
+        success Entities::Variable
+      end
+      params do
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+        requires :key, type: String, desc: 'The key of the variable'
+        requires :value, type: String, desc: 'The value of the variable'
+      end
+      post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
+        authorize! :update_pipeline_schedule, pipeline_schedule
+
+        variable_params = declared_params(include_missing: false)
+        variable = pipeline_schedule.variables.create(variable_params)
+        if variable.persisted?
+          present variable, with: Entities::Variable
+        else
+          render_validation_error!(variable)
+        end
+      end
+
+      desc 'Edit a pipeline schedule variable' do
+        success Entities::Variable
+      end
+      params do
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+        requires :key, type: String, desc: 'The key of the variable'
+        optional :value, type: String, desc: 'The value of the variable'
+      end
+      put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+        authorize! :update_pipeline_schedule, pipeline_schedule
+
+        if pipeline_schedule_variable.update(declared_params(include_missing: false))
+          present pipeline_schedule_variable, with: Entities::Variable
+        else
+          render_validation_error!(pipeline_schedule_variable)
+        end
+      end
+
+      desc 'Delete a pipeline schedule variable' do
+        success Entities::Variable
+      end
+      params do
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+        requires :key, type: String, desc: 'The key of the variable'
+      end
+      delete ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+        authorize! :admin_pipeline_schedule, pipeline_schedule
 
         status :accepted
-        present pipeline_schedule.destroy, with: Entities::PipelineScheduleDetails
+        present pipeline_schedule_variable.destroy, with: Entities::Variable
       end
     end
 
     helpers do
       def pipeline_schedule
         @pipeline_schedule ||=
-          user_project.pipeline_schedules
-                      .preload(:owner, :last_pipeline)
-                      .find_by(id: params.delete(:pipeline_schedule_id))
+          user_project
+            .pipeline_schedules
+            .preload(:owner, :last_pipeline)
+            .find_by(id: params.delete(:pipeline_schedule_id)).tap do |pipeline_schedule|
+              unless can?(current_user, :read_pipeline_schedule, pipeline_schedule)
+                not_found!('Pipeline Schedule')
+              end
+            end
+      end
+
+      def pipeline_schedule_variable
+        @pipeline_schedule_variable ||=
+          pipeline_schedule.variables.find_by(key: params[:key]).tap do |pipeline_schedule_variable|
+            unless pipeline_schedule_variable
+              not_found!('Pipeline Schedule Variable')
+            end
+          end
       end
     end
   end

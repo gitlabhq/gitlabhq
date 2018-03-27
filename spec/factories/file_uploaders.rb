@@ -1,8 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :file_uploader do
     skip_create
 
-    project factory: :empty_project
+    project
     secret nil
 
     transient do

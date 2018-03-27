@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe "Admin::AbuseReports", feature: true, js: true  do
+describe "Admin::AbuseReports", :js  do
   let(:user) { create(:user) }
 
   context 'as an admin' do
     before do
-      gitlab_sign_in :admin
+      sign_in(create(:admin))
     end
 
     describe 'if a user has been reported for abuse' do

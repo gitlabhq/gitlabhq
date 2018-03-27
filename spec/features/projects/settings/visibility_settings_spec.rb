@@ -1,29 +1,29 @@
 require 'spec_helper'
 
-feature 'Visibility settings', feature: true, js: true do
+feature 'Visibility settings', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, visibility_level: 20) }
 
   context 'as owner' do
     before do
-      gitlab_sign_in(user)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in(user)
+      visit edit_project_path(project)
     end
 
     scenario 'project visibility select is available' do
-      visibility_select_container = find('.js-visibility-select')
+      visibility_select_container = find('.project-visibility-setting')
 
-      expect(visibility_select_container.find('.visibility-select').value).to eq project.visibility_level.to_s
-      expect(visibility_select_container).to have_content 'The project can be accessed without any authentication.'
+      expect(visibility_select_container.find('select').value).to eq project.visibility_level.to_s
+      expect(visibility_select_container).to have_content 'The project can be accessed by anyone, regardless of authentication.'
     end
 
     scenario 'project visibility description updates on change' do
-      visibility_select_container = find('.js-visibility-select')
-      visibility_select = visibility_select_container.find('.visibility-select')
+      visibility_select_container = find('.project-visibility-setting')
+      visibility_select = visibility_select_container.find('select')
       visibility_select.select('Private')
 
       expect(visibility_select.value).to eq '0'
-      expect(visibility_select_container).to have_content 'Project access must be granted explicitly to each user.'
+      expect(visibility_select_container).to have_content 'Access must be granted explicitly to each user.'
     end
   end
 
@@ -31,17 +31,16 @@ feature 'Visibility settings', feature: true, js: true do
     let(:master_user) { create(:user) }
 
     before do
-      project.team << [master_user, :master]
-      gitlab_sign_in(master_user)
-      visit edit_namespace_project_path(project.namespace, project)
+      project.add_master(master_user)
+      sign_in(master_user)
+      visit edit_project_path(project)
     end
 
     scenario 'project visibility is locked' do
-      visibility_select_container = find('.js-visibility-select')
+      visibility_select_container = find('.project-visibility-setting')
 
-      expect(visibility_select_container).not_to have_select '.visibility-select'
-      expect(visibility_select_container).to have_content 'Public'
-      expect(visibility_select_container).to have_content 'The project can be accessed without any authentication.'
+      expect(visibility_select_container).to have_selector 'select[name="project[visibility_level]"]:disabled'
+      expect(visibility_select_container).to have_content 'The project can be accessed by anyone, regardless of authentication.'
     end
   end
 end

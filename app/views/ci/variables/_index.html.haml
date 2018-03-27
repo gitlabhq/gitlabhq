@@ -1,0 +1,20 @@
+- save_endpoint = local_assigns.fetch(:save_endpoint, nil)
+
+.row
+  .col-lg-12.js-ci-variable-list-section{ data: { save_endpoint: save_endpoint } }
+    .hide.alert.alert-danger.js-ci-variable-error-box
+
+    %ul.ci-variable-list
+      - @variables.each.each do |variable|
+        = render 'ci/variables/variable_row', form_field: 'variables', variable: variable
+      = render 'ci/variables/variable_row', form_field: 'variables'
+    .prepend-top-20
+      %button.btn.btn-success.js-secret-variables-save-button{ type: 'button' }
+        %span.hide.js-secret-variables-save-loading-icon
+          = icon('spinner spin')
+        = _('Save variables')
+      %button.btn.btn-info.btn-inverted.prepend-left-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@variables.size == 0}" } }
+        - if @variables.size == 0
+          = n_('Hide value', 'Hide values', @variables.size)
+        - else
+          = n_('Reveal value', 'Reveal values', @variables.size)

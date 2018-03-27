@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Public Snippets', :js, feature: true do
+feature 'Public Snippets', :js do
   scenario 'Unauthenticated user should see public snippets' do
     public_snippet = create(:personal_snippet, :public)
 

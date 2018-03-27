@@ -10,11 +10,15 @@
     border: 0;
   }
 
+  &.file-holder-bottom-radius {
+    border-radius: 0 0 $border-radius-small $border-radius-small;
+  }
+
   &.readme-holder {
     margin: $gl-padding 0;
 
     &.limited-width-container .file-content {
-      max-width: $limited-layout-width-sm;
+      max-width: $limited-layout-width;
       margin-left: auto;
       margin-right: auto;
     }
@@ -92,13 +96,13 @@
 
     @for $i from 0 through 5 {
       .legend-box-#{$i} {
-        background-color: mix($blame-cyan, $blame-blue, $i / 5.0 * 100%);
+        background-color: mix($blame-cyan, $blame-blue, $i / 5 * 100%);
       }
     }
 
     @for $i from 1 through 4 {
       .legend-box-#{$i + 5} {
-        background-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
+        background-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
       }
     }
   }
@@ -119,7 +123,11 @@
     }
 
     &.wiki {
-      padding: 30px $gl-padding;
+      padding: $gl-padding;
+
+      @media (min-width: $screen-md-min) {
+        padding: $gl-padding * 2;
+      }
     }
 
     &.blob-no-preview {
@@ -133,7 +141,7 @@
      */
     &.blame {
       table {
-        border: none;
+        border: 0;
         margin: 0;
       }
 
@@ -141,54 +149,64 @@
         border-bottom: 1px solid $blame-border;
 
         &:last-child {
-          border-bottom: none;
+          border-bottom: 0;
         }
       }
 
       td {
-        border-top: none;
-        border-bottom: none;
+        border-top: 0;
+        border-bottom: 0;
 
         &:first-child {
-          border-left: none;
+          border-left: 0;
         }
 
         &:last-child {
-          border-right: none;
+          border-right: 0;
         }
-      }
 
-      td.blame-commit {
-        padding: 5px 10px;
-        min-width: 400px;
-        background: $gray-light;
-        border-left: 3px solid;
+        &.blame-commit {
+          padding: 5px 10px;
+          min-width: 400px;
+          max-width: 400px;
+          background: $gray-light;
+          border-left: 3px solid;
+
+          .commit-row-title {
+            display: flex;
+          }
+
+          .item-title {
+            flex: 1;
+            margin-right: 0.5em;
+          }
+        }
+
+        &.line-numbers {
+          float: none;
+          border-left: 1px solid $blame-line-numbers-border;
+
+          i {
+            float: none;
+            margin-right: 0;
+          }
+        }
+
+        &.lines {
+          padding: 0;
+        }
       }
 
       @for $i from 0 through 5 {
         td.blame-commit-age-#{$i} {
-          border-left-color: mix($blame-cyan, $blame-blue, $i / 5.0 * 100%);
+          border-left-color: mix($blame-cyan, $blame-blue, $i / 5 * 100%);
         }
       }
 
       @for $i from 1 through 4 {
         td.blame-commit-age-#{$i + 5} {
-          border-left-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
+          border-left-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
         }
-      }
-
-      td.line-numbers {
-        float: none;
-        border-left: 1px solid $blame-line-numbers-border;
-
-        i {
-          float: none;
-          margin-right: 0;
-        }
-      }
-
-      td.lines {
-        padding: 0;
       }
     }
 
@@ -345,6 +363,18 @@ span.idiff {
       float: none;
     }
   }
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+
+    .file-actions {
+      white-space: normal;
+
+      .btn-group {
+        padding-top: 5px;
+      }
+    }
+  }
 }
 
 .is-stl-loading {
@@ -364,4 +394,9 @@ span.idiff {
 
 .file-fork-suggestion-note {
   margin-right: 1.5em;
+}
+
+.label-lfs {
+  color: $common-gray-light;
+  border: 1px solid $common-gray-light;
 }

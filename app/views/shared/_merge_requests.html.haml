@@ -1,6 +1,6 @@
 - if @merge_requests.to_a.any?
   .panel.panel-default.panel-small.panel-without-border
-    %ul.content-list.mr-list
+    %ul.content-list.mr-list.issuable-list
       = render partial: 'projects/merge_requests/merge_request', collection: @merge_requests
 
   = paginate @merge_requests, theme: "gitlab"

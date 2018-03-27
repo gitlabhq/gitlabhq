@@ -42,13 +42,18 @@ describe Gitlab::QuickActions::Dsl do
       command :with_params_parsing do |parsed|
         parsed
       end
+
+      params '<Comment>'
+      substitution :something do |text|
+        "#{text} Some complicated thing you want in here"
+      end
     end
   end
 
   describe '.command_definitions' do
     it 'returns an array with commands definitions' do
       no_args_def, explanation_with_aliases_def, dynamic_description_def,
-      cc_def, cond_action_def, with_params_parsing_def =
+      cc_def, cond_action_def, with_params_parsing_def, substitution_def =
         DummyClass.command_definitions
 
       expect(no_args_def.name).to eq(:no_args)
@@ -71,7 +76,7 @@ describe Gitlab::QuickActions::Dsl do
 
       expect(dynamic_description_def.name).to eq(:dynamic_description)
       expect(dynamic_description_def.aliases).to eq([])
-      expect(dynamic_description_def.to_h(noteable: 'issue')[:description]).to eq('A dynamic description for ISSUE')
+      expect(dynamic_description_def.to_h(OpenStruct.new(noteable: 'issue'))[:description]).to eq('A dynamic description for ISSUE')
       expect(dynamic_description_def.explanation).to eq('')
       expect(dynamic_description_def.params).to eq(['The first argument', 'The second argument'])
       expect(dynamic_description_def.condition_block).to be_nil
@@ -104,6 +109,15 @@ describe Gitlab::QuickActions::Dsl do
       expect(with_params_parsing_def.condition_block).to be_nil
       expect(with_params_parsing_def.action_block).to be_a_kind_of(Proc)
       expect(with_params_parsing_def.parse_params_block).to be_a_kind_of(Proc)
+
+      expect(substitution_def.name).to eq(:something)
+      expect(substitution_def.aliases).to eq([])
+      expect(substitution_def.description).to eq('')
+      expect(substitution_def.explanation).to eq('')
+      expect(substitution_def.params).to eq(['<Comment>'])
+      expect(substitution_def.condition_block).to be_nil
+      expect(substitution_def.action_block.call('text')).to eq('text Some complicated thing you want in here')
+      expect(substitution_def.parse_params_block).to be_nil
     end
   end
 end

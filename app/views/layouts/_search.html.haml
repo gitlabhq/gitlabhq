@@ -5,7 +5,7 @@
 - if @group && @group.persisted? && @group.path
   - group_data_attrs = { group_path: j(@group.path), name: @group.name, issues_path: issues_group_path(j(@group.path)), mr_path: merge_requests_group_path(j(@group.path)) }
 - if @project && @project.persisted?
-  - project_data_attrs = { project_path: j(@project.path), name: j(@project.name), issues_path: namespace_project_issues_path(@project.namespace, @project), mr_path: namespace_project_merge_requests_path(@project.namespace, @project) }
+  - project_data_attrs = { project_path: j(@project.path), name: j(@project.name), issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project), issues_disabled: !@project.issues_enabled? }
 .search.search-form{ class: "#{'has-location-badge' if label.present?}" }
   = form_tag search_path, method: :get, class: 'navbar-form' do |f|
     .search-input-container
@@ -13,16 +13,24 @@
         .location-badge= label
       .search-input-wrap
         .dropdown{ data: { url: search_autocomplete_path } }
-          = search_field_tag 'search', nil, placeholder: 'Search', class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options', spellcheck: false, tabindex: '1', autocomplete: 'off', data: { toggle: 'dropdown', issues_path: issues_dashboard_url, mr_path: merge_requests_dashboard_url }, aria: { label: 'Search' }
+          = search_field_tag 'search', nil, placeholder: 'Search',
+                                            class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options',
+                                            spellcheck: false,
+                                            tabindex: '1',
+                                            autocomplete: 'off',
+                                            data: { issues_path: issues_dashboard_path,
+                                              mr_path: merge_requests_dashboard_path },
+                                            aria: { label: 'Search' }
+          %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
           .dropdown-menu.dropdown-select
             = dropdown_content do
               %ul
-                %li
-                  %a.is-focused.dropdown-menu-empty-link
+                %li.dropdown-menu-empty-item
+                  %a
                     Loading...
             = dropdown_loading
-          %i.search-icon
-          %i.clear-icon.js-clear-input
+          = sprite_icon('search', size: 16, css_class: 'search-icon')
+          = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input')
 
     = hidden_field_tag :group_id, @group.try(:id), class: 'js-search-group-options', data: group_data_attrs
 

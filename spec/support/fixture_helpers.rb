@@ -1,11 +1,12 @@
 module FixtureHelpers
-  def fixture_file(filename)
+  def fixture_file(filename, dir: '')
     return '' if filename.blank?
-    File.read(expand_fixture_path(filename))
+
+    File.read(expand_fixture_path(filename, dir: dir))
   end
 
-  def expand_fixture_path(filename)
-    File.expand_path(Rails.root.join('spec/fixtures/', filename))
+  def expand_fixture_path(filename, dir: '')
+    File.expand_path(Rails.root.join(dir, 'spec', 'fixtures', filename))
   end
 end
 

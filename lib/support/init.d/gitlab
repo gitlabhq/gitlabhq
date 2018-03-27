@@ -291,7 +291,7 @@ start_gitlab() {
   fi
 
   if [ "$gitlab_workhorse_status" = "0" ]; then
-    echo "The GitLab Workhorse is already running with pid $spid, not restarting"
+    echo "The GitLab Workhorse is already running with pid $hpid, not restarting"
   else
     # No need to remove a socket, gitlab-workhorse does this itself.
     # Because gitlab-workhorse has multiple executables we need to fix
@@ -313,7 +313,7 @@ start_gitlab() {
 
   if [ "$gitlab_pages_enabled" = true ]; then
     if [ "$gitlab_pages_status" = "0" ]; then
-      echo "The GitLab Pages is already running with pid $spid, not restarting"
+      echo "The GitLab Pages is already running with pid $gppid, not restarting"
     else
       $app_root/bin/daemon_with_pidfile $gitlab_pages_pid_path  \
           $gitlab_pages_dir/gitlab-pages $gitlab_pages_options \
@@ -421,7 +421,7 @@ print_status() {
   fi
   if [ "$gitlab_pages_enabled" = true ]; then
     if [ "$gitlab_pages_status" = "0" ]; then
-        echo "The GitLab Pages with pid $mpid is running."
+        echo "The GitLab Pages with pid $gppid is running."
     else
         printf "The GitLab Pages is \033[31mnot running\033[0m.\n"
     fi

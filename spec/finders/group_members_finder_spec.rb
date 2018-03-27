@@ -15,7 +15,7 @@ describe GroupMembersFinder, '#execute' do
 
     result = described_class.new(group).execute
 
-    expect(result.to_a).to eq([member3, member2, member1])
+    expect(result.to_a).to match_array([member3, member2, member1])
   end
 
   it 'returns members for nested group', :nested_groups do
@@ -27,6 +27,6 @@ describe GroupMembersFinder, '#execute' do
 
     result = described_class.new(nested_group).execute
 
-    expect(result.to_a).to eq([member4, member3, member1])
+    expect(result.to_a).to match_array([member1, member3, member4])
   end
 end

@@ -2,13 +2,15 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
-  include Gitlab::VisibilityLevel
+  include AfterCommitQueue
   include AccessRequestable
   include Avatarable
   include Referable
   include SelectForProjectAuthorization
+  include LoadedInGroupList
+  include GroupDescendant
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :owners,
@@ -16,44 +18,39 @@ class Group < Namespace
     through: :group_members,
     source: :user
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
 
-  has_many :project_group_links, dependent: :destroy
+  has_many :milestones
+  has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
-  has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
+  has_many :variables, class_name: 'Ci::GroupVariable'
+  has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :boards
+  has_many :badges, class_name: 'GroupBadge'
+
+  accepts_nested_attributes_for :variables, allow_destroy: true
+
   validate :visibility_level_allowed_by_projects
-
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+  validate :visibility_level_allowed_by_sub_groups
+  validate :visibility_level_allowed_by_parent
+  validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
-
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
+  after_update :path_changed_hook, if: :path_changed?
 
   class << self
     def supports_nested_groups?
       Gitlab::Database.postgresql?
-    end
-
-    # Searches for groups matching the given query.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query)
-      table   = Namespace.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
     end
 
     def sort(method)
@@ -89,7 +86,7 @@ class Group < Namespace
     end
   end
 
-  def to_reference(_from_project = nil, full: nil)
+  def to_reference(_from = nil, full: nil)
     "#{self.class.reference_prefix}#{full_path}"
   end
 
@@ -101,25 +98,24 @@ class Group < Namespace
     full_name
   end
 
-  def visibility_level_field
-    :visibility_level
+  def visibility_level_allowed_by_parent?(level = self.visibility_level)
+    return true unless parent_id && parent_id.nonzero?
+
+    level <= parent.visibility_level
   end
 
-  def visibility_level_allowed_by_projects
-    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
-
-    unless allowed_by_projects
-      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
-      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
-    end
-
-    allowed_by_projects
+  def visibility_level_allowed_by_projects?(level = self.visibility_level)
+    !projects.where('visibility_level > ?', level).exists?
   end
 
-  def avatar_url(**args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args)
+  def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
+    !children.where('visibility_level > ?', level).exists?
+  end
+
+  def visibility_level_allowed?(level = self.visibility_level)
+    visibility_level_allowed_by_parent?(level) &&
+      visibility_level_allowed_by_projects?(level) &&
+      visibility_level_allowed_by_sub_groups?(level)
   end
 
   def lfs_enabled?
@@ -169,11 +165,21 @@ class Group < Namespace
     add_user(user, :owner, current_user: current_user)
   end
 
+  def member?(user, min_access_level = Gitlab::Access::GUEST)
+    return false unless user
+
+    max_member_access_for_user(user) >= min_access_level
+  end
+
   def has_owner?(user)
+    return false unless user
+
     members_with_parents.owners.where(user_id: user).any?
   end
 
   def has_master?(user)
+    return false unless user
+
     members_with_parents.masters.where(user_id: user).any?
   end
 
@@ -181,12 +187,6 @@ class Group < Namespace
   # Parent owners are ignored for nested groups.
   def last_owner?(user)
     owners.include?(user) && owners.size == 1
-  end
-
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
-    end
   end
 
   def post_create_hook
@@ -205,21 +205,45 @@ class Group < Namespace
     SystemHooksService.new
   end
 
-  def refresh_members_authorized_projects
+  def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
-      .execute
+      .execute(blocking: blocking)
   end
 
   def user_ids_for_project_authorizations
-    users_with_parents.pluck(:id)
+    members_with_parents.pluck(:user_id)
   end
 
   def members_with_parents
-    GroupMember.non_request.where(source_id: ancestors.pluck(:id).push(id))
+    # Avoids an unnecessary SELECT when the group has no parents
+    source_ids =
+      if parent_id
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    GroupMember
+      .active_without_invites_and_requests
+      .where(source_id: source_ids)
+  end
+
+  def members_with_descendants
+    GroupMember
+      .active_without_invites_and_requests
+      .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
   def users_with_parents
-    User.where(id: members_with_parents.select(:user_id))
+    User
+      .where(id: members_with_parents.select(:user_id))
+      .reorder(nil)
+  end
+
+  def users_with_descendants
+    User
+      .where(id: members_with_descendants.select(:user_id))
+      .reorder(nil)
   end
 
   def max_member_access_for_user(user)
@@ -242,11 +266,53 @@ class Group < Namespace
     }
   end
 
-  protected
+  def secret_variables_for(ref, project)
+    list_of_ids = [self] + ancestors
+    variables = Ci::GroupVariable.where(group: list_of_ids)
+    variables = variables.unprotected unless project.protected_for?(ref)
+    variables = variables.group_by(&:group_id)
+    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
+  end
+
+  def group_member(user)
+    if group_members.loaded?
+      group_members.find { |gm| gm.user_id == user.id }
+    else
+      group_members.find_by(user_id: user)
+    end
+  end
+
+  def hashed_storage?(_feature)
+    false
+  end
+
+  private
 
   def update_two_factor_requirement
     return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
 
     users.find_each(&:update_two_factor_requirement)
+  end
+
+  def path_changed_hook
+    system_hook_service.execute_hooks_for(self, :rename)
+  end
+
+  def visibility_level_allowed_by_parent
+    return if visibility_level_allowed_by_parent?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
+  end
+
+  def visibility_level_allowed_by_projects
+    return if visibility_level_allowed_by_projects?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since this group contains projects with higher visibility.")
+  end
+
+  def visibility_level_allowed_by_sub_groups
+    return if visibility_level_allowed_by_sub_groups?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
 end

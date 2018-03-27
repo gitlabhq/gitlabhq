@@ -1,28 +1,37 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
 import BlobViewer from '~/blob/viewer/index';
+import axios from '~/lib/utils/axios_utils';
 
 describe('Blob viewer', () => {
   let blob;
-  preloadFixtures('blob/show.html.raw');
+  let mock;
+
+  preloadFixtures('snippets/show.html.raw');
 
   beforeEach(() => {
-    loadFixtures('blob/show.html.raw');
+    mock = new MockAdapter(axios);
+
+    loadFixtures('snippets/show.html.raw');
     $('#modal-upload-blob').remove();
 
     blob = new BlobViewer();
 
-    spyOn($, 'ajax').and.callFake(() => {
-      const d = $.Deferred();
-
-      d.resolve({
-        html: '<div>testing</div>',
-      });
-
-      return d.promise();
+    mock.onGet('http://test.host/snippets/1.json?viewer=rich').reply(200, {
+      html: '<div>testing</div>',
     });
+
+    mock.onGet('http://test.host/snippets/1.json?viewer=simple').reply(200, {
+      html: '<div>testing</div>',
+    });
+
+    spyOn(axios, 'get').and.callThrough();
   });
 
   afterEach(() => {
+    mock.restore();
     location.hash = '';
   });
 
@@ -30,7 +39,6 @@ describe('Blob viewer', () => {
     document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
     setTimeout(() => {
-      expect($.ajax).toHaveBeenCalled();
       expect(
         document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]')
           .classList.contains('hidden'),
@@ -46,7 +54,6 @@ describe('Blob viewer', () => {
     new BlobViewer();
 
     setTimeout(() => {
-      expect($.ajax).toHaveBeenCalled();
       expect(
         document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]')
           .classList.contains('hidden'),
@@ -64,12 +71,8 @@ describe('Blob viewer', () => {
     });
 
     asyncClick()
+      .then(() => asyncClick())
       .then(() => {
-        expect($.ajax).toHaveBeenCalled();
-        return asyncClick();
-      })
-      .then(() => {
-        expect($.ajax.calls.count()).toBe(1);
         expect(
           document.querySelector('.blob-viewer[data-type="simple"]').getAttribute('data-loaded'),
         ).toBe('true');
@@ -122,7 +125,6 @@ describe('Blob viewer', () => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(() => {
-        expect($.ajax).toHaveBeenCalled();
         expect(
           copyButton.classList.contains('disabled'),
         ).toBeFalsy();
@@ -135,8 +137,6 @@ describe('Blob viewer', () => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(() => {
-        expect($.ajax).toHaveBeenCalled();
-
         expect(
           copyButton.getAttribute('data-original-title'),
         ).toBe('Copy source to clipboard');
@@ -171,14 +171,14 @@ describe('Blob viewer', () => {
     it('sends AJAX request when switching to simple view', () => {
       blob.switchToViewer('simple');
 
-      expect($.ajax).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalled();
     });
 
     it('does not send AJAX request when switching to rich view', () => {
       blob.switchToViewer('simple');
       blob.switchToViewer('rich');
 
-      expect($.ajax.calls.count()).toBe(1);
+      expect(axios.get.calls.count()).toBe(1);
     });
   });
 });

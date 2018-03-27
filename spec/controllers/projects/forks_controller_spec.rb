@@ -51,7 +51,7 @@ describe Projects::ForksController do
 
         context 'when user is a member of the Project' do
           before do
-            forked_project.team << [project.creator, :developer]
+            forked_project.add_developer(project.creator)
           end
 
           it 'sees the project listed' do
@@ -89,7 +89,7 @@ describe Projects::ForksController do
 
         get_new
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -118,7 +118,7 @@ describe Projects::ForksController do
 
         post_create
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
       end
     end

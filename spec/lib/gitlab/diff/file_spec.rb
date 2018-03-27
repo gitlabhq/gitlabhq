@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::File, lib: true do
+describe Gitlab::Diff::File do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -13,6 +13,17 @@ describe Gitlab::Diff::File, lib: true do
 
     it { expect(diff_lines.size).to eq(30) }
     it { expect(diff_lines.first).to be_kind_of(Gitlab::Diff::Line) }
+  end
+
+  describe '#highlighted_diff_lines' do
+    it 'highlights the diff and memoises the result' do
+      expect(Gitlab::Diff::Highlight).to receive(:new)
+                                           .with(diff_file, repository: project.repository)
+                                           .once
+                                           .and_call_original
+
+      diff_file.highlighted_diff_lines
+    end
   end
 
   describe '#mode_changed?' do
@@ -44,14 +55,6 @@ describe Gitlab::Diff::File, lib: true do
       expect(diff).to receive(:collapsed?).and_return(false)
 
       expect(diff_file.collapsed?).to eq(false)
-    end
-  end
-
-  describe '#old_content_commit' do
-    it 'returns base commit' do
-      old_content_commit = diff_file.old_content_commit
-
-      expect(old_content_commit.id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
     end
   end
 
@@ -113,12 +116,8 @@ describe Gitlab::Diff::File, lib: true do
     end
 
     context 'when renamed' do
-      let(:commit) { project.commit('6907208d755b60ebeacb2e9dfea74c92c3449a1f') }
-      let(:diff_file) { commit.diffs.diff_file_with_new_path('files/js/commit.coffee') }
-
-      before do
-        allow(diff_file.new_blob).to receive(:id).and_return(diff_file.old_blob.id)
-      end
+      let(:commit) { project.commit('94bb47ca1297b7b3731ff2a36923640991e9236f') }
+      let(:diff_file) { commit.diffs.diff_file_with_new_path('CHANGELOG.md') }
 
       it 'returns false' do
         expect(diff_file.content_changed?).to be_falsey
@@ -130,8 +129,20 @@ describe Gitlab::Diff::File, lib: true do
         let(:commit) { project.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
         let(:diff_file) { commit.diffs.diff_file_with_new_path('files/images/6049019_460s.jpg') }
 
-        it 'returns true' do
-          expect(diff_file.content_changed?).to be_truthy
+        context 'when the blobs are different' do
+          it 'returns true' do
+            expect(diff_file.content_changed?).to be_truthy
+          end
+        end
+
+        context 'when there are no diff refs' do
+          before do
+            allow(diff_file).to receive(:diff_refs).and_return(nil)
+          end
+
+          it 'returns false' do
+            expect(diff_file.content_changed?).to be_falsey
+          end
         end
       end
 
@@ -139,8 +150,20 @@ describe Gitlab::Diff::File, lib: true do
         let(:commit) { project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
         let(:diff_file) { commit.diffs.diff_file_with_new_path('files/ruby/popen.rb') }
 
-        it 'returns true' do
-          expect(diff_file.content_changed?).to be_truthy
+        context 'when the blobs are different' do
+          it 'returns true' do
+            expect(diff_file.content_changed?).to be_truthy
+          end
+        end
+
+        context 'when there are no diff refs' do
+          before do
+            allow(diff_file).to receive(:diff_refs).and_return(nil)
+          end
+
+          it 'returns true' do
+            expect(diff_file.content_changed?).to be_truthy
+          end
         end
       end
     end
@@ -278,6 +301,21 @@ describe Gitlab::Diff::File, lib: true do
         expect(diff_file.simple_viewer).to be_a(DiffViewer::ModeChanged)
       end
     end
+
+    context 'when no other conditions apply' do
+      before do
+        allow(diff_file).to receive(:content_changed?).and_return(false)
+        allow(diff_file).to receive(:new_file?).and_return(false)
+        allow(diff_file).to receive(:deleted_file?).and_return(false)
+        allow(diff_file).to receive(:renamed_file?).and_return(false)
+        allow(diff_file).to receive(:mode_changed?).and_return(false)
+        allow(diff_file).to receive(:raw_text?).and_return(false)
+      end
+
+      it 'returns a No Preview viewer' do
+        expect(diff_file.simple_viewer).to be_a(DiffViewer::NoPreview)
+      end
+    end
   end
 
   describe '#rich_viewer' do
@@ -390,6 +428,43 @@ describe Gitlab::Diff::File, lib: true do
 
       it 'returns false' do
         expect(diff_file.rendered_as_text?).to be_falsey
+      end
+    end
+  end
+
+  context 'when neither blob exists' do
+    let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::BLANK_SHA, head_sha: Gitlab::Git::BLANK_SHA) }
+    let(:diff_file) { described_class.new(diff, diff_refs: blank_diff_refs, repository: project.repository) }
+
+    describe '#blob' do
+      it 'returns a concrete nil so it can be used in boolean expressions' do
+        actual = diff_file.blob && true
+
+        expect(actual).to be_nil
+      end
+    end
+
+    describe '#binary?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_binary
+      end
+    end
+
+    describe '#size' do
+      it 'returns zero' do
+        expect(diff_file.size).to be_zero
+      end
+    end
+
+    describe '#different_type?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_different_type
+      end
+    end
+
+    describe '#content_changed?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_content_changed
       end
     end
   end

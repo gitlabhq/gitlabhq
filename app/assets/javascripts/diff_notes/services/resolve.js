@@ -1,16 +1,15 @@
-/* eslint-disable class-methods-use-this, one-var, camelcase, no-new, comma-dangle, no-param-reassign, max-len */
-/* global Flash */
 /* global CommentsStore */
 
 import Vue from 'vue';
+import Flash from '../../flash';
 import '../../vue_shared/vue_resource_interceptor';
 
 window.gl = window.gl || {};
 
 class ResolveServiceClass {
   constructor(root) {
-    this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve`);
-    this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve`);
+    this.noteResource = Vue.resource(`${root}/notes{/noteId}/resolve?html=true`);
+    this.discussionResource = Vue.resource(`${root}/merge_requests{/mergeRequestId}/discussions{/discussionId}/resolve?html=true`);
   }
 
   resolve(noteId) {
@@ -32,27 +31,23 @@ class ResolveServiceClass {
       promise = this.resolveAll(mergeRequestId, discussionId);
     }
 
-    promise.then((response) => {
-      discussion.loading = false;
-
-      if (response.status === 200) {
-        const data = response.json();
-        const resolved_by = data ? data.resolved_by : null;
+    promise
+      .then(resp => resp.json())
+      .then((data) => {
+        discussion.loading = false;
+        const resolvedBy = data ? data.resolved_by : null;
 
         if (isResolved) {
           discussion.unResolveAllNotes();
         } else {
-          discussion.resolveAllNotes(resolved_by);
+          discussion.resolveAllNotes(resolvedBy);
         }
 
-        gl.mrWidget.checkStatus();
+        if (gl.mrWidget) gl.mrWidget.checkStatus();
         discussion.updateHeadline(data);
-      } else {
-        throw new Error('An error occurred when trying to resolve discussion.');
-      }
-    }).catch(() => {
-      new Flash('An error occurred when trying to resolve a discussion. Please try again.');
-    });
+        document.dispatchEvent(new CustomEvent('refreshVueNotes'));
+      })
+      .catch(() => new Flash('An error occurred when trying to resolve a discussion. Please try again.'));
   }
 
   resolveAll(mergeRequestId, discussionId) {
@@ -62,7 +57,7 @@ class ResolveServiceClass {
 
     return this.discussionResource.save({
       mergeRequestId,
-      discussionId
+      discussionId,
     }, {});
   }
 
@@ -73,7 +68,7 @@ class ResolveServiceClass {
 
     return this.discussionResource.delete({
       mergeRequestId,
-      discussionId
+      discussionId,
     }, {});
   }
 }

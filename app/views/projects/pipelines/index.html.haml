@@ -1,20 +1,15 @@
 - @no_container = true
 - page_title "Pipelines"
-= render "projects/pipelines/head"
 
-#pipelines-list-vue{ data: { endpoint: namespace_project_pipelines_path(@project.namespace, @project, format: :json),
-  "css-class" => container_class,
-  "help-page-path" => help_page_path('ci/quick_start/README'),
-  "new-pipeline-path" => new_namespace_project_pipeline_path(@project.namespace, @project),
-  "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
-  "all-path" =>  project_pipelines_path(@project),
-  "pending-path" => project_pipelines_path(@project, scope: :pending),
-  "running-path" => project_pipelines_path(@project, scope: :running),
-  "finished-path" => project_pipelines_path(@project, scope: :finished),
-  "branches-path" => project_pipelines_path(@project, scope: :branches),
-  "tags-path" => project_pipelines_path(@project, scope: :tags),
-  "has-ci" => @repository.gitlab_ci_yml,
-  "ci-lint-path" => ci_lint_path } }
-
-= page_specific_javascript_bundle_tag('common_vue')
-= page_specific_javascript_bundle_tag('pipelines')
+%div{ 'class' => container_class }
+  #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
+    "help-page-path" => help_page_path('ci/quick_start/README'),
+    "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
+    "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
+    "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
+    "no-pipelines-svg-path" => image_path('illustrations/pipelines_pending.svg'),
+    "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
+    "new-pipeline-path" => can?(current_user, :create_pipeline, @project) && new_project_pipeline_path(@project),
+    "ci-lint-path" => can?(current_user, :create_pipeline, @project) && ci_lint_path,
+    "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project) ,
+    "has-gitlab-ci" => (@project.has_ci? && @project.builds_enabled?).to_s } }

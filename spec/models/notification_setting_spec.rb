@@ -1,21 +1,28 @@
 require 'rails_helper'
 
-RSpec.describe NotificationSetting, type: :model do
+RSpec.describe NotificationSetting do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:source) }
   end
 
   describe "Validation" do
-    subject { NotificationSetting.new(source_id: 1, source_type: 'Project') }
+    subject { described_class.new(source_id: 1, source_type: 'Project') }
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:level) }
-    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:source_id, :source_type]).with_message(/already exists in source/) }
+
+    describe 'user_id' do
+      before do
+        subject.user = create(:user)
+      end
+
+      it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:source_type, :source_id]).with_message(/already exists in source/) }
+    end
 
     context "events" do
       let(:user) { create(:user) }
-      let(:notification_setting) { NotificationSetting.new(source_id: 1, source_type: 'Project', user_id: user.id) }
+      let(:notification_setting) { described_class.new(source_id: 1, source_type: 'Project', user_id: user.id) }
 
       before do
         notification_setting.level = "custom"
@@ -56,24 +63,20 @@ RSpec.describe NotificationSetting, type: :model do
     end
   end
 
-  describe 'event_enabled?' do
+  describe '#event_enabled?' do
     before do
       subject.update!(user: create(:user))
     end
 
     context 'for an event with a matching column name' do
-      before do
-        subject.update!(events: { new_note: true }.to_json)
-      end
-
       it 'returns the value of the column' do
-        subject.update!(new_note: false)
+        subject.update!(new_note: true)
 
-        expect(subject.event_enabled?(:new_note)).to be(false)
+        expect(subject.event_enabled?(:new_note)).to be(true)
       end
 
       context 'when the column has a nil value' do
-        it 'returns the value from the events hash' do
+        it 'returns false' do
           expect(subject.event_enabled?(:new_note)).to be(false)
         end
       end

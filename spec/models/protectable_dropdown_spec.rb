@@ -1,8 +1,15 @@
 require 'spec_helper'
 
-describe ProtectableDropdown, models: true do
+describe ProtectableDropdown do
   let(:project) { create(:project, :repository) }
   let(:subject) { described_class.new(project, :branches) }
+
+  describe 'initialize' do
+    it 'raises ArgumentError for invalid ref type' do
+      expect { described_class.new(double, :foo) }
+        .to raise_error(ArgumentError, "invalid ref type `foo`")
+    end
+  end
 
   describe '#protectable_ref_names' do
     before do

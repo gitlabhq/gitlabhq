@@ -1,8 +1,18 @@
 - form = local_assigns.fetch(:form)
 
-%fieldset.features.merge-requests-feature.append-bottom-default
-  %hr
-  %h5.prepend-top-0
-    Merge Requests
+.form-group
+  = label_tag :merge_method_merge, class: 'label-light' do
+    Merge method
+  .radio
+    = label_tag :project_merge_method_merge do
+      = form.radio_button :merge_method, :merge, class: "js-merge-method-radio"
+      %strong Merge commit
+      %br
+      %span.descr
+        A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
 
-  = render 'projects/merge_request_merge_settings', form: form
+  = render 'merge_request_rebase_settings', form: form
+
+  = render 'merge_request_fast_forward_settings', project: @project, form: form
+
+= render 'projects/merge_request_merge_settings', form: form

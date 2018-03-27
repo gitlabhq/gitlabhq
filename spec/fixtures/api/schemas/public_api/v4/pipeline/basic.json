@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "sha",
+    "ref",
+    "status"
+  ],
+  "properties" : {
+    "id": { "type": "integer" },
+    "sha": { "type": "string" },
+    "ref": { "type": "string" },
+    "status": { "type": "string" }
+  },
+  "additionalProperties": false
+}

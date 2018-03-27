@@ -1,7 +1,7 @@
 module MilestonesHelper
   def milestones_filter_path(opts = {})
     if @project
-      namespace_project_milestones_path(@project.namespace, @project, opts)
+      project_milestones_path(@project, opts)
     elsif @group
       group_milestones_path(@group, opts)
     else
@@ -11,7 +11,7 @@ module MilestonesHelper
 
   def milestones_label_path(opts = {})
     if @project
-      namespace_project_issues_path(@project.namespace, @project, opts)
+      project_issues_path(@project, opts)
     elsif @group
       issues_group_path(@group, opts)
     else
@@ -32,7 +32,18 @@ module MilestonesHelper
   end
 
   def milestone_issues_by_label_count(milestone, label, state:)
-    milestone.issues.with_label(label.title).send(state).size
+    issues = milestone.issues.with_label(label.title)
+    issues =
+      case state
+      when :opened
+        issues.opened
+      when :closed
+        issues.closed
+      else
+        raise ArgumentError, "invalid milestone state `#{state}`"
+      end
+
+    issues.size
   end
 
   # Returns count of milestones for different states
@@ -54,8 +65,10 @@ module MilestonesHelper
   def milestone_class_for_state(param, check, match_blank_param = false)
     if match_blank_param
       'active' if param.blank? || param == check
+    elsif param == check
+      'active'
     else
-      'active' if param == check
+      check
     end
   end
 
@@ -73,9 +86,17 @@ module MilestonesHelper
   def milestones_filter_dropdown_path
     project = @target_project || @project
     if project
-      namespace_project_milestones_path(project.namespace, project, :json)
+      project_milestones_path(project, :json)
+    elsif @group
+      group_milestones_path(@group, :json)
     else
       dashboard_milestones_path(:json)
+    end
+  end
+
+  def milestone_tooltip_title(milestone)
+    if milestone.due_date
+      [milestone.due_date.to_s(:medium), "(#{milestone_remaining_days(milestone)})"].join(' ')
     end
   end
 
@@ -118,7 +139,7 @@ module MilestonesHelper
 
   def milestone_merge_request_tab_path(milestone)
     if @project
-      merge_requests_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+      merge_requests_project_milestone_path(@project, milestone, format: :json)
     elsif @group
       merge_requests_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
     else
@@ -128,7 +149,7 @@ module MilestonesHelper
 
   def milestone_participants_tab_path(milestone)
     if @project
-      participants_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+      participants_project_milestone_path(@project, milestone, format: :json)
     elsif @group
       participants_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
     else
@@ -138,11 +159,21 @@ module MilestonesHelper
 
   def milestone_labels_tab_path(milestone)
     if @project
-      labels_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+      labels_project_milestone_path(@project, milestone, format: :json)
     elsif @group
       labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
     else
       labels_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def group_milestone_route(milestone, params = {})
+    params = nil if params.empty?
+
+    if milestone.legacy_group_milestone?
+      group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
+    else
+      group_milestone_path(@group, milestone.iid, milestone: params)
     end
   end
 end

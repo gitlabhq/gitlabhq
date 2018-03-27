@@ -1,92 +1,73 @@
-/* eslint-disable func-names, space-before-function-paren, max-len, no-var, one-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, one-var-declaration-per-line, quotes, prefer-arrow-callback, consistent-return, prefer-template, no-mixed-operators */
-/* global Mousetrap */
-/* global ShortcutsNavigation */
-/* global sidebar */
+import $ from 'jquery';
+import Mousetrap from 'mousetrap';
+import _ from 'underscore';
+import Sidebar from './right_sidebar';
+import Shortcuts from './shortcuts';
+import { CopyAsGFM } from './behaviors/markdown/copy_as_gfm';
 
-import 'mousetrap';
-import './shortcuts_navigation';
+export default class ShortcutsIssuable extends Shortcuts {
+  constructor(isMergeRequest) {
+    super();
 
-(function() {
-  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+    this.$replyField = isMergeRequest ? $('.js-main-target-form #note_note') : $('.js-main-target-form .js-vue-comment-form');
 
-  this.ShortcutsIssuable = (function(superClass) {
-    extend(ShortcutsIssuable, superClass);
+    Mousetrap.bind('a', () => ShortcutsIssuable.openSidebarDropdown('assignee'));
+    Mousetrap.bind('m', () => ShortcutsIssuable.openSidebarDropdown('milestone'));
+    Mousetrap.bind('l', () => ShortcutsIssuable.openSidebarDropdown('labels'));
+    Mousetrap.bind('r', this.replyWithSelectedText.bind(this));
+    Mousetrap.bind('e', ShortcutsIssuable.editIssue);
 
-    function ShortcutsIssuable(isMergeRequest) {
-      ShortcutsIssuable.__super__.constructor.call(this);
-      Mousetrap.bind('a', this.openSidebarDropdown.bind(this, 'assignee'));
-      Mousetrap.bind('m', this.openSidebarDropdown.bind(this, 'milestone'));
-      Mousetrap.bind('r', (function(_this) {
-        return function() {
-          _this.replyWithSelectedText();
-          return false;
-        };
-      })(this));
-      Mousetrap.bind('e', (function(_this) {
-        return function() {
-          _this.editIssue();
-          return false;
-        };
-      })(this));
-      Mousetrap.bind('l', this.openSidebarDropdown.bind(this, 'labels'));
-      if (isMergeRequest) {
-        this.enabledHelp.push('.hidden-shortcut.merge_requests');
-      } else {
-        this.enabledHelp.push('.hidden-shortcut.issues');
-      }
+    if (isMergeRequest) {
+      this.enabledHelp.push('.hidden-shortcut.merge_requests');
+    } else {
+      this.enabledHelp.push('.hidden-shortcut.issues');
+    }
+  }
+
+  replyWithSelectedText() {
+    const documentFragment = window.gl.utils.getSelectedFragment();
+
+    if (!documentFragment) {
+      this.$replyField.focus();
+      return false;
     }
 
-    ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, documentFragment, el, selected, separator;
-      var replyField = $('.js-main-target-form #note_note');
+    const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
+    const selected = CopyAsGFM.nodeToGFM(el);
 
-      documentFragment = window.gl.utils.getSelectedFragment();
-      if (!documentFragment) {
-        replyField.focus();
-        return;
-      }
-
-      el = window.gl.CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
-      selected = window.gl.CopyAsGFM.nodeToGFM(el);
-
-      if (selected.trim() === "") {
-        return;
-      }
-      quote = _.map(selected.split("\n"), function(val) {
-        return ("> " + val).trim() + "\n";
-      });
-      // If replyField already has some content, add a newline before our quote
-      separator = replyField.val().trim() !== "" && "\n\n" || '';
-      replyField.val(function(_, current) {
-        return current + separator + quote.join('') + "\n";
-      });
-
-      // Trigger autosave
-      replyField.trigger('input');
-
-      // Trigger autosize
-      var event = document.createEvent('Event');
-      event.initEvent('autosize:update', true, false);
-      replyField.get(0).dispatchEvent(event);
-
-      // Focus the input field
-      return replyField.focus();
-    };
-
-    ShortcutsIssuable.prototype.editIssue = function() {
-      var $editBtn;
-      $editBtn = $('.issuable-edit');
-      // Need to click the element as on issues, editing is inline
-      // on merge request, editing is on a different page
-      $editBtn.get(0).click();
-    };
-
-    ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {
-      sidebar.openDropdown(name);
+    if (selected.trim() === '') {
       return false;
-    };
+    }
 
-    return ShortcutsIssuable;
-  })(ShortcutsNavigation);
-}).call(window);
+    const quote = _.map(selected.split('\n'), val => `${(`> ${val}`).trim()}\n`);
+
+    // If replyField already has some content, add a newline before our quote
+    const separator = (this.$replyField.val().trim() !== '' && '\n\n') || '';
+    this.$replyField.val((a, current) => `${current}${separator}${quote.join('')}\n`)
+      .trigger('input')
+      .trigger('change');
+
+    // Trigger autosize
+    const event = document.createEvent('Event');
+    event.initEvent('autosize:update', true, false);
+    this.$replyField.get(0).dispatchEvent(event);
+
+    // Focus the input field
+    this.$replyField.focus();
+
+    return false;
+  }
+
+  static editIssue() {
+    // Need to click the element as on issues, editing is inline
+    // on merge request, editing is on a different page
+    document.querySelector('.js-issuable-edit').click();
+
+    return false;
+  }
+
+  static openSidebarDropdown(name) {
+    Sidebar.instance.openDropdown(name);
+    return false;
+  }
+}

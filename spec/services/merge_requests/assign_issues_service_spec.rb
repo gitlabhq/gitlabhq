@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::AssignIssuesService, services: true do
+describe MergeRequests::AssignIssuesService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }
@@ -8,7 +8,7 @@ describe MergeRequests::AssignIssuesService, services: true do
   let(:service) { described_class.new(project, user, merge_request: merge_request) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   it 'finds unassigned issues fixed in merge request' do

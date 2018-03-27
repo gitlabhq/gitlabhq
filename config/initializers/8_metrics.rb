@@ -77,7 +77,6 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(Banzai::ObjectRenderer)
   instrumentation.instrument_instance_methods(Banzai::Redactor)
-  instrumentation.instrument_methods(Banzai::NoteRenderer)
 
   [Issuable, Mentionable, Participable].each do |klass|
     instrumentation.instrument_instance_methods(klass)
@@ -95,6 +94,7 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
 
+  instrumentation.instrument_instance_methods(Rouge::Plugins::CommonMark)
   instrumentation.instrument_instance_methods(Rouge::Plugins::Redcarpet)
   instrumentation.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
 
@@ -167,6 +167,10 @@ if Gitlab::Metrics.enabled?
           loc && loc[0].start_with?(models) && method.source =~ regex
         end
       end
+
+    # Ability is in app/models, is not an ActiveRecord model, but should still
+    # be instrumented.
+    Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
   end
 
   Gitlab::Metrics::Instrumentation.configure do |config|
@@ -175,7 +179,7 @@ if Gitlab::Metrics.enabled?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::Sampler.new.start
+  Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
 
   module TrackNewRedisConnections
     def connect(*args)

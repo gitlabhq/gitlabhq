@@ -1,24 +1,19 @@
-/* global Flash */
-import '~/flash';
 import Visibility from 'visibilityjs';
+import { __ } from '../../locale';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
-import emptyState from '../components/empty_state.vue';
-import errorState from '../components/error_state.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import pipelinesTableComponent from '../components/pipelines_table.vue';
+import EmptyState from '../components/empty_state.vue';
+import SvgBlankState from '../components/blank_state.vue';
+import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
+import PipelinesTableComponent from '../components/pipelines_table.vue';
 import eventHub from '../event_hub';
 
 export default {
   components: {
-    pipelinesTableComponent,
-    errorState,
-    emptyState,
-    loadingIcon,
-  },
-  computed: {
-    shouldRenderErrorState() {
-      return this.hasError && !this.isLoading;
-    },
+    PipelinesTableComponent,
+    SvgBlankState,
+    EmptyState,
+    LoadingIcon,
   },
   data() {
     return {
@@ -56,12 +51,10 @@ export default {
       }
     });
 
-    eventHub.$on('refreshPipelines', this.fetchPipelines);
     eventHub.$on('postAction', this.postAction);
   },
   beforeDestroy() {
-    eventHub.$off('refreshPipelines');
-    eventHub.$on('postAction', this.postAction);
+    eventHub.$off('postAction', this.postAction);
   },
   destroyed() {
     this.poll.stop();
@@ -86,6 +79,7 @@ export default {
       this.hasError = true;
       this.isLoading = false;
       this.updateGraphDropdown = false;
+      this.hasMadeRequest = true;
     },
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
@@ -96,8 +90,8 @@ export default {
     },
     postAction(endpoint) {
       this.service.postAction(endpoint)
-        .then(() => eventHub.$emit('refreshPipelines'))
-        .catch(() => new Flash('An error occured while making the request.'));
+        .then(() => this.fetchPipelines())
+        .catch(() => Flash(__('An error occurred while making the request.')));
     },
   },
 };

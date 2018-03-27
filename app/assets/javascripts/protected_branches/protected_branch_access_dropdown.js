@@ -1,31 +1,26 @@
-/* eslint-disable arrow-parens, no-param-reassign, object-shorthand, no-else-return, comma-dangle, max-len */
+export default class ProtectedBranchAccessDropdown {
+  constructor(options) {
+    this.options = options;
+    this.initDropdown();
+  }
 
-(global => {
-  global.gl = global.gl || {};
-
-  gl.ProtectedBranchAccessDropdown = class {
-    constructor(options) {
-      const { $dropdown, data, onSelect } = options;
-
-      $dropdown.glDropdown({
-        data: data,
-        selectable: true,
-        inputId: $dropdown.data('input-id'),
-        fieldName: $dropdown.data('field-name'),
-        toggleLabel(item, el) {
-          if (el.is('.is-active')) {
-            return item.text;
-          } else {
-            return 'Select';
-          }
-        },
-        clicked(opts) {
-          const { e } = opts;
-
-          e.preventDefault();
-          onSelect();
+  initDropdown() {
+    const { $dropdown, data, onSelect } = this.options;
+    $dropdown.glDropdown({
+      data,
+      selectable: true,
+      inputId: $dropdown.data('inputId'),
+      fieldName: $dropdown.data('fieldName'),
+      toggleLabel(item, $el) {
+        if ($el.is('.is-active')) {
+          return item.text;
         }
-      });
-    }
-  };
-})(window);
+        return 'Select';
+      },
+      clicked(options) {
+        options.e.preventDefault();
+        onSelect();
+      },
+    });
+  }
+}

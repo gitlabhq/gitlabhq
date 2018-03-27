@@ -32,7 +32,7 @@ describe API::Helpers::Pagination do
 
     context 'when resource can be paginated' do
       before do
-        create_list(:empty_project, 3)
+        create_list(:project, 3)
       end
 
       describe 'first page' do
@@ -52,7 +52,13 @@ describe API::Helpers::Pagination do
           expect_header('X-Page', '1')
           expect_header('X-Next-Page', '2')
           expect_header('X-Prev-Page', '')
-          expect_header('Link', any_args)
+
+          expect_header('Link', anything) do |_key, val|
+            expect(val).to include('rel="first"')
+            expect(val).to include('rel="last"')
+            expect(val).to include('rel="next"')
+            expect(val).not_to include('rel="prev"')
+          end
 
           subject.paginate(resource)
         end
@@ -75,15 +81,74 @@ describe API::Helpers::Pagination do
           expect_header('X-Page', '2')
           expect_header('X-Next-Page', '')
           expect_header('X-Prev-Page', '1')
-          expect_header('Link', any_args)
+
+          expect_header('Link', anything) do |_key, val|
+            expect(val).to include('rel="first"')
+            expect(val).to include('rel="last"')
+            expect(val).to include('rel="prev"')
+            expect(val).not_to include('rel="next"')
+          end
+
+          subject.paginate(resource)
+        end
+      end
+
+      context 'if order' do
+        it 'is not present it adds default order(:id) if no order is present' do
+          resource.order_values = []
+
+          paginated_relation = subject.paginate(resource)
+
+          expect(resource.order_values).to be_empty
+          expect(paginated_relation.order_values).to be_present
+          expect(paginated_relation.order_values.first).to be_ascending
+          expect(paginated_relation.order_values.first.expr.name).to eq :id
+        end
+
+        it 'is present it does not add anything' do
+          paginated_relation = subject.paginate(resource.order(created_at: :desc))
+
+          expect(paginated_relation.order_values).to be_present
+          expect(paginated_relation.order_values.first).to be_descending
+          expect(paginated_relation.order_values.first.expr.name).to eq :created_at
+        end
+      end
+    end
+
+    context 'when resource empty' do
+      describe 'first page' do
+        before do
+          allow(subject).to receive(:params)
+            .and_return({ page: 1, per_page: 2 })
+        end
+
+        it 'returns appropriate amount of resources' do
+          expect(subject.paginate(resource).count).to eq 0
+        end
+
+        it 'adds appropriate headers' do
+          expect_header('X-Total', '0')
+          expect_header('X-Total-Pages', '1')
+          expect_header('X-Per-Page', '2')
+          expect_header('X-Page', '1')
+          expect_header('X-Next-Page', '')
+          expect_header('X-Prev-Page', '')
+
+          expect_header('Link', anything) do |_key, val|
+            expect(val).to include('rel="first"')
+            expect(val).to include('rel="last"')
+            expect(val).not_to include('rel="prev"')
+            expect(val).not_to include('rel="next"')
+            expect(val).not_to include('page=0')
+          end
 
           subject.paginate(resource)
         end
       end
     end
 
-    def expect_header(name, value)
-      expect(subject).to receive(:header).with(name, value)
+    def expect_header(*args, &block)
+      expect(subject).to receive(:header).with(*args, &block)
     end
 
     def expect_message(method)

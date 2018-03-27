@@ -28,10 +28,9 @@ class Todo < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :action, :project, :target_type, :user, presence: true
+  validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
-
-  default_scope { reorder(id: :desc) }
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
@@ -52,10 +51,14 @@ class Todo < ActiveRecord::Base
     # milestones, but still show something if the user has a URL with that
     # selected.
     def sort(method)
-      case method.to_s
-      when 'priority', 'label_priority' then order_by_labels_priority
-      else order_by(method)
-      end
+      sorted =
+        case method.to_s
+        when 'priority', 'label_priority' then order_by_labels_priority
+        else order_by(method)
+        end
+
+      # Break ties with the ID column for pagination
+      sorted.order(id: :desc)
     end
 
     # Order by priority depending on which issue/merge request the Todo belongs to

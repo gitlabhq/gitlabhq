@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Legal
 
 - [Corporate contributor license agreement](corporate_contributor_license_agreement.md)

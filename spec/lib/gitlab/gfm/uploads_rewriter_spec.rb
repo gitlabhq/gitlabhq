@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Gfm::UploadsRewriter do
   let(:user) { create(:user) }
-  let(:old_project) { create(:empty_project) }
-  let(:new_project) { create(:empty_project) }
+  let(:old_project) { create(:project) }
+  let(:new_project) { create(:project) }
   let(:rewriter) { described_class.new(text, old_project, user) }
 
   context 'text contains links to uploads' do
@@ -17,7 +17,7 @@ describe Gitlab::Gfm::UploadsRewriter do
     end
 
     let(:text) do
-      "Text and #{image_uploader.to_markdown} and #{zip_uploader.to_markdown}"
+      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}"
     end
 
     describe '#rewrite' do
@@ -39,8 +39,8 @@ describe Gitlab::Gfm::UploadsRewriter do
       it 'copies files' do
         expect(new_files).to all(exist)
         expect(old_paths).not_to match_array new_paths
-        expect(old_paths).to all(include(old_project.path_with_namespace))
-        expect(new_paths).to all(include(new_project.path_with_namespace))
+        expect(old_paths).to all(include(old_project.disk_path))
+        expect(new_paths).to all(include(new_project.disk_path))
       end
 
       it 'does not remove old files' do

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe TeamcityService, models: true, caching: true do
+describe TeamcityService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }
 
   subject(:service) do
     described_class.create(
-      project: create(:empty_project),
+      project: create(:project),
       properties: {
         teamcity_url: teamcity_url,
         username: 'mic',
@@ -205,10 +205,12 @@ describe TeamcityService, models: true, caching: true do
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')
-    teamcity_full_url = 'http://mic:password@gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    auth = %w(mic password)
+
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
 
-    WebMock.stub_request(:get, teamcity_full_url).to_return(
+    WebMock.stub_request(:get, teamcity_full_url).with(basic_auth: auth).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body

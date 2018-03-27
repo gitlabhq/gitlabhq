@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-feature 'project owner creates a license file', feature: true, js: true do
+feature 'project owner creates a license file', :js do
   let(:project_master) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   background do
     project.repository.delete_file(project_master, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
-    project.team << [project_master, :master]
-    gitlab_sign_in(project_master)
-    visit namespace_project_path(project.namespace, project)
+    project.add_master(project_master)
+    sign_in(project_master)
+    visit project_path(project)
   end
 
   scenario 'project master creates a license file manually from a template' do
-    visit namespace_project_tree_path(project.namespace, project, project.repository.root_ref)
+    visit project_tree_path(project, project.repository.root_ref)
     find('.add-to-tree').click
     click_link 'New file'
 
@@ -30,7 +30,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     click_button 'Commit changes'
 
     expect(current_path).to eq(
-      namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
+      project_blob_path(project, 'master/LICENSE'))
     expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end
@@ -40,7 +40,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     expect(page).to have_content('New file')
     expect(current_path).to eq(
-      namespace_project_new_blob_path(project.namespace, project, 'master'))
+      project_new_blob_path(project, 'master'))
     expect(find('#file_name').value).to eq('LICENSE')
     expect(page).to have_selector('.license-selector')
 
@@ -54,7 +54,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     click_button 'Commit changes'
 
     expect(current_path).to eq(
-      namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
+      project_blob_path(project, 'master/LICENSE'))
     expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end

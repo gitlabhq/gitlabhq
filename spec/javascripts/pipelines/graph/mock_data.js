@@ -39,7 +39,7 @@ export default {
           "details_path": "/root/ci-mock/builds/4153",
           "favicon": "/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico",
           "action": {
-            "icon": "icon_action_retry",
+            "icon": "retry",
             "title": "Retry",
             "path": "/root/ci-mock/builds/4153/retry",
             "method": "post"
@@ -62,7 +62,7 @@ export default {
             "details_path": "/root/ci-mock/builds/4153",
             "favicon": "/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico",
             "action": {
-              "icon": "icon_action_retry",
+              "icon": "retry",
               "title": "Retry",
               "path": "/root/ci-mock/builds/4153/retry",
               "method": "post"
@@ -96,7 +96,7 @@ export default {
           "details_path": "/root/ci-mock/builds/4166",
           "favicon": "/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico",
           "action": {
-            "icon": "icon_action_retry",
+            "icon": "retry",
             "title": "Retry",
             "path": "/root/ci-mock/builds/4166/retry",
             "method": "post"
@@ -119,7 +119,7 @@ export default {
             "details_path": "/root/ci-mock/builds/4166",
             "favicon": "/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico",
             "action": {
-              "icon": "icon_action_retry",
+              "icon": "retry",
               "title": "Retry",
               "path": "/root/ci-mock/builds/4166/retry",
               "method": "post"
@@ -138,7 +138,7 @@ export default {
           "details_path": "/root/ci-mock/builds/4159",
           "favicon": "/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico",
           "action": {
-            "icon": "icon_action_retry",
+            "icon": "retry",
             "title": "Retry",
             "path": "/root/ci-mock/builds/4159/retry",
             "method": "post"
@@ -161,7 +161,7 @@ export default {
             "details_path": "/root/ci-mock/builds/4159",
             "favicon": "/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico",
             "action": {
-              "icon": "icon_action_retry",
+              "icon": "retry",
               "title": "Retry",
               "path": "/root/ci-mock/builds/4159/retry",
               "method": "post"

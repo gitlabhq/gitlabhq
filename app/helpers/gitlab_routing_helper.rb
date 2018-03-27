@@ -1,144 +1,91 @@
-# Shorter routing method for project and project items
-# Since update to rails 4.1.9 we are now allowed to use `/` in project routing
-# so we use nested routing for project resources which include project and
-# project namespace. To avoid writing long methods every time we define shortcuts for
-# some of routing.
-#
-# For example instead of this:
-#
-#   namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
-#
-# We can simply use shortcut:
-#
-#   merge_request_path(merge_request)
-#
+# Shorter routing method for some project items
 module GitlabRoutingHelper
+  extend ActiveSupport::Concern
+
+  included do
+    Gitlab::Routing.includes_helpers(self)
+  end
+
   # Project
-  def project_path(project, *args)
-    namespace_project_path(project.namespace, project, *args)
+  def project_tree_path(project, ref = nil, *args)
+    namespace_project_tree_path(project.namespace, project, ref || @ref || project.repository.root_ref, *args) # rubocop:disable Cop/ProjectPathHelper
   end
 
-  def project_url(project, *args)
-    namespace_project_url(project.namespace, project, *args)
-  end
-
-  def edit_project_path(project, *args)
-    edit_namespace_project_path(project.namespace, project, *args)
-  end
-
-  def edit_project_url(project, *args)
-    edit_namespace_project_url(project.namespace, project, *args)
-  end
-
-  def project_files_path(project, *args)
-    namespace_project_tree_path(project.namespace, project, @ref || project.repository.root_ref)
-  end
-
-  def project_commits_path(project, *args)
-    namespace_project_commits_path(project.namespace, project, @ref || project.repository.root_ref)
-  end
-
-  def project_pipelines_path(project, *args)
-    namespace_project_pipelines_path(project.namespace, project, *args)
-  end
-
-  def project_environments_path(project, *args)
-    namespace_project_environments_path(project.namespace, project, *args)
-  end
-
-  def project_cycle_analytics_path(project, *args)
-    namespace_project_cycle_analytics_path(project.namespace, project, *args)
-  end
-
-  def project_jobs_path(project, *args)
-    namespace_project_jobs_path(project.namespace, project, *args)
+  def project_commits_path(project, ref = nil, *args)
+    namespace_project_commits_path(project.namespace, project, ref || @ref || project.repository.root_ref, *args) # rubocop:disable Cop/ProjectPathHelper
   end
 
   def project_ref_path(project, ref_name, *args)
-    namespace_project_commits_path(project.namespace, project, ref_name, *args)
-  end
-
-  def project_container_registry_path(project, *args)
-    namespace_project_container_registry_index_path(project.namespace, project, *args)
-  end
-
-  def activity_project_path(project, *args)
-    activity_namespace_project_path(project.namespace, project, *args)
+    project_commits_path(project, ref_name, *args)
   end
 
   def runners_path(project, *args)
-    namespace_project_runners_path(project.namespace, project, *args)
+    project_runners_path(project, *args)
   end
 
   def runner_path(runner, *args)
-    namespace_project_runner_path(@project.namespace, @project, runner, *args)
+    project_runner_path(@project, runner, *args)
   end
 
   def environment_path(environment, *args)
-    namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
+    project_environment_path(environment.project, environment, *args)
   end
 
   def environment_metrics_path(environment, *args)
-    metrics_namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
+    metrics_project_environment_path(environment.project, environment, *args)
   end
 
   def issue_path(entity, *args)
-    namespace_project_issue_path(entity.project.namespace, entity.project, entity, *args)
+    project_issue_path(entity.project, entity, *args)
   end
 
   def merge_request_path(entity, *args)
-    namespace_project_merge_request_path(entity.project.namespace, entity.project, entity, *args)
+    project_merge_request_path(entity.project, entity, *args)
   end
 
   def pipeline_path(pipeline, *args)
-    namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
-  end
-
-  def milestone_path(entity, *args)
-    namespace_project_milestone_path(entity.project.namespace, entity.project, entity, *args)
+    project_pipeline_path(pipeline.project, pipeline.id, *args)
   end
 
   def issue_url(entity, *args)
-    namespace_project_issue_url(entity.project.namespace, entity.project, entity, *args)
+    project_issue_url(entity.project, entity, *args)
   end
 
   def merge_request_url(entity, *args)
-    namespace_project_merge_request_url(entity.project.namespace, entity.project, entity, *args)
+    project_merge_request_url(entity.project, entity, *args)
   end
 
   def pipeline_url(pipeline, *args)
-    namespace_project_pipeline_url(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
+    project_pipeline_url(pipeline.project, pipeline.id, *args)
   end
 
   def pipeline_job_url(pipeline, build, *args)
-    namespace_project_job_url(pipeline.project.namespace, pipeline.project, build.id, *args)
+    project_job_url(pipeline.project, build.id, *args)
   end
 
   def commits_url(entity, *args)
-    namespace_project_commits_url(entity.project.namespace, entity.project, entity.ref, *args)
+    project_commits_url(entity.project, entity.ref, *args)
   end
 
   def commit_url(entity, *args)
-    namespace_project_commit_url(entity.project.namespace, entity.project, entity.sha, *args)
+    project_commit_url(entity.project, entity.sha, *args)
   end
 
-  def project_snippet_url(entity, *args)
-    namespace_project_snippet_url(entity.project.namespace, entity.project, entity, *args)
-  end
+  def preview_markdown_path(parent, *args)
+    return group_preview_markdown_path(parent) if parent.is_a?(Group)
 
-  def preview_markdown_path(project, *args)
     if @snippet.is_a?(PersonalSnippet)
       preview_markdown_snippets_path
     else
-      preview_markdown_namespace_project_path(project.namespace, project, *args)
+      preview_markdown_project_path(parent, *args)
     end
   end
 
   def toggle_subscription_path(entity, *args)
     if entity.is_a?(Issue)
-      toggle_subscription_namespace_project_issue_path(entity.project.namespace, entity.project, entity)
+      toggle_subscription_project_issue_path(entity.project, entity)
     else
-      toggle_subscription_namespace_project_merge_request_path(entity.project.namespace, entity.project, entity)
+      toggle_subscription_project_merge_request_path(entity.project, entity)
     end
   end
 
@@ -152,32 +99,27 @@ module GitlabRoutingHelper
 
   ## Members
   def project_members_url(project, *args)
-    namespace_project_project_members_url(project.namespace, project)
+    project_project_members_url(project, *args)
   end
 
   def project_member_path(project_member, *args)
-    namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member)
+    project_project_member_path(project_member.source, project_member)
   end
 
   def request_access_project_members_path(project, *args)
-    request_access_namespace_project_project_members_path(project.namespace, project)
+    request_access_project_project_members_path(project)
   end
 
   def leave_project_members_path(project, *args)
-    leave_namespace_project_project_members_path(project.namespace, project)
+    leave_project_project_members_path(project)
   end
 
   def approve_access_request_project_member_path(project_member, *args)
-    approve_access_request_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member)
+    approve_access_request_project_project_member_path(project_member.source, project_member)
   end
 
   def resend_invite_project_member_path(project_member, *args)
-    resend_invite_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member)
-  end
-
-  # Snippets
-  def personal_snippet_url(snippet, *args)
-    snippet_url(snippet)
+    resend_invite_project_project_member_path(project_member.source, project_member)
   end
 
   # Groups
@@ -211,50 +153,42 @@ module GitlabRoutingHelper
 
   def artifacts_action_path(path, project, build)
     action, path_params = path.split('/', 2)
-    args = [project.namespace, project, build, path_params]
+    args = [project, build, path_params]
 
     case action
     when 'download'
-      download_namespace_project_job_artifacts_path(*args)
+      download_project_job_artifacts_path(*args)
     when 'browse'
-      browse_namespace_project_job_artifacts_path(*args)
+      browse_project_job_artifacts_path(*args)
     when 'file'
-      file_namespace_project_job_artifacts_path(*args)
+      file_project_job_artifacts_path(*args)
     when 'raw'
-      raw_namespace_project_job_artifacts_path(*args)
+      raw_project_job_artifacts_path(*args)
     end
   end
 
   # Pipeline Schedules
   def pipeline_schedules_path(project, *args)
-    namespace_project_pipeline_schedules_path(project.namespace, project, *args)
+    project_pipeline_schedules_path(project, *args)
   end
 
   def pipeline_schedule_path(schedule, *args)
     project = schedule.project
-    namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
+    project_pipeline_schedule_path(project, schedule, *args)
   end
 
   def edit_pipeline_schedule_path(schedule)
     project = schedule.project
-    edit_namespace_project_pipeline_schedule_path(project.namespace, project, schedule)
+    edit_project_pipeline_schedule_path(project, schedule)
+  end
+
+  def play_pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    play_project_pipeline_schedule_path(project, schedule, *args)
   end
 
   def take_ownership_pipeline_schedule_path(schedule, *args)
     project = schedule.project
-    take_ownership_namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
-  end
-
-  # Settings
-  def project_settings_integrations_path(project, *args)
-    namespace_project_settings_integrations_path(project.namespace, project, *args)
-  end
-
-  def project_settings_members_path(project, *args)
-    namespace_project_settings_members_path(project.namespace, project, *args)
-  end
-
-  def project_settings_ci_cd_path(project, *args)
-    namespace_project_settings_ci_cd_path(project.namespace, project, *args)
+    take_ownership_project_pipeline_schedule_path(project, schedule, *args)
   end
 end

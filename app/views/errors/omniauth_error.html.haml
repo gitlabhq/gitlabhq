@@ -9,7 +9,7 @@
   %p Try logging in using your username or email. If you have forgotten your password, try recovering it
 
   = link_to "Sign in", new_session_path(:user), class: 'btn primary'
-  = link_to "Recover password", new_password_path(resource_name), class: 'btn secondary'
+  = link_to "Recover password", new_password_path(:user), class: 'btn secondary'
 
   %hr
   %p.light If none of the options work, try contacting a GitLab administrator.

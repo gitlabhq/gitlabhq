@@ -5,4 +5,4 @@
     = render 'shared/empty_states/merge_requests'
 
 - if @merge_requests.present?
-  = paginate @merge_requests, theme: "gitlab"
+  = paginate @merge_requests, theme: "gitlab", total_pages: @total_pages

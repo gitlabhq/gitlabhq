@@ -6,54 +6,33 @@
     %ul.dropdown-menu.dropdown-menu-align-right.project-home-dropdown
       - can_create_issue = can?(current_user, :create_issue, @project)
       - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-      - can_create_snippet = can?(current_user, :create_snippet, @project)
+      - can_create_project_snippet = can?(current_user, :create_project_snippet, @project)
+
+      - if can_create_issue || merge_project || can_create_project_snippet
+        %li.dropdown-header= _('This project')
 
       - if can_create_issue
-        %li
-          = link_to new_namespace_project_issue_path(@project.namespace, @project) do
-            = icon('exclamation-circle fw')
-            #{ _('New issue') }
+        %li= link_to _('New issue'), new_project_issue_path(@project)
 
       - if merge_project
-        %li
-          = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do
-            = icon('tasks fw')
-            #{ _('New merge request') }
+        %li= link_to _('New merge request'), project_new_merge_request_path(merge_project)
 
-      - if can_create_snippet
-        %li
-          = link_to new_namespace_project_snippet_path(@project.namespace, @project) do
-            = icon('file-text-o fw')
-            #{ _('New snippet') }
-
-      - if can_create_issue || merge_project || can_create_snippet
-        %li.divider
+      - if can_create_project_snippet
+        %li= link_to _('New snippet'), new_project_snippet_path(@project)
 
       - if can?(current_user, :push_code, @project)
-        %li
-          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
-            = icon('file fw')
-            #{ _('New file') }
-        %li
-          = link_to new_namespace_project_branch_path(@project.namespace, @project) do
-            = icon('code-fork fw')
-            #{ _('New branch') }
-        %li
-          = link_to new_namespace_project_tag_path(@project.namespace, @project) do
-            = icon('tags fw')
-            #{ _('New tag') }
+        %li.dropdown-header= _('This repository')
+
+      - if can?(current_user, :push_code, @project)
+        %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
+        - unless @project.empty_repo?
+          %li= link_to _('New branch'), new_project_branch_path(@project)
+          %li= link_to _('New tag'), new_project_tag_path(@project)
       - elsif current_user && current_user.already_forked?(@project)
-        %li
-          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
-            = icon('file fw')
-            #{ _('New file') }
+        %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
       - elsif can?(current_user, :fork_project, @project)
-        %li
-          - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'),
-                                notice:     edit_in_new_fork_notice,
-                                notice_now: edit_in_new_fork_notice_now }
-          - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
-                                                                                  continue:       continue_params)
-          = link_to fork_path, method: :post do
-            = icon('file fw')
-            #{ _('New file') }
+        - continue_params = { to:         project_new_blob_path(@project, @project.default_branch || 'master'),
+                              notice:     edit_in_new_fork_notice,
+                              notice_now: edit_in_new_fork_notice_now }
+        - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
+        %li= link_to _('New file'), fork_path, method: :post

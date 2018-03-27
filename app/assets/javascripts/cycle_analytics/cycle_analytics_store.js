@@ -1,11 +1,8 @@
 /* eslint-disable no-param-reassign */
 
 import { __ } from '../locale';
-import '../lib/utils/text_utility';
+import { dasherize } from '../lib/utils/text_utility';
 import DEFAULT_EVENT_OBJECTS from './default_event_objects';
-
-const global = window.gl || (window.gl = {});
-global.cycleAnalytics = global.cycleAnalytics || {};
 
 const EMPTY_STAGE_TEXTS = {
   issue: __('The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.'),
@@ -17,7 +14,7 @@ const EMPTY_STAGE_TEXTS = {
   production: __('The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle.'),
 };
 
-global.cycleAnalytics.CycleAnalyticsStore = {
+export default {
   state: {
     summary: '',
     stats: '',
@@ -39,7 +36,7 @@ global.cycleAnalytics.CycleAnalyticsStore = {
     });
 
     newData.stages.forEach((item) => {
-      const stageSlug = gl.text.dasherize(item.name.toLowerCase());
+      const stageSlug = dasherize(item.name.toLowerCase());
       item.active = false;
       item.isUserAllowed = data.permissions[stageSlug];
       item.emptyStageText = EMPTY_STAGE_TEXTS[stageSlug];

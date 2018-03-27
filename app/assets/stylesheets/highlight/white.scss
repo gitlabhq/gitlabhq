@@ -113,7 +113,7 @@ $white-gc-bg: #eaf2f5;
         border-color: $line-removed-dark;
 
         a {
-          color: scale-color($line-number-old,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
@@ -122,7 +122,7 @@ $white-gc-bg: #eaf2f5;
         border-color: $line-added-dark;
 
         a {
-          color: scale-color($line-number-new,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
@@ -163,7 +163,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-removed;
 
         &::before {
-          color: scale-color($line-number-old,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
 
         span.idiff {
@@ -175,7 +175,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-added;
 
         &::before {
-          color: scale-color($line-number-new,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
 
         span.idiff {
@@ -211,44 +211,62 @@ $white-gc-bg: #eaf2f5;
   .hll { background-color: $white-hll-bg; }
   .c { color: $white-c; font-style: italic; }
   .err { color: $white-err; background-color: $white-err-bg; }
-  .k { font-weight: bold; }
-  .o { font-weight: bold; }
+  .k { font-weight: $gl-font-weight-bold; }
+  .o { font-weight: $gl-font-weight-bold; }
   .cm { color: $white-cm; font-style: italic; }
-  .cp { color: $white-cp; font-weight: bold; }
+  .cp { color: $white-cp; font-weight: $gl-font-weight-bold; }
   .c1 { color: $white-c1; font-style: italic; }
-  .cs { color: $white-cs; font-weight: bold; font-style: italic; }
-  .gd { color: $white-gd; background-color: $white-gd-bg; }
-  .gd .x { color: $white-gd-x; background-color: $white-gd-x-bg; }
+  .cs { color: $white-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
+
+  .gd {
+    color: $white-gd;
+    background-color: $white-gd-bg;
+
+    .x {
+      color: $white-gd-x;
+      background-color: $white-gd-x-bg;
+    }
+  }
+
   .ge { font-style: italic; }
   .gr { color: $white-gr; }
   .gh { color: $white-gh; }
-  .gi { color: $white-gi; background-color: $white-gi-bg; }
-  .gi .x { color: $white-gi-x; background-color: $white-gi-x-bg; }
+
+  .gi {
+    color: $white-gi;
+    background-color: $white-gi-bg;
+
+    .x {
+      color: $white-gi-x;
+      background-color: $white-gi-x-bg;
+    }
+  }
+
   .go { color: $white-go; }
   .gp { color: $white-gp; }
-  .gs { font-weight: bold; }
-  .gu { color: $white-gu; font-weight: bold; }
+  .gs { font-weight: $gl-font-weight-bold; }
+  .gu { color: $white-gu; font-weight: $gl-font-weight-bold; }
   .gt { color: $white-gt; }
-  .kc { font-weight: bold; }
-  .kd { font-weight: bold; }
-  .kn { font-weight: bold; }
-  .kp { font-weight: bold; }
-  .kr { font-weight: bold; }
-  .kt { color: $white-kt; font-weight: bold; }
+  .kc { font-weight: $gl-font-weight-bold; }
+  .kd { font-weight: $gl-font-weight-bold; }
+  .kn { font-weight: $gl-font-weight-bold; }
+  .kp { font-weight: $gl-font-weight-bold; }
+  .kr { font-weight: $gl-font-weight-bold; }
+  .kt { color: $white-kt; font-weight: $gl-font-weight-bold; }
   .m { color: $white-m; }
   .s { color: $white-s; }
   .n { color: $white-n; }
   .na { color: $white-na; }
   .nb { color: $white-nb; }
-  .nc { color: $white-nc; font-weight: bold; }
+  .nc { color: $white-nc; font-weight: $gl-font-weight-bold; }
   .no { color: $white-no; }
   .ni { color: $white-ni; }
-  .ne { color: $white-ne; font-weight: bold; }
-  .nf { color: $white-nf; font-weight: bold; }
+  .ne { color: $white-ne; font-weight: $gl-font-weight-bold; }
+  .nf { color: $white-nf; font-weight: $gl-font-weight-bold; }
   .nn { color: $white-nn; }
   .nt { color: $white-nt; }
   .nv { color: $white-nv; }
-  .ow { font-weight: bold; }
+  .ow { font-weight: $gl-font-weight-bold; }
   .w { color: $white-w; }
   .mf { color: $white-mf; }
   .mh { color: $white-mh; }

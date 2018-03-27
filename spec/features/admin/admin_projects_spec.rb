@@ -1,18 +1,21 @@
 require 'spec_helper'
 
-describe "Admin::Projects", feature: true  do
+describe "Admin::Projects"  do
   include Select2Helper
 
   let(:user) { create :user }
-  let!(:project) { create(:project) }
-  let!(:current_user) do
-    gitlab_sign_in :admin
+  let(:project) { create(:project) }
+  let(:current_user) { create(:admin) }
+
+  before do
+    sign_in(current_user)
   end
 
   describe "GET /admin/projects" do
     let!(:archived_project) { create :project, :public, :archived }
 
     before do
+      expect(project).to be_persisted
       visit admin_projects_path
     end
 
@@ -25,7 +28,7 @@ describe "Admin::Projects", feature: true  do
       expect(page).not_to have_content(archived_project.name)
     end
 
-    it 'renders all projects', js: true do
+    it 'renders all projects', :js do
       find(:css, '#sort-projects-dropdown').click
       click_link 'Show archived projects'
 
@@ -33,27 +36,37 @@ describe "Admin::Projects", feature: true  do
       expect(page).to have_content(archived_project.name)
       expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
     end
+
+    it 'renders only archived projects', :js do
+      find(:css, '#sort-projects-dropdown').click
+      click_link 'Show archived projects only'
+
+      expect(page).to have_content(archived_project.name)
+      expect(page).not_to have_content(project.name)
+    end
   end
 
   describe "GET /admin/projects/:namespace_id/:id" do
     before do
-      visit admin_projects_path
-      click_link "#{project.name}"
-    end
+      expect(project).to be_persisted
 
-    it do
-      expect(current_path).to eq admin_namespace_project_path(project.namespace, project)
+      visit admin_projects_path
+      click_link project.name
     end
 
     it "has project info" do
+      expect(current_path).to eq admin_project_path(project)
       expect(page).to have_content(project.path)
       expect(page).to have_content(project.name)
-      expect(page).to have_content(project.name_with_namespace)
+      expect(page).to have_content(project.full_name)
       expect(page).to have_content(project.creator.name)
     end
   end
 
   describe 'transfer project' do
+    # The gitlab-shell transfer will fail for a project without a repository
+    let(:project) { create(:project, :repository) }
+
     before do
       create(:group, name: 'Web')
 
@@ -61,8 +74,8 @@ describe "Admin::Projects", feature: true  do
         .to receive(:move_uploads_to_new_namespace).and_return(true)
     end
 
-    it 'transfers project to group web', js: true do
-      visit admin_namespace_project_path(project.namespace, project)
+    it 'transfers project to group web', :js do
+      visit admin_project_path(project)
 
       click_button 'Search for Namespace'
       click_link 'group: web'
@@ -75,11 +88,11 @@ describe "Admin::Projects", feature: true  do
 
   describe 'add admin himself to a project' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
-    it 'adds admin a to a project as developer', js: true do
-      visit namespace_project_project_members_path(project.namespace, project)
+    it 'adds admin a to a project as developer', :js do
+      visit project_project_members_path(project)
 
       page.within '.users-project-form' do
         select2(current_user.id, from: '#user_ids', multiple: true)
@@ -97,12 +110,12 @@ describe "Admin::Projects", feature: true  do
 
   describe 'admin remove himself from a project' do
     before do
-      project.team << [user, :master]
-      project.team << [current_user, :developer]
+      project.add_master(user)
+      project.add_developer(current_user)
     end
 
     it 'removes admin from the project' do
-      visit namespace_project_project_members_path(project.namespace, project)
+      visit project_project_members_path(project)
 
       page.within '.content-list' do
         expect(page).to have_content(current_user.name)

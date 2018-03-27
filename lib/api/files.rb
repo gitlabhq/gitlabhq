@@ -1,10 +1,15 @@
 module API
   class Files < Grape::API
+    FILE_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
+
+    # Prevents returning plain/text responses for files with .txt extension
+    after_validation { content_type "application/json" }
+
     helpers do
       def commit_params(attrs)
         {
           file_path: attrs[:file_path],
-          start_branch: attrs[:branch],
+          start_branch: attrs[:start_branch] || attrs[:branch],
           branch_name: attrs[:branch],
           commit_message: attrs[:commit_message],
           file_content: attrs[:content],
@@ -37,8 +42,9 @@ module API
 
       params :simple_file_params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
-        requires :branch, type: String, desc: 'The name of branch'
-        requires :commit_message, type: String, desc: 'Commit Message'
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
+        requires :commit_message, type: String, desc: 'Commit message'
+        optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'The email of the author'
         optional :author_name, type: String, desc: 'The name of the author'
       end
@@ -54,13 +60,13 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
       desc 'Get raw file contents from the repository'
       params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag commit'
       end
-      get ":id/repository/files/:file_path/raw" do
+      get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
         send_git_blob @repo, @blob
@@ -71,7 +77,7 @@ module API
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit'
       end
-      get ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
+      get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
         {
@@ -91,7 +97,7 @@ module API
       params do
         use :extended_file_params
       end
-      post ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
+      post ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
@@ -109,7 +115,7 @@ module API
       params do
         use :extended_file_params
       end
-      put ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
+      put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
@@ -133,7 +139,7 @@ module API
       params do
         use :simple_file_params
       end
-      delete ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
+      delete ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)

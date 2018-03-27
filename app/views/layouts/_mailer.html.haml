@@ -10,6 +10,10 @@
       body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
       table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
       img { -ms-interpolation-mode: bicubic; }
+      .hidden {
+          display: none !important;
+          visibility: hidden !important;
+      }
 
       /* iOS BLUE LINKS */
       a[x-apple-data-detectors] {
@@ -63,12 +67,8 @@
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
             %img{ alt: "GitLab", height: "33", src: image_url('mailers/gitlab_footer_logo.gif'), style: "display:block;margin:0 auto 1em;", width: "90" }/
             %div
-              %a{ href: profile_notifications_url, style: "color:#3777b0;text-decoration:none;" } Manage all notifications
-              &middot;
-              %a{ href: help_url, style: "color:#3777b0;text-decoration:none;" } Help
-            %div
-              You're receiving this email because of your account on
-              = succeed "." do
-                %a{ href: root_url, style: "color:#3777b0;text-decoration:none;" }= Gitlab.config.gitlab.host
+              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, style: "color:#3777b0;text-decoration:none;")
+              - help_link = link_to(_("Help"), help_url, style: "color:#3777b0;text-decoration:none;")
+              = _("You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}").html_safe % { host: Gitlab.config.gitlab.host, manage_notifications_link: manage_notifications_link, help_link: help_link }
 
         = yield :additional_footer

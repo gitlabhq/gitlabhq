@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::SimpleExecutor, lib: true do
+describe SystemCheck::SimpleExecutor do
   class SimpleCheck < SystemCheck::BaseCheck
     set_name 'my simple check'
 
@@ -27,6 +27,20 @@ describe SystemCheck::SimpleExecutor, lib: true do
     set_skip_reason 'this is a skip reason'
 
     def skip?
+      true
+    end
+
+    def check?
+      raise 'should not execute this'
+    end
+  end
+
+  class DynamicSkipCheck < SystemCheck::BaseCheck
+    set_name 'dynamic skip check'
+    set_skip_reason 'this is a skip reason'
+
+    def skip?
+      self.skip_reason = 'this is a dynamic skip reason'
       true
     end
 
@@ -75,6 +89,24 @@ describe SystemCheck::SimpleExecutor, lib: true do
     end
   end
 
+  class BugousCheck < SystemCheck::BaseCheck
+    CustomError = Class.new(StandardError)
+    set_name 'my bugous check'
+
+    def check?
+      raise CustomError, 'omg'
+    end
+  end
+
+  before do
+    @rainbow = Rainbow.enabled
+    Rainbow.enabled = false
+  end
+
+  after do
+    Rainbow.enabled = @rainbow
+  end
+
   describe '#component' do
     it 'returns stored component name' do
       expect(subject.component).to eq('Test')
@@ -108,6 +140,10 @@ describe SystemCheck::SimpleExecutor, lib: true do
       subject << SimpleCheck
 
       expect(subject.checks.size).to eq(1)
+    end
+
+    it 'errors out when passing multiple items' do
+      expect { subject << [SimpleCheck, OtherCheck] }.to raise_error(ArgumentError)
     end
   end
 
@@ -187,8 +223,12 @@ describe SystemCheck::SimpleExecutor, lib: true do
         subject.run_check(SkipCheck)
       end
 
-      it 'displays #skip_reason' do
+      it 'displays .skip_reason' do
         expect { subject.run_check(SkipCheck) }.to output(/this is a skip reason/).to_stdout
+      end
+
+      it 'displays #skip_reason' do
+        expect { subject.run_check(DynamicSkipCheck) }.to output(/this is a dynamic skip reason/).to_stdout
       end
 
       it 'does not execute #check when #skip? is true' do
@@ -217,6 +257,12 @@ describe SystemCheck::SimpleExecutor, lib: true do
 
           subject.run_check(SkipMultiCheck)
         end
+      end
+    end
+
+    context 'when there is an exception' do
+      it 'rescues the exception' do
+        expect { subject.run_check(BugousCheck) }.not_to raise_exception
       end
     end
   end

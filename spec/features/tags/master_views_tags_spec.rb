@@ -1,23 +1,22 @@
 require 'spec_helper'
 
-feature 'Master views tags', feature: true do
+feature 'Master views tags' do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
   context 'when project has no tags' do
     let(:project) { create(:project_empty_repo) }
+
     before do
-      visit namespace_project_path(project.namespace, project)
-      click_on 'README'
+      visit project_path(project)
+      click_on 'Add Readme'
       fill_in :commit_message, with: 'Add a README file', visible: true
-      # Remove pre-receive hook so we can push without auth
-      FileUtils.rm_f(File.join(project.repository.path, 'hooks', 'pre-receive'))
       click_button 'Commit changes'
-      visit namespace_project_tags_path(project.namespace, project)
+      visit project_tags_path(project)
     end
 
     scenario 'displays a specific message' do
@@ -26,19 +25,19 @@ feature 'Master views tags', feature: true do
   end
 
   context 'when project has tags' do
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:project, :repository, namespace: user.namespace) }
     let(:repository) { project.repository }
 
     before do
-      visit namespace_project_tags_path(project.namespace, project)
+      visit project_tags_path(project)
     end
 
     scenario 'avoids a N+1 query in branches index' do
-      control_count = ActiveRecord::QueryRecorder.new { visit namespace_project_tags_path(project.namespace, project) }.count
+      control_count = ActiveRecord::QueryRecorder.new { visit project_tags_path(project) }.count
 
       %w(one two three four five).each { |tag| repository.add_tag(user, tag, 'master', 'foo') }
 
-      expect { visit namespace_project_tags_path(project.namespace, project) }.not_to exceed_query_limit(control_count)
+      expect { visit project_tags_path(project) }.not_to exceed_query_limit(control_count)
     end
 
     scenario 'views the tags list page' do
@@ -49,7 +48,7 @@ feature 'Master views tags', feature: true do
       click_on 'v1.0.0'
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v1.0.0'))
+        project_tag_path(project, 'v1.0.0'))
       expect(page).to have_content 'v1.0.0'
       expect(page).to have_content 'This tag has no release notes.'
     end
@@ -59,24 +58,24 @@ feature 'Master views tags', feature: true do
         click_on 'v1.0.0'
 
         expect(current_path).to eq(
-          namespace_project_tag_path(project.namespace, project, 'v1.0.0'))
+          project_tag_path(project, 'v1.0.0'))
 
         click_on 'Browse files'
 
         expect(current_path).to eq(
-          namespace_project_tree_path(project.namespace, project, 'v1.0.0'))
+          project_tree_path(project, 'v1.0.0'))
       end
 
       scenario 'has a button to browse commits' do
         click_on 'v1.0.0'
 
         expect(current_path).to eq(
-          namespace_project_tag_path(project.namespace, project, 'v1.0.0'))
+          project_tag_path(project, 'v1.0.0'))
 
         click_on 'Browse commits'
 
         expect(current_path).to eq(
-          namespace_project_commits_path(project.namespace, project, 'v1.0.0'))
+          project_commits_path(project, 'v1.0.0'))
       end
     end
   end

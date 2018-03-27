@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required" : [
+    "name",
+    "message",
+    "commit",
+    "release"
+  ],
+  "properties" : {
+    "name": { "type": "string" },
+    "message": { "type": ["string", "null"] },
+    "commit": { "$ref": "commit/basic.json" },
+    "release": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "release.json" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

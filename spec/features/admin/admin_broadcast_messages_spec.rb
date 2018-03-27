@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Admin Broadcast Messages', feature: true do
+feature 'Admin Broadcast Messages' do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     create(:broadcast_message, :expired, message: 'Migration to new server')
     visit admin_broadcast_messages_path
   end
@@ -40,7 +40,7 @@ feature 'Admin Broadcast Messages', feature: true do
     expect(page).not_to have_content 'Migration to new server'
   end
 
-  scenario 'Live preview a customized broadcast message', js: true do
+  scenario 'Live preview a customized broadcast message', :js do
     fill_in 'broadcast_message_message', with: "Live **Markdown** previews. :tada:"
 
     page.within('.broadcast-message-preview') do

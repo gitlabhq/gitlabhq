@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-describe 'Projects > Wiki > User views wiki in project page', feature: true do
+describe 'Projects > Wiki > User views wiki in project page' do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
   context 'when repository is disabled for project' do
     let(:project) do
-      create(:empty_project,
+      create(:project,
              :repository_disabled,
              :merge_requests_disabled,
              :builds_disabled)
@@ -18,23 +18,14 @@ describe 'Projects > Wiki > User views wiki in project page', feature: true do
 
     context 'when wiki homepage contains a link' do
       before do
-        WikiPages::CreateService.new(
-          project,
-          user,
-          title: 'home',
-          content: '[some link](other-page)'
-        ).execute
+        create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: '[some link](other-page)' })
       end
 
       it 'displays the correct URL for the link' do
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
         expect(page).to have_link(
           'some link',
-          href: namespace_project_wiki_path(
-            project.namespace,
-            project,
-            'other-page'
-          )
+          href: project_wiki_path(project, 'other-page')
         )
       end
     end

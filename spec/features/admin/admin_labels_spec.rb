@@ -5,7 +5,7 @@ RSpec.describe 'admin issues labels' do
   let!(:feature_label) { Label.create(title: 'feature', template: true) }
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe 'list' do
@@ -30,10 +30,10 @@ RSpec.describe 'admin issues labels' do
       end
     end
 
-    it 'deletes all labels', js: true do
+    it 'deletes all labels', :js do
       page.within '.labels' do
         page.all('.btn-remove').each do |remove|
-          remove.click
+          accept_confirm { remove.click }
           wait_for_requests
         end
       end

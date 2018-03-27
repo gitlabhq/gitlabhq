@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Service, models: true do
+describe Service do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -23,7 +23,7 @@ describe Service, models: true do
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:empty_project) }
+        let(:project) { create(:project) }
 
         it 'returns true' do
           expect(service.can_test?).to be true
@@ -46,7 +46,7 @@ describe Service, models: true do
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:empty_project) }
+        let(:project) { create(:project) }
 
         it 'test runs execute' do
           expect(service).to receive(:execute).with(data)
@@ -69,7 +69,7 @@ describe Service, models: true do
             api_key: '123456789'
           })
       end
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       describe 'is prefilled for projects pushover service' do
         it "has all fields prefilled" do
@@ -88,7 +88,7 @@ describe Service, models: true do
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(
-        project: create(:empty_project),
+        project: create(:project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -128,7 +128,7 @@ describe Service, models: true do
   describe "{property}_touched?" do
     let(:service) do
       BambooService.create(
-        project: create(:empty_project),
+        project: create(:project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -168,7 +168,7 @@ describe Service, models: true do
   describe "{property}_was" do
     let(:service) do
       BambooService.create(
-        project: create(:empty_project),
+        project: create(:project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -208,7 +208,7 @@ describe Service, models: true do
   describe 'initialize service with no properties' do
     let(:service) do
       GitlabIssueTrackerService.create(
-        project: create(:empty_project),
+        project: create(:project),
         title: 'random title'
       )
     end
@@ -223,7 +223,7 @@ describe Service, models: true do
   end
 
   describe "callbacks" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.new(
         project: project,
@@ -252,6 +252,66 @@ describe Service, models: true do
           service.update_attributes(active: false)
         end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
       end
+    end
+  end
+
+  describe "#deprecated?" do
+    let(:project) { create(:project, :repository) }
+
+    it 'should return false by default' do
+      service = create(:service, project: project)
+      expect(service.deprecated?).to be_falsy
+    end
+  end
+
+  describe "#deprecation_message" do
+    let(:project) { create(:project, :repository) }
+
+    it 'should be empty by default' do
+      service = create(:service, project: project)
+      expect(service.deprecation_message).to be_nil
+    end
+  end
+
+  describe '.find_by_template' do
+    let!(:kubernetes_service) { create(:kubernetes_service, template: true) }
+
+    it 'returns service template' do
+      expect(KubernetesService.find_by_template).to eq(kubernetes_service)
+    end
+  end
+
+  describe '#api_field_names' do
+    let(:fake_service) do
+      Class.new(Service) do
+        def fields
+          [
+            { name: 'token' },
+            { name: 'api_token' },
+            { name: 'key' },
+            { name: 'api_key' },
+            { name: 'password' },
+            { name: 'password_field' },
+            { name: 'safe_field' }
+          ]
+        end
+      end
+    end
+
+    let(:service) do
+      fake_service.new(properties: [
+        { token: 'token-value' },
+        { api_token: 'api_token-value' },
+        { key: 'key-value' },
+        { api_key: 'api_key-value' },
+        { password: 'password-value' },
+        { password_field: 'password_field-value' },
+        { safe_field: 'safe_field-value' }
+      ])
+    end
+
+    it 'filters out sensitive fields' do
+      expect(service.api_field_names).to eq(['safe_field'])
     end
   end
 end

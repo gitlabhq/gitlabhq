@@ -1,6 +1,8 @@
 - if merge_request.discussions_can_be_resolved_by?(current_user) && can?(current_user, :create_issue, @project)
   .btn-group{ role: "group", "v-if" => "unresolvedDiscussionCount > 0" }
-    .btn.btn-default.discussion-create-issue-btn.has-tooltip{ title: "Resolve all discussions in new issue",
-                                                             "aria-label" => "Resolve all discussions in a new issue",
-                                                             "data-container" => "body" }
-      = link_to custom_icon('icon_mr_issue'), new_namespace_project_issue_path(@project.namespace, @project, merge_request_to_resolve_discussions_of: merge_request.iid), title: "Resolve all discussions in new issue", class: 'new-issue-for-discussion'
+    = link_to custom_icon('icon_mr_issue'),
+              new_project_issue_path(@project, merge_request_to_resolve_discussions_of: merge_request.iid),
+              title: 'Resolve all discussions in new issue',
+              aria: { label: 'Resolve all discussions in new issue' },
+              data: { container: 'body' },
+              class: 'new-issue-for-discussion btn btn-default discussion-create-issue-btn has-tooltip'

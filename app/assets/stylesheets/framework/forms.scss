@@ -32,7 +32,7 @@ label {
   }
 
   &.label-light {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }
 
@@ -73,7 +73,7 @@ label {
   margin-right: 0;
 
   .control-label {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
     padding-top: 4px;
   }
 
@@ -157,7 +157,7 @@ label {
 
 .form-group .control-label,
 .form-group .control-label-full-width {
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
 }
 
 .form-control::-webkit-input-placeholder {
@@ -167,7 +167,7 @@ label {
 .input-group {
   .select2-container {
     display: table-cell;
-    width: 200px !important;
+    max-width: 180px;
   }
 
   .input-group-addon {
@@ -182,6 +182,7 @@ label {
 
 .help-block {
   margin-bottom: 0;
+  margin-top: #{$grid-size / 2};
 }
 
 .gl-field-error {

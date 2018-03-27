@@ -15,9 +15,10 @@ module Gitlab
         #
         module Configurable
           extend ActiveSupport::Concern
-          include Validatable
 
           included do
+            include Validatable
+
             validations do
               validates :config, type: Hash
             end
@@ -28,15 +29,15 @@ module Gitlab
 
             self.class.nodes.each do |key, factory|
               factory
-                .value(@config[key])
+                .value(config[key])
                 .with(key: key, parent: self)
 
-              @entries[key] = factory.create!
+              entries[key] = factory.create!
             end
 
             yield if block_given?
 
-            @entries.each_value do |entry|
+            entries.each_value do |entry|
               entry.compose!(deps)
             end
           end
@@ -58,13 +59,13 @@ module Gitlab
             def helpers(*nodes)
               nodes.each do |symbol|
                 define_method("#{symbol}_defined?") do
-                  @entries[symbol]&.specified?
+                  entries[symbol]&.specified?
                 end
 
                 define_method("#{symbol}_value") do
-                  return unless @entries[symbol] && @entries[symbol].valid?
+                  return unless entries[symbol] && entries[symbol].valid?
 
-                  @entries[symbol].value
+                  entries[symbol].value
                 end
               end
             end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'CycleAnalytics#review', feature: true do
+describe 'CycleAnalytics#review' do
   extend CycleAnalyticsHelpers::TestGeneration
 
   let(:project) { create(:project, :repository) }
@@ -13,11 +13,11 @@ describe 'CycleAnalytics#review', feature: true do
     data_fn: -> (context) { { issue: context.create(:issue, project: context.project) } },
     start_time_conditions: [["merge request that closes issue is created",
                              -> (context, data) do
-                               context.create_merge_request_closing_issue(data[:issue])
+                               context.create_merge_request_closing_issue(context.user, context.project, data[:issue])
                              end]],
     end_time_conditions:   [["merge request that closes issue is merged",
                              -> (context, data) do
-                               context.merge_merge_requests_closing_issue(data[:issue])
+                               context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
                              end]],
     post_fn: nil)
 

@@ -24,14 +24,14 @@ describe AccessRequestable do
 
   describe 'Project' do
     describe '#request_access' do
-      let(:project) { create(:empty_project, :public, :access_requestable) }
+      let(:project) { create(:project, :public, :access_requestable) }
       let(:user) { create(:user) }
 
       it { expect(project.request_access(user)).to be_a(ProjectMember) }
     end
 
     describe '#access_requested?' do
-      let(:project) { create(:empty_project, :public, :access_requestable) }
+      let(:project) { create(:project, :public, :access_requestable) }
       let(:user) { create(:user) }
 
       before do

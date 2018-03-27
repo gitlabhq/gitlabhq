@@ -22,25 +22,32 @@ describe PipelineScheduleWorker do
     end
 
     context 'when there is a scheduled pipeline within next_run_at' do
-      it 'creates a new pipeline' do
-        expect{ subject }.to change { project.pipelines.count }.by(1)
-        expect(Ci::Pipeline.last).to be_schedule
+      shared_examples 'successful scheduling' do
+        it 'creates a new pipeline' do
+          expect { subject }.to change { project.pipelines.count }.by(1)
+          expect(Ci::Pipeline.last).to be_schedule
+
+          pipeline_schedule.reload
+          expect(pipeline_schedule.next_run_at).to be > Time.now
+          expect(pipeline_schedule).to eq(project.pipelines.last.pipeline_schedule)
+          expect(pipeline_schedule).to be_active
+        end
       end
 
-      it 'updates the next_run_at field' do
-        subject
+      it_behaves_like 'successful scheduling'
 
-        expect(pipeline_schedule.reload.next_run_at).to be > Time.now
-      end
+      context 'when the latest commit contains [ci skip]' do
+        before do
+          allow_any_instance_of(Ci::Pipeline)
+            .to receive(:git_commit_message)
+            .and_return('some commit [ci skip]')
+        end
 
-      it 'sets the schedule on the pipeline' do
-        subject
-
-        expect(project.pipelines.last.pipeline_schedule).to eq(pipeline_schedule)
+        it_behaves_like 'successful scheduling'
       end
     end
 
-    context 'inactive schedule' do
+    context 'when the schedule is deactivated' do
       before do
         pipeline_schedule.deactivate!
       end

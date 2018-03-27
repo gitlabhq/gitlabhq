@@ -1,0 +1,24 @@
+- content_for :table_content do
+  %li= link_to 'GitLab CI', '#gitlab-ci'
+
+- content_for :settings_content do
+  %h2#gitlab-ci
+    GitLab CI
+
+  %p
+    Below are the current settings regarding
+    = succeed('.') { link_to('GitLab CI', 'https://about.gitlab.com/gitlab-ci', target: '_blank') }
+
+  .table-responsive
+    %table
+      %thead
+        %tr
+          %th Setting
+          %th= instance_configuration_host(@instance_configuration.settings[:host])
+          %th Default
+      %tbody
+        %tr
+          - artifacts_size = @instance_configuration.settings[:gitlab_ci][:artifacts_max_size]
+          %td Artifacts maximum size
+          %td= instance_configuration_human_size_cell(artifacts_size[:value])
+          %td= instance_configuration_human_size_cell(artifacts_size[:default])

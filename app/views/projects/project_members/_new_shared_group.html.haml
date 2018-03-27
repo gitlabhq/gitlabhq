@@ -1,6 +1,6 @@
 .row
   .col-sm-12
-    = form_tag namespace_project_group_links_path(@project.namespace, @project), class: 'js-requires-input', method: :post do
+    = form_tag project_group_links_path(@project), class: 'js-requires-input', method: :post do
       .form-group
         = label_tag :link_group_id, "Select a group to share with", class: "label-light"
         = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, class: "input-clamp", required: true)

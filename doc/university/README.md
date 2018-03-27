@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab University
 
 GitLab University is the best place to learn about **Version Control with Git and GitLab**.
@@ -51,10 +55,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 1.5. Migrating from other Source Control
 
-1. [Migrating from BitBucket/Stash](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_bitbucket.html)
-1. [Migrating from GitHub](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_github.html)
-1. [Migrating from SVN](https://docs.gitlab.com/ee/workflow/importing/migrating_from_svn.html)
-1. [Migrating from Fogbugz](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_fogbugz.html)
+1. [Migrating from BitBucket/Stash](https://docs.gitlab.com/ee/user/project/import/bitbucket.html)
+1. [Migrating from GitHub](https://docs.gitlab.com/ee/user/project/import/github.html)
+1. [Migrating from SVN](https://docs.gitlab.com/ee/user/project/import/svn.html)
+1. [Migrating from Fogbugz](https://docs.gitlab.com/ee/user/project/import/fogbugz.html)
 
 #### 1.6. GitLab Inc.
 
@@ -76,13 +80,13 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
   - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/2016/06/08/getting-started-with-gitlab-development-kit/)
 1. [Contributing Technical Articles to the GitLab Blog](https://about.gitlab.com/2016/01/26/call-for-writers/)
-1. [GitLab Training Workshops](https://about.gitlab.com/training)
+1. [GitLab Training Workshops](https://docs.gitlab.com/ce/university/training/end-user/)
+1. [GitLab Professional Services](https://about.gitlab.com/services/)
 
 #### 1.8 GitLab Training Material
 
 1. [Git and GitLab Terminology](glossary/README.md)
 1. [Git and GitLab Workshop - Slides](https://docs.google.com/presentation/d/1JzTYD8ij9slejV2-TO-NzjCvlvj6mVn9BORePXNJoMI/edit?usp=drive_web)
-1. [Git and GitLab Revision](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/university/training/end-user)
 
 ---
 
@@ -122,6 +126,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 1. [IBM: Continuous Delivery vs Continuous Deployment - Video](https://www.youtube.com/watch?v=igwFj8PPSnw)
 1. [Amazon: Transition to Continuous Delivery - Video](https://www.youtube.com/watch?v=esEFaY0FDKc)
+2. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
 1. See **[Integrations](#integrations)** for integrations with other CI services.
 
 #### 2.4. Workflow

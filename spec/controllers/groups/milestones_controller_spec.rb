@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Groups::MilestonesController do
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, group: group) }
-  let(:project2) { create(:empty_project, group: group) }
+  let!(:project) { create(:project, group: group) }
+  let!(:project2) { create(:project, group: group) }
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
   let(:milestone) do
@@ -17,10 +17,68 @@ describe Groups::MilestonesController do
   end
   let(:milestone_path) { group_milestone_path(group, milestone.safe_title, title: milestone.title) }
 
+  let(:milestone_params) do
+    {
+      title: title,
+      start_date: Date.today,
+      due_date: 1.month.from_now.to_date
+    }
+  end
+
   before do
     sign_in(user)
     group.add_owner(user)
-    project.team << [user, :master]
+    project.add_master(user)
+  end
+
+  describe '#index' do
+    it 'shows group milestones page' do
+      get :index, group_id: group.to_param
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    context 'as JSON' do
+      let!(:milestone) { create(:milestone, group: group, title: 'group milestone') }
+      let!(:legacy_milestone1) { create(:milestone, project: project, title: 'legacy') }
+      let!(:legacy_milestone2) { create(:milestone, project: project2, title: 'legacy') }
+
+      it 'lists legacy group milestones and group milestones' do
+        get :index, group_id: group.to_param, format: :json
+
+        milestones = JSON.parse(response.body)
+
+        expect(milestones.count).to eq(2)
+        expect(milestones.first["title"]).to eq("group milestone")
+        expect(milestones.second["title"]).to eq("legacy")
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.content_type).to eq 'application/json'
+      end
+    end
+  end
+
+  describe '#show' do
+    let(:milestone1) { create(:milestone, project: project, title: 'legacy') }
+    let(:milestone2) { create(:milestone, project: project, title: 'legacy') }
+    let(:group_milestone) { create(:milestone, group: group) }
+
+    context 'when there is a title parameter' do
+      it 'searchs for a legacy group milestone' do
+        expect(GlobalMilestone).to receive(:build)
+        expect(Milestone).not_to receive(:find_by_iid)
+
+        get :show, group_id: group.to_param, id: title, title: milestone1.safe_title
+      end
+    end
+
+    context 'when there is not a title parameter' do
+      it 'searchs for a group milestone' do
+        expect(GlobalMilestone).not_to receive(:build)
+        expect(Milestone).to receive(:find_by_iid)
+
+        get :show, group_id: group.to_param, id: group_milestone.id
+      end
+    end
   end
 
   it_behaves_like 'milestone tabs'
@@ -29,16 +87,57 @@ describe Groups::MilestonesController do
     it "creates group milestone with Chinese title" do
       post :create,
            group_id: group.to_param,
-           milestone: { project_ids: [project.id, project2.id], title: title }
+           milestone: milestone_params
 
-      expect(response).to redirect_to(group_milestone_path(group, title.to_slug.to_s, title: title))
-      expect(Milestone.where(title: title).count).to eq(2)
+      milestone = Milestone.find_by_title(title)
+
+      expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
+      expect(milestone.group_id).to eq(group.id)
+      expect(milestone.due_date).to eq(milestone_params[:due_date])
+      expect(milestone.start_date).to eq(milestone_params[:start_date])
+    end
+  end
+
+  describe "#update" do
+    let(:milestone) { create(:milestone, group: group) }
+
+    it "updates group milestone" do
+      milestone_params[:title] = "title changed"
+
+      put :update,
+           id: milestone.iid,
+           group_id: group.to_param,
+           milestone: milestone_params
+
+      milestone.reload
+      expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
+      expect(milestone.title).to eq("title changed")
     end
 
-    it "redirects to new when there are no project ids" do
-      post :create, group_id: group.to_param, milestone: { title: title, project_ids: [""] }
-      expect(response).to render_template :new
-      expect(assigns(:milestone).errors).not_to be_nil
+    context "legacy group milestones" do
+      let!(:milestone1) { create(:milestone, project: project, title: 'legacy milestone', description: "old description") }
+      let!(:milestone2) { create(:milestone, project: project2, title: 'legacy milestone', description: "old description") }
+
+      it "updates only group milestones state" do
+        milestone_params[:title] = "title changed"
+        milestone_params[:description] = "description changed"
+        milestone_params[:state_event] = "close"
+
+        put :update,
+             id: milestone1.title.to_slug.to_s,
+             group_id: group.to_param,
+             milestone: milestone_params,
+             title: milestone1.title
+
+        expect(response).to redirect_to(group_milestone_path(group, milestone1.safe_title, title: milestone1.title))
+
+        [milestone1, milestone2].each do |milestone|
+          milestone.reload
+          expect(milestone.title).to eq("legacy milestone")
+          expect(milestone.description).to eq("old description")
+          expect(milestone.state).to eq("closed")
+        end
+      end
     end
   end
 
@@ -54,7 +153,7 @@ describe Groups::MilestonesController do
             it 'does not redirect' do
               get :index, group_id: group.to_param
 
-              expect(response).not_to have_http_status(301)
+              expect(response).not_to have_gitlab_http_status(301)
             end
           end
 
@@ -73,7 +172,7 @@ describe Groups::MilestonesController do
             it 'does not redirect' do
               get :show, group_id: group.to_param, id: title
 
-              expect(response).not_to have_http_status(301)
+              expect(response).not_to have_gitlab_http_status(301)
             end
           end
 
@@ -141,17 +240,17 @@ describe Groups::MilestonesController do
       it 'does not 404' do
         post :create,
              group_id: group.to_param,
-             milestone: { project_ids: [project.id, project2.id], title: title }
+             milestone: { title: title }
 
-        expect(response).not_to have_http_status(404)
+        expect(response).not_to have_gitlab_http_status(404)
       end
 
       it 'does not redirect to the correct casing' do
         post :create,
              group_id: group.to_param,
-             milestone: { project_ids: [project.id, project2.id], title: title }
+             milestone: { title: title }
 
-        expect(response).not_to have_http_status(301)
+        expect(response).not_to have_gitlab_http_status(301)
       end
     end
 
@@ -161,9 +260,9 @@ describe Groups::MilestonesController do
       it 'returns not found' do
         post :create,
              group_id: redirect_route.path,
-             milestone: { project_ids: [project.id, project2.id], title: title }
+             milestone: { title: title }
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

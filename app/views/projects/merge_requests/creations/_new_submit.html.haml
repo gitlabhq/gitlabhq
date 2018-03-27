@@ -1,0 +1,52 @@
+%h3.page-title
+  New Merge Request
+%p.slead
+  - source_title, target_title = format_mr_branch_names(@merge_request)
+  From
+  %strong.ref-name= source_title
+  %span into
+  %strong.ref-name= target_title
+
+  %span.pull-right
+    = link_to 'Change branches', mr_change_branches_path(@merge_request)
+%hr
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal common-note-form js-requires-input js-quick-submit' } do |f|
+  = render 'shared/issuable/form', f: f, issuable: @merge_request, commits: @commits
+  = f.hidden_field :source_project_id
+  = f.hidden_field :source_branch
+  = f.hidden_field :target_project_id
+  = f.hidden_field :target_branch, id: ''
+
+.mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
+  - if @commits.empty?
+    .commits-empty
+      %h4
+        There are no commits yet.
+      = custom_icon ('illustration_no_commits')
+  - else
+    %ul.merge-request-tabs.nav-links.no-top.no-bottom
+      %li.commits-tab.active
+        = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
+          Commits
+          %span.badge= @commits.size
+      - if @pipelines.any?
+        %li.builds-tab
+          = link_to url_for(params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
+            Pipelines
+            %span.badge= @pipelines.size
+      %li.diffs-tab
+        = link_to url_for(params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+          Changes
+          %span.badge= @merge_request.diff_size
+
+    .tab-content
+      #commits.commits.tab-pane.active
+        = render "projects/merge_requests/commits"
+      #diffs.diffs.tab-pane
+        -# This tab is always loaded via AJAX
+      - if @pipelines.any?
+        #pipelines.pipelines.tab-pane
+          = render 'projects/merge_requests/pipelines', endpoint: url_for(params.merge(action: 'pipelines', format: :json)), disable_initialization: true
+
+  .mr-loading-status
+    = spinner

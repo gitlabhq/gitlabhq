@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Dashboard snippets', feature: true do
+describe 'Dashboard snippets' do
   context 'when the project has snippets' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.owner, project: project) }
     before do
       allow(Snippet).to receive(:default_per_page).and_return(1)
-      gitlab_sign_in(project.owner)
+      sign_in(project.owner)
       visit dashboard_snippets_path
     end
 
@@ -25,7 +25,7 @@ describe 'Dashboard snippets', feature: true do
     end
 
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
 
       visit dashboard_snippets_path
     end

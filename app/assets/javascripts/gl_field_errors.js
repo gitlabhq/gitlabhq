@@ -1,42 +1,41 @@
-/* eslint-disable comma-dangle, class-methods-use-this, max-len, space-before-function-paren, arrow-parens, no-param-reassign */
-
-import './gl_field_error';
+import $ from 'jquery';
+import GlFieldError from './gl_field_error';
 
 const customValidationFlag = 'gl-field-error-ignore';
 
-class GlFieldErrors {
+export default class GlFieldErrors {
   constructor(form) {
     this.form = $(form);
     this.state = {
       inputs: [],
-      valid: false
+      valid: false,
     };
     this.initValidators();
   }
 
-  initValidators () {
+  initValidators() {
     // register selectors here as needed
     const validateSelectors = [':text', ':password', '[type=email]']
-      .map((selector) => `input${selector}`).join(',');
+      .map(selector => `input${selector}`).join(',');
 
     this.state.inputs = this.form.find(validateSelectors).toArray()
-      .filter((input) => !input.classList.contains(customValidationFlag))
-      .map((input) => new window.gl.GlFieldError({ input, formErrors: this }));
+      .filter(input => !input.classList.contains(customValidationFlag))
+      .map(input => new GlFieldError({ input, formErrors: this }));
 
-    this.form.on('submit', this.catchInvalidFormSubmit);
+    this.form.on('submit', GlFieldErrors.catchInvalidFormSubmit);
   }
 
   /* Neccessary to prevent intercept and override invalid form submit
    * because Safari & iOS quietly allow form submission when form is invalid
    * and prevents disabling of invalid submit button by application.js */
 
-  catchInvalidFormSubmit (event) {
-    const $form = $(event.currentTarget);
+  static catchInvalidFormSubmit(e) {
+    const $form = $(e.currentTarget);
 
     if (!$form.attr('novalidate')) {
-      if (!event.currentTarget.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
+      if (!e.currentTarget.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     }
   }
@@ -50,11 +49,9 @@ class GlFieldErrors {
     });
   }
 
-  focusOnFirstInvalid () {
-    const firstInvalid = this.state.inputs.filter((input) => !input.inputDomElement.validity.valid)[0];
+  focusOnFirstInvalid() {
+    const firstInvalid = this.state.inputs
+      .filter(input => !input.inputDomElement.validity.valid)[0];
     firstInvalid.inputElement.focus();
   }
 }
-
-window.gl = window.gl || {};
-window.gl.GlFieldErrors = GlFieldErrors;

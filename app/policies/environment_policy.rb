@@ -1,17 +1,9 @@
 class EnvironmentPolicy < BasePolicy
-  alias_method :environment, :subject
+  delegate { @subject.project }
 
-  def rules
-    delegate! environment.project
-
-    if can?(:create_deployment) && environment.stop_action?
-      can! :stop_environment if can_play_stop_action?
-    end
+  condition(:stop_action_allowed) do
+    @subject.stop_action? && can?(:update_build, @subject.stop_action)
   end
 
-  private
-
-  def can_play_stop_action?
-    Ability.allowed?(user, :update_build, environment.stop_action)
-  end
+  rule { can?(:create_deployment) & stop_action_allowed }.enable :stop_environment
 end

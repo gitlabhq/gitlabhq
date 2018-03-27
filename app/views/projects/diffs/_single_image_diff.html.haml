@@ -1,0 +1,16 @@
+- blob = diff_file.blob
+- old_blob = diff_file.old_blob
+- blob_raw_url = diff_file_blob_raw_url(diff_file)
+- old_blob_raw_url = diff_file_old_blob_raw_url(diff_file)
+- click_to_comment = local_assigns.fetch(:click_to_comment, true)
+- diff_view_data = local_assigns.fetch(:diff_view_data, '')
+- class_name = ''
+
+- if click_to_comment
+  - class_name = 'js-add-image-diff-note-button click-to-comment'
+
+.image.js-single-image{ data: diff_view_data }
+  .wrap
+    - single_class_name = diff_file.deleted_file? ? 'deleted' : 'added'
+    = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "#{single_class_name} #{class_name} js-image-frame", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.file_path }
+  %p.image-info= number_to_human_size(blob.size)

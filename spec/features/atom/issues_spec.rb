@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issues Feed', feature: true  do
+describe 'Issues Feed'  do
   describe 'GET /issues' do
     let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
@@ -9,14 +9,14 @@ describe 'Issues Feed', feature: true  do
     let!(:issue)    { create(:issue, author: user, assignees: [assignee], project: project) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       group.add_developer(user)
     end
 
     context 'when authenticated' do
       it 'renders atom feed' do
-        gitlab_sign_in user
-        visit namespace_project_issues_path(project.namespace, project, :atom)
+        sign_in user
+        visit project_issues_path(project, :atom)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')
@@ -28,10 +28,12 @@ describe 'Issues Feed', feature: true  do
       end
     end
 
-    context 'when authenticated via private token' do
+    context 'when authenticated via personal access token' do
       it 'renders atom feed' do
-        visit namespace_project_issues_path(project.namespace, project, :atom,
-                                            private_token: user.private_token)
+        personal_access_token = create(:personal_access_token, user: user)
+
+        visit project_issues_path(project, :atom,
+                                            private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')
@@ -45,7 +47,7 @@ describe 'Issues Feed', feature: true  do
 
     context 'when authenticated via RSS token' do
       it 'renders atom feed' do
-        visit namespace_project_issues_path(project.namespace, project, :atom,
+        visit project_issues_path(project, :atom,
                                             rss_token: user.rss_token)
 
         expect(response_headers['Content-Type'])
@@ -59,7 +61,7 @@ describe 'Issues Feed', feature: true  do
     end
 
     it "renders atom feed with url parameters for project issues" do
-      visit namespace_project_issues_path(project.namespace, project,
+      visit project_issues_path(project,
                                           :atom, rss_token: user.rss_token, state: 'opened', assignee_id: user.id)
 
       link = find('link[type="application/atom+xml"]')

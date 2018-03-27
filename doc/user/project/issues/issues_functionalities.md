@@ -41,36 +41,33 @@ it's reassigned to someone else to take it from there.
 if a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
-##### 3.1. Multiple Assignees (EES/EEP)
+##### 3.1. Multiple Assignees
 
-Issue Weights are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
 
 Often multiple people likely work on the same issue together,
 which can especially be difficult to track in large teams
 where there is shared ownership of an issue.
 
-In GitLab Enterprise Edition, you can also select multiple assignees
-to an issue.
+In [GitLab Starter](https://about.gitlab.com/products/), you can also
+select multiple assignees to an issue.
 
-> **Note:**
-Multiple Assignees was [introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)
-in [GitLab Enterprise Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
+Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
 
 #### 4. Milestone
 
 - Select a [milestone](../milestones/index.md) to attribute that issue to.
 
-#### 5. Time Tracking (EES/EEP)
-
-This feature is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+#### 5. Time Tracking
 
 - Estimate time: add an estimate time in which the issue will be implemented
 - Spend: add the time spent on the implementation of that issue
 
 > **Note:**
-both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
+Both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
 
-Learn more on the [Time Tracking documentation](https://docs.gitlab.com/ee/workflow/time_tracking.html).
+Learn more on the [Time Tracking documentation](../../../workflow/time_tracking.md).
 
 #### 6. Due date
 
@@ -92,9 +89,10 @@ but they are immediately available to all projects in the group.
 > **Tip:**
 if the label doesn't exist yet, when you click **Edit**, it opens a dropdown menu from which you can select **Create new label**.
 
-#### 8. Weight (EES/EEP)
+#### 8. Weight
 
-Issue Weights are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
 
 - Attribute a weight (in a 0 to 9 range) to that issue. Easy to complete
 should weight 1 and very hard to complete should weight 9.
@@ -171,6 +169,7 @@ Once you wrote your comment, you can either:
 #### 18. New Merge Request
 
 - Create a new merge request (with a new source branch named after the issue) in one action.
-The merge request will automatically close that issue as soon as merged.
+The merge request will automatically inherit the milestone and labels of the issue. The merge
+request will automatically close that issue as soon as merged.
 - Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
 named after that issue.

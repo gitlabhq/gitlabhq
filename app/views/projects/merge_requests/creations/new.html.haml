@@ -1,0 +1,7 @@
+- breadcrumb_title "Merge Requests"
+- page_title "New Merge Request"
+
+- if @merge_request.can_be_created && !params[:change_branches]
+  = render 'new_submit'
+- else
+  = render 'new_compare'

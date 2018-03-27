@@ -1,6 +1,6 @@
 module RepositoryCheck
   class ClearWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include RepositoryCheckQueue
 
     def perform

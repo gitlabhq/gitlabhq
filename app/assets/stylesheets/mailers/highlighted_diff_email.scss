@@ -152,44 +152,62 @@ span.highlight_word {
 .hll { background-color: $highlighted-hll-bg; }
 .c { color: $highlighted-c; font-style: italic; }
 .err { color: $highlighted-err; background-color: $highlighted-err-bg; }
-.k { font-weight: bold; }
-.o { font-weight: bold; }
+.k { font-weight: $gl-font-weight-bold; }
+.o { font-weight: $gl-font-weight-bold; }
 .cm { color: $highlighted-cm; font-style: italic; }
-.cp { color: $highlighted-cp; font-weight: bold; }
+.cp { color: $highlighted-cp; font-weight: $gl-font-weight-bold; }
 .c1 { color: $highlighted-c1; font-style: italic; }
-.cs { color: $highlighted-cs; font-weight: bold; font-style: italic; }
-.gd { color: $highlighted-gd; background-color: $highlighted-gd-bg; }
-.gd .x { color: $highlighted-gd; background-color: $highlighted-gd-x-bg; }
+.cs { color: $highlighted-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
+
+.gd {
+  color: $highlighted-gd;
+  background-color: $highlighted-gd-bg;
+
+  .x {
+    color: $highlighted-gd;
+    background-color: $highlighted-gd-x-bg;
+  }
+}
+
 .ge { font-style: italic; }
 .gr { color: $highlighted-gr; }
 .gh { color: $highlighted-gh; }
-.gi { color: $highlighted-gi; background-color: $highlighted-gi-bg; }
-.gi .x { color: $highlighted-gi; background-color: $highlighted-gi-x-bg; }
+
+.gi {
+  color: $highlighted-gi;
+  background-color: $highlighted-gi-bg;
+
+  .x {
+    color: $highlighted-gi;
+    background-color: $highlighted-gi-x-bg;
+  }
+}
+
 .go { color: $highlighted-go; }
 .gp { color: $highlighted-gp; }
-.gs { font-weight: bold; }
-.gu { color: $highlighted-gu; font-weight: bold; }
+.gs { font-weight: $gl-font-weight-bold; }
+.gu { color: $highlighted-gu; font-weight: $gl-font-weight-bold; }
 .gt { color: $highlighted-gt; }
-.kc { font-weight: bold; }
-.kd { font-weight: bold; }
-.kn { font-weight: bold; }
-.kp { font-weight: bold; }
-.kr { font-weight: bold; }
-.kt { color: $highlighted-kt; font-weight: bold; }
+.kc { font-weight: $gl-font-weight-bold; }
+.kd { font-weight: $gl-font-weight-bold; }
+.kn { font-weight: $gl-font-weight-bold; }
+.kp { font-weight: $gl-font-weight-bold; }
+.kr { font-weight: $gl-font-weight-bold; }
+.kt { color: $highlighted-kt; font-weight: $gl-font-weight-bold; }
 .m { color: $highlighted-m; }
 .s { color: $highlighted-s; }
 .n { color: $highlighted-n; }
 .na { color: $highlighted-na; }
 .nb { color: $highlighted-nb; }
-.nc { color: $highlighted-nc; font-weight: bold; }
+.nc { color: $highlighted-nc; font-weight: $gl-font-weight-bold; }
 .no { color: $highlighted-no; }
 .ni { color: $highlighted-ni; }
-.ne { color: $highlighted-ne; font-weight: bold; }
-.nf { color: $highlighted-nf; font-weight: bold; }
+.ne { color: $highlighted-ne; font-weight: $gl-font-weight-bold; }
+.nf { color: $highlighted-nf; font-weight: $gl-font-weight-bold; }
 .nn { color: $highlighted-nn; }
 .nt { color: $highlighted-nt; }
 .nv { color: $highlighted-nv; }
-.ow { font-weight: bold; }
+.ow { font-weight: $gl-font-weight-bold; }
 .w { color: $highlighted-w; }
 .mf { color: $highlighted-mf; }
 .mh { color: $highlighted-mh; }

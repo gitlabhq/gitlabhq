@@ -10,7 +10,7 @@ describe('Commit component', () => {
     CommitComponent = Vue.extend(commitComp);
   });
 
-  it('should render a code-fork icon if it does not represent a tag', () => {
+  it('should render a fork icon if it does not represent a tag', () => {
     component = new CommitComponent({
       propsData: {
         tag: false,
@@ -22,7 +22,7 @@ describe('Commit component', () => {
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
-          avatar_url: 'https://gitlab.com/uploads/system/user/avatar/300478/avatar.png',
+          avatar_url: 'https://gitlab.com/uploads/-/system/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
           path: '/jschatz1',
           username: 'jschatz1',
@@ -30,7 +30,7 @@ describe('Commit component', () => {
       },
     }).$mount();
 
-    expect(component.$el.querySelector('.icon-container i').classList).toContain('fa-code-fork');
+    expect(component.$el.querySelector('.icon-container').children).toContain('svg');
   });
 
   describe('Given all the props', () => {
@@ -45,7 +45,7 @@ describe('Commit component', () => {
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
-          avatar_url: 'https://gitlab.com/uploads/system/user/avatar/300478/avatar.png',
+          avatar_url: 'https://gitlab.com/uploads/-/system/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
           path: '/jschatz1',
           username: 'jschatz1',

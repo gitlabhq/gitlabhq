@@ -1,26 +1,35 @@
 <script>
-  /* global Flash */
   import updateMixin from '../../mixins/update';
   import markdownField from '../../../vue_shared/components/markdown/field.vue';
 
   export default {
+    components: {
+      markdownField,
+    },
     mixins: [updateMixin],
     props: {
       formState: {
         type: Object,
         required: true,
       },
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: true,
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
-    },
-    components: {
-      markdownField,
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     mounted() {
       this.$refs.textarea.focus();
@@ -36,12 +45,15 @@
       Description
     </label>
     <markdown-field
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs">
+      :markdown-preview-path="markdownPreviewPath"
+      :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    >
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"
-        data-supports-quick-actionss="false"
+        data-supports-quick-actions="false"
         aria-label="Description"
         v-model="formState.description"
         ref="textarea"

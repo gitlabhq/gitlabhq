@@ -1,17 +1,11 @@
-require 'rubygems'
+def rails5?
+  %w[1 true].include?(ENV["RAILS5"])
+end
+
+require 'rubygems' unless rails5?
+
+gemfile = rails5? ? "Gemfile.rails5" : "Gemfile"
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../#{gemfile}", __dir__)
 
 # Set up gems listed in the Gemfile.
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
-
 require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
-
-begin
-  require 'bootsnap/setup'
-rescue SystemCallError => exception
-  $stderr.puts "WARNING: Bootsnap failed to setup: #{exception.message}"
-end
-
-# set default directory for multiproces metrics gathering
-if ENV['RAILS_ENV'] == 'development' || ENV['RAILS_ENV'] == 'test'
-  ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_multiproc_dir'
-end

@@ -24,6 +24,10 @@ module Noteable
     DiscussionNote::NOTEABLE_TYPES.include?(base_class_name)
   end
 
+  def discussions_rendered_on_frontend?
+    false
+  end
+
   def discussion_notes
     notes
   end
@@ -38,10 +42,11 @@ module Noteable
 
   def grouped_diff_discussions(*args)
     # Doesn't use `discussion_notes`, because this may include commit diff notes
-    # besides MR diff notes, that we do no want to display on the MR Changes tab.
+    # besides MR diff notes, that we do not want to display on the MR Changes tab.
     notes.inc_relations_for_view.grouped_diff_discussions(*args)
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def resolvable_discussions
     @resolvable_discussions ||=
       if defined?(@discussions)
@@ -50,6 +55,7 @@ module Noteable
         discussion_notes.resolvable.discussions(self)
       end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def discussions_resolvable?
     resolvable_discussions.any?(&:resolvable?)
@@ -69,5 +75,9 @@ module Noteable
 
   def discussions_can_be_resolved_by?(user)
     discussions_to_be_resolved.all? { |discussion| discussion.can_resolve?(user) }
+  end
+
+  def lockable?
+    [MergeRequest, Issue].include?(self.class)
   end
 end

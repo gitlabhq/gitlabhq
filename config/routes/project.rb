@@ -1,11 +1,8 @@
-require 'constraints/project_url_constrainer'
-require 'gitlab/routes/legacy_builds'
-
 resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
-constraints(ProjectUrlConstrainer.new) do
+constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
   # the `format` option is not set to false, we need to specify that
@@ -41,7 +38,7 @@ constraints(ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template
+      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: %r{[^/]+} }
 
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
@@ -51,11 +48,16 @@ constraints(ProjectUrlConstrainer.new) do
           post :revert
           post :cherry_pick
           get :diff_for_path
+          get :merge_requests
         end
       end
 
-      resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
+      resource :pages, only: [:show, :update, :destroy] do
+        resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
+          member do
+            post :verify
+          end
+        end
       end
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
@@ -65,7 +67,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
         member do
           put :test
         end
@@ -74,7 +76,9 @@ constraints(ProjectUrlConstrainer.new) do
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
-        get :active_metrics
+        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [] do
+          get :active_common, on: :collection
+        end
       end
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
@@ -87,13 +91,8 @@ constraints(ProjectUrlConstrainer.new) do
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
-      resources :merge_requests, concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :merge_requests, concerns: :awardable, except: [:new, :create], constraints: { id: /\d+/ } do
         member do
-          get :commits
-          get :diffs
-          get :conflicts
-          get :conflict_for_path
-          get :pipelines
           get :commit_change_content
           post :merge
           post :cancel_merge_when_pipeline_succeeds
@@ -101,21 +100,37 @@ constraints(ProjectUrlConstrainer.new) do
           get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
-          get :diff_for_path
-          post :resolve_conflicts
           post :assign_related_issues
+          get :discussions, format: :json
+          post :rebase
+
+          scope constraints: { format: nil }, action: :show do
+            get :commits, defaults: { tab: 'commits' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+            get :diffs, defaults: { tab: 'diffs' }
+          end
+
+          scope constraints: { format: 'json' }, as: :json do
+            get :commits
+            get :pipelines
+            get :diffs, to: 'merge_requests/diffs#show'
+          end
+
+          get :diff_for_path, controller: 'merge_requests/diffs'
+
+          scope controller: 'merge_requests/conflicts' do
+            get :conflicts, action: :show
+            get :conflict_for_path
+            post :resolve_conflicts
+          end
         end
 
         collection do
-          get :branch_from
-          get :branch_to
-          get :update_branches
           get :diff_for_path
           post :bulk_update
-          get :new_diffs, path: 'new/diffs'
         end
 
-        resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+        resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
             delete :resolve, action: :unresolve
@@ -123,7 +138,31 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :variables, only: [:index, :show, :update, :create, :destroy]
+      controller 'merge_requests/creations', path: 'merge_requests' do
+        post '', action: :create, as: nil
+
+        scope path: 'new', as: :new_merge_request do
+          get '', action: :new
+
+          scope constraints: { format: nil }, action: :new do
+            get :diffs, defaults: { tab: 'diffs' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+          end
+
+          scope constraints: { format: 'json' }, as: :json do
+            get :diffs
+            get :pipelines
+          end
+
+          get :diff_for_path
+          get :update_branches
+          get :branch_from
+          get :branch_to
+        end
+      end
+
+      resource :variables, only: [:show, :update]
+
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
         member do
           post :take_ownership
@@ -148,7 +187,29 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :pipeline_schedules, except: [:show] do
         member do
+          post :play
           post :take_ownership
+        end
+      end
+
+      resources :clusters, except: [:edit, :create] do
+        collection do
+          scope :providers do
+            get '/user/new', to: 'clusters/user#new'
+            post '/user', to: 'clusters/user#create'
+
+            get '/gcp/new', to: 'clusters/gcp#new'
+            get '/gcp/login', to: 'clusters/gcp#login'
+            post '/gcp', to: 'clusters/gcp#create'
+          end
+        end
+
+        member do
+          get :status, format: :json
+
+          scope :applications do
+            post '/:application', to: 'clusters/applications#create', as: :install_applications
+          end
         end
       end
 
@@ -221,7 +282,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      Gitlab::Routes::LegacyBuilds.new(self).draw
+      draw :legacy_builds
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
@@ -240,13 +301,19 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :registry do
         resources :repository, only: [] do
-          resources :tags, only: [:destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+          # We default to JSON format in the controller to avoid ambiguity.
+          # `latest.json` could either be a request for a tag named `latest`
+          # in JSON format, or a request for tag named `latest.json`.
+          scope format: false do
+            resources :tags, only: [:index, :destroy],
+                             constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+          end
         end
       end
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do
+          post :promote
           put :sort_issues
           put :sort_merge_requests
           get :merge_requests
@@ -272,18 +339,20 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :toggle_subscription
           post :mark_as_spam
+          post :move
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
           get :realtime_changes
           post :create_merge_request
+          get :discussions, format: :json
         end
         collection do
           post  :bulk_update
         end
       end
 
-      resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
+      resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
         collection do
           delete :leave
 
@@ -310,32 +379,21 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :boards, only: [:index, :show] do
-        scope module: :boards do
-          resources :issues, only: [:index, :update]
-
-          resources :lists, only: [:index, :create, :update, :destroy] do
-            collection do
-              post :generate
-            end
-
-            resources :issues, only: [:index, :create]
-          end
-        end
-      end
+      # On CE only index and show are needed
+      resources :boards, only: [:index, :show]
 
       resources :todos, only: [:create]
 
       resources :uploads, only: [:create] do
         collection do
-          get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+          get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
         end
       end
 
       resources :runners, only: [:index, :edit, :update, :destroy, :show] do
         member do
-          get :resume
-          get :pause
+          post :resume
+          post :pause
         end
 
         collection do
@@ -348,15 +406,19 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do
-              get :build
+              # Keep around until 10.0, see gitlab-org/gitlab-ce#35307
+              get :build, to: "badges#pipeline"
+              get :pipeline
               get :coverage
             end
           end
         end
       end
       namespace :settings do
-        resource :members, only: [:show]
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
+        get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
+        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+          post :reset_cache
+        end
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository
       end
@@ -385,7 +447,7 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        put :new_issue_address
+        put :new_issuable_address
       end
     end
   end

@@ -8,7 +8,7 @@ module Gitlab
           end
 
           def action_icon
-            'icon_action_retry'
+            'retry'
           end
 
           def action_title
@@ -16,9 +16,7 @@ module Gitlab
           end
 
           def action_path
-            retry_namespace_project_job_path(subject.project.namespace,
-                                               subject.project,
-                                               subject)
+            retry_project_job_path(subject.project, subject)
           end
 
           def action_method

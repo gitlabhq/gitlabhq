@@ -9,6 +9,10 @@
         %span.runner-state.runner-state-specific
           Specific
 
+- add_to_breadcrumbs _("Runners"), admin_runners_path
+- breadcrumb_title "##{@runner.id}"
+- @no_container = true
+
 - if @runner.shared?
   .bs-callout.bs-callout-success
     %h4 This Runner will process jobs from ALL UNASSIGNED projects
@@ -39,7 +43,7 @@
             %tr.alert-info
               %td
                 %strong
-                  = project.name_with_namespace
+                  = project.full_name
               %td
                 .pull-right
                   = link_to 'Disable', [:admin, project.namespace.becomes(Namespace), project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
@@ -61,7 +65,7 @@
       - @projects.each do |project|
         %tr
           %td
-            = project.name_with_namespace
+            = project.full_name
           %td
             .pull-right
               = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
@@ -85,7 +89,7 @@
         %tr.build
           %td.id
             - if project
-              = link_to namespace_project_job_path(project.namespace, project, build) do
+              = link_to project_job_path(project, build) do
                 %strong ##{build.id}
             - else
               %strong ##{build.id}
@@ -95,11 +99,11 @@
 
           %td.status
             - if project
-              = project.name_with_namespace
+              = project.full_name
 
           %td.build-link
             - if project
-              = link_to ci_status_path(build.pipeline) do
+              = link_to pipeline_path(build.pipeline) do
                 %strong= build.pipeline.short_sha
 
           %td.timestamp

@@ -31,12 +31,12 @@ There are three methods to enable the use of `docker build` and `docker run` dur
 The simplest approach is to install GitLab Runner in `shell` execution mode.
 GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
-1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
+1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/#installation).
 
 1. During GitLab Runner installation select `shell` as method of executing job scripts or use command:
 
     ```bash
-    sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor shell \
@@ -93,7 +93,7 @@ In order to do that, follow the steps:
    mode:
 
     ```bash
-    sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
@@ -134,7 +134,7 @@ In order to do that, follow the steps:
     # When using dind, it's wise to use the overlayfs driver for
     # improved performance.
     variables:
-      DOCKER_DRIVER: overlay
+      DOCKER_DRIVER: overlay2
 
     services:
     - docker:dind
@@ -164,6 +164,21 @@ not without its own challenges:
 - By default, `docker:dind` uses `--storage-driver vfs` which is the slowest
   form offered. To use a different driver, see
   [Using the overlayfs driver](#using-the-overlayfs-driver).
+- Since the `docker:dind` container and the runner container don't share their
+  root filesystem, the job's working directory can be used as a mount point for
+  children containers. For example, if you have files you want to share with a
+  child container, you may create a subdirectory under `/builds/$CI_PROJECT_PATH`
+  and use it as your mount point (for a more thorough explanation, check [issue
+  #41227](https://gitlab.com/gitlab-org/gitlab-ce/issues/41227)):
+
+    ```yaml
+    variables:
+      MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
+
+    script:
+      - mkdir -p "$MOUNT_POINT"
+      - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
+    ```
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
 
@@ -178,7 +193,7 @@ In order to do that, follow the steps:
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
     ```bash
-    sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-runner register -n \
       --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
@@ -248,7 +263,9 @@ aware of the following implications:
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
 copies the filesystem on every run. This is a very disk-intensive operation
-which can be avoided if a different driver is used, for example `overlay`.
+which can be avoided if a different driver is used, for example `overlay2`.
+
+### Requirements
 
 1. Make sure a recent kernel is used, preferably `>= 4.2`.
 1. Check whether the `overlay` module is loaded:
@@ -271,12 +288,29 @@ which can be avoided if a different driver is used, for example `overlay`.
     overlay
     ```
 
-1. Use the driver by defining a variable at the top of your `.gitlab-ci.yml`:
+### Use driver per project
 
-    ```
-    variables:
-      DOCKER_DRIVER: overlay
-    ```
+You can enable the driver for each project individually by editing the project's `.gitlab-ci.yml`:
+
+```
+variables:
+  DOCKER_DRIVER: overlay2
+```
+
+### Use driver for every project
+
+To enable the driver for every project, you can set the environment variable for every build by adding `environment` in the `[[runners]]` section of `config.toml`:
+
+```toml
+environment = ["DOCKER_DRIVER=overlay2"]
+```
+
+If you're running multiple Runners you will have to modify all configuration files.
+
+> **Notes:**
+- More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
+- For more information about using OverlayFS with Docker, you can read
+  [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 
 ## Using the GitLab Container Registry
 

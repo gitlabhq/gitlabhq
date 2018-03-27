@@ -19,7 +19,7 @@
               %th Last commit
           %tbody
             - @matching_refs.each do |matching_branch|
-              = render partial: "matching_branch", object: matching_branch
+              = render partial: "projects/protected_branches/shared/matching_branch", object: matching_branch
     - else
       %p.settings-message.text-center
         Couldn't find any matching branches.

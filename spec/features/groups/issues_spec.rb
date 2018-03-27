@@ -1,42 +1,63 @@
 require 'spec_helper'
 
-feature 'Group issues page', feature: true do
-  let(:path) { issues_group_path(group) }
-  let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
+feature 'Group issues page' do
+  include FilteredSearchHelpers
 
-  include_examples 'project features apply to issuables', Issue
+  context 'with shared examples' do
+    let(:path) { issues_group_path(group) }
+    let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
 
-  context 'rss feed' do
-    let(:access_level) { ProjectFeature::ENABLED }
+    include_examples 'project features apply to issuables', Issue
 
-    context 'when signed in' do
-      let(:user) { user_in_group }
+    context 'rss feed' do
+      let(:access_level) { ProjectFeature::ENABLED }
 
-      it_behaves_like "it has an RSS button with current_user's RSS token"
-      it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+      context 'when signed in' do
+        let(:user) { user_in_group }
+
+        it_behaves_like "it has an RSS button with current_user's RSS token"
+        it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+      end
+
+      context 'when signed out' do
+        let(:user) { nil }
+
+        it_behaves_like "it has an RSS button without an RSS token"
+        it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+      end
     end
 
-    context 'when signed out' do
-      let(:user) { nil }
+    context 'assignee', :js do
+      let(:access_level) { ProjectFeature::ENABLED }
+      let(:user) { user_in_group }
+      let(:user2) { user_outside_group }
+      let(:path) { issues_group_path(group) }
 
-      it_behaves_like "it has an RSS button without an RSS token"
-      it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+      it 'filters by only group users' do
+        filtered_search.set('assignee:')
+
+        expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
+        expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
+      end
     end
   end
 
-  context 'assignee', :js do
-    let(:access_level) { ProjectFeature::ENABLED }
-    let(:user) { user_in_group }
-    let(:user2) { user_outside_group }
-    let(:path) { issues_group_path(group) }
+  context 'issues list', :nested_groups do
+    let(:group) { create(:group)}
+    let(:subgroup) { create(:group, parent: group) }
+    let(:project) { create(:project, :public, group: group)}
+    let(:subgroup_project) { create(:project, :public, group: subgroup)}
+    let!(:issue) { create(:issue, project: project, title: 'root group issue') }
+    let!(:subgroup_issue) { create(:issue, project: subgroup_project, title: 'subgroup issue') }
 
-    it 'filters by only group users' do
-      click_button('Assignee')
+    it 'returns all group and subgroup issues' do
+      visit issues_group_path(group)
 
-      wait_for_requests
-
-      expect(find('.dropdown-menu-assignee')).to have_link(user.name)
-      expect(find('.dropdown-menu-assignee')).not_to have_link(user2.name)
+      page.within('.issuable-list') do
+        expect(page).to have_selector('li.issue', count: 2)
+        expect(page).to have_content('root group issue')
+        expect(page).to have_content('subgroup issue')
+      end
     end
   end
 end

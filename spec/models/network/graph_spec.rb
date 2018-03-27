@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Network::Graph, models: true do
+describe Network::Graph do
   let(:project) { create(:project, :repository) }
   let!(:note_on_commit) { create(:note_on_commit, project: project) }
 

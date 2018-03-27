@@ -23,7 +23,7 @@ describe API::Templates do
     it 'returns a list of available gitignore templates' do
       get api('/templates/gitignores')
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to be > 15
@@ -34,7 +34,7 @@ describe API::Templates do
     it 'returns a list of available gitlab_ci_ymls' do
       get api('/templates/gitlab_ci_ymls')
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['name']).not_to be_nil
@@ -45,7 +45,7 @@ describe API::Templates do
     it 'adds a disclaimer on the top' do
       get api('/templates/gitlab_ci_ymls/Ruby')
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['content']).to start_with("# This file is a template,")
     end
   end
@@ -65,7 +65,7 @@ describe API::Templates do
       expect(json_response['description']).to include('A short and simple permissive license with conditions')
       expect(json_response['conditions']).to eq(%w[include-copyright])
       expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use])
-      expect(json_response['limitations']).to eq(%w[no-liability])
+      expect(json_response['limitations']).to eq(%w[liability warranty])
       expect(json_response['content']).to include('MIT License')
     end
   end
@@ -74,7 +74,7 @@ describe API::Templates do
     it 'returns a list of available license templates' do
       get api('/templates/licenses')
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(12)
@@ -86,7 +86,7 @@ describe API::Templates do
         it 'returns a list of available popular license templates' do
           get api('/templates/licenses?popular=1')
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
@@ -169,7 +169,7 @@ describe API::Templates do
         let(:license_type) { 'muth-over9000' }
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

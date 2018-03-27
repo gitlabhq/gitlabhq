@@ -3,8 +3,13 @@ class HelpController < ApplicationController
 
   layout 'help'
 
+  # Taken from Jekyll
+  # https://github.com/jekyll/jekyll/blob/3.5-stable/lib/jekyll/document.rb#L13
+  YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+
   def index
-    @help_index = File.read(Rails.root.join('doc', 'README.md'))
+    # Remove YAML frontmatter so that it doesn't look weird
+    @help_index = File.read(Rails.root.join('doc', 'README.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
 
     # Prefix Markdown links with `help/` unless they are external links
     # See http://rubular.com/r/X3baHTbPO2
@@ -22,7 +27,8 @@ class HelpController < ApplicationController
         path = File.join(Rails.root, 'doc', "#{@path}.md")
 
         if File.exist?(path)
-          @markdown = File.read(path)
+          # Remove YAML frontmatter so that it doesn't look weird
+          @markdown = File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
 
           render 'show.html.haml'
         else
@@ -49,6 +55,10 @@ class HelpController < ApplicationController
   end
 
   def shortcuts
+  end
+
+  def instance_configuration
+    @instance_configuration = InstanceConfiguration.new
   end
 
   def ui

@@ -1,3 +1,5 @@
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import AjaxCache from '~/lib/utils/ajax_cache';
 
 describe('AjaxCache', () => {
@@ -77,67 +79,63 @@ describe('AjaxCache', () => {
     });
   });
 
+  describe('override', () => {
+    it('overrides existing cache', () => {
+      AjaxCache.internalStorage.endpoint = 'existing-endpoint';
+      AjaxCache.override('endpoint', 'new-endpoint');
+
+      expect(AjaxCache.internalStorage.endpoint).toEqual('new-endpoint');
+    });
+  });
+
   describe('retrieve', () => {
-    let ajaxSpy;
+    let mock;
 
     beforeEach(() => {
-      spyOn(jQuery, 'ajax').and.callFake(url => ajaxSpy(url));
+      mock = new MockAdapter(axios);
+
+      spyOn(axios, 'get').and.callThrough();
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('stores and returns data from Ajax call if cache is empty', (done) => {
-      ajaxSpy = (url) => {
-        expect(url).toBe(dummyEndpoint);
-        const deferred = $.Deferred();
-        deferred.resolve(dummyResponse);
-        return deferred.promise();
-      };
+      mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
       AjaxCache.retrieve(dummyEndpoint)
       .then((data) => {
-        expect(data).toBe(dummyResponse);
-        expect(AjaxCache.internalStorage[dummyEndpoint]).toBe(dummyResponse);
+        expect(data).toEqual(dummyResponse);
+        expect(AjaxCache.internalStorage[dummyEndpoint]).toEqual(dummyResponse);
       })
       .then(done)
       .catch(fail);
     });
 
-    it('makes no Ajax call if request is pending', () => {
-      const responseDeferred = $.Deferred();
-
-      ajaxSpy = (url) => {
-        expect(url).toBe(dummyEndpoint);
-        // neither reject nor resolve to keep request pending
-        return responseDeferred.promise();
-      };
-
-      const unexpectedResponse = data => fail(`Did not expect response: ${data}`);
+    it('makes no Ajax call if request is pending', (done) => {
+      mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then(unexpectedResponse)
+      .then(done)
       .catch(fail);
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then(unexpectedResponse)
+      .then(done)
       .catch(fail);
 
-      expect($.ajax.calls.count()).toBe(1);
+      expect(axios.get.calls.count()).toBe(1);
     });
 
     it('returns undefined if Ajax call fails and cache is empty', (done) => {
-      const dummyStatusText = 'exploded';
-      const dummyErrorMessage = 'server exploded';
-      ajaxSpy = (url) => {
-        expect(url).toBe(dummyEndpoint);
-        const deferred = $.Deferred();
-        deferred.reject(null, dummyStatusText, dummyErrorMessage);
-        return deferred.promise();
-      };
+      const errorMessage = 'Network Error';
+      mock.onGet(dummyEndpoint).networkError();
 
       AjaxCache.retrieve(dummyEndpoint)
       .then(data => fail(`Received unexpected data: ${JSON.stringify(data)}`))
       .catch((error) => {
-        expect(error.message).toBe(`${dummyEndpoint}: ${dummyErrorMessage}`);
-        expect(error.textStatus).toBe(dummyStatusText);
+        expect(error.message).toBe(`${dummyEndpoint}: ${errorMessage}`);
+        expect(error.textStatus).toBe(errorMessage);
         done();
       })
       .catch(fail);
@@ -145,7 +143,9 @@ describe('AjaxCache', () => {
 
     it('makes no Ajax call if matching data exists', (done) => {
       AjaxCache.internalStorage[dummyEndpoint] = dummyResponse;
-      ajaxSpy = () => fail(new Error('expected no Ajax call!'));
+      mock.onGet(dummyEndpoint).reply(() => {
+        fail(new Error('expected no Ajax call!'));
+      });
 
       AjaxCache.retrieve(dummyEndpoint)
       .then((data) => {
@@ -162,12 +162,7 @@ describe('AjaxCache', () => {
 
       AjaxCache.internalStorage[dummyEndpoint] = oldDummyResponse;
 
-      ajaxSpy = (url) => {
-        expect(url).toBe(dummyEndpoint);
-        const deferred = $.Deferred();
-        deferred.resolve(dummyResponse);
-        return deferred.promise();
-      };
+      mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
       // Call without forceRetrieve param
       AjaxCache.retrieve(dummyEndpoint)
@@ -180,7 +175,7 @@ describe('AjaxCache', () => {
       // Call with forceRetrieve param
       AjaxCache.retrieve(dummyEndpoint, true)
         .then((data) => {
-          expect(data).toBe(dummyResponse);
+          expect(data).toEqual(dummyResponse);
         })
         .then(done)
         .catch(fail);

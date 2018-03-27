@@ -51,6 +51,13 @@ module Gitlab
       self.num_running(job_ids).zero?
     end
 
+    # Returns true if the given job is running
+    #
+    # job_id - The Sidekiq job ID to check.
+    def self.running?(job_id)
+      num_running([job_id]) > 0
+    end
+
     # Returns the number of jobs that are running.
     #
     # job_ids - The Sidekiq job IDs to check.
@@ -90,9 +97,14 @@ module Gitlab
     #
     # Returns an array of completed JIDs
     def self.completed_jids(job_ids)
-      Sidekiq.redis do |redis|
-        job_ids.reject { |jid| redis.exists(key_for(jid)) }
+      statuses = job_status(job_ids)
+
+      completed = []
+      job_ids.zip(statuses).each do |job_id, status|
+        completed << job_id unless status
       end
+
+      completed
     end
 
     def self.key_for(jid)

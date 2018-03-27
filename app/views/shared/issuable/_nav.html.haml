@@ -1,8 +1,7 @@
 - type = local_assigns.fetch(:type, :issues)
 - page_context_word = type.to_s.humanize(capitalize: false)
-- issuables = @issues || @merge_requests
 
-%ul.nav-links.issues-state-filters
+%ul.nav-links.issues-state-filters.mobile-separator
   %li{ class: active_when(params[:state] == 'opened') }>
     = link_to page_filter_path(state: 'opened', label: true), id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", data: { state: 'opened' } do
       #{issuables_state_counter_text(type, :opened)}
@@ -20,6 +19,4 @@
       = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by issues that are currently closed.', data: { state: 'closed' } do
         #{issuables_state_counter_text(type, :closed)}
 
-  %li{ class: active_when(params[:state] == 'all') }>
-    = link_to page_filter_path(state: 'all', label: true), id: 'state-all', title: "Show all #{page_context_word}.", data: { state: 'all' } do
-      #{issuables_state_counter_text(type, :all)}
+  = render 'shared/issuable/nav_links/all', page_context_word: page_context_word, counter: issuables_state_counter_text(type, :all)

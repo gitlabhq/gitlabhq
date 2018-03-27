@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
+describe Banzai::Filter::ExternalIssueReferenceFilter do
   include FilterSpecHelper
 
   def helper
@@ -49,7 +49,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = filter("Issue (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{reference}</a>\.\)})
     end
 
     it 'includes a title attribute' do
@@ -88,12 +88,12 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
 
       it 'queries the collection on the first call' do
         expect_any_instance_of(Project).to receive(:default_issues_tracker?).once.and_call_original
-        expect_any_instance_of(Project).to receive(:issue_reference_pattern).once.and_call_original
+        expect_any_instance_of(Project).to receive(:external_issue_reference_pattern).once.and_call_original
 
         not_cached = reference_filter.call("look for #{reference}", { project: project })
 
         expect_any_instance_of(Project).not_to receive(:default_issues_tracker?)
-        expect_any_instance_of(Project).not_to receive(:issue_reference_pattern)
+        expect_any_instance_of(Project).not_to receive(:external_issue_reference_pattern)
 
         cached = reference_filter.call("look for #{reference}", { project: project })
 
@@ -107,6 +107,11 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     let(:project) { create(:redmine_project) }
     let(:issue) { ExternalIssue.new("#123", project) }
     let(:reference) { issue.to_reference }
+
+    before do
+      project.issues_enabled = false
+      project.save!
+    end
 
     it_behaves_like "external issue tracker"
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::CommitReferenceFilter, lib: true do
+describe Banzai::Filter::CommitReferenceFilter do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -27,7 +27,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
         expect(doc.css('a').first.text).to eq commit.short_id
         expect(doc.css('a').first.attr('href'))
-          .to eq urls.namespace_project_commit_url(project.namespace, project, reference)
+          .to eq urls.project_commit_url(project, reference)
       end
     end
 
@@ -42,7 +42,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     it 'links with adjacent text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{commit.short_id}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{commit.short_id}</a>\.\)})
     end
 
     it 'ignores invalid commit IDs' do
@@ -90,7 +90,19 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_commit_url(project.namespace, project, reference, only_path: true)
+      expect(link).to eq urls.project_commit_url(project, reference, only_path: true)
+    end
+
+    context "in merge request context" do
+      let(:noteable) { create(:merge_request, target_project: project, source_project: project) }
+      let(:commit) { noteable.commits.first }
+
+      it 'handles merge request contextual commit references' do
+        url = urls.diffs_project_merge_request_url(project, noteable, commit_id: commit.id)
+        doc = reference_filter("See #{reference}", noteable: noteable)
+
+        expect(doc.css('a').first[:href]).to eq(url)
+      end
     end
   end
 
@@ -98,18 +110,18 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
+    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.css('a').first.text).to eql("#{project2.path_with_namespace}@#{commit.short_id}")
+      expect(doc.css('a').first.text).to eql("#{project2.full_path}@#{commit.short_id}")
     end
 
     it 'has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.text).to eql("See (#{project2.path_with_namespace}@#{commit.short_id}.)")
+      expect(doc.text).to eql("See (#{project2.full_path}@#{commit.short_id}.)")
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
@@ -121,10 +133,10 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
   context 'cross-project / same-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, namespace: namespace) }
+    let(:project)   { create(:project, namespace: namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
+    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
@@ -147,10 +159,10 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
   context 'cross-project shorthand reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, namespace: namespace) }
+    let(:project)   { create(:project, namespace: namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
+    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
@@ -175,24 +187,24 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { urls.namespace_project_commit_url(project2.namespace, project2, commit.id) }
+    let(:reference) { urls.project_commit_url(project2, commit.id) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_commit_url(project2.namespace, project2, commit.id)
+        .to eq urls.project_commit_url(project2, commit.id)
     end
 
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{commit.reference_link_text(project)}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{commit.reference_link_text(project)}</a>\.\)})
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
       act = "Committed #{invalidate_reference(reference)}"
-      expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
+      expect(reference_filter(act).to_html).to match(%r{<a.+>#{Regexp.escape(invalidate_reference(reference))}</a>})
     end
   end
 end

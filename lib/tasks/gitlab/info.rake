@@ -1,7 +1,7 @@
 namespace :gitlab do
   namespace :env do
     desc "GitLab | Show information about GitLab and its environment"
-    task info: :environment  do
+    task info: :gitlab_environment do
       # check if there is an RVM environment
       rvm_version = run_and_match(%w(rvm --version), /[\d\.]+/).try(:to_s)
       # check Ruby version
@@ -42,8 +42,7 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      omniauth_providers = Gitlab.config.omniauth.providers
-      omniauth_providers.map! { |provider| provider['name'] }
+      omniauth_providers = Gitlab.config.omniauth.providers.map { |provider| provider['name'] }
 
       puts ""
       puts "GitLab information".color(:yellow)
@@ -69,7 +68,7 @@ namespace :gitlab do
       puts "Version:\t#{gitlab_shell_version || "unknown".color(:red)}"
       puts "Repository storage paths:"
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        puts "- #{name}: \t#{repository_storage['path']}"
+        puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
       end
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"

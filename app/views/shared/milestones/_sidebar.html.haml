@@ -1,7 +1,7 @@
 - affix_offset = local_assigns.fetch(:affix_offset, "50")
 - project = local_assigns[:project]
 
-%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar.milestone-sidebar
     .block.milestone-progress.issuable-sidebar-header
       %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
@@ -21,7 +21,7 @@
       .title
         Start date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
       .value
         %span.value-content
           - if milestone.start_date
@@ -51,7 +51,7 @@
       .title.hide-collapsed
         Due date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
       .value.hide-collapsed
         %span.value-content
           - if milestone.due_date
@@ -67,13 +67,13 @@
       .block.issues
         .sidebar-collapsed-icon
           %strong
-            = icon('hashtag', 'aria-hidden': 'true')
+            = custom_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues
           %span.badge= milestone.issues_visible_to_user(current_user).count
           - if project && can?(current_user, :create_issue, project)
-            = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
+            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
         .value.hide-collapsed.bold
           %span.milestone-stat
@@ -85,10 +85,17 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
+    .block
+      #issuable-time-tracker{ data: { time_estimate: @milestone.total_issue_time_estimate, time_spent: @milestone.total_issue_time_spent, human_time_estimate: @milestone.human_total_issue_time_estimate, human_time_spent: @milestone.human_total_issue_time_spent } }
+        // Fallback while content is loading
+        .title.hide-collapsed
+          = _('Time tracking')
+          = icon('spinner spin')
+
     .block.merge-requests
       .sidebar-collapsed-icon
         %strong
-          = icon('exclamation', 'aria-hidden': 'true')
+          = custom_icon('mr_bold')
         %span= milestone.merge_requests.count
       .title.hide-collapsed
         Merge requests

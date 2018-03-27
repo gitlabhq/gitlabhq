@@ -2,7 +2,7 @@ module Gitlab
   module SlashCommands
     class IssueCommand < BaseCommand
       def self.available?(project)
-        project.issues_enabled? && project.default_issues_tracker?
+        project.issues_enabled?
       end
 
       def collection

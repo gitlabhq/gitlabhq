@@ -1,21 +1,19 @@
-/* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, max-len */
-
+import $ from 'jquery';
 import '~/behaviors/autosize';
 
-(function() {
-  describe('Autosize behavior', function() {
-    var load;
-    beforeEach(function() {
-      return setFixtures('<textarea class="js-autosize" style="resize: vertical"></textarea>');
-    });
-    it('does not overwrite the resize property', function() {
-      load();
-      return expect($('textarea')).toHaveCss({
-        resize: 'vertical'
-      });
-    });
-    return load = function() {
-      return $(document).trigger('load');
-    };
+function load() {
+  $(document).trigger('load');
+}
+
+describe('Autosize behavior', () => {
+  beforeEach(() => {
+    setFixtures('<textarea class="js-autosize" style="resize: vertical"></textarea>');
   });
-}).call(window);
+
+  it('does not overwrite the resize property', () => {
+    load();
+    expect($('textarea')).toHaveCss({
+      resize: 'vertical',
+    });
+  });
+});

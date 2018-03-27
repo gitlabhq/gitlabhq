@@ -18,6 +18,10 @@ module Gitlab
         { name: name, content: content }
       end
 
+      def <=>(other)
+        name <=> other.name
+      end
+
       class << self
         def all(project = nil)
           if categories.any?
@@ -58,7 +62,7 @@ module Gitlab
           directory = category_directory(category)
           files = finder(project).list_files_for(directory)
 
-          files.map { |f| new(f, project) }
+          files.map { |f| new(f, project) }.sort
         end
 
         def category_directory(category)

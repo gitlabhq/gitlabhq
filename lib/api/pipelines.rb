@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get all Pipelines of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::PipelineBasic
@@ -42,12 +42,15 @@ module API
         requires :ref, type: String,  desc: 'Reference'
       end
       post ':id/pipeline' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42124')
+
         authorize! :create_pipeline, user_project
 
         new_pipeline = Ci::CreatePipelineService.new(user_project,
                                                      current_user,
                                                      declared_params(include_missing: false))
                            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+
         if new_pipeline.persisted?
           present new_pipeline, with: Entities::Pipeline
         else

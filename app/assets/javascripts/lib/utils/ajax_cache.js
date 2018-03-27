@@ -1,9 +1,14 @@
+import axios from './axios_utils';
 import Cache from './cache';
 
 class AjaxCache extends Cache {
   constructor() {
     super();
     this.pendingRequests = { };
+  }
+
+  override(endpoint, data) {
+    this.internalStorage[endpoint] = data;
   }
 
   retrieve(endpoint, forceRetrieve) {
@@ -14,25 +19,18 @@ class AjaxCache extends Cache {
     let pendingRequest = this.pendingRequests[endpoint];
 
     if (!pendingRequest) {
-      pendingRequest = new Promise((resolve, reject) => {
-        // jQuery 2 is not Promises/A+ compatible (missing catch)
-        $.ajax(endpoint) // eslint-disable-line promise/catch-or-return
-        .then(data => resolve(data),
-          (jqXHR, textStatus, errorThrown) => {
-            const error = new Error(`${endpoint}: ${errorThrown}`);
-            error.textStatus = textStatus;
-            reject(error);
-          },
-        );
-      })
-      .then((data) => {
-        this.internalStorage[endpoint] = data;
-        delete this.pendingRequests[endpoint];
-      })
-      .catch((error) => {
-        delete this.pendingRequests[endpoint];
-        throw error;
-      });
+      pendingRequest = axios.get(endpoint)
+        .then(({ data }) => {
+          this.internalStorage[endpoint] = data;
+          delete this.pendingRequests[endpoint];
+        })
+        .catch((e) => {
+          const error = new Error(`${endpoint}: ${e.message}`);
+          error.textStatus = e.message;
+
+          delete this.pendingRequests[endpoint];
+          throw error;
+        });
 
       this.pendingRequests[endpoint] = pendingRequest;
     }

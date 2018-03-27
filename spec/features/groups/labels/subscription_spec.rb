@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels subscription', feature: true do
+feature 'Labels subscription' do
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
   let!(:feature) { create(:group_label, group: group, title: 'feature') }
@@ -11,7 +11,7 @@ feature 'Labels subscription', feature: true do
       gitlab_sign_in user
     end
 
-    scenario 'users can subscribe/unsubscribe to group labels', js: true do
+    scenario 'users can subscribe/unsubscribe to group labels', :js do
       visit group_labels_path(group)
 
       expect(page).to have_content('feature')

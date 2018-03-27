@@ -1,13 +1,16 @@
+import $ from 'jquery';
 import FilterableList from '~/filterable_list';
 import eventHub from './event_hub';
+import { normalizeHeaders, getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
-  constructor({ form, filter, holder, filterEndpoint, pagePath }) {
-    super(form, filter, holder);
+  constructor({ form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField }) {
+    super(form, filter, holder, filterInputField);
     this.form = form;
     this.filterEndpoint = filterEndpoint;
     this.pagePath = pagePath;
-    this.$dropdown = $('.js-group-filter-dropdown-wrap');
+    this.filterInputField = filterInputField;
+    this.$dropdown = $(dropdownSel);
   }
 
   getFilterEndpoint() {
@@ -23,30 +26,34 @@ export default class GroupFilterableList extends FilterableList {
   bindEvents() {
     super.bindEvents();
 
-    this.onFormSubmitWrapper = this.onFormSubmit.bind(this);
     this.onFilterOptionClikWrapper = this.onOptionClick.bind(this);
 
-    this.filterForm.addEventListener('submit', this.onFormSubmitWrapper);
     this.$dropdown.on('click', 'a', this.onFilterOptionClikWrapper);
   }
 
-  onFormSubmit(e) {
-    e.preventDefault();
-
-    const $form = $(this.form);
-    const filterGroupsParam = $form.find('[name="filter_groups"]').val();
+  onFilterInput() {
     const queryData = {};
+    const $form = $(this.form);
+    const archivedParam = getParameterByName('archived', window.location.href);
+    const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
 
     if (filterGroupsParam) {
-      queryData.filter_groups = filterGroupsParam;
+      queryData[this.filterInputField] = filterGroupsParam;
+    }
+
+    if (archivedParam) {
+      queryData.archived = archivedParam;
     }
 
     this.filterResults(queryData);
-    this.setDefaultFilterOption();
+
+    if (this.setDefaultFilterOption) {
+      this.setDefaultFilterOption();
+    }
   }
 
   setDefaultFilterOption() {
-    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu a:first-child').text());
+    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').first().text());
     this.$dropdown.find('.dropdown-label').text(defaultOption);
   }
 
@@ -54,34 +61,48 @@ export default class GroupFilterableList extends FilterableList {
     e.preventDefault();
 
     const queryData = {};
-    const sortParam = gl.utils.getParameterByName('sort', e.currentTarget.href);
+
+    // Get type of option selected from dropdown
+    const currentTargetClassList = e.currentTarget.parentElement.classList;
+    const isOptionFilterBySort = currentTargetClassList.contains('js-filter-sort-order');
+    const isOptionFilterByArchivedProjects = currentTargetClassList.contains('js-filter-archived-projects');
+
+    // Get option query param, also preserve currently applied query param
+    const sortParam = getParameterByName('sort', isOptionFilterBySort ? e.currentTarget.href : window.location.href);
+    const archivedParam = getParameterByName('archived', isOptionFilterByArchivedProjects ? e.currentTarget.href : window.location.href);
 
     if (sortParam) {
       queryData.sort = sortParam;
     }
 
+    if (archivedParam) {
+      queryData.archived = archivedParam;
+    }
+
     this.filterResults(queryData);
 
     // Active selected option
-    this.$dropdown.find('.dropdown-label').text($.trim(e.currentTarget.text));
+    if (isOptionFilterBySort) {
+      this.$dropdown.find('.dropdown-label').text($.trim(e.currentTarget.text));
+      this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').removeClass('is-active');
+    } else if (isOptionFilterByArchivedProjects) {
+      this.$dropdown.find('.dropdown-menu li.js-filter-archived-projects a').removeClass('is-active');
+    }
+
+    $(e.target).addClass('is-active');
 
     // Clear current value on search form
-    this.form.querySelector('[name="filter_groups"]').value = '';
+    this.form.querySelector(`[name="${this.filterInputField}"]`).value = '';
   }
 
-  onFilterSuccess(data, xhr, queryData) {
-    super.onFilterSuccess(data, xhr, queryData);
+  onFilterSuccess(res, queryData) {
+    const currentPath = this.getPagePath(queryData);
 
-    const paginationData = {
-      'X-Per-Page': xhr.getResponseHeader('X-Per-Page'),
-      'X-Page': xhr.getResponseHeader('X-Page'),
-      'X-Total': xhr.getResponseHeader('X-Total'),
-      'X-Total-Pages': xhr.getResponseHeader('X-Total-Pages'),
-      'X-Next-Page': xhr.getResponseHeader('X-Next-Page'),
-      'X-Prev-Page': xhr.getResponseHeader('X-Prev-Page'),
-    };
+    window.history.replaceState({
+      page: currentPath,
+    }, document.title, currentPath);
 
-    eventHub.$emit('updateGroups', data);
-    eventHub.$emit('updatePagination', paginationData);
+    eventHub.$emit('updateGroups', res.data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
+    eventHub.$emit('updatePagination', normalizeHeaders(res.headers));
   }
 }

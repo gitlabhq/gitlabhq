@@ -18,6 +18,8 @@
 #     non_archived: boolean
 #
 class ProjectsFinder < UnionFinder
+  include CustomAttributesFilter
+
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
 
@@ -28,7 +30,14 @@ class ProjectsFinder < UnionFinder
   end
 
   def execute
-    collection = init_collection
+    user = params.delete(:user)
+    collection =
+      if user
+        PersonalProjectsFinder.new(user).execute(current_user)
+      else
+        init_collection
+      end
+
     collection = by_ids(collection)
     collection = by_personal(collection)
     collection = by_starred(collection)
@@ -37,6 +46,7 @@ class ProjectsFinder < UnionFinder
     collection = by_tags(collection)
     collection = by_search(collection)
     collection = by_archived(collection)
+    collection = by_custom_attributes(collection)
 
     sort(collection)
   end
@@ -114,13 +124,22 @@ class ProjectsFinder < UnionFinder
   end
 
   def sort(items)
-    params[:sort].present? ? items.sort(params[:sort]) : items
+    params[:sort].present? ? items.sort(params[:sort]) : items.order_id_desc
   end
 
   def by_archived(projects)
-    # Back-compatibility with the places where `params[:archived]` can be set explicitly to `false`
-    params[:non_archived] = !Gitlab::Utils.to_boolean(params[:archived]) if params.key?(:archived)
-
-    params[:non_archived] ? projects.non_archived : projects
+    if params[:non_archived]
+      projects.non_archived
+    elsif params.key?(:archived) # Back-compatibility with the places where `params[:archived]` can be set explicitly to `false`
+      if params[:archived] == 'only'
+        projects.archived
+      elsif Gitlab::Utils.to_boolean(params[:archived])
+        projects
+      else
+        projects.non_archived
+      end
+    else
+      projects
+    end
   end
 end

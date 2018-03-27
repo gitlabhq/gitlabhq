@@ -3,6 +3,7 @@ namespace :gitlab do
     desc 'GitLab | Assets | Compile all frontend assets'
     task compile: [
       'yarn:check',
+      'gettext:po_to_json',
       'rake:assets:precompile',
       'webpack:compile',
       'fix_urls'

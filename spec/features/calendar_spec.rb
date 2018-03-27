@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Contributions Calendar', :feature, :js do
+feature 'Contributions Calendar', :js do
   let(:user) { create(:user) }
-  let(:contributed_project) { create(:empty_project, :public) }
+  let(:contributed_project) { create(:project, :public, :repository) }
   let(:issue_note) { create(:note, project: contributed_project) }
 
   # Ex/ Sunday Jan 1, 2016
@@ -12,7 +12,7 @@ feature 'Contributions Calendar', :feature, :js do
   issue_params = { title: issue_title }
 
   def get_cell_color_selector(contributions)
-    activity_colors = %w[#ededed #acd5f2 #7fa8c9 #527ba0 #254e77]
+    activity_colors = ["#ededed", "rgb(172, 213, 242)", "rgb(127, 168, 201)", "rgb(82, 123, 160)", "rgb(37, 78, 119)"]
     # We currently don't actually test the cases with contributions >= 20
     activity_colors_index =
       if contributions > 0 && contributions < 10
@@ -42,14 +42,14 @@ feature 'Contributions Calendar', :feature, :js do
   end
 
   def push_code_contribution
-    push_params = {
-      project: contributed_project,
-      action: Event::PUSHED,
-      author_id: user.id,
-      data: { commit_count: 3 }
-    }
+    event = create(:push_event, project: contributed_project, author: user)
 
-    Event.create(push_params)
+    create(:push_event_payload,
+           event: event,
+           commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 3,
+           ref: 'master')
   end
 
   def note_comment_contribution
@@ -63,12 +63,12 @@ feature 'Contributions Calendar', :feature, :js do
     Event.create(note_comment_params)
   end
 
-  def selected_day_activities
-    find('.user-calendar-activities').text
+  def selected_day_activities(visible: true)
+    find('.user-calendar-activities', visible: visible).text
   end
 
   before do
-    gitlab_sign_in user
+    sign_in user
   end
 
   describe 'calendar day selection' do
@@ -112,7 +112,7 @@ feature 'Contributions Calendar', :feature, :js do
         end
 
         it 'hides calendar day activities' do
-          expect(selected_day_activities).to be_empty
+          expect(selected_day_activities(visible: false)).to be_empty
         end
       end
     end

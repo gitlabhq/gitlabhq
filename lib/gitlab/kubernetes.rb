@@ -76,5 +76,44 @@ module Gitlab
 
       url.to_s
     end
+
+    def to_kubeconfig(url:, namespace:, token:, ca_pem: nil)
+      config = {
+        apiVersion: 'v1',
+        clusters: [
+          name: 'gitlab-deploy',
+          cluster: {
+            server: url
+          }
+        ],
+        contexts: [
+          name: 'gitlab-deploy',
+          context: {
+            cluster: 'gitlab-deploy',
+            namespace: namespace,
+            user: 'gitlab-deploy'
+          }
+        ],
+        'current-context': 'gitlab-deploy',
+        kind: 'Config',
+        users: [
+          {
+            name: 'gitlab-deploy',
+            user: { token: token }
+          }
+        ]
+      }
+
+      kubeconfig_embed_ca_pem(config, ca_pem) if ca_pem
+
+      config.deep_stringify_keys
+    end
+
+    private
+
+    def kubeconfig_embed_ca_pem(config, ca_pem)
+      cluster = config.dig(:clusters, 0, :cluster)
+      cluster[:'certificate-authority-data'] = Base64.strict_encode64(ca_pem)
+    end
   end
 end

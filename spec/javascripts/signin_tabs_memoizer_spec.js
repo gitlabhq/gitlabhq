@@ -1,8 +1,7 @@
 import AccessorUtilities from '~/lib/utils/accessor';
+import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 
-import '~/signin_tabs_memoizer';
-
-((global) => {
+(() => {
   describe('SigninTabsMemoizer', () => {
     const fixtureTemplate = 'static/signin_tabs.html.raw';
     const tabSelector = 'ul.nav-tabs';
@@ -10,7 +9,7 @@ import '~/signin_tabs_memoizer';
     let memo;
 
     function createMemoizer() {
-      memo = new global.ActiveTabMemoizer({
+      memo = new SigninTabsMemoizer({
         currentTabKey,
         tabSelector,
       });
@@ -54,6 +53,13 @@ import '~/signin_tabs_memoizer';
       expect(memo.readData()).toEqual('#standard');
     });
 
+    it('overrides last selected tab with hash tag when given', () => {
+      window.location.hash = '#ldap';
+      createMemoizer();
+
+      expect(memo.readData()).toEqual('#ldap');
+    });
+
     describe('class constructor', () => {
       beforeEach(() => {
         memo = createMemoizer();
@@ -78,7 +84,7 @@ import '~/signin_tabs_memoizer';
         beforeEach(function () {
           memo.isLocalStorageAvailable = false;
 
-          global.ActiveTabMemoizer.prototype.saveData.call(memo);
+          SigninTabsMemoizer.prototype.saveData.call(memo);
         });
 
         it('should not call .setItem', () => {
@@ -92,7 +98,7 @@ import '~/signin_tabs_memoizer';
         beforeEach(function () {
           memo.isLocalStorageAvailable = true;
 
-          global.ActiveTabMemoizer.prototype.saveData.call(memo, value);
+          SigninTabsMemoizer.prototype.saveData.call(memo, value);
         });
 
         it('should call .setItem', () => {
@@ -117,7 +123,7 @@ import '~/signin_tabs_memoizer';
         beforeEach(function () {
           memo.isLocalStorageAvailable = false;
 
-          readData = global.ActiveTabMemoizer.prototype.readData.call(memo);
+          readData = SigninTabsMemoizer.prototype.readData.call(memo);
         });
 
         it('should not call .getItem and should return `null`', () => {
@@ -130,7 +136,7 @@ import '~/signin_tabs_memoizer';
         beforeEach(function () {
           memo.isLocalStorageAvailable = true;
 
-          readData = global.ActiveTabMemoizer.prototype.readData.call(memo);
+          readData = SigninTabsMemoizer.prototype.readData.call(memo);
         });
 
         it('should call .getItem and return the localStorage value', () => {
@@ -140,4 +146,4 @@ import '~/signin_tabs_memoizer';
       });
     });
   });
-})(window);
+})();

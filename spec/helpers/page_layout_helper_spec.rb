@@ -54,13 +54,13 @@ describe PageLayoutHelper do
 
   describe 'page_image' do
     it 'defaults to the GitLab logo' do
-      expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+      expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
     end
 
     %w(project user group).each do |type|
       context "with @#{type} assigned" do
         it "uses #{type.titlecase} avatar if available" do
-          object = double(avatar_url: 'http://example.com/uploads/system/avatar.png')
+          object = double(avatar_url: 'http://example.com/uploads/-/system/avatar.png')
           assign(type, object)
 
           expect(helper.page_image).to eq object.avatar_url
@@ -70,13 +70,13 @@ describe PageLayoutHelper do
           object = double(avatar_url: nil)
           assign(type, object)
 
-          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
         end
       end
 
       context "with no assignments" do
         it 'falls back to the default' do
-          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
         end
       end
     end

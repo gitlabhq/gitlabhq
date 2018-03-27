@@ -1,12 +1,14 @@
 require 'spec_helper'
 
-describe "Dashboard Feed", feature: true  do
+describe "Dashboard Feed"  do
   describe "GET /" do
     let!(:user) { create(:user, name: "Jonh") }
 
-    context "projects atom feed via private token" do
+    context "projects atom feed via personal access token" do
       it "renders projects atom feed" do
-        visit dashboard_projects_path(:atom, private_token: user.private_token)
+        personal_access_token = create(:personal_access_token, user: user)
+
+        visit dashboard_projects_path(:atom, private_token: personal_access_token.token)
         expect(body).to have_selector('feed title')
       end
     end
@@ -24,7 +26,7 @@ describe "Dashboard Feed", feature: true  do
       let(:note) { create(:note, noteable: issue, author: user, note: 'Bug confirmed', project: project) }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         issue_event(issue, user)
         note_event(note, user)
         visit dashboard_projects_path(:atom, rss_token: user.rss_token)

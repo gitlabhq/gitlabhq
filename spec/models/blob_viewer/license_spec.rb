@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobViewer::License, model: true do
+describe BlobViewer::License do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

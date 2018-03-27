@@ -22,25 +22,24 @@ module Mattermost
   # going.
   class Session
     include Doorkeeper::Helpers::Controller
-    include HTTParty
 
     LEASE_TIMEOUT = 60
 
-    base_uri Settings.mattermost.host
-
-    attr_accessor :current_resource_owner, :token
+    attr_accessor :current_resource_owner, :token, :base_uri
 
     def initialize(current_user)
       @current_resource_owner = current_user
+      @base_uri = Settings.mattermost.host
     end
 
     def with_session
       with_lease do
-        raise Mattermost::NoSessionError unless create
+        create
 
         begin
           yield self
-        rescue Errno::ECONNREFUSED
+        rescue Errno::ECONNREFUSED => e
+          Rails.logger.error(e.message + "\n" + e.backtrace.join("\n"))
           raise Mattermost::NoSessionError
         ensure
           destroy
@@ -72,23 +71,39 @@ module Mattermost
 
     def get(path, options = {})
       handle_exceptions do
-        self.class.get(path, options.merge(headers: @headers))
+        Gitlab::HTTP.get(path, build_options(options))
       end
     end
 
     def post(path, options = {})
       handle_exceptions do
-        self.class.post(path, options.merge(headers: @headers))
+        Gitlab::HTTP.post(path, build_options(options))
+      end
+    end
+
+    def delete(path, options = {})
+      handle_exceptions do
+        Gitlab::HTTP.delete(path, build_options(options))
       end
     end
 
     private
 
+    def build_options(options)
+      options.tap do |hash|
+        hash[:headers] = @headers
+        hash[:allow_local_requests] = true
+        hash[:base_uri] = base_uri if base_uri.presence
+      end
+    end
+
     def create
-      return unless oauth_uri
-      return unless token_uri
+      raise Mattermost::NoSessionError unless oauth_uri
+      raise Mattermost::NoSessionError unless token_uri
 
       @token = request_token
+      raise Mattermost::NoSessionError unless @token
+
       @headers = {
         Authorization: "Bearer #{@token}"
       }
@@ -106,10 +121,15 @@ module Mattermost
       @oauth_uri = nil
 
       response = get("/api/v3/oauth/gitlab/login", follow_redirects: false)
-      return unless 300 <= response.code && response.code < 400
+      return unless (300...400) === response.code
 
       redirect_uri = response.headers['location']
       return unless redirect_uri
+
+      oauth_cookie = parse_cookie(response)
+      @headers = {
+        Cookie: oauth_cookie.to_cookie_string
+      }
 
       @oauth_uri = URI.parse(redirect_uri)
     end
@@ -124,7 +144,7 @@ module Mattermost
     def request_token
       response = get(token_uri, follow_redirects: false)
 
-      if 200 <= response.code && response.code < 400
+      if (200...400) === response.code
         response.headers['token']
       end
     end
@@ -151,10 +171,16 @@ module Mattermost
 
     def handle_exceptions
       yield
-    rescue HTTParty::Error => e
+    rescue Gitlab::HTTP::Error => e
       raise Mattermost::ConnectionError.new(e.message)
     rescue Errno::ECONNREFUSED => e
       raise Mattermost::ConnectionError.new(e.message)
+    end
+
+    def parse_cookie(response)
+      cookie_hash = Gitlab::HTTP::CookieHash.new
+      response.get_fields('Set-Cookie').each { |c| cookie_hash.add_cookies(c) }
+      cookie_hash
     end
   end
 end

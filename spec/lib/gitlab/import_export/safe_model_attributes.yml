@@ -14,7 +14,6 @@ Issue:
 - iid
 - updated_by_id
 - confidential
-- deleted_at
 - closed_at
 - due_date
 - moved_to_id
@@ -25,17 +24,24 @@ Issue:
 - relative_position
 - last_edited_at
 - last_edited_by_id
+- discussion_locked
 Event:
 - id
 - target_type
 - target_id
-- title
-- data
 - project_id
 - created_at
 - updated_at
 - action
 - author_id
+PushEventPayload:
+- commit_count
+- action
+- ref_type
+- commit_from
+- commit_to
+- ref
+- commit_title
 Note:
 - id
 - note
@@ -57,6 +63,7 @@ Note:
 - change_position
 - resolved_at
 - resolved_by_id
+- resolved_by_push
 - discussion_id
 - original_discussion_id
 LabelLink:
@@ -82,6 +89,7 @@ Milestone:
 - id
 - title
 - project_id
+- group_id
 - description
 - due_date
 - start_date
@@ -144,14 +152,12 @@ MergeRequest:
 - iid
 - description
 - position
-- locked_at
 - updated_by_id
 - merge_error
 - merge_params
 - merge_when_pipeline_succeeds
 - merge_user_id
 - merge_commit_sha
-- deleted_at
 - in_progress_merge_commit_sha
 - lock_version
 - milestone_id
@@ -161,10 +167,11 @@ MergeRequest:
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
+- discussion_locked
+- allow_maintainer_to_push
 MergeRequestDiff:
 - id
 - state
-- st_commits
 - merge_request_id
 - created_at
 - updated_at
@@ -172,6 +179,18 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+- commits_count
+MergeRequestDiffCommit:
+- merge_request_diff_id
+- relative_order
+- sha
+- authored_date
+- committed_date
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order
@@ -183,6 +202,7 @@ MergeRequestDiffFile:
 - a_mode
 - b_mode
 - too_large
+- binary
 Ci::Pipeline:
 - id
 - project_id
@@ -204,9 +224,14 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
+- config_source
+- failure_reason
+- protected
 Ci::Stage:
 - id
 - name
+- status
+- lock_version
 - project_id
 - pipeline_id
 - created_at
@@ -254,6 +279,8 @@ CommitStatus:
 - coverage_regex
 - auto_canceled_by_id
 - retried
+- protected
+- failure_reason
 Ci::Variable:
 - id
 - project_id
@@ -266,7 +293,6 @@ Ci::Trigger:
 - id
 - token
 - project_id
-- deleted_at
 - created_at
 - updated_at
 - owner_id
@@ -282,7 +308,49 @@ Ci::PipelineSchedule:
 - project_id
 - owner_id
 - active
-- deleted_at
+- created_at
+- updated_at
+Clusters::Cluster:
+- id
+- user_id
+- enabled
+- name
+- provider_type
+- platform_type
+- created_at
+- updated_at
+Clusters::Project:
+- id
+- project_id
+- cluster_id
+- created_at
+- updated_at
+Clusters::Providers::Gcp:
+- id
+- cluster_id
+- status
+- status_reason
+- gcp_project_id
+- zone
+- num_nodes
+- machine_type
+- operation_id
+- endpoint
+- encrypted_access_token
+- encrypted_access_token_iv
+- created_at
+- updated_at
+Clusters::Platforms::Kubernetes:
+- id
+- cluster_id
+- api_url
+- ca_cert
+- namespace
+- username
+- encrypted_password
+- encrypted_password_iv
+- encrypted_token
+- encrypted_token_iv
 - created_at
 - updated_at
 DeployKey:
@@ -373,6 +441,7 @@ Project:
 - public_builds
 - last_repository_check_failed
 - last_repository_check_at
+- collapse_outdated_diff_comments
 - container_registry_enabled
 - only_allow_merge_if_pipeline_succeeds
 - has_external_issue_tracker
@@ -381,8 +450,15 @@ Project:
 - only_allow_merge_if_all_discussions_are_resolved
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
+- resolve_outdated_diff_discussions
 - build_allow_git_fetch
 - last_repository_updated_at
+- ci_config_path
+- delete_error
+- merge_requests_ff_only_enabled
+- merge_requests_rebase_enabled
+- jobs_cache_index
+- pages_https_only
 Author:
 - name
 ProjectFeature:
@@ -436,5 +512,38 @@ Timelog:
 - merge_request_id
 - issue_id
 - user_id
+- spent_at
 - created_at
 - updated_at
+ProjectAutoDevops:
+- id
+- enabled
+- domain
+- project_id
+- created_at
+- updated_at
+IssueAssignee:
+- user_id
+- issue_id
+ProjectCustomAttribute:
+- id
+- created_at
+- updated_at
+- project_id
+- key
+- value
+LfsFileLock:
+- id
+- path
+- user_id
+- project_id
+- created_at
+Badge:
+- id
+- link_url
+- image_url
+- project_id
+- group_id
+- created_at
+- updated_at
+- type

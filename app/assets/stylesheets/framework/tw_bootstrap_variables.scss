@@ -137,7 +137,7 @@ $well-border: #eee;
 //##
 
 $code-color: $red-600;
-$code-bg: lighten($red-50, 2%);
+$code-bg: lighten($red-100, 2%);
 
 $kbd-color: $white-light;
 $kbd-bg: #333;
@@ -162,3 +162,38 @@ $pre-color: $gl-text-color !default;
 $pre-border-color: $border-color;
 
 $table-bg-accent: $gray-light;
+
+$zindex-popover: 900;
+
+//== Modals
+//
+//##
+
+//** Padding applied to the modal body
+$modal-inner-padding: $gl-padding;
+
+//** Padding applied to the modal title
+$modal-title-padding: $gl-padding;
+//** Modal title line-height
+// $modal-title-line-height:     $line-height-base
+
+//** Background color of modal content area
+$modal-content-bg: $gray-light;
+$modal-body-bg: $white-light;
+//** Modal content border color
+// $modal-content-border-color:                   rgba(0,0,0,.2)
+//** Modal content border color **for IE8**
+// $modal-content-fallback-border-color:          #999
+
+//** Modal backdrop background color
+// $modal-backdrop-bg:           #000
+//** Modal backdrop opacity
+// $modal-backdrop-opacity:      .5
+//** Modal header border color
+// $modal-header-border-color:   #e5e5e5
+//** Modal footer border color
+// $modal-footer-border-color:   $modal-header-border-color
+
+$modal-lg: 860px;
+$modal-md: 540px;
+// $modal-sm:                    300px

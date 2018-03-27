@@ -6,3 +6,41 @@
 .gfm-commit_range {
   @extend .commit-sha;
 }
+
+.gfm-project_member {
+  padding: 0 2px;
+  border-radius: #{$border-radius-default / 2};
+  background-color: $user-mention-bg;
+
+  &:hover {
+    background-color: $user-mention-bg-hover;
+  }
+}
+
+.gfm-color_chip {
+  display: inline-block;
+  margin: 0 0 2px 4px;
+  vertical-align: middle;
+  border-radius: 3px;
+
+  $chip-size: 0.9em;
+  $bg-size: $chip-size / 0.9;
+  $bg-pos: $bg-size / 2;
+
+  width: $chip-size;
+  height: $chip-size;
+  background: $white-light;
+  background-image: linear-gradient(135deg, $gray-dark 25%, transparent 0%, transparent 75%, $gray-dark 0%),
+                    linear-gradient(135deg, $gray-dark 25%, transparent 0%, transparent 75%, $gray-dark 0%);
+  background-size: $bg-size $bg-size;
+  background-position: 0 0, $bg-pos $bg-pos;
+
+  > span {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 2px;
+    border-radius: 3px;
+    border: 1px solid $black-transparent;
+  }
+}

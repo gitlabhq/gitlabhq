@@ -1,0 +1,22 @@
+- breadcrumb_title 'Kubernetes'
+- page_title "Kubernetes Clusters"
+
+.clusters-container
+  - if @clusters.empty?
+    = render "empty_state"
+  - else
+    .top-area.adjust
+      .nav-text
+        = s_("ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project")
+    .ci-table.js-clusters-list
+      .gl-responsive-table-row.table-row-header{ role: "row" }
+        .table-section.section-30{ role: "rowheader" }
+          = s_("ClusterIntegration|Kubernetes cluster")
+        .table-section.section-30{ role: "rowheader" }
+          = s_("ClusterIntegration|Environment scope")
+        .table-section.section-30{ role: "rowheader" }
+          = s_("ClusterIntegration|Project namespace")
+        .table-section.section-10{ role: "rowheader" }
+      - @clusters.each do |cluster|
+        = render "cluster", cluster: cluster.present(current_user: current_user)
+    = paginate @clusters, theme: "gitlab"

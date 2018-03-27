@@ -1,23 +1,27 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
+describe 'Issue Boards', :js do
   include DragTo
+  include MobileHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
 
-    gitlab_sign_in(user)
+    set_cookie('sidebar_collapsed', 'true')
+
+    sign_in(user)
   end
 
   context 'no lists' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
       expect(page).to have_selector('.board', count: 3)
     end
@@ -65,23 +69,25 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
     let!(:closed)       { create(:label, project: project, name: 'Closed') }
     let!(:accepting)  { create(:label, project: project, name: 'Accepting Merge Requests') }
+    let!(:a_plus) { create(:label, project: project, name: 'A+') }
 
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
     let!(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
-    let!(:issue1) { create(:labeled_issue, project: project, assignees: [user], labels: [planning], relative_position: 8) }
-    let!(:issue2) { create(:labeled_issue, project: project, author: user2, labels: [planning], relative_position: 7) }
-    let!(:issue3) { create(:labeled_issue, project: project, labels: [planning], relative_position: 6) }
-    let!(:issue4) { create(:labeled_issue, project: project, labels: [planning], relative_position: 5) }
-    let!(:issue5) { create(:labeled_issue, project: project, labels: [planning], milestone: milestone, relative_position: 4) }
-    let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development], relative_position: 3) }
-    let!(:issue7) { create(:labeled_issue, project: project, labels: [development], relative_position: 2) }
-    let!(:issue8) { create(:closed_issue, project: project) }
-    let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
+    let!(:issue1) { create(:labeled_issue, project: project, title: 'aaa', description: '111', assignees: [user], labels: [planning], relative_position: 8) }
+    let!(:issue2) { create(:labeled_issue, project: project, title: 'bbb', description: '222', author: user2, labels: [planning], relative_position: 7) }
+    let!(:issue3) { create(:labeled_issue, project: project, title: 'ccc', description: '333', labels: [planning], relative_position: 6) }
+    let!(:issue4) { create(:labeled_issue, project: project, title: 'ddd', description: '444', labels: [planning], relative_position: 5) }
+    let!(:issue5) { create(:labeled_issue, project: project, title: 'eee', description: '555', labels: [planning], milestone: milestone, relative_position: 4) }
+    let!(:issue6) { create(:labeled_issue, project: project, title: 'fff', description: '666', labels: [planning, development], relative_position: 3) }
+    let!(:issue7) { create(:labeled_issue, project: project, title: 'ggg', description: '777', labels: [development], relative_position: 2) }
+    let!(:issue8) { create(:closed_issue, project: project, title: 'hhh', description: '888') }
+    let!(:issue9) { create(:labeled_issue, project: project, title: 'iii', description: '999', labels: [planning, testing, bug, accepting], relative_position: 1) }
+    let!(:issue10) { create(:labeled_issue, project: project, title: 'issue +', description: 'A+ great issue', labels: [a_plus]) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
 
       wait_for_requests
 
@@ -132,7 +138,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     it 'allows user to delete board' do
       page.within(find('.board:nth-child(2)')) do
-        find('.board-delete').click
+        accept_confirm { find('.board-delete').click }
       end
 
       wait_for_requests
@@ -144,8 +150,10 @@ describe 'Issue Boards', feature: true, js: true do
       click_button 'Add list'
       wait_for_requests
 
+      find('.dropdown-menu-close').click
+
       page.within(find('.board:nth-child(2)')) do
-        find('.board-delete').click
+        accept_confirm { find('.board-delete').click }
       end
 
       wait_for_requests
@@ -158,7 +166,7 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       page.within(find('.board:nth-child(2)')) do
@@ -166,12 +174,14 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_selector('.card', count: 20)
         expect(page).to have_content('Showing 20 of 58 issues')
 
+        find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
         expect(page).to have_selector('.card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
+        find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
@@ -232,7 +242,7 @@ describe 'Issue Boards', feature: true, js: true do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(3)')).to have_content(issue6.title)
-        expect(find('.board:nth-child(3)').all('.card').last).not_to have_content(development.title)
+        expect(find('.board:nth-child(3)').all('.card').last).to have_content(development.title)
       end
 
       it 'issue moves between lists' do
@@ -243,7 +253,7 @@ describe 'Issue Boards', feature: true, js: true do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(2)')).to have_content(issue7.title)
-        expect(find('.board:nth-child(2)').all('.card').first).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)').all('.card').first).to have_content(planning.title)
       end
 
       it 'issue moves from closed' do
@@ -333,7 +343,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_requests
 
-          click_link 'Create new label'
+          click_link 'Create project label'
 
           fill_in('new_label_name', with: 'Testing New Label')
 
@@ -372,7 +382,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by milestone' do
-        set_filter("milestone", "\"#{milestone.title}\"")
+        set_filter("milestone", "\"#{milestone.title}")
         click_filter_link(milestone.title)
         submit_filter
 
@@ -392,8 +402,17 @@ describe 'Issue Boards', feature: true, js: true do
         wait_for_empty_boards((3..4))
       end
 
+      it 'filters by label with encoded character' do
+        set_filter("label", a_plus.title)
+        click_filter_link(a_plus.title)
+        submit_filter
+
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
+      end
+
       it 'filters by label with space after reload' do
-        set_filter("label", "\"#{accepting.title}\"")
+        set_filter("label", "\"#{accepting.title}")
         click_filter_link(accepting.title)
         submit_filter
 
@@ -444,11 +463,13 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 20)
           expect(page).to have_content('Showing 20 of 51 issues')
 
+          find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 40)
           expect(page).to have_content('Showing 40 of 51 issues')
 
+          find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 51)
@@ -507,20 +528,20 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
     it 'allows user to use keyboard shortcuts' do
-      find('.boards-list').native.send_keys('i')
+      find('body').native.send_keys('i')
       expect(page).to have_content('New Issue')
     end
   end
 
   context 'signed out user' do
     before do
-      gitlab_sign_out
-      visit namespace_project_board_path(project.namespace, project, board)
+      sign_out(:user)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -529,7 +550,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'does not show create new list' do
-      expect(page).not_to have_selector('.js-new-board-list')
+      expect(page).not_to have_button('.js-new-board-list')
     end
 
     it 'does not allow dragging' do
@@ -541,10 +562,10 @@ describe 'Issue Boards', feature: true, js: true do
     let(:user_guest) { create(:user) }
 
     before do
-      project.team << [user_guest, :guest]
-      gitlab_sign_out
-      gitlab_sign_in(user_guest)
-      visit namespace_project_board_path(project.namespace, project, board)
+      project.add_guest(user_guest)
+      sign_out(:user)
+      sign_in(user_guest)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -554,6 +575,9 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+    # ensure there is enough horizontal space for four boards
+    resize_window(2000, 800)
+
     drag_to(selector: selector,
             scrollable: '#board-app',
             list_from_index: list_from_index,

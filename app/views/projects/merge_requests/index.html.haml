@@ -1,29 +1,20 @@
 - @no_container = true
 - @can_bulk_update = can?(current_user, :admin_merge_request, @project)
+- merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+- new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
-- unless @project.default_issues_tracker?
-  = content_for :sub_nav do
-    = render "projects/merge_requests/head"
+- new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
-
-
-= render 'projects/last_push'
+%div{ class: container_class }
+  = render 'projects/last_push'
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
       .nav-controls
-        - if @can_bulk_update
-          = button_tag "Edit Merge Requests", class: "btn js-bulk-update-toggle"
-        - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-        - if merge_project
-          = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New merge request" do
-            New merge request
+        = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
 
     = render 'shared/issuable/search_bar', type: :merge_requests
 
@@ -32,5 +23,7 @@
 
     .merge-requests-holder
       = render 'merge_requests'
+      - if new_merge_request_email
+        = render 'projects/issuable_by_email', email: new_merge_request_email, issuable_type: 'merge_request'
 - else
-  = render 'shared/empty_states/merge_requests', button_path: new_namespace_project_merge_request_path(@project.namespace, @project)
+  = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path

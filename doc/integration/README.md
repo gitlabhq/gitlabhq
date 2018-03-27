@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab Integration
 
 GitLab integrates with multiple third-party services to allow external issue
@@ -5,19 +9,22 @@ trackers and external authentication.
 
 See the documentation below for details on how to configure these services.
 
-- [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
-- [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
-- [LDAP](ldap.md) Set up sign in via LDAP
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
-- [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
-- [CAS](cas.md) Configure GitLab to sign in using CAS
-- [OAuth2 provider](oauth_provider.md) OAuth2 application creation
-- [OpenID Connect](openid_connect_provider.md) Use GitLab as an identity provider
-- [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
-- [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 - [Akismet](akismet.md) Configure Akismet to stop spam
-- [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
+- [Auth0 OmniAuth](auth0.md) Enable the Auth0 OmniAuth provider
+- [Bitbucket](bitbucket.md) Import projects from Bitbucket.org and login to your GitLab instance with your
+Bitbucket.org account
+- [CAS](cas.md) Configure GitLab to sign in using CAS
+- [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
+- [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
+- [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
+- [LDAP](ldap.md) Set up sign in via LDAP
+- [OAuth2 provider](oauth_provider.md) OAuth2 application creation
+- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
+- [OpenID Connect](openid_connect_provider.md) Use GitLab as an identity provider
 - [PlantUML](../administration/integration/plantuml.md) Configure PlantUML to use diagrams in AsciiDoc documents.
+- [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
+- [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
+- [Trello](trello_power_up.md) Integrate Trello with GitLab
 
 > GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 

@@ -1,45 +1,37 @@
 import Vue from 'vue';
-import failedToMergeComponent from '~/vue_merge_request_widget/components/states/mr_widget_failed_to_merge';
+import failedToMergeComponent from '~/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-
-const mr = {
-  mergeError: 'Merge error happened.',
-};
-const createComponent = () => {
-  const Component = Vue.extend(failedToMergeComponent);
-  return new Component({
-    el: document.createElement('div'),
-    propsData: { mr },
-  });
-};
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetFailedToMerge', () => {
-  describe('data', () => {
-    it('should have default data', () => {
-      const data = failedToMergeComponent.data();
+  let Component;
+  let vm;
 
-      expect(data.timer).toEqual(10);
-      expect(data.isRefreshing).toBeFalsy();
-    });
+  beforeEach(() => {
+    Component = Vue.extend(failedToMergeComponent);
+    spyOn(eventHub, '$emit');
+    vm = mountComponent(Component, { mr: {
+      mergeError: 'Merge error happened.',
+    } });
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('computed', () => {
     describe('timerText', () => {
       it('should return correct timer text', () => {
-        const vm = createComponent();
-        expect(vm.timerText).toEqual('10 seconds');
+        expect(vm.timerText).toEqual('Refreshing in 10 seconds to show the updated status...');
 
         vm.timer = 1;
-        expect(vm.timerText).toEqual('a second');
+        expect(vm.timerText).toEqual('Refreshing in a second to show the updated status...');
       });
     });
   });
 
   describe('created', () => {
     it('should disable polling', () => {
-      spyOn(eventHub, '$emit');
-      createComponent();
-
       expect(eventHub.$emit).toHaveBeenCalledWith('DisablePolling');
     });
   });
@@ -47,13 +39,10 @@ describe('MRWidgetFailedToMerge', () => {
   describe('methods', () => {
     describe('refresh', () => {
       it('should emit event to request component refresh', () => {
-        spyOn(eventHub, '$emit');
-        const vm = createComponent();
-
-        expect(vm.isRefreshing).toBeFalsy();
+        expect(vm.isRefreshing).toEqual(false);
 
         vm.refresh();
-        expect(vm.isRefreshing).toBeTruthy();
+        expect(vm.isRefreshing).toEqual(true);
         expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
         expect(eventHub.$emit).toHaveBeenCalledWith('EnablePolling');
       });
@@ -61,12 +50,11 @@ describe('MRWidgetFailedToMerge', () => {
 
     describe('updateTimer', () => {
       it('should update timer and emit event when timer end', () => {
-        const vm = createComponent();
         spyOn(vm, 'refresh');
 
         expect(vm.timer).toEqual(10);
 
-        for (let i = 0; i < 10; i++) { // eslint-disable-line
+        for (let i = 0; i < 10; i += 1) {
           expect(vm.timer).toEqual(10 - i);
           vm.updateTimer();
         }
@@ -76,47 +64,54 @@ describe('MRWidgetFailedToMerge', () => {
     });
   });
 
-  describe('template', () => {
-    let vm;
-    let el;
-
-    beforeEach(() => {
-      vm = createComponent();
-      el = vm.$el;
-    });
-
-    it('should have correct elements', (done) => {
-      expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('Merge error happened.');
-      expect(el.innerText).toContain('Refreshing in 10 seconds');
-      expect(el.innerText).not.toContain('Merge failed.');
-      expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(el.querySelector('button').innerText).toContain('Merge');
-      expect(el.querySelector('.js-refresh-button').innerText).toContain('Refresh now');
-      expect(el.querySelector('.js-refresh-label')).toEqual(null);
-      expect(el.innerText).not.toContain('Refreshing now...');
-      setTimeout(() => {
-        expect(el.innerText).toContain('Refreshing in 9 seconds');
-        done();
-      }, 1010);
-    });
-
-    it('should just generic merge failed message if merge_error is not available', (done) => {
-      vm.mr.mergeError = null;
+  describe('while it is refreshing', () => {
+    it('renders Refresing now', (done) => {
+      vm.isRefreshing = true;
 
       Vue.nextTick(() => {
-        expect(el.innerText).toContain('Merge failed.');
-        expect(el.innerText).not.toContain('Merge error happened.');
+        expect(vm.$el.querySelector('.js-refresh-label').textContent.trim()).toEqual('Refreshing now');
         done();
       });
     });
+  });
 
-    it('should show refresh label when refresh requested', () => {
-      vm.refresh();
-      Vue.nextTick(() => {
-        expect(el.innerText).not.toContain('Merge failed. Refreshing');
-        expect(el.innerText).toContain('Refreshing now...');
-      });
+  describe('while it is not regresing', () => {
+    it('renders warning icon and disabled merge button', () => {
+      expect(vm.$el.querySelector('.js-ci-status-icon-warning')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-disabled-merge-button').getAttribute('disabled')).toEqual('disabled');
+    });
+
+    it('renders given error', () => {
+      expect(vm.$el.querySelector('.has-error-message').textContent.trim()).toEqual('Merge error happened..');
+    });
+
+    it('renders refresh button', () => {
+      expect(vm.$el.querySelector('.js-refresh-button').textContent.trim()).toEqual('Refresh now');
+    });
+
+    it('renders remaining time', () => {
+      expect(
+        vm.$el.querySelector('.has-custom-error').textContent.trim(),
+      ).toEqual('Refreshing in 10 seconds to show the updated status...');
+    });
+  });
+
+  it('should just generic merge failed message if merge_error is not available', (done) => {
+    vm.mr.mergeError = null;
+
+    Vue.nextTick(() => {
+      expect(vm.$el.innerText).toContain('Merge failed.');
+      expect(vm.$el.innerText).not.toContain('Merge error happened.');
+      done();
+    });
+  });
+
+  it('should show refresh label when refresh requested', (done) => {
+    vm.refresh();
+    Vue.nextTick(() => {
+      expect(vm.$el.innerText).not.toContain('Merge failed. Refreshing');
+      expect(vm.$el.innerText).toContain('Refreshing now');
+      done();
     });
   });
 });

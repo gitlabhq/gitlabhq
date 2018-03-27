@@ -1,61 +1,62 @@
 - @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs "Issues", project_issues_path(@project)
+- breadcrumb_title @issue.to_reference
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
+
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 
-.clearfix.detail-page-header
-  .issuable-header
-    .issuable-status-box.status-box.status-box-closed{ class: issue_button_visibility(@issue, false) }
-      = icon('check', class: "hidden-sm hidden-md hidden-lg")
+.detail-page-header
+  .detail-page-header-body
+    .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
+      = sprite_icon('mobile-issue-close', size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
       %span.hidden-xs
         Closed
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
-      = icon('circle-o', class: "hidden-sm hidden-md hidden-lg")
+      = sprite_icon('issue-open-m', size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
       %span.hidden-xs Open
+
+    .issuable-meta
+      - if @issue.confidential
+        .issuable-warning-icon.inline= sprite_icon('eye-slash', size: 16, css_class: 'icon')
+      - if @issue.discussion_locked?
+        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      = issuable_meta(@issue, @project, "Issue")
 
     %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = icon('angle-double-left')
 
-    .issuable-meta
-      = confidential_icon(@issue)
-      = issuable_meta(@issue, @project, "Issue")
-
-  .issuable-actions
+  .detail-page-header-actions.js-issuable-actions
     .clearfix.issue-btn-group.dropdown
       %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
         Options
         = icon('caret-down')
       .dropdown-menu.dropdown-menu-align-right.hidden-lg
         %ul
+          - unless current_user == @issue.author
+            %li= link_to 'Report abuse', new_abuse_report_path(user_id: @issue.author.id, ref_url: issue_url(@issue))
           - if can_update_issue
-            %li
-              = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'issuable-edit'
-            %li
-              = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-            %li
-              = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+            %li= link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), class: "btn-close js-btn-issue-action #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+            %li= link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen js-btn-issue-action #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
           - if can_report_spam
-            %li
-              = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
+            %li= link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
           - if can_update_issue || can_report_spam
             %li.divider
-          %li
-            = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
+          %li= link_to 'New issue', new_project_issue_path(@project), title: 'New issue', id: 'new_issue_link'
 
-    - if can_update_issue
-      = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
-      = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-      = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+    = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue
+
     - if can_report_spam
-      = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
-    = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
+      = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
+    = link_to new_project_issue_path(@project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
       New issue
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue)
+    -# haml-lint:disable InlineJavaScript
+    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue).to_json
     #js-issuable-app
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
@@ -65,15 +66,15 @@
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
-    #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
+    #merge-requests{ data: { url: referenced_merge_requests_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
-    #related-branches{ data: { url: related_branches_namespace_project_issue_url(@project.namespace, @project, @issue) } }
+    #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
   .content-block.emoji-block
     .row
-      .col-sm-8
+      .col-sm-8.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .col-sm-4.new-branch-col
         = render 'new_branch' unless @issue.confidential?
@@ -82,6 +83,3 @@
     = render 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable: @issue
-
-= page_specific_javascript_bundle_tag('common_vue')
-= page_specific_javascript_bundle_tag('issue_show')

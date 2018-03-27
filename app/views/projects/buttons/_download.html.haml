@@ -1,43 +1,36 @@
-- pipeline = local_assigns.fetch(:pipeline) { project.pipelines.latest_successful_for(ref) }
+- pipeline = local_assigns.fetch(:pipeline) { project.latest_successful_pipeline_for(ref) }
 
 - if !project.empty_repo? && can?(current_user, :download_code, project)
   .project-action-button.dropdown.inline>
     %button.btn.has-tooltip{ title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download') }
-      = icon('download')
+      = sprite_icon('download')
       = icon("caret-down")
       %span.sr-only=  _('Select Archive Format')
     %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
       %li.dropdown-header
         #{ _('Source code') }
       %li
-        = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'zip'), rel: 'nofollow', download: '' do
-          %i.fa.fa-download
+        = link_to archive_project_repository_path(project, ref: ref, format: 'zip'), rel: 'nofollow', download: '' do
           %span=  _('Download zip')
       %li
-        = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.gz'), rel: 'nofollow', download: '' do
-          %i.fa.fa-download
+        = link_to archive_project_repository_path(project, ref: ref, format: 'tar.gz'), rel: 'nofollow', download: '' do
           %span= _('Download tar.gz')
       %li
-        = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.bz2'), rel: 'nofollow', download: '' do
-          %i.fa.fa-download
+        = link_to archive_project_repository_path(project, ref: ref, format: 'tar.bz2'), rel: 'nofollow', download: '' do
           %span= _('Download tar.bz2')
       %li
-        = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar'), rel: 'nofollow', download: '' do
-          %i.fa.fa-download
+        = link_to archive_project_repository_path(project, ref: ref, format: 'tar'), rel: 'nofollow', download: '' do
           %span= _('Download tar')
 
-      - if pipeline
-        - artifacts = pipeline.builds.latest.with_artifacts
-        - if artifacts.any?
-          %li.dropdown-header Artifacts
-          - unless pipeline.latest?
-            - latest_pipeline = project.pipeline_for(ref)
-            %li
-              .unclickable= ci_status_for_statuseable(latest_pipeline)
-            %li.dropdown-header Previous Artifacts
-          - artifacts.each do |job|
-            %li
-              = link_to latest_succeeded_namespace_project_artifacts_path(project.namespace, project, "#{ref}/download", job: job.name), rel: 'nofollow', download: '' do
-                %i.fa.fa-download
-                %span
-                  #{ s_('DownloadArtifacts|Download') } '#{job.name}'
+      - if pipeline && pipeline.latest_builds_with_artifacts.any?
+        %li.dropdown-header Artifacts
+        - unless pipeline.latest?
+          - latest_pipeline = project.pipeline_for(ref)
+          %li
+            .unclickable= ci_status_for_statuseable(latest_pipeline)
+          %li.dropdown-header Previous Artifacts
+        - pipeline.latest_builds_with_artifacts.each do |job|
+          %li
+            = link_to latest_succeeded_project_artifacts_path(project, "#{ref}/download", job: job.name), rel: 'nofollow', download: '' do
+              %span
+                #{s_('DownloadArtifacts|Download')} '#{job.name}'

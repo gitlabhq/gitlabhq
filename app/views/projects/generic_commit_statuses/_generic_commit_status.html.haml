@@ -19,15 +19,15 @@
     - if ref
       - if generic_commit_status.ref
         .icon-container
-          = generic_commit_status.tags.any? ? icon('tag') : icon('code-fork')
-        = link_to generic_commit_status.ref, namespace_project_commits_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.ref)
+          = generic_commit_status.tags.any? ? icon('tag') : sprite_icon('fork', size: 10)
+        = link_to generic_commit_status.ref, project_commits_path(generic_commit_status.project, generic_commit_status.ref)
       - else
         .light none
       .icon-container.commit-icon
         = custom_icon("icon_commit")
 
     - if commit_sha
-      = link_to generic_commit_status.short_sha, namespace_project_commit_path(generic_commit_status.project.namespace, generic_commit_status.project, generic_commit_status.sha), class: "commit-sha"
+      = link_to generic_commit_status.short_sha, project_commit_path(generic_commit_status.project, generic_commit_status.sha), class: "commit-sha"
 
     - if retried
       = icon('warning', class: 'text-warning has-tooltip', title: 'Status was retried.')
@@ -53,7 +53,7 @@
   - if admin
     %td
       - if generic_commit_status.project
-        = link_to generic_commit_status.project.name_with_namespace, admin_namespace_project_path(generic_commit_status.project.namespace, generic_commit_status.project)
+        = link_to generic_commit_status.project.full_name, admin_project_path(generic_commit_status.project)
     %td
       - if generic_commit_status.try(:runner)
         = runner_link(generic_commit_status.runner)

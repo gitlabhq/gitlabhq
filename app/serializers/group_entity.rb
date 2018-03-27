@@ -45,6 +45,6 @@ class GroupEntity < Grape::Entity
   end
 
   expose :avatar_url do |group|
-    group_icon(group)
+    group_icon_url(group)
   end
 end

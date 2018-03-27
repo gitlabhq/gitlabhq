@@ -23,7 +23,7 @@ $space-between-cards: 8px;
     line-height: 1;
     color: $gl-text-color-secondary;
     margin-left: 8px;
-    font-weight: 500;
+    font-weight: $gl-font-weight-normal;
 
     a {
       font-size: 18px;
@@ -83,7 +83,7 @@ $space-between-cards: 8px;
   border-top-color: $color-low-score;
 
   .card-score-big {
-    background-color: $red-25;
+    background-color: $red-50;
   }
 }
 
@@ -91,7 +91,7 @@ $space-between-cards: 8px;
   border-top-color: $color-average-score;
 
   .card-score-big {
-    background-color: $orange-25;
+    background-color: $orange-50;
   }
 }
 
@@ -99,7 +99,7 @@ $space-between-cards: 8px;
   border-top-color: $color-high-score;
 
   .card-score-big {
-    background-color: $green-25;
+    background-color: $green-50;
   }
 }
 
@@ -139,7 +139,7 @@ $space-between-cards: 8px;
 .card-score-value {
   font-size: 16px;
   color: $gl-text-color;
-  font-weight: 500;
+  font-weight: $gl-font-weight-normal;
 }
 
 .card-score-big {
@@ -147,7 +147,7 @@ $space-between-cards: 8px;
   border-bottom: 1px solid $border-color;
   font-size: 22px;
   padding: 10px 0;
-  font-weight: 500;
+  font-weight: $gl-font-weight-normal;
 }
 
 .card-buttons {

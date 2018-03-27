@@ -1,7 +1,19 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var */
+import $ from 'jquery';
+import { highCountTrim } from '~/lib/utils/text_utility';
 
-$(document).on('todo:toggle', function(e, count) {
-  var $todoPendingCount = $('.todos-count');
-  $todoPendingCount.text(gl.text.highCountTrim(count));
-  $todoPendingCount.toggleClass('hidden', count === 0);
-});
+/**
+ * Updates todo counter when todos are toggled.
+ * When count is 0, we hide the badge.
+ *
+ * @param {jQuery.Event} e
+ * @param {String} count
+ */
+export default function initTodoToggle() {
+  $(document).on('todo:toggle', (e, count) => {
+    const parsedCount = parseInt(count, 10);
+    const $todoPendingCount = $('.todos-count');
+
+    $todoPendingCount.text(highCountTrim(parsedCount));
+    $todoPendingCount.toggleClass('hidden', parsedCount === 0);
+  });
+}

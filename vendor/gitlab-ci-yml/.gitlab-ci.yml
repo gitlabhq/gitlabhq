@@ -1,4 +1,4 @@
-image: ruby:2.3-alpine
+image: ruby:2.4-alpine
 
 test:
-  script: ruby verify_templates.rb
+  script: ./verify_templates.rb

@@ -1,7 +1,12 @@
 module ProfilesHelper
-  def email_provider_label
-    return unless current_user.external_email?
-
-    current_user.email_provider.present? ? Gitlab::OAuth::Provider.label_for(current_user.email_provider) : "LDAP"
+  def attribute_provider_label(attribute)
+    user_synced_attributes_metadata = current_user.user_synced_attributes_metadata
+    if user_synced_attributes_metadata&.synced?(attribute)
+      if user_synced_attributes_metadata.provider
+        Gitlab::Auth::OAuth::Provider.label_for(user_synced_attributes_metadata.provider)
+      else
+        'LDAP'
+      end
+    end
   end
 end

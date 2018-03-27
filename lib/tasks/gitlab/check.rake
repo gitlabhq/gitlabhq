@@ -1,7 +1,3 @@
-# Temporary hack, until we migrate all checks to SystemCheck format
-require 'system_check'
-require 'system_check/helpers'
-
 namespace :gitlab do
   desc 'GitLab | Check the configuration of GitLab and its environment'
   task check: %w{gitlab:gitlab_shell:check
@@ -12,7 +8,7 @@ namespace :gitlab do
 
   namespace :app do
     desc 'GitLab | Check the configuration of the GitLab Rails app'
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
 
       checks = [
@@ -33,6 +29,7 @@ namespace :gitlab do
         SystemCheck::App::RedisVersionCheck,
         SystemCheck::App::RubyVersionCheck,
         SystemCheck::App::GitVersionCheck,
+        SystemCheck::App::GitUserDefaultSSHConfigCheck,
         SystemCheck::App::ActiveUsersCheck
       ]
 
@@ -41,10 +38,8 @@ namespace :gitlab do
   end
 
   namespace :gitlab_shell do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the configuration of GitLab Shell"
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
       start_checking "GitLab Shell"
 
@@ -66,7 +61,7 @@ namespace :gitlab do
       puts "Repo base directory exists?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         if File.exist?(repo_base_path)
@@ -91,7 +86,7 @@ namespace :gitlab do
       puts "Repo storage directories are symlinks?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -115,7 +110,7 @@ namespace :gitlab do
       puts "Repo paths access is drwxrws---?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -145,7 +140,7 @@ namespace :gitlab do
       puts "Repo paths owned by #{gitlab_shell_ssh_user}:root, or #{gitlab_shell_ssh_user}:#{Gitlab.config.gitlab_shell.owner_group}?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -181,6 +176,7 @@ namespace :gitlab do
         puts "can't check, you have no projects".color(:magenta)
         return
       end
+
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
@@ -211,6 +207,7 @@ namespace :gitlab do
       gitlab_shell_repo_base = gitlab_shell_path
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
+
       if system(check_cmd, chdir: gitlab_shell_repo_base)
         puts 'gitlab-shell self-check successful'.color(:green)
       else
@@ -249,10 +246,8 @@ namespace :gitlab do
   end
 
   namespace :sidekiq do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the configuration of Sidekiq"
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
       start_checking "Sidekiq"
 
@@ -288,6 +283,7 @@ namespace :gitlab do
       return if process_count.zero?
 
       print 'Number of Sidekiq processes ... '
+
       if process_count == 1
         puts '1'.color(:green)
       else
@@ -309,151 +305,38 @@ namespace :gitlab do
   end
 
   namespace :incoming_email do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the configuration of Reply by email"
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
-      start_checking "Reply by email"
 
       if Gitlab.config.incoming_email.enabled
-        check_imap_authentication
+        checks = [
+          SystemCheck::IncomingEmail::ImapAuthenticationCheck
+        ]
 
         if Rails.env.production?
-          check_initd_configured_correctly
-          check_mail_room_running
+          checks << SystemCheck::IncomingEmail::InitdConfiguredCheck
+          checks << SystemCheck::IncomingEmail::MailRoomRunningCheck
         else
-          check_foreman_configured_correctly
+          checks << SystemCheck::IncomingEmail::ForemanConfiguredCheck
         end
+
+        SystemCheck.run('Reply by email', checks)
       else
         puts 'Reply by email is disabled in config/gitlab.yml'
       end
-
-      finished_checking "Reply by email"
-    end
-
-    # Checks
-    ########################
-
-    def check_initd_configured_correctly
-      return if omnibus_gitlab?
-
-      print "Init.d configured correctly? ... "
-
-      path = "/etc/default/gitlab"
-
-      if File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "Enable mail_room in the init.d configuration."
-        )
-        for_more_information(
-          "doc/administration/reply_by_email.md"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_foreman_configured_correctly
-      print "Foreman configured correctly? ... "
-
-      path = Rails.root.join("Procfile")
-
-      if File.exist?(path) && File.read(path) =~ /^mail_room:/
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "Enable mail_room in your Procfile."
-        )
-        for_more_information(
-          "doc/administration/reply_by_email.md"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_mail_room_running
-      return if omnibus_gitlab?
-
-      print "MailRoom running? ... "
-
-      path = "/etc/default/gitlab"
-
-      unless File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
-        puts "can't check because of previous errors".color(:magenta)
-        return
-      end
-
-      if mail_room_running?
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          sudo_gitlab("RAILS_ENV=production bin/mail_room start")
-        )
-        for_more_information(
-          see_installation_guide_section("Install Init Script"),
-          "see log/mail_room.log for possible errors"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_imap_authentication
-      print "IMAP server credentials are correct? ... "
-
-      config_path = Rails.root.join('config', 'mail_room.yml').to_s
-      erb = ERB.new(File.read(config_path))
-      erb.filename = config_path
-      config_file = YAML.load(erb.result)
-
-      config = config_file[:mailboxes].first
-
-      if config
-        begin
-          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
-          imap.starttls if config[:start_tls]
-          imap.login(config[:email], config[:password])
-          connected = true
-        rescue
-          connected = false
-        end
-      end
-
-      if connected
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "Check that the information in config/gitlab.yml is correct"
-        )
-        for_more_information(
-          "doc/administration/reply_by_email.md"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def mail_room_running?
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
-      ps_ux.include?("mail_room")
     end
   end
 
   namespace :ldap do
-    include SystemCheck::Helpers
-
-    task :check, [:limit] => :environment do |_, args|
+    task :check, [:limit] => :gitlab_environment do |_, args|
       # Only show up to 100 results because LDAP directories can be very big.
       # This setting only affects the `rake gitlab:check` script.
       args.with_defaults(limit: 100)
       warn_user_is_not_gitlab
       start_checking "LDAP"
 
-      if Gitlab::LDAP::Config.enabled?
+      if Gitlab::Auth::LDAP::Config.enabled?
         check_ldap(args.limit)
       else
         puts 'LDAP is disabled in config/gitlab.yml'
@@ -463,13 +346,13 @@ namespace :gitlab do
     end
 
     def check_ldap(limit)
-      servers = Gitlab::LDAP::Config.providers
+      servers = Gitlab::Auth::LDAP::Config.providers
 
       servers.each do |server|
         puts "Server: #{server}"
 
         begin
-          Gitlab::LDAP::Adapter.open(server) do |adapter|
+          Gitlab::Auth::LDAP::Adapter.open(server) do |adapter|
             check_ldap_auth(adapter)
 
             puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
@@ -501,33 +384,52 @@ namespace :gitlab do
   end
 
   namespace :repo do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
-    task check: :environment do
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        namespace_dirs = Dir.glob(File.join(repository_storage['path'], '*'))
+    task check: :gitlab_environment do
+      puts "This task is deprecated. Please use gitlab:git:fsck instead".color(:red)
+      Rake::Task["gitlab:git:fsck"].execute
+    end
+  end
 
-        namespace_dirs.each do |namespace_dir|
-          repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
-          repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
-        end
-      end
+  namespace :orphans do
+    desc 'Gitlab | Check for orphaned namespaces and repositories'
+    task check: :gitlab_environment do
+      warn_user_is_not_gitlab
+      checks = [
+        SystemCheck::Orphans::NamespaceCheck,
+        SystemCheck::Orphans::RepositoryCheck
+      ]
+
+      SystemCheck.run('Orphans', checks)
+    end
+
+    desc 'GitLab | Check for orphaned namespaces in the repositories path'
+    task check_namespaces: :gitlab_environment do
+      warn_user_is_not_gitlab
+      checks = [SystemCheck::Orphans::NamespaceCheck]
+
+      SystemCheck.run('Orphans', checks)
+    end
+
+    desc 'GitLab | Check for orphaned repositories in the repositories path'
+    task check_repositories: :gitlab_environment do
+      warn_user_is_not_gitlab
+      checks = [SystemCheck::Orphans::RepositoryCheck]
+
+      SystemCheck.run('Orphans', checks)
     end
   end
 
   namespace :user do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the integrity of a specific user's repositories"
-    task :check_repos, [:username] => :environment do |t, args|
-      username = args[:username] || prompt("Check repository integrity for fsername? ".color(:blue))
+    task :check_repos, [:username] => :gitlab_environment do |t, args|
+      username = args[:username] || prompt("Check repository integrity for username? ".color(:blue))
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|
           File.join(
             p.repository_storage_path,
-            "#{p.path_with_namespace}.git"
+            "#{p.disk_path}.git"
           )
         end
 
@@ -550,37 +452,6 @@ namespace :gitlab do
       puts "OK (#{current_version})".color(:green)
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".color(:red)
-    end
-  end
-
-  def check_repo_integrity(repo_dir)
-    puts "\nChecking repo at #{repo_dir.color(:yellow)}"
-
-    git_fsck(repo_dir)
-    check_config_lock(repo_dir)
-    check_ref_locks(repo_dir)
-  end
-
-  def git_fsck(repo_dir)
-    puts "Running `git fsck`".color(:yellow)
-    system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: repo_dir)
-  end
-
-  def check_config_lock(repo_dir)
-    config_exists = File.exist?(File.join(repo_dir, 'config.lock'))
-    config_output = config_exists ? 'yes'.color(:red) : 'no'.color(:green)
-    puts "'config.lock' file exists?".color(:yellow) + " ... #{config_output}"
-  end
-
-  def check_ref_locks(repo_dir)
-    lock_files = Dir.glob(File.join(repo_dir, 'refs/heads/*.lock'))
-    if lock_files.present?
-      puts "Ref lock files exist:".color(:red)
-      lock_files.each do |lock_file|
-        puts "  #{lock_file}"
-      end
-    else
-      puts "No ref lock files exist".color(:green)
     end
   end
 end

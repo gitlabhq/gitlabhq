@@ -1,18 +1,18 @@
 require 'rails_helper'
 
-describe 'Search bar', js: true, feature: true do
+describe 'Search bar', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   def get_left_style(style)
@@ -32,7 +32,7 @@ describe 'Search bar', js: true, feature: true do
     it 'selects item' do
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([author_token])
       expect_filtered_search_input_empty
     end
   end
@@ -100,7 +100,7 @@ describe 'Search bar', js: true, feature: true do
       find('.filtered-search-box .clear-search').click
       filtered_search.click
 
-      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 4)
+      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
       expect(get_left_style(find('#js-dropdown-hint')['style'])).to eq(hint_offset)
     end
   end

@@ -8,6 +8,19 @@ module Projects
         define_secret_variables
         define_triggers_variables
         define_badges_variables
+        define_auto_devops_variables
+      end
+
+      def reset_cache
+        if ResetProjectCacheService.new(@project, current_user).execute
+          respond_to do |format|
+            format.json { head :ok }
+          end
+        else
+          respond_to do |format|
+            format.json { head :bad_request }
+          end
+        end
       end
 
       private
@@ -21,7 +34,10 @@ module Projects
       end
 
       def define_secret_variables
-        @variable = Ci::Variable.new
+        @variable = Ci::Variable.new(project: project)
+          .present(current_user: current_user)
+        @variables = project.variables.order_key_asc
+          .map { |variable| variable.present(current_user: current_user) }
       end
 
       def define_triggers_variables
@@ -32,12 +48,16 @@ module Projects
       def define_badges_variables
         @ref = params[:ref] || @project.default_branch || 'master'
 
-        @badges = [Gitlab::Badge::Build::Status,
+        @badges = [Gitlab::Badge::Pipeline::Status,
                    Gitlab::Badge::Coverage::Report]
 
         @badges.map! do |badge|
           badge.new(@project, @ref).metadata
         end
+      end
+
+      def define_auto_devops_variables
+        @auto_devops = @project.auto_devops || ProjectAutoDevops.new
       end
     end
   end

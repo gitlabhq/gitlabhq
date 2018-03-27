@@ -1,8 +1,8 @@
-- path_to_directory = browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path: directory.path)
+- path_to_directory = browse_project_job_artifacts_path(@project, @build, path: directory.path)
 
 %tr.tree-item{ 'data-link' => path_to_directory }
   %td.tree-item-file-name
     = tree_icon('folder', '755', directory.name)
-    = link_to path_to_directory do
-      %span.str-truncated= directory.name
+    = link_to path_to_directory, class: 'str-truncated' do
+      %span= directory.name
   %td

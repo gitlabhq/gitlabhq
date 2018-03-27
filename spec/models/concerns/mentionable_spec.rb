@@ -13,7 +13,7 @@ describe Mentionable do
   end
 
   describe 'references' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:mentionable) { Example.new }
 
     it 'excludes JIRA references' do
@@ -48,10 +48,10 @@ describe Issue, "Mentionable" do
 
   describe '#referenced_mentionables' do
     context 'with an issue on a private project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project) }
       let(:public_issue) { create(:issue, project: project) }
-      let(:private_project) { create(:empty_project, :private) }
+      let(:private_project) { create(:project, :private) }
       let(:private_issue) { create(:issue, project: private_project) }
       let(:user) { create(:user) }
 
@@ -62,7 +62,7 @@ describe Issue, "Mentionable" do
 
       context 'when the current user can see the issue' do
         before do
-          private_project.team << [user, Gitlab::Access::DEVELOPER]
+          private_project.add_developer(user)
         end
 
         it 'includes the reference' do
@@ -102,12 +102,12 @@ describe Issue, "Mentionable" do
   end
 
   describe '#create_new_cross_references!' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:author)  { create(:author) }
     let(:issues)  { create_list(:issue, 2, project: project, author: author) }
 
     before do
-      project.team << [author, Gitlab::Access::DEVELOPER]
+      project.add_developer(author)
     end
 
     context 'before changes are persisted' do
@@ -174,25 +174,25 @@ describe Commit, 'Mentionable' do
     it "is false when message doesn't reference anything" do
       allow(commit.raw).to receive(:message).and_return "WIP: Do something"
 
-      expect(commit.matches_cross_reference_regex?).to be false
+      expect(commit.matches_cross_reference_regex?).to be_falsey
     end
 
     it 'is true if issue #number mentioned in title' do
       allow(commit.raw).to receive(:message).and_return "#1"
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     it 'is true if references an MR' do
       allow(commit.raw).to receive(:message).and_return "See merge request !12"
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     it 'is true if references a commit' do
       allow(commit.raw).to receive(:message).and_return "a1b2c3d4"
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     it 'is true if issue referenced by url' do
@@ -200,16 +200,22 @@ describe Commit, 'Mentionable' do
 
       allow(commit.raw).to receive(:message).and_return Gitlab::UrlBuilder.build(issue)
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     context 'with external issue tracker' do
-      let(:project) { create(:jira_project) }
+      let(:project) { create(:jira_project, :repository) }
 
       it 'is true if external issues referenced' do
         allow(commit.raw).to receive(:message).and_return 'JIRA-123'
 
-        expect(commit.matches_cross_reference_regex?).to be true
+        expect(commit.matches_cross_reference_regex?).to be_truthy
+      end
+
+      it 'is true if internal issues referenced' do
+        allow(commit.raw).to receive(:message).and_return '#123'
+
+        expect(commit.matches_cross_reference_regex?).to be_truthy
       end
     end
   end

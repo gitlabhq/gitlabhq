@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe Projects::DestroyService, services: true do
+describe Projects::DestroyService do
+  include ProjectForksHelper
+
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:path) { project.repository.path_to_repo }
@@ -36,6 +38,27 @@ describe Projects::DestroyService, services: true do
     end
   end
 
+  shared_examples 'handles errors thrown during async destroy' do |error_message|
+    it 'does not allow the error to bubble up' do
+      expect do
+        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      end.not_to raise_error
+    end
+
+    it 'unmarks the project as "pending deletion"' do
+      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+
+      expect(project.reload.pending_delete).to be(false)
+    end
+
+    it 'stores an error message in `projects.delete_error`' do
+      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+
+      expect(project.reload.delete_error).to be_present
+      expect(project.delete_error).to include(error_message)
+    end
+  end
+
   context 'Sidekiq inline' do
     before do
       # Run sidekiq immediatly to check that renamed repository will be removed
@@ -60,14 +83,14 @@ describe Projects::DestroyService, services: true do
     before do
       new_user = create(:user)
       project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
-      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(Redis::CannotConnectError)
+      allow_any_instance_of(described_class).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 
     it 'keeps project team intact upon an error' do
       Sidekiq::Testing.inline! do
         begin
           destroy_project(project, user, {})
-        rescue Redis::CannotConnectError
+        rescue ::Redis::CannotConnectError
         end
       end
 
@@ -89,10 +112,51 @@ describe Projects::DestroyService, services: true do
     end
 
     it_behaves_like 'deleting the project with pipeline and build'
-  end
 
-  context 'with execute' do
-    it_behaves_like 'deleting the project with pipeline and build'
+    context 'errors' do
+      context 'when `remove_legacy_registry_tags` fails' do
+        before do
+          expect_any_instance_of(described_class)
+            .to receive(:remove_legacy_registry_tags).and_return(false)
+        end
+
+        it_behaves_like 'handles errors thrown during async destroy', "Failed to remove some tags"
+      end
+
+      context 'when `remove_repository` fails' do
+        before do
+          expect_any_instance_of(described_class)
+            .to receive(:remove_repository).and_return(false)
+        end
+
+        it_behaves_like 'handles errors thrown during async destroy', "Failed to remove project repository"
+      end
+
+      context 'when `execute` raises expected error' do
+        before do
+          expect_any_instance_of(Project)
+            .to receive(:destroy!).and_raise(StandardError.new("Other error message"))
+        end
+
+        it_behaves_like 'handles errors thrown during async destroy', "Other error message"
+      end
+
+      context 'when `execute` raises unexpected error' do
+        before do
+          expect_any_instance_of(Project)
+            .to receive(:destroy!).and_raise(Exception.new('Other error message'))
+        end
+
+        it 'allows error to bubble up and rolls back project deletion' do
+          expect do
+            Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+          end.to raise_error(Exception, 'Other error message')
+
+          expect(project.reload.pending_delete).to be(false)
+          expect(project.delete_error).to include("Other error message")
+        end
+      end
+    end
   end
 
   describe 'container registry' do
@@ -119,8 +183,7 @@ describe Projects::DestroyService, services: true do
           expect_any_instance_of(ContainerRepository)
             .to receive(:delete_tags!).and_return(false)
 
-          expect{ destroy_project(project, user) }
-            .to raise_error(ActiveRecord::RecordNotDestroyed)
+          expect(destroy_project(project, user)).to be false
         end
       end
     end
@@ -145,10 +208,37 @@ describe Projects::DestroyService, services: true do
           expect_any_instance_of(ContainerRepository)
             .to receive(:delete_tags!).and_return(false)
 
-          expect { destroy_project(project, user) }
-            .to raise_error(Projects::DestroyService::DestroyError)
+          expect(destroy_project(project, user)).to be false
         end
       end
+    end
+  end
+
+  context 'for a forked project with LFS objects' do
+    let(:forked_project) { fork_project(project, user) }
+
+    before do
+      project.lfs_objects << create(:lfs_object)
+      forked_project.forked_project_link.destroy
+      forked_project.reload
+    end
+
+    it 'destroys the fork' do
+      expect { destroy_project(forked_project, user) }
+        .not_to raise_error
+    end
+  end
+
+  context 'as the root of a fork network' do
+    let!(:fork_network) { create(:fork_network, root_project: project) }
+
+    it 'updates the fork network with the project name' do
+      destroy_project(project, user)
+
+      fork_network.reload
+
+      expect(fork_network.deleted_root_project_name).to eq(project.full_name)
+      expect(fork_network.root_project).to be_nil
     end
   end
 

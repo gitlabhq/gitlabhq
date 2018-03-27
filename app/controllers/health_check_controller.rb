@@ -1,3 +1,3 @@
 class HealthCheckController < HealthCheck::HealthCheckController
-  include RequiresHealthToken
+  include RequiresWhitelistedMonitoringClient
 end

@@ -4,6 +4,61 @@ namespace :gitlab do
     TEMPLATE_DATA.each { |template| update(template) }
   end
 
+  desc "GitLab | Update project templates"
+  task :update_project_templates do
+    if Rails.env.production?
+      puts "This rake task is not meant fo production instances".red
+      exit(1)
+    end
+
+    admin = User.find_by(admin: true)
+
+    unless admin
+      puts "No admin user could be found".red
+      exit(1)
+    end
+
+    Gitlab::ProjectTemplate.all.each do |template|
+      params = {
+        import_url: template.clone_url,
+        namespace_id: admin.namespace.id,
+        path: template.name,
+        skip_wiki: true
+      }
+
+      puts "Creating project for #{template.title}"
+      project = Projects::CreateService.new(admin, params).execute
+
+      unless project.persisted?
+        puts project.errors.messages
+        exit(1)
+      end
+
+      loop do
+        if project.finished?
+          puts "Import finished for #{template.name}"
+          break
+        end
+
+        if project.failed?
+          puts "Failed to import from #{project_params[:import_url]}".red
+          exit(1)
+        end
+
+        puts "Waiting for the import to finish"
+
+        sleep(5)
+        project.reload
+      end
+
+      Projects::ImportExport::ExportService.new(project, admin).execute
+      FileUtils.cp(project.export_project_path, template.archive_path)
+      Projects::DestroyService.new(admin, project).execute
+      puts "Exported #{template.name}".green
+    end
+    puts "Done".green
+  end
+
   def update(template)
     sub_dir = template.repo_url.match(/([A-Za-z-]+)\.git\z/)[1]
     dir = File.join(vendor_directory, sub_dir)

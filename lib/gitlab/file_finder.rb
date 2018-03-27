@@ -6,27 +6,49 @@ module Gitlab
 
     attr_reader :project, :ref
 
+    delegate :repository, to: :project
+
     def initialize(project, ref)
       @project = project
       @ref = ref
     end
 
     def find(query)
-      blobs = project.repository.search_files_by_content(query, ref).first(BATCH_SIZE)
-      found_file_names = Set.new
+      by_content = find_by_content(query)
 
-      results = blobs.map do |blob|
-        blob = Gitlab::ProjectSearchResults.parse_search_result(blob)
-        found_file_names << blob.filename
+      already_found = Set.new(by_content.map(&:filename))
+      by_filename = find_by_filename(query, except: already_found)
 
-        [blob.filename, blob]
+      (by_content + by_filename)
+        .sort_by(&:filename)
+        .map { |blob| [blob.filename, blob] }
+    end
+
+    private
+
+    def find_by_content(query)
+      results = repository.search_files_by_content(query, ref).first(BATCH_SIZE)
+      results.map { |result| Gitlab::ProjectSearchResults.parse_search_result(result, project) }
+    end
+
+    def find_by_filename(query, except: [])
+      filenames = repository.search_files_by_name(query, ref).first(BATCH_SIZE)
+      filenames.delete_if { |filename| except.include?(filename) } unless except.empty?
+
+      blob_refs = filenames.map { |filename| [ref, filename] }
+      blobs = Gitlab::Git::Blob.batch(repository, blob_refs, blob_size_limit: 1024)
+
+      blobs.map do |blob|
+        Gitlab::SearchResults::FoundBlob.new(
+          id: blob.id,
+          filename: blob.path,
+          basename: File.basename(blob.path),
+          ref: ref,
+          startline: 1,
+          data: blob.data,
+          project: project
+        )
       end
-
-      project.repository.search_files_by_name(query, ref).first(BATCH_SIZE).each do |filename|
-        results << [filename, OpenStruct.new(ref: ref)] unless found_file_names.include?(filename)
-      end
-
-      results.sort_by(&:first)
     end
   end
 end

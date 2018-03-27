@@ -17,20 +17,17 @@
                   %th Global Shortcuts
                 %tr
                   %td.shortcut
-                    .key n
-                  %td Main Navigation
-                %tr
-                  %td.shortcut
                     .key s
                   %td Focus Search
                 %tr
                   %td.shortcut
                     .key f
                   %td Focus Filter
-                %tr
-                  %td.shortcut
-                    .key p b
-                  %td Show/hide the Performance Bar
+                - if performance_bar_enabled?
+                  %tr
+                    %td.shortcut
+                      .key p b
+                    %td Show/hide the Performance Bar
                 %tr
                   %td.shortcut
                     .key ?
@@ -120,7 +117,7 @@
                     .key g
                     .key p
                   %td
-                    Go to the project's home page
+                    Go to the project's overview page
                 %tr
                   %td.shortcut
                     .key g

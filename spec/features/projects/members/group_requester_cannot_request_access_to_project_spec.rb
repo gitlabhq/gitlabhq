@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Group requester cannot request access to project', feature: true, js: true do
+feature 'Projects > Members > Group requester cannot request access to project', :js do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }
@@ -8,10 +8,10 @@ feature 'Projects > Members > Group requester cannot request access to project',
 
   background do
     group.add_owner(owner)
-    gitlab_sign_in(user)
+    sign_in(user)
     visit group_path(group)
     perform_enqueued_jobs { click_link 'Request Access' }
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'group requester does not see the request access / withdraw access request button' do

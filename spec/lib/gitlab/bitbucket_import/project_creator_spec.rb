@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::ProjectCreator, lib: true do
+describe Gitlab::BitbucketImport::ProjectCreator do
   let(:user) { create(:user) }
 
   let(:repo) do
@@ -15,7 +15,7 @@ describe Gitlab::BitbucketImport::ProjectCreator, lib: true do
            has_wiki?: false)
   end
 
-  let(:namespace){ create(:group, owner: user) }
+  let(:namespace) { create(:group, owner: user) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
   let(:access_params) { { bitbucket_access_token: token, bitbucket_access_token_secret: secret } }
@@ -27,7 +27,7 @@ describe Gitlab::BitbucketImport::ProjectCreator, lib: true do
   it 'creates project' do
     allow_any_instance_of(Project).to receive(:add_import_job)
 
-    project_creator = Gitlab::BitbucketImport::ProjectCreator.new(repo, 'vim', namespace, user, access_params)
+    project_creator = described_class.new(repo, 'vim', namespace, user, access_params)
     project = project_creator.execute
 
     expect(project.import_url).to eq("ssh://git@bitbucket.org/asd/vim.git")

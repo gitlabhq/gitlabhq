@@ -5,15 +5,18 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedPaths
   include Select2Helper
   include WaitForRequests
+  include ProjectForksHelper
 
   step 'I am a member of project "Shop"' do
     @project = ::Project.find_by(name: "Shop")
     @project ||= create(:project, :repository, name: "Shop")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
-    @forked_project = Projects::ForkService.new(@project, @user).execute
+    @forked_project = fork_project(@project, @user,
+                                   namespace: @user.namespace,
+                                   repository: true)
   end
 
   step 'I click link "New Merge Request"' do
@@ -25,13 +28,13 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I should see merge request "Merge Request On Forked Project"' do
     expect(@project.merge_requests.size).to be >= 1
     @merge_request = @project.merge_requests.last
-    expect(current_path).to eq namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(current_path).to eq project_merge_request_path(@project, @merge_request)
     expect(@merge_request.title).to eq "Merge Request On Forked Project"
     expect(@merge_request.source_project).to eq @forked_project
     expect(@merge_request.source_branch).to eq "fix"
     expect(@merge_request.target_branch).to eq "master"
-    expect(page).to have_content @forked_project.path_with_namespace
-    expect(page).to have_content @project.path_with_namespace
+    expect(page).to have_content @forked_project.full_path
+    expect(page).to have_content @project.full_path
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
 
@@ -43,10 +46,10 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content('Target branch')
 
     first('.js-source-project').click
-    first('.dropdown-source-project a', text: @forked_project.path_with_namespace)
+    first('.dropdown-source-project a', text: @forked_project.full_path)
 
     first('.js-target-project').click
-    first('.dropdown-target-project a', text: @project.path_with_namespace)
+    first('.dropdown-target-project a', text: @project.full_path)
 
     first('.js-source-branch').click
     wait_for_requests
@@ -77,12 +80,12 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content "An Edited Forked Merge Request"
     expect(@project.merge_requests.size).to be >= 1
     @merge_request = @project.merge_requests.last
-    expect(current_path).to eq namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(current_path).to eq project_merge_request_path(@project, @merge_request)
     expect(@merge_request.source_project).to eq @forked_project
     expect(@merge_request.source_branch).to eq "fix"
     expect(@merge_request.target_branch).to eq "master"
-    expect(page).to have_content @forked_project.path_with_namespace
-    expect(page).to have_content @project.path_with_namespace
+    expect(page).to have_content @forked_project.full_path
+    expect(page).to have_content @project.full_path
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
   end
@@ -97,7 +100,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see the edit page prefilled for "Merge Request On Forked Project"' do
-    expect(current_path).to eq edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(current_path).to eq edit_project_merge_request_path(@project, @merge_request)
     expect(page).to have_content "Edit merge request #{@merge_request.to_reference}"
     expect(find("#merge_request_title").value).to eq "Merge Request On Forked Project"
   end

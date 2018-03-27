@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebHookLog, models: true do
+describe WebHookLog do
   it { is_expected.to belong_to(:web_hook) }
 
   it { is_expected.to serialize(:request_headers).as(Hash) }

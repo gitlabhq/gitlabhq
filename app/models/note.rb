@@ -3,7 +3,6 @@
 # A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
-  include Gitlab::CurrentSettings
   include Participable
   include Mentionable
   include Awardable
@@ -14,6 +13,18 @@ class Note < ActiveRecord::Base
   include ResolvableNote
   include IgnorableColumn
   include Editable
+  include Gitlab::SQL::Pattern
+  include ThrottledTouch
+
+  module SpecialRole
+    FIRST_TIME_CONTRIBUTOR = :first_time_contributor
+
+    class << self
+      def values
+        constants.map {|const| self.const_get(const)}
+      end
+    end
+  end
 
   ignore_column :original_discussion_id
 
@@ -32,8 +43,11 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Attribute used to store the attributes that have ben changed by quick actions.
+  # Attribute used to store the attributes that have been changed by quick actions.
   attr_accessor :commands_changes
+
+  # A special role that may be displayed on issuable's discussions
+  attr_accessor :special_role
 
   default_value_for :system, false
 
@@ -41,13 +55,13 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
 
-  has_many :todos, dependent: :destroy
-  has_many :events, as: :target, dependent: :destroy
+  has_many :todos
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
 
   delegate :gfm_reference, :local_reference, to: :noteable
@@ -56,7 +70,7 @@ class Note < ActiveRecord::Base
   delegate :title, to: :noteable, allow_nil: true
 
   validates :note, presence: true
-  validates :project, presence: true, unless: :for_personal_snippet?
+  validates :project, presence: true, if: :for_project_noteable?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -67,42 +81,45 @@ class Note < ActiveRecord::Base
   validates :author, presence: true
   validates :discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
 
-  validate unless: [:for_commit?, :importing?, :for_personal_snippet?] do |note|
+  validate unless: [:for_commit?, :importing?, :skip_project_check?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:project, 'does not match noteable project')
     end
   end
 
+  # @deprecated attachments are handler by the MarkdownUploader
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
-  scope :system, ->{ where(system: true) }
-  scope :user, ->{ where(system: false) }
-  scope :common, ->{ where(noteable_type: ["", nil]) }
-  scope :fresh, ->{ order(created_at: :asc, id: :asc) }
-  scope :updated_after, ->(time){ where('updated_at > ?', time) }
-  scope :inc_author_project, ->{ includes(:project, :author) }
-  scope :inc_author, ->{ includes(:author) }
+  scope :system, -> { where(system: true) }
+  scope :user, -> { where(system: false) }
+  scope :common, -> { where(noteable_type: ["", nil]) }
+  scope :fresh, -> { order(created_at: :asc, id: :asc) }
+  scope :updated_after, ->(time) { where('updated_at > ?', time) }
+  scope :inc_author_project, -> { includes(:project, :author) }
+  scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
     includes(:project, :author, :updated_by, :resolved_by, :award_emoji, :system_note_metadata)
   end
 
-  scope :diff_notes, ->{ where(type: %w(LegacyDiffNote DiffNote)) }
-  scope :new_diff_notes, ->{ where(type: 'DiffNote') }
-  scope :non_diff_notes, ->{ where(type: ['Note', 'DiscussionNote', nil]) }
+  scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
+  scope :new_diff_notes, -> { where(type: 'DiffNote') }
+  scope :non_diff_notes, -> { where(type: ['Note', 'DiscussionNote', nil]) }
 
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits
     includes(:author, :noteable, :updated_by,
              project: [:project_members, { group: [:group_members] }])
   end
+  scope :with_metadata, -> { includes(:system_note_metadata) }
 
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create
-  after_save :keep_around_commit, unless: :for_personal_snippet?
+  after_save :keep_around_commit, if: :for_project_noteable?
   after_save :expire_etag_cache
+  after_save :touch_noteable
   after_destroy :expire_etag_cache
 
   class << self
@@ -116,19 +133,28 @@ class Note < ActiveRecord::Base
 
     def find_discussion(discussion_id)
       notes = where(discussion_id: discussion_id).fresh.to_a
+
       return if notes.empty?
 
       Discussion.build(notes)
     end
 
+    # Group diff discussions by line code or file path.
+    # It is not needed to group by line code when comment is
+    # on an image.
     def grouped_diff_discussions(diff_refs = nil)
       groups = {}
 
       diff_notes.fresh.discussions.each do |discussion|
-        line_code = discussion.line_code_in_diffs(diff_refs)
+        group_key =
+          if discussion.on_image?
+            discussion.file_new_path
+          else
+            discussion.line_code_in_diffs(diff_refs)
+          end
 
-        if line_code
-          discussions = groups[line_code] ||= []
+        if group_key
+          discussions = groups[group_key] ||= []
           discussions << discussion
         end
       end
@@ -141,10 +167,24 @@ class Note < ActiveRecord::Base
         .group(:noteable_id)
         .where(noteable_type: type, noteable_id: ids)
     end
+
+    def has_special_role?(role, note)
+      note.special_role == role
+    end
+
+    def search(query)
+      fuzzy_search(query, [:note])
+    end
   end
 
   def cross_reference?
-    system? && SystemNoteService.cross_reference?(note)
+    return unless system?
+
+    if force_cross_reference_regex_check?
+      matches_cross_reference_regex?
+    else
+      SystemNoteService.cross_reference?(note)
+    end
   end
 
   def diff_note?
@@ -156,7 +196,7 @@ class Note < ActiveRecord::Base
   end
 
   def max_attachment_size
-    current_application_settings.max_attachment_size.megabytes.to_i
+    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
   def hook_attrs
@@ -183,20 +223,26 @@ class Note < ActiveRecord::Base
     noteable.is_a?(PersonalSnippet)
   end
 
+  def for_project_noteable?
+    !for_personal_snippet?
+  end
+
   def skip_project_check?
-    for_personal_snippet?
+    !for_project_noteable?
+  end
+
+  def commit
+    @commit ||= project.commit(commit_id) if commit_id.present?
   end
 
   # override to return commits, which are not active record
   def noteable
-    if for_commit?
-      project.commit(commit_id)
-    else
-      super
-    end
-  # Temp fix to prevent app crash
-  # if note commit id doesn't exist
+    return commit if for_commit?
+
+    super
   rescue
+    # Temp fix to prevent app crash
+    # if note commit id doesn't exist
     nil
   end
 
@@ -204,6 +250,22 @@ class Note < ActiveRecord::Base
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
+  end
+
+  def special_role=(role)
+    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.values.include?(role)
+
+    @special_role = role
+  end
+
+  def has_special_role?(role)
+    self.class.has_special_role?(role, self)
+  end
+
+  def specialize_for_first_contribution!(noteable)
+    return unless noteable.author_id == self.author_id
+
+    self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
   end
 
   def editable?
@@ -244,6 +306,11 @@ class Note < ActiveRecord::Base
 
   def can_be_discussion_note?
     self.noteable.supports_discussions? && !part_of_discussion?
+  end
+
+  def can_create_todo?
+    # Skip system notes, and notes on project snippet
+    !system? && !for_snippet?
   end
 
   def discussion_class(noteable = nil)
@@ -299,6 +366,66 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def references
+    refs = [noteable]
+
+    if part_of_discussion?
+      refs += discussion.notes.take_while { |n| n.id < id }
+    end
+
+    refs
+  end
+
+  def expire_etag_cache
+    return unless noteable&.discussions_rendered_on_frontend?
+
+    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
+      project,
+      target_type: noteable_type.underscore,
+      target_id: noteable_id
+    )
+    Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
+  def touch(*args)
+    # We're not using an explicit transaction here because this would in all
+    # cases result in all future queries going to the primary, even if no writes
+    # are performed.
+    #
+    # We touch the noteable first so its SELECT query can run before our writes,
+    # ensuring it runs on a secondary (if no prior write took place).
+    touch_noteable
+    super
+  end
+
+  # By default Rails will issue an "SELECT *" for the relation, which is
+  # overkill for just updating the timestamps. To work around this we manually
+  # touch the data so we can SELECT only the columns we need.
+  def touch_noteable
+    # Commits are not stored in the DB so we can't touch them.
+    return if for_commit?
+
+    assoc = association(:noteable)
+
+    noteable_object =
+      if assoc.loaded?
+        noteable
+      else
+        # If the object is not loaded (e.g. when notes are loaded async) we
+        # _only_ want the data we actually need.
+        assoc.scope.select(:id, :updated_at).take
+      end
+
+    noteable_object&.touch
+
+    # We return the noteable object so we can re-use it in EE for ElasticSearch.
+    noteable_object
+  end
+
+  def banzai_render_context(field)
+    super.merge(noteable: noteable)
+  end
+
   private
 
   def keep_around_commit
@@ -327,15 +454,9 @@ class Note < ActiveRecord::Base
     self.discussion_id ||= discussion_class.discussion_id(self)
   end
 
-  def expire_etag_cache
-    return unless for_issue?
+  def force_cross_reference_regex_check?
+    return unless system?
 
-    key = Gitlab::Routing.url_helpers.namespace_project_noteable_notes_path(
-      noteable.project.namespace,
-      noteable.project,
-      target_type: noteable_type.underscore,
-      target_id: noteable.id
-    )
-    Gitlab::EtagCaching::Store.new.touch(key)
+    SystemNoteMetadata::TYPES_WITH_CROSS_REFERENCES.include?(system_note_metadata&.action)
   end
 end

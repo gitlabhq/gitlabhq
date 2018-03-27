@@ -1,39 +1,55 @@
-%h3.page-title Authorization required
 %main{ :role => "main" }
-  %p.h4
-    Authorize
-    %strong.text-info= @pre_auth.client.name
-    to use your account?
+  .modal-no-backdrop.modal-doorkeepr-auth
+    .modal-content
+      .modal-header
+        %h3.page-title
+          Authorize
+          = link_to @pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer'
+          to use your account?
 
-  - if current_user.admin?
-    .text-warning.prepend-top-20
-      %p
-        = icon("exclamation-triangle fw")
-        You are an admin, which means granting access to
-        %strong= @pre_auth.client.name
-        will allow them to interact with GitLab as an admin as well. Proceed with caution.
+      .modal-body
+        - if current_user.admin?
+          .text-warning
+            %p
+              = icon("exclamation-triangle fw")
+              You are an admin, which means granting access to
+              %strong= @pre_auth.client.name
+              will allow them to interact with GitLab as an admin as well. Proceed with caution.
+        %p
+          An application called
+          = link_to @pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer'
+          is requesting access to your GitLab account.
 
-  - if @pre_auth.scopes
-    #oauth-permissions
-      %p This application will be able to:
-      %ul.text-info
-        - @pre_auth.scopes.each do |scope|
-          %li= t scope, scope: [:doorkeeper, :scopes]
-  %hr/
-  .actions
-    = form_tag oauth_authorization_path, method: :post do
-      = hidden_field_tag :client_id, @pre_auth.client.uid
-      = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
-      = hidden_field_tag :state, @pre_auth.state
-      = hidden_field_tag :response_type, @pre_auth.response_type
-      = hidden_field_tag :scope, @pre_auth.scope
-      = hidden_field_tag :nonce, @pre_auth.nonce
-      = submit_tag "Authorize", class: "btn btn-success wide pull-left"
-    = form_tag oauth_authorization_path, method: :delete do
-      = hidden_field_tag :client_id, @pre_auth.client.uid
-      = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
-      = hidden_field_tag :state, @pre_auth.state
-      = hidden_field_tag :response_type, @pre_auth.response_type
-      = hidden_field_tag :scope, @pre_auth.scope
-      = hidden_field_tag :nonce, @pre_auth.nonce
-      = submit_tag "Deny", class: "btn btn-danger prepend-left-10"
+          - auth_app_owner = @pre_auth.client.application.owner
+          - if auth_app_owner
+            This application was created by
+            = succeed "." do
+              = link_to auth_app_owner.name, user_path(auth_app_owner)
+
+          Please note that this application is not provided by GitLab and you should verify its authenticity before
+          allowing access.
+        - if @pre_auth.scopes
+          %p
+            This application will be able to:
+            %ul
+              - @pre_auth.scopes.each do |scope|
+                %li
+                  %strong= t scope, scope: [:doorkeeper, :scopes]
+                  .scope-description= t scope, scope: [:doorkeeper, :scope_desc]
+        .form-actions.text-right
+          = form_tag oauth_authorization_path, method: :delete, class: 'inline'  do
+            = hidden_field_tag :client_id, @pre_auth.client.uid
+            = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
+            = hidden_field_tag :state, @pre_auth.state
+            = hidden_field_tag :response_type, @pre_auth.response_type
+            = hidden_field_tag :scope, @pre_auth.scope
+            = hidden_field_tag :nonce, @pre_auth.nonce
+            = submit_tag "Deny", class: "btn btn-danger"
+          = form_tag oauth_authorization_path, method: :post, class: 'inline' do
+            = hidden_field_tag :client_id, @pre_auth.client.uid
+            = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
+            = hidden_field_tag :state, @pre_auth.state
+            = hidden_field_tag :response_type, @pre_auth.response_type
+            = hidden_field_tag :scope, @pre_auth.scope
+            = hidden_field_tag :nonce, @pre_auth.nonce
+            = submit_tag "Authorize", class: "btn btn-success prepend-left-10"

@@ -1,27 +1,29 @@
 module Ci
   class Pipeline < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasStatus
     include Importable
     include AfterCommitQueue
     include Presentable
+    include Gitlab::OptimisticLocking
 
-    belongs_to :project
+    belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
     has_many :stages
-    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
-    has_many :builds, foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
+    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
+    has_many :variables, class_name: 'Ci::PipelineVariable'
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     has_many :merge_requests, foreign_key: "head_pipeline_id"
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
-    has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
     has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
@@ -30,6 +32,7 @@ module Ci
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
+    delegate :full_path, to: :project, prefix: true
 
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
@@ -49,10 +52,21 @@ module Ci
       external: 6
     }
 
+    enum config_source: {
+      unknown_source: nil,
+      repository_source: 1,
+      auto_devops_source: 2
+    }
+
+    enum failure_reason: {
+      unknown_failure: 0,
+      config_error: 1
+    }
+
     state_machine :status, initial: :created do
       event :enqueue do
-        transition created: :pending
-        transition [:success, :failed, :canceled, :skipped] => :running
+        transition [:created, :skipped] => :pending
+        transition [:success, :failed, :canceled] => :running
       end
 
       event :run do
@@ -100,6 +114,12 @@ module Ci
         pipeline.auto_canceled_by = nil
       end
 
+      before_transition any => :failed do |pipeline, transition|
+        transition.args.first.try do |reason|
+          pipeline.failure_reason = reason
+        end
+      end
+
       after_transition [:created, :pending] => :running do |pipeline|
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
@@ -128,30 +148,67 @@ module Ci
       end
     end
 
-    # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest, ->(ref = nil) do
-      max_id = unscope(:select)
-        .select("max(#{quoted_table_name}.id)")
-        .group(:ref, :sha)
+    scope :internal, -> { where(source: internal_sources) }
 
-      if ref
-        where(ref: ref, id: max_id.where(ref: ref))
-      else
-        where(id: max_id)
-      end
+    # Returns the pipelines in descending order (= newest first), optionally
+    # limited to a number of references.
+    #
+    # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
+    #       pipelines to.
+    def self.newest_first(ref = nil)
+      relation = order(id: :desc)
+
+      ref ? relation.where(ref: ref) : relation
     end
 
     def self.latest_status(ref = nil)
-      latest(ref).status
+      newest_first(ref).pluck(:status).first
     end
 
     def self.latest_successful_for(ref)
-      success.latest(ref).order(id: :desc).first
+      newest_first(ref).success.take
     end
 
     def self.latest_successful_for_refs(refs)
-      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+      relation = newest_first(refs).success
+
+      relation.each_with_object({}) do |pipeline, hash|
         hash[pipeline.ref] ||= pipeline
+      end
+    end
+
+    # Returns a Hash containing the latest pipeline status for every given
+    # commit.
+    #
+    # The keys of this Hash are the commit SHAs, the values the statuses.
+    #
+    # commits - The list of commit SHAs to get the status for.
+    # ref - The ref to scope the data to (e.g. "master"). If the ref is not
+    #       given we simply get the latest status for the commits, regardless
+    #       of what refs their pipelines belong to.
+    def self.latest_status_per_commit(commits, ref = nil)
+      p1 = arel_table
+      p2 = arel_table.alias
+
+      # This LEFT JOIN will filter out all but the newest row for every
+      # combination of (project_id, sha) or (project_id, sha, ref) if a ref is
+      # given.
+      cond = p1[:sha].eq(p2[:sha])
+        .and(p1[:project_id].eq(p2[:project_id]))
+        .and(p1[:id].lt(p2[:id]))
+
+      cond = cond.and(p1[:ref].eq(p2[:ref])) if ref
+      join = p1.join(p2, Arel::Nodes::OuterJoin).on(cond)
+
+      relation = select(:sha, :status)
+        .where(sha: commits)
+        .where(p2[:id].eq(nil))
+        .joins(join.join_sources)
+
+      relation = relation.where(ref: ref) if ref
+
+      relation.each_with_object({}) do |row, hash|
+        hash[row[:sha]] = row[:status]
       end
     end
 
@@ -163,8 +220,16 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
+    def self.internal_sources
+      sources.reject { |source| source == "external" }.values
+    end
+
     def stages_count
       statuses.select(:stage).distinct.count
+    end
+
+    def total_size
+      statuses.count(:id)
     end
 
     def stages_names
@@ -222,10 +287,12 @@ module Ci
       Ci::Pipeline.truncate_sha(sha)
     end
 
+    # NOTE: This is loaded lazily and will never be nil, even if the commit
+    # cannot be found.
+    #
+    # Use constructs like: `pipeline.commit.present?`
     def commit
-      @commit ||= project.commit(sha)
-    rescue
-      nil
+      @commit ||= Commit.lazy(project, sha)
     end
 
     def branch?
@@ -249,7 +316,7 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+      retry_optimistic_lock(cancelable_statuses) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -275,10 +342,9 @@ module Ci
     end
 
     def latest?
-      return false unless ref
-      commit = project.commit(ref)
-      return false unless commit
-      commit.sha == sha
+      return false unless ref && commit.present?
+
+      project.commit(ref) == commit
     end
 
     def retried
@@ -298,6 +364,14 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def seeds_size
+      @seeds_size ||= stage_seeds.sum(&:size)
+    end
+
+    def has_kubernetes_active?
+      project.deployment_platform&.active?
+    end
+
     def has_stage_seeds?
       stage_seeds.any?
     end
@@ -306,13 +380,21 @@ module Ci
       builds.latest.failed_but_allowed.any?
     end
 
+    def set_config_source
+      if ci_yaml_from_repo
+        self.config_source = :repository_source
+      elsif implied_ci_yaml_file
+        self.config_source = :auto_devops_source
+      end
+    end
+
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
-      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+      rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
       rescue
@@ -321,10 +403,30 @@ module Ci
       end
     end
 
+    def ci_yaml_file_path
+      if project.ci_config_path.blank?
+        '.gitlab-ci.yml'
+      else
+        project.ci_config_path
+      end
+    end
+
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = project.repository.gitlab_ci_yml_for(sha) rescue nil
+      @ci_yaml_file =
+        if auto_devops_source?
+          implied_ci_yaml_file
+        else
+          ci_yaml_from_repo
+        end
+
+      if @ci_yaml_file
+        @ci_yaml_file
+      else
+        self.yaml_errors = "Failed to load CI/CD config file for #{sha}"
+        nil
+      end
     end
 
     def has_yaml_errors?
@@ -349,7 +451,7 @@ module Ci
     end
 
     def notes
-      Note.for_commit_id(sha)
+      project.notes.for_commit_id(sha)
     end
 
     def process!
@@ -357,7 +459,7 @@ module Ci
     end
 
     def update_status
-      Gitlab::OptimisticLocking.retry_lock(self) do
+      retry_optimistic_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run
@@ -371,9 +473,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
     end
 
     def queued_duration
@@ -386,7 +489,7 @@ module Ci
     def update_duration
       return unless started_at
 
-      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
+      self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
     def execute_hooks
@@ -406,7 +509,31 @@ module Ci
         .fabricate!
     end
 
+    def latest_builds_with_artifacts
+      # We purposely cast the builds to an Array here. Because we always use the
+      # rows if there are more than 0 this prevents us from having to run two
+      # queries: one to get the count and one to get the rows.
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
+    end
+
     private
+
+    def ci_yaml_from_repo
+      return unless project
+      return unless sha
+
+      project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
+    rescue GRPC::NotFound, GRPC::Internal
+      nil
+    end
+
+    def implied_ci_yaml_file
+      return unless project
+
+      if project.auto_devops_enabled?
+        Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
+      end
+    end
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)

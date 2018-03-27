@@ -1,4 +1,6 @@
-import '~/todos';
+import $ from 'jquery';
+import * as urlUtils from '~/lib/utils/url_utility';
+import Todos from '~/pages/dashboard/todos/index/todos';
 import '~/lib/utils/common_utils';
 
 describe('Todos', () => {
@@ -9,14 +11,14 @@ describe('Todos', () => {
     loadFixtures('todos/todos.html.raw');
     todoItem = document.querySelector('.todos-list .todo');
 
-    return new gl.Todos();
+    return new Todos();
   });
 
   describe('goToTodoUrl', () => {
     it('opens the todo url', (done) => {
       const todoLink = todoItem.dataset.url;
 
-      spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(todoLink);
         done();
       });
@@ -26,37 +28,30 @@ describe('Todos', () => {
 
     describe('meta click', () => {
       let visitUrlSpy;
+      let windowOpenSpy;
+      let metakeyEvent;
 
       beforeEach(() => {
-        spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
-        visitUrlSpy = spyOn(gl.utils, 'visitUrl').and.callFake(() => {});
+        metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
+        visitUrlSpy = spyOn(urlUtils, 'visitUrl').and.callFake(() => {});
+        windowOpenSpy = spyOn(window, 'open').and.callFake(() => {});
       });
 
-      it('opens the todo url in another tab', (done) => {
+      it('opens the todo url in another tab', () => {
         const todoLink = todoItem.dataset.url;
 
-        spyOn(window, 'open').and.callFake((url, target) => {
-          expect(todoLink).toEqual(url);
-          expect(target).toEqual('_blank');
-          done();
-        });
+        $('.todos-list .todo').trigger(metakeyEvent);
 
-        todoItem.click();
         expect(visitUrlSpy).not.toHaveBeenCalled();
+        expect(windowOpenSpy).toHaveBeenCalledWith(todoLink, '_blank');
       });
 
-      it('opens the avatar\'s url in another tab when the avatar is clicked', (done) => {
-        const avatarImage = todoItem.querySelector('img');
-        const avatarUrl = avatarImage.parentElement.getAttribute('href');
+      it('run native funcionality when avatar is clicked', () => {
+        $('.todos-list a').on('click', e => e.preventDefault());
+        $('.todos-list img').trigger(metakeyEvent);
 
-        spyOn(window, 'open').and.callFake((url, target) => {
-          expect(avatarUrl).toEqual(url);
-          expect(target).toEqual('_blank');
-          done();
-        });
-
-        avatarImage.click();
         expect(visitUrlSpy).not.toHaveBeenCalled();
+        expect(windowOpenSpy).not.toHaveBeenCalled();
       });
     });
   });

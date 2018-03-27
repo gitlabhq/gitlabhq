@@ -17,7 +17,7 @@
 
 .wiki h3 {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 header,
@@ -37,7 +37,7 @@ ul.notes-form,
 .issuable-details .content-block-small,
 .edit-link,
 .note-action-button {
-  display: none!important;
+  display: none !important;
 }
 
 pre {

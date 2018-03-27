@@ -8,7 +8,7 @@ describe Admin::ServicesController do
   end
 
   describe 'GET #edit' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     Service.available_services_names.each do |service_name|
       context "#{service_name}" do
@@ -20,14 +20,14 @@ describe Admin::ServicesController do
         it 'successfully displays the template' do
           get :edit, id: service.id
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end
   end
 
   describe "#update" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.create(
         project: project,
@@ -46,7 +46,7 @@ describe Admin::ServicesController do
 
       put :update, id: service.id, service: { active: true }
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
     end
 
     it 'does not call the propagation worker when service is not active' do
@@ -54,7 +54,7 @@ describe Admin::ServicesController do
 
       put :update, id: service.id, service: { properties: {} }
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
     end
   end
 end

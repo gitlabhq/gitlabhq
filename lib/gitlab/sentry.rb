@@ -1,11 +1,13 @@
 module Gitlab
   module Sentry
     def self.enabled?
-      Rails.env.production? && current_application_settings.sentry_enabled?
+      Rails.env.production? && Gitlab::CurrentSettings.sentry_enabled?
     end
 
     def self.context(current_user = nil)
       return unless self.enabled?
+
+      Raven.tags_context(locale: I18n.locale)
 
       if current_user
         Raven.user_context(

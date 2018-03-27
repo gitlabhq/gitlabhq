@@ -7,12 +7,12 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
     fill_in 'project_path', with: 'Empty'
     page.within '#content-body' do
       click_button "Create project"
-    end  
+    end
   end
 
   step 'I should see project page' do
     expect(page).to have_content "Empty"
-    expect(current_path).to eq namespace_project_path(Project.last.namespace, Project.last)
+    expect(current_path).to eq project_path(Project.last)
   end
 
   step 'I should see empty project instructions' do

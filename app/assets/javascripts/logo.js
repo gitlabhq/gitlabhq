@@ -1,7 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback */
+import $ from 'jquery';
 
-(function() {
-  window.addEventListener('beforeunload', function() {
+export default function initLogoAnimation() {
+  window.addEventListener('beforeunload', () => {
     $('.tanuki-logo').addClass('animate');
   });
-}).call(window);
+}

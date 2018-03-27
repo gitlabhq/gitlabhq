@@ -1,22 +1,22 @@
 = content_for :flash_message do
   = render 'shared/project_limit'
+
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
-  %ul.nav-links.scrolling-tabs
+  %ul.nav-links.scrolling-tabs.mobile-separator
     = nav_link(page: [dashboard_projects_path, root_path]) do
-      = link_to dashboard_projects_path, title: 'Home', class: 'shortcuts-activity', data: {placement: 'right'} do
+      = link_to dashboard_projects_path, class: 'shortcuts-activity', data: {placement: 'right'} do
         Your projects
     = nav_link(page: starred_dashboard_projects_path) do
-      = link_to starred_dashboard_projects_path, title: 'Starred Projects', data: {placement: 'right'} do
+      = link_to starred_dashboard_projects_path, data: {placement: 'right'} do
         Starred projects
     = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
-      = link_to explore_root_path, title: 'Explore', data: {placement: 'right'} do
+      = link_to explore_root_path, data: {placement: 'right'} do
         Explore projects
 
   .nav-controls
     = render 'shared/projects/search_form'
     = render 'shared/projects/dropdown'
     - if current_user.can_create_project?
-      = link_to new_project_path, class: 'btn btn-new' do
-        New project
+      = link_to "New project", new_project_path, class: "btn btn-new"

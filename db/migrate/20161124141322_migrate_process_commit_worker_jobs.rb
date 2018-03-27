@@ -12,10 +12,11 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
 
     def repository_storage_path
-      Gitlab.config.repositories.storages[repository_storage]['path']
+      Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
     end
 
     def repository_path
+      # TODO: review if the change from Legacy storage needs to reflect here as well.
       File.join(repository_storage_path, read_attribute(:path_with_namespace) + '.git')
     end
 

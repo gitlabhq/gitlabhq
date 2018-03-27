@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "domain": { "type": "string" },
+    "url": { "type": "uri" },
+    "project_id": { "type": "integer" },
+    "verified": { "type": "boolean" },
+    "verification_code": { "type": ["string", "null"] },
+    "enabled_until": { "type": ["date", "null"] },
+    "certificate_expiration": {
+      "type": "object",
+      "properties": {
+        "expired": { "type": "boolean" },
+        "expiration": { "type": "string" }
+      },
+      "required": ["expired", "expiration"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["domain", "url", "project_id", "verified", "verification_code", "enabled_until"],
+  "additionalProperties": false
+}

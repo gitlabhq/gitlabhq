@@ -1,13 +1,9 @@
 - @no_container = true
 - page_title "Charts"
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('graphs')
-= render "projects/commits/head"
 
 .repo-charts{ class: container_class }
   %h4.sub-header
-    Programming languages used in this repository
+    = _("Programming languages used in this repository")
 
   .row
     .col-md-4
@@ -30,9 +26,11 @@
   .row.tree-ref-header
     .col-md-6
       %h4
-        Commit statistics for
-        %strong= @ref
-        #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+        - start_time = capture do
+          #{@commits_graph.start_date.strftime('%b %d')}
+        - end_time = capture do
+          #{@commits_graph.end_date.strftime('%b %d')}
+        = (_("Commit statistics for %{ref} %{start_time} - %{end_time}") % { ref: "<strong>#{@ref}</strong>", start_time: start_time, end_time: end_time }).html_safe
 
     .col-md-6
       .tree-ref-container
@@ -45,83 +43,42 @@
     .col-md-6
       %ul.commit-stats
         %li
-          Total:
-          %strong #{@commits_graph.commits.size} commits
+          - total = capture do
+            #{@commits_graph.commits.size}
+          = (_("Total: %{total}") % { total: "<strong>#{total} commits</strong>" }).html_safe
         %li
-          Average per day:
-          %strong #{@commits_graph.commit_per_day} commits
+          - average = capture do
+            #{@commits_graph.commit_per_day}
+          = (_("Average per day: %{average}") % { average: "<strong>#{average} commits</strong>" }).html_safe
         %li
-          Authors:
-          %strong= @commits_graph.authors
+          - authors = capture do
+            #{@commits_graph.authors}
+          = (_("Authors: %{authors}") % { authors: "<strong>#{authors}</strong>" }).html_safe
     .col-md-6
       %div
         %p.slead
-          Commits per day of month
+          = _("Commits per day of month")
         %canvas#month-chart
   .row
     .col-md-6
     .col-md-6
       %div
         %p.slead
-          Commits per weekday
+          = _("Commits per weekday")
         %canvas#weekday-chart
   .row
     .col-md-6
     .col-md-6
       %div
         %p.slead
-          Commits per day hour (UTC)
+          = _("Commits per day hour (UTC)")
         %canvas#hour-chart
 
-:javascript
-  var responsiveChart = function (selector, data) {
-    var options = { "scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2, maintainAspectRatio: false };
-    // get selector by context
-    var ctx = selector.get(0).getContext("2d");
-    // pointing parent container to make chart.js inherit its width
-    var container = $(selector).parent();
-    var generateChart = function() {
-      selector.attr('width', $(container).width());
-      if (window.innerWidth < 768) {
-        // Scale fonts if window width lower than 768px (iPad portrait)
-        options.scaleFontSize = 8
-      }
-      return new Chart(ctx).Bar(data, options);
-    };
-    // enabling auto-resizing
-    $(window).resize(generateChart);
-    return generateChart();
-  };
-
-  var chartData = function (keys, values) {
-    var data = {
-      labels : keys,
-      datasets : [{
-        fillColor : "rgba(220,220,220,0.5)",
-        strokeColor : "rgba(220,220,220,1)",
-        barStrokeWidth: 1,
-        barValueSpacing: 1,
-        barDatasetSpacing: 1,
-        data : values
-      }]
-    };
-    return data;
-  };
-
-  var hourData = chartData(#{@commits_per_time.keys.to_json}, #{@commits_per_time.values.to_json});
-  responsiveChart($('#hour-chart'), hourData);
-
-  var dayData = chartData(#{@commits_per_week_days.keys.to_json}, #{@commits_per_week_days.values.to_json});
-  responsiveChart($('#weekday-chart'), dayData);
-
-  var monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json});
-  responsiveChart($('#month-chart'), monthData);
-
-  var data = #{@languages.to_json};
-  var ctx = $("#languages-chart").get(0).getContext("2d");
-  var options = {
-    scaleOverlay: true,
-    responsive: true,
-    maintainAspectRatio: false
-  }
-  var myPieChart = new Chart(ctx).Pie(data, options);
+-# haml-lint:disable InlineJavaScript
+%script#projectChartData{ type: "application/json" }
+  - projectChartData = {};
+  - projectChartData['hour'] = @commits_per_time
+  - projectChartData['weekDays'] = @commits_per_week_days
+  - projectChartData['month'] = @commits_per_month
+  - projectChartData['languages'] = @languages
+  = projectChartData.to_json.html_safe

@@ -33,7 +33,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
     if @label.valid?
       respond_to do |format|
-        format.html { redirect_to namespace_project_labels_path(@project.namespace, @project) }
+        format.html { redirect_to project_labels_path(@project) }
         format.json { render json: @label }
       end
     else
@@ -51,7 +51,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label = Labels::UpdateService.new(label_params).execute(@label)
 
     if @label.valid?
-      redirect_to namespace_project_labels_path(@project.namespace, @project)
+      redirect_to project_labels_path(@project)
     else
       render :edit
     end
@@ -61,12 +61,11 @@ class Projects::LabelsController < Projects::ApplicationController
     Gitlab::IssuesLabels.generate(@project)
 
     if params[:redirect] == 'issues'
-      redirect_to namespace_project_issues_path(@project.namespace, @project)
+      redirect_to project_issues_path(@project)
     elsif params[:redirect] == 'merge_requests'
-      redirect_to namespace_project_merge_requests_path(@project.namespace,
-                                                        @project)
+      redirect_to project_merge_requests_path(@project)
     else
-      redirect_to namespace_project_labels_path(@project.namespace, @project)
+      redirect_to project_labels_path(@project)
     end
   end
 
@@ -74,7 +73,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    redirect_to namespace_project_labels_path(@project.namespace, @project),
+    redirect_to project_labels_path(@project),
                 status: 302,
                 notice: 'Label was removed'
   end
@@ -112,12 +111,15 @@ class Projects::LabelsController < Projects::ApplicationController
 
     begin
       return render_404 unless promote_service.execute(@label)
+
+      flash[:notice] = "#{@label.title} promoted to group label."
       respond_to do |format|
         format.html do
-          redirect_to(namespace_project_labels_path(@project.namespace, @project),
-                      notice: 'Label was promoted to a Group Label')
+          redirect_to(project_labels_path(@project), status: 303)
         end
-        format.js
+        format.json do
+          render json: { url: project_labels_path(@project) }
+        end
       end
     rescue ActiveRecord::RecordInvalid => e
       Gitlab::AppLogger.error "Failed to promote label \"#{@label.title}\" to group label"
@@ -125,7 +127,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
       respond_to do |format|
         format.html do
-          redirect_to(namespace_project_labels_path(@project.namespace, @project),
+          redirect_to(project_labels_path(@project),
                       notice: 'Failed to promote label due to internal error. Please contact administrators.')
         end
         format.js

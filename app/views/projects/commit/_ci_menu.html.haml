@@ -1,10 +1,10 @@
 %ul.nav-links.no-top.no-bottom.commit-ci-menu
   = nav_link(path: 'commit#show') do
-    = link_to namespace_project_commit_path(@project.namespace, @project, @commit.id) do
+    = link_to project_commit_path(@project, @commit.id) do
       Changes
       %span.badge= @diffs.size
   - if can?(current_user, :read_pipeline, @project)
     = nav_link(path: 'commit#pipelines') do
-      = link_to pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
+      = link_to pipelines_project_commit_path(@project, @commit.id) do
         Pipelines
-        %span.badge= @commit.pipelines.size
+        %span.badge.js-pipelines-mr-count= @commit.pipelines.size

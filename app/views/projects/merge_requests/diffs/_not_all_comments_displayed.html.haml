@@ -1,0 +1,17 @@
+- if @commit || @start_version || (@merge_request_diff && !@merge_request_diff.latest?)
+  .mr-version-controls
+    .content-block.comments-disabled-notif.clearfix
+      = icon('info-circle')
+      = succeed '.' do
+        - if @commit
+          Only comments from the following commit are shown below
+        - else
+          Not all comments are displayed because you're
+          - if @start_version
+            comparing two versions of the diff
+          - else
+            viewing an old version of the diff
+      .pull-right
+        = link_to diffs_project_merge_request_path(@merge_request.project, @merge_request), class: 'btn btn-sm' do
+          Show latest version
+          = "of the diff" if @commit

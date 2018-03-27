@@ -13,8 +13,6 @@ class ProjectMember < Member
 
   scope :in_project, ->(project) { where(source_id: project.id) }
 
-  before_destroy :delete_member_todos
-
   class << self
     # Add users to projects with passed access option
     #
@@ -87,11 +85,11 @@ class ProjectMember < Member
     project.owner == user
   end
 
-  private
-
-  def delete_member_todos
-    user.todos.where(project_id: source_id).destroy_all if user
+  def notifiable_options
+    { project: project }
   end
+
+  private
 
   def send_invite
     notification_service.invite_project_member(self, @raw_invite_token)

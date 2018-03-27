@@ -1,0 +1,134 @@
+#!/usr/bin/env ruby
+
+require 'gitlab'
+
+#
+# Configure credentials to be used with gitlab gem
+#
+Gitlab.configure do |config|
+  config.endpoint       = 'https://gitlab.com/api/v4'
+  config.private_token  = ENV["DOCS_API_TOKEN"] # GitLab Docs bot access token with Developer access to gitlab-docs
+end
+
+#
+# The remote docs project
+#
+GITLAB_DOCS_REPO = 'gitlab-com/gitlab-docs'.freeze
+
+#
+# Truncate the remote docs branch name if it's more than 63 characters
+# otherwise we hit the filesystem limit and the directory name where
+# NGINX serves the site won't match the branch name.
+#
+def docs_branch
+  # The maximum string length a file can have on a filesystem (ext4)
+  # is 63 characters. Let's use something smaller to be 100% sure.
+  max = 42
+  # Prefix the remote branch with the slug of the project in order
+  # to avoid name conflicts in the rare case the branch name already
+  # exists in the docs repo and truncate to max length.
+  "#{slug}-#{ENV["CI_COMMIT_REF_SLUG"]}"[0...max]
+end
+
+#
+# Create a remote branch in gitlab-docs and immediately cancel the pipeline
+# to avoid race conditions, since a triggered pipeline will also run right
+# after the branch creation. This only happens the very first time a branch
+# is created and will be skipped in subsequent runs. Read more in
+# https://gitlab.com/gitlab-com/gitlab-docs/issues/154.
+#
+def create_remote_branch
+  Gitlab.create_branch(GITLAB_DOCS_REPO, docs_branch, 'master')
+  puts "=> Remote branch '#{docs_branch}' created"
+
+  pipelines = nil
+
+  # Wait until the pipeline is started
+  loop do
+    sleep 1
+    puts "=> Waiting for pipeline to start..."
+    pipelines = Gitlab.pipelines(GITLAB_DOCS_REPO, { ref: docs_branch })
+    break if pipelines.any?
+  end
+
+  # Get the first pipeline ID which should be the only one for the branch
+  pipeline_id = pipelines.first.id
+
+  # Cancel the pipeline
+  Gitlab.cancel_pipeline(GITLAB_DOCS_REPO, pipeline_id)
+rescue Gitlab::Error::BadRequest
+  puts "=> Remote branch '#{docs_branch}' already exists"
+end
+
+#
+# Remove a remote branch in gitlab-docs
+#
+def remove_remote_branch
+  Gitlab.delete_branch(GITLAB_DOCS_REPO, docs_branch)
+  puts "=> Remote branch '#{docs_branch}' deleted"
+end
+
+#
+# Define suffix in review app URL based on project
+#
+def slug
+  case ENV["CI_PROJECT_NAME"]
+  when 'gitlab-ce'
+    'ce'
+  when 'gitlab-ee'
+    'ee'
+  when 'gitlab-runner'
+    'runner'
+  when 'omnibus-gitlab'
+    'omnibus'
+  end
+end
+
+#
+# Overriding vars in https://gitlab.com/gitlab-com/gitlab-docs/blob/master/.gitlab-ci.yml
+#
+def param_name
+  "BRANCH_#{slug.upcase}"
+end
+
+#
+# Trigger a pipeline in gitlab-docs
+#
+def trigger_pipeline
+  # The review app URL
+  app_url = "http://#{docs_branch}.#{ENV["DOCS_REVIEW_APPS_DOMAIN"]}/#{slug}"
+
+  # Create the cross project pipeline using CI_JOB_TOKEN
+  pipeline = Gitlab.run_trigger(GITLAB_DOCS_REPO, ENV["CI_JOB_TOKEN"], docs_branch, { param_name => ENV["CI_COMMIT_REF_NAME"] })
+
+  puts "=> Follow the status of the triggered pipeline:"
+  puts ""
+  puts "https://gitlab.com/gitlab-com/gitlab-docs/pipelines/#{pipeline.id}"
+  puts ""
+  puts "=> In a few minutes, you will be able to preview your changes under the following URL:"
+  puts ""
+  puts app_url
+  puts ""
+  puts "=> For more information, read the documentation"
+  puts "=> https://docs.gitlab.com/ee/development/writing_documentation.html#previewing-the-changes-live"
+  puts ""
+  puts "=> If something doesn't work, drop a line in the #docs chat channel."
+  puts ""
+end
+
+#
+# When the first argument is deploy then create the branch and trigger pipeline
+# When it is 'stop', it deleted the remote branch. That way, we ensure there
+# are no stale remote branches and the Review server doesn't fill.
+#
+case ARGV[0]
+when 'deploy'
+  create_remote_branch
+  trigger_pipeline
+when 'cleanup'
+  remove_remote_branch
+else
+  puts "Please provide a valid option:
+  deploy  - Creates the remote branch and triggers a pipeline
+  cleanup - Deletes the remote branch and stops the Review App"
+end

@@ -24,11 +24,11 @@
             %td
               = truncate(hook_log.url, length: 50)
             %td.light
-              #{number_with_precision(hook_log.execution_duration, precision: 2)} ms
+              #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
             %td.light
               = time_ago_with_tooltip(hook_log.created_at)
             %td
-              = link_to 'View details', namespace_project_hook_hook_log_path(project.namespace, project, hook, hook_log)
+              = link_to 'View details', project_hook_hook_log_path(project, hook, hook_log)
 
       = paginate hook_logs, theme: 'gitlab'
 

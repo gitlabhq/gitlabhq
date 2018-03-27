@@ -23,15 +23,14 @@
 }
 
 .settings {
-  overflow: hidden;
   border-bottom: 1px solid $gray-darker;
 
   &:first-of-type {
     margin-top: 10px;
   }
 
-  &.expanded {
-    overflow: visible;
+  &.animating {
+    overflow: hidden;
   }
 }
 
@@ -54,17 +53,20 @@
 .settings-content {
   max-height: 1px;
   overflow-y: scroll;
-  margin-right: -20px;
-  padding-right: 130px;
+  padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
+  // Keep the section from expanding when we scroll over it
+  pointer-events: none;
 
-  &.expanded {
+  .settings.expanded & {
     max-height: none;
     overflow-y: visible;
     animation: expandMaxHeight 300ms ease-in;
+    // Reset and allow clicks again when expanded
+    pointer-events: auto;
   }
 
-  &.no-animate {
+  .settings.no-animate & {
     animation: none;
   }
 
@@ -86,6 +88,23 @@
     height: 1px;
     overflow: hidden;
     margin-top: 20px;
+  }
+
+  .sub-section {
+    margin-bottom: 32px;
+    padding: 16px;
+    border: 1px solid $border-color;
+    background-color: $gray-light;
+  }
+
+  .bs-callout,
+  .checkbox:first-child,
+  .help-block {
+    margin-top: 0;
+  }
+
+  .label-light {
+    margin-bottom: 0;
   }
 }
 
@@ -116,6 +135,17 @@
   padding-top: 0;
 }
 
+.integration-settings-form {
+  .well {
+    padding: $gl-padding / 2;
+    box-shadow: none;
+  }
+
+  .svg-container {
+    max-width: 150px;
+  }
+}
+
 .token-token-container {
   #impersonation-token-token {
     width: 80%;
@@ -127,6 +157,47 @@
   }
 }
 
+.visibility-level-setting {
+  .radio {
+    margin-bottom: 10px;
+
+    i.fa {
+      margin: 2px 0;
+      font-size: 20px;
+    }
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description,
+    .option-disabled-reason {
+      margin-left: 29px;
+      color: $project-option-descr-color;
+    }
+
+    .option-disabled-reason {
+      display: none;
+    }
+
+    &.disabled {
+      i.fa {
+        opacity: 0.5;
+      }
+
+      .option-description {
+        display: none;
+      }
+
+      .option-disabled-reason {
+        display: block;
+      }
+    }
+  }
+}
+
 .prometheus-metrics-monitoring {
   .panel {
     .panel-toggle {
@@ -134,7 +205,8 @@
     }
 
     .badge {
-      font-size: inherit;
+      font-size: 12px;
+      line-height: 12px;
     }
 
     .panel-heading .badge-count {
@@ -181,11 +253,34 @@
         margin-left: 5px;
         background: $badge-bg;
       }
-    }
 
-    /* Ensure we don't add border if there's only single li */
-    li + li {
-      border-top: 1px solid $border-color;
+      /* Ensure we don't add border if there's only single li */
+      + li {
+        border-top: 1px solid $border-color;
+      }
     }
   }
+}
+
+.modal-doorkeepr-auth,
+.doorkeeper-app-form {
+  .scope-description {
+    color: $theme-gray-700;
+  }
+}
+
+.modal-doorkeepr-auth {
+  .modal-body {
+    padding: $gl-padding;
+  }
+}
+
+.doorkeeper-app-form {
+  .scope-description {
+    margin: 0 0 5px 17px;
+  }
+}
+
+.deprecated-service {
+  cursor: default;
 }

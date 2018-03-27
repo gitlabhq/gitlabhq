@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Gitlab::VersionInfo', lib: true, no_db: true do
+describe 'Gitlab::VersionInfo' do
   before do
     @unknown = Gitlab::VersionInfo.new
     @v0_0_1 = Gitlab::VersionInfo.new(0, 0, 1)
@@ -50,8 +50,8 @@ describe 'Gitlab::VersionInfo', lib: true, no_db: true do
   context 'unknown' do
     it { expect(@unknown).not_to be @v0_0_1 }
     it { expect(@unknown).not_to be Gitlab::VersionInfo.new }
-    it { expect{@unknown > @v0_0_1}.to raise_error(ArgumentError) }
-    it { expect{@unknown < @v0_0_1}.to raise_error(ArgumentError) }
+    it { expect {@unknown > @v0_0_1}.to raise_error(ArgumentError) }
+    it { expect {@unknown < @v0_0_1}.to raise_error(ArgumentError) }
   end
 
   context 'parse' do

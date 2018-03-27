@@ -63,13 +63,20 @@
     display: flex;
     flex: 1;
     -webkit-flex: 1;
-    padding-left: 30px;
+    padding-left: 12px;
     position: relative;
     margin-bottom: 0;
   }
 
   .input-token {
     max-width: 200px;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      color: inherit;
+    }
   }
 
   .input-token:only-child,
@@ -202,8 +209,16 @@
     box-shadow: 0 0 4px $search-input-focus-shadow-color;
   }
 
-  &.focus .fa-filter {
-    color: $common-gray-dark;
+  gl-emoji {
+    display: inline-block;
+    font-family: inherit;
+    font-size: inherit;
+    vertical-align: inherit;
+
+    img {
+      height: 18px;
+      width: 18px;
+    }
   }
 
   .form-control {
@@ -220,13 +235,6 @@
     }
   }
 
-  .fa-filter {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: $gray-darkest;
-  }
-
   .fa-times {
     right: 10px;
     color: $gray-darkest;
@@ -235,7 +243,7 @@
   .clear-search {
     width: 35px;
     background-color: $white-light;
-    border: none;
+    border: 0;
     outline: none;
     z-index: 1;
 
@@ -248,17 +256,11 @@
 .filtered-search-box-input-container {
   flex: 1;
   position: relative;
-  // Fix PhantomJS not supporting `flex: 1;` properly.
-  // This is important because it can change the expected `e.target` when clicking things in tests.
-  // See https://gitlab.com/gitlab-org/gitlab-ce/blob/b54acba8b732688c59fe2f38510c469dc86ee499/spec/features/issues/filtered_search/visual_tokens_spec.rb#L61
-  // - With `width: 100%`: `e.target` = `.tokens-container`, https://i.imgur.com/jGq7wbx.png
-  // - Without `width: 100%`: `e.target` = `.filtered-search`, https://i.imgur.com/cNI2CyT.png
-  width: 100%;
   min-width: 0;
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 215px;
+  max-height: $dropdown-max-height;
   max-width: 280px;
   overflow: auto;
 
@@ -291,16 +293,11 @@
     color: $gl-text-color;
     border-color: $dropdown-input-focus-border;
     outline: none;
-
-    svg {
-      fill: $gl-text-color;
-    }
   }
 
   svg {
     height: 14px;
     width: 14px;
-    fill: $gl-text-color-secondary;
     vertical-align: middle;
   }
 
@@ -327,21 +324,12 @@
 
 .filtered-search-history-dropdown-content {
   max-height: none;
-}
 
-.filtered-search-history-dropdown-item,
-.filtered-search-history-clear-button {
-  @include dropdown-link;
-
-  overflow: hidden;
-  width: 100%;
-  margin: 0.5em 0;
-
-  background-color: transparent;
-  border: 0;
-  text-align: left;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  .filtered-search-history-dropdown-item,
+  .filtered-search-history-clear-button {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .filtered-search-history-dropdown-token {
@@ -351,8 +339,8 @@
     margin-right: 0.3em;
   }
 
-  & > .value {
-    font-weight: 600;
+  > .value {
+    font-weight: $gl-font-weight-bold;
   }
 }
 
@@ -363,10 +351,6 @@
   .dropdown-toggle {
     line-height: 22px;
   }
-}
-
-.dropdown-menu .filter-dropdown-item {
-  padding: 0;
 }
 
 @media (max-width: $screen-xs-max) {
@@ -380,7 +364,8 @@
 @media (max-width: $screen-xs) {
   .filter-dropdown-container {
     .dropdown-toggle,
-    .dropdown {
+    .dropdown,
+    .dropdown-menu {
       width: 100%;
     }
 
@@ -396,28 +381,13 @@
   }
 }
 
-%filter-dropdown-item-btn-hover {
-  background-color: $dropdown-hover-color;
-  color: $white-light;
-  text-decoration: none;
-
-  .avatar {
-    border-color: $white-light;
-  }
-}
-
-.filter-dropdown-item {
+.droplab-dropdown .dropdown-menu .filter-dropdown-item {
   .btn {
-    border: none;
-    width: 100%;
-    text-align: left;
-    padding: 8px 16px;
     text-overflow: ellipsis;
-    overflow: hidden;
-    border-radius: 0;
 
     .fa {
       width: 15px;
+      line-height: $line-height-base;
     }
 
     .dropdown-label-box {
@@ -426,39 +396,28 @@
       border-width: 1px;
       width: 17px;
       height: 17px;
-    }
-
-    &:hover,
-    &:focus {
-      @extend %filter-dropdown-item-btn-hover;
+      top: 0;
     }
   }
 
   .dropdown-light-content {
     font-size: 14px;
-    font-weight: 400;
+    font-weight: $gl-font-weight-normal;
   }
 
   .dropdown-user {
-    display: -webkit-flex;
     display: flex;
   }
 
   .dropdown-user-details {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
 
-    &> span {
+    > span {
       white-space: normal;
       word-break: break-all;
     }
   }
-}
-
-.filter-dropdown-item.droplab-item-active .btn {
-  @extend %filter-dropdown-item-btn-hover;
 }
 
 .filter-dropdown-loading {

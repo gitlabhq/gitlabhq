@@ -143,7 +143,7 @@ describe Gitlab::Ci::Config::Entry::Global do
         describe '#cache_value' do
           it 'returns cache configuration' do
             expect(global.cache_value)
-              .to eq(key: 'k', untracked: true, paths: ['public/'])
+              .to eq(key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push')
           end
         end
 
@@ -157,7 +157,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                        image: { name: 'ruby:2.2' },
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
-                       cache: { key: 'k', untracked: true, paths: ['public/'] },
+                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
                        variables: { 'VAR' => 'value' },
                        ignore: false,
                        after_script: ['make clean'] },
@@ -168,7 +168,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                          image: { name: 'ruby:2.2' },
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
-                         cache: { key: 'k', untracked: true, paths: ['public/'] },
+                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
                          variables: {},
                          ignore: false,
                          after_script: ['make clean'] }
@@ -212,7 +212,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
       describe '#cache_value' do
         it 'returns correct cache definition' do
-          expect(global.cache_value).to eq(key: 'a')
+          expect(global.cache_value).to eq(key: 'a', policy: 'pull-push')
         end
       end
     end

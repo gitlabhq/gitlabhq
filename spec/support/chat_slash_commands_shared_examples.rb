@@ -36,7 +36,7 @@ RSpec.shared_examples 'chat slash commands service' do
     end
 
     context 'with a token passed' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:params) { { token: 'token' } }
 
       before do

@@ -1,8 +1,8 @@
 /* global ListIssue */
 
 import Vue from 'vue';
-import queryData from '../../utils/query_data';
-import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import queryData from '~/boards/utils/query_data';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import './header';
 import './list';
 import './footer';
@@ -12,11 +12,11 @@ const ModalStore = gl.issueBoards.ModalStore;
 
 gl.issueBoards.IssuesModal = Vue.extend({
   props: {
-    blankStateImage: {
+    newIssuePath: {
       type: String,
       required: true,
     },
-    newIssuePath: {
+    emptyStateSvg: {
       type: String,
       required: true,
     },
@@ -88,9 +88,9 @@ gl.issueBoards.IssuesModal = Vue.extend({
       return gl.boardService.getBacklog(queryData(this.filter.path, {
         page: this.page,
         per: this.perPage,
-      })).then((res) => {
-        const data = res.json();
-
+      }))
+      .then(res => res.data)
+      .then((data) => {
         if (clearIssues) {
           this.issues = [];
         }
@@ -150,14 +150,14 @@ gl.issueBoards.IssuesModal = Vue.extend({
           :label-path="labelPath">
         </modal-header>
         <modal-list
-          :image="blankStateImage"
           :issue-link-base="issueLinkBase"
           :root-path="rootPath"
+          :empty-state-svg="emptyStateSvg"
           v-if="!loading && showList && !filterLoading"></modal-list>
         <empty-state
           v-if="showEmptyState"
-          :image="blankStateImage"
-          :new-issue-path="newIssuePath"></empty-state>
+          :new-issue-path="newIssuePath"
+          :empty-state-svg="emptyStateSvg"></empty-state>
         <section
           class="add-issues-list text-center"
           v-if="loading || filterLoading">

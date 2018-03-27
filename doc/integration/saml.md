@@ -102,15 +102,15 @@ in your SAML IdP:
     installation to generate the correct value).
 
 1.  Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
-    `name_identifier_format` to match your IdP. Check
+    `name_identifier_format` to match your IdP. If a fingerprint is used it must
+    be a SHA1 fingerprint; check
     [the omniauth-saml documentation](https://github.com/omniauth/omniauth-saml)
-    for details on these options.
+    for more details on these options.
 
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
-1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
-    installed GitLab via Omnibus or from source respectively.
+1.  For the changes to take effect, you must [reconfigure][] GitLab if you installed via Omnibus or [restart GitLab][] if you installed from source.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
     in `issuer`.
@@ -132,14 +132,17 @@ On the sign in page there should now be a SAML button below the regular sign in 
 Click the icon to begin the authentication process. If everything goes well the user
 will be returned to GitLab and will be signed in.
 
-## External Groups
+## Marking Users as External based on SAML Groups
 
 >**Note:**
 This setting is only available on GitLab 8.7 and above.
 
-SAML login includes support for external groups. You can define in the SAML
-settings which groups, to which your users belong in your IdP, you wish to be
-marked as [external](../user/permissions.md).
+SAML login includes support for automatically identifying whether a user should
+be considered an [external](../user/permissions.md) user based on the user's group
+membership in the SAML identity provider. This feature **does not** allow you to
+automatically add users to GitLab [Groups](../user/group/index.md), it simply 
+allows you to mark users as External if they are members of certain groups in the 
+Identity Provider.
 
 ### Requirements
 
@@ -309,6 +312,7 @@ need to be validated using a fingerprint, a certificate or a validator.
 
 For this you need take the following into account:
 
+- If a fingerprint is used, it must be the SHA1 fingerprint
 - If no certificate is provided in the settings, a fingerprint or fingerprint
   validator needs to be provided and the response from the server must contain
   a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)

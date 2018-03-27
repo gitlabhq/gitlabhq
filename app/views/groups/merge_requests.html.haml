@@ -1,21 +1,14 @@
 - page_title "Merge Requests"
 
-- if @group_merge_requests.empty?
+- if group_merge_requests_count(state: 'all').zero?
   = render 'shared/empty_states/merge_requests', project_select_button: true
 - else
   .top-area
     = render 'shared/issuable/nav', type: :merge_requests
     - if current_user
       .nav-controls
-        = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request"
+        = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
 
-  = render 'shared/issuable/filter', type: :merge_requests
-
-  .row-content-block.second-block
-    Only merge requests from
-    %strong= @group.name
-    group are listed here.
-    - if current_user
-      To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+  = render 'shared/issuable/search_bar', type: :merge_requests
 
   = render 'shared/merge_requests'

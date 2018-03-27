@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 feature 'Project Tree RSS' do
+  let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { namespace_project_tree_path(project.namespace, project, :master) }
+  let(:path) { project_tree_path(project, :master) }
 
   context 'when signed in' do
     before do
-      user = create(:user)
-      project.team << [user, :developer]
-      gitlab_sign_in(user)
+      project.add_developer(user)
+      sign_in(user)
       visit path
     end
 

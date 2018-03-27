@@ -1,18 +1,21 @@
-/* global Flash */
+import Flash from '../flash';
+import AjaxFilter from '../droplab/plugins/ajax_filter';
+import FilteredSearchDropdown from './filtered_search_dropdown';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
+import DropdownUtils from './dropdown_utils';
+import FilteredSearchTokenizer from './filtered_search_tokenizer';
 
-import AjaxFilter from '~/droplab/plugins/ajax_filter';
-import './filtered_search_dropdown';
-
-class DropdownUser extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, tokenKeys, filter) {
-    super(droplab, dropdown, input, filter);
+export default class DropdownUser extends FilteredSearchDropdown {
+  constructor(options = {}) {
+    const { tokenKeys } = options;
+    super(options);
     this.config = {
       AjaxFilter: {
         endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
         searchKey: 'search',
         params: {
-          per_page: 20,
           active: true,
+          group_id: this.getGroupId(),
           project_id: this.getProjectId(),
           current_user: true,
         },
@@ -23,7 +26,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         },
         onError() {
           /* eslint-disable no-new */
-          new Flash('An error occured fetching the dropdown data.');
+          new Flash('An error occurred fetching the dropdown data.');
           /* eslint-enable no-new */
         },
       },
@@ -32,8 +35,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   }
 
   hideCurrentUser() {
-    const currenUserItem = this.dropdown.querySelector('.js-current-user');
-    currenUserItem.classList.add('hidden');
+    addClassIfElementExists(this.dropdown.querySelector('.js-current-user'), 'hidden');
   }
 
   itemClicked(e) {
@@ -46,13 +48,17 @@ class DropdownUser extends gl.FilteredSearchDropdown {
     super.renderContent(forceShowList);
   }
 
+  getGroupId() {
+    return this.input.getAttribute('data-group-id');
+  }
+
   getProjectId() {
     return this.input.getAttribute('data-project-id');
   }
 
   getSearchInput() {
-    const query = gl.DropdownUtils.getSearchInput(this.input);
-    const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query, this.tokenKeys.get());
+    const query = DropdownUtils.getSearchInput(this.input);
+    const { lastToken } = FilteredSearchTokenizer.processTokens(query, this.tokenKeys.get());
 
     let value = lastToken || '';
 
@@ -73,6 +79,3 @@ class DropdownUser extends gl.FilteredSearchDropdown {
     this.droplab.addHook(this.input, this.dropdown, [AjaxFilter], this.config).init();
   }
 }
-
-window.gl = window.gl || {};
-gl.DropdownUser = DropdownUser;

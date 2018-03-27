@@ -1,0 +1,8 @@
+#content
+  = email_default_heading("#{@resource.user.name}, you've added an additional email!")
+  %p Click the link below to confirm your email address (#{@resource.email})
+  #cta
+    = link_to 'Confirm your email address', confirmation_url(@resource, confirmation_token: @token)
+  %p
+    If this email was added in error, you can remove it here:
+    = link_to "Emails", profile_emails_url

@@ -1,6 +1,8 @@
+- add_to_breadcrumbs "Snippets", project_snippets_path(@project)
+- breadcrumb_title @snippet.to_reference
 - page_title "Edit", "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
 
 %h3.page-title
   Edit Snippet
 %hr
-= render "shared/snippets/form", url: namespace_project_snippet_path(@project.namespace, @project, @snippet)
+= render "shared/snippets/form", url: project_snippet_path(@project, @snippet)

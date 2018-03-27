@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe API::Todos do
-  let(:project_1) { create(:empty_project, :test_repo) }
-  let(:project_2) { create(:empty_project) }
+  let(:project_1) { create(:project, :repository) }
+  let(:project_2) { create(:project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
   let(:john_doe) { create(:user, username: 'john_doe') }
@@ -13,8 +13,8 @@ describe API::Todos do
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do
-    project_1.team << [john_doe, :developer]
-    project_2.team << [john_doe, :developer]
+    project_1.add_developer(john_doe)
+    project_2.add_developer(john_doe)
   end
 
   describe 'GET /todos' do
@@ -110,7 +110,7 @@ describe API::Todos do
       it 'returns authentication error' do
         post api("/todos/#{pending_1.id}/mark_as_done")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -118,7 +118,7 @@ describe API::Todos do
       it 'marks a todo as done' do
         post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['id']).to eq(pending_1.id)
         expect(json_response['state']).to eq('done')
         expect(pending_1.reload).to be_done
@@ -129,6 +129,12 @@ describe API::Todos do
 
         post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
       end
+
+      it 'returns 404 if the todo does not belong to the current user' do
+        post api("/todos/#{pending_1.id}/mark_as_done", author_1)
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -137,7 +143,7 @@ describe API::Todos do
       it 'returns authentication error' do
         post api('/todos/mark_as_done')
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -145,7 +151,7 @@ describe API::Todos do
       it 'marks all todos as done' do
         post api('/todos/mark_as_done', john_doe)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
         expect(pending_3.reload).to be_done
@@ -191,14 +197,14 @@ describe API::Todos do
 
     it 'returns an error if the issuable is not accessible' do
       guest = create(:user)
-      project_1.team << [guest, :guest]
+      project_1.add_guest(guest)
 
       post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", guest)
 
       if issuable_type == 'merge_requests'
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       else
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

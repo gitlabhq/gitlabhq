@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Edit group label', feature: true do
+feature 'Edit group label' do
   given(:user)  { create(:user) }
   given(:group) { create(:group) }
   given(:label) { create(:group_label, group: group) }
 
   background do
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
     visit edit_group_label_path(group, label)
   end
 

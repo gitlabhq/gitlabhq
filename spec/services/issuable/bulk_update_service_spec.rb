@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Issuable::BulkUpdateService, services: true do
+describe Issuable::BulkUpdateService do
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
 
   def bulk_update(issuables, extra_params = {})
     bulk_update_params = extra_params
@@ -54,7 +54,7 @@ describe Issuable::BulkUpdateService, services: true do
     context 'when the new assignee ID is a valid user' do
       it 'succeeds' do
         new_assignee = create(:user)
-        project.team << [new_assignee, :developer]
+        project.add_developer(new_assignee)
 
         result = bulk_update(merge_request, assignee_id: new_assignee.id)
 
@@ -64,7 +64,7 @@ describe Issuable::BulkUpdateService, services: true do
 
       it 'updates the assignee to the user ID passed' do
         assignee = create(:user)
-        project.team << [assignee, :developer]
+        project.add_developer(assignee)
 
         expect { bulk_update(merge_request, assignee_id: assignee.id) }
           .to change { merge_request.reload.assignee }.from(user).to(assignee)
@@ -92,7 +92,7 @@ describe Issuable::BulkUpdateService, services: true do
     context 'when the new assignee ID is a valid user' do
       it 'succeeds' do
         new_assignee = create(:user)
-        project.team << [new_assignee, :developer]
+        project.add_developer(new_assignee)
 
         result = bulk_update(issue, assignee_ids: [new_assignee.id])
 
@@ -102,7 +102,7 @@ describe Issuable::BulkUpdateService, services: true do
 
       it 'updates the assignee to the user ID passed' do
         assignee = create(:user)
-        project.team << [assignee, :developer]
+        project.add_developer(assignee)
         expect { bulk_update(issue, assignee_ids: [assignee.id]) }
           .to change { issue.reload.assignees.first }.from(user).to(assignee)
       end
@@ -118,7 +118,7 @@ describe Issuable::BulkUpdateService, services: true do
     context 'when the new assignee ID is not present' do
       it 'does not unassign' do
         expect { bulk_update(issue, assignee_ids: []) }
-          .not_to change{ issue.reload.assignees }
+          .not_to change { issue.reload.assignees }
       end
     end
   end

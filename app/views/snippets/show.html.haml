@@ -1,4 +1,7 @@
+- @hide_top_links = true
 - @content_class = "limit-container-width limited-inner-width-container" unless fluid_layout
+- add_to_breadcrumbs "Snippets", dashboard_snippets_path
+- breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
 
 = render 'shared/snippets/header'

@@ -1,54 +1,55 @@
-= render 'profiles/head'
+- breadcrumb_title "Edit Profile"
+- @content_class = "limit-container-width" unless fluid_layout
 
-= bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default' }, authenticity_token: true do |f|
+= bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default js-quick-submit' }, authenticity_token: true do |f|
   = form_errors(@user)
 
   .row
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Public Avatar
       %p
         - if @user.avatar?
           You can change your avatar here
           - if gravatar_enabled?
-            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
+            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
         - else
           You can upload an avatar here
           - if gravatar_enabled?
-            or change it at #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
-    .col-lg-9
+            or change it at #{link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host}
+    .col-lg-8
       .clearfix.avatar-image.append-bottom-default
-        = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
-      %h5.prepend-top-0
-        Upload new avatar
+        = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
+          = image_tag avatar_icon_for_user(@user, 160), alt: '', class: 'avatar s160'
+      %h5.prepend-top-0= _("Upload new avatar")
       .prepend-top-5.append-bottom-10
-        %a.btn.js-choose-user-avatar-button
-          Browse file...
-        %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
+        %button.btn.js-choose-user-avatar-button{ type: 'button' }= _("Choose file...")
+        %span.avatar-file-name.prepend-left-default.js-avatar-filename= _("No file chosen")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
-      .help-block
-        The maximum file size allowed is 200KB.
+      .help-block= _("The maximum file size allowed is 200KB.")
       - if @user.avatar?
         %hr
-        = link_to 'Remove avatar', profile_avatar_path, data: { confirm: 'Avatar will be removed. Are you sure?' }, method: :delete, class: 'btn btn-gray'
+        = link_to _('Remove avatar'), profile_avatar_path, data: { confirm: _('Avatar will be removed. Are you sure?') }, method: :delete, class: 'btn btn-danger btn-inverted'
   %hr
   .row
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Main settings
       %p
         This information will appear on your profile.
         - if current_user.ldap_user?
           Some options are unavailable for LDAP accounts
-    .col-lg-9
+    .col-lg-8
       .row
-        = f.text_field :name,  required: true, wrapper: { class: 'col-md-9' },
-          help: 'Enter your name, so people you know can recognize you.'
+        - if @user.read_only_attribute?(:name)
+          = f.text_field :name, required: true, readonly: true, wrapper: { class: 'col-md-9' },
+          help: "Your name was automatically set based on your #{ attribute_provider_label(:name) } account, so people you know can recognize you."
+        - else
+          = f.text_field :name, required: true, wrapper: { class: 'col-md-9' }, help: "Enter your name, so people you know can recognize you."
         = f.text_field :id, readonly: true, label: 'User ID', wrapper: { class: 'col-md-3' }
 
-      - if @user.external_email?
-        = f.text_field :email, required: true, readonly: true, help: "Your email address was automatically set based on your #{email_provider_label} account."
+      - if @user.read_only_attribute?(:email)
+        = f.text_field :email, required: true, readonly: true, help: "Your email address was automatically set based on your #{ attribute_provider_label(:email) } account."
       - else
         = f.text_field :email, required: true, value: (@user.email unless @user.temp_oauth_email?),
           help: user_email_help_text(@user)
@@ -62,7 +63,10 @@
       = f.text_field :linkedin
       = f.text_field :twitter
       = f.text_field :website_url, label: 'Website'
-      = f.text_field :location
+      - if @user.read_only_attribute?(:location)
+        = f.text_field :location, readonly: true, help: "Your location was automatically set based on your #{ attribute_provider_label(:location) } account."
+      - else
+        = f.text_field :location
       = f.text_field :organization
       = f.text_area :bio, rows: 4, maxlength: 250, help: 'Tell us about yourself in fewer than 250 characters.'
       .prepend-top-default.append-bottom-default

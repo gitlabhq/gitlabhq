@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe Boards::Issues::CreateService, services: true do
+describe Boards::Issues::CreateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
     let(:label)   { create(:label, project: project, name: 'in-progress') }
     let!(:list)   { create(:list, board: board, label: label, position: 0) }
 
-    subject(:service) { described_class.new(project, user, board_id: board.id, list_id: list.id, title: 'New issue') }
+    subject(:service) { described_class.new(board.parent, project, user, board_id: board.id, list_id: list.id, title: 'New issue') }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'delegates the create proceedings to Issues::CreateService' do

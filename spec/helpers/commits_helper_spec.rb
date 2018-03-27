@@ -12,6 +12,17 @@ describe CommitsHelper do
       expect(helper.commit_author_link(commit))
         .not_to include('onmouseover="alert(1)"')
     end
+
+    it 'escapes the author name' do
+      user = build_stubbed(:user, name: 'Foo <script>alert("XSS")</script>')
+
+      commit = double(author: user, author_name: '', author_email: '')
+
+      expect(helper.commit_author_link(commit))
+        .to include('Foo &lt;script&gt;')
+      expect(helper.commit_author_link(commit, avatar: true))
+        .to include('commit-author-name', 'Foo &lt;script&gt;')
+    end
   end
 
   describe 'commit_committer_link' do
@@ -25,10 +36,21 @@ describe CommitsHelper do
       expect(helper.commit_committer_link(commit))
         .not_to include('onmouseover="alert(1)"')
     end
+
+    it 'escapes the commiter name' do
+      user = build_stubbed(:user, name: 'Foo <script>alert("XSS")</script>')
+
+      commit = double(committer: user, committer_name: '', committer_email: '')
+
+      expect(helper.commit_committer_link(commit))
+        .to include('Foo &lt;script&gt;')
+      expect(helper.commit_committer_link(commit, avatar: true))
+        .to include('commit-committer-name', 'Foo &lt;script&gt;')
+    end
   end
 
   describe '#view_on_environment_button' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:environment) { create(:environment, external_url: 'http://example.com') }
     let(:path) { 'source/file.html' }
     let(:sha) { RepoHelpers.sample_commit.id }

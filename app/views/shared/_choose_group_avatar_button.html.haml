@@ -1,7 +1,4 @@
-%button.choose-btn.btn.btn-sm.js-choose-group-avatar-button{ type: 'button' }
-  %i.fa.fa-paperclip
-  %span Choose File ...
-&nbsp;
-%span.file_name.js-avatar-filename File name...
-= f.file_field :avatar, class: 'js-group-avatar-input hidden'
-.light The maximum file size allowed is 200KB.
+%button.btn.js-choose-group-avatar-button{ type: 'button' }= _("Choose File ...")
+%span.file_name.js-avatar-filename= _("No file chosen")
+= f.file_field :avatar, class: "js-group-avatar-input hidden"
+.help-block= _("The maximum file size allowed is 200KB.")

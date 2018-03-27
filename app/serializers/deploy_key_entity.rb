@@ -3,19 +3,20 @@ class DeployKeyEntity < Grape::Entity
   expose :user_id
   expose :title
   expose :fingerprint
-  expose :can_push
   expose :destroyed_when_orphaned?, as: :destroyed_when_orphaned
   expose :almost_orphaned?, as: :almost_orphaned
   expose :created_at
   expose :updated_at
-  expose :projects, using: ProjectEntity do |deploy_key|
-    deploy_key.projects.select { |project| options[:user].can?(:read_project, project) }
+  expose :deploy_keys_projects, using: DeployKeysProjectEntity do |deploy_key|
+    deploy_key.deploy_keys_projects
+              .without_project_deleted
+              .select { |deploy_key_project| Ability.allowed?(options[:user], :read_project, deploy_key_project.project) }
   end
   expose :can_edit
 
   private
 
   def can_edit
-    options[:user].can?(:update_deploy_key, object)
+    Ability.allowed?(options[:user], :update_deploy_key, object)
   end
 end

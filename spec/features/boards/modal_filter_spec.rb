@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe 'Issue Boards add issue modal filtering', :feature, :js do
-  let(:project) { create(:empty_project, :public) }
+describe 'Issue Boards add issue modal filtering', :js do
+  let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:planning) { create(:label, project: project, name: 'Planning') }
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }
@@ -10,9 +10,9 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   let!(:issue1) { create(:issue, project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   it 'shows empty state when no results found' do
@@ -76,7 +76,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
     let!(:issue) { create(:issue, project: project, author: user2) }
 
     before do
-      project.team << [user2, :developer]
+      project.add_developer(user2)
 
       visit_board
     end
@@ -99,7 +99,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
     let!(:issue) { create(:issue, project: project, assignees: [user2]) }
 
     before do
-      project.team << [user2, :developer]
+      project.add_developer(user2)
 
       visit_board
     end
@@ -202,7 +202,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   end
 
   def visit_board
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
 
     click_button('Add issues')

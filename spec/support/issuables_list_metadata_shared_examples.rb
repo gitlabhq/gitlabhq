@@ -2,19 +2,15 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
   before do
     @issuable_ids = []
 
-    2.times do |n|
+    %w[fix improve/awesome].each do |source_branch|
       issuable =
         if issuable_type == :issue
           create(issuable_type, project: project)
         else
-          create(issuable_type, source_project: project, source_branch: "#{n}-feature")
+          create(issuable_type, source_project: project, source_branch: source_branch)
         end
 
       @issuable_ids << issuable.id
-
-      issuable.id.times       { create(:note, noteable: issuable, project: issuable.project) }
-      (issuable.id + 1).times { create(:award_emoji, :downvote, awardable: issuable) }
-      (issuable.id + 2).times { create(:award_emoji, :upvote, awardable: issuable) }
     end
   end
 
@@ -27,15 +23,14 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
 
     meta_data = assigns(:issuable_meta_data)
 
-    @issuable_ids.each do |id|
-      expect(meta_data[id].notes_count).to eq(id)
-      expect(meta_data[id].downvotes).to eq(id + 1)
-      expect(meta_data[id].upvotes).to eq(id + 2)
+    aggregate_failures do
+      expect(meta_data.keys).to match_array(@issuable_ids)
+      expect(meta_data.values).to all(be_kind_of(Issuable::IssuableMeta))
     end
   end
 
   describe "when given empty collection" do
-    let(:project2) { create(:empty_project, :public) }
+    let(:project2) { create(:project, :public) }
 
     it "doesn't execute any queries with false conditions" do
       get_action =

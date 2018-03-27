@@ -5,11 +5,11 @@
 %p.light
   Only project members will be imported. Group members will be skipped.
 %hr
-= form_tag apply_import_namespace_project_project_members_path(@project.namespace, @project), method: 'post', class: 'form-horizontal' do
+= form_tag apply_import_project_project_members_path(@project), method: 'post', class: 'form-horizontal' do
   .form-group
     = label_tag :source_project_id, "Project", class: 'control-label'
-    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
+    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(@projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
 
   .form-actions
     = button_tag 'Import project members', class: "btn btn-create"
-    = link_to "Cancel", namespace_project_settings_members_path(@project.namespace, @project), class: "btn btn-cancel"
+    = link_to "Cancel", project_project_members_path(@project), class: "btn btn-cancel"

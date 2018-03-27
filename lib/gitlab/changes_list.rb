@@ -16,6 +16,7 @@ module Gitlab
       @changes ||= begin
         @raw_changes.map do |change|
           next if change.blank?
+
           oldrev, newrev, ref = change.strip.split(' ')
           { oldrev: oldrev, newrev: newrev, ref: ref }
         end.compact

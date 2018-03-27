@@ -1,14 +1,28 @@
 require 'securerandom'
 
 class Repository
-  include Gitlab::ShellAdapter
-  include RepositoryMirroring
+  REF_MERGE_REQUEST = 'merge-requests'.freeze
+  REF_KEEP_AROUND = 'keep-around'.freeze
+  REF_ENVIRONMENTS = 'environments'.freeze
+  MAX_DIVERGING_COUNT = 1000
 
-  attr_accessor :path_with_namespace, :project
+  RESERVED_REFS_NAMES = %W[
+    heads
+    tags
+    replace
+    #{REF_ENVIRONMENTS}
+    #{REF_KEEP_AROUND}
+    #{REF_ENVIRONMENTS}
+  ].freeze
+
+  include Gitlab::ShellAdapter
+  include Gitlab::RepositoryCacheAdapter
+
+  attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
+  delegate :bundle_to_disk, :create_from_bundle, to: :raw_repository
 
-  CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
@@ -22,7 +36,11 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref).freeze
+                      tag_count avatar exists? root_ref has_visible_content?
+                      issue_template_names merge_request_template_names).freeze
+
+  # Methods that use cache_method but only memoize the value
+  MEMOIZED_CACHED_METHODS = %i(license).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -35,71 +53,78 @@ class Repository
     gitignore: :gitignore,
     koding: :koding_yml,
     gitlab_ci: :gitlab_ci_yml,
-    avatar: :avatar
+    avatar: :avatar,
+    issue_template: :issue_template_names,
+    merge_request_template: :merge_request_template_names
   }.freeze
 
-  # Wraps around the given method and caches its output in Redis and an instance
-  # variable.
-  #
-  # This only works for methods that do not take any arguments.
-  def self.cache_method(name, fallback: nil, memoize_only: false)
-    original = :"_uncached_#{name}"
-
-    alias_method(original, name)
-
-    define_method(name) do
-      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
-    end
+  def initialize(full_path, project, disk_path: nil, is_wiki: false)
+    @full_path = full_path
+    @disk_path = disk_path || full_path
+    @project = project
+    @commit_cache = {}
+    @is_wiki = is_wiki
   end
 
-  def initialize(path_with_namespace, project)
-    @path_with_namespace = path_with_namespace
-    @project = project
+  def ==(other)
+    @disk_path == other.disk_path
   end
 
   def raw_repository
-    return nil unless path_with_namespace
+    return nil unless full_path
 
     @raw_repository ||= initialize_raw_repository
+  end
+
+  alias_method :raw, :raw_repository
+
+  def cleanup
+    @raw_repository&.cleanup
   end
 
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, disk_path + '.git')
     )
   end
 
-  #
-  # Git repository can contains some hidden refs like:
-  #   /refs/notes/*
-  #   /refs/git-as-svn/*
-  #   /refs/pulls/*
-  # This refs by default not visible in project page and not cloned to client side.
-  #
-  # This method return true if repository contains some content visible in project page.
-  #
-  def has_visible_content?
-    branch_count > 0
+  def inspect
+    "#<#{self.class.name}:#{@disk_path}>"
+  end
+
+  def create_hooks
+    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
   end
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+    return ref if ref.is_a?(::Commit)
 
-    commit =
-      if ref.is_a?(Gitlab::Git::Commit)
-        ref
-      else
-        Gitlab::Git::Commit.find(raw_repository, ref)
-      end
-
-    commit = ::Commit.new(commit, @project) if commit
-    commit
-  rescue Rugged::OdbError, Rugged::TreeError
-    nil
+    find_commit(ref)
   end
 
-  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
+  # Finding a commit by the passed SHA
+  # Also takes care of caching, based on the SHA
+  def commit_by(oid:)
+    return @commit_cache[oid] if @commit_cache.key?(oid)
+
+    @commit_cache[oid] = find_commit(oid)
+  end
+
+  def commits_by(oids:)
+    return [] unless oids.present?
+
+    commits = Gitlab::Git::Commit.batch_by_oid(raw_repository, oids)
+
+    if commits.present?
+      Commit.decorate(commits, @project)
+    else
+      []
+    end
+  end
+
+  def commits(ref = nil, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil, all: nil)
     options = {
       repo: raw_repository,
       ref: ref,
@@ -109,12 +134,14 @@ class Repository
       after: after,
       before: before,
       follow: Array(path).length == 1,
-      skip_merges: skip_merges
+      skip_merges: skip_merges,
+      all: all
     }
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
-    commits
+
+    CommitCollection.new(project, commits, ref)
   end
 
   def commits_between(from, to)
@@ -123,33 +150,27 @@ class Repository
     commits
   end
 
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+
+    refs.map { |sha| commit(sha.strip) }
+  end
+
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
     unless exists? && has_visible_content? && query.present?
       return []
     end
 
-    ref ||= root_ref
-
-    args = %W(
-      #{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset}
-      --max-count #{limit} --grep=#{query} --regexp-ignore-case
-    )
-    args = args.concat(%W(-- #{path})) if path.present?
-
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines
-    git_log_results.map { |c| commit(c.chomp) }.compact
+    commits = raw_repository.find_commits_by_message(query, ref, path, limit, offset).map do |c|
+      commit(c)
+    end
+    CommitCollection.new(project, commits, ref)
   end
 
   def find_branch(name, fresh_repo: true)
-    # Since the Repository object may have in-memory index changes, invalidating the memoized Repository object may
-    # cause unintended side effects. Because finding a branch is a read-only operation, we can safely instantiate
-    # a new repo here to ensure a consistent state to avoid a libgit2 bug where concurrent access (e.g. via git gc)
-    # may cause the branch to "disappear" erroneously or have the wrong SHA.
-    #
-    # See: https://github.com/libgit2/libgit2/issues/1534 and https://gitlab.com/gitlab-org/gitlab-ce/issues/15392
-    raw_repo = fresh_repo ? initialize_raw_repository : raw_repository
-
-    raw_repo.find_branch(name)
+    raw_repository.find_branch(name, fresh_repo)
   end
 
   def find_tag(name)
@@ -157,32 +178,25 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    newrev = commit(ref).try(:sha)
-
-    return false unless newrev
-
-    GitOperationService.new(user, self).add_branch(branch_name, newrev)
+    branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
     after_create_branch
-    find_branch(branch_name)
+
+    branch
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    newrev = commit(target).try(:id)
-    options = { message: message, tagger: user_to_committer(user) } if message
-
-    return false unless newrev
-
-    GitOperationService.new(user, self).add_tag(tag_name, newrev, options)
-
-    find_tag(tag_name)
+    raw_repository.add_tag(tag_name, user: user, target: target, message: message)
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-    branch = find_branch(branch_name)
 
-    GitOperationService.new(user, self).rm_branch(branch)
+    raw_repository.rm_branch(branch_name, user: user)
 
     after_remove_branch
     true
@@ -190,9 +204,8 @@ class Repository
 
   def rm_tag(user, tag_name)
     before_remove_tag
-    tag = find_tag(tag_name)
 
-    GitOperationService.new(user, self).rm_tag(tag)
+    raw_repository.rm_tag(tag_name, user: user)
 
     after_remove_tag
     true
@@ -203,12 +216,20 @@ class Repository
   end
 
   def branch_exists?(branch_name)
+    return false unless raw_repository
+
     branch_names.include?(branch_name)
   end
 
+  def tag_exists?(tag_name)
+    return false unless raw_repository
+
+    tag_names.include?(tag_name)
+  end
+
   def ref_exists?(ref)
-    rugged.references.exist?(ref)
-  rescue Rugged::ReferenceError
+    !!raw_repository&.ref_exists?(ref)
+  rescue ArgumentError
     false
   end
 
@@ -217,19 +238,14 @@ class Repository
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
   def keep_around(sha)
-    return unless sha && commit(sha)
+    return unless sha.present? && commit_by(oid: sha)
 
     return if kept_around?(sha)
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
-    begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
-    rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
-    rescue Rugged::OSError => ex
-      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
-    end
+    raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
+  rescue Gitlab::Git::CommandError => ex
+    Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
   end
 
   def kept_around?(sha)
@@ -237,15 +253,16 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
-    root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
+    root_ref_hash = raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
-      number_commits_behind = raw_repository
-        .count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
-
-      number_commits_ahead = raw_repository
-        .count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
+      number_commits_behind, number_commits_ahead =
+        raw_repository.count_commits_between(
+          root_ref_hash,
+          branch.dereferenced_target.sha,
+          left_right: true,
+          max_count: MAX_DIVERGING_COUNT)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -257,8 +274,9 @@ class Repository
   end
 
   def expire_branches_cache
-    expire_method_caches(%i(branch_names branch_count))
+    expire_method_caches(%i(branch_names branch_count has_visible_content?))
     @local_branches = nil
+    @branch_exists_memo = nil
   end
 
   def expire_statistics_caches
@@ -267,17 +285,6 @@ class Repository
 
   def expire_all_method_caches
     expire_method_caches(CACHED_METHODS)
-  end
-
-  # Expires the caches of a specific set of methods
-  def expire_method_caches(methods)
-    methods.each do |key|
-      cache.expire(key)
-
-      ivar = cache_instance_variable_name(key)
-
-      remove_instance_variable(ivar) if instance_variable_defined?(ivar)
-    end
   end
 
   def expire_avatar_cache
@@ -299,7 +306,7 @@ class Repository
 
     expire_method_caches(to_refresh)
 
-    to_refresh.each { |method| send(method) }
+    to_refresh.each { |method| send(method) } # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -327,7 +334,7 @@ class Repository
   def expire_emptiness_caches
     return unless empty?
 
-    expire_method_caches(%i(empty?))
+    expire_method_caches(%i(has_visible_content?))
   end
 
   def lookup_cache
@@ -438,9 +445,9 @@ class Repository
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.send(m, *args, &block)
+      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -449,34 +456,38 @@ class Repository
   end
 
   def blob_at(sha, path)
-    unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
-    end
+    Blob.decorate(raw_repository.blob_at(sha, path), project)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
 
-  def blob_by_oid(oid)
-    Gitlab::Git::Blob.raw(self, oid)
+  # items is an Array like: [[oid, path], [oid1, path1]]
+  def blobs_at(items)
+    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
   end
 
   def root_ref
-    if raw_repository
-      raw_repository.root_ref
-    else
-      # When the repo does not exist we raise this error so no data is cached.
-      raise Rugged::ReferenceError
-    end
+    # When the repo does not exist, or there is no root ref, we raise this error so no data is cached.
+    raw_repository&.root_ref or raise Gitlab::Git::Repository::NoRepository # rubocop:disable Style/AndOr
   end
   cache_method :root_ref
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
-    refs_directory_exists?
+    return false unless full_path
+
+    raw_repository.exists?
   end
   cache_method :exists?
 
-  delegate :empty?, to: :raw_repository
-  cache_method :empty?
+  # We don't need to cache the output of this method because both exists? and
+  # has_visible_content? are already memoized and cached. There's no guarantee
+  # that the values are expired and loaded atomically.
+  def empty?
+    return true unless exists?
+
+    !has_visible_content?
+  end
 
   # The size of this repository in megabytes.
   def size
@@ -492,11 +503,7 @@ class Repository
   def commit_count_for_ref(ref)
     return 0 unless exists?
 
-    begin
-      cache.fetch(:"commit_count_#{ref}") { raw_repository.commit_count(ref) }
-    rescue Rugged::ReferenceError
-      0
-    end
+    cache.fetch(:"commit_count_#{ref}") { raw_repository.commit_count(ref) }
   end
 
   delegate :branch_names, to: :raw_repository
@@ -505,16 +512,30 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  delegate :branch_count, :tag_count, to: :raw_repository
+  delegate :branch_count, :tag_count, :has_visible_content?, to: :raw_repository
   cache_method :branch_count, fallback: 0
   cache_method :tag_count, fallback: 0
+  cache_method :has_visible_content?, fallback: false
 
   def avatar
-    if tree = file_on_head(:avatar)
-      tree.path
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      if tree = file_on_head(:avatar)
+        tree.path
+      end
     end
   end
   cache_method :avatar
+
+  def issue_template_names
+    Gitlab::Template::IssueTemplate.dropdown_names(project)
+  end
+  cache_method :issue_template_names, fallback: []
+
+  def merge_request_template_names
+    Gitlab::Template::MergeRequestTemplate.dropdown_names(project)
+  end
+  cache_method :merge_request_template_names, fallback: []
 
   def readme
     if readme = tree(:head)&.readme
@@ -545,7 +566,7 @@ class Repository
   def license_key
     return unless exists?
 
-    Licensee.license(path).try(:key)
+    raw_repository.license_short_name
   end
   cache_method :license_key
 
@@ -605,39 +626,23 @@ class Repository
     end
   end
 
-  # Returns url for submodule
-  #
-  # Ex.
-  #   @repository.submodule_url_for('master', 'rack')
-  #   # => git@localhost:rack.git
-  #
-  def submodule_url_for(ref, path)
-    if submodules(ref).any?
-      submodule = submodules(ref)[path]
-
-      if submodule
-        submodule['url']
-      end
-    end
-  end
-
   def last_commit_for_path(sha, path)
-    sha = last_commit_id_for_path(sha, path)
-    commit(sha)
+    commit = raw_repository.last_commit_for_path(sha, path)
+    ::Commit.new(commit, @project) if commit
   end
 
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-      Gitlab::Popen.popen(args, path_to_repo).first.strip
+      last_commit_for_path(sha, path)&.id
     end
   end
 
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
+
       result = n.match(/\A#{name}-([0-9]+)\z/)
       result[1].to_i if result
     end.compact
@@ -655,7 +660,9 @@ class Repository
 
   def tags_sorted_by(value)
     case value
-    when 'name'
+    when 'name_asc'
+      VersionSorter.sort(tags) { |tag| tag.name }
+    when 'name_desc'
       VersionSorter.rsort(tags) { |tag| tag.name }
     when 'updated_desc'
       tags_sorted_by_committed_date.reverse
@@ -666,10 +673,14 @@ class Repository
     end
   end
 
-  def contributors
+  # Params:
+  #
+  # order_by: name|email|commits
+  # sort: asc|desc default: 'asc'
+  def contributors(order_by: nil, sort: 'asc')
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
-    commits.group_by(&:author_email).map do |email, commits|
+    commits = commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
       contributor.email = email
 
@@ -683,31 +694,15 @@ class Repository
 
       contributor
     end
-  end
-
-  def refs_contains_sha(ref_type, sha)
-    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
-
-    if names.respond_to?(:split)
-      names = names.split("\n").map(&:strip)
-
-      names.each do |name|
-        name.slice! '* '
-      end
-
-      names
-    else
-      []
-    end
+    Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
   def branch_names_contains(sha)
-    refs_contains_sha('branch', sha)
+    raw_repository.branch_names_contains_sha(sha)
   end
 
   def tag_names_contains(sha)
-    refs_contains_sha('tag', sha)
+    raw_repository.tag_names_contains_sha(sha)
   end
 
   def local_branches
@@ -721,309 +716,159 @@ class Repository
   end
 
   def create_dir(user, path, **options)
-    options[:user] = user
     options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def create_file(user, path, content, **options)
-    options[:user] = user
     options[:actions] = [{ action: :create, file_path: path, content: content }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def update_file(user, path, content, **options)
     previous_path = options.delete(:previous_path)
     action = previous_path && previous_path != path ? :move : :update
 
-    options[:user] = user
     options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def delete_file(user, path, **options)
-    options[:user] = user
     options[:actions] = [{ action: :delete, file_path: path }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
-  # rubocop:disable Metrics/ParameterLists
-  def multi_action(
-    user:, branch_name:, message:, actions:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
+  def with_cache_hooks
+    result = yield
 
-    GitOperationService.new(user, self).with_branch(
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+    return unless result
 
-      index = Gitlab::Git::Index.new(raw_repository)
+    after_create if result.repo_created?
+    after_create_branch if result.branch_created?
 
-      if start_commit
-        index.read_tree(start_commit.raw_commit.tree)
-        parents = [start_commit.sha]
-      else
-        parents = []
+    result.newrev
+  end
+
+  def multi_action(user, **options)
+    start_project = options.delete(:start_project)
+
+    if start_project
+      options[:start_repository] = start_project.repository.raw_repository
+    end
+
+    with_cache_hooks { raw.multi_action(user, **options) }
+  end
+
+  def merge(user, source_sha, merge_request, message)
+    with_cache_hooks do
+      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
+        merge_request.update(in_progress_merge_commit_sha: commit_id)
+        nil # Return value does not matter.
       end
-
-      actions.each do |options|
-        index.public_send(options.delete(:action), options)
-      end
-
-      options = {
-        tree: index.write_tree,
-        message: message,
-        parents: parents
-      }
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      create_commit(options)
-    end
-  end
-  # rubocop:enable Metrics/ParameterLists
-
-  def get_committer_and_author(user, email: nil, name: nil)
-    committer = user_to_committer(user)
-    author = Gitlab::Git.committer_hash(email: email, name: name) || committer
-
-    {
-      author: author,
-      committer: committer
-    }
-  end
-
-  def user_to_committer(user)
-    Gitlab::Git.committer_hash(email: user.email, name: user.name)
-  end
-
-  def can_be_merged?(source_sha, target_branch)
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    if our_commit && their_commit
-      !rugged.merge_commits(our_commit, their_commit).conflicts?
-    else
-      false
     end
   end
 
-  def merge(user, source, merge_request, options = {})
-    GitOperationService.new(user, self).with_branch(
-      merge_request.target_branch) do |start_commit|
-      our_commit = start_commit.sha
-      their_commit = source
+  def ff_merge(user, source, target_branch, merge_request: nil)
+    their_commit_id = commit(source)&.id
+    raise 'Invalid merge source' if their_commit_id.nil?
 
-      raise 'Invalid merge target' unless our_commit
-      raise 'Invalid merge source' unless their_commit
+    merge_request&.update(in_progress_merge_commit_sha: their_commit_id)
 
-      merge_index = rugged.merge_commits(our_commit, their_commit)
-      break if merge_index.conflicts?
-
-      actual_options = options.merge(
-        parents: [our_commit, their_commit],
-        tree: merge_index.write_tree(rugged)
-      )
-
-      commit_id = create_commit(actual_options)
-      merge_request.update(in_progress_merge_commit_sha: commit_id)
-      commit_id
-    end
-  rescue Repository::CommitError # when merge_index.conflicts?
-    false
+    with_cache_hooks { raw.ff_merge(user, their_commit_id, target_branch) }
   end
 
   def revert(
-    user, commit, branch_name,
+    user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
-    GitOperationService.new(user, self).with_branch(
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
 
-      revert_tree_id = check_revert_content(commit, start_commit.sha)
-      unless revert_tree_id
-        raise Repository::CreateTreeError.new('Failed to revert commit')
-      end
-
-      committer = user_to_committer(user)
-
-      create_commit(message: commit.revert_message(user),
-                    author: committer,
-                    committer: committer,
-                    tree: revert_tree_id,
-                    parents: [start_commit.sha])
+    with_cache_hooks do
+      raw_repository.revert(
+        user: user,
+        commit: commit.raw,
+        branch_name: branch_name,
+        message: message,
+        start_branch_name: start_branch_name,
+        start_repository: start_project.repository.raw_repository
+      )
     end
   end
 
   def cherry_pick(
-    user, commit, branch_name,
+    user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
-    GitOperationService.new(user, self).with_branch(
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
 
-      cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-      unless cherry_pick_tree_id
-        raise Repository::CreateTreeError.new('Failed to cherry-pick commit')
-      end
-
-      committer = user_to_committer(user)
-
-      create_commit(message: commit.message,
-                    author: {
-                        email: commit.author_email,
-                        name: commit.author_name,
-                        time: commit.authored_date
-                    },
-                    committer: committer,
-                    tree: cherry_pick_tree_id,
-                    parents: [start_commit.sha])
+    with_cache_hooks do
+      raw_repository.cherry_pick(
+        user: user,
+        commit: commit.raw,
+        branch_name: branch_name,
+        message: message,
+        start_branch_name: start_branch_name,
+        start_repository: start_project.repository.raw_repository
+      )
     end
   end
 
-  def resolve_conflicts(user, branch_name, params)
-    GitOperationService.new(user, self).with_branch(branch_name) do
-      committer = user_to_committer(user)
+  def merged_to_root_ref?(branch_or_name)
+    branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
-      create_commit(params.merge(author: committer, committer: committer))
-    end
-  end
-
-  def check_revert_content(target_commit, source_sha)
-    args = [target_commit.sha, source_sha]
-    args << { mainline: 1 } if target_commit.merge_commit?
-
-    revert_index = rugged.revert_commit(*args)
-    return false if revert_index.conflicts?
-
-    tree_id = revert_index.write_tree(rugged)
-    return false unless diff_exists?(source_sha, tree_id)
-
-    tree_id
-  end
-
-  def check_cherry_pick_content(target_commit, source_sha)
-    args = [target_commit.sha, source_sha]
-    args << 1 if target_commit.merge_commit?
-
-    cherry_pick_index = rugged.cherrypick_commit(*args)
-    return false if cherry_pick_index.conflicts?
-
-    tree_id = cherry_pick_index.write_tree(rugged)
-    return false unless diff_exists?(source_sha, tree_id)
-
-    tree_id
-  end
-
-  def diff_exists?(sha1, sha2)
-    rugged.diff(sha1, sha2).size > 0
-  end
-
-  def merged_to_root_ref?(branch_name)
-    branch_commit = commit(branch_name)
-    root_ref_commit = commit(root_ref)
-
-    if branch_commit
-      same_head = branch_commit.id == root_ref_commit.id
-      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
+    if branch
+      same_head = branch.target == root_ref_sha
+      merged = ancestor?(branch.target, root_ref_sha)
+      !same_head && merged
     else
       nil
     end
   end
 
+  def root_ref_sha
+    @root_ref_sha ||= commit(root_ref).sha
+  end
+
+  delegate :merged_branch_names, :can_be_merged?, to: :raw_repository
+
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
     second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
-    rugged.merge_base(first_commit_id, second_commit_id)
-  rescue Rugged::ReferenceError
-    nil
+    raw_repository.merge_base(first_commit_id, second_commit_id)
   end
 
-  def is_ancestor?(ancestor_id, descendant_id)
+  def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
-    
-    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-      if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
-      else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-      end
+
+    raw_repository.ancestor?(ancestor_id, descendant_id)
+  end
+
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)
+    unless remote_name
+      remote_name = "tmp-#{SecureRandom.hex}"
+      tmp_remote_name = true
     end
-  end
 
-  def empty_repo?
-    !exists? || !has_visible_content?
-  end
-
-  def search_files_by_content(query, ref)
-    return [] if empty_repo? || query.blank?
-
-    offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
-    Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
-  end
-
-  def search_files_by_name(query, ref)
-    return [] if empty_repo? || query.blank?
-
-    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
-    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
-  end
-
-  def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield(nil) if start_repository.empty_repo?
-
-    branch_name_or_sha =
-      if start_repository == self
-        start_branch_name
-      else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
-          start_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
-        )
-
-        start_repository.commit(start_branch_name).sha
-      end
-
-    yield(commit(branch_name_or_sha))
-
+    add_remote(remote_name, url, mirror_refmap: refmap)
+    fetch_remote(remote_name, forced: forced, prune: prune)
   ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    remove_remote(remote_name) if tmp_remote_name
   end
 
-  def add_remote(name, url)
-    raw_repository.remote_add(name, url)
-  rescue Rugged::ConfigError
-    raw_repository.remote_update(name, url: url)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
   end
 
-  def remove_remote(name)
-    raw_repository.remote_delete(name)
-    true
-  rescue Rugged::ConfigError
-    false
+  def fetch_source_branch!(source_repository, source_branch, local_ref)
+    raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
   end
 
-  def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
-  end
-
-  def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    Gitlab::Popen.popen(args, path_to_repo)
+  def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
+    raw_repository.compare_source_branch(target_branch_name, source_repository.raw_repository, source_branch_name, straight: straight)
   end
 
   def create_ref(ref, ref_path)
-    fetch_ref(path_to_repo, ref, ref_path)
+    raw_repository.write_ref(ref_path, ref)
   end
 
   def ls_files(ref)
@@ -1031,8 +876,16 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
-  def gitattribute(path, name)
-    raw_repository.attributes(path)[name]
+  def search_files_by_content(query, ref)
+    return [] if empty? || query.blank?
+
+    raw_repository.search_files_by_content(query, ref)
+  end
+
+  def search_files_by_name(query, ref)
+    return [] if empty?
+
+    raw_repository.search_files_by_name(query, ref)
   end
 
   def copy_gitattributes(ref)
@@ -1043,43 +896,6 @@ class Repository
     rescue Gitlab::Git::Repository::InvalidRef
       false
     end
-  end
-
-  # Caches the supplied block both in a cache and in an instance variable.
-  #
-  # The cache key and instance variable are named the same way as the value of
-  # the `key` argument.
-  #
-  # This method will return `nil` if the corresponding instance variable is also
-  # set to `nil`. This ensures we don't keep yielding the block when it returns
-  # `nil`.
-  #
-  # key - The name of the key to cache the data in.
-  # fallback - A value to fall back to in the event of a Git error.
-  def cache_method_output(key, fallback: nil, memoize_only: false, &block)
-    ivar = cache_instance_variable_name(key)
-
-    if instance_variable_defined?(ivar)
-      instance_variable_get(ivar)
-    else
-      begin
-        value =
-          if memoize_only
-            yield
-          else
-            cache.fetch(key, &block)
-          end
-        instance_variable_set(ivar, value)
-      rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
-        # if e.g. HEAD or the entire repository doesn't exist we want to
-        # gracefully handle this and not cache anything.
-        fallback
-      end
-    end
-  end
-
-  def cache_instance_variable_name(key)
-    :"@#{key.to_s.tr('?!', '')}"
   end
 
   def file_on_head(type)
@@ -1094,11 +910,38 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
-  def gitlab_ci_yml_for(sha)
-    blob_data_at(sha, '.gitlab-ci.yml')
+  def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
+    blob_data_at(sha, path)
+  end
+
+  def fetch_ref(source_repository, source_ref:, target_ref:)
+    raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
+  end
+
+  def repository_storage_path
+    @project.repository_storage_path
+  end
+
+  def rebase(user, merge_request)
+    raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
+                                       branch_sha: merge_request.source_branch_sha,
+                                       remote_repository: merge_request.target_project.repository.raw,
+                                       remote_branch: merge_request.target_branch)
   end
 
   private
+
+  # TODO Generice finder, later split this on finders by Ref or Oid
+  # gitlab-org/gitlab-ce#39239
+  def find_commit(oid_or_ref)
+    commit = if oid_or_ref.is_a?(Gitlab::Git::Commit)
+               oid_or_ref
+             else
+               Gitlab::Git::Commit.find(raw_repository, oid_or_ref)
+             end
+
+    ::Commit.new(commit, @project) if commit
+  end
 
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
@@ -1108,14 +951,8 @@ class Repository
     blob.data
   end
 
-  def refs_directory_exists?
-    return false unless path_with_namespace
-
-    File.exist?(File.join(path_to_repo, 'refs'))
-  end
-
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
+    @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
   def tags_sorted_by_committed_date
@@ -1134,24 +971,14 @@ class Repository
   end
 
   def keep_around_ref_name(sha)
-    "refs/keep-around/#{sha}"
+    "refs/#{REF_KEEP_AROUND}/#{sha}"
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
-  end
-
-  def create_commit(params = {})
-    params[:message].delete!("\r")
-
-    Rugged::Commit.create(rugged, params)
-  end
-
-  def repository_storage_path
-    @project.repository_storage_path
+    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
   end
 end

@@ -58,10 +58,19 @@ en:
           expired: "The access token expired"
           unknown: "The access token is invalid"
     scopes:
-      api: Access your API
-      read_user: Read user information
+      api: Access the authenticated user's API
+      read_user: Read the authenticated user's personal information
       openid: Authenticate using OpenID Connect
-
+      sudo: Perform API actions as any user in the system (if the authenticated user is an admin)
+    scope_desc:
+      api:
+        Full access to GitLab as the user, including read/write on all their groups and projects
+      read_user:
+        Read-only access to the user's profile information, like username, public email and full name
+      openid:
+        The ability to authenticate using GitLab, and read-only access to the user's profile information and group memberships
+      sudo:
+        Access to the Sudo feature, to perform API actions as any user in the system (only available for admins)
     flash:
       applications:
         create:

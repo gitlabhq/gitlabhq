@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FlowdockService, models: true do
+describe FlowdockService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -29,7 +29,7 @@ describe FlowdockService, models: true do
     let(:project) { create(:project, :repository) }
 
     before do
-      @flowdock_service = FlowdockService.new
+      @flowdock_service = described_class.new
       allow(@flowdock_service).to receive_messages(
         project_id: project.id,
         project: project,
@@ -46,6 +46,7 @@ describe FlowdockService, models: true do
       @sample_data[:commits].each do |commit|
         # One request to Flowdock per new commit
         next if commit[:id] == @sample_data[:before]
+
         expect(WebMock).to have_requested(:post, @api_url).with(
           body: /#{commit[:id]}.*#{project.path}/
         ).once

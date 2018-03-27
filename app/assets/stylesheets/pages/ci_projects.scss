@@ -22,7 +22,7 @@
       vertical-align: middle !important;
 
       a {
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
         text-decoration: none;
       }
     }
@@ -36,7 +36,7 @@
     pre.commit-message {
       background: none;
       padding: 0;
-      border: none;
+      border: 0;
       margin: 20px 0;
       border-radius: 0;
     }

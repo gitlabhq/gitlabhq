@@ -41,6 +41,8 @@ class ProjectFeature < ActiveRecord::Base
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
   belongs_to :project, -> { unscope(where: :pending_delete) }
 
+  validates :project, presence: true
+
   validate :repository_children_level
 
   default_value_for :builds_access_level,         value: ENABLED, allows_nil: false
@@ -51,8 +53,11 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
-    access_level = public_send(ProjectFeature.access_level_attribute(feature))
-    get_permission(user, access_level)
+    get_permission(user, access_level(feature))
+  end
+
+  def access_level(feature)
+    public_send(ProjectFeature.access_level_attribute(feature)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def builds_enabled?
@@ -77,7 +82,7 @@ class ProjectFeature < ActiveRecord::Base
   # which cannot be higher than repository access level
   def repository_children_level
     validator = lambda do |field|
-      level = public_send(field) || ProjectFeature::ENABLED
+      level = public_send(field) || ProjectFeature::ENABLED # rubocop:disable GitlabSecurity/PublicSend
       not_allowed = level > repository_access_level
       self.errors.add(field, "cannot have higher visibility level than repository access level") if not_allowed
     end

@@ -1,16 +1,10 @@
 %div{ class: container_class }
   .nav-block.activity-filter-block.activities
     .controls
-      = link_to namespace_project_path(@project.namespace, @project, rss_url_options), title: "Subscribe", class: 'btn rss-btn has-tooltip' do
+      = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn rss-btn has-tooltip' do
         = icon('rss')
 
     = render 'shared/event_filter'
 
   .content_list.project-activity{ :"data-href" => activity_project_path(@project) }
   = spinner
-
-:javascript
-  var activity = new gl.Activities();
-  $(document).on('page:restore', function (event) {
-    activity.reloadActivities()
-  })

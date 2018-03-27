@@ -27,7 +27,7 @@ This means that, as a rule, copy should be very short. A long message or label i
 
 >**Example:**
 Use `Add` instead of `Add issue` as a button label.
-Preferrably use context and placement of controls to make it obvious what clicking on them will do.
+Preferably use context and placement of controls to make it obvious what clicking on them will do.
 
 ---
 
@@ -46,11 +46,11 @@ Avoid using periods in solitary sentences in these elements:
 * Labels
 * Hover text
 * Bulleted lists
-* Dialog body text
+* Modal body text
 
 Periods should be used for:
 
-* Lists or dialogs with multiple sentences
+* Lists or modals with multiple sentences
 * Any sentence followed by a link
 
 | :white_check_mark: **Do** place periods after sentences followed by a link | :no_entry_sign: **Don’t** place periods after a link if it‘s not followed by a sentence |
@@ -80,7 +80,7 @@ Omit punctuation after phrases and labels to create a cleaner and more readable 
 
 | Punctuation mark | Copy and paste | HTML entity | Unicode | Mac shortcut | Windows shortcut | Description |
 |---|---|---|---|---|---|---|
-| Period | **.** | | | | | Omit for single sentences in affordances like labels, hover text, bulleted lists, and dialog body text.<br><br>Use in lists or dialogs with multiple sentences, and any sentence followed by a link or inline code.<br><br>Place inside quotation marks unless you’re telling the reader what to enter and it’s ambiguous whether to include the period. |
+| Period | **.** | | | | | Omit for single sentences in affordances like labels, hover text, bulleted lists, and modal body text.<br><br>Use in lists or modals with multiple sentences, and any sentence followed by a link or inline code.<br><br>Place inside quotation marks unless you’re telling the reader what to enter and it’s ambiguous whether to include the period. |
 | Comma | **,** | | | | | Place inside quotation marks.<br><br>Use a [serial comma][serial comma] in lists of three or more terms. |
 | Exclamation point | **!** | | | | | Avoid exclamation points as they tend to come across as shouting. Some exceptions include greetings or congratulatory messages. |
 | Colon | **:** | `&#58;` | `\u003A` | | | Omit from labels, for example, in the labels for fields in a form. |
@@ -88,7 +88,7 @@ Omit punctuation after phrases and labels to create a cleaner and more readable 
 | Quotation marks | **“**<br><br>**”**<br><br>**‘**<br><br>**’** | `&ldquo;`<br><br>`&rdquo;`<br><br>`&lsquo;`<br><br>`&rsquo;` | `\u201C`<br><br>`\u201D`<br><br>`\u2018`<br><br>`\u2019` | <kbd>⌥ Option</kbd>+<kbd>[</kbd><br><br><kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>[</kbd><br><br><kbd>⌥ Option</kbd>+<kbd>]</kbd><br><br><kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>]</kbd> | <kbd>Alt</kbd>+<kbd>0 1 4 7</kbd><br><br><kbd>Alt</kbd>+<kbd>0 1 4 8</kbd><br><br><kbd>Alt</kbd>+<kbd>0 1 4 5</kbd><br><br><kbd>Alt</kbd>+<kbd>0 1 4 6</kbd> | Use proper quotation marks (also known as smart quotes, curly quotes, or typographer’s quotes) for quotes. Single quotation marks are used for quotes inside of quotes.<br><br>The right single quotation mark symbol is also used for apostrophes.<br><br>Don’t use primes, straight quotes, or free-standing accents for quotation marks. |
 | Primes | **′**<br><br>**″** | `&prime;`<br><br>`&Prime;` | `\u2032`<br><br>`\u2033` | | <kbd>Alt</kbd>+<kbd>8 2 4 2</kbd><br><br><kbd>Alt</kbd>+<kbd>8 2 4 3</kbd> | Use prime (′) only in abbreviations for feet, arcminutes, and minutes: 3° 15′<br><br>Use double-prime (″) only in abbreviations for inches, arcseconds, and seconds: 3° 15′ 35″<br><br>Don’t use quotation marks, straight quotes, or free-standing accents for primes. |
 | Straight quotes and accents | **"**<br><br>**'**<br><br>**`**<br><br>**´** | `&quot;`<br><br>`&#39;`<br><br>`&#96;`<br><br>`&acute;` | `\u0022`<br><br>`\u0027`<br><br>`\u0060`<br><br>`\u00B4` | | | Don’t use straight quotes or free-standing accents for primes or quotation marks.<br><br>Proper typography never uses straight quotes. They are left over from the age of typewriters and their only modern use is for code. |
-| Ellipsis | **…** | `&hellip;` | | <kbd>⌥ Option</kbd>+<kbd>;</kbd> | <kbd>Alt</kbd>+<kbd>0 1 3 3</kbd> | Use to indicate an action in progress (“Downloading…”) or incomplete or truncated text. No space before the ellipsis.<br><br>Omit from menu items or buttons that open a dialog or start some other process. |
+| Ellipsis | **…** | `&hellip;` | | <kbd>⌥ Option</kbd>+<kbd>;</kbd> | <kbd>Alt</kbd>+<kbd>0 1 3 3</kbd> | Use to indicate an action in progress (“Downloading…”) or incomplete or truncated text. No space before the ellipsis.<br><br>Omit from menu items or buttons that open a modal or start some other process. |
 | Chevrons | **«**<br><br>**»**<br><br>**‹**<br><br>**›**<br><br>**<**<br><br>**>** | `&#171;`<br><br>`&#187;`<br><br>`&#8249;`<br><br>`&#8250;`<br><br>`&lt;`<br><br>`&gt;` | `\u00AB`<br><br>`\u00BB`<br><br>`\u2039`<br><br>`\u203A`<br><br>`\u003C`<br><br>`\u003E`<br><br> | | | Omit from links or buttons that open another page or move to the next or previous step in a process. Also known as angle brackets, angular quote brackets, or guillemets. |
 | Em dash | **—** | `&mdash;` | `\u2014` | <kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>-</kbd> | <kbd>Alt</kbd>+<kbd>0 1 5 1</kbd> | Avoid using dashes to separate text. If you must use dashes for this purpose — like this — use an em dash surrounded by spaces. |
 | En dash | **–** | `&ndash;` | `\u2013` | <kbd>⌥ Option</kbd>+<kbd>-</kbd> | <kbd>Alt</kbd>+<kbd>0 1 5 0</kbd> | Use an en dash without spaces instead of a hyphen to indicate a range of values, such as numbers, times, and dates: “3–5 kg”, “8:00 AM–12:30 PM”, “10–17 Jan” |
@@ -105,6 +105,14 @@ Only use the terms below.
 When using verbs or adjectives:
 * If the context clearly refers to the object, use them alone. Example: `Edit` or `Closed`
 * If the context isn’t clear enough, use them with the object. Example: `Edit issue` or `Closed issues`
+
+### Search
+
+| Term | Use |
+| ---- | --- |
+| Search | When using all metadata to add criteria that match/don't match. Search can also affect ordering, by ranking best results. |
+| Filter | When taking a single criteria that removes items within a list that match/don't match. Filters do not affect ordering. |
+| Sort   | Orders a list based on a single or grouped criteria |
 
 ### Projects and Groups
 
@@ -167,7 +175,7 @@ A **comment** is a written piece of text that users of GitLab can create. Commen
 #### Discussion
 A **discussion** is a group of 1 or more comments. A discussion can include subdiscussions. Some discussions have the special capability of being able to be **resolved**. Both the comments in the discussion and the discussion itself can be resolved.
 
-## Confirmation dialogs
+## Modals
 
 - Destruction buttons should be clear and always say what they are destroying.
   E.g., `Delete page` instead of just `Delete`.
@@ -175,6 +183,8 @@ A **discussion** is a group of 1 or more comments. A discussion can include subd
   destructive one, provide a way for them to do that as a secondary button.
 - Avoid the word `cancel` or `canceled` in the descriptive copy. It can be
   confusing when you then see the `Cancel` button.
+
+see also: guidelines for [modal components](components.md#modals)
 
 ---
 

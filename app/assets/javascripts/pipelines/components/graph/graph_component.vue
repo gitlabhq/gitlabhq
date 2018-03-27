@@ -1,9 +1,13 @@
 <script>
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import stageColumnComponent from './stage_column_component.vue';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-  import '../../../flash';
 
   export default {
+    components: {
+      stageColumnComponent,
+      loadingIcon,
+    },
+
     props: {
       isLoading: {
         type: Boolean,
@@ -13,11 +17,6 @@
         type: Object,
         required: true,
       },
-    },
-
-    components: {
-      stageColumnComponent,
-      loadingIcon,
     },
 
     computed: {
@@ -53,12 +52,12 @@
 </script>
 <template>
   <div class="build-content middle-block js-pipeline-graph">
-    <div class="pipeline-visualization pipeline-graph">
+    <div class="pipeline-visualization pipeline-graph pipeline-tab-content">
       <div class="text-center">
         <loading-icon
           v-if="isLoading"
           size="3"
-          />
+        />
       </div>
 
       <ul
@@ -70,7 +69,8 @@
           :jobs="stage.groups"
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
-          :is-first-column="isFirstColumn(index)"/>
+          :is-first-column="isFirstColumn(index)"
+        />
       </ul>
     </div>
   </div>

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::NoteMessage, models: true do
+describe ChatMessage::NoteMessage do
   subject { described_class.new(args) }
 
   let(:color) { '#345' }
@@ -38,7 +38,7 @@ describe ChatMessage::NoteMessage, models: true do
 
     context 'without markdown' do
       it 'returns a message regarding notes on commits' do
-        expect(subject.pretext).to eq("test.user <http://url.com|commented on " \
+        expect(subject.pretext).to eq("Test User (test.user) <http://url.com|commented on " \
           "commit 5f163b2b> in <http://somewhere.com|project_name>: " \
           "*Added a commit message*")
         expect(subject.attachments).to eq([{
@@ -55,11 +55,11 @@ describe ChatMessage::NoteMessage, models: true do
 
       it 'returns a message regarding notes on commits' do
         expect(subject.pretext).to eq(
-          'test.user [commented on commit 5f163b2b](http://url.com) in [project_name](http://somewhere.com): *Added a commit message*'
+          'Test User (test.user) [commented on commit 5f163b2b](http://url.com) in [project_name](http://somewhere.com): *Added a commit message*'
         )
         expect(subject.attachments).to eq('comment on a commit')
         expect(subject.activity).to eq({
-          title: 'test.user [commented on commit 5f163b2b](http://url.com)',
+          title: 'Test User (test.user) [commented on commit 5f163b2b](http://url.com)',
           subtitle: 'in [project_name](http://somewhere.com)',
           text: 'Added a commit message',
           image: 'http://fakeavatar'
@@ -81,7 +81,7 @@ describe ChatMessage::NoteMessage, models: true do
 
     context 'without markdown' do
       it 'returns a message regarding notes on a merge request' do
-        expect(subject.pretext).to eq("test.user <http://url.com|commented on " \
+        expect(subject.pretext).to eq("Test User (test.user) <http://url.com|commented on " \
           "merge request !30> in <http://somewhere.com|project_name>: " \
           "*merge request title*")
         expect(subject.attachments).to eq([{
@@ -98,10 +98,10 @@ describe ChatMessage::NoteMessage, models: true do
 
       it 'returns a message regarding notes on a merge request' do
         expect(subject.pretext).to eq(
-          'test.user [commented on merge request !30](http://url.com) in [project_name](http://somewhere.com): *merge request title*')
+          'Test User (test.user) [commented on merge request !30](http://url.com) in [project_name](http://somewhere.com): *merge request title*')
         expect(subject.attachments).to eq('comment on a merge request')
         expect(subject.activity).to eq({
-          title: 'test.user [commented on merge request !30](http://url.com)',
+          title: 'Test User (test.user) [commented on merge request !30](http://url.com)',
           subtitle: 'in [project_name](http://somewhere.com)',
           text: 'merge request title',
           image: 'http://fakeavatar'
@@ -124,7 +124,7 @@ describe ChatMessage::NoteMessage, models: true do
     context 'without markdown' do
       it 'returns a message regarding notes on an issue' do
         expect(subject.pretext).to eq(
-          "test.user <http://url.com|commented on " \
+          "Test User (test.user) <http://url.com|commented on " \
             "issue #20> in <http://somewhere.com|project_name>: " \
             "*issue title*")
         expect(subject.attachments).to eq([{
@@ -141,10 +141,10 @@ describe ChatMessage::NoteMessage, models: true do
 
       it 'returns a message regarding notes on an issue' do
         expect(subject.pretext).to eq(
-          'test.user [commented on issue #20](http://url.com) in [project_name](http://somewhere.com): *issue title*')
+          'Test User (test.user) [commented on issue #20](http://url.com) in [project_name](http://somewhere.com): *issue title*')
         expect(subject.attachments).to eq('comment on an issue')
         expect(subject.activity).to eq({
-          title: 'test.user [commented on issue #20](http://url.com)',
+          title: 'Test User (test.user) [commented on issue #20](http://url.com)',
           subtitle: 'in [project_name](http://somewhere.com)',
           text: 'issue title',
           image: 'http://fakeavatar'
@@ -165,7 +165,7 @@ describe ChatMessage::NoteMessage, models: true do
 
     context 'without markdown' do
       it 'returns a message regarding notes on a project snippet' do
-        expect(subject.pretext).to eq("test.user <http://url.com|commented on " \
+        expect(subject.pretext).to eq("Test User (test.user) <http://url.com|commented on " \
           "snippet $5> in <http://somewhere.com|project_name>: " \
           "*snippet title*")
         expect(subject.attachments).to eq([{
@@ -182,7 +182,7 @@ describe ChatMessage::NoteMessage, models: true do
 
       it 'returns a message regarding notes on a project snippet' do
         expect(subject.pretext).to eq(
-          'test.user [commented on snippet $5](http://url.com) in [project_name](http://somewhere.com): *snippet title*')
+          'Test User (test.user) [commented on snippet $5](http://url.com) in [project_name](http://somewhere.com): *snippet title*')
         expect(subject.attachments).to eq('comment on a snippet')
       end
     end

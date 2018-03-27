@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ProjectUrlConstrainer, lib: true do
-  let!(:project) { create(:empty_project) }
+describe Constraints::ProjectUrlConstrainer do
+  let!(:project) { create(:project) }
   let!(:namespace) { project.namespace }
 
   describe '#matches?' do

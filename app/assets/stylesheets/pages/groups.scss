@@ -26,14 +26,117 @@
   }
 }
 
-.groups-header {
-  @media (min-width: $screen-sm-min) {
-    .nav-links {
-      width: 35%;
+.group-nav-container .nav-controls {
+  display: flex;
+  align-items: flex-start;
+  padding: $gl-padding-top 0;
+  border-bottom: 1px solid $border-color;
+
+  .group-filter-form {
+    flex: 1;
+  }
+
+  .dropdown-menu-align-right {
+    margin-top: 0;
+  }
+
+  .new-project-subgroup {
+    .dropdown-primary {
+      min-width: 115px;
     }
 
-    .nav-controls {
-      width: 65%;
+    .dropdown-toggle {
+      .dropdown-btn-icon {
+        pointer-events: none;
+        color: inherit;
+        margin-left: 0;
+      }
+    }
+
+    .dropdown-menu {
+      min-width: 280px;
+      margin-top: 2px;
+    }
+
+    li:not(.divider) {
+      padding: 0;
+
+      &.droplab-item-selected {
+        .icon-container {
+          .list-item-checkmark {
+            visibility: visible;
+          }
+        }
+      }
+
+      .menu-item {
+        padding: 8px 4px;
+
+        &:hover {
+          background-color: $gray-darker;
+          color: $theme-gray-900;
+        }
+      }
+
+      .icon-container {
+        float: left;
+        padding-left: 6px;
+
+        .list-item-checkmark {
+          visibility: hidden;
+        }
+      }
+
+      .description {
+        font-size: 14px;
+
+        strong {
+          display: block;
+          font-weight: $gl-font-weight-bold;
+        }
+      }
+    }
+  }
+
+  @media (max-width: $screen-sm-max) {
+    &,
+    .dropdown,
+    .dropdown .dropdown-toggle,
+    .btn-new {
+      display: block;
+    }
+
+    .group-filter-form,
+    .dropdown {
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+
+    .group-filter-form,
+    .dropdown .dropdown-toggle,
+    .btn-new {
+      width: 100%;
+    }
+
+    .dropdown .dropdown-toggle .fa-chevron-down {
+      position: absolute;
+      top: 11px;
+      right: 8px;
+    }
+
+    .new-project-subgroup {
+      display: flex;
+      align-items: flex-start;
+
+      .dropdown-primary {
+        flex: 1;
+      }
+
+      .dropdown-menu {
+        width: 100%;
+        max-width: inherit;
+        min-width: inherit;
+      }
     }
   }
 }
@@ -107,5 +210,30 @@
   svg {
     width: 62px;
     height: 50px;
+  }
+}
+
+.user-access-role {
+  display: inline-block;
+  color: $gl-text-color-secondary;
+  font-size: 12px;
+  line-height: 20px;
+  margin: -5px 3px;
+  padding: 0 $label-padding;
+  border: 1px solid $border-color;
+  border-radius: $label-border-radius;
+  font-weight: $gl-font-weight-normal;
+}
+
+.js-groups-dropdown {
+  width: 100%;
+}
+
+.dropdown-group-transfer {
+  bottom: 100%;
+  top: initial;
+
+  .dropdown-content {
+    overflow-y: unset;
   }
 }

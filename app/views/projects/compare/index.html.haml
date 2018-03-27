@@ -1,18 +1,18 @@
 - @no_container = true
+- breadcrumb_title "Compare Revisions"
 - page_title "Compare"
-= render "projects/commits/head"
 
 %div{ class: container_class }
+  %h3.page-title
+    = _("Compare Git revisions")
   .sub-header-block
-    Compare Git revisions.
+    - example_master = capture do
+      %code.ref-name master
+    - example_sha = capture do
+      %code.ref-name 4eedf23
+    = (_("Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request.") % { master: example_master, sha: example_sha }).html_safe
     %br
-    Fill input field with commit SHA like
-    %code.ref-name 4eedf23
-    or branch/tag name like
-    %code.ref-name master
-    and press compare button for the commits list and a code diff.
-    %br
-    Changes are shown <b>from</b> the version in the first field <b>to</b> the version in the second field.
+    = (_("Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision.")).html_safe
 
   .prepend-top-20
     = render "form"

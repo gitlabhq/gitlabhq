@@ -1,18 +1,33 @@
-.dropdown.inline.js-group-filter-dropdown-wrap
+- options_hash = local_assigns.fetch(:options_hash, groups_sort_options_hash)
+- show_archive_options = local_assigns.fetch(:show_archive_options, false)
+- if @sort.present?
+  - default_sort_by = @sort
+- else
+  - if params[:sort]
+    - default_sort_by = params[:sort]
+  - else
+    - default_sort_by = sort_value_recently_created
+
+.dropdown.inline.js-group-filter-dropdown-wrap.append-right-10
   %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
     %span.dropdown-label
-      - if @sort.present?
-        = sort_options_hash[@sort]
-      - else
-        = sort_title_recently_created
+      = options_hash[default_sort_by]
     = icon('chevron-down')
-  %ul.dropdown-menu.dropdown-menu-align-right
-    %li
-      = link_to filter_groups_path(sort: sort_value_recently_created) do
-        = sort_title_recently_created
-      = link_to filter_groups_path(sort: sort_value_oldest_created) do
-        = sort_title_oldest_created
-      = link_to filter_groups_path(sort: sort_value_recently_updated) do
-        = sort_title_recently_updated
-      = link_to filter_groups_path(sort: sort_value_oldest_updated) do
-        = sort_title_oldest_updated
+  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+    %li.dropdown-header
+      = _("Sort by")
+    - options_hash.each do |value, title|
+      %li.js-filter-sort-order
+        = link_to filter_groups_path(sort: value), class: ("is-active" if default_sort_by == value) do
+          = title
+    - if show_archive_options
+      %li.divider
+      %li.js-filter-archived-projects
+        = link_to filter_groups_path(archived: nil), class: ("is-active" unless params[:archived].present?) do
+          Hide archived projects
+      %li.js-filter-archived-projects
+        = link_to filter_groups_path(archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
+          Show archived projects
+      %li.js-filter-archived-projects
+        = link_to filter_groups_path(archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
+          Show archived projects only

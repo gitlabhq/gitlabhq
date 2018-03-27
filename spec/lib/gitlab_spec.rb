@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Gitlab, lib: true do
+describe Gitlab do
   describe '.com?' do
     it 'is true when on GitLab.com' do
       stub_config_setting(url: 'https://gitlab.com')

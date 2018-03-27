@@ -6,6 +6,14 @@
   }
 }
 
+.wiki-form {
+  .edit-wiki-page-slug-tip {
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 5px;
+  }
+}
+
 .title .edit-wiki-header {
   width: 780px;
   margin-left: auto;
@@ -37,7 +45,7 @@
   }
 
   .light {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     color: $gl-text-color-secondary;
   }
 
@@ -89,16 +97,26 @@
 
   h3 {
     font-size: 19px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     margin: $gl-padding 0;
   }
 }
 
 .right-sidebar.wiki-sidebar {
-  padding: $gl-padding 0;
+  padding: 0;
 
   &.right-sidebar-collapsed {
     display: none;
+  }
+
+  .sidebar-container {
+    padding: $gl-padding 0;
+    width: calc(100% + 100px);
+    padding-right: 100px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .blocks-container {
@@ -114,7 +132,11 @@
 
     &:hover,
     &.active {
-      color: $black;
+      text-decoration: none;
+
+      span {
+        text-decoration: underline;
+      }
     }
   }
 
@@ -147,15 +169,20 @@
 }
 
 ul.wiki-pages-list.content-list {
-  & ul {
+  ul {
     list-style: none;
     margin-left: 0;
     padding-left: 15px;
-  }
 
-  & ul li {
-    padding: 5px 0;
+    li {
+      padding: 5px 0;
+    }
   }
+}
+
+.wiki-holder {
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .wiki {

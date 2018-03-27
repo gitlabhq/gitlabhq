@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CampfireService, models: true do
+describe CampfireService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -29,7 +29,7 @@ describe CampfireService, models: true do
     let(:project) { create(:project, :repository) }
 
     before do
-      @campfire_service = CampfireService.new
+      @campfire_service = described_class.new
       allow(@campfire_service).to receive_messages(
         project_id: project.id,
         project: project,
@@ -39,21 +39,22 @@ describe CampfireService, models: true do
         room: 'test-room'
       )
       @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-      @rooms_url = 'https://verySecret:X@project-name.campfirenow.com/rooms.json'
+      @rooms_url = 'https://project-name.campfirenow.com/rooms.json'
+      @auth = %w(verySecret X)
       @headers = { 'Content-Type' => 'application/json; charset=utf-8' }
     end
 
     it "calls Campfire API to get a list of rooms and speak in a room" do
       # make sure a valid list of rooms is returned
       body = File.read(Rails.root + 'spec/fixtures/project_services/campfire/rooms.json')
-      WebMock.stub_request(:get, @rooms_url).to_return(
+      WebMock.stub_request(:get, @rooms_url).with(basic_auth: @auth).to_return(
         body: body,
         status: 200,
         headers: @headers
       )
       # stub the speak request with the room id found in the previous request's response
-      speak_url = 'https://verySecret:X@project-name.campfirenow.com/room/123/speak.json'
-      WebMock.stub_request(:post, speak_url)
+      speak_url = 'https://project-name.campfirenow.com/room/123/speak.json'
+      WebMock.stub_request(:post, speak_url).with(basic_auth: @auth)
 
       @campfire_service.execute(@sample_data)
 
@@ -66,7 +67,7 @@ describe CampfireService, models: true do
     it "calls Campfire API to get a list of rooms but shouldn't speak in a room" do
       # return a list of rooms that do not contain a room named 'test-room'
       body = File.read(Rails.root + 'spec/fixtures/project_services/campfire/rooms2.json')
-      WebMock.stub_request(:get, @rooms_url).to_return(
+      WebMock.stub_request(:get, @rooms_url).with(basic_auth: @auth).to_return(
         body: body,
         status: 200,
         headers: @headers

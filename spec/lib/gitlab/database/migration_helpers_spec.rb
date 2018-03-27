@@ -1,10 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::Database::MigrationHelpers, lib: true do
+describe Gitlab::Database::MigrationHelpers do
   let(:model) do
-    ActiveRecord::Migration.new.extend(
-      Gitlab::Database::MigrationHelpers
-    )
+    ActiveRecord::Migration.new.extend(described_class)
   end
 
   before do
@@ -69,16 +67,34 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
           model.add_concurrent_index(:users, :foo, unique: true)
         end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
+        end
       end
 
       context 'using MySQL' do
-        it 'creates a regular index' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        end
 
+        it 'creates a regular index' do
           expect(model).to receive(:add_index)
             .with(:users, :foo, {})
 
           model.add_concurrent_index(:users, :foo)
+        end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
         end
       end
     end
@@ -97,6 +113,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     context 'outside a transaction' do
       before do
         allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:index_exists?).and_return(true)
       end
 
       context 'using PostgreSQL' do
@@ -105,18 +122,41 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           allow(model).to receive(:disable_statement_timeout)
         end
 
-        it 'removes the index concurrently by column name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, column: :foo })
+        describe 'by column name' do
+          it 'removes the index concurrently' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, column: :foo })
 
-          model.remove_concurrent_index(:users, :foo)
+            model.remove_concurrent_index(:users, :foo)
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index(:users, :foo, unique: true)
+          end
         end
 
-        it 'removes the index concurrently by index name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+        describe 'by index name' do
+          before do
+            allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
+          end
 
-          model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          it 'removes the index concurrently by index name' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
         end
       end
 
@@ -143,6 +183,10 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
   end
 
   describe '#add_concurrent_foreign_key' do
+    before do
+      allow(model).to receive(:foreign_key_exists?).and_return(false)
+    end
+
     context 'inside a transaction' do
       it 'raises an error' do
         expect(model).to receive(:transaction_open?).and_return(true)
@@ -159,11 +203,20 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       end
 
       context 'using MySQL' do
-        it 'creates a regular foreign key' do
+        before do
           allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+        end
 
+        it 'creates a regular foreign key' do
           expect(model).to receive(:add_foreign_key)
             .with(:projects, :users, column: :user_id, on_delete: :cascade)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:add_foreign_key)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -174,10 +227,28 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           allow(Gitlab::Database).to receive(:mysql?).and_return(false)
         end
 
-        it 'creates a concurrent foreign key' do
+        it 'creates a concurrent foreign key and validates it' do
           expect(model).to receive(:disable_statement_timeout)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'appends a valid ON DELETE statement' do
+          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id,
+                                           on_delete: :nullify)
+        end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
+          expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -192,6 +263,29 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
       expect(name).to be_an_instance_of(String)
       expect(name.length).to eq(13)
+    end
+  end
+
+  describe '#foreign_key_exists?' do
+    before do
+      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(:projects, :users, { column: :non_standard_id })
+      allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+    end
+
+    it 'finds existing foreign keys by column' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :non_standard_id)).to be_truthy
+    end
+
+    it 'finds existing foreign keys by target table only' do
+      expect(model.foreign_key_exists?(:projects, :users)).to be_truthy
+    end
+
+    it 'compares by column name if given' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :user_id)).to be_falsey
+    end
+
+    it 'compares by target if no column given' do
+      expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
     end
   end
 
@@ -266,7 +360,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       before do
         expect(model).to receive(:transaction_open?).and_return(false)
 
-        create_list(:empty_project, 5)
+        create_list(:project, 5)
       end
 
       it 'updates all the rows in a table' do
@@ -442,6 +536,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         it 'renames a column concurrently' do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
 
+          expect(model).to receive(:check_trigger_permissions!).with(:users)
+
           expect(model).to receive(:install_rename_triggers_for_mysql)
             .with(trigger_name, 'users', 'old', 'new')
 
@@ -468,6 +564,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       context 'using PostgreSQL' do
         it 'renames a column concurrently' do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+          expect(model).to receive(:check_trigger_permissions!).with(:users)
 
           expect(model).to receive(:install_rename_triggers_for_postgresql)
             .with(trigger_name, 'users', 'old', 'new')
@@ -498,6 +596,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     it 'cleans up the renaming procedure for PostgreSQL' do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
 
+      expect(model).to receive(:check_trigger_permissions!).with(:users)
+
       expect(model).to receive(:remove_rename_triggers_for_postgresql)
         .with(:users, /trigger_.{12}/)
 
@@ -508,6 +608,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
     it 'cleans up the renaming procedure for MySQL' do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+      expect(model).to receive(:check_trigger_permissions!).with(:users)
 
       expect(model).to receive(:remove_rename_triggers_for_mysql)
         .with(/trigger_.{12}/)
@@ -565,8 +667,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
   describe '#remove_rename_triggers_for_postgresql' do
     it 'removes the function and trigger' do
-      expect(model).to receive(:execute).with('DROP TRIGGER foo ON bar')
-      expect(model).to receive(:execute).with('DROP FUNCTION foo()')
+      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo ON bar')
+      expect(model).to receive(:execute).with('DROP FUNCTION IF EXISTS foo()')
 
       model.remove_rename_triggers_for_postgresql('bar', 'foo')
     end
@@ -574,8 +676,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
   describe '#remove_rename_triggers_for_mysql' do
     it 'removes the triggers' do
-      expect(model).to receive(:execute).with('DROP TRIGGER foo_insert')
-      expect(model).to receive(:execute).with('DROP TRIGGER foo_update')
+      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo_insert')
+      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo_update')
 
       model.remove_rename_triggers_for_mysql('foo')
     end
@@ -833,6 +935,280 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
         expect(user.reload.name).to eq('Kathy Eve Aliceson')
       end
+    end
+  end
+
+  describe 'sidekiq migration helpers', :sidekiq, :redis do
+    let(:worker) do
+      Class.new do
+        include Sidekiq::Worker
+        sidekiq_options queue: 'test'
+      end
+    end
+
+    describe '#sidekiq_queue_length' do
+      context 'when queue is empty' do
+        it 'returns zero' do
+          Sidekiq::Testing.disable! do
+            expect(model.sidekiq_queue_length('test')).to eq 0
+          end
+        end
+      end
+
+      context 'when queue contains jobs' do
+        it 'returns correct size of the queue' do
+          Sidekiq::Testing.disable! do
+            worker.perform_async('Something', [1])
+            worker.perform_async('Something', [2])
+
+            expect(model.sidekiq_queue_length('test')).to eq 2
+          end
+        end
+      end
+    end
+
+    describe '#migrate_sidekiq_queue' do
+      it 'migrates jobs from one sidekiq queue to another' do
+        Sidekiq::Testing.disable! do
+          worker.perform_async('Something', [1])
+          worker.perform_async('Something', [2])
+
+          expect(model.sidekiq_queue_length('test')).to eq 2
+          expect(model.sidekiq_queue_length('new_test')).to eq 0
+
+          model.sidekiq_queue_migrate('test', to: 'new_test')
+
+          expect(model.sidekiq_queue_length('test')).to eq 0
+          expect(model.sidekiq_queue_length('new_test')).to eq 2
+        end
+      end
+    end
+  end
+
+  describe '#check_trigger_permissions!' do
+    it 'does nothing when the user has the correct permissions' do
+      expect { model.check_trigger_permissions!('users') }
+        .not_to raise_error
+    end
+
+    it 'raises RuntimeError when the user does not have the correct permissions' do
+      allow(Gitlab::Database::Grant).to receive(:create_and_execute_trigger?)
+        .with('kittens')
+        .and_return(false)
+
+      expect { model.check_trigger_permissions!('kittens') }
+        .to raise_error(RuntimeError, /Your database user is not allowed/)
+    end
+  end
+
+  describe '#bulk_queue_background_migration_jobs_by_range', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with enough rows to bulk queue jobs more than once' do
+        before do
+          stub_const('Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_JOB_BUFFER_SIZE', 1)
+        end
+
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in groups of buffer size 1' do
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id1, id2]]])
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id3, id3]]])
+
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+        end
+      end
+
+      context 'with not enough rows to bulk queue jobs more than once' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in bulk all at once (big buffer size)' do
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id1, id2]],
+                                                                                  ['FooJob', [id3, id3]]])
+
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+        end
+      end
+
+      context 'without specifying batch_size' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob')
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+          end
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.bulk_queue_background_migration_jobs_by_range(ProjectAuthorization, 'FooJob')
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
+
+  describe '#queue_background_migration_jobs_by_range_at_intervals', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with batch_size option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+            expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.minutes.from_now.to_f)
+          end
+        end
+      end
+
+      context 'without batch_size option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+          end
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
+
+  describe '#change_column_type_using_background_migration' do
+    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
+
+    let(:issue_model) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = 'issues'
+        include EachBatch
+      end
+    end
+
+    it 'changes the type of a column using a background migration' do
+      expect(model)
+        .to receive(:add_column)
+        .with('issues', 'closed_at_for_type_change', :datetime_with_timezone)
+
+      expect(model)
+        .to receive(:install_rename_triggers)
+        .with('issues', :closed_at, 'closed_at_for_type_change')
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          10.minutes,
+          'CopyColumn',
+          ['issues', :closed_at, 'closed_at_for_type_change', issue.id, issue.id]
+        )
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          1.hour + 10.minutes,
+          'CleanupConcurrentTypeChange',
+          ['issues', :closed_at, 'closed_at_for_type_change']
+        )
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CopyColumn')
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CleanupConcurrentTypeChange')
+
+      model.change_column_type_using_background_migration(
+        issue_model.all,
+        :closed_at,
+        :datetime_with_timezone
+      )
+    end
+  end
+
+  describe '#perform_background_migration_inline?' do
+    it 'returns true in a test environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(true)
+
+      expect(model.perform_background_migration_inline?).to eq(true)
+    end
+
+    it 'returns true in a development environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(false)
+
+      allow(Rails.env)
+        .to receive(:development?)
+        .and_return(true)
+
+      expect(model.perform_background_migration_inline?).to eq(true)
+    end
+
+    it 'returns false in a production environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(false)
+
+      allow(Rails.env)
+        .to receive(:development?)
+        .and_return(false)
+
+      expect(model.perform_background_migration_inline?).to eq(false)
     end
   end
 end

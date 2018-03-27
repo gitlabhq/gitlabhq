@@ -6,26 +6,26 @@
 @keyframes blinking-dots {
   0% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   25% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   75% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,1);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 1);
   }
 
   100% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 }
 
@@ -37,65 +37,75 @@
 }
 
 .build-page {
-  .sticky {
-    position: absolute;
-    left: 0;
-    right: 0;
+  .build-trace-container {
+    position: relative;
   }
 
-  .build-trace-container {
-    position: absolute;
-    top: 225px;
-    left: 15px;
-    bottom: 10px;
+  .build-trace {
     background: $black;
     color: $gray-darkest;
-    font-family: $monospace_font;
+    white-space: pre;
+    overflow-x: auto;
     font-size: 12px;
+    border-radius: 0;
+    border: 0;
+    padding: $grid-size;
 
-    &.sidebar-expanded {
-      right: 305px;
+    .bash {
+      display: block;
+    }
+  }
+
+  .top-bar {
+    height: 35px;
+    background: $gray-light;
+    border: 1px solid $border-color;
+    color: $gl-text-color;
+    position: sticky;
+    position: -webkit-sticky;
+    top: $header-height;
+    padding: $grid-size;
+
+    &.affix {
+      top: $header-height;
+
+      // with sidebar
+      &.sidebar-expanded {
+        right: 306px;
+        left: 16px;
+      }
+
+      // without sidebar
+      &.sidebar-collapsed {
+        right: 16px;
+        left: 16px;
+      }
     }
 
-    &.sidebar-collapsed {
-      right: 16px;
-    }
-
-    code {
-      background: $black;
-      color: $gray-darkest;
-    }
-
-    .top-bar {
+    &.affix-top {
+      position: absolute;
+      right: 0;
+      left: 0;
       top: 0;
-      height: 35px;
-      display: flex;
-      justify-content: flex-end;
-      background: $gray-light;
-      border: 1px solid $border-color;
-      color: $gl-text-color;
+    }
 
-      .truncated-info {
-        margin: 0 auto;
-        align-self: center;
+    .truncated-info {
+      .truncated-info-size {
+        margin: 0 5px;
+      }
 
-        .truncated-info-size {
-          margin: 0 5px;
-        }
-
-        .raw-link {
-          color: $gl-text-color;
-          margin-left: 5px;
-          text-decoration: underline;
-        }
+      .raw-link {
+        color: $gl-text-color;
+        margin-left: 5px;
+        text-decoration: underline;
       }
     }
 
     .controllers {
       display: flex;
-      align-self: center;
       font-size: 15px;
-      margin-bottom: 4px;
+      justify-content: center;
+      align-items: center;
 
       svg {
         height: 15px;
@@ -103,17 +113,13 @@
         fill: $gl-text-color;
       }
 
-      .controllers-buttons,
-      .btn-scroll {
-        color: $gl-text-color;
-        height: 15px;
-        vertical-align: middle;
-        padding: 0;
-        width: 12px;
-      }
-
       .controllers-buttons {
-        margin: 1px 10px;
+        color: $gl-text-color;
+        margin: 0 $grid-size;
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
 
       .btn-scroll.animate {
@@ -143,16 +149,6 @@
     }
   }
 
-  .bash {
-    top: 35px;
-    left: 10px;
-    bottom: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 10px 20px 20px 5px;
-    white-space: pre;
-  }
-
   .environment-information {
     border: 1px solid $border-color;
     padding: 8px $gl-padding 12px;
@@ -174,6 +170,16 @@
     margin: auto auto 12px 2px;
     border-radius: 50%;
     animation: blinking-dots 1s linear infinite;
+  }
+}
+
+.with-performance-bar .build-page {
+  .top-bar {
+    top: $header-height + $performance-bar-height;
+
+    &.affix {
+      top: $header-height + $performance-bar-height;
+    }
   }
 }
 
@@ -230,8 +236,18 @@
     display: none;
   }
 
+  .sidebar-container {
+    width: calc(100% + 100px);
+    padding-right: 100px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .blocks-container {
     padding: 0 $gl-padding;
+    width: 289px;
   }
 
   .block {
@@ -250,7 +266,19 @@
     }
   }
 
+  .block-last {
+    padding: 16px 0;
+  }
+
+  .trigger-build-variables {
+    margin: 0;
+    overflow-x: auto;
+    -ms-overflow-style: scrollbar;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .trigger-build-variable {
+    font-weight: $gl-font-weight-normal;
     color: $code-color;
   }
 
@@ -295,22 +323,19 @@
   }
 
   .build-dropdown {
-    padding: $gl-padding 0;
+    margin: $gl-padding 0;
+    padding: 0;
 
     .dropdown-menu-toggle {
-      margin-top: 8px;
-    }
-
-    .dropdown-menu {
-      right: $gl-padding;
-      left: $gl-padding;
-      width: auto;
+      margin-top: #{$gl-padding / 2};
     }
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -319,13 +344,15 @@
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     max-height: 300px;
+    width: 289px;
     overflow: auto;
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
-      height: 13px;
+      height: 14px;
+      width: 14px;
     }
 
     a {
@@ -344,7 +371,7 @@
     .build-job {
       position: relative;
 
-      .fa-arrow-right {
+      .icon-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -352,9 +379,9 @@
       }
 
       &.active {
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
 
-        .fa-arrow-right {
+        .icon-arrow-right {
           display: block;
         }
       }
@@ -367,8 +394,7 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
-        font-size: 13px;
+      .icon-retry {
         margin-left: 3px;
       }
     }
@@ -399,6 +425,7 @@
 
 .build-light-text {
   color: $gl-text-color-secondary;
+  word-wrap: break-word;
 }
 
 .build-gutter-toggle {

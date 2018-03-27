@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::PushMessage, models: true do
+describe ChatMessage::PushMessage do
   subject { described_class.new(args) }
 
   let(:args) do

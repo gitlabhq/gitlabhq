@@ -1,14 +1,14 @@
+- @hide_top_links = true
 - @no_container = true
-
+- breadcrumb_title "Projects"
 - page_title "Starred Projects"
 - header_title "Projects", dashboard_projects_path
 
-= render "projects/last_push"
-
 %div{ class: container_class }
+  = render "projects/last_push"
   = render 'dashboard/projects_head'
 
-  - if @projects.any? || params[:filter_projects]
+  - if params[:filter_projects] || any_projects?(@projects)
     = render 'projects'
   - else
     %h3 You don't have starred projects yet

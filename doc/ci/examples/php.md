@@ -167,7 +167,7 @@ Finally, push to GitLab and let the tests begin!
 ### Test against different PHP versions in Shell builds
 
 The [phpenv][] project allows you to easily manage different versions of PHP
-each with its own config. This is specially usefull when testing PHP projects
+each with its own config. This is especially useful when testing PHP projects
 with the Shell executor.
 
 You will have to install it on your build machine under the `gitlab-runner`
@@ -227,7 +227,7 @@ following in your `.gitlab-ci.yml`:
 ...
 
 # Composer stores all downloaded packages in the vendor/ directory.
-# Do not use the following if the vendor/ directory is commited to
+# Do not use the following if the vendor/ directory is committed to
 # your git repository.
 cache:
   paths:
@@ -267,10 +267,10 @@ terminal execute:
 
 ```bash
 # Check using docker executor
-gitlab-ci-multi-runner exec docker test:app
+gitlab-runner exec docker test:app
 
 # Check using shell executor
-gitlab-ci-multi-runner exec shell test:app
+gitlab-runner exec shell test:app
 ```
 
 ## Example project

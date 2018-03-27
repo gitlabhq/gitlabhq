@@ -11,7 +11,7 @@ describe Profiles::AccountsController do
     it 'renders 404 if someone tries to unlink a non existent provider' do
       delete :unlink, provider: 'github'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     [:saml, :cas3].each do |provider|
@@ -23,13 +23,13 @@ describe Profiles::AccountsController do
 
           delete :unlink, provider: provider.to_s
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(user.reload.identities).to include(identity)
         end
       end
     end
 
-    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0].each do |provider|
+    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0, :authentiq].each do |provider|
       describe "#{provider} provider" do
         let(:user) { create(:omniauth_user, provider: provider.to_s) }
 
@@ -38,7 +38,7 @@ describe Profiles::AccountsController do
 
           delete :unlink, provider: provider.to_s
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(user.reload.identities).not_to include(identity)
         end
       end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Group, models: true do
+describe Group do
   let!(:group) { create(:group, :access_requestable) }
 
   describe 'associations' do
@@ -9,12 +9,16 @@ describe Group, models: true do
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:group_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
+    it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
+    it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
+    it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
+    it { is_expected.to have_many(:badges).class_name('GroupBadge') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -24,22 +28,8 @@ describe Group, models: true do
         group.add_developer(developer)
       end
 
-      describe '#members' do
-        it 'includes members and exclude requesters' do
-          member_user_ids = group.members.pluck(:user_id)
-
-          expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
-        end
-      end
-
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = group.requesters.pluck(:user_id)
-
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
-        end
+      it_behaves_like 'members and requesters associations' do
+        let(:namespace) { group }
       end
     end
   end
@@ -52,7 +42,6 @@ describe Group, models: true do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }
@@ -76,11 +65,82 @@ describe Group, models: true do
 
         expect(group).not_to be_valid
       end
+    end
 
-      it 'rejects reserved group paths' do
-        group = build(:group, path: 'activity', parent: create(:group))
+    describe '#visibility_level_allowed_by_parent' do
+      let(:parent) { create(:group, :internal) }
+      let(:sub_group) { build(:group, parent_id: parent.id) }
 
-        expect(group).not_to be_valid
+      context 'without a parent' do
+        it 'is valid' do
+          sub_group.parent_id = nil
+
+          expect(sub_group).to be_valid
+        end
+      end
+
+      context 'with a parent' do
+        context 'when visibility of sub group is greater than the parent' do
+          it 'is invalid' do
+            sub_group.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+            expect(sub_group).to be_invalid
+          end
+        end
+
+        context 'when visibility of sub group is lower or equal to the parent' do
+          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE].each do |level|
+            it 'is valid' do
+              sub_group.visibility_level = level
+
+              expect(sub_group).to be_valid
+            end
+          end
+        end
+      end
+    end
+
+    describe '#visibility_level_allowed_by_projects' do
+      let!(:internal_group) { create(:group, :internal) }
+      let!(:internal_project) { create(:project, :internal, group: internal_group) }
+
+      context 'when group has a lower visibility' do
+        it 'is invalid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+          expect(internal_group).to be_invalid
+          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since this group contains projects with higher visibility.')
+        end
+      end
+
+      context 'when group has a higher visibility' do
+        it 'is valid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+          expect(internal_group).to be_valid
+        end
+      end
+    end
+
+    describe '#visibility_level_allowed_by_sub_groups' do
+      let!(:internal_group) { create(:group, :internal) }
+      let!(:internal_sub_group) { create(:group, :internal, parent: internal_group) }
+
+      context 'when parent group has a lower visibility' do
+        it 'is invalid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+          expect(internal_group).to be_invalid
+          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since there are sub-groups with higher visibility.')
+        end
+      end
+
+      context 'when parent group has a higher visibility' do
+        it 'is valid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+          expect(internal_group).to be_valid
+        end
       end
     end
   end
@@ -180,15 +240,13 @@ describe Group, models: true do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["only images allowed"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff"])
     end
   end
 
   describe '#avatar_url' do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
-    let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-    let(:avatar_path) { "/uploads/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
       before do
@@ -196,12 +254,8 @@ describe Group, models: true do
       end
 
       it 'shows correct avatar url' do
-        expect(group.avatar_url).to eq(avatar_path)
-        expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(group.avatar_url).to eq(group.avatar.url)
+        expect(group.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, group.avatar.url].join)
       end
     end
   end
@@ -235,6 +289,7 @@ describe Group, models: true do
   describe '#has_owner?' do
     before do
       @members = setup_group_members(group)
+      create(:group_member, :invited, :owner, group: group)
     end
 
     it { expect(group.has_owner?(@members[:owner])).to be_truthy }
@@ -243,11 +298,13 @@ describe Group, models: true do
     it { expect(group.has_owner?(@members[:reporter])).to be_falsey }
     it { expect(group.has_owner?(@members[:guest])).to be_falsey }
     it { expect(group.has_owner?(@members[:requester])).to be_falsey }
+    it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
   describe '#has_master?' do
     before do
       @members = setup_group_members(group)
+      create(:group_member, :invited, :master, group: group)
     end
 
     it { expect(group.has_master?(@members[:owner])).to be_falsey }
@@ -256,6 +313,7 @@ describe Group, models: true do
     it { expect(group.has_master?(@members[:reporter])).to be_falsey }
     it { expect(group.has_master?(@members[:guest])).to be_falsey }
     it { expect(group.has_master?(@members[:requester])).to be_falsey }
+    it { expect(group.has_master?(nil)).to be_falsey }
   end
 
   describe '#lfs_enabled?' do
@@ -352,7 +410,7 @@ describe Group, models: true do
     subject { build(:group, :nested) }
 
     it { is_expected.to be_valid }
-    it { expect(subject.parent).to be_kind_of(Group) }
+    it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
   describe '#members_with_parents', :nested_groups do
@@ -416,6 +474,132 @@ describe Group, models: true do
       group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
 
       expect(calls).to eq 2
+    end
+  end
+
+  describe '#path_changed_hook' do
+    let(:system_hook_service) { SystemHooksService.new }
+
+    context 'for a new group' do
+      let(:group) { build(:group) }
+
+      before do
+        expect(group).to receive(:system_hook_service).and_return(system_hook_service)
+      end
+
+      it 'does not trigger system hook' do
+        expect(system_hook_service).to receive(:execute_hooks_for).with(group, :create)
+
+        group.save!
+      end
+    end
+
+    context 'for an existing group' do
+      let(:group) { create(:group, path: 'old-path') }
+
+      context 'when the path is changed' do
+        let(:new_path) { 'very-new-path' }
+
+        it 'triggers the rename system hook' do
+          expect(group).to receive(:system_hook_service).and_return(system_hook_service)
+          expect(system_hook_service).to receive(:execute_hooks_for).with(group, :rename)
+
+          group.update_attributes!(path: new_path)
+        end
+      end
+
+      context 'when the path is not changed' do
+        it 'does not trigger system hook' do
+          expect(group).not_to receive(:system_hook_service)
+
+          group.update_attributes!(name: 'new name')
+        end
+      end
+    end
+  end
+
+  describe '#secret_variables_for' do
+    let(:project) { create(:project, group: group) }
+
+    let!(:secret_variable) do
+      create(:ci_group_variable, value: 'secret', group: group)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_group_variable, :protected, value: 'protected', group: group)
+    end
+
+    subject { group.secret_variables_for('ref', project) }
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(secret_variable, protected_variable)
+      end
+    end
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when group has children', :postgresql do
+      let(:group_child)      { create(:group, parent: group) }
+      let(:group_child_2)    { create(:group, parent: group_child) }
+      let(:group_child_3)    { create(:group, parent: group_child_2) }
+      let(:variable_child)   { create(:ci_group_variable, group: group_child) }
+      let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
+      let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
+
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
+
+      it 'returns all variables belong to the group and parent groups' do
+        expected_array1 = [protected_variable, secret_variable]
+        expected_array2 = [variable_child, variable_child_2, variable_child_3]
+        got_array = group_child_3.secret_variables_for('ref', project).to_a
+
+        expect(got_array.shift(2)).to contain_exactly(*expected_array1)
+        expect(got_array).to eq(expected_array2)
+      end
+    end
+  end
+
+  describe '#has_parent?' do
+    context 'when the group has a parent' do
+      it 'should be truthy' do
+        group = create(:group, :nested)
+        expect(group.has_parent?).to be_truthy
+      end
+    end
+
+    context 'when the group has no parent' do
+      it 'should be falsy' do
+        group = create(:group, parent: nil)
+        expect(group.has_parent?).to be_falsy
+      end
     end
   end
 end

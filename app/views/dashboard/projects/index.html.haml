@@ -1,4 +1,5 @@
 - @no_container = true
+- @hide_top_links = true
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
@@ -6,16 +7,11 @@
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
-= render "projects/last_push"
-
 %div{ class: container_class }
-  - if show_callout?('user_callout_dismissed')
-    = render 'shared/user_callout'
-
-  - if @projects.any? || params[:name]
+  = render "projects/last_push"
+  - if show_projects?(@projects, params)
     = render 'dashboard/projects_head'
-
-  - if @projects.any? || params[:name]
+    = render 'nav'
     = render 'projects'
   - else
     = render "zero_authorized_projects"

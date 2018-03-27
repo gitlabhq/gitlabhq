@@ -19,7 +19,7 @@
               %th Last commit
           %tbody
             - @matching_refs.each do |matching_tag|
-              = render partial: "matching_tag", object: matching_tag
+              = render partial: "projects/protected_tags/shared/matching_tag", object: matching_tag
     - else
       %p.settings-message.text-center
         Couldn't find any matching tags.

@@ -8,7 +8,15 @@ module QA
       end
 
       def name
-        'qa_test_' + time.strftime('%d_%m_%Y_%H-%M-%S')
+        'qa-test-' + time.strftime('%d-%m-%Y-%H-%M-%S')
+      end
+
+      def path
+        "#{sandbox_name}/#{name}"
+      end
+
+      def sandbox_name
+        Runtime::Env.sandbox_name || 'gitlab-qa-sandbox'
       end
     end
   end

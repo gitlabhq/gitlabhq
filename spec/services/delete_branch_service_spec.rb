@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeleteBranchService, services: true do
+describe DeleteBranchService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
@@ -9,7 +9,7 @@ describe DeleteBranchService, services: true do
   describe '#execute' do
     context 'when user has access to push to repository' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'removes the branch' do

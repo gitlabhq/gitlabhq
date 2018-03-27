@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required" : [
+    "additions",
+    "deletions",
+    "total"
+  ],
+  "properties" : {
+    "additions": { "type": "integer" },
+    "deletions": { "type": "integer" },
+    "total": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

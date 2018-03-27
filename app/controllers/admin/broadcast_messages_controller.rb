@@ -1,8 +1,10 @@
 class Admin::BroadcastMessagesController < Admin::ApplicationController
+  include BroadcastMessagesHelper
+
   before_action :finder, only: [:edit, :update, :destroy]
 
   def index
-    @broadcast_messages = BroadcastMessage.reorder("ends_at DESC").page(params[:page])
+    @broadcast_messages = BroadcastMessage.order(ends_at: :desc).page(params[:page])
     @broadcast_message  = BroadcastMessage.new
   end
 
@@ -37,7 +39,8 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   end
 
   def preview
-    @broadcast_message = BroadcastMessage.new(broadcast_message_params)
+    broadcast_message = BroadcastMessage.new(broadcast_message_params)
+    render json: { message: render_broadcast_message(broadcast_message) }
   end
 
   protected

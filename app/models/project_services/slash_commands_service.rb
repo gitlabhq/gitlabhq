@@ -5,7 +5,7 @@ class SlashCommandsService < Service
 
   prop_accessor :token
 
-  has_many :chat_names, foreign_key: :service_id, dependent: :destroy
+  has_many :chat_names, foreign_key: :service_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   def valid_token?(token)
     self.respond_to?(:token) &&
@@ -30,10 +30,10 @@ class SlashCommandsService < Service
   def trigger(params)
     return unless valid_token?(params[:token])
 
-    user = find_chat_user(params)
+    chat_user = find_chat_user(params)
 
-    if user
-      Gitlab::SlashCommands::Command.new(project, user, params).execute
+    if chat_user&.user
+      Gitlab::SlashCommands::Command.new(project, chat_user, params).execute
     else
       url = authorize_chat_name_url(params)
       Gitlab::SlashCommands::Presenters::Access.new(url).authorize

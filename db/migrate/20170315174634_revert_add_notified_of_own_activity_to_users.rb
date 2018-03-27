@@ -1,4 +1,5 @@
-# rubocop:disable Migration/AddColumnWithDefaultToLargeTable
+# rubocop:disable Migration/RemoveColumn
+# rubocop:disable Migration/UpdateLargeTable
 class RevertAddNotifiedOfOwnActivityToUsers < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!

@@ -1,6 +1,6 @@
 module MergeRequestHelpers
   def visit_merge_requests(project, opts = {})
-    visit namespace_project_merge_requests_path project.namespace, project, opts
+    visit project_merge_requests_path project, opts
   end
 
   def first_merge_request

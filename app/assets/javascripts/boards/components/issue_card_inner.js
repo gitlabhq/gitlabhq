@@ -1,5 +1,6 @@
+import $ from 'jquery';
 import Vue from 'vue';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -31,6 +32,10 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       required: false,
       default: false,
     },
+    groupId: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -40,7 +45,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     };
   },
   components: {
-    userAvatarLink,
+    UserAvatarLink,
   },
   computed: {
     numberOverLimit() {
@@ -64,10 +69,19 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return this.issue.assignees.length > this.numberOverLimit;
     },
     cardUrl() {
-      return `${this.issueLinkBase}/${this.issue.id}`;
+      let baseUrl = this.issueLinkBase;
+
+      if (this.groupId && this.issue.project) {
+        baseUrl = this.issueLinkBase.replace(':project_path', this.issue.project.path);
+      }
+
+      return `${baseUrl}/${this.issue.iid}`;
     },
     issueId() {
-      return `#${this.issue.id}`;
+      if (this.issue.iid) {
+        return `#${this.issue.iid}`;
+      }
+      return false;
     },
     showLabelFooter() {
       return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
@@ -97,9 +111,8 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return `Avatar for ${assignee.name}`;
     },
     showLabel(label) {
-      if (!this.list) return true;
-
-      return !this.list.label || label.id !== this.list.label.id;
+      if (!label.id) return false;
+      return true;
     },
     filterByLabel(label, e) {
       if (!this.updateFilters) return;
@@ -144,9 +157,9 @@ gl.issueBoards.IssueCardInner = Vue.extend({
             :title="issue.title">{{ issue.title }}</a>
           <span
             class="card-number"
-            v-if="issue.id"
+            v-if="issueId"
           >
-            {{ issueId }}
+            <template v-if="groupId && issue.project">{{issue.project.path}}</template>{{ issueId }}
           </span>
         </h4>
         <div class="card-assignee">

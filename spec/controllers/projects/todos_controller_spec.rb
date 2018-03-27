@@ -2,7 +2,7 @@ require('spec_helper')
 
 describe Projects::TodosController do
   let(:user)          { create(:user) }
-  let(:project)       { create(:empty_project) }
+  let(:project)       { create(:project) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -20,7 +20,7 @@ describe Projects::TodosController do
       context 'when authorized' do
         before do
           sign_in(user)
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'creates todo for issue' do
@@ -28,15 +28,15 @@ describe Projects::TodosController do
             go
           end.to change { user.todos.count }.by(1)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it 'returns todo path and pending count' do
           go
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['count']).to eq 1
-          expect(json_response['delete_path']).to match(/\/dashboard\/todos\/\d{1}/)
+          expect(json_response['delete_path']).to match(%r{/dashboard/todos/\d{1}})
         end
       end
 
@@ -47,7 +47,7 @@ describe Projects::TodosController do
             go
           end.to change { user.todos.count }.by(0)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not create todo for issue when user not logged in' do
@@ -55,7 +55,7 @@ describe Projects::TodosController do
             go
           end.to change { user.todos.count }.by(0)
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -67,8 +67,8 @@ describe Projects::TodosController do
         end
 
         it "doesn't create todo" do
-          expect{ go }.not_to change { user.todos.count }
-          expect(response).to have_http_status(404)
+          expect { go }.not_to change { user.todos.count }
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -88,7 +88,7 @@ describe Projects::TodosController do
       context 'when authorized' do
         before do
           sign_in(user)
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'creates todo for merge request' do
@@ -96,15 +96,15 @@ describe Projects::TodosController do
             go
           end.to change { user.todos.count }.by(1)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it 'returns todo path and pending count' do
           go
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['count']).to eq 1
-          expect(json_response['delete_path']).to match(/\/dashboard\/todos\/\d{1}/)
+          expect(json_response['delete_path']).to match(%r{/dashboard/todos/\d{1}})
         end
       end
 
@@ -115,7 +115,7 @@ describe Projects::TodosController do
             go
           end.to change { user.todos.count }.by(0)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not create todo for merge request user has no access to' do
@@ -123,7 +123,7 @@ describe Projects::TodosController do
             go
           end.to change { user.todos.count }.by(0)
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -135,8 +135,8 @@ describe Projects::TodosController do
         end
 
         it "doesn't create todo" do
-          expect{ go }.not_to change { user.todos.count }
-          expect(response).to have_http_status(404)
+          expect { go }.not_to change { user.todos.count }
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

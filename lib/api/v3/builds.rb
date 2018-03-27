@@ -8,7 +8,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         helpers do
           params :optional_scope do
             optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -16,7 +16,7 @@ module API
                              coerce_with: ->(scope) {
                                             if scope.is_a?(String)
                                               [scope]
-                                            elsif   scope.is_a?(Hashie::Mash)
+                                            elsif   scope.is_a?(::Hash)
                                               scope.values
                                             else
                                               ['unknown']
@@ -36,6 +36,7 @@ module API
           builds = user_project.builds.order('id DESC')
           builds = filter_builds(builds, params[:scope])
 
+          builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
           present paginate(builds), with: ::API::V3::Entities::Build
         end
 
@@ -169,7 +170,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
-          authorize!(:update_build, build)
+          authorize!(:erase_build, build)
           return forbidden!('Build is not erasable!') unless build.erasable?
 
           build.erase(erased_by: current_user)

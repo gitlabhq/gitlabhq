@@ -1,3 +1,5 @@
+- add_to_breadcrumbs "Groups", admin_groups_path
+- breadcrumb_title @group.name
 - page_title @group.name, "Groups"
 %h3.page-title
   Group: #{@group.full_name}
@@ -14,7 +16,7 @@
       %ul.well-list
         %li
           .avatar-container.s60
-            = image_tag group_icon(@group), class: "avatar s60"
+            = group_icon(@group, class: "avatar s60")
         %li
           %span.light Name:
           %strong= @group.name
@@ -66,11 +68,11 @@
         - @projects.each do |project|
           %li
             %strong
-              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+              = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
               %span.badge
                 = storage_counter(project.statistics.storage_size)
             %span.pull-right.light
-              %span.monospace= project.path_with_namespace + ".git"
+              %span.monospace= project.full_path + '.git'
       .panel-footer
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
@@ -84,11 +86,11 @@
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li
               %strong
-                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
                 %span.badge
                   = storage_counter(project.statistics.storage_size)
               %span.pull-right.light
-                %span.monospace= project.path_with_namespace + ".git"
+                %span.monospace= project.full_path + '.git'
 
   .col-md-6
     - if can?(current_user, :admin_group_member, @group)
@@ -107,8 +109,7 @@
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag 'Add users to group', class: "btn btn-create"
-
-    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
+      = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
 
     .panel.panel-default
       .panel-heading
@@ -117,7 +118,7 @@
         %span.badge= @group.members.size
         .pull-right
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
-      %ul.well-list.group-users-list.content-list
+      %ul.well-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

@@ -1,134 +1,133 @@
-import '~/lib/utils/pretty_time';
+import { parseSeconds, abbreviateTime, stringifyTime } from '~/lib/utils/pretty_time';
 
-(() => {
-  const prettyTime = gl.utils.prettyTime;
+function assertTimeUnits(obj, minutes, hours, days, weeks) {
+  expect(obj.minutes).toBe(minutes);
+  expect(obj.hours).toBe(hours);
+  expect(obj.days).toBe(days);
+  expect(obj.weeks).toBe(weeks);
+}
 
-  describe('prettyTime methods', function () {
-    describe('parseSeconds', function () {
-      it('should correctly parse a negative value', function () {
-        const parser = prettyTime.parseSeconds;
+describe('prettyTime methods', () => {
+  describe('parseSeconds', () => {
+    it('should correctly parse a negative value', () => {
+      const zeroSeconds = parseSeconds(-1000);
 
-        const zeroSeconds = parser(-1000);
-
-        expect(zeroSeconds.minutes).toBe(16);
-        expect(zeroSeconds.hours).toBe(0);
-        expect(zeroSeconds.days).toBe(0);
-        expect(zeroSeconds.weeks).toBe(0);
-      });
-
-      it('should correctly parse a zero value', function () {
-        const parser = prettyTime.parseSeconds;
-
-        const zeroSeconds = parser(0);
-
-        expect(zeroSeconds.minutes).toBe(0);
-        expect(zeroSeconds.hours).toBe(0);
-        expect(zeroSeconds.days).toBe(0);
-        expect(zeroSeconds.weeks).toBe(0);
-      });
-
-      it('should correctly parse a small non-zero second values', function () {
-        const parser = prettyTime.parseSeconds;
-
-        const subOneMinute = parser(10);
-
-        expect(subOneMinute.minutes).toBe(0);
-        expect(subOneMinute.hours).toBe(0);
-        expect(subOneMinute.days).toBe(0);
-        expect(subOneMinute.weeks).toBe(0);
-
-        const aboveOneMinute = parser(100);
-
-        expect(aboveOneMinute.minutes).toBe(1);
-        expect(aboveOneMinute.hours).toBe(0);
-        expect(aboveOneMinute.days).toBe(0);
-        expect(aboveOneMinute.weeks).toBe(0);
-
-        const manyMinutes = parser(1000);
-
-        expect(manyMinutes.minutes).toBe(16);
-        expect(manyMinutes.hours).toBe(0);
-        expect(manyMinutes.days).toBe(0);
-        expect(manyMinutes.weeks).toBe(0);
-      });
-
-      it('should correctly parse large second values', function () {
-        const parser = prettyTime.parseSeconds;
-
-        const aboveOneHour = parser(4800);
-
-        expect(aboveOneHour.minutes).toBe(20);
-        expect(aboveOneHour.hours).toBe(1);
-        expect(aboveOneHour.days).toBe(0);
-        expect(aboveOneHour.weeks).toBe(0);
-
-        const aboveOneDay = parser(110000);
-
-        expect(aboveOneDay.minutes).toBe(33);
-        expect(aboveOneDay.hours).toBe(6);
-        expect(aboveOneDay.days).toBe(3);
-        expect(aboveOneDay.weeks).toBe(0);
-
-        const aboveOneWeek = parser(25000000);
-
-        expect(aboveOneWeek.minutes).toBe(26);
-        expect(aboveOneWeek.hours).toBe(0);
-        expect(aboveOneWeek.days).toBe(3);
-        expect(aboveOneWeek.weeks).toBe(173);
-      });
+      assertTimeUnits(zeroSeconds, 16, 0, 0, 0);
     });
 
-    describe('stringifyTime', function () {
-      it('should stringify values with all non-zero units', function () {
-        const timeObject = {
-          weeks: 1,
-          days: 4,
-          hours: 7,
-          minutes: 20,
-        };
+    it('should correctly parse a zero value', () => {
+      const zeroSeconds = parseSeconds(0);
 
-        const timeString = prettyTime.stringifyTime(timeObject);
-
-        expect(timeString).toBe('1w 4d 7h 20m');
-      });
-
-      it('should stringify values with some non-zero units', function () {
-        const timeObject = {
-          weeks: 0,
-          days: 4,
-          hours: 0,
-          minutes: 20,
-        };
-
-        const timeString = prettyTime.stringifyTime(timeObject);
-
-        expect(timeString).toBe('4d 20m');
-      });
-
-      it('should stringify values with no non-zero units', function () {
-        const timeObject = {
-          weeks: 0,
-          days: 0,
-          hours: 0,
-          minutes: 0,
-        };
-
-        const timeString = prettyTime.stringifyTime(timeObject);
-
-        expect(timeString).toBe('0m');
-      });
+      assertTimeUnits(zeroSeconds, 0, 0, 0, 0);
     });
 
-    describe('abbreviateTime', function () {
-      it('should abbreviate stringified times for weeks', function () {
-        const fullTimeString = '1w 3d 4h 5m';
-        expect(prettyTime.abbreviateTime(fullTimeString)).toBe('1w');
-      });
+    it('should correctly parse a small non-zero second values', () => {
+      const subOneMinute = parseSeconds(10);
+      const aboveOneMinute = parseSeconds(100);
+      const manyMinutes = parseSeconds(1000);
 
-      it('should abbreviate stringified times for non-weeks', function () {
-        const fullTimeString = '0w 3d 4h 5m';
-        expect(prettyTime.abbreviateTime(fullTimeString)).toBe('3d');
-      });
+      assertTimeUnits(subOneMinute, 0, 0, 0, 0);
+      assertTimeUnits(aboveOneMinute, 1, 0, 0, 0);
+      assertTimeUnits(manyMinutes, 16, 0, 0, 0);
+    });
+
+    it('should correctly parse large second values', () => {
+      const aboveOneHour = parseSeconds(4800);
+      const aboveOneDay = parseSeconds(110000);
+      const aboveOneWeek = parseSeconds(25000000);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 6, 3, 0);
+      assertTimeUnits(aboveOneWeek, 26, 0, 3, 173);
+    });
+
+    it('should correctly accept a custom param for hoursPerDay', () => {
+      const config = { hoursPerDay: 24 };
+
+      const aboveOneHour = parseSeconds(4800, config);
+      const aboveOneDay = parseSeconds(110000, config);
+      const aboveOneWeek = parseSeconds(25000000, config);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 6, 1, 0);
+      assertTimeUnits(aboveOneWeek, 26, 8, 4, 57);
+    });
+
+    it('should correctly accept a custom param for daysPerWeek', () => {
+      const config = { daysPerWeek: 7 };
+
+      const aboveOneHour = parseSeconds(4800, config);
+      const aboveOneDay = parseSeconds(110000, config);
+      const aboveOneWeek = parseSeconds(25000000, config);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 6, 3, 0);
+      assertTimeUnits(aboveOneWeek, 26, 0, 0, 124);
+    });
+
+    it('should correctly accept custom params for daysPerWeek and hoursPerDay', () => {
+      const config = { daysPerWeek: 55, hoursPerDay: 14 };
+
+      const aboveOneHour = parseSeconds(4800, config);
+      const aboveOneDay = parseSeconds(110000, config);
+      const aboveOneWeek = parseSeconds(25000000, config);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 2, 2, 0);
+      assertTimeUnits(aboveOneWeek, 26, 0, 1, 9);
     });
   });
-})(window.gl || (window.gl = {}));
+
+  describe('stringifyTime', () => {
+    it('should stringify values with all non-zero units', () => {
+      const timeObject = {
+        weeks: 1,
+        days: 4,
+        hours: 7,
+        minutes: 20,
+      };
+
+      const timeString = stringifyTime(timeObject);
+
+      expect(timeString).toBe('1w 4d 7h 20m');
+    });
+
+    it('should stringify values with some non-zero units', () => {
+      const timeObject = {
+        weeks: 0,
+        days: 4,
+        hours: 0,
+        minutes: 20,
+      };
+
+      const timeString = stringifyTime(timeObject);
+
+      expect(timeString).toBe('4d 20m');
+    });
+
+    it('should stringify values with no non-zero units', () => {
+      const timeObject = {
+        weeks: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+      };
+
+      const timeString = stringifyTime(timeObject);
+
+      expect(timeString).toBe('0m');
+    });
+  });
+
+  describe('abbreviateTime', () => {
+    it('should abbreviate stringified times for weeks', () => {
+      const fullTimeString = '1w 3d 4h 5m';
+      expect(abbreviateTime(fullTimeString)).toBe('1w');
+    });
+
+    it('should abbreviate stringified times for non-weeks', () => {
+      const fullTimeString = '0w 3d 4h 5m';
+      expect(abbreviateTime(fullTimeString)).toBe('3d');
+    });
+  });
+});

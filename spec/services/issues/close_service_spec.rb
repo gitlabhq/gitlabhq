@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe Issues::CloseService, services: true do
+describe Issues::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:issue) { create(:issue, assignees: [user2]) }
+  let(:issue) { create(:issue, assignees: [user2], author: create(:user)) }
   let(:project) { issue.project }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
@@ -40,6 +40,11 @@ describe Issues::CloseService, services: true do
         .with(issue, commit: nil, notifications: true, system_note: true)
 
       service.execute(issue)
+    end
+
+    it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
+      expect { service.execute(issue) }
+        .to change { project.open_issues_count }.from(1).to(0)
     end
 
     it 'invalidates counter cache for assignees' do
@@ -98,13 +103,13 @@ describe Issues::CloseService, services: true do
       end
     end
 
-    context 'external issue tracker' do
+    context 'internal issues disabled' do
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
-        described_class.new(project, user).close_issue(issue)
+        project.issues_enabled = false
+        project.save!
       end
 
-      it 'closes the issue' do
+      it 'does not close the issue' do
         expect(issue).to be_valid
         expect(issue).to be_opened
         expect(todo.reload).to be_pending

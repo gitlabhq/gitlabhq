@@ -1,83 +1,126 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, camelcase, no-var, one-var, one-var-declaration-per-line, prefer-template, quotes, object-shorthand, comma-dangle, no-unused-vars, prefer-arrow-callback, no-else-return, vars-on-top, no-new, max-len */
+import $ from 'jquery';
+import _ from 'underscore';
+import { __, sprintf } from './locale';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+import { convertPermissionToBoolean } from './lib/utils/common_utils';
 
-(function() {
-  window.ImporterStatus = (function() {
-    function ImporterStatus(jobs_url, import_url) {
-      this.jobs_url = jobs_url;
-      this.import_url = import_url;
-      this.initStatusPage();
-      this.setAutoUpdate();
-    }
+class ImporterStatus {
+  constructor({ jobsUrl, importUrl, ciCdOnly }) {
+    this.jobsUrl = jobsUrl;
+    this.importUrl = importUrl;
+    this.ciCdOnly = ciCdOnly;
+    this.initStatusPage();
+    this.setAutoUpdate();
+  }
 
-    ImporterStatus.prototype.initStatusPage = function() {
-      $('.js-add-to-import').off('click').on('click', (function(_this) {
-        return function(e) {
-          var $btn, $namespace_input, $target_field, $tr, id, target_namespace, newName;
-          $btn = $(e.currentTarget);
-          $tr = $btn.closest('tr');
-          $target_field = $tr.find('.import-target');
-          $namespace_input = $target_field.find('.js-select-namespace option:selected');
-          id = $tr.attr('id').replace('repo_', '');
-          target_namespace = null;
-          newName = null;
-          if ($namespace_input.length > 0) {
-            target_namespace = $namespace_input[0].innerHTML;
-            newName = $target_field.find('#path').prop('value');
-            $target_field.empty().append(target_namespace + "/" + newName);
-          }
-          $btn.disable().addClass('is-loading');
-          return $.post(_this.import_url, {
-            repo_id: id,
-            target_namespace: target_namespace,
-            new_name: newName
-          }, {
-            dataType: 'script'
-          });
-        };
-      })(this));
-      return $('.js-import-all').off('click').on('click', function(e) {
-        var $btn;
-        $btn = $(this);
+  initStatusPage() {
+    $('.js-add-to-import')
+      .off('click')
+      .on('click', this.addToImport.bind(this));
+
+    $('.js-import-all')
+      .off('click')
+      .on('click', function onClickImportAll() {
+        const $btn = $(this);
         $btn.disable().addClass('is-loading');
-        return $('.js-add-to-import').each(function() {
+        return $('.js-add-to-import').each(function triggerAddImport() {
           return $(this).trigger('click');
         });
       });
-    };
+  }
 
-    ImporterStatus.prototype.setAutoUpdate = function() {
-      return setInterval(((function(_this) {
-        return function() {
-          return $.get(_this.jobs_url, function(data) {
-            return $.each(data, function(i, job) {
-              var job_item, status_field;
-              job_item = $("#project_" + job.id);
-              status_field = job_item.find(".job-status");
-              if (job.import_status === 'finished') {
-                job_item.removeClass("active").addClass("success");
-                return status_field.html('<span><i class="fa fa-check"></i> done</span>');
-              } else if (job.import_status === 'scheduled') {
-                return status_field.html("<i class='fa fa-spinner fa-spin'></i> scheduled");
-              } else if (job.import_status === 'started') {
-                return status_field.html("<i class='fa fa-spinner fa-spin'></i> started");
-              } else {
-                return status_field.html(job.import_status);
-              }
-            });
-          });
-        };
-      })(this)), 4000);
-    };
-
-    return ImporterStatus;
-  })();
-
-  $(function() {
-    if ($('.js-importer-status').length) {
-      var jobsImportPath = $('.js-importer-status').data('jobs-import-path');
-      var importPath = $('.js-importer-status').data('import-path');
-
-      new window.ImporterStatus(jobsImportPath, importPath);
+  addToImport(event) {
+    const $btn = $(event.currentTarget);
+    const $tr = $btn.closest('tr');
+    const $targetField = $tr.find('.import-target');
+    const $namespaceInput = $targetField.find('.js-select-namespace option:selected');
+    const id = $tr.attr('id').replace('repo_', '');
+    let targetNamespace;
+    let newName;
+    if ($namespaceInput.length > 0) {
+      targetNamespace = $namespaceInput[0].innerHTML;
+      newName = $targetField.find('#path').prop('value');
+      $targetField.empty().append(`${targetNamespace}/${newName}`);
     }
-  });
-}).call(window);
+    $btn.disable().addClass('is-loading');
+
+    return axios.post(this.importUrl, {
+      repo_id: id,
+      target_namespace: targetNamespace,
+      new_name: newName,
+      ci_cd_only: this.ciCdOnly,
+    })
+    .then(({ data }) => {
+      const job = $(`tr#repo_${id}`);
+      job.attr('id', `project_${data.id}`);
+
+      job.find('.import-target').html(`<a href="${data.full_path}">${data.full_path}</a>`);
+      $('table.import-jobs tbody').prepend(job);
+
+      job.addClass('active');
+      const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
+      job.find('.import-actions').html(sprintf(
+        _.escape(__('%{loadingIcon} Started')), {
+          loadingIcon: `<i class="fa fa-spinner fa-spin" aria-label="${_.escape(connectingVerb)}"></i>`,
+        },
+        false,
+      ));
+    })
+    .catch(() => flash(__('An error occurred while importing project')));
+  }
+
+  autoUpdate() {
+    return axios.get(this.jobsUrl)
+      .then(({ data = [] }) => {
+        data.forEach((job) => {
+          const jobItem = $(`#project_${job.id}`);
+          const statusField = jobItem.find('.job-status');
+
+          const spinner = '<i class="fa fa-spinner fa-spin"></i>';
+
+          switch (job.import_status) {
+            case 'finished':
+              jobItem.removeClass('active').addClass('success');
+              statusField.html(`<span><i class="fa fa-check"></i> ${__('Done')}</span>`);
+              break;
+            case 'scheduled':
+              statusField.html(`${spinner} ${__('Scheduled')}`);
+              break;
+            case 'started':
+              statusField.html(`${spinner} ${__('Started')}`);
+              break;
+            case 'failed':
+              statusField.html(__('Failed'));
+              break;
+            default:
+              statusField.html(job.import_status);
+              break;
+          }
+        });
+      });
+  }
+
+  setAutoUpdate() {
+    setInterval(this.autoUpdate.bind(this), 4000);
+  }
+}
+
+// eslint-disable-next-line consistent-return
+function initImporterStatus() {
+  const importerStatus = document.querySelector('.js-importer-status');
+
+  if (importerStatus) {
+    const data = importerStatus.dataset;
+    return new ImporterStatus({
+      jobsUrl: data.jobsImportPath,
+      importUrl: data.importPath,
+      ciCdOnly: convertPermissionToBoolean(data.ciCdOnly),
+    });
+  }
+}
+
+export {
+  initImporterStatus as default,
+  ImporterStatus,
+};

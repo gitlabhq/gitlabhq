@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SystemNoteMetadata, models: true do
+describe SystemNoteMetadata do
   describe 'associations' do
     it { is_expected.to belong_to(:note) }
   end

@@ -14,7 +14,7 @@ class ProjectStatistics < ActiveRecord::Base
   def refresh!(only: nil)
     STATISTICS_COLUMNS.each do |column, generator|
       if only.blank? || only.include?(column)
-        public_send("update_#{column}")
+        public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
       end
     end
 
@@ -35,7 +35,9 @@ class ProjectStatistics < ActiveRecord::Base
   end
 
   def update_build_artifacts_size
-    self.build_artifacts_size = project.builds.sum(:artifacts_size)
+    self.build_artifacts_size =
+      project.builds.sum(:artifacts_size) +
+      Ci::JobArtifact.artifacts_size_for(self.project)
   end
 
   def update_storage_size

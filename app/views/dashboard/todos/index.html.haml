@@ -1,13 +1,14 @@
+- @hide_top_links = true
 - page_title "Todos"
 - header_title "Todos", dashboard_todos_path
 
 - if current_user.todos.any?
   .top-area
-    %ul.nav-links
+    %ul.nav-links.mobile-separator
       %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
         = link_to todos_filter_path(state: 'pending') do
           %span
-            To do
+            Todos
           %span.badge
             = number_with_delimiter(todos_pending_count)
       %li.todos-done{ class: active_when(params[:state] == 'done') }>
@@ -76,17 +77,18 @@
           %ul.content-list.todos-list
             = render @todos
       = paginate @todos, theme: "gitlab"
-    .js-nothing-here-container.todos-all-done.hidden
-      = render "shared/empty_states/icons/todos_all_done.svg"
+    .js-nothing-here-container.todos-all-done.hidden.svg-content
+      = image_tag 'illustrations/todos_all_done.svg'
       %h4.text-center
         You're all done!
   - elsif current_user.todos.any?
     .todos-all-done
-      = render "shared/empty_states/icons/todos_all_done.svg"
+      .svg-content.svg-250
+        = image_tag 'illustrations/todos_all_done.svg'
       - if todos_filter_empty?
         %h4.text-center
           = Gitlab.config.gitlab.no_todos_messages.sample
-        %p.text-center
+        %p
           Are you looking for things to do? Take a look at
           = succeed "," do
             = link_to "the opened issues", issues_dashboard_path
@@ -98,11 +100,11 @@
           There are no todos to show.
   - else
     .todos-empty
-      .todos-empty-hero
-        = render "shared/empty_states/icons/todos_empty.svg"
+      .todos-empty-hero.svg-content
+        = image_tag 'illustrations/todos_empty.svg'
       .todos-empty-content
         %h4
-          Todos let you see what you should do next.
+          Todos let you see what you should do next
         %p
           When an issue or merge request is assigned to you, or when you
           %strong

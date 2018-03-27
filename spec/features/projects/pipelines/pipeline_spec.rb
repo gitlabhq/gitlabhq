@@ -1,14 +1,12 @@
 require 'spec_helper'
 
-describe 'Pipeline', :feature, :js do
-  include GitlabRoutingHelper
-
-  let(:project) { create(:empty_project) }
+describe 'Pipeline', :js do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
-    project.team << [user, :developer]
+    sign_in(user)
+    project.add_developer(user)
   end
 
   shared_context 'pipeline builds' do
@@ -44,11 +42,11 @@ describe 'Pipeline', :feature, :js do
   describe 'GET /:project/pipelines/:id' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
     before do
-      visit namespace_project_pipeline_path(project.namespace, project, pipeline)
+      visit project_pipeline_path(project, pipeline)
     end
 
     it 'shows the pipeline graph' do
@@ -69,13 +67,13 @@ describe 'Pipeline', :feature, :js do
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
             expect(page).to have_selector('.js-ci-status-icon-running')
-            expect(page).to have_selector('.js-icon-action-cancel')
+            expect(page).to have_selector('.js-icon-cancel')
             expect(page).to have_content('deploy')
           end
         end
 
         it 'should be possible to cancel the running build' do
-          find('#ci-badge-deploy .ci-action-icon-container').trigger('click')
+          find('#ci-badge-deploy .ci-action-icon-container').click
 
           expect(page).not_to have_content('Cancel running')
         end
@@ -88,13 +86,13 @@ describe 'Pipeline', :feature, :js do
             expect(page).to have_content('build')
           end
 
-          page.within('#ci-badge-build .ci-action-icon-container') do
-            expect(page).to have_selector('.js-icon-action-retry')
+          page.within('#ci-badge-build .ci-action-icon-container.js-icon-retry') do
+            expect(page).to have_selector('svg')
           end
         end
 
         it 'should be possible to retry the success job' do
-          find('#ci-badge-build .ci-action-icon-container').trigger('click')
+          find('#ci-badge-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
@@ -107,13 +105,13 @@ describe 'Pipeline', :feature, :js do
             expect(page).to have_content('test')
           end
 
-          page.within('#ci-badge-test .ci-action-icon-container') do
-            expect(page).to have_selector('.js-icon-action-retry')
+          page.within('#ci-badge-test .ci-action-icon-container.js-icon-retry') do
+            expect(page).to have_selector('svg')
           end
         end
 
         it 'should be possible to retry the failed build' do
-          find('#ci-badge-test .ci-action-icon-container').trigger('click')
+          find('#ci-badge-test .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
@@ -126,13 +124,13 @@ describe 'Pipeline', :feature, :js do
             expect(page).to have_content('manual')
           end
 
-          page.within('#ci-badge-manual-build .ci-action-icon-container') do
-            expect(page).to have_selector('.js-icon-action-play')
+          page.within('#ci-badge-manual-build .ci-action-icon-container.js-icon-play') do
+            expect(page).to have_selector('svg')
           end
         end
 
         it 'should be possible to play the manual job' do
-          find('#ci-badge-manual-build .ci-action-icon-container').trigger('click')
+          find('#ci-badge-manual-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Play job')
         end
@@ -154,7 +152,7 @@ describe 'Pipeline', :feature, :js do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
       end
 
       it 'shows Pipeline tab as active' do
@@ -167,7 +165,7 @@ describe 'Pipeline', :feature, :js do
 
       context 'when retrying' do
         before do
-          find('.js-retry-button').trigger('click')
+          find('.js-retry-button').click
         end
 
         it { expect(page).not_to have_content('Retry') }
@@ -187,14 +185,44 @@ describe 'Pipeline', :feature, :js do
     end
   end
 
+  context 'when user does not have access to read jobs' do
+    before do
+      project.update(public_builds: false)
+    end
+
+    describe 'GET /:project/pipelines/:id' do
+      include_context 'pipeline builds'
+
+      let(:project) { create(:project, :repository) }
+      let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows the pipeline graph' do
+        expect(page).to have_selector('.pipeline-visualization')
+        expect(page).to have_content('Build')
+        expect(page).to have_content('Test')
+        expect(page).to have_content('Deploy')
+        expect(page).to have_content('Retry')
+        expect(page).to have_content('Cancel running')
+      end
+
+      it 'should not link to job' do
+        expect(page).not_to have_selector('.js-pipeline-graph-job-link')
+      end
+    end
+  end
+
   describe 'GET /:project/pipelines/:id/builds' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      visit builds_namespace_project_pipeline_path(project.namespace, project, pipeline)
+      visit builds_project_pipeline_path(project, pipeline)
     end
 
     it 'shows a list of jobs' do
@@ -220,7 +248,7 @@ describe 'Pipeline', :feature, :js do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
       end
 
       it 'shows Jobs tab as active' do
@@ -233,7 +261,7 @@ describe 'Pipeline', :feature, :js do
 
       context 'when retrying' do
         before do
-          find('.js-retry-button').trigger('click')
+          find('.js-retry-button').click
         end
 
         it { expect(page).not_to have_content('Retry') }
@@ -264,9 +292,9 @@ describe 'Pipeline', :feature, :js do
   end
 
   describe 'GET /:project/pipelines/:id/failures' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
-    let(:pipeline_failures_page) { failures_namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
     context 'with failed build' do

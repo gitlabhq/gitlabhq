@@ -1,41 +1,41 @@
 require 'spec_helper'
 
-describe Ci::TriggerPolicy, :models do
+describe Ci::TriggerPolicy do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:trigger) { create(:ci_trigger, project: project, owner: owner) }
 
   let(:policies) do
-    described_class.abilities(user, trigger).to_set
+    described_class.new(user, trigger)
   end
 
   shared_examples 'allows to admin and manage trigger' do
     it 'does include ability to admin trigger' do
-      expect(policies).to include :admin_trigger
+      expect(policies).to be_allowed :admin_trigger
     end
 
     it 'does include ability to manage trigger' do
-      expect(policies).to include :manage_trigger
+      expect(policies).to be_allowed :manage_trigger
     end
   end
 
   shared_examples 'allows to manage trigger' do
     it 'does not include ability to admin trigger' do
-      expect(policies).not_to include :admin_trigger
+      expect(policies).not_to be_allowed :admin_trigger
     end
 
     it 'does include ability to manage trigger' do
-      expect(policies).to include :manage_trigger
+      expect(policies).to be_allowed :manage_trigger
     end
   end
 
   shared_examples 'disallows to admin and manage trigger' do
     it 'does not include ability to admin trigger' do
-      expect(policies).not_to include :admin_trigger
+      expect(policies).not_to be_allowed :admin_trigger
     end
 
     it 'does not include ability to manage trigger' do
-      expect(policies).not_to include :manage_trigger
+      expect(policies).not_to be_allowed :manage_trigger
     end
   end
 
@@ -45,7 +45,7 @@ describe Ci::TriggerPolicy, :models do
 
       context 'when user is master of the project' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it_behaves_like 'allows to admin and manage trigger'
@@ -53,7 +53,7 @@ describe Ci::TriggerPolicy, :models do
 
       context 'when user is developer of the project' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it_behaves_like 'disallows to admin and manage trigger'
@@ -69,7 +69,7 @@ describe Ci::TriggerPolicy, :models do
 
       context 'when user is master of the project' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it_behaves_like 'allows to admin and manage trigger'
@@ -81,7 +81,7 @@ describe Ci::TriggerPolicy, :models do
 
       context 'when user is master of the project' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it_behaves_like 'allows to manage trigger'
@@ -89,7 +89,7 @@ describe Ci::TriggerPolicy, :models do
 
       context 'when user is developer of the project' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it_behaves_like 'disallows to admin and manage trigger'

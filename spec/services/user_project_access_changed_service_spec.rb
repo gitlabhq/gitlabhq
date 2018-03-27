@@ -8,5 +8,12 @@ describe UserProjectAccessChangedService do
 
       described_class.new([1, 2]).execute
     end
+
+    it 'permits non-blocking operation' do
+      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
+        .with([[1], [2]])
+
+      described_class.new([1, 2]).execute(blocking: false)
+    end
   end
 end

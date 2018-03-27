@@ -1,25 +1,20 @@
 - @no_container = true
 - page_title "Logs"
-- loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
-             Gitlab::EnvironmentLogger, Gitlab::SidekiqLogger,
-             Gitlab::RepositoryCheckLogger]
-= render 'admin/monitoring/head'
 
 %div{ class: container_class }
   %ul.nav-links.log-tabs
-    - loggers.each do |klass|
-      %li{ class: active_when(klass == Gitlab::GitLogger) }>
-        = link_to klass::file_name, "##{klass::file_name_noext}",
-            'data-toggle' => 'tab'
+    - @loggers.each do |klass|
+      %li{ class: active_when(klass == @loggers.first) }>
+        = link_to klass.file_name, "##{klass.file_name_noext}", data: { toggle: 'tab' }
   .row-content-block
     To prevent performance issues admin logs output the last 2000 lines
   .tab-content
-    - loggers.each do |klass|
-      .tab-pane{ class: active_when(klass == Gitlab::GitLogger), id: klass::file_name_noext }
+    - @loggers.each do |klass|
+      .tab-pane{ class: active_when(klass == @loggers.first), id: klass.file_name_noext }
         .file-holder#README
           .js-file-title.file-title
             %i.fa.fa-file
-            = klass::file_name
+            = klass.file_name
             .pull-right
               = link_to '#', class: 'log-bottom' do
                 %i.fa.fa-arrow-down

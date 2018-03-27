@@ -2,15 +2,15 @@ require 'spec_helper'
 
 describe ::Gitlab::RepoPath do
   describe '.parse' do
-    set(:project) { create(:project) }
+    set(:project) { create(:project, :repository) }
 
     context 'a repository storage path' do
       it 'parses a full repository path' do
-        expect(described_class.parse(project.repository.path)).to eq([project, false, nil])
+        expect(described_class.parse(project.repository.full_path)).to eq([project, false, nil])
       end
 
       it 'parses a full wiki path' do
-        expect(described_class.parse(project.wiki.repository.path)).to eq([project, true, nil])
+        expect(described_class.parse(project.wiki.repository.full_path)).to eq([project, true, nil])
       end
     end
 
@@ -48,8 +48,8 @@ describe ::Gitlab::RepoPath do
   describe '.strip_storage_path' do
     before do
       allow(Gitlab.config.repositories).to receive(:storages).and_return({
-        'storage1' => { 'path' => '/foo' },
-        'storage2' => { 'path' => '/bar' }
+        'storage1' => Gitlab::GitalyClient::StorageSettings.new('path' => '/foo'),
+        'storage2' => Gitlab::GitalyClient::StorageSettings.new('path' => '/bar')
       })
     end
 
@@ -65,7 +65,7 @@ describe ::Gitlab::RepoPath do
   end
 
   describe '.find_project' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:redirect) { project.route.create_redirect('foo/bar/baz') }
 
     context 'when finding a project by its canonical path' do

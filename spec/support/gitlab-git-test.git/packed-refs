@@ -1,0 +1,19 @@
+# pack-refs with: peeled fully-peeled sorted 
+0b4bc9a49b562e85de7cc9e834518ea6828729b9 refs/heads/feature
+12d65c8dd2b2676fa3ac47d955accc085a37a9c1 refs/heads/fix
+6473c90867124755509e100d0d35ebdc85a0b6ae refs/heads/fix-blob-path
+58fa1a3af4de73ea83fe25a1ef1db8e0c56f67e5 refs/heads/fix-existing-submodule-dir
+40f4a7a617393735a95a0bb67b08385bc1e7c66d refs/heads/fix-mode
+9abd6a8c113a2dd76df3fdb3d58a8cec6db75f8d refs/heads/gitattributes
+46e1395e609395de004cacd4b142865ab0e52a29 refs/heads/gitattributes-updated
+4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6 refs/heads/master
+5937ac0a7beb003549fc5fd26fc247adbce4a52e refs/heads/merge-test
+9596bc54a6f0c0c98248fe97077eb5ccf48a98d0 refs/heads/missing-gitmodules
+f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8 refs/tags/v1.0.0
+^6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b refs/tags/v1.1.0
+^5937ac0a7beb003549fc5fd26fc247adbce4a52e
+10d64eed7760f2811ee2d64b44f1f7d3b364f17b refs/tags/v1.2.0
+^eb49186cfa5c4338011f5f590fac11bd66c5c631
+2ac1f24e253e08135507d0830508febaaccf02ee refs/tags/v1.2.1
+^fa1b1e6c004a68b7d8763b86455da9e6b23e36d6

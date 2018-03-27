@@ -1,4 +1,4 @@
-# Features API
+# Features flags API
 
 All methods require administrator authorization.
 
@@ -58,6 +58,11 @@ POST /features/:name
 | --------- | ---- | -------- | ----------- |
 | `name` | string | yes | Name of the feature to create or update |
 | `value` | integer/string | yes | `true` or `false` to enable/disable, or an integer for percentage of time |
+| `feature_group` | string | no | A Feature group name |
+| `user` | string | no | A GitLab username |
+
+Note that you can enable or disable a feature for both a `feature_group` and a
+`user` with a single API call.
 
 ```bash
 curl --data "value=30" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/new_library

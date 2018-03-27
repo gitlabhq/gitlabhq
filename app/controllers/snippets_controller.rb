@@ -4,6 +4,7 @@ class SnippetsController < ApplicationController
   include SpammableActions
   include SnippetsActions
   include RendersBlob
+  include PreviewMarkdown
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
@@ -66,7 +67,7 @@ class SnippetsController < ApplicationController
     @noteable = @snippet
 
     @discussions = @snippet.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
     respond_to do |format|
       format.html do
@@ -87,17 +88,6 @@ class SnippetsController < ApplicationController
     redirect_to snippets_path, status: 302
   end
 
-  def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, params).execute
-
-    render json: {
-      body: view_context.markdown(result[:text], skip_project_check: true),
-      references: {
-        users: result[:users]
-      }
-    }
-  end
-
   protected
 
   def snippet
@@ -106,6 +96,10 @@ class SnippetsController < ApplicationController
 
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
+
+  def spammable_path
+    snippet_path(@snippet)
+  end
 
   def authorize_read_snippet!
     return if can?(current_user, :read_personal_snippet, @snippet)

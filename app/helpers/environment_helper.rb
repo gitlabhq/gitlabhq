@@ -8,7 +8,7 @@ module EnvironmentHelper
   def environment_link_for_build(project, build)
     environment = environment_for_build(project, build)
     if environment
-      link_to environment.name, namespace_project_environment_path(project.namespace, project, environment)
+      link_to environment.name, project_environment_path(project, environment)
     else
       content_tag :span, build.expanded_environment_name
     end

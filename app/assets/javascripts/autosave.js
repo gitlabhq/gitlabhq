@@ -1,55 +1,54 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-param-reassign, quotes, prefer-template, no-var, one-var, no-unused-vars, one-var-declaration-per-line, no-void, consistent-return, no-empty, max-len */
+/* eslint-disable no-param-reassign, prefer-template, no-var, no-void, consistent-return */
+
 import AccessorUtilities from './lib/utils/accessor';
 
-window.Autosave = (function() {
-  function Autosave(field, key) {
+export default class Autosave {
+  constructor(field, key) {
     this.field = field;
-    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
 
+    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
     if (key.join != null) {
-      key = key.join("/");
+      key = key.join('/');
     }
-    this.key = "autosave/" + key;
-    this.field.data("autosave", this);
+    this.key = 'autosave/' + key;
+    this.field.data('autosave', this);
     this.restore();
-    this.field.on("input", (function(_this) {
-      return function() {
-        return _this.save();
-      };
-    })(this));
+    this.field.on('input', () => this.save());
   }
 
-  Autosave.prototype.restore = function() {
-    var text;
-
+  restore() {
     if (!this.isLocalStorageAvailable) return;
+    if (!this.field.length) return;
 
-    text = window.localStorage.getItem(this.key);
+    const text = window.localStorage.getItem(this.key);
 
     if ((text != null ? text.length : void 0) > 0) {
       this.field.val(text);
     }
-    return this.field.trigger("input");
-  };
 
-  Autosave.prototype.save = function() {
-    var text;
-    text = this.field.val();
+    this.field.trigger('input');
+    // v-model does not update with jQuery trigger
+    // https://github.com/vuejs/vue/issues/2804#issuecomment-216968137
+    const event = new Event('change', { bubbles: true, cancelable: false });
+    const field = this.field.get(0);
+    field.dispatchEvent(event);
+  }
+
+  save() {
+    if (!this.field.length) return;
+
+    const text = this.field.val();
 
     if (this.isLocalStorageAvailable && (text != null ? text.length : void 0) > 0) {
       return window.localStorage.setItem(this.key, text);
     }
 
     return this.reset();
-  };
+  }
 
-  Autosave.prototype.reset = function() {
+  reset() {
     if (!this.isLocalStorageAvailable) return;
 
     return window.localStorage.removeItem(this.key);
-  };
-
-  return Autosave;
-})();
-
-export default window.Autosave;
+  }
+}

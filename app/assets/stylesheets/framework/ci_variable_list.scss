@@ -1,0 +1,99 @@
+.ci-variable-list {
+  margin-left: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+  clear: both;
+}
+
+.ci-variable-row {
+  display: flex;
+  align-items: flex-start;
+
+  @media (max-width: $screen-xs-max) {
+    align-items: flex-end;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: $gl-btn-padding;
+
+    @media (max-width: $screen-xs-max) {
+      margin-bottom: 3 * $gl-btn-padding;
+    }
+  }
+
+  &:last-child {
+    .ci-variable-body-item:last-child {
+      margin-right: $ci-variable-remove-button-width;
+
+      @media (max-width: $screen-xs-max) {
+        margin-right: 0;
+      }
+    }
+
+    .ci-variable-row-remove-button {
+      display: none;
+    }
+
+    @media (max-width: $screen-xs-max) {
+      .ci-variable-row-body {
+        margin-right: $ci-variable-remove-button-width;
+      }
+    }
+  }
+}
+
+.ci-variable-row-body {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+  }
+}
+
+.ci-variable-body-item {
+  flex: 1;
+
+  &:not(:last-child) {
+    margin-right: $gl-btn-padding;
+
+    @media (max-width: $screen-xs-max) {
+      margin-right: 0;
+      margin-bottom: $gl-btn-padding;
+    }
+  }
+}
+
+.ci-variable-protected-item {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.ci-variable-row-remove-button {
+  @include transition(color);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: $ci-variable-remove-button-width;
+  height: $input-height;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: $gl-text-color-secondary;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    color: $gl-text-color;
+  }
+
+  &[disabled] {
+    color: $gl-text-color-disabled;
+  }
+}

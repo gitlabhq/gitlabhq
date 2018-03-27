@@ -34,7 +34,7 @@ describe('Pipelines Artifacts dropdown', () => {
     ).toEqual(artifacts[0].path);
 
     expect(
-      component.$el.querySelector('.dropdown-menu li a span').textContent,
+      component.$el.querySelector('.dropdown-menu li a').textContent,
     ).toContain(artifacts[0].name);
   });
 });

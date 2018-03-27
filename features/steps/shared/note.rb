@@ -11,10 +11,10 @@ module SharedNote
       note = find('.note')
       note.hover
 
-      note.find('.more-actions').click
-      note.find('.more-actions .dropdown-menu li', match: :first)
+      find('.more-actions').click
+      find('.more-actions .dropdown-menu li', match: :first)
 
-      find(".js-note-delete").click
+      accept_confirm { find(".js-note-delete").click }
     end
   end
 
@@ -137,7 +137,7 @@ module SharedNote
 
   step 'The comment with the header should not have an ID' do
     page.within(".note-body > .note-text") do
-      expect(page).to     have_content("Comment with a header")
+      expect(page).to have_content("Comment with a header")
       expect(page).not_to have_css("#comment-with-a-header")
     end
   end
@@ -147,21 +147,23 @@ module SharedNote
       note = find('.note')
       note.hover
 
-      note.find('.more-actions').click
-      note.find('.more-actions .dropdown-menu li', match: :first)
-
       note.find('.js-note-edit').click
     end
+
+    page.find('.current-note-edit-form textarea')
 
     page.within(".current-note-edit-form") do
       fill_in 'note[note]', with: '+1 Awesome!'
       click_button 'Save comment'
     end
+    wait_for_requests
   end
 
   step 'I should see +1 in the description' do
     page.within(".note") do
       expect(page).to have_content("+1 Awesome!")
     end
+
+    wait_for_requests
   end
 end

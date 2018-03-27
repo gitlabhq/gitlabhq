@@ -1,9 +1,9 @@
 - @no_container = true
+- breadcrumb_title "Labels"
 - page_title "New Label"
-= render "shared/mr_head"
 
 %div{ class: container_class }
   %h3.page-title
     New Label
   %hr
-  = render 'shared/labels/form', url: namespace_project_labels_path(@project.namespace.becomes(Namespace), @project), back_path: namespace_project_labels_path(@project.namespace, @project)
+  = render 'shared/labels/form', url: project_labels_path(@project), back_path: project_labels_path(@project)

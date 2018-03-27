@@ -24,6 +24,7 @@ module EmailsHelper
 
   def action_title(url)
     return unless url
+
     %w(merge_requests issues commit).each do |action|
       if url.split("/").include?(action)
         return "View #{action.humanize.singularize}"
@@ -61,8 +62,8 @@ module EmailsHelper
     else
       image_tag(
         image_url('mailers/gitlab_header_logo.gif'),
-        size: "55x50",
-        alt: "GitLab"
+        size: '55x50',
+        alt: 'GitLab'
       )
     end
   end
@@ -78,5 +79,21 @@ module EmailsHelper
       'margin:0',
       'text-align:center'
     ].join(';')
+  end
+
+  # "You are receiving this email because #{reason}"
+  def notification_reason_text(reason)
+    string = case reason
+             when NotificationReason::OWN_ACTIVITY
+               'of your activity'
+             when NotificationReason::ASSIGNED
+               'you have been assigned an item'
+             when NotificationReason::MENTIONED
+               'you have been mentioned'
+             else
+               'of your account'
+             end
+
+    "#{string} on #{Gitlab.config.gitlab.host}"
   end
 end

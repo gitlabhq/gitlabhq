@@ -2,9 +2,11 @@
 
 ## Software delivery
 
-There are two editions of GitLab: [Enterprise Edition](https://about.gitlab.com/gitlab-ee/) (EE) and [Community Edition](https://about.gitlab.com/gitlab-ce/) (CE). GitLab CE is delivered via git from the [gitlabhq repository](https://gitlab.com/gitlab-org/gitlab-ce/tree/master). New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
+There are two software distributions of GitLab: the open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) (CE), and the open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) (EE). GitLab is available under [different subscriptions](https://about.gitlab.com/products/).
 
-EE releases are available not long after CE releases. To obtain the GitLab EE there is a [repository at gitlab.com](https://gitlab.com/gitlab-org/gitlab-ee). For more information about the release process see the section 'New versions and upgrading' in the readme.
+New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
+
+For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/release/docs/tree/master#gitlab-release-process).
 
 Both EE and CE require some add-on components called gitlab-shell and Gitaly. These components are available from the [gitlab-shell](https://gitlab.com/gitlab-org/gitlab-shell/tree/master) and [gitaly](https://gitlab.com/gitlab-org/gitaly/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
@@ -133,8 +135,6 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 ### Log locations of the services
 
-Note: `/home/git/` is shorthand for `/home/git`.
-
 gitlabhq (includes Unicorn and Sidekiq logs)
 
 - `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `unicorn.stdout.log`, `githost.log` and `unicorn.stderr.log` normally.
@@ -194,3 +194,7 @@ bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by gitlabhq work in Ubuntu they do not always work in RHEL.
+
+## GitLab.com
+
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.

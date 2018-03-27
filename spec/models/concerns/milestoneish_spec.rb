@@ -7,7 +7,7 @@ describe Milestone, 'Milestoneish' do
   let(:member) { create(:user) }
   let(:guest) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let!(:issue) { create(:issue, project: project, milestone: milestone) }
   let!(:security_issue_1) { create(:issue, :confidential, project: project, author: author, milestone: milestone) }
@@ -24,8 +24,8 @@ describe Milestone, 'Milestoneish' do
   let(:label_3) { create(:label, title: 'label_3', project: project) }
 
   before do
-    project.team << [member, :developer]
-    project.team << [guest, :guest]
+    project.add_developer(member)
+    project.add_guest(guest)
   end
 
   describe '#sorted_issues' do
@@ -184,6 +184,23 @@ describe Milestone, 'Milestoneish' do
       milestone = build_stubbed(:milestone, start_date: Time.now - 2.days)
 
       expect(milestone.elapsed_days).to eq(2)
+    end
+  end
+
+  describe '#total_issue_time_spent' do
+    it 'calculates total issue time spent' do
+      closed_issue_1.spend_time(duration: 300, user_id: author.id)
+      closed_issue_1.save!
+      closed_issue_2.spend_time(duration: 600, user_id: assignee.id)
+      closed_issue_2.save!
+
+      expect(milestone.total_issue_time_spent).to eq(900)
+    end
+  end
+
+  describe '#human_total_issue_time_spent' do
+    it 'returns nil if no time has been spent' do
+      expect(milestone.human_total_issue_time_spent).to be_nil
     end
   end
 end

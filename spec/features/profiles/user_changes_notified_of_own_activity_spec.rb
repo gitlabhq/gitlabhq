@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Profile > Notifications > User changes notified_of_own_activity setting', feature: true, js: true do
+feature 'Profile > Notifications > User changes notified_of_own_activity setting', :js do
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'User opts into receiving notifications about their own activity' do

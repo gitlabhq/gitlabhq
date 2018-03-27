@@ -30,7 +30,7 @@ class Projects::SnippetsController < Projects::ApplicationController
     ).execute
     @snippets = @snippets.page(params[:page])
     if @snippets.out_of_range? && @snippets.total_pages != 0
-      redirect_to namespace_project_snippets_path(page: @snippets.total_pages)
+      redirect_to project_snippets_path(@project, page: @snippets.total_pages)
     end
   end
 
@@ -64,7 +64,7 @@ class Projects::SnippetsController < Projects::ApplicationController
         @noteable = @snippet
 
         @discussions = @snippet.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
         render 'show'
       end
 
@@ -79,7 +79,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to namespace_project_snippets_path(@project.namespace, @project), status: 302
+    redirect_to project_snippets_path(@project), status: 302
   end
 
   protected
@@ -89,6 +89,10 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
+
+  def spammable_path
+    project_snippet_path(@project, @snippet)
+  end
 
   def authorize_read_project_snippet!
     return render_404 unless can?(current_user, :read_project_snippet, @snippet)

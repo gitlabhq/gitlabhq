@@ -3,6 +3,7 @@
   border-bottom: 1px solid $border-color;
   color: $gl-text-color;
   line-height: 34px;
+  display: flex;
 
   a {
     color: $gl-text-color;
@@ -11,6 +12,39 @@
   .issue_created_ago,
   .author_link {
     white-space: nowrap;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+  }
+}
+
+.detail-page-header-body {
+  position: relative;
+  line-height: 35px;
+  display: flex;
+  flex-grow: 1;
+
+  @media (min-width: $screen-sm-min) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.detail-page-header-actions {
+  align-self: center;
+  flex-shrink: 0;
+  flex: 0 0 auto;
+
+  @media (max-width: $screen-xs-max) {
+    width: 100%;
+    margin-top: 10px;
+
+    > .issue-btn-group {
+      > .btn {
+        width: 100%;
+      }
+    }
   }
 }
 

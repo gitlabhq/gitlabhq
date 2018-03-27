@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Notes::QuickActionsService, services: true do
+describe Notes::QuickActionsService do
   shared_context 'note on noteable' do
-    let(:project) { create(:empty_project) }
-    let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+    let(:project) { create(:project) }
+    let(:master) { create(:user).tap { |u| project.add_master(u) } }
     let(:assignee) { create(:user) }
 
     before do
-      project.team << [assignee, :master]
+      project.add_master(assignee)
     end
   end
 
@@ -165,31 +165,17 @@ describe Notes::QuickActionsService, services: true do
 
     let(:note) { create(:note_on_issue, project: project) }
 
-    context 'with no current_user' do
-      it 'returns false' do
-        expect(described_class.supported?(note, nil)).to be_falsy
-      end
-    end
-
-    context 'when current_user cannot update the noteable' do
-      it 'returns false' do
-        user = create(:user)
-
-        expect(described_class.supported?(note, user)).to be_falsy
-      end
-    end
-
-    context 'when current_user can update the noteable' do
+    context 'with a note on an issue' do
       it 'returns true' do
-        expect(described_class.supported?(note, master)).to be_truthy
+        expect(described_class.supported?(note)).to be_truthy
       end
+    end
 
-      context 'with a note on a commit' do
-        let(:note) { create(:note_on_commit, project: project) }
+    context 'with a note on a commit' do
+      let(:note) { create(:note_on_commit, project: project) }
 
-        it 'returns false' do
-          expect(described_class.supported?(note, nil)).to be_falsy
-        end
+      it 'returns false' do
+        expect(described_class.supported?(note)).to be_falsy
       end
     end
   end
@@ -201,7 +187,7 @@ describe Notes::QuickActionsService, services: true do
       service = described_class.new(project, master)
       note = create(:note_on_issue, project: project)
 
-      expect(described_class).to receive(:supported?).with(note, master)
+      expect(described_class).to receive(:supported?).with(note)
 
       service.supported?(note)
     end
@@ -225,8 +211,8 @@ describe Notes::QuickActionsService, services: true do
 
   context 'CE restriction for issue assignees' do
     describe '/assign' do
-      let(:project) { create(:empty_project) }
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:project) { create(:project) }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:assignee) { create(:user) }
       let(:master) { create(:user) }
       let(:service) { described_class.new(project, master) }
@@ -237,8 +223,8 @@ describe Notes::QuickActionsService, services: true do
       end
 
       before do
-        project.team << [master, :master]
-        project.team << [assignee, :master]
+        project.add_master(master)
+        project.add_master(assignee)
       end
 
       it 'adds only one assignee from the list' do

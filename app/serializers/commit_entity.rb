@@ -1,4 +1,4 @@
-class CommitEntity < API::Entities::RepoCommit
+class CommitEntity < API::Entities::Commit
   include RequestAwareEntity
 
   expose :author, using: UserEntity
@@ -8,16 +8,10 @@ class CommitEntity < API::Entities::RepoCommit
   end
 
   expose :commit_url do |commit|
-    namespace_project_commit_url(
-      request.project.namespace,
-      request.project,
-      commit)
+    project_commit_url(request.project, commit)
   end
 
   expose :commit_path do |commit|
-    namespace_project_commit_path(
-      request.project.namespace,
-      request.project,
-      commit)
+    project_commit_path(request.project, commit)
   end
 end

@@ -9,7 +9,7 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
@@ -36,6 +36,22 @@ describe UsersController, "routing" do
 
   it "to #calendar_activities" do
     expect(get("/users/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
+  end
+
+  describe 'redirect alias routes' do
+    include RSpec::Rails::RequestExampleGroup
+
+    it '/u/user1 redirects to /user1' do
+      expect(get("/u/user1")).to redirect_to('/user1')
+    end
+
+    it '/u/user1/groups redirects to /user1/groups' do
+      expect(get("/u/user1/groups")).to redirect_to('/users/user1/groups')
+    end
+
+    it '/u/user1/projects redirects to /user1/projects' do
+      expect(get("/u/user1/projects")).to redirect_to('/users/user1/projects')
+    end
   end
 end
 
@@ -135,7 +151,6 @@ end
 #             profile_history GET    /profile/history(.:format)             profile#history
 #            profile_password PUT    /profile/password(.:format)            profile#password_update
 #               profile_token GET    /profile/token(.:format)               profile#token
-# profile_reset_private_token PUT    /profile/reset_private_token(.:format) profile#reset_private_token
 #                     profile GET    /profile(.:format)                     profile#show
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
@@ -145,10 +160,6 @@ describe ProfilesController, "routing" do
 
   it "to #audit_log" do
     expect(get("/profile/audit_log")).to route_to('profiles#audit_log')
-  end
-
-  it "to #reset_private_token" do
-    expect(put("/profile/reset_private_token")).to route_to('profiles#reset_private_token')
   end
 
   it "to #reset_rss_token" do
@@ -199,7 +210,7 @@ describe Profiles::KeysController, "routing" do
 
   # get all the ssh-keys of a user
   it "to #get_keys" do
-    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end
@@ -262,8 +273,10 @@ describe "Authentication", "routing" do
     expect(post("/users/sign_in")).to route_to('sessions#create')
   end
 
-  it "DELETE /users/sign_out" do
-    expect(delete("/users/sign_out")).to route_to('sessions#destroy')
+  # sign_out with GET instead of DELETE facilitates ad-hoc single-sign-out processes
+  # (https://gitlab.com/gitlab-org/gitlab-ce/issues/39708)
+  it "GET /users/sign_out" do
+    expect(get("/users/sign_out")).to route_to('sessions#destroy')
   end
 
   it "POST /users/password" do
@@ -280,42 +293,6 @@ describe "Authentication", "routing" do
 
   it "PUT /users/password" do
     expect(put("/users/password")).to route_to('passwords#update')
-  end
-end
-
-describe "Groups", "routing" do
-  let(:name) { 'complex.group-namegit' }
-
-  before do
-    allow_any_instance_of(GroupUrlConstrainer).to receive(:matches?).and_return(true)
-  end
-
-  it "to #show" do
-    expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
-  end
-
-  it "also supports nested groups" do
-    expect(get("/#{name}/#{name}")).to route_to('groups#show', id: "#{name}/#{name}")
-  end
-
-  it "also display group#show on the short path" do
-    expect(get("/#{name}")).to route_to('groups#show', id: name)
-  end
-
-  it "to #activity" do
-    expect(get("/groups/#{name}/activity")).to route_to('groups#activity', id: name)
-  end
-
-  it "to #issues" do
-    expect(get("/groups/#{name}/issues")).to route_to('groups#issues', id: name)
-  end
-
-  it "to #members" do
-    expect(get("/groups/#{name}/group_members")).to route_to('groups/group_members#index', group_id: name)
-  end
-
-  it "also display group#show with slash in the path" do
-    expect(get('/group/subgroup')).to route_to('groups#show', id: 'group/subgroup')
   end
 end
 

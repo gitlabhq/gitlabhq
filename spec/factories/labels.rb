@@ -1,11 +1,11 @@
-FactoryGirl.define do
+FactoryBot.define do
   trait :base_label do
     title { generate(:label_title) }
     color "#990000"
   end
 
   factory :label, traits: [:base_label], class: ProjectLabel do
-    project factory: :empty_project
+    project
 
     transient do
       priority nil

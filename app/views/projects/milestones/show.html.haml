@@ -1,7 +1,8 @@
 - @no_container = true
+- add_to_breadcrumbs "Milestones", project_milestones_path(@project)
+- breadcrumb_title @milestone.title
 - page_title       @milestone.title, "Milestones"
 - page_description @milestone.description
-= render "shared/mr_head"
 
 %div{ class: container_class }
   .detail-page-header.milestone-page-header
@@ -22,16 +23,37 @@
         = milestone_date_range(@milestone)
     .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
-        - if @milestone.active?
-          = link_to 'Close milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
-        - else
-          = link_to 'Reopen milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
-
-        = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped btn-nr" do
+        = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped btn-nr" do
           Edit
 
-        = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
-          Delete
+        - if @project.group
+          %button.js-promote-project-milestone-button.btn.btn-grouped{ data: { toggle: 'modal',
+            target: '#promote-milestone-modal',
+            milestone_title: @milestone.title,
+            url: promote_project_milestone_path(@milestone.project, @milestone),
+            container: 'body' },
+            disabled: true,
+            type: 'button' }
+            = _('Promote')
+          #promote-milestone-modal
+
+        - if @milestone.active?
+          = link_to 'Close milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
+        - else
+          = link_to 'Reopen milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
+
+        %button.js-delete-milestone-button.btn.btn-grouped.btn-danger{ data: { toggle: 'modal',
+          target: '#delete-milestone-modal',
+          milestone_id: @milestone.id,
+          milestone_title: markdown_field(@milestone, :title),
+          milestone_url: project_milestone_path(@project, @milestone),
+          milestone_issue_count: @milestone.issues.count,
+          milestone_merge_request_count: @milestone.merge_requests.count },
+          disabled: true }
+          = _('Delete')
+          = icon('spin spinner', class: 'js-loading-icon hidden' )
+
+        #delete-milestone-modal
 
       %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
         = icon('angle-double-left')
@@ -39,6 +61,7 @@
   .detail-page-description.milestone-detail
     %h2.title
       = markdown_field(@milestone, :title)
+
     %div
       - if @milestone.description.present?
         .description

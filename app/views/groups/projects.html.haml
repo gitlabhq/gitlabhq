@@ -1,4 +1,4 @@
-= render "groups/settings_head"
+- breadcrumb_title "Projects"
 
 .panel.panel-default.prepend-top-default
   .panel-heading
@@ -14,14 +14,14 @@
         .list-item-name
           %span{ class: visibility_level_color(project.visibility_level) }
             = visibility_level_icon(project.visibility_level)
-          %strong= link_to project.name_with_namespace, project
+          %strong= link_to project.full_name, project
         .pull-right
           - if project.archived
             %span.label.label-warning archived
           %span.badge
             = storage_counter(project.statistics.storage_size)
-          = link_to 'Members', namespace_project_project_members_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
-          = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+          = link_to 'Members', project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+          = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
           = link_to 'Remove', project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn btn-sm btn-remove"
     - if @projects.blank?
       .nothing-here-block This group has no projects yet

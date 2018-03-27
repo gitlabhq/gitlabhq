@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'User views files page', feature: true do
+feature 'User views files page' do
   let(:user) { create(:user) }
   let(:project) { create(:forked_project_with_submodules) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in user
-    visit namespace_project_tree_path(project.namespace, project, project.repository.root_ref)
+    project.add_master(user)
+    sign_in user
+    visit project_tree_path(project, project.repository.root_ref)
   end
 
   scenario 'user sees folders and submodules sorted together, followed by files' do

@@ -60,7 +60,7 @@ respectively.
           path: /mnt/cephfs/repositories
     ```
 
-1. [Restart GitLab] for the changes to take effect.
+1. [Restart GitLab][restart-gitlab] for the changes to take effect.
 
 >**Note:**
 The [`gitlab_shell: repos_path` entry][repospath] in `gitlab.yml` will be
@@ -97,9 +97,59 @@ be stored via the **Application Settings** in the Admin area.
 Beginning with GitLab 8.13.4, multiple paths can be chosen. New projects will be
 randomly placed on one of the selected paths.
 
+## Handling failing repository storage
+
+> [Introduced][ce-11449] in GitLab 9.5.
+
+When GitLab detects access to the repositories storage fails repeatedly, it can
+gracefully prevent attempts to access the storage. This might be useful when
+the repositories are stored somewhere on the network.
+
+This can be configured from the admin interface:
+
+![circuitbreaker configuration](img/circuitbreaker_config.png)
+
+**Number of access attempts**: The number of attempts GitLab will make to access a
+storage when probing a shard.
+
+**Number of failures before backing off**: The number of failures after which
+GitLab will start temporarily disabling access to a storage shard on a host.
+
+**Maximum git storage failures:** The number of failures of after which GitLab will
+completely prevent access to the storage. The number of failures can be reset in
+the admin interface: `https://gitlab.example.com/admin/health_check` or using the
+[api](../api/repository_storage_health.md) to allow access to the storage again.
+
+**Seconds to wait after a storage failure:** When access to a storage fails. GitLab
+will prevent access to the storage for the time specified here. This allows the
+filesystem to recover.
+
+**Seconds before reseting failure information:** The time in seconds GitLab will
+keep failure information. When no failures occur during this time, information about the
+mount is reset.
+
+**Seconds to wait for a storage access attempt:** The time in seconds GitLab will
+try to access storage. After this time a timeout error will be raised.
+
+To enable the circuitbreaker for repository storage you can flip the feature flag from a rails console:
+
+```
+Feature.enable('git_storage_circuit_breaker')
+```
+
+Alternatively it can be enabled by setting `true` in the `GIT_STORAGE_CIRCUIT_BREAKER` environment variable.
+This approach would be used when enabling the circuit breaker on a single host.
+
+When storage failures occur, this will be visible in the admin interface like this:
+
+![failing storage](img/failing_storage.png)
+
+To allow access to all storages, click the `Reset git storage health information` button.
+
 [ce-4578]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4578
-[restart gitlab]: restart_gitlab.md#installations-from-source
-[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart-gitlab]: restart_gitlab.md#installations-from-source
+[reconfigure-gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [backups]: ../raketasks/backup_restore.md
 [raketask]: https://gitlab.com/gitlab-org/gitlab-ce/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56
 [repospath]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-9-stable/config/gitlab.yml.example#L457
+[ce-11449]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11449

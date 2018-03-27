@@ -15,16 +15,32 @@ const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
 window.gl = window.gl || {};
 window.gl.CommitPipelinesTable = CommitPipelinesTable;
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
-  if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
-    const table = new CommitPipelinesTable({
-      propsData: {
-        endpoint: pipelineTableViewEl.dataset.endpoint,
-        helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
-      },
-    }).$mount();
-    pipelineTableViewEl.appendChild(table.$el);
+  if (pipelineTableViewEl) {
+      // Update MR and Commits tabs
+    pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
+      if (event.detail.pipelines &&
+        event.detail.pipelines.count &&
+        event.detail.pipelines.count.all) {
+        const badge = document.querySelector('.js-pipelines-mr-count');
+
+        badge.textContent = event.detail.pipelines.count.all;
+      }
+    });
+
+    if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
+      const table = new CommitPipelinesTable({
+        propsData: {
+          endpoint: pipelineTableViewEl.dataset.endpoint,
+          helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
+          autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
+        },
+      }).$mount();
+      pipelineTableViewEl.appendChild(table.$el);
+    }
   }
-});
+};

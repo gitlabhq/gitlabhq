@@ -1,11 +1,11 @@
 #modal-create-new-dir.modal
-  .modal-dialog
+  .modal-dialog.modal-lg
     .modal-content
       .modal-header
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= _('Create New Directory')
       .modal-body
-        = form_tag namespace_project_create_dir_path(@project.namespace, @project, @id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-quick-submit js-requires-input' do
+        = form_tag project_create_dir_path(@project, @id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-quick-submit js-requires-input' do
           .form-group
             = label_tag :dir_name, _('Directory name'), class: 'control-label'
             .col-sm-10
@@ -17,9 +17,4 @@
             = submit_tag _("Create directory"), class: 'btn btn-create'
             = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
-            - unless can?(current_user, :push_code, @project)
-              .inline.prepend-left-10
-                = commit_in_fork_help
-
-:javascript
-  new NewCommitForm($('.js-create-dir-form'))
+            = render 'shared/projects/edit_information'

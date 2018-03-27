@@ -1,7 +1,7 @@
 # Pipelines settings
 
 To reach the pipelines settings navigate to your project's
-**Settings ➔ Pipelines**.
+**Settings ➔ CI/CD**.
 
 The following settings can be configured per project.
 
@@ -27,6 +27,22 @@ The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
 
+## Custom CI config path
+
+>  - [Introduced][ce-12509] in GitLab 9.4.
+
+By default we look for the `.gitlab-ci.yml` file in the project's root
+directory. If you require a different location **within** the repository,
+you can set a custom filepath that will be used to lookup the config file,
+this filepath should be **relative** to the root.
+
+Here are some valid examples:
+
+> * .gitlab-ci.yml
+> * .my-custom-file.yml
+> * my/path/.gitlab-ci.yml
+> * my/path/.my-custom-file.yml
+
 ## Test coverage parsing
 
 If you use test coverage in your code, GitLab can capture its output in the
@@ -50,17 +66,37 @@ in the pipelines settings page.
 
 ## Visibility of pipelines
 
-For public and internal projects, the pipelines page can be accessed by
-anyone and those logged in respectively. If you wish to hide it so that only
-the members of the project or group have access to it, uncheck the **Public
-pipelines** checkbox and save the changes.
+Access to pipelines and job details (including output of logs and artifacts)
+is checked against your current user access level and the **Public pipelines**
+project setting under your project's **Settings > CI/CD > General pipelines settings**.
+
+If **Public pipelines** is enabled (default):
+
+- for **public** projects, anyone can view the pipelines and access the job details
+  (output logs and artifacts)
+- for **internal** projects, any logged in user can view the pipelines
+  and access the job details
+  (output logs and artifacts)
+- for **private** projects, any member (guest or higher) can view the pipelines
+  and access the job details
+  (output logs and artifacts)
+
+If **Public pipelines** is disabled:
+
+- for **public** projects, anyone can view the pipelines, but only members
+  (reporter or higher) can access the job details (output logs and artifacts)
+- for **internal** projects, any logged in user can view the pipelines,
+  but only members (reporter or higher) can access the job details (output logs
+  and artifacts)
+- for **private** projects, only members (reporter or higher)
+  can view the pipelines and access the job details (output logs and artifacts)
 
 ## Auto-cancel pending pipelines
 
 > [Introduced][ce-9362] in GitLab 9.1.
 
-If you want to auto-cancel all pending non-HEAD pipelines on branch, when 
-new pipeline will be created (after your git push or manually from UI), 
+If you want to auto-cancel all pending non-HEAD pipelines on branch, when
+new pipeline will be created (after your git push or manually from UI),
 check **Auto-cancel pending pipelines** checkbox and save the changes.
 
 ## Badges
@@ -79,10 +115,12 @@ pages.
 
 Depending on the status of your job, a badge can have the following values:
 
+- pending
 - running
-- success
+- passed
 - failed
 - skipped
+- canceled
 - unknown
 
 You can access a pipeline status badge image using the following link:
@@ -115,3 +153,4 @@ into your `README.md`:
 [var]: ../../../ci/yaml/README.md#git-strategy
 [coverage report]: #test-coverage-parsing
 [ce-9362]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362
+[ce-12509]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509

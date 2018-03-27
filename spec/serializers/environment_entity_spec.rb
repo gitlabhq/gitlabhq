@@ -16,6 +16,10 @@ describe EnvironmentEntity do
     expect(subject).to include(:id, :name, :state, :environment_path)
   end
 
+  it 'exposes folder path' do
+    expect(subject).to include(:folder_path)
+  end
+
   context 'metrics disabled' do
     before do
       allow(environment).to receive(:has_metrics?).and_return(false)

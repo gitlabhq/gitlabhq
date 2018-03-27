@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get all labels of the project' do
         success Entities::Label
       end
@@ -15,7 +15,7 @@ module API
         use :pagination
       end
       get ':id/labels' do
-        present paginate(available_labels), with: Entities::Label, current_user: current_user, project: user_project
+        present paginate(available_labels_for(user_project)), with: Entities::Label, current_user: current_user, project: user_project
       end
 
       desc 'Create a new label' do
@@ -30,7 +30,7 @@ module API
       post ':id/labels' do
         authorize! :admin_label, user_project
 
-        label = available_labels.find_by(title: params[:name])
+        label = available_labels_for(user_project).find_by(title: params[:name])
         conflict!('Label already exists') if label
 
         priority = params.delete(:priority)
@@ -56,7 +56,7 @@ module API
         label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
-        label.destroy
+        destroy_conditionally!(label)
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do

@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 
@@ -175,7 +176,7 @@ import Cookies from 'js-cookie';
 
     getConflictsCountText() {
       const count = this.getConflictsCount();
-      const text = count ? 'conflicts' : 'conflict';
+      const text = count > 1 ? 'conflicts' : 'conflict';
 
       return `${count} ${text}`;
     },

@@ -1,26 +1,7 @@
-- expanded = Rails.env.test?
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('protected_branches')
+- content_for :create_protected_branch do
+  = render 'projects/protected_branches/create_protected_branch'
 
-%section.settings
-  .settings-header
-    %h4
-      Protected Branches
-    %button.btn.js-settings-toggle
-      = expanded ? 'Collapse' : 'Expand'
-    %p
-      Keep stable branches secure and force developers to use merge requests.
-  .settings-content.no-animate{ class: ('expanded' if expanded) }
-    %p
-      By default, protected branches are designed to:
-      %ul
-        %li prevent their creation, if not already created, from everybody except Masters
-        %li prevent pushes from everybody except Masters
-        %li prevent <strong>anyone</strong> from force pushing to the branch
-        %li prevent <strong>anyone</strong> from deleting the branch
-      %p Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches"), class: "underlined-link"} and #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}.
+- content_for :branches_list do
+  = render "projects/protected_branches/branches_list"
 
-    - if can? current_user, :admin_project, @project
-      = render 'projects/protected_branches/create_protected_branch'
-
-    = render "projects/protected_branches/branches_list"
+= render 'projects/protected_branches/shared/index'

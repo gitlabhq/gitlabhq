@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class AttributesFinder
-    
       def initialize(included_attributes:, excluded_attributes:, methods:)
         @included_attributes = included_attributes || {}
         @excluded_attributes = excluded_attributes || {}

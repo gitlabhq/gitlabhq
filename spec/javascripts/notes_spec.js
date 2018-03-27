@@ -1,27 +1,30 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
-/* global Notes */
-
-import 'vendor/autosize';
+import $ from 'jquery';
+import _ from 'underscore';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
+import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
-import '~/render_gfm';
-import '~/render_math';
-import '~/notes';
+import '~/behaviors/markdown/render_gfm';
+import Notes from '~/notes';
+import timeoutPromise from './helpers/set_timeout_promise_helper';
 
 (function() {
   window.gon || (window.gon = {});
   window.gl = window.gl || {};
   gl.utils = gl.utils || {};
 
-  const htmlEscape = (comment) => {
-    const escapedString = comment.replace(/["&'<>]/g, (a) => {
+  const htmlEscape = comment => {
+    const escapedString = comment.replace(/["&'<>]/g, a => {
       const escapedToken = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
         "'": '&#x27;',
-        '`': '&#x60;'
+        '`': '&#x60;',
       }[a];
 
       return escapedToken;
@@ -32,38 +35,84 @@ import '~/notes';
 
   describe('Notes', function() {
     const FLASH_TYPE_ALERT = 'alert';
-    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
+    var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
 
-    beforeEach(function () {
+    beforeEach(function() {
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:issues:show');
+      $('body').attr('data-page', 'projects:merge_requets:show');
+    });
+
+    afterEach(() => {
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
+    });
+
+    describe('addBinding', () => {
+      it('calls postComment when comment button is clicked', () => {
+        spyOn(Notes.prototype, 'postComment');
+        this.notes = new Notes('', []);
+
+        $('.js-comment-button').click();
+
+        expect(Notes.prototype.postComment).toHaveBeenCalled();
+      });
     });
 
     describe('task lists', function() {
+      let mock;
+
       beforeEach(function() {
+        spyOn(axios, 'patch').and.callThrough();
+        mock = new MockAdapter(axios);
+
+        mock
+          .onPatch(
+            `${
+              gl.TEST_HOST
+            }/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
+          )
+          .reply(200, {});
+
         $('.js-comment-button').on('click', function(e) {
           e.preventDefault();
         });
         this.notes = new Notes('', []);
       });
 
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('modifies the Markdown field', function() {
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
-        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
-        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        $('input[type=checkbox]')
+          .attr('checked', true)[1]
+          .dispatchEvent(changeEvent);
+
+        expect($('.js-task-list-field.original-task-list').val()).toBe(
+          '- [x] Task List Item',
+        );
       });
 
-      it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
-          return expect(req.data.note).not.toBe(null);
+      it('submits an ajax request on tasklist:changed', function(done) {
+        $('.js-task-list-container').trigger('tasklist:changed');
+
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(
+            `${
+              gl.TEST_HOST
+            }/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
+            {
+              note: { note: '' },
+            },
+          );
+          done();
         });
-        $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
 
@@ -77,10 +126,10 @@ import '~/notes';
         spyOn(this.notes, 'renderNote').and.stub();
 
         $(textarea).data('autosave', {
-          reset: function() {}
+          reset: function() {},
         });
 
-        $('.js-comment-button').on('click', (e) => {
+        $('.js-comment-button').on('click', e => {
           const $form = $(this);
           e.preventDefault();
           this.notes.addNote($form);
@@ -96,6 +145,16 @@ import '~/notes';
         $('.js-comment-button').click();
         expect(this.autoSizeSpy).toHaveBeenTriggered();
       });
+
+      it('should not place escaped text in the comment box in case of error', function() {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        $(textarea).text('A comment with `markup`.');
+
+        deferred.reject();
+        $('.js-comment-button').click();
+        expect($(textarea).val()).toEqual('A comment with `markup`.');
+      });
     });
 
     describe('updateNote', () => {
@@ -103,6 +162,7 @@ import '~/notes';
       let noteEntity;
       let $form;
       let $notesContainer;
+      let mock;
 
       beforeEach(() => {
         this.notes = new Notes('', []);
@@ -115,29 +175,39 @@ import '~/notes';
                   <div class="note-text">${sampleComment}</div>
                  </li>`,
           note: sampleComment,
-          valid: true
+          valid: true,
         };
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
         $form.find('textarea.js-note-text').val(sampleComment);
+
+        mock = new MockAdapter(axios);
+        mock.onPost(NOTES_POST_PATH).reply(200, noteEntity);
       });
 
-      it('updates note and resets edit form', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('updates note and resets edit form', done => {
         spyOn(this.notes, 'revertNoteEditForm');
         spyOn(this.notes, 'setupNewNote');
 
         $('.js-comment-button').click();
-        deferred.resolve(noteEntity);
 
-        const $targetNote = $notesContainer.find(`#note_${noteEntity.id}`);
-        const updatedNote = Object.assign({}, noteEntity);
-        updatedNote.note = 'bar';
-        this.notes.updateNote(updatedNote, $targetNote);
+        setTimeout(() => {
+          const $targetNote = $notesContainer.find(`#note_${noteEntity.id}`);
+          const updatedNote = Object.assign({}, noteEntity);
+          updatedNote.note = 'bar';
+          this.notes.updateNote(updatedNote, $targetNote);
 
-        expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith($targetNote);
-        expect(this.notes.setupNewNote).toHaveBeenCalled();
+          expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith(
+            $targetNote,
+          );
+          expect(this.notes.setupNewNote).toHaveBeenCalled();
+
+          done();
+        });
       });
     });
 
@@ -152,8 +222,7 @@ import '~/notes';
       });
 
       it('sets target when hash matches', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue(hash);
+        spyOn(urlUtils, 'getLocationHash').and.returnValue(hash);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -162,8 +231,7 @@ import '~/notes';
       });
 
       it('unsets target when hash does not match', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue('note_doesnotexist');
+        spyOn(urlUtils, 'getLocationHash').and.returnValue('note_doesnotexist');
 
         Notes.updateNoteTargetSelector($note);
 
@@ -171,8 +239,7 @@ import '~/notes';
       });
 
       it('unsets target when there is not a hash fragment anymore', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue(null);
+        spyOn(urlUtils, 'getLocationHash').and.returnValue(null);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -192,23 +259,19 @@ import '~/notes';
           note: 'heya',
           html: '<div>heya</div>',
         };
-        $notesList = jasmine.createSpyObj('$notesList', [
-          'find',
-          'append',
-        ]);
+        $notesList = jasmine.createSpyObj('$notesList', ['find', 'append']);
 
         notes = jasmine.createSpyObj('notes', [
           'setupNewNote',
           'refresh',
           'collapseLongCommitList',
           'updateNotesCount',
-          'putConflictEditWarningInPlace'
+          'putConflictEditWarningInPlace',
         ]);
         notes.taskList = jasmine.createSpyObj('tasklist', ['init']);
         notes.note_ids = [];
         notes.updatedNotesTrackingMap = {};
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote').and.callThrough();
         spyOn(Notes, 'isUpdatedNote').and.callThrough();
         spyOn(Notes, 'animateAppendNote').and.callThrough();
@@ -220,7 +283,10 @@ import '~/notes';
           Notes.isNewNote.and.returnValue(true);
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, $notesList);
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(
+            note.html,
+            $notesList,
+          );
         });
       });
 
@@ -235,7 +301,10 @@ import '~/notes';
 
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
-          expect(Notes.animateUpdateNote).toHaveBeenCalledWith(note.html, $note);
+          expect(Notes.animateUpdateNote).toHaveBeenCalledWith(
+            note.html,
+            $note,
+          );
           expect(notes.setupNewNote).toHaveBeenCalledWith($newNote);
         });
 
@@ -263,7 +332,10 @@ import '~/notes';
             $notesList.find.and.returnValue($note);
             Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
-            expect(notes.putConflictEditWarningInPlace).toHaveBeenCalledWith(note, $note);
+            expect(notes.putConflictEditWarningInPlace).toHaveBeenCalledWith(
+              note,
+              $note,
+            );
           });
         });
       });
@@ -273,11 +345,11 @@ import '~/notes';
       it('should consider same note text as the same', () => {
         const result = Notes.isUpdatedNote(
           {
-            note: 'initial'
+            note: 'initial',
           },
           $(`<div>
             <div class="original-note-content">initial</div>
-          </div>`)
+          </div>`),
         );
 
         expect(result).toEqual(false);
@@ -286,11 +358,11 @@ import '~/notes';
       it('should consider same note with trailing newline as the same', () => {
         const result = Notes.isUpdatedNote(
           {
-            note: 'initial\n'
+            note: 'initial\n',
           },
           $(`<div>
             <div class="original-note-content">initial\n</div>
-          </div>`)
+          </div>`),
         );
 
         expect(result).toEqual(false);
@@ -299,11 +371,11 @@ import '~/notes';
       it('should consider different notes as different', () => {
         const result = Notes.isUpdatedNote(
           {
-            note: 'foo'
+            note: 'foo',
           },
           $(`<div>
             <div class="original-note-content">bar</div>
-          </div>`)
+          </div>`),
         );
 
         expect(result).toEqual(true);
@@ -326,6 +398,7 @@ import '~/notes';
           diff_discussion_html: false,
         };
         $form = jasmine.createSpyObj('$form', ['closest', 'find']);
+        $form.length = 1;
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
         notes = jasmine.createSpyObj('notes', [
@@ -334,7 +407,6 @@ import '~/notes';
         ]);
         notes.note_ids = [];
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote');
         spyOn(Notes, 'animateAppendNote');
         Notes.isNewNote.and.returnValue(true);
@@ -354,12 +426,31 @@ import '~/notes';
           $form.closest.and.returnValues(row, $form);
           $form.find.and.returnValues(discussionContainer);
           body.attr.and.returnValue('');
-
-          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
         });
 
         it('should call Notes.animateAppendNote', () => {
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $('.main-notes-list'));
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(
+            note.discussion_html,
+            $('.main-notes-list'),
+          );
+        });
+
+        it('should append to row selected with line_code', () => {
+          $form.length = 0;
+          note.discussion_line_code = 'line_code';
+          note.diff_discussion_html = '<tr></tr>';
+
+          const line = document.createElement('div');
+          line.id = note.discussion_line_code;
+          document.body.appendChild(line);
+
+          $form.closest.and.returnValues($form);
+
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
+          expect(line.nextSibling.outerHTML).toEqual(note.diff_discussion_html);
         });
       });
 
@@ -374,7 +465,10 @@ import '~/notes';
         });
 
         it('should call Notes.animateAppendNote', () => {
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, discussionContainer);
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(
+            note.html,
+            discussionContainer,
+          );
         });
       });
     });
@@ -407,9 +501,7 @@ import '~/notes';
 
       beforeEach(() => {
         noteHTML = '<div></div>';
-        $note = jasmine.createSpyObj('$note', [
-          'replaceWith'
-        ]);
+        $note = jasmine.createSpyObj('$note', ['replaceWith']);
 
         $updatedNote = Notes.animateUpdateNote(noteHTML, $note);
       });
@@ -424,19 +516,17 @@ import '~/notes';
     });
 
     describe('putEditFormInPlace', () => {
-      it('should call gl.GLForm with GFM parameter passed through', () => {
-        spyOn(gl, 'GLForm');
+      it('should call GLForm with GFM parameter passed through', () => {
+        const notes = new Notes('', []);
+        const $el = $(`
+          <div>
+            <form></form>
+          </div>
+        `);
 
-        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
-        $el.find.and.returnValue($('<div>'));
-        $el.closest.and.returnValue($('<div>'));
+        notes.putEditFormInPlace($el);
 
-        Notes.prototype.putEditFormInPlace.call({
-          getEditFormSelector: () => '',
-          enableGFM: true
-        }, $el);
-
-        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+        expect(notes.glForm.enableGFM).toBeTruthy();
       });
     });
 
@@ -449,12 +539,23 @@ import '~/notes';
                 <div class="note-text">${sampleComment}</div>
                </li>`,
         note: sampleComment,
-        valid: true
+        valid: true,
       };
       let $form;
       let $notesContainer;
+      let mock;
+
+      function mockNotesPost() {
+        mock.onPost(NOTES_POST_PATH).reply(200, note);
+      }
+
+      function mockNotesPostError() {
+        mock.onPost(NOTES_POST_PATH).networkError();
+      }
 
       beforeEach(() => {
+        mock = new MockAdapter(axios);
+
         this.notes = new Notes('', []);
         window.gon.current_username = 'root';
         window.gon.current_user_fullname = 'Administrator';
@@ -463,63 +564,187 @@ import '~/notes';
         $form.find('textarea.js-note-text').val(sampleComment);
       });
 
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('should show placeholder note while new comment is being posted', () => {
+        mockNotesPost();
+
         $('.js-comment-button').click();
-        expect($notesContainer.find('.note.being-posted').length > 0).toEqual(true);
+        expect($notesContainer.find('.note.being-posted').length > 0).toEqual(
+          true,
+        );
       });
 
-      it('should remove placeholder note when new comment is done posting', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
+      it('should remove placeholder note when new comment is done posting', done => {
+        mockNotesPost();
+
         $('.js-comment-button').click();
 
-        deferred.resolve(note);
-        expect($notesContainer.find('.note.being-posted').length).toEqual(0);
+        setTimeout(() => {
+          expect($notesContainer.find('.note.being-posted').length).toEqual(0);
+
+          done();
+        });
       });
 
-      it('should show actual note element when new comment is done posting', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
-        $('.js-comment-button').click();
+      describe('postComment', () => {
+        it('disables the submit button', done => {
+          const $submitButton = $form.find('.js-comment-submit-button');
+          expect($submitButton).not.toBeDisabled();
+          const dummyEvent = {
+            preventDefault() {},
+            target: $submitButton,
+          };
+          mock.onPost(NOTES_POST_PATH).replyOnce(() => {
+            expect($submitButton).toBeDisabled();
+            return [200, note];
+          });
 
-        deferred.resolve(note);
-        expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(true);
+          this.notes
+            .postComment(dummyEvent)
+            .then(() => {
+              expect($submitButton).not.toBeDisabled();
+            })
+            .then(done)
+            .catch(done.fail);
+        });
       });
 
-      it('should reset Form when new comment is done posting', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
+      it('should show actual note element when new comment is done posting', done => {
+        mockNotesPost();
+
         $('.js-comment-button').click();
 
-        deferred.resolve(note);
-        expect($form.find('textarea.js-note-text').val()).toEqual('');
+        setTimeout(() => {
+          expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(
+            true,
+          );
+
+          done();
+        });
       });
 
-      it('should show flash error message when new comment failed to be posted', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
+      it('should reset Form when new comment is done posting', done => {
+        mockNotesPost();
+
         $('.js-comment-button').click();
 
-        deferred.reject();
-        expect($notesContainer.parent().find('.flash-container .flash-text').is(':visible')).toEqual(true);
+        setTimeout(() => {
+          expect($form.find('textarea.js-note-text').val()).toEqual('');
+
+          done();
+        });
       });
 
-      it('should show flash error message when comment failed to be updated', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
+      it('should show flash error message when new comment failed to be posted', done => {
+        mockNotesPostError();
+
         $('.js-comment-button').click();
 
-        deferred.resolve(note);
-        const $noteEl = $notesContainer.find(`#note_${note.id}`);
-        $noteEl.find('.js-note-edit').click();
-        $noteEl.find('textarea.js-note-text').val(updatedComment);
-        $noteEl.find('.js-comment-save-button').click();
+        setTimeout(() => {
+          expect(
+            $notesContainer
+              .parent()
+              .find('.flash-container .flash-text')
+              .is(':visible'),
+          ).toEqual(true);
 
-        deferred.reject();
-        const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`);
-        expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
-        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual(sampleComment); // See if comment reverted back to original
-        expect($('.flash-container').is(':visible')).toEqual(true); // Flash error message shown
+          done();
+        });
+      });
+
+      it('should show flash error message when comment failed to be updated', done => {
+        mockNotesPost();
+
+        $('.js-comment-button').click();
+
+        timeoutPromise()
+          .then(() => {
+            const $noteEl = $notesContainer.find(`#note_${note.id}`);
+            $noteEl.find('.js-note-edit').click();
+            $noteEl.find('textarea.js-note-text').val(updatedComment);
+
+            mock.restore();
+
+            mockNotesPostError();
+
+            $noteEl.find('.js-comment-save-button').click();
+          })
+          .then(timeoutPromise)
+          .then(() => {
+            const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`);
+            expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
+            expect(
+              $updatedNoteEl
+                .find('.note-text')
+                .text()
+                .trim(),
+            ).toEqual(sampleComment); // See if comment reverted back to original
+            expect($('.flash-container').is(':visible')).toEqual(true); // Flash error message shown
+
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
+    describe('postComment with Slash commands', () => {
+      const sampleComment = '/assign @root\n/award :100:';
+      const note = {
+        commands_changes: {
+          assignee_id: 1,
+          emoji_award: '100',
+        },
+        errors: {
+          commands_only: ['Commands applied'],
+        },
+        valid: false,
+      };
+      let $form;
+      let $notesContainer;
+      let mock;
+
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+        mock.onPost(NOTES_POST_PATH).reply(200, note);
+
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        gl.awardsHandler = {
+          addAwardToEmojiBar: () => {},
+          scrollToAwards: () => {},
+        };
+        gl.GfmAutoComplete = {
+          dataSources: {
+            commands: '/root/test-project/autocomplete_sources/commands',
+          },
+        };
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').val(sampleComment);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('should remove slash command placeholder when comment with slash commands is done posting', done => {
+        spyOn(gl.awardsHandler, 'addAwardToEmojiBar').and.callThrough();
+        $('.js-comment-button').click();
+
+        expect(
+          $notesContainer.find('.system-note.being-posted').length,
+        ).toEqual(1); // Placeholder shown
+
+        setTimeout(() => {
+          expect(
+            $notesContainer.find('.system-note.being-posted').length,
+          ).toEqual(0); // Placeholder removed
+          done();
+        });
       });
     });
 
@@ -532,12 +757,16 @@ import '~/notes';
                 <div class="note-text">${sampleComment}</div>
                </li>`,
         note: sampleComment,
-        valid: true
+        valid: true,
       };
       let $form;
       let $notesContainer;
+      let mock;
 
       beforeEach(() => {
+        mock = new MockAdapter(axios);
+        mock.onPost(NOTES_POST_PATH).reply(200, note);
+
         this.notes = new Notes('', []);
         window.gon.current_username = 'root';
         window.gon.current_user_fullname = 'Administrator';
@@ -546,19 +775,31 @@ import '~/notes';
         $form.find('textarea.js-note-text').html(sampleComment);
       });
 
-      it('should not render a script tag', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('should not render a script tag', done => {
         $('.js-comment-button').click();
 
-        deferred.resolve(note);
-        const $noteEl = $notesContainer.find(`#note_${note.id}`);
-        $noteEl.find('.js-note-edit').click();
-        $noteEl.find('textarea.js-note-text').html(updatedComment);
-        $noteEl.find('.js-comment-save-button').click();
+        setTimeout(() => {
+          const $noteEl = $notesContainer.find(`#note_${note.id}`);
+          $noteEl.find('.js-note-edit').click();
+          $noteEl.find('textarea.js-note-text').html(updatedComment);
+          $noteEl.find('.js-comment-save-button').click();
 
-        const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`).find('.js-task-list-container');
-        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
+          const $updatedNoteEl = $notesContainer
+            .find(`#note_${note.id}`)
+            .find('.js-task-list-container');
+          expect(
+            $updatedNoteEl
+              .find('.note-text')
+              .text()
+              .trim(),
+          ).toEqual('');
+
+          done();
+        });
       });
     });
 
@@ -575,7 +816,9 @@ import '~/notes';
 
       it('should return form metadata object from form reference', () => {
         $form.find('textarea.js-note-text').val(sampleComment);
-        const { formData, formContent, formAction } = this.notes.getFormData($form);
+        const { formData, formContent, formAction } = this.notes.getFormData(
+          $form,
+        );
 
         expect(formData.indexOf(sampleComment) > -1).toBe(true);
         expect(formContent).toEqual(sampleComment);
@@ -591,7 +834,9 @@ import '~/notes';
         const { formContent } = this.notes.getFormData($form);
 
         expect(_.escape).toHaveBeenCalledWith(sampleComment);
-        expect(formContent).toEqual('&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;');
+        expect(formContent).toEqual(
+          '&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;',
+        );
       });
     });
 
@@ -601,7 +846,8 @@ import '~/notes';
       });
 
       it('should return true when comment begins with a quick action', () => {
-        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
+        const sampleComment =
+          '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
         const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
         expect(hasQuickActions).toBeTruthy();
@@ -625,7 +871,8 @@ import '~/notes';
     describe('stripQuickActions', () => {
       it('should strip quick actions from the comment which begins with a quick action', () => {
         this.notes = new Notes();
-        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
+        const sampleComment =
+          '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
         const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('');
@@ -633,7 +880,8 @@ import '~/notes';
 
       it('should strip quick actions from the comment but leaves plain comment if it is present', () => {
         this.notes = new Notes();
-        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
+        const sampleComment =
+          '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
         const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('Merging this');
@@ -641,7 +889,8 @@ import '~/notes';
 
       it('should NOT strip string that has slashes within', () => {
         this.notes = new Notes();
-        const sampleComment = 'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
+        const sampleComment =
+          'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
         const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe(sampleComment);
@@ -652,7 +901,7 @@ import '~/notes';
       const availableQuickActions = [
         { name: 'close', description: 'Close this issue', params: [] },
         { name: 'title', description: 'Change title', params: [{}] },
-        { name: 'estimate', description: 'Set time estimate', params: [{}] }
+        { name: 'estimate', description: 'Set time estimate', params: [{}] },
       ];
 
       beforeEach(() => {
@@ -661,17 +910,29 @@ import '~/notes';
 
       it('should return executing quick action description when note has single quick action', () => {
         const sampleComment = '/close';
-        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying command to close this issue');
+        expect(
+          this.notes.getQuickActionDescription(
+            sampleComment,
+            availableQuickActions,
+          ),
+        ).toBe('Applying command to close this issue');
       });
 
       it('should return generic multiple quick action description when note has multiple quick actions', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying multiple commands');
+        expect(
+          this.notes.getQuickActionDescription(
+            sampleComment,
+            availableQuickActions,
+          ),
+        ).toBe('Applying multiple commands');
       });
 
       it('should return generic quick action description when available quick actions list is not populated', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getQuickActionDescription(sampleComment)).toBe('Applying command');
+        expect(this.notes.getQuickActionDescription(sampleComment)).toBe(
+          'Applying command',
+        );
       });
     });
 
@@ -701,14 +962,35 @@ import '~/notes';
         expect($tempNote.attr('id')).toEqual(uniqueId);
         expect($tempNote.hasClass('being-posted')).toBeTruthy();
         expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
-        $tempNote.find('.timeline-icon > a, .note-header-info > a').each(function() {
-          expect($(this).attr('href')).toEqual(`/${currentUsername}`);
-        });
-        expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
-        expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
-        expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual(currentUserFullname);
-        expect($tempNoteHeader.find('.note-headline-light').text().trim()).toEqual(`@${currentUsername}`);
-        expect($tempNote.find('.note-body .note-text p').text().trim()).toEqual(sampleComment);
+        $tempNote
+          .find('.timeline-icon > a, .note-header-info > a')
+          .each(function() {
+            expect($(this).attr('href')).toEqual(`/${currentUsername}`);
+          });
+        expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(
+          currentUserAvatar,
+        );
+        expect(
+          $tempNote.find('.timeline-content').hasClass('discussion'),
+        ).toBeFalsy();
+        expect(
+          $tempNoteHeader
+            .find('.hidden-xs')
+            .text()
+            .trim(),
+        ).toEqual(currentUserFullname);
+        expect(
+          $tempNoteHeader
+            .find('.note-headline-light')
+            .text()
+            .trim(),
+        ).toEqual(`@${currentUsername}`);
+        expect(
+          $tempNote
+            .find('.note-body .note-text p')
+            .text()
+            .trim(),
+        ).toEqual(sampleComment);
       });
 
       it('should return constructed placeholder element for discussion note based on form contents', () => {
@@ -717,11 +999,32 @@ import '~/notes';
           uniqueId,
           isDiscussionNote: true,
           currentUsername,
-          currentUserFullname
+          currentUserFullname,
         });
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
-        expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
+        expect(
+          $tempNote.find('.timeline-content').hasClass('discussion'),
+        ).toBeTruthy();
+      });
+
+      it('should return a escaped user name', () => {
+        const currentUserFullnameXSS = 'Foo <script>alert("XSS")</script>';
+        const $tempNote = this.notes.createPlaceholderNote({
+          formContent: sampleComment,
+          uniqueId,
+          isDiscussionNote: false,
+          currentUsername,
+          currentUserFullname: currentUserFullnameXSS,
+          currentUserAvatar,
+        });
+        const $tempNoteHeader = $tempNote.find('.note-header');
+        expect(
+          $tempNoteHeader
+            .find('.hidden-xs')
+            .text()
+            .trim(),
+        ).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
       });
     });
 
@@ -744,7 +1047,12 @@ import '~/notes';
         expect($tempNote.attr('id')).toEqual(uniqueId);
         expect($tempNote.hasClass('being-posted')).toBeTruthy();
         expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
-        expect($tempNote.find('.timeline-content i').text().trim()).toEqual(sampleCommandDescription);
+        expect(
+          $tempNote
+            .find('.timeline-content i')
+            .text()
+            .trim(),
+        ).toEqual(sampleCommandDescription);
       });
     });
 
@@ -754,7 +1062,11 @@ import '~/notes';
       });
 
       it('shows a flash message', () => {
-        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash(
+          'Error message',
+          FLASH_TYPE_ALERT,
+          this.notes.parentTimeline.get(0),
+        );
 
         expect($('.flash-alert').is(':visible')).toBeTruthy();
       });
@@ -767,7 +1079,11 @@ import '~/notes';
       });
 
       it('hides visible flash message', () => {
-        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash(
+          'Error message 1',
+          FLASH_TYPE_ALERT,
+          this.notes.parentTimeline.get(0),
+        );
 
         this.notes.clearFlash();
 
@@ -775,4 +1091,4 @@ import '~/notes';
       });
     });
   });
-}).call(window);
+}.call(window));

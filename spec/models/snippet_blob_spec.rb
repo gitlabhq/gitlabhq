@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SnippetBlob, models: true do
+describe SnippetBlob do
   let(:snippet) { create(:snippet) }
 
   subject { described_class.new(snippet) }

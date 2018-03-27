@@ -10,14 +10,80 @@ RSpec.shared_examples 'additional metrics query' do
     [{ 'metric': {}, 'values': [[1488758662.506, '0.00002996364761904785'], [1488758722.506, '0.00003090239047619091']] }]
   end
 
+  let(:client) { double('prometheus_client') }
+  let(:query_result) { described_class.new(client).query(*query_params) }
+  let(:project) { create(:project) }
+  let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
+
   before do
     allow(client).to receive(:label_values).and_return(metric_names)
-    allow(metric_group_class).to receive(:all).and_return([simple_metric_group(metrics: [simple_metric])])
+    allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group(metrics: [simple_metric])])
+  end
+
+  context 'metrics query context' do
+    subject! { described_class.new(client) }
+
+    shared_examples 'query context containing environment slug and filter' do
+      it 'contains ci_environment_slug' do
+        expect(subject).to receive(:query_metrics).with(project, hash_including(ci_environment_slug: environment.slug))
+
+        subject.query(*query_params)
+      end
+
+      it 'contains environment filter' do
+        expect(subject).to receive(:query_metrics).with(
+          project,
+          hash_including(
+            environment_filter: "container_name!=\"POD\",environment=\"#{environment.slug}\""
+          )
+        )
+
+        subject.query(*query_params)
+      end
+    end
+
+    describe 'project has Kubernetes service' do
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
+        let(:kube_namespace) { project.deployment_platform.actual_namespace }
+
+        it_behaves_like 'query context containing environment slug and filter'
+
+        it 'query context contains kube_namespace' do
+          expect(subject).to receive(:query_metrics).with(project, hash_including(kube_namespace: kube_namespace))
+
+          subject.query(*query_params)
+        end
+      end
+
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+    end
+
+    describe 'project without Kubernetes service' do
+      it_behaves_like 'query context containing environment slug and filter'
+
+      it 'query context contains empty kube_namespace' do
+        expect(subject).to receive(:query_metrics).with(project, hash_including(kube_namespace: ''))
+
+        subject.query(*query_params)
+      end
+    end
   end
 
   context 'with one group where two metrics is found' do
     before do
-      allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+      allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group])
     end
 
     context 'some queries return results' do
@@ -51,8 +117,9 @@ RSpec.shared_examples 'additional metrics query' do
 
   context 'with two groups with one metric each' do
     let(:metrics) { [simple_metric(queries: [simple_query])] }
+
     before do
-      allow(metric_group_class).to receive(:all).and_return(
+      allow(metric_group_class).to receive(:common_metrics).and_return(
         [
           simple_metric_group(name: 'group_a', metrics: [simple_metric(queries: [simple_query])]),
           simple_metric_group(name: 'group_b', metrics: [simple_metric(title: 'title_b', queries: [simple_query('b')])])

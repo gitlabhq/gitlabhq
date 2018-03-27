@@ -1,18 +1,12 @@
 - page_title "Milestones"
-= render "groups/head_issues"
 
 .top-area
   = render 'shared/milestones_filter', counts: @milestone_states
 
   .nav-controls
+    = render 'shared/milestones_sort_dropdown'
     - if can?(current_user, :admin_milestones, @group)
-      = link_to new_group_milestone_path(@group), class: "btn btn-new" do
-        New milestone
-
-.row-content-block
-  Only milestones from
-  %strong= @group.name
-  group are listed here.
+      = link_to "New milestone", new_group_milestone_path(@group), class: "btn btn-new"
 
 .milestones
   %ul.content-list

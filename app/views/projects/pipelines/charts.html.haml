@@ -1,14 +1,11 @@
 - @no_container = true
-- page_title "Charts", "Pipelines"
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('graphs')
-= render 'head'
+- breadcrumb_title "CI / CD Charts"
+- page_title _("Charts"), _("Pipelines")
 
 %div{ class: container_class }
   .sub-header-block
     .oneline
-      A collection of graphs for Continuous Integration
+      = _("A collection of graphs regarding Continuous Integration")
 
   #charts.ci-charts
     .row

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TodoService, services: true do
+describe TodoService do
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
   let(:non_member) { create(:user) }
@@ -10,18 +10,18 @@ describe TodoService, services: true do
   let(:john_doe) { create(:user) }
   let(:skipped) { create(:user) }
   let(:skip_users) { [skipped] }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin, skipped].map(&:to_reference).join(' ') }
   let(:service) { described_class.new }
 
   before do
-    project.team << [guest, :guest]
-    project.team << [author, :developer]
-    project.team << [member, :developer]
-    project.team << [john_doe, :developer]
-    project.team << [skipped, :developer]
+    project.add_guest(guest)
+    project.add_developer(author)
+    project.add_developer(member)
+    project.add_developer(john_doe)
+    project.add_developer(skipped)
   end
 
   describe 'Issues' do
@@ -103,7 +103,7 @@ describe TodoService, services: true do
 
       context 'when a private group is mentioned' do
         let(:group)   { create(:group, :private) }
-        let(:project) { create(:empty_project, :private, group: group) }
+        let(:project) { create(:project, :private, group: group) }
         let(:issue)   { create(:issue, author: author, project: project, description: group.to_reference) }
 
         before do
@@ -248,11 +248,26 @@ describe TodoService, services: true do
       end
     end
 
-    describe '#destroy_issue' do
-      it 'refresh the todos count cache for the user' do
-        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+    describe '#destroy_target' do
+      it 'refreshes the todos count cache for users with todos on the target' do
+        create(:todo, target: issue, user: john_doe, author: john_doe, project: issue.project)
 
-        service.destroy_issue(issue, john_doe)
+        expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
+
+        service.destroy_target(issue) { }
+      end
+
+      it 'does not refresh the todos count cache for users with only done todos on the target' do
+        create(:todo, :done, target: issue, user: john_doe, author: john_doe, project: issue.project)
+
+        expect_any_instance_of(User).not_to receive(:update_todos_count_cache)
+
+        service.destroy_target(issue) { }
+      end
+
+      it 'yields the target to the caller' do
+        expect { |b| service.destroy_target(issue, &b) }
+          .to yield_with_args(issue)
       end
     end
 
@@ -336,7 +351,7 @@ describe TodoService, services: true do
 
     describe '#mark_todos_as_done' do
       it_behaves_like 'updating todos state', :mark_todos_as_done, :pending, :done do
-        let(:collection) { [first_todo, second_todo] }
+        let(:collection) { Todo.all }
       end
     end
 
@@ -348,7 +363,7 @@ describe TodoService, services: true do
 
     describe '#mark_todos_as_pending' do
       it_behaves_like 'updating todos state', :mark_todos_as_pending, :done, :pending do
-        let(:collection) { [first_todo, second_todo] }
+        let(:collection) { Todo.all }
       end
     end
 
@@ -586,13 +601,13 @@ describe TodoService, services: true do
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
         create(:todo, :directly_addressed, user: member, project: project, target: addressed_mr_assigned, author: author)
 
-        expect{ service.update_merge_request(addressed_mr_assigned, author) }.not_to change(member.todos, :count)
+        expect { service.update_merge_request(addressed_mr_assigned, author) }.not_to change(member.todos, :count)
       end
 
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is done' do
         create(:todo, :directly_addressed, user: skipped, project: project, target: addressed_mr_assigned, author: author)
 
-        expect{ service.update_merge_request(addressed_mr_assigned, author, skip_users) }.not_to change(skipped.todos, :count)
+        expect { service.update_merge_request(addressed_mr_assigned, author, skip_users) }.not_to change(skipped.todos, :count)
       end
 
       context 'with a task list' do
@@ -640,14 +655,6 @@ describe TodoService, services: true do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
-      end
-    end
-
-    describe '#destroy_merge_request' do
-      it 'refresh the todos count cache for the user' do
-        expect(john_doe).to receive(:update_todos_count_cache).and_call_original
-
-        service.destroy_merge_request(mr_assigned, john_doe)
       end
     end
 
@@ -873,21 +880,23 @@ describe TodoService, services: true do
       create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
       todos = TodosFinder.new(john_doe, {}).execute
-      expect { TodoService.new.mark_todos_as_done(todos, john_doe) }
+      expect { described_class.new.mark_todos_as_done(todos, john_doe) }
        .to change { john_doe.todos.done.count }.from(0).to(1)
     end
 
     it 'marks an array of todos as done' do
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
-      expect { TodoService.new.mark_todos_as_done([todo], john_doe) }
+      todos = TodosFinder.new(john_doe, {}).execute
+      expect { described_class.new.mark_todos_as_done(todos, john_doe) }
         .to change { todo.reload.state }.from('pending').to('done')
     end
 
     it 'returns the ids of updated todos' do # Needed on API
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
-      expect(TodoService.new.mark_todos_as_done([todo], john_doe)).to eq([todo.id])
+      todos = TodosFinder.new(john_doe, {}).execute
+      expect(described_class.new.mark_todos_as_done(todos, john_doe)).to eq([todo.id])
     end
 
     context 'when some of the todos are done already' do
@@ -895,25 +904,47 @@ describe TodoService, services: true do
       let!(:second_todo) { create(:todo, :mentioned, user: john_doe, target: another_issue, project: project) }
 
       it 'returns the ids of those still pending' do
-        TodoService.new.mark_pending_todos_as_done(issue, john_doe)
+        described_class.new.mark_pending_todos_as_done(issue, john_doe)
 
-        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq([second_todo.id])
+        expect(described_class.new.mark_todos_as_done(Todo.all, john_doe)).to eq([second_todo.id])
       end
 
       it 'returns an empty array if all are done' do
-        TodoService.new.mark_pending_todos_as_done(issue, john_doe)
-        TodoService.new.mark_pending_todos_as_done(another_issue, john_doe)
+        described_class.new.mark_pending_todos_as_done(issue, john_doe)
+        described_class.new.mark_pending_todos_as_done(another_issue, john_doe)
 
-        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq([])
+        expect(described_class.new.mark_todos_as_done(Todo.all, john_doe)).to eq([])
       end
     end
+  end
 
-    it 'caches the number of todos of a user', :caching do
+  describe '#mark_todos_as_done_by_ids' do
+    let(:issue) { create(:issue, project: project, author: author, assignees: [john_doe]) }
+    let(:another_issue) { create(:issue, project: project, author: author, assignees: [john_doe]) }
+
+    it 'marks an array of todo ids as done' do
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+      another_todo = create(:todo, :mentioned, user: john_doe, target: another_issue, project: project)
+
+      expect { described_class.new.mark_todos_as_done_by_ids([todo.id, another_todo.id], john_doe) }
+        .to change { john_doe.todos.done.count }.from(0).to(2)
+    end
+
+    it 'marks a single todo id as done' do
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      expect { described_class.new.mark_todos_as_done_by_ids(todo.id, john_doe) }
+        .to change { todo.reload.state }.from('pending').to('done')
+    end
+
+    it 'caches the number of todos of a user', :use_clean_rails_memory_store_caching do
       create(:todo, :mentioned, user: john_doe, target: issue, project: project)
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
-      TodoService.new.mark_todos_as_done([todo], john_doe)
 
-      expect_any_instance_of(TodosFinder).not_to receive(:execute)
+      described_class.new.mark_todos_as_done_by_ids(todo, john_doe)
+
+      # Make sure no TodosFinder is inialized to perform counting
+      expect(TodosFinder).not_to receive(:new)
 
       expect(john_doe.todos_done_count).to eq(1)
       expect(john_doe.todos_pending_count).to eq(1)

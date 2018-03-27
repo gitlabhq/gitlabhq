@@ -13,6 +13,31 @@ describe AbuseReportsController do
     sign_in(reporter)
   end
 
+  describe 'GET new' do
+    context 'when the user has already been deleted' do
+      it 'redirects the reporter to root_path' do
+        user_id = user.id
+        user.destroy
+
+        get :new, { user_id: user_id }
+
+        expect(response).to redirect_to root_path
+        expect(flash[:alert]).to eq('Cannot create the abuse report. The user has been deleted.')
+      end
+    end
+
+    context 'when the user has already been blocked' do
+      it 'redirects the reporter to the user\'s profile' do
+        user.block
+
+        get :new, { user_id: user.id }
+
+        expect(response).to redirect_to user
+        expect(flash[:alert]).to eq('Cannot create the abuse report. This user has been blocked.')
+      end
+    end
+  end
+
   describe 'POST create' do
     context 'with valid attributes' do
       it 'saves the abuse report' do

@@ -9,9 +9,9 @@ describe API::Groups do
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:empty_project, namespace: group1) }
-  let!(:project2) { create(:empty_project, namespace: group2) }
-  let!(:project3) { create(:empty_project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let!(:project1) { create(:project, namespace: group1) }
+  let!(:project2) { create(:project, namespace: group2) }
+  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -20,10 +20,30 @@ describe API::Groups do
 
   describe "GET /groups" do
     context "when unauthenticated" do
-      it "returns authentication error" do
+      it "returns public groups" do
         get api("/groups")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
+      end
+
+      it 'avoids N+1 queries' do
+        # Establish baseline
+        get api("/groups", admin)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/groups", admin)
+        end
+
+        create(:group)
+
+        expect do
+          get api("/groups", admin)
+        end.not_to exceed_query_limit(control)
       end
     end
 
@@ -31,7 +51,7 @@ describe API::Groups do
       it "normal user: returns an array of groups of user1" do
         get api("/groups", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -42,7 +62,7 @@ describe API::Groups do
       it "does not include statistics" do
         get api("/groups", user1), statistics: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include 'statistics'
@@ -53,7 +73,7 @@ describe API::Groups do
       it "admin: returns an array of all groups" do
         get api("/groups", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
@@ -62,7 +82,7 @@ describe API::Groups do
       it "does not include statistics by default" do
         get api("/groups", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include('statistics')
@@ -82,7 +102,7 @@ describe API::Groups do
 
         get api("/groups", admin), statistics: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response)
@@ -94,7 +114,7 @@ describe API::Groups do
       it "returns all groups excluding skipped groups" do
         get api("/groups", admin), skip_groups: [group2.id]
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -109,7 +129,7 @@ describe API::Groups do
 
         get api("/groups", user1), all_available: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to contain_exactly(public_group.name, group1.name)
@@ -127,7 +147,7 @@ describe API::Groups do
       it "sorts by name ascending by default" do
         get api("/groups", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group3.name, group1.name])
@@ -136,7 +156,7 @@ describe API::Groups do
       it "sorts in descending order when passed" do
         get api("/groups", user1), sort: "desc"
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group1.name, group3.name])
@@ -145,7 +165,7 @@ describe API::Groups do
       it "sorts by the order_by param" do
         get api("/groups", user1), order_by: "path"
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group1.name, group3.name])
@@ -154,25 +174,82 @@ describe API::Groups do
 
     context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
+        group1.add_master(user2)
+
         get api('/groups', user2), owned: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(group2.name)
       end
     end
   end
 
   describe "GET /groups/:id" do
+    # Given a group, create one project for each visibility level
+    #
+    # group      - Group to add projects to
+    # share_with - If provided, each project will be shared with this Group
+    #
+    # Returns a Hash of visibility_level => Project pairs
+    def add_projects_to_group(group, share_with: nil)
+      projects = {
+        public:   create(:project, :public,   namespace: group),
+        internal: create(:project, :internal, namespace: group),
+        private:  create(:project, :private,  namespace: group)
+      }
+
+      if share_with
+        create(:project_group_link, project: projects[:public],   group: share_with)
+        create(:project_group_link, project: projects[:internal], group: share_with)
+        create(:project_group_link, project: projects[:private],  group: share_with)
+      end
+
+      projects
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 404 for a private group' do
+        get api("/groups/#{group2.id}")
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns 200 for a public group' do
+        get api("/groups/#{group1.id}")
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns only public projects in the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group)
+
+        get api("/groups/#{public_group.id}")
+
+        expect(json_response['projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id)
+      end
+
+      it 'returns only public projects shared with the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group, share_with: group1)
+
+        get api("/groups/#{group1.id}")
+
+        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id)
+      end
+    end
+
     context "when authenticated as user" do
       it "returns one of user1's groups" do
-        project = create(:empty_project, namespace: group2, path: 'Foo')
+        project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
 
         get api("/groups/#{group1.id}", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['id']).to eq(group1.id)
         expect(json_response['name']).to eq(group1.name)
         expect(json_response['path']).to eq(group1.path)
@@ -194,13 +271,33 @@ describe API::Groups do
       it "does not return a non existing group" do
         get api("/groups/1328", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not return a group not attached to user1" do
         get api("/groups/#{group2.id}", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns only public and internal projects in the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group)
+
+        get api("/groups/#{public_group.id}", user2)
+
+        expect(json_response['projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id, projects[:internal].id)
+      end
+
+      it 'returns only public and internal projects shared with the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group, share_with: group1)
+
+        get api("/groups/#{group1.id}", user2)
+
+        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
     end
 
@@ -208,14 +305,14 @@ describe API::Groups do
       it "returns any existing group" do
         get api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(group2.name)
       end
 
       it "does not return a non existing group" do
         get api("/groups/1328", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -223,20 +320,20 @@ describe API::Groups do
       it 'returns any existing group' do
         get api("/groups/#{group1.path}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(group1.name)
       end
 
       it 'does not return a non existing group' do
         get api('/groups/unknown', admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'does not return a group not attached to user1' do
         get api("/groups/#{group2.path}", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -248,7 +345,7 @@ describe API::Groups do
       it 'updates the group' do
         put api("/groups/#{group1.id}", user1), name: new_group_name, request_access_enabled: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
         expect(json_response['request_access_enabled']).to eq(true)
       end
@@ -256,7 +353,7 @@ describe API::Groups do
       it 'returns 404 for a non existing group' do
         put api('/groups/1328', user1), name: new_group_name
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -264,7 +361,7 @@ describe API::Groups do
       it 'updates the group' do
         put api("/groups/#{group1.id}", admin), name: new_group_name
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
       end
     end
@@ -273,7 +370,7 @@ describe API::Groups do
       it 'does not updates the group' do
         put api("/groups/#{group1.id}", user2), name: new_group_name
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -281,7 +378,7 @@ describe API::Groups do
       it 'returns 404 when trying to update the group' do
         put api("/groups/#{group2.id}", user1), name: new_group_name
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -291,7 +388,7 @@ describe API::Groups do
       it "returns the group's projects" do
         get api("/groups/#{group1.id}/projects", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name'] }
@@ -302,7 +399,7 @@ describe API::Groups do
       it "returns the group's projects with simple representation" do
         get api("/groups/#{group1.id}/projects", user1), simple: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name'] }
@@ -311,11 +408,11 @@ describe API::Groups do
       end
 
       it 'filters the groups projects' do
-        public_project = create(:empty_project, :public, path: 'test1', group: group1)
+        public_project = create(:project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
@@ -325,21 +422,21 @@ describe API::Groups do
       it "does not return a non existing group" do
         get api("/groups/1328/projects", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not return a group not attached to user1" do
         get api("/groups/#{group2.id}/projects", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "only returns projects to which user has access" do
-        project3.team << [user3, :developer]
+        project3.add_developer(user3)
 
         get api("/groups/#{group1.id}/projects", user3)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project3.name)
@@ -350,7 +447,7 @@ describe API::Groups do
 
         get api("/groups/#{project2.group.id}/projects", user3), owned: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project2.name)
       end
@@ -360,7 +457,7 @@ describe API::Groups do
 
         get api("/groups/#{group1.id}/projects", user1), starred: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project1.name)
       end
@@ -370,7 +467,7 @@ describe API::Groups do
       it "returns any existing group" do
         get api("/groups/#{group2.id}/projects", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project2.name)
@@ -379,7 +476,21 @@ describe API::Groups do
       it "does not return a non existing group" do
         get api("/groups/1328/projects", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'avoids N+1 queries' do
+        get api("/groups/#{group1.id}/projects", admin)
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/groups/#{group1.id}/projects", admin)
+        end.count
+
+        create(:project, namespace: group1)
+
+        expect do
+          get api("/groups/#{group1.id}/projects", admin)
+        end.not_to exceed_query_limit(control_count)
       end
     end
 
@@ -387,7 +498,7 @@ describe API::Groups do
       it 'returns any existing group' do
         get api("/groups/#{group1.path}/projects", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
@@ -396,13 +507,149 @@ describe API::Groups do
       it 'does not return a non existing group' do
         get api('/groups/unknown/projects', admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'does not return a group not attached to user1' do
         get api("/groups/#{group2.path}/projects", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'GET /groups/:id/subgroups', :nested_groups do
+    let!(:subgroup1) { create(:group, parent: group1) }
+    let!(:subgroup2) { create(:group, :private, parent: group1) }
+    let!(:subgroup3) { create(:group, :private, parent: group2) }
+
+    context 'when unauthenticated' do
+      it 'returns only public subgroups' do
+        get api("/groups/#{group1.id}/subgroups")
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(subgroup1.id)
+        expect(json_response.first['parent_id']).to eq(group1.id)
+      end
+
+      it 'returns 404 for a private group' do
+        get api("/groups/#{group2.id}/subgroups")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when authenticated as user' do
+      context 'when user is not member of a public group' do
+        it 'returns no subgroups for the public group' do
+          get api("/groups/#{group1.id}/subgroups", user2)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(0)
+        end
+
+        context 'when using all_available in request' do
+          it 'returns public subgroups' do
+            get api("/groups/#{group1.id}/subgroups", user2), all_available: true
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response).to be_an Array
+            expect(json_response.length).to eq(1)
+            expect(json_response[0]['id']).to eq(subgroup1.id)
+            expect(json_response[0]['parent_id']).to eq(group1.id)
+          end
+        end
+      end
+
+      context 'when user is not member of a private group' do
+        it 'returns 404 for the private group' do
+          get api("/groups/#{group2.id}/subgroups", user1)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+
+      context 'when user is member of public group' do
+        before do
+          group1.add_guest(user2)
+        end
+
+        it 'returns private subgroups' do
+          get api("/groups/#{group1.id}/subgroups", user2)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
+          private_subgroups = json_response.select { |group| group['visibility'] == 'private' }
+          expect(private_subgroups.length).to eq(1)
+          expect(private_subgroups.first['id']).to eq(subgroup2.id)
+          expect(private_subgroups.first['parent_id']).to eq(group1.id)
+        end
+
+        context 'when using statistics in request' do
+          it 'does not include statistics' do
+            get api("/groups/#{group1.id}/subgroups", user2), statistics: true
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response).to be_an Array
+            expect(json_response.first).not_to include 'statistics'
+          end
+        end
+      end
+
+      context 'when user is member of private group' do
+        before do
+          group2.add_guest(user1)
+        end
+
+        it 'returns subgroups' do
+          get api("/groups/#{group2.id}/subgroups", user1)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(subgroup3.id)
+          expect(json_response.first['parent_id']).to eq(group2.id)
+        end
+      end
+    end
+
+    context 'when authenticated as admin' do
+      it 'returns private subgroups of a public group' do
+        get api("/groups/#{group1.id}/subgroups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+      end
+
+      it 'returns subgroups of a private group' do
+        get api("/groups/#{group2.id}/subgroups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+      end
+
+      it 'does not include statistics by default' do
+        get api("/groups/#{group1.id}/subgroups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it 'includes statistics if requested' do
+        get api("/groups/#{group1.id}/subgroups", admin), statistics: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).to include('statistics')
       end
     end
   end
@@ -412,7 +659,31 @@ describe API::Groups do
       it "does not create group" do
         post api("/groups", user1), attributes_for(:group)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      context 'as owner', :nested_groups do
+        before do
+          group2.add_owner(user1)
+        end
+
+        it 'can create subgroups' do
+          post api("/groups", user1), parent_id: group2.id, name: 'foo', path: 'foo'
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+      end
+
+      context 'as master', :nested_groups do
+        before do
+          group2.add_master(user1)
+        end
+
+        it 'cannot create subgroups' do
+          post api("/groups", user1), parent_id: group2.id, name: 'foo', path: 'foo'
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 
@@ -422,11 +693,12 @@ describe API::Groups do
 
         post api("/groups", user3), group
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
 
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
+        expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.current_application_settings.default_group_visibility))
       end
 
       it "creates a nested group", :nested_groups do
@@ -436,7 +708,7 @@ describe API::Groups do
 
         post api("/groups", user3), group
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
 
         expect(json_response["full_path"]).to eq("#{parent.path}/#{group[:path]}")
         expect(json_response["parent_id"]).to eq(parent.id)
@@ -445,20 +717,20 @@ describe API::Groups do
       it "does not create group, duplicate" do
         post api("/groups", user3), { name: 'Duplicate Test', path: group2.path }
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(response.message).to eq("Bad Request")
       end
 
       it "returns 400 bad request error if name not given" do
         post api("/groups", user3), { path: group2.path }
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 bad request error if path not given" do
         post api("/groups", user3), { name: 'test' }
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -468,7 +740,11 @@ describe API::Groups do
       it "removes group" do
         delete api("/groups/#{group1.id}", user1)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/groups/#{group1.id}", user1) }
       end
 
       it "does not remove a group if not an owner" do
@@ -477,19 +753,19 @@ describe API::Groups do
 
         delete api("/groups/#{group1.id}", user3)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "does not remove a non existing group" do
         delete api("/groups/1328", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not remove a group not attached to user1" do
         delete api("/groups/#{group2.id}", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -497,22 +773,22 @@ describe API::Groups do
       it "removes any existing group" do
         delete api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
       end
 
       it "does not remove a non existing group" do
         delete api("/groups/1328", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-    let(:project) { create(:empty_project) }
-    let(:project_path) { project.full_path.gsub('/', '%2F') }
+    let(:project) { create(:project) }
+    let(:project_path) { CGI.escape(project.full_path) }
 
-    before(:each) do
+    before do
       allow_any_instance_of(Projects::TransferService)
         .to receive(:execute).and_return(true)
     end
@@ -521,7 +797,7 @@ describe API::Groups do
       it "does not transfer project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -529,7 +805,7 @@ describe API::Groups do
       it "transfers project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", admin)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
       end
 
       context 'when using project path in URL' do
@@ -537,7 +813,7 @@ describe API::Groups do
           it "transfers project to group" do
             post api("/groups/#{group1.id}/projects/#{project_path}", admin)
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end
         end
 
@@ -545,7 +821,7 @@ describe API::Groups do
           it "does not transfer project to group" do
             post api("/groups/#{group1.id}/projects/nogroup%2Fnoproject", admin)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -555,7 +831,7 @@ describe API::Groups do
           it "transfers project to group" do
             post api("/groups/#{group1.path}/projects/#{project_path}", admin)
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end
         end
 
@@ -563,10 +839,20 @@ describe API::Groups do
           it "does not transfer project to group" do
             post api("/groups/noexist/projects/#{project_path}", admin)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
+    end
+  end
+
+  it_behaves_like 'custom attributes endpoints', 'groups' do
+    let(:attributable) { group1 }
+    let(:other_attributable) { group2 }
+    let(:user) { user1 }
+
+    before do
+      group2.add_owner(user1)
     end
   end
 end

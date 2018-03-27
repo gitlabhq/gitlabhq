@@ -1,4 +1,5 @@
 class Projects::PipelinesController < Projects::ApplicationController
+  before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
@@ -28,6 +29,8 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     @pipelines_count = PipelinesFinder
       .new(project).execute.count
+
+    @pipelines.map(&:commit) # List commits for batch loading
 
     respond_to do |format|
       format.html
@@ -60,7 +63,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
     if @pipeline.persisted?
-      redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
+      redirect_to project_pipeline_path(project, @pipeline)
     else
       render 'new'
     end
@@ -111,7 +114,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+        redirect_back_or_default default: project_pipelines_path(project)
       end
 
       format.json { head :no_content }
@@ -123,7 +126,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+        redirect_back_or_default default: project_pipelines_path(project)
       end
 
       format.json { head :no_content }
@@ -132,10 +135,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def charts
     @charts = {}
-    @charts[:week] = Ci::Charts::WeekChart.new(project)
-    @charts[:month] = Ci::Charts::MonthChart.new(project)
-    @charts[:year] = Ci::Charts::YearChart.new(project)
-    @charts[:pipeline_times] = Ci::Charts::PipelineTime.new(project)
+    @charts[:week] = Gitlab::Ci::Charts::WeekChart.new(project)
+    @charts[:month] = Gitlab::Ci::Charts::MonthChart.new(project)
+    @charts[:year] = Gitlab::Ci::Charts::YearChart.new(project)
+    @charts[:pipeline_times] = Gitlab::Ci::Charts::PipelineTime.new(project)
 
     @counts = {}
     @counts[:total] = @project.pipelines.count(:all)
@@ -163,5 +166,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def commit
     @commit ||= @pipeline.commit
+  end
+
+  def whitelist_query_limiting
+    # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42339')
   end
 end

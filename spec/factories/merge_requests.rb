@@ -1,9 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :merge_request do
     title { generate(:title) }
-    author
     association :source_project, :repository, factory: :project
     target_project { source_project }
+    author { source_project.creator }
 
     # $ git log --pretty=oneline feature..master
     # 5937ac0a7beb003549fc5fd26fc247adbce4a52e Add submodule from gitlab.com
@@ -20,6 +20,11 @@ FactoryGirl.define do
     merge_status "can_be_merged"
 
     trait :with_diffs do
+    end
+
+    trait :with_image_diffs do
+      source_branch "add_images_and_changes"
+      target_branch "master"
     end
 
     trait :without_diffs do
@@ -42,10 +47,6 @@ FactoryGirl.define do
 
     trait :opened do
       state :opened
-    end
-
-    trait :reopened do
-      state :reopened
     end
 
     trait :locked do
@@ -72,9 +73,26 @@ FactoryGirl.define do
       merge_user author
     end
 
+    trait :remove_source_branch do
+      merge_params do
+        { 'force_remove_source_branch' => '1' }
+      end
+    end
+
+    after(:build) do |merge_request|
+      target_project = merge_request.target_project
+      source_project = merge_request.source_project
+
+      # Fake `fetch_ref!` if we don't have repository
+      # We have too many existing tests replying on this behaviour
+      unless [target_project, source_project].all?(&:repository_exists?)
+        allow(merge_request).to receive(:fetch_ref!)
+      end
+    end
+
     factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
-    factory :reopened_merge_request, traits: [:reopened]
+    factory :reopened_merge_request, traits: [:opened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
     factory :merge_request_with_diff_notes do
       after(:create) do |mr|

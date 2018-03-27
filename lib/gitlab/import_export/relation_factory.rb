@@ -14,7 +14,10 @@ module Gitlab
                     create_access_levels: 'ProtectedTag::CreateAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,
-                    label: :project_label }.freeze
+                    auto_devops: :project_auto_devops,
+                    label: :project_label,
+                    custom_attributes: 'ProjectCustomAttribute',
+                    project_badges: 'Badge' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id].freeze
 
@@ -34,7 +37,7 @@ module Gitlab
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('noteable_id').merge('project_id' => project.id)
+        @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
         @project = project
@@ -55,23 +58,22 @@ module Gitlab
       private
 
       def setup_models
-        if @relation_name == :notes
-          set_note_author
-
-          # attachment is deprecated and note uploads are handled by Markdown uploader
-          @relation_hash['attachment'] = nil
+        case @relation_name
+        when :merge_request_diff_files       then setup_diff
+        when :notes                          then setup_note
+        when :project_label, :project_labels then setup_label
+        when :milestone, :milestones         then setup_milestone
+        when 'Ci::Pipeline'                  then setup_pipeline
+        else
+          @relation_hash['project_id'] = @project.id
         end
 
         update_user_references
         update_project_references
+        remove_duplicate_assignees
 
-        handle_group_label if group_label?
         reset_tokens!
         remove_encrypted_attributes!
-
-        @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
-        set_st_diff_commits if @relation_name == :merge_request_diff
-        set_diff if @relation_name == :merge_request_diff_files
       end
 
       def update_user_references
@@ -80,6 +82,20 @@ module Gitlab
             @relation_hash[reference] = @members_mapper.map[@relation_hash[reference]]
           end
         end
+      end
+
+      def remove_duplicate_assignees
+        return unless @relation_hash['issue_assignees']
+
+        # When an assignee did not exist in the members mapper, the importer is
+        # assigned. We only need to assign each user once.
+        @relation_hash['issue_assignees'].uniq!(&:user_id)
+      end
+
+      def setup_note
+        set_note_author
+        # attachment is deprecated and note uploads are handled by Markdown uploader
+        @relation_hash['attachment'] = nil
       end
 
       # Sets the author for a note. If the user importing the project
@@ -107,9 +123,7 @@ module Gitlab
           @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
 
-          imported_object do |object|
-            object.commit_id = nil
-          end
+          imported_object
         elsif @relation_name == :merge_requests
           MergeRequestParser.new(@project, @relation_hash.delete('diff_head_sha'), imported_object, @relation_hash).parse!
         else
@@ -134,17 +148,22 @@ module Gitlab
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
-      def group_label?
-        @relation_hash['type'] == 'GroupLabel'
-      end
-
-      def handle_group_label
+      def setup_label
         # If there's no group, move the label to a project label
-        if @relation_hash['group_id']
+        if @relation_hash['type'] == 'GroupLabel' && @relation_hash['group_id']
           @relation_hash['project_id'] = nil
           @relation_name = :group_label
         else
+          @relation_hash['group_id'] = nil
           @relation_hash['type'] = 'ProjectLabel'
+        end
+      end
+
+      def setup_milestone
+        if @relation_hash['group_id']
+          @relation_hash['group_id'] = @project.group.id
+        else
+          @relation_hash['project_id'] = @project.id
         end
       end
 
@@ -171,8 +190,9 @@ module Gitlab
       end
 
       def imported_object
-        yield(existing_or_new_object) if block_given?
-        existing_or_new_object.importing = true if existing_or_new_object.respond_to?(:importing)
+        if existing_or_new_object.respond_to?(:importing)
+          existing_or_new_object.importing = true
+        end
 
         existing_or_new_object
       rescue ActiveRecord::RecordNotUnique
@@ -196,15 +216,16 @@ module Gitlab
                                                                                relation_class: relation_class)
       end
 
-      def set_st_diff_commits
-        @relation_hash['st_diffs'] = @relation_hash.delete('utf8_st_diffs')
-
-        HashUtil.deep_symbolize_array!(@relation_hash['st_diffs'])
-        HashUtil.deep_symbolize_array_with_date!(@relation_hash['st_commits'])
+      def setup_diff
+        @relation_hash['diff'] = @relation_hash.delete('utf8_diff')
       end
 
-      def set_diff
-        @relation_hash['diff'] = @relation_hash.delete('utf8_diff')
+      def setup_pipeline
+        @relation_hash.fetch('stages').each do |stage|
+          stage.statuses.each do |status|
+            status.pipeline = imported_object
+          end
+        end
       end
 
       def existing_or_new_object
@@ -248,7 +269,14 @@ module Gitlab
       end
 
       def find_or_create_object!
-        finder_attributes = @relation_name == :group_label ? %w[title group_id] : %w[title project_id]
+        finder_attributes = if @relation_name == :group_label
+                              %w[title group_id]
+                            elsif parsed_relation_hash['project_id']
+                              %w[title project_id]
+                            else
+                              %w[title group_id]
+                            end
+
         finder_hash = parsed_relation_hash.slice(*finder_attributes)
 
         if label?

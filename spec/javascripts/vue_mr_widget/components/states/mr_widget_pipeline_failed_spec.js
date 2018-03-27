@@ -10,7 +10,7 @@ describe('MRWidgetPipelineFailed', () => {
     it('should have correct elements', () => {
       expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(vm.$el.innerText).toContain('The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure.');
+      expect(vm.$el.innerText).toContain('The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure');
     });
   });
 });

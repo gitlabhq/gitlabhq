@@ -1,147 +1,217 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GithubImport
+    # HTTP client for interacting with the GitHub API.
+    #
+    # This class is basically a fancy wrapped around Octokit while adding some
+    # functionality to deal with rate limiting and parallel imports. Usage is
+    # mostly the same as Octokit, for example:
+    #
+    #     client = GithubImport::Client.new('hunter2')
+    #
+    #     client.labels.each do |label|
+    #       puts label.name
+    #     end
     class Client
-      GITHUB_SAFE_REMAINING_REQUESTS = 100
-      GITHUB_SAFE_SLEEP_TIME = 500
+      include ::Gitlab::Utils::StrongMemoize
 
-      attr_reader :access_token, :host, :api_version
+      attr_reader :octokit
 
-      def initialize(access_token, host: nil, api_version: 'v3')
-        @access_token = access_token
-        @host = host.to_s.sub(%r{/+\z}, '')
-        @api_version = api_version
-        @users = {}
+      # A single page of data and the corresponding page number.
+      Page = Struct.new(:objects, :number)
 
-        if access_token
-          ::Octokit.auto_paginate = false
+      # The minimum number of requests we want to keep available.
+      #
+      # We don't use a value of 0 as multiple threads may be using the same
+      # token in parallel. This could result in all of them hitting the GitHub
+      # rate limit at once. The threshold is put in place to not hit the limit
+      # in most cases.
+      RATE_LIMIT_THRESHOLD = 50
+
+      # token - The GitHub API token to use.
+      #
+      # per_page - The number of objects that should be displayed per page.
+      #
+      # parallel - When set to true hitting the rate limit will result in a
+      #            dedicated error being raised. When set to `false` we will
+      #            instead just `sleep()` until the rate limit is reset. Setting
+      #            this value to `true` for parallel importing is crucial as
+      #            otherwise hitting the rate limit will result in a thread
+      #            being blocked in a `sleep()` call for up to an hour.
+      def initialize(token, per_page: 100, parallel: true)
+        @octokit = Octokit::Client.new(
+          access_token: token,
+          per_page: per_page,
+          api_endpoint: api_endpoint
+        )
+
+        @octokit.connection_options[:ssl] = { verify: verify_ssl }
+
+        @parallel = parallel
+      end
+
+      def parallel?
+        @parallel
+      end
+
+      # Returns the details of a GitHub user.
+      #
+      # username - The username of the user.
+      def user(username)
+        with_rate_limit { octokit.user(username) }
+      end
+
+      # Returns the details of a GitHub repository.
+      #
+      # name - The path (in the form `owner/repository`) of the repository.
+      def repository(name)
+        with_rate_limit { octokit.repo(name) }
+      end
+
+      def labels(*args)
+        each_object(:labels, *args)
+      end
+
+      def milestones(*args)
+        each_object(:milestones, *args)
+      end
+
+      def releases(*args)
+        each_object(:releases, *args)
+      end
+
+      # Fetches data from the GitHub API and yields a Page object for every page
+      # of data, without loading all of them into memory.
+      #
+      # method - The Octokit method to use for getting the data.
+      # args - Arguments to pass to the Octokit method.
+      #
+      # rubocop: disable GitlabSecurity/PublicSend
+      def each_page(method, *args, &block)
+        return to_enum(__method__, method, *args) unless block_given?
+
+        page =
+          if args.last.is_a?(Hash) && args.last[:page]
+            args.last[:page]
+          else
+            1
+          end
+
+        collection = with_rate_limit { octokit.public_send(method, *args) }
+        next_url = octokit.last_response.rels[:next]
+
+        yield Page.new(collection, page)
+
+        while next_url
+          response = with_rate_limit { next_url.get }
+          next_url = response.rels[:next]
+
+          yield Page.new(response.data, page += 1)
         end
       end
 
-      def api
-        @api ||= ::Octokit::Client.new(
-          access_token: access_token,
-          api_endpoint: api_endpoint,
-          # If there is no config, we're connecting to github.com and we
-          # should verify ssl.
-          connection_options: {
-            ssl: { verify: config ? config['verify_ssl'] : true }
-          }
-        )
-      end
+      # Iterates over all of the objects for the given method (e.g. `:labels`).
+      #
+      # method - The method to send to Octokit for querying data.
+      # args - Any arguments to pass to the Octokit method.
+      def each_object(method, *args, &block)
+        return to_enum(__method__, method, *args) unless block_given?
 
-      def client
-        unless config
-          raise Projects::ImportService::Error,
-            'OAuth configuration for GitHub missing.'
+        each_page(method, *args) do |page|
+          page.objects.each do |object|
+            yield object
+          end
         end
-
-        @client ||= ::OAuth2::Client.new(
-          config.app_id,
-          config.app_secret,
-          github_options.merge(ssl: { verify: config['verify_ssl'] })
-        )
       end
 
-      def authorize_url(redirect_uri)
-        client.auth_code.authorize_url({
-          redirect_uri: redirect_uri,
-          scope: "repo, user, user:email"
-        })
+      # Yields the supplied block, responding to any rate limit errors.
+      #
+      # The exact strategy used for handling rate limiting errors depends on
+      # whether we are running in parallel mode or not. For more information see
+      # `#rate_or_wait_for_rate_limit`.
+      def with_rate_limit
+        return yield unless rate_limiting_enabled?
+
+        request_count_counter.increment
+
+        raise_or_wait_for_rate_limit unless requests_remaining?
+
+        begin
+          yield
+        rescue Octokit::TooManyRequests
+          raise_or_wait_for_rate_limit
+
+          # This retry will only happen when running in sequential mode as we'll
+          # raise an error in parallel mode.
+          retry
+        end
       end
 
-      def get_token(code)
-        client.auth_code.get_token(code).token
+      # Returns `true` if we're still allowed to perform API calls.
+      def requests_remaining?
+        remaining_requests > RATE_LIMIT_THRESHOLD
       end
 
-      def method_missing(method, *args, &block)
-        if api.respond_to?(method)
-          request(method, *args, &block)
+      def remaining_requests
+        octokit.rate_limit.remaining
+      end
+
+      def raise_or_wait_for_rate_limit
+        rate_limit_counter.increment
+
+        if parallel?
+          raise RateLimitError
         else
-          super(method, *args, &block)
+          sleep(rate_limit_resets_in)
         end
       end
 
-      def respond_to?(method)
-        api.respond_to?(method) || super
+      def rate_limit_resets_in
+        # We add a few seconds to the rate limit so we don't _immediately_
+        # resume when the rate limit resets as this may result in us performing
+        # a request before GitHub has a chance to reset the limit.
+        octokit.rate_limit.resets_in + 5
       end
 
-      def user(login)
-        return nil unless login.present?
-        return @users[login] if @users.key?(login)
-
-        @users[login] = api.user(login)
+      def rate_limiting_enabled?
+        strong_memoize(:rate_limiting_enabled) do
+          api_endpoint.include?('.github.com')
+        end
       end
-
-      private
 
       def api_endpoint
-        if host.present? && api_version.present?
-          "#{host}/api/#{api_version}"
-        else
-          github_options[:site]
-        end
+        custom_api_endpoint || default_api_endpoint
       end
 
-      def config
-        Gitlab.config.omniauth.providers.find { |provider| provider.name == "github" }
+      def custom_api_endpoint
+        github_omniauth_provider.dig('args', 'client_options', 'site')
       end
 
-      def github_options
-        if config
-          config["args"]["client_options"].deep_symbolize_keys
-        else
-          OmniAuth::Strategies::GitHub.default_options[:client_options].symbolize_keys
-        end
+      def default_api_endpoint
+        OmniAuth::Strategies::GitHub.default_options[:client_options][:site]
       end
 
-      def rate_limit
-        api.rate_limit!
-      # GitHub Rate Limit API returns 404 when the rate limit is
-      # disabled. In this case we just want to return gracefully
-      # instead of spitting out an error.
-      rescue Octokit::NotFound
-        nil
+      def verify_ssl
+        github_omniauth_provider.fetch('verify_ssl', true)
       end
 
-      def has_rate_limit?
-        return @has_rate_limit if defined?(@has_rate_limit)
-
-        @has_rate_limit = rate_limit.present?
+      def github_omniauth_provider
+        @github_omniauth_provider ||= Gitlab::Auth::OAuth::Provider.config_for('github').to_h
       end
 
-      def rate_limit_exceed?
-        has_rate_limit? && rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
+      def rate_limit_counter
+        @rate_limit_counter ||= Gitlab::Metrics.counter(
+          :github_importer_rate_limit_hits,
+          'The number of times we hit the GitHub rate limit when importing projects'
+        )
       end
 
-      def rate_limit_sleep_time
-        rate_limit.resets_in + GITHUB_SAFE_SLEEP_TIME
-      end
-
-      def request(method, *args, &block)
-        sleep rate_limit_sleep_time if rate_limit_exceed?
-
-        data = api.send(method, *args)
-        return data unless data.is_a?(Array)
-
-        last_response = api.last_response
-
-        if block_given?
-          yield data
-          # api.last_response could change while we're yielding (e.g. fetching labels for each PR)
-          # so we cache our own last response
-          each_response_page(last_response, &block)
-        else
-          each_response_page(last_response) { |page| data.concat(page) }
-          data
-        end
-      end
-
-      def each_response_page(last_response)
-        while last_response.rels[:next]
-          sleep rate_limit_sleep_time if rate_limit_exceed?
-          last_response = last_response.rels[:next].get
-          yield last_response.data if last_response.data.is_a?(Array)
-        end
+      def request_count_counter
+        @request_counter ||= Gitlab::Metrics.counter(
+          :github_importer_request_count,
+          'The number of GitHub API calls performed when importing projects'
+        )
       end
     end
   end

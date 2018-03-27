@@ -11,13 +11,13 @@
 
   %small.pull-right.cgray
     - if snippet_title.project_id?
-      = link_to snippet_title.project.name_with_namespace, namespace_project_path(snippet_title.project.namespace, snippet_title.project)
+      = link_to snippet_title.project.full_name, project_path(snippet_title.project)
 
   .snippet-info
     = snippet_title.to_reference
     %span
       by
       = link_to user_snippets_path(snippet_title.author) do
-        = image_tag avatar_icon(snippet_title.author), class: "avatar avatar-inline s16", alt: ''
+        = image_tag avatar_icon_for_user(snippet_title.author), class: "avatar avatar-inline s16", alt: ''
         = snippet_title.author_name
       %span.light= time_ago_with_tooltip(snippet_title.created_at)

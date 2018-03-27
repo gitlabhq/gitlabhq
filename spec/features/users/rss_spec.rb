@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 feature 'User RSS' do
+  let(:user) { create(:user) }
   let(:path) { user_path(create(:user)) }
 
   context 'when signed in' do
     before do
-      gitlab_sign_in(create(:user))
+      sign_in(user)
       visit path
     end
 

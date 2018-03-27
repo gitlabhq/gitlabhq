@@ -73,7 +73,7 @@
 .profile-link-holder {
   display: inline;
 
-  a {
+  a:not(.text-link) {
     text-decoration: none;
   }
 }
@@ -83,7 +83,7 @@
   &::after {
     content: "\00B7"; // Middle Dot
     padding: 0 6px;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   &:last-child {
@@ -105,6 +105,15 @@
   .file-name {
     display: inline-block;
     padding-left: 10px;
+  }
+}
+
+.subkeys-list {
+  @include basic-list;
+
+  li {
+    padding: 3px 0;
+    border: 0;
   }
 }
 
@@ -277,7 +286,7 @@ table.u2f-registrations {
 
 .oauth-application-show {
   .scope-name {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 
   .scopes-list {
@@ -286,13 +295,12 @@ table.u2f-registrations {
 }
 
 .user-callout {
-  margin: 0 auto;
-  max-width: $screen-lg-min;
+  margin: 20px -5px 0;
 
   .bordered-box {
     border: 1px solid $blue-300;
     border-radius: $border-radius-default;
-    background-color: $blue-25;
+    background-color: $blue-50;
     position: relative;
     display: flex;
     justify-content: center;
@@ -374,6 +382,44 @@ table.u2f-registrations {
           }
         }
       }
+    }
+  }
+}
+
+.nav-wip {
+  border: 1px solid $blue-500;
+  background: $blue-50;
+  padding: $gl-padding;
+  margin-bottom: $gl-padding;
+
+  a {
+    color: $blue-500;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.email-badge {
+  display: inline;
+  margin-right: $gl-padding / 2;
+
+  .email-badge-email {
+    display: inline;
+    margin-right: $gl-padding / 4;
+  }
+
+  .label-verification-status {
+    border-width: 1px;
+    border-style: solid;
+
+    &.verified {
+      @include green-status-color;
+    }
+
+    &.unverified {
+      @include status-color($gray-dark, $gray, $common-gray-dark);
     }
   }
 }

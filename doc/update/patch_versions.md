@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Universal update guide for patch versions
 
 ## Select Version to Install
@@ -35,7 +39,7 @@ current version with `cat VERSION`).
 cd /home/git/gitlab
 
 sudo -u git -H git fetch --all
-sudo -u git -H git checkout -- Gemfile.lock db/schema.rb
+sudo -u git -H git checkout -- Gemfile.lock db/schema.rb locale
 sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
 
@@ -56,6 +60,12 @@ sudo -u git -H bundle clean
 # Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
+# Compile GetText PO files
+# Internationalization was added in `v9.2.0` so these commands are only
+# required for versions equal or major to it.
+sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
+sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+
 # Clean up assets and cache
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production
 ```
@@ -68,7 +78,15 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-### 5. Update gitlab-shell to the corresponding version
+### 5. Update gitaly to the corresponding version
+
+```bash
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+```
+
+### 6. Update gitlab-shell to the corresponding version
 
 ```bash
 cd /home/git/gitlab-shell
@@ -78,14 +96,14 @@ sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`ca
 sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
 ```
 
-### 6. Start application
+### 7. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 7. Check application status
+### 8. Check application status
 
 Check if GitLab and its environment are configured correctly:
 

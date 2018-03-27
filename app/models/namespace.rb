@@ -1,12 +1,15 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid
-
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
-  include Gitlab::CurrentSettings
+  include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
+  include Storage::LegacyNamespace
+  include Gitlab::SQL::Pattern
+  include IgnorableColumn
+
+  ignore_column :deleted_at
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -15,18 +18,20 @@ class Namespace < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  has_many :projects, dependent: :destroy
+  has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
+
+  # This should _not_ be `inverse_of: :namespace`, because that would also set
+  # `user.namespace` when this user creates a group with themselves as `owner`.
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
-  has_one :chat_team, dependent: :destroy
+  has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
-    uniqueness: { scope: :parent_id },
     length: { maximum: 255 },
     namespace_name: true
 
@@ -34,16 +39,21 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    dynamic_path: true
+    namespace_path: true
 
   validate :nesting_level_allowed
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
-  after_update :move_dir, if: :path_changed?
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
-  # Save the storage paths before the projects are destroyed to use them on after destroy
+  before_create :sync_share_with_group_lock_with_parent
+  before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
+  after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
+
+  # Legacy Storage specific hooks
+
+  after_update :move_dir, if: :path_or_parent_changed?
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
@@ -79,10 +89,7 @@ class Namespace < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:name].matches(pattern).or(t[:path].matches(pattern)))
+      fuzzy_search(query, [:name, :path])
     end
 
     def clean_path(path)
@@ -105,49 +112,16 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def visibility_level_field
+    :visibility_level
+  end
+
   def to_param
     full_path
   end
 
   def human_name
     owner_name
-  end
-
-  def move_dir
-    if any_project_has_container_registry_tags?
-      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
-    end
-
-    # Move the namespace directory in all storages paths used by member projects
-    repository_storage_paths.each do |repository_storage_path|
-      # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, full_path_was)
-
-      unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
-
-        # if we cannot move namespace directory we should rollback
-        # db changes in order to prevent out of sync between db and fs
-        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
-      end
-    end
-
-    Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
-    Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
-
-    remove_exports!
-
-    # If repositories moved successfully we need to
-    # send update instructions to users.
-    # However we cannot allow rollback since we moved namespace dir
-    # So we basically we mute exceptions in next actions
-    begin
-      send_update_instructions
-    rescue
-      # Returning false does not rollback after_* transaction but gives
-      # us information about failing some of tasks
-      false
-    end
   end
 
   def any_project_has_container_registry_tags?
@@ -165,7 +139,19 @@ class Namespace < ActiveRecord::Base
   end
 
   def find_fork_of(project)
-    projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+    return nil unless project.fork_network
+
+    if RequestStore.active?
+      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+        Hash.new do |found_forks, project|
+          found_forks[project] = project.fork_network.find_forks_in(projects).first
+        end
+      end
+
+      forks_in_namespace[project]
+    else
+      project.fork_network.find_forks_in(projects).first
+    end
   end
 
   def lfs_enabled?
@@ -186,10 +172,31 @@ class Namespace < ActiveRecord::Base
       .base_and_ancestors
   end
 
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
+  end
+
+  def self_and_ancestors
+    return self.class.where(id: id) unless parent_id
+
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .base_and_ancestors
+  end
+
   # Returns all the descendants of the current namespace.
   def descendants
     Gitlab::GroupHierarchy
       .new(self.class.where(parent_id: id))
+      .base_and_descendants
+  end
+
+  def self_and_descendants
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
       .base_and_descendants
   end
 
@@ -199,14 +206,6 @@ class Namespace < ActiveRecord::Base
 
   def parent_changed?
     parent_id_changed?
-  end
-
-  def prepare_for_destroy
-    old_repository_storage_paths
-  end
-
-  def old_repository_storage_paths
-    @old_repository_storage_paths ||= repository_storage_paths
   end
 
   # Includes projects from this namespace and projects from all subgroups
@@ -219,37 +218,44 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
-  private
+  def subgroup?
+    has_parent?
+  end
 
-  def repository_storage_paths
-    # We need to get the storage paths for all the projects, even the ones that are
-    # pending delete. Unscoping also get rids of the default order, which causes
-    # problems with SELECT DISTINCT.
-    Project.unscoped do
-      all_projects.select('distinct(repository_storage)').to_a.map(&:repository_storage_path)
+  # Overridden on EE module
+  def multiple_issue_boards_available?
+    false
+  end
+
+  def full_path_was
+    if parent_id_was.nil?
+      path_was
+    else
+      previous_parent = Group.find_by(id: parent_id_was)
+      previous_parent.full_path + '/' + path_was
     end
   end
 
-  def rm_dir
-    # Remove the namespace directory in all storages paths used by member projects
-    old_repository_storage_paths.each do |repository_storage_path|
-      # Move namespace directory into trash.
-      # We will remove it later async
-      new_path = "#{full_path}+#{id}+deleted"
+  # Exports belonging to projects with legacy storage are placed in a common
+  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
+  # them.
+  #
+  # Exports of projects using hashed storage are placed in a location defined
+  # only by the project ID, so each must be removed individually.
+  def remove_exports!
+    remove_legacy_exports!
 
-      if gitlab_shell.mv_namespace(repository_storage_path, full_path, new_path)
-        message = "Namespace directory \"#{full_path}\" moved to \"#{new_path}\""
-        Gitlab::AppLogger.info message
+    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
+  end
 
-        # Remove namespace directroy async with delay so
-        # GitLab has time to remove all projects first
-        run_after_commit do
-          GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
-        end
-      end
-    end
+  def features
+    []
+  end
 
-    remove_exports!
+  private
+
+  def path_or_parent_changed?
+    path_changed? || parent_changed?
   end
 
   def refresh_access_of_projects_invited_groups
@@ -259,25 +265,33 @@ class Namespace < ActiveRecord::Base
       .find_each(&:refresh_members_authorized_projects)
   end
 
-  def remove_exports!
-    Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
-  end
-
-  def export_path
-    File.join(Gitlab::ImportExport.storage_path, full_path_was)
-  end
-
-  def full_path_was
-    if parent
-      parent.full_path + '/' + path_was
-    else
-      path_was
-    end
-  end
-
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
       errors.add(:parent_id, "has too deep level of nesting")
+    end
+  end
+
+  def sync_share_with_group_lock_with_parent
+    if parent&.share_with_group_lock?
+      self.share_with_group_lock = true
+    end
+  end
+
+  def force_share_with_group_lock_on_descendants
+    return unless Group.supports_nested_groups?
+
+    # We can't use `descendants.update_all` since Rails will throw away the WITH
+    # RECURSIVE statement. We also can't use WHERE EXISTS since we can't use
+    # different table aliases, hence we're just using WHERE IN. Since we have a
+    # maximum of 20 nested groups this should be fine.
+    Namespace.where(id: descendants.select(:id))
+      .update_all(share_with_group_lock: true)
+  end
+
+  def write_projects_repository_config
+    all_projects.find_each do |project|
+      project.expires_full_path_cache # we need to clear cache to validate renames correctly
+      project.write_repository_config
     end
   end
 end

@@ -3,8 +3,10 @@ require 'prometheus/client/formats/text'
 class MetricsService
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
-    Gitlab::HealthChecks::RedisCheck,
-    Gitlab::HealthChecks::FsShardsCheck
+    Gitlab::HealthChecks::Redis::RedisCheck,
+    Gitlab::HealthChecks::Redis::CacheCheck,
+    Gitlab::HealthChecks::Redis::QueuesCheck,
+    Gitlab::HealthChecks::Redis::SharedStateCheck
   ].freeze
 
   def prometheus_metrics_text
@@ -18,7 +20,7 @@ class MetricsService
   end
 
   def metrics_text
-    "#{health_metrics_text}#{prometheus_metrics_text}"
+    prometheus_metrics_text.concat(health_metrics_text)
   end
 
   private
@@ -28,6 +30,6 @@ class MetricsService
   end
 
   def multiprocess_metrics_path
-    @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir']).freeze
+    ::Prometheus::Client.configuration.multiprocess_files_dir
   end
 end

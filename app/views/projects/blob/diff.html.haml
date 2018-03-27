@@ -5,25 +5,24 @@
       = diff_match_line @form.since, @form.since, text: @match_line, view: diff_view
 
   - @lines.each_with_index do |line, index|
-    - line_new = index + @form.since
-    - line_old = line_new - @form.offset
-    - line_content = capture do
-      %td.line_content.noteable_line{ class: line_class }==#{' ' * @form.indent}#{line}
-    %tr.line_holder.diff-expanded{ id: line_old, class: line_class }
+    - line_number_new = index + @form.since
+    - line_number_old = line_number_new - @form.offset
+    - line[0, 0] = ' ' * @form.indent
+    %tr.line_holder.diff-expanded{ id: line_number_old, class: line_class }
       - case diff_view
       - when :inline
-        %td.old_line.diff-line-num{ data: { linenumber: line_old } }
-          %a{ href: "#", data: { linenumber: line_old }, disabled: true }
-        %td.new_line.diff-line-num{ data: { linenumber: line_new } }
-          %a{ href: "#", data: { linenumber: line_new }, disabled: true }
-        = line_content
+        %td.old_line.diff-line-num{ data: { linenumber: line_number_old } }
+          %a{ href: "#", data: { linenumber: line_number_old }, disabled: true }
+        %td.new_line.diff-line-num{ data: { linenumber: line_number_new } }
+          %a{ href: "#", data: { linenumber: line_number_new }, disabled: true }
+        %td.line_content.noteable_line{ class: line_class }= line
       - when :parallel
-        %td.old_line.diff-line-num{ data: { linenumber: line_old } }
-          %a{ href: "##{line_old}", data: { linenumber: line_old }, disabled: true }
-        = line_content
-        %td.new_line.diff-line-num{ data: { linenumber: line_new } }
-          %a{ href: "##{line_new}", data: { linenumber: line_new }, disabled: true }
-        = line_content
+        %td.old_line.diff-line-num{ data: { linenumber: line_number_old } }
+          %a{ href: "##{line_number_old}", data: { linenumber: line_number_old }, disabled: true }
+        %td.line_content.noteable_line.left-side{ class: line_class }= line
+        %td.new_line.diff-line-num{ data: { linenumber: line_number_new } }
+          %a{ href: "##{line_number_new}", data: { linenumber: line_number_new }, disabled: true }
+        %td.line_content.noteable_line.right-side{ class: line_class }= line
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.lines.size
     %tr.line_holder{ id: @form.to, class: line_class }

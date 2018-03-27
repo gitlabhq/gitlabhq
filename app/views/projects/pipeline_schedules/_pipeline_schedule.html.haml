@@ -3,30 +3,33 @@
     %td
       = pipeline_schedule.description
     %td.branch-name-cell
-      = icon('code-fork')
-      - if pipeline_schedule.ref
+      = sprite_icon('fork', size: 12)
+      - if pipeline_schedule.ref.present?
         = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
     %td
       - if pipeline_schedule.last_pipeline
         .status-icon-container{ class: "ci-status-icon-#{pipeline_schedule.last_pipeline.status}" }
-          = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline_schedule.last_pipeline.id) do
+          = link_to project_pipeline_path(@project, pipeline_schedule.last_pipeline.id) do
             = ci_icon_for_status(pipeline_schedule.last_pipeline.status)
             %span ##{pipeline_schedule.last_pipeline.id}
       - else
         = s_("PipelineSchedules|None")
     %td.next-run-cell
-      - if pipeline_schedule.active?
+      - if pipeline_schedule.active? && pipeline_schedule.next_run_at
         = time_ago_with_tooltip(pipeline_schedule.real_next_run)
       - else
         = s_("PipelineSchedules|Inactive")
     %td
       - if pipeline_schedule.owner
-        = image_tag avatar_icon(pipeline_schedule.owner, 20), class: "avatar s20"
+        = image_tag avatar_icon_for_user(pipeline_schedule.owner, 20), class: "avatar s20"
         = link_to user_path(pipeline_schedule.owner) do
           = pipeline_schedule.owner&.name
     %td
       .pull-right.btn-group
-        - if can?(current_user, :update_pipeline_schedule, @project) && !pipeline_schedule.owned_by?(current_user)
+        - if can?(current_user, :play_pipeline_schedule, pipeline_schedule)
+          = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn' do
+            = icon('play')
+        - if can?(current_user, :take_ownership_pipeline_schedule, pipeline_schedule)
           = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn' do
             = s_('PipelineSchedules|Take ownership')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)

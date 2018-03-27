@@ -1,4 +1,4 @@
-## GitLab Core Team & GitLab Inc. Contribution Process
+## GitLab core team & GitLab Inc. contribution process
 
 ---
 
@@ -53,7 +53,7 @@ Below we describe the contributing process to GitLab for two reasons:
 Several people from the [GitLab team][team] are helping community members to get
 their contributions accepted by meeting our [Definition of done][done].
 
-What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
+What you can expect from them is described at https://about.gitlab.com/roles/merge-request-coach/.
 
 ## Assigning issues
 
@@ -71,10 +71,14 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature freeze on the 7th for the release on the 22nd
 
-After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
+After 7th at 23:59 (Pacific Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
+
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
+
+Any release candidate that gets created after this date can become a final release,
+hence the name release candidate.
 
 ### Between the 1st and the 7th
 
@@ -85,7 +89,8 @@ These types of merge requests for the upcoming release need special consideratio
   and a dedicated team with front-end, back-end, and UX.
 * **Small features**: any other feature request.
 
-**Large features** must be with a maintainer **by the 1st**. This means that:
+It is strongly recommended that **large features** be with a maintainer **by the
+1st**. This means that:
 
 * There is a merge request (even if it's WIP).
 * The person (or people, if it needs a frontend and backend maintainer) who will
@@ -100,13 +105,36 @@ The maintainer can also choose to assign a reviewer to perform an initial
 review, but this way the maintainer is unlikely to be surprised by receiving an
 MR later in the cycle.
 
-**Small features** must be with a reviewer (not necessarily maintainer) **by the
-3rd**.
+It is strongly recommended that **small features** be with a reviewer (not
+necessarily a maintainer) **by the 3rd**.
 
 Most merge requests from the community do not have a specific release
 target. However, if one does and falls into either of the above categories, it's
 the reviewer's responsibility to manage the above communication and assignment
 on behalf of the community member.
+
+#### What happens if these deadlines are missed?
+
+If a small or large feature is _not_ with a maintainer or reviewer by the
+recommended date, this does _not_ mean that maintainers or reviewers will refuse
+to review or merge it, or that the feature will definitely not make it in before
+the feature freeze.
+
+However, with every day that passes without review, it will become more likely
+that the feature will slip, because maintainers and reviewers may not have
+enough time to do a thorough review, and developers may not have enough time to
+adequately address any feedback that may come back.
+
+A maintainer or reviewer may also determine that it will not be possible to
+finish the current scope of the feature in time, but that it is possible to
+reduce the scope so that something can still ship this month, with the remaining
+scope moving to the next release. The sooner this decision is made, in
+conversation with the Product Manager and developer, the more time there is to
+extract that which is now out of scope, and to finish that which remains in scope.
+
+For these reasons, it is strongly recommended to follow the guidelines above,
+to maximize the chances of your feature making it in before the feature freeze,
+and to prevent any last minute surprises.
 
 ### On the 7th
 
@@ -119,27 +147,63 @@ only be left until after the freeze if:
   are aware of it.
 * It is in the correct milestone, with the ~Deliverable label.
 
+If a merge request is not ready, but the developers and Product Manager
+responsible for the feature think it is essential that it is in the release,
+they can [ask for an exception](#asking-for-an-exception) in advance. This is
+preferable to merging something that we are not confident in, but should still
+be a rare case: most features can be allowed to slip a release.
+
 All Community Edition merge requests from GitLab team members merged on the
 freeze date (the 7th) should have a corresponding Enterprise Edition merge
 request, even if there are no conflicts. This is to reduce the size of the
 subsequent EE merge, as we often merge a lot to CE on the release date. For more
 information, see
-[limit conflicts with EE when developing on CE][limit_ee_conflicts].
+[Automatic CE->EE merge][automatic_ce_ee_merge] and
+[Guidelines for implementing Enterprise Edition features][ee_features].
 
 ### After the 7th
 
-Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
-and security issues will be cherry-picked into the stable branch.
-Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
-These fixes will be shipped in the next RC for that release if it is before the 22nd.
-If the fixes are are completed on or after the 22nd, they will be shipped in a patch for that release.
+Once the stable branch is frozen, the only MRs that can be cherry-picked into
+the stable branch are:
+
+* Fixes for [regressions](#regressions)
+* Fixes for security issues
+* New or updated translations (as long as they do not touch application code)
+
+During the feature freeze all merge requests that are meant to go into the
+upcoming release should have the correct milestone assigned _and_ the
+`Pick into X.Y` label where `X.Y` is equal to the milestone, so that release
+managers can find and pick them.
+Merge requests without this label will not be picked into the stable release.
+
+For example, if the upcoming release is `10.2.0` you will need to set the
+`Pick into 10.2` label.
+
+Fixes marked like this will be shipped in the next RC (before the 22nd), or the
+next patch release.
+
+If a merge request is to be picked into more than one release it will need one
+`Pick into X.Y` label per release where the merge request should be back-ported
+to.
+
+For example, if the current patch release is `10.1.1` and a regression fix needs
+to be backported down to the `9.5` release, you will need to assign it the
+`10.1` milestone and the following labels:
+
+- `Pick into 10.1`
+- `Pick into 10.0`
+- `Pick into 9.5`
+
+### Asking for an exception
 
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
-you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
+you can ask for an exception to be made.
 
-1. a Release Manager
-2. an Engineering Lead
-3. an Engineering Director, the VP of Engineering, or the CTO
+Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
+using the `Exception-request` issue template.
+
+**Do not** set the relevant `Pick into X.Y` label (see above) before request an
+exception; this should be done after the exception is approved.
 
 You can find who is who on the [team page](https://about.gitlab.com/team/).
 
@@ -152,34 +216,35 @@ When in doubt, we err on the side of _not_ cherry-picking.
 For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
 (e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
-During the feature freeze all merge requests that are meant to go into the upcoming
-release should have the correct milestone assigned _and_ have the label
-~"Pick into Stable" set, so that release managers can find and pick them.
-Merge requests without a milestone and this label will
-not be merged into any stable branches.
+All MRs which have had exceptions granted must be merged by the 15th.
+
+### Regressions
+
+A regression for a particular monthly release is a bug that exists in that
+release, but wasn't present in the release before. This includes bugs in
+features that were only added in that monthly release. Every regression **must**
+have the milestone of the release it was introduced in - if a regression doesn't
+have a milestone, it might be 'just' a bug!
+
+For instance, if 10.5.0 adds a feature, and that feature doesn't work correctly,
+then this is a regression in 10.5. If 10.5.1 then fixes that, but 10.5.3 somehow
+reintroduces the bug, then this bug is still a regression in 10.5.
+
+Because GitLab.com runs release candidates of new releases, a regression can be
+reported in a release before its 'official' release date on the 22nd of the
+month. When we say 'the most recent monthly release', this can refer to either
+the version currently running on GitLab.com, or the most recent version
+available in the package repositories.
+
+A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
+and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+just like any other issue, to help GitLab team members focus on issues that are
+relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
 
 ## Release retrospective and kickoff
 
-### Retrospective
-
-After each release, we have a retrospective call where we discuss what went well,
-what went wrong, and what we can improve for the next release. The
-[retrospective notes] are public and you are invited to comment on them.
-If you're interested, you can even join the
-[retrospective call][retro-kickoff-call], on the first working day after the
-22nd at 6pm CET / 9am PST.
-
-### Kickoff
-
-Before working on the next release, we have a
-kickoff call to explain what we expect to ship in the next release. The
-[kickoff notes] are public and you are invited to comment on them.
-If you're interested, you can even join the [kickoff call][retro-kickoff-call],
-on the first working day after the 7th at 6pm CET / 9am PST..
-
-[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
-[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
-[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
+- [Retrospective](https://about.gitlab.com/handbook/engineering/workflow/#retrospective)
+- [Kickoff](https://about.gitlab.com/handbook/engineering/workflow/#kickoff)
 
 ## Copy & paste responses
 
@@ -247,4 +312,5 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
 [done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
-[limit_ee_conflicts]: https://docs.gitlab.com/ce/development/limit_ee_conflicts.html
+[automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
+[ee_features]: https://docs.gitlab.com/ce/development/ee_features.html

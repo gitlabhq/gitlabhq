@@ -1,12 +1,7 @@
 require 'rails_helper'
 
-feature 'Mini Pipeline Graph in Commit View', :js, :feature do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
-
-  before do
-    gitlab_sign_in(user)
-  end
+feature 'Mini Pipeline Graph in Commit View', :js do
+  let(:project) { create(:project, :public, :repository) }
 
   context 'when commit has pipelines' do
     let(:pipeline) do
@@ -15,21 +10,21 @@ feature 'Mini Pipeline Graph in Commit View', :js, :feature do
               ref: project.default_branch,
               sha: project.commit.sha)
     end
+    let(:build) { create(:ci_build, pipeline: pipeline) }
 
-    let(:build) do
-      create(:ci_build, pipeline: pipeline)
-    end
-
-    before do
+    it 'display icon with status' do
       build.run
-      visit namespace_project_commit_path(project.namespace, project, project.commit.id)
+      visit project_commit_path(project, project.commit.id)
+
+      expect(page).to have_selector('.ci-status-icon-running')
     end
 
-    it 'should display a mini pipeline graph' do
+    it 'displays a mini pipeline graph' do
+      build.run
+      visit project_commit_path(project, project.commit.id)
+
       expect(page).to have_selector('.mr-widget-pipeline-graph')
-    end
 
-    it 'should show the builds list when stage is clicked' do
       first('.mini-pipeline-graph-dropdown-toggle').click
 
       wait_for_requests
@@ -38,12 +33,14 @@ feature 'Mini Pipeline Graph in Commit View', :js, :feature do
         expect(page).to have_selector('.ci-status-icon-running')
         expect(page).to have_content(build.stage)
       end
+
+      build.drop
     end
   end
 
   context 'when commit does not have pipelines' do
     before do
-      visit namespace_project_commit_path(project.namespace, project, project.commit.id)
+      visit project_commit_path(project, project.commit.id)
     end
 
     it 'should not display a mini pipeline graph' do

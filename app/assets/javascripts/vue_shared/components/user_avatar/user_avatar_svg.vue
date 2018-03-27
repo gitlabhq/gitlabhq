@@ -39,7 +39,7 @@ export default {
     :class="avatarSizeClass"
     :height="size"
     :width="size"
-    v-html="svg">
-  </svg>
+    v-html="svg"
+  />
 </template>
 

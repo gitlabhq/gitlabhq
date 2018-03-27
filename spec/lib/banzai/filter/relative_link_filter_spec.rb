@@ -1,13 +1,15 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RelativeLinkFilter, lib: true do
+describe Banzai::Filter::RelativeLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         commit,
       project:        project,
+      group:          group,
       project_wiki:   project_wiki,
       ref:            ref,
-      requested_path: requested_path
+      requested_path: requested_path,
+      only_path:      only_path
     })
 
     described_class.call(doc, contexts)
@@ -25,12 +27,18 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     %(<a href="#{path}">#{path}</a>)
   end
 
+  def nested(element)
+    %(<div>#{element}</div>)
+  end
+
   let(:project)        { create(:project, :repository) }
-  let(:project_path)   { project.path_with_namespace }
+  let(:group)          { nil }
+  let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }
   let(:requested_path) { '/' }
+  let(:only_path)      { true }
 
   shared_examples :preserve_unchanged do
     it 'does not modify any relative URL in anchor' do
@@ -56,7 +64,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   end
 
   context 'without a repository' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     include_examples :preserve_unchanged
   end
 
@@ -67,6 +75,11 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
 
   it 'does not raise an exception on invalid URIs' do
     act = link("://foo")
+    expect { filter(act) }.not_to raise_error
+  end
+
+  it 'does not raise an exception with a garbled path' do
+    act = link("open(/var/tmp/):%20/location%0Afrom:%20/test")
     expect { filter(act) }.not_to raise_error
   end
 
@@ -204,6 +217,23 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
       end
     end
 
+    context 'when ref name contains special chars' do
+      let(:ref) {'mark#\'@],+;-._/#@!$&()+down'}
+
+      it 'correctly escapes the ref' do
+        # Adressable won't escape the '#', so we do this manually
+        ref_escaped = 'mark%23\'@%5D,+;-._/%23@!$&()+down'
+
+        # Stub this method so the branch doesn't actually need to be in the repo
+        allow_any_instance_of(described_class).to receive(:uri_type).and_return(:raw)
+
+        doc = filter(link('files/images/logo-black.png'))
+
+        expect(doc.at_css('a')['href'])
+          .to eq "/#{project_path}/raw/#{ref_escaped}/files/images/logo-black.png"
+      end
+    end
+
     context 'when requested path is a directory with space in the repo' do
       let(:ref) { 'master' }
       let(:commit) { project.commit('38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e') }
@@ -222,5 +252,101 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   context 'with a valid ref' do
     let(:commit) { nil } # force filter to use ref instead of commit
     include_examples :valid_repository
+  end
+
+  context 'with a /upload/ URL' do
+    # not needed
+    let(:commit) { nil }
+    let(:ref) { nil }
+    let(:requested_path) { nil }
+    let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
+    let(:relative_path) { "/#{project.full_path}#{upload_path}" }
+
+    context 'to a project upload' do
+      context 'with an absolute URL' do
+        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+        let(:only_path) { false }
+
+        it 'rewrites the link correctly' do
+          doc = filter(link(upload_path))
+
+          expect(doc.at_css('a')['href']).to eq(absolute_path)
+        end
+      end
+
+      it 'rebuilds relative URL for a link' do
+        doc = filter(link(upload_path))
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+
+        doc = filter(nested(link(upload_path)))
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'rebuilds relative URL for an image' do
+        doc = filter(image(upload_path))
+        expect(doc.at_css('img')['src']).to eq(relative_path)
+
+        doc = filter(nested(image(upload_path)))
+        expect(doc.at_css('img')['src']).to eq(relative_path)
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+
+      it 'supports unescaped Unicode filenames' do
+        path = '/uploads/한글.png'
+        doc = filter(link(path))
+
+        expect(doc.at_css('a')['href']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
+      end
+
+      it 'supports escaped Unicode filenames' do
+        path = '/uploads/한글.png'
+        escaped = Addressable::URI.escape(path)
+        doc = filter(image(escaped))
+
+        expect(doc.at_css('img')['src']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
+      end
+    end
+
+    context 'to a group upload' do
+      let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+      let(:group) { create(:group) }
+      let(:project) { nil }
+      let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+      context 'with an absolute URL' do
+        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+        let(:only_path) { false }
+
+        it 'rewrites the link correctly' do
+          doc = filter(upload_link)
+
+          expect(doc.at_css('a')['href']).to eq(absolute_path)
+        end
+      end
+
+      it 'rewrites the link correctly' do
+        doc = filter(upload_link)
+
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'rewrites the link correctly for subgroup' do
+        group.update!(parent: create(:group))
+
+        doc = filter(upload_link)
+
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+    end
   end
 end

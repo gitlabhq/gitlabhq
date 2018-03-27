@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RedactorFilter, lib: true do
+describe Banzai::Filter::RedactorFilter do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 
   it 'ignores non-GFM links' do
     html = %(See <a href="https://google.com/">Google</a>)
-    doc = filter(html, current_user: double)
+    doc = filter(html, current_user: build(:user))
 
     expect(doc.css('a').length).to eq 1
   end
@@ -17,7 +17,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
   it 'skips when the skip_redaction flag is set' do
     user = create(:user)
-    project = create(:empty_project)
+    project = create(:project)
 
     link = reference_link(project: project.id, reference_type: 'test')
     doc = filter(link, current_user: user, skip_redaction: true)
@@ -45,8 +45,8 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'allows permitted Project references' do
         user = create(:user)
-        project = create(:empty_project)
-        project.team << [user, :master]
+        project = create(:project)
+        project.add_master(user)
 
         link = reference_link(project: project.id, reference_type: 'test')
         doc = filter(link, current_user: user)
@@ -62,7 +62,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'removes unpermitted references' do
         user = create(:user)
-        project = create(:empty_project)
+        project = create(:project)
 
         link = reference_link(project: project.id, reference_type: 'test')
         doc = filter(link, current_user: user)
@@ -82,7 +82,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     context 'for confidential issues' do
       it 'removes references for non project members' do
         non_member = create(:user)
-        project = create(:empty_project, :public)
+        project = create(:project, :public)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -93,8 +93,8 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'removes references for project members with guest role' do
         member = create(:user)
-        project = create(:empty_project, :public)
-        project.team << [member, :guest]
+        project = create(:project, :public)
+        project.add_guest(member)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -105,7 +105,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'allows references for author' do
         author = create(:user)
-        project = create(:empty_project, :public)
+        project = create(:project, :public)
         issue = create(:issue, :confidential, project: project, author: author)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -116,7 +116,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'allows references for assignee' do
         assignee = create(:user)
-        project = create(:empty_project, :public)
+        project = create(:project, :public)
         issue = create(:issue, :confidential, project: project, assignees: [assignee])
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -127,8 +127,8 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'allows references for project members' do
         member = create(:user)
-        project = create(:empty_project, :public)
-        project.team << [member, :developer]
+        project = create(:project, :public)
+        project.add_developer(member)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -139,7 +139,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'allows references for admin' do
         admin = create(:admin)
-        project = create(:empty_project, :public)
+        project = create(:project, :public)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -151,7 +151,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
     it 'allows references for non confidential issues' do
       user = create(:user)
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       issue = create(:issue, project: project)
 
       link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')

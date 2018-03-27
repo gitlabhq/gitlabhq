@@ -1,15 +1,16 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::IssueSearch, service: true do
+describe Gitlab::SlashCommands::IssueSearch do
   describe '#execute' do
     let!(:issue) { create(:issue, project: project, title: 'find me') }
     let!(:confidential) { create(:issue, :confidential, project: project, title: 'mepmep find') }
-    let(:project) { create(:empty_project) }
-    let(:user) { issue.author }
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:chat_name) { double(:chat_name, user: user) }
     let(:regex_match) { described_class.match("issue search find") }
 
     subject do
-      described_class.new(project, user).execute(regex_match)
+      described_class.new(project, chat_name).execute(regex_match)
     end
 
     context 'when the user has no access' do
@@ -21,7 +22,7 @@ describe Gitlab::SlashCommands::IssueSearch, service: true do
 
     context 'the user has access' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'returns all results' do

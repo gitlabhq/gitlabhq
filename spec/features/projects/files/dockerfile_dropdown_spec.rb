@@ -1,22 +1,22 @@
 require 'spec_helper'
 require 'fileutils'
 
-feature 'User wants to add a Dockerfile file', feature: true do
+feature 'User wants to add a Dockerfile file' do
   before do
     user = create(:user)
-    project = create(:project)
-    project.team << [user, :master]
+    project = create(:project, :repository)
+    project.add_master(user)
 
-    gitlab_sign_in user
+    sign_in user
 
-    visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: 'Dockerfile')
+    visit project_new_blob_path(project, 'master', file_name: 'Dockerfile')
   end
 
   scenario 'user can see Dockerfile dropdown' do
     expect(page).to have_css('.dockerfile-selector')
   end
 
-  scenario 'user can pick a Dockerfile file from the dropdown', js: true do
+  scenario 'user can pick a Dockerfile file from the dropdown', :js do
     find('.js-dockerfile-selector').click
 
     wait_for_requests

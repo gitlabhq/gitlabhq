@@ -10,9 +10,8 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def create
-    @deploy_key = deploy_keys.new(create_params.merge(user: current_user))
-
-    if @deploy_key.save
+    @deploy_key = DeployKeys::CreateService.new(current_user, create_params.merge(public: true)).execute
+    if @deploy_key.persisted?
       redirect_to admin_deploy_keys_path
     else
       render 'new'
@@ -51,10 +50,10 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def create_params
-    params.require(:deploy_key).permit(:key, :title, :can_push)
+    params.require(:deploy_key).permit(:key, :title)
   end
 
   def update_params
-    params.require(:deploy_key).permit(:title, :can_push)
+    params.require(:deploy_key).permit(:title)
   end
 end

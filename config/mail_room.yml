@@ -21,7 +21,7 @@
       :delivery_method: sidekiq
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
-        :namespace: <%= Gitlab::Redis::SIDEKIQ_NAMESPACE %>
+        :namespace: <%= Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE %>
         :queue: email_receiver
         :worker: EmailReceiverWorker
         <% if config[:sentinels] %>
@@ -36,7 +36,7 @@
       :arbitration_method: redis
       :arbitration_options:
         :redis_url: <%= config[:redis_url].to_json %>
-        :namespace: <%= Gitlab::Redis::MAILROOM_NAMESPACE %>
+        :namespace: <%= Gitlab::Redis::Queues::MAILROOM_NAMESPACE %>
         <% if config[:sentinels] %>
         :sentinels:
           <% config[:sentinels].each do |sentinel| %>

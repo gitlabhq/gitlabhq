@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "domain": { "type": "string" },
+    "url": { "type": "uri" },
+    "verified": { "type": "boolean" },
+    "verification_code": { "type": ["string", "null"] },
+    "enabled_until": { "type": ["date", "null"] },
+    "certificate": {
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string" },
+        "expired": { "type": "boolean" },
+        "certificate": { "type": "string" },
+        "certificate_text": { "type": "string" }
+      },
+      "required": ["subject", "expired"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["domain", "url", "verified", "verification_code", "enabled_until"],
+  "additionalProperties": false
+}

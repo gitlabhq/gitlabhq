@@ -1,19 +1,31 @@
-- commit_message = @page.persisted? ? "Update #{@page.title}" : "Create #{@page.title}"
+- commit_message = @page.persisted? ? s_("WikiPageEdit|Update %{page_title}") : s_("WikiPageCreate|Create %{page_title}")
+- commit_message = commit_message % { page_title: @page.title }
 
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
   = form_errors(@page)
 
-  = f.hidden_field :title, value: @page.title
+  - if @page.persisted?
+    = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
+
+  .form-group
+    .col-sm-12= f.label :title, class: 'control-label-full-width'
+    .col-sm-12
+      = f.text_field :title, class: 'form-control', value: @page.title
+      - if @page.persisted?
+        %span.edit-wiki-page-slug-tip
+          = icon('lightbulb-o')
+          = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")
+          = link_to icon('question-circle'), help_page_path('user/project/wiki/index', anchor: 'moving-a-wiki-page'), target: '_blank'
   .form-group
     .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12
-      = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: "form-control"
+      = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control'
 
   .form-group
     .col-sm-12= f.label :content, class: 'control-label-full-width'
     .col-sm-12
-      = render layout: 'projects/md_preview', locals: { url: namespace_project_wiki_preview_markdown_path(@project.namespace, @project, @page.slug) } do
-        = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: 'Write your content or drag files here...'
+      = render layout: 'projects/md_preview', locals: { url: project_wiki_preview_markdown_path(@project, @page.slug) } do
+        = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: s_("WikiPage|Write your content or drag files here...")
         = render 'shared/notes/hints'
 
       .clearfix
@@ -21,12 +33,11 @@
 
       .help-block
         = succeed '.' do
-          To link to a (new) page, simply type
-          %code [Link Title](page-slug)
+          = (s_("WikiMarkdownTip|To link to a (new) page, simply type %{link_example}") % { link_example: '<code>[Link Title](page-slug)</code>' }).html_safe
 
         = succeed '.' do
-          More examples are in the
-          = link_to 'documentation', help_page_path("user/markdown", anchor: "wiki-specific-markdown")
+          - markdown_link = link_to s_("WikiMarkdownDocs|documentation"), help_page_path('user/markdown', anchor: 'wiki-specific-markdown')
+          = (s_("WikiMarkdownDocs|More examples are in the %{docs_link}") % { docs_link: markdown_link }).html_safe
 
   .form-group
     .col-sm-12= f.label :commit_message, class: 'control-label-full-width'
@@ -34,10 +45,10 @@
 
   .form-actions
     - if @page && @page.persisted?
-      = f.submit 'Save changes', class: "btn-save btn"
+      = f.submit _("Save changes"), class: 'btn-save btn'
       .pull-right
-        = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel btn-grouped"
+        = link_to _("Cancel"), project_wiki_path(@project, @page), class: 'btn btn-cancel btn-grouped'
     - else
-      = f.submit 'Create page', class: "btn-create btn"
+      = f.submit s_("Wiki|Create page"), class: 'btn-create btn'
       .pull-right
-        = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
+        = link_to _("Cancel"), project_wiki_path(@project, :home), class: 'btn btn-cancel'

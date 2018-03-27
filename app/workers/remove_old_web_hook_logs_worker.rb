@@ -1,5 +1,5 @@
 class RemoveOldWebHookLogsWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   WEB_HOOK_LOG_LIFETIME = 2.days

@@ -1,14 +1,13 @@
 - commit = local_assigns.fetch(:commit) { @repository.commit }
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
+- content_url = local_assigns.fetch(:content_url) { @tree.readme ? project_blob_path(@project, tree_join(@ref, @tree.readme.path)) : project_tree_path(@project, @ref) }
+
 #tree-holder.tree-holder.clearfix
   .nav-block
     = render 'projects/tree/tree_header', tree: @tree
 
   - if commit
-    .info-well.hidden-xs.project-last-commit.append-bottom-default
-      .well-segment
-        %ul.blob-commit-info
-          = render 'projects/commits/commit', commit: commit, ref: ref, project: project
+    = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
-  = render 'projects/tree/tree_content', tree: @tree
+  = render 'projects/tree/tree_content', tree: @tree, content_url: content_url

@@ -1,13 +1,13 @@
 shared_context 'gitlab email notification' do
+  set(:project) { create(:project, :repository) }
+  set(:recipient) { create(:user, email: 'recipient@example.com') }
+
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
   let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
-  let(:recipient) { create(:user, email: 'recipient@example.com') }
-  let(:project) { create(:empty_project) }
   let(:new_user_address) { 'newguy@example.com' }
 
   before do
-    reset_delivered_emails!
     email = recipient.emails.create(email: "notifications@example.com")
     recipient.update_attribute(:notification_email, email.email)
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@#{Gitlab.config.gitlab.host}")
@@ -50,7 +50,7 @@ shared_examples 'an email with X-GitLab headers containing project details' do
     aggregate_failures do
       is_expected.to have_header('X-GitLab-Project', /#{project.name}/)
       is_expected.to have_header('X-GitLab-Project-Id', /#{project.id}/)
-      is_expected.to have_header('X-GitLab-Project-Path', /#{project.path_with_namespace}/)
+      is_expected.to have_header('X-GitLab-Project-Path', /#{project.full_path}/)
     end
   end
 end

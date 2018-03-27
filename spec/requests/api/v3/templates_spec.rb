@@ -19,7 +19,7 @@ describe API::V3::Templates do
     it 'returns a list of available gitignore templates' do
       get v3_api(path)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to be > 15
     end
@@ -29,7 +29,7 @@ describe API::V3::Templates do
     it 'returns a list of available gitlab_ci_ymls' do
       get v3_api(path)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['name']).not_to be_nil
     end
@@ -39,7 +39,7 @@ describe API::V3::Templates do
     it 'adds a disclaimer on the top' do
       get v3_api(path)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['content']).to start_with("# This file is a template,")
     end
   end
@@ -57,7 +57,7 @@ describe API::V3::Templates do
       expect(json_response['description']).to include('A short and simple permissive license with conditions')
       expect(json_response['conditions']).to eq(%w[include-copyright])
       expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use])
-      expect(json_response['limitations']).to eq(%w[no-liability])
+      expect(json_response['limitations']).to eq(%w[liability warranty])
       expect(json_response['content']).to include('MIT License')
     end
   end
@@ -66,7 +66,7 @@ describe API::V3::Templates do
     it 'returns a list of available license templates' do
       get v3_api(path)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(12)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
@@ -77,7 +77,7 @@ describe API::V3::Templates do
         it 'returns a list of available popular license templates' do
           get v3_api("#{path}?popular=1")
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
           expect(json_response.map { |l| l['key'] }).to include('apache-2.0')
@@ -159,7 +159,7 @@ describe API::V3::Templates do
         let(:license_type) { 'muth-over9000' }
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

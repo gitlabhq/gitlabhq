@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Subscribers::ActionView do
-  let(:transaction) { Gitlab::Metrics::Transaction.new }
+  let(:env) { {} }
+  let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
 
   let(:subscriber) { described_class.new }
 
@@ -26,6 +27,14 @@ describe Gitlab::Metrics::Subscribers::ActionView do
 
       expect(transaction).to receive(:add_metric)
         .with(described_class::SERIES, values, tags)
+
+      subscriber.render_template(event)
+    end
+
+    it 'observes view rendering time' do
+      expect(described_class.gitlab_view_rendering_duration_seconds)
+        .to receive(:observe)
+              .with({ view: 'app/views/x.html.haml' }, 2.1)
 
       subscriber.render_template(event)
     end

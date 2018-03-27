@@ -19,31 +19,37 @@ module Gitlab
       "It must start with letter, digit, emoji or '_'."
     end
 
-    def file_name_regex
-      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
-    end
-
-    def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@', '+' and '.'."
-    end
-
-    def container_registry_reference_regex
-      Gitlab::PathRegex.git_reference_regex
+    ##
+    # Docker Distribution Registry repository / tag name rules
+    #
+    # See https://github.com/docker/distribution/blob/master/reference/regexp.go.
+    #
+    def container_repository_name_regex
+      @container_repository_regex ||= %r{\A[a-z0-9]+((?:[._/]|__|[-])[a-z0-9]+)*\Z}
     end
 
     ##
-    # Docker Distribution Registry 2.4.1 repository name rules
+    # We do not use regexp anchors here because these are not allowed when
+    # used as a routing constraint.
     #
-    def container_repository_name_regex
-      @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
+    def container_registry_tag_regex
+      @container_registry_tag_regex ||= /[\w][\w.-]{0,127}/
+    end
+
+    def environment_name_regex_chars
+      'a-zA-Z0-9_/\\$\\{\\}\\. \\-'
+    end
+
+    def environment_name_regex_chars_without_slash
+      'a-zA-Z0-9_\\$\\{\\}\\. -'
     end
 
     def environment_name_regex
-      @environment_name_regex ||= /\A[a-zA-Z0-9_\\\/\${}. -]+\z/.freeze
+      @environment_name_regex ||= /\A[#{environment_name_regex_chars_without_slash}]([#{environment_name_regex_chars}]*[#{environment_name_regex_chars_without_slash}])?\z/.freeze
     end
 
     def environment_name_regex_message
-      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces"
+      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces, but it cannot start or end with '/'"
     end
 
     def kubernetes_namespace_regex
@@ -51,7 +57,8 @@ module Gitlab
     end
 
     def kubernetes_namespace_regex_message
-      "can contain only letters, digits or '-', and cannot start or end with '-'"
+      "can contain only lowercase letters, digits, and '-'. " \
+      "Must start with a letter, and cannot end with '-'"
     end
 
     def environment_slug_regex
@@ -61,6 +68,10 @@ module Gitlab
     def environment_slug_regex_message
       "can contain only lowercase letters, digits, and '-'. " \
       "Must start with a letter, and cannot end with '-'"
+    end
+
+    def build_trace_section_regex
+      @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)\r\033\[0K/.freeze
     end
   end
 end

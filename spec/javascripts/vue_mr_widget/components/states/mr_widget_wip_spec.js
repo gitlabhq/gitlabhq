@@ -50,9 +50,7 @@ describe('MRWidgetWIP', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeWIP').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return mrObj;
-            },
+            data: mrObj,
           });
         }));
 
@@ -78,7 +76,7 @@ describe('MRWidgetWIP', () => {
 
     it('should have correct elements', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('This merge request is currently Work In Progress and therefore unable to merge');
+      expect(el.innerText).toContain('This is a Work in Progress');
       expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(el.querySelector('button').innerText).toContain('Merge');
       expect(el.querySelector('.js-remove-wip').innerText).toContain('Resolve WIP status');

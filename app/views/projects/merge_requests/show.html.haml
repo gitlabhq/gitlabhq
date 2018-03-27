@@ -1,1 +1,100 @@
-= render "show"
+- @gfm_form = true
+- @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs "Merge Requests", project_merge_requests_path(@project)
+- breadcrumb_title @merge_request.to_reference
+- page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
+- page_description @merge_request.description
+- page_card_attributes @merge_request.card_attributes
+
+.merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
+  = render "projects/merge_requests/mr_title"
+
+  .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
+    = render "projects/merge_requests/mr_box"
+
+    - if @merge_request.source_branch_exists?
+      = render "projects/merge_requests/how_to_merge"
+
+    -# haml-lint:disable InlineJavaScript
+    :javascript
+      window.gl = window.gl || {};
+      window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget')}
+
+    #js-vue-mr-widget.mr-widget
+
+    .content-block.content-block-small.emoji-list-container.js-noteable-awards
+      = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
+
+    .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
+      .merge-request-tabs-container
+        .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+          .fade-left= icon('angle-left')
+          .fade-right= icon('angle-right')
+          .nav-links.scrolling-tabs
+            %ul.merge-request-tabs
+              %li.notes-tab
+                = tab_link_for @merge_request, :show, force_link: @commit.present? do
+                  Discussion
+                  %span.badge= @merge_request.related_notes.user.count
+              - if @merge_request.source_project
+                %li.commits-tab
+                  = tab_link_for @merge_request, :commits do
+                    Commits
+                    %span.badge= @commits_count
+              - if @pipelines.any?
+                %li.pipelines-tab
+                  = tab_link_for @merge_request, :pipelines do
+                    Pipelines
+                    %span.badge.js-pipelines-mr-count= @pipelines.size
+              %li.diffs-tab
+                = tab_link_for @merge_request, :diffs do
+                  Changes
+                  %span.badge= @merge_request.diff_size
+
+        - if has_vue_discussions_cookie?
+          #js-vue-discussion-counter
+        - else
+          #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
+            %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}" }
+              %div
+                .line-resolve-all{ "v-show" => "discussionCount > 0",
+                  ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
+                  %span.line-resolve-btn.is-disabled{ type: "button",
+                      ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
+                    %template{ 'v-if' => 'resolvedDiscussionCount === discussionCount' }
+                      = render 'shared/icons/icon_status_success_solid.svg'
+                    %template{ 'v-else' => '' }
+                      = render 'shared/icons/icon_resolve_discussion.svg'
+                  %span.line-resolve-text
+                    {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
+                = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
+                = render "discussions/jump_to_next"
+
+    .tab-content#diff-notes-app
+      #notes.notes.tab-pane.voting_notes
+        .row
+          %section.col-md-12
+            %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
+            .issuable-discussion.js-vue-notes-event
+              = render "projects/merge_requests/discussion"
+              - if has_vue_discussions_cookie?
+                #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
+                  noteable_data: serialize_issuable(@merge_request),
+                  current_user_data: UserSerializer.new.represent(current_user).to_json} }
+
+      #commits.commits.tab-pane
+        -# This tab is always loaded via AJAX
+      #pipelines.pipelines.tab-pane
+        - if @pipelines.any?
+          = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
+      #diffs.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked? } }
+        -# This tab is always loaded via AJAX
+
+    .mr-loading-status
+      = spinner
+
+= render 'shared/issuable/sidebar', issuable: @merge_request
+- if @merge_request.can_be_reverted?(current_user)
+  = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title
+- if @merge_request.can_be_cherry_picked?
+  = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit, title: @merge_request.title

@@ -32,19 +32,20 @@ module Banzai
     # Convert a Markdown-containing field on an object into an HTML-safe String
     # of HTML. This method is analogous to calling render(object.field), but it
     # can cache the rendered HTML in the object, rather than Redis.
-    #
-    # The context to use is managed by the object and cannot be changed.
-    # Use #render, passing it the field text, if a custom rendering is needed.
-    def self.render_field(object, field)
-      object.refresh_markdown_cache!(do_update: update_object?(object)) unless object.cached_html_up_to_date?(field)
+    def self.render_field(object, field, context = {})
+      unless object.respond_to?(:cached_markdown_fields)
+        return cacheless_render_field(object, field, context)
+      end
+
+      object.refresh_markdown_cache! unless object.cached_html_up_to_date?(field)
 
       object.cached_html_for(field)
     end
 
     # Same as +render_field+, but without consulting or updating the cache field
-    def self.cacheless_render_field(object, field, options = {})
-      text = object.__send__(field)
-      context = object.banzai_render_context(field).merge(options)
+    def self.cacheless_render_field(object, field, context = {})
+      text = object.__send__(field) # rubocop:disable GitlabSecurity/PublicSend
+      context = context.reverse_merge(object.banzai_render_context(field)) if object.respond_to?(:banzai_render_context)
 
       cacheless_render(text, context)
     end
@@ -132,6 +133,8 @@ module Banzai
     end
 
     def self.cacheless_render(text, context = {})
+      return text.to_s unless text.present?
+
       Gitlab::Metrics.measure(:banzai_cacheless_render) do
         result = render_result(text, context)
 
@@ -146,6 +149,7 @@ module Banzai
 
     def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
+
       ["banzai", *cache_key, pipeline_name || :full]
     end
 
@@ -154,12 +158,8 @@ module Banzai
     # method.
     def self.full_cache_multi_key(cache_key, pipeline_name)
       return unless cache_key
-      Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
-    end
 
-    # GitLab EE needs to disable updates on GET requests in Geo
-    def self.update_object?(object)
-      true
+      Rails.cache.__send__(:expanded_key, full_cache_key(cache_key, pipeline_name)) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 end

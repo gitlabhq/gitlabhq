@@ -3,12 +3,16 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20161221153951_rename_reserved_project_names.rb')
 
-# This migration uses multiple threads, and thus different transactions. This
-# means data created in this spec may not be visible to some threads. To work
-# around this we use the TRUNCATE cleaning strategy.
-describe RenameReservedProjectNames, truncate: true do
+# This migration is using factories, which set fields that don't actually
+# exist in the DB schema previous to 20161221153951. Thus we just use the
+# latest schema when testing this migration.
+# This is ok-ish because:
+#   1. This migration is a data migration
+#   2. It only relies on very stable DB fields: routes.id, routes.path, namespaces.id, projects.namespace_id
+# Ideally, the test should not use factories and rely on the `table` helper instead.
+describe RenameReservedProjectNames, :migration, schema: :latest do
   let(:migration) { described_class.new }
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
 
   before do
     project.path = 'projects'

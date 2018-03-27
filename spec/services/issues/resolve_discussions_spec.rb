@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 
-describe Issues::ResolveDiscussions, services: true do
+describe Issues::ResolveDiscussions do
   class DummyService < Issues::BaseService
     include ::Issues::ResolveDiscussions
 
@@ -14,13 +14,13 @@ describe Issues::ResolveDiscussions, services: true do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   describe "for resolving discussions" do
     let(:discussion) { create(:diff_note_on_merge_request, project: project, note: "Almost done").to_discussion }
     let(:merge_request) { discussion.noteable }
-    let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "other") }
+    let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "fix") }
 
     describe "#merge_request_for_resolving_discussion" do
       let(:service) { DummyService.new(project, user, merge_request_to_resolve_discussions_of: merge_request.iid) }

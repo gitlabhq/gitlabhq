@@ -41,9 +41,14 @@ module Peek
             ]
           end.sort_by{ |a,b,c,d,e,f| -f }
 
-          output = ''
-          per_file.each do |file_name, lines, file_wall, file_cpu, file_idle, file_sort|
+          output = "<div class='modal-dialog modal-full'><div class='modal-content'>"
+          output << "<div class='modal-header'>"
+          output << "<button class='close btn btn-link btn-sm' type='button' data-dismiss='modal'>X</button>"
+          output << "<h4>Line profiling: #{human_description(params[:lineprofiler])}</h4>"
+          output << "</div>"
+          output << "<div class='modal-body'>"
 
+          per_file.each do |file_name, lines, file_wall, file_cpu, file_idle, file_sort|
             output << "<div class='peek-rblineprof-file'><div class='heading'>"
 
             show_src = file_sort > min
@@ -86,10 +91,31 @@ module Peek
             output << "</div></div>" # .data then .peek-rblineprof-file
           end
 
-          response.body += "<div class='peek-rblineprof-modal' id='line-profile'>#{output}</div>".html_safe
+          output << "</div></div></div>"
+
+          response.body += "<div class='modal' id='modal-peek-line-profile' tabindex=-1>#{output}</div>".html_safe
         end
 
         ret
+      end
+
+      private
+
+      def human_description(lineprofiler_param)
+        case lineprofiler_param
+        when 'app'
+          'app/ & lib/'
+        when 'views'
+          'app/view/'
+        when 'gems'
+          'vendor/gems'
+        when 'all'
+          'everything in Rails.root'
+        when 'stdlib'
+          'everything in the Ruby standard library'
+        else
+          'app/, config/, lib/, vendor/ & plugin/'
+        end
       end
     end
   end

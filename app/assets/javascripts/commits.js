@@ -1,74 +1,65 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, consistent-return, no-return-assign, no-param-reassign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, prefer-template, object-shorthand, comma-dangle, max-len, prefer-arrow-callback */
-/* global Pager */
+import $ from 'jquery';
+import { pluralize } from './lib/utils/text_utility';
+import { localTimeAgo } from './lib/utils/datetime_utility';
+import Pager from './pager';
+import axios from './lib/utils/axios_utils';
 
-window.CommitsList = (function() {
-  var CommitsList = {};
+export default class CommitsList {
+  constructor(limit = 0) {
+    this.timer = null;
 
-  CommitsList.timer = null;
-
-  CommitsList.init = function(limit) {
     this.$contentList = $('.content_list');
 
-    $("body").on("click", ".day-commits-table li.commit", function(e) {
-      if (e.target.nodeName !== "A") {
-        location.href = $(this).attr("url");
-        e.stopPropagation();
-        return false;
-      }
-    });
+    Pager.init(parseInt(limit, 10), false, false, this.processCommits.bind(this));
 
-    Pager.init(limit, false, false, this.processCommits);
-
-    this.content = $("#commits-list");
-    this.searchField = $("#commits-search");
+    this.content = $('#commits-list');
+    this.searchField = $('#commits-search');
     this.lastSearch = this.searchField.val();
-    return this.initSearch();
-  };
+    this.initSearch();
+  }
 
-  CommitsList.initSearch = function() {
+  initSearch() {
     this.timer = null;
-    return this.searchField.keyup((function(_this) {
-      return function() {
-        clearTimeout(_this.timer);
-        return _this.timer = setTimeout(_this.filterResults, 500);
-      };
-    })(this));
-  };
-
-  CommitsList.filterResults = function() {
-    var commitsUrl, form, search;
-    form = $(".commits-search-form");
-    search = CommitsList.searchField.val();
-    if (search === CommitsList.lastSearch) return;
-    commitsUrl = form.attr("action") + '?' + form.serialize();
-    CommitsList.content.fadeTo('fast', 0.5);
-    return $.ajax({
-      type: "GET",
-      url: form.attr("action"),
-      data: form.serialize(),
-      complete: function() {
-        return CommitsList.content.fadeTo('fast', 1.0);
-      },
-      success: function(data) {
-        CommitsList.lastSearch = search;
-        CommitsList.content.html(data.html);
-        return history.replaceState({
-          page: commitsUrl
-        // Change url so if user reload a page - search results are saved
-        }, document.title, commitsUrl);
-      },
-      error: function() {
-        CommitsList.lastSearch = null;
-      },
-      dataType: "json"
+    this.searchField.on('keyup', () => {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(this.filterResults.bind(this), 500);
     });
-  };
+  }
+
+  filterResults() {
+    const form = $('.commits-search-form');
+    const search = this.searchField.val();
+    if (search === this.lastSearch) return Promise.resolve();
+    const commitsUrl = `${form.attr('action')}?${form.serialize()}`;
+    this.content.fadeTo('fast', 0.5);
+    const params = form.serializeArray().reduce((acc, obj) => Object.assign(acc, {
+      [obj.name]: obj.value,
+    }), {});
+
+    return axios.get(form.attr('action'), {
+      params,
+    })
+      .then(({ data }) => {
+        this.lastSearch = search;
+        this.content.html(data.html);
+        this.content.fadeTo('fast', 1.0);
+
+        // Change url so if user reload a page - search results are saved
+        history.replaceState({
+          page: commitsUrl,
+        }, document.title, commitsUrl);
+      })
+      .catch(() => {
+        this.content.fadeTo('fast', 1.0);
+        this.lastSearch = null;
+      });
+  }
 
   // Prepare loaded data.
-  CommitsList.processCommits = (data) => {
+  processCommits(data) {
     let processedData = data;
     const $processedData = $(processedData);
-    const $commitsHeadersLast = CommitsList.$contentList.find('li.js-commit-header').last();
+    const $commitsHeadersLast = this.$contentList.find('li.js-commit-header').last();
     const lastShownDay = $commitsHeadersLast.data('day');
     const $loadedCommitsHeadersFirst = $processedData.filter('li.js-commit-header').first();
     const loadedShownDayFirst = $loadedCommitsHeadersFirst.data('day');
@@ -81,17 +72,15 @@ window.CommitsList = (function() {
       commitsCount = $commitsHeadersLast.nextUntil('li.js-commit-header').find('li.commit').length;
 
       // Remove duplicate of commits header.
-      processedData = $processedData.not(`li.js-commit-header[data-day="${loadedShownDayFirst}"]`);
+      processedData = $processedData.not(`li.js-commit-header[data-day='${loadedShownDayFirst}']`);
 
       // Update commits count in the previous commits header.
       commitsCount += Number($(processedData).nextUntil('li.js-commit-header').first().find('li.commit').length);
-      $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${gl.text.pluralize('commit', commitsCount)}`);
+      $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${pluralize('commit', commitsCount)}`);
     }
 
-    gl.utils.localTimeAgo($processedData.find('.js-timeago'));
+    localTimeAgo($processedData.find('.js-timeago'));
 
     return processedData;
-  };
-
-  return CommitsList;
-})();
+  }
+}

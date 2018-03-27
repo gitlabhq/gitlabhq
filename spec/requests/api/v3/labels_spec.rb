@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe API::V3::Labels do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:label1) { create(:label, title: 'label1', project: project) }
   let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET /projects/:id/labels' do
@@ -27,7 +27,7 @@ describe API::V3::Labels do
 
       get v3_api("/projects/#{project.id}/labels", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
       expect(json_response.first.keys).to match_array expected_keys
@@ -71,7 +71,7 @@ describe API::V3::Labels do
       it "subscribes to the label" do
         post v3_api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response["name"]).to eq(label1.title)
         expect(json_response["subscribed"]).to be_truthy
       end
@@ -81,7 +81,7 @@ describe API::V3::Labels do
       it "subscribes to the label" do
         post v3_api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response["name"]).to eq(label1.title)
         expect(json_response["subscribed"]).to be_truthy
       end
@@ -93,7 +93,7 @@ describe API::V3::Labels do
       it "returns 304" do
         post v3_api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
-        expect(response).to have_http_status(304)
+        expect(response).to have_gitlab_http_status(304)
       end
     end
 
@@ -101,7 +101,7 @@ describe API::V3::Labels do
       it "returns 404 error" do
         post v3_api("/projects/#{project.id}/labels/1234/subscription", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -113,7 +113,7 @@ describe API::V3::Labels do
       it "unsubscribes from the label" do
         delete v3_api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response["name"]).to eq(label1.title)
         expect(json_response["subscribed"]).to be_falsey
       end
@@ -123,7 +123,7 @@ describe API::V3::Labels do
       it "unsubscribes from the label" do
         delete v3_api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response["name"]).to eq(label1.title)
         expect(json_response["subscribed"]).to be_falsey
       end
@@ -135,7 +135,7 @@ describe API::V3::Labels do
       it "returns 304" do
         delete v3_api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
-        expect(response).to have_http_status(304)
+        expect(response).to have_gitlab_http_status(304)
       end
     end
 
@@ -143,7 +143,7 @@ describe API::V3::Labels do
       it "returns 404 error" do
         delete v3_api("/projects/#{project.id}/labels/1234/subscription", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -152,18 +152,18 @@ describe API::V3::Labels do
     it 'returns 200 for existing label' do
       delete v3_api("/projects/#{project.id}/labels", user), name: 'label1'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'returns 404 for non existing label' do
       delete v3_api("/projects/#{project.id}/labels", user), name: 'label2'
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Label Not Found')
     end
 
     it 'returns 400 for wrong parameters' do
       delete v3_api("/projects/#{project.id}/labels", user)
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
   end
 end

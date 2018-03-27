@@ -1,10 +1,12 @@
 require 'spec_helper'
 
-feature 'File blob', :js, feature: true do
-  let(:project) { create(:project, :public) }
+feature 'File blob', :js do
+  include MobileHelpers
+
+  let(:project) { create(:project, :public, :repository) }
 
   def visit_blob(path, anchor: nil, ref: 'master')
-    visit namespace_project_blob_path(project.namespace, project, File.join(ref, path), anchor: anchor)
+    visit project_blob_path(project, File.join(ref, path), anchor: anchor)
 
     wait_for_requests
   end
@@ -29,6 +31,16 @@ feature 'File blob', :js, feature: true do
         # shows a raw button
         expect(page).to have_link('Open raw')
       end
+    end
+
+    it 'displays file actions on all screen sizes' do
+      file_actions_selector = '.file-actions'
+
+      resize_screen_sm
+      expect(page).to have_selector(file_actions_selector, visible: true)
+
+      resize_screen_xs
+      expect(page).to have_selector(file_actions_selector, visible: true)
     end
   end
 
@@ -494,6 +506,31 @@ feature 'File blob', :js, feature: true do
 
         # shows a learn more link
         expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
+      end
+    end
+  end
+
+  context 'realtime pipelines' do
+    before do
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'feature',
+        branch_name: 'feature',
+        commit_message: "Add ruby file",
+        file_path: 'files/ruby/test.rb',
+        file_content: "# Awesome content"
+      ).execute
+
+      create(:ci_pipeline, status: 'running', project: project, ref: 'feature', sha: project.commit('feature').sha)
+      visit_blob('files/ruby/test.rb', ref: 'feature')
+    end
+
+    it 'should show the realtime pipeline status' do
+      page.within('.commit-actions') do
+        expect(page).to have_css('.ci-status-icon')
+        expect(page).to have_css('.ci-status-icon-running')
+        expect(page).to have_css('.js-ci-status-icon-running')
       end
     end
   end

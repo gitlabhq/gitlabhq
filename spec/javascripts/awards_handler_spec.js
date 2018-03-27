@@ -1,7 +1,8 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
-import AwardsHandler from '~/awards_handler';
+import loadAwardsHandler from '~/awards_handler';
 
 import '~/lib/utils/common_utils';
 
@@ -25,15 +26,15 @@ import '~/lib/utils/common_utils';
   };
 
   describe('AwardsHandler', function() {
-    preloadFixtures('issues/issue_with_comment.html.raw');
-    beforeEach(function() {
-      loadFixtures('issues/issue_with_comment.html.raw');
-      awardsHandler = new AwardsHandler;
-      spyOn(awardsHandler, 'postEmoji').and.callFake((function(_this) {
-        return function(button, url, emoji, cb) {
-          return cb();
-        };
-      })(this));
+    preloadFixtures('merge_requests/diff_comment.html.raw');
+    beforeEach(function(done) {
+      loadFixtures('merge_requests/diff_comment.html.raw');
+      $('body').attr('data-page', 'projects:merge_requests:show');
+      loadAwardsHandler(true).then((obj) => {
+        awardsHandler = obj;
+        spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
+        done();
+      }).catch(fail);
 
       let isEmojiMenuBuilt = false;
       openAndWaitForEmojiMenu = function() {
@@ -54,6 +55,9 @@ import '~/lib/utils/common_utils';
     afterEach(function() {
       // restore original url root value
       gon.relative_url_root = urlRoot;
+
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
 
       awardsHandler.destroy();
     });
@@ -76,7 +80,7 @@ import '~/lib/utils/common_utils';
           return expect($emojiMenu.length).toBe(1);
         });
       });
-      return it('should remove emoji menu when body is clicked', function(done) {
+      it('should remove emoji menu when body is clicked', function(done) {
         $('.js-add-award').eq(0).click();
         return lazyAssert(done, function() {
           var $emojiMenu;
@@ -85,6 +89,17 @@ import '~/lib/utils/common_utils';
           expect($emojiMenu.length).toBe(1);
           expect($emojiMenu.hasClass('is-visible')).toBe(false);
           return expect($('.js-awards-block.current').length).toBe(0);
+        });
+      });
+      it('should not remove emoji menu when search is clicked', function(done) {
+        $('.js-add-award').eq(0).click();
+        return lazyAssert(done, function() {
+          var $emojiMenu;
+          $emojiMenu = $('.emoji-menu');
+          $('.emoji-search').click();
+          expect($emojiMenu.length).toBe(1);
+          expect($emojiMenu.hasClass('is-visible')).toBe(true);
+          return expect($('.js-awards-block.current').length).toBe(1);
         });
       });
     });
@@ -124,7 +139,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.userAuthored($thumbsUpEmoji);
-        return expect($thumbsUpEmoji.data("original-title")).toBe("You cannot vote on your own issue, MR and note");
+        return expect($thumbsUpEmoji.data("originalTitle")).toBe("You cannot vote on your own issue, MR and note");
       });
       it('should restore tooltip back to initial vote list', function() {
         var $thumbsUpEmoji, $votesBlock;
@@ -135,12 +150,12 @@ import '~/lib/utils/common_utils';
         awardsHandler.userAuthored($thumbsUpEmoji);
         jasmine.clock().tick(2801);
         jasmine.clock().uninstall();
-        return expect($thumbsUpEmoji.data("original-title")).toBe("sam");
+        return expect($thumbsUpEmoji.data("originalTitle")).toBe("sam");
       });
     });
     describe('::getAwardUrl', function() {
       return it('returns the url for request', function() {
-        return expect(awardsHandler.getAwardUrl()).toBe('http://test.host/frontend-fixtures/issues-project/issues/1/toggle_award_emoji');
+        return expect(awardsHandler.getAwardUrl()).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1/toggle_award_emoji');
       });
     });
     describe('::addAward and ::checkMutuality', function() {
@@ -180,7 +195,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('You, sam, jerry, max, and andy');
+        return expect($thumbsUpEmoji.data("originalTitle")).toBe('You, sam, jerry, max, and andy');
       });
       return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -190,7 +205,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('You and sam');
+        return expect($thumbsUpEmoji.data("originalTitle")).toBe('You and sam');
       });
     });
     describe('::removeYouToUserList', function() {
@@ -203,7 +218,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('sam, jerry, max, and andy');
+        return expect($thumbsUpEmoji.data("originalTitle")).toBe('sam, jerry, max, and andy');
       });
       return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -214,7 +229,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('sam');
+        return expect($thumbsUpEmoji.data("originalTitle")).toBe('sam');
       });
     });
     describe('::searchEmojis', () => {

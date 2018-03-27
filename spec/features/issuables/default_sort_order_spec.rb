@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'Projects > Issuables > Default sort order', feature: true do
-  let(:project) { create(:empty_project, :public) }
+describe 'Projects > Issuables > Default sort order' do
+  let(:project) { create(:project, :public) }
 
   let(:first_created_issuable) { issuables.order_created_asc.first }
   let(:last_created_issuable) { issuables.order_created_desc.first }
@@ -26,7 +26,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       MergeRequest.all
     end
 
-    context 'in the "merge requests" tab', js: true do
+    context 'in the "merge requests" tab', :js do
       let(:issuable_type) { :merge_request }
 
       it 'is "last created"' do
@@ -37,19 +37,19 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       end
     end
 
-    context 'in the "merge requests / open" tab', js: true do
+    context 'in the "merge requests / open" tab', :js do
       let(:issuable_type) { :merge_request }
 
-      it 'is "last created"' do
+      it 'is "created date"' do
         visit_merge_requests_with_state(project, 'open')
 
-        expect(selected_sort_order).to eq('last created')
+        expect(selected_sort_order).to eq('created date')
         expect(first_merge_request).to include(last_created_issuable.title)
         expect(last_merge_request).to include(first_created_issuable.title)
       end
     end
 
-    context 'in the "merge requests / merged" tab', js: true do
+    context 'in the "merge requests / merged" tab', :js do
       let(:issuable_type) { :merged_merge_request }
 
       it 'is "last updated"' do
@@ -61,7 +61,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       end
     end
 
-    context 'in the "merge requests / closed" tab', js: true do
+    context 'in the "merge requests / closed" tab', :js do
       let(:issuable_type) { :closed_merge_request }
 
       it 'is "last updated"' do
@@ -73,13 +73,13 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       end
     end
 
-    context 'in the "merge requests / all" tab', js: true do
+    context 'in the "merge requests / all" tab', :js do
       let(:issuable_type) { :merge_request }
 
-      it 'is "last created"' do
+      it 'is "created date"' do
         visit_merge_requests_with_state(project, 'all')
 
-        expect(find('.issues-other-filters')).to have_content('Last created')
+        expect(find('.issues-other-filters')).to have_content('Created date')
         expect(first_merge_request).to include(last_created_issuable.title)
         expect(last_merge_request).to include(first_created_issuable.title)
       end
@@ -102,31 +102,31 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       Issue.all
     end
 
-    context 'in the "issues" tab', js: true do
+    context 'in the "issues" tab', :js do
       let(:issuable_type) { :issue }
 
-      it 'is "last created"' do
+      it 'is "created date"' do
         visit_issues project
 
-        expect(find('.issues-other-filters')).to have_content('Last created')
+        expect(find('.issues-other-filters')).to have_content('Created date')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
       end
     end
 
-    context 'in the "issues / open" tab', js: true do
+    context 'in the "issues / open" tab', :js do
       let(:issuable_type) { :issue }
 
-      it 'is "last created"' do
+      it 'is "created date"' do
         visit_issues_with_state(project, 'open')
 
-        expect(find('.issues-other-filters')).to have_content('Last created')
+        expect(find('.issues-other-filters')).to have_content('Created date')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
       end
     end
 
-    context 'in the "issues / closed" tab', js: true do
+    context 'in the "issues / closed" tab', :js do
       let(:issuable_type) { :closed_issue }
 
       it 'is "last updated"' do
@@ -138,13 +138,13 @@ describe 'Projects > Issuables > Default sort order', feature: true do
       end
     end
 
-    context 'in the "issues / all" tab', js: true do
+    context 'in the "issues / all" tab', :js do
       let(:issuable_type) { :issue }
 
-      it 'is "last created"' do
+      it 'is "created date"' do
         visit_issues_with_state(project, 'all')
 
-        expect(find('.issues-other-filters')).to have_content('Last created')
+        expect(find('.issues-other-filters')).to have_content('Created date')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
       end
@@ -157,24 +157,10 @@ describe 'Projects > Issuables > Default sort order', feature: true do
         visit_issues(project, sort: 'id_desc')
       end
 
-      it 'shows the sort order as last created' do
-        expect(find('.issues-other-filters')).to have_content('Last created')
+      it 'shows the sort order as created date' do
+        expect(find('.issues-other-filters')).to have_content('Created date')
         expect(first_issue).to include(last_created_issuable.title)
         expect(last_issue).to include(first_created_issuable.title)
-      end
-    end
-
-    context 'when the sort in the URL is id_asc' do
-      let(:issuable_type) { :issue }
-
-      before do
-        visit_issues(project, sort: 'id_asc')
-      end
-
-      it 'shows the sort order as oldest created' do
-        expect(find('.issues-other-filters')).to have_content('Oldest created')
-        expect(first_issue).to include(first_created_issuable.title)
-        expect(last_issue).to include(last_created_issuable.title)
       end
     end
   end

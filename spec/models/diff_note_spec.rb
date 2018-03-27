@@ -1,21 +1,22 @@
 require 'spec_helper'
 
-describe DiffNote, models: true do
+describe DiffNote do
   include RepoHelpers
 
-  let(:merge_request) { create(:merge_request) }
+  let!(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:commit) { project.commit(sample_commit.id) }
 
   let(:path) { "files/ruby/popen.rb" }
 
+  let(:diff_refs) { merge_request.diff_refs }
   let!(:position) do
     Gitlab::Diff::Position.new(
       old_path: path,
       new_path: path,
       old_line: nil,
       new_line: 14,
-      diff_refs: merge_request.diff_refs
+      diff_refs: diff_refs
     )
   end
 
@@ -25,7 +26,7 @@ describe DiffNote, models: true do
       new_path: path,
       old_line: 16,
       new_line: 22,
-      diff_refs: merge_request.diff_refs
+      diff_refs: diff_refs
     )
   end
 
@@ -98,32 +99,16 @@ describe DiffNote, models: true do
       diff_line = subject.diff_line
 
       expect(diff_line.added?).to be true
-      expect(diff_line.new_line).to eq(position.new_line)
+      expect(diff_line.new_line).to eq(position.formatter.new_line)
       expect(diff_line.text).to eq("+    vars = {")
     end
   end
 
   describe "#line_code" do
     it "returns the correct line code" do
-      line_code = Gitlab::Diff::LineCode.generate(position.file_path, position.new_line, 15)
+      line_code = Gitlab::Git.diff_line_code(position.file_path, position.formatter.new_line, 15)
 
       expect(subject.line_code).to eq(line_code)
-    end
-  end
-
-  describe "#for_line?" do
-    context "when provided the correct diff line" do
-      it "returns true" do
-        expect(subject.for_line?(subject.diff_line)).to be true
-      end
-    end
-
-    context "when provided a different diff line" do
-      it "returns false" do
-        some_line = subject.diff_file.diff_lines.first
-
-        expect(subject.for_line?(some_line)).to be false
-      end
     end
   end
 
@@ -158,25 +143,21 @@ describe DiffNote, models: true do
   describe "creation" do
     describe "updating of position" do
       context "when noteable is a commit" do
-        let(:diff_note) { create(:diff_note_on_commit, project: project, position: position) }
+        let(:diff_refs) { commit.diff_refs }
+
+        subject { create(:diff_note_on_commit, project: project, position: position, commit_id: commit.id) }
 
         it "doesn't update the position" do
-          diff_note
-
-          expect(diff_note.original_position).to eq(position)
-          expect(diff_note.position).to eq(position)
+          is_expected.to have_attributes(original_position: position,
+                                         position: position)
         end
       end
 
       context "when noteable is a merge request" do
-        let(:diff_note) { create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
-
         context "when the note is active" do
           it "doesn't update the position" do
-            diff_note
-
-            expect(diff_note.original_position).to eq(position)
-            expect(diff_note.position).to eq(position)
+            expect(subject.original_position).to eq(position)
+            expect(subject.position).to eq(position)
           end
         end
 
@@ -186,10 +167,8 @@ describe DiffNote, models: true do
           end
 
           it "updates the position" do
-            diff_note
-
-            expect(diff_note.original_position).to eq(position)
-            expect(diff_note.position).not_to eq(position)
+            expect(subject.original_position).to eq(position)
+            expect(subject.position).not_to eq(position)
           end
         end
       end
@@ -253,6 +232,46 @@ describe DiffNote, models: true do
           expect(subject.created_at_diff?(merge_request.diff_refs)).to be false
         end
       end
+    end
+  end
+
+  describe "image diff notes" do
+    let(:path) { "files/images/any_image.png" }
+
+    let!(:position) do
+      Gitlab::Diff::Position.new(
+        old_path: path,
+        new_path: path,
+        width: 10,
+        height: 10,
+        x: 1,
+        y: 1,
+        diff_refs: merge_request.diff_refs,
+        position_type: "image"
+      )
+    end
+
+    describe "validations" do
+      subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
+
+      it { is_expected.not_to validate_presence_of(:line_code) }
+
+      it "does not validate diff line" do
+        diff_line = subject.diff_line
+
+        expect(diff_line).to be nil
+        expect(subject).to be_valid
+      end
+
+      it "does not update the position" do
+        expect(subject).not_to receive(:update_position)
+
+        subject.save
+      end
+    end
+
+    it "returns true for on_image?" do
+      expect(subject.on_image?).to be_truthy
     end
   end
 end

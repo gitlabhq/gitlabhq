@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
-import katex from 'vendor/katex';
+import katex from 'katex';
 
 const Component = Vue.extend(MarkdownComponent);
 
@@ -40,6 +40,18 @@ describe('Markdown component', () => {
 
   it('renders the markdown HTML', () => {
     expect(vm.$el.querySelector('.markdown h1')).not.toBeNull();
+  });
+
+  it('sanitizes output', (done) => {
+    Object.assign(cell, {
+      source: ['[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n'],
+    });
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('a')).toBeNull();
+
+      done();
+    });
   });
 
   describe('katex', () => {

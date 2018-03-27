@@ -1,6 +1,9 @@
-/* eslint-disable func-names, object-shorthand, comma-dangle, wrap-iife, space-before-function-paren, no-param-reassign, max-len */
+import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+import { __ } from './locale';
 
-class GroupLabelSubscription {
+export default class GroupLabelSubscription {
   constructor(container) {
     const $container = $(container);
     this.$dropdown = $container.find('.dropdown');
@@ -15,14 +18,12 @@ class GroupLabelSubscription {
     event.preventDefault();
 
     const url = this.$unsubscribeButtons.attr('data-url');
-
-    $.ajax({
-      type: 'POST',
-      url: url
-    }).done(() => {
-      this.toggleSubscriptionButtons();
-      this.$unsubscribeButtons.removeAttr('data-url');
-    });
+    axios.post(url)
+      .then(() => {
+        this.toggleSubscriptionButtons();
+        this.$unsubscribeButtons.removeAttr('data-url');
+      })
+      .catch(() => flash(__('There was an error when unsubscribing from this label.')));
   }
 
   subscribe(event) {
@@ -33,12 +34,9 @@ class GroupLabelSubscription {
 
     this.$unsubscribeButtons.attr('data-url', url);
 
-    $.ajax({
-      type: 'POST',
-      url: url
-    }).done(() => {
-      this.toggleSubscriptionButtons();
-    });
+    axios.post(url)
+      .then(() => this.toggleSubscriptionButtons())
+      .catch(() => flash(__('There was an error when subscribing to this label.')));
   }
 
   toggleSubscriptionButtons() {
@@ -47,6 +45,3 @@ class GroupLabelSubscription {
     this.$unsubscribeButtons.toggleClass('hidden');
   }
 }
-
-window.gl = window.gl || {};
-window.gl.GroupLabelSubscription = GroupLabelSubscription;

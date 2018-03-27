@@ -1,8 +1,7 @@
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import glRegexp from '~/lib/utils/regexp';
-import AjaxCache from '~/lib/utils/ajax_cache';
+import $ from 'jquery';
+import _ from 'underscore';
+import glRegexp from './lib/utils/regexp';
+import AjaxCache from './lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -33,6 +32,7 @@ class GfmAutoComplete {
     this.input.each((i, input) => {
       const $input = $(input);
       $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
+      $input.on('change.atwho', () => input.dispatchEvent(new Event('input')));
       // This triggers at.js again
       // Needed for quick actions with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
@@ -58,12 +58,12 @@ class GfmAutoComplete {
       displayTpl(value) {
         if (GfmAutoComplete.isLoading(value)) return GfmAutoComplete.Loading.template;
         // eslint-disable-next-line no-template-curly-in-string
-        let tpl = '<li>/${name}';
+        let tpl = '<li><span class="name">/${name}</span>';
         if (value.aliases.length > 0) {
-          tpl += ' <small>(or /<%- aliases.join(", /") %>)</small>';
+          tpl += ' <small class="aliases">(or /<%- aliases.join(", /") %>)</small>';
         }
         if (value.params.length > 0) {
-          tpl += ' <small><%- params.join(" ") %></small>';
+          tpl += ' <small class="params"><%- params.join(" ") %></small>';
         }
         if (value.description !== '') {
           tpl += '<small class="description"><i><%- description %></i></small>';
@@ -132,9 +132,8 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const relevantText = subtext.trim().split(/\s/).pop();
           const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
-          const match = regexp.exec(relevantText);
+          const match = regexp.exec(subtext);
 
           return match && match.length ? match[1] : null;
         },
@@ -288,6 +287,10 @@ class GfmAutoComplete {
   }
 
   setupLabels($input) {
+    const fetchData = this.fetchData.bind(this);
+    const LABEL_COMMAND = { LABEL: '/label', UNLABEL: '/unlabel', RELABEL: '/relabel' };
+    let command = '';
+
     $input.atwho({
       at: '~',
       alias: 'labels',
@@ -310,7 +313,44 @@ class GfmAutoComplete {
             title: sanitize(m.title),
             color: m.color,
             search: m.title,
+            set: m.set,
           }));
+        },
+        matcher(flag, subtext) {
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
+
+          // Check if ~ is followed by '/label', '/relabel' or '/unlabel' commands.
+          command = subtextNodes.find((node) => {
+            if (node === LABEL_COMMAND.LABEL ||
+                node === LABEL_COMMAND.RELABEL ||
+                node === LABEL_COMMAND.UNLABEL) { return node; }
+            return null;
+          });
+
+          return match && match.length ? match[1] : null;
+        },
+        filter(query, data, searchKey) {
+          if (GfmAutoComplete.isLoading(data)) {
+            fetchData(this.$inputor, this.at);
+            return data;
+          }
+
+          if (data === GfmAutoComplete.defaultLoadingData) {
+            return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
+          }
+
+          // The `LABEL_COMMAND.RELABEL` is intentionally skipped
+          // because we want to return all the labels (unfiltered) for that command.
+          if (command === LABEL_COMMAND.LABEL) {
+            // Return labels with set: undefined.
+            return data.filter(label => !label.set);
+          } else if (command === LABEL_COMMAND.UNLABEL) {
+            // Return labels with set: true.
+            return data.filter(label => label.set);
+          }
+
+          return data;
         },
       },
     });
@@ -339,27 +379,15 @@ class GfmAutoComplete {
         let resultantValue = value;
         if (value && !this.setting.skipSpecialCharacterTest) {
           const withoutAt = value.substring(1);
-          if (withoutAt && /[^\w\d]/.test(withoutAt)) {
+          const regex = value.charAt() === '~' ? /\W|^\d+$/ : /\W/;
+          if (withoutAt && regex.test(withoutAt)) {
             resultantValue = `${value.charAt()}"${withoutAt}"`;
           }
         }
         return resultantValue;
       },
       matcher(flag, subtext) {
-        // The below is taken from At.js source
-        // Tweaked to commands to start without a space only if char before is a non-word character
-        // https://github.com/ichord/At.js
-        const atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
-        const atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
-        const targetSubtext = subtext.split(/\s+/g).pop();
-        const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
-
-        const accentAChar = decodeURI('%C3%80');
-        const accentYChar = decodeURI('%C3%BF');
-
-        const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
-
-        const match = regexp.exec(targetSubtext);
+        const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
 
         if (match) {
           return match[1];
@@ -375,7 +403,12 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
+      import(/* webpackChunkName: 'emoji' */ './emoji')
+        .then(({ validEmojiNames, glEmojiTag }) => {
+          this.loadData($input, at, validEmojiNames);
+          GfmAutoComplete.glEmojiTag = glEmojiTag;
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     } else {
       AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
         .then((data) => {
@@ -398,6 +431,13 @@ class GfmAutoComplete {
     this.cachedData = {};
   }
 
+  destroy() {
+    this.input.each((i, input) => {
+      const $input = $(input);
+      $input.atwho('destroy');
+    });
+  }
+
   static isLoading(data) {
     let dataToInspect = data;
     if (data && data.length > 0) {
@@ -408,7 +448,26 @@ class GfmAutoComplete {
     return dataToInspect &&
       (dataToInspect === loadingState || dataToInspect.name === loadingState);
   }
+
+  static defaultMatcher(flag, subtext, controllers) {
+    // The below is taken from At.js source
+    // Tweaked to commands to start without a space only if char before is a non-word character
+    // https://github.com/ichord/At.js
+    const atSymbolsWithBar = Object.keys(controllers).join('|');
+    const atSymbolsWithoutBar = Object.keys(controllers).join('');
+    const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
+    const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+
+    const accentAChar = decodeURI('%C3%80');
+    const accentYChar = decodeURI('%C3%BF');
+
+    const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_\`${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
+
+    return regexp.exec(targetSubtext);
+  }
 }
+
+GfmAutoComplete.regexSubtext = new RegExp(/\s+/g);
 
 GfmAutoComplete.defaultLoadingData = ['loading'];
 
@@ -423,12 +482,14 @@ GfmAutoComplete.atTypeMap = {
 };
 
 // Emoji
+GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {
   templateFunction(name) {
-    return `<li>
-      ${name} ${glEmojiTag(name)}
-    </li>
-    `;
+    // glEmojiTag helper is loaded on-demand in fetchData()
+    if (GfmAutoComplete.glEmojiTag) {
+      return `<li>${name} ${GfmAutoComplete.glEmojiTag(name)}</li>`;
+    }
+    return `<li>${name}</li>`;
   },
 };
 // Team Members

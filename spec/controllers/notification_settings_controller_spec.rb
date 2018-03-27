@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe NotificationSettingsController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:group) { create(:group, :internal) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   describe '#create' do
@@ -99,7 +99,7 @@ describe NotificationSettingsController do
     end
 
     context 'not authorized' do
-      let(:private_project) { create(:empty_project, :private) }
+      let(:private_project) { create(:project, :private) }
 
       before do
         sign_in(user)
@@ -110,7 +110,7 @@ describe NotificationSettingsController do
              project_id: private_project.id,
              notification_setting: { level: :participating }
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -172,7 +172,7 @@ describe NotificationSettingsController do
             id: notification_setting,
             notification_setting: { level: :participating }
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

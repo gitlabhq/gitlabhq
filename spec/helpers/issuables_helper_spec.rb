@@ -59,77 +59,6 @@ describe IssuablesHelper do
           .to eq('<span>All</span> <span class="badge">42</span>')
       end
     end
-
-    describe 'counter caching based on issuable type and params', :caching do
-      let(:params) do
-        {
-          scope: 'created-by-me',
-          state: 'opened',
-          utf8: '✓',
-          author_id: '11',
-          assignee_id: '18',
-          label_name: %w(bug discussion documentation),
-          milestone_title: 'v4.0',
-          sort: 'due_date_asc',
-          namespace_id: 'gitlab-org',
-          project_id: 'gitlab-ce',
-          page: 2
-        }.with_indifferent_access
-      end
-
-      it 'returns the cached value when called for the same issuable type & with the same params' do
-        expect(helper).to receive(:params).twice.and_return(params)
-        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
-
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
-
-        expect(helper).not_to receive(:issuables_count_for_state)
-
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
-      end
-
-      it 'does not take some keys into account in the cache key' do
-        expect(helper).to receive(:params).and_return({
-          author_id: '11',
-          state: 'foo',
-          sort: 'foo',
-          utf8: 'foo',
-          page: 'foo'
-        }.with_indifferent_access)
-        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
-
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
-
-        expect(helper).to receive(:params).and_return({
-          author_id: '11',
-          state: 'bar',
-          sort: 'bar',
-          utf8: 'bar',
-          page: 'bar'
-        }.with_indifferent_access)
-        expect(helper).not_to receive(:issuables_count_for_state)
-
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
-      end
-
-      it 'does not take params order into account in the cache key' do
-        expect(helper).to receive(:params).and_return('author_id' => '11', 'state' => 'opened')
-        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
-
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
-
-        expect(helper).to receive(:params).and_return('state' => 'opened', 'author_id' => '11')
-        expect(helper).not_to receive(:issuables_count_for_state)
-
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
-      end
-    end
   end
 
   describe '#issuable_reference' do
@@ -196,10 +125,10 @@ describe IssuablesHelper do
   describe '#updated_at_by' do
     let(:user) { create(:user) }
     let(:unedited_issuable) { create(:issue) }
-    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
+    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago) }
     let(:edited_updated_at_by) do
       {
-        updatedAt: edited_issuable.updated_at.to_time.iso8601,
+        updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
         updatedBy: {
           name: user.name,
           path: user_path(user)
@@ -209,5 +138,87 @@ describe IssuablesHelper do
 
     it { expect(helper.updated_at_by(unedited_issuable)).to eq({}) }
     it { expect(helper.updated_at_by(edited_issuable)).to eq(edited_updated_at_by) }
+
+    context 'when updated by a deleted user' do
+      let(:edited_updated_at_by) do
+        {
+          updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
+          updatedBy: {
+            name: User.ghost.name,
+            path: user_path(User.ghost)
+          }
+        }
+      end
+
+      before do
+        user.destroy
+      end
+
+      it 'returns "Ghost user" as edited_by' do
+        expect(helper.updated_at_by(edited_issuable.reload)).to eq(edited_updated_at_by)
+      end
+    end
+  end
+
+  describe '#issuable_initial_data' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).and_return(true)
+    end
+
+    it 'returns the correct json for an issue' do
+      issue = create(:issue, author: user, description: 'issue text')
+      @project = issue.project
+
+      expected_data = {
+        endpoint: "/#{@project.full_path}/issues/#{issue.iid}",
+        updateEndpoint: "/#{@project.full_path}/issues/#{issue.iid}.json",
+        canUpdate: true,
+        canDestroy: true,
+        issuableRef: "##{issue.iid}",
+        markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
+        markdownDocsPath: '/help/user/markdown',
+        issuableTemplates: [],
+        projectPath: @project.path,
+        projectNamespace: @project.namespace.path,
+        initialTitleHtml: issue.title,
+        initialTitleText: issue.title,
+        initialDescriptionHtml: '<p dir="auto">issue text</p>',
+        initialDescriptionText: 'issue text',
+        initialTaskStatus: '0 of 0 tasks completed'
+      }
+      expect(helper.issuable_initial_data(issue)).to eq(expected_data)
+    end
+  end
+
+  describe '#selected_labels' do
+    context 'if label_name param is a string' do
+      it 'returns a new label with title' do
+        allow(helper).to receive(:params)
+          .and_return(ActionController::Parameters.new(label_name: 'test label'))
+
+        labels = helper.selected_labels
+
+        expect(labels).to be_an(Array)
+        expect(labels.size).to eq(1)
+        expect(labels.first.title).to eq('test label')
+      end
+    end
+
+    context 'if label_name param is an array' do
+      it 'returns a new label with title for each element' do
+        allow(helper).to receive(:params)
+          .and_return(ActionController::Parameters.new(label_name: ['test label 1', 'test label 2']))
+
+        labels = helper.selected_labels
+
+        expect(labels).to be_an(Array)
+        expect(labels.size).to eq(2)
+        expect(labels.first.title).to eq('test label 1')
+        expect(labels.second.title).to eq('test label 2')
+      end
+    end
   end
 end

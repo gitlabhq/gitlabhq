@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Member leaves project', feature: true do
+feature 'Projects > Members > Member leaves project' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   background do
-    project.team << [user, :developer]
-    gitlab_sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    project.add_developer(user)
+    sign_in(user)
+    visit project_path(project)
   end
 
   scenario 'user leaves project' do

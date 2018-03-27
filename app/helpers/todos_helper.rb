@@ -30,6 +30,7 @@ module TodosHelper
       else
         todo.target_reference
       end
+
     link_to text, todo_target_path(todo), class: 'has-tooltip', title: todo.target.title
   end
 
@@ -39,7 +40,7 @@ module TodosHelper
     anchor = dom_id(todo.note) if todo.note.present?
 
     if todo.for_commit?
-      namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
+      project_commit_path(todo.project,
                                     todo.target, anchor: anchor)
     else
       path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
@@ -53,8 +54,16 @@ module TodosHelper
   def todo_target_state_pill(todo)
     return unless show_todo_state?(todo)
 
+    type =
+      case todo.target
+      when MergeRequest
+        'mr'
+      when Issue
+        'issue'
+      end
+
     content_tag(:span, nil, class: 'target-status') do
-      content_tag(:span, nil, class: "status-box status-box-#{todo.target.state.dasherize}") do
+      content_tag(:span, nil, class: "status-box status-box-#{type}-#{todo.target.state.dasherize}") do
         todo.target.state.capitalize
       end
     end
@@ -105,7 +114,7 @@ module TodosHelper
     projects = current_user.authorized_projects.sorted_by_activity.non_archived.with_route
 
     projects = projects.map do |project|
-      { id: project.id, text: project.name_with_namespace }
+      { id: project.id, text: project.full_name }
     end
 
     projects.unshift({ id: '', text: 'Any Project' }).to_json

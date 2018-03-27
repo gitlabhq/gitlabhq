@@ -12,23 +12,30 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string| yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user|
+| `order_by` | string | no | Return tags ordered by `name` or `updated` fields. Default is `updated` |
+| `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
 
 ```json
 [
   {
     "commit": {
+      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+      "short_id": "2695effb",
+      "title": "Initial commit",
+      "created_at": "2017-07-26T11:08:53.000+02:00",
+      "parent_ids": [
+        "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
+      ],
+      "message": "Initial commit",
       "author_name": "John Smith",
       "author_email": "john@example.com",
       "authored_date": "2012-05-28T04:42:42-07:00",
-      "committed_date": "2012-05-28T04:42:42-07:00",
       "committer_name": "Jack Smith",
       "committer_email": "jack@example.com",
-      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-      "message": "Initial commit",
-      "parent_ids": [
-        "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
-      ]
+      "committed_date": "2012-05-28T04:42:42-07:00"
     },
     "release": {
       "tag_name": "1.0.0",
@@ -68,16 +75,19 @@ Example Response:
   "message": null,
   "commit": {
     "id": "60a8ff033665e1207714d6670fcd7b65304ec02f",
-    "message": "v5.0.0\n",
+    "short_id": "60a8ff03",
+    "title": "Initial commit",
+    "created_at": "2017-07-26T11:08:53.000+02:00",
     "parent_ids": [
       "f61c062ff8bcbdb00e0a1b3317a91aed6ceee06b"
     ],
-    "authored_date": "2015-02-01T21:56:31.000+01:00",
+    "message": "v5.0.0\n",
     "author_name": "Arthur Verschaeve",
     "author_email": "contact@arthurverschaeve.be",
-    "committed_date": "2015-02-01T21:56:31.000+01:00",
+    "authored_date": "2015-02-01T21:56:31.000+01:00",
     "committer_name": "Arthur Verschaeve",
-    "committer_email": "contact@arthurverschaeve.be"
+    "committer_email": "contact@arthurverschaeve.be",
+    "committed_date": "2015-02-01T21:56:31.000+01:00"
   },
   "release": null
 }
@@ -102,17 +112,20 @@ Parameters:
 ```json
 {
   "commit": {
+    "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+    "short_id": "2695effb",
+    "title": "Initial commit",
+    "created_at": "2017-07-26T11:08:53.000+02:00",
+    "parent_ids": [
+      "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
+    ],
+    "message": "Initial commit",
     "author_name": "John Smith",
     "author_email": "john@example.com",
     "authored_date": "2012-05-28T04:42:42-07:00",
-    "committed_date": "2012-05-28T04:42:42-07:00",
     "committer_name": "Jack Smith",
     "committer_email": "jack@example.com",
-    "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-    "message": "Initial commit",
-    "parent_ids": [
-      "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
-    ]
+    "committed_date": "2012-05-28T04:42:42-07:00"
   },
   "release": {
     "tag_name": "1.0.0",
@@ -122,7 +135,7 @@ Parameters:
   "message": null
 }
 ```
-The message will be `nil` when creating a lightweight tag otherwise
+The message will be `null` when creating a lightweight tag otherwise
 it will contain the annotation.
 
 In case of an error,

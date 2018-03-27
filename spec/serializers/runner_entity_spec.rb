@@ -4,7 +4,7 @@ describe RunnerEntity do
   let(:runner) { create(:ci_runner, :specific) }
   let(:entity) { described_class.new(runner, request: request, current_user: user) }
   let(:request) { double('request') }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:admin) }
 
   before do

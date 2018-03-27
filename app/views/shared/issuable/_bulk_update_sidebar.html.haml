@@ -1,9 +1,9 @@
 - type = local_assigns.fetch(:type)
 
-%aside.issues-bulk-update.js-right-sidebar.right-sidebar.affix-top{ data: { "offset-top" => "50", "spy" => "affix" }, "aria-live" => "polite" }
+%aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? } }
   .issuable-sidebar.hidden
     = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: "bulk-update"  do
-      .block
+      .block.issuable-sidebar-header
         .filter-item.inline.update-issues-btn.pull-left
           = button_tag "Update all", class: "btn update-selected-issues btn-info", disabled: true
         = button_tag "Cancel", class: "btn btn-default js-bulk-update-menu-hide pull-right"
@@ -31,7 +31,7 @@
         .title
           Milestone
         .filter-item
-          = dropdown_tag("Select milestone", options: { title: "Assign milestone", toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true, default_label: "Milestone" } })
+          = dropdown_tag("Select milestone", options: { title: "Assign milestone", toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: project_milestones_path(@project, :json), use_id: true, default_label: "Milestone" } })
       .block
         .title
           Labels

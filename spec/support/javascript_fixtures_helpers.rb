@@ -1,6 +1,5 @@
 require 'action_dispatch/testing/test_request'
 require 'fileutils'
-require 'gitlab/popen'
 
 module JavaScriptFixturesHelpers
   include Gitlab::Popen
@@ -29,6 +28,10 @@ module JavaScriptFixturesHelpers
 
     FileUtils.mkdir_p(File.dirname(fixture_file_name))
     File.write(fixture_file_name, fixture)
+  end
+
+  def remove_repository(project)
+    Gitlab::Shell.new.remove_repository(project.repository_storage_path, project.disk_path)
   end
 
   private

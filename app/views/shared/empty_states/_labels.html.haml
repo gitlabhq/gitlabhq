@@ -1,11 +1,11 @@
 .row.empty-state.labels
   .col-xs-12
     .svg-content
-      = render 'shared/empty_states/icons/labels.svg'
-  .col-xs-12.text-center
+      = image_tag 'illustrations/labels.svg'
+  .col-xs-12
     .text-content
-      %h4 Labels can be applied to issues and merge requests to categorize them.
-      %p You can also star a label to make it a priority label.
+      %h4= _("Labels can be applied to issues and merge requests to categorize them.")
+      %p= _("You can also star a label to make it a priority label.")
       - if can?(current_user, :admin_label, @project)
-        = link_to 'New label', new_namespace_project_label_path(@project.namespace, @project), class: 'btn btn-new', title: 'New label', id: 'new_label_link'
-        = link_to 'Generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post, class: 'btn btn-success btn-inverted', title: 'Generate a default set of labels', id: 'generate_labels_link'
+        = link_to _('New label'), new_project_label_path(@project), class: 'btn btn-new', title: _('New label'), id: 'new_label_link'
+        = link_to _('Generate a default set of labels'), generate_project_labels_path(@project), method: :post, class: 'btn btn-success btn-inverted', title: _('Generate a default set of labels'), id: 'generate_labels_link'

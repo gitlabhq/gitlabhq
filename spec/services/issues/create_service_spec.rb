@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Issues::CreateService, services: true do
-  let(:project) { create(:empty_project) }
+describe Issues::CreateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#execute' do
@@ -13,8 +13,8 @@ describe Issues::CreateService, services: true do
       let(:labels) { create_pair(:label, project: project) }
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :master]
+        project.add_master(user)
+        project.add_master(assignee)
       end
 
       let(:opts) do
@@ -35,11 +35,15 @@ describe Issues::CreateService, services: true do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
+        expect { issue }.to change { project.open_issues_count }.from(0).to(1)
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
 
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
@@ -126,7 +130,7 @@ describe Issues::CreateService, services: true do
         end
 
         it 'invalidates open issues counter for assignees when issue is assigned' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
 
           described_class.new(project, user, opts).execute
 
@@ -156,7 +160,7 @@ describe Issues::CreateService, services: true do
     context 'issue create service' do
       context 'assignees' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'removes assignee when user id is invalid' do
@@ -176,7 +180,7 @@ describe Issues::CreateService, services: true do
         end
 
         it 'saves assignee when user id is valid' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
           opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
 
           issue = described_class.new(project, user, opts).execute
@@ -220,8 +224,8 @@ describe Issues::CreateService, services: true do
         end
 
         before do
-          project.team << [user, :master]
-          project.team << [assignee, :master]
+          project.add_master(user)
+          project.add_master(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -238,7 +242,7 @@ describe Issues::CreateService, services: true do
       let(:project) { merge_request.source_project }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       describe 'for a single discussion' do
@@ -351,14 +355,14 @@ describe Issues::CreateService, services: true do
         end
 
         it 'marks related spam_log as recaptcha_verified' do
-          expect { issue }.to change{SpamLog.last.recaptcha_verified}.from(false).to(true)
+          expect { issue }.to change {SpamLog.last.recaptcha_verified}.from(false).to(true)
         end
 
         context 'when spam log does not belong to a user' do
           let(:log_user) { create(:user) }
 
           it 'does not mark spam_log as recaptcha_verified' do
-            expect { issue }.not_to change{SpamLog.last.recaptcha_verified}
+            expect { issue }.not_to change {SpamLog.last.recaptcha_verified}
           end
         end
       end
@@ -366,7 +370,7 @@ describe Issues::CreateService, services: true do
       context 'when recaptcha was not verified' do
         context 'when akismet detects spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
           end
 
           it 'marks an issue as a spam ' do
@@ -378,7 +382,7 @@ describe Issues::CreateService, services: true do
           end
 
           it 'creates a new spam_log' do
-            expect{issue}.to change{SpamLog.count}.from(0).to(1)
+            expect {issue}.to change {SpamLog.count}.from(0).to(1)
           end
 
           it 'assigns a spam_log to an issue' do
@@ -388,7 +392,7 @@ describe Issues::CreateService, services: true do
 
         context 'when akismet does not detect spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
           end
 
           it 'does not mark an issue as a spam ' do

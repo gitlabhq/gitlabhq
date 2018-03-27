@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown assignee', :feature, :js do
+describe 'Dropdown assignee', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
@@ -20,13 +20,13 @@ describe 'Dropdown assignee', :feature, :js do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user_john, :master]
-    project.team << [user_jacob, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    project.add_master(user_john)
+    project.add_master(user_jacob)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -43,15 +43,16 @@ describe 'Dropdown assignee', :feature, :js do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('assignee:')
+      slow_requests do
+        filtered_search.set('assignee:')
 
-      expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do
       filtered_search.set('assignee:')
 
-      expect(find(js_dropdown_assignee)).to have_css('.filter-dropdown-loading')
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 
@@ -134,8 +135,10 @@ describe 'Dropdown assignee', :feature, :js do
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user_jacob.username}" }])
+      expect_tokens([assignee_token(user_jacob.name)])
       expect_filtered_search_input_empty
     end
 
@@ -143,8 +146,10 @@ describe 'Dropdown assignee', :feature, :js do
       filtered_search.send_keys('roo')
       click_assignee(user.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_tokens([assignee_token(user.name)])
       expect_filtered_search_input_empty
     end
 
@@ -152,7 +157,7 @@ describe 'Dropdown assignee', :feature, :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_tokens([assignee_token('none')])
       expect_filtered_search_input_empty
     end
   end
@@ -171,7 +176,7 @@ describe 'Dropdown assignee', :feature, :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: user.username }])
+      expect_tokens([assignee_token(user.username)])
       expect_filtered_search_input_empty
     end
   end
@@ -200,6 +205,12 @@ describe 'Dropdown assignee', :feature, :js do
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
+
+    it 'opens assignee dropdown with existing my-reaction' do
+      filtered_search.set('my-reaction:star assignee:')
+
+      expect(page).to have_css(js_dropdown_assignee, visible: true)
+    end
   end
 
   describe 'caching requests' do
@@ -211,7 +222,7 @@ describe 'Dropdown assignee', :feature, :js do
       expect(initial_size).to be > 0
 
       new_user = create(:user)
-      project.team << [new_user, :master]
+      project.add_master(new_user)
       find('.filtered-search-box .clear-search').click
       filtered_search.set('assignee')
       filtered_search.send_keys(':')

@@ -1,7 +1,7 @@
 module Gitlab
   module ImportExport
     class MergeRequestParser
-      FORKED_PROJECT_ID = -1
+      FORKED_PROJECT_ID = nil
 
       def initialize(project, diff_head_sha, merge_request, relation_hash)
         @project = project
@@ -26,11 +26,11 @@ module Gitlab
       end
 
       def fetch_ref
-        @project.repository.fetch_ref(@project.repository.path, @diff_head_sha, @merge_request.source_branch)
+        @project.repository.fetch_ref(@project.repository, source_ref: @diff_head_sha, target_ref: @merge_request.source_branch)
       end
 
       def branch_exists?(branch_name)
-        @project.repository.branch_exists?(branch_name)
+        @project.repository.raw.branch_exists?(branch_name)
       end
 
       def fork_merge_request?

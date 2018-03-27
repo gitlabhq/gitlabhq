@@ -20,19 +20,21 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
+    wait_for_requests
+    expect(find('.js-issuable-subscribe-button')).to have_css 'button.is-checked'
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
+    wait_for_requests
+    expect(find('.js-issuable-subscribe-button')).to have_css 'button:not(.is-checked)'
   end
 
   step 'I click link "Closed"' do
     find('.issues-state-filters [data-state="closed"] span', text: 'Closed').click
   end
 
-  step 'I click button "Unsubscribe"' do
-    click_on "Unsubscribe"
+  step 'I click the subscription toggle' do
+    find('.js-issuable-subscribe-button button').click
   end
 
   step 'I should see "Release 0.3" in issues' do
@@ -168,6 +170,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
            author: project.users.first,
            description: "# Description header"
           )
+    wait_for_requests
   end
 
   step 'project "Shop" have "Tweet control" open issue' do
@@ -222,7 +225,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     end
   end
 
-  step 'The list should be sorted by "Most popular"' do
+  step 'The list should be sorted by "Popularity"' do
     page.within '.issues-list' do
       page.within 'li.issue:nth-child(1)' do
         expect(page).to have_content 'Release 0.4'
@@ -247,7 +250,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When 'I visit empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I see empty project details with ssh clone info' do
@@ -259,12 +262,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When "I visit project \"Community\" issues page" do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   When "I visit empty project's issues page" do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   step 'I leave a comment with code block' do

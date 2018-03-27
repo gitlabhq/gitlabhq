@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :project_group_link do
-    project factory: :empty_project
+    project
     group
   end
 end

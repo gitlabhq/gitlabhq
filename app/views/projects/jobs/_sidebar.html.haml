@@ -1,101 +1,105 @@
 - builds = @build.pipeline.builds.to_a
 
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
-  .blocks-container
-    .block
-      %strong
-        = @build.name
-      %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-build-toggle{ href: "#", 'aria-label': 'Toggle Sidebar', role: 'button' }
-        = icon('angle-double-right')
+  .sidebar-container
+    .blocks-container
+      .block
+        %strong.inline.prepend-top-8
+          = @build.name
+        - if can?(current_user, :update_build, @build) && @build.retryable?
+          = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button pull-right btn btn-inverted-secondary btn-retry visible-md-block visible-lg-block', method: :post
+        %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-build-toggle{ href: "#", 'aria-label': 'Toggle Sidebar', role: 'button' }
+          = icon('angle-double-right')
 
-    #js-details-block-vue
+      #js-details-block-vue
 
-    - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
-      .block{ class: ("block-first" if !@build.coverage) }
-        .title
-          Job artifacts
-        - if @build.artifacts_expired?
-          %p.build-detail-row
-            The artifacts were removed
-            #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-        - elsif @build.has_expiring_artifacts?
-          %p.build-detail-row
-            The artifacts will be removed in
-            %span.js-artifacts-remove= @build.artifacts_expire_at
+      - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
+        .block
+          .title
+            Job artifacts
+          - if @build.artifacts_expired?
+            %p.build-detail-row
+              The artifacts were removed
+              #{time_ago_with_tooltip(@build.artifacts_expire_at)}
+          - elsif @build.has_expiring_artifacts?
+            %p.build-detail-row
+              The artifacts will be removed in
+              %span= time_ago_in_words @build.artifacts_expire_at
 
-        - if @build.artifacts?
-          .btn-group.btn-group-justified{ role: :group }
-            - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
-              = link_to keep_namespace_project_job_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
-                Keep
+          - if @build.artifacts?
+            .btn-group.btn-group-justified{ role: :group }
+              - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
+                = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
+                  Keep
 
-            = link_to download_namespace_project_job_artifacts_path(@project.namespace, @project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
-              Download
+              = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
+                Download
 
-            - if @build.artifacts_metadata?
-              = link_to browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
-                Browse
+              - if @build.artifacts_metadata?
+                = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
+                  Browse
 
-    - if @build.trigger_request
-      .build-widget
-        %h4.title
-          Trigger
+      - if @build.trigger_request
+        .build-widget.block
+          %h4.title
+            Trigger
 
+          - if @build.trigger_request&.trigger&.short_token
+            %p
+              %span.build-light-text Token:
+              #{@build.trigger_request.trigger.short_token}
+
+          - if @build.trigger_variables.any?
+            %p
+              %button.btn.group.btn-group-justified.js-reveal-variables Reveal Variables
+
+            %dl.js-build-variables.trigger-build-variables.hide
+              - @build.trigger_variables.each do |trigger_variable|
+                %dt.js-build-variable.trigger-build-variable= trigger_variable[:key]
+                %dd.js-build-value.trigger-build-value= trigger_variable[:value]
+
+      %div{ class: (@build.pipeline.stages_count > 1 ? "block" : "block-last") }
         %p
-          %span.build-light-text Token:
-          #{@build.trigger_request.trigger.short_token}
+          Commit
+          = link_to @build.pipeline.short_sha, project_commit_path(@project, @build.pipeline.sha), class: 'commit-sha link-commit'
+          = clipboard_button(text: @build.pipeline.short_sha, title: "Copy commit SHA to clipboard")
+          - if @build.merge_request
+            in
+            = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request), class: 'link-commit'
 
-        - if @build.trigger_request.variables
-          %p
-            %button.btn.group.btn-group-justified.reveal-variables Reveal Variables
+        %p.build-light-text.append-bottom-0
+          #{@build.pipeline.git_commit_title}
 
+      - if @build.pipeline.stages_count > 1
+        .block-last.dropdown.build-dropdown
+          %div
+            %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
+              = ci_icon_for_status(@build.pipeline.status)
+            Pipeline
+            = link_to "##{@build.pipeline.id}", project_pipeline_path(@project, @build.pipeline), class: 'link-commit'
+            from
+            = link_to "#{@build.pipeline.ref}", project_ref_path(@project, @build.pipeline.ref), class: 'link-commit ref-name'
+          %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+            %span.stage-selection More
+            = icon('chevron-down')
+          %ul.dropdown-menu
+            - @build.pipeline.legacy_stages.each do |stage|
+              %li
+                %a.stage-item= stage.name
 
-          - @build.trigger_request.variables.each do |key, value|
-            .hide.js-build
-              .js-build-variable.trigger-build-variable= key
-              .js-build-value.trigger-build-value= value
-
-    .block
-      %p
-        Commit
-        = link_to @build.pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, @build.pipeline.sha), class: 'commit-sha link-commit'
-        = clipboard_button(text: @build.pipeline.short_sha, title: "Copy commit SHA to clipboard")
-        - if @build.merge_request
-          in
-          = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request), class: 'link-commit'
-
-      %p.build-light-text.append-bottom-0
-        #{@build.pipeline.git_commit_title}
-
-    - if @build.pipeline.stages_count > 1
-      .dropdown.build-dropdown
-        .title
-          %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
-            = ci_icon_for_status(@build.pipeline.status)
-          Pipeline
-          = link_to "##{@build.pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @build.pipeline), class: 'link-commit'
-          from
-          = link_to "#{@build.pipeline.ref}", namespace_project_branch_path(@project.namespace, @project, @build.pipeline.ref), class: 'link-commit'
-        %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-          %span.stage-selection More
-          = icon('chevron-down')
-        %ul.dropdown-menu
-          - @build.pipeline.legacy_stages.each do |stage|
-            %li
-              %a.stage-item= stage.name
-
-  .builds-container
-    - HasStatus::ORDERED_STATUSES.each do |build_status|
-      - builds.select{|build| build.status == build_status}.each do |build|
-        .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
-          = link_to namespace_project_job_path(@project.namespace, @project, build) do
-            = icon('arrow-right')
-            %span{ class: "ci-status-icon-#{build.status}" }
-              = ci_icon_for_status(build.status)
-            %span
-              - if build.name
-                = build.name
-              - else
-                = build.id
-            - if build.retried?
-              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+    .builds-container
+      - HasStatus::ORDERED_STATUSES.each do |build_status|
+        - builds.select{|build| build.status == build_status}.each do |build|
+          .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
+            = link_to project_job_path(@project, build) do
+              = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
+              %span{ class: "ci-status-icon-#{build.status}" }
+                = ci_icon_for_status(build.status)
+              %span
+                - if build.name
+                  = build.name
+                - else
+                  = build.id
+              - if build.retried?
+                %span.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+                  = sprite_icon('retry', size:16, css_class: 'icon-retry')

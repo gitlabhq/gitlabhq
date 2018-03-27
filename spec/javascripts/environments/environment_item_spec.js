@@ -68,7 +68,7 @@ describe('Environment item', () => {
             username: 'root',
             id: 1,
             state: 'active',
-            avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+            avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
             web_url: 'http://localhost:3000/root',
           },
           commit: {
@@ -84,7 +84,7 @@ describe('Environment item', () => {
               username: 'root',
               id: 1,
               state: 'active',
-              avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+              avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
               web_url: 'http://localhost:3000/root',
             },
             commit_path: '/root/ci-folders/tree/500aabcb17c97bdcf2d0c410b70cb8556f0362dd',

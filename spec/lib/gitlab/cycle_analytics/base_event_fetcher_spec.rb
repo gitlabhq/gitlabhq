@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Gitlab::CycleAnalytics::BaseEventFetcher do
   let(:max_events) { 2 }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user, :admin) }
   let(:start_time_attrs) { Issue.arel_table[:created_at] }
   let(:end_time_attrs) { [Issue::Metrics.arel_table[:first_associated_with_milestone_at]] }
-  let(:options) do 
+  let(:options) do
     { start_time_attrs: start_time_attrs,
       end_time_attrs: end_time_attrs,
-      from: 30.days.ago } 
+      from: 30.days.ago }
   end
 
   subject do
@@ -23,6 +23,8 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
     allow_any_instance_of(described_class).to receive(:serialize) do |event|
       event
     end
+    allow_any_instance_of(described_class)
+      .to receive(:allowed_ids).and_return(nil)
 
     stub_const('Gitlab::CycleAnalytics::BaseEventFetcher::MAX_EVENTS', max_events)
 
@@ -39,7 +41,7 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
       milestone = create(:milestone, project: project)
 
       issue.update(milestone: milestone)
-      create_merge_request_closing_issue(issue)
+      create_merge_request_closing_issue(user, project, issue)
     end
   end
 end

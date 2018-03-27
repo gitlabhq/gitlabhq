@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-feature 'Explore Snippets', feature: true do
+feature 'Explore Snippets' do
   let!(:public_snippet) { create(:personal_snippet, :public) }
   let!(:internal_snippet) { create(:personal_snippet, :internal) }
   let!(:private_snippet) { create(:personal_snippet, :private) }
 
   scenario 'User should see snippets that are not private' do
-    gitlab_sign_in create(:user)
+    sign_in create(:user)
     visit explore_snippets_path
 
     expect(page).to have_content(public_snippet.title)
@@ -15,7 +15,7 @@ feature 'Explore Snippets', feature: true do
   end
 
   scenario 'External user should see only public snippets' do
-    gitlab_sign_in create(:user, :external)
+    sign_in create(:user, :external)
     visit explore_snippets_path
 
     expect(page).to have_content(public_snippet.title)

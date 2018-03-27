@@ -1,13 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::Gfm::ReferenceRewriter do
-  let(:text) { 'some text' }
-  let(:old_project) { create(:empty_project, name: 'old-project') }
-  let(:new_project) { create(:empty_project, name: 'new-project') }
+  let(:group) { create(:group) }
+  let(:old_project) { create(:project, name: 'old-project', group: group) }
+  let(:new_project) { create(:project, name: 'new-project', group: group) }
   let(:user) { create(:user) }
 
+  let(:old_project_ref) { old_project.to_reference(new_project) }
+  let(:text) { 'some text' }
+
   before do
-    old_project.team << [user, :reporter]
+    old_project.add_reporter(user)
   end
 
   describe '#rewrite' do
@@ -39,7 +42,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
         it { is_expected.not_to include merge_request.to_reference(new_project) }
       end
 
-      context 'description ambigous elements' do
+      context 'rewrite ambigous references' do
         context 'url' do
           let(:url) { 'http://gitlab.com/#1' }
           let(:text) { "This references #1, but not #{url}" }
@@ -66,23 +69,21 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
         context 'description with project labels' do
           let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
-          let(:project_ref) { old_project.to_reference(new_project) }
 
           context 'label referenced by id' do
             let(:text) { '#1 and ~123' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+            it { is_expected.to eq %Q{#{old_project_ref}#1 and #{old_project_ref}~123} }
           end
 
           context 'label referenced by text' do
             let(:text) { '#1 and ~"test"' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+            it { is_expected.to eq %Q{#{old_project_ref}#1 and #{old_project_ref}~123} }
           end
         end
 
         context 'description with group labels' do
           let(:old_group) { create(:group) }
           let!(:group_label) { create(:group_label, id: 321, name: 'group label', group: old_group) }
-          let(:project_ref) { old_project.to_reference(new_project) }
 
           before do
             old_project.update(namespace: old_group)
@@ -90,21 +91,53 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
           context 'label referenced by id' do
             let(:text) { '#1 and ~321' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
+            it { is_expected.to eq %Q{#{old_project_ref}#1 and #{old_project_ref}~321} }
           end
 
           context 'label referenced by text' do
             let(:text) { '#1 and ~"group label"' }
-            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
+            it { is_expected.to eq %Q{#{old_project_ref}#1 and #{old_project_ref}~321} }
           end
         end
       end
+    end
 
-      context 'reference contains milestone' do
-        let(:milestone) { create(:milestone) }
-        let(:text) { "milestone ref: #{milestone.to_reference}" }
+    context 'reference contains project milestone' do
+      let!(:milestone) do
+        create(:milestone, title: '9.0', project: old_project)
+      end
 
-        it { is_expected.to eq text }
+      let(:text) { 'milestone: %"9.0"' }
+
+      it { is_expected.to eq %Q[milestone: #{old_project_ref}%"9.0"] }
+    end
+
+    context 'when referring to group milestone' do
+      let!(:milestone) do
+        create(:milestone, title: '10.0', group: group)
+      end
+
+      let(:text) { 'milestone %"10.0"' }
+
+      it { is_expected.to eq text }
+    end
+
+    context 'when referable has a nil reference' do
+      before do
+        create(:milestone, title: '9.0', project: old_project)
+
+        allow_any_instance_of(Milestone)
+          .to receive(:to_reference)
+          .and_return(nil)
+      end
+
+      let(:text) { 'milestone: %"9.0"' }
+
+      it 'raises an error that should be fixed' do
+        expect { subject }.to raise_error(
+          described_class::RewriteError,
+          'Unspecified reference detected for Milestone'
+        )
       end
     end
   end

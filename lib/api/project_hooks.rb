@@ -10,6 +10,7 @@ module API
         requires :url, type: String, desc: "The URL to send the request to"
         optional :push_events, type: Boolean, desc: "Trigger hook on push events"
         optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
+        optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
@@ -24,7 +25,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get project hooks' do
         success Entities::ProjectHook
       end
@@ -96,7 +97,7 @@ module API
       delete ":id/hooks/:hook_id" do
         hook = user_project.hooks.find(params.delete(:hook_id))
 
-        hook.destroy
+        destroy_conditionally!(hook)
       end
     end
   end

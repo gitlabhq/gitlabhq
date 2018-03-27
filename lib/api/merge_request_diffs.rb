@@ -8,7 +8,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a list of merge request diff versions' do
         detail 'This feature was introduced in GitLab 8.12.'
         success Entities::MergeRequestDiff
@@ -21,7 +21,7 @@ module API
       get ":id/merge_requests/:merge_request_iid/versions" do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present paginate(merge_request.merge_request_diffs), with: Entities::MergeRequestDiff
+        present paginate(merge_request.merge_request_diffs.order_id_desc), with: Entities::MergeRequestDiff
       end
 
       desc 'Get a single merge request diff version' do

@@ -4,18 +4,18 @@ import stageColumnComponent from '~/pipelines/components/graph/stage_column_comp
 describe('stage column component', () => {
   let component;
   const mockJob = {
-    id: 4256,
+    id: 4250,
     name: 'test',
     status: {
       icon: 'icon_status_success',
       text: 'passed',
       label: 'passed',
       group: 'success',
-      details_path: '/root/ci-mock/builds/4256',
+      details_path: '/root/ci-mock/builds/4250',
       action: {
-        icon: 'icon_action_retry',
+        icon: 'retry',
         title: 'Retry',
-        path: '/root/ci-mock/builds/4256/retry',
+        path: '/root/ci-mock/builds/4250/retry',
         method: 'post',
       },
     },
@@ -24,10 +24,17 @@ describe('stage column component', () => {
   beforeEach(() => {
     const StageColumnComponent = Vue.extend(stageColumnComponent);
 
+    const mockJobs = [];
+    for (let i = 0; i < 3; i += 1) {
+      const mockedJob = Object.assign({}, mockJob);
+      mockedJob.id += i;
+      mockJobs.push(mockedJob);
+    }
+
     component = new StageColumnComponent({
       propsData: {
         title: 'foo',
-        jobs: [mockJob, mockJob, mockJob],
+        jobs: mockJobs,
       },
     }).$mount();
   });

@@ -20,11 +20,18 @@ describe Projects::HousekeepingService do
       expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :the_task, :the_lease_key, :the_uuid)
 
       subject.execute
+
       expect(project.reload.pushes_since_gc).to eq(0)
     end
 
+    it 'yields the block if given' do
+      expect do |block|
+        subject.execute(&block)
+      end.to yield_with_no_args
+    end
+
     context 'when no lease can be obtained' do
-      before(:each) do
+      before do
         expect(subject).to receive(:try_obtain_lease).and_return(false)
       end
 
@@ -38,6 +45,13 @@ describe Projects::HousekeepingService do
         expect do
           expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
         end.not_to change { project.pushes_since_gc }
+      end
+
+      it 'does not yield' do
+        expect do |block|
+          expect { subject.execute(&block) }
+            .to raise_error(Projects::HousekeepingService::LeaseTaken)
+        end.not_to yield_with_no_args
       end
     end
   end
@@ -61,7 +75,7 @@ describe Projects::HousekeepingService do
     end
   end
 
-  it 'uses all three kinds of housekeeping we offer' do
+  it 'goes through all three housekeeping tasks, executing only the highest task when there is overlap' do
     allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
     allow(subject).to receive(:lease_key).and_return(:the_lease_key)
 

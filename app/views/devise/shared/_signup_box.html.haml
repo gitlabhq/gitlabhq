@@ -25,10 +25,10 @@
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags
-      %div
+      .submit-container
         = f.submit "Register", class: "btn-register btn"
 .clearfix.submit-container
   %p
     %span.light Didn't receive a confirmation email?
     = succeed '.' do
-      = link_to "Request a new one", new_confirmation_path(resource_name)
+      = link_to "Request a new one", new_confirmation_path(:user)

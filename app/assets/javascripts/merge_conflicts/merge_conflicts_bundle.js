@@ -1,7 +1,9 @@
 /* eslint-disable new-cap, comma-dangle, no-new */
-/* global Flash */
 
+import $ from 'jquery';
 import Vue from 'vue';
+import Flash from '../flash';
+import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
 import './merge_conflict_service';
 import './mixins/line_conflict_utils';
@@ -9,8 +11,9 @@ import './mixins/line_conflict_actions';
 import './components/diff_file_editor';
 import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
+import syntaxHighlight from '../syntax_highlight';
 
-$(() => {
+export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
   const conflictsEl = document.querySelector('#conflicts');
   const mergeConflictsStore = gl.mergeConflicts.mergeConflictsStore;
@@ -19,14 +22,16 @@ $(() => {
     resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath
   });
 
+  initIssuableSidebar();
+
   gl.MergeConflictsResolverApp = new Vue({
     el: '#conflicts',
-    data: mergeConflictsStore.state,
     components: {
       'diff-file-editor': gl.mergeConflicts.diffFileEditor,
       'inline-conflict-lines': gl.mergeConflicts.inlineConflictLines,
       'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines
     },
+    data: mergeConflictsStore.state,
     computed: {
       conflictsCountText() { return mergeConflictsStore.getConflictsCountText(); },
       readyToCommit() { return mergeConflictsStore.isReadyToCommit(); },
@@ -34,24 +39,23 @@ $(() => {
       showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent(); }
     },
     created() {
-      mergeConflictsService
-        .fetchConflictsData()
-        .done((data) => {
+      mergeConflictsService.fetchConflictsData()
+        .then(({ data }) => {
           if (data.type === 'error') {
             mergeConflictsStore.setFailedRequest(data.message);
           } else {
             mergeConflictsStore.setConflictsData(data);
           }
-        })
-        .error(() => {
-          mergeConflictsStore.setFailedRequest();
-        })
-        .always(() => {
+
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $('.js-syntax-highlight').syntaxHighlight();
+            syntaxHighlight($('.js-syntax-highlight'));
           });
+        })
+        .catch(() => {
+          mergeConflictsStore.setLoadingState(false);
+          mergeConflictsStore.setFailedRequest();
         });
     },
     methods: {
@@ -78,14 +82,14 @@ $(() => {
 
         mergeConflictsService
           .submitResolveConflicts(mergeConflictsStore.getCommitData())
-          .done((data) => {
+          .then(({ data }) => {
             window.location.href = data.redirect_to;
           })
-          .error(() => {
+          .catch(() => {
             mergeConflictsStore.setSubmitState(false);
             new Flash('Failed to save merge conflicts resolutions. Please try again!');
           });
       }
     }
   });
-});
+}

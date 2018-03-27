@@ -1,31 +1,26 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, prefer-arrow-callback, no-else-return, max-len */
-/* global Flash */
+import $ from 'jquery';
+import Flash from './flash';
 
-(function() {
-  this.NotificationsDropdown = (function() {
-    function NotificationsDropdown() {
-      $(document).off('click', '.update-notification').on('click', '.update-notification', function(e) {
-        var form, label, notificationLevel;
-        e.preventDefault();
-        if ($(this).is('.is-active') && $(this).data('notification-level') === 'custom') {
-          return;
-        }
-        notificationLevel = $(this).data('notification-level');
-        label = $(this).data('notification-title');
-        form = $(this).parents('.notification-form:first');
-        form.find('.js-notification-loading').toggleClass('fa-bell fa-spin fa-spinner');
-        form.find('#notification_setting_level').val(notificationLevel);
-        return form.submit();
-      });
-      $(document).off('ajax:success', '.notification-form').on('ajax:success', '.notification-form', function(e, data) {
-        if (data.saved) {
-          return $(e.currentTarget).closest('.js-notification-dropdown').replaceWith(data.html);
-        } else {
-          return new Flash('Failed to save new settings', 'alert');
-        }
-      });
+export default function notificationsDropdown() {
+  $(document).on('click', '.update-notification', function updateNotificationCallback(e) {
+    e.preventDefault();
+    if ($(this).is('.is-active') && $(this).data('notificationLevel') === 'custom') {
+      return;
     }
 
-    return NotificationsDropdown;
-  })();
-}).call(window);
+    const notificationLevel = $(this).data('notificationLevel');
+    const form = $(this).parents('.notification-form:first');
+
+    form.find('.js-notification-loading').toggleClass('fa-bell fa-spin fa-spinner');
+    form.find('#notification_setting_level').val(notificationLevel);
+    form.submit();
+  });
+
+  $(document).on('ajax:success', '.notification-form', (e, data) => {
+    if (data.saved) {
+      $(e.currentTarget).closest('.js-notification-dropdown').replaceWith(data.html);
+    } else {
+      Flash('Failed to save new settings', 'alert');
+    }
+  });
+}

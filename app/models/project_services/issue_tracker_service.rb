@@ -5,8 +5,15 @@ class IssueTrackerService < Service
 
   # Pattern used to extract links from comments
   # Override this method on services that uses different patterns
-  def reference_pattern
-    @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+  # This pattern does not support cross-project references
+  # The other code assumes that this pattern is a superset of all
+  # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
+  def self.reference_pattern(only_long: false)
+    if only_long
+      /(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)/
+    else
+      /(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)/
+    end
   end
 
   def default?
@@ -17,7 +24,7 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
-  def project_path
+  def issue_tracker_path
     project_url
   end
 
@@ -70,13 +77,13 @@ class IssueTrackerService < Service
     result = false
 
     begin
-      response = HTTParty.head(self.project_url, verify: true)
+      response = Gitlab::HTTP.head(self.project_url, verify: true)
 
       if response
         message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
         result = true
       end
-    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
+    rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
     Rails.logger.info(message)

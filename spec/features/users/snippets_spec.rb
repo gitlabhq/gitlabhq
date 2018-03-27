@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Snippets tab on a user profile', feature: true, js: true do
+describe 'Snippets tab on a user profile', :js do
   context 'when the user has snippets' do
     let(:user) { create(:user) }
 
@@ -24,7 +24,7 @@ describe 'Snippets tab on a user profile', feature: true, js: true do
       let!(:other_snippet) { create(:snippet, :public) }
 
       it 'contains only internal and public snippets of a user when a user is logged in' do
-        gitlab_sign_in(:user)
+        sign_in(create(:user))
         visit user_path(user)
         page.within('.user-profile-nav') { click_link 'Snippets' }
         wait_for_requests

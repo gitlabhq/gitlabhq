@@ -112,7 +112,7 @@ GitLab from source respectively.
 
 >**Note:**
 Be careful to choose a port different than the one that Registry listens to (`5000` by default),
-otherwise you will run into conflicts .
+otherwise you will run into conflicts.
 
 ---
 
@@ -465,22 +465,41 @@ on how to achieve that.
 
 ## Disable Container Registry but use GitLab as an auth endpoint
 
-You can disable the embedded Container Registry to use an external one, but
-still use GitLab as an auth endpoint.
-
 **Omnibus GitLab**
+
+You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
+
 1. Open `/etc/gitlab/gitlab.rb` and set necessary configurations:
 
     ```ruby
-    registry['enable'] = false
     gitlab_rails['registry_enabled'] = true
     gitlab_rails['registry_host'] = "registry.gitlab.example.com"
     gitlab_rails['registry_port'] = "5005"
     gitlab_rails['registry_api_url'] = "http://localhost:5000"
-    gitlab_rails['registry_key_path'] = "/var/opt/gitlab/gitlab-rails/certificate.key"
     gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
     gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
     ```
+
+1. A certificate keypair is required for GitLab and the Container Registry to
+   communicate securely.  By default omnibus-gitlab will generate one keypair,
+   which is saved to `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key`.
+   When using a non-bundled Container Registry, you will need to supply a
+   custom certificate key. To do that, add the following to
+   `/etc/gitlab/gitlab.rb`
+
+    ```ruby
+    gitlab_rails['registry_key_path'] = "/custom/path/to/registry-key.key"
+    # registry['internal_key'] should contain the contents of the custom key
+    # file. Line breaks in the key file should be marked using `\n` character
+    # Example:
+    registry['internal_key'] = "---BEGIN RSA PRIVATE KEY---\nMIIEpQIBAA\n"
+    ```
+
+    **Note:** The file specified at `registry_key_path` gets populated with the
+    content specified by `internal_key`, each time reconfigure is executed. If
+    no file is specified, omnibus-gitlab will default it to
+    `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and will populate
+    it.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 

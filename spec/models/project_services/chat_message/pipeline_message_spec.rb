@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ChatMessage::PipelineMessage do
   subject { described_class.new(args) }
 
-  let(:user) { { name: 'hacker' } }
+  let(:user) { { name: "The Hacker", username: 'hacker' } }
   let(:duration) { 7210 }
   let(:args) do
     {
@@ -22,12 +22,13 @@ describe ChatMessage::PipelineMessage do
       user: user
     }
   end
+  let(:combined_name) { "The Hacker (hacker)" }
 
   context 'without markdown' do
     context 'pipeline succeeded' do
       let(:status) { 'success' }
       let(:color) { 'good' }
-      let(:message) { build_message('passed') }
+      let(:message) { build_message('passed', combined_name) }
 
       it 'returns a message with information about succeeded build' do
         expect(subject.pretext).to be_empty
@@ -39,7 +40,7 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline failed' do
       let(:status) { 'failed' }
       let(:color) { 'danger' }
-      let(:message) { build_message }
+      let(:message) { build_message(status, combined_name) }
 
       it 'returns a message with information about failed build' do
         expect(subject.pretext).to be_empty
@@ -75,13 +76,13 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline succeeded' do
       let(:status) { 'success' }
       let(:color) { 'good' }
-      let(:message) { build_markdown_message('passed') }
+      let(:message) { build_markdown_message('passed', combined_name) }
 
       it 'returns a message with information about succeeded build' do
         expect(subject.pretext).to be_empty
         expect(subject.attachments).to eq(message)
         expect(subject.activity).to eq({
-          title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of branch [develop](http://example.gitlab.com/commits/develop) by hacker passed',
+          title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of branch [develop](http://example.gitlab.com/commits/develop) by The Hacker (hacker) passed',
           subtitle: 'in [project_name](http://example.gitlab.com)',
           text: 'in 02:00:10',
           image: ''
@@ -92,13 +93,13 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline failed' do
       let(:status) { 'failed' }
       let(:color) { 'danger' }
-      let(:message) { build_markdown_message }
+      let(:message) { build_markdown_message(status, combined_name) }
 
       it 'returns a message with information about failed build' do
         expect(subject.pretext).to be_empty
         expect(subject.attachments).to eq(message)
         expect(subject.activity).to eq({
-          title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of branch [develop](http://example.gitlab.com/commits/develop) by hacker failed',
+          title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of branch [develop](http://example.gitlab.com/commits/develop) by The Hacker (hacker) failed',
           subtitle: 'in [project_name](http://example.gitlab.com)',
           text: 'in 02:00:10',
           image: ''

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::GoogleCodeImport::Client, lib: true do
+describe Gitlab::GoogleCodeImport::Client do
   let(:raw_data) { JSON.parse(fixture_file("GoogleCodeProjectHosting.json")) }
   subject { described_class.new(raw_data) }
 

@@ -3,13 +3,13 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170324160416_migrate_user_activities_to_users_last_activity_on.rb')
 
-describe MigrateUserActivitiesToUsersLastActivityOn, :redis, :truncate do
+describe MigrateUserActivitiesToUsersLastActivityOn, :clean_gitlab_redis_shared_state, :delete do
   let(:migration) { described_class.new }
   let!(:user_active_1) { create(:user) }
   let!(:user_active_2) { create(:user) }
 
   def record_activity(user, time)
-    Gitlab::Redis.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.zadd(described_class::USER_ACTIVITY_SET_KEY, time.to_i, user.username)
     end
   end

@@ -1,62 +1,65 @@
-/* global Flash */
-
+import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import Flash from '../flash';
 import Translate from '../vue_shared/translate';
-import LimitWarningComponent from './components/limit_warning_component';
-import './components/stage_code_component';
-import './components/stage_issue_component';
-import './components/stage_plan_component';
-import './components/stage_production_component';
-import './components/stage_review_component';
-import './components/stage_staging_component';
-import './components/stage_test_component';
-import './components/total_time_component';
-import './cycle_analytics_service';
-import './cycle_analytics_store';
+import banner from './components/banner.vue';
+import stageCodeComponent from './components/stage_code_component.vue';
+import stagePlanComponent from './components/stage_plan_component.vue';
+import stageComponent from './components/stage_component.vue';
+import stageReviewComponent from './components/stage_review_component.vue';
+import stageStagingComponent from './components/stage_staging_component.vue';
+import stageTestComponent from './components/stage_test_component.vue';
+import CycleAnalyticsService from './cycle_analytics_service';
+import CycleAnalyticsStore from './cycle_analytics_store';
 
 Vue.use(Translate);
 
-$(() => {
+export default () => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
-  const cycleAnalyticsEl = document.querySelector('#cycle-analytics');
-  const cycleAnalyticsStore = gl.cycleAnalytics.CycleAnalyticsStore;
-  const cycleAnalyticsService = new gl.cycleAnalytics.CycleAnalyticsService({
-    requestPath: cycleAnalyticsEl.dataset.requestPath,
-  });
 
-  gl.cycleAnalyticsApp = new Vue({
+  new Vue({ // eslint-disable-line no-new
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
-    data: {
-      state: cycleAnalyticsStore.state,
-      isLoading: false,
-      isLoadingStage: false,
-      isEmptyStage: false,
-      hasError: false,
-      startDate: 30,
-      isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+    components: {
+      banner,
+      'stage-issue-component': stageComponent,
+      'stage-plan-component': stagePlanComponent,
+      'stage-code-component': stageCodeComponent,
+      'stage-test-component': stageTestComponent,
+      'stage-review-component': stageReviewComponent,
+      'stage-staging-component': stageStagingComponent,
+      'stage-production-component': stageComponent,
+    },
+    data() {
+      const cycleAnalyticsEl = document.querySelector('#cycle-analytics');
+      const cycleAnalyticsService = new CycleAnalyticsService({
+        requestPath: cycleAnalyticsEl.dataset.requestPath,
+      });
+
+      return {
+        store: CycleAnalyticsStore,
+        state: CycleAnalyticsStore.state,
+        isLoading: false,
+        isLoadingStage: false,
+        isEmptyStage: false,
+        hasError: false,
+        startDate: 30,
+        isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+        service: cycleAnalyticsService,
+      };
     },
     computed: {
       currentStage() {
-        return cycleAnalyticsStore.currentActiveStage();
+        return this.store.currentActiveStage();
       },
-    },
-    components: {
-      'stage-issue-component': gl.cycleAnalytics.StageIssueComponent,
-      'stage-plan-component': gl.cycleAnalytics.StagePlanComponent,
-      'stage-code-component': gl.cycleAnalytics.StageCodeComponent,
-      'stage-test-component': gl.cycleAnalytics.StageTestComponent,
-      'stage-review-component': gl.cycleAnalytics.StageReviewComponent,
-      'stage-staging-component': gl.cycleAnalytics.StageStagingComponent,
-      'stage-production-component': gl.cycleAnalytics.StageProductionComponent,
     },
     created() {
       this.fetchCycleAnalyticsData();
     },
     methods: {
       handleError() {
-        cycleAnalyticsStore.setErrorState(true);
+        this.store.setErrorState(true);
         return new Flash('There was an error while fetching cycle analytics data.');
       },
       initDropdown() {
@@ -77,22 +80,22 @@ $(() => {
 
         this.isLoading = true;
 
-        cycleAnalyticsService
+        this.service
           .fetchCycleAnalyticsData(fetchOptions)
-          .done((response) => {
-            cycleAnalyticsStore.setCycleAnalyticsData(response);
+          .then(resp => resp.json())
+          .then((response) => {
+            this.store.setCycleAnalyticsData(response);
             this.selectDefaultStage();
             this.initDropdown();
+            this.isLoading = false;
           })
-          .error(() => {
+          .catch(() => {
             this.handleError();
-          })
-          .always(() => {
             this.isLoading = false;
           });
       },
       selectDefaultStage() {
-        const stage = this.state.stages.first();
+        const stage = this.state.stages[0];
         this.selectStage(stage);
       },
       selectStage(stage) {
@@ -100,27 +103,27 @@ $(() => {
         if (this.currentStage === stage) return;
 
         if (!stage.isUserAllowed) {
-          cycleAnalyticsStore.setActiveStage(stage);
+          this.store.setActiveStage(stage);
           return;
         }
 
         this.isLoadingStage = true;
-        cycleAnalyticsStore.setStageEvents([], stage);
-        cycleAnalyticsStore.setActiveStage(stage);
+        this.store.setStageEvents([], stage);
+        this.store.setActiveStage(stage);
 
-        cycleAnalyticsService
+        this.service
           .fetchStageData({
             stage,
             startDate: this.startDate,
           })
-          .done((response) => {
+          .then(resp => resp.json())
+          .then((response) => {
             this.isEmptyStage = !response.events.length;
-            cycleAnalyticsStore.setStageEvents(response.events, stage);
+            this.store.setStageEvents(response.events, stage);
+            this.isLoadingStage = false;
           })
-          .error(() => {
+          .catch(() => {
             this.isEmptyStage = true;
-          })
-          .always(() => {
             this.isLoadingStage = false;
           });
       },
@@ -130,8 +133,4 @@ $(() => {
       },
     },
   });
-
-  // Register global components
-  Vue.component('limit-warning', LimitWarningComponent);
-  Vue.component('total-time', gl.cycleAnalytics.TotalTimeComponent);
-});
+};

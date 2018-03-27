@@ -6,27 +6,31 @@ describe StuckCiJobsWorker do
   let(:worker) { described_class.new }
   let(:exclusive_lease_uuid) { SecureRandom.uuid }
 
-  subject do
-    job.reload
-    job.status
-  end
-
   before do
     job.update!(status: status, updated_at: updated_at)
     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(exclusive_lease_uuid)
   end
 
   shared_examples 'job is dropped' do
-    it 'changes status' do
+    before do
       worker.perform
-      is_expected.to eq('failed')
+      job.reload
+    end
+
+    it "changes status" do
+      expect(job).to be_failed
+      expect(job).to be_stuck_or_timeout_failure
     end
   end
 
   shared_examples 'job is unchanged' do
-    it "doesn't change status" do
+    before do
       worker.perform
-      is_expected.to eq(status)
+      job.reload
+    end
+
+    it "doesn't change status" do
+      expect(job.status).to eq(status)
     end
   end
 
@@ -101,8 +105,8 @@ describe StuckCiJobsWorker do
       job.project.update(pending_delete: true)
     end
 
-    it 'does not drop job' do
-      expect_any_instance_of(Ci::Build).not_to receive(:drop)
+    it 'does drop job' do
+      expect_any_instance_of(Ci::Build).to receive(:drop).and_call_original
       worker.perform
     end
   end
@@ -113,7 +117,7 @@ describe StuckCiJobsWorker do
     let(:worker2) { described_class.new }
 
     it 'is guard by exclusive lease when executed concurrently' do
-      expect(worker).to receive(:drop).at_least(:once)
+      expect(worker).to receive(:drop).at_least(:once).and_call_original
       expect(worker2).not_to receive(:drop)
       worker.perform
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
@@ -121,8 +125,8 @@ describe StuckCiJobsWorker do
     end
 
     it 'can be executed in sequence' do
-      expect(worker).to receive(:drop).at_least(:once)
-      expect(worker2).to receive(:drop).at_least(:once)
+      expect(worker).to receive(:drop).at_least(:once).and_call_original
+      expect(worker2).to receive(:drop).at_least(:once).and_call_original
       worker.perform
       worker2.perform
     end

@@ -5,13 +5,31 @@
   margin-right: auto;
 }
 
+.issuable-warning-icon {
+  background-color: $orange-100;
+  border-radius: $border-radius-default;
+  margin: 0 $btn-side-margin 0 0;
+  width: $issuable-warning-size;
+  height: $issuable-warning-size;
+  text-align: center;
+
+  .icon {
+    fill: $orange-600;
+    vertical-align: text-bottom;
+  }
+
+  &:first-of-type {
+    margin-right: $issuable-warning-icon-margin;
+  }
+}
+
 .limit-container-width {
   .detail-page-header,
   .page-content-header,
   .commit-box,
   .info-well,
   .commit-ci-menu,
-  .files-changed,
+  .files-changed-inner,
   .limited-header-width,
   .limited-width-notes {
     @extend .fixed-width-container;
@@ -46,10 +64,19 @@
     }
   }
 
+  .title-container {
+    display: flex;
+  }
+
   .title {
     padding: 0;
-    margin-bottom: 16px;
-    border-bottom: none;
+    margin-bottom: $gl-padding;
+    border-bottom: 0;
+  }
+
+  .btn-edit {
+    margin-left: auto;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -57,6 +84,7 @@
     border: 1px solid $white-normal;
     padding: 5px;
     max-height: calc(100vh - 100px);
+    max-width: 100%;
   }
 
   .emoji-block {
@@ -74,28 +102,57 @@
 
 .issuable-show-labels {
   a {
-    margin-right: 5px;
     margin-bottom: 5px;
+    margin-right: 5px;
     display: inline-block;
 
     .color-label {
-      padding: 6px 10px;
+      padding: 4px $grid-size;
       border-radius: $label-border-radius;
+    }
+
+    &:hover .color-label {
+      text-decoration: underline;
     }
   }
 
   &.has-labels {
+    // this font size is a fix to
+    // prevent unintended spacing between labels
+    // which shows up when rendering markup has white-space
+    // characters present.
+    // see: https://css-tricks.com/fighting-the-space-between-inline-block-elements/#article-header-id-3
+    font-size: 0;
     margin-bottom: -5px;
   }
 }
 
 .right-sidebar {
-  a,
-  .btn-link {
+  position: fixed;
+  top: $header-height;
+  bottom: 0;
+  right: 0;
+  transition: width $sidebar-transition-duration;
+  background: $gray-light;
+  z-index: 200;
+  overflow: hidden;
+
+  a:not(.btn) {
     color: inherit;
+
+    &:hover {
+      color: $gl-link-hover-color;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
+
+    }
+
   }
 
   .btn-link {
+    color: inherit;
     outline: none;
   }
 
@@ -118,11 +175,7 @@
     }
 
     &:last-child {
-      border: none;
-    }
-
-    span {
-      display: inline-block;
+      border: 0;
     }
 
     .select2-container span {
@@ -135,6 +188,14 @@
 
       &:hover {
         color: $gray-darkest;
+      }
+    }
+
+    &.assignee {
+      .author_link:hover {
+        .author {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -152,11 +213,18 @@
       margin-left: 0;
     }
 
+    a.edit-link:not([href]):hover {
+      color: rgba($avatar-border, .2);
+    }
+
+    .lock-edit, // uses same style, different js behaviour
     .edit-link {
+      @extend .btn-blank;
       color: $gl-text-color;
 
-      &:not([href]):hover {
-        color: rgba($avatar-border, .2);
+      &:hover {
+        text-decoration: underline;
+        color: $gl-link-hover-color;
       }
     }
   }
@@ -191,25 +259,17 @@
   .btn-clipboard:hover {
     color: $gl-text-color;
   }
-}
-
-.right-sidebar {
-  position: absolute;
-  top: $header-height;
-  bottom: 0;
-  right: 0;
-  transition: width .3s;
-  background: $gray-light;
-  padding: 0 20px;
-  z-index: 200;
-  overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$header-height});
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+  }
+
+  &.affix-top .issuable-sidebar {
+    height: 100%;
   }
 
   &.right-sidebar-expanded {
@@ -224,11 +284,15 @@
       }
     }
 
+    .issuable-sidebar {
+      padding: 0 20px;
+    }
+
     .issuable-sidebar-header {
       padding-top: 10px;
     }
 
-    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+    &:not(.issue-boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
       .issuable-sidebar-header {
         display: none;
       }
@@ -239,11 +303,16 @@
     }
 
     .light {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
-    .no-value {
+    .no-value,
+    .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
+    }
+
+    .btn-secondary-hover-link:hover {
+      color: $gl-link-color;
     }
 
     .sidebar-collapsed-icon {
@@ -253,6 +322,7 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      text-align: center;
     }
 
     .title .gutter-toggle {
@@ -274,7 +344,7 @@
       display: block;
       margin-top: 4px;
       font-size: 13px;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .hide-expanded {
@@ -296,7 +366,7 @@
     .block {
       width: $gutter_collapsed_width - 2px;
       padding: 15px 0 0;
-      border-bottom: none;
+      border-bottom: 0;
       overflow: hidden;
     }
 
@@ -321,9 +391,17 @@
       margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
-      &:hover,
+      svg {
+        fill: $issuable-sidebar-color;
+      }
+
+      &:hover:not(.disabled),
       &:hover .todo-undone {
         color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
       }
 
       span {
@@ -343,17 +421,13 @@
         display: none;
       }
 
-      .avatar:hover,
       .avatar-counter:hover {
+        color: $issuable-sidebar-color;
         border-color: $issuable-sidebar-color;
       }
 
-      .avatar-counter:hover {
-        color: $issuable-sidebar-color;
-      }
-
       .btn-clipboard {
-        border: none;
+        border: 0;
         color: $issuable-sidebar-color;
 
         &:hover {
@@ -413,22 +487,12 @@
         }
       }
     }
-  }
 
-  a {
-    &:hover {
-      color: $md-link-color;
-      text-decoration: none;
-
-      .avatar {
-        border-color: rgba($avatar-border, .2);
-      }
-    }
-  }
-
-  .dropdown-content {
-    a:hover {
-      color: inherit;
+    .milestone-title span,
+    .collapse-truncated-title {
+      @include str-truncated(100%);
+      display: block;
+      margin: 0 4px;
     }
   }
 
@@ -437,9 +501,45 @@
     padding-top: 6px;
   }
 
-  .open .dropdown-menu {
+  .dropdown-menu {
     width: 100%;
+
+    /*
+     * Overwrite hover style for dropdown items, so that they are not blue
+     * This should be removed during dev of https://gitlab.com/gitlab-org/gitlab-ce/issues/44040
+     */
+    li a {
+      &:hover,
+      &:active,
+      &:focus,
+      &.is-focused {
+        @include dropdown-item-hover;
+      }
+    }
+
   }
+}
+
+.with-performance-bar .right-sidebar {
+  top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$performance-bar-height});
+  }
+}
+
+.sidebar-move-issue-confirmation-button {
+  width: 100%;
+
+  &.is-loading {
+    .sidebar-move-issue-confirmation-loading-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.sidebar-move-issue-confirmation-loading-icon {
+  display: none;
 }
 
 .detail-page-description {
@@ -454,6 +554,7 @@
   color: $gray-darkest;
   display: block;
   margin: 16px 0 0;
+  font-size: 85%;
 
   .author_link {
     color: $gray-darkest;
@@ -461,7 +562,9 @@
 }
 
 .participants-list {
-  margin: -5px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -7px;
 }
 
 
@@ -472,7 +575,7 @@
 
 .participants-author {
   display: inline-block;
-  padding: 5px;
+  padding: 7px;
 
   &:nth-of-type(7n) {
     padding-right: 0;
@@ -529,51 +632,33 @@
 }
 
 .issuable-status-box {
-  float: none;
-  display: inline-block;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 0;
-
-  @media (max-width: $screen-xs-max) {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.issuable-header {
-  position: relative;
-  padding-left: 45px;
-  padding-right: 45px;
-  line-height: 35px;
+  padding-left: 9px;
+  padding-right: 9px;
 
   @media (min-width: $screen-sm-min) {
-    float: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.issuable-actions {
-  padding-top: 10px;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
-    padding-top: 0;
+    display: inline-block;
+    height: auto;
+    align-self: center;
   }
 }
 
 .issuable-gutter-toggle {
   @media (max-width: $screen-sm-max) {
-    position: absolute;
-    top: 0;
-    right: 0;
+    margin-left: $btn-side-margin;
   }
 }
 
 .issuable-meta {
+  flex: 1;
   display: inline-block;
-  line-height: 18px;
   font-size: 14px;
+  line-height: 24px;
+  align-self: center;
 }
 
 .js-issuable-selector-wrap {
@@ -597,7 +682,38 @@
     .issue-info-container {
       -webkit-flex: 1;
       flex: 1;
+      display: flex;
       padding-right: $gl-padding;
+
+      .issue-main-info {
+        flex: 1 auto;
+        margin-right: 10px;
+      }
+
+      .issuable-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 1 0 auto;
+
+        .controls {
+          margin-bottom: 2px;
+          line-height: 20px;
+          padding: 0;
+        }
+
+        .issue-updated-at {
+          line-height: 20px;
+        }
+      }
+
+      @media(max-width: $screen-xs-max) {
+        .issuable-meta {
+          .controls li {
+            margin-right: 0;
+          }
+        }
+      }
     }
 
     .issue-check {
@@ -607,6 +723,30 @@
 
       .selected_issue {
         vertical-align: text-top;
+      }
+    }
+
+    .issuable-milestone,
+    .issuable-info,
+    .task-status,
+    .issuable-updated-at {
+      font-weight: $gl-font-weight-normal;
+      color: $gl-text-color-secondary;
+
+      a {
+        color: $gl-text-color;
+
+        .fa {
+          color: $gl-text-color-secondary;
+        }
+      }
+    }
+
+    @media(max-width: $screen-md-max) {
+      .task-status,
+      .issuable-due-date,
+      .project-ref-path {
+        display: none;
       }
     }
   }
@@ -737,6 +877,47 @@
     &.sidebar-collapsed-icon {
       .issuable-todo-inner {
         display: none;
+      }
+    }
+  }
+}
+
+.issuable-close-button,
+.issuable-close-toggle {
+  @include transition(border-color, color);
+}
+
+.issuable-close-dropdown {
+  .dropdown-menu {
+    min-width: 270px;
+    left: auto;
+    right: 0;
+  }
+
+  .description {
+    .text {
+      margin: 0;
+    }
+  }
+
+  .dropdown-toggle > .icon {
+    margin: 0 3px;
+  }
+}
+
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $theme-gray-700;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
       }
     }
   }

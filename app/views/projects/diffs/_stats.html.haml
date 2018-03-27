@@ -1,36 +1,41 @@
-.js-toggle-container
-  .commit-stat-summary
-    Showing
-    %button.diff-stats-summary-toggler.js-toggle-button{ type: "button" }
-      %strong= pluralize(diff_files.size, "changed file")
+- sum_added_lines = diff_files.sum(&:added_lines)
+- sum_removed_lines = diff_files.sum(&:removed_lines)
+.commit-stat-summary.dropdown
+  Showing
+  %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown" } }<
+    = pluralize(diff_files.size, "changed file")
+    = icon("caret-down", class: "prepend-left-5")
+  %span.diff-stats-additions-deletions-expanded#diff-stats
     with
-    %strong.cgreen #{diff_files.sum(&:added_lines)} additions
+    %strong.cgreen= pluralize(sum_added_lines, 'addition')
     and
-    %strong.cred #{diff_files.sum(&:removed_lines)} deletions
-  .file-stats.js-toggle-content.hide
-    %ul
-      - diff_files.each do |diff_file|
-        - file_hash = hexdigest(diff_file.file_path)
-        %li
-          - if diff_file.deleted_file?
-            %span.deleted-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-minus
-                = diff_file.old_path
-          - elsif diff_file.renamed_file?
-            %span.renamed-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-minus
-                = diff_file.old_path
-                &rarr;
-                = diff_file.new_path
-          - elsif diff_file.new_file?
-            %span.new-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-plus
-                = diff_file.new_path
-          - else
-            %span.edit-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-adjust
-                = diff_file.new_path
+    %strong.cred= pluralize(sum_removed_lines, 'deletion')
+  .diff-stats-additions-deletions-collapsed.pull-right.hidden-xs.hidden-sm{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
+    %strong.cgreen<
+      +#{sum_added_lines}
+    %strong.cred<
+      \-#{sum_removed_lines}
+  .dropdown-menu.diff-file-changes
+    = dropdown_filter("Search files")
+    .dropdown-content
+      %ul
+        - diff_files.each do |diff_file|
+          %li
+            %a.diff-changed-file{ href: "##{hexdigest(diff_file.file_path)}", title: diff_file.new_path }
+              = sprite_icon(diff_file_changed_icon(diff_file), size: 16, css_class: "#{diff_file_changed_icon_color(diff_file)} diff-file-changed-icon append-right-8")
+              %span.diff-changed-file-content.append-right-8
+                - if diff_file.blob&.name
+                  %strong.diff-changed-file-name
+                    = diff_file.blob.name
+                - else
+                  %strong.diff-changed-blank-file-name
+                    = s_('Diffs|No file name available')
+                %span.diff-changed-file-path.prepend-top-5= diff_file_path_text(diff_file)
+              %span.diff-changed-stats
+                %span.cgreen<
+                  +#{diff_file.added_lines}
+                %span.cred<
+                  \-#{diff_file.removed_lines}
+        %li.dropdown-menu-empty-item.hidden
+          %a
+            No files found.

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::BaseParser, lib: true do
+describe Banzai::ReferenceParser::BaseParser do
   include ReferenceParserHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   subject do
     klass = Class.new(described_class) do

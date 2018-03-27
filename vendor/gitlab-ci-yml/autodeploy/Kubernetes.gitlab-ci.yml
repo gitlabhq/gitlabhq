@@ -1,3 +1,6 @@
+# This template has been DEPRECATED. Consider using Auto DevOps instead:
+# https://docs.gitlab.com/ee/topics/autodevops
+
 # Explanation on the scripts:
 # https://gitlab.com/gitlab-examples/kubernetes-deploy/blob/master/README.md
 image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
@@ -27,7 +30,7 @@ production:
     - command deploy
   environment:
     name: production
-    url: http://$CI_PROJECT_NAME.$KUBE_DOMAIN
+    url: http://$CI_PROJECT_PATH_SLUG.$KUBE_DOMAIN
   when: manual
   only:
     - master
@@ -38,7 +41,7 @@ staging:
     - command deploy
   environment:
     name: staging
-    url: http://$CI_PROJECT_NAME-staging.$KUBE_DOMAIN
+    url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_DOMAIN
   only:
     - master
 
@@ -48,7 +51,7 @@ review:
     - command deploy
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
+    url: http://$CI_PROJECT_PATH_SLUG-$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
     on_stop: stop_review
   only:
     - branches

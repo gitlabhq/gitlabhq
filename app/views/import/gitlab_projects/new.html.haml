@@ -1,25 +1,40 @@
 - page_title "GitLab Import"
 - header_title "Projects", root_path
+
 %h3.page-title
   = icon('gitlab')
   Import an exported GitLab project
 %hr
 
-= form_tag import_gitlab_project_path, class: 'form-horizontal', multipart: true do
-  %p
-    Project will be imported as
-    %strong
-      #{@namespace.name}/#{@path}
+= form_tag import_gitlab_project_path, class: 'new_project', multipart: true do
+  .row
+    .form-group.col-xs-12.col-sm-6
+      = label_tag :namespace_id, 'Project path', class: 'label-light'
+      .form-group
+        .input-group
+          - if current_user.can_select_namespace?
+            .input-group-addon.has-tooltip{ title: root_url }
+              = root_url
+            = select_tag :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), class: 'select2 js-select-namespace', tabindex: 1
 
-  %p
-    To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.
-  .form-group
-    = hidden_field_tag :namespace_id, @namespace.id
-    = hidden_field_tag :path, @path
-    = label_tag :file, class: 'control-label' do
-      %span GitLab project export
-    .col-sm-10
-      = file_field_tag :file, class: ''
+          - else
+            .input-group-addon.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
+              #{user_url(current_user.username)}/
+            = hidden_field_tag :namespace_id, value: current_user.namespace_id
+    .form-group.col-xs-12.col-sm-6.project-path
+      = label_tag :path, 'Project name', class: 'label-light'
+      = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control", tabindex: 2, autofocus: true, required: true
 
-  .form-actions
-    = submit_tag 'Import project', class: 'btn btn-create'
+  .row
+    .form-group.col-md-12
+      To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.
+  .row
+    .form-group.col-sm-12
+      = hidden_field_tag :namespace_id, @namespace.id
+      = label_tag :file, 'GitLab project export', class: 'label-light'
+      .form-group
+        = file_field_tag :file, class: ''
+  .row
+    .form-actions
+      = submit_tag 'Import project', class: 'btn btn-create'
+      = link_to 'Cancel', new_project_path, class: 'btn btn-cancel'

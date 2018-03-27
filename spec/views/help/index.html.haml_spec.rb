@@ -25,6 +25,14 @@ describe 'help/index' do
     end
   end
 
+  describe 'instance configuration link' do
+    it 'is visible to guests' do
+      render
+
+      expect(rendered).to have_link(nil, help_instance_configuration_url)
+    end
+  end
+
   def stub_user(user = double)
     allow(view).to receive(:user_signed_in?).and_return(user)
   end
@@ -37,5 +45,6 @@ describe 'help/index' do
   def stub_helpers
     allow(view).to receive(:markdown).and_return('')
     allow(view).to receive(:version_status_badge).and_return('')
+    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
   end
 end

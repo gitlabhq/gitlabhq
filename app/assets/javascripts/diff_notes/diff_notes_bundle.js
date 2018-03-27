@@ -1,6 +1,7 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
 /* global ResolveCount */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import './models/discussion';
 import './models/note';
@@ -14,9 +15,11 @@ import './components/resolve_count';
 import './components/resolve_discussion_btn';
 import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
+import { hasVueMRDiscussionsCookie } from '../lib/utils/common_utils';
 
-$(() => {
-  const projectPath = document.querySelector('.merge-request').dataset.projectPath;
+export default () => {
+  const projectPathHolder = document.querySelector('.merge-request') || document.querySelector('.commit-box');
+  const projectPath = projectPathHolder.dataset.projectPath;
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn, new-issue-for-discussion-btn';
 
   window.gl = window.gl || {};
@@ -32,6 +35,10 @@ $(() => {
       const tmpApp = new tmp().$mount();
 
       $(this).replaceWith(tmpApp.$el);
+      $(tmpApp.$el).one('remove.vue', () => {
+        tmpApp.$destroy();
+        tmpApp.$el.remove();
+      });
     });
 
     const $components = $(COMPONENT_SELECTOR).filter(function () {
@@ -42,6 +49,10 @@ $(() => {
       $components.each(function () {
         const $this = $(this);
         const noteId = $this.attr(':note-id');
+        const discussionId = $this.attr(':discussion-id');
+
+        if ($this.is('comment-and-resolve-btn') && !discussionId) return;
+
         const tmp = Vue.extend({
           template: $this.get(0).outerHTML
         });
@@ -58,12 +69,14 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
-    el: '#resolve-count-app',
-    components: {
-      'resolve-count': ResolveCount
-    }
-  });
+  if (!hasVueMRDiscussionsCookie()) {
+    new Vue({
+      el: '#resolve-count-app',
+      components: {
+        'resolve-count': ResolveCount
+      },
+    });
+  }
 
   $(window).trigger('resize.nav');
-});
+};

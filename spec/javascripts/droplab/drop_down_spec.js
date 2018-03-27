@@ -1,8 +1,8 @@
 import DropDown from '~/droplab/drop_down';
 import utils from '~/droplab/utils';
-import { SELECTED_CLASS, IGNORE_CLASS } from '~/droplab/constants';
+import { SELECTED_CLASS } from '~/droplab/constants';
 
-describe('DropDown', function () {
+describe('DropLab DropDown', function () {
   describe('class constructor', function () {
     beforeEach(function () {
       spyOn(DropDown.prototype, 'getItems');
@@ -128,93 +128,131 @@ describe('DropDown', function () {
     beforeEach(function () {
       this.classList = jasmine.createSpyObj('classList', ['contains']);
       this.list = { dispatchEvent: () => {} };
-      this.dropdown = { hide: () => {}, list: this.list, addSelectedClass: () => {} };
-      this.event = { preventDefault: () => {}, target: { classList: this.classList } };
+      this.dropdown = {
+        hideOnClick: true,
+        hide: () => {},
+        list: this.list,
+        addSelectedClass: () => {},
+      };
+      this.event = {
+        preventDefault: () => {},
+        target: {
+          classList: this.classList,
+          closest: () => null,
+        },
+      };
       this.customEvent = {};
-      this.closestElement = {};
+      this.dummyListItem = document.createElement('li');
+      spyOn(this.event.target, 'closest').and.callFake((selector) => {
+        if (selector === 'li') {
+          return this.dummyListItem;
+        }
+
+        return null;
+      });
 
       spyOn(this.dropdown, 'hide');
       spyOn(this.dropdown, 'addSelectedClass');
       spyOn(this.list, 'dispatchEvent');
       spyOn(this.event, 'preventDefault');
       spyOn(window, 'CustomEvent').and.returnValue(this.customEvent);
-      spyOn(utils, 'closest').and.returnValues(this.closestElement, undefined);
       this.classList.contains.and.returnValue(false);
-
-      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
     });
 
-    it('should call utils.closest', function () {
-      expect(utils.closest).toHaveBeenCalledWith(this.event.target, 'LI');
+    it('should call event.target.closest', function () {
+      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
+      expect(this.event.target.closest).toHaveBeenCalledWith('.droplab-item-ignore');
+      expect(this.event.target.closest).toHaveBeenCalledWith('li');
     });
 
     it('should call addSelectedClass', function () {
-      expect(this.dropdown.addSelectedClass).toHaveBeenCalledWith(this.closestElement);
+      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
+      expect(this.dropdown.addSelectedClass).toHaveBeenCalledWith(this.dummyListItem);
     });
 
     it('should call .preventDefault', function () {
+      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
       expect(this.event.preventDefault).toHaveBeenCalled();
     });
 
     it('should call .hide', function () {
+      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
       expect(this.dropdown.hide).toHaveBeenCalled();
     });
 
     it('should construct CustomEvent', function () {
+      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
       expect(window.CustomEvent).toHaveBeenCalledWith('click.dl', jasmine.any(Object));
     });
 
-    it('should call .classList.contains checking for IGNORE_CLASS', function () {
-      expect(this.classList.contains).toHaveBeenCalledWith(IGNORE_CLASS);
-    });
-
     it('should call .dispatchEvent with the customEvent', function () {
+      DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
       expect(this.list.dispatchEvent).toHaveBeenCalledWith(this.customEvent);
     });
 
     describe('if the target is a UL element', function () {
       beforeEach(function () {
-        this.event = { preventDefault: () => {}, target: { tagName: 'UL', classList: this.classList } };
+        this.event.target = document.createElement('ul');
 
-        spyOn(this.event, 'preventDefault');
-        utils.closest.calls.reset();
-
-        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+        spyOn(this.event.target, 'closest');
       });
 
       it('should return immediately', function () {
-        expect(utils.closest).not.toHaveBeenCalled();
+        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
+        expect(this.event.target.closest).not.toHaveBeenCalled();
+        expect(this.dropdown.addSelectedClass).not.toHaveBeenCalled();
       });
     });
 
-    describe('if the target has the IGNORE_CLASS class', function () {
+    describe('if the target has the droplab-item-ignore class', function () {
       beforeEach(function () {
-        this.event = { preventDefault: () => {}, target: { tagName: 'LI', classList: this.classList } };
+        this.ignoredButton = document.createElement('button');
+        this.ignoredButton.classList.add('droplab-item-ignore');
+        this.event.target = this.ignoredButton;
 
-        spyOn(this.event, 'preventDefault');
-        this.classList.contains.and.returnValue(true);
-        utils.closest.calls.reset();
-
-        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+        spyOn(this.ignoredButton, 'closest').and.callThrough();
       });
 
-      it('should return immediately', function () {
-        expect(utils.closest).not.toHaveBeenCalled();
+      it('does not select element', function () {
+        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
+        expect(this.ignoredButton.closest.calls.count()).toBe(1);
+        expect(this.ignoredButton.closest).toHaveBeenCalledWith('.droplab-item-ignore');
+        expect(this.dropdown.addSelectedClass).not.toHaveBeenCalled();
       });
     });
 
     describe('if no selected element exists', function () {
       beforeEach(function () {
         this.event.preventDefault.calls.reset();
-        this.clickEvent = DropDown.prototype.clickEvent.call(this.dropdown, this.event);
-      });
-
-      it('should return undefined', function () {
-        expect(this.clickEvent).toBe(undefined);
+        this.dummyListItem = null;
       });
 
       it('should return before .preventDefault is called', function () {
+        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
         expect(this.event.preventDefault).not.toHaveBeenCalled();
+        expect(this.dropdown.addSelectedClass).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('if hideOnClick is false', () => {
+      beforeEach(function () {
+        this.dropdown.hideOnClick = false;
+        this.dropdown.hide.calls.reset();
+      });
+
+      it('should not call .hide', function () {
+        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+
+        expect(this.dropdown.hide).not.toHaveBeenCalled();
       });
     });
   });
@@ -278,16 +316,25 @@ describe('DropDown', function () {
 
   describe('addEvents', function () {
     beforeEach(function () {
-      this.list = { addEventListener: () => {} };
-      this.dropdown = { list: this.list, clickEvent: () => {}, eventWrapper: {} };
-
-      spyOn(this.list, 'addEventListener');
-
-      DropDown.prototype.addEvents.call(this.dropdown);
+      this.list = {
+        addEventListener: () => {},
+        querySelectorAll: () => [],
+      };
+      this.dropdown = {
+        list: this.list,
+        clickEvent: () => {},
+        closeDropdown: () => {},
+        eventWrapper: {},
+      };
     });
 
     it('should call .addEventListener', function () {
+      spyOn(this.list, 'addEventListener');
+
+      DropDown.prototype.addEvents.call(this.dropdown);
+
       expect(this.list.addEventListener).toHaveBeenCalledWith('click', jasmine.any(Function));
+      expect(this.list.addEventListener).toHaveBeenCalledWith('keyup', jasmine.any(Function));
     });
   });
 
@@ -351,14 +398,17 @@ describe('DropDown', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      this.list = { querySelector: () => {} };
+      this.list = { querySelector: () => {}, dispatchEvent: () => {} };
       this.dropdown = { renderChildren: () => {}, list: this.list };
       this.renderableList = {};
       this.data = [0, 1];
+      this.customEvent = {};
 
       spyOn(this.dropdown, 'renderChildren').and.callFake(data => data);
       spyOn(this.list, 'querySelector').and.returnValue(this.renderableList);
+      spyOn(this.list, 'dispatchEvent');
       spyOn(this.data, 'map').and.callThrough();
+      spyOn(window, 'CustomEvent').and.returnValue(this.customEvent);
 
       DropDown.prototype.render.call(this.dropdown, this.data);
     });
@@ -373,6 +423,14 @@ describe('DropDown', function () {
 
     it('sets the renderableList .innerHTML', function () {
       expect(this.renderableList.innerHTML).toBe('01');
+    });
+
+    it('should call render.dl', function () {
+      expect(window.CustomEvent).toHaveBeenCalledWith('render.dl', jasmine.any(Object));
+    });
+
+    it('should call dispatchEvent with the customEvent', function () {
+      expect(this.list.dispatchEvent).toHaveBeenCalledWith(this.customEvent);
     });
 
     describe('if no data argument is passed', function () {
@@ -394,7 +452,7 @@ describe('DropDown', function () {
 
     describe('if no dynamic list is present', function () {
       beforeEach(function () {
-        this.list = { querySelector: () => {} };
+        this.list = { querySelector: () => {}, dispatchEvent: () => {} };
         this.dropdown = { renderChildren: () => {}, list: this.list };
         this.data = [0, 1];
 

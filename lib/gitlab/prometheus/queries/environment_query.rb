@@ -3,7 +3,7 @@ module Gitlab
     module Queries
       class EnvironmentQuery < BaseQuery
         def query(environment_id)
-          Environment.find_by(id: environment_id).try do |environment|
+          ::Environment.find_by(id: environment_id).try do |environment|
             environment_slug = environment.slug
             timeframe_start = 8.hours.ago.to_f
             timeframe_end = Time.now.to_f
@@ -18,6 +18,11 @@ module Gitlab
               cpu_current: client_query(cpu_query, time: timeframe_end)
             }
           end
+        end
+
+        def self.transform_reactive_result(result)
+          result[:metrics] = result.delete :data
+          result
         end
       end
     end

@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-escape, max-len, quotes, no-var, no-underscore-dangle, func-names, space-before-function-paren, no-unused-vars, no-return-assign, object-shorthand, one-var, one-var-declaration-per-line, comma-dangle, consistent-return, class-methods-use-this, new-parens */
 
-import 'vendor/cropper';
+import $ from 'jquery';
+import 'cropper';
+import _ from 'underscore';
 
 ((global) => {
   // Matches everything but the file name
@@ -72,7 +74,8 @@ import 'vendor/cropper';
         aspectRatio: 1,
         modal: true,
         scalable: false,
-        rotatable: false,
+        rotatable: true,
+        checkOrientation: true,
         zoomable: true,
         dragMode: 'move',
         guides: false,

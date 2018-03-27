@@ -13,6 +13,7 @@ GET /projects/:id/repository/branches
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `search` | string | no | Return list of branches matching the search criteria.  |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/repository/branches
@@ -95,6 +96,8 @@ Example response:
 
 ## Protect repository branch
 
+>**Note:** This API endpoint is deprecated in favor of `POST /projects/:id/protected_branches`.
+
 Protects a single project repository branch. This is an idempotent function,
 protecting an already protected repository branch still returns a `200 OK`
 status code.
@@ -142,6 +145,8 @@ Example response:
 ```
 
 ## Unprotect repository branch
+
+>**Note:** This API endpoint is deprecated in favor of `DELETE /projects/:id/protected_branches/:name`
 
 Unprotects a single project repository branch. This is an idempotent function,
 unprotecting an already unprotected repository branch still returns a `200 OK`

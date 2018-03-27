@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe ProjectGroupLink do
   describe "Associations" do
-    it { should belong_to(:group) }
-    it { should belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe "Validation" do
@@ -12,10 +12,10 @@ describe ProjectGroupLink do
     let(:project) { create(:project, group: group) }
     let!(:project_group_link) { create(:project_group_link, project: project) }
 
-    it { should validate_presence_of(:project_id) }
-    it { should validate_uniqueness_of(:group_id).scoped_to(:project_id).with_message(/already shared/) }
-    it { should validate_presence_of(:group) }
-    it { should validate_presence_of(:group_access) }
+    it { is_expected.to validate_presence_of(:project_id) }
+    it { is_expected.to validate_uniqueness_of(:group_id).scoped_to(:project_id).with_message(/already shared/) }
+    it { is_expected.to validate_presence_of(:group) }
+    it { is_expected.to validate_presence_of(:group_access) }
 
     it "doesn't allow a project to be shared with the group it is in" do
       project_group_link.group = group
@@ -30,9 +30,9 @@ describe ProjectGroupLink do
     end
   end
 
-  describe "destroying a record", truncate: true do
+  describe "destroying a record", :delete do
     it "refreshes group users' authorized projects" do
-      project     = create(:empty_project, :private)
+      project     = create(:project, :private)
       group       = create(:group)
       reporter    = create(:user)
       group_users = group.users

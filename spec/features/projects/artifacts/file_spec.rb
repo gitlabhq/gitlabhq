@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Artifact file', :js, feature: true do
+feature 'Artifact file', :js do
   let(:project) { create(:project, :public) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
   def visit_file(path)
@@ -10,7 +10,7 @@ feature 'Artifact file', :js, feature: true do
   end
 
   def file_path(path)
-    file_namespace_project_job_artifacts_path(project.namespace, project, build, path)
+    file_project_job_artifacts_path(project, build, path)
   end
 
   context 'Text file' do
@@ -39,7 +39,6 @@ feature 'Artifact file', :js, feature: true do
 
   context 'JPG file' do
     before do
-      page.driver.browser.url_blacklist = []
       visit_file('rails_sample.jpg')
 
       wait_for_requests

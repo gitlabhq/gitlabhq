@@ -18,7 +18,7 @@ module StaticModel
   #
   # Pass it along if we respond to it.
   def [](key)
-    send(key) if respond_to?(key)
+    send(key) if respond_to?(key) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def to_param

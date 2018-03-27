@@ -1,9 +1,11 @@
 class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
+  include GitlabRoutingHelper
 
   include Emails::Issues
   include Emails::MergeRequests
   include Emails::Notes
+  include Emails::PagesDomains
   include Emails::Projects
   include Emails::Profile
   include Emails::Pipelines
@@ -111,15 +113,17 @@ class Notify < BaseMailer
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
     headers['X-GitLab-Reply-Key'] = reply_key
 
+    @reason = headers['X-GitLab-NotificationReason']
+
     if Gitlab::IncomingEmail.enabled? && @sent_notification
       address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
-      address.display_name = @project.name_with_namespace
+      address.display_name = @project.full_name
 
       headers['Reply-To'] = address
 
       fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
-      headers['References'] ||= ''
-      headers['References'] << ' ' << fallback_reply_message_id
+      headers['References'] ||= []
+      headers['References'] << fallback_reply_message_id
 
       @reply_by_email = true
     end
@@ -155,6 +159,18 @@ class Notify < BaseMailer
     mail_thread(model, headers)
   end
 
+  def mail_answer_note_thread(model, note, headers = {})
+    headers['Message-ID'] = message_id(note)
+    headers['In-Reply-To'] = message_id(note.references.last)
+    headers['References'] = note.references.map { |ref| message_id(ref) }
+
+    headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion?
+
+    headers[:subject]&.prepend('Re: ')
+
+    mail_thread(model, headers)
+  end
+
   def reply_key
     @reply_key ||= SentNotification.reply_key
   end
@@ -164,7 +180,7 @@ class Notify < BaseMailer
 
     headers['X-GitLab-Project'] = @project.name
     headers['X-GitLab-Project-Id'] = @project.id
-    headers['X-GitLab-Project-Path'] = @project.path_with_namespace
+    headers['X-GitLab-Project-Path'] = @project.full_path
   end
 
   def add_unsubscription_headers_and_links

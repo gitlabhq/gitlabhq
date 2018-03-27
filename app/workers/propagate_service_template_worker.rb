@@ -1,7 +1,6 @@
 # Worker for updating any project specific caches.
 class PropagateServiceTemplateWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   LEASE_TIMEOUT = 4.hours.to_i
 

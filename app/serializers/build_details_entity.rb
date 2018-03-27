@@ -6,8 +6,8 @@ class BuildDetailsEntity < JobEntity
   expose :pipeline, using: PipelineEntity
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
-  expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :update_build, project) } do |build|
-    erase_namespace_project_job_path(project.namespace, project, build)
+  expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
+    erase_project_job_path(project, build)
   end
 
   expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, build.merge_request) } do
@@ -16,23 +16,24 @@ class BuildDetailsEntity < JobEntity
     end
 
     expose :path do |build|
-      namespace_project_merge_request_path(project.namespace, project, build.merge_request)
+      project_merge_request_path(build.merge_request.project,
+                                 build.merge_request)
     end
   end
 
   expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) && build.failed? } do |build|
-    new_namespace_project_issue_path(project.namespace, project, issue: build_failed_issue_options)
+    new_project_issue_path(project, issue: build_failed_issue_options)
   end
 
   expose :raw_path do |build|
-    raw_namespace_project_job_path(project.namespace, project, build)
+    raw_project_job_path(project, build)
   end
 
   private
 
   def build_failed_issue_options
-    { title: "Build Failed ##{build.id}",
-      description: namespace_project_job_path(project.namespace, project, build) }
+    { title: "Job Failed ##{build.id}",
+      description: "Job [##{build.id}](#{project_job_path(project, build)}) failed for #{build.sha}:\n" }
   end
 
   def current_user

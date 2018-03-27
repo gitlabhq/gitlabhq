@@ -1,26 +1,41 @@
-/* eslint-disable class-methods-use-this */
-
-import './lib/utils/url_utility';
+import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
+import { getLocationHash } from './lib/utils/url_utility';
+import FilesCommentButton from './files_comment_button';
+import SingleFileDiff from './single_file_diff';
+import imageDiffHelper from './image_diff/helpers/index';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
 
-class Diff {
+export default class Diff {
   constructor() {
     const $diffFile = $('.files .diff-file');
-    $diffFile.singleFileDiff();
-    $diffFile.filesCommentButton();
 
-    $diffFile.each((index, file) => new gl.ImageFile(file));
+    $diffFile.each((index, file) => {
+      if (!$.data(file, 'singleFileDiff')) {
+        $.data(file, 'singleFileDiff', new SingleFileDiff(file));
+      }
+    });
+
+    const tab = document.getElementById('diffs');
+    if (!tab || (tab && tab.dataset && tab.dataset.isLocked !== '')) FilesCommentButton.init($diffFile);
+
+    const firstFile = $('.files').first().get(0);
+    const canCreateNote = firstFile && firstFile.hasAttribute('data-can-create-note');
+    $diffFile.each((index, file) => imageDiffHelper.initImageDiff(file, canCreateNote));
 
     if (!isBound) {
       $(document)
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
-        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this))
+        .on('mousedown', 'td.line_content.parallel', this.handleParallelLineDown.bind(this));
       isBound = true;
     }
 
-    if (gl.utils.getLocationHash()) {
+    if (getLocationHash()) {
       this.highlightSelectedLine();
     }
 
@@ -54,15 +69,17 @@ class Diff {
     }
 
     const file = $target.parents('.diff-file');
-    const link = file.data('blob-diff-path');
+    const link = file.data('blobDiffPath');
     const view = file.data('view');
 
     const params = { since, to, bottom, offset, unfold, view };
-    $.get(link, params, response => $target.parent().replaceWith(response));
+    axios.get(link, { params })
+    .then(({ data }) => $target.parent().replaceWith(data))
+    .catch(() => flash(__('An error occurred while loading diff')));
   }
 
   openAnchoredDiff(cb) {
-    const locationHash = gl.utils.getLocationHash();
+    const locationHash = getLocationHash();
     const anchoredDiff = locationHash && locationHash.split('_')[0];
 
     if (!anchoredDiff) return;
@@ -91,11 +108,23 @@ class Diff {
     }
     this.highlightSelectedLine();
   }
+  // eslint-disable-next-line class-methods-use-this
+  handleParallelLineDown(e) {
+    const line = $(e.currentTarget);
+    const table = line.closest('table');
 
-  diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('view-type');
+    table.removeClass('left-side-selected right-side-selected');
+
+    const lineClass = ['left-side', 'right-side'].filter(name => line.hasClass(name))[0];
+    if (lineClass) {
+      table.addClass(`${lineClass}-selected`);
+    }
   }
-
+  // eslint-disable-next-line class-methods-use-this
+  diffViewType() {
+    return $('.inline-parallel-buttons a.active').data('viewType');
+  }
+  // eslint-disable-next-line class-methods-use-this
   lineNumbers(line) {
     const children = line.find('.diff-line-num').toArray();
     if (children.length !== 2) {
@@ -103,9 +132,9 @@ class Diff {
     }
     return children.map(elm => parseInt($(elm).data('linenumber'), 10) || 0);
   }
-
+  // eslint-disable-next-line class-methods-use-this
   highlightSelectedLine() {
-    const hash = gl.utils.getLocationHash();
+    const hash = getLocationHash();
     const $diffFiles = $('.diff-file');
     $diffFiles.find('.hll').removeClass('hll');
 
@@ -116,6 +145,3 @@ class Diff {
     }
   }
 }
-
-window.gl = window.gl || {};
-window.gl.Diff = Diff;

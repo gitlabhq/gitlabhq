@@ -1,52 +1,27 @@
 - @no_container = true
-- page_title "Contributors"
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('graphs')
-= render 'projects/commits/head'
+- page_title _('Contributors')
 
-%div{ class: container_class }
+.js-graphs-show{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }
   .sub-header-block
-    .tree-ref-holder
+    .tree-ref-holder.inline.vertical-align-middle
       = render 'shared/ref_switcher', destination: 'graphs'
-    %ul.breadcrumb.repo-breadcrumb
-      = commits_breadcrumbs
+    = link_to s_('Commits|History'), project_commits_path(@project, current_ref), class: 'btn'
 
   .loading-graph
     .center
       %h3.page-title
         %i.fa.fa-spinner.fa-spin
-        Building repository graph.
-      %p.slead Please wait a moment, this page will automatically refresh when ready.
+        = s_('ContributorsPage|Building repository graph.')
+      %p.slead
+        = s_('ContributorsPage|Please wait a moment, this page will automatically refresh when ready.')
 
   .stat-graph.hide
     .header.clearfix
       %h3#date_header.page-title
       %p.light
-        Commits to #{@ref}, excluding merge commits. Limited to 6,000 commits.
+        = s_('ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits.') % { branch_name: @ref }
       %input#brush_change{ :type => "hidden" }
     .graphs.row
       #contributors-master
       #contributors.clearfix
         %ol.contributors-list.clearfix
-
-
-
-:javascript
-  $.ajax({
-    type: "GET",
-    url: "#{namespace_project_graph_path(@project.namespace, @project, current_ref, format: :json)}",
-    dataType: "json",
-    success: function (data) {
-      var graph = new ContributorsStatGraph();
-      graph.init(data);
-
-      $("#brush_change").change(function(){
-        graph.change_date_header();
-        graph.redraw_authors();
-      });
-
-      $(".stat-graph").fadeIn();
-      $(".loading-graph").hide();
-    }
-  });

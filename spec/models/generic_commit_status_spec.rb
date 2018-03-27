@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe GenericCommitStatus, models: true do
-  let(:project) { create(:empty_project) }
+describe GenericCommitStatus do
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:external_url) { 'http://example.gitlab.com/status' }
 
@@ -43,7 +43,7 @@ describe GenericCommitStatus, models: true do
 
     context 'when user has ability to see datails' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'details path points to an external URL' do

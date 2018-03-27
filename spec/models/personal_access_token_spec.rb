@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe PersonalAccessToken, models: true do
+describe PersonalAccessToken do
+  subject { described_class }
+
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }
@@ -41,7 +43,30 @@ describe PersonalAccessToken, models: true do
     it 'revokes the token' do
       active_personal_access_token.revoke!
 
-      expect(active_personal_access_token.revoked?).to be true
+      expect(active_personal_access_token).to be_revoked
+    end
+  end
+
+  describe 'Redis storage' do
+    let(:user_id) { 123 }
+    let(:token) { 'abc000foo' }
+
+    before do
+      subject.redis_store!(user_id, token)
+    end
+
+    it 'returns stored data' do
+      expect(subject.redis_getdel(user_id)).to eq(token)
+    end
+
+    context 'after deletion' do
+      before do
+        expect(subject.redis_getdel(user_id)).to eq(token)
+      end
+
+      it 'token is removed' do
+        expect(subject.redis_getdel(user_id)).to be_nil
+      end
     end
   end
 
@@ -61,10 +86,37 @@ describe PersonalAccessToken, models: true do
       expect(personal_access_token).to be_valid
     end
 
-    it "allows creating a token with read_registry scope" do
-      personal_access_token.scopes = [:read_registry]
+    context 'when registry is disabled' do
+      before do
+        stub_container_registry_config(enabled: false)
+      end
 
-      expect(personal_access_token).to be_valid
+      it "rejects creating a token with read_registry scope" do
+        personal_access_token.scopes = [:read_registry]
+
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
+      end
+
+      it "allows revoking a token with read_registry scope" do
+        personal_access_token.scopes = [:read_registry]
+
+        personal_access_token.revoke!
+
+        expect(personal_access_token).to be_revoked
+      end
+    end
+
+    context 'when registry is enabled' do
+      before do
+        stub_container_registry_config(enabled: true)
+      end
+
+      it "allows creating a token with read_registry scope" do
+        personal_access_token.scopes = [:read_registry]
+
+        expect(personal_access_token).to be_valid
+      end
     end
 
     it "rejects creating a token with unavailable scopes" do

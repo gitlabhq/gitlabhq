@@ -1,13 +1,22 @@
 <script>
   import commitIconSvg from 'icons/_icon_commit.svg';
   import userAvatarLink from './user_avatar/user_avatar_link.vue';
+  import tooltip from '../directives/tooltip';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
+    directives: {
+      tooltip,
+    },
+    components: {
+      userAvatarLink,
+      icon,
+    },
     props: {
       /**
        * Indicates the existance of a tag.
        * Used to render the correct icon, if true will render `fa-tag` icon,
-       * if false will render `fa-code-fork` icon.
+       * if false will render a svg sprite fork icon
        */
       tag: {
         type: Boolean,
@@ -62,13 +71,16 @@
         required: false,
         default: () => ({}),
       },
+      showBranch: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     computed: {
       /**
        * Used to verify if all the properties needed to render the commit
        * ref section were provided.
-       *
-       * TODO: Improve this! Use lodash _.has when we have it.
        *
        * @returns {Boolean}
        */
@@ -78,8 +90,6 @@
       /**
        * Used to verify if all the properties needed to render the commit
        * author section were provided.
-       *
-       * TODO: Improve this! Use lodash _.has when we have it.
        *
        * @returns {Boolean}
        */
@@ -100,51 +110,55 @@
           this.author.username ? `${this.author.username}'s avatar` : null;
       },
     },
-    data() {
-      return { commitIconSvg };
-    },
-    components: {
-      userAvatarLink,
+    created() {
+      this.commitIconSvg = commitIconSvg;
     },
   };
 </script>
 <template>
   <div class="branch-commit">
-    <div v-if="hasCommitRef" class="icon-container hidden-xs">
-      <i
-        v-if="tag"
-        class="fa fa-tag"
-        aria-hidden="true">
-      </i>
-      <i
-        v-if="!tag"
-        class="fa fa-code-fork"
-        aria-hidden="true">
-      </i>
-    </div>
+    <template v-if="hasCommitRef && showBranch">
+      <div class="icon-container">
+        <i
+          v-if="tag"
+          class="fa fa-tag"
+          aria-hidden="true"
+        >
+        </i>
+        <icon
+          v-if="!tag"
+          name="fork"
+        />
+      </div>
 
-    <a
-      v-if="hasCommitRef"
-      class="ref-name hidden-xs"
-      :href="commitRef.ref_url">
-      {{commitRef.name}}
-    </a>
-
+      <a
+        class="ref-name"
+        :href="commitRef.ref_url"
+        v-tooltip
+        data-container="body"
+        :title="commitRef.name"
+      >
+        {{ commitRef.name }}
+      </a>
+    </template>
     <div
       v-html="commitIconSvg"
-      class="commit-icon js-commit-icon">
+      class="commit-icon js-commit-icon"
+    >
     </div>
 
     <a
       class="commit-sha"
-      :href="commitUrl">
-      {{shortSha}}
+      :href="commitUrl"
+    >
+      {{ shortSha }}
     </a>
 
     <div class="commit-title flex-truncate-parent">
       <span
         v-if="title"
-        class="flex-truncate-child">
+        class="flex-truncate-child"
+      >
         <user-avatar-link
           v-if="hasAuthor"
           class="avatar-image-container"
@@ -153,9 +167,11 @@
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
         />
-        <a class="commit-row-message"
-          :href="commitUrl">
-          {{title}}
+        <a
+          class="commit-row-message"
+          :href="commitUrl"
+        >
+          {{ title }}
         </a>
       </span>
       <span v-else>

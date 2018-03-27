@@ -1,11 +1,12 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
     source :push
     ref 'master'
     sha '97de212e80737a608d939f648d959671fb0a0142'
     status 'pending'
+    protected false
 
-    project factory: :empty_project
+    project
 
     factory :ci_pipeline_without_jobs do
       after(:build) do |pipeline|
@@ -46,6 +47,7 @@ FactoryGirl.define do
 
       trait :invalid do
         config(rspec: nil)
+        failure_reason :config_error
       end
 
       trait :blocked do
@@ -58,6 +60,10 @@ FactoryGirl.define do
 
       trait :failed do
         status :failed
+      end
+
+      trait :protected do
+        protected true
       end
     end
   end

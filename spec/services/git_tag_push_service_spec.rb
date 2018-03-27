@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe GitTagPushService, services: true do
+describe GitTagPushService do
   include RepoHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
-  let(:service) { GitTagPushService.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref) }
+  let(:service) { described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref) }
 
   let(:oldrev) { Gitlab::Git::BLANK_SHA }
   let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
@@ -35,11 +35,11 @@ describe GitTagPushService, services: true do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "creates a new pipeline" do
-      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect { subject }.to change { Ci::Pipeline.count }
       expect(Ci::Pipeline.last).to be_push
     end
   end
@@ -184,7 +184,7 @@ describe GitTagPushService, services: true do
 
   describe "Webhooks" do
     context "execute webhooks" do
-      let(:service) { GitTagPushService.new(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: 'refs/tags/v1.0.0') }
+      let(:service) { described_class.new(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: 'refs/tags/v1.0.0') }
 
       it "when pushing tags" do
         expect(project).to receive(:execute_hooks)

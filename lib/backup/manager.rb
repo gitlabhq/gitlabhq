@@ -8,18 +8,9 @@ module Backup
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
 
-      # saving additional informations
-      s = {}
-      s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = Time.now
-      s[:gitlab_version]     = Gitlab::VERSION
-      s[:tar_version]        = tar_version
-      s[:skipped]            = ENV["SKIP"]
-      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{s[:gitlab_version]}#{FILE_NAME_SUFFIX}"
-
       Dir.chdir(backup_path) do
         File.open("#{backup_path}/backup_information.yml", "w+") do |file|
-          file << s.to_yaml.gsub(/^---\n/, '')
+          file << backup_information.to_yaml.gsub(/^---\n/, '')
         end
 
         # create archive
@@ -33,11 +24,11 @@ module Backup
           abort 'Backup failed'
         end
 
-        upload(tar_file)
+        upload
       end
     end
 
-    def upload(tar_file)
+    def upload
       $progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
 
       connection_settings = Gitlab.config.backup.upload.connection
@@ -48,7 +39,7 @@ module Backup
 
       directory = connect_to_remote_directory(connection_settings)
 
-      if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
+      if directory.files.create(key: remote_target, body: File.open(tar_file), public: false,
                                 multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
                                 encryption: Gitlab.config.backup.upload.encryption,
                                 storage_class: Gitlab.config.backup.upload.storage_class)
@@ -88,7 +79,7 @@ module Backup
             # - 1495527122_gitlab_backup.tar
             # - 1495527068_2017_05_23_gitlab_backup.tar
             # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
-            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/
+            next unless file =~ /^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/
 
             timestamp = $1.to_i
 
@@ -110,50 +101,55 @@ module Backup
     end
 
     def unpack
-      Dir.chdir(backup_path)
+      Dir.chdir(backup_path) do
+        # check for existing backups in the backup dir
+        if backup_file_list.empty?
+          $progress.puts "No backups found in #{backup_path}"
+          $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
+          exit 1
+        elsif backup_file_list.many? && ENV["BACKUP"].nil?
+          $progress.puts 'Found more than one backup:'
+          # print list of available backups
+          $progress.puts " " + available_timestamps.join("\n ")
+          $progress.puts 'Please specify which one you want to restore:'
+          $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+          exit 1
+        end
 
-      # check for existing backups in the backup dir
-      if backup_file_list.empty?
-        $progress.puts "No backups found in #{backup_path}"
-        $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
-        exit 1
-      elsif backup_file_list.many? && ENV["BACKUP"].nil?
-        $progress.puts 'Found more than one backup, please specify which one you want to restore:'
-        $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
-        exit 1
-      end
+        tar_file = if ENV['BACKUP'].present?
+                     "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
+                   else
+                     backup_file_list.first
+                   end
 
-      tar_file = if ENV['BACKUP'].present?
-                   "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
-                 else
-                   backup_file_list.first
-                 end
+        unless File.exist?(tar_file)
+          $progress.puts "The backup file #{tar_file} does not exist!"
+          exit 1
+        end
 
-      unless File.exist?(tar_file)
-        $progress.puts "The backup file #{tar_file} does not exist!"
-        exit 1
-      end
+        $progress.print 'Unpacking backup ... '
 
-      $progress.print 'Unpacking backup ... '
+        unless Kernel.system(*%W(tar -xf #{tar_file}))
+          $progress.puts 'unpacking backup failed'.color(:red)
+          exit 1
+        else
+          $progress.puts 'done'.color(:green)
+        end
 
-      unless Kernel.system(*%W(tar -xf #{tar_file}))
-        $progress.puts 'unpacking backup failed'.color(:red)
-        exit 1
-      else
-        $progress.puts 'done'.color(:green)
-      end
+        ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
-      ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
-
-      # restoring mismatching backups can lead to unexpected problems
-      if settings[:gitlab_version] != Gitlab::VERSION
-        $progress.puts 'GitLab version mismatch:'.color(:red)
-        $progress.puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
-        $progress.puts '  Please switch to the following version and try again:'.color(:red)
-        $progress.puts "  version: #{settings[:gitlab_version]}".color(:red)
-        $progress.puts
-        $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
-        exit 1
+        # restoring mismatching backups can lead to unexpected problems
+        if settings[:gitlab_version] != Gitlab::VERSION
+          $progress.puts(<<~HEREDOC.color(:red))
+            GitLab version mismatch:
+              Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
+              Please switch to the following version and try again:
+              version: #{settings[:gitlab_version]}
+          HEREDOC
+          $progress.puts
+          $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
+          exit 1
+        end
       end
     end
 
@@ -176,8 +172,13 @@ module Backup
       @backup_file_list ||= Dir.glob("*#{FILE_NAME_SUFFIX}")
     end
 
+    def available_timestamps
+      @backup_file_list.map {|item| item.gsub("#{FILE_NAME_SUFFIX}", "")}
+    end
+
     def connect_to_remote_directory(connection_settings)
-      connection = ::Fog::Storage.new(connection_settings)
+      # our settings use string keys, but Fog expects symbols
+      connection = ::Fog::Storage.new(connection_settings.symbolize_keys)
 
       # We only attempt to create the directory for local backups. For AWS
       # and other cloud providers, we cannot guarantee the user will have
@@ -193,16 +194,24 @@ module Backup
       Gitlab.config.backup.upload.remote_directory
     end
 
+    def remote_target
+      if ENV['DIRECTORY']
+        File.join(ENV['DIRECTORY'], tar_file)
+      else
+        tar_file
+      end
+    end
+
     def backup_contents
       folders_to_backup + archives_to_backup + ["backup_information.yml"]
     end
 
     def archives_to_backup
-      ARCHIVES_TO_BACKUP.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
+      ARCHIVES_TO_BACKUP.map { |name| (name + ".tar.gz") unless skipped?(name) }.compact
     end
 
     def folders_to_backup
-      FOLDERS_TO_BACKUP.reject{ |name| skipped?(name) }
+      FOLDERS_TO_BACKUP.reject { |name| skipped?(name) }
     end
 
     def disabled_features
@@ -213,6 +222,20 @@ module Backup
 
     def settings
       @settings ||= YAML.load_file("backup_information.yml")
+    end
+
+    def tar_file
+      @tar_file ||= "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
+    end
+
+    def backup_information
+      @backup_information ||= {
+        db_version: ActiveRecord::Migrator.current_version.to_s,
+        backup_created_at: Time.now,
+        gitlab_version: Gitlab::VERSION,
+        tar_version: tar_version,
+        skipped: ENV["SKIP"]
+      }
     end
   end
 end

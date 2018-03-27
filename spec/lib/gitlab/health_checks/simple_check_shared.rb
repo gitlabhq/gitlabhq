@@ -8,7 +8,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_success", value: 1)) }
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_timeout", value: 0)) }
-      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be >= 0)) }
+      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency_seconds", value: be >= 0)) }
     end
 
     context 'Check is misbehaving' do
@@ -18,7 +18,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_success", value: 0)) }
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_timeout", value: 0)) }
-      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be >= 0)) }
+      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency_seconds", value: be >= 0)) }
     end
 
     context 'Check is timeouting' do
@@ -28,7 +28,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_success", value: 0)) }
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_timeout", value: 1)) }
-      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be >= 0)) }
+      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency_seconds", value: be >= 0)) }
     end
   end
 
@@ -47,7 +47,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
         allow(described_class).to receive(:check).and_return 'error!'
       end
 
-      it { is_expected.to have_attributes(success: false, message: "unexpected #{check_name} check result: error!") }
+      it { is_expected.to have_attributes(success: false, message: "unexpected #{described_class.human_name} check result: error!") }
     end
 
     context 'Check is timeouting' do
@@ -55,7 +55,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
         allow(described_class).to receive(:check ).and_return Timeout::Error.new
       end
 
-      it { is_expected.to have_attributes(success: false, message: "#{check_name} check timed out") }
+      it { is_expected.to have_attributes(success: false, message: "#{described_class.human_name} check timed out") }
     end
   end
 

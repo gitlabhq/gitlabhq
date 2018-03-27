@@ -1,19 +1,14 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, one-var, one-var-declaration-per-line, no-useless-escape, max-len */
+import $ from 'jquery';
 
-window.GroupAvatar = (function() {
-  function GroupAvatar() {
-    $('.js-choose-group-avatar-button').on("click", function() {
-      var form;
-      form = $(this).closest("form");
-      return form.find(".js-group-avatar-input").click();
-    });
-    $('.js-group-avatar-input').on("change", function() {
-      var filename, form;
-      form = $(this).closest("form");
-      filename = $(this).val().replace(/^.*[\\\/]/, '');
-      return form.find(".js-avatar-filename").text(filename);
-    });
-  }
-
-  return GroupAvatar;
-})();
+export default function groupAvatar() {
+  $('.js-choose-group-avatar-button').on('click', function onClickGroupAvatar() {
+    const form = $(this).closest('form');
+    return form.find('.js-group-avatar-input').click();
+  });
+  $('.js-group-avatar-input').on('change', function onChangeAvatarInput() {
+    const form = $(this).closest('form');
+    // eslint-disable-next-line no-useless-escape
+    const filename = $(this).val().replace(/^.*[\\\/]/, '');
+    return form.find('.js-avatar-filename').text(filename);
+  });
+}

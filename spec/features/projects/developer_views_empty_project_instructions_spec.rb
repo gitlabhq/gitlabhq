@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-feature 'Developer views empty project instructions', feature: true do
-  let(:project) { create(:empty_project, :empty_repo) }
+feature 'Developer views empty project instructions' do
+  let(:project) { create(:project, :empty_repo) }
   let(:developer) { create(:user) }
 
   background do
-    project.team << [developer, :developer]
+    project.add_developer(developer)
 
-    gitlab_sign_in(developer)
+    sign_in(developer)
   end
 
   context 'without an SSH key' do
@@ -17,7 +17,7 @@ feature 'Developer views empty project instructions', feature: true do
       expect_instructions_for('http')
     end
 
-    scenario 'switches to SSH', js: true do
+    scenario 'switches to SSH', :js do
       visit_project
 
       select_protocol('SSH')
@@ -37,7 +37,7 @@ feature 'Developer views empty project instructions', feature: true do
       expect_instructions_for('ssh')
     end
 
-    scenario 'switches to HTTP', js: true do
+    scenario 'switches to HTTP', :js do
       visit_project
 
       select_protocol('HTTP')
@@ -47,7 +47,7 @@ feature 'Developer views empty project instructions', feature: true do
   end
 
   def visit_project
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def select_protocol(protocol)

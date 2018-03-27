@@ -8,8 +8,9 @@ namespace :gitlab do
       namespace_ids = Namespace.where(['updated_at > ?', date]).pluck(:id).sort
       scope = scope.where('id IN (?) OR namespace_id in (?)', project_ids, namespace_ids)
     end
+
     scope.find_each do |project|
-      base = File.join(project.repository_storage_path, project.path_with_namespace)
+      base = File.join(project.repository_storage_path, project.disk_path)
       puts base + '.git'
       puts base + '.wiki.git'
     end

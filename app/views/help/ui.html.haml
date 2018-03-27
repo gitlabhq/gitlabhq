@@ -66,7 +66,7 @@
   .example
     .cover-block
       .avatar-holder
-        = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
+        = image_tag avatar_icon_for_email('admin@example.com', 90), class: "avatar s90", alt: ''
       .cover-title
         John Smith
 
@@ -187,7 +187,7 @@
             = icon('chevron-down')
           %ul.dropdown-menu
             %li
-              %a Sort by date
+              = link_to 'Sort by date', '#'
 
         = link_to 'New issue', '#', class: 'btn btn-new btn-inverted'
 
@@ -407,29 +407,6 @@
           .dropdown-content
           .dropdown-loading
             = icon('spinner spin')
-    :javascript
-      $('#js-project-dropdown').glDropdown({
-        data: function (term, callback) {
-          Api.projects(term, { order_by: 'last_activity_at' }, function (data) {
-            callback(data);
-          });
-        },
-        text: function (project) {
-          return project.name_with_namespace || project.name;
-        },
-        selectable: true,
-        fieldName: "author_id",
-        filterable: true,
-        search: {
-          fields: ['name_with_namespace']
-        },
-        id: function (data) {
-          return data.id;
-        },
-        isSelected: function (data) {
-          return data.id === 2;
-        }
-      })
 
   .example
     %div
@@ -525,7 +502,7 @@
   %h4
     %code .file-holder
 
-  - blob = Snippet.new(content: "Wow\nSuch\nFile")
+  - blob = Snippet.new(content: "Wow\nSuch\nFile").blob
   .example
     .file-holder
       .js-file-title.file-title

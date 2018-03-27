@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Gitlab::PathRegex, lib: true do
+describe Gitlab::PathRegex do
   # Pass in a full path to remove the format segment:
   # `/ci/lint(.:format)` -> `/ci/lint`
   def without_format(path)
@@ -36,41 +36,78 @@ describe Gitlab::PathRegex, lib: true do
       described_class::PROJECT_WILDCARD_ROUTES.include?(path.split('/').first)
   end
 
-  def failure_message(missing_words, constant_name, migration_helper)
+  def failure_message(constant_name, migration_helper, missing_words: [], additional_words: [])
     missing_words = Array(missing_words)
-    <<-MSG
+    additional_words = Array(additional_words)
+    message = ""
+    if missing_words.any?
+      message += <<-MISSING
       Found new routes that could cause conflicts with existing namespaced routes
       for groups or projects.
 
-      Add <#{missing_words.join(', ')}> to `Gitlab::PathRegex::#{constant_name}
-      to make sure no projects or namespaces can be created with those paths.
+      Nest <#{missing_words.join(', ')}> in a route containing `-`, that way
+      we know there will be no conflicts with groups or projects created with those
+      paths.
 
-      To rename any existing records with those paths you can use the
-      `Gitlab::Database::RenameReservedpathsMigration::<VERSION>.#{migration_helper}`
-      migration helper.
+      MISSING
+    end
 
-      Make sure to make a note of the renamed records in the release blog post.
+    if additional_words.any?
+      message += <<-ADDITIONAL
+      Is <#{additional_words.join(', ')}> in `#{constant_name}` required?
+      If they are really required, update these specs to reflect that.
 
-    MSG
+      ADDITIONAL
+    end
+
+    message
   end
 
-  let(:all_routes) do
+  let(:all_non_legacy_routes) do
     route_set = Rails.application.routes
     routes_collection = route_set.routes
     routes_array = routes_collection.routes
-    routes_array.map { |route| route.path.spec.to_s }
+
+    non_legacy_routes = routes_array.reject do |route|
+      route.name.to_s =~ /legacy_(\w*)_redirect/
+    end
+
+    non_deprecated_redirect_routes = non_legacy_routes.reject do |route|
+      app = route.app
+      # `app.app` is either another app, or `self`. We want to find the final app.
+      app = app.app while app.try(:app) && app.app != app
+
+      app.is_a?(ActionDispatch::Routing::PathRedirect) && app.block.include?('/-/')
+    end
+
+    non_deprecated_redirect_routes.map { |route| route.path.spec.to_s }
   end
 
-  let(:routes_without_format) { all_routes.map { |path| without_format(path) } }
+  let(:routes_without_format) { all_non_legacy_routes.map { |path| without_format(path) } }
 
   # Routes not starting with `/:` or `/*`
   # all routes not starting with a param
   let(:routes_not_starting_in_wildcard) { routes_without_format.select { |p| p !~ %r{^/[:*]} } }
 
   let(:top_level_words) do
-    routes_not_starting_in_wildcard.map do |route|
+    words = routes_not_starting_in_wildcard.map do |route|
       route.split('/')[1]
-    end.compact.uniq
+    end.compact
+
+    (words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)).uniq
+  end
+
+  let(:ee_top_level_words) do
+    ['unsubscribes']
+  end
+
+  let(:files_in_public) do
+    git = Gitlab.config.git.bin_path
+    tracked = `cd #{Rails.root} && #{git} ls-files public`
+      .split("\n")
+      .map { |entry| entry.gsub('public/', '') }
+      .uniq
+    tracked + %w(assets uploads)
   end
 
   # All routes that start with a namespaced path, that have 1 or more
@@ -84,7 +121,7 @@ describe Gitlab::PathRegex, lib: true do
   STARTING_WITH_NAMESPACE = %r{^/\*namespace_id/:(project_)?id}
   NON_PARAM_PARTS = %r{[^:*][a-z\-_/]*}
   ANY_OTHER_PATH_PART = %r{[a-z\-_/:]*}
-  WILDCARD_SEGMENT = %r{\*}
+  WILDCARD_SEGMENT = /\*/
   let(:namespaced_wildcard_routes) do
     routes_without_format.select do |p|
       p =~ %r{#{STARTING_WITH_NAMESPACE}/#{NON_PARAM_PARTS}/#{ANY_OTHER_PATH_PART}#{WILDCARD_SEGMENT}}
@@ -122,11 +159,13 @@ describe Gitlab::PathRegex, lib: true do
     it 'includes all the top level namespaces' do
       failure_block = lambda do
         missing_words = top_level_words - described_class::TOP_LEVEL_ROUTES
-        failure_message(missing_words, 'TOP_LEVEL_ROUTES', 'rename_root_paths')
+        additional_words = described_class::TOP_LEVEL_ROUTES - top_level_words
+        failure_message('TOP_LEVEL_ROUTES', 'rename_root_paths',
+                        missing_words: missing_words, additional_words: additional_words)
       end
 
       expect(described_class::TOP_LEVEL_ROUTES)
-        .to include(*top_level_words), failure_block
+        .to contain_exactly(*top_level_words), failure_block
     end
   end
 
@@ -134,11 +173,13 @@ describe Gitlab::PathRegex, lib: true do
     it "don't contain a second wildcard" do
       failure_block = lambda do
         missing_words = paths_after_group_id - described_class::GROUP_ROUTES
-        failure_message(missing_words, 'GROUP_ROUTES', 'rename_child_paths')
+        additional_words = described_class::GROUP_ROUTES - paths_after_group_id
+        failure_message('GROUP_ROUTES', 'rename_child_paths',
+                        missing_words: missing_words, additional_words: additional_words)
       end
 
       expect(described_class::GROUP_ROUTES)
-        .to include(*paths_after_group_id), failure_block
+        .to contain_exactly(*paths_after_group_id), failure_block
     end
   end
 
@@ -147,14 +188,14 @@ describe Gitlab::PathRegex, lib: true do
       aggregate_failures do
         all_wildcard_paths.each do |path|
           expect(wildcards_include?(path))
-            .to be(true), failure_message(path, 'PROJECT_WILDCARD_ROUTES', 'rename_wildcard_paths')
+            .to be(true), failure_message('PROJECT_WILDCARD_ROUTES', 'rename_wildcard_paths', missing_words: path)
         end
       end
     end
   end
 
-  describe '.root_namespace_path_regex' do
-    subject { described_class.root_namespace_path_regex }
+  describe '.root_namespace_route_regex' do
+    subject { %r{\A#{described_class.root_namespace_route_regex}/\z} }
 
     it 'rejects top level routes' do
       expect(subject).not_to match('admin/')
@@ -170,8 +211,6 @@ describe Gitlab::PathRegex, lib: true do
 
     it 'accepts group routes' do
       expect(subject).to match('activity/')
-      expect(subject).to match('group_members/')
-      expect(subject).to match('subgroups/')
     end
 
     it 'is not case sensitive' do
@@ -203,8 +242,6 @@ describe Gitlab::PathRegex, lib: true do
 
         it 'accepts group routes' do
           expect(subject).to match('activity/')
-          expect(subject).to match('group_members/')
-          expect(subject).to match('subgroups/')
         end
       end
 
@@ -225,8 +262,6 @@ describe Gitlab::PathRegex, lib: true do
 
         it 'accepts group routes' do
           expect(subject).to match('activity/more/')
-          expect(subject).to match('group_members/more/')
-          expect(subject).to match('subgroups/more/')
         end
       end
     end
@@ -248,9 +283,7 @@ describe Gitlab::PathRegex, lib: true do
         end
 
         it 'rejects group routes' do
-          expect(subject).not_to match('root/activity/')
-          expect(subject).not_to match('root/group_members/')
-          expect(subject).not_to match('root/subgroups/')
+          expect(subject).not_to match('root/-/')
         end
       end
 
@@ -270,9 +303,7 @@ describe Gitlab::PathRegex, lib: true do
         end
 
         it 'rejects group routes' do
-          expect(subject).not_to match('root/activity/more/')
-          expect(subject).not_to match('root/group_members/more/')
-          expect(subject).not_to match('root/subgroups/more/')
+          expect(subject).not_to match('root/-/')
         end
       end
     end
@@ -287,8 +318,8 @@ describe Gitlab::PathRegex, lib: true do
     end
   end
 
-  describe '.project_path_regex' do
-    subject { described_class.project_path_regex }
+  describe '.project_route_regex' do
+    subject { %r{\A#{described_class.project_route_regex}/\z} }
 
     it 'accepts top level routes' do
       expect(subject).to match('admin/')
@@ -305,9 +336,7 @@ describe Gitlab::PathRegex, lib: true do
     end
 
     it 'accepts group routes' do
-      expect(subject).to match('activity/')
-      expect(subject).to match('group_members/')
-      expect(subject).to match('subgroups/')
+      expect(subject).to match('analytics/')
     end
 
     it 'is not case sensitive' do
@@ -338,9 +367,7 @@ describe Gitlab::PathRegex, lib: true do
     end
 
     it 'accepts group routes' do
-      expect(subject).to match('root/activity/')
-      expect(subject).to match('root/group_members/')
-      expect(subject).to match('root/subgroups/')
+      expect(subject).to match('root/analytics/')
     end
 
     it 'is not case sensitive' do

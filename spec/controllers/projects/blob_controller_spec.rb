@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Projects::BlobController do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
 
   describe "GET show" do
@@ -35,6 +37,26 @@ describe Projects::BlobController do
       end
     end
 
+    context 'with file path and JSON format' do
+      context "valid branch, valid file" do
+        let(:id) { 'master/README.md' }
+
+        before do
+          get(:show,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              format: :json)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).to have_key 'html'
+          expect(json_response).to have_key 'raw_path'
+        end
+      end
+    end
+
     context 'with tree path' do
       before do
         get(:show,
@@ -48,7 +70,7 @@ describe Projects::BlobController do
         let(:id) { 'markdown/doc' }
         it 'redirects' do
           expect(subject)
-            .to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
+            .to redirect_to("/#{project.full_path}/tree/markdown/doc")
         end
       end
     end
@@ -67,7 +89,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
     end
@@ -117,7 +139,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to redirect_to(namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG'))
+        expect(response).to redirect_to(project_blob_path(project, 'master/CHANGELOG'))
       end
     end
 
@@ -125,13 +147,13 @@ describe Projects::BlobController do
       let(:developer) { create(:user) }
 
       before do
-        project.team << [developer, :developer]
+        project.add_developer(developer)
         sign_in(developer)
         get :edit, default_params
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -139,13 +161,13 @@ describe Projects::BlobController do
       let(:master) { create(:user) }
 
       before do
-        project.team << [master, :master]
+        project.add_master(master)
         sign_in(master)
         get :edit, default_params
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end
@@ -164,11 +186,11 @@ describe Projects::BlobController do
     end
 
     def blob_after_edit_path
-      namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG')
+      project_blob_path(project, 'master/CHANGELOG')
     end
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
     end
@@ -186,14 +208,14 @@ describe Projects::BlobController do
       it 'redirects to MR diff' do
         put :update, mr_params
 
-        after_edit_path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        after_edit_path = diffs_project_merge_request_path(project, merge_request)
         file_anchor = "##{Digest::SHA1.hexdigest('CHANGELOG')}"
         expect(response).to redirect_to(after_edit_path + file_anchor)
       end
 
       context "when user doesn't have access" do
         before do
-          other_project = create(:empty_project)
+          other_project = create(:project, :repository)
           merge_request.update!(source_project: other_project, target_project: other_project)
         end
 
@@ -206,9 +228,8 @@ describe Projects::BlobController do
     end
 
     context 'when user has forked project' do
-      let(:forked_project_link) { create(:forked_project_link, forked_from_project: project) }
-      let!(:forked_project) { forked_project_link.forked_to_project }
-      let(:guest) { forked_project.owner }
+      let!(:forked_project) { fork_project(project, guest, namespace: guest.namespace, repository: true) }
+      let(:guest) { create(:user) }
 
       before do
         sign_in(guest)
@@ -223,7 +244,7 @@ describe Projects::BlobController do
         it 'redirects to blob' do
           put :update, default_params
 
-          expect(response).to redirect_to(namespace_project_blob_path(forked_project.namespace, forked_project, 'master/CHANGELOG'))
+          expect(response).to redirect_to(project_blob_path(forked_project, 'master/CHANGELOG'))
         end
       end
 
@@ -235,8 +256,7 @@ describe Projects::BlobController do
           put :update, default_params
 
           expect(response).to redirect_to(
-            new_namespace_project_merge_request_path(
-              forked_project.namespace,
+            project_new_merge_request_path(
               forked_project,
               merge_request: {
                 source_project_id: forked_project.id,

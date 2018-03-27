@@ -14,5 +14,11 @@ module Mattermost
         type: type
       }.to_json)
     end
+
+    # The deletion is done async, so the response is fast.
+    # On the mattermost side, this triggers an soft deletion
+    def destroy(team_id:)
+      session_delete("/api/v4/teams/#{team_id}")
+    end
   end
 end

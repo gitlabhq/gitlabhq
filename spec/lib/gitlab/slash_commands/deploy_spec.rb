@@ -1,9 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Deploy, service: true do
+describe Gitlab::SlashCommands::Deploy do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { create(:user) }
+    let(:chat_name) { double(:chat_name, user: user) }
     let(:regex_match) { described_class.match('deploy staging to production') }
 
     before do
@@ -16,13 +17,13 @@ describe Gitlab::SlashCommands::Deploy, service: true do
     end
 
     subject do
-      described_class.new(project, user).execute(regex_match)
+      described_class.new(project, chat_name).execute(regex_match)
     end
 
     context 'if no environment is defined' do
       it 'does not execute an action' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to eq("No action found to be executed")
+        expect(subject[:text]).to eq "Couldn't find a deployment manual action."
       end
     end
 
@@ -35,12 +36,12 @@ describe Gitlab::SlashCommands::Deploy, service: true do
       context 'without actions' do
         it 'does not execute an action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to eq("No action found to be executed")
+          expect(subject[:text]).to eq "Couldn't find a deployment manual action."
         end
       end
 
-      context 'with action' do
-        let!(:manual1) do
+      context 'when single action has been matched' do
+        before do
           create(:ci_build, :manual, pipeline: pipeline,
                                      name: 'first',
                                      environment: 'production')
@@ -48,31 +49,61 @@ describe Gitlab::SlashCommands::Deploy, service: true do
 
         it 'returns success result' do
           expect(subject[:response_type]).to be(:in_channel)
-          expect(subject[:text]).to start_with('Deployment started from staging to production')
+          expect(subject[:text])
+            .to start_with('Deployment started from staging to production')
         end
+      end
 
-        context 'when duplicate action exists' do
-          let!(:manual2) do
+      context 'when more than one action has been matched' do
+        context 'when there is no specific actions with a environment name' do
+          before do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'first',
+                                       environment: 'production')
+
             create(:ci_build, :manual, pipeline: pipeline,
                                        name: 'second',
                                        environment: 'production')
           end
 
-          it 'returns error' do
+          it 'returns error about too many actions defined' do
+            expect(subject[:text]).to eq("Couldn't find a deployment manual action.")
             expect(subject[:response_type]).to be(:ephemeral)
-            expect(subject[:text]).to eq('Too many actions defined')
           end
         end
 
-        context 'when teardown action exists' do
-          let!(:teardown) do
+        context 'when one of the actions is environement specific action' do
+          before do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'first',
+                                       environment: 'production')
+
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'production',
+                                       environment: 'production')
+          end
+
+          it 'deploys to production' do
+            expect(subject[:text])
+              .to start_with('Deployment started from staging to production')
+            expect(subject[:response_type]).to be(:in_channel)
+          end
+        end
+
+        context 'when one of the actions is a teardown action' do
+          before do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'first',
+                                       environment: 'production')
+
             create(:ci_build, :manual, :teardown_environment,
                    pipeline: pipeline, name: 'teardown', environment: 'production')
           end
 
-          it 'returns the success message' do
+          it 'deploys to production' do
+            expect(subject[:text])
+              .to start_with('Deployment started from staging to production')
             expect(subject[:response_type]).to be(:in_channel)
-            expect(subject[:text]).to start_with('Deployment started from staging to production')
           end
         end
       end

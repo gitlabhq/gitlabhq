@@ -1,69 +1,13 @@
 - diff_file = viewer.diff_file
-- blob = diff_file.blob
-- old_blob = diff_file.old_blob
-- blob_raw_path = diff_file_blob_raw_path(diff_file)
-- old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
+- image_point = Gitlab::Diff::ImagePoint.new(nil, nil, nil, nil)
+- discussions = @grouped_diff_discussions[diff_file.new_path] if @grouped_diff_discussions
+
+- locals = { diff_file: diff_file, position: diff_file.position(image_point, position_type: :image).to_json, click_to_comment: true, diff_view_data: diff_view_data }
 
 - if diff_file.new_file? || diff_file.deleted_file?
-  .image
-    %span.wrap
-      .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added') }
-        %img{ src: blob_raw_path, alt: diff_file.file_path }
-      %p.image-info= number_to_human_size(blob.size)
+  = render partial: "projects/diffs/single_image_diff", locals: locals
 - else
-  .image
-    .two-up.view
-      %span.wrap
-        .frame.deleted
-          %a{ href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.old_content_sha, diff_file.old_path)) }
-            %img{ src: old_blob_raw_path, alt: diff_file.old_path }
-        %p.image-info.hide
-          %span.meta-filesize= number_to_human_size(old_blob.size)
-          |
-          %b W:
-          %span.meta-width
-          |
-          %b H:
-          %span.meta-height
-      %span.wrap
-        .frame.added
-          %a{ href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.new_path)) }
-            %img{ src: blob_raw_path, alt: diff_file.new_path }
-        %p.image-info.hide
-          %span.meta-filesize= number_to_human_size(blob.size)
-          |
-          %b W:
-          %span.meta-width
-          |
-          %b H:
-          %span.meta-height
+  = render partial: "projects/diffs/replaced_image_diff", locals: locals
 
-    .swipe.view.hide
-      .swipe-frame
-        .frame.deleted
-          %img{ src: old_blob_raw_path, alt: diff_file.old_path }
-        .swipe-wrap
-          .frame.added
-            %img{ src: blob_raw_path, alt: diff_file.new_path }
-        %span.swipe-bar
-          %span.top-handle
-          %span.bottom-handle
-
-    .onion-skin.view.hide
-      .onion-skin-frame
-        .frame.deleted
-          %img{ src: old_blob_raw_path, alt: diff_file.old_path }
-        .frame.added
-          %img{ src: blob_raw_path, alt: diff_file.new_path }
-        .controls
-          .transparent
-          .drag-track
-            .dragger{ :style => "left: 0px;" }
-          .opaque
-
-
-  .view-modes.hide
-    %ul.view-modes-menu
-      %li.two-up{ data: { mode: 'two-up' } } 2-up
-      %li.swipe{ data: { mode: 'swipe' } } Swipe
-      %li.onion-skin{ data: { mode: 'onion-skin' } } Onion skin
+.note-container
+  = render partial: "discussions/notes", collection: discussions, as: :discussion

@@ -11,17 +11,59 @@
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
+#     author_id: integer
 #     assignee_id: integer
 #     search: string
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
 #     iids: integer[]
+#     my_reaction_emoji: string
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class IssuableFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
+  include CreatedAtFilter
+
+  requires_cross_project_access unless: -> { project? }
+
   NONE = '0'.freeze
 
   attr_accessor :current_user, :params
+
+  def self.scalar_params
+    @scalar_params ||= %i[
+      assignee_id
+      assignee_username
+      author_id
+      author_username
+      authorized_only
+      group_id
+      iids
+      label_name
+      milestone_title
+      my_reaction_emoji
+      non_archived
+      project_id
+      scope
+      search
+      sort
+      state
+      include_subgroups
+    ]
+  end
+
+  def self.array_params
+    @array_params ||= { label_name: [], iids: [], assignee_username: [] }
+  end
+
+  def self.valid_params
+    @valid_params ||= scalar_params + [array_params]
+  end
 
   def initialize(current_user, params = {})
     @current_user = current_user
@@ -30,30 +72,32 @@ class IssuableFinder
 
   def execute
     items = init_collection
+    items = filter_items(items)
+
+    # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
+    items = by_project(items)
+
+    sort(items)
+  end
+
+  def filter_items(items)
     items = by_scope(items)
+    items = by_created_at(items)
+    items = by_updated_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
     items = by_assignee(items)
     items = by_author(items)
-    items = by_due_date(items)
     items = by_non_archived(items)
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
-    items = by_created_at(items)
-
-    # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
-    items = by_project(items)
-    sort(items)
+    by_my_reaction_emoji(items)
   end
 
-  def find(*params)
-    execute.find(*params)
-  end
-
-  def find_by(*params)
-    execute.find_by(*params)
+  def row_count
+    Gitlab::IssuablesCountForState.new(self).for_state_or_opened(params[:state])
   end
 
   # We often get counts for each state by running a query per state, and
@@ -77,13 +121,8 @@ class IssuableFinder
     end
 
     counts[:all] = counts.values.sum
-    counts[:opened] += counts[:reopened]
 
     counts
-  end
-
-  def find_by!(*params)
-    execute.find_by!(*params)
   end
 
   def group
@@ -117,7 +156,8 @@ class IssuableFinder
       if current_user && params[:authorized_only].presence && !current_user_related?
         current_user.authorized_projects
       elsif group
-        GroupProjectsFinder.new(group: group, current_user: current_user).execute
+        finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
+        GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
       else
         ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
       end
@@ -142,9 +182,17 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        scope = Milestone.where(project_id: projects)
+        if project?
+          group_id = project.group&.id
+          project_id = project.id
+        end
 
-        scope.where(title: params[:milestone_title])
+        group_id = group.id if group
+
+        search_params =
+          { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
+
+        MilestonesFinder.new(search_params).execute
       else
         Milestone.none
       end
@@ -228,6 +276,8 @@ class IssuableFinder
   end
 
   def by_scope(items)
+    return items.none if current_user_related? && !current_user
+
     case params[:scope]
     when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)
@@ -236,6 +286,13 @@ class IssuableFinder
     else
       items
     end
+  end
+
+  def by_updated_at(items)
+    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
+    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
+
+    items
   end
 
   def by_state(items)
@@ -326,11 +383,6 @@ class IssuableFinder
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
         items = items.with_milestone(params[:milestone_title])
-        items_projects = projects(items)
-
-        if items_projects
-          items = items.where(milestones: { project_id: items_projects })
-        end
       end
     end
 
@@ -338,57 +390,24 @@ class IssuableFinder
   end
 
   def by_label(items)
-    if labels?
+    return items unless labels?
+
+    items =
       if filter_by_no_label?
-        items = items.without_label
+        items.without_label
       else
-        items = items.with_label(label_names, params[:sort])
-        items_projects = projects(items)
-
-        if items_projects
-          label_ids = LabelsFinder.new(current_user, project_ids: items_projects).execute(skip_authorization: true).select(:id)
-          items = items.where(labels: { id: label_ids })
-        end
+        items.with_label(label_names, params[:sort])
       end
-    end
 
     items
   end
 
-  def by_due_date(items)
-    if due_date?
-      if filter_by_no_due_date?
-        items = items.without_due_date
-      elsif filter_by_overdue?
-        items = items.due_before(Date.today)
-      elsif filter_by_due_this_week?
-        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
-      elsif filter_by_due_this_month?
-        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
-      end
+  def by_my_reaction_emoji(items)
+    if params[:my_reaction_emoji].present? && current_user
+      items = items.awarded(current_user, params[:my_reaction_emoji])
     end
 
     items
-  end
-
-  def filter_by_no_due_date?
-    due_date? && params[:due_date] == Issue::NoDueDate.name
-  end
-
-  def filter_by_overdue?
-    due_date? && params[:due_date] == Issue::Overdue.name
-  end
-
-  def filter_by_due_this_week?
-    due_date? && params[:due_date] == Issue::DueThisWeek.name
-  end
-
-  def filter_by_due_this_month?
-    due_date? && params[:due_date] == Issue::DueThisMonth.name
-  end
-
-  def due_date?
-    params[:due_date].present? && klass.column_names.include?('due_date')
   end
 
   def label_names
@@ -401,18 +420,6 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
-  end
-
-  def by_created_at(items)
-    if params[:created_after].present?
-      items = items.where(items.klass.arel_table[:created_at].gteq(params[:created_after]))
-    end
-
-    if params[:created_before].present?
-      items = items.where(items.klass.arel_table[:created_at].lteq(params[:created_before]))
-    end
-
-    items
   end
 
   def current_user_related?

@@ -6,6 +6,5 @@ import 'vendor/jquery.endless-scroll';
 import 'vendor/jquery.caret';
 import 'vendor/jquery.atwho';
 import 'vendor/jquery.scrollTo';
-import 'vendor/jquery.nicescroll';
-import 'vendor/jquery.waitforimages';
+import 'jquery.waitforimages';
 import 'select2/select2';

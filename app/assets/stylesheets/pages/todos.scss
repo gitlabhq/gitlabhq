@@ -81,7 +81,7 @@
   .todo-title {
     display: flex;
 
-    & > .title-item {
+    > .title-item {
       -webkit-flex: 0 0 auto;
       flex: 0 0 auto;
       margin: 0 2px;
@@ -108,14 +108,14 @@
     margin: 0;
     float: none;
     display: inline-block;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     padding: 0 5px;
     line-height: inherit;
     font-size: 14px;
   }
 
   .action-name {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   .todo-body {
@@ -128,7 +128,6 @@
 
         .label {
           color: $gl-text-color;
-          font-size: inherit;
         }
 
         p {
@@ -141,7 +140,7 @@
       }
 
       pre {
-        border: none;
+        border: 0;
         background: $gray-light;
         border-radius: 0;
         color: $todo-body-pre-color;
@@ -262,6 +261,6 @@
   }
 
   a {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }

@@ -15,8 +15,8 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS
 
             validates :name, type: String, presence: true
-            validates :entrypoint, type: String, allow_nil: true
-            validates :command, type: String, allow_nil: true
+            validates :entrypoint, array_of_strings: true, allow_nil: true
+            validates :command, array_of_strings: true, allow_nil: true
             validates :alias, type: String, allow_nil: true
           end
 

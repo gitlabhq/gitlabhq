@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Issue awards', js: true, feature: true do
+feature 'Issue awards', :js do
   let(:user)      { create(:user) }
   let(:project)   { create(:project, :public) }
   let(:issue)     { create(:issue, project: project) }
 
   describe 'logged in' do
     before do
-      gitlab_sign_in(user)
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      sign_in(user)
+      visit project_issue_path(project, issue)
       wait_for_requests
     end
 
@@ -17,7 +17,7 @@ feature 'Issue awards', js: true, feature: true do
       expect(page).to have_selector('.js-emoji-btn.active')
       expect(first('.js-emoji-btn')).to have_content '1'
 
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
       expect(first('.js-emoji-btn')).to have_content '1'
     end
 
@@ -26,7 +26,7 @@ feature 'Issue awards', js: true, feature: true do
       find('.js-emoji-btn.active').click
       expect(first('.js-emoji-btn')).to have_content '0'
 
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
       expect(first('.js-emoji-btn')).to have_content '0'
     end
 
@@ -40,7 +40,7 @@ feature 'Issue awards', js: true, feature: true do
 
   describe 'logged out' do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
       wait_for_requests
     end
 

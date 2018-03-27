@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'CycleAnalytics#plan', feature: true do
+describe 'CycleAnalytics#plan' do
   extend CycleAnalyticsHelpers::TestGeneration
 
   let(:project) { create(:project, :repository) }
@@ -29,8 +29,8 @@ describe 'CycleAnalytics#plan', feature: true do
                                context.create_commit_referencing_issue(data[:issue], branch_name: data[:branch_name])
                              end]],
     post_fn: -> (context, data) do
-      context.create_merge_request_closing_issue(data[:issue], source_branch: data[:branch_name])
-      context.merge_merge_requests_closing_issue(data[:issue])
+      context.create_merge_request_closing_issue(context.user, context.project, data[:issue], source_branch: data[:branch_name])
+      context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])
     end)
 
   context "when a regular label (instead of a list label) is added to the issue" do
@@ -41,8 +41,8 @@ describe 'CycleAnalytics#plan', feature: true do
       issue.update(label_ids: [label.id])
       create_commit_referencing_issue(issue, branch_name: branch_name)
 
-      create_merge_request_closing_issue(issue, source_branch: branch_name)
-      merge_merge_requests_closing_issue(issue)
+      create_merge_request_closing_issue(user, project, issue, source_branch: branch_name)
+      merge_merge_requests_closing_issue(user, project, issue)
 
       expect(subject[:issue].median).to be_nil
     end

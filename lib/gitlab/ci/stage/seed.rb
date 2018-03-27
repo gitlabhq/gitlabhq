@@ -2,8 +2,12 @@ module Gitlab
   module Ci
     module Stage
       class Seed
+        include ::Gitlab::Utils::StrongMemoize
+
         attr_reader :pipeline
+
         delegate :project, to: :pipeline
+        delegate :size, to: :@jobs
 
         def initialize(pipeline, stage, jobs)
           @pipeline = pipeline
@@ -28,7 +32,8 @@ module Gitlab
             attributes.merge(project: project,
                              ref: pipeline.ref,
                              tag: pipeline.tag,
-                             trigger_request: trigger)
+                             trigger_request: trigger,
+                             protected: protected_ref?)
           end
         end
 
@@ -41,6 +46,14 @@ module Gitlab
             pipeline.builds.create!(builds_attributes).each do |build|
               yield build if block_given?
             end
+          end
+        end
+
+        private
+
+        def protected_ref?
+          strong_memoize(:protected_ref) do
+            project.protected_for?(pipeline.ref)
           end
         end
       end

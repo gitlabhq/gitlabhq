@@ -1,11 +1,18 @@
 class ProjectHook < WebHook
-  belongs_to :project
+  include TriggerableHooks
 
-  scope :issue_hooks, -> { where(issues_events: true) }
-  scope :confidential_issue_hooks, -> { where(confidential_issues_events: true) }
-  scope :note_hooks, -> { where(note_events: true) }
-  scope :merge_request_hooks, -> { where(merge_requests_events: true) }
-  scope :job_hooks, -> { where(job_events: true) }
-  scope :pipeline_hooks, -> { where(pipeline_events: true) }
-  scope :wiki_page_hooks, ->  { where(wiki_page_events: true) }
+  triggerable_hooks [
+    :push_hooks,
+    :tag_push_hooks,
+    :issue_hooks,
+    :confidential_issue_hooks,
+    :note_hooks,
+    :merge_request_hooks,
+    :job_hooks,
+    :pipeline_hooks,
+    :wiki_page_hooks
+  ]
+
+  belongs_to :project
+  validates :project, presence: true
 end

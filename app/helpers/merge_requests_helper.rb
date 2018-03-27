@@ -1,8 +1,7 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
     target_project = event.project.default_merge_request_target
-    new_namespace_project_merge_request_path(
-      event.project.namespace,
+    project_new_merge_request_path(
       event.project,
       new_mr_from_push_event(event, target_project)
     )
@@ -41,15 +40,15 @@ module MergeRequestsHelper
 
   def merge_path_description(merge_request, separator)
     if merge_request.for_fork?
-      "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.path_with_namespace}:#{@merge_request.target_branch}"
+      "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.full_path}:#{@merge_request.target_branch}"
     else
       "Branches: #{@merge_request.source_branch} #{separator} #{@merge_request.target_branch}"
     end
   end
 
   def mr_change_branches_path(merge_request)
-    new_namespace_project_merge_request_path(
-      @project.namespace, @project,
+    project_new_merge_request_path(
+      @project,
       merge_request: {
         source_project_id: merge_request.source_project_id,
         target_project_id: merge_request.target_project_id,
@@ -74,7 +73,8 @@ module MergeRequestsHelper
   end
 
   def target_projects(project)
-    [project, project.default_merge_request_target].uniq
+    MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: project)
+      .execute
   end
 
   def merge_request_button_visibility(merge_request, closed)
@@ -82,9 +82,7 @@ module MergeRequestsHelper
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
-    diffs_namespace_project_merge_request_path(
-      project.namespace, project, merge_request,
-      diff_id: merge_request_diff.id, start_sha: start_sha)
+    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, start_sha: start_sha)
   end
 
   def version_index(merge_request_diff)
@@ -101,6 +99,43 @@ module MergeRequestsHelper
       should_remove_source_branch: true,
       sha: merge_request.diff_head_sha
     }.merge(merge_params_ee(merge_request))
+  end
+
+  def tab_link_for(merge_request, tab, options = {}, &block)
+    data_attrs = {
+      action: tab.to_s,
+      target: "##{tab}",
+      toggle: options.fetch(:force_link, false) ? '' : 'tab'
+    }
+
+    url = case tab
+          when :show
+            data_attrs[:target] = '#notes'
+            method(:project_merge_request_path)
+          when :commits
+            method(:commits_project_merge_request_path)
+          when :pipelines
+            method(:pipelines_project_merge_request_path)
+          when :diffs
+            method(:diffs_project_merge_request_path)
+          else
+            raise "Cannot create tab #{tab}."
+          end
+
+    link_to(url[merge_request.project, merge_request], data: data_attrs, &block)
+  end
+
+  def allow_maintainer_push_unavailable_reason(merge_request)
+    return if merge_request.can_allow_maintainer_to_push?(current_user)
+
+    minimum_visibility = [merge_request.target_project.visibility_level,
+                          merge_request.source_project.visibility_level].min
+
+    if minimum_visibility < Gitlab::VisibilityLevel::INTERNAL
+      _('Not available for private projects')
+    elsif ProtectedBranch.protected?(merge_request.source_project, merge_request.source_branch)
+      _('Not available for protected branches')
+    end
   end
 
   def merge_params_ee(merge_request)

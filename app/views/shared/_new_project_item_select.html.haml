@@ -1,19 +1,7 @@
-- if @projects.any?
-  .project-item-select-holder
-    = project_select_tag :project_path, class: "project-item-select", data: { include_groups: local_assigns[:include_groups], order_by: 'last_activity_at' }, with_feature_enabled: local_assigns[:with_feature_enabled]
-    %a.btn.btn-new.new-project-item-select-button
-      = local_assigns[:label]
+- if any_projects?(@projects)
+  .project-item-select-holder.btn-group
+    %a.btn.btn-new.new-project-item-link{ href: '', data: { label: local_assigns[:label], type: local_assigns[:type] } }
+      = icon('spinner spin')
+    = project_select_tag :project_path, class: "project-item-select", data: { include_groups: local_assigns[:include_groups], order_by: 'last_activity_at', relative_path: local_assigns[:path] }, with_feature_enabled: local_assigns[:with_feature_enabled]
+    %button.btn.btn-new.new-project-item-select-button
       = icon('caret-down')
-
-  :javascript
-    $('.new-project-item-select-button').on('click', function() {
-      $('.project-item-select').select2('open');
-    });
-
-    var relativePath = '#{local_assigns[:path]}';
-
-    $('.project-item-select').on('click', function() {
-      window.location = $(this).val() + '/' + relativePath;
-    });
-
-    new ProjectSelect()

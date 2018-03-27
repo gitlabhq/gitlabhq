@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::File, lib: true do
+describe Gitlab::Conflict::File do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
@@ -8,9 +8,10 @@ describe Gitlab::Conflict::File, lib: true do
   let(:our_commit) { rugged.branches['conflict-resolvable'].target }
   let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) }
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
-  let(:conflict) { index.conflicts.last }
-  let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
-  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, merge_request: merge_request) }
+  let(:rugged_conflict) { index.conflicts.last }
+  let(:raw_conflict_content) { index.merge_file('files/ruby/regex.rb')[:data] }
+  let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit.oid, rugged_conflict, raw_conflict_content) }
+  let(:conflict_file) { described_class.new(raw_conflict_file, merge_request: merge_request) }
 
   describe '#resolve_lines' do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
@@ -48,18 +49,18 @@ describe Gitlab::Conflict::File, lib: true do
       end
     end
 
-    it 'raises MissingResolution when passed a hash without resolutions for all sections' do
+    it 'raises ResolutionError when passed a hash without resolutions for all sections' do
       empty_hash = section_keys.map { |key| [key, nil] }.to_h
       invalid_hash = section_keys.map { |key| [key, 'invalid'] }.to_h
 
       expect { conflict_file.resolve_lines({}) }
-        .to raise_error(Gitlab::Conflict::File::MissingResolution)
+        .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
 
       expect { conflict_file.resolve_lines(empty_hash) }
-        .to raise_error(Gitlab::Conflict::File::MissingResolution)
+        .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
 
       expect { conflict_file.resolve_lines(invalid_hash) }
-        .to raise_error(Gitlab::Conflict::File::MissingResolution)
+        .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
     end
   end
 
@@ -82,6 +83,13 @@ describe Gitlab::Conflict::File, lib: true do
       conflict_file.lines.each do |line|
         expect(line.text).to eq(html_to_text(line.rich_text))
       end
+    end
+
+    # This spec will break if Rouge's highlighting changes, but we need to
+    # ensure that the lines are actually highlighted.
+    it 'highlights the lines correctly' do
+      expect(conflict_file.lines.first.rich_text)
+        .to eq("<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"k\">module</span> <span class=\"nn\">Gitlab</span></span>\n")
     end
   end
 
@@ -144,7 +152,7 @@ describe Gitlab::Conflict::File, lib: true do
     end
 
     context 'with an example file' do
-      let(:file) do
+      let(:raw_conflict_content) do
         <<FILE
   # Ensure there is no match line header here
   def username_regexp
@@ -220,7 +228,6 @@ end
 FILE
       end
 
-      let(:conflict_file) { Gitlab::Conflict::File.new({ data: file }, conflict, merge_request: merge_request) }
       let(:sections) { conflict_file.sections }
 
       it 'sets the correct match line headers' do

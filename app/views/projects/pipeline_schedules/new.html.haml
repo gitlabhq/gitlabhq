@@ -1,4 +1,8 @@
+- breadcrumb_title "Schedules"
+- @breadcrumb_link = namespace_project_pipeline_schedules_path(@project.namespace, @project)
 - page_title _("New Pipeline Schedule")
+
+- add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 %h3.page-title
   = _("Schedule a new pipeline")

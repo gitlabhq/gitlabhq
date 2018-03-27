@@ -5,7 +5,7 @@ class Projects::RunnersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   def edit
@@ -29,17 +29,17 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def resume
     if Ci::UpdateRunnerService.new(@runner).update(active: true)
-      redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
+      redirect_to runners_path(@project), notice: 'Runner was successfully updated.'
     else
-      redirect_to runner_path(@runner), alert: 'Runner was not updated.'
+      redirect_to runners_path(@project), alert: 'Runner was not updated.'
     end
   end
 
   def pause
     if Ci::UpdateRunnerService.new(@runner).update(active: false)
-      redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
+      redirect_to runners_path(@project), notice: 'Runner was successfully updated.'
     else
-      redirect_to runner_path(@runner), alert: 'Runner was not updated.'
+      redirect_to runners_path(@project), alert: 'Runner was not updated.'
     end
   end
 
@@ -49,7 +49,7 @@ class Projects::RunnersController < Projects::ApplicationController
   def toggle_shared_runners
     project.toggle!(:shared_runners_enabled)
 
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   protected

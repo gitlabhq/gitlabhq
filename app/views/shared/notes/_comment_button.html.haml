@@ -1,16 +1,16 @@
 - noteable_name = @note.noteable.human_class_name
 
-.pull-left.btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
+.pull-left.btn-group.append-right-10.droplab-dropdown.comment-type-dropdown.js-comment-type-dropdown
   %input.btn.btn-nr.btn-create.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: 'Comment' }
 
   - if @note.can_be_discussion_note?
     = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => 'Open comment type dropdown' do
       = icon('caret-down', class: 'toggle-icon')
 
-    %ul#resolvable-comment-menu.dropdown-menu{ data: { dropdown: true } }
+    %ul#resolvable-comment-menu.dropdown-menu.dropdown-open-top{ data: { dropdown: true } }
       %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => 'Comment', 'close-text' => "Comment & close #{noteable_name}", 'reopen-text' => "Comment & reopen #{noteable_name}" } }
-        %a{ href: '#' }
-          = icon('check')
+        %button.btn.btn-transparent
+          = icon('check', class: 'icon')
           .description
             %strong Comment
             %p
@@ -19,8 +19,8 @@
       %li.divider.droplab-item-ignore
 
       %li#discussion{ data: { value: 'DiscussionNote', 'submit-text' => 'Start discussion', 'close-text' => "Start discussion & close #{noteable_name}", 'reopen-text' => "Start discussion & reopen #{noteable_name}" } }
-        %a{ href: '#' }
-          = icon('check')
+        %button.btn.btn-transparent
+          = icon('check', class: 'icon')
           .description
             %strong Start discussion
             %p

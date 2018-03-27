@@ -14,7 +14,7 @@
 
   %td.branch-commit
     - if can?(current_user, :read_build, job)
-      = link_to namespace_project_job_url(job.project.namespace, job.project, job) do
+      = link_to project_job_path(job.project, job) do
         %span.build-link ##{job.id}
     - else
       %span.build-link ##{job.id}
@@ -22,7 +22,7 @@
     - if ref
       - if job.ref
         .icon-container
-          = job.tag? ? icon('tag') : icon('code-fork')
+          = job.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else
         .light none
@@ -30,7 +30,7 @@
         = custom_icon("icon_commit")
 
     - if commit_sha
-      = link_to job.short_sha, namespace_project_commit_path(job.project.namespace, job.project, job.sha), class: "commit-sha"
+      = link_to job.short_sha, project_commit_path(job.project, job.sha), class: "commit-sha"
 
     - if job.stuck?
       = icon('warning', class: 'text-warning has-tooltip', title: 'Job is stuck. Check runners.')
@@ -63,7 +63,7 @@
   - if admin
     %td
       - if job.project
-        = link_to job.project.name_with_namespace, admin_namespace_project_path(job.project.namespace, job.project)
+        = link_to job.project.full_name, admin_project_path(job.project)
     %td
       - if job.try(:runner)
         = runner_link(job.runner)
@@ -95,16 +95,16 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, job) && job.artifacts?
-        = link_to download_namespace_project_job_artifacts_path(job.project.namespace, job.project, job), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
-          = icon('download')
+        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
+          = sprite_icon('download')
       - if can?(current_user, :update_build, job)
         - if job.active?
-          = link_to cancel_namespace_project_job_path(job.project.namespace, job.project, job, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
+          = link_to cancel_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
         - elsif allow_retry
           - if job.playable? && !admin && can?(current_user, :update_build, job)
-            = link_to play_namespace_project_job_path(job.project.namespace, job.project, job, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
+            = link_to play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
               = custom_icon('icon_play')
           - elsif job.retryable?
-            = link_to retry_namespace_project_job_path(job.project.namespace, job.project, job, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+            = link_to retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
               = icon('repeat')

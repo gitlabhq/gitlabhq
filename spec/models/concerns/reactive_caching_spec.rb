@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ReactiveCaching, caching: true do
+describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   class CacheTest
@@ -31,7 +31,7 @@ describe ReactiveCaching, caching: true do
 
   let(:now) { Time.now.utc }
 
-  around(:each) do |example|
+  around do |example|
     Timecop.freeze(now) { example.run }
   end
 

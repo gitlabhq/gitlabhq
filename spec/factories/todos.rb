@@ -1,8 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :todo do
-    project factory: :empty_project
-    author
-    user
+    project
+    author { project.creator }
+    user { project.creator }
     target factory: :issue
     action { Todo::ASSIGNED }
 
@@ -45,7 +45,7 @@ FactoryGirl.define do
   end
 
   factory :on_commit_todo, class: Todo do
-    project factory: :empty_project
+    project
     author
     user
     action { Todo::ASSIGNED }

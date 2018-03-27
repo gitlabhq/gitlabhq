@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LabelLink, models: true do
+describe LabelLink do
   it { expect(build(:label_link)).to be_valid }
 
   it { is_expected.to belong_to(:label) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'New issue', feature: true, js: true do
+describe 'New issue', :js do
   include StubENV
 
   let(:project) { create(:project, :public) }
@@ -9,7 +9,7 @@ describe 'New issue', feature: true, js: true do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-    current_application_settings.update!(
+    Gitlab::CurrentSettings.update!(
       akismet_enabled: true,
       akismet_api_key: 'testkey',
       recaptcha_enabled: true,
@@ -17,15 +17,15 @@ describe 'New issue', feature: true, js: true do
       recaptcha_private_key: 'test private key'
     )
 
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
   context 'when identified as a spam' do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "true", status: 200)
 
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     it 'creates an issue after solving reCaptcha' do
@@ -33,6 +33,9 @@ describe 'New issue', feature: true, js: true do
       fill_in 'issue_description', with: 'issue description'
 
       click_button 'Submit issue'
+
+      # reCAPTCHA alerts when it can't contact the server, so just accept it and move on
+      page.driver.browser.switch_to.alert.accept
 
       # it is impossible to test recaptcha automatically and there is no possibility to fill in recaptcha
       # recaptcha verification is skipped in test environment and it always returns true
@@ -50,7 +53,7 @@ describe 'New issue', feature: true, js: true do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: 'false', status: 200)
 
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     it 'creates an issue' do

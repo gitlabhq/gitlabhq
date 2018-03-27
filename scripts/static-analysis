@@ -1,40 +1,70 @@
 #!/usr/bin/env ruby
 
-require ::File.expand_path('../lib/gitlab/popen', __dir__)
+# We don't have auto-loading here
+require_relative '../lib/gitlab/popen'
+require_relative '../lib/gitlab/popen/runner'
 
-tasks = [
-  %w[bundle exec bundle-audit check --update --ignore CVE-2016-4658 CVE-2017-5029],
-  %w[bundle exec rake config_lint],
-  %w[bundle exec rake flay],
-  %w[bundle exec rake haml_lint],
-  %w[bundle exec rake scss_lint],
-  %w[bundle exec rake brakeman],
-  %w[bundle exec license_finder],
-  %w[yarn run eslint],
-  %w[bundle exec rubocop --require rubocop-rspec]
-]
-
-failed_tasks = tasks.reduce({}) do |failures, task|
-  output, status = Gitlab::Popen.popen(task)
-
-  puts "Running: #{task.join(' ')}"
-  puts output
-
-  failures[task.join(' ')] = output unless status.zero?
-
-  failures
+def emit_warnings(static_analysis)
+  static_analysis.warned_results.each do |result|
+    puts
+    puts "**** #{result.cmd.join(' ')} had the following warning(s):"
+    puts
+    puts result.stderr
+    puts
+  end
 end
 
-if failed_tasks.empty?
-  puts 'All static analyses passed successfully.'
-else
-  puts "\n===================================================\n\n"
-  puts "Some static analyses failed:"
-
-  failed_tasks.each do |failed_task, output|
-    puts "\n**** #{failed_task} failed with the following error:\n\n"
-    puts output
+def emit_errors(static_analysis)
+  static_analysis.failed_results.each do |result|
+    puts
+    puts "**** #{result.cmd.join(' ')} failed with the following error(s):"
+    puts
+    puts result.stdout
+    puts result.stderr
+    puts
   end
+end
+
+tasks = [
+  %w[bin/rake lint:all],
+  %w[bundle exec license_finder],
+  %w[yarn run eslint],
+  %w[bundle exec rubocop --parallel],
+  %w[scripts/lint-conflicts.sh],
+  %w[scripts/lint-rugged]
+]
+
+static_analysis = Gitlab::Popen::Runner.new
+
+static_analysis.run(tasks) do |cmd, &run|
+  puts
+  puts "$ #{cmd.join(' ')}"
+
+  result = run.call
+
+  puts "==> Finished in #{result.duration} seconds"
+  puts
+end
+
+puts
+puts '==================================================='
+puts
+puts
+
+if static_analysis.all_success_and_clean?
+  puts 'All static analyses passed successfully.'
+elsif static_analysis.all_success?
+  puts 'All static analyses passed successfully, but we have warnings:'
+  puts
+
+  emit_warnings(static_analysis)
+
+  exit 2
+else
+  puts 'Some static analyses failed:'
+
+  emit_warnings(static_analysis)
+  emit_errors(static_analysis)
 
   exit 1
 end

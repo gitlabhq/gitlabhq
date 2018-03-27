@@ -29,21 +29,11 @@
 
 = render 'shared/issuable/form/metadata', issuable: issuable, form: form
 
-- if issuable.can_move?(current_user)
-  %hr
-  .form-group
-    = label_tag :move_to_project_id, 'Move', class: 'control-label'
-    .col-sm-10
-      .issuable-form-select-holder
-        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id), page_size: MoveToProjectFinder::PAGE_SIZE }
-      &nbsp;
-      %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
-      title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
-        = icon('question-circle')
-
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
 = render 'shared/issuable/form/merge_params', issuable: issuable
+
+= render 'shared/issuable/form/contribution', issuable: issuable, form: form
 
 - if @merge_request_to_resolve_discussions_of
   .form-group
@@ -77,11 +67,11 @@
 
   %span.append-right-10
     - if issuable.new_record?
-      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create qa-issuable-create-button'
     - else
       = form.submit 'Save changes', class: 'btn btn-save'
 
-  - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
+  - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
     .inline.prepend-top-10
       Please review the
       %strong= link_to('contribution guidelines', guide_url)

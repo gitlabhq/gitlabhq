@@ -1,5 +1,7 @@
 - @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
-- page_title "Edit", @page.title.capitalize, "Wiki"
+- page_title _("Edit"), @page.title.capitalize, _("Wiki")
+
+= wiki_page_errors(@error)
 
 .wiki-page-header.has-sidebar-toggle
   %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
@@ -8,26 +10,26 @@
   .nav-text
     %h2.wiki-page-title
       - if @page.persisted?
-        = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)
+        = link_to @page.title.capitalize, project_wiki_path(@project, @page)
       - else
         = @page.title.capitalize
       %span.light
         &middot;
         - if @page.persisted?
-          Edit Page
+          = s_("Wiki|Edit Page")
         - else
-          Create Page
+          = s_("Wiki|Create Page")
 
   .nav-controls
     - if can?(current_user, :create_wiki, @project)
       = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
-        New page
+        = s_("Wiki|New page")
     - if @page.persisted?
-      = link_to namespace_project_wiki_history_path(@project.namespace, @project, @page), class: "btn" do
-        Page history
+      = link_to project_wiki_history_path(@project, @page), class: "btn" do
+        = s_("Wiki|Page history")
       - if can?(current_user, :admin_wiki, @project)
-        = link_to namespace_project_wiki_path(@project.namespace, @project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-danger" do
-          Delete
+        = link_to project_wiki_path(@project, @page), data: { confirm: s_("WikiPageConfirmDelete|Are you sure you want to delete this page?")}, method: :delete, class: "btn btn-danger" do
+          = _("Delete")
 
 = render 'form'
 

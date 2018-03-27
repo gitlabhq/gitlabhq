@@ -4,7 +4,7 @@ module Gitlab
     # Abstract class for badge metadata
     #
     class Metadata
-      include Gitlab::Application.routes.url_helpers
+      include Gitlab::Routing
       include ActionView::Helpers::AssetTagHelper
       include ActionView::Helpers::UrlHelper
 

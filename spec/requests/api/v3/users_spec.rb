@@ -12,7 +12,7 @@ describe API::V3::Users do
       it 'returns an array of users' do
         get v3_api('/users', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         username = user.username
@@ -45,14 +45,14 @@ describe API::V3::Users do
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get v3_api("/users/#{user.id}/keys")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
     context 'when authenticated' do
       it 'returns 404 for non-existing user' do
         get v3_api('/users/999999/keys', admin)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
@@ -62,10 +62,23 @@ describe API::V3::Users do
 
         get v3_api("/users/#{user.id}/keys", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(key.title)
       end
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { "/users/#{user.id}/keys" }
+      let(:api_call) { method(:v3_api) }
+
+      before do
+        user.keys << key
+        user.save
+      end
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -75,14 +88,14 @@ describe API::V3::Users do
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get v3_api("/users/#{user.id}/emails")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
     context 'when authenticated' do
       it 'returns 404 for non-existing user' do
         get v3_api('/users/999999/emails', admin)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
@@ -92,7 +105,7 @@ describe API::V3::Users do
 
         get v3_api("/users/#{user.id}/emails", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['email']).to eq(email.email)
       end
@@ -100,7 +113,7 @@ describe API::V3::Users do
       it "returns a 404 for invalid ID" do
         put v3_api("/users/ASDF/emails", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -109,7 +122,7 @@ describe API::V3::Users do
     context "when unauthenticated" do
       it "returns authentication error" do
         get v3_api("/user/keys")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -120,7 +133,7 @@ describe API::V3::Users do
 
         get v3_api("/user/keys", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
       end
@@ -131,7 +144,7 @@ describe API::V3::Users do
     context "when unauthenticated" do
       it "returns authentication error" do
         get v3_api("/user/emails")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -142,7 +155,7 @@ describe API::V3::Users do
 
         get v3_api("/user/emails", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first["email"]).to eq(email.email)
       end
@@ -153,25 +166,25 @@ describe API::V3::Users do
     before { admin }
     it 'blocks existing user' do
       put v3_api("/users/#{user.id}/block", admin)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(user.reload.state).to eq('blocked')
     end
 
     it 'does not re-block ldap blocked users' do
       put v3_api("/users/#{ldap_blocked_user.id}/block", admin)
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'does not be available for non admin users' do
       put v3_api("/users/#{user.id}/block", user)
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
       expect(user.reload.state).to eq('active')
     end
 
     it 'returns a 404 error if user id not found' do
       put v3_api('/users/9999/block', admin)
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
@@ -182,44 +195,44 @@ describe API::V3::Users do
 
     it 'unblocks existing user' do
       put v3_api("/users/#{user.id}/unblock", admin)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(user.reload.state).to eq('active')
     end
 
     it 'unblocks a blocked user' do
       put v3_api("/users/#{blocked_user.id}/unblock", admin)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(blocked_user.reload.state).to eq('active')
     end
 
     it 'does not unblock ldap blocked users' do
       put v3_api("/users/#{ldap_blocked_user.id}/unblock", admin)
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'does not be available for non admin users' do
       put v3_api("/users/#{user.id}/unblock", user)
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
       expect(user.reload.state).to eq('active')
     end
 
     it 'returns a 404 error if user id not found' do
       put v3_api('/users/9999/block', admin)
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
       put v3_api("/users/ASDF/block", admin)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
   describe 'GET /users/:id/events' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
 
     before do
@@ -233,17 +246,42 @@ describe API::V3::Users do
 
         get api("/users/#{user.id}/events", other_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
       end
     end
 
     context "as a user than can see the event's project" do
+      context 'when the list of events includes push events' do
+        let(:event) { create(:push_event, author: user, project: project) }
+        let!(:payload) { create(:push_event_payload, event: event) }
+        let(:payload_hash) { json_response[0]['push_data'] }
+
+        before do
+          get api("/users/#{user.id}/events?action=pushed", user)
+        end
+
+        it 'responds with HTTP 200 OK' do
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'includes the push payload as a Hash' do
+          expect(payload_hash).to be_an_instance_of(Hash)
+        end
+
+        it 'includes the push payload details' do
+          expect(payload_hash['commit_count']).to eq(payload.commit_count)
+          expect(payload_hash['action']).to eq(payload.action)
+          expect(payload_hash['ref_type']).to eq(payload.ref_type)
+          expect(payload_hash['commit_to']).to eq(payload.commit_to)
+        end
+      end
+
       context 'joined event' do
         it 'returns the "joined" event' do
           get v3_api("/users/#{user.id}/events", user)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
 
@@ -263,7 +301,7 @@ describe API::V3::Users do
       end
 
       context 'when there are multiple events from different projects' do
-        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:second_note) { create(:note_on_issue, project: create(:project)) }
         let(:third_note) { create(:note_on_issue, project: project) }
 
         before do
@@ -287,9 +325,9 @@ describe API::V3::Users do
     end
 
     it 'returns a 404 error if not found' do
-      get v3_api('/users/42/events', user)
+      get v3_api('/users/420/events', user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
@@ -311,6 +349,14 @@ describe API::V3::Users do
       post v3_api('/users', admin), attributes_for(:user)
 
       expect(json_response['is_admin']).to be_nil
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:v3_api) }
+
+      include_examples 'does not allow the "read_user" scope'
     end
   end
 end

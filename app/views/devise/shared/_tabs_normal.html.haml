@@ -1,6 +1,6 @@
 %ul.nav-links.new-session-tabs.nav-tabs{ role: 'tablist' }
   %li.active{ role: 'presentation' }
     %a{ href: '#login-pane', data: { toggle: 'tab' }, role: 'tab' } Sign in
-  - if signin_enabled? && signup_enabled?
+  - if allow_signup?
     %li{ role: 'presentation' }
       %a{ href: '#register-pane', data: { toggle: 'tab' }, role: 'tab' } Register

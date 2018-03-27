@@ -20,6 +20,10 @@ module Gitlab
         def query(*args)
           raise NotImplementedError
         end
+
+        def self.transform_reactive_result(result)
+          result
+        end
       end
     end
   end

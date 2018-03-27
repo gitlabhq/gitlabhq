@@ -1,25 +1,25 @@
 require 'spec_helper'
 
-feature 'Projects members', feature: true do
+feature 'Projects members' do
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }
-  let(:project) { create(:empty_project, :public, :access_requestable, creator: user, group: group) }
+  let(:project) { create(:project, :public, :access_requestable, creator: user, group: group) }
   let(:project_invitee) { create(:project_member, project: project, invite_token: '123', invite_email: 'test1@abc.com', user: nil) }
   let(:group_invitee) { create(:group_member, group: group, invite_token: '123', invite_email: 'test2@abc.com', user: nil) }
   let(:project_requester) { create(:user) }
   let(:group_requester) { create(:user) }
 
   background do
-    project.team << [developer, :developer]
+    project.add_developer(developer)
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'with a group invitee' do
     before do
       group_invitee
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'does not appear in the project members page' do
@@ -33,7 +33,7 @@ feature 'Projects members', feature: true do
     before do
       group_invitee
       project_invitee
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'shows the project invitee, the project developer, and the group owner' do
@@ -54,7 +54,7 @@ feature 'Projects members', feature: true do
   context 'with a group requester' do
     before do
       group.request_access(group_requester)
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'does not appear in the project members page' do
@@ -68,7 +68,7 @@ feature 'Projects members', feature: true do
     before do
       group.request_access(group_requester)
       project.request_access(project_requester)
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'shows the project requester, the project developer, and the group owner' do

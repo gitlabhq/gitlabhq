@@ -13,12 +13,6 @@ describe List do
     it { is_expected.to validate_presence_of(:position) }
     it { is_expected.to validate_numericality_of(:position).only_integer.is_greater_than_or_equal_to(0) }
 
-    it 'validates uniqueness of label scoped to board_id' do
-      create(:list)
-
-      expect(subject).to validate_uniqueness_of(:label_id).scoped_to(:board_id)
-    end
-
     context 'when list_type is set to closed' do
       subject { described_class.new(list_type: :closed) }
 

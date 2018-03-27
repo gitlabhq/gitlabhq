@@ -1,6 +1,3 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('integrations')
-
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
     %h4.prepend-top-0
@@ -8,21 +5,17 @@
       = boolean_to_icon @service.activated?
 
     %p= @service.description
-  .col-lg-9
-    = form_for(@service, as: :service, url: namespace_project_service_path(@project.namespace, @project, @service.to_param), method: :put, html: { class: 'gl-show-field-errors form-horizontal js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_namespace_project_service_path } }) do |form|
-      = render 'shared/service_settings', form: form, subject: @service
-      .footer-block.row-content-block
-        %button.btn.btn-save{ type: 'submit' }
-          = icon('spinner spin', class: 'hidden js-btn-spinner')
-          %span.js-btn-label
-            Save changes
-        &nbsp;
-        - if @service.valid? && @service.activated?
-          - unless @service.can_test?
-            - disabled_class = 'disabled'
-            - disabled_title = @service.disabled_title
 
-        = link_to 'Cancel', namespace_project_settings_integrations_path(@project.namespace, @project), class: 'btn btn-cancel'
+    - if @service.respond_to?(:detailed_description)
+      %p= @service.detailed_description
+  .col-lg-9
+    = form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'gl-show-field-errors form-horizontal integration-settings-form js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
+      = render 'shared/service_settings', form: form, subject: @service
+      - if @service.editable?
+        .footer-block.row-content-block
+          = service_save_button(@service)
+          &nbsp;
+          = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
   %hr

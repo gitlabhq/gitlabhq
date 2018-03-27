@@ -15,7 +15,7 @@ module RuboCop
 
           name = node.children[1]
 
-          add_offense(node, :selector) if name == :add_foreign_key
+          add_offense(node, location: :selector) if name == :add_foreign_key
         end
 
         def method_name(node)

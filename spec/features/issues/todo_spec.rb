@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Manually create a todo item from issue', feature: true, js: true do
-  let!(:project)   { create(:project) }
-  let!(:issue)     { create(:issue, project: project) }
-  let!(:user)      { create(:user)}
+feature 'Manually create a todo item from issue', :js do
+  let!(:project) { create(:project) }
+  let!(:issue)   { create(:issue, project: project) }
+  let!(:user)    { create(:user)}
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    project.add_master(user)
+    sign_in(user)
+    visit project_issue_path(project, issue)
   end
 
   it 'creates todo when clicking button' do
@@ -21,7 +21,7 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
       expect(page).to have_content '1'
     end
 
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
 
     page.within '.header-content .todos-count' do
       expect(page).to have_content '1'
@@ -36,7 +36,7 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
 
     expect(page).to have_selector('.todos-count', visible: false)
 
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
 
     expect(page).to have_selector('.todos-count', visible: false)
   end

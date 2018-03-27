@@ -3,13 +3,12 @@
   transition: padding $sidebar-transition-duration;
 
   .container-fluid {
-    background: $white-light;
     padding: 0 $gl-padding;
 
     &.container-blank {
       background: none;
       padding: 0;
-      border: none;
+      border: 0;
     }
   }
 }
@@ -43,10 +42,17 @@
   }
 
   .sidebar-collapsed-icon {
-    cursor: pointer;
-
     .btn {
       background-color: $gray-light;
+    }
+
+    &:not(.disabled) {
+      cursor: pointer;
+    }
+
+    svg {
+      width: $gl-padding;
+      height: $gl-padding;
     }
   }
 }
@@ -54,6 +60,10 @@
 .right-sidebar-expanded {
   padding-right: 0;
   z-index: 300;
+
+  .btn-sidebar-action {
+    display: inline-flex;
+  }
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
@@ -78,21 +88,16 @@
 
 .right-sidebar {
   border-left: 1px solid $border-color;
+  height: calc(100% - #{$header-height});
+}
 
-  &.affix {
-    position: fixed;
-    top: $header-height;
-  }
-
-  &:not(.affix-top) {
-    min-height: 100%;
-  }
+.with-performance-bar .right-sidebar.affix {
+  top: $header-height + $performance-bar-height;
 }
 
 @mixin maintain-sidebar-dimensions {
   display: block;
   width: $gutter-width;
-  padding: 10px 20px;
 }
 
 .issues-bulk-update.right-sidebar {
@@ -104,6 +109,15 @@
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;
     width: $gutter-width;
+
+    .issuable-sidebar-header {
+      // matches `.top-area .nav-controls` for issuable index pages
+      padding: 11px 0;
+    }
+
+    .block:last-of-type {
+      border: 0;
+    }
   }
 
   &.right-sidebar-collapsed {
@@ -123,3 +137,19 @@
     width: calc(100% + 35px);
   }
 }
+
+.pikaday-container {
+  .pika-single {
+    margin-top: 2px;
+    width: 250px;
+  }
+
+  .dropdown-menu-toggle {
+    line-height: 20px;
+  }
+}
+
+.sidebar-collapsed-icon .sidebar-collapsed-value {
+  font-size: 12px;
+}
+

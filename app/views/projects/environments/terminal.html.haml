@@ -1,10 +1,8 @@
 - @no_container = true
 - page_title "Terminal for environment", @environment.name
-= render "projects/pipelines/head"
 
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag "xterm/xterm"
-  = page_specific_javascript_bundle_tag("terminal")
 
 %div{ class: container_class }
   .top-area
@@ -22,4 +20,4 @@
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
 
 .terminal-container{ class: container_class }
-  #terminal{ data: { project_path: "#{terminal_namespace_project_environment_path(@project.namespace, @project, @environment)}.ws" } }
+  #terminal{ data: { project_path: "#{terminal_project_environment_path(@project, @environment)}.ws" } }

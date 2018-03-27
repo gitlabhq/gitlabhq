@@ -1,6 +1,4 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('group')
-- parent = GroupFinder.new(current_user).execute(id: params[:parent_id] || @group.parent_id)
+- parent = @group.parent
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 
@@ -13,21 +11,18 @@
         %span>= root_url
         - if parent
           %strong= parent.full_path + '/'
+      = f.hidden_field :parent_id
       = f.text_field :path, placeholder: 'open-source', class: 'form-control',
         autofocus: local_assigns[:autofocus] || false, required: true,
         pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
         title: 'Please choose a group path with no special characters.',
         "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-      - if parent
-        = f.hidden_field :parent_id, value: parent.id
 
     - if @group.persisted?
       .alert.alert-warning.prepend-top-10
-        %ul
-          %li Changing group path can have unintended side effects.
-          %li Renaming group path will rename directory for all related projects
-          %li It will change web url for access group and group projects.
-          %li It will change the git path to repositories under this group.
+        Changing group path can have unintended side effects.
+        = succeed '.' do
+          = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
 .form-group.group-name-holder
   = f.label :name, class: 'control-label' do

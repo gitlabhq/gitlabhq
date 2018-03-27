@@ -45,7 +45,7 @@ class SpamService
   def check(api)
     return false unless request && check_for_spam?
 
-    return false unless akismet.is_spam?
+    return false unless akismet.spam?
 
     create_spam_log(api)
     true

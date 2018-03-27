@@ -11,10 +11,10 @@
     %ul.dropdown-footer-list
       - if can? current_user, :admin_milestone, project
         %li
-          = link_to new_namespace_project_milestone_path(project.namespace, project), title: "New Milestone" do
+          = link_to new_project_milestone_path(project), title: "New Milestone" do
             Create new
       %li
-        = link_to namespace_project_milestones_path(project.namespace, project) do
+        = link_to project_milestones_path(project) do
           - if can? current_user, :admin_milestone, project
             Manage milestones
           - else

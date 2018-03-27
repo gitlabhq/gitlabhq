@@ -6,7 +6,7 @@ module Gitlab
           module Routable
             def full_path
               if route && route.path.present?
-                @full_path ||= route.path
+                @full_path ||= route.path # rubocop:disable Gitlab/ModuleWithInstanceVariables
               else
                 update_route if persisted?
 
@@ -30,7 +30,7 @@ module Gitlab
             def prepare_route
               route || build_route(source: self)
               route.path = build_full_path
-              @full_path = nil
+              @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
             end
           end
 
@@ -68,13 +68,25 @@ module Gitlab
             has_one :route, as: :source
             self.table_name = 'projects'
 
+            HASHED_STORAGE_FEATURES = {
+              repository: 1,
+              attachments: 2
+            }.freeze
+
             def repository_storage_path
-              Gitlab.config.repositories.storages[repository_storage]['path']
+              Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
             end
 
             # Overridden to have the correct `source_type` for the `route` relation
             def self.name
               'Project'
+            end
+
+            def hashed_storage?(feature)
+              raise ArgumentError, "Invalid feature" unless HASHED_STORAGE_FEATURES.include?(feature)
+              return false unless respond_to?(:storage_version)
+
+              self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
             end
           end
         end

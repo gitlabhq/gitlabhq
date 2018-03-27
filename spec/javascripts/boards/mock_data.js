@@ -1,19 +1,21 @@
+/* global BoardService */
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
+import _ from 'underscore';
 
-const listObj = {
-  id: _.random(10000),
+export const listObj = {
+  id: 300,
   position: 0,
   title: 'Test',
   list_type: 'label',
   label: {
-    id: _.random(10000),
+    id: 5000,
     title: 'Testing',
     color: 'red',
     description: 'testing;'
   }
 };
 
-const listObjDuplicate = {
+export const listObjDuplicate = {
   id: listObj.id,
   position: 1,
   title: 'Test',
@@ -26,21 +28,21 @@ const listObjDuplicate = {
   }
 };
 
-const BoardsMockData = {
+export const BoardsMockData = {
   'GET': {
-    '/test/issue-boards/board/1/lists{/id}/issues': {
+    '/test/-/boards/1/lists/300/issues?id=300&page=1&=': {
       issues: [{
         title: 'Testing',
+        id: 1,
         iid: 1,
         confidential: false,
         labels: [],
         assignees: [],
       }],
-      size: 1
     }
   },
   'POST': {
-    '/test/issue-boards/board/1/lists{/id}': listObj
+    '/test/-/boards/1/lists': listObj
   },
   'PUT': {
     '/test/issue-boards/board/1/lists{/id}': {}
@@ -50,15 +52,21 @@ const BoardsMockData = {
   }
 };
 
-const boardsMockInterceptor = (request, next) => {
-  const body = BoardsMockData[request.method][request.url];
-
-  next(request.respondWith(JSON.stringify(body), {
-    status: 200
-  }));
+export const boardsMockInterceptor = (config) => {
+  const body = BoardsMockData[config.method.toUpperCase()][config.url];
+  return [200, body];
 };
 
-window.listObj = listObj;
-window.listObjDuplicate = listObjDuplicate;
-window.BoardsMockData = BoardsMockData;
-window.boardsMockInterceptor = boardsMockInterceptor;
+export const mockBoardService = (opts = {}) => {
+  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/boards.json';
+  const listsEndpoint = opts.listsEndpoint || '/test/-/boards/1/lists';
+  const bulkUpdatePath = opts.bulkUpdatePath || '';
+  const boardId = opts.boardId || '1';
+
+  return new BoardService({
+    boardsEndpoint,
+    listsEndpoint,
+    bulkUpdatePath,
+    boardId,
+  });
+};

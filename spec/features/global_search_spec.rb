@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Global search', feature: true do
+feature 'Global search' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
   describe 'I search through the issues and I see pagination' do
@@ -22,7 +22,7 @@ feature 'Global search', feature: true do
       click_button "Go"
 
       select_filter("Issues")
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
+      expect(page).to have_selector('.gl-pagination .next')
     end
   end
 end

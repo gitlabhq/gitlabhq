@@ -1,5 +1,9 @@
 class Dashboard::ApplicationController < ApplicationController
+  include ControllerWithCrossProjectAccessCheck
+
   layout 'dashboard'
+
+  requires_cross_project_access
 
   private
 

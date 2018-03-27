@@ -18,14 +18,35 @@ module Banzai
 
       def find_object(project, id)
         if project && project.valid_repo?
-          project.commit(id)
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/43894
+          Gitlab::GitalyClient.allow_n_plus_1_calls { project.commit(id) }
+        end
+      end
+
+      def referenced_merge_request_commit_shas
+        return [] unless noteable.is_a?(MergeRequest)
+
+        @referenced_merge_request_commit_shas ||= begin
+          referenced_shas = references_per_parent.values.reduce(:|).to_a
+          noteable.all_commit_shas.select do |sha|
+            referenced_shas.any? { |ref| Gitlab::Git.shas_eql?(sha, ref) }
+          end
         end
       end
 
       def url_for_object(commit, project)
         h = Gitlab::Routing.url_helpers
-        h.namespace_project_commit_url(project.namespace, project, commit,
-                                        only_path: context[:only_path])
+
+        if referenced_merge_request_commit_shas.include?(commit.id)
+          h.diffs_project_merge_request_url(project,
+                                            noteable,
+                                            commit_id: commit.id,
+                                            only_path: only_path?)
+        else
+          h.project_commit_url(project,
+                               commit,
+                               only_path: only_path?)
+        end
       end
 
       def object_link_text_extras(object, matches)
@@ -37,6 +58,16 @@ module Banzai
         end
 
         extras
+      end
+
+      private
+
+      def noteable
+        context[:noteable]
+      end
+
+      def only_path?
+        context[:only_path]
       end
     end
   end

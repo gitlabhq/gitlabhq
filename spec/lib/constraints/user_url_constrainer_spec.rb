@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserUrlConstrainer, lib: true do
+describe Constraints::UserUrlConstrainer do
   let!(:user) { create(:user, username: 'dz') }
 
   describe '#matches?' do

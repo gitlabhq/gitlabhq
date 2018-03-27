@@ -1,6 +1,7 @@
 - @no_container = true
+- add_to_breadcrumbs "Tags", project_tags_path(@project)
+- breadcrumb_title @tag.name
 - page_title "Edit", @tag.name, "Tags"
-= render "projects/commits/head"
 
 %div{ class: container_class }
   .sub-header-block.no-bottom-space
@@ -10,11 +11,11 @@
         %strong= @tag.name
 
 
-  = form_for(@release, method: :put, url: namespace_project_tag_release_path(@project.namespace, @project, @tag.name), html: { class: 'form-horizontal common-note-form release-form js-quick-submit' }) do |f|
+  = form_for(@release, method: :put, url: project_tag_release_path(@project, @tag.name), html: { class: 'form-horizontal common-note-form release-form js-quick-submit' }) do |f|
     = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: "Write your release notes or drag files here..."
       = render 'shared/notes/hints'
     .error-alert
     .prepend-top-default
       = f.submit 'Save changes', class: 'btn btn-save'
-      = link_to "Cancel", namespace_project_tag_path(@project.namespace, @project, @tag.name), class: "btn btn-default btn-cancel"
+      = link_to "Cancel", project_tag_path(@project, @tag.name), class: "btn btn-default btn-cancel"

@@ -2,7 +2,9 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
-  serialize :properties, JSON # rubocop:disable Cop/ActiverecordSerialize
+  include Importable
+
+  serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
   default_value_for :push_events, true
@@ -44,11 +46,20 @@ class Service < ActiveRecord::Base
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
+  scope :deployment, -> { where(category: 'deployment') }
 
   default_value_for :category, 'common'
 
   def activated?
     active
+  end
+
+  def show_active_box?
+    true
+  end
+
+  def editable?
+    true
   end
 
   def template?
@@ -109,8 +120,24 @@ class Service < ActiveRecord::Base
     nil
   end
 
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key)/ }
+  end
+
   def global_fields
     fields
+  end
+
+  def configurable_events
+    events = self.class.supported_events
+
+    # No need to disable individual triggers when there is only one
+    if events.count == 1
+      []
+    else
+      events
+    end
   end
 
   def supported_events
@@ -133,11 +160,6 @@ class Service < ActiveRecord::Base
 
   def can_test?
     true
-  end
-
-  # reason why service cannot be tested
-  def disabled_title
-    "Please setup a project repository."
   end
 
   # Provide convenient accessor methods
@@ -203,7 +225,7 @@ class Service < ActiveRecord::Base
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
+    ProjectServiceWorker.perform_async(id, data)
   end
 
   def issue_tracker?
@@ -230,6 +252,7 @@ class Service < ActiveRecord::Base
       kubernetes
       mattermost_slash_commands
       mattermost
+      packagist
       pipelines_email
       pivotaltracker
       prometheus
@@ -240,6 +263,7 @@ class Service < ActiveRecord::Base
       teamcity
       microsoft_teams
     ]
+
     if Rails.env.development?
       service_names += %w[mock_ci mock_deployment mock_monitoring]
     end
@@ -254,6 +278,18 @@ class Service < ActiveRecord::Base
     service
   end
 
+  def deprecated?
+    false
+  end
+
+  def deprecation_message
+    nil
+  end
+
+  def self.find_by_template
+    find_by(template: true)
+  end
+
   private
 
   def cache_project_has_external_issue_tracker
@@ -266,5 +302,32 @@ class Service < ActiveRecord::Base
     if project && !project.destroyed?
       project.cache_has_external_wiki
     end
+  end
+
+  def self.event_description(event)
+    case event
+    when "push", "push_events"
+      "Event will be triggered by a push to the repository"
+    when "tag_push", "tag_push_events"
+      "Event will be triggered when a new tag is pushed to the repository"
+    when "note", "note_events"
+      "Event will be triggered when someone adds a comment"
+    when "issue", "issue_events"
+      "Event will be triggered when an issue is created/updated/closed"
+    when "confidential_issue", "confidential_issue_events"
+      "Event will be triggered when a confidential issue is created/updated/closed"
+    when "merge_request", "merge_request_events"
+      "Event will be triggered when a merge request is created/updated/merged"
+    when "pipeline", "pipeline_events"
+      "Event will be triggered when a pipeline status changes"
+    when "wiki_page", "wiki_page_events"
+      "Event will be triggered when a wiki page is created/updated"
+    when "commit", "commit_events"
+      "Event will be triggered when a commit is created/updated"
+    end
+  end
+
+  def valid_recipients?
+    activated? && !importing?
   end
 end

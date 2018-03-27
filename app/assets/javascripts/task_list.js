@@ -1,18 +1,19 @@
-/* global Flash */
-
+import $ from 'jquery';
 import 'deckar01-task_list';
+import axios from './lib/utils/axios_utils';
+import Flash from './flash';
 
-class TaskList {
+export default class TaskList {
   constructor(options = {}) {
     this.selector = options.selector;
     this.dataType = options.dataType;
     this.fieldName = options.fieldName;
     this.onSuccess = options.onSuccess || (() => {});
-    this.onError = function showFlash(response) {
+    this.onError = function showFlash(e) {
       let errorMessages = '';
 
-      if (response.responseJSON) {
-        errorMessages = response.responseJSON.errors.join(' ');
+      if (e.response.data && typeof e.response.data === 'object') {
+        errorMessages = e.response.data.errors.join(' ');
       }
 
       return new Flash(errorMessages || 'Update failed', 'alert');
@@ -39,15 +40,9 @@ class TaskList {
     patchData[this.dataType] = {
       [this.fieldName]: $target.val(),
     };
-    return $.ajax({
-      type: 'PATCH',
-      url: $target.data('update-url') || $('form.js-issuable-update').attr('action'),
-      data: patchData,
-      success: this.onSuccess,
-      error: this.onError,
-    });
+
+    return axios.patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
+      .then(({ data }) => this.onSuccess(data))
+      .catch(err => this.onError(err));
   }
 }
-
-window.gl = window.gl || {};
-window.gl.TaskList = TaskList;

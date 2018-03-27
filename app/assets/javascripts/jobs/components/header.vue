@@ -3,7 +3,11 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'jobHeaderSection',
+    name: 'JobHeaderSection',
+    components: {
+      ciHeader,
+      loadingIcon,
+    },
     props: {
       job: {
         type: Object,
@@ -13,10 +17,6 @@
         type: Boolean,
         required: true,
       },
-    },
-    components: {
-      ciHeader,
-      loadingIcon,
     },
     data() {
       return {
@@ -30,6 +30,18 @@
       shouldRenderContent() {
         return !this.isLoading && Object.keys(this.job).length;
       },
+      /**
+       * When job has not started the key will be `false`
+       * When job started the key will be a string with a date.
+       */
+      jobStarted() {
+        return !this.job.started === false;
+      },
+    },
+    watch: {
+      job() {
+        this.actions = this.getActions();
+      },
     },
     methods: {
       getActions() {
@@ -40,25 +52,10 @@
             label: 'New issue',
             path: this.job.new_issue_path,
             cssClass: 'js-new-issue btn btn-new btn-inverted visible-md-block visible-lg-block',
-            type: 'ujs-link',
+            type: 'link',
           });
         }
-
-        if (this.job.retry_path) {
-          actions.push({
-            label: 'Retry',
-            path: this.job.retry_path,
-            cssClass: 'js-retry-button btn btn-inverted-secondary visible-md-block visible-lg-block',
-            type: 'ujs-link',
-          });
-        }
-
         return actions;
-      },
-    },
-    watch: {
-      job() {
-        this.actions = this.getActions();
       },
     },
   };
@@ -73,11 +70,13 @@
       :time="job.created_at"
       :user="job.user"
       :actions="actions"
-      :hasSidebarButton="true"
-      />
+      :has-sidebar-button="true"
+      :should-render-triggered-label="jobStarted"
+    />
     <loading-icon
       v-if="isLoading"
       size="2"
-      />
+      class="prepend-top-default append-bottom-default"
+    />
   </div>
 </template>

@@ -1,8 +1,10 @@
 /* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, no-new, no-param-reassign, max-len */
 /* global ace */
-/* global Flash */
 
 import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
@@ -49,27 +51,26 @@ import Vue from 'vue';
       loadEditor() {
         this.loading = true;
 
-        $.get(this.file.content_path)
-          .done((file) => {
+        axios.get(this.file.content_path)
+          .then(({ data }) => {
             const content = this.$el.querySelector('pre');
-            const fileContent = document.createTextNode(file.content);
+            const fileContent = document.createTextNode(data.content);
 
             content.textContent = fileContent.textContent;
 
-            this.originalContent = file.content;
+            this.originalContent = data.content;
             this.fileLoaded = true;
             this.editor = ace.edit(content);
             this.editor.$blockScrolling = Infinity; // Turn off annoying warning
-            this.editor.getSession().setMode(`ace/mode/${file.blob_ace_mode}`);
+            this.editor.getSession().setMode(`ace/mode/${data.blob_ace_mode}`);
             this.editor.on('change', () => {
               this.saveDiffResolution();
             });
             this.saveDiffResolution();
+            this.loading = false;
           })
-          .fail(() => {
-            new Flash('Failed to load the file, please try again.');
-          })
-          .always(() => {
+          .catch(() => {
+            flash(__('An error occurred while loading the file'));
             this.loading = false;
           });
       },

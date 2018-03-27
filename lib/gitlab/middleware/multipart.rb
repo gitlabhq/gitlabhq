@@ -42,11 +42,12 @@ module Gitlab
 
             key, value = parsed_field.first
             if value.nil?
-              value = open_file(tmp_path)
+              value = open_file(tmp_path, @request.params["#{key}.name"])
               @open_files << value
             else
               value = decorate_params_value(value, @request.params[key], tmp_path)
             end
+
             @request.update_param(key, value)
           end
 
@@ -60,6 +61,7 @@ module Gitlab
           unless path_hash.is_a?(Hash) && path_hash.count == 1
             raise "invalid path: #{path_hash.inspect}"
           end
+
           path_key, path_value = path_hash.first
 
           unless value_hash.is_a?(Hash) && value_hash[path_key]
@@ -68,7 +70,7 @@ module Gitlab
 
           case path_value
           when nil
-            value_hash[path_key] = open_file(tmp_path)
+            value_hash[path_key] = open_file(tmp_path, value_hash.dig(path_key, '.name'))
             @open_files << value_hash[path_key]
             value_hash
           when Hash
@@ -79,8 +81,8 @@ module Gitlab
           end
         end
 
-        def open_file(path)
-          ::UploadedFile.new(path, File.basename(path), 'application/octet-stream')
+        def open_file(path, name)
+          ::UploadedFile.new(path, name || File.basename(path), 'application/octet-stream')
         end
       end
 

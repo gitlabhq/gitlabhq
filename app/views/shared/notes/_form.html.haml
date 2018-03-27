@@ -10,6 +10,7 @@
   = hidden_field_tag :line_type
   = hidden_field_tag :merge_request_diff_head_sha, @note.noteable.try(:diff_head_sha)
   = hidden_field_tag :in_reply_to_discussion_id
+  = hidden_field_tag :note_project_id
 
   = note_target_fields(@note)
   = f.hidden_field :noteable_type
@@ -23,20 +24,21 @@
   -# DiffNote
   = f.hidden_field :position
 
-  = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
-    = render 'projects/zen', f: f,
-      attr: :note,
-      classes: 'note-textarea js-note-text',
-      placeholder: "Write a comment or drag your files here...",
-      supports_quick_actions: supports_quick_actions,
-      supports_autocomplete: supports_autocomplete
-    = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
-    .error-alert
+  .discussion-form-container
+    = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
+      = render 'projects/zen', f: f,
+        attr: :note,
+        classes: 'note-textarea js-note-text',
+        placeholder: "Write a comment or drag your files here...",
+        supports_quick_actions: supports_quick_actions,
+        supports_autocomplete: supports_autocomplete
+      = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
+      .error-alert
 
-  .note-form-actions.clearfix
-    = render partial: 'shared/notes/comment_button'
+    .note-form-actions.clearfix
+      = render partial: 'shared/notes/comment_button'
 
-    = yield(:note_actions)
+      = yield(:note_actions)
 
-    %a.btn.btn-cancel.js-note-discard{ role: "button", data: {cancel_text: "Cancel" } }
-      Discard draft
+      %a.btn.btn-cancel.js-note-discard{ role: "button", data: {cancel_text: "Cancel" } }
+        Discard draft

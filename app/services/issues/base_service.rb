@@ -1,10 +1,18 @@
 module Issues
   class BaseService < ::IssuableBaseService
-    def hook_data(issue, action)
-      issue_data = issue.to_hook_data(current_user)
-      issue_url = Gitlab::UrlBuilder.build(issue)
-      issue_data[:object_attributes].merge!(url: issue_url, action: action)
-      issue_data
+    def hook_data(issue, action, old_associations: {})
+      hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
+      hook_data[:object_attributes][:action] = action
+
+      hook_data
+    end
+
+    def reopen_service
+      Issues::ReopenService
+    end
+
+    def close_service
+      Issues::CloseService
     end
 
     private
@@ -14,8 +22,8 @@ module Issues
         issue, issue.project, current_user, old_assignees)
     end
 
-    def execute_hooks(issue, action = 'open')
-      issue_data  = hook_data(issue, action)
+    def execute_hooks(issue, action = 'open', old_associations: {})
+      issue_data  = hook_data(issue, action, old_associations: old_associations)
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
       issue.project.execute_hooks(issue_data, hooks_scope)
       issue.project.execute_services(issue_data, hooks_scope)
@@ -36,6 +44,10 @@ module Issues
       else
         params.delete(:assignee_ids)
       end
+    end
+
+    def update_project_counter_caches?(issue)
+      super || issue.confidential_changed?
     end
   end
 end

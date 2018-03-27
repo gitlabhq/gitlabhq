@@ -1,37 +1,21 @@
 require 'spec_helper'
 
-describe Boards::ListService, services: true do
+describe Boards::ListService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    context 'when board parent is a project' do
+      let(:parent) { create(:project) }
 
-    subject(:service) { described_class.new(project, double) }
+      subject(:service) { described_class.new(parent, double) }
 
-    context 'when project does not have a board' do
-      it 'creates a new project board' do
-        expect { service.execute }.to change(project.boards, :count).by(1)
-      end
-
-      it 'delegates the project board creation to Boards::CreateService' do
-        expect_any_instance_of(Boards::CreateService).to receive(:execute).once
-
-        service.execute
-      end
+      it_behaves_like 'boards list service'
     end
 
-    context 'when project has a board' do
-      before do
-        create(:board, project: project)
-      end
+    context 'when board parent is a group' do
+      let(:parent) { create(:group) }
 
-      it 'does not create a new board' do
-        expect { service.execute }.not_to change(project.boards, :count)
-      end
-    end
+      subject(:service) { described_class.new(parent, double) }
 
-    it 'returns project boards' do
-      board = create(:board, project: project)
-
-      expect(service.execute).to match_array [board]
+      it_behaves_like 'boards list service'
     end
   end
 end

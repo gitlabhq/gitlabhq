@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe 'admin deploy keys', type: :feature do
+RSpec.describe 'admin deploy keys' do
   let!(:deploy_key) { create(:deploy_key, public: true) }
   let!(:another_deploy_key) { create(:another_deploy_key, public: true) }
 
   before do
-    gitlab_sign_in(:admin)
+    sign_in(create(:admin))
   end
 
   it 'show all public deploy keys' do
@@ -14,6 +14,16 @@ RSpec.describe 'admin deploy keys', type: :feature do
     page.within(find('.deploy-keys-list', match: :first)) do
       expect(page).to have_content(deploy_key.title)
       expect(page).to have_content(another_deploy_key.title)
+    end
+  end
+
+  it 'shows all the projects the deploy key has write access' do
+    write_key = create(:deploy_keys_project, :write_access, deploy_key: deploy_key)
+
+    visit admin_deploy_keys_path
+
+    page.within(find('.deploy-keys-list', match: :first)) do
+      expect(page).to have_content(write_key.project.full_name)
     end
   end
 
@@ -28,14 +38,12 @@ RSpec.describe 'admin deploy keys', type: :feature do
     it 'creates a new deploy key' do
       fill_in 'deploy_key_title', with: 'laptop'
       fill_in 'deploy_key_key', with: new_ssh_key
-      check 'deploy_key_can_push'
       click_button 'Create'
 
       expect(current_path).to eq admin_deploy_keys_path
 
       page.within(find('.deploy-keys-list', match: :first)) do
         expect(page).to have_content('laptop')
-        expect(page).to have_content('Yes')
       end
     end
   end
@@ -48,14 +56,12 @@ RSpec.describe 'admin deploy keys', type: :feature do
 
     it 'updates an existing deploy key' do
       fill_in 'deploy_key_title', with: 'new-title'
-      check 'deploy_key_can_push'
       click_button 'Save changes'
 
       expect(current_path).to eq admin_deploy_keys_path
 
       page.within(find('.deploy-keys-list', match: :first)) do
         expect(page).to have_content('new-title')
-        expect(page).to have_content('Yes')
       end
     end
   end

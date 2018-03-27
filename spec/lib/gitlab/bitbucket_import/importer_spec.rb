@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::Importer, lib: true do
+describe Gitlab::BitbucketImport::Importer do
   include ImportSpecHelper
 
   before do
@@ -52,19 +52,25 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
 
   let(:project) do
     create(
-      :empty_project,
+      :project,
       import_source: project_identifier,
-      import_data: ProjectImportData.new(credentials: data)
+      import_url: "https://bitbucket.org/#{project_identifier}.git",
+      import_data_attributes: { credentials: data }
     )
   end
 
-  let(:importer) { Gitlab::BitbucketImport::Importer.new(project) }
+  let(:importer) { described_class.new(project) }
+  let(:gitlab_shell) { double }
 
   let(:issues_statuses_sample_data) do
     {
       count: sample_issues_statuses.count,
       values: sample_issues_statuses
     }
+  end
+
+  before do
+    allow(importer).to receive(:gitlab_shell) { gitlab_shell }
   end
 
   context 'issues statuses' do
@@ -110,15 +116,36 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
     end
 
     it 'maps statuses to open or closed' do
+      allow(importer).to receive(:import_wiki)
+
       importer.execute
 
       expect(project.issues.where(state: "closed").size).to eq(5)
       expect(project.issues.where(state: "opened").size).to eq(2)
     end
 
-    it 'calls import_wiki' do
-      expect(importer).to receive(:import_wiki)
-      importer.execute
+    describe 'wiki import' do
+      it 'is skipped when the wiki exists' do
+        expect(project.wiki).to receive(:repository_exists?) { true }
+        expect(importer.gitlab_shell).not_to receive(:import_repository)
+
+        importer.execute
+
+        expect(importer.errors).to be_empty
+      end
+
+      it 'imports to the project disk_path' do
+        expect(project.wiki).to receive(:repository_exists?) { false }
+        expect(importer.gitlab_shell).to receive(:import_repository).with(
+          project.repository_storage_path,
+          project.wiki.disk_path,
+          project.import_url + '/wiki'
+        )
+
+        importer.execute
+
+        expect(importer.errors).to be_empty
+      end
     end
   end
 end

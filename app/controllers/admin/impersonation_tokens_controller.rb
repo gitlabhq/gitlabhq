@@ -9,7 +9,6 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @impersonation_token = finder.build(impersonation_token_params)
 
     if @impersonation_token.save
-      flash[:impersonation_token] = @impersonation_token.token
       redirect_to admin_user_impersonation_tokens_path, notice: "A new impersonation token has been created."
     else
       set_index_vars
@@ -44,7 +43,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def set_index_vars
-    @scopes = Gitlab::Auth::API_SCOPES
+    @scopes = Gitlab::Auth.available_scopes(current_user)
 
     @impersonation_token ||= finder.build
     @inactive_impersonation_tokens = finder(state: 'inactive').execute

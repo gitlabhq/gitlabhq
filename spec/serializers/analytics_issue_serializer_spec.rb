@@ -8,7 +8,7 @@ describe AnalyticsIssueSerializer do
   end
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:resource) do
     {
       total_time: "172802.724419",

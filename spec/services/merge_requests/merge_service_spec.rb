@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-describe MergeRequests::MergeService, services: true do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
-  let(:merge_request) { create(:merge_request, assignee: user2) }
+describe MergeRequests::MergeService do
+  set(:user) { create(:user) }
+  set(:user2) { create(:user) }
+  let(:merge_request) { create(:merge_request, :simple, author: user2, assignee: user2) }
   let(:project) { merge_request.project }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
   end
 
   describe '#execute' do
     context 'valid params' do
-      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -112,7 +112,7 @@ describe MergeRequests::MergeService, services: true do
     context 'closes related todos' do
       let(:merge_request) { create(:merge_request, assignee: user, author: user) }
       let(:project) { merge_request.project }
-      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
       let!(:todo) do
         create(:todo, :assigned,
           project: project,
@@ -133,23 +133,79 @@ describe MergeRequests::MergeService, services: true do
       it { expect(todo).to be_done }
     end
 
-    context 'remove source branch by author' do
-      let(:service) do
-        merge_request.merge_params['force_remove_source_branch'] = '1'
-        merge_request.save!
-        MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message')
+    context 'source branch removal' do
+      context 'when the source branch is protected' do
+        let(:service) do
+          described_class.new(project, user, 'should_remove_source_branch' => true)
+        end
+
+        before do
+          create(:protected_branch, project: project, name: merge_request.source_branch)
+        end
+
+        it 'does not delete the source branch' do
+          expect(DeleteBranchService).not_to receive(:new)
+          service.execute(merge_request)
+        end
       end
 
-      it 'removes the source branch' do
-        expect(DeleteBranchService).to receive(:new)
-          .with(merge_request.source_project, merge_request.author)
-          .and_call_original
-        service.execute(merge_request)
+      context 'when the source branch is the default branch' do
+        let(:service) do
+          described_class.new(project, user, 'should_remove_source_branch' => true)
+        end
+
+        before do
+          allow(project).to receive(:root_ref?).with(merge_request.source_branch).and_return(true)
+        end
+
+        it 'does not delete the source branch' do
+          expect(DeleteBranchService).not_to receive(:new)
+          service.execute(merge_request)
+        end
+      end
+
+      context 'when the source branch can be removed' do
+        context 'when MR author set the source branch to be removed' do
+          let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+
+          before do
+            merge_request.update_attribute(:merge_params, { 'force_remove_source_branch' => '1' })
+          end
+
+          it 'removes the source branch using the author user' do
+            expect(DeleteBranchService).to receive(:new)
+              .with(merge_request.source_project, merge_request.author)
+              .and_call_original
+            service.execute(merge_request)
+          end
+
+          context 'when the merger set the source branch not to be removed' do
+            let(:service) { described_class.new(project, user, commit_message: 'Awesome message', 'should_remove_source_branch' => false) }
+
+            it 'does not delete the source branch' do
+              expect(DeleteBranchService).not_to receive(:new)
+              service.execute(merge_request)
+            end
+          end
+        end
+
+        context 'when MR merger set the source branch to be removed' do
+          let(:service) do
+            described_class.new(project, user, commit_message: 'Awesome message', 'should_remove_source_branch' => true)
+          end
+
+          it 'removes the source branch using the current user' do
+            expect(DeleteBranchService).to receive(:new)
+              .with(merge_request.source_project, user)
+              .and_call_original
+            service.execute(merge_request)
+          end
+        end
       end
     end
 
     context "error handling" do
-      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 
       before do
         allow(Rails.logger).to receive(:error)
@@ -170,7 +226,7 @@ describe MergeRequests::MergeService, services: true do
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
 
-        allow(service).to receive(:repository).and_raise(GitHooksService::PreReceiveError, error_message)
+        allow(service).to receive(:repository).and_raise(Gitlab::Git::HooksService::PreReceiveError, error_message)
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
@@ -191,6 +247,28 @@ describe MergeRequests::MergeService, services: true do
         expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.merge_error).to include(error_message)
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+      end
+
+      context "when fast-forward merge is not allowed" do
+        before do
+          allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
+        end
+
+        %w(semi-linear ff).each do |merge_method|
+          it "logs and saves error if merge is #{merge_method} only" do
+            merge_method = 'rebase_merge' if merge_method == 'semi-linear'
+            merge_request.project.update(merge_method: merge_method)
+            error_message = 'Only fast-forward merge is allowed for your project. Please update your source branch'
+            allow(service).to receive(:execute_hooks)
+
+            service.execute(merge_request)
+
+            expect(merge_request).to be_open
+            expect(merge_request.merge_commit_sha).to be_nil
+            expect(merge_request.merge_error).to include(error_message)
+            expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+          end
+        end
       end
     end
   end

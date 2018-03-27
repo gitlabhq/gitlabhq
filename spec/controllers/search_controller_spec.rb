@@ -8,12 +8,38 @@ describe SearchController do
   end
 
   it 'finds issue comments' do
-    project = create(:empty_project, :public)
+    project = create(:project, :public)
     note = create(:note_on_issue, project: project)
 
     get :show, project_id: project.id, scope: 'notes', search: note.note
 
     expect(assigns[:search_objects].first).to eq note
+  end
+
+  context 'when the user cannot read cross project' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+                          .with(user, :read_cross_project, :global) { false }
+    end
+
+    it 'still allows accessing the search page' do
+      get :show
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'still blocks searches without a project_id' do
+      get :show, search: 'hello'
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'allows searches with a project_id' do
+      get :show, search: 'hello', project_id: create(:project, :public).id
+
+      expect(response).to have_gitlab_http_status(200)
+    end
   end
 
   context 'on restricted projects' do
@@ -23,7 +49,7 @@ describe SearchController do
       end
 
       it "doesn't expose comments on issues" do
-        project = create(:empty_project, :public, :issues_private)
+        project = create(:project, :public, :issues_private)
         note = create(:note_on_issue, project: project)
 
         get :show, project_id: project.id, scope: 'notes', search: note.note
@@ -33,7 +59,7 @@ describe SearchController do
     end
 
     it "doesn't expose comments on merge_requests" do
-      project = create(:empty_project, :public, :merge_requests_private)
+      project = create(:project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
       get :show, project_id: project.id, scope: 'notes', search: note.note
@@ -42,7 +68,7 @@ describe SearchController do
     end
 
     it "doesn't expose comments on snippets" do
-      project = create(:empty_project, :public, :snippets_private)
+      project = create(:project, :public, :snippets_private)
       note = create(:note_on_project_snippet, project: project)
 
       get :show, project_id: project.id, scope: 'notes', search: note.note

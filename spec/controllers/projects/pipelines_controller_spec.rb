@@ -3,32 +3,34 @@ require 'spec_helper'
 describe Projects::PipelinesController do
   include ApiHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project, :public, :repository) }
   let(:feature) { ProjectFeature::DISABLED }
 
   before do
+    stub_not_protect_default_branch
     project.add_developer(user)
-    project.project_feature.update(
-      builds_access_level: feature)
+    project.project_feature.update(builds_access_level: feature)
 
     sign_in(user)
   end
 
   describe 'GET index.json' do
     before do
-      create(:ci_empty_pipeline, status: 'pending', project: project)
-      create(:ci_empty_pipeline, status: 'running', project: project)
-      create(:ci_empty_pipeline, status: 'created', project: project)
-      create(:ci_empty_pipeline, status: 'success', project: project)
+      %w(pending running created success).each_with_index do |status, index|
+        sha = project.commit("HEAD~#{index}")
+        create(:ci_empty_pipeline, status: status, project: project, sha: sha)
+      end
+    end
 
-      get :index, namespace_id: project.namespace,
-                  project_id: project,
-                  format: :json
+    subject do
+      get :index, namespace_id: project.namespace, project_id: project, format: :json
     end
 
     it 'returns JSON with serialized pipelines' do
-      expect(response).to have_http_status(:ok)
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('pipeline')
 
       expect(json_response).to include('pipelines')
@@ -38,6 +40,12 @@ describe Projects::PipelinesController do
       expect(json_response['count']['pending']).to eq 1
       expect(json_response['count']['finished']).to eq 1
     end
+
+    context 'when performing gitaly calls', :request_store do
+      it 'limits the Gitaly requests' do
+        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(3)
+      end
+    end
   end
 
   describe 'GET show JSON' do
@@ -46,7 +54,7 @@ describe Projects::PipelinesController do
     it 'returns the pipeline' do
       get_pipeline_json
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).not_to be_an(Array)
       expect(json_response['id']).to be(pipeline.id)
       expect(json_response['details']).to have_key 'stages'
@@ -60,7 +68,7 @@ describe Projects::PipelinesController do
         create_build('post deploy', 3, 'pages 0')
       end
 
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:pipeline) do
         create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end
@@ -100,7 +108,7 @@ describe Projects::PipelinesController do
       end
 
       it 'returns html source for stage dropdown' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('projects/pipelines/_stage')
         expect(json_response).to include('html')
       end
@@ -112,7 +120,7 @@ describe Projects::PipelinesController do
       end
 
       it 'responds with not found' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -137,11 +145,11 @@ describe Projects::PipelinesController do
     end
 
     it 'return a detailed pipeline status in json' do
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+      expect(json_response['favicon']).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
     end
   end
 
@@ -158,16 +166,16 @@ describe Projects::PipelinesController do
 
     context 'when builds are enabled' do
       let(:feature) { ProjectFeature::ENABLED }
-  
+
       it 'retries a pipeline without returning any content' do
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(build.reload).to be_retried
       end
     end
 
     context 'when builds are disabled' do
       it 'fails to retry pipeline' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -175,7 +183,7 @@ describe Projects::PipelinesController do
   describe 'POST cancel.json' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
-  
+
     before do
       post :cancel, namespace_id: project.namespace,
                     project_id: project,
@@ -185,16 +193,16 @@ describe Projects::PipelinesController do
 
     context 'when builds are enabled' do
       let(:feature) { ProjectFeature::ENABLED }
-  
+
       it 'cancels a pipeline without returning any content' do
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(pipeline.reload).to be_canceled
       end
     end
 
     context 'when builds are disabled' do
       it 'fails to retry pipeline' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

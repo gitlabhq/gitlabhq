@@ -26,7 +26,7 @@ RSpec.shared_examples "referenced feature visibility" do |*related_features|
     end
 
     it "creates reference for member" do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
     end

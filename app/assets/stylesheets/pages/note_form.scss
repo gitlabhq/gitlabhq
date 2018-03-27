@@ -7,7 +7,7 @@
 
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
-    opacity: 1.0;
+    opacity: 1;
     filter: alpha(opacity = 100);
   }
 }
@@ -16,12 +16,8 @@
 .discussion {
   .new-note {
     margin: 0;
-    border: none;
+    border: 0;
   }
-}
-
-.new-note {
-  display: none;
 }
 
 .new-note,
@@ -103,45 +99,85 @@
   }
 }
 
-.confidential-issue-warning {
-  background-color: $gray-normal;
-  border-radius: 3px;
+.issuable-note-warning {
+  color: $orange-600;
+  background-color: $orange-100;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+  border: 1px solid $border-gray-normal;
+  border-bottom: 0;
   padding: 3px 12px;
   margin: auto;
-  margin-top: 0;
-  text-align: center;
-  font-size: 12px;
   align-items: center;
 
-  @media (max-width: $screen-md-max) {
-    // On smaller devices the warning becomes the fourth item in the list,
-    // rather than centering, and grows to span the full width of the
-    // comment area.
-    order: 4;
-    margin: 6px auto;
-    width: 100%;
+  .icon {
+    margin-right: $issuable-warning-icon-margin;
+    vertical-align: text-bottom;
+    fill: $orange-600;
   }
 
-  .fa {
-    margin-right: 8px;
+  + .md-area {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .disabled-comment {
+    border: 0;
+    border-radius: $label-border-radius;
+    padding-top: $gl-vert-padding;
+    padding-bottom: $gl-vert-padding;
+
+    .icon svg {
+      position: relative;
+      top: 2px;
+      margin-right: $btn-xs-side-margin;
+      width: $gl-font-size;
+      height: $gl-font-size;
+      fill: $orange-600;
+    }
   }
 }
 
-.right-sidebar-expanded {
-  .confidential-issue-warning {
-    // When the sidebar is open the warning becomes the fourth item in the list,
-    // rather than centering, and grows to span the full width of the
-    // comment area.
-    order: 4;
-    margin: 6px auto;
-    width: 100%;
+.sidebar-item-icon {
+  border-radius: $border-radius-default;
+  margin: 0 5px 0 0;
+  vertical-align: text-bottom;
+
+  &.is-active {
+    fill: $orange-600;
+  }
+
+  .sidebar-collapsed-icon & {
+    margin: 0;
+  }
+
+  .sidebar-item-value & {
+    fill: $theme-gray-700;
   }
 }
 
+.sidebar-item-warning-message {
+  line-height: 1.5;
+  padding: 16px;
+
+  .text {
+    color: $text-color;
+  }
+
+  .sidebar-item-warning-message-actions {
+    display: flex;
+
+    .btn {
+      flex-grow: 1;
+    }
+  }
+}
 
 .discussion-form {
-  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-form-container {
+  padding: $gl-padding-top $gl-padding $gl-padding;
 }
 
 .discussion-notes .disabled-comment {
@@ -189,7 +225,7 @@
     .close {
       color: $white-light;
       opacity: 0.85;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
 
       &:hover {
         opacity: 1;
@@ -203,6 +239,10 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+
+    &.is-replying {
+      padding-bottom: $gl-padding;
+    }
   }
 }
 
@@ -221,13 +261,12 @@
       width: 100%;
       padding-right: 5px;
     }
-
   }
 
   .discussion-actions {
     display: table;
 
-    .new-issue-for-discussion path {
+    .btn-default path {
       fill: $gray-darkest;
     }
 
@@ -352,69 +391,23 @@
   .dropdown-toggle {
     float: right;
 
-    .toggle-icon {
+    i {
       color: $white-light;
       padding-right: 2px;
       margin-top: 2px;
-      pointer-events: none;
+    }
+
+    &[disabled] {
+      i {
+        color: $gl-text-color-disabled;
+      }
     }
   }
 
   .dropdown-menu {
     top: initial;
-    bottom: 40px;
+    bottom: 100%;
     width: 298px;
-  }
-
-  .description {
-    display: inline-block;
-    white-space: normal;
-    margin-left: 8px;
-    padding-right: 33px;
-  }
-
-  li {
-    padding-top: 6px;
-
-    & > a {
-      margin: 0;
-      padding: 0;
-      color: inherit;
-      border-radius: 0;
-      text-overflow: inherit;
-
-      &:hover,
-      &:focus {
-        background-color: inherit;
-        color: inherit;
-      }
-    }
-
-    &:hover,
-    &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
-    }
-
-    &.droplab-item-selected i {
-      visibility: visible;
-    }
-
-    i {
-      visibility: hidden;
-    }
-  }
-
-  i {
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 2px;
-  }
-
-  .divider {
-    margin: 0 8px;
-    padding: 0;
-    border-top: $gray-darkest;
   }
 
   @media (max-width: $screen-xs-max) {

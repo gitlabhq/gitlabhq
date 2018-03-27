@@ -1,14 +1,58 @@
+.modal-header {
+  background-color: $modal-body-bg;
+  padding: #{3 * $grid-size} #{2 * $grid-size};
+
+  .page-title,
+  .modal-title {
+    .color-label {
+      font-size: $gl-font-size;
+      padding: $gl-vert-padding $label-padding-modal;
+    }
+  }
+
+  .page-title {
+    margin-top: 0;
+  }
+}
+
 .modal-body {
+  background-color: $modal-body-bg;
+  line-height: $line-height-base;
+  min-height: $modal-body-height;
   position: relative;
-  padding: 15px;
+  padding: #{3 * $grid-size} #{2 * $grid-size};
+  text-align: left;
 
   .form-actions {
-    margin: -$gl-padding + 1;
-    margin-top: 15px;
+    margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
   }
 
   .text-danger {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+
+  .btn + .btn {
+    margin-left: $grid-size;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column;
+
+    .btn + .btn {
+      margin-left: 0;
+      margin-top: $grid-size;
+    }
+  }
+
+  @media (min-width: $screen-sm-min) {
+    .btn:first-of-type {
+      margin-left: auto;
+    }
   }
 }
 
@@ -16,8 +60,35 @@ body.modal-open {
   overflow: hidden;
 }
 
-@media (min-width: $screen-md-min) {
-  .modal-dialog {
-    width: 860px;
+.modal-no-backdrop {
+  @extend .modal-dialog;
+
+  .modal-content {
+    box-shadow: none;
+  }
+}
+
+@media (min-width: $screen-lg-min) {
+  .modal-full {
+    width: 98%;
+  }
+}
+
+.modal {
+  background-color: $black-transparent;
+  z-index: 2100;
+
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      margin: 30px auto;
+    }
+  }
+}
+
+.recaptcha-modal .recaptcha-form {
+  display: inline-block;
+
+  .recaptcha {
+    margin: 0;
   }
 }

@@ -1,26 +1,29 @@
 - @no_container = true
 - page_title "Labels"
 - hide_class = ''
-= render "shared/mr_head"
+- can_admin_label = can?(current_user, :admin_label, @project)
 
 - if @labels.exists? || @prioritized_labels.exists?
+  #promote-label-modal
   %div{ class: container_class }
     .top-area.adjust
       .nav-text
-        Labels can be applied to issues and merge requests. Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
+        Labels can be applied to issues and merge requests.
+        - if can_admin_label
+          Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
 
-      .nav-controls
-        - if can?(current_user, :admin_label, @project)
-          = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
+      - if can_admin_label
+        .nav-controls
+          = link_to new_project_label_path(@project), class: "btn btn-new" do
             New label
 
     .labels
-      - if can?(current_user, :admin_label, @project)
+      - if can_admin_label
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
         .prioritized-labels{ class: ('hide' if hide) }
           %h5 Prioritized Labels
-          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
+          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
             #js-priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
               = render 'shared/empty_states/priority_labels'
             - if @prioritized_labels.present?
@@ -28,7 +31,7 @@
 
       - if @labels.present?
         .other-labels
-          - if can?(current_user, :admin_label, @project)
+          - if can_admin_label
             %h5{ class: ('hide' if hide) } Other Labels
           %ul.content-list.manage-labels-list.js-other-labels
             = render partial: 'shared/label', subject: @project, collection: @labels, as: :label

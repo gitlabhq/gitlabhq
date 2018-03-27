@@ -1,18 +1,20 @@
 - page_title "SSH Keys"
-= render 'profiles/head'
+- @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
       SSH keys allow you to establish a secure connection between your computer and GitLab.
-  .col-lg-9
+  .col-lg-8
     %h5.prepend-top-0
       Add an SSH key
     %p.profile-settings-content
       Before you can add an SSH key you need to
-      = link_to "generate it.", help_page_path("ssh/README")
+      = link_to "generate one", help_page_path("ssh/README", anchor: 'generating-a-new-ssh-key-pair')
+      or use an
+      = link_to "existing key.", help_page_path("ssh/README", anchor: 'locating-an-existing-ssh-key-pair')
     = render 'form'
     %hr
     %h5

@@ -255,14 +255,14 @@ $colors: (
 
     &.saved {
       .editor {
-        border-top: solid 2px $green-200;
+        border-top: solid 2px $green-300;
       }
     }
 
     .editor {
       pre {
         height: 350px;
-        border: none;
+        border: 0;
         border-radius: 0;
         margin-bottom: 0;
       }

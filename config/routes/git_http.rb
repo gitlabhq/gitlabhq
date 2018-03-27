@@ -16,6 +16,13 @@ scope(path: '*namespace_id/:project_id',
       get '/*oid', action: :deprecated
     end
 
+    scope(path: 'info/lfs') do
+      resources :lfs_locks, controller: :lfs_locks_api, path: 'locks' do
+        post :unlock, on: :member
+        post :verify, on: :collection
+      end
+    end
+
     # GitLab LFS object storage
     scope(path: 'gitlab-lfs/objects/*oid', controller: :lfs_storage, constraints: { oid: /[a-f0-9]{64}/ }) do
       get '/', action: :download
@@ -33,7 +40,7 @@ scope(path: '*namespace_id/:project_id',
     # /info/refs?service=git-receive-pack, but nothing else.
     #
     git_http_handshake = lambda do |request|
-      ProjectUrlConstrainer.new.matches?(request) &&
+      ::Constraints::ProjectUrlConstrainer.new.matches?(request) &&
         (request.query_string.blank? ||
          request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/))
     end

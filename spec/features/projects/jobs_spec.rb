@@ -1,14 +1,13 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs', :feature do
+feature 'Jobs' do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
-  let(:project) { create(:project) }
-  let(:namespace) { project.namespace }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+  let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do
@@ -16,8 +15,8 @@ feature 'Jobs', :feature do
   end
 
   before do
-    project.team << [user, user_access_level]
-    gitlab_sign_in(user)
+    project.add_role(user, user_access_level)
+    sign_in(user)
   end
 
   describe "GET /:project/jobs" do
@@ -25,7 +24,7 @@ feature 'Jobs', :feature do
 
     context "Pending scope" do
       before do
-        visit namespace_project_jobs_path(project.namespace, project, scope: :pending)
+        visit project_jobs_path(project, scope: :pending)
       end
 
       it "shows Pending tab jobs" do
@@ -40,7 +39,7 @@ feature 'Jobs', :feature do
     context "Running scope" do
       before do
         job.run!
-        visit namespace_project_jobs_path(project.namespace, project, scope: :running)
+        visit project_jobs_path(project, scope: :running)
       end
 
       it "shows Running tab jobs" do
@@ -55,7 +54,7 @@ feature 'Jobs', :feature do
     context "Finished scope" do
       before do
         job.run!
-        visit namespace_project_jobs_path(project.namespace, project, scope: :finished)
+        visit project_jobs_path(project, scope: :finished)
       end
 
       it "shows Finished tab jobs" do
@@ -68,7 +67,7 @@ feature 'Jobs', :feature do
     context "All jobs" do
       before do
         project.builds.running_or_pending.each(&:success)
-        visit namespace_project_jobs_path(project.namespace, project)
+        visit project_jobs_path(project)
       end
 
       it "shows All tab jobs" do
@@ -82,7 +81,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:jobs_url) do
-        namespace_project_jobs_path(project.namespace, project)
+        project_jobs_path(project)
       end
 
       before do
@@ -98,7 +97,7 @@ feature 'Jobs', :feature do
   describe "POST /:project/jobs/:id/cancel_all" do
     before do
       job.run!
-      visit namespace_project_jobs_path(project.namespace, project)
+      visit project_jobs_path(project)
       click_link "Cancel running"
     end
 
@@ -117,7 +116,7 @@ feature 'Jobs', :feature do
       let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'shows status name', :js do
@@ -140,7 +139,7 @@ feature 'Jobs', :feature do
       let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'shows retry button' do
@@ -157,7 +156,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
         before do
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
         end
 
         it 'shows New issue button' do
@@ -165,11 +164,11 @@ feature 'Jobs', :feature do
         end
 
         it 'links to issues/new with the title and description filled in' do
-          button_title = "Build Failed ##{job.id}"
-          job_path = namespace_project_job_path(namespace, project, job)
-          options = { issue: { title: button_title, description: job_path } }
+          button_title = "Job Failed ##{job.id}"
+          job_url = project_job_path(project, job)
+          options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
-          href = new_namespace_project_issue_path(namespace, project, options)
+          href = new_project_issue_path(project, options)
 
           page.within('.header-action-buttons') do
             expect(find('.js-new-issue')['href']).to include(href)
@@ -180,7 +179,7 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        visit namespace_project_job_path(project.namespace, project, job2)
+        visit project_job_path(project, job2)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -188,8 +187,8 @@ feature 'Jobs', :feature do
 
     context "Download artifacts" do
       before do
-        job.update_attributes(artifacts_file: artifacts_file)
-        visit namespace_project_job_path(project.namespace, project, job)
+        job.update_attributes(legacy_artifacts_file: artifacts_file)
+        visit project_job_path(project, job)
       end
 
       it 'has button to download artifacts' do
@@ -199,10 +198,10 @@ feature 'Jobs', :feature do
 
     context 'Artifacts expire date' do
       before do
-        job.update_attributes(artifacts_file: artifacts_file,
+        job.update_attributes(legacy_artifacts_file: artifacts_file,
                               artifacts_expire_at: expire_at)
 
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       context 'no expire date defined' do
@@ -248,7 +247,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:job_url) do
-        namespace_project_job_path(project.namespace, project, job)
+        project_job_path(project, job)
       end
 
       before do
@@ -264,7 +263,7 @@ feature 'Jobs', :feature do
       before do
         job.run!
 
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it do
@@ -276,7 +275,7 @@ feature 'Jobs', :feature do
       before do
         job.run!
 
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       context 'when job has an initial trace' do
@@ -293,26 +292,44 @@ feature 'Jobs', :feature do
     end
 
     feature 'Variables' do
-      let(:trigger_request) { create(:ci_trigger_request_with_variables) }
+      let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do
         create :ci_build, pipeline: pipeline, trigger_request: trigger_request
       end
 
-      before do
-        visit namespace_project_job_path(project.namespace, project, job)
+      shared_examples 'expected variables behavior' do
+        it 'shows variable key and value after click', :js do
+          expect(page).to have_css('.js-reveal-variables')
+          expect(page).not_to have_css('.js-build-variable')
+          expect(page).not_to have_css('.js-build-value')
+
+          click_button 'Reveal Variables'
+
+          expect(page).not_to have_css('.js-reveal-variables')
+          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+          expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+        end
       end
 
-      it 'shows variable key and value after click', js: true do
-        expect(page).to have_css('.reveal-variables')
-        expect(page).not_to have_css('.js-build-variable')
-        expect(page).not_to have_css('.js-build-value')
+      context 'when variables are stored in trigger_request' do
+        before do
+          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
 
-        click_button 'Reveal Variables'
+          visit project_job_path(project, job)
+        end
 
-        expect(page).not_to have_css('.reveal-variables')
-        expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-        expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+        it_behaves_like 'expected variables behavior'
+      end
+
+      context 'when variables are stored in pipeline_variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+
+          visit project_job_path(project, job)
+        end
+
+        it_behaves_like 'expected variables behavior'
       end
     end
 
@@ -325,7 +342,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
 
         it 'shows a link for the job' do
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
 
           expect(page).to have_link environment.name
         end
@@ -335,7 +352,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
 
           expect(page).to have_link environment.name
         end
@@ -346,10 +363,60 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
 
           expect(page).to have_link('latest deployment')
         end
+      end
+    end
+
+    context 'Playable manual action' do
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows manual action empty state' do
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+
+      it 'plays manual action and shows pending status', :js do
+        click_link 'Trigger this manual action'
+
+        wait_for_requests
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+        expect(page).to have_content('pending')
+      end
+    end
+
+    context 'Non triggered job' do
+      let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows empty state' do
+        expect(page).to have_content('This job has not been triggered yet')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+      end
+    end
+
+    context 'Pending job' do
+      let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows pending empty state' do
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
       end
     end
   end
@@ -358,12 +425,11 @@ feature 'Jobs', :feature do
     context "Job from project" do
       before do
         job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
         find('.js-cancel-job').click()
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page.status_code).to eq(200)
         expect(page).to have_content 'Retry'
       end
     end
@@ -373,13 +439,12 @@ feature 'Jobs', :feature do
     context "Job from project", :js do
       before do
         job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
         find('.js-cancel-job').click()
-        find('.js-retry-button').trigger('click')
+        find('.js-retry-button').click
       end
 
       it 'shows the right status and buttons', :js do
-        expect(page).to have_http_status(200)
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end
@@ -392,9 +457,9 @@ feature 'Jobs', :feature do
         job.cancel!
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-        gitlab_sign_out_direct
-        gitlab_sign_in(create(:user))
-        visit namespace_project_job_path(project.namespace, project, job)
+        sign_out(:user)
+        sign_in(create(:user))
+        visit project_job_path(project, job)
       end
 
       it 'does not show the Retry button' do
@@ -407,15 +472,15 @@ feature 'Jobs', :feature do
 
   describe "GET /:project/jobs/:id/download" do
     before do
-      job.update_attributes(artifacts_file: artifacts_file)
-      visit namespace_project_job_path(project.namespace, project, job)
+      job.update_attributes(legacy_artifacts_file: artifacts_file)
+      visit project_job_path(project, job)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
-        job2.update_attributes(artifacts_file: artifacts_file)
-        visit download_namespace_project_job_artifacts_path(project.namespace, project, job2)
+        job2.update_attributes(legacy_artifacts_file: artifacts_file)
+        visit download_project_job_artifacts_path(project, job2)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -425,29 +490,47 @@ feature 'Jobs', :feature do
   describe 'GET /:project/jobs/:id/raw', :js do
     context 'access source' do
       context 'job from project' do
-        before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
-          job.run!
-          visit namespace_project_job_path(project.namespace, project, job)
-          find('.js-raw-link-controller').click()
+        context 'when job is running' do
+          before do
+            job.run!
+          end
+
+          it 'sends the right headers' do
+            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+              visit raw_project_job_path(project, job)
+            end
+
+            expect(requests.first.status_code).to eq(200)
+            expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          end
         end
 
-        it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+        context 'when job is complete' do
+          let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+
+          it 'sends the right headers' do
+            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+              visit raw_project_job_path(project, job)
+            end
+
+            expect(requests.first.status_code).to eq(200)
+            expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(requests.first.response_headers['X-Sendfile']).to eq(job.job_artifacts_trace.file.path)
+          end
         end
       end
 
       context 'job from other project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job2.run!
-          visit raw_namespace_project_job_path(project.namespace, project, job2)
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(404)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job2)
+          end
+          expect(requests.first.status_code).to eq(404)
         end
       end
     end
@@ -456,8 +539,6 @@ feature 'Jobs', :feature do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
-
         job.run!
       end
 
@@ -466,16 +547,14 @@ feature 'Jobs', :feature do
           allow_any_instance_of(Gitlab::Ci::Trace)
             .to receive(:paths)
             .and_return([existing_file])
-
-          visit namespace_project_job_path(namespace, project, job)
-
-          find('.js-raw-link-controller').click
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(existing_file)
         end
       end
 
@@ -485,7 +564,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([])
 
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
         end
 
         it 'sends the right headers' do
@@ -496,7 +575,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:raw_job_url) do
-        raw_namespace_project_job_path(project.namespace, project, job)
+        raw_project_job_path(project, job)
       end
 
       before do
@@ -512,7 +591,7 @@ feature 'Jobs', :feature do
   describe "GET /:project/jobs/:id/trace.json" do
     context "Job from project" do
       before do
-        visit trace_namespace_project_job_path(project.namespace, project, job, format: :json)
+        visit trace_project_job_path(project, job, format: :json)
       end
 
       it { expect(page.status_code).to eq(200) }
@@ -520,7 +599,7 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        visit trace_namespace_project_job_path(project.namespace, project, job2, format: :json)
+        visit trace_project_job_path(project, job2, format: :json)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -530,7 +609,7 @@ feature 'Jobs', :feature do
   describe "GET /:project/jobs/:id/status" do
     context "Job from project" do
       before do
-        visit status_namespace_project_job_path(project.namespace, project, job)
+        visit status_project_job_path(project, job)
       end
 
       it { expect(page.status_code).to eq(200) }
@@ -538,7 +617,7 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        visit status_namespace_project_job_path(project.namespace, project, job2)
+        visit status_project_job_path(project, job2)
       end
 
       it { expect(page.status_code).to eq(404) }

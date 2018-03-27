@@ -1,16 +1,22 @@
-.form-group.import-url-data
-  = f.label :import_url, class: 'control-label' do
-    %span Git repository URL
-  .col-sm-10
-    = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+- ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 
-    .well.prepend-top-20
-      %ul
-        %li
-          The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.
-        %li
-          If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
-        %li
-          The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
-        %li
-          To migrate an SVN repository, check out #{link_to "this document", help_page_path('workflow/importing/migrating_from_svn')}.
+.form-group.import-url-data
+  = f.label :import_url, class: 'label-light' do
+    %span
+      = _('Git repository URL')
+
+  = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', required: true
+
+  .well.prepend-top-20
+    %ul
+      %li
+        = _('The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.').html_safe
+      %li
+        = _('If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.').html_safe
+      %li
+        = import_will_timeout_message(ci_cd_only)
+      %li
+        = import_svn_message(ci_cd_only)
+
+-# EE-specific start
+-# EE-specific end

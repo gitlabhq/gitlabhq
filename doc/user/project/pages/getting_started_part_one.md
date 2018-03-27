@@ -1,31 +1,28 @@
-# GitLab Pages from A to Z: Part 1
+---
+last_updated: 2018-02-16
+author: Marcia Ramos
+author_gitlab: marcia
+level: beginner
+article_type: user guide
+date: 2017-02-22
+---
 
-> **Article [Type](../../../development/writing_documentation.html#types-of-technical-articles)**: user guide || 
-> **Level**: beginner || 
-> **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
-> **Publication date:** 2017/02/22
+# Static sites and GitLab Pages domains
 
-- **Part 1: Static sites and GitLab Pages domains**
-- [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
-- [Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md)
-- [Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
-
-## GitLab Pages from A to Z
-
-This is a comprehensive guide, made for those who want to
+This document is the beginning of a comprehensive guide, made for those who want to
 publish a website with GitLab Pages but aren't familiar with
 the entire process involved.
 
-This [first part](#what-you-need-to-know-before-getting-started) of this series will present you to the concepts of
+This [first document](#what-you-need-to-know-before-getting-started) of this series will present you to the concepts of
 static sites, and go over how the default Pages domains work.
 
-The [second part](getting_started_part_two.md) covers how to get started with GitLab Pages: deploy
+The [second document](getting_started_part_two.md) covers how to get started with GitLab Pages: deploy
 a website from a forked project or create a new one from scratch.
 
-The [third part](getting_started_part_three.md) will show you how to set up a custom domain or subdomain
+The [third document](getting_started_part_three.md) will show you how to set up a custom domain or subdomain
 to your site already deployed.
 
-The [fourth part](getting_started_part_four.md) will show you how to create and tweak GitLab CI for
+The [fourth document](getting_started_part_four.md) will show you how to create and tweak GitLab CI for
 GitLab Pages.
 
 To **enable** GitLab Pages for GitLab CE (Community Edition)
@@ -41,7 +38,7 @@ server up and running for your GitLab instance.
 
 Before we begin, let's understand a few concepts first.
 
-### Static sites
+## Static sites
 
 GitLab Pages only supports static websites, meaning,
 your output files must be HTML, CSS, and JavaScript only.
@@ -51,18 +48,18 @@ CSS, and JS, or use a [Static Site Generator (SSG)](https://www.staticgen.com/)
 to simplify your code and build the static site for you,
 which is highly recommendable and much faster than hardcoding.
 
-#### Further Reading
+### Further reading
 
 - Read through this technical overview on [Static versus Dynamic Websites](https://about.gitlab.com/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/)
 - Understand [how modern Static Site Generators work](https://about.gitlab.com/2016/06/10/ssg-overview-gitlab-pages-part-2/) and what you can add to your static site
 - You can use [any SSG with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 - Fork an [example project](https://gitlab.com/pages) to build your website based upon
 
-### GitLab Pages domain
+## GitLab Pages domain
 
 If you set up a GitLab Pages project on GitLab.com,
 it will automatically be accessible under a
-[subdomain of `namespace.pages.io`](https://docs.gitlab.com/ce/user/project/pages/).
+[subdomain of `namespace.gitlab.io`](introduction.md#gitlab-pages-on-gitlab-com).
 The `namespace` is defined by your username on GitLab.com,
 or the group name you created this project under.
 
@@ -73,9 +70,11 @@ Pages wildcard domain. This guide is valid for any GitLab instance,
 you just need to replace Pages wildcard domain on GitLab.com
 (`*.gitlab.io`) with your own.
 
-#### Practical examples
+Learn more about [namespaces](../../group/index.md#namespaces).
 
-**Project Websites:**
+### Practical examples
+
+#### Project Websites
 
 - You created a project called `blog` under your username `john`,
 therefore your project URL is `https://gitlab.com/john/blog/`.
@@ -87,15 +86,20 @@ URL is `https://gitlab.com/websites/blog/`. Once you enable
 GitLab Pages for this project, the site will live under
 `https://websites.gitlab.io/blog/`.
 
-**User and Group Websites:**
+#### User and Group Websites
 
 - Under your username, `john`, you created a project called
 `john.gitlab.io`. Your project URL will be `https://gitlab.com/john/john.gitlab.io`.
 Once you enable GitLab Pages for your project, your website
 will be published under `https://john.gitlab.io`.
 - Under your group `websites`, you created a project called
-`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`. Once you enable GitLab Pages for your project,
+`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`.
+Once you enable GitLab Pages for your project,
 your website will be published under `https://websites.gitlab.io`.
+
+>**Note:**
+GitLab Pages [does **not** support subgroups](../../group/subgroups/index.md#limitations).
+You can only create the highest level group website.
 
 **General example:**
 
@@ -106,6 +110,4 @@ your website will be published under `https://websites.gitlab.io`.
 - On your GitLab instance, replace `gitlab.io` above with your
 Pages server domain. Ask your sysadmin for this information.
 
-|||
-|:--|--:|
-||[**Part 2: Quick start guide - Setting up GitLab Pages →**](getting_started_part_two.md)|
+_Read on about [Projects for GitLab Pages and URL structure](getting_started_part_two.md)._

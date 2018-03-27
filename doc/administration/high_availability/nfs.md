@@ -32,7 +32,9 @@ options:
 
 ## AWS Elastic File System
 
-GitLab does not recommend using AWS Elastic File System (EFS).
+GitLab strongly recommends against using AWS Elastic File System (EFS).
+Our support team will not be able to assist on performance issues related to
+file system access.
 
 Customers and users have reported that AWS EFS does not perform well for GitLab's
 use-case. There are several issues that can cause problems. For these reasons
@@ -42,9 +44,17 @@ GitLab does not recommend using EFS with GitLab.
   are allocated. For smaller volumes, users may experience decent performance
   for a period of time due to 'Burst Credits'. Over a period of weeks to months
   credits may run out and performance will bottom out.
+- To keep "Burst Credits" available, it may be necessary to provision more space
+  with 'dummy data'.  However, this may get expensive.
+- Another option to maintain "Burst Credits" is to use FS Cache on the server so
+  that AWS doesn't always have to go into EFS to access files.
 - For larger volumes, allocated IOPS may not be the problem. Workloads where
   many small files are written in a serialized manner are not well-suited for EFS.
   EBS with an NFS server on top will perform much better.
+
+In addition, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
+because this will also affect performance. We recommend that the log files be
+stored on a local volume.
 
 For more details on another person's experience with EFS, see
 [Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)

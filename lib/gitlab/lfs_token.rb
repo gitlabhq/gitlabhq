@@ -18,13 +18,17 @@ module Gitlab
     end
 
     def token
-      Gitlab::Redis.with do |redis|
-        token = redis.get(redis_key)
+      Gitlab::Redis::SharedState.with do |redis|
+        token = redis.get(redis_shared_state_key)
         token ||= Devise.friendly_token(TOKEN_LENGTH)
-        redis.set(redis_key, token, ex: EXPIRY_TIME)
+        redis.set(redis_shared_state_key, token, ex: EXPIRY_TIME)
 
         token
       end
+    end
+
+    def deploy_key_pushable?(project)
+      actor.is_a?(DeployKey) && actor.can_push_to?(project)
     end
 
     def user?
@@ -41,7 +45,7 @@ module Gitlab
 
     private
 
-    def redis_key
+    def redis_shared_state_key
       "gitlab:lfs_token:#{actor.class.name.underscore}_#{actor.id}" if actor
     end
   end

@@ -15,7 +15,7 @@ describe TodosHelper do
   end
 
   describe '#todo_projects_options' do
-    let(:projects) { create_list(:empty_project, 3) }
+    let(:projects) { create_list(:project, 3) }
     let(:user)     { create(:user) }
 
     it 'returns users authorised projects in json format' do
@@ -26,8 +26,8 @@ describe TodosHelper do
 
       expected_results = [
         { 'id' => '', 'text' => 'Any Project' },
-        { 'id' => projects.second.id, 'text' => projects.second.name_with_namespace },
-        { 'id' => projects.first.id, 'text' => projects.first.name_with_namespace }
+        { 'id' => projects.second.id, 'text' => projects.second.full_name },
+        { 'id' => projects.first.id, 'text' => projects.first.full_name }
       ]
 
       expect(JSON.parse(helper.todo_projects_options)).to match_array(expected_results)

@@ -44,11 +44,16 @@ the artifacts will be kept forever.
 For more examples on artifacts, follow the [artifacts reference in
 `.gitlab-ci.yml`](../../../ci/yaml/README.md#artifacts).
 
-## Browsing job artifacts
+## Browsing artifacts
 
 >**Note:**
 With GitLab 9.2, PDFs, images, videos and other formats can be previewed
 directly in the job artifacts browser without the need to download them.
+
+>**Note:**
+With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
+directly in a new tab without the need to download them when
+[GitLab Pages](../../../administration/pages/index.md) is enabled
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
@@ -64,13 +69,15 @@ archive. If your artifacts contained directories, then you are also able to
 browse inside them.
 
 Below you can see how browsing looks like. In this case we have browsed inside
-the archive and at this point there is one directory and one HTML file.
+the archive and at this point there is one directory, a couple files, and
+one HTML file that you can view directly online when
+[GitLab Pages](../../../administration/pages/index.md) is enabled (opens in a new tab).
 
 ![Job artifacts browser](img/job_artifacts_browser.png)
 
 ---
 
-## Downloading job artifacts
+## Downloading artifacts
 
 If you need to download the whole archive, there are buttons in various places
 inside GitLab that make that possible.
@@ -95,21 +102,26 @@ inside GitLab that make that possible.
 
     ![Job artifacts browser](img/job_artifacts_browser.png)
 
-## Downloading the latest job artifacts
+## Downloading the latest artifacts
 
 It is possible to download the latest artifacts of a job via a well known URL
 so you can use it for scripting purposes.
 
+>**Note:**
+The latest artifacts are considered as the artifacts created by jobs in the
+latest pipeline that succeeded for the specific ref.
+Artifacts for other pipelines can be accessed with direct access to them.
+
 The structure of the URL to download the whole artifacts archive is the following:
 
 ```
-https://example.com/<namespace>/<project>/builds/artifacts/<ref>/download?job=<job_name>
+https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/download?job=<job_name>
 ```
 
 To download a single file from the artifacts use the following URL:
 
 ```
-https://example.com/<namespace>/<project>/builds/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
+https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
 ```
 
 For example, to download the latest artifacts of the job named `coverage` of
@@ -117,26 +129,26 @@ the `master` branch of the `gitlab-ce` project that belongs to the `gitlab-org`
 namespace, the URL would be:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/download?job=coverage
+https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/download?job=coverage
 ```
 
 To download the file `coverage/index.html` from the same
 artifacts use the following URL:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/raw/coverage/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
 ```
 
 There is also a URL to browse the latest job artifacts:
 
 ```
-https://example.com/<namespace>/<project>/builds/artifacts/<ref>/browse?job=<job_name>
+https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/browse?job=<job_name>
 ```
 
 For example:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/browse?job=coverage
+https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/browse?job=coverage
 ```
 
 The latest builds are also exposed in the UI in various places. Specifically,
@@ -151,5 +163,18 @@ information in the UI.
 
 ![Latest artifacts button](img/job_latest_artifacts_browser.png)
 
+## Erasing artifacts
+
+DANGER: **Warning:**
+This is a destructive action that leads to data loss. Use with caution.
+
+If you have at least Developer [permissions](../../permissions.md#gitlab-ci-cd-permissions)
+on the project, you can erase a single job via the UI which will also remove the
+artifacts and the job's trace.
+
+1. Navigate to a job's page.
+1. Click the trash icon at the top right of the job's trace.
+1. Confirm the deletion.
 
 [expiry date]: ../../../ci/yaml/README.md#artifacts-expire_in
+[ce-14399]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14399

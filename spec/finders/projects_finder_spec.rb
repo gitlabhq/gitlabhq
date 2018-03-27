@@ -6,19 +6,19 @@ describe ProjectsFinder do
     let(:group) { create(:group, :public) }
 
     let!(:private_project) do
-      create(:empty_project, :private, name: 'A', path: 'A')
+      create(:project, :private, name: 'A', path: 'A')
     end
 
     let!(:internal_project) do
-      create(:empty_project, :internal, group: group, name: 'B', path: 'B')
+      create(:project, :internal, group: group, name: 'B', path: 'B')
     end
 
     let!(:public_project) do
-      create(:empty_project, :public, group: group, name: 'C', path: 'C')
+      create(:project, :public, group: group, name: 'C', path: 'C')
     end
 
     let!(:shared_project) do
-      create(:empty_project, :private, name: 'D', path: 'D')
+      create(:project, :private, name: 'D', path: 'D')
     end
 
     let(:params) { {} }
@@ -90,7 +90,7 @@ describe ProjectsFinder do
     end
 
     describe 'filter by personal' do
-      let!(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let!(:personal_project) { create(:project, namespace: user.namespace) }
       let(:params) { { personal: true } }
 
       it { is_expected.to eq([personal_project]) }
@@ -109,7 +109,7 @@ describe ProjectsFinder do
     end
 
     describe 'filter by archived' do
-      let!(:archived_project) { create(:empty_project, :public, :archived, name: 'E', path: 'E') }
+      let!(:archived_project) { create(:project, :public, :archived, name: 'E', path: 'E') }
 
       context 'non_archived=true' do
         let(:params) { { non_archived: true } }
@@ -121,6 +121,12 @@ describe ProjectsFinder do
         let(:params) { { non_archived: false } }
 
         it { is_expected.to match_array([public_project, internal_project, archived_project]) }
+      end
+
+      describe 'filter by archived only' do
+        let(:params) { { archived: 'only' } }
+
+        it { is_expected.to eq([archived_project]) }
       end
 
       describe 'filter by archived for backward compatibility' do
@@ -139,7 +145,7 @@ describe ProjectsFinder do
 
     describe 'filter by owned' do
       let(:params) { { owned: true } }
-      let!(:owned_project) { create(:empty_project, :private, namespace: current_user.namespace) }
+      let!(:owned_project) { create(:project, :private, namespace: current_user.namespace) }
 
       it { is_expected.to eq([owned_project]) }
     end

@@ -1,5 +1,5 @@
 namespace :admin do
-  resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
+  resources :users, constraints: { id: %r{[a-zA-Z./0-9_\-]+} } do
     resources :keys, only: [:show, :destroy]
     resources :identities, except: [:show]
     resources :impersonation_tokens, only: [:index, :create] do
@@ -24,6 +24,8 @@ namespace :admin do
   resource :impersonation, only: :destroy
 
   resources :abuse_reports, only: [:index, :destroy]
+  resources :gitaly_servers, only: [:index]
+
   resources :spam_logs, only: [:index, :destroy] do
     member do
       post :mark_as_ham
@@ -67,7 +69,9 @@ namespace :admin do
   end
 
   resource :logs, only: [:show]
-  resource :health_check, controller: 'health_check', only: [:show]
+  resource :health_check, controller: 'health_check', only: [:show] do
+    post :reset_storage_health
+  end
   resource :background_jobs, controller: 'background_jobs', only: [:show]
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
@@ -95,7 +99,7 @@ namespace :admin do
 
   resource :appearances, only: [:show, :create, :update], path: 'appearance' do
     member do
-      get :preview
+      get :preview_sign_in
       delete :logo
       delete :header_logos
     end

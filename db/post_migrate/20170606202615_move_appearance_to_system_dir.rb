@@ -52,6 +52,6 @@ class MoveAppearanceToSystemDir < ActiveRecord::Migration
   end
 
   def new_upload_dir
-    File.join(base_directory, "public", "uploads", "system")
+    File.join(base_directory, "public", "uploads", "-", "system")
   end
 end

@@ -3,9 +3,13 @@ require 'spec_helper'
 describe Projects::JobsController do
   include ApiHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:user) { create(:user) }
+
+  before do
+    stub_not_protect_default_branch
+  end
 
   describe 'GET index' do
     context 'when scope is pending' do
@@ -16,7 +20,7 @@ describe Projects::JobsController do
       end
 
       it 'has only pending builds' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:builds).first.status).to eq('pending')
       end
     end
@@ -29,7 +33,7 @@ describe Projects::JobsController do
       end
 
       it 'has only running jobs' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:builds).first.status).to eq('running')
       end
     end
@@ -42,7 +46,7 @@ describe Projects::JobsController do
       end
 
       it 'has only finished jobs' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:builds).first.status).to eq('success')
       end
     end
@@ -58,7 +62,7 @@ describe Projects::JobsController do
         end
 
         it 'redirects to the page' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:builds).current_page).to eq(last_page)
         end
       end
@@ -103,7 +107,7 @@ describe Projects::JobsController do
         end
 
         it 'has a job' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:build).id).to eq(job.id)
         end
       end
@@ -114,7 +118,7 @@ describe Projects::JobsController do
         end
 
         it 'renders not_found' do
-          expect(response).to have_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -132,9 +136,9 @@ describe Projects::JobsController do
       end
 
       it 'exposes needed information' do
-        expect(response).to have_http_status(:ok)
-        expect(json_response['raw_path']).to match(/jobs\/\d+\/raw\z/)
-        expect(json_response.dig('merge_request', 'path')).to match(/merge_requests\/\d+\z/)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
+        expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
         expect(json_response['new_issue_path'])
           .to include('/issues/new')
       end
@@ -155,11 +159,22 @@ describe Projects::JobsController do
       get_trace
     end
 
-    context 'when job has a trace' do
-      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+    context 'when job has a trace artifact' do
+      let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it 'returns a trace' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq job.id
+        expect(json_response['status']).to eq job.status
+        expect(json_response['html']).to eq(job.trace.html)
+      end
+    end
+
+    context 'when job has a trace' do
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
+
+      it 'returns a trace' do
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
         expect(json_response['html']).to eq('BUILD TRACE')
@@ -170,7 +185,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns no traces' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
         expect(json_response['html']).to be_nil
@@ -178,10 +193,10 @@ describe Projects::JobsController do
     end
 
     context 'when job has a trace with ANSI sequence and Unicode' do
-      let(:job) { create(:ci_build, :unicode_trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :unicode_trace_live, pipeline: pipeline) }
 
       it 'returns a trace with Unicode' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
         expect(json_response['html']).to include("ヾ(´༎ຶД༎ຶ`)ﾉ")
@@ -208,11 +223,11 @@ describe Projects::JobsController do
     end
 
     it 'return a detailed job status in json' do
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+      expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
     end
   end
 
@@ -228,7 +243,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :retryable, pipeline: pipeline) }
 
       it 'redirects to the retried job page' do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
       end
     end
@@ -237,7 +252,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'renders unprocessable_entity' do
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
@@ -264,7 +279,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
       it 'redirects to the played job page' do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
@@ -277,7 +292,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'renders unprocessable_entity' do
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
@@ -300,7 +315,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
 
       it 'redirects to the canceled job page' do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
@@ -313,7 +328,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
       it 'returns unprocessable_entity' do
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
@@ -338,7 +353,7 @@ describe Projects::JobsController do
       end
 
       it 'redirects to a index page' do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_jobs_path)
       end
 
@@ -355,7 +370,7 @@ describe Projects::JobsController do
       end
 
       it 'redirects to a index page' do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_jobs_path)
       end
     end
@@ -367,18 +382,20 @@ describe Projects::JobsController do
   end
 
   describe 'POST erase' do
+    let(:role) { :master }
+
     before do
-      project.add_developer(user)
+      project.add_role(user, role)
       sign_in(user)
 
       post_erase
     end
 
     context 'when job is erasable' do
-      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
 
       it 'redirects to the erased job page' do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
@@ -396,7 +413,28 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
 
       it 'returns unprocessable_entity' do
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when user is developer' do
+      let(:role) { :developer }
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline, user: triggered_by) }
+
+      context 'when triggered by same user' do
+        let(:triggered_by) { user }
+
+        it 'has successful status' do
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when triggered by different user' do
+        let(:triggered_by) { create(:user) }
+
+        it 'does not have successful status' do
+          expect(response).not_to have_gitlab_http_status(:found)
+        end
       end
     end
 
@@ -412,11 +450,21 @@ describe Projects::JobsController do
       get_raw
     end
 
+    context 'when job has a trace artifact' do
+      let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      it 'returns a trace' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eq 'text/plain; charset=utf-8'
+        expect(response.body).to eq job.job_artifacts_trace.open.read
+      end
+    end
+
     context 'when job has a trace file' do
-      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'send a trace file' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'text/plain; charset=utf-8'
         expect(response.body).to eq 'BUILD TRACE'
       end
@@ -426,7 +474,7 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns not_found' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

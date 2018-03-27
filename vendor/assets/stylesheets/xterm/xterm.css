@@ -142,7 +142,7 @@
  *  Determine default colors for xterm.js
  */
 .terminal .xterm-bold {
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .terminal .xterm-underline {

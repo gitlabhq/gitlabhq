@@ -1,13 +1,7 @@
-<template>
-  <div class="cell text-cell">
-    <prompt />
-    <div class="markdown" v-html="markdown"></div>
-  </div>
-</template>
-
 <script>
   /* global katex */
   import marked from 'marked';
+  import sanitize from 'sanitize-html';
   import Prompt from './prompt.vue';
 
   const renderer = new marked.Renderer();
@@ -89,20 +83,35 @@
     },
     computed: {
       markdown() {
-        return marked(this.cell.source.join('').replace(/\\/g, '\\\\'));
+        return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), {
+          allowedTags: false,
+          allowedAttributes: {
+            '*': ['class'],
+          },
+        });
       },
     },
   };
 </script>
 
-<style>
-.markdown .katex {
-  display: block;
-  text-align: center;
-}
+<template>
+  <div class="cell text-cell">
+    <prompt />
+    <div
+      class="markdown"
+      v-html="markdown">
+    </div>
+  </div>
+</template>
 
-.markdown .inline-katex .katex {
-  display: inline;
-  text-align: initial;
-}
+<style>
+  .markdown .katex {
+    display: block;
+    text-align: center;
+  }
+
+  .markdown .inline-katex .katex {
+    display: inline;
+    text-align: initial;
+  }
 </style>

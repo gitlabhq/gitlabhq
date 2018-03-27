@@ -4,7 +4,7 @@
 - dom_id = "group_member_#{group_link.id}"
 %li.member.group_member{ id: dom_id }
   %span.list-item-name
-    = image_tag group_icon(group), class: "avatar s40", alt: ''
+    = group_icon(group, class: "avatar s40", alt: '')
     %strong
       = link_to group.full_name, group_path(group)
     .cgray
@@ -14,7 +14,7 @@
         %span{ class: ('text-warning' if group_link.expires_soon?) }
           Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
   .controls.member-controls
-    = form_tag namespace_project_group_link_path(@project.namespace, @project, group_link), method: :put, remote: true, class: 'form-horizontal js-edit-member-form' do
+    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'form-horizontal js-edit-member-form' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access
       .member-form-control.dropdown.append-right-5
         %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
@@ -36,7 +36,7 @@
         = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{group.id}", disabled: !can_admin_member
         %i.clear-icon.js-clear-input
     - if can_admin_member
-      = link_to namespace_project_group_link_path(@project.namespace, @project, group_link),
+      = link_to project_group_link_path(@project, group_link),
         method: :delete,
         data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do

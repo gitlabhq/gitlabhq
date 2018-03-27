@@ -1,0 +1,13 @@
+.js-create-item-dropdown-fixture-root
+  %input{ name: 'variable[environment]', type: 'hidden' }
+  = dropdown_tag('some label',
+                   options: { toggle_class: 'js-dropdown-menu-toggle',
+                              content_class: 'js-dropdown-content',
+                              filter: true,
+                              dropdown_class: "dropdown-menu-selectable",
+                              footer_content: true }) do
+    %ul.dropdown-footer-list
+      %li
+        %button{ class: "dropdown-create-new-item-button js-dropdown-create-new-item" }
+          Create wildcard
+          %code

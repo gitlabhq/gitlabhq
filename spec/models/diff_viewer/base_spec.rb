@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffViewer::Base, model: true do
+describe DiffViewer::Base do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }
@@ -32,10 +32,8 @@ describe DiffViewer::Base, model: true do
       end
 
       context 'when the binaryness does not match' do
-        before do
-          allow(diff_file.old_blob).to receive(:binary?).and_return(false)
-          allow(diff_file.new_blob).to receive(:binary?).and_return(false)
-        end
+        let(:commit) { project.commit_by(oid: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
+        let(:diff_file) { commit.diffs.diff_file_with_new_path('Gemfile.zip') }
 
         it 'returns false' do
           expect(viewer_class.can_render?(diff_file)).to be_falsey
@@ -60,8 +58,7 @@ describe DiffViewer::Base, model: true do
 
       context 'when the binaryness does not match' do
         before do
-          allow(diff_file.old_blob).to receive(:binary?).and_return(true)
-          allow(diff_file.new_blob).to receive(:binary?).and_return(true)
+          allow_any_instance_of(Blob).to receive(:binary?).and_return(true)
         end
 
         it 'returns false' do
@@ -77,12 +74,12 @@ describe DiffViewer::Base, model: true do
     end
 
     context 'when the file was renamed and only the old blob is supported' do
-      let(:commit) { project.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+      let(:commit) { project.commit_by(oid: '2f63565e7aac07bcdadb654e253078b727143ec4') }
       let(:diff_file) { commit.diffs.diff_file_with_new_path('files/images/6049019_460s.jpg') }
 
       before do
         allow(diff_file).to receive(:renamed_file?).and_return(true)
-        allow(diff_file.new_blob).to receive(:extension).and_return('jpeg')
+        viewer_class.extensions = %w(notjpg)
       end
 
       it 'returns false' do
@@ -94,8 +91,7 @@ describe DiffViewer::Base, model: true do
   describe '#collapsed?' do
     context 'when the combined blob size is larger than the collapse limit' do
       before do
-        allow(diff_file.old_blob).to receive(:raw_size).and_return(512.kilobytes)
-        allow(diff_file.new_blob).to receive(:raw_size).and_return(513.kilobytes)
+        allow(diff_file).to receive(:raw_size).and_return(1025.kilobytes)
       end
 
       it 'returns true' do
@@ -113,8 +109,7 @@ describe DiffViewer::Base, model: true do
   describe '#too_large?' do
     context 'when the combined blob size is larger than the size limit' do
       before do
-        allow(diff_file.old_blob).to receive(:raw_size).and_return(2.megabytes)
-        allow(diff_file.new_blob).to receive(:raw_size).and_return(4.megabytes)
+        allow(diff_file).to receive(:raw_size).and_return(6.megabytes)
       end
 
       it 'returns true' do
@@ -132,8 +127,7 @@ describe DiffViewer::Base, model: true do
   describe '#render_error' do
     context 'when the combined blob size is larger than the size limit' do
       before do
-        allow(diff_file.old_blob).to receive(:raw_size).and_return(2.megabytes)
-        allow(diff_file.new_blob).to receive(:raw_size).and_return(4.megabytes)
+        allow(diff_file).to receive(:raw_size).and_return(6.megabytes)
       end
 
       it 'returns :too_large' do

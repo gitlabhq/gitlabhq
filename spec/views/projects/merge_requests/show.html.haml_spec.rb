@@ -2,16 +2,17 @@ require 'spec_helper'
 
 describe 'projects/merge_requests/show.html.haml' do
   include Devise::Test::ControllerHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-  let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+  let(:project) { create(:project, :public, :repository) }
+  let(:forked_project) { fork_project(project, user, repository: true) }
+  let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
   let(:note) { create(:note_on_merge_request, project: project, noteable: closed_merge_request) }
 
   let(:closed_merge_request) do
     create(:closed_merge_request,
-      source_project: fork_project,
+      source_project: forked_project,
       target_project: project,
       author: user)
   end
@@ -25,7 +26,9 @@ describe 'projects/merge_requests/show.html.haml' do
     assign(:notes, [])
     assign(:pipelines, Ci::Pipeline.none)
 
-    allow(view).to receive_messages(current_user: user, can?: true)
+    allow(view).to receive_messages(current_user: user,
+                                    can?: true,
+                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
   end
 
   context 'when the merge request is closed' do
@@ -50,7 +53,9 @@ describe 'projects/merge_requests/show.html.haml' do
   context 'when the merge request is open' do
     it 'closes the merge request if the source project does not exist' do
       closed_merge_request.update_attributes(state: 'open')
-      fork_project.destroy
+      forked_project.destroy
+      # Reload merge request so MergeRequest#source_project turns to `nil`
+      closed_merge_request.reload
 
       render
 

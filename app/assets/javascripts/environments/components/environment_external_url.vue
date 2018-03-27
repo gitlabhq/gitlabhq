@@ -1,27 +1,27 @@
 <script>
-import tooltip from '../../vue_shared/directives/tooltip';
+  import tooltip from '../../vue_shared/directives/tooltip';
+  import { s__ } from '../../locale';
 
-/**
- * Renders the external url link in environments table.
- */
-export default {
-  props: {
-    externalUrl: {
-      type: String,
-      required: true,
+  /**
+  * Renders the external url link in environments table.
+  */
+  export default {
+    directives: {
+      tooltip,
     },
-  },
-
-  directives: {
-    tooltip,
-  },
-
-  computed: {
-    title() {
-      return 'Open';
+    props: {
+      externalUrl: {
+        type: String,
+        required: true,
+      },
     },
-  },
-};
+
+    computed: {
+      title() {
+        return s__('Environments|Open');
+      },
+    },
+  };
 </script>
 <template>
   <a
@@ -32,9 +32,12 @@ export default {
     rel="noopener noreferrer nofollow"
     :title="title"
     :aria-label="title"
-    :href="externalUrl">
+    :href="externalUrl"
+  >
     <i
       class="fa fa-external-link"
-      aria-hidden="true" />
+      aria-hidden="true"
+    >
+    </i>
   </a>
 </template>

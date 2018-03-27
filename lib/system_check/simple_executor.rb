@@ -23,7 +23,8 @@ module SystemCheck
     #
     # @param [BaseCheck] check class
     def <<(check)
-      raise ArgumentError unless check < BaseCheck
+      raise ArgumentError unless check.is_a?(Class) && check < BaseCheck
+
       @checks << check
     end
 
@@ -48,12 +49,12 @@ module SystemCheck
 
       # When implements skip method, we run it first, and if true, skip the check
       if check.can_skip? && check.skip?
-        $stdout.puts check_klass.skip_reason.color(:magenta)
+        $stdout.puts check.skip_reason.try(:color, :magenta) || check_klass.skip_reason.color(:magenta)
         return
       end
 
       # When implements a multi check, we don't control the output
-      if check.is_multi_check?
+      if check.multi_check?
         check.multi_check
         return
       end
@@ -65,6 +66,7 @@ module SystemCheck
 
         if check.can_repair?
           $stdout.print 'Trying to fix error automatically. ...'
+
           if check.repair!
             $stdout.puts 'Success'.color(:green)
             return
@@ -75,6 +77,8 @@ module SystemCheck
 
         check.show_error
       end
+    rescue StandardError => e
+      $stdout.puts "Exception: #{e.message}".color(:red)
     end
 
     private

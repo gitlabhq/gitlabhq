@@ -25,7 +25,7 @@ module Users
         user.block
 
         # Reverse the user block if record migration fails
-        if !migrate_records && transition
+        if !migrate_records_in_transaction && transition
           transition.rollback
           user.save!
         end
@@ -36,24 +36,30 @@ module Users
 
     private
 
-    def migrate_records
+    def migrate_records_in_transaction
       user.transaction(requires_new: true) do
         @ghost_user = User.ghost
 
-        migrate_issues
-        migrate_merge_requests
-        migrate_notes
-        migrate_abuse_reports
-        migrate_award_emojis
+        migrate_records
       end
+    end
+
+    def migrate_records
+      migrate_issues
+      migrate_merge_requests
+      migrate_notes
+      migrate_abuse_reports
+      migrate_award_emojis
     end
 
     def migrate_issues
       user.issues.update_all(author_id: ghost_user.id)
+      Issue.where(last_edited_by_id: user.id).update_all(last_edited_by_id: ghost_user.id)
     end
 
     def migrate_merge_requests
       user.merge_requests.update_all(author_id: ghost_user.id)
+      MergeRequest.where(merge_user_id: user.id).update_all(merge_user_id: ghost_user.id)
     end
 
     def migrate_notes

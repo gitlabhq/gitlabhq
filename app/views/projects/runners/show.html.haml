@@ -20,6 +20,9 @@
       %td Active
       %td= @runner.active? ? 'Yes' : 'No'
     %tr
+      %td Protected
+      %td= @runner.ref_protected? ? 'Yes' : 'No'
+    %tr
       %td Can run untagged jobs
       %td= @runner.run_untagged? ? 'Yes' : 'No'
     %tr
@@ -37,6 +40,9 @@
     %tr
       %td Version
       %td= @runner.version
+    %tr
+      %td IP Address
+      %td= @runner.ip_address
     %tr
       %td Revision
       %td= @runner.revision

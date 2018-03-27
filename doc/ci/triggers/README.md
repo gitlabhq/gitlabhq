@@ -19,7 +19,7 @@ A unique trigger token can be obtained when [adding a new trigger](#adding-a-new
 ## Adding a new trigger
 
 You can add a new trigger by going to your project's
-**Settings ➔ Pipelines** under **Triggers**. The **Add trigger** button will
+**Settings ➔ CI/CD** under **Triggers**. The **Add trigger** button will
 create a new token which you can then use to trigger a rerun of this
 particular project's pipeline.
 
@@ -43,7 +43,7 @@ From now on the trigger will be run as you.
 ## Revoking a trigger
 
 You can revoke a trigger any time by going at your project's
-**Settings ➔ Pipelines** under **Triggers** and hitting the **Revoke** button.
+**Settings ➔ CI/CD** under **Triggers** and hitting the **Revoke** button.
 The action is irreversible.
 
 ## Triggering a pipeline
@@ -64,7 +64,7 @@ POST /projects/:id/trigger/pipeline
 The required parameters are the [trigger's `token`](#authentication-tokens)
 and the Git `ref` on which the trigger will be performed. Valid refs are the
 branch and the tag. The `:id` of a project can be found by
-[querying the API](../../api/projects.md) or by visiting the **Pipelines**
+[querying the API](../../api/projects.md) or by visiting the **CI/CD**
 settings page which provides self-explanatory examples.
 
 When a rerun of a pipeline is triggered, the information is exposed in GitLab's
@@ -219,7 +219,7 @@ removed with one of the future versions of GitLab. You are advised to
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-variables-environment-variables
 [registry]: ../../user/project/container_registry.md

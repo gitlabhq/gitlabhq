@@ -115,8 +115,7 @@
   @return $unfoldedTransition;
 }
 
-.btn,
-.global-dropdown-toggle {
+.btn {
   @include transition(background-color, border-color, color, box-shadow);
 }
 
@@ -126,7 +125,7 @@
   @include transition(border-color);
 }
 
-.note-action-button .link-highlight,
+.note-action-button,
 .toolbar-btn,
 .dropdown-toggle-caret {
   @include transition(color);
@@ -186,4 +185,89 @@ a {
 
 .fade-in-full {
   animation: fadeInFull $fade-in-duration 1;
+}
+
+
+.animation-container {
+  background: $repo-editor-grey;
+  height: 40px;
+  overflow: hidden;
+  position: relative;
+
+  &.animation-container-small {
+    height: 12px;
+  }
+
+  &.animation-container-right {
+    .skeleton-line-2 {
+      left: 0;
+      right: 150px;
+    }
+  }
+
+  &::before {
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: blockTextShine;
+    animation-timing-function: linear;
+    background-image: $repo-editor-linear-gradient;
+    background-repeat: no-repeat;
+    background-size: 800px 45px;
+    content: ' ';
+    display: block;
+    height: 100%;
+    position: relative;
+  }
+
+  div {
+    background: $white-light;
+    height: 6px;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+
+  .skeleton-line-1 {
+    left: 0;
+    top: 8px;
+  }
+
+  .skeleton-line-2 {
+    left: 150px;
+    top: 0;
+    height: 10px;
+  }
+
+  .skeleton-line-3 {
+    left: 0;
+    top: 23px;
+  }
+
+  .skeleton-line-4 {
+    left: 0;
+    top: 38px;
+  }
+
+  .skeleton-line-5 {
+    left: 200px;
+    top: 28px;
+    height: 10px;
+  }
+
+  .skeleton-line-6 {
+    top: 14px;
+    left: 230px;
+    height: 10px;
+  }
+}
+
+@keyframes blockTextShine {
+  0% {
+    transform: translateX(-468px);
+  }
+
+  100% {
+    transform: translateX(468px);
+  }
 }

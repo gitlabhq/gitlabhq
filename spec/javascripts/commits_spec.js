@@ -1,77 +1,94 @@
-/* global CommitsList */
-
+import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
-import '~/pager';
-import '~/commits';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import CommitsList from '~/commits';
 
-(() => {
-  describe('Commits List', () => {
-    beforeEach(() => {
-      setFixtures(`
-        <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/master">
-          <input id="commits-search">
-        </form>
-        <ol id="commits-list"></ol>
-        `);
-    });
+describe('Commits List', () => {
+  let commitsList;
 
-    it('should be defined', () => {
-      expect(CommitsList).toBeDefined();
-    });
+  beforeEach(() => {
+    setFixtures(`
+      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/master">
+        <input id="commits-search">
+      </form>
+      <ol id="commits-list"></ol>
+      `);
+    commitsList = new CommitsList(25);
+  });
 
-    describe('processCommits', () => {
-      it('should join commit headers', () => {
-        CommitsList.$contentList = $(`
-          <div>
-            <li class="commit-header" data-day="2016-09-20">
-              <span class="day">20 Sep, 2016</span>
-              <span class="commits-count">1 commit</span>
-            </li>
-            <li class="commit"></li>
-          </div>
-        `);
+  it('should be defined', () => {
+    expect(CommitsList).toBeDefined();
+  });
 
-        const data = `
+  describe('processCommits', () => {
+    it('should join commit headers', () => {
+      commitsList.$contentList = $(`
+        <div>
           <li class="commit-header" data-day="2016-09-20">
             <span class="day">20 Sep, 2016</span>
             <span class="commits-count">1 commit</span>
           </li>
           <li class="commit"></li>
-        `;
+        </div>
+      `);
 
-        // The last commit header should be removed
-        // since the previous one has the same data-day value.
-        expect(CommitsList.processCommits(data).find('li.commit-header').length).toBe(0);
-      });
-    });
+      const data = `
+        <li class="commit-header" data-day="2016-09-20">
+          <span class="day">20 Sep, 2016</span>
+          <span class="commits-count">1 commit</span>
+        </li>
+        <li class="commit"></li>
+      `;
 
-    describe('on entering input', () => {
-      let ajaxSpy;
-
-      beforeEach(() => {
-        CommitsList.init(25);
-        CommitsList.searchField.val('');
-
-        spyOn(history, 'replaceState').and.stub();
-        ajaxSpy = spyOn(jQuery, 'ajax').and.callFake((req) => {
-          req.success({
-            data: '<li>Result</li>',
-          });
-        });
-      });
-
-      it('should save the last search string', () => {
-        CommitsList.searchField.val('GitLab');
-        CommitsList.filterResults();
-        expect(ajaxSpy).toHaveBeenCalled();
-        expect(CommitsList.lastSearch).toEqual('GitLab');
-      });
-
-      it('should not make ajax call if the input does not change', () => {
-        CommitsList.filterResults();
-        expect(ajaxSpy).not.toHaveBeenCalled();
-        expect(CommitsList.lastSearch).toEqual('');
-      });
+      // The last commit header should be removed
+      // since the previous one has the same data-day value.
+      expect(commitsList.processCommits(data).find('li.commit-header').length).toBe(0);
     });
   });
-})();
+
+  describe('on entering input', () => {
+    let ajaxSpy;
+    let mock;
+
+    beforeEach(() => {
+      commitsList.searchField.val('');
+
+      spyOn(history, 'replaceState').and.stub();
+      mock = new MockAdapter(axios);
+
+      mock.onGet('/h5bp/html5-boilerplate/commits/master').reply(200, {
+        html: '<li>Result</li>',
+      });
+
+      ajaxSpy = spyOn(axios, 'get').and.callThrough();
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('should save the last search string', (done) => {
+      commitsList.searchField.val('GitLab');
+      commitsList.filterResults()
+        .then(() => {
+          expect(ajaxSpy).toHaveBeenCalled();
+          expect(commitsList.lastSearch).toEqual('GitLab');
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('should not make ajax call if the input does not change', (done) => {
+      commitsList.filterResults()
+        .then(() => {
+          expect(ajaxSpy).not.toHaveBeenCalled();
+          expect(commitsList.lastSearch).toEqual('');
+
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+});

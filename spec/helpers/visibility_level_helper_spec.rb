@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe VisibilityLevelHelper do
-  let(:project)          { build(:empty_project) }
+  let(:project)          { build(:project) }
   let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet)  { build(:project_snippet) }
@@ -58,35 +58,82 @@ describe VisibilityLevelHelper do
     end
   end
 
-  describe "skip_level?" do
+  describe "disallowed_visibility_level?" do
     describe "forks" do
-      let(:project)       { create(:empty_project, :internal) }
-      let(:fork_project)  { create(:empty_project, forked_from_project: project) }
+      let(:project)       { create(:project, :internal) }
+      let(:fork_project)  { create(:project, forked_from_project: project) }
 
-      it "skips levels" do
-        expect(skip_level?(fork_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
-        expect(skip_level?(fork_project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(skip_level?(fork_project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(fork_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(disallowed_visibility_level?(fork_project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
+        expect(disallowed_visibility_level?(fork_project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
       end
     end
 
     describe "non-forked project" do
-      let(:project) { create(:empty_project, :internal) }
+      let(:project) { create(:project, :internal) }
 
-      it "skips levels" do
-        expect(skip_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
-        expect(skip_level?(project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(skip_level?(project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
+        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
+        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
       end
     end
 
-    describe "Snippet" do
+    describe "group" do
+      let(:group) { create(:group, :internal) }
+
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      end
+    end
+
+    describe "sub-group" do
+      let(:group) { create(:group, :private) }
+      let(:subgroup) { create(:group, :private, parent: group) }
+
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::INTERNAL)).to be_truthy
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      end
+    end
+
+    describe "snippet" do
       let(:snippet) { create(:snippet, :internal) }
 
-      it "skips levels" do
-        expect(skip_level?(snippet, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
-        expect(skip_level?(snippet, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(skip_level?(snippet, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(snippet, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
+        expect(disallowed_visibility_level?(snippet, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
+        expect(disallowed_visibility_level?(snippet, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      end
+    end
+  end
+
+  describe "disallowed_visibility_level_description" do
+    let(:group) { create(:group, :internal) }
+    let!(:subgroup) { create(:group, :internal, parent: group) }
+    let!(:project) { create(:project, :internal, group: group) }
+
+    describe "project" do
+      it "provides correct description for disabled levels" do
+        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(strip_tags disallowed_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, project))
+          .to include "the visibility of #{project.group.name} is internal"
+      end
+    end
+
+    describe "group" do
+      it "provides correct description for disabled levels" do
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PRIVATE)).to be_truthy
+        expect(disallowed_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group))
+          .to include "it contains projects with higher visibility", "it contains sub-groups with higher visibility"
+
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(strip_tags disallowed_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, subgroup))
+          .to include "the visibility of #{group.name} is internal"
       end
     end
   end

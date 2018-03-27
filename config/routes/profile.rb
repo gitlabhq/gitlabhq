@@ -1,9 +1,11 @@
+# for secondary email confirmations - uses the same confirmation controller as :users
+devise_for :emails, path: 'profile/emails', controllers: { confirmations: :confirmations }
+
 resource :profile, only: [:show, :update] do
   member do
     get :audit_log
     get :applications, to: 'oauth/applications#index'
 
-    put :reset_private_token
     put :reset_incoming_email_token
     put :reset_rss_token
     put :update_username
@@ -23,7 +25,16 @@ resource :profile, only: [:show, :update] do
     end
     resource :preferences, only: [:show, :update]
     resources :keys, only: [:index, :show, :create, :destroy]
-    resources :emails, only: [:index, :create, :destroy]
+    resources :gpg_keys, only: [:index, :create, :destroy] do
+      member do
+        put :revoke
+      end
+    end
+    resources :emails, only: [:index, :create, :destroy] do
+      member do
+        put :resend_confirmation_instructions
+      end
+    end
     resources :chat_names, only: [:index, :new, :create, :destroy] do
       collection do
         delete :deny

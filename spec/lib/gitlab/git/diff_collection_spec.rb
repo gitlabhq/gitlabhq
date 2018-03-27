@@ -341,8 +341,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     end
 
     context 'when diff is quite large will collapse by default' do
-      let(:iterator) { [{ diff: 'a' * (Gitlab::Git::Diff.collapse_limit + 1) }] }
-      let(:max_files) { 100 }
+      let(:iterator) { [{ diff: 'a' * 20480 }] }
 
       context 'when no collapse is set' do
         let(:expanded) { true }
@@ -384,7 +383,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         context 'when go over safe limits on files' do
           let(:iterator) { [fake_diff(1, 1)] * 4 }
 
-          before(:each) do
+          before do
             stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: 2, max_lines: max_lines })
           end
 
@@ -409,7 +408,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
             ]
           end
 
-          before(:each) do
+          before do
             stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: max_files, max_lines: 80 })
           end
 
@@ -434,7 +433,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
             ]
           end
 
-          before(:each) do
+          before do
             stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: max_files, max_lines: 80 })
           end
 
@@ -484,8 +483,11 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     end
 
     def each
+      return enum_for(:each) unless block_given?
+
       loop do
         break if @count.zero?
+
         # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
         @count -= 1
         yield @value

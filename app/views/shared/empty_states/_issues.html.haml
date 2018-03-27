@@ -5,18 +5,23 @@
 .row.empty-state
   .col-xs-12
     .svg-content
-      = render 'shared/empty_states/icons/issues.svg'
-  .col-xs-12.text-center
+      = image_tag 'illustrations/issues.svg'
+  .col-xs-12
     .text-content
-      - if has_button && current_user
+      - if current_user
         %h4
-          The Issue Tracker is the place to add things that need to be improved or solved in a project
+          = _("The Issue Tracker is the place to add things that need to be improved or solved in a project")
         %p
-          Issues can be bugs, tasks or ideas to be discussed.
-          Also, issues are searchable and filterable.
-        - if project_select_button
-          = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue'
-        = link_to 'New issue', button_path, class: 'btn btn-new', title: 'New issue', id: 'new_issue_link'
+          = _("Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.")
+        - if has_button
+          .text-center
+            - if project_select_button
+              = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue', type: :issues
+            - else
+              = link_to 'New issue', button_path, class: 'btn btn-success', title: 'New issue', id: 'new_issue_link'
       - else
+        %h4.text-center= _("There are no issues to show")
+        %p
+          = _("The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.")
         .text-center
-          %h4 There are no issues to show.
+          = link_to _('Register / Sign In'), new_user_session_path, class: 'btn btn-success'

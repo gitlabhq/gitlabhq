@@ -12,7 +12,7 @@ module Network
     end
 
     def method_missing(m, *args, &block)
-      @commit.send(m, *args, &block)
+      @commit.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def space
@@ -24,12 +24,7 @@ module Network
     end
 
     def parents(map)
-      @commit.parents.map do |p|
-        if map.include?(p.id)
-          map[p.id]
-        end
-      end
-      .compact
+      map.values_at(*@commit.parent_ids).compact
     end
   end
 end

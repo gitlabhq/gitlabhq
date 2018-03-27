@@ -1,57 +1,71 @@
 import Vue from 'vue';
-import '~/render_math';
-import '~/render_gfm';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import '~/behaviors/markdown/render_gfm';
+import * as urlUtils from '~/lib/utils/url_utility';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
-import Poll from '~/lib/utils/poll';
+import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import issueShowData from '../mock_data';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
 }
 
-describe('Issuable output', () => {
-  document.body.innerHTML = '<span id="task_status"></span>';
+const REALTIME_REQUEST_STACK = [
+  issueShowData.initialRequest,
+  issueShowData.secondRequest,
+];
 
+describe('Issuable output', () => {
+  let mock;
+  let realtimeRequestCount = 0;
   let vm;
 
-  beforeEach(() => {
+  document.body.innerHTML = '<span id="task_status"></span>';
+
+  beforeEach((done) => {
     spyOn(eventHub, '$emit');
-    spyOn(Poll.prototype, 'makeRequest');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
+
+    mock = new MockAdapter(axios);
+    mock.onGet('/gitlab-org/gitlab-shell/issues/9/realtime_changes/realtime_changes').reply(() => {
+      const res = Promise.resolve([200, REALTIME_REQUEST_STACK[realtimeRequestCount]]);
+      realtimeRequestCount += 1;
+      return res;
+    });
 
     vm = new IssuableDescriptionComponent({
       propsData: {
         canUpdate: true,
         canDestroy: true,
-        canMove: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
+        updateEndpoint: gl.TEST_HOST,
         issuableRef: '#1',
         initialTitleHtml: '',
         initialTitleText: '',
-        initialDescriptionHtml: '',
-        initialDescriptionText: '',
-        markdownPreviewUrl: '/',
-        markdownDocs: '/',
-        projectsAutocompleteUrl: '/',
-        isConfidential: false,
+        initialDescriptionHtml: 'test',
+        initialDescriptionText: 'test',
+        markdownPreviewPath: '/',
+        markdownDocsPath: '/',
         projectNamespace: '/',
         projectPath: '/',
       },
     }).$mount();
+
+    setTimeout(done);
   });
 
   afterEach(() => {
+    mock.restore();
+    realtimeRequestCount = 0;
+
+    vm.poll.stop();
+    vm.$destroy();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
-    vm.poll.options.successCallback({
-      json() {
-        return issueShowData.initialRequest;
-      },
-    });
-
     let editedText;
     Vue.nextTick()
     .then(() => {
@@ -67,13 +81,9 @@ describe('Issuable output', () => {
       expect(editedText.querySelector('time')).toBeTruthy();
     })
     .then(() => {
-      vm.poll.options.successCallback({
-        json() {
-          return issueShowData.secondRequest;
-        },
-      });
+      vm.poll.makeRequest();
     })
-    .then(Vue.nextTick)
+    .then(() => new Promise(resolve => setTimeout(resolve)))
     .then(() => {
       expect(document.querySelector('title').innerText).toContain('2 (#1)');
       expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
@@ -134,48 +144,19 @@ describe('Issuable output', () => {
       spyOn(vm.service, 'getData').and.callThrough();
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          json() {
-            return {
-              confidential: false,
-              web_url: location.pathname,
-            };
+          data: {
+            confidential: false,
+            web_url: location.pathname,
           },
         });
       }));
 
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(
-          vm.service.getData,
-        ).toHaveBeenCalled();
-
-        done();
-      });
-    });
-
-    it('reloads the page if the confidential status has changed', (done) => {
-      spyOn(gl.utils, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          json() {
-            return {
-              confidential: true,
-              web_url: location.pathname,
-            };
-          },
-        });
-      }));
-
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(
-          gl.utils.visitUrl,
-        ).toHaveBeenCalledWith(location.pathname);
-
-        done();
-      });
+      vm.updateIssuable()
+        .then(() => {
+          expect(vm.service.getData).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('correctly updates issuable data', (done) => {
@@ -183,29 +164,22 @@ describe('Issuable output', () => {
         resolve();
       }));
 
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(
-          vm.service.updateIssuable,
-        ).toHaveBeenCalledWith(vm.formState);
-        expect(
-          eventHub.$emit,
-        ).toHaveBeenCalledWith('close.form');
-
-        done();
-      });
+      vm.updateIssuable()
+        .then(() => {
+          expect(vm.service.updateIssuable).toHaveBeenCalledWith(vm.formState);
+          expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('does not redirect if issue has not moved', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          json() {
-            return {
-              web_url: location.pathname,
-              confidential: vm.isConfidential,
-            };
+          data: {
+            web_url: location.pathname,
+            confidential: vm.isConfidential,
           },
         });
       }));
@@ -214,22 +188,20 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          gl.utils.visitUrl,
+          urlUtils.visitUrl,
         ).not.toHaveBeenCalled();
 
         done();
       });
     });
 
-    it('redirects if issue is moved', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+    it('redirects if returned web_url has changed', (done) => {
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          json() {
-            return {
-              web_url: '/testing-issue-move',
-              confidential: vm.isConfidential,
-            };
+          data: {
+            web_url: '/testing-issue-move',
+            confidential: vm.isConfidential,
           },
         });
       }));
@@ -238,58 +210,141 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          gl.utils.visitUrl,
+          urlUtils.visitUrl,
         ).toHaveBeenCalledWith('/testing-issue-move');
 
         done();
       });
     });
 
-    it('does not update issuable if project move confirm is false', (done) => {
-      spyOn(window, 'confirm').and.returnValue(false);
-      spyOn(vm.service, 'updateIssuable');
+    describe('shows dialog when issue has unsaved changed', () => {
+      it('confirms on title change', (done) => {
+        vm.showForm = true;
+        vm.state.titleText = 'title has changed';
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        Vue.nextTick(() => {
+          expect(e.returnValue).not.toBeNull();
+          done();
+        });
+      });
 
-      vm.store.formState.move_to_project_id = 1;
+      it('confirms on description change', (done) => {
+        vm.showForm = true;
+        vm.state.descriptionText = 'description has changed';
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        Vue.nextTick(() => {
+          expect(e.returnValue).not.toBeNull();
+          done();
+        });
+      });
 
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(
-          vm.service.updateIssuable,
-        ).not.toHaveBeenCalled();
-
-        done();
+      it('does nothing when nothing has changed', (done) => {
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        Vue.nextTick(() => {
+          expect(e.returnValue).toBeNull();
+          done();
+        });
       });
     });
 
-    it('closes form on error', (done) => {
-      spyOn(window, 'Flash').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
-        reject();
-      }));
+    describe('error when updating', () => {
+      beforeEach(() => {
+        spyOn(window, 'Flash').and.callThrough();
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
+          reject();
+        }));
+      });
 
-      vm.updateIssuable();
+      it('closes form on error', (done) => {
+        vm.updateIssuable();
 
-      setTimeout(() => {
-        expect(
-          eventHub.$emit,
-        ).toHaveBeenCalledWith('close.form');
-        expect(
-          window.Flash,
-        ).toHaveBeenCalledWith('Error updating issue');
+        setTimeout(() => {
+          expect(
+            eventHub.$emit,
+          ).toHaveBeenCalledWith('close.form');
+          expect(
+            window.Flash,
+          ).toHaveBeenCalledWith('Error updating issue');
 
-        done();
+          done();
+        });
+      });
+
+      it('returns the correct error message for issuableType', (done) => {
+        vm.issuableType = 'merge request';
+
+        Vue.nextTick(() => {
+          vm.updateIssuable();
+
+          setTimeout(() => {
+            expect(
+              eventHub.$emit,
+            ).toHaveBeenCalledWith('close.form');
+            expect(
+              window.Flash,
+            ).toHaveBeenCalledWith('Error updating merge request');
+
+            done();
+          });
+        });
       });
     });
   });
 
+  it('opens recaptcha modal if update rejected as spam', (done) => {
+    function mockScriptSrc() {
+      const recaptchaChild = vm.$children
+        .find(child => child.$options._componentTag === 'recaptcha-modal'); // eslint-disable-line no-underscore-dangle
+
+      recaptchaChild.scriptSrc = '//scriptsrc';
+    }
+
+    let modal;
+    const promise = new Promise((resolve) => {
+      resolve({
+        data: {
+          recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
+        },
+      });
+    });
+
+    spyOn(vm.service, 'updateIssuable').and.returnValue(promise);
+
+    vm.canUpdate = true;
+    vm.showForm = true;
+
+    vm.$nextTick()
+      .then(() => mockScriptSrc())
+      .then(() => vm.updateIssuable())
+      .then(promise)
+      .then(() => setTimeoutPromise())
+      .then(() => {
+        modal = vm.$el.querySelector('.js-recaptcha-modal');
+
+        expect(modal.style.display).not.toEqual('none');
+        expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
+      })
+      .then(() => modal.querySelector('.close').click())
+      .then(() => vm.$nextTick())
+      .then(() => {
+        expect(modal.style.display).toEqual('none');
+        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
   describe('deleteIssuable', () => {
     it('changes URL when deleted', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          json() {
-            return { web_url: '/test' };
+          data: {
+            web_url: '/test',
           },
         });
       }));
@@ -298,7 +353,7 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          gl.utils.visitUrl,
+          urlUtils.visitUrl,
         ).toHaveBeenCalledWith('/test');
 
         done();
@@ -306,12 +361,12 @@ describe('Issuable output', () => {
     });
 
     it('stops polling when deleting', (done) => {
-      spyOn(gl.utils, 'visitUrl');
-      spyOn(vm.poll, 'stop');
+      spyOn(urlUtils, 'visitUrl');
+      spyOn(vm.poll, 'stop').and.callThrough();
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          json() {
-            return { web_url: '/test' };
+          data: {
+            web_url: '/test',
           },
         });
       }));
@@ -350,34 +405,35 @@ describe('Issuable output', () => {
 
   describe('open form', () => {
     it('shows locked warning if form is open & data is different', (done) => {
-      vm.poll.options.successCallback({
-        json() {
-          return issueShowData.initialRequest;
-        },
-      });
-
-      Vue.nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.openForm();
 
-          vm.poll.options.successCallback({
-            json() {
-              return issueShowData.secondRequest;
-            },
-          });
+          vm.poll.makeRequest();
         })
-        .then(Vue.nextTick)
+        // Wait for the request
+        .then(vm.$nextTick)
+        // Wait for the successCallback to update the store state
+        .then(vm.$nextTick)
+        // Wait for the new state to flow to the Vue components
+        .then(vm.$nextTick)
         .then(() => {
-          expect(
-            vm.formState.lockedWarningVisible,
-          ).toBeTruthy();
-
-          expect(
-            vm.$el.querySelector('.alert'),
-          ).not.toBeNull();
+          expect(vm.formState.lockedWarningVisible).toEqual(true);
+          expect(vm.$el.querySelector('.alert')).not.toBeNull();
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('show inline edit button', () => {
+    it('should not render by default', () => {
+      expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
+    });
+
+    it('should render if showInlineEditButton', () => {
+      vm.showInlineEditButton = true;
+      expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
     });
   });
 });

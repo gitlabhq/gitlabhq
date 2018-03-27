@@ -58,6 +58,24 @@ Before proceeding with the Pages configuration, you will need to:
    so that your users don't have to bring their own.
 1. (Only for custom domains) Have a **secondary IP**.
 
+NOTE: **Note:**
+If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites will only be accessible to devices/users that have access to the private network.
+
+### Add the domain to the Public Suffix List
+
+The [Public Suffix List](https://publicsuffix.org) is used by browsers to
+decide how to treat subdomains. If your GitLab instance allows members of the
+public to create GitLab Pages sites, it also allows those users to create
+subdomains on the pages domain (`example.io`). Adding the domain to the Public
+Suffix List prevents browsers from accepting
+[supercookies](https://en.wikipedia.org/wiki/HTTP_cookie#Supercookie),
+among other things.
+
+Follow [these instructions](https://publicsuffix.org/submit/) to submit your
+GitLab Pages subdomain. For instance, if your domain is `example.io`, you should
+request that `*.example.io` is added to the Public Suffix List. GitLab.com
+added `*.gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/issues/230).
+
 ### DNS configuration
 
 GitLab Pages expect to run on their own virtual host. In your DNS server/provider
@@ -207,6 +225,18 @@ world. Custom domains and TLS are supported.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
+
+### Custom domain verification
+
+To prevent malicious users from hijacking domains that don't belong to them,
+GitLab supports [custom domain verification](../../user/project/pages/getting_started_part_three.md#dns-txt-record).
+When adding a custom domain, users will be required to prove they own it by
+adding a GitLab-controlled verification code to the DNS records for that domain.
+
+If your userbase is private or otherwise trusted, you can disable the
+verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
+**Require users to prove ownership of custom domains** in the Pages section.
+This setting is enabled by default.
 
 ## Change storage path
 

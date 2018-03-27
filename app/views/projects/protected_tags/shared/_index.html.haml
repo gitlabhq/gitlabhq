@@ -1,0 +1,24 @@
+- expanded = Rails.env.test?
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      Protected Tags
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Limit access to creating and updating tags.
+  .settings-content
+    %p
+      By default, protected tags are designed to:
+      %ul
+        %li Prevent tag creation by everybody except Masters
+        %li Prevent <strong>anyone</strong> from updating the tag
+        %li Prevent <strong>anyone</strong> from deleting the tag
+
+    %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags")}.
+
+    - if can? current_user, :admin_project, @project
+      = yield :create_protected_tag
+
+    = yield :tag_list

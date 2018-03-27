@@ -4,9 +4,21 @@ module Gitlab
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
     MAX_INT_VALUE = 2147483647
+    # The max value between MySQL's TIMESTAMP and PostgreSQL's timestampz:
+    # https://www.postgresql.org/docs/9.1/static/datatype-datetime.html
+    # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
+    MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
+    end
+
+    def self.username
+      config['username'] || ENV['USER']
+    end
+
+    def self.database_name
+      config['database']
     end
 
     def self.adapter_name
@@ -21,8 +33,25 @@ module Gitlab
       adapter_name.casecmp('postgresql').zero?
     end
 
+    # Overridden in EE
+    def self.read_only?
+      false
+    end
+
+    def self.read_write?
+      !self.read_only?
+    end
+
     def self.version
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
+    end
+
+    def self.join_lateral_supported?
+      postgresql? && version.to_f >= 9.3
+    end
+
+    def self.replication_slots_supported?
+      postgresql? && version.to_f >= 9.4
     end
 
     def self.nulls_last_order(field, direction = 'ASC')
@@ -83,20 +112,51 @@ module Gitlab
       end
     end
 
-    def self.bulk_insert(table, rows)
+    # Bulk inserts a number of rows into a table, optionally returning their
+    # IDs.
+    #
+    # table - The name of the table to insert the rows into.
+    # rows - An Array of Hash instances, each mapping the columns to their
+    #        values.
+    # return_ids - When set to true the return value will be an Array of IDs of
+    #              the inserted rows, this only works on PostgreSQL.
+    # disable_quote - A key or an Array of keys to exclude from quoting (You
+    #                 become responsible for protection from SQL injection for
+    #                 these keys!)
+    def self.bulk_insert(table, rows, return_ids: false, disable_quote: [])
       return if rows.empty?
 
       keys = rows.first.keys
       columns = keys.map { |key| connection.quote_column_name(key) }
+      return_ids = false if mysql?
 
+      disable_quote = Array(disable_quote).to_set
       tuples = rows.map do |row|
-        row.values_at(*keys).map { |value| connection.quote(value) }
+        keys.map do |k|
+          disable_quote.include?(k) ? row[k] : connection.quote(row[k])
+        end
       end
 
-      connection.execute <<-EOF
+      sql = <<-EOF
         INSERT INTO #{table} (#{columns.join(', ')})
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       EOF
+
+      if return_ids
+        sql << 'RETURNING id'
+      end
+
+      result = connection.execute(sql)
+
+      if return_ids
+        result.values.map { |tuple| tuple[0].to_i }
+      else
+        []
+      end
+    end
+
+    def self.sanitize_timestamp(timestamp)
+      MAX_TIMESTAMP_VALUE > timestamp ? timestamp : MAX_TIMESTAMP_VALUE.dup
     end
 
     # pool_size - The size of the DB pool.
@@ -121,6 +181,15 @@ module Gitlab
 
     def self.connection
       ActiveRecord::Base.connection
+    end
+
+    def self.cached_column_exists?(table_name, column_name)
+      connection.schema_cache.columns_hash(table_name).has_key?(column_name.to_s)
+    end
+
+    def self.cached_table_exists?(table_name)
+      # Rails 5 uses data_source_exists? instead of table_exists?
+      connection.schema_cache.table_exists?(table_name)
     end
 
     private_class_method :connection

@@ -1,30 +1,32 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-unused-vars, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, no-new, max-len */
-/* global Flash */
+import $ from 'jquery';
+import Flash from './flash';
+import { __, s__ } from './locale';
+import { spriteIcon } from './lib/utils/common_utils';
+import axios from './lib/utils/axios_utils';
 
-(function() {
-  this.Star = (function() {
-    function Star() {
-      $('.project-home-panel .toggle-star').on('ajax:success', function(e, data, status, xhr) {
-        var $starIcon, $starSpan, $this, toggleStar;
-        $this = $(this);
-        $starSpan = $this.find('span');
-        $starIcon = $this.find('i');
-        toggleStar = function(isStarred) {
+export default class Star {
+  constructor() {
+    $('.project-home-panel .toggle-star').on('click', function toggleStarClickCallback() {
+      const $this = $(this);
+      const $starSpan = $this.find('span');
+      const $startIcon = $this.find('svg');
+
+      axios.post($this.data('endpoint'))
+        .then(({ data }) => {
+          const isStarred = $starSpan.hasClass('starred');
           $this.parent().find('.star-count').text(data.star_count);
-          if (isStarred) {
-            $starSpan.removeClass('starred').text('Star');
-            $starIcon.removeClass('fa-star').addClass('fa-star-o');
-          } else {
-            $starSpan.addClass('starred').text('Unstar');
-            $starIcon.removeClass('fa-star-o').addClass('fa-star');
-          }
-        };
-        toggleStar($starSpan.hasClass('starred'));
-      }).on('ajax:error', function(e, xhr, status, error) {
-        new Flash('Star toggle failed. Try again later.', 'alert');
-      });
-    }
 
-    return Star;
-  })();
-}).call(window);
+          if (isStarred) {
+            $starSpan.removeClass('starred').text(s__('StarProject|Star'));
+            $startIcon.remove();
+            $this.prepend(spriteIcon('star-o'));
+          } else {
+            $starSpan.addClass('starred').text(__('Unstar'));
+            $startIcon.remove();
+            $this.prepend(spriteIcon('star'));
+          }
+        })
+        .catch(() => Flash('Star toggle failed. Try again later.'));
+    });
+  }
+}

@@ -56,9 +56,11 @@ module AuthenticatesWithTwoFactor
       session.delete(:otp_user_id)
 
       remember_me(user) if user_params[:remember_me] == '1'
+      user.save!
       sign_in(user)
     else
       user.increment_failed_attempts!
+      Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
       flash.now[:alert] = 'Invalid two-factor code.'
       prompt_for_two_factor(user)
     end
@@ -69,12 +71,13 @@ module AuthenticatesWithTwoFactor
     if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenge])
       # Remove any lingering user data from login
       session.delete(:otp_user_id)
-      session.delete(:challenges)
+      session.delete(:challenge)
 
       remember_me(user) if user_params[:remember_me] == '1'
       sign_in(user)
     else
       user.increment_failed_attempts!
+      Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=U2F")
       flash.now[:alert] = 'Authentication via U2F device failed.'
       prompt_for_two_factor(user)
     end

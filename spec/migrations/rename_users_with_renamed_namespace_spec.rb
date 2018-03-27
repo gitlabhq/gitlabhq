@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170518200835_rename_users_with_renamed_namespace.rb')
 
-describe RenameUsersWithRenamedNamespace, truncate: true do
+describe RenameUsersWithRenamedNamespace, :delete do
   it 'renames a user that had their namespace renamed to the namespace path' do
     other_user = create(:user, username: 'kodingu')
     other_user1 = create(:user, username: 'api0')

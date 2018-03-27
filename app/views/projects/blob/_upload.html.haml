@@ -1,8 +1,8 @@
 #modal-upload-blob.modal
-  .modal-dialog
+  .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } &times;
         %h3.page-title= title
       .modal-body
         = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal', data: { method: method } do
@@ -19,12 +19,9 @@
           = render 'shared/new_commit_form', placeholder: placeholder
 
           .form-actions
-            = button_tag button_title, class: 'btn btn-small btn-create btn-upload-file', id: 'submit-all'
+            = button_tag class: 'btn btn-create btn-upload-file', id: 'submit-all', type: 'button' do
+              = icon('spin spinner', class: 'js-loading-icon hidden' )
+              = button_title
             = link_to _("Cancel"), '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
-            - unless can?(current_user, :push_code, @project)
-              .inline.prepend-left-10
-                = commit_in_fork_help
-
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('blob')
+            = render 'shared/projects/edit_information'

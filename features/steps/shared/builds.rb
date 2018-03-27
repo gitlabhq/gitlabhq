@@ -11,7 +11,7 @@ module SharedBuilds
 
   step 'project has a recent build' do
     @pipeline = create(:ci_empty_pipeline, project: @project, sha: @project.commit.sha, ref: 'master')
-    @build = create(:ci_build, :coverage, pipeline: @pipeline)
+    @build = create(:ci_build, :running, :coverage, pipeline: @pipeline)
   end
 
   step 'recent build is successful' do
@@ -27,23 +27,23 @@ module SharedBuilds
   end
 
   step 'I visit recent build details page' do
-    visit namespace_project_job_path(@project.namespace, @project, @build)
+    visit project_job_path(@project, @build)
   end
 
   step 'I visit project builds page' do
-    visit namespace_project_jobs_path(@project.namespace, @project)
+    visit project_jobs_path(@project)
   end
 
   step 'recent build has artifacts available' do
     artifacts = Rails.root + 'spec/fixtures/ci_build_artifacts.zip'
     archive = fixture_file_upload(artifacts, 'application/zip')
-    @build.update_attributes(artifacts_file: archive)
+    @build.update_attributes(legacy_artifacts_file: archive)
   end
 
   step 'recent build has artifacts metadata available' do
     metadata = Rails.root + 'spec/fixtures/ci_build_artifacts_metadata.gz'
     gzip = fixture_file_upload(metadata, 'application/x-gzip')
-    @build.update_attributes(artifacts_metadata: gzip)
+    @build.update_attributes(legacy_artifacts_metadata: gzip)
   end
 
   step 'recent build has a build trace' do
@@ -56,7 +56,7 @@ module SharedBuilds
   end
 
   step 'I access artifacts download page' do
-    visit download_namespace_project_job_artifacts_path(@project.namespace, @project, @build)
+    visit download_project_job_artifacts_path(@project, @build)
   end
 
   step 'I see details of a build' do

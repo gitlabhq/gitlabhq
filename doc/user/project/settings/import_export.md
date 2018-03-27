@@ -9,6 +9,9 @@
 >    application settings (`/admin/application_settings`) under 'Import sources'.
 >    Ask your administrator if you don't see the **GitLab export** button when
 >    creating a new project.
+>  - Starting with GitLab 10.0, administrators can disable the project export option
+>    on the GitLab instance in application settings (`/admin/application_settings`)
+>    under 'Visibility and Access Controls'.
 >  - You can find some useful raketasks if you are an administrator in the
 >    [import_export](../../../administration/raketasks/project_import_export.md)
 >    raketask.
@@ -19,23 +22,27 @@
 >    in the import side is required to map the users, based on email or username.
 >    Otherwise, a supplementary comment is left to mention the original author and
 >    the MRs, notes or issues will be owned by the importer.
+>  - Control project Import/Export with the [API](../../../api/project_import_export.md).
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
 
 ## Version history
 
-| GitLab version | Import/Export version |
-| -------- | -------- |
-| 9.4.0 to current | 0.1.8 |
-| 9.2.0    | 0.1.7 |
-| 8.17.0   | 0.1.6 |
-| 8.13.0   | 0.1.5 |
-| 8.12.0   | 0.1.4 |
-| 8.10.3   | 0.1.3 |
-| 8.10.0   | 0.1.2 |
-| 8.9.5    | 0.1.1 |
-| 8.9.0    | 0.1.0 |
+| GitLab version   | Import/Export version |
+| ---------------- | --------------------- |
+| 10.4 to current  | 0.2.2                 |
+| 10.3             | 0.2.1                 |
+| 10.0             | 0.2.0                 |
+| 9.4.0            | 0.1.8                 |
+| 9.2.0            | 0.1.7                 |
+| 8.17.0           | 0.1.6                 |
+| 8.13.0           | 0.1.5                 |
+| 8.12.0           | 0.1.4                 |
+| 8.10.3           | 0.1.3                 |
+| 8.10.0           | 0.1.2                 |
+| 8.9.5            | 0.1.1                 |
+| 8.9.0            | 0.1.0                 |
 
  > The table reflects what GitLab version we updated the Import/Export version at.
  > For instance, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)

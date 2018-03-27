@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
+describe Gitlab::Prometheus::AdditionalMetricsParser do
   include Prometheus::MetricBuilders
 
   let(:parser_error_class) { Gitlab::Prometheus::ParsingError }
@@ -24,7 +24,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
                 queries: [{ query_range: 'query_range_empty' }]
           - group: group_b
             priority: 1
-            metrics: 
+            metrics:
               - title: title
                 required_metrics: ['metric_a']
                 weight: 1
@@ -148,7 +148,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
             - group: group_a
               priority: 1
               metrics:
-              - title: 
+              - title:
                 required_metrics: []
                 weight: 1
                 queries: []

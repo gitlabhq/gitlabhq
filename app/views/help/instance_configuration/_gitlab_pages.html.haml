@@ -1,0 +1,35 @@
+- gitlab_pages = @instance_configuration.settings[:gitlab_pages]
+- content_for :table_content do
+  %li= link_to 'GitLab Pages', '#gitlab-pages'
+
+- content_for :settings_content do
+  %h2#gitlab-pages
+    GitLab Pages
+
+  %p
+    Below are the settings for
+    = succeed('.') { link_to('Gitlab Pages', gitlab_pages[:url], target: '_blank') }
+  .table-responsive
+    %table
+      %thead
+        %tr
+          %th Setting
+          %th= instance_configuration_host(@instance_configuration.settings[:host])
+      %tbody
+        %tr
+          %td Domain Name
+          %td
+            %code= instance_configuration_cell_html(gitlab_pages[:host])
+        %tr
+          %td IP Address
+          %td
+            %code= instance_configuration_cell_html(gitlab_pages[:ip_address])
+        %tr
+          %td Port
+          %td
+            %code= instance_configuration_cell_html(gitlab_pages[:port])
+  %br
+
+  %p
+    The maximum size of your Pages site is regulated by the artifacts maximum
+    size which is part of #{succeed('.') { link_to('GitLab CI', '#gitlab-ci') }}

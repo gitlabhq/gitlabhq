@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Projects::UpdatePagesConfigurationService, services: true do
-  let(:project) { create(:empty_project) }
+describe Projects::UpdatePagesConfigurationService do
+  let(:project) { create(:project) }
   subject { described_class.new(project) }
 
   describe "#update" do

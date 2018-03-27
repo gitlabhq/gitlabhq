@@ -1,7 +1,7 @@
 /* global ListIssue */
 
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/stores/modal_store';
@@ -18,6 +18,7 @@ describe('Modal store', () => {
 
     issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [],
@@ -25,6 +26,7 @@ describe('Modal store', () => {
     });
     issue2 = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 2,
       confidential: false,
       labels: [],

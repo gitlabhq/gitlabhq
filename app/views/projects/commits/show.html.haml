@@ -1,39 +1,36 @@
 - @no_container = true
+- breadcrumb_title _("Commits")
 
 - page_title _("Commits"), @ref
 = content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
+  = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
-= content_for :sub_nav do
-  = render "head"
+.js-project-commits-show{ 'data-commits-limit' => @limit }
+  %div{ class: container_class }
+    .tree-holder
+      .nav-block
+        .tree-ref-container
+          .tree-ref-holder
+            = render 'shared/ref_switcher', destination: 'commits'
 
-%div{ class: container_class }
-  .row-content-block.second-block.content-component-block.flex-container-block
-    .tree-ref-holder
-      = render 'shared/ref_switcher', destination: 'commits'
+          %ul.breadcrumb.repo-breadcrumb
+            = commits_breadcrumbs
+        .tree-controls.hidden-xs.hidden-sm
+          - if @merge_request.present?
+            .control
+              = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn'
+          - elsif create_mr_button?(@repository.root_ref, @ref)
+            .control
+              = link_to _("Create merge request"), create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success'
 
-    %ul.breadcrumb.repo-breadcrumb
-      = commits_breadcrumbs
+          .control
+            = form_tag(project_commits_path(@project, @id), method: :get, class: 'commits-search-form', data: { 'signatures-path' => namespace_project_signatures_path }) do
+              = search_field_tag :search, params[:search], { placeholder: _('Filter by commit message'), id: 'commits-search', class: 'form-control search-text-input input-short', spellcheck: false }
+          .control
+            = link_to project_commits_path(@project, @ref, rss_url_options), title: _("Commits feed"), class: 'btn' do
+              = icon("rss")
 
-    .block-controls.hidden-xs.hidden-sm
-      - if @merge_request.present?
-        .control
-          = link_to _("View open merge request"), namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn'
-      - elsif create_mr_button?(@repository.root_ref, @ref)
-        .control
-          = link_to _("Create merge request"), create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success'
-
-      .control
-        = form_tag(namespace_project_commits_path(@project.namespace, @project, @id), method: :get, class: 'commits-search-form') do
-          = search_field_tag :search, params[:search], { placeholder: _('Filter by commit message'), id: 'commits-search', class: 'form-control search-text-input input-short', spellcheck: false }
-      .control
-        = link_to namespace_project_commits_path(@project.namespace, @project, @ref, rss_url_options), title: _("Commits feed"), class: 'btn' do
-          = icon("rss")
-
-  %div{ id: dom_id(@project) }
-    %ol#commits-list.list-unstyled.content_list
-      = render 'commits', project: @project, ref: @ref
-  = spinner
-
-:javascript
-  CommitsList.init(#{@limit});
+    %div{ id: dom_id(@project) }
+      %ol#commits-list.list-unstyled.content_list
+        = render 'commits', project: @project, ref: @ref
+    = spinner

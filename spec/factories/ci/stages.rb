@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_stage, class: Ci::LegacyStage do
     skip_create
 
@@ -14,5 +14,13 @@ FactoryGirl.define do
                                     status: status,
                                     warnings: warnings)
     end
+  end
+
+  factory :ci_stage_entity, class: Ci::Stage do
+    project factory: :project
+    pipeline factory: :ci_empty_pipeline
+
+    name 'test'
+    status 'pending'
   end
 end

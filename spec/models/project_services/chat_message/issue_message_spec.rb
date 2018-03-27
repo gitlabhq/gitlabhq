@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::IssueMessage, models: true do
+describe ChatMessage::IssueMessage do
   subject { described_class.new(args) }
 
   let(:args) do
@@ -42,7 +42,7 @@ describe ChatMessage::IssueMessage, models: true do
     context 'open' do
       it 'returns a message regarding opening of issues' do
         expect(subject.pretext).to eq(
-          '[<http://somewhere.com|project_name>] Issue opened by test.user')
+          '[<http://somewhere.com|project_name>] Issue opened by Test User (test.user)')
         expect(subject.attachments).to eq([
           {
             title: "#100 Issue title",
@@ -62,7 +62,20 @@ describe ChatMessage::IssueMessage, models: true do
 
       it 'returns a message regarding closing of issues' do
         expect(subject.pretext). to eq(
-          '[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> closed by test.user')
+          '[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> closed by Test User (test.user)')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'reopen' do
+      before do
+        args[:object_attributes][:action] = 'reopen'
+        args[:object_attributes][:state] = 'opened'
+      end
+
+      it 'returns a message regarding reopening of issues' do
+        expect(subject.pretext)
+          .to eq('[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> opened by Test User (test.user)')
         expect(subject.attachments).to be_empty
       end
     end
@@ -76,10 +89,10 @@ describe ChatMessage::IssueMessage, models: true do
     context 'open' do
       it 'returns a message regarding opening of issues' do
         expect(subject.pretext).to eq(
-          '[[project_name](http://somewhere.com)] Issue opened by test.user')
+          '[[project_name](http://somewhere.com)] Issue opened by Test User (test.user)')
         expect(subject.attachments).to eq('issue description')
         expect(subject.activity).to eq({
-          title: 'Issue opened by test.user',
+          title: 'Issue opened by Test User (test.user)',
           subtitle: 'in [project_name](http://somewhere.com)',
           text: '[#100 Issue title](http://url.com)',
           image: 'http://someavatar.com'
@@ -95,10 +108,10 @@ describe ChatMessage::IssueMessage, models: true do
 
       it 'returns a message regarding closing of issues' do
         expect(subject.pretext). to eq(
-          '[[project_name](http://somewhere.com)] Issue [#100 Issue title](http://url.com) closed by test.user')
+          '[[project_name](http://somewhere.com)] Issue [#100 Issue title](http://url.com) closed by Test User (test.user)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
-          title: 'Issue closed by test.user',
+          title: 'Issue closed by Test User (test.user)',
           subtitle: 'in [project_name](http://somewhere.com)',
           text: '[#100 Issue title](http://url.com)',
           image: 'http://someavatar.com'

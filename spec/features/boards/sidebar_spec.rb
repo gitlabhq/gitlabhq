@@ -1,9 +1,11 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
+describe 'Issue Boards', :js do
+  include BoardHelpers
+
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
-  let(:project)      { create(:empty_project, :public) }
+  let(:project)      { create(:project, :public) }
   let!(:milestone)   { create(:milestone, project: project) }
   let!(:development) { create(:label, project: project, name: 'Development') }
   let!(:bug)         { create(:label, project: project, name: 'Bug') }
@@ -15,19 +17,17 @@ describe 'Issue Boards', feature: true, js: true do
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
   let(:card) { find('.board:nth-child(2)').first('.card') }
 
-  before do
-    Timecop.freeze
-
-    project.team << [user, :master]
-
-    gitlab_sign_in(user)
-
-    visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_requests
+  around do |example|
+    Timecop.freeze { example.run }
   end
 
-  after do
-    Timecop.return
+  before do
+    project.add_master(user)
+
+    sign_in(user)
+
+    visit project_board_path(project, board)
+    wait_for_requests
   end
 
   it 'shows sidebar when clicking issue' do
@@ -51,7 +51,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     expect(page).to have_selector('.issue-boards-sidebar')
 
-    find('.gutter-toggle').trigger('click')
+    find('.gutter-toggle').click
 
     expect(page).not_to have_selector('.issue-boards-sidebar')
   end
@@ -77,6 +77,22 @@ describe 'Issue Boards', feature: true, js: true do
     page.within(find('.board:nth-child(2)')) do
       expect(page).to have_selector('.card', count: 1)
     end
+  end
+
+  it 'does not show remove button for backlog or closed issues' do
+    create(:issue, project: project)
+    create(:issue, :closed, project: project)
+
+    visit project_board_path(project, board)
+    wait_for_requests
+
+    click_card(find('.board:nth-child(1)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+
+    click_card(find('.board:nth-child(3)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
   end
 
   context 'assignee' do
@@ -155,7 +171,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       page.within(find('.board:nth-child(2)')) do
-        find('.card:nth-child(2)').trigger('click')
+        find('.card:nth-child(2)').click
       end
 
       page.within('.assignee') do
@@ -241,7 +257,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      expect(card).to have_selector('.label', count: 2)
+      expect(card).to have_selector('.label', count: 3)
       expect(card).to have_content(bug.title)
     end
 
@@ -267,7 +283,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      expect(card).to have_selector('.label', count: 3)
+      expect(card).to have_selector('.label', count: 4)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
     end
@@ -292,35 +308,53 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      expect(card).not_to have_selector('.label')
+      expect(card).to have_selector('.label', count: 1)
       expect(card).not_to have_content(stretch.title)
+    end
+
+    it 'creates project label' do
+      click_card(card)
+
+      page.within('.labels') do
+        click_link 'Edit'
+        click_link 'Create project label'
+        fill_in 'new_label_name', with: 'test label'
+        first('.suggest-colors-dropdown a').click
+        click_button 'Create'
+        wait_for_requests
+
+        expect(page).to have_link 'test label'
+      end
     end
   end
 
   context 'subscription' do
     it 'changes issue subscription' do
       click_card(card)
+      wait_for_requests
 
-      page.within('.subscription') do
-        click_button 'Subscribe'
+      page.within('.subscriptions') do
+        find('.js-issuable-subscribe-button button:not(.is-checked)').click
         wait_for_requests
-        expect(page).to have_content("Unsubscribe")
+
+        expect(page).to have_css('.js-issuable-subscribe-button button.is-checked')
       end
     end
-  end
 
-  def click_card(card)
-    page.within(card) do
-      first('.card-number').click
-    end
+    it 'has checked subscription toggle when already subscribed' do
+      create(:subscription, user: user, project: project, subscribable: issue2, subscribed: true)
+      visit project_board_path(project, board)
+      wait_for_requests
 
-    wait_for_sidebar
-  end
+      click_card(card)
+      wait_for_requests
 
-  def wait_for_sidebar
-    # loop until the CSS transition is complete
-    Timeout.timeout(0.5) do
-      loop until evaluate_script('$(".right-sidebar").outerWidth()') == 290
+      page.within('.subscriptions') do
+        find('.js-issuable-subscribe-button button.is-checked').click
+        wait_for_requests
+
+        expect(page).to have_css('.js-issuable-subscribe-button button:not(.is-checked)')
+      end
     end
   end
 end

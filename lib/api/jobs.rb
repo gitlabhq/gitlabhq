@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -16,9 +16,9 @@ module API
                              case scope
                              when String
                                [scope]
-                             when Hashie::Mash
+                             when ::Hash
                                scope.values
-                             when Hashie::Array
+                             when ::Array
                                scope
                              else
                                ['unknown']
@@ -38,6 +38,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
+        builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
         present paginate(builds), with: Entities::Job
       end
 
@@ -66,40 +67,9 @@ module API
       get ':id/jobs/:job_id' do
         authorize_read_builds!
 
-        build = get_build!(params[:job_id])
+        build = find_build!(params[:job_id])
 
         present build, with: Entities::Job
-      end
-
-      desc 'Download the artifacts file from a job' do
-        detail 'This feature was introduced in GitLab 8.5'
-      end
-      params do
-        requires :job_id, type: Integer, desc: 'The ID of a job'
-      end
-      get ':id/jobs/:job_id/artifacts' do
-        authorize_read_builds!
-
-        build = get_build!(params[:job_id])
-
-        present_artifacts!(build.artifacts_file)
-      end
-
-      desc 'Download the artifacts file from a job' do
-        detail 'This feature was introduced in GitLab 8.10'
-      end
-      params do
-        requires :ref_name, type: String, desc: 'The ref from repository'
-        requires :job,      type: String, desc: 'The name for the job'
-      end
-      get ':id/jobs/artifacts/:ref_name/download',
-        requirements: { ref_name: /.+/ } do
-        authorize_read_builds!
-
-        builds = user_project.latest_successful_builds_for(params[:ref_name])
-        latest_build = builds.find_by!(name: params[:job])
-
-        present_artifacts!(latest_build.artifacts_file)
       end
 
       # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
@@ -112,7 +82,7 @@ module API
       get ':id/jobs/:job_id/trace' do
         authorize_read_builds!
 
-        build = get_build!(params[:job_id])
+        build = find_build!(params[:job_id])
 
         header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
         content_type 'text/plain'
@@ -131,7 +101,7 @@ module API
       post ':id/jobs/:job_id/cancel' do
         authorize_update_builds!
 
-        build = get_build!(params[:job_id])
+        build = find_build!(params[:job_id])
         authorize!(:update_build, build)
 
         build.cancel
@@ -148,7 +118,7 @@ module API
       post ':id/jobs/:job_id/retry' do
         authorize_update_builds!
 
-        build = get_build!(params[:job_id])
+        build = find_build!(params[:job_id])
         authorize!(:update_build, build)
         return forbidden!('Job is not retryable') unless build.retryable?
 
@@ -166,30 +136,11 @@ module API
       post ':id/jobs/:job_id/erase' do
         authorize_update_builds!
 
-        build = get_build!(params[:job_id])
-        authorize!(:update_build, build)
+        build = find_build!(params[:job_id])
+        authorize!(:erase_build, build)
         return forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
-        present build, with: Entities::Job
-      end
-
-      desc 'Keep the artifacts to prevent them from being deleted' do
-        success Entities::Job
-      end
-      params do
-        requires :job_id, type: Integer, desc: 'The ID of a job'
-      end
-      post ':id/jobs/:job_id/artifacts/keep' do
-        authorize_update_builds!
-
-        build = get_build!(params[:job_id])
-        authorize!(:update_build, build)
-        return not_found!(build) unless build.artifacts?
-
-        build.keep_artifacts!
-
-        status 200
         present build, with: Entities::Job
       end
 
@@ -203,7 +154,7 @@ module API
       post ":id/jobs/:job_id/play" do
         authorize_read_builds!
 
-        build = get_build!(params[:job_id])
+        build = find_build!(params[:job_id])
 
         authorize!(:update_build, build)
         bad_request!("Unplayable Job") unless build.playable?
@@ -216,14 +167,6 @@ module API
     end
 
     helpers do
-      def find_build(id)
-        user_project.builds.find_by(id: id.to_i)
-      end
-
-      def get_build!(id)
-        find_build(id) || not_found!
-      end
-
       def filter_builds(builds, scope)
         return builds if scope.nil? || scope.empty?
 
@@ -233,14 +176,6 @@ module API
         render_api_error!('Scope contains invalid value(s)', 400) unless unknown.empty?
 
         builds.where(status: available_statuses && scope)
-      end
-
-      def authorize_read_builds!
-        authorize! :read_build, user_project
-      end
-
-      def authorize_update_builds!
-        authorize! :update_build, user_project
       end
     end
   end

@@ -62,9 +62,8 @@ module Gitlab
 
         # Allows to define conditions that must be met in order for the command
         # to be returned by `.command_names` & `.command_definitions`.
-        # It accepts a block that will be evaluated with the context given to
-        # `CommandDefintion#to_h`.
-        #
+        # It accepts a block that will be evaluated with the context
+        # of a QuickActions::InterpretService instance
         # Example:
         #
         #   condition do
@@ -105,9 +104,32 @@ module Gitlab
         #     # Awesome code block
         #   end
         def command(*command_names, &block)
+          define_command(CommandDefinition, *command_names, &block)
+        end
+
+        # Registers a new substitution which is recognizable from body of email or
+        # comment.
+        # It accepts aliases and takes a block with the formatted content.
+        #
+        # Example:
+        #
+        #   command :my_substitution, :alias_for_my_substitution do |text|
+        #     "#{text} MY AWESOME SUBSTITUTION"
+        #   end
+        def substitution(*substitution_names, &block)
+          define_command(SubstitutionDefinition, *substitution_names, &block)
+        end
+
+        def definition_by_name(name)
+          command_definitions_by_name[name.to_sym]
+        end
+
+        private
+
+        def define_command(klass, *command_names, &block)
           name, *aliases = command_names
 
-          definition = CommandDefinition.new(
+          definition = klass.new(
             name,
             aliases: aliases,
             description: @description,
@@ -129,10 +151,6 @@ module Gitlab
           @params = nil
           @condition_block = nil
           @parse_params_block = nil
-        end
-
-        def definition_by_name(name)
-          command_definitions_by_name[name.to_sym]
         end
       end
     end

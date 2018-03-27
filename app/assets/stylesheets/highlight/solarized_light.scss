@@ -239,7 +239,7 @@ $solarized-light-il: #2aa198;
   .gi { color: $solarized-light-gi; } /* Generic.Inserted */
   .go { color: $solarized-light-go; } /* Generic.Output */
   .gp { color: $solarized-light-gp; } /* Generic.Prompt */
-  .gs { color: $solarized-light-gs; font-weight: bold; } /* Generic.Strong */
+  .gs { color: $solarized-light-gs; font-weight: $gl-font-weight-bold; } /* Generic.Strong */
   .gu { color: $solarized-light-gu; } /* Generic.Subheading */
   .gt { color: $solarized-light-gt; } /* Generic.Traceback */
   .kc { color: $solarized-light-kc; } /* Keyword.Constant */

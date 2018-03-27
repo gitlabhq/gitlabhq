@@ -11,6 +11,7 @@ module API
           requires :url, type: String, desc: "The URL to send the request to"
           optional :push_events, type: Boolean, desc: "Trigger hook on push events"
           optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
+          optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"
           optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
           optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
           optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
@@ -56,7 +57,9 @@ module API
           use :project_hook_properties
         end
         post ":id/hooks" do
-          hook = user_project.hooks.new(declared_params(include_missing: false))
+          attrs = declared_params(include_missing: false)
+          attrs[:job_events] = attrs.delete(:build_events) if attrs.key?(:build_events)
+          hook = user_project.hooks.new(attrs)
 
           if hook.save
             present hook, with: ::API::V3::Entities::ProjectHook
@@ -77,7 +80,9 @@ module API
         put ":id/hooks/:hook_id" do
           hook = user_project.hooks.find(params.delete(:hook_id))
 
-          if hook.update_attributes(declared_params(include_missing: false))
+          attrs = declared_params(include_missing: false)
+          attrs[:job_events] = attrs.delete(:build_events) if attrs.key?(:build_events)
+          if hook.update_attributes(attrs)
             present hook, with: ::API::V3::Entities::ProjectHook
           else
             error!("Invalid url given", 422) if hook.errors[:url].present?

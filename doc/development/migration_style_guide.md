@@ -4,7 +4,7 @@ When writing migrations for GitLab, you have to take into account that
 these will be ran by hundreds of thousands of organizations of all sizes, some with
 many years of data in their database.
 
-In addition, having to take a server offline for a a upgrade small or big is a
+In addition, having to take a server offline for an upgrade small or big is a
 big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style
 guide below.
@@ -23,10 +23,6 @@ When downtime is necessary the migration has to be approved by:
 An up-to-date list of people holding these titles can be found at
 <https://about.gitlab.com/team/>.
 
-The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
-various database operations, whether they require downtime and how to
-work around that whenever possible.
-
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as few assumptions as
 possible about the state of the database.
@@ -35,12 +31,23 @@ Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
 
-## Commit Guidelines
+## Schema Changes
 
-Each migration **must** be added in its own commit with a descriptive commit
-message. If a commit adds a migration it _should only_ include the migration and
-any corresponding changes to `db/schema.rb`. This makes it easy to revert a
-database migration without accidentally reverting other changes.
+Migrations that make changes to the database schema (e.g. adding a column) can
+only be added in the monthly release, patch releases may only contain data
+migrations _unless_ schema changes are absolutely required to solve a problem.
+
+## What Requires Downtime?
+
+The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
+various database operations, such as 
+
+- [adding, dropping, and renaming columns](what_requires_downtime.md#adding-columns)
+- [changing column constraints and types](what_requires_downtime.md#changing-column-constraints)
+- [adding and dropping indexes, tables, and foreign keys](what_requires_downtime.md#adding-indexes)
+
+and whether they require downtime and how to work around that whenever possible.
+
 
 ## Downtime Tagging
 
@@ -137,10 +144,13 @@ class MyMigration < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    remove_concurrent_index :table_name, :column_name if index_exists?(:table_name, :column_name)
+    remove_concurrent_index :table_name, :column_name
   end
 end
 ```
+
+Note that it is not necessary to check if the index exists prior to
+removing it.
 
 ## Adding indexes
 
@@ -199,7 +209,43 @@ end
 
 Keep in mind that this operation can easily take 10-15 minutes to complete on
 larger installations (e.g. GitLab.com). As a result you should only add default
-values if absolutely necessary.
+values if absolutely necessary. There is a RuboCop cop that will fail if this
+method is used on some tables that are very large on GitLab.com, which would
+cause other issues.
+
+## Updating an existing column
+
+To update an existing column to a particular value, you can use
+`update_column_in_batches` (`add_column_with_default` uses this internally to
+fill in the default value). This will split the updates into batches, so we
+don't update too many rows at in a single statement.
+
+This updates the column `foo` in the `projects` table to 10, where `some_column`
+is `'hello'`:
+
+```ruby
+update_column_in_batches(:projects, :foo, 10) do |table, query|
+  query.where(table[:some_column].eq('hello'))
+end
+```
+
+To perform a computed update, the value can be wrapped in `Arel.sql`, so Arel
+treats it as an SQL literal. The below example is the same as the one above, but
+the value is set to the product of the `bar` and `baz` columns:
+
+```ruby
+update_value = Arel.sql('bar * baz')
+
+update_column_in_batches(:projects, :foo, update_value) do |table, query|
+  query.where(table[:some_column].eq('hello'))
+end
+```
+
+Like `add_column_with_default`, there is a RuboCop cop to detect usage of this
+on large tables. In the case of `update_column_in_batches`, it may be acceptable
+to run on a large table, as long as it is only updating a small subset of the
+rows in the table, but do not ignore that without validating on the GitLab.com
+staging environment - or asking someone else to do so for you - beforehand.
 
 ## Integer column type
 
@@ -224,9 +270,9 @@ add_column(:projects, :foo, :integer, default: 10, limit: 8)
 
 ## Timestamp column type
 
-By default, Rails uses the `timestamp` data type that stores timestamp data without timezone information.        
-The `timestamp` data type is used by calling either the `add_timestamps` or the `timestamps` method.       
-Also Rails converts the `:datetime` data type to the `timestamp` one.        
+By default, Rails uses the `timestamp` data type that stores timestamp data without timezone information.
+The `timestamp` data type is used by calling either the `add_timestamps` or the `timestamps` method.
+Also Rails converts the `:datetime` data type to the `timestamp` one.
 
 Example:
 

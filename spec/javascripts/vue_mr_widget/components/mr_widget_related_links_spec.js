@@ -1,138 +1,82 @@
 import Vue from 'vue';
-import relatedLinksComponent from '~/vue_merge_request_widget/components/mr_widget_related_links';
-
-const createComponent = (data) => {
-  const Component = Vue.extend(relatedLinksComponent);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: data,
-  });
-};
+import relatedLinksComponent from '~/vue_merge_request_widget/components/mr_widget_related_links.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetRelatedLinks', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { relatedLinks } = relatedLinksComponent.props;
+  let vm;
 
-      expect(relatedLinks).toBeDefined();
-      expect(relatedLinks.type instanceof Object).toBeTruthy();
-      expect(relatedLinks.required).toBeTruthy();
-    });
+  const createComponent = (data) => {
+    const Component = Vue.extend(relatedLinksComponent);
+
+    return mountComponent(Component, data);
+  };
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('computed', () => {
-    describe('hasLinks', () => {
-      it('should return correct value when we have links reference', () => {
-        const data = {
-          relatedLinks: {
-            closing: '/foo',
-            mentioned: '/foo',
-            assignToMe: '/foo',
-          },
-        };
-        const vm = createComponent(data);
-        expect(vm.hasLinks).toBeTruthy();
+    describe('closesText', () => {
+      it('returns Closes text for open merge request', () => {
+        vm = createComponent({ state: 'open', relatedLinks: {} });
+        expect(vm.closesText).toEqual('Closes');
+      });
 
-        vm.relatedLinks.closing = null;
-        expect(vm.hasLinks).toBeTruthy();
+      it('returns correct text for closed merge request', () => {
+        vm = createComponent({ state: 'closed', relatedLinks: {} });
+        expect(vm.closesText).toEqual('Did not close');
+      });
 
-        vm.relatedLinks.mentioned = null;
-        expect(vm.hasLinks).toBeTruthy();
-
-        vm.relatedLinks.assignToMe = null;
-        expect(vm.hasLinks).toBeFalsy();
+      it('returns correct tense for merged request', () => {
+        vm = createComponent({ state: 'merged', relatedLinks: {} });
+        expect(vm.closesText).toEqual('Closed');
       });
     });
   });
 
-  describe('methods', () => {
-    const data = {
+  it('should have only have closing issues text', () => {
+    vm = createComponent({
       relatedLinks: {
         closing: '<a href="#">#23</a> and <a>#42</a>',
-        mentioned: '<a href="#">#7</a>',
       },
-    };
-    const vm = createComponent(data);
-
-    describe('hasMultipleIssues', () => {
-      it('should return true if the given text has multiple issues', () => {
-        expect(vm.hasMultipleIssues(data.relatedLinks.closing)).toBeTruthy();
-      });
-
-      it('should return false if the given text has one issue', () => {
-        expect(vm.hasMultipleIssues(data.relatedLinks.mentioned)).toBeFalsy();
-      });
     });
+    const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
 
-    describe('issueLabel', () => {
-      it('should return true if the given text has multiple issues', () => {
-        expect(vm.issueLabel('closing')).toEqual('issues');
-      });
-
-      it('should return false if the given text has one issue', () => {
-        expect(vm.issueLabel('mentioned')).toEqual('issue');
-      });
-    });
-
-    describe('verbLabel', () => {
-      it('should return true if the given text has multiple issues', () => {
-        expect(vm.verbLabel('closing')).toEqual('are');
-      });
-
-      it('should return false if the given text has one issue', () => {
-        expect(vm.verbLabel('mentioned')).toEqual('is');
-      });
-    });
+    expect(content).toContain('Closes #23 and #42');
+    expect(content).not.toContain('Mentions');
   });
 
-  describe('template', () => {
-    it('should have only have closing issues text', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          closing: '<a href="#">#23</a> and <a>#42</a>',
-        },
-      });
-      const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
-
-      expect(content).toContain('Closes issues #23 and #42');
-      expect(content).not.toContain('mentioned');
+  it('should have only have mentioned issues text', () => {
+    vm = createComponent({
+      relatedLinks: {
+        mentioned: '<a href="#">#7</a>',
+      },
     });
 
-    it('should have only have mentioned issues text', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          mentioned: '<a href="#">#7</a>',
-        },
-      });
+    expect(vm.$el.innerText).toContain('Mentions #7');
+    expect(vm.$el.innerText).not.toContain('Closes');
+  });
 
-      expect(vm.$el.innerText).toContain('issue #7');
-      expect(vm.$el.innerText).toContain('is mentioned but will not be closed.');
-      expect(vm.$el.innerText).not.toContain('Closes');
+  it('should have closing and mentioned issues at the same time', () => {
+    vm = createComponent({
+      relatedLinks: {
+        closing: '<a href="#">#7</a>',
+        mentioned: '<a href="#">#23</a> and <a>#42</a>',
+      },
+    });
+    const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
+
+    expect(content).toContain('Closes #7');
+    expect(content).toContain('Mentions #23 and #42');
+  });
+
+  it('should have assing issues link', () => {
+    vm = createComponent({
+      relatedLinks: {
+        assignToMe: '<a href="#">Assign yourself to these issues</a>',
+      },
     });
 
-    it('should have closing and mentioned issues at the same time', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          closing: '<a href="#">#7</a>',
-          mentioned: '<a href="#">#23</a> and <a>#42</a>',
-        },
-      });
-      const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
-
-      expect(content).toContain('Closes issue #7.');
-      expect(content).toContain('issues #23 and #42');
-      expect(content).toContain('are mentioned but will not be closed.');
-    });
-
-    it('should have assing issues link', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          assignToMe: '<a href="#">Assign yourself to these issues</a>',
-        },
-      });
-
-      expect(vm.$el.innerText).toContain('Assign yourself to these issues');
-    });
+    expect(vm.$el.innerText).toContain('Assign yourself to these issues');
   });
 });

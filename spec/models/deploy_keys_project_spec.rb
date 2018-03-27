@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeployKeysProject, models: true do
+describe DeployKeysProject do
   describe "Associations" do
     it { is_expected.to belong_to(:deploy_key) }
     it { is_expected.to belong_to(:project) }
@@ -8,11 +8,11 @@ describe DeployKeysProject, models: true do
 
   describe "Validation" do
     it { is_expected.to validate_presence_of(:project_id) }
-    it { is_expected.to validate_presence_of(:deploy_key_id) }
+    it { is_expected.to validate_presence_of(:deploy_key) }
   end
 
   describe "Destroying" do
-    let(:project)     { create(:empty_project) }
+    let(:project)     { create(:project) }
     subject           { create(:deploy_keys_project, project: project) }
     let(:deploy_key)  { subject.deploy_key }
 
@@ -39,7 +39,7 @@ describe DeployKeysProject, models: true do
     end
 
     context "when the deploy key is used by more than one project" do
-      let!(:other_project) { create(:empty_project) }
+      let!(:other_project) { create(:project) }
 
       before do
         other_project.deploy_keys << deploy_key

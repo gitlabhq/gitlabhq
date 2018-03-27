@@ -1,20 +1,20 @@
 require 'rails_helper'
 
-feature 'Multiple issue updating from issues#index', feature: true do
+feature 'Multiple issue updating from issues#index', :js do
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
-  context 'status', js: true do
+  context 'status' do
     it 'sets to closed' do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.js-issue-status').click
 
@@ -25,9 +25,9 @@ feature 'Multiple issue updating from issues#index', feature: true do
 
     it 'sets to open' do
       create_closed
-      visit namespace_project_issues_path(project.namespace, project, state: 'closed')
+      visit project_issues_path(project, state: 'closed')
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.js-issue-status').click
 
@@ -37,11 +37,11 @@ feature 'Multiple issue updating from issues#index', feature: true do
     end
   end
 
-  context 'assignee', js: true do
+  context 'assignee' do
     it 'updates to current user' do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       click_update_assignee_button
 
@@ -55,9 +55,9 @@ feature 'Multiple issue updating from issues#index', feature: true do
 
     it 'updates to unassigned' do
       create_assigned
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       click_update_assignee_button
 
@@ -67,13 +67,13 @@ feature 'Multiple issue updating from issues#index', feature: true do
     end
   end
 
-  context 'milestone', js: true do
-    let(:milestone)  { create(:milestone, project: project) }
+  context 'milestone' do
+    let!(:milestone) { create(:milestone, project: project) }
 
     it 'updates milestone' do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.issues-bulk-update .js-milestone-select').click
 
@@ -85,11 +85,11 @@ feature 'Multiple issue updating from issues#index', feature: true do
 
     it 'sets to no milestone' do
       create_with_milestone
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
       expect(first('.issue')).to have_content milestone.title
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.issues-bulk-update .js-milestone-select').click
 

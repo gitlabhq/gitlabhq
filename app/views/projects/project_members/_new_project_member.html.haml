@@ -1,6 +1,6 @@
 .row
   .col-sm-12
-    = form_for @project_member, as: :project_member, url: namespace_project_project_members_path(@project.namespace, @project), html: { class: 'users-project-form' } do |f|
+    = form_for @project_member, as: :project_member, url: project_project_members_path(@project), html: { class: 'users-project-form' } do |f|
       .form-group
         = label_tag :user_ids, "Select members to invite", class: "label-light"
         = users_select_tag(:user_ids, multiple: true, class: "input-clamp", scope: :all, email_user: true, placeholder: "Search for members to update or invite")
@@ -18,4 +18,4 @@
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
           %i.clear-icon.js-clear-input
       = f.submit "Add to project", class: "btn btn-create"
-      = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default", title: "Import members from another project"
+      = link_to "Import", import_project_project_members_path(@project), class: "btn btn-default", title: "Import members from another project"

@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe 'Navigation bar counter', feature: true, caching: true do
+describe 'Navigation bar counter', :use_clean_rails_memory_store_caching do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
     issue.assignees = [user]
     merge_request.update(assignee: user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   it 'reflects dashboard issues count' do

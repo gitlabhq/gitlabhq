@@ -320,11 +320,11 @@ Response:
 
 [ce-2893]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2893
 
-## Download the artifacts file
+## Download the artifacts archive
 
 > [Introduced][ce-5347] in GitLab 8.10.
 
-Download the artifacts file from the given reference name and job provided the
+Download the artifacts archive from the given reference name and job provided the
 job finished successfully.
 
 ```
@@ -336,7 +336,7 @@ Parameters
 | Attribute   | Type    | Required | Description               |
 |-------------|---------|----------|-------------------------- |
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
-| `ref_name`  | string  | yes      | The ref from a repository |
+| `ref_name`  | string  | yes      | The ref from a repository (can only be branch or tag name, not HEAD or SHA) |
 | `job`       | string  | yes      | The name of the job       |
 
 Example request:
@@ -353,6 +353,40 @@ Example response:
 | 404       | Build not found or no artifacts |
 
 [ce-5347]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5347
+
+## Download a single artifact file
+
+> Introduced in GitLab 10.0
+
+Download a single artifact file from within the job's artifacts archive.
+
+Only a single file is going to be extracted from the archive and streamed to a client.
+
+```
+GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
+```
+
+Parameters
+
+| Attribute       | Type    | Required | Description               |
+|-----------------|---------|----------|-------------------------- |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
+| `job_id  `      | integer | yes      | The unique job identifier |
+| `artifact_path` | string  | yes      | Path to a file inside the artifacts archive |
+
+Example request:
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
+```
+
+Example response:
+
+| Status    | Description                          |
+|-----------|--------------------------------------|
+| 200       | Sends a single artifact file         |
+| 400       | Invalid path provided                |
+| 404       | Build not found or no file/artifacts |
 
 ## Get a trace file
 

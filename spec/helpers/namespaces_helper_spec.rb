@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NamespacesHelper, type: :helper do
+describe NamespacesHelper do
   let!(:admin) { create(:admin) }
   let!(:admin_group) { create(:group, :private) }
   let!(:user) { create(:user) }
@@ -28,6 +28,31 @@ describe NamespacesHelper, type: :helper do
 
       expect(options).not_to include(admin_group.name)
       expect(options).to include(user_group.name)
+    end
+
+    context 'when nested groups are available', :nested_groups do
+      it 'includes groups nested in groups the user can administer' do
+        allow(helper).to receive(:current_user).and_return(user)
+        child_group = create(:group, :private, parent: user_group)
+
+        options = helper.namespaces_options
+
+        expect(options).to include(child_group.name)
+      end
+
+      it 'orders the groups correctly' do
+        allow(helper).to receive(:current_user).and_return(user)
+        child_group = create(:group, :private, parent: user_group)
+        other_child = create(:group, :private, parent: user_group)
+        sub_child = create(:group, :private, parent: child_group)
+
+        expect(helper).to receive(:options_for_group)
+                            .with([user_group, child_group, sub_child, other_child], anything)
+                            .and_call_original
+        allow(helper).to receive(:options_for_group).and_call_original
+
+        helper.namespaces_options
+      end
     end
   end
 end

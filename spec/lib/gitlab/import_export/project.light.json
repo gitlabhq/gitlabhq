@@ -2,10 +2,24 @@
   "description": "Nisi et repellendus ut enim quo accusamus vel magnam.",
   "visibility_level": 10,
   "archived": false,
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Project milestone",
+      "project_id": 8,
+      "description": "Project-level milestone",
+      "due_date": null,
+      "created_at": "2016-06-14T15:02:04.415Z",
+      "updated_at": "2016-06-14T15:02:04.415Z",
+      "state": "active",
+      "iid": 1,
+      "group_id": null
+    }
+  ],
   "labels": [
     {
       "id": 2,
-      "title": "test2",
+      "title": "A project label",
       "color": "#428bca",
       "project_id": 8,
       "created_at": "2016-07-22T08:55:44.161Z",
@@ -13,20 +27,6 @@
       "template": false,
       "description": "",
       "type": "ProjectLabel",
-      "priorities": [
-      ]
-    },
-    {
-      "id": 3,
-      "title": "test3",
-      "color": "#428bca",
-      "group_id": 8,
-      "created_at": "2016-07-22T08:55:44.161Z",
-      "updated_at": "2016-07-22T08:55:44.161Z",
-      "template": false,
-      "description": "",
-      "project_id": null,
-      "type": "GroupLabel",
       "priorities": [
         {
           "id": 1,
@@ -39,10 +39,66 @@
       ]
     }
   ],
-  "snippets": [
-
+  "issues": [
+    {
+      "id": 1,
+      "title": "Fugiat est minima quae maxime non similique.",
+      "assignee_id": null,
+      "project_id": 8,
+      "author_id": 1,
+      "created_at": "2017-07-07T18:13:01.138Z",
+      "updated_at": "2017-08-15T18:37:40.807Z",
+      "branch_name": null,
+      "description": "Quam totam fuga numquam in eveniet.",
+      "state": "opened",
+      "iid": 20,
+      "updated_by_id": 1,
+      "confidential": false,
+      "due_date": null,
+      "moved_to_id": null,
+      "lock_version": null,
+      "time_estimate": 0,
+      "closed_at": null,
+      "last_edited_at": null,
+      "last_edited_by_id": null,
+      "group_milestone_id": null,
+      "milestone": {
+        "id": 1,
+        "title": "Project milestone",
+        "project_id": 8,
+        "description": "Project-level milestone",
+        "due_date": null,
+        "created_at": "2016-06-14T15:02:04.415Z",
+        "updated_at": "2016-06-14T15:02:04.415Z",
+        "state": "active",
+        "iid": 1,
+        "group_id": null
+      },
+      "label_links": [
+        {
+          "id": 11,
+          "label_id": 2,
+          "target_id": 1,
+          "target_type": "Issue",
+          "created_at": "2017-08-15T18:37:40.795Z",
+          "updated_at": "2017-08-15T18:37:40.795Z",
+          "label": {
+            "id": 6,
+            "title": "Another project label",
+            "color": "#A8D695",
+            "project_id": null,
+            "created_at": "2017-08-15T18:37:19.698Z",
+            "updated_at": "2017-08-15T18:37:19.698Z",
+            "template": false,
+            "description": "",
+            "group_id": null,
+            "type": "ProjectLabel",
+            "priorities": []
+          }
+        }
+      ]
+    }
   ],
-  "hooks": [
-
-  ]
+  "snippets": [],
+  "hooks": []
 }

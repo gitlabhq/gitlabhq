@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateLargeTable
 class UpdateRetriedForCiBuild < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -21,7 +22,7 @@ class UpdateRetriedForCiBuild < ActiveRecord::Migration
   private
 
   def up_mysql
-    # This is a trick to overcome MySQL limitation: 
+    # This is a trick to overcome MySQL limitation:
     # Mysql2::Error: Table 'ci_builds' is specified twice, both as a target for 'UPDATE' and as a separate source for data
     # However, this leads to create a temporary table from `max(ci_builds.id)` which is slow and do full database update
     execute <<-SQL.strip_heredoc
@@ -54,14 +55,14 @@ class UpdateRetriedForCiBuild < ActiveRecord::Migration
 
   def with_temporary_partial_index
     if Gitlab::Database.postgresql?
-      unless index_exists?(:ci_builds, name: :index_for_ci_builds_retried_migration)
+      unless index_exists?(:ci_builds, :id, name: :index_for_ci_builds_retried_migration)
         execute 'CREATE INDEX CONCURRENTLY index_for_ci_builds_retried_migration ON ci_builds (id) WHERE retried IS NULL;'
       end
     end
 
     yield
 
-    if Gitlab::Database.postgresql? && index_exists?(:ci_builds, name: :index_for_ci_builds_retried_migration)
+    if Gitlab::Database.postgresql? && index_exists?(:ci_builds, :id, name: :index_for_ci_builds_retried_migration)
       execute 'DROP INDEX CONCURRENTLY index_for_ci_builds_retried_migration'
     end
   end

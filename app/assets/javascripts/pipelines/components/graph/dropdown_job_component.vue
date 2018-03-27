@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import jobNameComponent from './job_name_component.vue';
   import jobComponent from './job_component.vue';
   import tooltip from '../../../vue_shared/directives/tooltip';
@@ -18,7 +19,7 @@
    *     "group": "success",
    *     "details_path": "/root/ci-mock/builds/4256",
    *     "action": {
-   *       "icon": "icon_action_retry",
+   *       "icon": "retry",
    *       "title": "Retry",
    *       "path": "/root/ci-mock/builds/4256/retry",
    *       "method": "post"
@@ -27,13 +28,6 @@
    * }
    */
   export default {
-    props: {
-      job: {
-        type: Object,
-        required: true,
-      },
-    },
-
     directives: {
       tooltip,
     },
@@ -43,15 +37,44 @@
       jobNameComponent,
     },
 
+    props: {
+      job: {
+        type: Object,
+        required: true,
+      },
+    },
+
     computed: {
       tooltipText() {
         return `${this.job.name} - ${this.job.status.label}`;
       },
     },
+
+    mounted() {
+      this.stopDropdownClickPropagation();
+    },
+
+    methods: {
+      /**
+     * When the user right clicks or cmd/ctrl + click in the job name
+     * the dropdown should not be closed and the link should open in another tab,
+     * so we stop propagation of the click event inside the dropdown.
+     *
+     * Since this component is rendered multiple times per page we need to guarantee we only
+     * target the click event of this component.
+     */
+      stopDropdownClickPropagation() {
+        $(this.$el
+          .querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
+          .on('click', (e) => {
+            e.stopPropagation();
+          });
+      },
+    },
   };
 </script>
 <template>
-  <div>
+  <div class="ci-job-dropdown-container">
     <button
       v-tooltip
       type="button"
@@ -62,22 +85,25 @@
 
       <job-name-component
         :name="job.name"
-        :status="job.status" />
+        :status="job.status"
+      />
 
       <span class="dropdown-counter-badge">
-        {{job.size}}
+        {{ job.size }}
       </span>
     </button>
 
     <ul class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown">
       <li class="scrollable-menu">
         <ul>
-          <li v-for="item in job.jobs">
+          <li
+            v-for="(item, i) in job.jobs"
+            :key="i">
             <job-component
               :job="item"
               :is-dropdown="true"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
-              />
+            />
           </li>
         </ul>
       </li>

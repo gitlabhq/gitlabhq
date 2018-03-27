@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
 
+import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
-import '~/pager';
-import '~/activities';
+import Activities from '~/activities';
 
 (() => {
   window.gon || (window.gon = {});
@@ -35,7 +35,7 @@ import '~/activities';
   describe('Activities', () => {
     beforeEach(() => {
       loadFixtures(fixtureTemplate);
-      new gl.Activities();
+      new Activities();
     });
 
     for (let i = 0; i < filters.length; i += 1) {

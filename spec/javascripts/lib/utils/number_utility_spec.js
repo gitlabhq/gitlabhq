@@ -1,4 +1,4 @@
-import { formatRelevantDigits, bytesToKiB, bytesToMiB } from '~/lib/utils/number_utils';
+import { formatRelevantDigits, bytesToKiB, bytesToMiB, bytesToGiB, numberToHumanSize } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
   describe('formatRelevantDigits', () => {
@@ -50,6 +50,31 @@ describe('Number Utils', () => {
     it('calculates MiB for the given bytes', () => {
       expect(bytesToMiB(1048576)).toEqual(1);
       expect(bytesToMiB(1000000)).toEqual(0.95367431640625);
+    });
+  });
+
+  describe('bytesToGiB', () => {
+    it('calculates GiB for the given bytes', () => {
+      expect(bytesToGiB(1073741824)).toEqual(1);
+      expect(bytesToGiB(10737418240)).toEqual(10);
+    });
+  });
+
+  describe('numberToHumanSize', () => {
+    it('should return bytes', () => {
+      expect(numberToHumanSize(654)).toEqual('654 bytes');
+    });
+
+    it('should return KiB', () => {
+      expect(numberToHumanSize(1079)).toEqual('1.05 KiB');
+    });
+
+    it('should return MiB', () => {
+      expect(numberToHumanSize(10485764)).toEqual('10.00 MiB');
+    });
+
+    it('should return GiB', () => {
+      expect(numberToHumanSize(10737418240)).toEqual('10.00 GiB');
     });
   });
 });

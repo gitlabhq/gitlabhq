@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Release, type: :model do
+RSpec.describe Release do
   let(:release) { create(:release) }
 
   it { expect(release).to be_valid }

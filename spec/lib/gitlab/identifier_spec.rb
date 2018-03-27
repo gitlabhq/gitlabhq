@@ -5,7 +5,7 @@ describe Gitlab::Identifier do
     Class.new { include Gitlab::Identifier }.new
   end
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
 
@@ -69,6 +69,10 @@ describe Gitlab::Identifier do
       2.times do
         expect(identifier.identify_using_commit(project, '123')).to eq(user)
       end
+    end
+
+    it 'returns nil if the project & ref are not present' do
+      expect(identifier.identify_using_commit(nil, nil)).to be_nil
     end
   end
 

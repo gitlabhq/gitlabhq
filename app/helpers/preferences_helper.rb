@@ -36,37 +36,16 @@ module PreferencesHelper
   def project_view_choices
     [
       ['Files and Readme (default)', :files],
-      ['Activity', :activity]
+      ['Activity', :activity],
+      ['Readme', :readme]
     ]
+  end
+
+  def user_application_theme
+    @user_application_theme ||= Gitlab::Themes.for_user(current_user).css_class
   end
 
   def user_color_scheme
     Gitlab::ColorSchemes.for_user(current_user).css_class
-  end
-
-  def default_project_view
-    return anonymous_project_view unless current_user
-
-    user_view = current_user.project_view
-
-    if can?(current_user, :download_code, @project)
-      user_view
-    elsif user_view == "activity"
-      "activity"
-    elsif @project.wiki_enabled?
-      "wiki"
-    elsif @project.feature_available?(:issues, current_user)
-      "projects/issues/issues"
-    else
-      "customize_workflow"
-    end
-  end
-
-  def anonymous_project_view
-    if !@project.empty_repo? && can?(current_user, :download_code, @project)
-      'files'
-    else
-      'activity'
-    end
   end
 end

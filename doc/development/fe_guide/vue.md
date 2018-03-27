@@ -28,8 +28,9 @@ As always, the Frontend Architectural Experts are available to help with any Vue
 
 All new features built with Vue.js must follow a [Flux architecture][flux].
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
-In order to achieve this goal, each Vue bundle needs a Store - where we keep all the data -,
-a Service - that we use to communicate with the server - and a main Vue component.
+In order to achieve this goal, you can either use [vuex](#vuex) or use the [store pattern][state-management], explained below:
+
+Each Vue bundle needs a Store - where we keep all the data -,a Service - that we use to communicate with the server - and a main Vue component.
 
 Think of the Main Vue Component as the entry point of your application. This is the only smart
 component that should exist in each Vue feature.
@@ -52,13 +53,13 @@ you can find a clear separation of concerns:
 ```
 new_feature
 ├── components
-│   └── component.js.es6
+│   └── component.vue
 │   └── ...
-├── store
-│  └── new_feature_store.js.es6
-├── service
-│  └── new_feature_service.js.es6
-├── new_feature_bundle.js.es6
+├── stores
+│  └── new_feature_store.js
+├── services
+│  └── new_feature_service.js
+├── new_feature_bundle.js
 ```
 _For consistency purposes, we recommend you to follow the same structure._
 
@@ -73,6 +74,59 @@ The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
 Don't forget to follow [these steps.][page_specific_javascript]
+
+### Bootstrapping Gotchas
+#### Providing data from Haml to JavaScript
+While mounting a Vue application may be a need to provide data from Rails to JavaScript.
+To do that, provide the data through `data` attributes in the HTML element and query them while mounting the application.
+
+_Note:_ You should only do this while initing the application, because the mounted element will be replaced with Vue-generated DOM.
+
+The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
+instead of querying the DOM inside the main vue component is that makes tests easier by avoiding the need to
+create a fixture or an HTML element in the unit test. See the following example:
+
+```javascript
+// haml
+.js-vue-app{ data: { endpoint: 'foo' }}
+
+document.addEventListener('DOMContentLoaded', () => new Vue({
+  el: '.js-vue-app',
+  data() {
+    const dataset = this.$options.el.dataset;
+    return {
+      endpoint: dataset.endpoint,
+    };
+  },
+  render(createElement) {
+    return createElement('my-component', {
+      props: {
+        endpoint: this.isLoading,
+      },
+    });
+  },
+}));
+```
+
+#### Accessing the `gl` object
+When we need to query the `gl` object for data that won't change during the application's lyfecyle, we should do it in the same place where we query the DOM.
+By following this practice, we can avoid the need to mock the `gl` object, which will make tests easier.
+It should be done while initializing our Vue instance, and the data should be provided as `props` to the main component:
+
+##### example:
+```javascript
+
+document.addEventListener('DOMContentLoaded', () => new Vue({
+  el: '.js-vue-app',
+  render(createElement) {
+    return createElement('my-component', {
+      props: {
+        username: gon.current_username,
+      },
+    });
+  },
+}));
+```
 
 ### A folder for Components
 
@@ -89,6 +143,29 @@ in one table would not be a good use of this pattern.
 
 You can read more about components in Vue.js site, [Component System][component-system]
 
+#### Components Gotchas
+1. Using SVGs in components: To use an SVG in a template we need to make it a property we can access through the component.
+A `prop` and a property returned by the `data` functions require `vue` to set a `getter` and a `setter` for each of them.
+The SVG should be a computed property in order to improve performance, note that computed properties are cached based on their dependencies.
+
+```javascript
+// bad
+import svg from 'svg.svg';
+data() {
+  return {
+    myIcon: svg,
+  };
+};
+
+// good
+import svg from 'svg.svg';
+computed: {
+  myIcon() {
+    return svg;
+  }
+}
+```
+
 ### A folder for the Store
 
 The Store is a class that allows us to manage the state in a single
@@ -101,22 +178,14 @@ itself, please read this guide: [State Management][state-management]
 
 The Service is a class used only to communicate with the server.
 It does not store or manipulate any data. It is not aware of the store or the components.
-We use [vue-resource][vue-resource-repo] to communicate with the server.
+We use [axios][axios] to communicate with the server.
+Refer to [axios](axios.md) for more details.
 
-Vue Resource should only be imported in the service file.
+Axios instance should only be imported in the service file.
 
   ```javascript
-  import Vue from 'vue';
-  import VueResource from 'vue-resource';
-
-  Vue.use(VueResource);
+  import axios from 'javascripts/lib/utils/axios_utils';
   ```
-
-### CSRF token
-We use a Vue Resource interceptor to manage the CSRF token.
-`app/assets/javascripts/vue_shared/vue_resource_interceptor.js` holds all our common interceptors.
-Note: You don't need to load `app/assets/javascripts/vue_shared/vue_resource_interceptor.js`
-since it's already being loaded by `common_vue.js`.
 
 ### End Result
 
@@ -126,13 +195,13 @@ The following example shows an  application:
 // store.js
 export default class Store {
 
-  /**  
+  /**
    * This is where we will iniatialize the state of our data.
    * Usually in a small SPA you don't need any options when starting the store. In the case you do
    * need guarantee it's an Object and it's documented.
-   *    
-   * @param  {Object} options   
-   */   
+   *
+   * @param  {Object} options
+   */
   constructor(options) {
     this.options = options;
 
@@ -158,15 +227,14 @@ export default class Store {
 }
 
 // service.js
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-import 'vue_shared/vue_resource_interceptor';
-
-Vue.use(VueResource);
+import axios from 'javascripts/lib/utils/axios_utils'
 
 export default class Service {
   constructor(options) {
-    this.todos = Vue.resource(endpoint.todosEndpoint);
+    this.todos = axios.create({
+      baseURL: endpoint.todosEndpoint
+    });
+
   }
 
   getTodos() {
@@ -205,14 +273,14 @@ import Store from 'store';
 import Service from 'service';
 import TodoComponent from 'todoComponent';
 export default {
-  /**  
+  /**
    * Although most data belongs in the store, each component it's own state.
    * We want to show a loading spinner while we are fetching the todos, this state belong
    * in the component.
    *
    * We need to access the store methods through all methods of our component.
    * We need to access the state of our store.
-   */   
+   */
   data() {
     const store = new Store();
 
@@ -308,7 +376,7 @@ is a good example of this pattern.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
+Please refer to the Vue section of our [style guide](style_guide_js.md#vue-js)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components
@@ -387,51 +455,220 @@ describe('Todos App', () => {
   });
 });
 ```
+#### `mountComponent` helper
+There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
+
+```javascript
+import Vue from 'vue';
+import mountComponent from 'helpers/vue_mount_component_helper.js'
+import component from 'component.vue'
+
+const Component = Vue.extend(component);
+const data = {prop: 'foo'};
+const vm = mountComponent(Component, data);
+```
+
 #### Test the component's output
 The main return value of a Vue component is the rendered output. In order to test the component we
 need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
 
-
 ### Stubbing API responses
-[Vue Resource Interceptors][vue-resource-interceptor] allow us to add a interceptor with
-the response we need:
+Refer to [mock axios](axios.md#mock-axios-response-on-tests)
+
+
+## Vuex
+To manage the state of an application you may use [Vuex][vuex-docs].
+
+_Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
+
+### Separation of concerns
+Vuex is composed of State, Getters, Mutations, Actions and Modules.
+
+When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
+_Note:_ The action itself will not update the state, only a mutation should update the state.
+
+#### File structure
+When using Vuex at GitLab, separate this concerns into different files to improve readability. If you can, separate the Mutation Types as well:
+
+```
+└── store
+  ├── index.js          # where we assemble modules and export the store
+  ├── actions.js        # actions
+  ├── mutations.js      # mutations
+  ├── getters.js        # getters
+  └── mutation_types.js # mutation types
+```
+The following examples show an application that lists and adds users to the state.
+
+##### `index.js`
+This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
-  // Mock the service to return data
-  const interceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify([{
-      title: 'This is a todo',
-      body: 'This is the text'
-    }]), {
-      status: 200,
-    }));
+import Vue from 'vue';
+import Vuex from 'vuex';
+import * as actions from './actions';
+import * as getters from './getters';
+import mutations from './mutations';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  actions,
+  getters,
+  mutations,
+  state: {
+    users: [],
+  },
+});
+```
+_Note:_ If the state of the application is too complex, an individual file for the state may be better.
+
+#### `actions.js`
+An action commits a mutatation. In this file, we will write the actions that will call the respective mutation:
+
+```javascript
+  import * as types from './mutation_types';
+
+  export const addUser = ({ commit }, user) => {
+    commit(types.ADD_USER, user);
   };
+```
+
+To dispatch an action from a component, use the `mapActions` helper:
+```javascript
+import { mapActions } from 'vuex';
+
+{
+  methods: {
+    ...mapActions([
+      'addUser',
+    ]),
+    onClickUser(user) {
+      this.addUser(user);
+    },
+  },
+};
+```
+
+#### `getters.js`
+Sometimes we may need to get derived state based on store state, like filtering for a specific prop. This can be done through the `getters`:
+
+```javascript
+// get all the users with pets
+export getUsersWithPets = (state, getters) => {
+  return state.users.filter(user => user.pet !== undefined);
+};
+```
+
+To access a getter from a component, use the `mapGetters` helper:
+```javascript
+import { mapGetters } from 'vuex';
+
+{
+  computed: {
+    ...mapGetters([
+      'getUsersWithPets',
+    ]),
+  },
+};
+```
+
+#### `mutations.js`
+The only way to actually change state in a Vuex store is by committing a mutation.
+
+```javascript
+  import * as types from './mutation_types';
+
+  export default {
+    [types.ADD_USER](state, user) {
+      state.users.push(user);
+    },
+  };
+```
+
+#### `mutations_types.js`
+From [vuex mutations docs][vuex-mutations]:
+> It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
+
+```javascript
+export const ADD_USER = 'ADD_USER';
+```
+
+### How to include the store in your application
+The store should be included in the main component of your application:
+```javascript
+  // app.vue
+  import store from 'store'; // it will include the index.js file
+
+  export default {
+    name: 'application',
+    store,
+    ...
+  };
+```
+
+### Vuex Gotchas
+1. Avoid calling a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency through out the application. From Vuex docs:
+
+  >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
+
+  ```javascript
+    // component.vue
+
+    // bad
+    created() {
+      this.$store.commit('mutation');
+    }
+
+    // good
+    created() {
+      this.$store.dispatch('action');
+    }
+  ```
+1. When possible, use mutation types instead of hardcoding strings. It will be less error prone.
+1. The State will be accessible in all components descending from the use where the store is instantiated.
+
+### Testing Vuex
+#### Testing Vuex concerns
+Refer to [vuex docs][vuex-testing] regarding testing Actions, Getters and Mutations.
+
+#### Testing components that need a store
+Smaller components might use `store` properties to access the data.
+In order to write unit tests for those components, we need to include the store and provide the correct state:
+
+```javascript
+//component_spec.js
+import Vue from 'vue';
+import store from './store';
+import component from './component.vue'
+
+describe('component', () => {
+  let vm;
+  let Component;
 
   beforeEach(() => {
-    Vue.http.interceptors.push(interceptor);
+    Component = Vue.extend(issueActions);
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    vm.$destroy();
   });
 
-  it('should do something', (done) => {
-    setTimeout(() => {
-      // Test received data
-      done();
-    }, 0);
-  });
-```
+  it('should show a user', () => {
+    const user = {
+      name: 'Foo',
+      age: '30',
+    };
 
-1. Use `$.mount()` to mount the component
-```javascript
-  // bad
-  new Component({
-    el: document.createElement('div')
-  });
+    // populate the store
+    store.dipatch('addUser', user);
 
-  // good
-  new Component().$mount();
+    vm = new Component({
+      store,
+      propsData: props,
+    }).$mount();
+  });
+});
 ```
 
 [vue-docs]: http://vuejs.org/guide/index.html
@@ -441,8 +678,12 @@ the response we need:
 [component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow
-[vue-resource-repo]: https://github.com/pagekit/vue-resource
-[vue-resource-interceptor]: https://github.com/pagekit/vue-resource/blob/develop/docs/http.md#interceptors
 [vue-test]: https://vuejs.org/v2/guide/unit-testing.html
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [flux]: https://facebook.github.io/flux
+[vuex-docs]: https://vuex.vuejs.org
+[vuex-structure]: https://vuex.vuejs.org/en/structure.html
+[vuex-mutations]: https://vuex.vuejs.org/en/mutations.html
+[vuex-testing]: https://vuex.vuejs.org/en/testing.html
+[axios]: https://github.com/axios/axios
+[axios-interceptors]: https://github.com/axios/axios#interceptors

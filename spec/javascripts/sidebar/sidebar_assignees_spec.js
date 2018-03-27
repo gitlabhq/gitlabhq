@@ -1,23 +1,33 @@
+import _ from 'underscore';
 import Vue from 'vue';
-import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees';
+import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import Mock from './mock_data';
 
 describe('sidebar assignees', () => {
-  let component;
-  let SidebarAssigneeComponent;
+  let vm;
+  let mediator;
+  let sidebarAssigneesEl;
   preloadFixtures('issues/open-issue.html.raw');
 
   beforeEach(() => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
-    SidebarAssigneeComponent = Vue.extend(SidebarAssignees);
-    spyOn(SidebarMediator.prototype, 'saveAssignees').and.callThrough();
-    spyOn(SidebarMediator.prototype, 'assignYourself').and.callThrough();
-    this.mediator = new SidebarMediator(Mock.mediator);
+
     loadFixtures('issues/open-issue.html.raw');
-    this.sidebarAssigneesEl = document.querySelector('#js-vue-sidebar-assignees');
+
+    mediator = new SidebarMediator(Mock.mediator);
+    spyOn(mediator, 'saveAssignees').and.callThrough();
+    spyOn(mediator, 'assignYourself').and.callThrough();
+
+    const SidebarAssigneeComponent = Vue.extend(SidebarAssignees);
+    sidebarAssigneesEl = document.querySelector('#js-vue-sidebar-assignees');
+    vm = mountComponent(SidebarAssigneeComponent, {
+      mediator,
+      field: sidebarAssigneesEl.dataset.field,
+    }, sidebarAssigneesEl);
   });
 
   afterEach(() => {
@@ -28,30 +38,24 @@ describe('sidebar assignees', () => {
   });
 
   it('calls the mediator when saves the assignees', () => {
-    component = new SidebarAssigneeComponent()
-      .$mount(this.sidebarAssigneesEl);
-    component.saveAssignees();
-
-    expect(SidebarMediator.prototype.saveAssignees).toHaveBeenCalled();
+    vm.saveAssignees();
+    expect(mediator.saveAssignees).toHaveBeenCalled();
   });
 
   it('calls the mediator when "assignSelf" method is called', () => {
-    component = new SidebarAssigneeComponent()
-      .$mount(this.sidebarAssigneesEl);
-    component.assignSelf();
+    vm.assignSelf();
 
-    expect(SidebarMediator.prototype.assignYourself).toHaveBeenCalled();
-    expect(this.mediator.store.assignees.length).toEqual(1);
+    expect(mediator.assignYourself).toHaveBeenCalled();
+    expect(mediator.store.assignees.length).toEqual(1);
   });
 
   it('hides assignees until fetched', (done) => {
-    component = new SidebarAssigneeComponent().$mount(this.sidebarAssigneesEl);
-    const currentAssignee = this.sidebarAssigneesEl.querySelector('.value');
+    const currentAssignee = sidebarAssigneesEl.querySelector('.value');
     expect(currentAssignee).toBe(null);
 
-    component.store.isFetching.assignees = false;
+    vm.store.isFetching.assignees = false;
     Vue.nextTick(() => {
-      expect(component.$el.querySelector('.value')).toBeVisible();
+      expect(vm.$el.querySelector('.value')).toBeVisible();
       done();
     });
   });

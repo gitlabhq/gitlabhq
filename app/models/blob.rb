@@ -76,10 +76,28 @@ class Blob < SimpleDelegator
     new(blob, project)
   end
 
+  def self.lazy(project, commit_id, path)
+    BatchLoader.for({ project: project, commit_id: commit_id, path: path }).batch do |items, loader|
+      items_by_project = items.group_by { |i| i[:project] }
+
+      items_by_project.each do |project, items|
+        items = items.map { |i| i.values_at(:commit_id, :path) }
+
+        project.repository.blobs_at(items).each do |blob|
+          loader.call({ project: blob.project, commit_id: blob.commit_id, path: blob.path }, blob) if blob
+        end
+      end
+    end
+  end
+
   def initialize(blob, project = nil)
     @project = project
 
     super(blob)
+  end
+
+  def inspect
+    "#<#{self.class.name} oid:#{id[0..8]} commit:#{commit_id[0..8]} path:#{path}>"
   end
 
   # Returns the data of the blob.
@@ -95,7 +113,10 @@ class Blob < SimpleDelegator
   end
 
   def load_all_data!
-    super(project.repository) if project
+    # Endpoint needed: gitlab-org/gitaly#756
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      super(project.repository) if project
+    end
   end
 
   def no_highlighting?
@@ -139,7 +160,7 @@ class Blob < SimpleDelegator
     if stored_externally?
       if rich_viewer
         rich_viewer.binary?
-      elsif Linguist::Language.find_by_filename(name).any?
+      elsif Linguist::Language.find_by_extension(name).any?
         false
       elsif _mime_type
         _mime_type.binary?
@@ -156,7 +177,9 @@ class Blob < SimpleDelegator
   end
 
   def file_type
-    Gitlab::FileDetector.type_of(path)
+    name = File.basename(path)
+
+    Gitlab::FileDetector.type_of(path) || Gitlab::FileDetector.type_of(name)
   end
 
   def video?

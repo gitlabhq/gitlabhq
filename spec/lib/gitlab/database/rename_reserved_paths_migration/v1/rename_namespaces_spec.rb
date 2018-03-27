@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :truncate do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :delete do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
+  let(:namespace) { create(:group, name: 'the-path') }
 
   before do
     allow(migration).to receive(:say)
+    TestEnv.clean_test_path
   end
 
   def migration_namespace(namespace)
@@ -92,7 +94,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
   describe '#move_repositories' do
     let(:namespace) { create(:group, name: 'hello-group') }
     it 'moves a project for a namespace' do
-      create(:project, namespace: namespace, path: 'hello-project')
+      create(:project, :repository, :legacy_storage, namespace: namespace, path: 'hello-project')
       expected_path = File.join(TestEnv.repos_path, 'bye-group', 'hello-project.git')
 
       subject.move_repositories(namespace, 'hello-group', 'bye-group')
@@ -102,7 +104,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
     it 'moves a namespace in a subdirectory correctly' do
       child_namespace = create(:group, name: 'sub-group', parent: namespace)
-      create(:project, namespace: child_namespace, path: 'hello-project')
+      create(:project, :repository, :legacy_storage, namespace: child_namespace, path: 'hello-project')
 
       expected_path = File.join(TestEnv.repos_path, 'hello-group', 'renamed-sub-group', 'hello-project.git')
 
@@ -113,7 +115,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
     it 'moves a parent namespace with subdirectories' do
       child_namespace = create(:group, name: 'sub-group', parent: namespace)
-      create(:project, namespace: child_namespace, path: 'hello-project')
+      create(:project, :repository, :legacy_storage, namespace: child_namespace, path: 'hello-project')
       expected_path = File.join(TestEnv.repos_path, 'renamed-group', 'sub-group', 'hello-project.git')
 
       subject.move_repositories(child_namespace, 'hello-group', 'renamed-group')
@@ -137,8 +139,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
   end
 
   describe "#rename_namespace" do
-    let(:namespace) { create(:group, name: 'the-path') }
-
     it 'renames paths & routes for the namespace' do
       expect(subject).to receive(:rename_path_for_routable)
                            .with(namespace)
@@ -149,11 +149,27 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
       expect(namespace.reload.path).to eq('the-path0')
     end
 
-    it "moves the the repository for a project in the namespace" do
-      create(:project, namespace: namespace, path: "the-path-project")
-      expected_repo = File.join(TestEnv.repos_path, "the-path0", "the-path-project.git")
+    it 'tracks the rename' do
+      expect(subject).to receive(:track_rename)
+                           .with('namespace', 'the-path', 'the-path0')
 
       subject.rename_namespace(namespace)
+    end
+
+    it 'renames things related to the namespace' do
+      expect(subject).to receive(:rename_namespace_dependencies)
+                           .with(namespace, 'the-path', 'the-path0')
+
+      subject.rename_namespace(namespace)
+    end
+  end
+
+  describe '#rename_namespace_dependencies' do
+    it "moves the the repository for a project in the namespace" do
+      create(:project, :repository, :legacy_storage, namespace: namespace, path: "the-path-project")
+      expected_repo = File.join(TestEnv.repos_path, "the-path0", "the-path-project.git")
+
+      subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
 
       expect(File.directory?(expected_repo)).to be(true)
     end
@@ -161,27 +177,27 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
     it "moves the uploads for the namespace" do
       expect(subject).to receive(:move_uploads).with("the-path", "the-path0")
 
-      subject.rename_namespace(namespace)
+      subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
     end
 
     it "moves the pages for the namespace" do
       expect(subject).to receive(:move_pages).with("the-path", "the-path0")
 
-      subject.rename_namespace(namespace)
+      subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
     end
 
     it 'invalidates the markdown cache of related projects' do
-      project = create(:empty_project, namespace: namespace, path: "the-path-project")
+      project = create(:project, :legacy_storage, namespace: namespace, path: "the-path-project")
 
       expect(subject).to receive(:remove_cached_html_for_projects).with([project.id])
 
-      subject.rename_namespace(namespace)
+      subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
     end
 
     it "doesn't rename users for other namespaces" do
       expect(subject).not_to receive(:rename_user)
 
-      subject.rename_namespace(namespace)
+      subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
     end
 
     it 'renames the username of a namespace for a user' do
@@ -189,7 +205,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
       expect(subject).to receive(:rename_user).with('the-path', 'the-path0')
 
-      subject.rename_namespace(user.namespace)
+      subject.rename_namespace_dependencies(user.namespace, 'the-path', 'the-path0')
     end
   end
 
@@ -222,6 +238,52 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
                            .with(migration_namespace(child_namespace))
 
       subject.rename_namespaces(type: :child)
+    end
+  end
+
+  describe '#revert_renames', :redis do
+    it 'renames the routes back to the previous values' do
+      project = create(:project, :legacy_storage, :repository, path: 'a-project', namespace: namespace)
+      subject.rename_namespace(namespace)
+
+      expect(subject).to receive(:perform_rename)
+                           .with(
+                             kind_of(Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Namespace),
+                             'the-path0',
+                             'the-path'
+                           ).and_call_original
+
+      subject.revert_renames
+
+      expect(namespace.reload.path).to eq('the-path')
+      expect(namespace.reload.route.path).to eq('the-path')
+      expect(project.reload.route.path).to eq('the-path/a-project')
+    end
+
+    it 'moves the repositories back to their original place' do
+      project = create(:project, :repository, :legacy_storage, path: 'a-project', namespace: namespace)
+      project.create_repository
+      subject.rename_namespace(namespace)
+
+      expected_path = File.join(TestEnv.repos_path, 'the-path', 'a-project.git')
+
+      expect(subject).to receive(:rename_namespace_dependencies)
+                           .with(
+                             kind_of(Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Namespace),
+                             'the-path0',
+                             'the-path'
+                           ).and_call_original
+
+      subject.revert_renames
+
+      expect(File.directory?(expected_path)).to be_truthy
+    end
+
+    it "doesn't break when the namespace was renamed" do
+      subject.rename_namespace(namespace)
+      namespace.update_attributes!(path: 'renamed-afterwards')
+
+      expect { subject.revert_renames }.not_to raise_error
     end
   end
 end

@@ -5,7 +5,7 @@ module SharedProjectTab
   include SharedActiveTab
 
   step 'the active main tab should be Project' do
-    ensure_active_main_tab('Project')
+    ensure_active_main_tab('Overview')
   end
 
   step 'the active main tab should be Repository' do
@@ -32,6 +32,10 @@ module SharedProjectTab
     ensure_active_main_tab('Wiki')
   end
 
+  step 'the active main tab should be Members' do
+    ensure_active_main_tab('Members')
+  end
+
   step 'the active main tab should be Settings' do
     ensure_active_main_tab('Settings')
   end
@@ -49,7 +53,7 @@ module SharedProjectTab
   end
 
   step 'the active sub tab should be Home' do
-    ensure_active_sub_tab('Home')
+    ensure_active_sub_tab('Details')
   end
 
   step 'the active sub tab should be Activity' do

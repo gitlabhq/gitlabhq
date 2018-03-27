@@ -19,7 +19,7 @@
    *     "group": "success",
    *     "details_path": "/root/ci-mock/builds/4256",
    *     "action": {
-   *       "icon": "icon_action_retry",
+   *       "icon": "retry",
    *       "title": "Retry",
    *       "path": "/root/ci-mock/builds/4256/retry",
    *       "method": "post"
@@ -29,6 +29,15 @@
    */
 
   export default {
+    components: {
+      actionComponent,
+      dropdownActionComponent,
+      jobNameComponent,
+    },
+
+    directives: {
+      tooltip,
+    },
     props: {
       job: {
         type: Object,
@@ -48,19 +57,27 @@
       },
     },
 
-    components: {
-      actionComponent,
-      dropdownActionComponent,
-      jobNameComponent,
-    },
-
-    directives: {
-      tooltip,
-    },
-
     computed: {
+      status() {
+        return this.job && this.job.status ? this.job.status : {};
+      },
+
       tooltipText() {
-        return `${this.job.name} - ${this.job.status.label}`;
+        const textBuilder = [];
+
+        if (this.job.name) {
+          textBuilder.push(this.job.name);
+        }
+
+        if (this.job.name && this.status.label) {
+          textBuilder.push('-');
+        }
+
+        if (this.status.label) {
+          textBuilder.push(`${this.job.status.label}`);
+        }
+
+        return textBuilder.join(' ');
       },
 
       /**
@@ -75,48 +92,52 @@
   };
 </script>
 <template>
-  <div>
+  <div class="ci-job-component">
     <a
       v-tooltip
-      v-if="job.status.details_path"
-      :href="job.status.details_path"
+      v-if="status.has_details"
+      :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      data-container="body">
+      data-container="body"
+      class="js-pipeline-graph-job-link"
+    >
 
       <job-name-component
         :name="job.name"
         :status="job.status"
-        />
+      />
     </a>
 
     <div
       v-else
       v-tooltip
+      class="js-job-component-tooltip"
       :title="tooltipText"
       :class="cssClassJobName"
-      data-container="body">
+      data-container="body"
+    >
 
       <job-name-component
         :name="job.name"
         :status="job.status"
-        />
+      />
     </div>
 
     <action-component
       v-if="hasAction && !isDropdown"
-      :tooltip-text="job.status.action.title"
-      :link="job.status.action.path"
-      :action-icon="job.status.action.icon"
-      :action-method="job.status.action.method"
-      />
+      :tooltip-text="status.action.title"
+      :link="status.action.path"
+      :action-icon="status.action.icon"
+      :action-method="status.action.method"
+    />
 
     <dropdown-action-component
       v-if="hasAction && isDropdown"
-      :tooltip-text="job.status.action.title"
-      :link="job.status.action.path"
-      :action-icon="job.status.action.icon"
-      :action-method="job.status.action.method"
-      />
+      :tooltip-text="status.action.title"
+      :link="status.action.path"
+      :action-icon="status.action.icon"
+      :action-method="status.action.method"
+    />
   </div>
 </template>

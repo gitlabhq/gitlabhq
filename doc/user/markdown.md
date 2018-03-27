@@ -36,11 +36,15 @@ GFM honors the markdown specification in how [paragraphs and line breaks are han
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
 Line-breaks, or softreturns, are rendered if you end a line with two or more spaces:
 
-    Roses are red [followed by two or more spaces]
+[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
+[//]: # (They are needed for the Markdown text to render correctly.)
+    Roses are red [followed by two or more spaces]  
     Violets are blue
 
     Sugar is sweet
 
+[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
+[//]: # (They are needed for the Markdown text to render correctly.)
 Roses are red  
 Violets are blue
 
@@ -195,12 +199,23 @@ With inline diffs tags you can display {+ additions +} or [- deletions -].
 
 The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
 
+Examples:
+
+```
+- {+ additions +}
+- [+ additions +]
+- {- deletions -}
+- [- deletions -]
+```
+
 However the wrapping tags cannot be mixed as such:
 
+```
 - {+ additions +]
 - [+ additions +}
 - {- deletions -]
 - [- deletions -}
+```
 
 ### Emoji
 
@@ -215,7 +230,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 
 	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
+	Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
@@ -225,7 +240,7 @@ You can use it to point out a :bug: or warn about :speak_no_evil: patches. And i
 
 If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 
 ### Special GitLab References
 
@@ -242,13 +257,13 @@ GFM will recognize the following:
 | `@user_name`               | specific user                   |
 | `@group_name`              | specific group                  |
 | `@all`                     | entire team                     |
-| `#123`                     | issue                           |
+| `#12345`                   | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
 | `~123`                     | label by ID                     |
 | `~bug`                     | one-word label by name          |
 | `~"feature request"`       | multi-word label by name        |
-| `%123`                     | milestone by ID                 |
+| `%123`                     | project milestone by ID         |
 | `%v1.23`                   | one-word milestone by name      |
 | `%"release candidate"`     | multi-word milestone by name    |
 | `9ba12248`                 | specific commit                 |
@@ -262,7 +277,7 @@ GFM also recognizes certain cross-project references:
 |:----------------------------------------|:------------------------|
 | `namespace/project#123`                 | issue                   |
 | `namespace/project!123`                 | merge request           |
-| `namespace/project%123`                 | milestone               |
+| `namespace/project%123`                 | project milestone       |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
@@ -274,7 +289,7 @@ It also has a shorthand version to reference other projects from the same namesp
 |:------------------------------|:------------------------|
 | `project#123`                 | issue                   |
 | `project!123`                 | merge request           |
-| `project%123`                 | milestone               |
+| `project%123`                 | project milestone       |
 | `project$123`                 | snippet                 |
 | `project@9ba12248`            | specific commit         |
 | `project@9ba12248...b19a04f5` | commit range comparison |
@@ -367,6 +382,79 @@ _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
 >**Note:**
 This also works for the asciidoctor `:stem: latexmath`. For details see the [asciidoctor user manual][asciidoctor-manual].
+
+### Colors
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#colors
+
+It is possible to have color written in HEX, RGB or HSL format rendered with a color indicator.
+
+Color written inside backticks will be followed by a color "chip".
+
+Examples:
+
+    `#F00`
+    `#F00A`
+    `#FF0000`
+    `#FF0000AA`
+    `RGB(0,255,0)`
+    `RGB(0%,100%,0%)`
+    `RGBA(0,255,0,0.7)`
+    `HSL(540,70%,50%)`
+    `HSLA(540,70%,50%,0.7)`
+
+Becomes:
+
+`#F00`  
+`#F00A`  
+`#FF0000`  
+`#FF0000AA`  
+`RGB(0,255,0)`  
+`RGB(0%,100%,0%)`  
+`RGBA(0,255,0,0.7)`  
+`HSL(540,70%,50%)`  
+`HSLA(540,70%,50%,0.7)`  
+
+#### Supported formats:
+
+* HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+* RGB: `` `RGB[A](R, G, B[, A])` ``
+* HSL: `` `HSL[A](H, S, L[, A])` ``
+
+### Mermaid
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
+GitLab 10.3.
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
+
+It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
+
+Example:
+
+    ```mermaid
+    graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+    ```
+
+Becomes:
+
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
+
+For details see the [Mermaid official page][mermaid].
 
 ## Standard Markdown
 
@@ -596,6 +684,30 @@ See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubyd
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
+#### Details and Summary
+
+Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details) and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary) tags. This is especially useful for collapsing long logs so they take up less screen space.
+
+<p>
+<details>
+<summary>Click me to collapse/fold.</summary>
+These details will remain hidden until expanded.
+
+<pre><code>PASTE LOGS HERE</code></pre>
+</details>
+</p>
+
+**Note:** Unfortunately Markdown is not supported inside these tags, as described by the [markdown specification](https://daringfireball.net/projects/markdown/syntax#html). You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting).
+
+```html
+<details>
+<summary>Click me to collapse/fold.</summary>
+These details will remain hidden until expanded.
+
+<pre><code>PASTE LOGS HERE</code></pre>
+</details>
+```
+
 ### Horizontal Rule
 
 ```
@@ -790,6 +902,7 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
+[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

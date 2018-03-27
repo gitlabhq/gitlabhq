@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Git::Index, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:index) { described_class.new(repository) }
 
   before do

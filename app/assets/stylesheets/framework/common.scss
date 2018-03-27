@@ -5,30 +5,44 @@
 .cgreen { color: $common-green; }
 .cdark { color: $common-gray-dark; }
 
-/** COMMON CLASSES **/
-.prepend-top-0 { margin-top: 0; }
-.prepend-top-5 { margin-top: 5px; }
-.prepend-top-10 { margin-top: 10px; }
-.prepend-top-default { margin-top: $gl-padding !important; }
-.prepend-top-20 { margin-top: 20px; }
-.prepend-left-5 { margin-left: 5px; }
-.prepend-left-10 { margin-left: 10px; }
-.prepend-left-default { margin-left: $gl-padding; }
-.prepend-left-20 { margin-left: 20px; }
-.append-right-5 { margin-right: 5px; }
-.append-right-10 { margin-right: 10px; }
-.append-right-default { margin-right: $gl-padding; }
-.append-right-20 { margin-right: 20px; }
-.append-bottom-0 { margin-bottom: 0; }
-.append-bottom-10 { margin-bottom: 10px; }
-.append-bottom-15 { margin-bottom: 15px; }
-.append-bottom-20 { margin-bottom: 20px; }
-.append-bottom-default { margin-bottom: $gl-padding; }
-.inline { display: inline-block; }
-.center { text-align: center; }
-.vertical-align-middle { vertical-align: middle; }
+.text-plain,
+.text-plain:hover {
+  color: $gl-text-color;
+}
 
-.underlined-link { text-decoration: underline; }
+.text-secondary {
+  color: $gl-text-color-secondary;
+}
+
+.text-tertiary {
+  color: $gl-text-color-tertiary;
+}
+
+.text-primary,
+.text-primary:hover {
+  color: $brand-primary;
+}
+
+.text-success,
+.text-success:hover {
+  color: $brand-success;
+}
+
+.text-danger,
+.text-danger:hover {
+  color: $brand-danger;
+}
+
+.text-warning,
+.text-warning:hover {
+  color: $brand-warning;
+}
+
+.text-info,
+.text-info:hover {
+  color: $brand-info;
+}
+
 .hint { font-style: italic; color: $hint-color; }
 .light { color: $common-gray; }
 
@@ -36,12 +50,12 @@
   color: $common-gray;
   font-size: 14px;
   margin-bottom: 12px;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   line-height: 24px;
 }
 
 .bold {
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .tab-content {
@@ -51,7 +65,7 @@
 pre {
   &.clean {
     background: none;
-    border: none;
+    border: 0;
     margin: 0;
     padding: 0;
   }
@@ -76,6 +90,14 @@ hr {
 
 .str-truncated {
   @include str-truncated;
+
+  &-60 {
+    @include str-truncated(60%);
+  }
+
+  &-100 {
+    @include str-truncated(100%);
+  }
 }
 
 .block-truncated {
@@ -89,7 +111,7 @@ hr {
   }
 }
 
-.item-title { font-weight: 600; }
+.item-title { font-weight: $gl-font-weight-bold; }
 
 /** FLASH message **/
 .author_link,
@@ -101,10 +123,17 @@ hr {
   font-size: 14px;
 }
 
-table a code {
-  position: relative;
-  top: -2px;
-  margin-right: 3px;
+table {
+  a code {
+    position: relative;
+    top: -2px;
+    margin-right: 3px;
+  }
+
+  td.permission-x {
+    background: $table-permission-x-bg !important;
+    text-align: center;
+  }
 }
 
 .loading {
@@ -118,18 +147,13 @@ table a code {
 span.update-author {
   display: block;
   color: $update-author-color;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   font-style: italic;
 
   strong {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
     font-style: normal;
   }
-}
-
-.user-mention {
-  color: $user-mention-color;
-  font-weight: bold;
 }
 
 .field_with_errors {
@@ -155,7 +179,7 @@ li.note {
   img { max-width: 100%; }
   .note-title {
     li {
-      border-bottom: none !important;
+      border-bottom: 0 !important;
     }
   }
 }
@@ -200,7 +224,7 @@ li.note {
 
   pre {
     background: $white-light;
-    border: none;
+    border: 0;
     font-size: 12px;
   }
 }
@@ -210,19 +234,6 @@ li.note {
   background: $error-bg;
   margin: 0;
   color: $white-light;
-
-  a {
-    color: $white-light;
-    text-decoration: underline;
-  }
-}
-
-.browser-alert {
-  padding: 10px;
-  text-align: center;
-  background: $error-bg;
-  color: $white-light;
-  font-weight: bold;
 
   a {
     color: $white-light;
@@ -294,13 +305,6 @@ img.emoji {
   margin-bottom: 10px;
 }
 
-table {
-  td.permission-x {
-    background: $table-permission-x-bg !important;
-    text-align: center;
-  }
-}
-
 .btn-sign-in {
   text-shadow: none;
 
@@ -336,15 +340,10 @@ table {
   text-align: center;
 }
 
-#nprogress .spinner {
-  top: 15px !important;
-  right: 10px !important;
-}
-
 .header-with-avatar {
   h3 {
     margin: 0;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .username {
@@ -371,10 +370,15 @@ table {
 
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
+
+  .dz-upload {
+    background: $gl-success !important;
+  }
+
 }
 
-.dropzone .dz-preview .dz-progress .dz-upload {
-  background: $gl-success !important;
+.dz-message {
+  margin: 0;
 }
 
 .space-right {
@@ -406,16 +410,17 @@ table {
 }
 
 .hide-bottom-border {
-  border-bottom: none !important;
+  border-bottom: 0 !important;
 }
 
 .gl-accessibility {
   &:focus {
+    display: flex;
+    align-items: center;
     top: 1px;
     left: 1px;
     width: auto;
     height: 100%;
-    line-height: 50px;
     padding: 0 10px;
     clip: auto;
     text-decoration: none;
@@ -430,16 +435,6 @@ table {
   border-radius: $border-radius-default;
 }
 
-.str-truncated {
-  &-60 {
-    @include str-truncated(60%);
-  }
-
-  &-100 {
-    @include str-truncated(100%);
-  }
-}
-
 .tooltip {
   .tooltip-inner {
     word-wrap: break-word;
@@ -451,3 +446,36 @@ table {
   opacity: .5;
 }
 
+.break-word {
+  word-wrap: break-word;
+}
+
+/** COMMON CLASSES **/
+.prepend-top-0 { margin-top: 0; }
+.prepend-top-5 { margin-top: 5px; }
+.prepend-top-8 { margin-top: $grid-size; }
+.prepend-top-10 { margin-top: 10px; }
+.prepend-top-15 { margin-top: 15px; }
+.prepend-top-default { margin-top: $gl-padding !important; }
+.prepend-top-16 { margin-top: 16px; }
+.prepend-top-20 { margin-top: 20px; }
+.prepend-left-4 { margin-left: 4px; }
+.prepend-left-5 { margin-left: 5px; }
+.prepend-left-8 { margin-left: 8px; }
+.prepend-left-10 { margin-left: 10px; }
+.prepend-left-default { margin-left: $gl-padding; }
+.prepend-left-20 { margin-left: 20px; }
+.append-right-5 { margin-right: 5px; }
+.append-right-8 { margin-right: 8px; }
+.append-right-10 { margin-right: 10px; }
+.append-right-default { margin-right: $gl-padding; }
+.append-right-20 { margin-right: 20px; }
+.append-bottom-0 { margin-bottom: 0; }
+.append-bottom-5 { margin-bottom: 5px; }
+.append-bottom-10 { margin-bottom: 10px; }
+.append-bottom-15 { margin-bottom: 15px; }
+.append-bottom-20 { margin-bottom: 20px; }
+.append-bottom-default { margin-bottom: $gl-padding; }
+.inline { display: inline-block; }
+.center { text-align: center; }
+.vertical-align-middle { vertical-align: middle; }

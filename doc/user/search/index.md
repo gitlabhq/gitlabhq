@@ -27,18 +27,42 @@ on the search field on the top-right of your screen:
 
 ![shortcut to your issues and mrs](img/issues_mrs_shortcut.png)
 
-## Issues and merge requests per project
+### Issues and merge requests per project
 
 If you want to search for issues present in a specific project, navigate to
 a project's **Issues** tab, and click on the field **Search or filter results...**. It will
-display a dropdown menu, from which you can add filters per author, assignee, milestone, label,
-and weight. When done, press **Enter** on your keyboard to filter the issues.
+display a dropdown menu, from which you can add filters per author, assignee, milestone, 
+label, weight, and 'my-reaction' (based on your emoji votes). When done, press **Enter** on your keyboard to filter the issues.
 
 ![filter issues in a project](img/issue_search_filter.png)
 
 The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab,
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
+
+### Searching for specific terms
+
+You can filter issues and merge requests by specific terms included in titles or descriptions.
+
+* Syntax
+    * Searches look for all the words in a query, in any order. E.g.: searching
+      issues for `display bug` will return all issues matching both those words, in any order.
+    * To find the exact term, use double quotes: `"display bug"`
+* Limitation
+    * For performance reasons, terms shorter than 3 chars are ignored. E.g.: searching
+      issues for `included in titles` is same as `included titles`
+
+![filter issues by specific terms](img/issue_search_by_term.png)
+
+### Issues and merge requests per group
+
+Similar to **Issues and merge requests per project**, you can also search for issues
+within a group. Navigate to a group's **Issues** tab and query search results in
+the same way as you do for projects.
+
+![filter issues in a group](img/group_issues_filter.png)
+
+The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab.
 
 ## Search history
 

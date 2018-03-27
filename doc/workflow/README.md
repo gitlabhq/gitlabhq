@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Workflow
 
 - [Automatic issue closing](../user/project/issues/automatic_issue_closing.md)
@@ -6,7 +10,7 @@
 - [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
-- [Groups](groups.md)
+- [Groups](../user/group/index.md)
 - Issues - The GitLab Issue Tracker is an advanced and complete tool for
   tracking the evolution of a new idea or the process of solving a problem.
   - [Confidential issues](../user/project/issues/confidential_issues.md)
@@ -16,14 +20,13 @@
 - [File finder](file_finder.md)
 - [Labels](../user/project/labels.md)
 - [Notification emails](notifications.md)
-- [Project Features](project_features.md)
+- [Projects](../user/project/index.md)
 - [Project forking workflow](forking_workflow.md)
-- [Project users](add-user/add-user.md)
+- [Project users](../user/project/members/index.md)
 - [Protected branches](../user/project/protected_branches.md)
 - [Protected tags](../user/project/protected_tags.md)
 - [Quick Actions](../user/project/quick_actions.md)
-- [Sharing a project with a group](share_with_group.md)
-- [Share projects with other groups](share_projects_with_other_groups.md)
+- [Sharing projects with groups](../user/project/members/share_project_with_groups.md)
 - [Time tracking](time_tracking.md)
 - [Web Editor](../user/project/repository/web_editor.md)
 - [Releases](releases.md)
@@ -37,6 +40,7 @@
   - [Revert changes in the UI](../user/project/merge_requests/revert_changes.md)
   - [Merge requests versions](../user/project/merge_requests/versions.md)
   - ["Work In Progress" merge requests](../user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Fast-forward merge requests](../user/project/merge_requests/fast_forward_merge.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, Bitbucket, etc](importing/README.md)
 - [Todos](todos.md)

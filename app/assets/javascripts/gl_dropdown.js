@@ -1,8 +1,58 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
+/* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+
+import $ from 'jquery';
+import _ from 'underscore';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import axios from './lib/utils/axios_utils';
+import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 
-var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote;
+var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
+
+GitLabDropdownInput = (function() {
+  function GitLabDropdownInput(input, options) {
+    var $inputContainer, $clearButton;
+    var _this = this;
+    this.input = input;
+    this.options = options;
+    this.fieldName = this.options.fieldName || 'field-name';
+    $inputContainer = this.input.parent();
+    $clearButton = $inputContainer.find('.js-dropdown-input-clear');
+    $clearButton.on('click', (function(_this) {
+      // Clear click
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return _this.input.val('').trigger('input').focus();
+      };
+    })(this));
+
+    this.input
+    .on('keydown', function (e) {
+      var keyCode = e.which;
+      if (keyCode === 13 && !options.elIsInput) {
+        e.preventDefault();
+      }
+    })
+    .on('input', function(e) {
+      var val = e.currentTarget.value || _this.options.inputFieldName;
+      val = val.split(' ').join('-') // replaces space with dash
+        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
+        .replace(/(-)\1+/g, '-'); // replace repeated dashes
+      _this.cb(_this.options.fieldName, val, {}, true);
+      _this.input.closest('.dropdown')
+        .find('.dropdown-toggle-text')
+        .text(val);
+    });
+  }
+
+  GitLabDropdownInput.prototype.onInput = function(cb) {
+    this.cb = cb;
+  };
+
+  return GitLabDropdownInput;
+})();
 
 GitLabDropdownFilter = (function() {
   var ARROW_KEY_CODES, BLUR_KEYCODES, HAS_VALUE_CLASS;
@@ -114,7 +164,7 @@ GitLabDropdownFilter = (function() {
     } else {
       elements = this.options.elements();
       if (search_text) {
-        return elements.each(function() {
+        elements.each(function() {
           var $el, matches;
           $el = $(this);
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
@@ -127,8 +177,10 @@ GitLabDropdownFilter = (function() {
           }
         });
       } else {
-        return elements.show().removeClass('option-hidden');
+        elements.show().removeClass('option-hidden');
       }
+
+      elements.parent().find('.dropdown-menu-empty-item').toggleClass('hidden', elements.is(':visible'));
     }
   };
 
@@ -163,32 +215,24 @@ GitLabDropdownRemote = (function() {
   };
 
   GitLabDropdownRemote.prototype.fetchData = function() {
-    return $.ajax({
-      url: this.dataEndpoint,
-      dataType: this.options.dataType,
-      beforeSend: (function(_this) {
-        return function() {
-          if (_this.options.beforeSend) {
-            return _this.options.beforeSend();
-          }
-        };
-      })(this),
-      success: (function(_this) {
-        return function(data) {
-          if (_this.options.success) {
-            return _this.options.success(data);
-          }
-        };
-      })(this)
-    });
-  // Fetch the data through ajax if the data is a string
+    if (this.options.beforeSend) {
+      this.options.beforeSend();
+    }
+
+    // Fetch the data through ajax if the data is a string
+    return axios.get(this.dataEndpoint)
+      .then(({ data }) => {
+        if (this.options.success) {
+          return this.options.success(data);
+        }
+      });
   };
 
   return GitLabDropdownRemote;
 })();
 
 GitLabDropdown = (function() {
-  var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, CURSOR_SELECT_SCROLL_PADDING, currentIndex;
+  var ACTIVE_CLASS, FILTER_INPUT, NO_FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, CURSOR_SELECT_SCROLL_PADDING, currentIndex;
 
   LOADING_CLASS = "is-loading";
 
@@ -200,13 +244,15 @@ GitLabDropdown = (function() {
 
   currentIndex = -1;
 
-  NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
+  NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
 
   SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ", .option-hidden)";
 
   CURSOR_SELECT_SCROLL_PADDING = 5;
 
-  FILTER_INPUT = '.dropdown-input .dropdown-input-field';
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field:not(.dropdown-no-filter)';
+
+  NO_FILTER_INPUT = '.dropdown-input .dropdown-input-field.dropdown-no-filter';
 
   function GitLabDropdown(el1, options) {
     var searchFields, selector, self;
@@ -221,6 +267,7 @@ GitLabDropdown = (function() {
     this.dropdown = selector != null ? $(selector) : $(this.el).parent();
     // Set Defaults
     this.filterInput = this.options.filterInput || this.getElement(FILTER_INPUT);
+    this.noFilterInput = this.options.noFilterInput || this.getElement(NO_FILTER_INPUT);
     this.highlight = !!this.options.highlight;
     this.filterInputBlur = this.options.filterInputBlur != null
       ? this.options.filterInputBlur
@@ -248,7 +295,7 @@ GitLabDropdown = (function() {
             return function(data) {
               _this.fullData = data;
               _this.parseData(_this.fullData);
-              _this.focusTextInput(true);
+              _this.focusTextInput();
               if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val() && _this.filter.input.val().trim() !== '') {
                 return _this.filter.input.trigger('input');
               }
@@ -258,6 +305,10 @@ GitLabDropdown = (function() {
           instance: this,
         });
       }
+    }
+    if (this.noFilterInput.length) {
+      this.plainInput = new GitLabDropdownInput(this.noFilterInput, this.options);
+      this.plainInput.onInput(this.addInput.bind(this));
     }
     // Init filterable
     if (this.options.filterable) {
@@ -276,7 +327,7 @@ GitLabDropdown = (function() {
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
               selector = ".dropdown-page-one " + selector;
             }
-            return $(selector);
+            return $(selector, this.instance.dropdown);
           };
         })(this),
         data: (function(_this) {
@@ -432,11 +483,11 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.shouldPropagate = function(e) {
     var $target;
-    if (this.options.multiSelect) {
+    if (this.options.multiSelect || this.options.shouldPropagate === false) {
       $target = $(e.target);
       if ($target && !$target.hasClass('dropdown-menu-close') &&
                      !$target.hasClass('dropdown-menu-close-icon') &&
-                     !$target.data('is-link')) {
+                     !$target.data('isLink')) {
         e.stopPropagation();
         return false;
       } else {
@@ -459,10 +510,11 @@ GitLabDropdown = (function() {
 
     const dropdownToggle = this.dropdown.find('.dropdown-menu-toggle');
     const hasFilterBulkUpdate = dropdownToggle.hasClass('js-filter-bulk-update');
+    const shouldRefreshOnOpen = dropdownToggle.hasClass('js-gl-dropdown-refresh-on-open');
     const hasMultiSelect = dropdownToggle.hasClass('js-multiselect');
 
     // Makes indeterminate items effective
-    if (this.fullData && hasFilterBulkUpdate) {
+    if (this.fullData && (shouldRefreshOnOpen || hasFilterBulkUpdate)) {
       this.parseData(this.fullData);
     }
 
@@ -492,10 +544,11 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.positionMenuAbove = function() {
-    var $button = $(this.el);
     var $menu = this.dropdown.find('.dropdown-menu');
 
-    $menu.css('top', ($button.height() + $menu.height()) * -1);
+    $menu.addClass('dropdown-open-top');
+    $menu.css('top', 'initial');
+    $menu.css('bottom', '100%');
   };
 
   GitLabDropdown.prototype.hidden = function(e) {
@@ -525,7 +578,7 @@ GitLabDropdown = (function() {
       for (var i = 0; i < html.length; i += 1) {
         var el = html[i];
 
-        if (el instanceof jQuery) {
+        if (el instanceof $) {
           el = el.get(0);
         }
 
@@ -556,7 +609,20 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.renderItem = function(data, group, index) {
-    var field, fieldName, html, selected, text, url, value;
+    var field, fieldName, html, selected, text, url, value, rowHidden;
+
+    if (!this.options.renderRow) {
+      value = this.options.id ? this.options.id(data) : data.id;
+
+      if (value) {
+        value = value.toString().replace(/'/g, '\\\'');
+      }
+    }
+
+    // Hide element
+    if (this.options.hideRow && this.options.hideRow(value)) {
+      rowHidden = true;
+    }
     if (group == null) {
       group = false;
     }
@@ -565,6 +631,7 @@ GitLabDropdown = (function() {
       index = false;
     }
     html = document.createElement('li');
+
     if (data === 'divider' || data === 'separator') {
       html.className = data;
       return html;
@@ -580,14 +647,16 @@ GitLabDropdown = (function() {
       html = this.options.renderRow.call(this.options, data, this);
     } else {
       if (!selected) {
-        value = this.options.id ? this.options.id(data) : data.id;
         fieldName = this.options.fieldName;
 
-        if (value) { value = value.toString().replace(/'/g, '\\\''); }
-
-        field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
-        if (field.length) {
-          selected = true;
+        if (value) {
+          field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
+          if (field.length) {
+            selected = true;
+          }
+        } else {
+          field = this.dropdown.parent().find(`input[name='${fieldName}']`);
+          selected = !field.length;
         }
       }
       // Set URL
@@ -644,7 +713,7 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.noResults = function() {
     var html;
-    return html = "<li class='dropdown-menu-empty-link'> <a href='#' class='is-focused'> No matching results. </a> </li>";
+    return '<li class="dropdown-menu-empty-item"><a>No matching results</a></li>';
   };
 
   GitLabDropdown.prototype.rowClicked = function(el) {
@@ -679,7 +748,7 @@ GitLabDropdown = (function() {
       : selectedObject.id;
     if (isInput) {
       field = $(this.el);
-    } else if (value) {
+    } else if (value != null) {
       field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
     }
 
@@ -687,7 +756,7 @@ GitLabDropdown = (function() {
       return;
     }
 
-    if (el.hasClass(ACTIVE_CLASS)) {
+    if (el.hasClass(ACTIVE_CLASS) && value !== 0) {
       isMarking = false;
       el.removeClass(ACTIVE_CLASS);
       if (field && field.length) {
@@ -728,25 +797,27 @@ GitLabDropdown = (function() {
     return [selectedObject, isMarking];
   };
 
-  GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
+  GitLabDropdown.prototype.focusTextInput = function() {
     if (this.options.filterable) {
-      $(':focus').blur();
+      const initialScrollTop = $(window).scrollTop();
 
-      this.dropdown.one('transitionend', () => {
+      if (this.dropdown.is('.open')) {
         this.filterInput.focus();
-      });
+      }
 
-      if (triggerFocus) {
-        // This triggers after a ajax request
-        // in case of slow requests, the dropdown transition could already be finished
-        this.dropdown.trigger('transitionend');
+      if ($(window).scrollTop() < initialScrollTop) {
+        $(window).scrollTop(initialScrollTop);
       }
     }
   };
 
-  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
+  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
     var $input;
     // Create hidden input for form
+    if (single) {
+      $('input[name="' + fieldName + '"]').remove();
+    }
+
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
@@ -762,7 +833,7 @@ GitLabDropdown = (function() {
       $input.attr('data-meta', selectedObject[this.options.inputMeta]);
     }
 
-    return this.dropdown.before($input);
+    this.dropdown.before($input).trigger('change');
   };
 
   GitLabDropdown.prototype.selectRowAtIndex = function(index) {
@@ -781,9 +852,9 @@ GitLabDropdown = (function() {
     if ($el.length) {
       var href = $el.attr('href');
       if (href && href !== '#') {
-        gl.utils.visitUrl(href);
+        visitUrl(href);
       } else {
-        $el.first().trigger('click');
+        $el.trigger('click');
       }
     }
   };

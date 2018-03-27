@@ -32,7 +32,7 @@ module Users
     private
 
     def can_create_user?
-      (current_user.nil? && current_application_settings.signup_enabled?) || current_user&.admin?
+      (current_user.nil? && Gitlab::CurrentSettings.allow_signup?) || current_user&.admin?
     end
 
     # Allowed params for creating a user (admins only)
@@ -100,7 +100,7 @@ module Users
     end
 
     def skip_user_confirmation_email_from_setting
-      !current_application_settings.send_user_confirmation_email
+      !Gitlab::CurrentSettings.send_user_confirmation_email
     end
   end
 end

@@ -14,6 +14,9 @@ GET /projects/:id/repository/commits
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 | `since` | string | no | Only commits after or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `until` | string | no | Only commits before or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
+| `path` | string | no | The file path |
+| `all` | boolean | no | Retrieve every commit from the repository |
+
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
@@ -69,8 +72,9 @@ POST /projects/:id/repository/commits
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `branch` | string | yes | The name of a branch |
+| `branch` | string | yes | Name of the branch to commit into. To create a new branch, also provide `start_branch`. |
 | `commit_message` | string | yes | Commit message |
+| `start_branch` | string | no | Name of the branch to start the new commit from |
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
@@ -83,6 +87,7 @@ POST /projects/:id/repository/commits
 | `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb` |
 | `content` | string | no | File content, required for all except `delete`. Optional for `move` |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
+| `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
 
 ```bash
 PAYLOAD=$(cat << 'JSON'
@@ -157,6 +162,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
+| `stats` | boolean | no | Include commit stats. Default is true |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
@@ -180,6 +186,12 @@ Example response:
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
+  "last_pipeline" : {
+    "id": 8,
+    "ref": "master",
+    "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0"
+    "status": "created"
+  }
   "stats": {
     "additions": 15,
     "deletions": 10,
@@ -187,6 +199,41 @@ Example response:
   },
   "status": "running"
 }
+```
+
+## Get references a commit is pushed to
+
+> [Introduced][ce-15026] in GitLab 10.6
+
+Get all references (from branches or tags) a commit is pushed to.
+The pagination parameters `page` and `per_page` can be used to restrict the list of references.
+
+```
+GET /projects/:id/repository/commits/:sha/refs
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha` | string | yes | The commit hash  |
+| `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
+```
+
+Example response:
+
+```json
+[
+  {"type": "branch", "name": "'test'"},
+  {"type": "branch", "name": "add-balsamiq-file"},
+  {"type": "branch", "name": "wip"},
+  {"type": "tag", "name": "v1.1.0"}
+ ]
+
 ```
 
 ## Cherry pick a commit
@@ -491,3 +538,4 @@ Example response:
 
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"
 [ce-8047]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8047
+[ce-15026]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15026

@@ -9,7 +9,7 @@ TEST_MUTABLE_REPO_PATH = 'mutable-repo.git'.freeze
 TEST_BROKEN_REPO_PATH  = 'broken-repo.git'.freeze
 
 module SeedHelper
-  GITLAB_GIT_TEST_REPO_URL = ENV.fetch('GITLAB_GIT_TEST_REPO_URL', 'https://gitlab.com/gitlab-org/gitlab-git-test.git').freeze
+  GITLAB_GIT_TEST_REPO_URL = File.expand_path('../gitlab-git-test.git', __FILE__).freeze
 
   def ensure_seeds
     if File.exist?(SEED_STORAGE_PATH)
@@ -41,7 +41,7 @@ module SeedHelper
   end
 
   def create_mutable_seeds
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone #{TEST_REPO_PATH} #{TEST_MUTABLE_REPO_PATH}),
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} #{TEST_MUTABLE_REPO_PATH}),
            chdir: SEED_STORAGE_PATH,
            out: '/dev/null',
            err: '/dev/null')

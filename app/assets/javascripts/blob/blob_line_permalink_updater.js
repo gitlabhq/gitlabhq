@@ -1,7 +1,9 @@
+import { getLocationHash } from '../lib/utils/url_utility';
+
 const lineNumberRe = /^L[0-9]+/;
 
 const updateLineNumbersOnBlobPermalinks = (linksToUpdate) => {
-  const hash = gl.utils.getLocationHash();
+  const hash = getLocationHash();
   if (hash && lineNumberRe.test(hash)) {
     const hashUrlString = `#${hash}`;
 

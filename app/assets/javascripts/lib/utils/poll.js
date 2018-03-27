@@ -1,8 +1,11 @@
 import httpStatusCodes from './http_status';
+import { normalizeHeaders } from './common_utils';
 
 /**
  * Polling utility for handling realtime updates.
- * Service for vue resouce and method need to be provided as props
+ * Requirements: Promise based HTTP client
+ *
+ * Service for promise based http client and method need to be provided as props
  *
  * @example
  * new Poll({
@@ -57,9 +60,8 @@ export default class Poll {
   }
 
   checkConditions(response) {
-    const headers = gl.utils.normalizeHeaders(response.headers);
+    const headers = normalizeHeaders(response.headers);
     const pollInterval = parseInt(headers[this.intervalHeader], 10);
-
     if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
       this.timeoutID = setTimeout(() => {
         this.makeRequest();
@@ -81,6 +83,9 @@ export default class Poll {
       })
       .catch((error) => {
         notificationCallback(false);
+        if (error.status === httpStatusCodes.ABORTED) {
+          return;
+        }
         errorCallback(error);
       });
   }
@@ -98,7 +103,12 @@ export default class Poll {
   /**
    * Restarts polling after it has been stoped
    */
-  restart() {
+  restart(options) {
+    // update data
+    if (options && options.data) {
+      this.options.data = options.data;
+    }
+
     this.canPoll = true;
     this.makeRequest();
   }

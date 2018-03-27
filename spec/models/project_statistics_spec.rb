@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe ProjectStatistics, models: true do
-  let(:project) { create :empty_project }
+describe ProjectStatistics do
+  let(:project) { create :project }
   let(:statistics) { project.statistics }
 
   describe 'constants' do
@@ -133,15 +133,35 @@ describe ProjectStatistics, models: true do
 
   describe '#update_build_artifacts_size' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:build1) { create(:ci_build, pipeline: pipeline, artifacts_size: 45.megabytes) }
-    let!(:build2) { create(:ci_build, pipeline: pipeline, artifacts_size: 56.megabytes) }
 
-    before do
-      statistics.update_build_artifacts_size
+    context 'when new job artifacts are calculated' do
+      let(:ci_build) { create(:ci_build, pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :archive, project: pipeline.project, job: ci_build)
+      end
+
+      it "stores the size of related build artifacts" do
+        statistics.update_build_artifacts_size
+
+        expect(statistics.build_artifacts_size).to be(106365)
+      end
+
+      it 'calculates related build artifacts by project' do
+        expect(Ci::JobArtifact).to receive(:artifacts_size_for).with(project) { 0 }
+
+        statistics.update_build_artifacts_size
+      end
     end
 
-    it "stores the size of related build artifacts" do
-      expect(statistics.build_artifacts_size).to eq 101.megabytes
+    context 'when legacy artifacts are used' do
+      let!(:ci_build) { create(:ci_build, pipeline: pipeline, artifacts_size: 10.megabytes) }
+
+      it "stores the size of related build artifacts" do
+        statistics.update_build_artifacts_size
+
+        expect(statistics.build_artifacts_size).to eq(10.megabytes)
+      end
     end
   end
 

@@ -12,14 +12,17 @@ following format:
 
 ```yaml
 ---
-title: "Going through change[log]s"
+title: "Change[log]s"
 merge_request: 1972
-author: Ozzy Osbourne
+author: Black Sabbath
+type: added
 ```
 
 The `merge_request` value is a reference to a merge request that adds this
 entry, and the `author` key is used to give attribution to community
 contributors. **Both are optional**.
+The `type` field maps the category of the change,
+valid options are: added, fixed, changed, deprecated, removed, security, other. **Type field is mandatory**.
 
 Community contributors and core team members are encouraged to add their name to
 the `author` field. GitLab team members **should not**.
@@ -77,7 +80,7 @@ changes.
 
 The first example focuses on _how_ we fixed something, not on _what_ it fixes.
 The rewritten version clearly describes the _end benefit_ to the user (fewer 500
-errors), and _when_ (searching commits with ElasticSearch).
+errors), and _when_ (searching commits with Elasticsearch).
 
 Use your best judgement and try to put yourself in the mindset of someone
 reading the compiled changelog. Does this entry add value? Does it offer context
@@ -94,6 +97,19 @@ Its simplest usage is to provide the value for `title`:
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!'
 ```
 
+At this point the script would ask you to select the category of the change (mapped to the `type` field in the entry):
+
+```text
+>> Please specify the category of your change:
+1. New feature
+2. Bug fix
+3. Feature change
+4. New deprecation
+5. Feature removal
+6. Security fix
+7. Other
+```
+
 The entry filename is based on the name of the current Git branch. If you run
 the command above on a branch called `feature/hey-dz`, it will generate a
 `changelogs/unreleased/feature-hey-dz.yml` file.
@@ -106,26 +122,29 @@ create changelogs/unreleased/my-feature.yml
 title: Hey DZ, I added a feature to GitLab!
 merge_request:
 author:
+type:
 ```
 If you're working on the GitLab EE repository, the entry will be added to
-`changelogs/unreleased-ee/` instead.
+`ee/changelogs/unreleased/` instead.
 
-#### Arguments
+### Arguments
 
-| Argument            | Shorthand | Purpose                                       |
-| -----------------   | --------- | --------------------------------------------- |
-| [`--amend`]         |           | Amend the previous commit                     |
-| [`--force`]         | `-f`      | Overwrite an existing entry                   |
-| [`--merge-request`] | `-m`      | Set merge request ID                          |
-| [`--dry-run`]       | `-n`      | Don't actually write anything, just print     |
-| [`--git-username`]  | `-u`      | Use Git user.name configuration as the author |
-| [`--help`]          | `-h`      | Print help message                            |
+| Argument            | Shorthand | Purpose                                                                                                    |
+| -----------------   | --------- | ---------------------------------------------------------------------------------------------------------- |
+| [`--amend`]         |           | Amend the previous commit                                                                                  |
+| [`--force`]         | `-f`      | Overwrite an existing entry                                                                                |
+| [`--merge-request`] | `-m`      | Set merge request ID                                                                                       |
+| [`--dry-run`]       | `-n`      | Don't actually write anything, just print                                                                  |
+| [`--git-username`]  | `-u`      | Use Git user.name configuration as the author                                                              |
+| [`--type`]          | `-t`      | The category of the change, valid options are: added, fixed, changed, deprecated, removed, security, other |
+| [`--help`]          | `-h`      | Print help message                                                                                         |
 
 [`--amend`]: #-amend
 [`--force`]: #-force-or-f
 [`--merge-request`]: #-merge-request-or-m
 [`--dry-run`]: #-dry-run-or-n
 [`--git-username`]: #-git-username-or-u
+[`--type`]: #-type-or-t
 [`--help`]: #-help
 
 ##### `--amend`
@@ -147,6 +166,7 @@ create changelogs/unreleased/feature-hey-dz.yml
 title: Added an awesome new feature to GitLab
 merge_request:
 author:
+type:
 ```
 
 ##### `--force` or `-f`
@@ -164,6 +184,7 @@ create changelogs/unreleased/feature-hey-dz.yml
 title: Hey DZ, I added a feature to GitLab!
 merge_request: 1983
 author:
+type:
 ```
 
 ##### `--merge-request` or `-m`
@@ -178,6 +199,7 @@ create changelogs/unreleased/feature-hey-dz.yml
 title: Hey DZ, I added a feature to GitLab!
 merge_request: 1983
 author:
+type:
 ```
 
 ##### `--dry-run` or `-n`
@@ -192,6 +214,7 @@ create changelogs/unreleased/feature-hey-dz.yml
 title: Added an awesome new feature to GitLab
 merge_request:
 author:
+type:
 
 $ ls changelogs/unreleased/
 ```
@@ -211,6 +234,21 @@ create changelogs/unreleased/feature-hey-dz.yml
 title: Hey DZ, I added a feature to GitLab!
 merge_request:
 author: Jane Doe
+type:
+```
+
+##### `--type` or `-t`
+
+Use the **`--type`** or **`-t`** argument to provide the `type` value:
+
+```text
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -t added
+create changelogs/unreleased/feature-hey-dz.yml
+---
+title: Hey DZ, I added a feature to GitLab!
+merge_request:
+author:
+type: added
 ```
 
 ### History and Reasoning
@@ -241,8 +279,8 @@ After much discussion we settled on the current solution of one file per entry,
 and then compiling the entries into the overall `CHANGELOG.md` file during the
 [release process].
 
-[boring solution]: https://about.gitlab.com/handbook/#boring-solutions
-[release managers]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/release-manager.md
+[boring solution]: https://about.gitlab.com/handbook/values/#boring-solutions
+[release managers]: https://gitlab.com/gitlab-org/release/docs/blob/master/quickstart/release-manager.md
 [started brainstorming]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17826
 [release process]: https://gitlab.com/gitlab-org/release-tools
 

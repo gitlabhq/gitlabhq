@@ -1,6 +1,6 @@
 ![GitLab Flow](gitlab_flow.png)
 
-## Introduction
+# Introduction to GitLab Flow
 
 Version management with git makes branching and merging much easier than older versioning systems such as SVN.
 This allows a wide variety of branching strategies and workflows.
@@ -91,7 +91,6 @@ This workflow where commits only flow downstream ensures that everything has bee
 If you need to cherry-pick a commit with a hotfix it is common to develop it on a feature branch and merge it into master with a merge request, do not delete the feature branch.
 If master is good to go (it should be if you are practicing [continuous delivery](http://martinfowler.com/bliki/ContinuousDelivery.html)) you then merge it to the other branches.
 If this is not possible because more manual testing is required you can send merge requests from the feature branch to the downstream branches.
-An 'extreme' version of environment branches are setting up an environment for each feature branch as done by [Teatro](https://teatro.io/).
 
 ## Release branches with GitLab flow
 
@@ -300,7 +299,7 @@ If there are no merge conflicts and the feature branches are short lived the ris
 If there are merge conflicts you merge the master branch into the feature branch and the CI server will rerun the tests.
 If you have long lived feature branches that last for more than a few days you should make your issues smaller.
 
-## Working wih feature branches
+## Working with feature branches
 
 ![Shell output showing git pull output](git_pull.png)
 

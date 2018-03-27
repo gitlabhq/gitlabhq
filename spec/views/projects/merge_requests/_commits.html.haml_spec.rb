@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe 'projects/merge_requests/show/_commits.html.haml' do
+describe 'projects/merge_requests/_commits.html.haml' do
   include Devise::Test::ControllerHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
-  let(:target_project) { create(:project, :repository) }
-  let(:source_project) { create(:project, :repository, forked_from_project: target_project) }
+  let(:target_project) { create(:project, :public, :repository) }
+  let(:source_project) { fork_project(target_project, user, repository: true) }
 
   let(:merge_request) do
     create(:merge_request, :simple,
@@ -24,11 +25,8 @@ describe 'projects/merge_requests/show/_commits.html.haml' do
   it 'shows commits from source project' do
     render
 
-    commit = source_project.commit(merge_request.source_branch)
-    href = namespace_project_commit_path(
-      source_project.namespace,
-      source_project,
-      commit)
+    commit = merge_request.commits.first # HEAD
+    href = diffs_project_merge_request_path(target_project, merge_request, commit_id: commit)
 
     expect(rendered).to have_link(Commit.truncate_sha(commit.sha), href: href)
   end

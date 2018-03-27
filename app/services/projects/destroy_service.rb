@@ -9,45 +9,60 @@ module Projects
     def async_execute
       project.update_attribute(:pending_delete, true)
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
-      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.path_with_namespace} with job ID #{job_id}")
+      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
     end
 
     def execute
       return false unless can?(current_user, :remove_project, project)
 
-      repo_path = project.path_with_namespace
-      wiki_path = repo_path + '.wiki'
-
       # Flush the cache for both repositories. This has to be done _before_
       # removing the physical repositories as some expiration code depends on
       # Git data (e.g. a list of branch names).
-      flush_caches(project, wiki_path)
+      flush_caches(project)
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
-      Project.transaction do
-        project.team.truncate
-        project.destroy!
-
-        unless remove_legacy_registry_tags
-          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
-        end
-
-        unless remove_repository(repo_path)
-          raise_error('Failed to remove project repository. Please try again or contact administrator.')
-        end
-
-        unless remove_repository(wiki_path)
-          raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
-        end
+      # The project is not necessarily a fork, so update the fork network originating
+      # from this project
+      if fork_network = project.root_of_fork_network
+        fork_network.update(root_project: nil,
+                            deleted_root_project_name: project.full_name)
       end
 
-      log_info("Project \"#{project.path_with_namespace}\" was removed")
+      attempt_destroy_transaction(project)
+
       system_hook_service.execute_hooks_for(project, :destroy)
+      log_info("Project \"#{project.full_path}\" was removed")
+
       true
+    rescue => error
+      attempt_rollback(project, error.message)
+      false
+    rescue Exception => error # rubocop:disable Lint/RescueException
+      # Project.transaction can raise Exception
+      attempt_rollback(project, error.message)
+      raise
     end
 
     private
+
+    def repo_path
+      project.disk_path
+    end
+
+    def wiki_path
+      project.wiki.disk_path
+    end
+
+    def trash_repositories!
+      unless remove_repository(repo_path)
+        raise_error('Failed to remove project repository. Please try again or contact administrator.')
+      end
+
+      unless remove_repository(wiki_path)
+        raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
+      end
+    end
 
     def remove_repository(path)
       # Skip repository removal. We use this flag when remove user or group
@@ -67,6 +82,30 @@ module Projects
         end
       else
         false
+      end
+    end
+
+    def attempt_rollback(project, message)
+      return unless project
+
+      # It's possible that the project was destroyed, but some after_commit
+      # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
+      # which cannot be altered.
+      project.update_attributes(delete_error: message, pending_delete: false) unless project.destroyed?
+
+      log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
+    end
+
+    def attempt_destroy_transaction(project)
+      Project.transaction do
+        unless remove_legacy_registry_tags
+          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
+        end
+
+        trash_repositories!
+
+        project.team.truncate
+        project.destroy!
       end
     end
 
@@ -96,10 +135,12 @@ module Projects
       "#{path}+#{project.id}#{DELETED_FLAG}"
     end
 
-    def flush_caches(project, wiki_path)
+    def flush_caches(project)
       project.repository.before_delete
 
-      Repository.new(wiki_path, project).before_delete
+      Repository.new(wiki_path, project, disk_path: repo_path).before_delete
+
+      Projects::ForksCountService.new(project).delete_cache
     end
   end
 end

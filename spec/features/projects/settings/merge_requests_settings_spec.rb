@@ -1,14 +1,12 @@
 require 'spec_helper'
 
-feature 'Project settings > Merge Requests', feature: true, js: true do
-  include GitlabRoutingHelper
-
-  let(:project) { create(:empty_project, :public) }
+feature 'Project settings > Merge Requests', :js do
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 
   background do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
   context 'when Merge Request and Pipelines are initially enabled' do
@@ -21,7 +19,10 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
         expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
-        select 'Disabled', from: "project_project_feature_attributes_merge_requests_access_level"
+        within('.sharing-permissions-form') do
+          find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+          find('input[value="Save changes"]').send_keys(:return)
+        end
 
         expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).not_to have_content('Only allow merge requests to be merged if all discussions are resolved')
@@ -38,7 +39,10 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
         expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
-        select 'Everyone with access', from: "project_project_feature_attributes_builds_access_level"
+        within('.sharing-permissions-form') do
+          find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .project-feature-toggle').click
+          find('input[value="Save changes"]').send_keys(:return)
+        end
 
         expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
@@ -56,7 +60,10 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
       expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
       expect(page).not_to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
-      select 'Everyone with access', from: "project_project_feature_attributes_merge_requests_access_level"
+      within('.sharing-permissions-form') do
+        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+        find('input[value="Save changes"]').send_keys(:return)
+      end
 
       expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
       expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
@@ -75,7 +82,9 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
 
     scenario 'when unchecked sets :printing_merge_request_link_enabled to false' do
       uncheck('project_printing_merge_request_link_enabled')
-      click_on('Save')
+      within('.merge-request-settings-form') do
+        click_on('Save changes')
+      end
 
       # Wait for save to complete and page to reload
       checkbox = find_field('project_printing_merge_request_link_enabled')

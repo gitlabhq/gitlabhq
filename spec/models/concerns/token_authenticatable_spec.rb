@@ -12,7 +12,7 @@ shared_examples 'TokenAuthenticatable' do
 end
 
 describe User, 'TokenAuthenticatable' do
-  let(:token_field) { :authentication_token }
+  let(:token_field) { :rss_token }
   it_behaves_like 'TokenAuthenticatable'
 
   describe 'ensures authentication token' do

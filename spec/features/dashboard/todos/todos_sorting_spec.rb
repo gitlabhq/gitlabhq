@@ -2,14 +2,14 @@ require 'spec_helper'
 
 feature 'Dashboard > User sorts todos' do
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
   let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
   let(:label_3) { create(:label, title: 'label_3', project: project, priority: 3) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'sort options' do
@@ -83,7 +83,7 @@ feature 'Dashboard > User sorts todos' do
       create(:todo, user: user, project: project, target: issue_2)
       create(:todo, user: user, project: project, target: merge_request_1)
 
-      gitlab_sign_in(user)
+      sign_in(user)
       visit dashboard_todos_path
     end
 

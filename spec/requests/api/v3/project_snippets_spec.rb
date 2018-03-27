@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe API::ProjectSnippets do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
@@ -28,9 +28,9 @@ describe API::ProjectSnippets do
 
       get v3_api("/projects/#{project.id}/snippets/", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(3)
-      expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
+      expect(json_response.map { |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
       expect(json_response.last).to have_key('web_url')
     end
 
@@ -38,7 +38,7 @@ describe API::ProjectSnippets do
       create(:project_snippet, :private, project: project)
 
       get v3_api("/projects/#{project.id}/snippets/", user)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(0)
     end
   end
@@ -56,7 +56,7 @@ describe API::ProjectSnippets do
     it 'creates a new snippet' do
       post v3_api("/projects/#{project.id}/snippets/", admin), params
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       snippet = ProjectSnippet.find(json_response['id'])
       expect(snippet.content).to eq(params[:code])
       expect(snippet.title).to eq(params[:title])
@@ -69,7 +69,7 @@ describe API::ProjectSnippets do
 
       post v3_api("/projects/#{project.id}/snippets/", admin), params
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context 'when the snippet is spam' do
@@ -80,7 +80,7 @@ describe API::ProjectSnippets do
       end
 
       before do
-        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
       end
 
       context 'when the snippet is private' do
@@ -95,7 +95,7 @@ describe API::ProjectSnippets do
           expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
             .not_to change { Snippet.count }
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
@@ -116,7 +116,7 @@ describe API::ProjectSnippets do
 
       put v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       snippet.reload
       expect(snippet.content).to eq(new_content)
     end
@@ -124,14 +124,14 @@ describe API::ProjectSnippets do
     it 'returns 404 for invalid snippet id' do
       put v3_api("/projects/#{snippet.project.id}/snippets/1234", admin), title: 'foo'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'returns 400 for missing parameters' do
       put v3_api("/projects/#{project.id}/snippets/1234", admin)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context 'when the snippet is spam' do
@@ -140,7 +140,7 @@ describe API::ProjectSnippets do
       end
 
       before do
-        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
       end
 
       context 'when the snippet is private' do
@@ -173,7 +173,7 @@ describe API::ProjectSnippets do
           expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
             .not_to change { snippet.reload.title }
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
@@ -194,13 +194,13 @@ describe API::ProjectSnippets do
 
       delete v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'returns 404 for invalid snippet id' do
       delete v3_api("/projects/#{snippet.project.id}/snippets/1234", admin)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
@@ -211,7 +211,7 @@ describe API::ProjectSnippets do
     it 'returns raw text' do
       get v3_api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response.content_type).to eq 'text/plain'
       expect(response.body).to eq(snippet.content)
     end
@@ -219,7 +219,7 @@ describe API::ProjectSnippets do
     it 'returns 404 for invalid snippet id' do
       delete v3_api("/projects/#{snippet.project.id}/snippets/1234", admin)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::Highlight, lib: true do
+describe Gitlab::Diff::Highlight do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -10,7 +10,7 @@ describe Gitlab::Diff::Highlight, lib: true do
 
   describe '#highlight' do
     context "with a diff file" do
-      let(:subject) { Gitlab::Diff::Highlight.new(diff_file, repository: project.repository).highlight }
+      let(:subject) { described_class.new(diff_file, repository: project.repository).highlight }
 
       it 'returns Gitlab::Diff::Line elements' do
         expect(subject.first).to be_an_instance_of(Gitlab::Diff::Line)
@@ -41,7 +41,7 @@ describe Gitlab::Diff::Highlight, lib: true do
     end
 
     context "with diff lines" do
-      let(:subject) { Gitlab::Diff::Highlight.new(diff_file.diff_lines, repository: project.repository).highlight }
+      let(:subject) { described_class.new(diff_file.diff_lines, repository: project.repository).highlight }
 
       it 'returns Gitlab::Diff::Line elements' do
         expect(subject.first).to be_an_instance_of(Gitlab::Diff::Line)
@@ -71,6 +71,28 @@ describe Gitlab::Diff::Highlight, lib: true do
 
         expect(subject[5].text).to eq(code)
         expect(subject[5].text).to be_html_safe
+      end
+
+      context 'when the inline diff marker has an invalid range' do
+        before do
+          allow_any_instance_of(Gitlab::Diff::InlineDiffMarker).to receive(:mark).and_raise(RangeError)
+        end
+
+        it 'keeps the original rich line' do
+          code = %q{+      raise RuntimeError, "System commands must be given as an array of strings"}
+
+          expect(subject[5].text).to eq(code)
+          expect(subject[5].text).not_to be_html_safe
+        end
+
+        it 'reports to Sentry if configured' do
+          allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
+
+          expect(Gitlab::Sentry).to receive(:context)
+          expect(Raven).to receive(:capture_exception)
+
+          subject
+        end
       end
     end
   end

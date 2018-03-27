@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Database, lib: true do
+describe Gitlab::Database do
   before do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end
@@ -48,6 +48,50 @@ describe Gitlab::Database, lib: true do
 
         expect(described_class.version).to eq '9.4.4'
       end
+    end
+  end
+
+  describe '.join_lateral_supported?' do
+    it 'returns false when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.join_lateral_supported?).to eq(false)
+    end
+
+    it 'returns false when using PostgreSQL 9.2' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.2.1')
+
+      expect(described_class.join_lateral_supported?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 9.3.0 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.3.0')
+
+      expect(described_class.join_lateral_supported?).to eq(true)
+    end
+  end
+
+  describe '.replication_slots_supported?' do
+    it 'returns false when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.replication_slots_supported?).to eq(false)
+    end
+
+    it 'returns false when using PostgreSQL 9.3' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.3.1')
+
+      expect(described_class.replication_slots_supported?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 9.4.0 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.4.0')
+
+      expect(described_class.replication_slots_supported?).to eq(true)
     end
   end
 
@@ -177,8 +221,44 @@ describe Gitlab::Database, lib: true do
       described_class.bulk_insert('test', rows)
     end
 
+    it 'does not quote values of a column in the disable_quote option' do
+      [1, 2, 4, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: :c)
+    end
+
+    it 'does not quote values of columns in the disable_quote option' do
+      [2, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: [:a, :c])
+    end
+
     it 'handles non-UTF-8 data' do
       expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
+    end
+
+    context 'when using PostgreSQL' do
+      before do
+        allow(described_class).to receive(:mysql?).and_return(false)
+      end
+
+      it 'allows the returning of the IDs of the inserted rows' do
+        result = double(:result, values: [['10']])
+
+        expect(connection)
+          .to receive(:execute)
+          .with(/RETURNING id/)
+          .and_return(result)
+
+        ids = described_class
+          .bulk_insert('test', [{ number: 10 }], return_ids: true)
+
+        expect(ids).to eq([10])
+      end
     end
   end
 
@@ -203,6 +283,29 @@ describe Gitlab::Database, lib: true do
         expect(pool.spec.config[:host]).to eq('127.0.0.1')
       ensure
         pool.disconnect!
+      end
+    end
+  end
+
+  describe '.cached_column_exists?' do
+    it 'only retrieves data once' do
+      expect(ActiveRecord::Base.connection).to receive(:columns).once.and_call_original
+
+      2.times do
+        expect(described_class.cached_column_exists?(:projects, :id)).to be_truthy
+        expect(described_class.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+      end
+    end
+  end
+
+  describe '.cached_table_exists?' do
+    it 'only retrieves data once per table' do
+      expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:projects).once.and_call_original
+      expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:bogus_table_name).once.and_call_original
+
+      2.times do
+        expect(described_class.cached_table_exists?(:projects)).to be_truthy
+        expect(described_class.cached_table_exists?(:bogus_table_name)).to be_falsey
       end
     end
   end
@@ -232,6 +335,28 @@ describe Gitlab::Database, lib: true do
       expect(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.false_value).to eq 0
+    end
+  end
+
+  describe '#sanitize_timestamp' do
+    let(:max_timestamp) { Time.at((1 << 31) - 1) }
+
+    subject { described_class.sanitize_timestamp(timestamp) }
+
+    context 'with a timestamp smaller than MAX_TIMESTAMP_VALUE' do
+      let(:timestamp) { max_timestamp - 10.years }
+
+      it 'returns the given timestamp' do
+        expect(subject).to eq(timestamp)
+      end
+    end
+
+    context 'with a timestamp larger than MAX_TIMESTAMP_VALUE' do
+      let(:timestamp) { max_timestamp + 1.second }
+
+      it 'returns MAX_TIMESTAMP_VALUE' do
+        expect(subject).to eq(max_timestamp)
+      end
     end
   end
 end

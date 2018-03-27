@@ -1,32 +1,32 @@
 - referenced_users = local_assigns.fetch(:referenced_users, nil)
 
+- if defined?(@merge_request) && @merge_request.discussion_locked?
+  .issuable-note-warning
+    = sprite_icon('lock', size: 16, css_class: 'icon')
+    %span
+      = _('This merge request is locked.')
+      = _('Only project members can comment.')
+
 .md-area
   .md-header
     %ul.nav-links.clearfix
-      %li.active
+      %li.md-header-tab.active
         %a.js-md-write-button{ href: "#md-write-holder", tabindex: -1 }
           Write
-      %li
+      %li.md-header-tab
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
 
-      - if defined?(@issue) && @issue.confidential?
-        %li.confidential-issue-warning
-          = icon('warning')
-          %span This is a confidential issue. Your comment will not be visible to the public.
-
-      %li.pull-right
-        .toolbar-group
-          = markdown_toolbar_button({ icon: "bold fw", data: { "md-tag" => "**" }, title: "Add bold text" })
-          = markdown_toolbar_button({ icon: "italic fw", data: { "md-tag" => "*" }, title: "Add italic text" })
-          = markdown_toolbar_button({ icon: "quote-right fw", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
-          = markdown_toolbar_button({ icon: "code fw", data: { "md-tag" => "`", "md-block" => "```" }, title: "Insert code" })
-          = markdown_toolbar_button({ icon: "list-ul fw", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
-          = markdown_toolbar_button({ icon: "list-ol fw", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
-          = markdown_toolbar_button({ icon: "check-square-o fw", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
-        .toolbar-group
-          %button.toolbar-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
-            = icon("arrows-alt fw")
+      %li.md-header-toolbar.active
+        = markdown_toolbar_button({ icon: "bold", data: { "md-tag" => "**" }, title: "Add bold text" })
+        = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "*" }, title: "Add italic text" })
+        = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
+        = markdown_toolbar_button({ icon: "code", data: { "md-tag" => "`", "md-block" => "```" }, title: "Insert code" })
+        = markdown_toolbar_button({ icon: "list-bulleted", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
+        = markdown_toolbar_button({ icon: "list-numbered", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
+        = markdown_toolbar_button({ icon: "task-done", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
+        %button.toolbar-btn.toolbar-fullscreen-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: "Go full screen", data: { container: "body" } }
+          = sprite_icon("screen-full")
 
   .md-write-holder
     = yield

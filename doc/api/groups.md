@@ -2,19 +2,21 @@
 
 ## List groups
 
-Get a list of groups. (As user: my groups or all available, as admin: all groups).
+Get a list of visible groups for the authenticated user. When accessed without
+authentication, only public groups are returned.
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `skip_groups` | array of integers | no | Skip the group IDs passes |
-| `all_available` | boolean | no | Show all the groups you have access to |
-| `search` | string | no | Return list of authorized groups matching the search criteria |
+| `skip_groups` | array of integers | no | Skip the group IDs passed |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users) |
+| `search` | string | no | Return the list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
-| `owned` | boolean | no | Limit by groups owned by the current user |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `owned` | boolean | no | Limit to groups owned by the current user |
 
 ```
 GET /groups
@@ -39,11 +41,94 @@ GET /groups
 ]
 ```
 
+When adding the parameter `statistics=true` and the authenticated user is an admin, additional group statistics are returned.
+
+```
+GET /groups?statistics=true
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "description": "An interesting group",
+    "visibility": "public",
+    "lfs_enabled": true,
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+    "parent_id": null,
+    "statistics": {
+      "storage_size" : 212,
+      "repository_size" : 33,
+      "lfs_objects_size" : 123,
+      "job_artifacts_size" : 57
+
+    }
+  }
+]
+```
+
 You can search for groups by name or path, see below.
+
+You can filter by [custom attributes](custom_attributes.md) with:
+
+```
+GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_value
+```
+
+## List a groups's subgroups
+
+> [Introduced][ce-15142] in GitLab 10.3.
+
+Get a list of visible direct subgroups in this group.
+When accessed without authentication, only public groups are returned.
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
+| `skip_groups` | array of integers | no | Skip the group IDs passed |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users) |
+| `search` | string | no | Return the list of authorized groups matching the search criteria |
+| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics` | boolean | no | Include group statistics (admins only) |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `owned` | boolean | no | Limit to groups owned by the current user |
+
+```
+GET /groups/:id/subgroups
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "description": "An interesting group",
+    "visibility": "public",
+    "lfs_enabled": true,
+    "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://gitlab.example.com/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+    "parent_id": 123
+  }
+]
+```
 
 ## List a group's projects
 
-Get a list of projects in this group.
+Get a list of projects in this group. When accessed without authentication, only
+public projects are returned.
 
 ```
 GET /groups/:id/projects
@@ -62,6 +147,7 @@ Parameters:
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `starred` | boolean | no | Limit by projects starred by the current user |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:
 
@@ -109,7 +195,8 @@ Example response:
 
 ## Details of a group
 
-Get all details of a group.
+Get all details of a group. This endpoint can be accessed without authentication
+if the group is publicly accessible.
 
 ```
 GET /groups/:id
@@ -120,6 +207,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
@@ -281,13 +369,15 @@ POST /groups
 
 Parameters:
 
-- `name` (required) - The name of the group
-- `path` (required) - The path of the group
-- `description` (optional) - The group's description
-- `visibility` (optional) - The group's visibility. Can be `private`, `internal`, or `public`.
-- `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
-- `request_access_enabled` (optional) - Allow users to request member access.
-- `parent_id` (optional) - The parent group id for creating nested group.
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | yes | The name of the group |
+| `path` | string | yes | The path of the group |
+| `description` | string | no | The group's description |
+| `visibility` | string | no | The group's visibility. Can be `private`, `internal`, or `public`. |
+| `lfs_enabled` | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
+| `request_access_enabled` | boolean | no | Allow users to request member access. |
+| `parent_id` | integer | no | The parent group id for creating nested group. |
 
 ## Transfer project to group
 
@@ -299,8 +389,10 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
-- `project_id` (required) - The ID or path of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `project_id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Update group
 
@@ -431,3 +523,9 @@ And to switch pages add:
 ```
 /groups?per_page=100&page=2
 ```
+
+[ce-15142]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15142
+
+## Group badges
+
+Read more in the [Group Badges](group_badges.md) documentation.

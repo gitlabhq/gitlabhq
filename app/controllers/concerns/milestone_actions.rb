@@ -6,7 +6,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_merge_requests_tab", {
-          merge_requests: @milestone.sorted_merge_requests,
+          merge_requests: @milestone.sorted_merge_requests, # rubocop:disable Gitlab/ModuleWithInstanceVariables
           show_project_name: true
         })
       end
@@ -18,7 +18,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_participants_tab", {
-          users: @milestone.participants
+          users: @milestone.participants # rubocop:disable Gitlab/ModuleWithInstanceVariables
         })
       end
     end
@@ -29,7 +29,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_labels_tab", {
-          labels: @milestone.labels
+          labels: @milestone.labels # rubocop:disable Gitlab/ModuleWithInstanceVariables
         })
       end
     end
@@ -43,13 +43,15 @@ module MilestoneActions
     }
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def milestone_redirect_path
     if @project
-      namespace_project_milestone_path(@project.namespace, @project, @milestone)
+      project_milestone_path(@project, @milestone)
     elsif @group
       group_milestone_path(@group, @milestone.safe_title, title: @milestone.title)
     else
       dashboard_milestone_path(@milestone.safe_title, title: @milestone.title)
     end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

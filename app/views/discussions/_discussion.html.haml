@@ -3,12 +3,12 @@
   .timeline-entry-inner
     .timeline-icon
       = link_to user_path(discussion.author) do
-        = image_tag avatar_icon(discussion.author), class: "avatar s40"
+        = image_tag avatar_icon_for_user(discussion.author), class: "avatar s40"
     .timeline-content
       .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
         .discussion-header
           .discussion-actions
-            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button" }
+            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button", class: ("js-toggle-lazy-diff" unless expanded) }
               - if expanded
                 = icon("chevron-up")
               - else
@@ -32,9 +32,17 @@
             - elsif discussion.diff_discussion?
               on
               = conditional_link_to url.present?, url do
-                - unless discussion.active?
-                  an old version of
-                the diff
+                - if discussion.on_merge_request_commit?
+                  - unless discussion.active?
+                    an outdated change in
+                  commit
+
+                  %span.commit-sha= Commit.truncate_sha(discussion.commit_id)
+                - else
+                  - unless discussion.active?
+                    an old version of
+                  the diff
+
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
           = render "discussions/headline", discussion: discussion
@@ -44,4 +52,4 @@
             = render "discussions/diff_with_notes", discussion: discussion
           - else
             .panel.panel-default
-              = render "discussions/notes", discussion: discussion
+              = render partial: "discussions/notes", locals: { discussion: discussion, disable_collapse_class: true }

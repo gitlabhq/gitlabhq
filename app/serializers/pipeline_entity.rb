@@ -10,18 +10,17 @@ class PipelineEntity < Grape::Entity
   expose :created_at, :updated_at
 
   expose :path do |pipeline|
-    namespace_project_pipeline_path(
-      pipeline.project.namespace,
-      pipeline.project,
-      pipeline)
+    project_pipeline_path(pipeline.project, pipeline)
   end
 
   expose :flags do
     expose :latest?, as: :latest
     expose :stuck?, as: :stuck
+    expose :auto_devops_source?, as: :auto_devops
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable
+    expose :failure_reason?, as: :failure_reason
   end
 
   expose :details do
@@ -46,20 +45,19 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :commit, using: CommitEntity
+  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
+
+  expose :failure_reason, if: -> (pipeline, _) { pipeline.failure_reason? } do |pipeline|
+    pipeline.present.failure_reason
+  end
 
   expose :retry_path, if: -> (*) { can_retry? }  do |pipeline|
-    retry_namespace_project_pipeline_path(pipeline.project.namespace,
-                                          pipeline.project,
-                                          pipeline.id)
+    retry_project_pipeline_path(pipeline.project, pipeline)
   end
 
   expose :cancel_path, if: -> (*) { can_cancel? } do |pipeline|
-    cancel_namespace_project_pipeline_path(pipeline.project.namespace,
-                                           pipeline.project,
-                                           pipeline.id)
+    cancel_project_pipeline_path(pipeline.project, pipeline)
   end
-
-  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
 
   private
 

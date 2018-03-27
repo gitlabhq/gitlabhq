@@ -11,7 +11,7 @@ describe API::V3::Snippets do
 
       get v3_api("/snippets/", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
         public_snippet.id,
         internal_snippet.id,
@@ -24,7 +24,7 @@ describe API::V3::Snippets do
       create(:personal_snippet, :private)
 
       get v3_api("/snippets/", user)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(0)
     end
   end
@@ -41,14 +41,14 @@ describe API::V3::Snippets do
     it 'returns all snippets with public visibility from all users' do
       get v3_api("/snippets/public", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
         public_snippet.id,
         public_snippet_other.id)
-      expect(json_response.map{ |snippet| snippet['web_url']} ).to include(
+      expect(json_response.map { |snippet| snippet['web_url']} ).to include(
         "http://localhost/snippets/#{public_snippet.id}",
         "http://localhost/snippets/#{public_snippet_other.id}")
-      expect(json_response.map{ |snippet| snippet['raw_url']} ).to include(
+      expect(json_response.map { |snippet| snippet['raw_url']} ).to include(
         "http://localhost/snippets/#{public_snippet.id}/raw",
         "http://localhost/snippets/#{public_snippet_other.id}/raw")
     end
@@ -60,7 +60,7 @@ describe API::V3::Snippets do
     it 'returns raw text' do
       get v3_api("/snippets/#{snippet.id}/raw", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response.content_type).to eq 'text/plain'
       expect(response.body).to eq(snippet.content)
     end
@@ -68,7 +68,7 @@ describe API::V3::Snippets do
     it 'returns 404 for invalid snippet id' do
       delete v3_api("/snippets/1234", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
@@ -88,7 +88,7 @@ describe API::V3::Snippets do
         post v3_api("/snippets/", user), params
       end.to change { PersonalSnippet.count }.by(1)
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq(params[:title])
       expect(json_response['file_name']).to eq(params[:file_name])
     end
@@ -98,7 +98,7 @@ describe API::V3::Snippets do
 
       post v3_api("/snippets/", user), params
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context 'when the snippet is spam' do
@@ -107,7 +107,7 @@ describe API::V3::Snippets do
       end
 
       before do
-        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+        allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
       end
 
       context 'when the snippet is private' do
@@ -121,7 +121,7 @@ describe API::V3::Snippets do
         it 'rejects the shippet' do
           expect { create_snippet(visibility_level: Snippet::PUBLIC) }
             .not_to change { Snippet.count }
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
         end
 
         it 'creates a spam log' do
@@ -140,7 +140,7 @@ describe API::V3::Snippets do
 
       put v3_api("/snippets/#{public_snippet.id}", user), content: new_content
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       public_snippet.reload
       expect(public_snippet.content).to eq(new_content)
     end
@@ -148,21 +148,21 @@ describe API::V3::Snippets do
     it 'returns 404 for invalid snippet id' do
       put v3_api("/snippets/1234", user), title: 'foo'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it "returns 404 for another user's snippet" do
       put v3_api("/snippets/#{public_snippet.id}", other_user), title: 'fubar'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'returns 400 for missing parameters' do
       put v3_api("/snippets/1234", user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
   end
 
@@ -172,14 +172,14 @@ describe API::V3::Snippets do
       expect do
         delete v3_api("/snippets/#{public_snippet.id}", user)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
       end.to change { PersonalSnippet.count }.by(-1)
     end
 
     it 'returns 404 for invalid snippet id' do
       delete v3_api("/snippets/1234", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end

@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def icon
-          'icon_status_warning'
+          'status_warning'
         end
 
         def group

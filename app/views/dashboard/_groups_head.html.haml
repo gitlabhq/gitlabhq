@@ -1,14 +1,13 @@
 .top-area
-  %ul.nav-links
+  %ul.nav-links.mobile-separator
     = nav_link(page: dashboard_groups_path) do
-      = link_to dashboard_groups_path, title: 'Your groups' do
+      = link_to dashboard_groups_path, title: _("Your groups") do
         Your groups
     = nav_link(page: explore_groups_path) do
-      = link_to explore_groups_path, title: 'Explore public groups' do
+      = link_to explore_groups_path, title: _("Explore public groups") do
         Explore public groups
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'
     - if current_user.can_create_group?
-      = link_to new_group_path, class: "btn btn-new" do
-        New group
+      = link_to _("New group"), new_group_path, class: "btn btn-new"

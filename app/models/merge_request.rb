@@ -1,36 +1,61 @@
 class MergeRequest < ActiveRecord::Base
-  include InternalId
+  include NonatomicInternalId
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include IgnorableColumn
+  include TimeTrackable
+  include ManualInverseAssociation
+  include EachBatch
+  include ThrottledTouch
+  include Gitlab::Utils::StrongMemoize
 
-  ignore_column :position
+  ignore_column :locked_at,
+                :ref_fetched,
+                :deleted_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_many :merge_request_diffs, dependent: :destroy
+  has_many :merge_request_diffs
+
   has_one :merge_request_diff,
-    -> { order('merge_request_diffs.id DESC') }
+    -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+
+  belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
+  manual_inverse_association :latest_merge_request_diff, :merge_request
+
+  # This is the same as latest_merge_request_diff unless:
+  # 1. There are arguments - in which case we might be trying to force-reload.
+  # 2. This association is already loaded.
+  # 3. The latest diff does not exist.
+  #
+  # The second one in particular is important - MergeRequestDiff#merge_request
+  # is the inverse of MergeRequest#merge_request_diff, which means it may not be
+  # the latest diff, because we could have loaded any diff from this particular
+  # MR. If we haven't already loaded a diff, then it's fine to load the latest.
+  def merge_request_diff(*args)
+    fallback = latest_merge_request_diff if args.empty? && !association(:merge_request_diff).loaded?
+
+    fallback || super
+  end
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+  has_many :merge_requests_closing_issues,
+    class_name: 'MergeRequestsClosingIssues',
+    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   belongs_to :assignee, class_name: "User"
 
-  serialize :merge_params, Hash # rubocop:disable Cop/ActiverecordSerialize
+  serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
-
-  delegate :commits, :real_size, :commits_sha, :commits_count,
-    to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -42,37 +67,34 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened] => :closed
+      transition [:opened] => :closed
     end
 
     event :mark_as_merged do
-      transition [:reopened, :opened, :locked] => :merged
+      transition [:opened, :locked] => :merged
     end
 
     event :reopen do
-      transition closed: :reopened
+      transition closed: :opened
     end
 
     event :lock_mr do
-      transition [:reopened, :opened] => :locked
+      transition [:opened] => :locked
     end
 
     event :unlock_mr do
-      transition locked: :reopened
+      transition locked: :opened
     end
 
-    after_transition any => :locked do |merge_request, transition|
-      merge_request.locked_at = Time.now
-      merge_request.save
-    end
+    before_transition any => :opened do |merge_request|
+      merge_request.merge_jid = nil
 
-    after_transition locked: (any - :locked) do |merge_request, transition|
-      merge_request.locked_at = nil
-      merge_request.save
+      merge_request.run_after_commit do
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
     end
 
     state :opened
-    state :reopened
     state :closed
     state :merged
     state :locked
@@ -118,7 +140,9 @@ class MergeRequest < ActiveRecord::Base
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
-
+  scope :by_commit_sha, ->(sha) do
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
+  end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
   scope :assigned, -> { where("assignee_id IS NOT NULL") }
@@ -131,6 +155,22 @@ class MergeRequest < ActiveRecord::Base
 
   def self.reference_prefix
     '!'
+  end
+
+  def rebase_in_progress?
+    strong_memoize(:rebase_in_progress) do
+      # The source project can be deleted
+      next false unless source_project
+
+      source_project.repository.rebase_in_progress?(id)
+    end
+  end
+
+  # Use this method whenever you need to make sure the head_pipeline is synced with the
+  # branch head commit, for example checking if a merge request can be merged.
+  # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
+  def actual_head_pipeline
+    head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
   # Pattern used to extract `!123` merge request references from text
@@ -172,7 +212,23 @@ class MergeRequest < ActiveRecord::Base
     target = unscoped.where(target_project_id: relation).select(:id)
     union  = Gitlab::SQL::Union.new([source, target])
 
-    where("merge_requests.id IN (#{union.to_sql})")
+    where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  # This is used after project import, to reset the IDs to the correct
+  # values. It is not intended to be called without having already scoped the
+  # relation.
+  def self.set_latest_merge_request_diff_ids!
+    update = '
+      latest_merge_request_diff_id = (
+        SELECT MAX(id)
+        FROM merge_request_diffs
+        WHERE merge_requests.id = merge_request_diffs.merge_request_id
+      )'.squish
+
+    self.each_batch do |batch|
+      batch.update_all(update)
+    end
   end
 
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
@@ -189,6 +245,16 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  # Verifies if title has changed not taking into account WIP prefix
+  # for merge requests.
+  def wipless_title_changed(old_title)
+    self.class.wipless_title(old_title) != self.wipless_title
+  end
+
+  def hook_attrs
+    Gitlab::HookData::MergeRequestBuilder.new(self).build
+  end
+
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
@@ -197,9 +263,17 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
-  # This method is needed for compatibility with issues to not mess view and other code
+  # These method are needed for compatibility with issues to not mess view and other code
   def assignees
     Array(assignee)
+  end
+
+  def assignee_ids
+    Array(assignee_id)
+  end
+
+  def assignee_ids=(ids)
+    write_attribute(:assignee_id, ids.last)
   end
 
   def assignee_or_author?(user)
@@ -211,6 +285,44 @@ class MergeRequest < ActiveRecord::Base
     reference = "#{self.class.reference_prefix}#{iid}"
 
     "#{project.to_reference(from, full: full)}#{reference}"
+  end
+
+  def commits
+    if persisted?
+      merge_request_diff.commits
+    elsif compare_commits
+      compare_commits.reverse
+    else
+      []
+    end
+  end
+
+  def commits_count
+    if persisted?
+      merge_request_diff.commits_count
+    elsif compare_commits
+      compare_commits.size
+    else
+      0
+    end
+  end
+
+  def commit_shas
+    if persisted?
+      merge_request_diff.commit_shas
+    elsif compare_commits
+      compare_commits.to_a.reverse.map(&:sha)
+    else
+      Array(diff_head_sha)
+    end
+  end
+
+  # Calls `MergeWorker` to proceed with the merge process and
+  # updates `merge_jid` with the MergeWorker#jid.
+  # This helps tracking enqueued and ongoing merge jobs.
+  def merge_async(user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params)
+    update_column(:merge_jid, jid)
   end
 
   def first_commit
@@ -235,9 +347,7 @@ class MergeRequest < ActiveRecord::Base
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
-    return real_size if merge_request_diff
-
-    diffs.real_size
+    merge_request_diff&.real_size || diffs.real_size
   end
 
   def diff_base_commit
@@ -265,15 +375,27 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_start_sha
-    diff_start_commit.try(:sha)
+    if persisted?
+      merge_request_diff.start_commit_sha
+    else
+      target_branch_head.try(:sha)
+    end
   end
 
   def diff_base_sha
-    diff_base_commit.try(:sha)
+    if persisted?
+      merge_request_diff.base_commit_sha
+    else
+      branch_merge_base_commit.try(:sha)
+    end
   end
 
   def diff_head_sha
-    diff_head_commit.try(:sha)
+    if persisted?
+      merge_request_diff.head_commit_sha
+    else
+      source_branch_head.try(:sha)
+    end
   end
 
   # When importing a pull request from GitHub, the old and new branches may no
@@ -282,16 +404,32 @@ class MergeRequest < ActiveRecord::Base
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
-  def source_branch_head
-    return unless source_project
+  def source_branch_ref
+    return @source_branch_sha if @source_branch_sha
+    return unless source_branch
 
-    source_branch_ref = @source_branch_sha || source_branch
-    source_project.repository.commit(source_branch_ref) if source_branch_ref
+    Gitlab::Git::BRANCH_REF_PREFIX + source_branch
+  end
+
+  def target_branch_ref
+    return @target_branch_sha if @target_branch_sha
+    return unless target_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + target_branch
+  end
+
+  def source_branch_head
+    strong_memoize(:source_branch_head) do
+      if source_project && source_branch_ref
+        source_project.repository.commit(source_branch_ref)
+      end
+    end
   end
 
   def target_branch_head
-    target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch_ref) if target_branch_ref
+    strong_memoize(:target_branch_head) do
+      target_project.repository.commit(target_branch_ref)
+    end
   end
 
   def branch_merge_base_commit
@@ -332,7 +470,7 @@ class MergeRequest < ActiveRecord::Base
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
 
-    if opened? || reopened?
+    if opened?
       similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.try(:id)).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
       if similar_mrs.any?
@@ -357,6 +495,14 @@ class MergeRequest < ActiveRecord::Base
                'Source project is not a fork of the target project'
   end
 
+  def merge_ongoing?
+    # While the MergeRequest is locked, it should present itself as 'merge ongoing'.
+    # The unlocking process is handled by StuckMergeJobsWorker scheduled in Cron.
+    return true if locked?
+
+    !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
+  end
+
   def closed_without_fork?
     closed? && source_project_missing?
   end
@@ -365,7 +511,7 @@ class MergeRequest < ActiveRecord::Base
     return false unless for_fork?
     return true unless source_project
 
-    !source_project.forked_from?(target_project)
+    !source_project.in_fork_network_of?(target_project)
   end
 
   def reopenable?
@@ -377,8 +523,13 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
-    merge_request_diffs.create
-    reload_merge_request_diff
+    fetch_ref!
+
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      merge_request_diffs.create
+      reload_merge_request_diff
+    end
   end
 
   def reload_merge_request_diff
@@ -387,7 +538,7 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_request_diff_for(diff_refs_or_sha)
     @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
-      diffs = merge_request_diffs.viewable.select_without_diff
+      diffs = merge_request_diffs.viewable
       h[diff_refs_or_sha] =
         if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
           diffs.find_by_diff_refs(diff_refs_or_sha)
@@ -410,8 +561,16 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def clear_memoized_shas
+    @target_branch_sha = @source_branch_sha = nil
+
+    clear_memoization(:source_branch_head)
+    clear_memoization(:target_branch_head)
+  end
+
   def reload_diff_if_branch_changed
-    if source_branch_changed? || target_branch_changed?
+    if (source_branch_changed? || target_branch_changed?) &&
+        (source_branch_head && target_branch_head)
       reload_diff
     end
   end
@@ -420,8 +579,10 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
-    create_merge_request_diff
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
+    new_diff = create_merge_request_diff
+
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
+
     new_diff_refs = self.diff_refs
 
     update_diff_discussion_positions(
@@ -432,7 +593,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked?
+    return unless unchecked? && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -469,17 +630,25 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
-  def mergeable_state?(skip_ci_check: false)
+  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
     return false unless skip_ci_check || mergeable_ci_state?
-    return false unless mergeable_discussions_state?
+    return false unless skip_discussions_check || mergeable_discussions_state?
 
     true
+  end
+
+  def ff_merge_possible?
+    project.repository.ancestor?(target_branch_sha, diff_head_sha)
+  end
+
+  def should_be_rebased?
+    project.ff_merge_must_be_possible? && !ff_merge_possible?
   end
 
   def can_cancel_merge_when_pipeline_succeeds?(current_user)
@@ -490,7 +659,7 @@ class MergeRequest < ActiveRecord::Base
     !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
-      diff_head_commit == source_branch_head
+      diff_head_sha == source_branch_head.try(:sha)
   end
 
   def should_remove_source_branch?
@@ -508,16 +677,23 @@ class MergeRequest < ActiveRecord::Base
   def related_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
-    commit_ids = commits.last(commits_for_notes_limit).map(&:id)
+    commit_ids = commit_shas.take(commits_for_notes_limit)
 
-    Note.where(
-      "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
-      "((project_id = :source_project_id OR project_id = :target_project_id) AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
-      mr_id: id,
-      commit_ids: commit_ids,
-      target_project_id: target_project_id,
-      source_project_id: source_project_id
-    )
+    commit_notes = Note
+      .except(:order)
+      .where(project_id: [source_project_id, target_project_id])
+      .for_commit_id(commit_ids)
+
+    # We're using a UNION ALL here since this results in better performance
+    # compared to using OR statements. We're using UNION ALL since the queries
+    # used won't produce any duplicates (e.g. a note for a commit can't also be
+    # a note for an MR).
+    union = Gitlab::SQL::Union
+      .new([notes, commit_notes], remove_duplicates: false)
+      .to_sql
+
+    Note.from("(#{union}) #{Note.table_name}")
+      .includes(:noteable)
   end
 
   alias_method :discussion_notes, :related_notes
@@ -526,24 +702,6 @@ class MergeRequest < ActiveRecord::Base
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 
     !discussions_to_be_resolved?
-  end
-
-  def hook_attrs
-    attrs = {
-      source: source_project.try(:hook_attrs),
-      target: target_project.hook_attrs,
-      last_commit: nil,
-      work_in_progress: work_in_progress?,
-      total_time_spent: total_time_spent,
-      human_total_time_spent: human_total_time_spent,
-      human_time_estimate: human_time_estimate
-    }
-
-    if diff_head_commit
-      attrs[:last_commit] = diff_head_commit.hook_attrs
-    end
-
-    attributes.merge!(attrs)
   end
 
   def for_fork?
@@ -560,12 +718,14 @@ class MergeRequest < ActiveRecord::Base
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
   def cache_merge_request_closes_issues!(current_user)
-    return if project.has_external_issue_tracker?
+    return unless project.issues_enabled?
 
     transaction do
       self.merge_requests_closing_issues.delete_all
 
       closes_issues(current_user).each do |issue|
+        next if issue.is_a?(ExternalIssue)
+
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end
@@ -595,7 +755,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_path
     if target_project
-      target_project.path_with_namespace
+      target_project.full_path
     else
       "(removed)"
     end
@@ -603,7 +763,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_path
     if source_project
-      source_project.path_with_namespace
+      source_project.full_path
     else
       "(removed)"
     end
@@ -628,13 +788,13 @@ class MergeRequest < ActiveRecord::Base
   def source_branch_exists?
     return false unless self.source_project
 
-    self.source_project.repository.branch_names.include?(self.source_branch)
+    self.source_project.repository.branch_exists?(self.source_branch)
   end
 
   def target_branch_exists?
     return false unless self.target_project
 
-    self.target_project.repository.branch_names.include?(self.target_branch)
+    self.target_project.repository.branch_exists?(self.target_branch)
   end
 
   def merge_commit_message(include_description: false)
@@ -652,7 +812,7 @@ class MergeRequest < ActiveRecord::Base
     end
 
     message << "#{description}" if include_description && description.present?
-    message << "See merge request #{to_reference}"
+    message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
   end
@@ -690,17 +850,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def locked_long_ago?
-    return false unless locked?
-
-    locked_at.nil? || locked_at < (Time.now - 1.day)
-  end
-
   def has_ci?
-    has_ci_integration = source_project.try(:ci_service)
-    uses_gitlab_ci = all_pipelines.any?
+    return false if has_no_commits?
 
-    (has_ci_integration || uses_gitlab_ci) && commits.any?
+    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_service)
   end
 
   def branch_missing?
@@ -713,7 +866,7 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     access = ::Gitlab::UserAccess.new(user, project: project)
-    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
+    access.can_update_branch?(target_branch)
   end
 
   def can_be_merged_via_command_line_by?(user)
@@ -723,8 +876,9 @@ class MergeRequest < ActiveRecord::Base
 
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_pipeline_succeeds?
+    return true unless head_pipeline
 
-    !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
+    actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end
 
   def environments_for(current_user)
@@ -757,39 +911,20 @@ class MergeRequest < ActiveRecord::Base
 
   def state_icon_name
     if merged?
-      "check"
+      "git-merge"
     elsif closed?
-      "times"
+      "close"
     else
-      "circle-o"
+      "issue-open-m"
     end
   end
 
-  def fetch_ref
-    target_project.repository.fetch_ref(
-      source_project.repository.path_to_repo,
-      "refs/heads/#{source_branch}",
-      ref_path
-    )
-    update_column(:ref_fetched, true)
+  def fetch_ref!
+    target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
-  end
-
-  def ref_fetched?
-    super ||
-      begin
-        computed_value = project.repository.ref_exists?(ref_path)
-        update_column(:ref_fetched, true) if computed_value
-
-        computed_value
-      end
-  end
-
-  def ensure_ref_fetched
-    fetch_ref unless ref_fetched?
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def in_locked_state
@@ -797,7 +932,7 @@ class MergeRequest < ActiveRecord::Base
       lock_mr
       yield
     ensure
-      unlock_mr if locked?
+      unlock_mr
     end
   end
 
@@ -819,7 +954,8 @@ class MergeRequest < ActiveRecord::Base
   def compute_diverged_commits_count
     return 0 unless source_branch_sha && target_branch_sha
 
-    Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_branch_sha, target_branch_sha).size
+    target_project.repository
+      .count_commits_between(source_branch_sha, target_branch_sha)
   end
   private :compute_diverged_commits_count
 
@@ -831,19 +967,30 @@ class MergeRequest < ActiveRecord::Base
     return Ci::Pipeline.none unless source_project
 
     @all_pipelines ||= source_project.pipelines
-      .where(sha: all_commits_sha, ref: source_branch)
+      .where(sha: all_commit_shas, ref: source_branch)
       .order(id: :desc)
+  end
+
+  def all_commits
+    # MySQL doesn't support LIMIT in a subquery.
+    diffs_relation = if Gitlab::Database.postgresql?
+                       merge_request_diffs.recent
+                     else
+                       merge_request_diffs
+                     end
+
+    MergeRequestDiffCommit
+      .where(merge_request_diff: diffs_relation)
+      .limit(10_000)
   end
 
   # Note that this could also return SHA from now dangling commits
   #
-  def all_commits_sha
-    if persisted?
-      merge_request_diffs.flat_map(&:commits_sha).uniq
-    elsif compare_commits
-      compare_commits.to_a.reverse.map(&:id)
-    else
-      [diff_head_sha]
+  def all_commit_shas
+    @all_commit_shas ||= begin
+      return commit_shas unless persisted?
+
+      all_commits.pluck(:sha).uniq
     end
   end
 
@@ -852,7 +999,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_reverted?(current_user)
-    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+    return false unless merge_commit
+
+    merged_at = metrics&.merged_at
+    notes_association = notes_with_associations
+
+    if merged_at
+      # It is not guaranteed that Note#created_at will be strictly later than
+      # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
+      # comparison, as will a HA environment if clocks are not *precisely*
+      # synchronized. Add a minute's leeway to compensate for both possibilities
+      cutoff = merged_at - 1.minute
+
+      notes_association = notes_association.where('created_at >= ?', cutoff)
+    end
+
+    !merge_commit.has_been_reverted?(current_user, notes_association)
   end
 
   def can_be_cherry_picked?
@@ -885,6 +1047,12 @@ class MergeRequest < ActiveRecord::Base
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
     end
+
+    if project.resolve_outdated_diff_discussions?
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project, current_user)
+        .execute(self)
+    end
   end
 
   def keep_around_commit
@@ -905,9 +1073,37 @@ class MergeRequest < ActiveRecord::Base
     return true if autocomplete_precheck
 
     return false unless mergeable?(skip_ci_check: true)
-    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if actual_head_pipeline && !(actual_head_pipeline.success? || actual_head_pipeline.active?)
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def update_project_counter_caches
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  end
+
+  def first_contribution?
+    return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
+
+    project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
+  def allow_maintainer_to_push
+    maintainer_push_possible? && super
+  end
+
+  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+
+  def maintainer_push_possible?
+    source_project.present? && for_fork? &&
+      target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      !ProtectedBranch.protected?(source_project, source_branch)
+  end
+
+  def can_allow_maintainer_to_push?(user)
+    maintainer_push_possible? &&
+      Ability.allowed?(user, :push_code, source_project)
   end
 end

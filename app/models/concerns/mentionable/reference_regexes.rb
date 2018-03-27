@@ -14,7 +14,7 @@ module Mentionable
     end
 
     EXTERNAL_PATTERN = begin
-      issue_pattern = ExternalIssue.reference_pattern
+      issue_pattern = IssueTrackerService.reference_pattern
       link_patterns = URI.regexp(%w(http https))
       reference_pattern(link_patterns, issue_pattern)
     end

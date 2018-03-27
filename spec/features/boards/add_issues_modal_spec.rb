@@ -1,27 +1,27 @@
 require 'rails_helper'
 
-describe 'Issue Boards add issue modal', :feature, :js do
-  let(:project) { create(:empty_project, :public) }
+describe 'Issue Boards add issue modal', :js do
+  let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
   let!(:planning) { create(:label, project: project, name: 'Planning') }
   let!(:label) { create(:label, project: project) }
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }
   let!(:list2) { create(:list, board: board, label: label, position: 1) }
-  let!(:issue) { create(:issue, project: project) }
-  let!(:issue2) { create(:issue, project: project) }
+  let!(:issue) { create(:issue, project: project, title: 'abc', description: 'def') }
+  let!(:issue2) { create(:issue, project: project, title: 'hij', description: 'klm') }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 
   it 'resets filtered search state' do
-    visit namespace_project_board_path(project.namespace, project, board, search: 'testing')
+    visit project_board_path(project, board, search: 'testing')
 
     wait_for_requests
 
@@ -101,7 +101,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Cancel'
         end
 
-        first('.board-delete').click
+        accept_confirm { first('.board-delete').click }
 
         click_button('Add issues')
 

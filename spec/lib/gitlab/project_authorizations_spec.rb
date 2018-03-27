@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::ProjectAuthorizations do
   let(:group) { create(:group) }
-  let!(:owned_project) { create(:empty_project) }
-  let!(:other_project) { create(:empty_project) }
-  let!(:group_project) { create(:empty_project, namespace: group) }
+  let!(:owned_project) { create(:project) }
+  let!(:other_project) { create(:project) }
+  let!(:group_project) { create(:project, namespace: group) }
 
   let(:user) { owned_project.namespace.owner }
 
@@ -15,7 +15,7 @@ describe Gitlab::ProjectAuthorizations do
   end
 
   before do
-    other_project.team << [user, :reporter]
+    other_project.add_reporter(user)
     group.add_developer(user)
   end
 
@@ -49,7 +49,7 @@ describe Gitlab::ProjectAuthorizations do
   if Group.supports_nested_groups?
     context 'with nested groups' do
       let!(:nested_group) { create(:group, parent: group) }
-      let!(:nested_project) { create(:empty_project, namespace: nested_group) }
+      let!(:nested_project) { create(:project, namespace: nested_group) }
 
       it 'includes nested groups' do
         expect(authorizations.pluck(:project_id)).to include(nested_project.id)

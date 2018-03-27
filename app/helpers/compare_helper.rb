@@ -4,13 +4,12 @@ module CompareHelper
       to.present? &&
       from != to &&
       can?(current_user, :create_merge_request, project) &&
-      project.repository.branch_names.include?(from) &&
-      project.repository.branch_names.include?(to)
+      project.repository.branch_exists?(from) &&
+      project.repository.branch_exists?(to)
   end
 
   def create_mr_path(from = params[:from], to = params[:to], project = @project)
-    new_namespace_project_merge_request_path(
-      project.namespace,
+    project_new_merge_request_path(
       project,
       merge_request: {
         source_branch: to,

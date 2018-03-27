@@ -1,7 +1,9 @@
 /* eslint-disable space-before-function-paren, camelcase, guard-for-in, no-restricted-syntax, no-unused-vars, max-len */
 /* global NoteModel */
 
+import $ from 'jquery';
 import Vue from 'vue';
+import { localTimeAgo } from '../../lib/utils/datetime_utility';
 
 class DiscussionModel {
   constructor (discussionId) {
@@ -71,7 +73,7 @@ class DiscussionModel {
         $(`${discussionSelector} .discussion-header`).append(data.discussion_headline_html);
       }
 
-      gl.utils.localTimeAgo($('.js-timeago', `${discussionSelector}`));
+      localTimeAgo($('.js-timeago', `${discussionSelector}`));
     } else {
       $discussionHeadline.remove();
     }

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'user browses project', feature: true, js: true do
-  let(:project) { create(:project) }
+feature 'user browses project', :js do
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit namespace_project_tree_path(project.namespace, project, project.default_branch)
+    project.add_master(user)
+    sign_in(user)
+    visit project_tree_path(project, project.default_branch)
   end
 
   scenario "can see blame of '.gitignore'" do

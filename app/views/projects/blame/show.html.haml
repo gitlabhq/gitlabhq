@@ -1,7 +1,6 @@
 - @no_container = true
 - project_duration = age_map_duration(@blame_groups, @project)
 - page_title "Blame", @blob.path, @ref
-= render "projects/commits/head"
 
 %div{ class: container_class }
   #blob-content-holder.tree-holder
@@ -21,10 +20,10 @@
                 .commit
                   = author_avatar(commit, size: 36)
                   .commit-row-title
-                    %strong
-                      = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
+                    %span.item-title.str-truncated-100
+                      = link_to_markdown commit.title, project_commit_path(@project, commit.id), class: "cdark", title: commit.title
                     .pull-right
-                      = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "commit-sha"
+                      = link_to commit.short_id, project_commit_path(@project, commit), class: "commit-sha"
                     &nbsp;
                   .light
                     = commit_author_link(commit, avatar: false)

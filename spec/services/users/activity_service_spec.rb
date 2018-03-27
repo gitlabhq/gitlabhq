@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Users::ActivityService, services: true do
+describe Users::ActivityService do
   include UserActivitiesHelpers
 
   let(:user) { create(:user) }
 
   subject(:service) { described_class.new(user, 'type') }
 
-  describe '#execute', :redis do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     context 'when last activity is nil' do
       before do
         service.execute
@@ -36,6 +36,18 @@ describe Users::ActivityService, services: true do
 
           expect(last_hour_user_ids).to match_array([user.id, other_user.id])
         end
+      end
+    end
+
+    context 'when in GitLab read-only instance' do
+      before do
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
+
+      it 'does not update last_activity_at' do
+        service.execute
+
+        expect(last_hour_user_ids).to eq([])
       end
     end
   end

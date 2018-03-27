@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CaseSensitivity, models: true do
+describe CaseSensitivity do
   describe '.iwhere' do
     let(:connection) { ActiveRecord::Base.connection }
     let(:model)      { Class.new { include CaseSensitivity } }

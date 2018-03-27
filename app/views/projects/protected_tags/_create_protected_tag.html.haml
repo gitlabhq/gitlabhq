@@ -1,32 +1,8 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
-  .panel.panel-default
-    .panel-heading
-      %h3.panel-title
-        Protect a tag
-    .panel-body
-      .form-horizontal
-        = form_errors(@protected_tag)
-        .form-group
-          = f.label :name, class: 'col-md-2 text-right' do
-            Tag:
-          .col-md-10.protected-tags-dropdown
-            = render partial: "projects/protected_tags/dropdown", locals: { f: f }
-            .help-block
-              = link_to 'Wildcards', help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
-              such as
-              %code v*
-              or
-              %code *-release
-              are supported
-        .form-group
-          %label.col-md-2.text-right{ for: 'create_access_levels_attributes' }
-            Allowed to create:
-          .col-md-10
-            .create_access_levels-container
-              = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-create wide',
-                             dropdown_class: 'dropdown-menu-selectable',
-                             data: { field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', input_id: 'create_access_levels_attributes' }})
+- content_for :create_access_levels do
+  .create_access_levels-container
+    = dropdown_tag('Select',
+                   options: { toggle_class: 'js-allowed-to-create wide',
+                   dropdown_class: 'dropdown-menu-selectable capitalize-header',
+                   data: { field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', input_id: 'create_access_levels_attributes' }})
 
-    .panel-footer
-      = f.submit 'Protect', class: 'btn-create btn', disabled: true
+= render 'projects/protected_tags/shared/create_protected_tag'

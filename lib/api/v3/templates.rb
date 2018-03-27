@@ -16,15 +16,15 @@ module API
         }
       }.freeze
       PROJECT_TEMPLATE_REGEX =
-        /[\<\{\[]
+        %r{[\<\{\[]
           (project|description|
           one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
-        [\>\}\]]/xi.freeze
+        [\>\}\]]}xi.freeze
       YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i.freeze
       FULLNAME_TEMPLATE_REGEX =
-        /[\<\{\[]
+        %r{[\<\{\[]
           (fullname|name\sof\s(author|copyright\sowner))
-        [\>\}\]]/xi.freeze
+        [\>\}\]]}xi.freeze
       DEPRECATION_MESSAGE = ' This endpoint is deprecated and has been removed in V4.'.freeze
 
       helpers do
@@ -52,16 +52,16 @@ module API
           detailed_desc = 'This feature was introduced in GitLab 8.7.'
           detailed_desc << DEPRECATION_MESSAGE unless status == :ok
           detail detailed_desc
-          success ::API::Entities::RepoLicense
+          success ::API::Entities::License
         end
         params do
           optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
         end
         get route do
           options = {
-            featured: declared(params).popular.present? ? true : nil
+            featured: declared(params)[:popular].present? ? true : nil
           }
-          present Licensee::License.all(options), with: ::API::Entities::RepoLicense
+          present Licensee::License.all(options), with: ::API::Entities::License
         end
       end
 
@@ -70,17 +70,17 @@ module API
           detailed_desc = 'This feature was introduced in GitLab 8.7.'
           detailed_desc << DEPRECATION_MESSAGE unless status == :ok
           detail detailed_desc
-          success ::API::Entities::RepoLicense
+          success ::API::Entities::License
         end
         params do
           requires :name, type: String, desc: 'The name of the template'
         end
         get route, requirements: { name: /[\w\.-]+/ } do
-          not_found!('License') unless Licensee::License.find(declared(params).name)
+          not_found!('License') unless Licensee::License.find(declared(params)[:name])
 
           template = parsed_license_template
 
-          present template, with: ::API::Entities::RepoLicense
+          present template, with: ::API::Entities::License
         end
       end
 
@@ -111,7 +111,7 @@ module API
             requires :name, type: String, desc: 'The name of the template'
           end
           get route do
-            new_template = klass.find(declared(params).name)
+            new_template = klass.find(declared(params)[:name])
 
             render_response(template_type, new_template)
           end

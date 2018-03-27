@@ -1,18 +1,19 @@
 require 'spec_helper'
 
-describe 'Explore Groups page', :js, :feature do
+describe 'Explore Groups page', :js do
   let!(:user) { create :user }
   let!(:group) { create(:group) }
   let!(:public_group) { create(:group, :public) }
   let!(:private_group) { create(:group, :private) }
-  let!(:empty_project) { create(:empty_project, group: public_group) }
+  let!(:empty_project) { create(:project, group: public_group) }
 
   before do
     group.add_owner(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit explore_groups_path
+    wait_for_requests
   end
 
   it 'shows groups user is member of' do
@@ -22,7 +23,7 @@ describe 'Explore Groups page', :js, :feature do
   end
 
   it 'filters groups' do
-    fill_in 'filter_groups', with: group.name
+    fill_in 'filter', with: group.name
     wait_for_requests
 
     expect(page).to have_content(group.full_name)
@@ -31,10 +32,10 @@ describe 'Explore Groups page', :js, :feature do
   end
 
   it 'resets search when user cleans the input' do
-    fill_in 'filter_groups', with: group.name
+    fill_in 'filter', with: group.name
     wait_for_requests
 
-    fill_in 'filter_groups', with: ""
+    fill_in 'filter', with: ""
     wait_for_requests
 
     expect(page).to have_content(group.full_name)
@@ -45,21 +46,21 @@ describe 'Explore Groups page', :js, :feature do
 
   it 'shows non-archived projects count' do
     # Initially project is not archived
-    expect(find('.js-groups-list-holder .content-list li:first-child .stats span:first-child')).to have_text("1")
+    expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("1")
 
     # Archive project
     empty_project.archive!
     visit explore_groups_path
 
     # Check project count
-    expect(find('.js-groups-list-holder .content-list li:first-child .stats span:first-child')).to have_text("0")
+    expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("0")
 
     # Unarchive project
     empty_project.unarchive!
     visit explore_groups_path
 
     # Check project count
-    expect(find('.js-groups-list-holder .content-list li:first-child .stats span:first-child')).to have_text("1")
+    expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("1")
   end
 
   describe 'landing component' do

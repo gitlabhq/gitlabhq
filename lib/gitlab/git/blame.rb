@@ -16,7 +16,7 @@ module Gitlab
       def each
         @blames.each do |blame|
           yield(
-            Gitlab::Git::Commit.new(blame.commit),
+            Gitlab::Git::Commit.new(@repo, blame.commit),
             blame.line
           )
         end
@@ -25,11 +25,24 @@ module Gitlab
       private
 
       def load_blame
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{@repo.path} blame -p #{@sha} -- #{@path})
-        # Read in binary mode to ensure ASCII-8BIT
-        raw_output = IO.popen(cmd, 'rb') {|io| io.read }
+        raw_output = @repo.gitaly_migrate(:blame) do |is_enabled|
+          if is_enabled
+            load_blame_by_gitaly
+          else
+            load_blame_by_shelling_out
+          end
+        end
+
         output = encode_utf8(raw_output)
         process_raw_blame output
+      end
+
+      def load_blame_by_gitaly
+        @repo.gitaly_commit_client.raw_blame(@sha, @path)
+      end
+
+      def load_blame_by_shelling_out
+        @repo.shell_blame(@sha, @path)
       end
 
       def process_raw_blame(output)

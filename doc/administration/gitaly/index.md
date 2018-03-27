@@ -2,8 +2,9 @@
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) (introduced in GitLab
 9.0) is a service that provides high-level RPC access to Git
-repositories. As of GitLab 9.3 it is still an optional component with
-limited scope.
+repositories. Gitaly was optional when it was first introduced in
+GitLab, but since GitLab 9.4 it is a mandatory component of the
+application.
 
 GitLab components that access Git repositories (gitlab-rails,
 gitlab-shell, gitlab-workhorse) act as clients to Gitaly. End users do
@@ -32,6 +33,14 @@ prometheus_listen_addr = "localhost:9236"
 
 Changes to `/home/git/gitaly/config.toml` are applied when you run `service
 gitlab restart`.
+
+## Client-side GRPC logs
+
+Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
+client has its own log file which may contain useful information when
+you are seeing Gitaly errors. You can control the log level of the
+gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
+default level is `WARN`.
 
 ## Running Gitaly on its own server
 
@@ -146,9 +155,11 @@ Omnibus installations:
 ```ruby
 # /etc/gitlab/gitlab.rb
 git_data_dirs({
-  { 'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tcp://gitlab.internal:9999' } },
-  { 'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tcp://gitlab.internal:9999' } },
+  'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tcp://gitlab.internal:9999' },
+  'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tcp://gitlab.internal:9999' },
 })
+
+gitlab_rails['gitaly_token'] = 'abc123secret'
 ```
 
 Source installations:
@@ -164,6 +175,9 @@ gitlab:
       storage1:
         path: /mnt/gitlab/storage1/repositories
         gitaly_address: tcp://gitlab.internal:9999
+
+  gitaly:
+    token: 'abc123secret'
 ```
 
 Now reconfigure (Omnibus) or restart (source). When you tail the
@@ -172,39 +186,20 @@ Gitaly logs on your Gitaly server (`sudo gitlab-ctl tail gitaly` or
 coming in. One sure way to trigger a Gitaly request is to clone a
 repository from your GitLab server over HTTP.
 
-## Configuring GitLab to not use Gitaly
+## Disabling or enabling the Gitaly service in a cluster environment
 
-Gitaly is still an optional component in GitLab 9.3. This means you
-can choose to not use it.
+If you are running Gitaly [as a remote
+service](#running-gitaly-on-its-own-server) you may want to disable
+the local Gitaly service that runs on your Gitlab server by default.
 
-In Omnibus you can make the following change in
-`/etc/gitlab/gitlab.rb` and reconfigure. This will both disable the
-Gitaly service and configure the rest of GitLab not to use it.
+> 'Disabling Gitaly' only makes sense when you run GitLab in a custom
+cluster configuration, where different services run on different
+machines. Disabling Gitaly on all machines in the cluster is not a
+valid configuration.
 
-```ruby
-gitaly['enable'] = false
-```
-
-In source installations, edit `/home/git/gitlab/config/gitlab.yml` and
-make sure `enabled` in the `gitaly` section is set to 'false'. This
-does not disable the Gitaly service in your init script; it only
-prevents it from being used.
-
-Apply the change with `service gitlab restart`.
-
-```yaml
-  gitaly:
-    enabled: false
-```
-
-## Disabling or enabling the Gitaly service
-
-Be careful: if you disable Gitaly without instructing the rest of your
-GitLab installation not to use Gitaly, you may end up with errors
-because GitLab tries to access a service that is not running.
-
-To disable the Gitaly service in your Omnibus installation, add the
-following line to `/etc/gitlab/gitlab.rb`:
+If you are setting up a GitLab cluster where Gitaly does not need to
+run on all machines, you can disable the Gitaly service in your
+Omnibus installation, add the following line to `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitaly['enable'] = false
@@ -213,11 +208,13 @@ gitaly['enable'] = false
 When you run `gitlab-ctl reconfigure` the Gitaly service will be
 disabled.
 
-To disable the Gitaly service in an installation from source, add the
-following to `/etc/default/gitlab`:
+To disable the Gitaly service in a GitLab cluster where you installed
+GitLab from source, add the following to `/etc/default/gitlab` on the
+machine where you want to disable Gitaly.
 
 ```shell
 gitaly_enabled=false
 ```
 
-When you run `service gitlab restart` Gitaly will be disabled.
+When you run `service gitlab restart` Gitaly will be disabled on this
+particular machine.

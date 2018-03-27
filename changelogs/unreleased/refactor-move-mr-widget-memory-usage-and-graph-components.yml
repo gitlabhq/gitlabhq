@@ -1,0 +1,5 @@
+---
+title: Move MemoryGraph and MemoryUsage vue components
+merge_request: 17533
+author: George Tsiolis
+type: performance

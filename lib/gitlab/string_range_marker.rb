@@ -1,21 +1,31 @@
 module Gitlab
   class StringRangeMarker
-    attr_accessor :raw_line, :rich_line
+    attr_accessor :raw_line, :rich_line, :html_escaped
 
-    def initialize(raw_line, rich_line = raw_line)
-      @raw_line = raw_line
-      @rich_line = ERB::Util.html_escape(rich_line)
+    def initialize(raw_line, rich_line = nil)
+      @raw_line = raw_line.dup
+      if rich_line.nil?
+        @rich_line = raw_line.dup
+        @html_escaped = false
+      else
+        @rich_line = ERB::Util.html_escape(rich_line)
+        @html_escaped = true
+      end
     end
 
     def mark(marker_ranges)
-      return rich_line unless marker_ranges
+      return rich_line unless marker_ranges&.any?
 
-      rich_marker_ranges = []
-      marker_ranges.each do |range|
-        # Map the inline-diff range based on the raw line to character positions in the rich line
-        rich_positions = position_mapping[range].flatten
-        # Turn the array of character positions into ranges
-        rich_marker_ranges.concat(collapse_ranges(rich_positions))
+      if html_escaped
+        rich_marker_ranges = []
+        marker_ranges.each do |range|
+          # Map the inline-diff range based on the raw line to character positions in the rich line
+          rich_positions = position_mapping[range].flatten
+          # Turn the array of character positions into ranges
+          rich_marker_ranges.concat(collapse_ranges(rich_positions))
+        end
+      else
+        rich_marker_ranges = marker_ranges
       end
 
       offset = 0
@@ -31,7 +41,7 @@ module Gitlab
         offset += text.length - original_text.length
       end
 
-      rich_line.html_safe
+      @html_escaped ? rich_line.html_safe : rich_line
     end
 
     private
@@ -80,6 +90,7 @@ module Gitlab
     # Takes an array of integers, and returns an array of ranges covering the same integers
     def collapse_ranges(positions)
       return [] if positions.empty?
+
       ranges = []
 
       start = prev = positions[0]

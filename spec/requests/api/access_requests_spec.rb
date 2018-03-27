@@ -1,20 +1,20 @@
 require 'spec_helper'
 
 describe API::AccessRequests do
-  let(:master) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:access_requester) { create(:user) }
-  let(:stranger) { create(:user) }
+  set(:master) { create(:user) }
+  set(:developer) { create(:user) }
+  set(:access_requester) { create(:user) }
+  set(:stranger) { create(:user) }
 
-  let(:project) do
-    create(:empty_project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
-      project.team << [developer, :developer]
-      project.team << [master, :master]
+  set(:project) do
+    create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
+      project.add_developer(developer)
+      project.add_master(master)
       project.request_access(access_requester)
     end
   end
 
-  let(:group) do
+  set(:group) do
     create(:group, :public, :access_requestable) do |group|
       group.add_developer(developer)
       group.add_owner(master)
@@ -35,7 +35,7 @@ describe API::AccessRequests do
               user = public_send(type)
               get api("/#{source_type.pluralize}/#{source.id}/access_requests", user)
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -45,7 +45,7 @@ describe API::AccessRequests do
         it 'returns access requesters' do
           get api("/#{source_type.pluralize}/#{source.id}/access_requests", master)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(1)
@@ -68,7 +68,7 @@ describe API::AccessRequests do
                 user = public_send(type)
                 post api("/#{source_type.pluralize}/#{source.id}/access_requests", user)
 
-                expect(response).to have_http_status(403)
+                expect(response).to have_gitlab_http_status(403)
               end.not_to change { source.requesters.count }
             end
           end
@@ -80,7 +80,7 @@ describe API::AccessRequests do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", access_requester)
 
-            expect(response).to have_http_status(400)
+            expect(response).to have_gitlab_http_status(400)
           end.not_to change { source.requesters.count }
         end
       end
@@ -95,7 +95,7 @@ describe API::AccessRequests do
             expect do
               post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end.not_to change { source.requesters.count }
           end
         end
@@ -104,7 +104,7 @@ describe API::AccessRequests do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end.to change { source.requesters.count }.by(1)
 
           # User attributes
@@ -135,7 +135,7 @@ describe API::AccessRequests do
               user = public_send(type)
               put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}/approve", user)
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -147,7 +147,7 @@ describe API::AccessRequests do
             put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}/approve", master),
                 access_level: Member::MASTER
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end.to change { source.members.count }.by(1)
           # User attributes
           expect(json_response['id']).to eq(access_requester.id)
@@ -166,7 +166,7 @@ describe API::AccessRequests do
             expect do
               put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{stranger.id}/approve", master)
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end.not_to change { source.members.count }
           end
         end
@@ -187,7 +187,7 @@ describe API::AccessRequests do
               user = public_send(type)
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", user)
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -198,7 +198,7 @@ describe API::AccessRequests do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
-            expect(response).to have_http_status(204)
+            expect(response).to have_gitlab_http_status(204)
           end.to change { source.requesters.count }.by(-1)
         end
       end
@@ -208,7 +208,7 @@ describe API::AccessRequests do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", master)
 
-            expect(response).to have_http_status(204)
+            expect(response).to have_gitlab_http_status(204)
           end.to change { source.requesters.count }.by(-1)
         end
 
@@ -217,7 +217,7 @@ describe API::AccessRequests do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{developer.id}", master)
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end.not_to change { source.requesters.count }
           end
         end
@@ -227,7 +227,7 @@ describe API::AccessRequests do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{stranger.id}", master)
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end.not_to change { source.requesters.count }
           end
         end

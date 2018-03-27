@@ -1,32 +1,33 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, comma-dangle, quotes, prefer-arrow-callback, consistent-return, one-var, no-var, one-var-declaration-per-line, no-underscore-dangle, max-len */
-/* global bp */
-
+import $ from 'jquery';
 import Cookies from 'js-cookie';
+import bp from './breakpoints';
 import UsersSelect from './users_select';
 
-(function() {
-  this.IssuableContext = (function() {
-    function IssuableContext(currentUser) {
-      this.initParticipants();
-      new UsersSelect(currentUser);
-      $('select.select2').select2({
-        width: 'resolve',
-        dropdownAutoWidth: true
-      });
-      $(".issuable-sidebar .inline-update").on("change", "select", function() {
-        return $(this).submit();
-      });
-      $(".issuable-sidebar .inline-update").on("change", ".js-assignee", function() {
-        return $(this).submit();
-      });
-      $(document).off('click', '.issuable-sidebar .dropdown-content a').on('click', '.issuable-sidebar .dropdown-content a', function(e) {
-        return e.preventDefault();
-      });
-      $(document).off('click', '.edit-link').on('click', '.edit-link', function(e) {
-        var $block, $selectbox;
+export default class IssuableContext {
+  constructor(currentUser) {
+    this.userSelect = new UsersSelect(currentUser);
+
+    $('select.select2').select2({
+      width: 'resolve',
+      dropdownAutoWidth: true,
+    });
+
+    $('.issuable-sidebar .inline-update').on('change', 'select', function onClickSelect() {
+      return $(this).submit();
+    });
+    $('.issuable-sidebar .inline-update').on('change', '.js-assignee', function onClickAssignee() {
+      return $(this).submit();
+    });
+    $(document)
+      .off('click', '.issuable-sidebar .dropdown-content a')
+      .on('click', '.issuable-sidebar .dropdown-content a', e => e.preventDefault());
+
+    $(document)
+      .off('click', '.edit-link')
+      .on('click', '.edit-link', function onClickEdit(e) {
         e.preventDefault();
-        $block = $(this).parents('.block');
-        $selectbox = $block.find('.selectbox');
+        const $block = $(this).parents('.block');
+        const $selectbox = $block.find('.selectbox');
         if ($selectbox.is(':visible')) {
           $selectbox.hide();
           $block.find('.value').show();
@@ -34,46 +35,18 @@ import UsersSelect from './users_select';
           $selectbox.show();
           $block.find('.value').hide();
         }
+
         if ($selectbox.is(':visible')) {
-          return setTimeout(function() {
-            return $block.find('.dropdown-menu-toggle').trigger('click');
-          }, 0);
+          setTimeout(() => $block.find('.dropdown-menu-toggle').trigger('click'), 0);
         }
       });
-      window.addEventListener('beforeunload', function() {
-        // collapsed_gutter cookie hides the sidebar
-        var bpBreakpoint = bp.getBreakpointSize();
-        if (bpBreakpoint === 'xs' || bpBreakpoint === 'sm') {
-          Cookies.set('collapsed_gutter', true);
-        }
-      });
-    }
 
-    IssuableContext.prototype.initParticipants = function() {
-      var _this;
-      _this = this;
-      $(document).on("click", ".js-participants-more", this.toggleHiddenParticipants);
-      return $(".js-participants-author").each(function(i) {
-        if (i >= _this.PARTICIPANTS_ROW_COUNT) {
-          return $(this).addClass("js-participants-hidden").hide();
-        }
-      });
-    };
-
-    IssuableContext.prototype.toggleHiddenParticipants = function(e) {
-      var currentText, lessText, originalText;
-      e.preventDefault();
-      currentText = $(this).text().trim();
-      lessText = $(this).data("less-text");
-      originalText = $(this).data("original-text");
-      if (currentText === originalText) {
-        $(this).text(lessText);
-      } else {
-        $(this).text(originalText);
+    window.addEventListener('beforeunload', () => {
+      // collapsed_gutter cookie hides the sidebar
+      const bpBreakpoint = bp.getBreakpointSize();
+      if (bpBreakpoint === 'xs' || bpBreakpoint === 'sm') {
+        Cookies.set('collapsed_gutter', true);
       }
-      return $(".js-participants-hidden").toggle();
-    };
-
-    return IssuableContext;
-  })();
-}).call(window);
+    });
+  }
+}

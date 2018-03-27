@@ -2,7 +2,7 @@
 .js-file-title.file-title-flex-parent
   = render 'projects/blob/header_content', blob: blob
 
-  .file-actions.hidden-xs
+  .file-actions
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
 
     .btn-group{ role: "group" }<
@@ -11,7 +11,8 @@
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
-      = edit_blob_link
+      = edit_blob_button
+      = ide_edit_button
       - if current_user
         = replace_blob_link
         = delete_blob_link

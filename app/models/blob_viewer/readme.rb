@@ -10,5 +10,11 @@ module BlobViewer
     def visible_to?(current_user)
       can?(current_user, :read_wiki, project)
     end
+
+    def render_error
+      return if project.has_external_wiki? || (project.wiki_enabled? && project.wiki.has_home_page?)
+
+      :no_wiki
+    end
   end
 end

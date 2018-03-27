@@ -1,33 +1,33 @@
 <script>
-import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+  import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
-export default {
-  props: {
-    updatedAt: {
-      type: String,
-      required: false,
-      default: '',
+  export default {
+    components: {
+      timeAgoTooltip,
     },
-    updatedByName: {
-      type: String,
-      required: false,
-      default: '',
+    props: {
+      updatedAt: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      updatedByName: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      updatedByPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
-    updatedByPath: {
-      type: String,
-      required: false,
-      default: '',
+    computed: {
+      hasUpdatedBy() {
+        return this.updatedByName && this.updatedByPath;
+      },
     },
-  },
-  components: {
-    timeAgoTooltip,
-  },
-  computed: {
-    hasUpdatedBy() {
-      return this.updatedByName && this.updatedByPath;
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -37,7 +37,7 @@ export default {
     Edited
     <time-ago-tooltip
       v-if="updatedAt"
-      placement="bottom"
+      tooltip-placement="bottom"
       :time="updatedAt"
     />
     <span
@@ -48,7 +48,7 @@ export default {
         class="author_link"
         :href="updatedByPath"
       >
-        <span>{{updatedByName}}</span>
+        <span>{{ updatedByName }}</span>
       </a>
     </span>
   </small>

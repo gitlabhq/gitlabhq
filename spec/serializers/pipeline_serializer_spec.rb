@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe PipelineSerializer do
-  let(:user) { create(:user) }
+  set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
 
   let(:serializer) do
     described_class.new(current_user: user)
@@ -16,7 +17,7 @@ describe PipelineSerializer do
       end
 
       context 'when a single object is being serialized' do
-        let(:resource) { create(:ci_empty_pipeline) }
+        let(:resource) { create(:ci_empty_pipeline, project: project) }
 
         it 'serializers the pipeline object' do
           expect(subject[:id]).to eq resource.id
@@ -24,7 +25,7 @@ describe PipelineSerializer do
       end
 
       context 'when multiple objects are being serialized' do
-        let(:resource) { create_list(:ci_pipeline, 2) }
+        let(:resource) { create_list(:ci_pipeline, 2, project: project) }
 
         it 'serializers the array of pipelines' do
           expect(subject).not_to be_empty
@@ -100,22 +101,48 @@ describe PipelineSerializer do
 
     context 'number of queries' do
       let(:resource) { Ci::Pipeline.all }
-      let(:project) { create(:empty_project) }
 
       before do
-        Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
-          create_pipeline(status)
+        # Since RequestStore.active? is true we have to allow the
+        # gitaly calls in this block
+        # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/37772
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+            create_pipeline(status)
+          end
+        end
+        Gitlab::GitalyClient.reset_counts
+      end
+
+      shared_examples 'no N+1 queries' do
+        it 'verifies number of queries', :request_store do
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+          expect(recorded.count).to be_within(1).of(36)
+          expect(recorded.cached_count).to eq(0)
         end
       end
 
-      it 'verifies number of queries', :request_store do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(57)
-        expect(recorded.cached_count).to eq(0)
+      context 'with the same ref' do
+        let(:ref) { 'feature' }
+
+        it_behaves_like 'no N+1 queries'
+      end
+
+      context 'with different refs' do
+        def ref
+          @sequence ||= 0
+          @sequence += 1
+          "feature-#{@sequence}"
+        end
+
+        it_behaves_like 'no N+1 queries'
       end
 
       def create_pipeline(status)
-        create(:ci_empty_pipeline, project: project, status: status).tap do |pipeline|
+        create(:ci_empty_pipeline,
+               project: project,
+               status: status,
+               ref: ref).tap do |pipeline|
           Ci::Build::AVAILABLE_STATUSES.each do |status|
             create_build(pipeline, status, status)
           end
@@ -125,7 +152,7 @@ describe PipelineSerializer do
       def create_build(pipeline, stage, status)
         create(:ci_build, :tags, :triggered, :artifacts,
           pipeline: pipeline, stage: stage,
-          name: stage, status: status)
+          name: stage, status: status, ref: pipeline.ref)
       end
     end
   end
@@ -141,7 +168,7 @@ describe PipelineSerializer do
         expect(subject[:text]).to eq(status.text)
         expect(subject[:label]).to eq(status.label)
         expect(subject[:icon]).to eq(status.icon)
-        expect(subject[:favicon]).to eq("/assets/ci_favicons/#{status.favicon}.ico")
+        expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
       end
     end
   end

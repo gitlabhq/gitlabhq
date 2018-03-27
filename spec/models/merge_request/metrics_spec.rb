@@ -1,16 +1,11 @@
 require 'spec_helper'
 
-describe MergeRequest::Metrics, models: true do
-  subject { create(:merge_request) }
+describe MergeRequest::Metrics do
+  subject { described_class.new }
 
-  describe "when recording the default set of metrics on merge request save" do
-    it "records the merge time" do
-      time = Time.now
-      Timecop.freeze(time) { subject.mark_as_merged }
-      metrics = subject.metrics
-
-      expect(metrics).to be_present
-      expect(metrics.merged_at).to be_like_time(time)
-    end
+  describe 'associations' do
+    it { is_expected.to belong_to(:merge_request) }
+    it { is_expected.to belong_to(:latest_closed_by).class_name('User') }
+    it { is_expected.to belong_to(:merged_by).class_name('User') }
   end
 end

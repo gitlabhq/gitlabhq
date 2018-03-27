@@ -1,9 +1,9 @@
 %tr{ class: "tree-item #{tree_hex_class(tree_item)}" }
   %td.tree-item-file-name
     = tree_icon(type, tree_item.mode, tree_item.name)
-    - path = flatten_tree(tree_item)
-    = link_to namespace_project_tree_path(@project.namespace, @project, tree_join(@id || @commit.id, path)), title: path do
-      %span.str-truncated= path
+    - path = flatten_tree(@path, tree_item)
+    = link_to project_tree_path(@project, tree_join(@id || @commit.id, path)), class: 'str-truncated', title: path do
+      %span= path
   %td.hidden-xs.tree-commit
   %td.tree-time-ago.text-right
     = render 'projects/tree/spinner'

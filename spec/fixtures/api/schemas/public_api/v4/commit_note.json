@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required" : [
+    "note",
+    "path",
+    "line",
+    "line_type",
+    "author",
+    "created_at"
+  ],
+  "properties" : {
+    "note": { "type": ["string", "null"] },
+    "path": { "type": ["string", "null"] },
+    "line": { "type": ["integer", "null"] },
+    "line_type": { "type": ["string", "null"] },
+    "author": { "$ref": "user/basic.json" },
+    "created_at": { "type": "date" }
+  }
+}

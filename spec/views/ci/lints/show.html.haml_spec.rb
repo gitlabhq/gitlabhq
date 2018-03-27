@@ -4,7 +4,7 @@ describe 'ci/lints/show' do
   include Devise::Test::ControllerHelpers
 
   describe 'XSS protection' do
-    let(:config_processor) { Ci::GitlabCiYamlProcessor.new(YAML.dump(content)) }
+    let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
     before do
       assign(:status, true)
       assign(:builds, config_processor.builds)
@@ -59,7 +59,7 @@ describe 'ci/lints/show' do
     }
   end
 
-  let(:config_processor) { Ci::GitlabCiYamlProcessor.new(YAML.dump(content)) }
+  let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
 
   context 'when the content is valid' do
     before do
@@ -73,8 +73,8 @@ describe 'ci/lints/show' do
       render
 
       expect(rendered).to have_content('Tag list: dotnet')
-      expect(rendered).to have_content('Refs only: test@dude/repo')
-      expect(rendered).to have_content('Refs except: deploy')
+      expect(rendered).to have_content('Only policy: refs, test@dude/repo')
+      expect(rendered).to have_content('Except policy: refs, deploy')
       expect(rendered).to have_content('Environment: testing')
       expect(rendered).to have_content('When: on_success')
     end

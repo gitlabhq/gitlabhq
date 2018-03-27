@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Member, models: true do
+describe Member do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
 
   describe "Validation" do
-    subject { Member.new(access_level: Member::GUEST) }
+    subject { described_class.new(access_level: Member::GUEST) }
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }
@@ -57,17 +57,17 @@ describe Member, models: true do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:empty_project, :public, :access_requestable)
+      project = create(:project, :public, :access_requestable)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
 
-      @master_user = create(:user).tap { |u| project.team << [u, :master] }
+      @master_user = create(:user).tap { |u| project.add_master(u) }
       @master = project.members.find_by(user_id: @master_user.id)
 
       @blocked_user = create(:user).tap do |u|
-        project.team << [u, :master]
-        project.team << [u, :developer]
+        project.add_master(u)
+        project.add_developer(u)
 
         u.block!
       end
@@ -409,6 +409,15 @@ describe Member, models: true do
           expect(members).to be_a Array
           expect(members).to be_empty
         end
+
+        it 'supports differents formats' do
+          list = ['joe@local.test', admin, user1.id, user2.id.to_s]
+
+          members = described_class.add_users(source, list, :master)
+
+          expect(members.size).to eq(4)
+          expect(members.first).to be_invite
+        end
       end
     end
   end
@@ -479,7 +488,7 @@ describe Member, models: true do
       member.accept_invite!(user)
     end
 
-    it "refreshes user's authorized projects", truncate: true do
+    it "refreshes user's authorized projects", :delete do
       project = member.source
 
       expect(user.authorized_projects).not_to include(project)
@@ -514,11 +523,11 @@ describe Member, models: true do
     end
   end
 
-  describe "destroying a record", truncate: true do
+  describe "destroying a record", :delete do
     it "refreshes user's authorized projects" do
-      project = create(:empty_project, :private)
+      project = create(:project, :private)
       user    = create(:user)
-      member  = project.team << [user, :reporter]
+      member  = project.add_reporter(user)
 
       member.destroy
 

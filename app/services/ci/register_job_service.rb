@@ -2,8 +2,6 @@ module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
   class RegisterJobService
-    include Gitlab::CurrentSettings
-
     attr_reader :runner
 
     Result = Struct.new(:build, :valid?)
@@ -22,16 +20,31 @@ module Ci
 
       valid = true
 
+      if Feature.enabled?('ci_job_request_with_tags_matcher')
+        # pick builds that does not have other tags than runner's one
+        builds = builds.matches_tag_ids(runner.tags.ids)
+
+        # pick builds that have at least one tag
+        unless runner.run_untagged?
+          builds = builds.with_any_tags
+        end
+      end
+
       builds.find do |build|
         next unless runner.can_pick?(build)
 
         begin
           # In case when 2 runners try to assign the same build, second runner will be declined
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          build.runner_id = runner.id
-          build.run!
+          begin
+            build.runner_id = runner.id
+            build.run!
+            register_success(build)
 
-          return Result.new(build, true)
+            return Result.new(build, true)
+          rescue Ci::Build::MissingDependenciesError
+            build.drop!(:missing_dependency_failure)
+          end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
           # It also indicates that this build can be picked and passed to runner.
@@ -46,6 +59,7 @@ module Ci
         end
       end
 
+      register_failure
       Result.new(nil, valid)
     end
 
@@ -54,7 +68,7 @@ module Ci
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
-        joins(:project).where(projects: { shared_runners_enabled: true })
+        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
         .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
         .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
@@ -66,7 +80,7 @@ module Ci
     end
 
     def builds_for_specific_runner
-      new_builds.where(project: runner.projects.with_builds_enabled).order('created_at ASC')
+      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
     end
 
     def running_builds_for_shared_runners
@@ -75,11 +89,35 @@ module Ci
     end
 
     def new_builds
-      Ci::Build.pending.unstarted
+      builds = Ci::Build.pending.unstarted
+      builds = builds.ref_protected if runner.ref_protected?
+      builds
     end
 
     def shared_runner_build_limits_feature_enabled?
       ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
+    end
+
+    def register_failure
+      failed_attempt_counter.increment
+      attempt_counter.increment
+    end
+
+    def register_success(job)
+      job_queue_duration_seconds.observe({ shared_runner: @runner.shared? }, Time.now - job.created_at)
+      attempt_counter.increment
+    end
+
+    def failed_attempt_counter
+      @failed_attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_failed_total, "Counts the times a runner tries to register a job")
+    end
+
+    def attempt_counter
+      @attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_total, "Counts the times a runner tries to register a job")
+    end
+
+    def job_queue_duration_seconds
+      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time')
     end
   end
 end

@@ -2,10 +2,10 @@
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
   class EeCompatCheck
-    CE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ce.git'.freeze
-    EE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
+    DEFAULT_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-ce'.freeze
+    EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
-    IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
+    IGNORED_FILES_REGEX = %r{VERSION|CHANGELOG\.md|db/schema\.rb}i.freeze
     PLEASE_READ_THIS_BANNER = %Q{
       ============================================================
       ===================== PLEASE READ THIS =====================
@@ -17,28 +17,36 @@ module Gitlab
       ============================================================\n
     }.freeze
 
-    attr_reader :ee_repo_dir, :patches_dir, :ce_repo, :ce_branch, :ee_branch_found
-    attr_reader :failed_files
+    attr_reader :ee_repo_dir, :patches_dir, :ce_project_url, :ce_repo_url, :ce_branch, :ee_branch_found
+    attr_reader :job_id, :failed_files
 
-    def initialize(branch:, ce_repo: CE_REPO)
+    def initialize(branch:, ce_project_url: DEFAULT_CE_PROJECT_URL, job_id: nil)
       @ee_repo_dir = CHECK_DIR.join('ee-repo')
       @patches_dir = CHECK_DIR.join('patches')
       @ce_branch = branch
-      @ce_repo = ce_repo
+      @ce_project_url = ce_project_url
+      @ce_repo_url = "#{ce_project_url}.git"
+      @job_id = job_id
     end
 
     def check
       ensure_patches_dir
-      generate_patch(ce_branch, ce_patch_full_path)
+      add_remote('canonical-ce', "#{DEFAULT_CE_PROJECT_URL}.git")
+      generate_patch(branch: ce_branch, patch_path: ce_patch_full_path, remote: 'canonical-ce')
 
       ensure_ee_repo
       Dir.chdir(ee_repo_dir) do
         step("In the #{ee_repo_dir} directory")
 
+        add_remote('canonical-ee', EE_REPO_URL)
+
         status = catch(:halt_check) do
           ce_branch_compat_check!
           delete_ee_branches_locally!
           ee_branch_presence_check!
+
+          step("Checking out #{ee_branch_found}", %W[git checkout -b #{ee_branch_found} canonical-ee/#{ee_branch_found}])
+          generate_patch(branch: ee_branch_found, patch_path: ee_patch_full_path, remote: 'canonical-ee')
           ee_branch_compat_check!
         end
 
@@ -54,13 +62,20 @@ module Gitlab
 
     private
 
+    def add_remote(name, url)
+      step(
+        "Adding the #{name} remote (#{url})",
+        %W[git remote add #{name} #{url}]
+      )
+    end
+
     def ensure_ee_repo
       if Dir.exist?(ee_repo_dir)
         step("#{ee_repo_dir} already exists")
       else
         step(
-          "Cloning #{EE_REPO} into #{ee_repo_dir}",
-          %W[git clone --branch master --single-branch --depth=200 #{EE_REPO} #{ee_repo_dir}]
+          "Cloning #{EE_REPO_URL} into #{ee_repo_dir}",
+          %W[git clone --branch master --single-branch --depth=200 #{EE_REPO_URL} #{ee_repo_dir}]
         )
       end
     end
@@ -69,14 +84,14 @@ module Gitlab
       FileUtils.mkdir_p(patches_dir)
     end
 
-    def generate_patch(branch, patch_path)
+    def generate_patch(branch:, patch_path:, remote:)
       FileUtils.rm(patch_path, force: true)
 
-      find_merge_base_with_master(branch: branch)
+      find_merge_base_with_master(branch: branch, master_remote: remote)
 
       step(
-        "Generating the patch against origin/master in #{patch_path}",
-        %w[git diff --binary origin/master...HEAD]
+        "Generating the patch against #{remote}/master in #{patch_path}",
+        %W[git diff --binary #{remote}/master...origin/#{branch}]
       ) do |output, status|
         throw(:halt_check, :ko) unless status.zero?
 
@@ -94,13 +109,14 @@ module Gitlab
     end
 
     def ee_branch_presence_check!
-      _, status = step("Fetching origin/#{ee_branch_prefix}", %W[git fetch origin #{ee_branch_prefix}])
+      _, status = step("Fetching origin/#{ee_branch_prefix}", %W[git fetch canonical-ee #{ee_branch_prefix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_prefix
-      else
-        _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
+        return
       end
+
+      _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch canonical-ee #{ee_branch_suffix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_suffix
@@ -113,10 +129,6 @@ module Gitlab
     end
 
     def ee_branch_compat_check!
-      step("Checking out origin/#{ee_branch_found}", %W[git checkout -b #{ee_branch_found} FETCH_HEAD])
-
-      generate_patch(ee_branch_found, ee_patch_full_path)
-
       unless check_patch(ee_patch_full_path).zero?
         puts
         puts ee_branch_doesnt_apply_cleanly_msg
@@ -130,8 +142,7 @@ module Gitlab
 
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
-      step("Resetting to latest master", %w[git reset --hard origin/master])
-      step("Fetching CE/#{ce_branch}", %W[git fetch #{CE_REPO} #{ce_branch}])
+      step("Resetting to latest master", %w[git reset --hard canonical-ee/master])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         # Don't use --check here because it can result in a 0-exit status even
@@ -145,12 +156,14 @@ module Gitlab
         %W[git apply --3way #{patch_path}]
       ) do |output, status|
         puts output
+
         unless status.zero?
           @failed_files = output.lines.reduce([]) do |memo, line|
             if line.start_with?('error: patch failed:')
               file = line.sub(/\Aerror: patch failed: /, '')
               memo << file unless file =~ IGNORED_FILES_REGEX
             end
+
             memo
           end
 
@@ -168,10 +181,10 @@ module Gitlab
       command(%W[git branch --delete --force #{ee_branch_suffix}])
     end
 
-    def merge_base_found?
+    def merge_base_found?(master_remote:, branch:)
       step(
-        "Finding merge base with master",
-        %w[git merge-base origin/master HEAD]
+        "Finding merge base with #{master_remote}/master",
+        %W[git merge-base #{master_remote}/master origin/#{branch}]
       ) do |output, status|
         if status.zero?
           puts "Merge base was found: #{output}"
@@ -180,9 +193,7 @@ module Gitlab
       end
     end
 
-    def find_merge_base_with_master(branch:)
-      return if merge_base_found?
-
+    def find_merge_base_with_master(branch:, master_remote:)
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20
@@ -191,19 +202,19 @@ module Gitlab
           depth += Math.exp(factor).to_i
           # Repository is initially cloned with a depth of 20 so we need to fetch
           # deeper in the case the branch has more than 20 commits on top of master
-          fetch(branch: branch, depth: depth)
-          fetch(branch: 'master', depth: depth)
+          fetch(branch: branch, depth: depth, remote: 'origin')
+          fetch(branch: 'master', depth: depth, remote: master_remote)
 
-          merge_base_found?
+          merge_base_found?(master_remote: master_remote, branch: branch)
         end
 
-      raise "\n#{branch} is too far behind master, please rebase it!\n" unless success
+      raise "\n#{branch} is too far behind #{master_remote}/master, please rebase it!\n" unless success
     end
 
-    def fetch(branch:, depth:)
+    def fetch(branch:, depth:, remote: 'origin')
       step(
         "Fetching deeper...",
-        %W[git fetch --depth=#{depth} --prune origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}]
+        %W[git fetch --depth=#{depth} --prune #{remote} +refs/heads/#{branch}:refs/remotes/#{remote}/#{branch}]
       ) do |output, status|
         raise "Fetch failed: #{output}" unless status.zero?
       end
@@ -237,6 +248,10 @@ module Gitlab
       branch_name.parameterize << '.patch'
     end
 
+    def patch_url
+      "#{ce_project_url}/-/jobs/#{job_id}/artifacts/raw/ee_compat_check/patches/#{ce_patch_name}"
+    end
+
     def step(desc, cmd = nil)
       puts "\n=> #{desc}\n"
 
@@ -267,7 +282,7 @@ module Gitlab
         The `#{branch}` branch applies cleanly to EE/master!
 
         Much ❤️! For more information, see
-        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
         #{THANKS_FOR_READING_BANNER}
       }
     end
@@ -281,36 +296,37 @@ module Gitlab
         EE/master, and no `#{ee_branch_prefix}` or `#{ee_branch_suffix}` branch
         was found in the EE repository.
 
+        If you're a community contributor, don't worry, someone from
+        GitLab Inc. will take care of this, and you don't have to do anything.
+        If you're willing to help, and are ok to contribute to EE as well,
+        you're welcome to help. You could follow the instructions below.
+
         #{conflicting_files_msg}
 
         We advise you to create a `#{ee_branch_prefix}` or `#{ee_branch_suffix}`
         branch that includes changes from `#{ce_branch}` but also specific changes
         than can be applied cleanly to EE/master. In some cases, the conflicts
         are trivial and you can ignore the warning from this job. As always,
-        use your best judgment!
+        use your best judgement!
 
         There are different ways to create such branch:
 
         1. Create a new branch from master and cherry-pick your CE commits
 
           # In the EE repo
-          $ git fetch origin
-          $ git checkout -b #{ee_branch_prefix} origin/master
-          $ git fetch #{ce_repo} #{ce_branch}
+          $ git fetch #{EE_REPO_URL} master
+          $ git checkout -b #{ee_branch_prefix} FETCH_HEAD
+          $ git fetch #{ce_repo_url} #{ce_branch}
           $ git cherry-pick SHA # Repeat for all the commits you want to pick
 
           You can squash the `#{ce_branch}` commits into a single "Port of #{ce_branch} to EE" commit.
 
         2. Apply your branch's patch to EE
 
-          # In the CE repo
-          $ git fetch origin master
-          $ git diff --binary origin/master...HEAD -- > #{ce_branch}.patch
-
           # In the EE repo
-          $ git fetch origin master
-          $ git checkout -b #{ee_branch_prefix} origin/master
-          $ git apply --3way path/to/#{ce_branch}.patch
+          $ git fetch #{EE_REPO_URL} master
+          $ git checkout -b #{ee_branch_prefix} FETCH_HEAD
+          $ wget #{patch_url} && git apply --3way #{ce_patch_name}
 
           At this point you might have conflicts such as:
 
@@ -324,7 +340,7 @@ module Gitlab
           If the patch couldn't be applied cleanly, use the following command:
 
           # In the EE repo
-          $ git apply --reject path/to/#{ce_branch}.patch
+          $ git apply --reject #{ce_patch_name}
 
           This option makes git apply the parts of the patch that are applicable,
           and leave the rejected hunks in corresponding `.rej` files.
@@ -337,13 +353,13 @@ module Gitlab
           # In the EE repo
           $ git push origin #{ee_branch_prefix}
 
-        ⚠️ Also, don't forget to create a new merge request on gitlab-ce and
+        ⚠️ Also, don't forget to create a new merge request on gitlab-ee and
         cross-link it with the CE merge request.
 
         Once this is done, you can retry this failed build, and it should pass.
 
         Stay 💪 ! For more information, see
-        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
         #{THANKS_FOR_READING_BANNER}
       }
     end
@@ -364,7 +380,7 @@ module Gitlab
         retry this build.
 
         Stay 💪 ! For more information, see
-        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
         #{THANKS_FOR_READING_BANNER}
       }
     end

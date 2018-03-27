@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Highlight, lib: true do
+describe Gitlab::Highlight do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -12,7 +12,7 @@ describe Gitlab::Highlight, lib: true do
     let(:blob) { repository.blob_at_branch(branch, path) }
 
     let(:highlighter) do
-      Gitlab::Highlight.new(blob.path, blob.data, repository: repository)
+      described_class.new(blob.path, blob.data, repository: repository)
     end
 
     before do
@@ -42,7 +42,7 @@ describe Gitlab::Highlight, lib: true do
       let(:path) { 'files/whitespace' }
       let(:blob) { repository.blob_at_branch(branch, path) }
       let(:lines) do
-        Gitlab::Highlight.highlight(blob.path, blob.data, repository: repository).lines
+        described_class.highlight(blob.path, blob.data, repository: repository).lines
       end
 
       it 'strips extra LFs' do

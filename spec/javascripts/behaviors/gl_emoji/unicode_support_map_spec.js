@@ -1,4 +1,4 @@
-import { getUnicodeSupportMap } from '~/behaviors/gl_emoji/unicode_support_map';
+import getUnicodeSupportMap from '~/emoji/support/unicode_support_map';
 import AccessorUtilities from '~/lib/utils/accessor';
 
 describe('Unicode Support Map', () => {
@@ -21,13 +21,18 @@ describe('Unicode Support Map', () => {
       });
 
       it('should call .getItem and .setItem', () => {
-        const allArgs = window.localStorage.setItem.calls.allArgs();
+        const getArgs = window.localStorage.getItem.calls.allArgs();
+        const setArgs = window.localStorage.setItem.calls.allArgs();
 
-        expect(window.localStorage.getItem).toHaveBeenCalledWith('gl-emoji-user-agent');
-        expect(allArgs[0][0]).toBe('gl-emoji-user-agent');
-        expect(allArgs[0][1]).toBe(navigator.userAgent);
-        expect(allArgs[1][0]).toBe('gl-emoji-unicode-support-map');
-        expect(allArgs[1][1]).toBe(stringSupportMap);
+        expect(getArgs[0][0]).toBe('gl-emoji-version');
+        expect(getArgs[1][0]).toBe('gl-emoji-user-agent');
+
+        expect(setArgs[0][0]).toBe('gl-emoji-version');
+        expect(setArgs[0][1]).toBe('0.2.0');
+        expect(setArgs[1][0]).toBe('gl-emoji-user-agent');
+        expect(setArgs[1][1]).toBe(navigator.userAgent);
+        expect(setArgs[2][0]).toBe('gl-emoji-unicode-support-map');
+        expect(setArgs[2][1]).toBe(stringSupportMap);
       });
     });
 

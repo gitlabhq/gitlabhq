@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 feature 'Project RSS' do
+  let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { namespace_project_path(project.namespace, project) }
+  let(:path) { project_path(project) }
 
   context 'when signed in' do
     before do
-      user = create(:user)
-      project.team << [user, :developer]
-      gitlab_sign_in(user)
+      project.add_developer(user)
+      sign_in(user)
       visit path
     end
 

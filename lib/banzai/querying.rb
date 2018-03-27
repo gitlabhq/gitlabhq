@@ -52,8 +52,10 @@ module Banzai
 
         children.each do |child|
           next if child.text.blank?
+
           node = nodes.shift
           break unless node == child
+
           filtered_nodes << node
         end
       end

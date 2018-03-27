@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Group', feature: true do
+feature 'Group' do
   before do
-    gitlab_sign_in(:admin)
+    sign_in(create(:admin))
   end
 
   matcher :have_namespace_error_message do
@@ -65,7 +65,7 @@ feature 'Group', feature: true do
         end
 
         it 'updates the team URL on graph path update', :js do
-          out_span = find('span[data-bind-out="create_chat_team"]')
+          out_span = find('span[data-bind-out="create_chat_team"]', visible: false)
 
           expect(out_span.text).to be_empty
 
@@ -85,13 +85,12 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'create a nested group', :nested_groups, js: true do
+  describe 'create a nested group', :nested_groups, :js do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
       before do
-        visit subgroups_group_path(group)
-        click_link 'New Subgroup'
+        visit new_group_path(group, parent_id: group.id)
       end
 
       it 'creates a nested group' do
@@ -104,18 +103,15 @@ feature 'Group', feature: true do
     end
 
     context 'as group owner' do
-      let(:user) { create(:user) }
-
-      before do
-        group.add_owner(user)
-        gitlab_sign_out
-        gitlab_sign_in(user)
-
-        visit subgroups_group_path(group)
-        click_link 'New Subgroup'
-      end
-
       it 'creates a nested group' do
+        user = create(:user)
+
+        group.add_owner(user)
+        sign_out(:user)
+        sign_in(user)
+
+        visit new_group_path(group, parent_id: group.id)
+
         fill_in 'Group path', with: 'bar'
         click_button 'Create group'
 
@@ -128,14 +124,14 @@ feature 'Group', feature: true do
   it 'checks permissions to avoid exposing groups by parent_id' do
     group = create(:group, :private, path: 'secret-group')
 
-    gitlab_sign_out
-    gitlab_sign_in(:user)
+    sign_out(:user)
+    sign_in(create(:user))
     visit new_group_path(parent_id: group.id)
 
     expect(page).not_to have_content('secret-group')
   end
 
-  describe 'group edit' do
+  describe 'group edit', :js do
     let(:group) { create(:group) }
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
@@ -151,14 +147,14 @@ feature 'Group', feature: true do
       expect(page).to have_content 'successfully updated'
       expect(find('#group_name').value).to eq(new_name)
 
-      page.within ".navbar-gitlab" do
+      page.within ".breadcrumbs" do
         expect(page).to have_content new_name
       end
     end
 
     it 'removes group' do
-      click_link 'Remove group'
-
+      expect { remove_with_confirm('Remove group', group.path) }.to change {Group.count}.by(-1)
+      expect(group.members.all.count).to be_zero
       expect(page).to have_content "scheduled for deletion"
     end
   end
@@ -200,16 +196,24 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'group page with nested groups', :nested_groups, js: true do
+  describe 'group page with nested groups', :nested_groups, :js do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
+    let!(:project) { create(:project, namespace: group) }
     let!(:path)  { group_path(group) }
 
-    it 'has nested groups tab with nested groups inside' do
+    it 'it renders projects and groups on the page' do
       visit path
-      click_link 'Subgroups'
+      wait_for_requests
 
       expect(page).to have_content(nested_group.name)
+      expect(page).to have_content(project.name)
     end
+  end
+
+  def remove_with_confirm(button_text, confirm_with)
+    click_button button_text
+    fill_in 'confirm_name_input', with: confirm_with
+    click_button 'Confirm'
   end
 end

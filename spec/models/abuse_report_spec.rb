@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe AbuseReport, type: :model do
-  subject     { create(:abuse_report) }
-  let(:user)  { create(:admin) }
+describe AbuseReport do
+  set(:report) { create(:abuse_report) }
+  set(:user) { create(:admin) }
+  subject { report }
 
   it { expect(subject).to be_valid }
 

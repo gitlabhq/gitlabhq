@@ -1,2 +1,3 @@
 .file-content.image_file
-  %img{ src: blob_raw_url, alt: viewer.blob.name }
+  -# Uses the full URL rather than the path, to prevent it from getting prefixed with the asset host.
+  = image_tag(blob_raw_url, alt: viewer.blob.name)

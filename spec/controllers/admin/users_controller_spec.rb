@@ -2,24 +2,24 @@ require 'spec_helper'
 
 describe Admin::UsersController do
   let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:admin) { create(:admin) }
 
   before do
     sign_in(admin)
   end
 
   describe 'DELETE #user with projects' do
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'deletes user and ghosts their contributions' do
       delete :destroy, id: user.username, format: :json
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
       expect(issue.reload.author).to be_ghost
     end
@@ -27,7 +27,7 @@ describe Admin::UsersController do
     it 'deletes the user and their contributions when hard delete is specified' do
       delete :destroy, id: user.username, hard_delete: true, format: :json
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
       expect(Issue.exists?(issue.id)).to be_falsy
     end
@@ -127,7 +127,7 @@ describe Admin::UsersController do
 
   describe 'POST create' do
     it 'creates the user' do
-      expect{ post :create, user: attributes_for(:user) }.to change{ User.count }.by(1)
+      expect { post :create, user: attributes_for(:user) }.to change { User.count }.by(1)
     end
 
     it 'shows only one error message for an invalid email' do
@@ -150,6 +150,18 @@ describe Admin::UsersController do
         post :update, params
       end
 
+      context 'when the admin changes his own password' do
+        it 'updates the password' do
+          expect { update_password(admin, 'AValidPassword1') }
+            .to change { admin.reload.encrypted_password }
+        end
+
+        it 'does not set the new password to expire immediately' do
+          expect { update_password(admin, 'AValidPassword1') }
+            .not_to change { admin.reload.password_expires_at }
+        end
+      end
+
       context 'when the new password is valid' do
         it 'redirects to the user' do
           update_password(user, 'AValidPassword1')
@@ -158,15 +170,13 @@ describe Admin::UsersController do
         end
 
         it 'updates the password' do
-          update_password(user, 'AValidPassword1')
-
-          expect { user.reload }.to change { user.encrypted_password }
+          expect { update_password(user, 'AValidPassword1') }
+            .to change { user.reload.encrypted_password }
         end
 
         it 'sets the new password to expire immediately' do
-          update_password(user, 'AValidPassword1')
-
-          expect { user.reload }.to change { user.password_expires_at }.to(a_value <= Time.now)
+          expect { update_password(user, 'AValidPassword1') }
+            .to change { user.reload.password_expires_at }.to be_within(2.seconds).of(Time.now)
         end
       end
 
@@ -184,9 +194,8 @@ describe Admin::UsersController do
         end
 
         it 'does not update the password' do
-          update_password(user, 'invalid')
-
-          expect { user.reload }.not_to change { user.encrypted_password }
+          expect { update_password(user, 'invalid') }
+            .not_to change { user.reload.encrypted_password }
         end
       end
 
@@ -204,9 +213,8 @@ describe Admin::UsersController do
         end
 
         it 'does not update the password' do
-          update_password(user, 'AValidPassword1', 'AValidPassword2')
-
-          expect { user.reload }.not_to change { user.encrypted_password }
+          expect { update_password(user, 'AValidPassword1', 'AValidPassword2') }
+            .not_to change { user.reload.encrypted_password }
         end
       end
     end

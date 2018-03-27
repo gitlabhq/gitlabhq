@@ -28,7 +28,7 @@
         "additionalProperties": false
       },
       "assignee": {
-        "type": "object",
+        "type": ["object", "null"],
         "properties": {
           "name": { "type": "string" },
           "username": { "type": "string" },
@@ -53,7 +53,8 @@
         "properties": {
           "id": { "type": "integer" },
           "iid": { "type": "integer" },
-          "project_id": { "type": "integer" },
+          "project_id": { "type": ["integer", "null"] },
+          "group_id": { "type": ["integer", "null"] },
           "title": { "type": "string" },
           "description": { "type": ["string", "null"] },
           "state": { "type": "string" },
@@ -69,9 +70,18 @@
       "sha": { "type": "string" },
       "merge_commit_sha": { "type": ["string", "null"] },
       "user_notes_count": { "type": "integer" },
+      "changes_count": { "type": "string" },
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
-      "web_url": { "type": "uri" }
+      "discussion_locked": { "type": ["boolean", "null"] },
+      "web_url": { "type": "uri" },
+      "time_stats": {
+        "time_estimate": { "type": "integer" },
+        "total_time_spent": { "type": "integer" },
+        "human_time_estimate": { "type": ["string", "null"] },
+        "human_total_time_spent": { "type": ["string", "null"] }
+      },
+      "allow_maintainer_to_push": { "type": ["boolean", "null"] }
     },
     "required": [
       "id", "iid", "project_id", "title", "description",

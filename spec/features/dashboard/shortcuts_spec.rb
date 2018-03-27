@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Dashboard shortcuts', :feature, :js do
+feature 'Dashboard shortcuts', :js do
   context 'logged in' do
     before do
-      gitlab_sign_in :user
+      sign_in(create(:user))
       visit root_dashboard_path
     end
 
@@ -50,6 +50,6 @@ feature 'Dashboard shortcuts', :feature, :js do
   end
 
   def check_page_title(title)
-    expect(find('.header-content .title')).to have_content(title)
+    expect(find('.breadcrumbs-sub-title')).to have_content(title)
   end
 end

@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, no-var, no-param-reassign, quotes, prefer-template, no-else-return, new-cap, dot-notation, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, jasmine/no-spec-dupes, no-underscore-dangle, max-len */
-/* global LineHighlighter */
 
-import '~/line_highlighter';
+import $ from 'jquery';
+import LineHighlighter from '~/line_highlighter';
 
 (function() {
   describe('LineHighlighter', function() {
@@ -18,19 +18,25 @@ import '~/line_highlighter';
     beforeEach(function() {
       loadFixtures('static/line_highlighter.html.raw');
       this["class"] = new LineHighlighter();
-      this.css = this["class"].highlightClass;
+      this.css = this["class"].highlightLineClass;
       return this.spies = {
         __setLocationHash__: spyOn(this["class"], '__setLocationHash__').and.callFake(function() {})
       };
     });
     describe('behavior', function() {
       it('highlights one line given in the URL hash', function() {
-        new LineHighlighter('#L13');
+        new LineHighlighter({ hash: '#L13' });
         return expect($('#LC13')).toHaveClass(this.css);
+      });
+      it('highlights one line given in the URL hash with given CSS class name', function() {
+        const hiliter = new LineHighlighter({ hash: '#L13', highlightLineClass: 'hilite' });
+        expect(hiliter.highlightLineClass).toBe('hilite');
+        expect($('#LC13')).toHaveClass('hilite');
+        expect($('#LC13')).not.toHaveClass('hll');
       });
       it('highlights a range of lines given in the URL hash', function() {
         var line, results;
-        new LineHighlighter('#L5-25');
+        new LineHighlighter({ hash: '#L5-25' });
         expect($("." + this.css).length).toBe(21);
         results = [];
         for (line = 5; line <= 25; line += 1) {
@@ -41,7 +47,7 @@ import '~/line_highlighter';
       it('scrolls to the first highlighted line on initial load', function() {
         var spy;
         spy = spyOn($, 'scrollTo');
-        new LineHighlighter('#L5-25');
+        new LineHighlighter({ hash: '#L5-25' });
         return expect(spy).toHaveBeenCalledWith('#L5', jasmine.anything());
       });
       it('discards click events', function() {
@@ -50,10 +56,10 @@ import '~/line_highlighter';
         clickLine(13);
         return expect(spy).toHaveBeenPrevented();
       });
-      return it('handles garbage input from the hash', function() {
+      it('handles garbage input from the hash', function() {
         var func;
         func = function() {
-          return new LineHighlighter('#blob-content-holder');
+          return new LineHighlighter({ fileHolderSelector: '#blob-content-holder' });
         };
         return expect(func).not.toThrow();
       });

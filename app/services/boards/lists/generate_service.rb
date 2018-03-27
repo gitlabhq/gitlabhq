@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class GenerateService < BaseService
+    class GenerateService < Boards::BaseService
       def execute(board)
         return false unless board.lists.movable.empty?
 
@@ -15,11 +15,11 @@ module Boards
 
       def create_list(board, params)
         label = find_or_create_label(params)
-        Lists::CreateService.new(project, current_user, label_id: label.id).execute(board)
+        Lists::CreateService.new(parent, current_user, label_id: label.id).execute(board)
       end
 
       def find_or_create_label(params)
-        ::Labels::FindOrCreateService.new(current_user, project, params).execute
+        ::Labels::FindOrCreateService.new(current_user, parent, params).execute
       end
 
       def label_params

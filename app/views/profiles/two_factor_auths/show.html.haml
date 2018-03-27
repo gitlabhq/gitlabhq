@@ -1,98 +1,93 @@
 - page_title 'Two-Factor Authentication', 'Account'
-- header_title "Two-Factor Authentication", profile_two_factor_auth_path
-= render 'profiles/head'
+- add_to_breadcrumbs("Two-Factor Authentication", profile_account_path)
+- @content_class = "limit-container-width" unless fluid_layout
 
-- if inject_u2f_api?
-  - content_for :page_specific_javascripts do
-    = page_specific_javascript_bundle_tag('u2f')
-
-.row.prepend-top-default
-  .col-lg-3
-    %h4.prepend-top-0
-      Register Two-Factor Authentication App
-    %p
-      Use an app on your mobile device to enable two-factor authentication (2FA).
-  .col-lg-9
-    - if current_user.two_factor_otp_enabled?
-      = icon "check inverse", base: "circle", class: "text-success", text: "You've already enabled two-factor authentication using mobile authenticator applications. You can disable it from your account settings page."
-    - else
+.js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
+  .row.prepend-top-default
+    .col-lg-4
+      %h4.prepend-top-0
+        Register Two-Factor Authentication App
       %p
-        Download the Google Authenticator application from App Store or Google Play Store and scan this code.
-        More information is available in the #{link_to('documentation', help_page_path('profile/two_factor_authentication'))}.
-      .row.append-bottom-10
-        .col-md-3
-          = raw @qr_code
-        .col-md-9
-          .account-well
-            %p.prepend-top-0.append-bottom-0
-              Can't scan the code?
-            %p.prepend-top-0.append-bottom-0
-              To add the entry manually, provide the following details to the application on your phone.
-            %p.prepend-top-0.append-bottom-0
-              Account:
-              = @account_string
-            %p.prepend-top-0.append-bottom-0
-              Key:
-              = current_user.otp_secret.scan(/.{4}/).join(' ')
-            %p.two-factor-new-manual-content
-              Time based: Yes
-      = form_tag profile_two_factor_auth_path, method: :post do |f|
-        - if @error
-          .alert.alert-danger
-            = @error
-        .form-group
-          = label_tag :pin_code, nil, class: "label-light"
-          = text_field_tag :pin_code, nil, class: "form-control", required: true
-        .prepend-top-default
-          = submit_tag 'Register with two-factor app', class: 'btn btn-success'
+        Use an app on your mobile device to enable two-factor authentication (2FA).
+    .col-lg-8
+      - if current_user.two_factor_otp_enabled?
+        %p
+          You've already enabled two-factor authentication using mobile authenticator applications. In order to register a different device, you must first disable two-factor authentication.
+          = link_to 'Disable two-factor authentication', profile_two_factor_auth_path,
+                method: :delete,
+                data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
+                class: 'btn btn-danger'
+      - else
+        %p
+          Download the Google Authenticator application from App Store or Google Play Store and scan this code.
+          More information is available in the #{link_to('documentation', help_page_path('profile/two_factor_authentication'))}.
+        .row.append-bottom-10
+          .col-md-4
+            = raw @qr_code
+          .col-md-8
+            .account-well
+              %p.prepend-top-0.append-bottom-0
+                Can't scan the code?
+              %p.prepend-top-0.append-bottom-0
+                To add the entry manually, provide the following details to the application on your phone.
+              %p.prepend-top-0.append-bottom-0
+                Account:
+                = @account_string
+              %p.prepend-top-0.append-bottom-0
+                Key:
+                = current_user.otp_secret.scan(/.{4}/).join(' ')
+              %p.two-factor-new-manual-content
+                Time based: Yes
+        = form_tag profile_two_factor_auth_path, method: :post do |f|
+          - if @error
+            .alert.alert-danger
+              = @error
+          .form-group
+            = label_tag :pin_code, nil, class: "label-light"
+            = text_field_tag :pin_code, nil, class: "form-control", required: true
+          .prepend-top-default
+            = submit_tag 'Register with two-factor app', class: 'btn btn-success'
 
-%hr
+  %hr
 
-.row.prepend-top-default
+  .row.prepend-top-default
+    .col-lg-4
+      %h4.prepend-top-0
+        Register Universal Two-Factor (U2F) Device
+      %p
+        Use a hardware device to add the second factor of authentication.
+      %p
+        As U2F devices are only supported by a few browsers, we require that you set up a
+        two-factor authentication app before a U2F device. That way you'll always be able to
+        log in - even when you're using an unsupported browser.
+    .col-lg-8
+      - if @u2f_registration.errors.present?
+        = form_errors(@u2f_registration)
+      = render "u2f/register"
 
-  .col-lg-3
-    %h4.prepend-top-0
-      Register Universal Two-Factor (U2F) Device
-    %p
-      Use a hardware device to add the second factor of authentication.
-    %p
-      As U2F devices are only supported by a few browsers, we require that you set up a
-      two-factor authentication app before a U2F device. That way you'll always be able to
-      log in - even when you're using an unsupported browser.
-  .col-lg-9
-    - if @u2f_registration.errors.present?
-      = form_errors(@u2f_registration)
-    = render "u2f/register"
+      %hr
 
-    %hr
+      %h5 U2F Devices (#{@u2f_registrations.length})
 
-    %h5 U2F Devices (#{@u2f_registrations.length})
-
-    - if @u2f_registrations.present?
-      .table-responsive
-        %table.table.table-bordered.u2f-registrations
-          %colgroup
-            %col{ width: "50%" }
-            %col{ width: "30%" }
-            %col{ width: "20%" }
-          %thead
-            %tr
-              %th Name
-              %th Registered On
-              %th
-          %tbody
-            - @u2f_registrations.each do |registration|
+      - if @u2f_registrations.present?
+        .table-responsive
+          %table.table.table-bordered.u2f-registrations
+            %colgroup
+              %col{ width: "50%" }
+              %col{ width: "30%" }
+              %col{ width: "20%" }
+            %thead
               %tr
-                %td= registration.name.presence || "<no name set>"
-                %td= registration.created_at.to_date.to_s(:medium)
-                %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
+                %th Name
+                %th Registered On
+                %th
+            %tbody
+              - @u2f_registrations.each do |registration|
+                %tr
+                  %td= registration.name.presence || "<no name set>"
+                  %td= registration.created_at.to_date.to_s(:medium)
+                  %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
 
-    - else
-      .settings-message.text-center
-        You don't have any U2F devices registered yet.
-
-
-- if two_factor_skippable?
-  :javascript
-    var button = "<a class='btn btn-xs btn-warning pull-right' data-method='patch' href='#{skip_profile_two_factor_auth_path}'>Configure it later</a>";
-    $(".flash-alert").append(button);
+      - else
+        .settings-message.text-center
+          You don't have any U2F devices registered yet.

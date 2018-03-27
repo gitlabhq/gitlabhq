@@ -1,50 +1,41 @@
 class Projects::VariablesController < Projects::ApplicationController
   before_action :authorize_admin_build!
 
-  layout 'project_settings'
-
-  def index
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
-  end
-
   def show
-    @variable = @project.variables.find(params[:id])
+    respond_to do |format|
+      format.json do
+        render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+      end
+    end
   end
 
   def update
-    @variable = @project.variables.find(params[:id])
-
-    if @variable.update_attributes(project_params)
-      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully updated.'
+    if @project.update(variables_params)
+      respond_to do |format|
+        format.json { return render_variables }
+      end
     else
-      render action: "show"
+      respond_to do |format|
+        format.json { render_error }
+      end
     end
-  end
-
-  def create
-    @variable = Ci::Variable.new(project_params)
-
-    if @variable.valid? && @project.variables << @variable
-      flash[:notice] = 'Variables were successfully updated.'
-      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
-    else
-      render "show"
-    end
-  end
-
-  def destroy
-    @key = @project.variables.find(params[:id])
-    @key.destroy
-
-    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
-                status: 302,
-                notice: 'Variable was successfully removed.'
   end
 
   private
 
-  def project_params
-    params.require(:variable)
-      .permit([:id, :key, :value, :protected, :_destroy])
+  def render_variables
+    render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+  end
+
+  def render_error
+    render status: :bad_request, json: @project.errors.full_messages
+  end
+
+  def variables_params
+    params.permit(variables_attributes: [*variable_params_attributes])
+  end
+
+  def variable_params_attributes
+    %i[id key secret_value protected _destroy]
   end
 end

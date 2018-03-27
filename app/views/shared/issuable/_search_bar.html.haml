@@ -1,5 +1,6 @@
 - type = local_assigns.fetch(:type)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
+- full_path = @project.present? ? @project.full_path : @group.full_path
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
@@ -18,13 +19,12 @@
               dropdown_class: "filtered-search-history-dropdown",
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
-              .js-filtered-search-history-dropdown{ data: { project_full_path: @project.full_path } }
-          .filtered-search-box-input-container
+              .js-filtered-search-history-dropdown{ data: { full_path: full_path } }
+          .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-                  %input.form-control.filtered-search{ id: "filtered-search-#{type.to_s}", placeholder: 'Search or filter results...', data: { 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
-              = icon('filter')
+                  %input.form-control.filtered-search{ search_filter_input_options(type) }
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
@@ -56,7 +56,7 @@
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
                     No Assignee
-                %li.divider
+                %li.divider.droplab-item-ignore
                 - if current_user
                   = render 'shared/issuable/user_dropdown_item',
                     user: current_user
@@ -75,7 +75,7 @@
                 %li.filter-dropdown-item{ 'data-value' => 'started' }
                   %button.btn.btn-link
                     Started
-                %li.divider
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link.js-data-value
@@ -85,35 +85,34 @@
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
                     No Label
-                %li.divider
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
+            #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link
+                    %gl-emoji
+                    %span.js-data-value.prepend-left-10
+                      {{name}}
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
         .filter-dropdown-container
           - if type == :boards
-            - if can?(current_user, :admin_list, @project)
+            - if can?(current_user, :admin_list, board.parent)
               .dropdown.prepend-left-10#js-add-list
-                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
                   Add list
                 .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
                   = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
-                  - if can?(current_user, :admin_label, @project)
+                  - if can?(current_user, :admin_label, board.parent)
                     = render partial: "shared/issuable/label_page_create"
                   = dropdown_loading
-              #js-add-issues-btn.prepend-left-10
+              - if @project
+                #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'
-
-- unless type === :boards_modal
-  :javascript
-    $(document).off('page:restore').on('page:restore', function (event) {
-      if (gl.FilteredSearchManager) {
-        const filteredSearchManager = new gl.FilteredSearchManager();
-        filteredSearchManager.setup();
-      }
-    });

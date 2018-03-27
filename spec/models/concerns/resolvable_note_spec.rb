@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Note, ResolvableNote, models: true do
-  let(:project) { create(:project) }
+describe Note, ResolvableNote do
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   subject { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
@@ -189,8 +189,8 @@ describe Note, ResolvableNote, models: true do
         allow(subject).to receive(:resolvable?).and_return(false)
       end
 
-      it "returns nil" do
-        expect(subject.resolve!(current_user)).to be_nil
+      it "returns false" do
+        expect(subject.resolve!(current_user)).to be_falsey
       end
 
       it "doesn't set resolved_at" do
@@ -224,8 +224,8 @@ describe Note, ResolvableNote, models: true do
           subject.resolve!(user)
         end
 
-        it "returns nil" do
-          expect(subject.resolve!(current_user)).to be_nil
+        it "returns false" do
+          expect(subject.resolve!(current_user)).to be_falsey
         end
 
         it "doesn't change resolved_at" do
@@ -279,8 +279,8 @@ describe Note, ResolvableNote, models: true do
         allow(subject).to receive(:resolvable?).and_return(false)
       end
 
-      it "returns nil" do
-        expect(subject.unresolve!).to be_nil
+      it "returns false" do
+        expect(subject.unresolve!).to be_falsey
       end
     end
 
@@ -320,8 +320,8 @@ describe Note, ResolvableNote, models: true do
       end
 
       context "when not resolved" do
-        it "returns nil" do
-          expect(subject.unresolve!).to be_nil
+        it "returns false" do
+          expect(subject.unresolve!).to be_falsey
         end
       end
     end

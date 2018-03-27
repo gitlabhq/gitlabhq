@@ -11,6 +11,7 @@
       %th Name
       %th Callback URL
       %th Clients
+      %th Trusted
       %th
       %th
   %tbody.oauth-applications
@@ -19,5 +20,6 @@
         %td= link_to application.name, admin_application_path(application)
         %td= application.redirect_uri
         %td= application.access_tokens.map(&:resource_owner_id).uniq.count
+        %td= application.trusted? ? 'Y': 'N'
         %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-link'
         %td= render 'delete_form', application: application

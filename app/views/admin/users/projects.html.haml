@@ -29,12 +29,12 @@
     .panel.panel-default
       .panel-heading Joined projects (#{@joined_projects.count})
       %ul.well-list
-        - @joined_projects.sort_by(&:name_with_namespace).each do |project|
+        - @joined_projects.sort_by(&:full_name).each do |project|
           - member = project.team.find_member(@user.id)
           %li.project_member
             .list-item-name
-              = link_to admin_namespace_project_path(project.namespace, project), class: dom_class(project) do
-                = project.name_with_namespace
+              = link_to admin_project_path(project), class: dom_class(project) do
+                = project.full_name
 
             - if member
               .pull-right
@@ -44,5 +44,5 @@
                   %span.light.vertical-align-middle= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from project' do
+                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from project' do
                       %i.fa.fa-times

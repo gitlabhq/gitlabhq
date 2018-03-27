@@ -7,12 +7,13 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
             error!(errors[:project_access], 422)
           end
+
           not_found!
         end
 
@@ -116,7 +117,8 @@ module API
         not_found!('Snippet') unless snippet
 
         authorize! :admin_project_snippet, snippet
-        snippet.destroy
+
+        destroy_conditionally!(snippet)
       end
 
       desc 'Get a raw project snippet'
@@ -130,6 +132,22 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         present snippet.content
+      end
+
+      desc 'Get the user agent details for a project snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+      end
+      get ":id/snippets/:snippet_id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:snippet_id], project_id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

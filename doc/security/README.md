@@ -1,6 +1,11 @@
+---
+comments: false
+---
+
 # Security
 
 - [Password length limits](password_length_limits.md)
+- [Restrict SSH key technologies and minimum length](ssh_keys_restrictions.md)
 - [Rack attack](rack_attack.md)
 - [Webhooks and insecure internal web services](webhooks.md)
 - [Information exclusivity](information_exclusivity.md)

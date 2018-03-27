@@ -1,13 +1,14 @@
 require 'spec_helper'
 include ImportExport::CommonUtil
 
-describe Gitlab::ImportExport::VersionChecker, services: true do
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: '') }
+describe Gitlab::ImportExport::VersionChecker do
+  let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
 
   describe 'bundle a project Git repo' do
     let(:version) { Gitlab::ImportExport.version }
 
     before do
+      allow_any_instance_of(Gitlab::ImportExport::Shared).to receive(:relative_archive_path).and_return('')
       allow(File).to receive(:open).and_return(version)
     end
 

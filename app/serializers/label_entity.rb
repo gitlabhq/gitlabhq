@@ -1,5 +1,6 @@
 class LabelEntity < Grape::Entity
-  expose :id
+  expose :id, if: ->(label, _) { !label.is_a?(GlobalLabel) }
+
   expose :title
   expose :color
   expose :description

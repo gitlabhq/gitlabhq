@@ -3,7 +3,7 @@ module Emails
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id
       @project = Project.find project_id
-      @target_url = namespace_project_url(@project.namespace, @project)
+      @target_url = project_url(@project)
       @old_path_with_namespace = old_path_with_namespace
       mail(to: @user.notification_email,
            subject: subject("Project was moved"))

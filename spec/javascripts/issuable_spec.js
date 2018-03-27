@@ -1,80 +1,63 @@
-/* global IssuableIndex */
+import $ from 'jquery';
+import MockAdaptor from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import IssuableIndex from '~/issuable_index';
 
-import '~/lib/utils/url_utility';
-import '~/issuable_index';
-
-(() => {
-  const BASE_URL = '/user/project/issues?scope=all&state=closed';
-  const DEFAULT_PARAMS = '&utf8=%E2%9C%93';
-
-  function updateForm(formValues, form) {
-    $.each(formValues, (id, value) => {
-      $(`#${id}`, form).val(value);
+describe('Issuable', () => {
+  let Issuable;
+  describe('initBulkUpdate', () => {
+    it('should not set bulkUpdateSidebar', () => {
+      Issuable = new IssuableIndex('issue_');
+      expect(Issuable.bulkUpdateSidebar).not.toBeDefined();
     });
-  }
 
-  function resetForm(form) {
-    $('input[name!="utf8"]', form).each((index, input) => {
-      input.setAttribute('value', '');
+    it('should set bulkUpdateSidebar', () => {
+      const element = document.createElement('div');
+      element.classList.add('issues-bulk-update');
+      document.body.appendChild(element);
+
+      Issuable = new IssuableIndex('issue_');
+      expect(Issuable.bulkUpdateSidebar).toBeDefined();
     });
-  }
+  });
 
-  describe('Issuable', () => {
-    preloadFixtures('static/issuable_filter.html.raw');
+  describe('resetIncomingEmailToken', () => {
+    let mock;
 
     beforeEach(() => {
-      loadFixtures('static/issuable_filter.html.raw');
-      IssuableIndex.init();
+      const element = document.createElement('a');
+      element.classList.add('incoming-email-token-reset');
+      element.setAttribute('href', 'foo');
+      document.body.appendChild(element);
+
+      const input = document.createElement('input');
+      input.setAttribute('id', 'issuable_email');
+      document.body.appendChild(input);
+
+      Issuable = new IssuableIndex('issue_');
+
+      mock = new MockAdaptor(axios);
+
+      mock.onPut('foo').reply(200, {
+        new_address: 'testing123',
+      });
     });
 
-    it('should be defined', () => {
-      expect(window.IssuableIndex).toBeDefined();
+    afterEach(() => {
+      mock.restore();
     });
 
-    describe('filtering', () => {
-      let $filtersForm;
+    it('should send request to reset email token', (done) => {
+      spyOn(axios, 'put').and.callThrough();
+      document.querySelector('.incoming-email-token-reset').click();
 
-      beforeEach(() => {
-        $filtersForm = $('.js-filter-form');
-        loadFixtures('static/issuable_filter.html.raw');
-        resetForm($filtersForm);
-      });
+      setTimeout(() => {
+        expect(axios.put).toHaveBeenCalledWith('foo');
+        expect($('#issuable_email').val()).toBe('testing123');
 
-      it('should contain only the default parameters', () => {
-        spyOn(gl.utils, 'visitUrl');
-
-        IssuableIndex.filterResults($filtersForm);
-
-        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + DEFAULT_PARAMS);
-      });
-
-      it('should filter for the phrase "broken"', () => {
-        spyOn(gl.utils, 'visitUrl');
-
-        updateForm({ search: 'broken' }, $filtersForm);
-        IssuableIndex.filterResults($filtersForm);
-        const params = `${DEFAULT_PARAMS}&search=broken`;
-
-        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
-      });
-
-      it('should keep query parameters after modifying filter', () => {
-        spyOn(gl.utils, 'visitUrl');
-
-        // initial filter
-        updateForm({ milestone_title: 'v1.0' }, $filtersForm);
-
-        IssuableIndex.filterResults($filtersForm);
-        let params = `${DEFAULT_PARAMS}&milestone_title=v1.0`;
-        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
-
-        // update filter
-        updateForm({ label_name: 'Frontend' }, $filtersForm);
-
-        IssuableIndex.filterResults($filtersForm);
-        params = `${DEFAULT_PARAMS}&milestone_title=v1.0&label_name=Frontend`;
-        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
+        done();
       });
     });
   });
-})();
+});
+

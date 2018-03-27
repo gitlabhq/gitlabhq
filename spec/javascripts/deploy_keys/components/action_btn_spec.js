@@ -34,7 +34,7 @@ describe('Deploy keys action btn', () => {
     setTimeout(() => {
       expect(
         eventHub.$emit,
-      ).toHaveBeenCalledWith('enable.key', deployKey);
+      ).toHaveBeenCalledWith('enable.key', deployKey, jasmine.anything());
 
       done();
     });

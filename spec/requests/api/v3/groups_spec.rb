@@ -9,9 +9,9 @@ describe API::V3::Groups do
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:empty_project, namespace: group1) }
-  let!(:project2) { create(:empty_project, namespace: group2) }
-  let!(:project3) { create(:empty_project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let!(:project1) { create(:project, namespace: group1) }
+  let!(:project2) { create(:project, namespace: group2) }
+  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -23,7 +23,7 @@ describe API::V3::Groups do
       it "returns authentication error" do
         get v3_api("/groups")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -31,7 +31,7 @@ describe API::V3::Groups do
       it "normal user: returns an array of groups of user1" do
         get v3_api("/groups", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response)
@@ -41,7 +41,7 @@ describe API::V3::Groups do
       it "does not include statistics" do
         get v3_api("/groups", user1), statistics: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include 'statistics'
       end
@@ -51,7 +51,7 @@ describe API::V3::Groups do
       it "admin: returns an array of all groups" do
         get v3_api("/groups", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
       end
@@ -59,7 +59,7 @@ describe API::V3::Groups do
       it "does not include statistics by default" do
         get v3_api("/groups", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include('statistics')
       end
@@ -76,7 +76,7 @@ describe API::V3::Groups do
 
         get v3_api("/groups", admin), statistics: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response)
           .to satisfy_one { |group| group['statistics'] == attributes }
@@ -87,7 +87,7 @@ describe API::V3::Groups do
       it "returns all groups excluding skipped groups" do
         get v3_api("/groups", admin), skip_groups: [group2.id]
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
       end
@@ -101,7 +101,7 @@ describe API::V3::Groups do
 
         get v3_api("/groups", user1), all_available: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_groups).to contain_exactly(public_group.name, group1.name)
       end
@@ -118,7 +118,7 @@ describe API::V3::Groups do
       it "sorts by name ascending by default" do
         get v3_api("/groups", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group3.name, group1.name])
       end
@@ -126,7 +126,7 @@ describe API::V3::Groups do
       it "sorts in descending order when passed" do
         get v3_api("/groups", user1), sort: "desc"
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group1.name, group3.name])
       end
@@ -134,7 +134,7 @@ describe API::V3::Groups do
       it "sorts by the order_by param" do
         get v3_api("/groups", user1), order_by: "path"
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_groups).to eq([group1.name, group3.name])
       end
@@ -146,7 +146,7 @@ describe API::V3::Groups do
       it 'returns authentication error' do
         get v3_api('/groups/owned')
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -154,7 +154,7 @@ describe API::V3::Groups do
       it 'returns an array of groups the user owns' do
         get v3_api('/groups/owned', user2)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(group2.name)
@@ -165,12 +165,12 @@ describe API::V3::Groups do
   describe "GET /groups/:id" do
     context "when authenticated as user" do
       it "returns one of user1's groups" do
-        project = create(:empty_project, namespace: group2, path: 'Foo')
+        project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
 
         get v3_api("/groups/#{group1.id}", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['id']).to eq(group1.id)
         expect(json_response['name']).to eq(group1.name)
         expect(json_response['path']).to eq(group1.path)
@@ -192,13 +192,13 @@ describe API::V3::Groups do
       it "does not return a non existing group" do
         get v3_api("/groups/1328", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not return a group not attached to user1" do
         get v3_api("/groups/#{group2.id}", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -206,14 +206,14 @@ describe API::V3::Groups do
       it "returns any existing group" do
         get v3_api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(group2.name)
       end
 
       it "does not return a non existing group" do
         get v3_api("/groups/1328", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -221,20 +221,20 @@ describe API::V3::Groups do
       it 'returns any existing group' do
         get v3_api("/groups/#{group1.path}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(group1.name)
       end
 
       it 'does not return a non existing group' do
         get v3_api('/groups/unknown', admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'does not return a group not attached to user1' do
         get v3_api("/groups/#{group2.path}", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -246,7 +246,7 @@ describe API::V3::Groups do
       it 'updates the group' do
         put v3_api("/groups/#{group1.id}", user1), name: new_group_name, request_access_enabled: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
         expect(json_response['request_access_enabled']).to eq(true)
       end
@@ -254,7 +254,7 @@ describe API::V3::Groups do
       it 'returns 404 for a non existing group' do
         put v3_api('/groups/1328', user1), name: new_group_name
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -262,7 +262,7 @@ describe API::V3::Groups do
       it 'updates the group' do
         put v3_api("/groups/#{group1.id}", admin), name: new_group_name
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
       end
     end
@@ -271,7 +271,7 @@ describe API::V3::Groups do
       it 'does not updates the group' do
         put v3_api("/groups/#{group1.id}", user2), name: new_group_name
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -279,7 +279,7 @@ describe API::V3::Groups do
       it 'returns 404 when trying to update the group' do
         put v3_api("/groups/#{group2.id}", user1), name: new_group_name
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -289,7 +289,7 @@ describe API::V3::Groups do
       it "returns the group's projects" do
         get v3_api("/groups/#{group1.id}/projects", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
@@ -299,7 +299,7 @@ describe API::V3::Groups do
       it "returns the group's projects with simple representation" do
         get v3_api("/groups/#{group1.id}/projects", user1), simple: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(2)
         project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
@@ -307,11 +307,11 @@ describe API::V3::Groups do
       end
 
       it 'filters the groups projects' do
-        public_project = create(:empty_project, :public, path: 'test1', group: group1)
+        public_project = create(:project, :public, path: 'test1', group: group1)
 
         get v3_api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(public_project.name)
@@ -320,21 +320,21 @@ describe API::V3::Groups do
       it "does not return a non existing group" do
         get v3_api("/groups/1328/projects", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not return a group not attached to user1" do
         get v3_api("/groups/#{group2.id}/projects", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "only returns projects to which user has access" do
-        project3.team << [user3, :developer]
+        project3.add_developer(user3)
 
         get v3_api("/groups/#{group1.id}/projects", user3)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project3.name)
       end
@@ -344,7 +344,7 @@ describe API::V3::Groups do
 
         get v3_api("/groups/#{project2.group.id}/projects", user3), owned: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project2.name)
       end
@@ -354,7 +354,7 @@ describe API::V3::Groups do
 
         get v3_api("/groups/#{group1.id}/projects", user1), starred: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project1.name)
       end
@@ -364,7 +364,7 @@ describe API::V3::Groups do
       it "returns any existing group" do
         get v3_api("/groups/#{group2.id}/projects", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project2.name)
       end
@@ -372,7 +372,7 @@ describe API::V3::Groups do
       it "does not return a non existing group" do
         get v3_api("/groups/1328/projects", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -380,7 +380,7 @@ describe API::V3::Groups do
       it 'returns any existing group' do
         get v3_api("/groups/#{group1.path}/projects", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
       end
@@ -388,13 +388,13 @@ describe API::V3::Groups do
       it 'does not return a non existing group' do
         get v3_api('/groups/unknown/projects', admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'does not return a group not attached to user1' do
         get v3_api("/groups/#{group2.path}/projects", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -404,7 +404,7 @@ describe API::V3::Groups do
       it "does not create group" do
         post v3_api("/groups", user1), attributes_for(:group)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -414,7 +414,7 @@ describe API::V3::Groups do
 
         post v3_api("/groups", user3), group
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
 
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
@@ -428,7 +428,7 @@ describe API::V3::Groups do
 
         post v3_api("/groups", user3), group
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
 
         expect(json_response["full_path"]).to eq("#{parent.path}/#{group[:path]}")
         expect(json_response["parent_id"]).to eq(parent.id)
@@ -437,20 +437,20 @@ describe API::V3::Groups do
       it "does not create group, duplicate" do
         post v3_api("/groups", user3), { name: 'Duplicate Test', path: group2.path }
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(response.message).to eq("Bad Request")
       end
 
       it "returns 400 bad request error if name not given" do
         post v3_api("/groups", user3), { path: group2.path }
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 bad request error if path not given" do
         post v3_api("/groups", user3), { name: 'test' }
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -460,7 +460,7 @@ describe API::V3::Groups do
       it "removes group" do
         delete v3_api("/groups/#{group1.id}", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it "does not remove a group if not an owner" do
@@ -469,19 +469,19 @@ describe API::V3::Groups do
 
         delete v3_api("/groups/#{group1.id}", user3)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "does not remove a non existing group" do
         delete v3_api("/groups/1328", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "does not remove a group not attached to user1" do
         delete v3_api("/groups/#{group2.id}", user1)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -489,22 +489,22 @@ describe API::V3::Groups do
       it "removes any existing group" do
         delete v3_api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it "does not remove a non existing group" do
         delete v3_api("/groups/1328", admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-    let(:project) { create(:empty_project) }
-    let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
+    let(:project) { create(:project) }
+    let(:project_path) { CGI.escape(project.full_path) }
 
-    before(:each) do
+    before do
       allow_any_instance_of(Projects::TransferService)
         .to receive(:execute).and_return(true)
     end
@@ -513,7 +513,7 @@ describe API::V3::Groups do
       it "does not transfer project to group" do
         post v3_api("/groups/#{group1.id}/projects/#{project.id}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -521,7 +521,7 @@ describe API::V3::Groups do
       it "transfers project to group" do
         post v3_api("/groups/#{group1.id}/projects/#{project.id}", admin)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
       end
 
       context 'when using project path in URL' do
@@ -529,7 +529,7 @@ describe API::V3::Groups do
           it "transfers project to group" do
             post v3_api("/groups/#{group1.id}/projects/#{project_path}", admin)
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end
         end
 
@@ -537,7 +537,7 @@ describe API::V3::Groups do
           it "does not transfer project to group" do
             post v3_api("/groups/#{group1.id}/projects/nogroup%2Fnoproject", admin)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -547,7 +547,7 @@ describe API::V3::Groups do
           it "transfers project to group" do
             post v3_api("/groups/#{group1.path}/projects/#{project_path}", admin)
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end
         end
 
@@ -555,7 +555,7 @@ describe API::V3::Groups do
           it "does not transfer project to group" do
             post v3_api("/groups/noexist/projects/#{project_path}", admin)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end

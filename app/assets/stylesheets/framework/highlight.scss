@@ -1,5 +1,5 @@
 .file-content.code {
-  border: none;
+  border: 0;
   box-shadow: none;
   margin: 0;
   padding: 0;
@@ -7,7 +7,7 @@
 
   pre {
     padding: 10px 0;
-    border: none;
+    border: 0;
     border-radius: 0;
     font-family: $monospace_font;
     font-size: $code_font_size;
@@ -47,7 +47,7 @@
       font-family: $monospace_font;
       display: block;
       font-size: $code_font_size !important;
-      line-height: 19px;
+      min-height: 19px;
       white-space: nowrap;
 
       i {
@@ -61,7 +61,7 @@
       &:focus {
         outline: none;
 
-        & i {
+        i {
           visibility: visible;
         }
       }

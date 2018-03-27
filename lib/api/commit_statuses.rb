@@ -5,7 +5,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       include PaginationParams
 
       before { authenticate! }
@@ -74,7 +74,8 @@ module API
             source: :external,
             sha: commit.sha,
             ref: ref,
-            user: current_user)
+            user: current_user,
+            protected: @project.protected_for?(ref))
         end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
@@ -82,7 +83,8 @@ module API
           pipeline: pipeline,
           name: name,
           ref: ref,
-          user: current_user
+          user: current_user,
+          protected: @project.protected_for?(ref)
         )
 
         optional_attributes =
@@ -101,12 +103,15 @@ module API
           when 'success'
             status.success!
           when 'failed'
-            status.drop!
+            status.drop!(:api_failure)
           when 'canceled'
             status.cancel!
           else
             render_api_error!('invalid state', 400)
           end
+
+          MergeRequest.where(source_project: @project, source_branch: ref)
+            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
 
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e

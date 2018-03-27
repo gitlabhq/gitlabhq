@@ -12,7 +12,7 @@ describe 'OAuth tokens' do
 
         request_oauth_token(user)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
         expect(json_response['error']).to eq('invalid_grant')
       end
     end
@@ -23,7 +23,7 @@ describe 'OAuth tokens' do
 
         request_oauth_token(user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['access_token']).not_to be_nil
       end
     end
@@ -35,7 +35,7 @@ describe 'OAuth tokens' do
 
         request_oauth_token(user)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -46,7 +46,7 @@ describe 'OAuth tokens' do
 
         request_oauth_token(user)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end

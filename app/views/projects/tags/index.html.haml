@@ -1,16 +1,15 @@
 - @no_container = true
 - @sort ||= sort_value_recently_updated
-- page_title "Tags"
-= render "projects/commits/head"
+- page_title s_('TagsPage|Tags')
 
 .flex-list{ class: container_class }
   .top-area.adjust
     .nav-text.row-main-content
-      Tags give the ability to mark specific points in history as being important
+      = s_('TagsPage|Tags give the ability to mark specific points in history as being important')
 
     .nav-controls.row-fixed-content
       = form_tag(filter_tags_path, method: :get) do
-        = search_field_tag :search, params[:search], { placeholder: 'Filter by tag name', id: 'tag-search', class: 'form-control search-text-input input-short', spellcheck: false }
+        = search_field_tag :search, params[:search], { placeholder: s_('TagsPage|Filter by tag name'), id: 'tag-search', class: 'form-control search-text-input input-short', spellcheck: false }
 
       .dropdown
         %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown'} }
@@ -19,13 +18,13 @@
           = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
           %li.dropdown-header
-            Sort by
+            = s_('TagsPage|Sort by')
           - tags_sort_options_hash.each do |value, title|
             %li
               = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
       - if can?(current_user, :push_code, @project)
-        = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
-          New tag
+        = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
+          = s_('TagsPage|New tag')
 
   .tags
     - if @tags.any?
@@ -36,9 +35,9 @@
 
     - else
       .nothing-here-block
-        Repository has no tags yet.
+        = s_('TagsPage|Repository has no tags yet.')
         %br
         %small
-          Use git tag command to add a new one:
+          = s_('TagsPage|Use git tag command to add a new one:')
           %br
           %span.monospace git tag -a v1.4 -m 'version 1.4'

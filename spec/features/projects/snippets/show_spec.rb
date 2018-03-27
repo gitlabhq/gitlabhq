@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Project snippet', :js, feature: true do
+feature 'Project snippet', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:project_snippet, project: project, file_name: file_name, content: content) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    sign_in(user)
   end
 
   context 'Ruby file' do
@@ -15,7 +15,7 @@ feature 'Project snippet', :js, feature: true do
     let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
 
     before do
-      visit namespace_project_snippet_path(project.namespace, project, snippet)
+      visit project_snippet_path(project, snippet)
 
       wait_for_requests
     end
@@ -46,7 +46,7 @@ feature 'Project snippet', :js, feature: true do
 
     context 'visiting directly' do
       before do
-        visit namespace_project_snippet_path(project.namespace, project, snippet)
+        visit project_snippet_path(project, snippet)
 
         wait_for_requests
       end
@@ -118,7 +118,7 @@ feature 'Project snippet', :js, feature: true do
 
     context 'visiting with a line number anchor' do
       before do
-        visit namespace_project_snippet_path(project.namespace, project, snippet, anchor: 'L1')
+        visit project_snippet_path(project, snippet, anchor: 'L1')
 
         wait_for_requests
       end

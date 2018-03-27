@@ -1,3 +1,4 @@
+require 'rouge/plugins/common_mark'
 require 'rouge/plugins/redcarpet'
 
 module Banzai
@@ -14,23 +15,36 @@ module Banzai
       end
 
       def highlight_node(node)
-        language = node.attr('lang')
-        code = node.text
-        css_classes = "code highlight"
-        lexer = lexer_for(language)
-        lang = lexer.tag
+        css_classes = 'code highlight js-syntax-highlight'
+        lang = node.attr('lang')
+        retried = false
 
-        begin
-          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, code), tag: lang)
-
-          css_classes << " js-syntax-highlight #{lang}"
-        rescue
-          lang = nil
-          # Gracefully handle syntax highlighter bugs/errors to ensure
-          # users can still access an issue/comment/etc.
+        if use_rouge?(lang)
+          lexer = lexer_for(lang)
+          language = lexer.tag
+        else
+          lexer = Rouge::Lexers::PlainText.new
+          language = lang
         end
 
-        highlighted = %(<pre class="#{css_classes}" lang="#{lang}" v-pre="true"><code>#{code}</code></pre>)
+        begin
+          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, node.text), tag: language)
+          css_classes << " #{language}" if language
+        rescue
+          # Gracefully handle syntax highlighter bugs/errors to ensure users can
+          # still access an issue/comment/etc. First, retry with the plain text
+          # filter. If that fails, then just skip this entirely, but that would
+          # be a pretty bad upstream bug.
+          return if retried
+
+          language = nil
+          lexer = Rouge::Lexers::PlainText.new
+          retried = true
+
+          retry
+        end
+
+        highlighted = %(<pre class="#{css_classes}" lang="#{language}" v-pre="true"><code>#{code}</code></pre>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
@@ -50,6 +64,10 @@ module Banzai
       def replace_parent_pre_element(node, highlighted)
         # Replace the parent `pre` element with the entire highlighted block
         node.parent.replace(highlighted)
+      end
+
+      def use_rouge?(language)
+        %w(math mermaid plantuml).exclude?(language)
       end
     end
   end

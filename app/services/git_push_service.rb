@@ -1,6 +1,5 @@
 class GitPushService < BaseService
   attr_accessor :push_data, :push_commits
-  include Gitlab::CurrentSettings
   include Gitlab::Access
 
   # The N most recent commits to process in a single push payload.
@@ -30,7 +29,7 @@ class GitPushService < BaseService
       @project.repository.after_create_branch
 
       # Re-find the pushed commits.
-      if is_default_branch?
+      if default_branch?
         # Initial push to the default branch. Take the full history of that branch as "newly pushed".
         process_default_branch
       else
@@ -45,17 +44,20 @@ class GitPushService < BaseService
     elsif push_to_existing_branch?
       # Collect data for this git push
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
+
       process_commit_messages
 
       # Update the bare repositories info/attributes file using the contents of the default branches
       # .gitattributes file
-      update_gitattributes if is_default_branch?
+      update_gitattributes if default_branch?
     end
 
     execute_related_hooks
     perform_housekeeping
 
     update_caches
+
+    update_signatures
   end
 
   def update_gitattributes
@@ -63,16 +65,22 @@ class GitPushService < BaseService
   end
 
   def update_caches
-    if is_default_branch?
-      paths = Set.new
+    if default_branch?
+      if push_to_new_branch?
+        # If this is the initial push into the default branch, the file type caches
+        # will already be reset as a result of `Project#change_head`.
+        types = []
+      else
+        paths = Set.new
 
-      @push_commits.each do |commit|
-        commit.raw_deltas.each do |diff|
-          paths << diff.new_path
+        @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+          commit.raw_deltas.each do |diff|
+            paths << diff.new_path
+          end
         end
-      end
 
-      types = Gitlab::FileDetector.types_in_paths(paths.to_a)
+        types = Gitlab::FileDetector.types_in_paths(paths.to_a)
+      end
     else
       types = []
     end
@@ -80,11 +88,28 @@ class GitPushService < BaseService
     ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
   end
 
+  def update_signatures
+    commit_shas = @push_commits.last(PROCESS_COMMIT_LIMIT).map(&:sha)
+
+    return if commit_shas.empty?
+
+    shas_with_cached_signatures = GpgSignature.where(commit_sha: commit_shas).pluck(:commit_sha)
+    commit_shas -= shas_with_cached_signatures
+
+    return if commit_shas.empty?
+
+    commit_shas = Gitlab::Git::Commit.shas_with_signatures(project.repository, commit_shas)
+
+    commit_shas.each do |sha|
+      CreateGpgSignatureWorker.perform_async(sha, project.id)
+    end
+  end
+
   # Schedules processing of commit messages.
   def process_commit_messages
-    default = is_default_branch?
+    default = default_branch?
 
-    push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+    @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
       if commit.matches_cross_reference_regex?
         ProcessCommitWorker
           .perform_async(project.id, current_user.id, commit.to_hash, default)
@@ -103,7 +128,7 @@ class GitPushService < BaseService
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push)
-    
+
     SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
@@ -123,26 +148,12 @@ class GitPushService < BaseService
   end
 
   def process_default_branch
-    @push_commits = project.repository.commits(params[:newrev])
+    @push_commits_count = project.repository.commit_count_for_ref(params[:ref])
 
-    # Ensure HEAD points to the default branch in case it is not master
-    project.change_head(branch_name)
+    offset = [@push_commits_count - PROCESS_COMMIT_LIMIT, 0].max
+    @push_commits = project.repository.commits(params[:newrev], offset: offset, limit: PROCESS_COMMIT_LIMIT)
 
-    # Set protection on the default branch if configured
-    if current_application_settings.default_branch_protection != PROTECTION_NONE && !ProtectedBranch.protected?(@project, @project.default_branch)
-
-      params = {
-        name: @project.default_branch,
-        push_access_levels_attributes: [{
-          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }],
-        merge_access_levels_attributes: [{
-          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }]
-      }
-
-      ProtectedBranches::CreateService.new(@project, current_user, params).execute
-    end
+    @project.after_create_default_branch
   end
 
   def build_push_data
@@ -152,7 +163,8 @@ class GitPushService < BaseService
       params[:oldrev],
       params[:newrev],
       params[:ref],
-      push_commits)
+      @push_commits,
+      commits_count: @push_commits_count)
   end
 
   def push_to_existing_branch?
@@ -172,7 +184,7 @@ class GitPushService < BaseService
     Gitlab::Git.branch_ref?(params[:ref])
   end
 
-  def is_default_branch?
+  def default_branch?
     Gitlab::Git.branch_ref?(params[:ref]) &&
       (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
   end

@@ -17,25 +17,26 @@ have its own space to store its Docker images.
 
 You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
 
----
-
 ## Enable the Container Registry for your project
+
+NOTE: **Note:**
+If you cannot find the Container Registry entry under your project's settings,
+that means that it is not enabled in your GitLab instance. Ask your administrator
+to enable it.
 
 1. First, ask your system administrator to enable GitLab Container Registry
    following the [administration documentation](../../administration/container_registry.md).
    If you are using GitLab.com, this is enabled by default so you can start using
-   the Registry immediately.
-
-1. Go to your project's settings and enable the **Container Registry** feature
-   on your project. For new projects this might be enabled by default. For
-   existing projects (prior GitLab 8.8), you will have to explicitly enable it.
-
-    ![Enable Container Registry](img/container_registry_enable.png)
-
+   the Registry immediately. Currently there is a soft (10GB) size restriction for 
+   registry on GitLab.com, as part of the [repository size limit](repository/index.html#repository-size).
+1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
+   and enable the **Container Registry** feature on your project. For new
+   projects this might be enabled by default. For existing projects
+   (prior GitLab 8.8), you will have to explicitly enable it.
 1. Hit **Save changes** for the changes to take effect. You should now be able
-   to see the **Registry** link in the project menu.
+   to see the **Registry** link in the sidebar.
 
-    ![Container Registry tab](img/container_registry_tab.png)
+![Container Registry](img/container_registry.png)
 
 ## Build and push images
 
@@ -119,6 +120,11 @@ and [Using the GitLab Container Registry documentation](../../ci/docker/using_do
 If a project is private, credentials will need to be provided for authorization.
 The preferred way to do this, is by using [personal access tokens][pat].
 The minimal scope needed is `read_registry`.
+
+Example of using a personal access token:
+```
+docker login registry.example.com -u <your_username> -p <your_personal_access_token>
+```
 
 ## Troubleshooting the GitLab Container Registry
 

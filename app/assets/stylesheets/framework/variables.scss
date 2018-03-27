@@ -1,11 +1,15 @@
 /*
  * Layout
  */
+$grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
-$sidebar-transition-duration: .15s;
+$sidebar-transition-duration: 0.3s;
 $sidebar-breakpoint: 1024px;
+$default-transition-duration: 0.15s;
+$contextual-sidebar-width: 220px;
+$contextual-sidebar-collapsed-width: 50px;
 
 /*
  * Color schema
@@ -13,6 +17,7 @@ $sidebar-breakpoint: 1024px;
 $darken-normal-factor: 7%;
 $darken-dark-factor: 10%;
 $darken-border-factor: 5%;
+$darken-border-dashed-factor: 25%;
 
 $white-light: #fff;
 $white-normal: #f0f0f0;
@@ -26,46 +31,45 @@ $gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
-$green-25: #f6fcf8;
-$green-50: #e4f5eb;
-$green-100: #bae6cc;
-$green-200: #8dd5aa;
-$green-300: #5fc488;
-$green-400: #3cb76f;
+$green-50: #f1fdf6;
+$green-100: #dcf5e7;
+$green-200: #b3e6c8;
+$green-300: #75d09b;
+$green-400: #37b96d;
 $green-500: #1aaa55;
 $green-600: #168f48;
 $green-700: #12753a;
 $green-800: #0e5a2d;
 $green-900: #0a4020;
+$green-950: #072b15;
 
-$blue-25: #f6fafd;
-$blue-50: #e4eff9;
-$blue-100: #bcd7f1;
-$blue-200: #8fbce8;
-$blue-300: #62a1df;
-$blue-400: #418cd8;
+$blue-50: #f6fafe;
+$blue-100: #e4f0fb;
+$blue-200: #b8d6f4;
+$blue-300: #73afea;
+$blue-400: #2e87e0;
 $blue-500: #1f78d1;
 $blue-600: #1b69b6;
 $blue-700: #17599c;
 $blue-800: #134a81;
 $blue-900: #0f3b66;
+$blue-950: #0a2744;
 
-$orange-25: #fffcf8;
-$orange-50: #fff2e1;
-$orange-100: #fedfb3;
-$orange-200: #feca81;
-$orange-300: #fdb44f;
-$orange-400: #fca429;
+$orange-50: #fffaf4;
+$orange-100: #fff1de;
+$orange-200: #fed69f;
+$orange-300: #fdbc60;
+$orange-400: #fca121;
 $orange-500: #fc9403;
 $orange-600: #de7e00;
 $orange-700: #c26700;
-$orange-800: #a35100;
-$orange-900: #853b00;
+$orange-800: #a35200;
+$orange-900: #853c00;
+$orange-950: #592800;
 
-$red-25: #fef7f6;
-$red-50: #fbe7e4;
-$red-100: #f4c4bc;
-$red-200: #ed9d90;
+$red-50: #fef6f5;
+$red-100: #fbe5e1;
+$red-200: #f2b4a9;
 $red-300: #e67664;
 $red-400: #e05842;
 $red-500: #db3b21;
@@ -73,19 +77,68 @@ $red-600: #c0341d;
 $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
+$red-950: #4b140b;
 
-$purple-700: #4a2192;
-$purple-800: #2c0a5c;
-$purple-900: #380d75;
+// GitLab themes
+
+$indigo-50: #f7f7ff;
+$indigo-100: #ebebfa;
+$indigo-200: #d1d1f0;
+$indigo-300: #a6a6de;
+$indigo-400: #7c7ccc;
+$indigo-500: #6666c4;
+$indigo-600: #5b5bbd;
+$indigo-700: #4b4ba3;
+$indigo-800: #393982;
+$indigo-900: #292961;
+$indigo-950: #1a1a40;
+
+$theme-gray-50: #fafafa;
+$theme-gray-100: #f2f2f2;
+$theme-gray-200: #dfdfdf;
+$theme-gray-300: #cccccc;
+$theme-gray-400: #bababa;
+$theme-gray-500: #a7a7a7;
+$theme-gray-600: #949494;
+$theme-gray-700: #707070;
+$theme-gray-800: #4f4f4f;
+$theme-gray-900: #2e2e2e;
+$theme-gray-950: #1f1f1f;
+
+$theme-blue-50: #f4f8fc;
+$theme-blue-100: #e6edf5;
+$theme-blue-200: #c8d7e6;
+$theme-blue-300: #97b3cf;
+$theme-blue-400: #648cb4;
+$theme-blue-500: #4a79a8;
+$theme-blue-600: #3e6fa0;
+$theme-blue-700: #305c88;
+$theme-blue-800: #25496e;
+$theme-blue-900: #1a3652;
+$theme-blue-950: #0f2235;
+
+$theme-green-50: #f2faf6;
+$theme-green-100: #e4f3ea;
+$theme-green-200: #c0dfcd;
+$theme-green-300: #8ac2a1;
+$theme-green-400: #52a274;
+$theme-green-500: #35935c;
+$theme-green-600: #288a50;
+$theme-green-700: #1c7441;
+$theme-green-800: #145d33;
+$theme-green-900: #0d4524;
+$theme-green-950: #072d16;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
+$almost-black: #242424;
 
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
 
 $border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
+$border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
 /*
@@ -102,12 +155,17 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
-$gl-text-color: rgba(0, 0, 0, .85);
-$gl-text-color-secondary: rgba(0, 0, 0, .55);
-$gl-text-color-disabled: rgba(0, 0, 0, .35);
-$gl-text-color-inverted: rgba(255, 255, 255, 1.0);
-$gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
+$gl-font-weight-normal: 400;
+$gl-font-weight-bold: 600;
+$gl-text-color: #2e2e2e;
+$gl-text-color-secondary: #707070;
+$gl-text-color-tertiary: #949494;
+$gl-text-color-quaternary: #d6d6d6;
+$gl-text-color-inverted: rgba(255, 255, 255, 1);
+$gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
+$gl-text-color-disabled: #919191;
 $gl-text-green: $green-600;
+$gl-text-green-hover: $green-700;
 $gl-text-red: $red-500;
 $gl-text-orange: $orange-600;
 $gl-link-color: $blue-600;
@@ -118,7 +176,7 @@ $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 $gl-header-nav-hover-color: #434343;
-$placeholder-text-color: rgba(0, 0, 0, .42);
+$placeholder-text-color: $gl-text-color-tertiary;
 
 /*
  * Lists
@@ -126,12 +184,12 @@ $placeholder-text-color: rgba(0, 0, 0, .42);
 $list-font-size: $gl-font-size;
 $list-title-color: $gl-text-color;
 $list-text-color: $gl-text-color;
-$list-text-disabled-color: $gl-text-color-disabled;
+$list-text-disabled-color: $gl-text-color-tertiary;
 $list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
-$list-warning-row-bg: $orange-50;
-$list-warning-row-border: $orange-100;
+$list-warning-row-bg: $orange-100;
+$list-warning-row-border: $orange-200;
 $list-warning-row-color: $orange-700;
 
 /*
@@ -147,28 +205,38 @@ $code_font_size: 12px;
 $code_line_height: 1.6;
 
 /*
+ * Tooltips
+ */
+$tooltip-font-size: 12px;
+
+/*
  * Padding
  */
 $gl-padding: 16px;
-$gl-btn-padding: 10px;
+$gl-padding-8: 8px;
+$gl-padding-4: 4px;
+$gl-col-padding: 15px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
+$gl-bar-padding: 3px;
 
 /*
  * Misc
  */
-$row-hover: $blue-25;
-$row-hover-border: $blue-100;
+$row-hover: $blue-50;
+$row-hover-border: $blue-200;
 $progress-color: #c0392b;
-$header-height: 50px;
+$header-height: 40px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
+$container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
-$border-radius-default: 3px;
+$border-radius-default: 4px;
+$border-radius-small: 2px;
 $settings-icon-size: 18px;
 $provider-btn-not-active-color: $blue-500;
 $link-underline-blue: $blue-500;
@@ -179,9 +247,6 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
-$show-aside-bg: #eee;
-$show-aside-color: #777;
-$show-aside-shadow: #ddd;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
@@ -193,7 +258,10 @@ $divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
-
+$performance-bar-height: 35px;
+$flash-height: 52px;
+$context-header-height: 60px;
+$breadcrumb-min-height: 48px;
 
 /*
 * Common component specific colors
@@ -203,13 +271,14 @@ $well-pre-bg: #eee;
 $well-pre-color: #555;
 $loading-color: #555;
 $update-author-color: #999;
-$user-mention-color: #2fa0bb;
+$user-mention-bg: rgba($blue-500, 0.044);
+$user-mention-bg-hover: rgba($blue-500, 0.15);
 $time-color: #999;
 $project-member-show-color: #aaa;
 $gl-promo-color: #aaa;
 $error-bg: $red-400;
-$warning-message-bg: $orange-50;
-$warning-message-border: $orange-100;
+$warning-message-bg: $orange-100;
+$warning-message-border: $orange-200;
 $warning-message-color: $orange-700;
 $control-group-descr-color: #666;
 $table-permission-x-bg: #d9edf7;
@@ -227,7 +296,7 @@ $tanuki-yellow: #fca326;
  */
 $gl-primary: $blue-500;
 $gl-success: $green-500;
-$gl-success-focus: rgba($gl-success, .4);
+$gl-success-focus: rgba($gl-success, 0.4);
 $gl-info: $blue-500;
 $gl-warning: $orange-500;
 $gl-danger: $red-500;
@@ -257,32 +326,40 @@ $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
+$diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
+  'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$regular_font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif,
+  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
 /*
 * Dropdowns
 */
 $dropdown-width: 300px;
+$dropdown-min-height: 40px;
+$dropdown-max-height: 312px;
+$dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
-$dropdown-empty-row-bg: rgba(#000, .04);
+$dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-border-color: $border-color;
-$dropdown-shadow-color: rgba(#000, .1);
-$dropdown-divider-color: rgba(#000, .1);
+$dropdown-shadow-color: rgba(#000, 0.1);
+$dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-color: #555;
 $dropdown-input-fa-color: #c7c7c7;
 $dropdown-input-focus-border: $focus-border-color;
-$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
-$dropdown-loading-bg: rgba(#fff, .6);
+$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, 0.4);
+$dropdown-loading-bg: rgba(#fff, 0.6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-
+$dropdown-item-hover-bg: $gray-darker;
+$dropdown-fade-mask-height: 32px;
 
 /*
 * Filtered Search
@@ -291,11 +368,22 @@ $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 $dropdown-hover-color: $blue-400;
 
 /*
+* Contextual Sidebar
+*/
+$link-active-background: rgba(0, 0, 0, 0.04);
+$link-hover-background: rgba(0, 0, 0, 0.06);
+$inactive-badge-background: rgba(0, 0, 0, 0.08);
+
+/*
 * Buttons
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
 $btn-white-active: #848484;
+$gl-btn-padding: 10px;
+$gl-btn-line-height: 16px;
+$gl-btn-vert-padding: 8px;
+$gl-btn-horz-padding: 12px;
 
 /*
 * Badges
@@ -304,16 +392,22 @@ $badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
 
 /*
+ *  Status icons
+ */
+$status-icon-size: 22px;
+$status-icon-margin: $gl-btn-padding;
+
+/*
  *  Award emoji
  */
-$award-emoji-menu-shadow: rgba(0,0,0,.175);
+$award-emoji-menu-shadow: rgba(0, 0, 0, 0.175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 
 /*
  * Search Box
  */
-$search-input-border-color: rgba($blue-400, .8);
+$search-input-border-color: rgba($blue-400, 0.8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
 $search-input-width: 220px;
 $location-badge-active-bg: $blue-500;
@@ -323,13 +417,11 @@ $location-icon-color: #e7e9ed;
  *  Notes
  */
 $notes-light-color: $gl-text-color-secondary;
-$notes-role-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
 $note-line2-border: #ddd;
 $note-icon-gutter-width: 55px;
-
 
 /*
 * Zen
@@ -340,7 +432,7 @@ $zen-control-color: #555;
 * Calendar
 */
 $calendar-hover-bg: #ecf3fe;
-$calendar-border-color: rgba(#000, .1);
+$calendar-border-color: rgba(#000, 0.1);
 $calendar-user-contrib-text: #959494;
 
 /*
@@ -363,12 +455,25 @@ $ci-skipped-color: #888;
 */
 $issue-boards-font-size: 14px;
 $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
+/*
+ The following heights are used in boards.scss and are used for calculation of the board height.
+ They probably should be derived in a smarter way.
+*/
+$issue-boards-filter-height: 68px;
+$issue-boards-breadcrumbs-height-xs: 63px;
+$issue-board-list-difference-xs: $header-height +
+  $issue-boards-breadcrumbs-height-xs;
+$issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
+$issue-board-list-difference-md: $issue-board-list-difference-sm +
+  $issue-boards-filter-height;
 
 /*
 * Avatar
 */
 $avatar_radius: 50%;
-$avatar-border: rgba(0, 0, 0, .1);
+$avatar-border: $gray-normal;
+$avatar-border-hover: $gray-darker;
+$avatar-background: $gray-lightest;
 $gl-avatar-size: 40px;
 
 /*
@@ -386,24 +491,24 @@ $builds-trace-bg: #111;
 /*
 * Callout
 */
-$callout-danger-bg: $red-50;
-$callout-danger-border: $red-100;
+$callout-danger-bg: $red-100;
+$callout-danger-border: $red-200;
 $callout-danger-color: $red-700;
-$callout-warning-bg: $orange-50;
-$callout-warning-border: $orange-100;
+$callout-warning-bg: $orange-100;
+$callout-warning-border: $orange-200;
 $callout-warning-color: $orange-700;
-$callout-info-bg: $blue-50;
-$callout-info-border: $blue-100;
+$callout-info-bg: $blue-100;
+$callout-info-border: $blue-200;
 $callout-info-color: $blue-700;
-$callout-success-bg: $green-50;
-$callout-success-border: $green-100;
+$callout-success-bg: $green-100;
+$callout-success-border: $green-200;
 $callout-success-color: $green-700;
 
 /*
 * Commit Page
 */
-$commit-max-width-marker-color: rgba(0, 0, 0, 0.0);
-$commit-message-text-area-bg: rgba(0, 0, 0, 0.0);
+$commit-max-width-marker-color: rgba(0, 0, 0, 0);
+$commit-message-text-area-bg: rgba(0, 0, 0, 0);
 
 /*
 * Common
@@ -440,6 +545,7 @@ $logs-p-color: #333;
 /*
 * Forms
 */
+$input-height: 34px;
 $input-danger-bg: #f2dede;
 $input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
@@ -470,15 +576,20 @@ $jq-ui-default-color: #777;
 /*
 * Label
 */
+$label-font-size: 12px;
+$label-padding: 7px;
+$label-padding-modal: 10px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
-$label-remove-border: rgba(0, 0, 0, .1);
+$label-remove-border: rgba(0, 0, 0, 0.1);
 $label-border-radius: 100px;
 
 /*
 * Animation
 */
 $fade-in-duration: 200ms;
+$fade-mask-transition-duration: 0.1s;
+$fade-mask-transition-curve: ease-in-out;
 
 /*
 * Lint
@@ -515,6 +626,11 @@ $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: $green-600;
 $project-network-controls-color: #888;
 
+$feature-toggle-color: #fff;
+$feature-toggle-text-color: #fff;
+$feature-toggle-color-disabled: #999;
+$feature-toggle-color-enabled: #4a8bee;
+
 /*
 * Runners
 */
@@ -540,7 +656,6 @@ $stat-graph-selection-stroke: #333;
 $select2-drop-shadow1: rgba(76, 86, 103, 0.247059);
 $select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
 
-
 /*
 * Todo
 */
@@ -556,7 +671,7 @@ $kdb-color: #555;
 $kdb-border: #ccc;
 $kdb-border-bottom: #bbb;
 $kdb-shadow: #bbb;
-$body-text-shadow: rgba(255,255,255,0.01);
+$body-text-shadow: rgba(255, 255, 255, 0.01);
 
 /*
 * UI Dev Kit
@@ -567,9 +682,15 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: #eaf3fc;
-$stage-hover-border: #d1e7fc;
-$action-icon-color: #d6d6d6;
+$stage-hover-bg: $gray-darker;
+$ci-action-icon-size: 22px;
+$pipeline-dropdown-line-height: 20px;
+$pipeline-dropdown-status-icon-size: 18px;
+
+/*
+CI variable lists
+*/
+$ci-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
 
 /*
 Filtered Search
@@ -591,3 +712,58 @@ Convdev Index
 $color-high-score: $green-400;
 $color-average-score: $orange-400;
 $color-low-score: $red-400;
+
+/*
+Repo editor
+*/
+$repo-editor-grey: #f6f7f9;
+$repo-editor-grey-darker: #e9ebee;
+$repo-editor-linear-gradient: linear-gradient(
+  to right,
+  $repo-editor-grey 0%,
+  $repo-editor-grey-darker,
+  20%,
+  $repo-editor-grey 40%,
+  $repo-editor-grey 100%
+);
+
+/*
+Performance Bar
+*/
+$perf-bar-text: #999;
+$perf-bar-production: #222;
+$perf-bar-staging: #291430;
+$perf-bar-development: #4c1210;
+$perf-bar-bucket-bg: #111;
+$perf-bar-bucket-color: #ccc;
+$perf-bar-bucket-box-shadow-from: rgba($white-light, 0.2);
+$perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
+
+/*
+Issuable warning
+*/
+$issuable-warning-size: 24px;
+$issuable-warning-icon-margin: 4px;
+
+/*
+Image Commenting cursor
+*/
+$image-comment-cursor-left-offset: 12;
+$image-comment-cursor-top-offset: 12;
+
+/*
+Popup
+*/
+$popup-triangle-size: 15px;
+$popup-triangle-border-size: 1px;
+$popup-box-shadow-color: rgba(90, 90, 90, 0.05);
+
+/*
+Multi file editor
+*/
+$border-color-settings: #e1e1e1;
+
+/*
+Modals
+*/
+$modal-body-height: 134px;

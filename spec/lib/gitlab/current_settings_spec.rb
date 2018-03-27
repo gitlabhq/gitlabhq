@@ -8,29 +8,57 @@ describe Gitlab::CurrentSettings do
   end
 
   describe '#current_application_settings' do
+    it 'allows keys to be called directly' do
+      db_settings = create(:application_setting,
+                           home_page_url: 'http://mydomain.com',
+                           signup_enabled: false)
+
+      expect(described_class.home_page_url).to eq(db_settings.home_page_url)
+      expect(described_class.signup_enabled?).to be_falsey
+      expect(described_class.signup_enabled).to be_falsey
+      expect(described_class.metrics_sample_interval).to be(15)
+    end
+
     context 'with DB available' do
       before do
-        allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(true)
+        # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(true)` causes issues
+        # during the initialization phase of the test suite, so instead let's mock the internals of it
+        allow(ActiveRecord::Base.connection).to receive(:active?).and_return(true)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).and_call_original
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with('application_settings').and_return(true)
       end
 
       it 'attempts to use cached values first' do
         expect(ApplicationSetting).to receive(:cached)
 
-        expect(current_application_settings).to be_a(ApplicationSetting)
+        expect(described_class.current_application_settings).to be_a(ApplicationSetting)
       end
 
       it 'falls back to DB if Redis returns an empty value' do
         expect(ApplicationSetting).to receive(:cached).and_return(nil)
-        expect(ApplicationSetting).to receive(:last).and_call_original
+        expect(ApplicationSetting).to receive(:last).and_call_original.twice
 
-        expect(current_application_settings).to be_a(ApplicationSetting)
+        expect(described_class.current_application_settings).to be_a(ApplicationSetting)
       end
 
       it 'falls back to DB if Redis fails' do
-        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
-        expect(ApplicationSetting).to receive(:last).and_call_original
+        db_settings = ApplicationSetting.create!(ApplicationSetting.defaults)
 
-        expect(current_application_settings).to be_a(ApplicationSetting)
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
+
+        expect(described_class.current_application_settings).to eq(db_settings)
+      end
+
+      it 'creates default ApplicationSettings if none are present' do
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
+
+        settings = described_class.current_application_settings
+
+        expect(settings).to be_a(ApplicationSetting)
+        expect(settings).to be_persisted
+        expect(settings).to have_attributes(ApplicationSetting.defaults)
       end
 
       context 'with migrations pending' do
@@ -39,7 +67,7 @@ describe Gitlab::CurrentSettings do
         end
 
         it 'returns an in-memory ApplicationSetting object' do
-          settings = current_application_settings
+          settings = described_class.current_application_settings
 
           expect(settings).to be_a(OpenStruct)
           expect(settings.sign_in_enabled?).to eq(settings.sign_in_enabled)
@@ -50,7 +78,7 @@ describe Gitlab::CurrentSettings do
           db_settings = create(:application_setting,
                                home_page_url: 'http://mydomain.com',
                                signup_enabled: false)
-          settings = current_application_settings
+          settings = described_class.current_application_settings
           app_defaults = ApplicationSetting.last
 
           expect(settings).to be_a(OpenStruct)
@@ -67,15 +95,16 @@ describe Gitlab::CurrentSettings do
 
     context 'with DB unavailable' do
       before do
-        allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(false)
-        allow_any_instance_of(described_class).to receive(:retrieve_settings_from_database_cache?).and_return(nil)
+        # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
+        # during the initialization phase of the test suite, so instead let's mock the internals of it
+        allow(ActiveRecord::Base.connection).to receive(:active?).and_return(false)
       end
 
       it 'returns an in-memory ApplicationSetting object' do
         expect(ApplicationSetting).not_to receive(:current)
         expect(ApplicationSetting).not_to receive(:last)
 
-        expect(current_application_settings).to be_a(OpenStruct)
+        expect(described_class.current_application_settings).to be_a(OpenStruct)
       end
     end
 
@@ -88,8 +117,8 @@ describe Gitlab::CurrentSettings do
         expect(ApplicationSetting).not_to receive(:current)
         expect(ApplicationSetting).not_to receive(:last)
 
-        expect(current_application_settings).to be_a(ApplicationSetting)
-        expect(current_application_settings).not_to be_persisted
+        expect(described_class.current_application_settings).to be_a(ApplicationSetting)
+        expect(described_class.current_application_settings).not_to be_persisted
       end
     end
   end

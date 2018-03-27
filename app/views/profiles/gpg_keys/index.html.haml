@@ -1,0 +1,21 @@
+- page_title "GPG Keys"
+- @content_class = "limit-container-width" unless fluid_layout
+
+.row.prepend-top-default
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      GPG keys allow you to verify signed commits.
+  .col-lg-8
+    %h5.prepend-top-0
+      Add a GPG key
+    %p.profile-settings-content
+      Before you can add a GPG key you need to
+      = link_to 'generate it.', help_page_path('user/project/repository/gpg_signed_commits/index.md')
+    = render 'form'
+    %hr
+    %h5
+      Your GPG keys (#{@gpg_keys.count})
+    .append-bottom-default
+      = render 'key_table'

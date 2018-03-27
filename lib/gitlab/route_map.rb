@@ -18,7 +18,11 @@ module Gitlab
       mapping = @map.find { |mapping| mapping[:source] === path }
       return unless mapping
 
-      path.sub(mapping[:source], mapping[:public])
+      if mapping[:source].is_a?(String)
+        path.sub(mapping[:source], mapping[:public])
+      else
+        mapping[:source].replace(path, mapping[:public])
+      end
     end
 
     private
@@ -35,7 +39,7 @@ module Gitlab
         source_pattern = source_pattern[1...-1].gsub('\/', '/')
 
         begin
-          source_pattern = /\A#{source_pattern}\z/
+          source_pattern = Gitlab::UntrustedRegexp.new('\A' + source_pattern + '\z')
         rescue RegexpError => e
           raise FormatError, "Route map entry source is not a valid regular expression: #{e}"
         end

@@ -1,15 +1,14 @@
+- breadcrumb_title "Repository"
 - @no_container = true
 - page_title "Edit", @blob.path, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_bundle_tag('blob')
-= render "projects/commits/head"
 
 %div{ class: container_class }
   - if @conflict
     .alert.alert-danger
       Someone edited the file the same time you did. Please check out
-      = link_to "the file", namespace_project_blob_path(@project.namespace, @project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer'
+      = link_to "the file", project_blob_path(@project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer'
       and make sure your changes will not unintentionally remove theirs.
   .editor-title-row
     %h3.page-title.blob-edit-page-title
@@ -22,13 +21,13 @@
           Write
 
       %li
-        = link_to '#preview', 'data-preview-url' => namespace_project_preview_blob_path(@project.namespace, @project, @id) do
+        = link_to '#preview', 'data-preview-url' => project_preview_blob_path(@project, @id) do
           = editing_preview_title(@blob.name)
 
-    = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form', data: blob_editor_paths) do
+    = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form', data: blob_editor_paths) do
       = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
       = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
       = hidden_field_tag 'last_commit_sha', @last_commit_sha
       = hidden_field_tag 'content', '', id: "file-content"
       = hidden_field_tag 'from_merge_request_iid', params[:from_merge_request_iid]
-      = render 'projects/commit_button', ref: @ref, cancel_path: namespace_project_blob_path(@project.namespace, @project, @id)
+      = render 'projects/commit_button', ref: @ref, cancel_path: project_blob_path(@project, @id)

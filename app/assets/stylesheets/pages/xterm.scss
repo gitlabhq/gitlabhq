@@ -3,22 +3,21 @@
   // see also: https://gist.github.com/jasonm23/2868981
 
   $black: #000;
-  $red: #cd0000;
-  $green: #00cd00;
-  $yellow: #cdcd00;
-  $blue: #00e;   // according to wikipedia, this is the xterm standard
-  //$blue: #1e90ff; // this is used by all the terminals I tried (when configured with the xterm color profile)
-  $magenta: #cd00cd;
-  $cyan: #00cdcd;
-  $white: #e5e5e5;
+  $red: #ea1010;
+  $green: #009900;
+  $yellow: #999900;
+  $blue: #0073e6;
+  $magenta: #d411d4;
+  $cyan: #009999;
+  $white: #ccc;
   $l-black: #373b41;
-  $l-red: #c66;
-  $l-green: #b5bd68;
-  $l-yellow: #f0c674;
-  $l-blue: #81a2be;
-  $l-magenta: #b294bb;
-  $l-cyan: #8abeb7;
-  $l-white: $gray-darkest;
+  $l-red: #ff6161;
+  $l-green: #00d600;
+  $l-yellow: #bdbd00;
+  $l-blue: #5797ff;
+  $l-magenta: #d96dd9;
+  $l-cyan: #00bdbd;
+  $l-white: #fff;
 
   /*
   * xterm colors
@@ -281,7 +280,7 @@
   $xterm-fg-255: #eee;
 
   .term-bold {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .term-italic {

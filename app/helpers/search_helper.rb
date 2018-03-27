@@ -10,6 +10,7 @@ module SearchHelper
     search_pattern = Regexp.new(Regexp.escape(term), "i")
 
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
+    generic_results.concat(default_autocomplete_admin) if current_user.admin?
     generic_results.select! { |result| result[:label] =~ search_pattern }
 
     [
@@ -41,8 +42,14 @@ module SearchHelper
     [
       { category: "Settings", label: "User settings",    url: profile_path },
       { category: "Settings", label: "SSH Keys",         url: profile_keys_path },
-      { category: "Settings", label: "Dashboard",        url: root_path },
-      { category: "Settings", label: "Admin Section",    url: admin_root_path }
+      { category: "Settings", label: "Dashboard",        url: root_path }
+    ]
+  end
+
+  # Autocomplete results for settings pages, for admins
+  def default_autocomplete_admin
+    [
+      { category: "Settings", label: "Admin Section", url: admin_root_path }
     ]
   end
 
@@ -67,16 +74,16 @@ module SearchHelper
       ref = @ref || @project.repository.root_ref
 
       [
-        { category: "Current Project", label: "Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Commits",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Network",        url: namespace_project_network_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Graph",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Issues",         url: namespace_project_issues_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Members",        url: namespace_project_settings_members_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) }
+        { category: "Current Project", label: "Files",          url: project_tree_path(@project, ref) },
+        { category: "Current Project", label: "Commits",        url: project_commits_path(@project, ref) },
+        { category: "Current Project", label: "Network",        url: project_network_path(@project, ref) },
+        { category: "Current Project", label: "Graph",          url: project_graph_path(@project, ref) },
+        { category: "Current Project", label: "Issues",         url: project_issues_path(@project) },
+        { category: "Current Project", label: "Merge Requests", url: project_merge_requests_path(@project) },
+        { category: "Current Project", label: "Milestones",     url: project_milestones_path(@project) },
+        { category: "Current Project", label: "Snippets",       url: project_snippets_path(@project) },
+        { category: "Current Project", label: "Members",        url: project_project_members_path(@project) },
+        { category: "Current Project", label: "Wiki",           url: project_wikis_path(@project) }
       ]
     else
       []
@@ -85,7 +92,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's groups
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.search(term).limit(limit).map do |group|
+    current_user.authorized_groups.order_id_desc.search(term).limit(limit).map do |group|
       {
         category: "Groups",
         id: group.id,
@@ -97,14 +104,14 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.search_by_title(term)
+    current_user.authorized_projects.order_id_desc.search_by_title(term)
       .sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         category: "Projects",
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
-        label: "#{search_result_sanitize(p.name_with_namespace)}",
-        url: namespace_project_path(p.namespace, p)
+        label: "#{search_result_sanitize(p.full_name)}",
+        url: project_path(p)
       }
     end
   end
@@ -126,6 +133,29 @@ module SearchHelper
     search_path(options)
   end
 
+  def search_filter_input_options(type)
+    opts =
+      {
+        id: "filtered-search-#{type}",
+        placeholder: 'Search or filter results...',
+        data: {
+          'username-params' => UserSerializer.new.represent(@users)
+        },
+        autocomplete: 'off'
+      }
+
+    if @project.present?
+      opts[:data]['project-id'] = @project.id
+      opts[:data]['base-endpoint'] = project_path(@project)
+    else
+      # Group context
+      opts[:data]['group-id'] = @group.id
+      opts[:data]['base-endpoint'] = group_canonical_path(@group)
+    end
+
+    opts
+  end
+
   # Sanitize a HTML field for search display. Most tags are stripped out and the
   # maximum length is set to 200 characters.
   def search_md_sanitize(object, field)
@@ -139,5 +169,9 @@ module SearchHelper
 
     # Truncato's filtered_tags and filtered_attributes are not quite the same
     sanitize(html, tags: %w(a p ol ul li pre code))
+  end
+
+  def limited_count(count, limit = 1000)
+    count > limit ? "#{limit}+" : count
   end
 end

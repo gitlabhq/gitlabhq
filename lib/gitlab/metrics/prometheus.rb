@@ -3,52 +3,76 @@ require 'prometheus/client'
 module Gitlab
   module Metrics
     module Prometheus
-      include Gitlab::CurrentSettings
+      extend ActiveSupport::Concern
 
-      def metrics_folder_present?
-        ENV.has_key?('prometheus_multiproc_dir') &&
-          ::Dir.exist?(ENV['prometheus_multiproc_dir']) &&
-          ::File.writable?(ENV['prometheus_multiproc_dir'])
-      end
+      REGISTRY_MUTEX = Mutex.new
+      PROVIDER_MUTEX = Mutex.new
 
-      def prometheus_metrics_enabled?
-        return @prometheus_metrics_enabled if defined?(@prometheus_metrics_enabled)
+      class_methods do
+        include Gitlab::Utils::StrongMemoize
 
-        @prometheus_metrics_enabled = prometheus_metrics_enabled_unmemoized
-      end
+        def metrics_folder_present?
+          multiprocess_files_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
 
-      def registry
-        @registry ||= ::Prometheus::Client.registry
-      end
-
-      def counter(name, docstring, base_labels = {})
-        provide_metric(name) || registry.counter(name, docstring, base_labels)
-      end
-
-      def summary(name, docstring, base_labels = {})
-        provide_metric(name) || registry.summary(name, docstring, base_labels)
-      end
-
-      def gauge(name, docstring, base_labels = {})
-        provide_metric(name) || registry.gauge(name, docstring, base_labels)
-      end
-
-      def histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)
-        provide_metric(name) || registry.histogram(name, docstring, base_labels, buckets)
-      end
-
-      def provide_metric(name)
-        if prometheus_metrics_enabled?
-          registry.get(name)
-        else
-          NullMetric.new
+          multiprocess_files_dir &&
+            ::Dir.exist?(multiprocess_files_dir) &&
+            ::File.writable?(multiprocess_files_dir)
         end
-      end
 
-      private
+        def prometheus_metrics_enabled?
+          strong_memoize(:prometheus_metrics_enabled) do
+            prometheus_metrics_enabled_unmemoized
+          end
+        end
 
-      def prometheus_metrics_enabled_unmemoized
-        metrics_folder_present? && current_application_settings[:prometheus_metrics_enabled] || false
+        def registry
+          strong_memoize(:registry) do
+            REGISTRY_MUTEX.synchronize do
+              strong_memoize(:registry) do
+                ::Prometheus::Client.registry
+              end
+            end
+          end
+        end
+
+        def counter(name, docstring, base_labels = {})
+          safe_provide_metric(:counter, name, docstring, base_labels)
+        end
+
+        def summary(name, docstring, base_labels = {})
+          safe_provide_metric(:summary, name, docstring, base_labels)
+        end
+
+        def gauge(name, docstring, base_labels = {}, multiprocess_mode = :all)
+          safe_provide_metric(:gauge, name, docstring, base_labels, multiprocess_mode)
+        end
+
+        def histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)
+          safe_provide_metric(:histogram, name, docstring, base_labels, buckets)
+        end
+
+        private
+
+        def safe_provide_metric(method, name, *args)
+          metric = provide_metric(name)
+          return metric if metric
+
+          PROVIDER_MUTEX.synchronize do
+            provide_metric(name) || registry.method(method).call(name, *args)
+          end
+        end
+
+        def provide_metric(name)
+          if prometheus_metrics_enabled?
+            registry.get(name)
+          else
+            NullMetric.instance
+          end
+        end
+
+        def prometheus_metrics_enabled_unmemoized
+          metrics_folder_present? && Gitlab::CurrentSettings.prometheus_metrics_enabled || false
+        end
       end
     end
   end

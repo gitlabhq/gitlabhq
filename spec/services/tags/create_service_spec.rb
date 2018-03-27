@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Tags::CreateService, services: true do
+describe Tags::CreateService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
@@ -28,7 +28,7 @@ describe Tags::CreateService, services: true do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)
           .with(user, 'v1.1.0', 'master', 'Foo')
-          .and_raise(Rugged::TagError)
+          .and_raise(Gitlab::Git::Repository::TagExistsError)
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 
@@ -41,7 +41,7 @@ describe Tags::CreateService, services: true do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)
           .with(user, 'v1.1.0', 'master', 'Foo')
-          .and_raise(GitHooksService::PreReceiveError, 'something went wrong')
+          .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'something went wrong')
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 

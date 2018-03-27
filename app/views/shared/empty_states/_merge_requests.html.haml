@@ -5,18 +5,19 @@
 .row.empty-state.merge-requests
   .col-xs-12
     .svg-content
-      = render 'shared/empty_states/icons/merge_requests.svg'
-  .col-xs-12.text-center
+      = image_tag 'illustrations/merge_requests.svg'
+  .col-xs-12
     .text-content
       - if has_button
         %h4
-          Merge requests are a place to propose changes you've made to a project and discuss those changes with others.
+          = _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")
         %p
-          Interested parties can even contribute by pushing commits if they want to.
-        - if project_select_button
-          = render 'shared/new_project_item_select', path: 'merge_requests/new', label: 'New merge request'
-        - else
-          = link_to 'New merge request', button_path, class: 'btn btn-new', title: 'New merge request', id: 'new_merge_request_link'
+          = _("Interested parties can even contribute by pushing commits if they want to.")
+        .text-center
+          - if project_select_button
+            = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('New merge request'), type: :merge_requests
+          - else
+            = link_to _('New merge request'), button_path, class: 'btn btn-new', title: _('New merge request'), id: 'new_merge_request_link'
       - else
         %h4.text-center
-          There are no merge requests to show.
+          = _("There are no merge requests to show")

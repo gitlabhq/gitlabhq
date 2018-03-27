@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::CreateService, services: true do
+describe Users::CreateService do
   describe '#execute' do
     let(:admin_user) { create(:admin) }
 

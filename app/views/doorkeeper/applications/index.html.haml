@@ -1,7 +1,8 @@
 - page_title "Applications"
+- @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
@@ -10,7 +11,7 @@
         and applications that you've authorized to use your account.
       - else
         Manage applications that you've authorized to use your account.
-  .col-lg-9
+  .col-lg-8
     - if user_oauth_applications?
       %h5.prepend-top-0
         Add new application

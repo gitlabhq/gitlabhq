@@ -65,13 +65,14 @@ module Gitlab
               y << item
             end
             break if items.empty? || items.size < per_page
+
             page += 1
           end
         end
       end
 
       def config
-        Gitlab.config.omniauth.providers.find{|provider| provider.name == "gitlab"}
+        Gitlab::Auth::OAuth::Provider.config_for('gitlab')
       end
 
       def gitlab_options

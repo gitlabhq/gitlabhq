@@ -61,9 +61,9 @@ module Gitlab
       def import_wiki
         return if project.wiki.repository_exists?
 
-        path_with_namespace = "#{project.path_with_namespace}.wiki"
+        disk_path = project.wiki.disk_path
         import_url = project.import_url.sub(/\.git\z/, ".git/wiki")
-        gitlab_shell.import_repository(project.repository_storage_path, path_with_namespace, import_url)
+        gitlab_shell.import_repository(project.repository_storage_path, disk_path, import_url)
       rescue StandardError => e
         errors << { type: :wiki, errors: e.message }
       end
@@ -135,7 +135,7 @@ module Gitlab
           if label.valid?
             @labels[label_params[:title]] = label
           else
-            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.name_with_namespace}\""
+            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.full_name}\""
           end
         end
       end
@@ -149,16 +149,21 @@ module Gitlab
             description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
             description += pull_request.description
 
+            source_branch_sha = pull_request.source_branch_sha
+            target_branch_sha = pull_request.target_branch_sha
+            source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
+            target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
+
             merge_request = project.merge_requests.create!(
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
               source_project: project,
               source_branch: pull_request.source_branch_name,
-              source_branch_sha: pull_request.source_branch_sha,
+              source_branch_sha: source_branch_sha,
               target_project: project,
               target_branch: pull_request.target_branch_name,
-              target_branch_sha: pull_request.target_branch_sha,
+              target_branch_sha: target_branch_sha,
               state: pull_request.state,
               author_id: gitlab_user_id(project, pull_request.author),
               assignee_id: nil,
@@ -236,7 +241,7 @@ module Gitlab
       end
 
       def generate_line_code(pr_comment)
-        Gitlab::Diff::LineCode.generate(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
+        Gitlab::Git.diff_line_code(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
       end
 
       def pull_request_comment_attributes(comment)

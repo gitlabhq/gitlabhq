@@ -4,7 +4,7 @@ require 'carrierwave/storage/fog'
 describe GitlabUploader do
   let(:uploader_class) { Class.new(described_class) }
 
-  subject { uploader_class.new }
+  subject { uploader_class.new(double) }
 
   describe '#file_storage?' do
     context 'when file storage is used' do

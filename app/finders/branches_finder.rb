@@ -1,5 +1,5 @@
 class BranchesFinder
-  def initialize(repository, params)
+  def initialize(repository, params = {})
     @repository = repository
     @params = params
   end
@@ -23,7 +23,7 @@ class BranchesFinder
 
   def filter_by_name(branches)
     if search
-      branches.select { |branch| branch.name.include?(search) }
+      branches.select { |branch| branch.name.upcase.include?(search.upcase) }
     else
       branches
     end

@@ -2,10 +2,9 @@
 - page_title "Projects"
 - params[:visibility_level] ||= []
 
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
-  .top-area
+  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
     .prepend-top-default
       .search-holder
         = render 'shared/projects/search_form', autofocus: true, icon: true
@@ -15,7 +14,7 @@
             = hidden_field_tag :namespace_id, params[:namespace_id]
             - namespace = Namespace.find(params[:namespace_id])
             - toggle_text = "#{namespace.kind}: #{namespace.full_path}"
-          = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { toggle_class: 'js-namespace-select large' })
+          = dropdown_toggle(toggle_text, { toggle: 'dropdown', is_filter: 'true' }, { toggle_class: 'js-namespace-select large' })
           .dropdown-menu.dropdown-select.dropdown-menu-align-right
             = dropdown_title('Namespaces')
             = dropdown_filter("Search for Namespace")

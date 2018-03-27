@@ -9,22 +9,15 @@ class Upload < ActiveRecord::Base
   validates :model, presence: true
   validates :uploader, presence: true
 
-  before_save  :calculate_checksum, if:     :foreground_checksum?
-  after_commit :schedule_checksum,  unless: :foreground_checksum?
+  before_save  :calculate_checksum!, if: :foreground_checksummable?
+  after_commit :schedule_checksum,   if: :checksummable?
 
-  def self.remove_path(path)
-    where(path: path).destroy_all
-  end
+  # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
+  # hooks are not executed and the file will not be deleted
+  after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
 
-  def self.record(uploader)
-    remove_path(uploader.relative_path)
-
-    create(
-      size: uploader.file.size,
-      path: uploader.relative_path,
-      model: uploader.model,
-      uploader: uploader.class.to_s
-    )
+  def self.hexdigest(path)
+    Digest::SHA256.file(path).hexdigest
   end
 
   def absolute_path
@@ -33,20 +26,47 @@ class Upload < ActiveRecord::Base
     uploader_class.absolute_path(self)
   end
 
-  def calculate_checksum
-    return unless exist?
+  def calculate_checksum!
+    self.checksum = nil
+    return unless checksummable?
 
-    self.checksum = Digest::SHA256.file(absolute_path).hexdigest
+    self.checksum = self.class.hexdigest(absolute_path)
+  end
+
+  def build_uploader
+    uploader_class.new(model, mount_point, **uploader_context).tap do |uploader|
+      uploader.upload = self
+      uploader.retrieve_from_store!(identifier)
+    end
   end
 
   def exist?
     File.exist?(absolute_path)
   end
 
+  def uploader_context
+    {
+      identifier: identifier,
+      secret: secret
+    }.compact
+  end
+
   private
 
-  def foreground_checksum?
-    size <= CHECKSUM_THRESHOLD
+  def delete_file!
+    build_uploader.remove!
+  end
+
+  def checksummable?
+    checksum.nil? && local? && exist?
+  end
+
+  def local?
+    true
+  end
+
+  def foreground_checksummable?
+    checksummable? && size <= CHECKSUM_THRESHOLD
   end
 
   def schedule_checksum
@@ -59,5 +79,13 @@ class Upload < ActiveRecord::Base
 
   def uploader_class
     Object.const_get(uploader)
+  end
+
+  def identifier
+    File.basename(path)
+  end
+
+  def mount_point
+    super&.to_sym
   end
 end

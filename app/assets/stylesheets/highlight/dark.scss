@@ -204,11 +204,11 @@ $dark-il: #de935f;
   .cs { color: $dark-cs; } /* Comment.Special */
   .gd { color: $dark-gd; } /* Generic.Deleted */
   .ge { font-style: italic; } /* Generic.Emph */
-  .gh { color: $dark-gh; font-weight: bold; } /* Generic.Heading */
+  .gh { color: $dark-gh; font-weight: $gl-font-weight-bold; } /* Generic.Heading */
   .gi { color: $dark-gi; } /* Generic.Inserted */
-  .gp { color: $dark-gp; font-weight: bold; } /* Generic.Prompt */
-  .gs { font-weight: bold; } /* Generic.Strong */
-  .gu { color: $dark-gu; font-weight: bold; } /* Generic.Subheading */
+  .gp { color: $dark-gp; font-weight: $gl-font-weight-bold; } /* Generic.Prompt */
+  .gs { font-weight: $gl-font-weight-bold; } /* Generic.Strong */
+  .gu { color: $dark-gu; font-weight: $gl-font-weight-bold; } /* Generic.Subheading */
   .kc { color: $dark-kc; } /* Keyword.Constant */
   .kd { color: $dark-kd; } /* Keyword.Declaration */
   .kn { color: $dark-kn; } /* Keyword.Namespace */

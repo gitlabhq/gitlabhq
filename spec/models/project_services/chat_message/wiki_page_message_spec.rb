@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::WikiPageMessage, models: true do
+describe ChatMessage::WikiPageMessage do
   subject { described_class.new(args) }
 
   let(:args) do
@@ -29,7 +29,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
         it 'returns a message that a new wiki page was created' do
           expect(subject.pretext).to eq(
-            'test.user created <http://url.com|wiki page> in <http://somewhere.com|project_name>: '\
+            'Test User (test.user) created <http://url.com|wiki page> in <http://somewhere.com|project_name>: '\
               '*Wiki page title*')
         end
       end
@@ -41,7 +41,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
         it 'returns a message that a wiki page was updated' do
           expect(subject.pretext).to eq(
-            'test.user edited <http://url.com|wiki page> in <http://somewhere.com|project_name>: '\
+            'Test User (test.user) edited <http://url.com|wiki page> in <http://somewhere.com|project_name>: '\
               '*Wiki page title*')
         end
       end
@@ -95,7 +95,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
         it 'returns a message that a new wiki page was created' do
           expect(subject.pretext).to eq(
-            'test.user created [wiki page](http://url.com) in [project_name](http://somewhere.com): *Wiki page title*')
+            'Test User (test.user) created [wiki page](http://url.com) in [project_name](http://somewhere.com): *Wiki page title*')
         end
       end
 
@@ -106,7 +106,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
         it 'returns a message that a wiki page was updated' do
           expect(subject.pretext).to eq(
-            'test.user edited [wiki page](http://url.com) in [project_name](http://somewhere.com): *Wiki page title*')
+            'Test User (test.user) edited [wiki page](http://url.com) in [project_name](http://somewhere.com): *Wiki page title*')
         end
       end
     end
@@ -141,7 +141,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
         it 'returns the attachment for a new wiki page' do
           expect(subject.activity).to eq({
-            title: 'test.user created [wiki page](http://url.com)',
+            title: 'Test User (test.user) created [wiki page](http://url.com)',
             subtitle: 'in [project_name](http://somewhere.com)',
             text: 'Wiki page title',
             image: 'http://someavatar.com'
@@ -156,7 +156,7 @@ describe ChatMessage::WikiPageMessage, models: true do
 
         it 'returns the attachment for an updated wiki page' do
           expect(subject.activity).to eq({
-            title: 'test.user edited [wiki page](http://url.com)',
+            title: 'Test User (test.user) edited [wiki page](http://url.com)',
             subtitle: 'in [project_name](http://somewhere.com)',
             text: 'Wiki page title',
             image: 'http://someavatar.com'

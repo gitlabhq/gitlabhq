@@ -48,11 +48,11 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_title(title, back: false)
+  def dropdown_title(title, options: {})
     content_tag :div, class: "dropdown-title" do
       title_output = ""
 
-      if back
+      if options.fetch(:back, false)
         title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back", aria: { label: "Go back" }, type: "button") do
           icon('arrow-left')
         end
@@ -60,11 +60,22 @@ module DropdownsHelper
 
       title_output << content_tag(:span, title)
 
-      title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
-        icon('times', class: 'dropdown-menu-close-icon')
+      if options.fetch(:close, true)
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
+          icon('times', class: 'dropdown-menu-close-icon')
+        end
       end
 
       title_output.html_safe
+    end
+  end
+
+  def dropdown_input(placeholder, input_id: nil)
+    content_tag :div, class: "dropdown-input" do
+      filter_output = text_field_tag input_id, nil, class: "dropdown-input-field dropdown-no-filter", placeholder: placeholder, autocomplete: 'off'
+      filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
+
+      filter_output.html_safe
     end
   end
 
@@ -86,9 +97,11 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_footer(&block)
+  def dropdown_footer(add_content_class: false, &block)
     content_tag(:div, class: "dropdown-footer") do
-      if block
+      if add_content_class
+        content_tag(:div, capture(&block), class: "dropdown-footer-content")
+      else
         capture(&block)
       end
     end

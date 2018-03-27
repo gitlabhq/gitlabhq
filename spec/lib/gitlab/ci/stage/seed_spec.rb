@@ -11,6 +11,12 @@ describe Gitlab::Ci::Stage::Seed do
     described_class.new(pipeline, 'test', builds)
   end
 
+  describe '#size' do
+    it 'returns a number of jobs in the stage' do
+      expect(subject.size).to eq 2
+    end
+  end
+
   describe '#stage' do
     it 'returns hash attributes of a stage' do
       expect(subject.stage).to be_a Hash
@@ -26,6 +32,26 @@ describe Gitlab::Ci::Stage::Seed do
       expect(subject.builds).to all(include(project: pipeline.project))
       expect(subject.builds)
         .to all(include(trigger_request: pipeline.trigger_requests.first))
+    end
+
+    context 'when a ref is protected' do
+      before do
+        allow_any_instance_of(Project).to receive(:protected_for?).and_return(true)
+      end
+
+      it 'returns protected builds' do
+        expect(subject.builds).to all(include(protected: true))
+      end
+    end
+
+    context 'when a ref is unprotected' do
+      before do
+        allow_any_instance_of(Project).to receive(:protected_for?).and_return(false)
+      end
+
+      it 'returns unprotected builds' do
+        expect(subject.builds).to all(include(protected: false))
+      end
     end
   end
 

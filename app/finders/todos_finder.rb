@@ -13,6 +13,11 @@
 #
 
 class TodosFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
+
+  requires_cross_project_access unless: -> { project? }
+
   NONE = '0'.freeze
 
   attr_accessor :current_user, :params
@@ -83,6 +88,8 @@ class TodosFinder
     if project?
       @project = Project.find(params[:project_id])
 
+      @project = nil if @project.pending_delete?
+
       unless Ability.allowed?(current_user, :read_project, @project)
         @project = nil
       end
@@ -93,9 +100,14 @@ class TodosFinder
     @project
   end
 
-  def projects(items)
-    item_project_ids = items.reorder(nil).select(:project_id)
-    ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids).execute
+  def project_ids(items)
+    ids = items.except(:order).select(:project_id)
+    if Gitlab::Database.mysql?
+      # To make UPDATE work on MySQL, wrap it in a SELECT with an alias
+      ids = Todo.except(:order).select('*').from("(#{ids.to_sql}) AS t")
+    end
+
+    ids
   end
 
   def type?
@@ -107,7 +119,7 @@ class TodosFinder
   end
 
   def sort(items)
-    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
+    params[:sort] ? items.sort(params[:sort]) : items.order_id_desc
   end
 
   def by_action(items)
@@ -136,13 +148,12 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items = items.where(project: project)
+      items.where(project: project)
     else
-      item_projects = projects(items)
-      items = items.merge(item_projects).joins(:project)
-    end
+      projects = Project.public_or_visible_to_user(current_user)
 
-    items
+      items.joins(:project).merge(projects)
+    end
   end
 
   def by_state(items)

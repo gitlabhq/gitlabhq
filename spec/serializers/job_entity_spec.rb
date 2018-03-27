@@ -7,7 +7,9 @@ describe JobEntity do
   let(:request) { double('request') }
 
   before do
+    stub_not_protect_default_branch
     allow(request).to receive(:current_user).and_return(user)
+
     project.add_developer(user)
   end
 
@@ -77,7 +79,7 @@ describe JobEntity do
         project.add_developer(user)
 
         create(:protected_branch, :developers_can_merge,
-               name: 'master', project: project)
+               name: job.ref, project: job.project)
       end
 
       it 'contains path to play action' do
@@ -90,6 +92,13 @@ describe JobEntity do
     end
 
     context 'when user is not allowed to trigger action' do
+      before do
+        allow(job.project).to receive(:empty_repo?).and_return(false)
+
+        create(:protected_branch, :no_one_can_push,
+               name: job.ref, project: job.project)
+      end
+
       it 'does not contain path to play action' do
         expect(subject).not_to include(:play_path)
       end

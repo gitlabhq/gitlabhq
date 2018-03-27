@@ -1,18 +1,38 @@
 - diff_file = discussion.diff_file
 - blob = discussion.blob
+- discussions = { discussion.original_line_code => [discussion] }
+- diff_file_class = diff_file.text? ? 'text-file' : 'js-image-file'
+- diff_data = {}
+- expanded = discussion.expanded? || local_assigns.fetch(:expanded, nil)
+- unless expanded
+  - diff_data = { lines_path: project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion) }
 
-.diff-file.file-holder
+.diff-file.file-holder{ class: diff_file_class, data: diff_data }
   .js-file-title.file-title.file-title-flex-parent
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: discussion_path(discussion), show_toggle: false
 
-  .diff-content.code.js-syntax-highlight
-    %table
-      - discussions = { discussion.original_line_code => [discussion] }
-      = render partial: "projects/diffs/line",
-        collection: discussion.truncated_diff_lines,
-        as: :line,
-        locals: { diff_file: diff_file,
-          discussions: discussions,
-          discussion_expanded: true,
-          plain: true }
+  - if diff_file.text?
+    .diff-content.code.js-syntax-highlight
+      %table
+        - if expanded
+          - discussions = { discussion.original_line_code => [discussion] }
+          = render partial: "projects/diffs/line",
+            collection: discussion.truncated_diff_lines,
+            as: :line,
+            locals: { diff_file: diff_file,
+              discussions: discussions,
+              discussion_expanded: true,
+              plain: true }
+        - else
+          %tr.line_holder.line-holder-placeholder
+            %td.old_line.diff-line-num
+            %td.new_line.diff-line-num
+            %td.line_content
+              .js-code-placeholder
+          = render "discussions/diff_discussion", discussions: [discussion], expanded: true
+  - else
+    - partial = (diff_file.new_file? || diff_file.deleted_file?) ? 'single_image_diff' : 'replaced_image_diff'
+    = render partial: "projects/diffs/#{partial}", locals: { diff_file: diff_file, position: discussion.position.to_json, click_to_comment: false }
+    .note-container
+      = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true, disable_collapse_class: true }

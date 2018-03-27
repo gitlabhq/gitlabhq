@@ -1,4 +1,7 @@
-- ref = local_assigns.fetch(:ref)
+- merge_request = local_assigns.fetch(:merge_request, nil)
+- project = local_assigns.fetch(:project) { merge_request&.project }
+- ref = local_assigns.fetch(:ref) { merge_request&.source_branch }
+
 - commits, hidden = limited_commits(@commits)
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
@@ -7,9 +10,9 @@
     %span.commits-count= n_("%d commit", "%d commits", commits.count) % commits.count
 
   %li.commits-row{ data: { day: day } }
-    %ul.content-list.commit-list
-      = render commits, project: project, ref: ref
+    %ul.content-list.commit-list.flex-list
+      = render partial: 'projects/commits/commit', collection: commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
 - if hidden > 0
   %li.alert.alert-warning
-    = n_('%d additional commit has been omitted to prevent performance issues.', '%d additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
+    = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)

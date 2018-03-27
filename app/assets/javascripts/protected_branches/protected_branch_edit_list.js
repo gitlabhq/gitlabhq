@@ -1,18 +1,19 @@
-/* eslint-disable arrow-parens, no-param-reassign, no-new, comma-dangle */
+/* eslint-disable no-new */
 
-(global => {
-  global.gl = global.gl || {};
+import $ from 'jquery';
+import ProtectedBranchEdit from './protected_branch_edit';
 
-  gl.ProtectedBranchEditList = class {
-    constructor() {
-      this.$wrap = $('.protected-branches-list');
+export default class ProtectedBranchEditList {
+  constructor() {
+    this.$wrap = $('.protected-branches-list');
+    this.initEditForm();
+  }
 
-      // Build edit forms
-      this.$wrap.find('.js-protected-branch-edit-form').each((i, el) => {
-        new gl.ProtectedBranchEdit({
-          $wrap: $(el)
-        });
+  initEditForm() {
+    this.$wrap.find('.js-protected-branch-edit-form').each((i, el) => {
+      new ProtectedBranchEdit({
+        $wrap: $(el),
       });
-    }
-  };
-})(window);
+    });
+  }
+}

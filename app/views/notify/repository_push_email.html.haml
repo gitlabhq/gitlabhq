@@ -3,7 +3,7 @@
 
 %h3
   #{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name}
-  at #{link_to(@message.project_name_with_namespace, namespace_project_url(@message.project_namespace, @message.project))}
+  at #{link_to(@message.project_name_with_namespace, project_url(@message.project))}
 
 - if @message.compare
   - if @message.reverse_compare?
@@ -17,7 +17,7 @@
   %ul
     - @message.commits.each do |commit|
       %li
-        %strong= link_to(commit.short_id, namespace_project_commit_url(@message.project_namespace, @message.project, commit))
+        %strong= link_to(commit.short_id, project_commit_url(@message.project, commit))
         %div
           %span by #{commit.author_name}
           %i at #{commit.committed_date.to_s(:iso8601)}

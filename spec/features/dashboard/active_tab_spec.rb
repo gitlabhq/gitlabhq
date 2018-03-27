@@ -1,15 +1,14 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Active Tab', js: true, feature: true do
+RSpec.describe 'Dashboard Active Tab', :js do
   before do
-    gitlab_sign_in :user
+    sign_in(create(:user))
   end
 
   shared_examples 'page has active tab' do |title|
     it "#{title} tab" do
-      find('.global-dropdown-toggle').trigger('click')
-      expect(page).to have_selector('.global-dropdown-menu li.active', count: 1)
-      expect(find('.global-dropdown-menu li.active')).to have_content(title)
+      expect(page).to have_selector('.navbar-sub-nav li.active', count: 1)
+      expect(find('.navbar-sub-nav li.active')).to have_content(title)
     end
   end
 
@@ -21,27 +20,19 @@ RSpec.describe 'Dashboard Active Tab', js: true, feature: true do
     it_behaves_like 'page has active tab', 'Projects'
   end
 
-  context 'on dashboard issues' do
-    before do
-      visit issues_dashboard_path
-    end
-
-    it_behaves_like 'page has active tab', 'Issues'
-  end
-
-  context 'on dashboard merge requests' do
-    before do
-      visit merge_requests_dashboard_path
-    end
-
-    it_behaves_like 'page has active tab', 'Merge Requests'
-  end
-
   context 'on dashboard groups' do
     before do
       visit dashboard_groups_path
     end
 
     it_behaves_like 'page has active tab', 'Groups'
+  end
+
+  context 'on activity projects' do
+    before do
+      visit activity_dashboard_path
+    end
+
+    it_behaves_like 'page has active tab', 'Activity'
   end
 end

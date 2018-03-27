@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 feature 'No Password Alert' do
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   context 'with internal auth enabled' do
     before do
       sign_in(user)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     context 'when user has a password' do
@@ -30,14 +30,14 @@ feature 'No Password Alert' do
     let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
 
     before do
-      stub_application_setting(signin_enabled?: false)
+      stub_application_setting(password_authentication_enabled_for_git?: false)
       stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
     end
 
     context 'when user has no personal access tokens' do
       it 'has a personal access token alert' do
         gitlab_sign_in_via('saml', user, 'my-uid')
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
 
         expect(page).to have_content "You won't be able to pull or push project code via HTTP until you create a personal access token on your account"
       end
@@ -47,7 +47,7 @@ feature 'No Password Alert' do
       it 'shows no alert' do
         create(:personal_access_token, user: user)
         gitlab_sign_in_via('saml', user, 'my-uid')
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
 
         expect(page).not_to have_content "You won't be able to pull or push project code via HTTP until you create a personal access token on your account"
       end
@@ -59,7 +59,7 @@ feature 'No Password Alert' do
 
     before do
       sign_in(user)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     it 'shows no alert' do

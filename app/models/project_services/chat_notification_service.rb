@@ -99,11 +99,11 @@ class ChatNotificationService < Service
   def get_message(object_kind, data)
     case object_kind
     when "push", "tag_push"
-      ChatMessage::PushMessage.new(data)
+      ChatMessage::PushMessage.new(data) if notify_for_ref?(data)
     when "issue"
-      ChatMessage::IssueMessage.new(data) unless is_update?(data)
+      ChatMessage::IssueMessage.new(data) unless update?(data)
     when "merge_request"
-      ChatMessage::MergeMessage.new(data) unless is_update?(data)
+      ChatMessage::MergeMessage.new(data) unless update?(data)
     when "note"
       ChatMessage::NoteMessage.new(data)
     when "pipeline"
@@ -115,7 +115,7 @@ class ChatNotificationService < Service
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
-    self.public_send(field_name)
+    self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def build_event_channels
@@ -129,14 +129,14 @@ class ChatNotificationService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url
     project.web_url
   end
 
-  def is_update?(data)
+  def update?(data)
     data[:object_attributes][:action] == 'update'
   end
 
@@ -145,10 +145,16 @@ class ChatNotificationService < Service
   end
 
   def notify_for_ref?(data)
-    return true if data[:object_attributes][:tag]
+    return true if data.dig(:object_attributes, :tag)
     return true unless notify_only_default_branch?
 
-    data[:object_attributes][:ref] == project.default_branch
+    ref = if data[:ref]
+            Gitlab::Git.ref_name(data[:ref])
+          else
+            data.dig(:object_attributes, :ref)
+          end
+
+    ref == project.default_branch
   end
 
   def notify_for_pipeline?(data)

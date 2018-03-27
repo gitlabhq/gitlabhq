@@ -1,8 +1,7 @@
-# Issue board
+# Issue Board
 
->**Notes:**
-- [Introduced][ce-5554] in GitLab 8.11.
-- The Backlog column was replaced by the **Add issues** button in GitLab 8.17.
+>**Note:**
+[Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -13,14 +12,69 @@ Other interesting links:
 - [GitLab Issue Board landing page on about.gitlab.com][landing]
 - [YouTube video introduction to Issue Boards][youtube]
 
+![GitLab Issue Board](img/issue_board.png)
+
 ## Overview
 
-The Issue Board builds on GitLab's existing issue tracking functionality and
+The Issue Board builds on GitLab's existing
+[issue tracking functionality](issues/index.md#issue-tracker) and
 leverages the power of [labels] by utilizing them as lists of the scrum board.
 
-With the Issue Board you can have a different view of your issues while also
+With the Issue Board you can have a different view of your issues while
 maintaining the same filtering and sorting abilities you see across the
-issue tracker.
+issue tracker. An Issue Board is based on its project's label structure, therefore, it
+applies the same descriptive labels to indicate placement on the board, keeping
+consistency throughout the entire development lifecycle.
+
+An Issue Board shows you what issues your team is working on, who is assigned to each,
+and where in the workflow those issues are.
+
+You create issues, host code, perform reviews, build, test,
+and deploy from one single platform. Issue Boards help you to visualize
+and manage the entire process _in_ GitLab.
+
+With [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards), available
+only in [GitLab Ultimate](https://about.gitlab.com/products/),
+you go even further, as you can not only keep yourself and your project
+organized from a broader perspective with one Issue Board per project,
+but also allow your team members to organize their own workflow by creating
+multiple Issue Boards within the same project.
+
+## Use cases
+
+GitLab Workflow allows you to discuss proposals in issues, categorize them
+with labels, and from there organize and prioritize them with Issue Boards.
+
+For example, let's consider this simplified development workflow:
+
+1. You have a repository hosting your app's codebase
+and your team actively contributing to code
+1. Your **backend** team starts working a new
+implementation, gathers feedback and approval, and pass it over to **frontend**
+1. When frontend is complete, the new feature is deployed to **staging** to be tested
+1. When successful, it is deployed to **production**
+
+If we have the labels "**backend**", "**frontend**", "**staging**", and
+"**production**", and an Issue Board with a list for each, we can:
+
+- Visualize the entire flow of implementations since the
+beginning of the development lifecycle until deployed to production
+- Prioritize the issues in a list by moving them vertically
+- Move issues between lists to organize them according to the labels you've set
+- Add multiple issues to lists in the board by selecting one or more existing issues
+
+![issue card moving](img/issue_board_move_issue_card_list.png)
+
+> **Notes:**
+>
+>- For a broader use case, please check the blog post
+[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+>
+>- For a real use case, please check why
+[Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
+to improve their workflow with [multiple boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
+
+## Issue Board terminology
 
 Below is a table of the definitions used for GitLab's Issue Board.
 
@@ -36,10 +90,6 @@ two defaults:
 - Label list: a list based on a label. It shows all opened issues with that label.
 - **Backlog** (default): shows all open issues that does not belong to one of lists. Always appears on the very left.
 - **Closed** (default): shows all closed issues. Always appears on the very right.
-
-![GitLab Issue Board](img/issue_board.png)
-
----
 
 In short, here's a list of actions you can take in an Issue Board:
 
@@ -57,7 +107,7 @@ In short, here's a list of actions you can take in an Issue Board:
 If you are not able to perform one or more of the things above, make sure you
 have the right [permissions](#permissions).
 
-## First time using the issue board
+## First time using the Issue Board
 
 The first time you navigate to your Issue Board, you will be presented with
 a default list (**Done**) and a welcoming message that gives
@@ -98,7 +148,7 @@ list view that is removed. You can always add it back later if you need.
 ## Adding issues to a list
 
 You can add issues to a list by clicking the **Add issues** button that is
-present in the upper right corner of the issue board. This will open up a modal
+present in the upper right corner of the Issue Board. This will open up a modal
 window where you can see all the issues that do not belong to any list.
 
 Select one or more issues by clicking on the cards and then click **Add issues**
@@ -116,12 +166,26 @@ board itself.
 
 ![Remove issue from list](img/issue_boards_remove_issue.png)
 
-## Re-ordering an issue in a list
+## Issue ordering in a list
 
-> Introduced in GitLab 9.0.
+When visiting a board, issues appear ordered in any list. You are able to change
+that order simply by dragging and dropping the issues. The changed order will be saved
+to the system so that anybody who visits the same board later will see the reordering,
+with some exceptions.
 
-Issues can be re-ordered inside of lists. This is as simple as dragging and dropping
-an issue into the order you want.
+The first time a given issue appears in any board (i.e. the first time a user
+loads a board containing that issue), it will be ordered with 
+respect to other issues in that list according to [Priority order][label-priority].
+At that point, that issue will be assigned a relative order value by the system
+representing its relative order with respect to the other issues in the list. Any time
+you drag-and-drop reorder that issue, its relative order value will change accordingly.
+Also, any time that issue appears in any board when it is loaded by a user,
+the updated relative order value will be used for the ordering. (It's only the first
+time an issue appears that it takes from the Priority order mentioned above.) This means that
+if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
+a given board inside your GitLab instance, any time those two issues are subsequently
+loaded in any board in the same instance (could be a different project board or a different group board, for example), 
+that ordering will be maintained.
 
 ## Filtering issues
 
@@ -170,6 +234,27 @@ to another list the label changes and a system not is recorded.
 
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
+
+##  Group Issue Board
+
+>Introduced in GitLab 10.6
+
+Group issue board is analogous to project-level issue board and it is accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
+boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
+group-level objects are available.
+
+## Features per tier
+
+Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
+
+| Tier | Number of project issue boards | Board with configuration in project issue boards | Number of group issue boards | Board with configuration in group issue boards |
+| --- | --- | --- | --- | --- |
+| Libre    | 1        | No  | 1        | No  |
+| Starter  | Multiple | Yes | 1        | No  |
+| Premium  | Multiple | Yes | Multiple | Yes |
+| Ultimate | Multiple | Yes | Multiple | Yes |
 
 ## Tips
 

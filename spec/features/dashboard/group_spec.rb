@@ -1,13 +1,19 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Group', feature: true do
+RSpec.describe 'Dashboard Group' do
   before do
-    gitlab_sign_in(:user)
+    sign_in(create(:user))
   end
 
-  it 'creates new group', js: true do
+  it 'defaults sort dropdown to last created' do
     visit dashboard_groups_path
-    find('.btn-new').trigger('click')
+
+    expect(page).to have_button('Last created')
+  end
+
+  it 'creates new group', :js do
+    visit dashboard_groups_path
+    find('.btn-new').click
     new_path = 'Samurai'
     new_description = 'Tokugawa Shogunate'
 

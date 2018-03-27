@@ -22,8 +22,9 @@ module MergeRequests
     end
 
     def handle_changes(merge_request, options)
-      old_labels = options[:old_labels] || []
-      old_mentioned_users = options[:old_mentioned_users] || []
+      old_associations = options.fetch(:old_associations, {})
+      old_labels = old_associations.fetch(:labels, [])
+      old_mentioned_users = old_associations.fetch(:mentioned_users, [])
 
       if has_changes?(merge_request, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)
@@ -38,10 +39,6 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
-      end
-
-      if merge_request.previous_changes.include?('milestone_id')
-        create_milestone_note(merge_request)
       end
 
       if merge_request.previous_changes.include?('assignee_id')
@@ -83,7 +80,7 @@ module MergeRequests
       if merge_request.head_pipeline && merge_request.head_pipeline.active?
         MergeRequests::MergeWhenPipelineSucceedsService.new(project, current_user).execute(merge_request)
       else
-        MergeWorker.perform_async(merge_request.id, current_user.id, {})
+        merge_request.merge_async(current_user.id, {})
       end
     end
 
@@ -101,15 +98,10 @@ module MergeRequests
 
     private
 
-    def handle_wip_event(merge_request)
-      if wip_event = params.delete(:wip_event)
-        # We update the title that is provided in the params or we use the mr title
-        title = params[:title] || merge_request.title
-        params[:title] = case wip_event
-                         when 'wip' then MergeRequest.wip_title(title)
-                         when 'unwip' then MergeRequest.wipless_title(title)
-                         end
-      end
+    def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
+      SystemNoteService.change_branch(
+        issuable, issuable.project, current_user, branch_type,
+        old_branch, new_branch)
     end
   end
 end

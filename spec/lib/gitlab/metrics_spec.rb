@@ -20,7 +20,7 @@ describe Gitlab::Metrics do
 
     context 'prometheus metrics enabled in config' do
       before do
-        allow(described_class).to receive(:current_application_settings).and_return(prometheus_metrics_enabled: true)
+        allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(true)
       end
 
       context 'when metrics folder is present' do
@@ -115,7 +115,7 @@ describe Gitlab::Metrics do
     end
 
     context 'with a transaction' do
-      let(:transaction) { Gitlab::Metrics::Transaction.new }
+      let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
 
       before do
         allow(described_class).to receive(:current_transaction)
@@ -124,13 +124,13 @@ describe Gitlab::Metrics do
 
       it 'adds a metric to the current transaction' do
         expect(transaction).to receive(:increment)
-          .with('foo_real_time', a_kind_of(Numeric))
+                                 .with('foo_real_time', a_kind_of(Numeric), false)
 
         expect(transaction).to receive(:increment)
-          .with('foo_cpu_time', a_kind_of(Numeric))
+                                 .with('foo_cpu_time', a_kind_of(Numeric), false)
 
         expect(transaction).to receive(:increment)
-          .with('foo_call_count', 1)
+                                 .with('foo_call_count', 1, false)
 
         described_class.measure(:foo) { 10 }
       end
@@ -139,31 +139,6 @@ describe Gitlab::Metrics do
         val = described_class.measure(:foo) { 10 }
 
         expect(val).to eq(10)
-      end
-    end
-  end
-
-  describe '.tag_transaction' do
-    context 'without a transaction' do
-      it 'does nothing' do
-        expect_any_instance_of(Gitlab::Metrics::Transaction)
-          .not_to receive(:add_tag)
-
-        described_class.tag_transaction(:foo, 'bar')
-      end
-    end
-
-    context 'with a transaction' do
-      let(:transaction) { Gitlab::Metrics::Transaction.new }
-
-      it 'adds the tag to the transaction' do
-        expect(described_class).to receive(:current_transaction)
-          .and_return(transaction)
-
-        expect(transaction).to receive(:add_tag)
-          .with(:foo, 'bar')
-
-        described_class.tag_transaction(:foo, 'bar')
       end
     end
   end
@@ -180,7 +155,7 @@ describe Gitlab::Metrics do
 
     context 'with a transaction' do
       it 'sets the action of a transaction' do
-        trans = Gitlab::Metrics::Transaction.new
+        trans = Gitlab::Metrics::WebTransaction.new({})
 
         expect(described_class).to receive(:current_transaction)
           .and_return(trans)
@@ -210,7 +185,7 @@ describe Gitlab::Metrics do
 
     context 'with a transaction' do
       it 'adds an event' do
-        transaction = Gitlab::Metrics::Transaction.new
+        transaction = Gitlab::Metrics::WebTransaction.new({})
 
         expect(transaction).to receive(:add_event).with(:meow)
 
@@ -224,7 +199,7 @@ describe Gitlab::Metrics do
 
   shared_examples 'prometheus metrics API' do
     describe '#counter' do
-      subject { described_class.counter(:couter, 'doc') }
+      subject { described_class.counter(:counter, 'doc') }
 
       describe '#increment' do
         it 'successfully calls #increment without arguments' do
@@ -280,7 +255,7 @@ describe Gitlab::Metrics do
     it_behaves_like 'prometheus metrics API'
 
     describe '#null_metric' do
-      subject { described_class.provide_metric(:test) }
+      subject { described_class.send(:provide_metric, :test) }
 
       it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
@@ -321,7 +296,7 @@ describe Gitlab::Metrics do
     it_behaves_like 'prometheus metrics API'
 
     describe '#null_metric' do
-      subject { described_class.provide_metric(:test) }
+      subject { described_class.send(:provide_metric, :test) }
 
       it { is_expected.to be_nil }
     end

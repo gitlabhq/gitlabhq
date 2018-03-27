@@ -1,4 +1,4 @@
-- page_title "History", @page.title.capitalize, "Wiki"
+- page_title _("History"), @page.title.capitalize, _("Wiki")
 
 .wiki-page-header.has-sidebar-toggle
   %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
@@ -6,22 +6,22 @@
 
   .nav-text
     %h2.wiki-page-title
-      = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)
+      = link_to @page.title.capitalize, project_wiki_path(@project, @page)
       %span.light
         &middot;
-        History
+        = _("History")
 
 .table-holder
   %table.table
     %thead
       %tr
-        %th Page version
-        %th Author
-        %th Commit Message
-        %th Last updated
-        %th Format
+        %th= s_("Wiki|Page version")
+        %th= _("Author")
+        %th= _("Commit Message")
+        %th= _("Last updated")
+        %th= _("Format")
     %tbody
-      - @page.versions.each_with_index do |version, index|
+      - @page_versions.each_with_index do |version, index|
         - commit = version
         %tr
           %td
@@ -29,13 +29,14 @@
                                                      commit.id, index == 0) do
               = truncate_sha(commit.id)
           %td
-            = commit.author.name
+            = commit.author_name
           %td
             = commit.message
           %td
             #{time_ago_with_tooltip(version.authored_date)}
           %td
             %strong
-              = @page.page.wiki.page(@page.page.name, commit.id).try(:format)
+              = version.format
+= paginate @page_versions, theme: 'gitlab'
 
 = render 'sidebar'

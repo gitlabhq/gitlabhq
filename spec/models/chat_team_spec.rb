@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe ChatTeam, type: :model do
-  subject { create(:chat_team) }
+describe ChatTeam do
+  set(:chat_team) { create(:chat_team) }
+  subject { chat_team }
 
   # Associations
   it { is_expected.to belong_to(:namespace) }

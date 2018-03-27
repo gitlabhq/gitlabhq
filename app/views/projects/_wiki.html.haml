@@ -14,5 +14,5 @@
           Add a homepage to your wiki that contains information about your project
         %p
           We recommend you
-          = link_to "add a homepage", namespace_project_wiki_path(@project.namespace, @project, :home)
+          = link_to "add a homepage", project_wiki_path(@project, :home)
           to your project's wiki and GitLab will show it here instead of this message.

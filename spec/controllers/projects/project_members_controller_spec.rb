@@ -2,14 +2,13 @@ require('spec_helper')
 
 describe Projects::ProjectMembersController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   describe 'GET index' do
-    it 'should have the settings/members address with a 302 status code' do
+    it 'should have the project_members address with a 200 status code' do
       get :index, namespace_id: project.namespace, project_id: project
 
-      expect(response).to have_http_status(302)
-      expect(response.location).to include namespace_project_settings_members_path(project.namespace, project)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -22,7 +21,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user does not have enough rights' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'returns 404' do
@@ -31,14 +30,14 @@ describe Projects::ProjectMembersController do
                       user_ids: project_user.id,
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(project.users).not_to include project_user
       end
     end
 
     context 'when user has enough rights' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'adds user to members' do
@@ -50,7 +49,7 @@ describe Projects::ProjectMembersController do
                       access_level: Gitlab::Access::GUEST
 
         expect(response).to set_flash.to 'Users were successfully added.'
-        expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
+        expect(response).to redirect_to(project_project_members_path(project))
       end
 
       it 'adds no user to members' do
@@ -62,7 +61,27 @@ describe Projects::ProjectMembersController do
                       access_level: Gitlab::Access::GUEST
 
         expect(response).to set_flash.to 'Message'
-        expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
+        expect(response).to redirect_to(project_project_members_path(project))
+      end
+    end
+  end
+
+  describe 'PUT update' do
+    let(:requester) { create(:project_member, :access_request, project: project) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+    end
+
+    Gitlab::Access.options.each do |label, value|
+      it "can change the access level to #{label}" do
+        xhr :put, :update, project_member: { access_level: value },
+                           namespace_id: project.namespace,
+                           project_id: project,
+                           id: requester
+
+        expect(requester.reload.human_access).to eq(label)
       end
     end
   end
@@ -80,14 +99,14 @@ describe Projects::ProjectMembersController do
                          project_id: project,
                          id: 42
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'returns 404' do
@@ -95,14 +114,14 @@ describe Projects::ProjectMembersController do
                            project_id: project,
                            id: member
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(project.members).to include member
         end
       end
 
       context 'when user has enough rights' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it '[HTML] removes user from members' do
@@ -111,7 +130,7 @@ describe Projects::ProjectMembersController do
                            id: member
 
           expect(response).to redirect_to(
-            namespace_project_settings_members_path(project.namespace, project)
+            project_project_members_path(project)
           )
           expect(project.members).not_to include member
         end
@@ -138,14 +157,14 @@ describe Projects::ProjectMembersController do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'and is not an owner' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'removes user from members' do
@@ -159,17 +178,17 @@ describe Projects::ProjectMembersController do
       end
 
       context 'and is an owner' do
-        let(:project) { create(:empty_project, namespace: user.namespace) }
+        let(:project) { create(:project, namespace: user.namespace) }
 
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'cannot remove himself from the project' do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -183,7 +202,7 @@ describe Projects::ProjectMembersController do
                          project_id: project
 
           expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
-          expect(response).to redirect_to(namespace_project_path(project.namespace, project))
+          expect(response).to redirect_to(project_path(project))
           expect(project.requesters).to be_empty
           expect(project.users).not_to include user
         end
@@ -202,7 +221,7 @@ describe Projects::ProjectMembersController do
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'
       expect(response).to redirect_to(
-        namespace_project_path(project.namespace, project)
+        project_path(project)
       )
       expect(project.requesters.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
@@ -222,14 +241,14 @@ describe Projects::ProjectMembersController do
                                       project_id: project,
                                       id: 42
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'returns 404' do
@@ -237,14 +256,14 @@ describe Projects::ProjectMembersController do
                                         project_id: project,
                                         id: member
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(project.members).not_to include member
         end
       end
 
       context 'when user has enough rights' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'adds user to members' do
@@ -253,7 +272,7 @@ describe Projects::ProjectMembersController do
                                         id: member
 
           expect(response).to redirect_to(
-            namespace_project_settings_members_path(project.namespace, project)
+            project_project_members_path(project)
           )
           expect(project.members).to include member
         end
@@ -262,12 +281,12 @@ describe Projects::ProjectMembersController do
   end
 
   describe 'POST apply_import' do
-    let(:another_project) { create(:empty_project, :private) }
+    let(:another_project) { create(:project, :private) }
     let(:member) { create(:user) }
 
     before do
-      project.team << [user, :master]
-      another_project.team << [member, :guest]
+      project.add_master(user)
+      another_project.add_guest(member)
       sign_in(user)
     end
 
@@ -281,7 +300,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user can access source project members' do
       before do
-        another_project.team << [user, :guest]
+        another_project.add_guest(user)
       end
 
       include_context 'import applied'
@@ -290,7 +309,7 @@ describe Projects::ProjectMembersController do
         expect(project.team_members).to include member
         expect(response).to set_flash.to 'Successfully imported'
         expect(response).to redirect_to(
-          namespace_project_settings_members_path(project.namespace, project)
+          project_project_members_path(project)
         )
       end
     end
@@ -313,7 +332,7 @@ describe Projects::ProjectMembersController do
 
     context 'when creating owner' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
       end
 
@@ -329,7 +348,7 @@ describe Projects::ProjectMembersController do
 
     context 'when create master' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
       end
 

@@ -203,7 +203,7 @@ $monokai-gi: #a6e22e;
   .c1 { color: $monokai-c1; } /* Comment.Single */
   .cs { color: $monokai-cs; } /* Comment.Special */
   .ge { font-style: italic; } /* Generic.Emph */
-  .gs { font-weight: bold; } /* Generic.Strong */
+  .gs { font-weight: $gl-font-weight-bold; } /* Generic.Strong */
   .kc { color: $monokai-kc; } /* Keyword.Constant */
   .kd { color: $monokai-kd; } /* Keyword.Declaration */
   .kn { color: $monokai-kn; } /* Keyword.Namespace */

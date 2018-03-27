@@ -3,15 +3,15 @@
 .git-clone-holder.input-group
   .input-group-btn
     - if allowed_protocols_present?
-      .clone-dropdown-btn.btn.btn-static
+      .clone-dropdown-btn.btn
         %span
           = enabled_project_button(project, enabled_protocol)
     - else
-      %a#clone-dropdown.clone-dropdown-btn.btn{ href: '#', data: { toggle: 'dropdown' } }
+      %a#clone-dropdown.btn.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
         %span
           = default_clone_protocol.upcase
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-right.clone-options-dropdown
+      %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown
         %li
           = ssh_clone_button(project)
         %li
@@ -20,11 +20,3 @@
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
   .input-group-btn
     = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "btn-default btn-clipboard")
-
-:javascript
-  $('ul.clone-options-dropdown a').on('click',function(e){
-    e.preventDefault();
-    var $this = $(this);
-    $('a.clone-dropdown-btn span').text($this.text());
-    $('#project_clone').val($this.attr('href'));
-  });

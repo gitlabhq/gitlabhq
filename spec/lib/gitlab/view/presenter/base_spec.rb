@@ -26,7 +26,7 @@ describe Gitlab::View::Presenter::Base do
   describe '#can?' do
     context 'user is not allowed' do
       it 'returns false' do
-        presenter = presenter_class.new(build_stubbed(:empty_project))
+        presenter = presenter_class.new(build_stubbed(:project))
 
         expect(presenter.can?(nil, :read_project)).to be_falsy
       end
@@ -34,7 +34,7 @@ describe Gitlab::View::Presenter::Base do
 
     context 'user is allowed' do
       it 'returns true' do
-        presenter = presenter_class.new(build_stubbed(:empty_project, :public))
+        presenter = presenter_class.new(build_stubbed(:project, :public))
 
         expect(presenter.can?(nil, :read_project)).to be_truthy
       end
@@ -42,9 +42,9 @@ describe Gitlab::View::Presenter::Base do
 
     context 'subject is overriden' do
       it 'returns true' do
-        presenter = presenter_class.new(build_stubbed(:empty_project, :public))
+        presenter = presenter_class.new(build_stubbed(:project, :public))
 
-        expect(presenter.can?(nil, :read_project, build_stubbed(:empty_project))).to be_falsy
+        expect(presenter.can?(nil, :read_project, build_stubbed(:project))).to be_falsy
       end
     end
   end

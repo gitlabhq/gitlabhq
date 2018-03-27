@@ -1,228 +1,78 @@
-/*
- *  Application Header
- *
- */
+.navbar-gitlab {
+  padding: 0 16px;
+  z-index: 1000;
+  margin-bottom: 0;
+  min-height: $header-height;
+  border: 0;
+  border-bottom: 1px solid $border-color;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
 
-header {
-  transition: padding $sidebar-transition-duration;
+  .logo-text {
+    line-height: initial;
 
-  &.navbar-empty {
-    height: $header-height;
-    background: $white-light;
-    border-bottom: 1px solid $white-normal;
-
-    .center-logo {
-      margin: 8px 0;
-      text-align: center;
-
-      .tanuki-logo,
-      img {
-        height: 36px;
-      }
+    svg {
+      width: 55px;
+      height: 14px;
+      margin: 0;
+      fill: $white-light;
     }
   }
 
-  &.navbar-gitlab {
-    padding: 0 16px;
-    z-index: 400;
-    margin-bottom: 0;
-    min-height: $header-height;
-    background-color: $gray-light;
-    border: none;
-    border-bottom: 1px solid $border-color;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    color: $gl-text-color-secondary;
-    border-radius: 0;
-
-    @media (max-width: $screen-xs-min) {
-      padding: 0 16px;
-    }
-
-    &.with-horizontal-nav {
-      border-bottom: 0;
-
-      .navbar-border {
-        height: 1px;
-        position: absolute;
-        right: 0;
-        left: 0;
-        bottom: -1px;
-        background-color: $border-color;
-        opacity: 0;
-      }
-    }
-
-    .container-fluid {
-      width: 100% !important;
-      filter: none;
-      padding: 0;
-
-      .nav > li > a {
-        color: currentColor;
-        font-size: 18px;
-        padding: 0;
-        margin: (($header-height - 28) / 2) 3px;
-        margin-left: 8px;
-        height: 28px;
-        min-width: 32px;
-        line-height: 28px;
-        text-align: center;
-
-        &.header-user-dropdown-toggle {
-          margin-left: 14px;
-
-          &:hover,
-          &:focus,
-          &:active {
-            .header-user-avatar {
-              border-color: rgba($avatar-border, .2);
-            }
-          }
-        }
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: transparent;
-          color: $gl-text-color;
-
-          svg {
-            fill: $gl-text-color;
-          }
-        }
-
-        .fa-caret-down {
-          font-size: 14px;
-        }
-
-        .fa-chevron-down {
-          position: relative;
-          top: -3px;
-          font-size: 10px;
-        }
-
-        svg {
-          position: relative;
-          top: 2px;
-          height: 17px;
-          // hack to get SVG to line up with FA icons
-          width: 23px;
-          fill: currentColor;
-        }
-      }
-
-      .navbar-toggle {
-        color: $nav-toggle-gray;
-        margin: 5px 0;
-        border-radius: 0;
-        right: -10px;
-        padding: 6px 10px;
-
-        &:hover {
-          background-color: $white-normal;
-        }
-
-        &.active {
-          color: $gl-text-color-secondary;
-        }
-      }
-    }
+  .close-icon {
+    display: none;
   }
 
-  .global-dropdown {
-    position: absolute;
-    left: -10px;
-
-    .badge {
-      font-size: 11px;
+  .menu-expanded {
+    .more-icon {
+      display: none;
     }
 
-    li {
-      &.active a {
-        font-weight: bold;
-      }
-    }
-  }
-
-  .global-dropdown-toggle {
-    margin: 7px 0;
-    font-size: 18px;
-    padding: 6px 10px;
-    border: none;
-    background-color: $gray-light;
-
-    &:hover {
-      background-color: $white-normal;
-    }
-
-    &:focus {
-      outline: none;
-      background-color: $white-normal;
+    .close-icon {
+      display: block;
     }
   }
 
   .header-content {
+    display: -webkit-flex;
     display: flex;
     justify-content: space-between;
     position: relative;
     min-height: $header-height;
-    padding-left: 30px;
-
-    .dropdown-menu {
-      margin-top: -5px;
-    }
-
-    .header-logo {
-      display: inline-block;
-      margin: 0 12px 0 2px;
-      position: relative;
-      top: 10px;
-      transition-duration: .3s;
-
-      svg,
-      img {
-        height: 28px;
-      }
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-
-    .group-name-toggle {
-      margin: 3px 5px;
-    }
-
-    .group-title {
-      &.is-hidden {
-        .hidable:not(:last-of-type) {
-          display: none;
-        }
-      }
-    }
+    padding-left: 0;
 
     .title-container {
+      display: -webkit-flex;
       display: flex;
-      align-items: flex-start;
+      -webkit-align-items: stretch;
+      align-items: stretch;
+      -webkit-flex: 1 1 auto;
       flex: 1 1 auto;
-      padding-top: 14px;
-      overflow: hidden;
+      padding-top: 0;
+      overflow: visible;
     }
 
     .title {
+      padding-right: 0;
+      color: currentColor;
+      display: -webkit-flex;
+      display: flex;
       position: relative;
-      padding-right: 20px;
       margin: 0;
       font-size: 18px;
-      line-height: 22px;
-      display: inline-block;
-      font-weight: normal;
-      color: $gl-text-color;
       vertical-align: top;
       white-space: nowrap;
+
+      img {
+        height: 28px;
+
+        + .logo-text {
+          margin-left: 8px;
+        }
+      }
 
       &.wrap {
         white-space: normal;
@@ -233,30 +83,17 @@ header {
       }
 
       a {
-        color: currentColor;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+        padding: 2px 8px;
+        margin: 5px 2px 5px -8px;
+        border-radius: $border-radius-default;
 
-        &:hover {
-          text-decoration: underline;
-          color: $gl-header-nav-hover-color;
-        }
-      }
-
-      .dropdown-toggle-caret {
-        color: $gl-text-color;
-        border: transparent;
-        background: transparent;
-        position: absolute;
-        top: 2px;
-        right: 3px;
-        width: 12px;
-        line-height: 19px;
-        padding: 0;
-        font-size: 10px;
-        text-align: center;
-        cursor: pointer;
-
-        &:hover {
-          color: $gl-header-nav-hover-color;
+        .tanuki-logo {
+          @media (min-width: $screen-sm-min) {
+            margin-right: 8px;
+          }
         }
       }
 
@@ -266,15 +103,209 @@ header {
       }
     }
 
-    .navbar-collapse {
-      flex: 0 0 auto;
-      border-top: none;
-      padding: 0;
-
-      @media (max-width: $screen-xs-max) {
-        flex: 1 1 auto;
+    .dropdown.open {
+      > a {
+        border-bottom-color: $white-light;
       }
     }
+
+    &.menu-expanded {
+      @media (max-width: $screen-xs-max) {
+        .title-container {
+          display: none;
+        }
+
+        .navbar-collapse {
+          display: block;
+        }
+      }
+    }
+  }
+
+  li.dropdown-bold-header {
+    color: $gl-text-color-secondary;
+    font-size: 12px;
+    padding: 0 16px;
+  }
+
+  .navbar-collapse {
+    flex: 0 0 auto;
+    border-top: 0;
+    padding: 0;
+
+    @media (max-width: $screen-xs-max) {
+      flex: 1 1 auto;
+    }
+
+    .nav {
+      > li:not(.hidden-xs) a {
+        @media (max-width: $screen-xs-max) {
+          margin-left: 0;
+          min-width: 100%;
+        }
+      }
+    }
+  }
+
+  .container-fluid {
+    padding: 0;
+
+    .user-counter {
+      svg {
+        margin-right: 3px;
+      }
+    }
+
+    .navbar-toggle {
+      right: -10px;
+      border-radius: 0;
+      min-width: 45px;
+      padding: 0;
+      margin-right: -7px;
+      font-size: 14px;
+      text-align: center;
+      color: currentColor;
+
+      &:hover,
+      &:focus,
+      &.active {
+        color: currentColor;
+        background-color: transparent;
+      }
+
+      .more-icon,
+      .close-icon {
+        fill: $white-light;
+        margin: auto;
+      }
+    }
+
+    .navbar-nav {
+      @media (max-width: $screen-xs-max) {
+        display: -webkit-flex;
+        display: flex;
+        padding-right: 10px;
+      }
+
+      li {
+        .badge {
+          box-shadow: none;
+          font-weight: $gl-font-weight-bold;
+        }
+      }
+    }
+
+    .nav > li {
+      &.header-user {
+        @media (max-width: $screen-xs-max) {
+          padding-left: 10px;
+        }
+      }
+
+      > a {
+        will-change: color;
+        margin: 4px 2px;
+        padding: 6px 8px;
+        height: 32px;
+
+        @media (max-width: $screen-xs-max) {
+          padding: 0;
+        }
+
+        &.header-user-dropdown-toggle {
+          margin-left: 2px;
+
+          .header-user-avatar {
+            margin-right: 0;
+          }
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+          outline: 0;
+          opacity: 1;
+          color: $white-light;
+
+          &.header-user-dropdown-toggle .header-user-avatar {
+            border-color: $white-light;
+          }
+        }
+      }
+
+      .header-new-dropdown-toggle {
+        margin-right: 0;
+      }
+
+      .impersonated-user,
+      .impersonated-user:hover {
+        margin-right: 1px;
+        background-color: $white-light;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .impersonation-btn,
+      .impersonation-btn:hover {
+        background-color: $white-light;
+        margin-left: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+
+        i {
+          color: $orange-500;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+.navbar-sub-nav,
+.navbar-nav {
+  > li {
+    > a:hover,
+    > a:focus {
+      text-decoration: none;
+      outline: 0;
+      color: $white-light;
+    }
+
+    > a {
+      display: -webkit-flex;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      margin: 4px 2px;
+      font-size: 12px;
+      color: currentColor;
+      border-radius: $border-radius-default;
+      height: 32px;
+      font-weight: $gl-font-weight-bold;
+    }
+
+    &.line-separator {
+      margin: 8px;
+    }
+  }
+}
+
+.navbar-sub-nav {
+  display: -webkit-flex;
+  display: flex;
+  margin: 0 0 0 6px;
+
+  .projects-dropdown-menu {
+    padding: 0;
+    overflow-y: initial;
+    max-height: initial;
+  }
+
+  .dropdown-chevron {
+    position: relative;
+    top: -1px;
+    font-size: 10px;
   }
 
   .project-item-select-holder {
@@ -286,18 +317,151 @@ header {
   }
 }
 
+.caret-down {
+  height: 11px;
+  width: 11px;
+  margin-left: 4px;
+  fill: currentColor;
+}
+
+.header-user .dropdown-menu-nav,
+.header-new .dropdown-menu-nav {
+  margin-top: $dropdown-vertical-offset;
+}
+
+.breadcrumbs {
+  display: -webkit-flex;
+  display: flex;
+  min-height: $breadcrumb-min-height;
+  color: $gl-text-color;
+}
+
+.breadcrumbs-container {
+  display: -webkit-flex;
+  display: flex;
+  width: 100%;
+  position: relative;
+  padding-top: $gl-padding / 2;
+  padding-bottom: $gl-padding / 2;
+  align-items: center;
+  border-bottom: 1px solid $border-color;
+}
+
+.breadcrumbs-links {
+  -webkit-flex: 1;
+  flex: 1;
+  min-width: 0;
+  align-self: center;
+  color: $gl-text-color-secondary;
+
+  .avatar-tile {
+    margin-right: 4px;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    vertical-align: sub;
+  }
+
+  .text-expander {
+    margin-left: 0;
+    margin-right: 2px;
+
+    > i {
+      position: relative;
+      top: 1px;
+    }
+  }
+}
+
+.breadcrumbs-list {
+  display: -webkit-flex;
+  display: flex;
+  margin-bottom: 0;
+  line-height: 16px;
+
+  @media (max-width: $screen-xs-max) {
+    flex-wrap: wrap;
+  }
+
+  > li {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 2px 0;
+
+    &:not(:last-child) {
+      padding-right: 20px;
+
+      &:not(.dropdown) {
+        overflow: hidden;
+      }
+    }
+
+    > a {
+      font-size: 12px;
+      color: currentColor;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 0 1 auto;
+    }
+  }
+}
+
+.breadcrumb-item-text {
+  text-decoration: inherit;
+
+  @media (max-width: $screen-xs-max) {
+    @include str-truncated(128px);
+  }
+}
+
+.breadcrumbs-list-angle {
+  position: absolute;
+  right: 7px;
+  top: 50%;
+  color: $gl-text-color-tertiary;
+  transform: translateY(-50%);
+}
+
+.breadcrumbs-extra {
+  display: -webkit-flex;
+  display: flex;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.breadcrumbs-sub-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+
+  a {
+    color: $gl-text-color;
+  }
+}
+
+.btn-sign-in {
+  margin-top: 3px;
+  font-weight: $gl-font-weight-bold;
+
+  &:hover {
+    background-color: $white-light;
+  }
+}
+
 .navbar-nav {
   li {
     .badge {
       position: inherit;
-      top: -3px;
-      font-weight: normal;
-      margin-left: -12px;
+      font-weight: $gl-font-weight-normal;
+      margin-left: -6px;
       font-size: 11px;
       color: $white-light;
-      padding: 1px 5px 2px;
+      padding: 0 5px;
+      line-height: 12px;
       border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+      box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
       &.issues-count {
         background-color: $green-500;
@@ -315,11 +479,10 @@ header {
 }
 
 @media (max-width: $screen-xs-max) {
-  header .container-fluid {
+  .navbar-gitlab .container-fluid {
     font-size: 18px;
 
     .navbar-nav {
-      display: table;
       table-layout: fixed;
       width: 100%;
       margin: 0;
@@ -327,10 +490,11 @@ header {
     }
 
     .navbar-collapse {
-      padding-left: 5px;
+      margin-left: -8px;
+      margin-right: -10px;
 
       .nav > li:not(.hidden-xs) {
-        display: table-cell!important;
+        display: table-cell !important;
         width: 25%;
 
         a {
@@ -352,12 +516,12 @@ header {
 .header-user {
   .dropdown-menu-nav {
     width: auto;
-    min-width: 140px;
-    margin-top: -5px;
+    min-width: 160px;
+    margin-top: 4px;
     color: $gl-text-color;
     left: auto;
 
-    .current-user {
+    li.current-user {
       padding: 5px 18px;
 
       .user-name {
@@ -372,4 +536,24 @@ header {
   margin-right: 5px;
   border-radius: 50%;
   border: 1px solid $avatar-border;
+}
+
+.with-performance-bar .navbar-gitlab {
+  top: $performance-bar-height;
+}
+
+.navbar-empty {
+  height: $header-height;
+  background: $white-light;
+  border-bottom: 1px solid $white-normal;
+
+  .center-logo {
+    margin: 8px 0;
+    text-align: center;
+
+    .tanuki-logo,
+    img {
+      height: 36px;
+    }
+  }
 }

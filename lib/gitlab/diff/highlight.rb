@@ -14,6 +14,7 @@ module Gitlab
         else
           @diff_lines = diff_lines
         end
+
         @raw_lines = @diff_lines.map(&:text)
       end
 
@@ -26,7 +27,17 @@ module Gitlab
           rich_line = highlight_line(diff_line) || diff_line.text
 
           if line_inline_diffs = inline_diffs[i]
-            rich_line = InlineDiffMarker.new(diff_line.text, rich_line).mark(line_inline_diffs)
+            begin
+              rich_line = InlineDiffMarker.new(diff_line.text, rich_line).mark(line_inline_diffs)
+            # This should only happen when the encoding of the diff doesn't
+            # match the blob, which is a bug. But we shouldn't fail to render
+            # completely in that case, even though we want to report the error.
+            rescue RangeError => e
+              if Gitlab::Sentry.enabled?
+                Gitlab::Sentry.context
+                Raven.capture_exception(e)
+              end
+            end
           end
 
           diff_line.text = rich_line

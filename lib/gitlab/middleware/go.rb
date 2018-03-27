@@ -3,6 +3,10 @@
 module Gitlab
   module Middleware
     class Go
+      include ActionView::Helpers::TagHelper
+
+      PROJECT_PATH_REGEX = %r{\A(#{Gitlab::PathRegex.full_namespace_route_regex}/#{Gitlab::PathRegex.project_route_regex})/}.freeze
+
       def initialize(app)
         @app = app
       end
@@ -10,17 +14,20 @@ module Gitlab
       def call(env)
         request = Rack::Request.new(env)
 
-        if go_request?(request)
-          render_go_doc(request)
-        else
-          @app.call(env)
-        end
+        render_go_doc(request) || @app.call(env)
       end
 
       private
 
       def render_go_doc(request)
-        body = go_body(request)
+        return unless go_request?(request)
+
+        path = project_path(request)
+        return unless path
+
+        body = go_body(path)
+        return unless body
+
         response = Rack::Response.new(body, 200, { 'Content-Type' => 'text/html' })
         response.finish
       end
@@ -29,20 +36,36 @@ module Gitlab
         request["go-get"].to_i == 1 && request.env["PATH_INFO"].present?
       end
 
-      def go_body(request)
-        project_url = URI.join(Gitlab.config.gitlab.url, project_path(request))
+      def go_body(path)
+        config = Gitlab.config
+        project_url = URI.join(config.gitlab.url, path)
         import_prefix = strip_url(project_url.to_s)
 
-        "<!DOCTYPE html><html><head><meta content='#{import_prefix} git #{project_url}.git' name='go-import'></head></html>\n"
+        repository_url = if Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh'
+                           shell = config.gitlab_shell
+                           port = ":#{shell.ssh_port}" unless shell.ssh_port == 22
+                           "ssh://#{shell.ssh_user}@#{shell.ssh_host}#{port}/#{path}.git"
+                         else
+                           "#{project_url}.git"
+                         end
+
+        meta_tag = tag :meta, name: 'go-import', content: "#{import_prefix} git #{repository_url}"
+        head_tag = content_tag :head, meta_tag
+        content_tag :html, head_tag
       end
 
       def strip_url(url)
-        url.gsub(/\Ahttps?:\/\//, '')
+        url.gsub(%r{\Ahttps?://}, '')
       end
 
       def project_path(request)
         path_info = request.env["PATH_INFO"]
-        path_info.sub!(/^\//, '')
+        path_info.sub!(%r{^/}, '')
+
+        project_path_match = "#{path_info}/".match(PROJECT_PATH_REGEX)
+        return unless project_path_match
+
+        path = project_path_match[1]
 
         # Go subpackages may be in the form of `namespace/project/path1/path2/../pathN`.
         # In a traditional project with a single namespace, this would denote repo
@@ -51,7 +74,7 @@ module Gitlab
         # `path2/../pathN`, for example.
 
         # We find all potential project paths out of the path segments
-        path_segments = path_info.split('/')
+        path_segments = path.split('/')
         simple_project_path = path_segments.first(2).join('/')
 
         # If the path is at most 2 segments long, it is a simple `namespace/project` path and we're done
@@ -91,7 +114,15 @@ module Gitlab
       end
 
       def current_user(request)
-        request.env['warden']&.authenticate
+        authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
+        user = authenticator.find_user_from_access_token || authenticator.find_user_from_warden
+
+        return unless user&.can?(:access_api)
+
+        # Right now, the `api` scope is the only one that should be able to determine private project existence.
+        return unless authenticator.valid_access_token?(scopes: [:api])
+
+        user
       end
     end
   end

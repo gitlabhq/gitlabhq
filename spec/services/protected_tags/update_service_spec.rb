@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectedTags::UpdateService, services: true do
+describe ProtectedTags::UpdateService do
   let(:protected_tag) { create(:protected_tag) }
   let(:project) { protected_tag.project }
   let(:user) { project.owner }
@@ -19,7 +19,7 @@ describe ProtectedTags::UpdateService, services: true do
       let(:user) { create(:user) }
 
       it "raises error" do
-        expect{ service.execute(protected_tag) }.to raise_error(Gitlab::Access::AccessDeniedError)
+        expect { service.execute(protected_tag) }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
   end

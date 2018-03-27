@@ -115,6 +115,14 @@ Deleting a protected branch is only allowed via the web interface, not via Git.
 This means that you can't accidentally delete a protected branch from your
 command line or a Git client application.
 
+## Running pipelines on protected branches
+
+The permission to merge or push to protected branches is used to define if a user can
+run CI/CD pipelines and execute actions on jobs that are related to those branches.
+
+See [Security on protected branches](../../ci/pipelines.md#security-on-protected-branches)
+for details about the pipelines security model.
+
 ## Changelog
 
 **9.2**

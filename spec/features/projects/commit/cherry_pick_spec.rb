@@ -3,14 +3,14 @@ require 'spec_helper'
 describe 'Cherry-pick Commits' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:project, :repository, namespace: group) }
   let(:master_pickable_commit)  { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
   let(:master_pickable_merge)  { project.commit('e56497bb5f03a90a51293fc6d516788730953899') }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
-    visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+    project.add_master(user)
+    visit project_commit_path(project, master_pickable_commit.id)
   end
 
   context "I cherry-pick a commit" do
@@ -43,7 +43,7 @@ describe 'Cherry-pick Commits' do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'
       end
-      visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+      visit project_commit_path(project, master_pickable_commit.id)
       find("a[href='#modal-cherry-pick-commit']").click
       page.within('#modal-cherry-pick-commit') do
         uncheck 'create_merge_request'
@@ -64,7 +64,7 @@ describe 'Cherry-pick Commits' do
     end
   end
 
-  context "I cherry-pick a commit from a different branch", js: true do
+  context "I cherry-pick a commit from a different branch", :js do
     it do
       find('.header-action-buttons a.dropdown-toggle').click
       find(:css, "a[href='#modal-cherry-pick-commit']").click

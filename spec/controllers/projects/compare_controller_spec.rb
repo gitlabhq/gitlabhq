@@ -8,7 +8,7 @@ describe Projects::CompareController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   it 'compare shows some diffs' do
@@ -72,7 +72,7 @@ describe Projects::CompareController do
            from: '',
            to: 'master')
 
-      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, to: 'master'))
+      expect(response).to redirect_to(project_compare_index_path(project, to: 'master'))
     end
 
     it 'redirects back to index when params[:to] is empty and preserves params[:from]' do
@@ -82,7 +82,7 @@ describe Projects::CompareController do
            from: 'master',
            to: '')
 
-      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, from: 'master'))
+      expect(response).to redirect_to(project_compare_index_path(project, from: 'master'))
     end
 
     it 'redirects back to index when params[:from] and params[:to] are empty' do
@@ -133,7 +133,7 @@ describe Projects::CompareController do
           end
 
           it 'returns a 404' do
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -145,7 +145,7 @@ describe Projects::CompareController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -156,7 +156,7 @@ describe Projects::CompareController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -166,7 +166,7 @@ describe Projects::CompareController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

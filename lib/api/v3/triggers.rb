@@ -16,24 +16,33 @@ module API
           optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
         end
         post ":id/(ref/:ref/)trigger/builds", requirements: { ref: /.+/ } do
-          project = find_project(params[:id])
-          trigger = Ci::Trigger.find_by_token(params[:token].to_s)
-          not_found! unless project && trigger
-          unauthorized! unless trigger.project == project
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42121')
 
           # validate variables
-          variables = params[:variables].to_h
-          unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+          params[:variables] = params[:variables].to_h
+          unless params[:variables].all? { |key, value| key.is_a?(String) && value.is_a?(String) }
             render_api_error!('variables needs to be a map of key-valued strings', 400)
           end
 
-          # create request and trigger builds
-          trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
-          if trigger_request
-            present trigger_request, with: ::API::V3::Entities::TriggerRequest
+          project = find_project(params[:id])
+          not_found! unless project
+
+          result = Ci::PipelineTriggerService.new(project, nil, params).execute
+          not_found! unless result
+
+          if result[:http_status]
+            render_api_error!(result[:message], result[:http_status])
           else
-            errors = 'No builds created'
-            render_api_error!(errors, 400)
+            pipeline = result[:pipeline]
+
+            # We switched to Ci::PipelineVariable from Ci::TriggerRequest.variables.
+            # Ci::TriggerRequest doesn't save variables anymore.
+            # Here is copying Ci::PipelineVariable to Ci::TriggerRequest.variables for presenting the variables.
+            # The same endpoint in v4 API pressents Pipeline instead of TriggerRequest, so it doesn't need such a process.
+            trigger_request = pipeline.trigger_requests.last
+            trigger_request.variables = params[:variables]
+
+            present trigger_request, with: ::API::V3::Entities::TriggerRequest
           end
         end
 

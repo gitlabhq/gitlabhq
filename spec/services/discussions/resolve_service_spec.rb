@@ -9,7 +9,7 @@ describe Discussions::ResolveService do
     let(:service) { described_class.new(discussion.noteable.project, user, merge_request: merge_request) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it "doesn't resolve discussions the user can't resolve" do

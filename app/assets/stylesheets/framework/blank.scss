@@ -1,51 +1,101 @@
+.blank-state-parent-container {
+  .section-container {
+    padding: 10px;
+  }
+
+  .section-body {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 25px;
+    border-radius: $border-radius-default;
+  }
+}
+
+.blank-state-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  height: 100%;
+}
+
 .blank-state-welcome {
   text-align: center;
-  border-bottom: 1px solid $border-color;
+  padding: 20px 0 40px;
+
+  .blank-state-welcome-title {
+    font-size: 24px;
+  }
 
   .blank-state-text {
     margin-bottom: 0;
   }
 }
 
-.blank-state {
+.blank-state-link {
+  display: block;
+  color: $gl-text-color;
+  flex: 0 0 100%;
+  margin-bottom: 15px;
+
+  @media (min-width: $screen-sm-min) {
+    flex: 0 0 49%;
+
+    &:nth-child(odd) {
+      margin-right: 5px;
+    }
+
+    &:nth-child(even) {
+      margin-left: 5px;
+    }
+  }
+
+  &:hover {
+    background-color: $gray-light;
+    text-decoration: none;
+    color: $gl-text-color;
+  }
+}
+
+.blank-state-center {
   padding-top: 20px;
   padding-bottom: 20px;
   text-align: center;
 }
 
-.blank-state-no-icon {
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
+.blank-state {
+  padding: 20px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
 
-.blank-state-icon {
-  padding-bottom: 20px;
-  color: $gray-darkest;
-  font-size: 56px;
-
-  path,
-  polygon {
-    fill: currentColor;
+  @media (min-width: $screen-sm-min) {
+    display: flex;
+    align-items: center;
+    padding: 50px 30px;
   }
 }
 
-.blank-state-title {
-  margin-top: 0;
-  margin-bottom: 5px;
-  font-size: 18px;
-  font-weight: normal;
-}
-
-.blank-state-text {
-  margin-top: 0;
-  margin-bottom: $gl-padding;
-  font-size: 14px;
-
-  > strong {
-    font-weight: 600;
+.blank-state,
+.blank-state-center {
+  .blank-state-icon {
+    svg {
+      display: block;
+      margin: auto;
+    }
   }
-}
 
-.blank-state-welcome-title {
-  font-size: 24px;
+  .blank-state-title {
+    margin-top: 0;
+    font-size: 18px;
+  }
+
+  .blank-state-body {
+    @media (max-width: $screen-xs-max) {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      padding-left: 20px;
+    }
+  }
 }

@@ -5,5 +5,5 @@ ActsAsTaggableOn.strict_case_match = true
 ActsAsTaggableOn.tags_counter = false
 
 # validate that counter cache is disabled
-raise "Counter cache is not disabled" if 
+raise "Counter cache is not disabled" if
     ActsAsTaggableOn::Tagging.reflections["tag"].options[:counter_cache]

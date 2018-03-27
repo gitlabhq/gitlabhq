@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupLabel, models: true do
+describe GroupLabel do
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }
   end
@@ -39,8 +39,8 @@ describe GroupLabel, models: true do
 
     context 'cross-project' do
       let(:namespace) { build_stubbed(:namespace) }
-      let(:source_project) { build_stubbed(:empty_project, name: 'project-1', namespace: namespace) }
-      let(:target_project) { build_stubbed(:empty_project, name: 'project-2', namespace: namespace) }
+      let(:source_project) { build_stubbed(:project, name: 'project-1', namespace: namespace) }
+      let(:target_project) { build_stubbed(:project, name: 'project-2', namespace: namespace) }
 
       it 'returns a String reference to the object' do
         expect(label.to_reference(source_project, target_project: target_project)).to eq %(project-1~#{label.id})

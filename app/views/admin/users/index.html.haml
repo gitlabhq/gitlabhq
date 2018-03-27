@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title "Users"
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
   .prepend-top-default
@@ -77,3 +76,6 @@
       = render partial: 'admin/users/user', collection: @users
 
   = paginate @users, theme: "gitlab"
+
+#delete-user-modal
+

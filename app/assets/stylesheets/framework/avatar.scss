@@ -23,6 +23,7 @@
   &.s60 { @include avatar-size(60px, 12px); }
   &.s70 { @include avatar-size(70px, 14px); }
   &.s90 { @include avatar-size(90px, 15px); }
+  &.s100 { @include avatar-size(100px, 15px); }
   &.s110 { @include avatar-size(110px, 15px); }
   &.s140 { @include avatar-size(140px, 15px); }
   &.s160 { @include avatar-size(160px, 20px); }
@@ -35,12 +36,13 @@
   width: 40px;
   height: 40px;
   padding: 0;
+  background: $avatar-background;
+  overflow: hidden;
 
   &.avatar-inline {
     float: none;
     display: inline-block;
-    margin-left: 4px;
-    margin-bottom: 2px;
+    margin-left: 2px;
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
 
@@ -56,11 +58,11 @@
 
   &.avatar-tile {
     border-radius: 0;
-    border: none;
+    border: 0;
   }
 
   &:not([href]):hover {
-    border-color: rgba($avatar-border, .2);
+    border-color: darken($avatar-border, 10%);
   }
 }
 
@@ -69,14 +71,15 @@
   vertical-align: top;
 
   &.s16 { font-size: 12px; line-height: 1.33; }
-  &.s24 { font-size: 14px; line-height: 1.8; }
+  &.s24 { font-size: 13px; line-height: 1.8; }
   &.s26 { font-size: 20px; line-height: 1.33; }
   &.s32 { font-size: 20px; line-height: 30px; }
   &.s40 { font-size: 16px; line-height: 38px; }
   &.s60 { font-size: 32px; line-height: 58px; }
   &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 88px; }
-  &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
+  &.s100 { font-size: 36px; line-height: 98px; }
+  &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
 }
@@ -86,20 +89,26 @@
   overflow: hidden;
   display: flex;
 
+  a {
+    display: flex;
+  }
+
   .avatar {
     border-radius: 0;
-    border: none;
+    border: 0;
     height: auto;
     width: 100%;
     margin: 0;
     align-self: center;
   }
+
+  &.s40 { min-width: 40px; min-height: 40px; }
 }
 
 .avatar-counter {
   background-color: $gray-darkest;
   color: $white-light;
-  border: 1px solid $border-color;
+  border: 1px solid $avatar-border;
   border-radius: 1em;
   font-family: $regular_font;
   font-size: 9px;

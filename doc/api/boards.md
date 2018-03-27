@@ -15,10 +15,10 @@ GET /projects/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`   | integer/string  | yes    | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/boards
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards
 ```
 
 Example response:
@@ -27,6 +27,19 @@ Example response:
 [
   {
     "id" : 1,
+    "project": {
+      "id": 5,
+      "name": "Diaspora Project Site",
+      "name_with_namespace": "Diaspora / Diaspora Project Site",
+      "path": "diaspora-project-site",
+      "path_with_namespace": "diaspora/diaspora-project-site",
+      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+      "web_url": "http://example.com/diaspora/diaspora-project-site"
+    },
+    "milestone":   {
+      "id": 12
+      "title": "10.0"
+    },
     "lists" : [
       {
         "id" : 1,
@@ -60,6 +73,74 @@ Example response:
 ]
 ```
 
+## Single board
+
+Get a single board.
+
+```
+GET /projects/:id/boards/:board_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id` | integer | yes | The ID of a board |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1
+```
+
+Example response:
+
+```json
+  {
+    "id": 1,
+    "name:": "project issue board",
+    "project": {
+      "id": 5,
+      "name": "Diaspora Project Site",
+      "name_with_namespace": "Diaspora / Diaspora Project Site",
+      "path": "diaspora-project-site",
+      "path_with_namespace": "diaspora/diaspora-project-site",
+      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+      "web_url": "http://example.com/diaspora/diaspora-project-site"
+    },
+    "milestone":   {
+      "id": 12
+      "title": "10.0"
+    },
+    "lists" : [
+      {
+        "id" : 1,
+        "label" : {
+          "name" : "Testing",
+          "color" : "#F0AD4E",
+          "description" : null
+        },
+        "position" : 1
+      },
+      {
+        "id" : 2,
+        "label" : {
+          "name" : "Ready",
+          "color" : "#FF0000",
+          "description" : null
+        },
+        "position" : 2
+      },
+      {
+        "id" : 3,
+        "label" : {
+          "name" : "Production",
+          "color" : "#FF5F00",
+          "description" : null
+        },
+        "position" : 3
+      }
+    ]
+  }
+```
+
 ## List board lists
 
 Get a list of the board's lists.
@@ -71,8 +152,8 @@ GET /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`   | integer/string  | yes    | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`   | integer  | yes    | The ID of a board |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id` | integer | yes | The ID of a board |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists
@@ -122,9 +203,9 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes   | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`   | integer  | yes    | The ID of a board |
-| `list_id`| integer | yes   | The ID of a board's list |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id` | integer | yes | The ID of a board |
+| `list_id`| integer | yes | The ID of a board's list |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1
@@ -154,9 +235,9 @@ POST /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`   | integer  | yes    | The ID of a board |
-| `label_id`         | integer  | yes | The ID of a label |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id` | integer | yes | The ID of a board |
+| `label_id` | integer | yes | The ID of a label |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5
@@ -186,10 +267,10 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`   | integer  | yes    | The ID of a board |
-| `list_id`      | integer | yes | The ID of a board's list |
-| `position`         | integer  | yes  | The position of the list |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id` | integer | yes | The ID of a board |
+| `list_id` | integer | yes | The ID of a board's list |
+| `position` | integer | yes | The position of the list |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2
@@ -219,9 +300,9 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`   | integer  | yes    | The ID of a board |
-| `list_id`      | integer | yes | The ID of a board's list |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id` | integer | yes | The ID of a board |
+| `list_id` | integer | yes | The ID of a board's list |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1

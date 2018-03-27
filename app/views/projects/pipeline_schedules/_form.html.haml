@@ -1,7 +1,3 @@
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'schedule_form'
-
 = form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form" } do |f|
   = form_errors(@schedule)
   .form-group
@@ -22,6 +18,20 @@
       = f.label :ref, _('Target Branch'), class: 'label-light'
       = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown', dropdown_class: 'git-revision-dropdown', title: _("Select target branch"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
+  .form-group.js-ci-variable-list-section
+    .col-md-9
+      %label.label-light
+        #{ s_('PipelineSchedules|Variables') }
+      %ul.ci-variable-list
+        - @schedule.variables.each do |variable|
+          = render 'ci/variables/variable_row', form_field: 'schedule', variable: variable, only_key_value: true
+        = render 'ci/variables/variable_row', form_field: 'schedule', only_key_value: true
+      - if @schedule.variables.size > 0
+        %button.btn.btn-info.btn-inverted.prepend-top-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
+          - if @schedule.variables.size == 0
+            = n_('Hide value', 'Hide values', @schedule.variables.size)
+          - else
+            = n_('Reveal value', 'Reveal values', @schedule.variables.size)
   .form-group
     .col-md-9
       = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'

@@ -7,12 +7,12 @@
     .login-box.tab-pane{ id: "#{server['provider_name']}", role: 'tabpanel', class: active_when(i.zero? && !crowd_enabled?) }
       .login-body
         = render 'devise/sessions/new_ldap', server: server
-  - if signin_enabled?
-    .login-box.tab-pane{ id: 'ldap-standard', role: 'tabpanel' }
+  - if password_authentication_enabled_for_web?
+    .login-box.tab-pane{ id: 'login-pane', role: 'tabpanel' }
       .login-body
         = render 'devise/sessions/new_base'
 
-- elsif signin_enabled?
+- elsif password_authentication_enabled_for_web?
   .login-box.tab-pane.active{ id: 'login-pane', role: 'tabpanel' }
     .login-body
       = render 'devise/sessions/new_base'

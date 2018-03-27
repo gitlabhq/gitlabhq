@@ -2,13 +2,7 @@
 - @can_bulk_update = can?(current_user, :admin_issue, @project)
 
 - page_title "Issues"
-- new_issue_email = @project.new_issue_address(current_user)
-= content_for :sub_nav do
-  = render "projects/issues/head"
-
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
+- new_issue_email = @project.new_issuable_address(current_user, 'issue')
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
@@ -18,18 +12,7 @@
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
-        = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
-          = icon('rss')
-        - if @can_bulk_update
-          = button_tag "Edit Issues", class: "btn btn-default js-bulk-update-toggle"
-        = link_to new_namespace_project_issue_path(@project.namespace,
-                                                   @project,
-                                                   issue: { assignee_id: issues_finder.assignee.try(:id),
-                                                            milestone_id: issues_finder.milestones.first.try(:id) }),
-                                                   class: "btn btn-new",
-                                                   title: "New issue",
-                                                   id: "new_issue_link" do
-          New issue
+        = render "projects/issues/nav_btns"
     = render 'shared/issuable/search_bar', type: :issues
 
     - if @can_bulk_update
@@ -38,6 +21,6 @@
     .issues-holder
       = render 'issues'
       - if new_issue_email
-        = render 'issue_by_email', email: new_issue_email
+        = render 'projects/issuable_by_email', email: new_issue_email, issuable_type: 'issue'
 - else
-  = render 'shared/empty_states/issues', button_path: new_namespace_project_issue_path(@project.namespace, @project)
+  = render 'shared/empty_states/issues', button_path: new_project_issue_path(@project)

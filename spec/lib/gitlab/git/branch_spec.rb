@@ -1,54 +1,41 @@
 require "spec_helper"
 
 describe Gitlab::Git::Branch, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   subject { repository.branches }
 
   it { is_expected.to be_kind_of Array }
 
-  describe 'initialize' do
-    let(:commit_id) { 'f00' }
-    let(:commit_subject) { "My commit".force_encoding('ASCII-8BIT') }
-    let(:committer) do
-      Gitaly::FindLocalBranchCommitAuthor.new(
-        name: generate(:name),
-        email: generate(:email),
-        date: Google::Protobuf::Timestamp.new(seconds: 123)
-      )
-    end
-    let(:author) do
-      Gitaly::FindLocalBranchCommitAuthor.new(
-        name: generate(:name),
-        email: generate(:email),
-        date: Google::Protobuf::Timestamp.new(seconds: 456)
-      )
-    end
-    let(:gitaly_branch) do
-      Gitaly::FindLocalBranchResponse.new(
-        name: 'foo', commit_id: commit_id, commit_subject: commit_subject,
-        commit_author: author, commit_committer: committer
-      )
-    end
-    let(:attributes) do
-      {
-        id: commit_id,
-        message: commit_subject,
-        authored_date: Time.at(author.date.seconds),
-        author_name: author.name,
-        author_email: author.email,
-        committed_date: Time.at(committer.date.seconds),
-        committer_name: committer.name,
-        committer_email: committer.email
-      }
-    end
-    let(:branch) { described_class.new(repository, 'foo', gitaly_branch) }
+  describe '.find' do
+    subject { described_class.find(repository, branch) }
 
-    it 'parses Gitaly::FindLocalBranchResponse correctly' do
-      expect(Gitlab::Git::Commit).to receive(:decorate)
-        .with(hash_including(attributes)).and_call_original
+    before do
+      allow(repository).to receive(:find_branch).with(branch)
+        .and_call_original
+    end
 
-      expect(branch.dereferenced_target.message.encoding).to be(Encoding::UTF_8)
+    context 'when finding branch via branch name' do
+      let(:branch) { 'master' }
+
+      it 'returns a branch object' do
+        expect(subject).to be_a(described_class)
+        expect(subject.name).to eq(branch)
+
+        expect(repository).to have_received(:find_branch).with(branch)
+      end
+    end
+
+    context 'when the branch is already a branch' do
+      let(:commit) { repository.commit('master') }
+      let(:branch) { described_class.new(repository, 'master', commit.sha, commit) }
+
+      it 'returns a branch object' do
+        expect(subject).to be_a(described_class)
+        expect(subject).to eq(branch)
+
+        expect(repository).not_to have_received(:find_branch).with(branch)
+      end
     end
   end
 
@@ -72,5 +59,69 @@ describe Gitlab::Git::Branch, seed_helper: true do
     it { expect(branch.dereferenced_target.sha).to eq(SeedRepo::LastCommit::ID) }
   end
 
+  context 'with active, stale and future branches' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+
+    let(:user) { create(:user) }
+    let(:committer) do
+      Gitlab::Git.committer_hash(email: user.email, name: user.name)
+    end
+    let(:params) do
+      parents = [repository.rugged.head.target]
+      tree = parents.first.tree
+
+      {
+        message: 'commit message',
+        author: committer,
+        committer: committer,
+        tree: tree,
+        parents: parents
+      }
+    end
+    let(:stale_sha) { Timecop.freeze(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago - 5.days) { create_commit } }
+    let(:active_sha) { Timecop.freeze(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago + 5.days) { create_commit } }
+    let(:future_sha) { Timecop.freeze(100.days.since) { create_commit } }
+
+    before do
+      repository.create_branch('stale-1', stale_sha)
+      repository.create_branch('active-1', active_sha)
+      repository.create_branch('future-1', future_sha)
+    end
+
+    after do
+      ensure_seeds
+    end
+
+    describe 'examine if the branch is active or stale' do
+      let(:stale_branch) { repository.find_branch('stale-1') }
+      let(:active_branch) { repository.find_branch('active-1') }
+      let(:future_branch) { repository.find_branch('future-1') }
+
+      describe '#active?' do
+        it { expect(stale_branch.active?).to be_falsey }
+        it { expect(active_branch.active?).to be_truthy }
+        it { expect(future_branch.active?).to be_truthy }
+      end
+
+      describe '#stale?' do
+        it { expect(stale_branch.stale?).to be_truthy }
+        it { expect(active_branch.stale?).to be_falsey }
+        it { expect(future_branch.stale?).to be_falsey }
+      end
+
+      describe '#state' do
+        it { expect(stale_branch.state).to eq(:stale) }
+        it { expect(active_branch.state).to eq(:active) }
+        it { expect(future_branch.state).to eq(:active) }
+      end
+    end
+  end
+
   it { expect(repository.branches.size).to eq(SeedRepo::Repo::BRANCHES.size) }
+
+  def create_commit
+    repository.create_commit(params.merge(committer: committer.merge(time: Time.now)))
+  end
 end

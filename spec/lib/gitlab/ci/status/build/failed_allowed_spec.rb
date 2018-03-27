@@ -18,7 +18,7 @@ describe Gitlab::Ci::Status::Build::FailedAllowed do
 
   describe '#icon' do
     it 'returns a warning icon' do
-      expect(subject.icon).to eq 'icon_status_warning'
+      expect(subject.icon).to eq 'status_warning'
     end
   end
 

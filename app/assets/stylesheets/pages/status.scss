@@ -1,22 +1,3 @@
-@mixin status-color($color-light, $color-main, $color-dark) {
-  color: $color-main;
-  border-color: $color-main;
-
-  &:not(span):hover {
-    background-color: $color-light;
-    color: $color-dark;
-    border-color: $color-dark;
-
-    svg {
-      fill: $color-dark;
-    }
-  }
-
-  svg {
-    fill: $color-main;
-  }
-}
-
 .ci-status {
   padding: 2px 7px 4px;
   border: 1px solid $gray-darker;
@@ -37,11 +18,11 @@
   }
 
   &.ci-failed {
-    @include status-color($red-50, $red-500, $red-600);
+    @include status-color($red-100, $red-500, $red-600);
   }
 
   &.ci-success {
-    @include status-color($green-50, $green-500, $green-700);
+    @include green-status-color;
   }
 
   &.ci-canceled,
@@ -58,12 +39,12 @@
   &.ci-pending,
   &.ci-failed_with_warnings,
   &.ci-success_with_warnings {
-    @include status-color($orange-50, $orange-500, $orange-700);
+    @include status-color($orange-100, $orange-500, $orange-700);
   }
 
   &.ci-info,
   &.ci-running {
-    @include status-color($blue-50, $blue-500, $blue-600);
+    @include status-color($blue-100, $blue-500, $blue-600);
   }
 
   &.ci-created,
@@ -73,10 +54,6 @@
 
     &:not(span):hover {
       background-color: rgba($gl-text-color-secondary, .07);
-    }
-
-    svg {
-      fill: $gl-text-color-secondary;
     }
   }
 }

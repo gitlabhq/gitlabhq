@@ -1,18 +1,19 @@
 require 'spec_helper'
 
 feature 'Project Issues RSS' do
-  let(:project) { create(:empty_project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { namespace_project_issues_path(project.namespace, project) }
+  let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let(:path) { project_issues_path(project) }
 
   before do
     create(:issue, project: project)
   end
 
   context 'when signed in' do
+    let(:user) { create(:user) }
+
     before do
-      user = create(:user)
-      project.team << [user, :developer]
-      gitlab_sign_in(user)
+      project.add_developer(user)
+      sign_in(user)
       visit path
     end
 

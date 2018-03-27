@@ -9,12 +9,13 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
             error!(errors[:project_access], 422)
           end
+
           not_found!
         end
 
@@ -35,7 +36,7 @@ module API
       end
 
       desc 'Get a project repository tree' do
-        success Entities::RepoTreeObject
+        success Entities::TreeObject
       end
       params do
         optional :ref, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
@@ -52,12 +53,12 @@ module API
 
         tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
         entries = ::Kaminari.paginate_array(tree.sorted_entries)
-        present paginate(entries), with: Entities::RepoTreeObject
+        present paginate(entries), with: Entities::TreeObject
       end
 
       desc 'Get raw blob contents from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha/raw' do
         assign_blob_vars!
@@ -67,7 +68,7 @@ module API
 
       desc 'Get a blob from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha' do
         assign_blob_vars!
@@ -110,10 +111,12 @@ module API
       end
       params do
         use :pagination
+        optional :order_by, type: String, values: %w[email name commits], default: nil, desc: 'Return contributors ordered by `name` or `email` or `commits`'
+        optional :sort, type: String, values: %w[asc desc], default: nil, desc: 'Sort by asc (ascending) or desc (descending)'
       end
       get ':id/repository/contributors' do
         begin
-          contributors = ::Kaminari.paginate_array(user_project.repository.contributors)
+          contributors = ::Kaminari.paginate_array(user_project.repository.contributors(order_by: params[:order_by], sort: params[:sort]))
           present paginate(contributors), with: Entities::Contributor
         rescue
           not_found!

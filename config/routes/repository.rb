@@ -2,7 +2,10 @@
 
 resource :repository, only: [:create] do
   member do
-    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }
+    get ':ref/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, ref: /.+/ }, action: 'archive', as: 'archive'
+
+    # deprecated since GitLab 9.5
+    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }, as: 'archive_alternative'
   end
 end
 
@@ -46,6 +49,7 @@ scope format: false do
       end
     end
 
+    get '/branches/:state', to: 'branches#index', as: :branches_filtered, constraints: { state: /active|stale|all/ }
     resources :branches, only: [:index, :new, :create, :destroy]
     delete :merged_branches, controller: 'branches', action: :destroy_all_merged
     resources :tags, only: [:index, :show, :new, :create, :destroy] do
@@ -76,6 +80,8 @@ scope format: false do
     get '/tree/*id', to: 'tree#show', as: :tree
     get '/raw/*id', to: 'raw#show', as: :raw
     get '/blame/*id', to: 'blame#show', as: :blame
+
+    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
     get '/commits/*id', to: 'commits#show', as: :commits
 
     post '/create_dir/*id', to: 'tree#create_dir', as: :create_dir

@@ -1,7 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :project_hook do
     url { generate(:url) }
     enable_ssl_verification false
+    project
 
     trait :token do
       token { SecureRandom.hex(10) }

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Search::SnippetService, services: true do
+describe Search::SnippetService do
   let(:author) { create(:author) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project, :public) }
 
   let!(:public_snippet)   { create(:snippet, :public, content: 'password: XXX') }
   let!(:internal_snippet) { create(:snippet, :internal, content: 'password: XXX') }
@@ -33,7 +33,7 @@ describe Search::SnippetService, services: true do
 
       it 'returns public, internal snippets and project private snippets for project members' do
         member = create(:user)
-        project.team << [member, :developer]
+        project.add_developer(member)
         search = described_class.new(member, search: 'password')
         results = search.execute
 

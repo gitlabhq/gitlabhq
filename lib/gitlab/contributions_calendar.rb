@@ -23,7 +23,7 @@ module Gitlab
       mr_events = event_counts(date_from, :merge_requests)
         .having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
       note_events = event_counts(date_from, :merge_requests)
-        .having(action: [Event::COMMENTED], target_type: "Note")
+        .having(action: [Event::COMMENTED])
 
       union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events, note_events])
       events = Event.find_by_sql(union.to_sql).map(&:attributes)
@@ -34,6 +34,8 @@ module Gitlab
     end
 
     def events_by_date(date)
+      return Event.none unless can_read_cross_project?
+
       events = Event.contributions.where(author_id: contributor.id)
         .where(created_at: date.beginning_of_day..date.end_of_day)
         .where(project_id: projects)
@@ -48,10 +50,14 @@ module Gitlab
     end
 
     def starting_month
-      Date.today.month
+      Date.current.month
     end
 
     private
+
+    def can_read_cross_project?
+      Ability.allowed?(current_user, :read_cross_project)
+    end
 
     def event_counts(date_from, feature)
       t = Event.arel_table
@@ -66,12 +72,18 @@ module Gitlab
         .select(:id)
 
       conditions = t[:created_at].gteq(date_from.beginning_of_day)
-        .and(t[:created_at].lteq(Date.today.end_of_day))
+        .and(t[:created_at].lteq(Date.current.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
+      date_interval = if Gitlab::Database.postgresql?
+                        "INTERVAL '#{Time.zone.now.utc_offset} seconds'"
+                      else
+                        "INTERVAL #{Time.zone.now.utc_offset} SECOND"
+                      end
+
       Event.reorder(nil)
-        .select(t[:project_id], t[:target_type], t[:action], 'date(created_at) AS date', 'count(id) as total_amount')
-        .group(t[:project_id], t[:target_type], t[:action], 'date(created_at)')
+        .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval}) AS date", 'count(id) as total_amount')
+        .group(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval})")
         .where(conditions)
         .having(t[:project_id].in(Arel::Nodes::SqlLiteral.new(authed_projects.to_sql)))
     end

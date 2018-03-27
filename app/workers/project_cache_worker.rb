@@ -1,7 +1,6 @@
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
@@ -19,6 +18,8 @@ class ProjectCacheWorker
     update_statistics(project, statistics.map(&:to_sym))
 
     project.repository.refresh_method_caches(files.map(&:to_sym))
+
+    project.cleanup
   end
 
   def update_statistics(project, statistics = [])

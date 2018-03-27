@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe Boards::Lists::GenerateService, services: true do
+describe Boards::Lists::GenerateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
     subject(:service) { described_class.new(project, user) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'when board lists is empty' do

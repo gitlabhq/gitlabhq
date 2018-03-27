@@ -3,18 +3,23 @@ project_tree:
   - labels:
       :priorities
   - milestones:
-    - :events
+    - events:
+      - :push_event_payload
   - issues:
-    - :events
+    - events:
+      - :push_event_payload
     - :timelogs
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
     - label_links:
       - label:
           :priorities
     - milestone:
-      - :events
+      - events:
+        - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
@@ -22,25 +27,33 @@ project_tree:
   - :releases
   - project_members:
     - :user
+  - lfs_file_locks:
+    - :user
   - merge_requests:
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
     - merge_request_diff:
+      - :merge_request_diff_commits
       - :merge_request_diff_files
-    - :events
+    - events:
+      - :push_event_payload
     - :timelogs
     - label_links:
       - label:
           :priorities
     - milestone:
-      - :events
+      - events:
+        - :push_event_payload
   - pipelines:
     - notes:
       - :author
-      - :events
-    - :stages
-    - :statuses
+      - events:
+        - :push_event_payload
+    - stages:
+      - :statuses
+  - :auto_devops
   - :triggers
   - :pipeline_schedules
   - :services
@@ -51,6 +64,8 @@ project_tree:
   - protected_tags:
     - :create_access_levels
   - :project_feature
+  - :custom_attributes
+  - :project_badges
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -89,6 +104,7 @@ excluded_attributes:
     - :last_activity_at
     - :last_repository_updated_at
     - :last_repository_check_at
+    - :storage_version
   snippets:
     - :expired_at
   merge_request_diff:
@@ -100,11 +116,18 @@ excluded_attributes:
   merge_requests:
     - :milestone_id
     - :ref_fetched
+    - :merge_jid
+    - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
   statuses:
     - :trace
     - :token
+    - :when
+  push_event_payload:
+    - :event_id
+  project_badges:
+    - :group_id
 
 methods:
   labels:
@@ -115,11 +138,17 @@ methods:
     - :type
   services:
     - :type
-  merge_request_diff:
-    - :utf8_st_diffs
   merge_request_diff_files:
     - :utf8_diff
   merge_requests:
     - :diff_head_sha
+    - :source_branch_sha
+    - :target_branch_sha
   project:
     - :description_html
+  events:
+    - :action
+  push_event_payload:
+    - :action
+  project_badges:
+    - :type

@@ -4,8 +4,13 @@
       - @projects.each_with_index do |project|
         %li.project-row{ class: ('no-description' if project.description.blank?) }
           .controls
-            = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn"
-            = link_to 'Delete', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-remove"
+            = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn"
+            %button.delete-project-button.btn.btn-danger{ data: { toggle: 'modal',
+              target: '#delete-project-modal',
+              delete_project_url: project_path(project),
+              project_name: project.name }, type: 'button' }
+              = s_('AdminProjects|Delete')
+
           .stats
             %span.badge
               = storage_counter(project.statistics.storage_size)
@@ -31,3 +36,5 @@
     = paginate @projects, theme: 'gitlab'
   - else
     .nothing-here-block No projects found
+
+  #delete-project-modal

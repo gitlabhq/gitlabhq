@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Discussions::UpdateDiffPositionService, services: true do
+describe Discussions::UpdateDiffPositionService do
   let(:project) { create(:project, :repository) }
   let(:current_user) { project.owner }
   let(:create_commit) { project.commit("913c66a37b4a45b9769037c55c2d238bd0942d2e") }
@@ -150,21 +150,7 @@ describe Discussions::UpdateDiffPositionService, services: true do
       )
     end
 
-    context "when the diff line is the same" do
-      let(:line) { 16 }
-
-      it "updates the position" do
-        subject.execute(discussion)
-
-        expect(discussion.original_position).to eq(old_position)
-        expect(discussion.position).not_to eq(old_position)
-        expect(discussion.position.new_line).to eq(22)
-      end
-    end
-
-    context "when the diff line has changed" do
-      let(:line) { 9 }
-
+    shared_examples 'outdated diff note' do
       it "doesn't update the position" do
         subject.execute(discussion)
 
@@ -178,8 +164,8 @@ describe Discussions::UpdateDiffPositionService, services: true do
         change_position = discussion.change_position
         expect(change_position.start_sha).to eq(old_diff_refs.head_sha)
         expect(change_position.head_sha).to eq(new_diff_refs.head_sha)
-        expect(change_position.old_line).to eq(9)
-        expect(change_position.new_line).to be_nil
+        expect(change_position.formatter.old_line).to eq(9)
+        expect(change_position.formatter.new_line).to be_nil
       end
 
       it 'creates a system discussion' do
@@ -187,6 +173,52 @@ describe Discussions::UpdateDiffPositionService, services: true do
           discussion, project, current_user, instance_of(Gitlab::Diff::Position))
 
         subject.execute(discussion)
+      end
+    end
+
+    context "when the diff line is the same" do
+      let(:line) { 16 }
+
+      it "updates the position" do
+        subject.execute(discussion)
+
+        expect(discussion.original_position).to eq(old_position)
+        expect(discussion.position).not_to eq(old_position)
+        expect(discussion.position.formatter.new_line).to eq(22)
+      end
+
+      context 'when the resolve_outdated_diff_discussions setting is set' do
+        before do
+          project.update!(resolve_outdated_diff_discussions: true)
+        end
+
+        it 'does not resolve the discussion' do
+          subject.execute(discussion)
+
+          expect(discussion).not_to be_resolved
+          expect(discussion).not_to be_resolved_by_push
+        end
+      end
+    end
+
+    context "when the diff line has changed" do
+      let(:line) { 9 }
+
+      include_examples 'outdated diff note'
+
+      context 'when the resolve_outdated_diff_discussions setting is set' do
+        before do
+          project.update!(resolve_outdated_diff_discussions: true)
+        end
+
+        it 'sets resolves the discussion and sets resolved_by_push' do
+          subject.execute(discussion)
+
+          expect(discussion).to be_resolved
+          expect(discussion).to be_resolved_by_push
+        end
+
+        include_examples 'outdated diff note'
       end
     end
   end

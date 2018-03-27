@@ -8,6 +8,8 @@ module Banzai
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
+      include RequestStoreReferenceCache
+
       class << self
         attr_accessor :reference_type
       end
@@ -30,6 +32,8 @@ module Banzai
         attributes = attributes.reject { |_, v| v.nil? }
 
         attributes[:reference_type] ||= self.class.reference_type
+        attributes[:container] ||= 'body'
+        attributes[:placement] ||= 'bottom'
         attributes.delete(:original) if context[:no_original_data]
         attributes.map do |key, value|
           %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
@@ -51,6 +55,10 @@ module Banzai
 
       def project
         context[:project]
+      end
+
+      def group
+        context[:group]
       end
 
       def skip_project_check?

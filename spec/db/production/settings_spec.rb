@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rainbow/ext/string'
 
-describe 'seed production settings', lib: true do
+describe 'seed production settings' do
   include StubENV
   let(:settings_file) { Rails.root.join('db/fixtures/production/010_settings.rb') }
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }

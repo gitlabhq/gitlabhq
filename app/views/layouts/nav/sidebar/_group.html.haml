@@ -1,0 +1,135 @@
+- issues_count = group_issues_count(state: 'opened')
+- merge_requests_count = group_merge_requests_count(state: 'opened')
+- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index', 'boards#index', 'boards#show']
+
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+  .nav-sidebar-inner-scroll
+    .context-header
+      = link_to group_path(@group), title: @group.name do
+        .avatar-container.s40.group-avatar
+          = group_icon(@group, class: "avatar s40 avatar-tile")
+        .sidebar-context-title
+          = @group.name
+    %ul.sidebar-top-level-items
+      - if group_sidebar_link?(:overview)
+        = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
+          = link_to group_path(@group) do
+            .nav-icon-container
+              = sprite_icon('project')
+            %span.nav-item-name
+              Overview
+
+          %ul.sidebar-sub-level-items
+            = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
+              = link_to group_path(@group) do
+                %strong.fly-out-top-item-name
+                  #{ _('Overview') }
+            %li.divider.fly-out-top-item
+            = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
+              = link_to group_path(@group), title: 'Group details' do
+                %span
+                  Details
+
+            - if group_sidebar_link?(:activity)
+              = nav_link(path: 'groups#activity') do
+                = link_to activity_group_path(@group), title: 'Activity' do
+                  %span
+                    Activity
+
+      - if group_sidebar_link?(:issues)
+        = nav_link(path: issues_sub_menu_items) do
+          = link_to issues_group_path(@group) do
+            .nav-icon-container
+              = sprite_icon('issues')
+            %span.nav-item-name
+              Issues
+            %span.badge.count= number_with_delimiter(issues_count)
+
+          %ul.sidebar-sub-level-items
+            = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index'], html_options: { class: "fly-out-top-item" } ) do
+              = link_to issues_group_path(@group) do
+                %strong.fly-out-top-item-name
+                  #{ _('Issues') }
+                %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
+
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
+              = link_to issues_group_path(@group), title: 'List' do
+                %span
+                  List
+
+            - if group_sidebar_link?(:boards)
+              = nav_link(path: ['boards#index', 'boards#show']) do
+                = link_to group_boards_path(@group), title: boards_link_text do
+                  %span
+                    = boards_link_text
+
+            - if group_sidebar_link?(:labels)
+              = nav_link(path: 'labels#index') do
+                = link_to group_labels_path(@group), title: 'Labels' do
+                  %span
+                    Labels
+
+            - if group_sidebar_link?(:milestones)
+              = nav_link(path: 'milestones#index') do
+                = link_to group_milestones_path(@group), title: 'Milestones' do
+                  %span
+                    Milestones
+
+      - if group_sidebar_link?(:merge_requests)
+        = nav_link(path: 'groups#merge_requests') do
+          = link_to merge_requests_group_path(@group) do
+            .nav-icon-container
+              = sprite_icon('git-merge')
+            %span.nav-item-name
+              Merge Requests
+            %span.badge.count= number_with_delimiter(merge_requests_count)
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(path: 'groups#merge_requests', html_options: { class: "fly-out-top-item" } ) do
+              = link_to merge_requests_group_path(@group) do
+                %strong.fly-out-top-item-name
+                  #{ _('Merge Requests') }
+                %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
+
+      - if group_sidebar_link?(:group_members)
+        = nav_link(path: 'group_members#index') do
+          = link_to group_group_members_path(@group) do
+            .nav-icon-container
+              = sprite_icon('users')
+            %span.nav-item-name
+              Members
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
+              = link_to group_group_members_path(@group) do
+                %strong.fly-out-top-item-name
+                  #{ _('Members') }
+
+      - if group_sidebar_link?(:settings)
+        = nav_link(path: group_nav_link_paths) do
+          = link_to edit_group_path(@group) do
+            .nav-icon-container
+              = sprite_icon('settings')
+            %span.nav-item-name
+              Settings
+          %ul.sidebar-sub-level-items
+            = nav_link(path: %w[groups#projects groups#edit ci_cd#show], html_options: { class: "fly-out-top-item" } ) do
+              = link_to edit_group_path(@group) do
+                %strong.fly-out-top-item-name
+                  #{ _('Settings') }
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'groups#edit') do
+              = link_to edit_group_path(@group), title: 'General' do
+                %span
+                  General
+
+            = nav_link(path: 'groups#projects') do
+              = link_to projects_group_path(@group), title: 'Projects' do
+                %span
+                  Projects
+
+            = nav_link(controller: :ci_cd) do
+              = link_to group_settings_ci_cd_path(@group), title: 'CI / CD' do
+                %span
+                  CI / CD
+
+    = render 'shared/sidebar_toggle_button'

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::CreateService, services: true do
+describe MergeRequests::CreateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user) }
@@ -18,34 +18,83 @@ describe MergeRequests::CreateService, services: true do
       end
 
       let(:service) { described_class.new(project, user, opts) }
+      let(:merge_request) { service.execute }
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :developer]
+        project.add_master(user)
+        project.add_developer(assignee)
         allow(service).to receive(:execute_hooks)
-
-        @merge_request = service.execute
       end
 
       it 'creates an MR' do
-        expect(@merge_request).to be_valid
-        expect(@merge_request.title).to eq('Awesome merge_request')
-        expect(@merge_request.assignee).to be_nil
-        expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+        expect(merge_request).to be_valid
+        expect(merge_request.work_in_progress?).to be(false)
+        expect(merge_request.title).to eq('Awesome merge_request')
+        expect(merge_request.assignee).to be_nil
+        expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
       end
 
       it 'executes hooks with default action' do
-        expect(service).to have_received(:execute_hooks).with(@merge_request)
+        expect(service).to have_received(:execute_hooks).with(merge_request)
+      end
+
+      it 'refreshes the number of open merge requests', :use_clean_rails_memory_store_caching do
+        expect { service.execute }
+          .to change { project.open_merge_requests_count }.from(0).to(1)
       end
 
       it 'does not creates todos' do
         attributes = {
           project: project,
-          target_id: @merge_request.id,
-          target_type: @merge_request.class.name
+          target_id: merge_request.id,
+          target_type: merge_request.class.name
         }
 
         expect(Todo.where(attributes).count).to be_zero
+      end
+
+      it 'creates exactly 1 create MR event' do
+        attributes = {
+          action: Event::CREATED,
+          target_id: merge_request.id,
+          target_type: merge_request.class.name
+        }
+
+        expect(Event.where(attributes).count).to eq(1)
+      end
+
+      describe 'when marked with /wip' do
+        context 'in title and in description' do
+          let(:opts) do
+            {
+              title: 'WIP: Awesome merge_request',
+              description: "well this is not done yet\n/wip",
+              source_branch: 'feature',
+              target_branch: 'master',
+              assignee: assignee
+            }
+          end
+
+          it 'sets MR to WIP' do
+            expect(merge_request.work_in_progress?).to be(true)
+          end
+        end
+
+        context 'in description only' do
+          let(:opts) do
+            {
+              title: 'Awesome merge_request',
+              description: "well this is not done yet\n/wip",
+              source_branch: 'feature',
+              target_branch: 'master',
+              assignee: assignee
+            }
+          end
+
+          it 'sets MR to WIP' do
+            expect(merge_request.work_in_progress?).to be(true)
+          end
+        end
       end
 
       context 'when merge request is assigned to someone' do
@@ -59,15 +108,15 @@ describe MergeRequests::CreateService, services: true do
           }
         end
 
-        it { expect(@merge_request.assignee).to eq assignee }
+        it { expect(merge_request.assignee).to eq assignee }
 
         it 'creates a todo for new assignee' do
           attributes = {
             project: project,
             author: user,
             user: assignee,
-            target_id: @merge_request.id,
-            target_type: @merge_request.class.name,
+            target_id: merge_request.id,
+            target_type: merge_request.class.name,
             action: Todo::ASSIGNED,
             state: :pending
           }
@@ -134,8 +183,8 @@ describe MergeRequests::CreateService, services: true do
         end
 
         before do
-          project.team << [user, :master]
-          project.team << [assignee, :master]
+          project.add_master(user)
+          project.add_master(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -151,7 +200,7 @@ describe MergeRequests::CreateService, services: true do
         let(:assignee) { create(:user) }
 
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'removes assignee_id when user id is invalid' do
@@ -171,7 +220,7 @@ describe MergeRequests::CreateService, services: true do
         end
 
         it 'saves assignee when user id is valid' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
           opts = { title: 'Title', description: 'Description', assignee_id: assignee.id }
 
           merge_request = described_class.new(project, user, opts).execute
@@ -191,7 +240,7 @@ describe MergeRequests::CreateService, services: true do
           end
 
           it 'invalidates open merge request counter for assignees when merge request is assigned' do
-            project.team << [assignee, :master]
+            project.add_master(assignee)
 
             described_class.new(project, user, opts).execute
 
@@ -235,8 +284,8 @@ describe MergeRequests::CreateService, services: true do
       end
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :developer]
+        project.add_master(user)
+        project.add_developer(assignee)
       end
 
       it 'creates a `MergeRequestsClosingIssues` record for each issue' do
@@ -247,6 +296,67 @@ describe MergeRequests::CreateService, services: true do
 
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+      end
+    end
+
+    context 'when source and target projects are different' do
+      let(:target_project) { create(:project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          target_project_id: target_project.id
+        }
+      end
+
+      context 'when user can not access source project' do
+        before do
+          target_project.add_developer(assignee)
+          target_project.add_master(user)
+        end
+
+        it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+
+      context 'when user can not access target project' do
+        before do
+          target_project.add_developer(assignee)
+          target_project.add_master(user)
+        end
+
+        it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+    end
+
+    context 'when user sets source project id' do
+      let(:another_project) { create(:project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          source_project_id: another_project.id
+        }
+      end
+
+      before do
+        project.add_developer(assignee)
+        project.add_master(user)
+      end
+
+      it 'ignores source_project_id' do
+        merge_request = described_class.new(project, user, opts).execute
+
+        expect(merge_request.source_project_id).to eq(project.id)
       end
     end
   end

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::Filter::SnippetReferenceFilter, lib: true do
+describe Banzai::Filter::SnippetReferenceFilter do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let(:snippet)   { create(:project_snippet, project: project) }
   let(:reference) { snippet.to_reference }
 
@@ -23,12 +23,12 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls
-        .namespace_project_snippet_url(project.namespace, project, snippet)
+        .project_snippet_url(project, snippet)
     end
 
     it 'links with adjacent text' do
       doc = reference_filter("Snippet (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(reference)}</a>\.\)})
     end
 
     it 'ignores invalid snippet IDs' do
@@ -75,21 +75,21 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_snippet_url(project.namespace, project, snippet, only_path: true)
+      expect(link).to eq urls.project_snippet_url(project, snippet, only_path: true)
     end
   end
 
   context 'cross-project / cross-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let!(:snippet)  { create(:project_snippet, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
+    let(:reference) { "#{project2.full_path}$#{snippet.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+        .to eq urls.project_snippet_url(project2, snippet)
     end
 
     it 'link has valid text' do
@@ -113,16 +113,16 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
 
   context 'cross-project / same-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let!(:snippet)  { create(:project_snippet, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
+    let(:reference) { "#{project2.full_path}$#{snippet.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+        .to eq urls.project_snippet_url(project2, snippet)
     end
 
     it 'link has valid text' do
@@ -146,8 +146,8 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
 
   context 'cross-project shorthand reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let!(:snippet)  { create(:project_snippet, project: project2) }
     let(:reference) { "#{project2.path}$#{snippet.id}" }
 
@@ -155,7 +155,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+        .to eq urls.project_snippet_url(project2, snippet)
     end
 
     it 'link has valid text' do
@@ -179,26 +179,36 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
 
   context 'cross-project URL reference' do
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:snippet)   { create(:project_snippet, project: project2) }
-    let(:reference) { urls.namespace_project_snippet_url(project2.namespace, project2, snippet) }
+    let(:reference) { urls.project_snippet_url(project2, snippet) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+        .to eq urls.project_snippet_url(project2, snippet)
     end
 
     it 'links with adjacent text' do
       doc = reference_filter("See (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(snippet.to_reference(project))}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(snippet.to_reference(project))}</a>\.\)})
     end
 
     it 'ignores invalid snippet IDs on the referenced project' do
       act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
+      expect(reference_filter(act).to_html).to match(%r{<a.+>#{Regexp.escape(invalidate_reference(reference))}</a>})
+    end
+  end
+
+  context 'group context' do
+    it 'links to a valid reference' do
+      reference = "#{project.full_path}$#{snippet.id}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.project_snippet_url(project, snippet))
     end
   end
 end

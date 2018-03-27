@@ -1,8 +1,8 @@
 class Deployment < ActiveRecord::Base
-  include InternalId
+  include NonatomicInternalId
 
-  belongs_to :project, required: true, validate: true
-  belongs_to :environment, required: true, validate: true
+  belongs_to :project, required: true
+  belongs_to :environment, required: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
@@ -45,14 +45,7 @@ class Deployment < ActiveRecord::Base
   def includes_commit?(commit)
     return false unless commit
 
-    # Before 8.10, deployments didn't have keep-around refs. Any deployment
-    # created before then could have a `sha` referring to a commit that no
-    # longer exists in the repository, so just ignore those.
-    begin
-      project.repository.is_ancestor?(commit.id, sha)
-    rescue Rugged::OdbError
-      false
-    end
+    project.repository.ancestor?(commit.id, sha)
   end
 
   def update_merge_request_metrics!
@@ -105,27 +98,28 @@ class Deployment < ActiveRecord::Base
   end
 
   def has_metrics?
-    project.monitoring_service.present?
+    prometheus_adapter&.can_query?
   end
 
   def metrics
     return {} unless has_metrics?
 
-    project.monitoring_service.deployment_metrics(self)
-  end
-
-  def has_additional_metrics?
-    project.prometheus_service.present?
+    metrics = prometheus_adapter.query(:deployment, self)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   def additional_metrics
-    return {} unless project.prometheus_service.present?
+    return {} unless has_metrics?
 
-    metrics = project.prometheus_service.additional_deployment_metrics(self)
+    metrics = prometheus_adapter.query(:additional_metrics_deployment, self)
     metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   private
+
+  def prometheus_adapter
+    environment.prometheus_adapter
+  end
 
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)

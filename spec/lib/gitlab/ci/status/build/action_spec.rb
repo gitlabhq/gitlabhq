@@ -37,16 +37,16 @@ describe Gitlab::Ci::Status::Build::Action do
   describe '.matches?' do
     subject { described_class.matches?(build, user) }
 
-    context 'when build is an action' do
-      let(:build) { create(:ci_build, :manual) }
+    context 'when build is playable action' do
+      let(:build) { create(:ci_build, :playable) }
 
       it 'is a correct match' do
         expect(subject).to be true
       end
     end
 
-    context 'when build is not manual' do
-      let(:build) { create(:ci_build) }
+    context 'when build is not playable action' do
+      let(:build) { create(:ci_build, :non_playable) }
 
       it 'does not match' do
         expect(subject).to be false

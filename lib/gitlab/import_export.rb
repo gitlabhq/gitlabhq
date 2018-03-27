@@ -3,7 +3,7 @@ module Gitlab
     extend self
 
     # For every version update, the version history in import_export.md has to be kept up to date.
-    VERSION = '0.1.8'.freeze
+    VERSION = '0.2.2'.freeze
     FILENAME_LIMIT = 50
 
     def export_path(relative_path:)

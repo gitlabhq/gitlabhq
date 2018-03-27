@@ -4,9 +4,9 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_worker_jobs.rb')
 
 describe MigrateProcessCommitWorkerJobs do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :legacy_storage, :repository) }
   let(:user) { create(:user) }
-  let(:commit) { project.commit.raw.raw_commit }
+  let(:commit) { project.commit.raw.rugged_commit }
 
   describe 'Project' do
     describe 'find_including_path' do
@@ -20,7 +20,7 @@ describe MigrateProcessCommitWorkerJobs do
           .find_including_path(project.id)
 
         expect(migration_project[:path_with_namespace])
-          .to eq(project.path_with_namespace)
+          .to eq(project.full_path)
       end
     end
 
@@ -54,7 +54,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
   end
 
-  describe '#up', :redis do
+  describe '#up', :clean_gitlab_redis_shared_state do
     let(:migration) { described_class.new }
 
     def job_count
@@ -172,7 +172,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
   end
 
-  describe '#down', :redis do
+  describe '#down', :clean_gitlab_redis_shared_state do
     let(:migration) { described_class.new }
 
     def job_count

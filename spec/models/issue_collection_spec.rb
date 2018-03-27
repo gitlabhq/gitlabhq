@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe IssueCollection do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue1) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project) }
   let(:collection) { described_class.new([issue1, issue2]) }
@@ -42,7 +42,7 @@ describe IssueCollection do
 
     context 'using a user that has reporter access to the project' do
       it 'returns the issues of the project' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(collection.updatable_by_user(user)).to eq([issue1, issue2])
       end

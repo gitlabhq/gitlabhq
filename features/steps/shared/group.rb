@@ -36,14 +36,12 @@ module SharedGroup
   protected
 
   def is_member_of(username, groupname, role)
-    @project_count ||= 0
     user = User.find_by(name: username) || create(:user, name: username)
     group = Group.find_by(name: groupname) || create(:group, name: groupname)
     group.add_user(user, role)
-    project ||= create(:project, :repository, namespace: group, path: "project#{@project_count}")
+    project ||= create(:project, :repository, namespace: group)
     create(:closed_issue_event, project: project)
-    project.team << [user, :master]
-    @project_count += 1
+    project.add_master(user)
   end
 
   def owned_group

@@ -2,4 +2,4 @@
   - projects.each do |project|
     %li
       %a{ href: "#", class: "#{('is-active' if selected == project.id)}", data: { id: project.id } }
-        = project.path_with_namespace
+        = project.full_path

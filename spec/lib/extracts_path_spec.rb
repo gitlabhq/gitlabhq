@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ExtractsPath, lib: true do
-  include ExtractsPath
+describe ExtractsPath do
+  include described_class
   include RepoHelpers
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   let(:project) { double('project') }
   let(:request) { double('request') }
@@ -14,7 +14,7 @@ describe ExtractsPath, lib: true do
     repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0',
                               'release/app', 'release/app/v1.0.0'])
     allow(project).to receive(:repository).and_return(repo)
-    allow(project).to receive(:path_with_namespace)
+    allow(project).to receive(:full_path)
       .and_return('gitlab/gitlab-ci')
     allow(request).to receive(:format=)
   end
@@ -29,7 +29,7 @@ describe ExtractsPath, lib: true do
 
     it "log tree path has no escape sequences" do
       assign_ref_vars
-      expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
+      expect(@logs_path).to eq("/#{@project.full_path}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
     end
 
     context 'ref contains %20' do
@@ -56,7 +56,7 @@ describe ExtractsPath, lib: true do
 
     context 'subclass overrides get_id' do
       it 'uses ref returned by get_id' do
-        allow_any_instance_of(self.class).to receive(:get_id){ '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
+        allow_any_instance_of(self.class).to receive(:get_id) { '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
 
         assign_ref_vars
 

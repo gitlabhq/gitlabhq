@@ -1,5 +1,13 @@
 module LabelsHelper
+  extend self
   include ActionView::Helpers::TagHelper
+
+  def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
+    return true if label.is_a?(GroupLabel)
+    return true unless project
+
+    project.feature_available?(issuables_type, current_user)
+  end
 
   # Link to a Label
   #
@@ -43,11 +51,11 @@ module LabelsHelper
   def label_filter_path(subject, label, type: :issue)
     case subject
     when Group
-      send("#{type.to_s.pluralize}_group_path",
+      send("#{type.to_s.pluralize}_group_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject,
                   label_name: [label.name])
     when Project
-      send("namespace_project_#{type.to_s.pluralize}_path",
+      send("namespace_project_#{type.to_s.pluralize}_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject.namespace,
                   subject,
                   label_name: [label.name])
@@ -57,14 +65,14 @@ module LabelsHelper
   def edit_label_path(label)
     case label
     when GroupLabel then edit_group_label_path(label.group, label)
-    when ProjectLabel then edit_namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then edit_project_label_path(label.project, label)
     end
   end
 
   def destroy_label_path(label)
     case label
     when GroupLabel then group_label_path(label.group, label)
-    when ProjectLabel then namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then project_label_path(label.project, label)
     end
   end
 
@@ -121,13 +129,14 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path
-    return group_labels_path(@group, :json) if @group
-
+  def labels_filter_path(only_group_labels = false)
     project = @target_project || @project
 
     if project
-      namespace_project_labels_path(project.namespace, project, :json)
+      project_labels_path(project, :json)
+    elsif @group
+      options = { only_group_labels: only_group_labels } if only_group_labels
+      group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)
     end
@@ -149,8 +158,8 @@ module LabelsHelper
 
     case label_subscription_status(label, project)
     when 'group-level' then toggle_subscription_group_label_path(label.group, label)
-    when 'project-level' then toggle_subscription_namespace_project_label_path(project.namespace, project, label)
-    when 'unsubscribed' then toggle_subscription_namespace_project_label_path(project.namespace, project, label)
+    when 'project-level' then toggle_subscription_project_label_path(project, label)
+    when 'unsubscribed' then toggle_subscription_project_label_path(project, label)
     end
   end
 
@@ -162,6 +171,39 @@ module LabelsHelper
     case label
     when GroupLabel then 'Remove this label? This will affect all projects within the group. Are you sure?'
     when ProjectLabel then 'Remove this label? Are you sure?'
+    end
+  end
+
+  def create_label_title(subject)
+    case subject
+    when Group
+      _('Create group label')
+    when Project
+      _('Create project label')
+    else
+      _('Create new label')
+    end
+  end
+
+  def manage_labels_title(subject)
+    case subject
+    when Group
+      _('Manage group labels')
+    when Project
+      _('Manage project labels')
+    else
+      _('Manage labels')
+    end
+  end
+
+  def view_labels_title(subject)
+    case subject
+    when Group
+      _('View group labels')
+    when Project
+      _('View project labels')
+    else
+      _('View labels')
     end
   end
 

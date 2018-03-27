@@ -1,8 +1,52 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- page_title "Pipelines"
-= render "projects/settings/head"
+- page_title "CI / CD Settings"
+- page_title "CI / CD"
 
-= render 'projects/runners/index'
-= render 'projects/variables/index'
-= render 'projects/triggers/index'
-= render 'projects/pipelines_settings/show'
+- expanded = Rails.env.test?
+
+%section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      General pipelines settings
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Update your CI/CD configuration, like job timeout or Auto DevOps.
+  .settings-content
+    = render 'projects/pipelines_settings/show'
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      Runners settings
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Register and see your runners for this project.
+  .settings-content
+    = render 'projects/runners/index'
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Secret variables')
+      = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'secret-variables'), target: '_blank', rel: 'noopener noreferrer'
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p.append-bottom-0
+      = render "ci/variables/content"
+  .settings-content
+    = render 'ci/variables/index', save_endpoint: project_variables_path(@project)
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      Pipeline triggers
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will
+      impersonate their associated user including their access to projects and their project
+      permissions.
+  .settings-content
+    = render 'projects/triggers/index'

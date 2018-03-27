@@ -6,20 +6,22 @@ class DiffNote < Note
 
   NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
 
-  serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
-  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
-  serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
+  serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :original_position, presence: true
   validates :position, presence: true
-  validates :diff_line, presence: true
-  validates :line_code, presence: true, line_code: true
+  validates :diff_line, presence: true, if: :on_text?
+  validates :line_code, presence: true, line_code: true, if: :on_text?
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
   validate :verify_supported
+  validate :diff_refs_match_commit, if: :for_commit?
 
-  before_validation :set_original_position, :update_position, on: :create
-  before_validation :set_line_code
+  before_validation :set_original_position, on: :create
+  before_validation :update_position, on: :create, if: :on_text?
+  before_validation :set_line_code, if: :on_text?
   after_save :keep_around_commits
 
   def discussion_class(*)
@@ -43,6 +45,14 @@ class DiffNote < Note
     end
   end
 
+  def on_text?
+    position.position_type == "text"
+  end
+
+  def on_image?
+    position.position_type == "image"
+  end
+
   def diff_file
     @diff_file ||= self.original_position.diff_file(self.project.repository)
   end
@@ -51,11 +61,9 @@ class DiffNote < Note
     @diff_line ||= diff_file&.line_for_position(self.original_position)
   end
 
-  def for_line?(line)
-    diff_file.position(line) == self.original_position
-  end
-
   def original_line_code
+    return unless on_text?
+
     self.diff_file.line_code(self.diff_line)
   end
 
@@ -122,6 +130,12 @@ class DiffNote < Note
     return if self.original_position.complete? && self.position.complete?
 
     errors.add(:position, "is invalid")
+  end
+
+  def diff_refs_match_commit
+    return if self.original_position.diff_refs == self.commit.diff_refs
+
+    errors.add(:commit_id, 'does not match the diff refs')
   end
 
   def keep_around_commits

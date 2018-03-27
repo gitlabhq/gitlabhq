@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import formComponent from '~/issue_show/components/form.vue';
-import '~/templates/issuable_template_selector';
-import '~/templates/issuable_template_selectors';
 
 describe('Inline edit form component', () => {
   let vm;
@@ -12,15 +10,13 @@ describe('Inline edit form component', () => {
     vm = new Component({
       propsData: {
         canDestroy: true,
-        canMove: true,
         formState: {
           title: 'b',
           description: 'a',
           lockedWarningVisible: false,
         },
-        markdownPreviewUrl: '/',
-        markdownDocs: '/',
-        projectsAutocompleteUrl: '/',
+        markdownPreviewPath: '/',
+        markdownDocsPath: '/',
         projectPath: '/',
         projectNamespace: '/',
       },
@@ -36,7 +32,6 @@ describe('Inline edit form component', () => {
   });
 
   it('renders template selector when templates exists', (done) => {
-    spyOn(gl, 'IssuableTemplateSelectors');
     vm.issuableTemplates = ['test'];
 
     Vue.nextTick(() => {

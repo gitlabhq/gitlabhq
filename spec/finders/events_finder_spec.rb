@@ -3,8 +3,8 @@ require 'spec_helper'
 describe EventsFinder do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
-  let(:project1) { create(:empty_project, :private, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:empty_project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:project1) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: project1, author: user) }
   let(:opened_merge_request) { create(:merge_request, source_project: project2, author: user) }
   let!(:closed_issue_event) { create(:event, project: project1, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
@@ -25,6 +25,14 @@ describe EventsFinder do
       events = described_class.new(source: user, current_user: other_user).execute
 
       expect(events).not_to include(opened_merge_request_event)
+    end
+
+    it 'returns nothing when the current user cannot read cross project' do
+      expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+      events = described_class.new(source: user, current_user: user).execute
+
+      expect(events).to be_empty
     end
   end
 

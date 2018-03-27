@@ -398,3 +398,139 @@
     :why: https://github.com/remy/undefsafe/blob/master/LICENSE
     :versions: []
     :when: 2017-04-10 06:30:00.002555000 Z
+- - :approve
+  - thunky
+  - :who: Mike Greiling
+    :why: https://github.com/mafintosh/thunky/blob/master/README.md#license
+    :versions: []
+    :when: 2017-08-07 05:56:09.907045000 Z
+- - :whitelist
+  - Unlicense
+  - :who: Nick Thomas <nick@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/organization/issues/116
+    :versions: []
+    :when: 2017-09-01 17:17:51.996511844 Z
+- - :blacklist
+  - Facebook BSD+PATENTS
+  - :who: Nick Thomas <nick@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/organization/issues/117
+    :versions: []
+    :when: 2017-09-04 12:59:51.150798717 Z
+- - :approve
+  - console-browserify
+  - :who: Mike Greiling
+    :why: https://github.com/Raynos/console-browserify/blob/f0a8898487e2a47b8a5dc8734b91059fa2825506/LICENCE
+    :versions: []
+    :when: 2017-09-16 05:13:07.073651000 Z
+- - :approve
+  - duplexer
+  - :who: Mike Greiling
+    :why: https://github.com/Raynos/duplexer/blob/master/LICENCE
+    :versions: []
+    :when: 2017-09-16 05:14:15.774643000 Z
+- - :approve
+  - json3
+  - :who: Mike Greiling
+    :why: https://github.com/bestiejs/json3/blob/v3.3.2/LICENSE
+    :versions: []
+    :when: 2017-09-16 05:15:16.273892000 Z
+- - :approve
+  - mime
+  - :who: Mike Greiling
+    :why: https://github.com/broofa/node-mime/blob/v1.3.4/LICENSE
+    :versions: []
+    :when: 2017-09-16 05:16:21.135542000 Z
+- - :approve
+  - querystring-es3
+  - :who: Mike Greiling
+    :why: https://github.com/mike-spainhower/querystring/blob/v0.2.0/License.md
+    :versions: []
+    :when: 2017-09-16 05:17:20.372089000 Z
+- - :approve
+  - utils-merge
+  - :who: Mike Greiling
+    :why: https://github.com/jaredhanson/utils-merge/blob/v1.0.0/LICENSE
+    :versions: []
+    :when: 2017-09-16 05:18:26.193764000 Z
+- - :approve
+  - svg4everybody
+  - :who: Tim Zallmann
+    :why: CC0 1.0 - https://github.com/jonathantneal/svg4everybody/blob/master/LICENSE.md
+    :versions: []
+    :when: 2017-09-13 17:31:16.425819400 Z
+- - :approve
+  - "@gitlab-org/gitlab-svgs"
+  - :who: Tim Zallmann
+    :why: Our own library - GitLab License https://gitlab.com/gitlab-org/gitlab-svgs
+    :versions: []
+    :when: 2017-09-19 14:36:32.795496000 Z
+- - :license
+  - pikaday
+  - MIT
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2017-10-17 17:46:12.367554000 Z
+- - :license
+  - component-emitter
+  - MIT
+  - :who: Winnie Hellmann
+    :why: package.json does not specify the license (README.md does)
+    :versions:
+    - 1.1.2
+    :when: 2017-11-13 12:23:10.502463000 Z
+- - :license
+  - json-schema
+  - BSD
+  - :who: Winnie Hellmann
+    :why: https://github.com/kriszyp/json-schema/blob/v0.2.3/package.json#L18-L19
+    :versions:
+    - 0.2.3
+    :when: 2017-11-16 12:52:18.286091000 Z
+- - :license
+  - node-forge
+  - New BSD
+  - :who: Winnie Hellmann
+    :why: https://github.com/digitalbazaar/forge/blob/0.6.33/LICENSE
+    :versions:
+    - 0.6.33
+    :when: 2017-11-16 12:56:17.974767000 Z
+- - :license
+  - sntp
+  - BSD
+  - :who: Winnie Hellmann
+    :why: https://github.com/hueniverse/sntp/blob/v1.0.9/package.json#L28-L29
+    :versions:
+    - 1.0.9
+    :when: 2017-11-16 13:02:06.765282000 Z
+- - :license
+  - JSONStream
+  - MIT
+  - :who: Tim Zallmann
+    :why: https://github.com/dominictarr/JSONStream/blob/master/LICENSE.MIT
+    :versions: []
+    :when: 2018-01-17 22:46:12.367554000 Z
+- - :approve
+  - uws
+  - :who: Tim Zallmann
+    :why: zlib license + Development Lib + https://github.com/uNetworking/uWebSockets/blob/master/LICENSE
+    :versions: []
+    :when: 2018-01-17 23:46:12.367554000 Z
+- - :approve
+  - atob
+  - :who: Mike Greiling
+    :why: https://github.com/node-browser-compat/atob/blob/master/LICENSE
+    :versions: []
+    :when: 2018-02-20 19:42:08.409887000 Z
+- - :approve
+  - cyclist
+  - :who: Mike Greiling
+    :why: https://github.com/mafintosh/cyclist/blob/master/LICENSE
+    :versions: []
+    :when: 2018-02-20 21:37:43.774978000 Z
+- - :approve
+  - bitsyntax
+  - :who: Mike Greiling
+    :why: https://github.com/squaremo/bitsyntax-js/blob/master/LICENSE-MIT
+    :versions: []
+    :when: 2018-02-20 22:20:25.958123000 Z

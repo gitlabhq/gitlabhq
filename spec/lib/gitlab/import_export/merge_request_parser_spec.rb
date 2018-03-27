@@ -1,18 +1,19 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::MergeRequestParser do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }
-  let(:forked_from_project) { create(:project) }
-  let(:fork_link) { create(:forked_project_link, forked_from_project: project) }
+  let!(:project) { create(:project, :repository, name: 'test-repo-restorer', path: 'test-repo-restorer') }
+  let(:forked_project) { fork_project(project) }
 
   let!(:merge_request) do
-    create(:merge_request, source_project: fork_link.forked_to_project, target_project: project)
+    create(:merge_request, source_project: forked_project, target_project: project)
   end
 
   let(:parsed_merge_request) do
     described_class.new(project,
-                        merge_request.diff_head_sha,
+                        'abcd',
                         merge_request,
                         merge_request.as_json).parse!
   end
@@ -27,5 +28,15 @@ describe Gitlab::ImportExport::MergeRequestParser do
 
   it 'has a target branch' do
     expect(project.repository.branch_exists?(parsed_merge_request.target_branch)).to be true
+  end
+
+  it 'parses a MR that has no source branch' do
+    allow_any_instance_of(described_class).to receive(:branch_exists?).and_call_original
+    allow_any_instance_of(described_class).to receive(:branch_exists?).with(merge_request.source_branch).and_return(false)
+    allow_any_instance_of(described_class).to receive(:fork_merge_request?).and_return(true)
+    allow(Gitlab::GitalyClient).to receive(:migrate).and_call_original
+    allow(Gitlab::GitalyClient).to receive(:migrate).with(:fetch_ref).and_return([nil, 0])
+
+    expect(parsed_merge_request).to eq(merge_request)
   end
 end

@@ -1,6 +1,7 @@
 - @no_container = true
+- add_to_breadcrumbs "Environments", project_environments_path(@project)
+- breadcrumb_title @environment.name
 - page_title "Environments"
-= render "projects/pipelines/head"
 
 %div{ class: container_class }
   .row.top-area.adjust
@@ -12,20 +13,21 @@
         = render 'projects/environments/external_url', environment: @environment
         = render 'projects/environments/metrics_button', environment: @environment
         - if can?(current_user, :update_environment, @environment)
-          = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
+          = link_to 'Edit', edit_project_environment_path(@project, @environment), class: 'btn'
         - if can?(current_user, :stop_environment, @environment)
-          = link_to 'Stop', stop_namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to stop this environment?' }, class: 'btn btn-danger', method: :post
+          = link_to 'Stop', stop_project_environment_path(@project, @environment), data: { confirm: 'Are you sure you want to stop this environment?' }, class: 'btn btn-danger', method: :post
 
   .environments-container
     - if @deployments.blank?
-      .blank-state.blank-state-no-icon
-        %h2.blank-state-title
-          You don't have any deployments right now.
-        %p.blank-state-text
-          Define environments in the deploy stage(s) in
-          %code .gitlab-ci.yml
-          to track deployments here.
-        = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
+      .blank-state-row
+        .blank-state-center
+          %h2.blank-state-title
+            You don't have any deployments right now.
+          %p.blank-state-text
+            Define environments in the deploy stage(s) in
+            %code .gitlab-ci.yml
+            to track deployments here.
+          = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
     - else
       .table-holder
         .ci-table.environments{ role: 'grid' }

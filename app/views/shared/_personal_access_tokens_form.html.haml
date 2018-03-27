@@ -1,9 +1,9 @@
 - type = impersonation ? "impersonation" : "personal access"
 
 %h5.prepend-top-0
-  Add a #{type} Token
+  Add a #{type} token
 %p.profile-settings-content
-  Pick a name for the application, and we'll give you a unique #{type} Token.
+  Pick a name for the application, and we'll give you a unique #{type} token.
 
 = form_for token, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
 
@@ -23,18 +23,3 @@
 
   .prepend-top-default
     = f.submit "Create #{type} token", class: "btn btn-create"
-
-:javascript
-  var $dateField = $('.datepicker');
-  var date = $dateField.val();
-
-  new Pikaday({
-    field: $dateField.get(0),
-    theme: 'gitlab-theme animate-picker',
-    format: 'yyyy-mm-dd',
-    minDate: new Date(),
-    container: $dateField.parent().get(0),
-    onSelect: function(dateText) {
-      $dateField.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
-    }
-  });

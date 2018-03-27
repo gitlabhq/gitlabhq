@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe API::V3::Todos do
-  let(:project_1) { create(:empty_project) }
-  let(:project_2) { create(:empty_project) }
+  let(:project_1) { create(:project) }
+  let(:project_2) { create(:project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
   let(:john_doe) { create(:user, username: 'john_doe') }
@@ -12,8 +12,8 @@ describe API::V3::Todos do
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do
-    project_1.team << [john_doe, :developer]
-    project_2.team << [john_doe, :developer]
+    project_1.add_developer(john_doe)
+    project_2.add_developer(john_doe)
   end
 
   describe 'DELETE /todos/:id' do
@@ -37,6 +37,12 @@ describe API::V3::Todos do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
         delete v3_api("/todos/#{pending_1.id}", john_doe)
+      end
+
+      it 'returns 404 if the todo does not belong to the current user' do
+        delete v3_api("/todos/#{pending_1.id}", author_1)
+
+        expect(response.status).to eq(404)
       end
     end
   end

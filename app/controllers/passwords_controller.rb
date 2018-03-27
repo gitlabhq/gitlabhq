@@ -1,6 +1,8 @@
 class PasswordsController < Devise::PasswordsController
+  skip_before_action :require_no_authentication, only: [:edit, :update]
+
   before_action :resource_from_email, only: [:create]
-  before_action :prevent_ldap_reset,  only: [:create]
+  before_action :check_password_authentication_available, only: [:create]
   before_action :throttle_reset,      only: [:create]
 
   def edit
@@ -25,7 +27,7 @@ class PasswordsController < Devise::PasswordsController
 
   def update
     super do |resource|
-      if resource.valid? && resource.require_password?
+      if resource.valid? && resource.password_automatically_set?
         resource.update_attribute(:password_automatically_set, false)
       end
     end
@@ -38,11 +40,15 @@ class PasswordsController < Devise::PasswordsController
     self.resource = resource_class.find_by_email(email)
   end
 
-  def prevent_ldap_reset
-    return unless resource && resource.ldap_user?
+  def check_password_authentication_available
+    if resource
+      return if resource.allow_password_authentication?
+    else
+      return if Gitlab::CurrentSettings.password_authentication_enabled?
+    end
 
     redirect_to after_sending_reset_password_instructions_path_for(resource_name),
-      alert: "Cannot reset password for LDAP user."
+      alert: "Password authentication is unavailable."
   end
 
   def throttle_reset

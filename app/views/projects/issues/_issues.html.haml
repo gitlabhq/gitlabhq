@@ -1,7 +1,9 @@
+- empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
+
 %ul.content-list.issues-list.issuable-list
   = render partial: "projects/issues/issue", collection: @issues
   - if @issues.blank?
-    = render 'shared/empty_states/issues'
+    = render empty_state_path
 
 - if @issues.present?
-  = paginate @issues, theme: "gitlab"
+  = paginate @issues, theme: "gitlab", total_pages: @total_pages

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe DiffViewer::ServerSide, model: true do
-  let(:project) { create(:project, :repository) }
-  let(:commit) { project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
-  let(:diff_file) { commit.diffs.diff_file_with_new_path('files/ruby/popen.rb') }
+describe DiffViewer::ServerSide do
+  set(:project) { create(:project, :repository) }
+  let(:commit) { project.commit_by(oid: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
+  let!(:diff_file) { commit.diffs.diff_file_with_new_path('files/ruby/popen.rb') }
 
   let(:viewer_class) do
     Class.new(DiffViewer::Base) do
@@ -15,8 +15,7 @@ describe DiffViewer::ServerSide, model: true do
 
   describe '#prepare!' do
     it 'loads all diff file data' do
-      expect(diff_file.old_blob).to receive(:load_all_data!)
-      expect(diff_file.new_blob).to receive(:load_all_data!)
+      expect(Blob).to receive(:lazy).at_least(:twice)
 
       subject.prepare!
     end

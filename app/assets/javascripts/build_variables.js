@@ -1,8 +1,10 @@
-/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren */
+import $ from 'jquery';
 
-$(function() {
-  $('.reveal-variables').off('click').on('click', function() {
-    $('.js-build').toggle().niceScroll();
-    $(this).hide();
-  });
-});
+export default function handleRevealVariables() {
+  $('.js-reveal-variables')
+    .off('click')
+    .on('click', function click() {
+      $('.js-build-variables').toggle();
+      $(this).hide();
+    });
+}

@@ -1,16 +1,15 @@
-.detail-page-header.clearfix
-  .snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
-    %span.sr-only
-      = visibility_level_label(@snippet.visibility_level)
-    = visibility_level_icon(@snippet.visibility_level, fw: false)
-  %strong.item-title
-    Snippet #{@snippet.to_reference}
-  %span.creator
-    authored
-    = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
-    by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "hidden-xs")}
+.detail-page-header
+  .detail-page-header-body
+    .snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
+      %span.sr-only
+        = visibility_level_label(@snippet.visibility_level)
+      = visibility_level_icon(@snippet.visibility_level, fw: false)
+    %span.creator
+      Authored
+      = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
+      by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "hidden-xs")}
 
-  .snippet-actions
+  .detail-page-header-actions
     - if @snippet.project_id?
       = render "projects/snippets/actions"
     - else

@@ -2,6 +2,7 @@
 #
 # After migrating issues_enabled merge_requests_enabled builds_enabled snippets_enabled and wiki_enabled
 # fields to a new table "project_features", support for the old fields is still needed in the API.
+require 'gitlab/utils'
 
 module ProjectFeaturesCompatibility
   extend ActiveSupport::Concern
@@ -32,6 +33,6 @@ module ProjectFeaturesCompatibility
     build_project_feature unless project_feature
 
     access_level = Gitlab::Utils.to_boolean(value) ? ProjectFeature::ENABLED : ProjectFeature::DISABLED
-    project_feature.send(:write_attribute, field, access_level)
+    project_feature.__send__(:write_attribute, field, access_level) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

@@ -1,14 +1,33 @@
+import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
+import FilteredSearchTokenKeys from './filtered_search_token_keys';
+import DropdownUtils from './dropdown_utils';
+import DropdownHint from './dropdown_hint';
+import DropdownEmoji from './dropdown_emoji';
+import DropdownNonUser from './dropdown_non_user';
+import DropdownUser from './dropdown_user';
+import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
-class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', tokenizer, page) {
+export default class FilteredSearchDropdownManager {
+  constructor({
+    baseEndpoint = '',
+    tokenizer,
+    page,
+    isGroup,
+    isGroupAncestor,
+    isGroupDecendent,
+    filteredSearchTokenKeys,
+  }) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
-    this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+    this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
+    this.groupsOnly = isGroup;
+    this.groupAncestor = isGroupAncestor;
+    this.isGroupDecendent = isGroupDecendent;
 
     this.setupMapping();
 
@@ -28,45 +47,80 @@ class FilteredSearchDropdownManager {
   }
 
   setupMapping() {
-    this.mapping = {
+    const supportedTokens = this.filteredSearchTokenKeys.getKeys();
+    const allowedMappings = {
+      hint: {
+        reference: null,
+        gl: DropdownHint,
+        element: this.container.querySelector('#js-dropdown-hint'),
+      },
+    };
+    const availableMappings = {
       author: {
         reference: null,
-        gl: 'DropdownUser',
+        gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-author'),
       },
       assignee: {
         reference: null,
-        gl: 'DropdownUser',
+        gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-assignee'),
       },
       milestone: {
         reference: null,
-        gl: 'DropdownNonUser',
-        extraArguments: [`${this.baseEndpoint}/milestones.json`, '%'],
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getMilestoneEndpoint(),
+          symbol: '%',
+        },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
       label: {
         reference: null,
-        gl: 'DropdownNonUser',
-        extraArguments: [`${this.baseEndpoint}/labels.json`, '~'],
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getLabelsEndpoint(),
+          symbol: '~',
+          preprocessing: DropdownUtils.duplicateLabelPreprocessing,
+        },
         element: this.container.querySelector('#js-dropdown-label'),
       },
-      hint: {
+      'my-reaction': {
         reference: null,
-        gl: 'DropdownHint',
-        element: this.container.querySelector('#js-dropdown-hint'),
+        gl: DropdownEmoji,
+        element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
     };
+
+    supportedTokens.forEach((type) => {
+      if (availableMappings[type]) {
+        allowedMappings[type] = availableMappings[type];
+      }
+    });
+
+    this.mapping = allowedMappings;
+  }
+
+  getMilestoneEndpoint() {
+    const endpoint = `${this.baseEndpoint}/milestones.json`;
+
+    return endpoint;
+  }
+
+  getLabelsEndpoint() {
+    const endpoint = `${this.baseEndpoint}/labels.json`;
+
+    return endpoint;
   }
 
   static addWordToInput(tokenName, tokenValue = '', clicked = false) {
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
 
-    gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
     input.value = '';
 
     if (clicked) {
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      FilteredSearchVisualTokens.moveInputToTheRight();
     }
   }
 
@@ -97,13 +151,19 @@ class FilteredSearchDropdownManager {
     let forceShowList = false;
 
     if (!mappingKey.reference) {
-      const dl = this.droplab;
-      const defaultArguments =
-        [null, dl, element, this.filteredSearchInput, this.filteredSearchTokenKeys, key];
-      const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
+      const defaultArguments = {
+        droplab: this.droplab,
+        dropdown: element,
+        input: this.filteredSearchInput,
+        tokenKeys: this.filteredSearchTokenKeys,
+        filter: key,
+      };
+      const extraArguments = mappingKey.extraArguments || {};
+      const glArguments = Object.assign({}, defaultArguments, extraArguments);
 
-      // Passing glArguments to `new gl[glClass](<arguments>)`
-      mappingKey.reference = new (Function.prototype.bind.apply(gl[glClass], glArguments))();
+      // Passing glArguments to `new glClass(<arguments>)`
+      mappingKey.reference =
+        new (Function.prototype.bind.apply(glClass, [null, glArguments]))();
     }
 
     if (firstLoad) {
@@ -141,7 +201,7 @@ class FilteredSearchDropdownManager {
   }
 
   setDropdown() {
-    const query = gl.DropdownUtils.getSearchQuery(true);
+    const query = DropdownUtils.getSearchQuery(true);
     const { lastToken, searchToken } =
       this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
 
@@ -154,7 +214,7 @@ class FilteredSearchDropdownManager {
       // Eg. token = 'label:'
 
       const split = lastToken.split(':');
-      const dropdownName = split[0].split(' ').last();
+      const dropdownName = _.last(split[0].split(' '));
       this.loadDropdown(split.length > 1 ? dropdownName : '');
     } else if (lastToken) {
       // Token has been initialized into an object because it has a value
@@ -186,6 +246,3 @@ class FilteredSearchDropdownManager {
     this.droplab.destroy();
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchDropdownManager = FilteredSearchDropdownManager;

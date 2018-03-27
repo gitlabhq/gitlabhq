@@ -1,9 +1,9 @@
 - if (@page && @page.persisted?)
   - if can?(current_user, :create_wiki, @project)
     = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
-      New page
-  = link_to namespace_project_wiki_history_path(@project.namespace, @project, @page), class: "btn" do
-    Page history
+      = s_("Wiki|New page")
+  = link_to project_wiki_history_path(@project, @page), class: "btn" do
+    = s_("Wiki|Page history")
   - if can?(current_user, :create_wiki, @project) && @page.latest?
-    = link_to namespace_project_wiki_edit_path(@project.namespace, @project, @page), class: "btn js-wiki-edit" do
-      Edit
+    = link_to project_wiki_edit_path(@project, @page), class: "btn js-wiki-edit" do
+      = _("Edit")

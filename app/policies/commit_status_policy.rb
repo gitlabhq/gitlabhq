@@ -1,5 +1,7 @@
 class CommitStatusPolicy < BasePolicy
-  def rules
-    delegate! @subject.project
+  delegate { @subject.project }
+
+  %w[read create update admin].each do |action|
+    rule { ~can?(:"#{action}_commit_status") }.prevent :"#{action}_build"
   end
 end

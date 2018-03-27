@@ -14,7 +14,9 @@ Read more on [pagination](README.md#pagination).
 
 ## List issues
 
-Get all issues created by the authenticated user.
+Get all issues the authenticated user has access to. By default it
+returns only issues created by the current user. To get all issues,
+use parameter `scope=all`.
 
 ```
 GET /issues
@@ -26,18 +28,28 @@ GET /issues?labels=foo,bar&state=opened
 GET /issues?milestone=1.0.0
 GET /issues?milestone=1.0.0&state=opened
 GET /issues?iids[]=42&iids[]=43
-GET /issues?search=issue+title+or+description
+GET /issues?author_id=5
+GET /issues?assignee_id=5
+GET /issues?my_reaction_emoji=star
 ```
 
-| Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
-| `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
-| `milestone` | string         | no       | The milestone title                                                                                                         |
-| `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search issues against their `title` and `description`                                                                       |
+| Attribute           | Type             | Required   | Description                                                                                                                                         |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                                       |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels                         |
+| `milestone`         | string           | no         | The milestone title                                                                                                                                 |
+| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                                              |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                                      |
+| `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                                       |
+| `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
+| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
+| `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/issues
@@ -87,6 +99,7 @@ Example response:
          "username" : "root"
       },
       "updated_at" : "2016-01-04T15:31:51.081Z",
+      "closed_at" : null,
       "id" : 76,
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
@@ -95,7 +108,14 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
-      "confidential": false
+      "time_stats": {
+         "time_estimate": 0,
+         "total_time_spent": 0,
+         "human_time_estimate": null,
+         "human_total_time_spent": null
+      },
+      "confidential": false,
+      "discussion_locked": false
    }
 ]
 ```
@@ -117,18 +137,29 @@ GET /groups/:id/issues?milestone=1.0.0
 GET /groups/:id/issues?milestone=1.0.0&state=opened
 GET /groups/:id/issues?iids[]=42&iids[]=43
 GET /groups/:id/issues?search=issue+title+or+description
+GET /groups/:id/issues?author_id=5
+GET /groups/:id/issues?assignee_id=5
+GET /groups/:id/issues?my_reaction_emoji=star
 ```
 
-| Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
-| `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
-| `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
-| `milestone` | string         | no       | The milestone title                                                                                                         |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search group issues against their `title` and `description`                                                                  |
+| Attribute           | Type             | Required   | Description                                                                                                                   |
+| ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
+| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
+| `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                 |
+| `milestone`         | string           | no         | The milestone title                                                                                                           |
+| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_        |
+| `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                        |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
+| `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
+| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
+| `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 
 
 ```bash
@@ -184,10 +215,18 @@ Example response:
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
+      "closed_at" : null,
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
-      "confidential": false
+      "time_stats": {
+         "time_estimate": 0,
+         "total_time_spent": 0,
+         "human_time_estimate": null,
+         "human_total_time_spent": null
+      },
+      "confidential": false,
+      "discussion_locked": false
    }
 ]
 ```
@@ -209,20 +248,29 @@ GET /projects/:id/issues?milestone=1.0.0
 GET /projects/:id/issues?milestone=1.0.0&state=opened
 GET /projects/:id/issues?iids[]=42&iids[]=43
 GET /projects/:id/issues?search=issue+title+or+description
+GET /projects/:id/issues?author_id=5
+GET /projects/:id/issues?assignee_id=5
+GET /projects/:id/issues?my_reaction_emoji=star
 ```
 
-| Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `iids`      | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
-| `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
-| `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
-| `milestone` | string         | no       | The milestone title                                                                                                         |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search project issues against their `title` and `description`                                                                |
-| `created_after` | datetime | no | Return issues created after the given time (inclusive) |
-| `created_before` | datetime | no | Return issues created before the given time (inclusive) |
+| Attribute           | Type             | Required   | Description                                                                                                                   |
+| ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
+| `iids[]`            | Array[integer]   | no         | Return only the milestone having the given `iid`                                                                              |
+| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
+| `milestone`         | string           | no         | The milestone title                                                                                                           |
+| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_        |
+| `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                        |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
+| `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
+| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
+| `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues
@@ -277,10 +325,18 @@ Example response:
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
+      "closed_at" : "2016-01-05T15:31:46.176Z",
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
-      "confidential": false
+      "time_stats": {
+         "time_estimate": 0,
+         "total_time_spent": 0,
+         "human_time_estimate": null,
+         "human_total_time_spent": null
+      },
+      "confidential": false,
+      "discussion_locked": false
    }
 ]
 ```
@@ -318,7 +374,8 @@ Example response:
       "id" : 11,
       "title" : "v3.0",
       "created_at" : "2016-01-04T15:31:39.788Z",
-      "updated_at" : "2016-01-04T15:31:39.788Z"
+      "updated_at" : "2016-01-04T15:31:39.788Z",
+      "closed_at" : "2016-01-05T15:31:46.176Z"
    },
    "author" : {
       "state" : "active",
@@ -356,7 +413,20 @@ Example response:
    "user_notes_count": 1,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/1",
-   "confidential": false
+   "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+   },
+   "confidential": false,
+   "discussion_locked": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
 
@@ -413,12 +483,26 @@ Example response:
    },
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
+   "closed_at" : null,
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/14",
-   "confidential": false
+   "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+   },
+   "confidential": false,
+   "discussion_locked": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
 
@@ -440,12 +524,14 @@ PUT /projects/:id/issues/:issue_iid
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
-| `assignee_ids`  | Array[integer] | no       | The ID of the users to assign the issue to                                                                    |
-| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to                                                               |
-| `labels`       | string  | no       | Comma-separated label names for an issue                                                                   |
+| `assignee_ids`  | Array[integer] | no  | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
+| `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
+| `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
+
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -469,6 +555,7 @@ Example response:
    "project_id" : 4,
    "description" : null,
    "updated_at" : "2016-01-07T12:55:16.213Z",
+   "closed_at" : "2016-01-08T12:55:16.213Z",
    "iid" : 15,
    "labels" : [
       "bug"
@@ -481,7 +568,20 @@ Example response:
    "user_notes_count": 0,
    "due_date": "2016-07-22",
    "web_url": "http://example.com/example/example/issues/15",
-   "confidential": false
+   "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+   },
+   "confidential": false,
+   "discussion_locked": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
 
@@ -524,7 +624,7 @@ POST /projects/:id/issues/:issue_iid/move
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85/move
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"to_project_id": 5}' https://gitlab.example.com/api/v4/projects/4/issues/85/move
 ```
 
 Example response:
@@ -539,6 +639,7 @@ Example response:
   "state": "opened",
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
+  "closed_at": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -567,7 +668,20 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  },
+  "confidential": false,
+  "discussion_locked": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects/1/issues/2",
+    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://example.com/api/v4/projects/1"
+  }
 }
 ```
 
@@ -604,6 +718,7 @@ Example response:
   "state": "opened",
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
+  "closed_at": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -632,7 +747,20 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  },
+  "confidential": false,
+  "discussion_locked": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects/1/issues/2",
+    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://example.com/api/v4/projects/1"
+  }
 }
 ```
 
@@ -655,6 +783,44 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe
+```
+
+Example response:
+
+```json
+{
+  "id": 93,
+  "iid": 12,
+  "project_id": 5,
+  "title": "Incidunt et rerum ea expedita iure quibusdam.",
+  "description": "Et cumque architecto sed aut ipsam.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.217Z",
+  "updated_at": "2016-04-07T13:02:37.905Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Edwardo Grady",
+    "username": "keyon",
+    "id": 21,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/keyon"
+  },
+  "author": {
+    "name": "Vivian Hermann",
+    "username": "orville",
+    "id": 11,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/orville"
+  },
+  "subscribed": false,
+  "due_date": null,
+  "web_url": "http://example.com/example/example/issues/12",
+  "confidential": false,
+  "discussion_locked": false
+}
 ```
 
 ## Create a todo
@@ -749,7 +915,8 @@ Example response:
     "downvotes": 0,
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
-    "confidential": false
+    "confidential": false,
+    "discussion_locked": false
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",
@@ -955,7 +1122,52 @@ Example response:
     "user_notes_count": 1,
     "should_remove_source_branch": null,
     "force_remove_source_branch": false,
-    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432"
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+
+## Participants on issues
+
+```
+GET /projects/:id/issues/:issue_iid/participants
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/participants
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "John Doe1",
+    "username": "user1",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+    "web_url": "http://localhost/user1"
+  },
+  {
+    "id": 5,
+    "name": "John Doe5",
+    "username": "user5",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/4aea8cf834ed91844a2da4ff7ae6b491?s=80&d=identicon",
+    "web_url": "http://localhost/user5"
   }
 ]
 ```
@@ -964,3 +1176,33 @@ Example response:
 ## Comments on issues
 
 Comments are done via the [notes](notes.md) resource.
+
+## Get user agent details
+
+Available only for admins.
+
+```
+GET /projects/:id/issues/:issue_iid/user_agent_detail
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail
+```
+
+Example response:
+
+```json
+{
+  "user_agent": "AppleWebKit/537.36",
+  "ip_address": "127.0.0.1",
+  "akismet_submitted": false
+}
+```
+
+[ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016

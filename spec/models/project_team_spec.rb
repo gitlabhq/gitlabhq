@@ -1,13 +1,13 @@
 require "spec_helper"
 
-describe ProjectTeam, models: true do
+describe ProjectTeam do
   let(:master) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
   let(:nonmember) { create(:user) }
 
   context 'personal project' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       project.add_master(master)
@@ -37,7 +37,7 @@ describe ProjectTeam, models: true do
 
   context 'group project' do
     let(:group) { create(:group) }
-    let!(:project) { create(:empty_project, group: group) }
+    let!(:project) { create(:project, group: group) }
 
     before do
       group.add_master(master)
@@ -75,7 +75,7 @@ describe ProjectTeam, models: true do
 
   describe '#fetch_members' do
     context 'personal project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       it 'returns project members' do
         user = create(:user)
@@ -119,7 +119,7 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group) }
-      let!(:project) { create(:empty_project, group: group) }
+      let!(:project) { create(:project, group: group) }
 
       it 'returns project members' do
         group_member = create(:group_member, group: group)
@@ -139,7 +139,7 @@ describe ProjectTeam, models: true do
   describe '#find_member' do
     context 'personal project' do
       let(:project) do
-        create(:empty_project, :public, :access_requestable)
+        create(:project, :public, :access_requestable)
       end
 
       let(:requester) { create(:user) }
@@ -160,7 +160,7 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group, :access_requestable) }
-      let(:project) { create(:empty_project, group: group) }
+      let(:project) { create(:project, group: group) }
       let(:requester) { create(:user) }
 
       before do
@@ -182,7 +182,7 @@ describe ProjectTeam, models: true do
     it 'returns Master role' do
       user = create(:user)
       group = create(:group)
-      project = create(:empty_project, namespace: group)
+      project = create(:project, namespace: group)
 
       group.add_master(user)
 
@@ -192,7 +192,7 @@ describe ProjectTeam, models: true do
     it 'returns Owner role' do
       user = create(:user)
       group = create(:group)
-      project = create(:empty_project, namespace: group)
+      project = create(:project, namespace: group)
 
       group.add_owner(user)
 
@@ -205,7 +205,7 @@ describe ProjectTeam, models: true do
 
     context 'personal project' do
       let(:project) do
-        create(:empty_project, :public, :access_requestable)
+        create(:project, :public, :access_requestable)
       end
 
       context 'when project is not shared with group' do
@@ -253,7 +253,7 @@ describe ProjectTeam, models: true do
     context 'group project' do
       let(:group) { create(:group, :access_requestable) }
       let!(:project) do
-        create(:empty_project, group: group)
+        create(:project, group: group)
       end
 
       before do
@@ -277,22 +277,22 @@ describe ProjectTeam, models: true do
     let(:master) { create(:user) }
 
     let(:personal_project) do
-      create(:empty_project, namespace: developer.namespace)
+      create(:project, namespace: developer.namespace)
     end
 
     let(:group_project) do
-      create(:empty_project, namespace: group)
+      create(:project, namespace: group)
     end
 
-    let(:members_project) { create(:empty_project) }
-    let(:shared_project) { create(:empty_project) }
+    let(:members_project) { create(:project) }
+    let(:shared_project) { create(:project) }
 
     before do
       group.add_master(master)
       group.add_developer(developer)
 
-      members_project.team << [developer, :developer]
-      members_project.team << [master, :master]
+      members_project.add_developer(developer)
+      members_project.add_master(master)
 
       create(:project_group_link, project: shared_project, group: group)
     end

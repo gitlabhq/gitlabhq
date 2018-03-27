@@ -37,7 +37,7 @@ when using the migration helper method
 `Gitlab::Database::MigrationHelpers#add_column_with_default`. This method works
 similar to `add_column` except it updates existing rows in batches without
 blocking access to the table being modified. See ["Adding Columns With Default
-Values"](migration_style_guide.html#adding-columns-with-default-values) for more
+Values"](migration_style_guide.md#adding-columns-with-default-values) for more
 information on how to use this method.
 
 ## Dropping Columns
@@ -194,6 +194,63 @@ end
 ```
 
 And that's it, we're done!
+
+## Changing Column Types For Large Tables
+
+While `change_column_type_concurrently` can be used for changing the type of a
+column without downtime it doesn't work very well for large tables. Because all
+of the work happens in sequence the migration can take a very long time to
+complete, preventing a deployment from proceeding.
+`change_column_type_concurrently` can also produce a lot of pressure on the
+database due to it rapidly updating many rows in sequence.
+
+To reduce database pressure you should instead use
+`change_column_type_using_background_migration` when migrating a column in a
+large table (e.g. `issues`). This method works similar to
+`change_column_type_concurrently` but uses background migration to spread the
+work / load over a longer time period, without slowing down deployments.
+
+Usage of this method is fairly simple:
+
+```ruby
+class ExampleMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  disable_ddl_transaction!
+
+  class Issue < ActiveRecord::Base
+    self.table_name = 'issues'
+
+    include EachBatch
+
+    def self.to_migrate
+      where('closed_at IS NOT NULL')
+    end
+  end
+
+  def up
+    change_column_type_using_background_migration(
+      Issue.to_migrate,
+      :closed_at,
+      :datetime_with_timezone
+    )
+  end
+
+  def down
+    change_column_type_using_background_migration(
+      Issue.to_migrate,
+      :closed_at,
+      :datetime
+    )
+  end
+end
+```
+
+This would change the type of `issues.closed_at` to `timestamp with time zone`.
+
+Keep in mind that the relation passed to
+`change_column_type_using_background_migration` _must_ include `EachBatch`,
+otherwise it will raise a `TypeError`.
 
 ## Adding Indexes
 

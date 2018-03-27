@@ -1,14 +1,12 @@
 - @no_container = true
 - page_title 'ConvDev Index'
 
-= render 'admin/monitoring/head'
-
 .container
   - if show_callout?('convdev_intro_callout_dismissed')
     = render 'callout'
 
   .prepend-top-default
-  - if !current_application_settings.usage_ping_enabled
+  - if !Gitlab::CurrentSettings.usage_ping_enabled
     = render 'disabled'
   - elsif @metric.blank?
     = render 'no_data'

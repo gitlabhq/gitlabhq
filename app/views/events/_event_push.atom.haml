@@ -1,14 +1,14 @@
 %div{ xmlns: "http://www.w3.org/1999/xhtml" }
-  - event.commits.first(15).each do |commit|
-    %p
-      %strong= commit[:author][:name]
-      = link_to "(##{truncate_sha(commit[:id])})", namespace_project_commit_path(event.project.namespace, event.project, id: commit[:id])
-      %i
-        at
-        = commit[:timestamp].to_time.to_s(:short)
-    %blockquote= markdown(escape_once(commit[:message]), pipeline: :atom, project: event.project, author: event.author)
-  - if event.commits_count > 15
-    %p
-      %i
-        \... and
-        = pluralize(event.commits_count - 15, "more commit")
+  %p
+    %strong= event.author_name
+    = link_to "(#{truncate_sha(event.commit_id)})", project_commit_path(event.project, event.commit_id)
+    %i
+      at
+      = event.created_at.to_s(:short)
+  - unless event.rm_ref?
+    %blockquote= markdown(escape_once(event.commit_title), pipeline: :atom, project: event.project, author: event.author)
+    - if event.commits_count > 1
+      %p
+        %i
+          \... and
+          = pluralize(event.commits_count - 1, "more commit")

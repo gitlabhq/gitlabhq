@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::Importer, lib: true do
+describe Gitlab::GitlabImport::Importer do
   include ImportSpecHelper
 
   describe '#execute' do
@@ -24,7 +24,7 @@ describe Gitlab::GitlabImport::Importer, lib: true do
     end
 
     it 'persists issues' do
-      project = create(:empty_project, import_source: 'asd/vim')
+      project = create(:project, import_source: 'asd/vim')
       project.build_import_data(credentials: { password: 'password' })
 
       subject = described_class.new(project)

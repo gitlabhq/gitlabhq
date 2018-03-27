@@ -1,11 +1,14 @@
+import $ from 'jquery';
+
 class RefSelectDropdown {
   constructor($dropdownButton, availableRefs) {
+    const availableRefsValue = availableRefs || JSON.parse(document.getElementById('availableRefs').innerHTML);
     $dropdownButton.glDropdown({
-      data: availableRefs,
+      data: availableRefsValue,
       filterable: true,
       filterByText: true,
       remote: false,
-      fieldName: $dropdownButton.data('field-name'),
+      fieldName: $dropdownButton.data('fieldName'),
       filterInput: 'input[type="search"]',
       selectable: true,
       isSelectable(branch, $el) {
@@ -23,7 +26,7 @@ class RefSelectDropdown {
     });
 
     const $dropdownContainer = $dropdownButton.closest('.dropdown');
-    const $fieldInput = $(`input[name="${$dropdownButton.data('field-name')}"]`, $dropdownContainer);
+    const $fieldInput = $(`input[name="${$dropdownButton.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
 
     $filterInput.on('keyup', (e) => {

@@ -1,17 +1,23 @@
 require 'spec_helper'
 
 describe Projects::BoardsController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
   describe 'GET index' do
     it 'creates a new project board when project does not have one' do
       expect { list_boards }.to change(project.boards, :count).by(1)
+    end
+
+    it 'sets boards_endpoint instance variable to a boards path' do
+      list_boards
+
+      expect(assigns(:boards_endpoint)).to eq project_boards_path(project)
     end
 
     context 'when format is HTML' do
@@ -45,7 +51,17 @@ describe Projects::BoardsController do
       it 'returns a not found 404 response' do
         list_boards
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'issues are disabled' do
+      let(:project) { create(:project, :issues_disabled) }
+
+      it 'returns a not found 404 response' do
+        list_boards
+
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -58,6 +74,12 @@ describe Projects::BoardsController do
 
   describe 'GET show' do
     let!(:board) { create(:board, project: project) }
+
+    it 'sets boards_endpoint instance variable to a boards path' do
+      read_board board: board
+
+      expect(assigns(:boards_endpoint)).to eq project_boards_path(project)
+    end
 
     context 'when format is HTML' do
       it 'renders template' do
@@ -85,7 +107,7 @@ describe Projects::BoardsController do
       it 'returns a not found 404 response' do
         read_board board: board
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -95,7 +117,7 @@ describe Projects::BoardsController do
 
         read_board board: another_board
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 

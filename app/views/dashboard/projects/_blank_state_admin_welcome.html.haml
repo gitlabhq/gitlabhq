@@ -1,0 +1,41 @@
+.blank-state-row
+  = link_to new_project_path, class: "blank-state-link" do
+    .blank-state
+      .blank-state-icon
+        = custom_icon("add_new_project", size: 50)
+      .blank-state-body
+        %h3.blank-state-title
+          Create a project
+        %p.blank-state-text
+          Projects are where you store your code, access issues, wiki and other features of GitLab.
+
+  - if current_user.can_create_group?
+    = link_to new_group_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_group", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Create a group
+          %p.blank-state-text
+            Groups are a great way to organize projects and people.
+
+    = link_to new_admin_user_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_user", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Add people
+          %p.blank-state-text
+            Add your team members and others to GitLab.
+
+  = link_to admin_root_path, class: "blank-state-link" do
+    .blank-state
+      .blank-state-icon
+        = custom_icon("configure_server", size: 50)
+      .blank-state-body
+        %h3.blank-state-title
+          Configure GitLab
+        %p.blank-state-text
+          Make adjustments to how your GitLab instance is set up.

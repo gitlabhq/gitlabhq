@@ -2,13 +2,15 @@
 - noteable_type = @noteable.class if @noteable.present?
 
 - if project
+  -# haml-lint:disable InlineJavaScript
   :javascript
+    gl = window.gl || {};
     gl.GfmAutoComplete = gl.GfmAutoComplete || {};
     gl.GfmAutoComplete.dataSources = {
-      members: "#{members_namespace_project_autocomplete_sources_path(project.namespace, project, type: noteable_type, type_id: params[:id])}",
-      issues: "#{issues_namespace_project_autocomplete_sources_path(project.namespace, project)}",
-      mergeRequests: "#{merge_requests_namespace_project_autocomplete_sources_path(project.namespace, project)}",
-      labels: "#{labels_namespace_project_autocomplete_sources_path(project.namespace, project)}",
-      milestones: "#{milestones_namespace_project_autocomplete_sources_path(project.namespace, project)}",
-      commands: "#{commands_namespace_project_autocomplete_sources_path(project.namespace, project, type: noteable_type, type_id: params[:id])}"
+      members: "#{members_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}",
+      issues: "#{issues_project_autocomplete_sources_path(project)}",
+      mergeRequests: "#{merge_requests_project_autocomplete_sources_path(project)}",
+      labels: "#{labels_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}",
+      milestones: "#{milestones_project_autocomplete_sources_path(project)}",
+      commands: "#{commands_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}"
     };

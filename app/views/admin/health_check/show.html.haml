@@ -1,42 +1,42 @@
 - @no_container = true
-- page_title "Health Check"
-= render 'admin/monitoring/head'
+- page_title _('Health Check')
+- no_errors = @errors.blank? && @failing_storage_statuses.blank?
 
 %div{ class: container_class }
-  %h3.page-title
-    Health Check
+  %h3.page-title= page_title
   .bs-callout.clearfix
     .pull-left
       %p
-    Access token is
-    %code#health-check-token= current_application_settings.health_check_access_token
+    #{ s_('HealthCheck|Access token is') }
+    %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
     .prepend-top-10
-      = button_to "Reset health check access token", reset_health_check_token_admin_application_settings_path,
+      = button_to _("Reset health check access token"), reset_health_check_token_admin_application_settings_path,
         method: :put, class: 'btn btn-default',
-        data: { confirm: 'Are you sure you want to reset the health check token?' }
+        data: { confirm: _('Are you sure you want to reset the health check token?') }
   %p.light
-    Health information can be retrieved from the following endpoints. More information is available
-    = link_to 'here', help_page_path('user/admin_area/monitoring/health_check')
+    #{ _('Health information can be retrieved from the following endpoints. More information is available') }
+    = link_to s_('More information is available|here'), help_page_path('user/admin_area/monitoring/health_check')
     %ul
       %li
-        %code= readiness_url(token: current_application_settings.health_check_access_token)
+        %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
       %li
-        %code= liveness_url(token: current_application_settings.health_check_access_token)
+        %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
       %li
-        %code= metrics_url(token: current_application_settings.health_check_access_token)
+        %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
 
   %hr
   .panel.panel-default
     .panel-heading
       Current Status:
-      - if @errors.blank?
+      - if no_errors
         = icon('circle', class: 'cgreen')
-        Healthy
+        #{ s_('HealthCheck|Healthy') }
       - else
         = icon('warning', class: 'cred')
-        Unhealthy
+        #{ s_('HealthCheck|Unhealthy') }
     .panel-body
-      - if @errors.blank?
-        No Health Problems Detected
+      - if no_errors
+        #{ s_('HealthCheck|No Health Problems Detected') }
       - else
         = @errors
+        = render partial: 'failing_storages', object: @failing_storage_statuses

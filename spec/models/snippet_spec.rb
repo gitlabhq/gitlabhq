@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Snippet, models: true do
+describe Snippet do
   describe 'modules' do
     subject { described_class }
 
@@ -33,7 +33,7 @@ describe Snippet, models: true do
 
   describe '#to_reference' do
     context 'when snippet belongs to a project' do
-      let(:project) { build(:empty_project, name: 'sample-project') }
+      let(:project) { build(:project, name: 'sample-project') }
       let(:snippet) { build(:snippet, id: 1, project: project) }
 
       it 'returns a String reference to the object' do
@@ -41,7 +41,7 @@ describe Snippet, models: true do
       end
 
       it 'supports a cross-project reference' do
-        another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
+        another_project = build(:project, name: 'another-project', namespace: project.namespace)
         expect(snippet.to_reference(another_project)).to eq "sample-project$1"
       end
     end
@@ -54,14 +54,14 @@ describe Snippet, models: true do
       end
 
       it 'still returns shortest reference when project arg present' do
-        another_project = build(:empty_project, name: 'another-project')
+        another_project = build(:project, name: 'another-project')
         expect(snippet.to_reference(another_project)).to eq "$1"
       end
     end
   end
 
   describe '#file_name' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'file_name is nil' do
       let(:snippet) { create(:snippet, project: project, file_name: nil) }
@@ -88,7 +88,7 @@ describe Snippet, models: true do
   end
 
   describe '.search' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { create(:snippet, title: 'test snippet') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -132,7 +132,7 @@ describe Snippet, models: true do
   end
 
   describe '#participants' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:snippet) { create(:snippet, content: 'foo', project: project) }
 
     let!(:note1) do

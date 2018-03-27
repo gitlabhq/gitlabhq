@@ -1,43 +1,31 @@
-- page_title "GitHub Import"
+- title = has_ci_cd_only_params? ? _('Connect repositories from GitHub') : _('GitHub import')
+- page_title title
+- breadcrumb_title title
 - header_title "Projects", root_path
 
 %h3.page-title
-  = icon 'github', text: 'Import Projects from GitHub'
+  = icon 'github', text: import_github_title
 
 - if github_import_configured?
   %p
-    To import a GitHub project, you first need to authorize GitLab to access
-    the list of your GitHub repositories:
+    = import_github_authorize_message
 
-  = link_to 'List your GitHub repositories', status_import_github_path, class: 'btn btn-success'
+  = link_to _('List your GitHub repositories'), status_import_github_path(ci_cd_only: params[:ci_cd_only]), class: 'btn btn-success'
 
   %hr
 
 %p
-  - if github_import_configured?
-    Alternatively,
-  - else
-    To import a GitHub project,
-  you can use a
-  = succeed '.' do
-    = link_to 'Personal Access Token', 'https://github.com/settings/tokens'
-  When you create your Personal Access Token,
-  you will need to select the <code>repo</code> scope, so we can display a
-  list of your public and private repositories which are available for import.
+  = import_github_personal_access_token_message
 
 = form_tag personal_access_token_import_github_path, method: :post, class: 'form-inline' do
   .form-group
-    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "Personal Access Token", size: 40
-    = submit_tag 'List your GitHub repositories', class: 'btn btn-success'
+    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: _('Personal Access Token'), size: 40
+    = submit_tag _('List your GitHub repositories'), class: 'btn btn-success'
+
+  -# EE-specific start
+  -# EE-specific end
 
 - unless github_import_configured?
   %hr
   %p
-    Note:
-    - if current_user.admin?
-      As an administrator you may like to configure
-    - else
-      Consider asking your GitLab administrator to configure
-    = link_to 'GitHub integration', help_page_path("integration/github")
-    which will allow login via GitHub and allow importing projects without
-    generating a Personal Access Token.
+    = import_configure_github_admin_message

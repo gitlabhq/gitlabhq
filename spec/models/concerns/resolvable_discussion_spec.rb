@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Discussion, ResolvableDiscussion, models: true do
+describe Discussion, ResolvableDiscussion do
   subject { described_class.new([first_note, second_note, third_note]) }
 
   let(:first_note) { create(:discussion_note_on_merge_request) }
@@ -190,7 +190,7 @@ describe Discussion, ResolvableDiscussion, models: true do
 
         context "when the signed in user can push to the project" do
           before do
-            subject.project.team << [current_user, :master]
+            subject.project.add_master(current_user)
           end
 
           it "returns true" do

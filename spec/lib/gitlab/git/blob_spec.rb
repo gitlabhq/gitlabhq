@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Blob, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   describe 'initialize' do
     let(:blob) { Gitlab::Git::Blob.new(name: 'test') }
@@ -16,6 +16,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   shared_examples 'finding blobs' do
+    context 'nil path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
+
+      it { expect(blob).to eq(nil) }
+    end
+
+    context 'blank path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, '') }
+
+      it { expect(blob).to eq(nil) }
+    end
+
     context 'file in subdir' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
 
@@ -78,12 +90,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
     context 'large file' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg') }
       let(:blob_size) { 111803 }
+      let(:stub_limit) { 1000 }
+
+      before do
+        stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', stub_limit)
+      end
 
       it { expect(blob.size).to eq(blob_size) }
-      it { expect(blob.data.length).to eq(blob_size) }
+      it { expect(blob.data.length).to eq(stub_limit) }
 
       it 'check that this test is sane' do
-        expect(blob.size).to be <= Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE
+        # It only makes sense to test limiting if the blob is larger than the limit.
+        expect(blob.size).to be > Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE
       end
 
       it 'can load all data' do
@@ -106,17 +124,20 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs'
     end
 
-    context 'when project_raw_show Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when project_raw_show Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs'
     end
   end
 
-  describe '.raw' do
+  shared_examples 'finding blobs by ID' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
+    let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
+
     it { expect(raw_blob.id).to eq(SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.data[0..10]).to eq("require \'fi") }
     it { expect(raw_blob.size).to eq(669) }
     it { expect(raw_blob.truncated?).to be_falsey }
+    it { expect(bad_blob).to be_nil }
 
     context 'large file' do
       it 'limits the size of a large file' do
@@ -133,6 +154,174 @@ describe Gitlab::Git::Blob, seed_helper: true do
         blob.load_all_data!(repository)
         expect(blob.loaded_size).to eq(blob_size)
       end
+    end
+
+    context 'when sha references a tree' do
+      it 'returns nil' do
+        tree = repository.rugged.rev_parse('master^{tree}')
+
+        blob = Gitlab::Git::Blob.raw(repository, tree.oid)
+
+        expect(blob).to be_nil
+      end
+    end
+  end
+
+  describe '.raw' do
+    context 'when the blob_raw Gitaly feature is enabled' do
+      it_behaves_like 'finding blobs by ID'
+    end
+
+    context 'when the blob_raw Gitaly feature is disabled', :skip_gitaly_mock do
+      it_behaves_like 'finding blobs by ID'
+    end
+  end
+
+  describe '.batch' do
+    shared_examples 'loading blobs in batch' do
+      let(:blob_references) do
+        [
+          [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
+          [SeedRepo::Commit::ID, 'six']
+        ]
+      end
+
+      subject { described_class.batch(repository, blob_references) }
+
+      it { expect(subject.size).to eq(blob_references.size) }
+
+      context 'first blob' do
+        let(:blob) { subject[0] }
+
+        it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
+        it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
+        it { expect(blob.path).to eq("files/ruby/popen.rb") }
+        it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+        it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
+        it { expect(blob.size).to eq(669) }
+        it { expect(blob.mode).to eq("100644") }
+      end
+
+      context 'second blob' do
+        let(:blob) { subject[1] }
+
+        it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
+        it { expect(blob.data).to eq('') }
+        it 'does not mark the blob as binary' do
+          expect(blob).not_to be_binary
+        end
+      end
+
+      context 'limiting' do
+        subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
+
+        context 'positive' do
+          let(:blob_size_limit) { 10 }
+
+          it { expect(subject.first.data.size).to eq(10) }
+        end
+
+        context 'zero' do
+          let(:blob_size_limit) { 0 }
+
+          it 'only loads the metadata' do
+            expect(subject.first.size).not_to be(0)
+            expect(subject.first.data).to eq('')
+          end
+        end
+
+        context 'negative' do
+          let(:blob_size_limit) { -1 }
+
+          it 'ignores MAX_DATA_DISPLAY_SIZE' do
+            stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+
+            expect(subject.first.data.size).to eq(669)
+          end
+        end
+      end
+    end
+
+    context 'when Gitaly list_blobs_by_sha_path feature is enabled' do
+      it_behaves_like 'loading blobs in batch'
+    end
+
+    context 'when Gitaly list_blobs_by_sha_path feature is disabled', :disable_gitaly do
+      it_behaves_like 'loading blobs in batch'
+    end
+  end
+
+  describe '.batch_lfs_pointers' do
+    let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
+
+    let(:non_lfs_blob) do
+      Gitlab::Git::Blob.find(
+        repository,
+        'master',
+        'README.md'
+      )
+    end
+
+    let(:lfs_blob) do
+      Gitlab::Git::Blob.find(
+        repository,
+        '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
+        'files/lfs/image.jpg'
+      )
+    end
+
+    shared_examples 'fetching batch of LFS pointers' do
+      it 'returns a list of Gitlab::Git::Blob' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        expect(blobs).to be_an(Array)
+      end
+
+      it 'accepts blob IDs as a lazy enumerator' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id].lazy)
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'handles empty list of IDs gracefully' do
+        blobs_1 = described_class.batch_lfs_pointers(repository, [].lazy)
+        blobs_2 = described_class.batch_lfs_pointers(repository, [])
+
+        expect(blobs_1).to eq([])
+        expect(blobs_2).to eq([])
+      end
+
+      it 'silently ignores tree objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'silently ignores non lfs objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'avoids loading large blobs into memory' do
+        # This line could call `lookup` on `repository`, so do here before mocking.
+        non_lfs_blob_id = non_lfs_blob.id
+
+        expect(repository).not_to receive(:lookup)
+
+        described_class.batch_lfs_pointers(repository, [non_lfs_blob_id])
+      end
+    end
+
+    context 'when Gitaly batch_lfs_pointers is enabled' do
+      it_behaves_like 'fetching batch of LFS pointers'
+    end
+
+    context 'when Gitaly batch_lfs_pointers is disabled', :disable_gitaly do
+      it_behaves_like 'fetching batch of LFS pointers'
     end
   end
 
@@ -308,6 +497,35 @@ describe Gitlab::Git::Blob, seed_helper: true do
         it { expect(blob.path).to eq("files/lfs/file-invalid.zip") }
         it { expect(blob.size).to eq(60) }
         it { expect(blob.mode).to eq("100644") }
+      end
+    end
+  end
+
+  describe '#load_all_data!' do
+    let(:full_data) { 'abcd' }
+    let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abc') }
+
+    subject { blob.load_all_data!(repository) }
+
+    it 'loads missing data' do
+      expect(Gitlab::GitalyClient).to receive(:migrate)
+        .with(:git_blob_load_all_data).and_return(full_data)
+
+      subject
+
+      expect(blob.data).to eq(full_data)
+    end
+
+    context 'with a fully loaded blob' do
+      let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: full_data) }
+
+      it "doesn't perform any loading" do
+        expect(Gitlab::GitalyClient).not_to receive(:migrate)
+          .with(:git_blob_load_all_data)
+
+        subject
+
+        expect(blob.data).to eq(full_data)
       end
     end
   end

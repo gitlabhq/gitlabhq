@@ -5,7 +5,17 @@ module Gitlab
   module Popen
     extend self
 
-    def popen(cmd, path = nil, vars = {})
+    Result = Struct.new(:cmd, :stdout, :stderr, :status, :duration)
+
+    # Returns [stdout + stderr, status]
+    def popen(cmd, path = nil, vars = {}, &block)
+      result = popen_with_detail(cmd, path, vars, &block)
+
+      [result.stdout << result.stderr, result.status&.exitstatus]
+    end
+
+    # Returns Result
+    def popen_with_detail(cmd, path = nil, vars = {})
       unless cmd.is_a?(Array)
         raise "System commands must be given as an array of strings"
       end
@@ -18,18 +28,21 @@ module Gitlab
         FileUtils.mkdir_p(path)
       end
 
-      cmd_output = ""
-      cmd_status = 0
+      cmd_stdout = ''
+      cmd_stderr = ''
+      cmd_status = nil
+      start = Time.now
+
       Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
         yield(stdin) if block_given?
         stdin.close
 
-        cmd_output << stdout.read
-        cmd_output << stderr.read
-        cmd_status = wait_thr.value.exitstatus
+        cmd_stdout = stdout.read
+        cmd_stderr = stderr.read
+        cmd_status = wait_thr.value
       end
 
-      [cmd_output, cmd_status]
+      Result.new(cmd, cmd_stdout, cmd_stderr, cmd_status, Time.now - start)
     end
   end
 end

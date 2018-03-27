@@ -18,7 +18,7 @@ describe UploadsController do
       it "returns 401 when the user is not logged in" do
         post :create, model: model, id: snippet.id, format: :json
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it "returns 404 when user can't comment on a snippet" do
@@ -27,7 +27,7 @@ describe UploadsController do
         sign_in(user)
         post :create, model: model, id: private_snippet.id, format: :json
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -39,7 +39,7 @@ describe UploadsController do
       it "returns an error without file" do
         post :create, model: model, id: snippet.id, format: :json
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_gitlab_http_status(422)
       end
 
       it "returns an error with invalid model" do
@@ -50,7 +50,7 @@ describe UploadsController do
       it "returns 404 status when object not found" do
         post :create, model: model, id: 9999, format: :json
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       context 'with valid image' do
@@ -102,7 +102,7 @@ describe UploadsController do
           subject
 
           expect(response.body).to match '\"alt\":\"rails_sample\"'
-          expect(response.body).to match "\"url\":\"/uploads/temp"
+          expect(response.body).to match "\"url\":\"/uploads/-/system/temp"
         end
 
         it 'does not create an Upload record' do
@@ -119,7 +119,7 @@ describe UploadsController do
           subject
 
           expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
-          expect(response.body).to match "\"url\":\"/uploads/temp"
+          expect(response.body).to match "\"url\":\"/uploads/-/system/temp"
         end
 
         it 'does not create an Upload record' do
@@ -131,7 +131,7 @@ describe UploadsController do
 
   describe "GET show" do
     context 'Content-Disposition security measures' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'for PNG files' do
         it 'returns Content-Disposition: inline' do
@@ -174,12 +174,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "user", mounted_as: "avatar", id: user.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'user', mounted_as: 'avatar', id: user.id, filename: 'image.png'
+
               response
             end
           end
@@ -190,12 +191,13 @@ describe UploadsController do
         it "responds with status 200" do
           get :show, model: "user", mounted_as: "avatar", id: user.id, filename: "image.png"
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it_behaves_like 'content not cached without revalidation' do
           subject do
             get :show, model: 'user', mounted_as: 'avatar', id: user.id, filename: 'image.png'
+
             response
           end
         end
@@ -203,7 +205,7 @@ describe UploadsController do
     end
 
     context "when viewing a project avatar" do
-      let!(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+      let!(:project) { create(:project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
 
       context "when the project is public" do
         before do
@@ -214,12 +216,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+
               response
             end
           end
@@ -233,12 +236,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+
               response
             end
           end
@@ -265,13 +269,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.team << [user, :master]
+              project.add_master(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.team << [user, :master]
+                project.add_master(user)
               end
 
               it "redirects to the sign in page" do
@@ -285,12 +289,13 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-                expect(response).to have_http_status(200)
+                expect(response).to have_gitlab_http_status(200)
               end
 
               it_behaves_like 'content not cached without revalidation' do
                 subject do
                   get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+
                   response
                 end
               end
@@ -301,7 +306,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end
           end
         end
@@ -316,12 +321,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+
               response
             end
           end
@@ -335,12 +341,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+
               response
             end
           end
@@ -378,12 +385,13 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-                expect(response).to have_http_status(200)
+                expect(response).to have_gitlab_http_status(200)
               end
 
               it_behaves_like 'content not cached without revalidation' do
                 subject do
                   get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+
                   response
                 end
               end
@@ -394,7 +402,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end
           end
         end
@@ -414,12 +422,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+
               response
             end
           end
@@ -433,12 +442,13 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+
               response
             end
           end
@@ -465,13 +475,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.team << [user, :master]
+              project.add_master(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.team << [user, :master]
+                project.add_master(user)
               end
 
               it "redirects to the sign in page" do
@@ -485,12 +495,13 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-                expect(response).to have_http_status(200)
+                expect(response).to have_gitlab_http_status(200)
               end
 
               it_behaves_like 'content not cached without revalidation' do
                 subject do
                   get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+
                   response
                 end
               end
@@ -501,7 +512,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end
           end
         end
@@ -516,12 +527,13 @@ describe UploadsController do
           it 'responds with status 200' do
             get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
+
               response
             end
           end
@@ -535,12 +547,13 @@ describe UploadsController do
           it 'responds with status 200' do
             get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
+
               response
             end
           end

@@ -1,8 +1,10 @@
+- breadcrumb_title "Access Tokens"
 - page_title "Personal Access Tokens"
-= render 'profiles/head'
+- @content_class = "limit-container-width" unless fluid_layout
+
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
@@ -11,15 +13,14 @@
       You can also use personal access tokens to authenticate against Git over HTTP.
       They are the only accepted password when you have Two-Factor Authentication (2FA) enabled.
 
-  .col-lg-9
-
-    - if flash[:personal_access_token]
+  .col-lg-8
+    - if @new_personal_access_token
       .created-personal-access-token-container
         %h5.prepend-top-0
           Your New Personal Access Token
         .form-group
-          = text_field_tag 'created-personal-access-token', flash[:personal_access_token], readonly: true, class: "form-control", 'aria-describedby' => "created-personal-access-token-help-block"
-          = clipboard_button(text: flash[:personal_access_token], title: "Copy personal access token to clipboard", placement: "left")
+          = text_field_tag 'created-personal-access-token', @new_personal_access_token, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-personal-access-token-help-block"
+          = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left")
           %span#created-personal-access-token-help-block.help-block.text-danger Make sure you save it - you won't be able to access it again.
 
       %hr
@@ -28,7 +29,39 @@
 
     = render "shared/personal_access_tokens_table", impersonation: false, active_tokens: @active_personal_access_tokens, inactive_tokens: @inactive_personal_access_tokens
 
-:javascript
-  $("#created-personal-access-token").click(function() {
-    this.select();
-  });
+%hr
+.row.prepend-top-default
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      RSS token
+    %p
+      Your RSS token is used to authenticate you when your RSS reader loads a personalized RSS feed, and is included in your personal RSS feed URLs.
+    %p
+      It cannot be used to access any other data.
+  .col-lg-8.rss-token-reset
+    = label_tag :rss_token, 'RSS token', class: "label-light"
+    = text_field_tag :rss_token, current_user.rss_token, class: 'form-control', readonly: true, onclick: 'this.select()'
+    %p.help-block
+      Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds as if they were you.
+      You should
+      = link_to 'reset it', [:reset, :rss_token, :profile], method: :put, data: { confirm: 'Are you sure? Any RSS URLs currently in use will stop working.' }
+      if that ever happens.
+
+- if incoming_email_token_enabled?
+  %hr
+  .row.prepend-top-default
+    .col-lg-4.profile-settings-sidebar
+      %h4.prepend-top-0
+        Incoming email token
+      %p
+        Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses.
+      %p
+        It cannot be used to access any other data.
+    .col-lg-8.incoming-email-token-reset
+      = label_tag :incoming_email_token, 'Incoming email token', class: "label-light"
+      = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control', readonly: true, onclick: 'this.select()'
+      %p.help-block
+        Keep this token secret. Anyone who gets ahold of it can create issues as if they were you.
+        You should
+        = link_to 'reset it', [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: 'Are you sure? Any issue email addresses currently in use will stop working.' }
+        if that ever happens.

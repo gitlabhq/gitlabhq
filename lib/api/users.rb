@@ -1,17 +1,30 @@
 module API
   class Users < Grape::API
     include PaginationParams
+    include APIGuard
+    include Helpers::CustomAttributes
 
-    before do
-      allow_access_with_scope :read_user if request.get?
-      authenticate!
-    end
+    allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      include CustomAttributesEndpoints
+
+      before do
+        authenticate_non_get!
+      end
+
       helpers do
-        def find_user(params)
+        def find_user_by_id(params)
           id = params[:user_id] || params[:id]
           User.find_by(id: id) || not_found!('User')
+        end
+
+        def reorder_users(users)
+          if params[:order_by] && params[:sort]
+            users.reorder(params[:order_by] => params[:sort])
+          else
+            users
+          end
         end
 
         params :optional_attributes do
@@ -27,10 +40,16 @@ module API
           optional :location, type: String, desc: 'The location of the user'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
-          optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
+        end
+
+        params :sort_params do
+          optional :order_by, type: String, values: %w[id name username created_at updated_at],
+                              default: 'id', desc: 'Return users ordered by a field'
+          optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                          desc: 'Return users sorted in ascending and descending order'
         end
       end
 
@@ -46,40 +65,58 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+        optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         all_or_none_of :extern_uid, :provider
 
+        use :sort_params
         use :pagination
+        use :with_custom_attributes
       end
       get do
-        unless can?(current_user, :read_users_list)
-          render_api_error!("Not authorized.", 403)
-        end
-
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
-        users = UsersFinder.new(current_user, params).execute
+        unless current_user&.admin?
+          params.except!(:created_after, :created_before, :order_by, :sort)
+        end
 
-        entity = current_user.admin? ? Entities::UserWithAdmin : Entities::UserBasic
-        present paginate(users), with: entity
+        users = UsersFinder.new(current_user, params).execute
+        users = reorder_users(users)
+
+        authorized = can?(current_user, :read_users_list)
+
+        # When `current_user` is not present, require that the `username`
+        # parameter is passed, to prevent an unauthenticated user from accessing
+        # a list of all the users on the GitLab instance. `UsersFinder` performs
+        # an exact match on the `username` parameter, so we are guaranteed to
+        # get either 0 or 1 `users` here.
+        authorized &&= params[:username].present? if current_user.blank?
+
+        forbidden!("Not authorized to access /api/v4/users") unless authorized
+
+        entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+        users, options = with_custom_attributes(users, with: entity)
+
+        present paginate(users), options
       end
 
       desc 'Get a single user' do
-        success Entities::UserBasic
+        success Entities::User
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+
+        use :with_custom_attributes
       end
       get ":id" do
         user = User.find_by(id: params[:id])
-        not_found!('User') unless user
+        not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        if current_user && current_user.admin?
-          present user, with: Entities::UserPublic
-        elsif can?(current_user, :read_user, user)
-          present user, with: Entities::User
-        else
-          render_api_error!("User not found.", 404)
-        end
+        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
+        user, opts = with_custom_attributes(user, opts)
+
+        present user, opts
       end
 
       desc 'Create a user. Available only for admins.' do
@@ -89,6 +126,7 @@ module API
         requires :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
+        optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
         at_least_one_of :password, :reset_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
@@ -122,6 +160,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         optional :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
+        optional :skip_reconfirmation, type: Boolean, desc: 'Flag indicating the account skips the confirmation by email'
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
@@ -156,7 +195,7 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic
@@ -220,7 +259,87 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        destroy_conditionally!(key)
+      end
+
+      desc 'Add a GPG key to a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key, type: String, desc: 'The new GPG key'
+      end
+      post ':id/gpg_keys' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params.delete(:id))
+        not_found!('User') unless user
+
+        key = user.gpg_keys.new(declared_params(include_missing: false))
+
+        if key.save
+          present key, with: Entities::GPGKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Get the GPG keys of a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/gpg_keys' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        present paginate(user.gpg_keys), with: Entities::GPGKey
+      end
+
+      desc 'Delete an existing GPG key from a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      delete ':id/gpg_keys/:key_id' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        status 204
         key.destroy
+      end
+
+      desc 'Revokes an existing GPG key from a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      post ':id/gpg_keys/:key_id/revoke' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        key.revoke
+        status :accepted
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -236,10 +355,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
+        email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -276,7 +394,9 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(user, email: email.email).execute
+        destroy_conditionally!(email) do |email|
+          Emails::DestroyService.new(current_user, user: user).execute(email)
+        end
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -287,11 +407,16 @@ module API
         optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
       end
       delete ":id" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42279')
+
         authenticated_as_admin!
+
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        user.delete_async(deleted_by: current_user, params: params)
+        destroy_conditionally!(user) do
+          user.delete_async(deleted_by: current_user, params: params)
+        end
       end
 
       desc 'Block a user. Available only for admins.'
@@ -333,7 +458,7 @@ module API
         resource :impersonation_tokens do
           helpers do
             def finder(options = {})
-              user = find_user(params)
+              user = find_user_by_id(params)
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
@@ -391,18 +516,33 @@ module API
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
           delete ':impersonation_token_id' do
-            find_impersonation_token.revoke!
+            token = find_impersonation_token
+
+            destroy_conditionally!(token) do
+              token.revoke!
+            end
           end
         end
       end
     end
 
     resource :user do
+      before do
+        authenticate!
+      end
+
       desc 'Get the currently authenticated user' do
         success Entities::UserPublic
       end
       get do
-        present current_user, with: sudo? ? Entities::UserWithPrivateDetails : Entities::UserPublic
+        entity =
+          if current_user.admin?
+            Entities::UserWithAdmin
+          else
+            Entities::UserPublic
+          end
+
+        present current_user, with: entity
       end
 
       desc "Get the currently authenticated user's SSH keys" do
@@ -455,6 +595,76 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        destroy_conditionally!(key)
+      end
+
+      desc "Get the currently authenticated user's GPG keys" do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        use :pagination
+      end
+      get 'gpg_keys' do
+        present paginate(current_user.gpg_keys), with: Entities::GPGKey
+      end
+
+      desc 'Get a single GPG key owned by currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      get 'gpg_keys/:key_id' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        present key, with: Entities::GPGKey
+      end
+
+      desc 'Add a new GPG key to the currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :key, type: String, desc: 'The new GPG key'
+      end
+      post 'gpg_keys' do
+        key = current_user.gpg_keys.new(declared_params)
+
+        if key.save
+          present key, with: Entities::GPGKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Revoke a GPG key owned by currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      post 'gpg_keys/:key_id/revoke' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        key.revoke
+        status :accepted
+      end
+
+      desc 'Delete a GPG key from the currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+      end
+      delete 'gpg_keys/:key_id' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        status 204
         key.destroy
       end
 
@@ -488,10 +698,9 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = Emails::CreateService.new(current_user, declared_params).execute
+        email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -506,7 +715,9 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(current_user, email: email.email).execute
+        destroy_conditionally!(email) do |email|
+          Emails::DestroyService.new(current_user, user: current_user).execute(email)
+        end
       end
 
       desc 'Get a list of user activities'

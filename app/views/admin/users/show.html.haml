@@ -1,3 +1,5 @@
+- add_to_breadcrumbs "Users", admin_users_path
+- breadcrumb_title @user.name
 - page_title @user.name, "Users"
 = render 'admin/users/head'
 
@@ -8,7 +10,7 @@
         = @user.name
       %ul.well-list
         %li
-          = image_tag avatar_icon(@user, 60), class: "avatar s60"
+          = image_tag avatar_icon_for_user(@user, 60), class: "avatar s60"
         %li
           %span.light Profile page:
           %strong
@@ -155,7 +157,6 @@
             %ul
               %li User will not be able to login
               %li User will not be able to access git repositories
-              %li User will be removed from joined projects and groups
               %li Personal projects will be left
               %li Owned groups will be left
             %br
@@ -171,13 +172,19 @@
 
       .panel.panel-danger
         .panel-heading
-          Remove user
+          = s_('AdminUsers|Delete user')
         .panel-body
           - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
             %p Deleting a user has the following effects:
             = render 'users/deletion_guidance', user: @user
             %br
-            = link_to 'Remove user', admin_user_path(@user), data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
+            %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
+              target: '#delete-user-modal',
+              delete_user_url: admin_user_path(@user),
+              block_user_url: block_admin_user_path(@user),
+              username: @user.name,
+              delete_contributions: 'false' }, type: 'button' }
+              = s_('AdminUsers|Delete user')
           - else
             - if @user.solo_owned_groups.present?
               %p
@@ -191,7 +198,7 @@
 
       .panel.panel-danger
         .panel-heading
-          Remove user and contributions
+          = s_('AdminUsers|Delete user and contributions')
         .panel-body
           - if can?(current_user, :destroy_user, @user)
             %p
@@ -203,7 +210,15 @@
               the user, and projects in them, will also be removed. Commits
               to other projects are unaffected.
             %br
-            = link_to 'Remove user and contributions', admin_user_path(@user, hard_delete: true), data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
+              %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
+                target: '#delete-user-modal',
+                delete_user_url: admin_user_path(@user, hard_delete: true),
+                block_user_url: block_admin_user_path(@user),
+                username: @user.name,
+                delete_contributions: 'true' }, type: 'button' }
+                = s_('AdminUsers|Delete user and contributions')
           - else
             %p
               You don't have access to delete this user.
+
+        #delete-user-modal

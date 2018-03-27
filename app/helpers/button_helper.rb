@@ -20,6 +20,9 @@ module ButtonHelper
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
     title = data[:title] || 'Copy to clipboard'
+    button_text = data[:button_text] || ''
+    hide_tooltip = data[:hide_tooltip] || false
+    hide_button_icon = data[:hide_button_icon] || false
 
     # This supports code in app/assets/javascripts/copy_to_clipboard.js that
     # works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
@@ -35,55 +38,54 @@ module ButtonHelper
     target = data.delete(:target)
     data[:clipboard_target] = target if target
 
-    data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+    unless hide_tooltip
+      data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+    end
 
-    content_tag :button,
-      icon('clipboard', 'aria-hidden': 'true'),
+    button_attributes = {
       class: "btn #{css_class}",
       data: data,
       type: :button,
       title: title,
-      aria: {
-        label: title
-      }
+      aria: { label: title }
+    }
+
+    content_tag :button, button_attributes do
+      concat(icon('clipboard', 'aria-hidden': 'true')) unless hide_button_icon
+      concat(button_text)
+    end
   end
 
-  def http_clone_button(project, placement = 'right', append_link: true)
-    klass = 'http-selector'
-    klass << ' has-tooltip' if current_user.try(:require_password?) || current_user.try(:require_personal_access_token?)
-
+  def http_clone_button(project, append_link: true)
     protocol = gitlab_config.protocol.upcase
+    dropdown_description = http_dropdown_description(protocol)
+    append_url = project.http_url_to_repo if append_link
 
-    tooltip_title =
-      if current_user.try(:require_password?)
-        _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
-      else
-        _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }
-      end
-
-    content_tag (append_link ? :a : :span), protocol,
-      class: klass,
-      href: (project.http_url_to_repo if append_link),
-      data: {
-        html: true,
-        placement: placement,
-        container: 'body',
-        title: tooltip_title
-      }
+    dropdown_item_with_description(protocol, dropdown_description, href: append_url)
   end
 
-  def ssh_clone_button(project, placement = 'right', append_link: true)
-    klass = 'ssh-selector'
-    klass << ' has-tooltip' if current_user.try(:require_ssh_key?)
+  def http_dropdown_description(protocol)
+    if current_user.try(:require_password_creation_for_git?)
+      _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
+    else
+      _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }
+    end
+  end
 
-    content_tag (append_link ? :a : :span), 'SSH',
-      class: klass,
-      href: (project.ssh_url_to_repo if append_link),
-      data: {
-        html: true,
-        placement: placement,
-        container: 'body',
-        title: _('Add an SSH key to your profile to pull or push via SSH.')
-      }
+  def ssh_clone_button(project, append_link: true)
+    dropdown_description = _("You won't be able to pull or push project code via SSH until you add an SSH key to your profile") if current_user.try(:require_ssh_key?)
+    append_url = project.ssh_url_to_repo if append_link
+
+    dropdown_item_with_description('SSH', dropdown_description, href: append_url)
+  end
+
+  def dropdown_item_with_description(title, description, href: nil)
+    button_content = content_tag(:strong, title, class: 'dropdown-menu-inner-title')
+    button_content << content_tag(:span, description, class: 'dropdown-menu-inner-content') if description
+
+    content_tag (href ? :a : :span),
+      (href ? button_content : title),
+      class: "#{title.downcase}-selector",
+      href: (href if href)
   end
 end

@@ -1,15 +1,11 @@
 .ci-status-icon-success,
 .ci-status-icon-passed {
-  color: $green-500;
-
   svg {
     fill: $green-500;
   }
 }
 
 .ci-status-icon-failed {
-  color: $gl-danger;
-
   svg {
     fill: $gl-danger;
   }
@@ -18,43 +14,33 @@
 .ci-status-icon-pending,
 .ci-status-icon-failed_with_warnings,
 .ci-status-icon-success_with_warnings {
-  color: $orange-500;
-
   svg {
     fill: $orange-500;
   }
 }
 
 .ci-status-icon-running {
-  color: $blue-400;
-
   svg {
     fill: $blue-400;
   }
 }
 
 .ci-status-icon-canceled,
-.ci-status-icon-disabled,
-.ci-status-icon-not-found {
-  color: $gl-text-color;
-
+.ci-status-icon-disabled {
   svg {
     fill: $gl-text-color;
   }
 }
 
 .ci-status-icon-created,
-.ci-status-icon-skipped {
-  color: $gray-darkest;
-
+.ci-status-icon-skipped,
+.ci-status-icon-notfound {
   svg {
     fill: $gray-darkest;
   }
 }
 
 .ci-status-icon-manual {
-  color: $gl-text-color;
-
   svg {
     fill: $gl-text-color;
   }

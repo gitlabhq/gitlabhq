@@ -4,7 +4,7 @@ To enable the Authentiq OmniAuth provider for passwordless authentication you mu
 
 Authentiq will generate a Client ID and the accompanying Client Secret for you to use.
 
-1. Get your Client credentials (Client ID and Client Secret) at [Authentiq](https://www.authentiq.com/register).
+1. Get your Client credentials (Client ID and Client Secret) at [Authentiq](https://www.authentiq.com/developers).
 
 2. On your GitLab server, open the configuration file:
 
@@ -32,7 +32,7 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
         "app_id" => "YOUR_CLIENT_ID",
         "app_secret" => "YOUR_CLIENT_SECRET",
         "args" => { 
-               scope: 'aq:name email~rs aq:push'
+               "scope": 'aq:name email~rs address aq:push'
          }
       }
     ]
@@ -45,21 +45,20 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
         app_id: 'YOUR_CLIENT_ID',
         app_secret: 'YOUR_CLIENT_SECRET',
         args: {
-               scope: 'aq:name email~rs aq:push'
+               scope: 'aq:name email~rs address aq:push'
               }
       }
     ```
     
     
 5. The `scope` is set to request the user's name, email (required and signed), and permission to send push notifications to sign in on subsequent visits.
-See [OmniAuth Authentiq strategy](https://github.com/AuthentiqID/omniauth-authentiq#scopes-and-redirect-uri-configuration) for more information on scopes and modifiers.
+See [OmniAuth Authentiq strategy](https://github.com/AuthentiqID/omniauth-authentiq/wiki/Scopes,-callback-url-configuration-and-responses) for more information on scopes and modifiers.
 
 6. Change `YOUR_CLIENT_ID` and `YOUR_CLIENT_SECRET` to the Client credentials you received in step 1.
 
 7. Save the configuration file.
 
-8. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source)
-   for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
+8. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be an Authentiq icon below the regular sign in form. Click the icon to begin the authentication process. 
 

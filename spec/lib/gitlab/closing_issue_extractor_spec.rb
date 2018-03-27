@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::ClosingIssueExtractor, lib: true do
-  let(:project) { create(:empty_project) }
-  let(:project2) { create(:empty_project) }
-  let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
+describe Gitlab::ClosingIssueExtractor do
+  let(:project) { create(:project) }
+  let(:project2) { create(:project) }
+  let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }
   let(:issue) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
@@ -13,8 +13,9 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
   subject { described_class.new(project, project.creator) }
 
   before do
-    project.team  << [project.creator, :developer]
-    project2.team << [project.creator, :master]
+    project.add_developer(project.creator)
+    project.add_developer(project2.creator)
+    project2.add_master(project.creator)
   end
 
   describe "#closed_by_message" do
@@ -254,10 +255,50 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
         expect(subject.closed_by_message(message)).to eq([issue])
       end
 
+      it do
+        message = "Implement: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "Implements: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "Implemented: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "Implementing: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implement: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implements: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implemented: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implementing: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
       context 'with an external issue tracker reference' do
         it 'extracts the referenced issue' do
           jira_project = create(:jira_project, name: 'JIRA_EXT1')
-          jira_project.team << [jira_project.creator, :master]
+          jira_project.add_master(jira_project.creator)
           jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
           closing_issue_extractor = described_class.new(jira_project, jira_project.creator)
           message = "Resolve #{jira_issue.to_reference}"
@@ -276,7 +317,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
 
     context "with a cross-project URL" do
       it do
-        message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
       end
     end
@@ -292,7 +333,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
 
     context "with an invalid URL" do
       it do
-        message = "Closes https://google.com#{urls.namespace_project_issue_path(issue2.project.namespace, issue2.project, issue2)}"
+        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([])
       end
     end
@@ -324,6 +365,20 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
             .to match_array([issue, other_issue, third_issue])
       end
 
+      it 'allows oxford commas (comma before and) when referencing multiple issues' do
+        message = "Closes #{reference}, #{reference2}, and #{reference3}"
+
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
+      end
+
+      it 'allows spaces before commas when referencing multiple issues' do
+        message = "Closes #{reference} , #{reference2} , and #{reference3}"
+
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
+      end
+
       it 'fetches issues in multi-line message' do
         message = "Awesome commit (closes #{reference})\nAlso fixes #{reference2}"
 
@@ -347,14 +402,14 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
       end
 
       it "fetches cross-project URL references" do
-        message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)} and #{reference}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}, #{reference} and #{urls.project_issue_url(other_issue.project, other_issue)}"
 
         expect(subject.closed_by_message(message))
-            .to match_array([issue, issue2])
+            .to match_array([issue, issue2, other_issue])
       end
 
       it "ignores invalid cross-project URL references" do
-        message = "Closes https://google.com#{urls.namespace_project_issue_path(issue2.project.namespace, issue2.project, issue2)} and #{reference}"
+        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)} and #{reference}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue])

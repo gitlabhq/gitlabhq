@@ -3,41 +3,12 @@
 The purpose of this guide is to document potential "gotchas" that contributors
 might encounter or should avoid during development of GitLab CE and EE.
 
-## Do not `describe` symbols
-
-Consider the following model spec:
-
-```ruby
-require 'rails_helper'
-
-describe User do
-  describe :to_param do
-    it 'converts the username to a param' do
-      user = described_class.new(username: 'John Smith')
-
-      expect(user.to_param).to eq 'john-smith'
-    end
-  end
-end
-```
-
-When run, this spec doesn't do what we might expect:
-
-```sh
-spec/models/user_spec.rb|6 error|  Failure/Error: u = described_class.new NoMethodError: undefined method `new' for :to_param:Symbol
-```
-
-### Solution
-
-Except for the top-level `describe` block, always provide a String argument to
-`describe`.
-
 ## Do not assert against the absolute value of a sequence-generated attribute
 
 Consider the following factory:
 
 ```ruby
-FactoryGirl.define do
+FactoryBot.define do
   factory :label do
     sequence(:title) { |n| "label#{n}" }
   end
@@ -82,7 +53,7 @@ When run, this spec doesn't do what we might expect:
      (compared using ==)
 ```
 
-That's because FactoryGirl sequences are not reseted for each example.
+That's because FactoryBot sequences are not reseted for each example.
 
 Please remember that sequence-generated values exist only to avoid having to
 explicitly set attributes that have a uniqueness constraint when using a factory.

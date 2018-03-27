@@ -95,6 +95,7 @@ module API
       put ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         return not_found!('Snippet') unless snippet
+
         authorize! :update_personal_snippet, snippet
 
         attrs = declared_params(include_missing: false).merge(request: request, api: true)
@@ -123,7 +124,7 @@ module API
 
         authorize! :destroy_personal_snippet, snippet
 
-        snippet.destroy
+        destroy_conditionally!(snippet)
       end
 
       desc 'Get a raw snippet' do
@@ -139,6 +140,22 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         present snippet.content
+      end
+
+      desc 'Get the user agent details for a snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a snippet'
+      end
+      get ":id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

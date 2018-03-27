@@ -1,6 +1,9 @@
 /* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, max-len, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
-/* global IssuableIndex */
-/* global Flash */
+
+import $ from 'jquery';
+import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
+import Flash from './flash';
 
 export default {
   init({ container, form, issues, prefixId } = {}) {
@@ -22,15 +25,9 @@ export default {
   },
 
   submit() {
-    const _this = this;
-    const xhr = $.ajax({
-      url: this.form.attr('action'),
-      method: this.form.attr('method'),
-      dataType: 'JSON',
-      data: this.getFormDataAsObject()
-    });
-    xhr.done(() => window.location.reload());
-    xhr.fail(() => this.onFormSubmitFailure());
+    axios[this.form.attr('method')](this.form.attr('action'), this.getFormDataAsObject())
+      .then(() => window.location.reload())
+      .catch(() => this.onFormSubmitFailure());
   },
 
   onFormSubmitFailure() {

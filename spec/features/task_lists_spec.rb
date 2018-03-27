@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Task Lists', feature: true do
+feature 'Task Lists' do
   include Warden::Test::Helpers
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -52,18 +52,18 @@ feature 'Task Lists', feature: true do
   before do
     Warden.test_mode!
 
-    project.team << [user, :master]
-    project.team << [user2, :guest]
+    project.add_master(user)
+    project.add_guest(user2)
 
     login_as(user)
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
-  describe 'for Issues', feature: true do
-    describe 'multiple tasks', js: true do
+  describe 'for Issues' do
+    describe 'multiple tasks', :js do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
@@ -98,12 +98,12 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
 
-    describe 'single incomplete task', js: true do
+    describe 'single incomplete task', :js do
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -116,13 +116,13 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
 
         expect(page).to have_content("0 of 1 task completed")
       end
     end
 
-    describe 'single complete task', js: true do
+    describe 'single complete task', :js do
       let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -135,13 +135,13 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
 
         expect(page).to have_content("1 of 1 task completed")
       end
     end
 
-    describe 'nested tasks', js: true do
+    describe 'nested tasks', :js do
       let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
 
       before do
@@ -181,7 +181,7 @@ feature 'Task Lists', feature: true do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -189,21 +189,20 @@ feature 'Task Lists', feature: true do
         expect(page).to have_selector('.note ul input[checked]', count: 2)
       end
 
-      it 'contains the required selectors' do
+      it 'contains the required selectors', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note .js-task-list-container')
         expect(page).to have_selector('.note .js-task-list-container .task-list .task-list-item .task-list-item-checkbox')
-        expect(page).to have_selector('.note .js-task-list-container .js-task-list-field')
       end
 
-      it 'is only editable by author' do
+      it 'is only editable by author', :js do
         visit_issue(project, issue)
         expect(page).to have_selector('.js-task-list-container')
 
-        logout(:user)
+        gitlab_sign_out
 
-        login_as(user2)
+        gitlab_sign_in(user2)
         visit current_path
         expect(page).not_to have_selector('.js-task-list-container')
       end
@@ -215,7 +214,7 @@ feature 'Task Lists', feature: true do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -230,7 +229,7 @@ feature 'Task Lists', feature: true do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -242,7 +241,7 @@ feature 'Task Lists', feature: true do
 
   describe 'for Merge Requests' do
     def visit_merge_request(project, merge)
-      visit namespace_project_merge_request_path(project.namespace, project, merge)
+      visit project_merge_request_path(project, merge)
     end
 
     describe 'multiple tasks' do
@@ -281,7 +280,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
@@ -298,7 +297,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("0 of 1 task completed")
       end
     end
@@ -315,7 +314,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("1 of 1 task completed")
       end
     end

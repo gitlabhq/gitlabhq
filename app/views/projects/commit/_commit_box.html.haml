@@ -1,5 +1,6 @@
-.page-content-header
+.page-content-header.js-commit-box{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
   .header-main-content
+    = render partial: 'signature', object: @commit.signature
     %strong
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id
@@ -21,7 +22,7 @@
       %span.btn.disabled.btn-grouped.hidden-xs.append-right-10
         = icon('comment')
         = @notes_count
-    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-default append-right-10 hidden-xs hidden-sm" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 hidden-xs hidden-sm" do
       #{ _('Browse files') }
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
@@ -29,24 +30,24 @@
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         %li.visible-xs-block.visible-sm-block
-          = link_to namespace_project_tree_path(@project.namespace, @project, @commit) do
-            _('Browse Files')
+          = link_to project_tree_path(@project, @commit) do
+            #{ _('Browse Files') }
         - unless @commit.has_been_reverted?(current_user)
           %li.clearfix
-            = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
+            = revert_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
         %li.clearfix
-          = cherry_pick_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
+          = cherry_pick_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
         - if can_collaborate_with_project?
           %li.clearfix
-            = link_to s_("CreateTag|Tag"), new_namespace_project_tag_path(@project.namespace, @project, ref: @commit)
+            = link_to s_("CreateTag|Tag"), new_project_tag_path(@project, ref: @commit)
         %li.divider
         %li.dropdown-header
           #{ _('Download') }
         - unless @commit.parents.length > 1
-          %li= link_to s_("DownloadCommit|Email Patches"), namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
-        %li= link_to s_("DownloadCommit|Plain Diff"),    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
+          %li= link_to s_("DownloadCommit|Email Patches"), project_commit_path(@project, @commit, format: :patch)
+        %li= link_to s_("DownloadCommit|Plain Diff"),    project_commit_path(@project, @commit, format: :diff)
 
-.commit-box
+.commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
     = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
   - if @commit.description.present?
@@ -59,25 +60,39 @@
       = custom_icon("icon_commit")
     %span.cgray= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
-      = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "commit-sha"
-    %span.commit-info.branches
+      = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
+    .commit-info.branches
       %i.fa.fa-spinner.fa-spin
+
+  .well-segment.merge-request-info
+    .icon-container
+      = custom_icon('mr_bold')
+    %span.commit-info.merge-requests{ 'data-project-commit-path' => merge_requests_project_commit_path(@project, @commit.id, format: :json) }
+      = icon('spinner spin')
 
   - if @commit.last_pipeline
     - last_pipeline = @commit.last_pipeline
     .well-segment.pipeline-info
-      .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
-        = link_to namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id) do
+      .status-icon-container
+        = link_to project_pipeline_path(@project, last_pipeline.id), class: "ci-status-icon-#{last_pipeline.status}" do
           = ci_icon_for_status(last_pipeline.status)
       #{ _('Pipeline') }
-      = link_to "##{last_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id)
+      = link_to "##{last_pipeline.id}", project_pipeline_path(@project, last_pipeline.id)
       = ci_label_for_status(last_pipeline.status)
       - if last_pipeline.stages_count.nonzero?
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), last_pipeline.stages_count) }
         .mr-widget-pipeline-graph
           = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
-      in
-      = time_interval_in_words last_pipeline.duration
+      - if last_pipeline.duration
+        in
+        = time_interval_in_words last_pipeline.duration
 
-:javascript
-  $(".commit-info.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");
+  - if @merge_request
+    .well-segment
+      = icon('info-circle fw')
+
+      This commit is part of merge request
+      = succeed '.' do
+        = link_to @merge_request.to_reference, diffs_project_merge_request_path(@project, @merge_request, commit_id: @commit.id)
+
+      Comments created here will be created in the context of that merge request.

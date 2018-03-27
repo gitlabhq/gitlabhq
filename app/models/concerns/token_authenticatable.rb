@@ -43,14 +43,17 @@ module TokenAuthenticatable
         write_attribute(token_field, token) if token
       end
 
+      # Returns a token, but only saves when the database is in read & write mode
       define_method("ensure_#{token_field}!") do
-        send("reset_#{token_field}!") if read_attribute(token_field).blank?
+        send("reset_#{token_field}!") if read_attribute(token_field).blank? # rubocop:disable GitlabSecurity/PublicSend
+
         read_attribute(token_field)
       end
 
+      # Resets the token, but only saves when the database is in read & write mode
       define_method("reset_#{token_field}!") do
         write_new_token(token_field)
-        save!
+        save! if Gitlab::Database.read_write?
       end
     end
   end

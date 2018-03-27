@@ -1,6 +1,7 @@
 - @no_container = true
+- add_to_breadcrumbs "Pipelines", project_pipelines_path(@project)
+- breadcrumb_title "##{@pipeline.id}"
 - page_title "Pipeline"
-= render "projects/pipelines/head"
 
 .js-pipeline-container{ class: container_class, data: { controller_action: "#{controller.action_name}" } }
   - if @commit
@@ -8,8 +9,4 @@
 
   = render "projects/pipelines/with_tabs", pipeline: @pipeline
 
-.js-pipeline-details-vue{ data: { endpoint: namespace_project_pipeline_path(@project.namespace, @project, @pipeline, format: :json) } }
-
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('pipelines_details')
+.js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json) } }

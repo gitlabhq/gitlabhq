@@ -1,43 +1,7 @@
+- breadcrumb_title "Milestones"
 - page_title "Milestones"
-- header_title group_title(@group, "Milestones", group_milestones_path(@group))
 
 %h3.page-title
   New Milestone
 
-%p.light
-  This will create milestone in every selected project
-%hr
-
-= form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form common-note-form js-quick-submit js-requires-input' }  do |f|
-  .row
-    - if @milestone.errors.any?
-      #error_explanation
-        .alert.alert-danger
-          %ul
-            - @milestone.errors.full_messages.each do |msg|
-              %li
-                = msg
-
-    .col-md-6
-      .form-group
-        = f.label :title, "Title", class: "control-label"
-        .col-sm-10
-          = f.text_field :title, maxlength: 255, class: "form-control", required: true, autofocus: true
-      .form-group.milestone-description
-        = f.label :description, "Description", class: "control-label"
-        .col-sm-10
-          = render layout: 'projects/md_preview', locals: { url: '' } do
-            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...'
-            .clearfix
-            .error-alert
-      .form-group
-        = f.label :projects, "Projects", class: "control-label"
-        .col-sm-10
-          = f.collection_select :project_ids, @group.projects.non_archived, :id, :name,
-            { selected: @group.projects.non_archived.pluck(:id) }, required: true, multiple: true, class: 'select2'
-
-    = render "shared/milestones/form_dates", f: f
-
-  .form-actions
-    = f.submit 'Create milestone', class: "btn-create btn"
-    = link_to "Cancel", group_milestones_path(@group), class: "btn btn-cancel"
+= render "form"

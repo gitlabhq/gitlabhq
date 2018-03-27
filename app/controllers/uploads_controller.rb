@@ -1,19 +1,34 @@
 class UploadsController < ApplicationController
   include UploadsActions
 
+  UnknownUploadModelError = Class.new(StandardError)
+
+  MODEL_CLASSES = {
+    "user"             => User,
+    "project"          => Project,
+    "note"             => Note,
+    "group"            => Group,
+    "appearance"       => Appearance,
+    "personal_snippet" => PersonalSnippet,
+    nil                => PersonalSnippet
+  }.freeze
+
+  rescue_from UnknownUploadModelError, with: :render_404
+
   skip_before_action :authenticate_user!
+  before_action :upload_mount_satisfied?
   before_action :find_model
   before_action :authorize_access!, only: [:show]
   before_action :authorize_create_access!, only: [:create]
 
-  private
+  def uploader_class
+    PersonalFileUploader
+  end
 
   def find_model
     return nil unless params[:id]
 
-    return render_404 unless upload_model && upload_mount
-
-    @model = upload_model.find(params[:id])
+    upload_model_class.find(params[:id])
   end
 
   def authorize_access!
@@ -53,55 +68,17 @@ class UploadsController < ApplicationController
     end
   end
 
-  def upload_model
-    upload_models = {
-      "user"    => User,
-      "project" => Project,
-      "note"    => Note,
-      "group"   => Group,
-      "appearance" => Appearance,
-      "personal_snippet" => PersonalSnippet
-    }
-
-    upload_models[params[:model]]
+  def upload_model_class
+    MODEL_CLASSES[params[:model]] || raise(UnknownUploadModelError)
   end
 
-  def upload_mount
-    return true unless params[:mounted_as]
-
-    upload_mounts = %w(avatar attachment file logo header_logo)
-
-    if upload_mounts.include?(params[:mounted_as])
-      params[:mounted_as]
-    end
+  def upload_model_class_has_mounts?
+    upload_model_class < CarrierWave::Mount::Extension
   end
 
-  def uploader
-    return @uploader if defined?(@uploader)
+  def upload_mount_satisfied?
+    return true unless upload_model_class_has_mounts?
 
-    case model
-    when nil
-      @uploader = PersonalFileUploader.new(nil, params[:secret])
-
-      @uploader.retrieve_from_store!(params[:filename])
-    when PersonalSnippet
-      @uploader = PersonalFileUploader.new(model, params[:secret])
-
-      @uploader.retrieve_from_store!(params[:filename])
-    else
-      @uploader = @model.send(upload_mount)
-
-      redirect_to @uploader.url unless @uploader.file_storage?
-    end
-
-    @uploader
-  end
-
-  def uploader_class
-    PersonalFileUploader
-  end
-
-  def model
-    @model ||= find_model
+    upload_model_class.uploader_options.has_key?(upload_mount)
   end
 end

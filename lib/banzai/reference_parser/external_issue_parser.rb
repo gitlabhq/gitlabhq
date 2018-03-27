@@ -21,10 +21,14 @@ module Banzai
         gather_attributes_per_project(nodes, self.class.data_attribute)
       end
 
-      private
-
+      # we extract only external issue trackers references here, we don't extract cross-project references,
+      # so we don't need to do anything here.
       def can_read_reference?(user, ref_project, node)
-        can?(user, :read_issue, ref_project)
+        true
+      end
+
+      def nodes_visible_to_user(user, nodes)
+        nodes
       end
     end
   end

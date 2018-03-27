@@ -36,14 +36,14 @@
     margin: 0;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
     }
 
     &.active {
       background: $gray-light;
 
       a {
-        font-weight: 600;
+        font-weight: $gl-font-weight-bold;
       }
     }
 
@@ -116,5 +116,87 @@
   @include webkit-prefix(animation-name, $animation-name);
   @include keyframes($animation-name) {
     @content;
+  }
+}
+
+/*
+ * Mixin for status badges, as used for pipelines and commit signatures
+ */
+@mixin status-color($color-light, $color-main, $color-dark) {
+  color: $color-main;
+  border-color: $color-main;
+
+  &:not(span):hover {
+    background-color: $color-light;
+    color: $color-dark;
+    border-color: $color-dark;
+  }
+}
+
+@mixin green-status-color {
+  @include status-color($green-100, $green-500, $green-700);
+}
+
+@mixin fade($gradient-direction, $gradient-color) {
+  visibility: hidden;
+  opacity: 0;
+  z-index: 2;
+  position: absolute;
+  bottom: 12px;
+  width: 43px;
+  height: 30px;
+  transition-duration: .3s;
+  -webkit-transform: translateZ(0);
+  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
+
+  &.scrolling {
+    visibility: visible;
+    opacity: 1;
+    transition-duration: .3s;
+  }
+
+  .fa {
+    position: relative;
+    top: 5px;
+    font-size: 18px;
+  }
+}
+
+@mixin scrolling-links() {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin triangle($color, $border-color, $size, $border-size) {
+  &::before,
+  &::after {
+    bottom: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: '';
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &::before {
+    border-color: transparent;
+    border-bottom-color: $border-color;
+    border-width: ($size + $border-size);
+    margin-left: -($size + $border-size);
+  }
+
+  &::after {
+    border-color: transparent;
+    border-bottom-color: $color;
+    border-width: $size;
+    margin-left: -$size;
   }
 }

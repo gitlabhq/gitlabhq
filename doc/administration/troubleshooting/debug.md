@@ -141,7 +141,7 @@ separate Rails process to debug the issue:
 
 1. Log in to your GitLab account.
 1. Copy the URL that is causing problems (e.g. https://gitlab.com/ABC).
-1. Obtain the private token for your user (Profile Settings -> Account).
+1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
 1. Bring up the GitLab Rails console. For omnibus users, run:
 
     ```
@@ -162,6 +162,34 @@ separate Rails process to debug the issue:
 
 1. In a new window, run `top`. It should show this ruby process using 100% CPU. Write down the PID.
 1. Follow step 2 from the previous section on using gdb.
+
+### GitLab: API is not accessible
+
+This often occurs when gitlab-shell attempts to request authorization via the
+internal API (e.g., `http://localhost:8080/api/v4/internal/allowed`), and
+something in the check fails. There are many reasons why this may happen:
+
+1. Timeout connecting to a database (e.g., PostgreSQL or Redis)
+1. Error in Git hooks or push rules
+1. Error accessing the repository (e.g., stale NFS handles)
+
+To diagnose this problem, try to reproduce the problem and then see if there
+is a unicorn worker that is spinning via `top`. Try to use the `gdb`
+techniques above. In addition, using `strace` may help isolate issues:
+
+```shell
+strace -tt -T -f -s 1024 -p <PID of unicorn worker> -o /tmp/unicorn.txt
+```
+
+If you cannot isolate which Unicorn worker is the issue, try to run `strace`
+on all the Unicorn workers to see where the `/internal/allowed` endpoint gets
+stuck:
+
+```shell
+ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs strace -tt -T -f -s 1024 -o /tmp/unicorn.txt
+```
+
+The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 
 # More information
 

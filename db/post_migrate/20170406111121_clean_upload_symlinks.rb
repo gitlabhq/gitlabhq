@@ -6,7 +6,7 @@ class CleanUploadSymlinks < ActiveRecord::Migration
   disable_ddl_transaction!
 
   DOWNTIME = false
-  DIRECTORIES_TO_MOVE = %w(user project note group appeareance)
+  DIRECTORIES_TO_MOVE = %w(user project note group appearance)
 
   def up
     return unless file_storage?
@@ -14,6 +14,7 @@ class CleanUploadSymlinks < ActiveRecord::Migration
     DIRECTORIES_TO_MOVE.each do |dir|
       symlink_location = File.join(old_upload_dir, dir)
       next unless File.symlink?(symlink_location)
+
       say "removing symlink: #{symlink_location}"
       FileUtils.rm(symlink_location)
     end
@@ -47,6 +48,6 @@ class CleanUploadSymlinks < ActiveRecord::Migration
   end
 
   def new_upload_dir
-    File.join(base_directory, "public", "uploads", "system")
+    File.join(base_directory, "public", "uploads", "-", "system")
   end
 end

@@ -1,0 +1,35 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties" : {
+      "id": { "type": "integer" },
+      "type": { "type": ["string", "null"] },
+      "body": { "type": "string" },
+      "attachment": { "type": ["string", "null"] },
+      "author": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "id": { "type": "integer" },
+          "state": { "type": "string" },
+          "avatar_url": { "type": "uri" },
+          "web_url": { "type": "uri" }
+        },
+        "additionalProperties": false
+      },
+      "created_at": { "type": "date" },
+      "updated_at": { "type": "date" },
+      "system": { "type": "boolean" },
+      "noteable_id": { "type": "integer" },
+      "noteable_iid": { "type": "integer" },
+      "noteable_type": { "type": "string" }
+    },
+    "required": [
+      "id", "body", "attachment", "author", "created_at", "updated_at",
+      "system", "noteable_id", "noteable_type"
+    ],
+    "additionalProperties": false
+  }
+}

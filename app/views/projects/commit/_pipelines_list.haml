@@ -2,8 +2,7 @@
 #commit-pipeline-table-view{ data: { disable_initialization: disable_initialization,
   endpoint: endpoint,
   "help-page-path" => help_page_path('ci/quick_start/README'),
+  "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
+  "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
+  "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
 } }
-
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('commit_pipelines')

@@ -3,7 +3,7 @@ require 'spec_helper'
 # Part of the test security suite for the Import/Export feature
 # Finds if a new model has been added that can potentially be part of the Import/Export
 # If it finds a new model, it will show a +failure_message+ with the options available.
-describe 'Import/Export model configuration', lib: true do
+describe 'Import/Export model configuration' do
   include ConfigurationHelper
 
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }

@@ -4,7 +4,7 @@ require 'rails_helper'
 describe Blob do
   include FakeBlobHelpers
 
-  let(:project) { build(:empty_project, lfs_enabled: true) }
+  let(:project) { build(:project, lfs_enabled: true) }
 
   before do
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
@@ -13,6 +13,23 @@ describe Blob do
   describe '.decorate' do
     it 'returns NilClass when given nil' do
       expect(described_class.decorate(nil)).to be_nil
+    end
+  end
+
+  describe '.lazy' do
+    let(:project) { create(:project, :repository) }
+    let(:commit) { project.commit_by(oid: 'e63f41fe459e62e1228fcef60d7189127aeba95a') }
+
+    it 'fetches all blobs when the first is accessed' do
+      changelog = described_class.lazy(project, commit.id, 'CHANGELOG')
+      contributing = described_class.lazy(project, commit.id, 'CONTRIBUTING.md')
+
+      expect(Gitlab::Git::Blob).to receive(:batch).once.and_call_original
+      expect(Gitlab::Git::Blob).not_to receive(:find)
+
+      # Access property so the values are loaded
+      changelog.id
+      contributing.id
     end
   end
 

@@ -1,7 +1,7 @@
 /* global ListIssue */
-/* global bp */
 
 import Vue from 'vue';
+import bp from '../../../breakpoints';
 
 const ModalStore = gl.issueBoards.ModalStore;
 
@@ -15,7 +15,7 @@ gl.issueBoards.ModalList = Vue.extend({
       type: String,
       required: true,
     },
-    image: {
+    emptyStateSvg: {
       type: String,
       required: true,
     },
@@ -119,8 +119,8 @@ gl.issueBoards.ModalList = Vue.extend({
         class="empty-state add-issues-empty-state-filter text-center"
         v-if="issuesCount > 0 && issues.length === 0">
         <div
-          class="svg-content"
-          v-html="image">
+          class="svg-content">
+          <img :src="emptyStateSvg"/>
         </div>
         <div class="text-content">
           <h4>

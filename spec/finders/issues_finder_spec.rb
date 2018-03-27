@@ -3,36 +3,49 @@ require 'spec_helper'
 describe IssuesFinder do
   set(:user) { create(:user) }
   set(:user2) { create(:user) }
-  set(:project1) { create(:empty_project) }
-  set(:project2) { create(:empty_project) }
+  set(:group) { create(:group) }
+  set(:subgroup) { create(:group, parent: group) }
+  set(:project1) { create(:project, group: group) }
+  set(:project2) { create(:project) }
+  set(:project3) { create(:project, group: subgroup) }
   set(:milestone) { create(:milestone, project: project1) }
   set(:label) { create(:label, project: project2) }
-  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago) }
-  set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
-  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 1.week.from_now) }
+  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago, updated_at: 1.week.ago) }
+  set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab', created_at: 1.week.from_now, updated_at: 1.week.from_now) }
+  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 2.weeks.from_now, updated_at: 2.weeks.from_now) }
+  set(:issue4) { create(:issue, project: project3) }
+  set(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue1) }
+  set(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: issue2) }
+  set(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: issue3) }
 
   describe '#execute' do
-    set(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
-    set(:label_link) { create(:label_link, label: label, target: issue2) }
+    let!(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
+    let!(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     before(:context) do
-      project1.team << [user, :master]
-      project2.team << [user, :developer]
-      project2.team << [user2, :developer]
+      project1.add_master(user)
+      project2.add_developer(user)
+      project2.add_developer(user2)
+      project3.add_developer(user)
 
       issue1
       issue2
       issue3
+      issue4
+
+      award_emoji1
+      award_emoji2
+      award_emoji3
     end
 
     context 'scope: all' do
       let(:scope) { 'all' }
 
       it 'returns all issues' do
-        expect(issues).to contain_exactly(issue1, issue2, issue3)
+        expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
       end
 
       context 'filtering by assignee ID' do
@@ -40,6 +53,26 @@ describe IssuesFinder do
 
         it 'returns issues assigned to that user' do
           expect(issues).to contain_exactly(issue1, issue2)
+        end
+      end
+
+      context 'filtering by group_id' do
+        let(:params) { { group_id: group.id } }
+
+        context 'when include_subgroup param not set' do
+          it 'returns all group issues' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'when include_subgroup param is true', :nested_groups do
+          before do
+            params[:include_subgroups] = true
+          end
+
+          it 'returns all group and subgroup issues' do
+            expect(issues).to contain_exactly(issue1, issue4)
+          end
         end
       end
 
@@ -59,20 +92,37 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by group milestone' do
+        let!(:group) { create(:group, :public) }
+        let(:group_milestone) { create(:milestone, group: group) }
+        let!(:group_member) { create(:group_member, group: group, user: user) }
+        let(:params) { { milestone_title: group_milestone.title } }
+
+        before do
+          project2.update(namespace: group)
+          issue2.update(milestone: group_milestone)
+          issue3.update(milestone: group_milestone)
+        end
+
+        it 'returns issues assigned to that group milestone' do
+          expect(issues).to contain_exactly(issue2, issue3)
+        end
+      end
+
       context 'filtering by no milestone' do
         let(:params) { { milestone_title: Milestone::None.title } }
 
         it 'returns issues with no milestone' do
-          expect(issues).to contain_exactly(issue2, issue3)
+          expect(issues).to contain_exactly(issue2, issue3, issue4)
         end
       end
 
       context 'filtering by upcoming milestone' do
         let(:params) { { milestone_title: Milestone::Upcoming.name } }
 
-        let(:project_no_upcoming_milestones) { create(:empty_project, :public) }
-        let(:project_next_1_1) { create(:empty_project, :public) }
-        let(:project_next_8_8) { create(:empty_project, :public) }
+        let(:project_no_upcoming_milestones) { create(:project, :public) }
+        let(:project_next_1_1) { create(:project, :public) }
+        let(:project_next_8_8) { create(:project, :public) }
 
         let(:yesterday) { Date.today - 1.day }
         let(:tomorrow) { Date.today + 1.day }
@@ -104,9 +154,9 @@ describe IssuesFinder do
       context 'filtering by started milestone' do
         let(:params) { { milestone_title: Milestone::Started.name } }
 
-        let(:project_no_started_milestones) { create(:empty_project, :public) }
-        let(:project_started_1_and_2) { create(:empty_project, :public) }
-        let(:project_started_8) { create(:empty_project, :public) }
+        let(:project_no_started_milestones) { create(:project, :public) }
+        let(:project_started_1_and_2) { create(:project, :public) }
+        let(:project_started_8) { create(:project, :public) }
 
         let(:yesterday) { Date.today - 1.day }
         let(:tomorrow) { Date.today + 1.day }
@@ -161,7 +211,7 @@ describe IssuesFinder do
         let(:params) { { label_name: Label::None.title } }
 
         it 'returns issues with no labels' do
-          expect(issues).to contain_exactly(issue1, issue3)
+          expect(issues).to contain_exactly(issue1, issue3, issue4)
         end
       end
 
@@ -186,7 +236,7 @@ describe IssuesFinder do
           let(:params) { { state: 'opened' } }
 
           it 'returns only opened issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3)
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
           end
         end
 
@@ -202,7 +252,7 @@ describe IssuesFinder do
           let(:params) { { state: 'all' } }
 
           it 'returns all issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue, issue4)
           end
         end
 
@@ -210,7 +260,7 @@ describe IssuesFinder do
           let(:params) { { state: 'invalid_state' } }
 
           it 'returns all issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+            expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue, issue4)
           end
         end
       end
@@ -225,10 +275,72 @@ describe IssuesFinder do
         end
 
         context 'through created_before' do
-          let(:params) { { created_before: issue1.created_at + 1.second } }
+          let(:params) { { created_before: issue1.created_at } }
 
           it 'returns issues created on or before the given date' do
             expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'through created_after and created_before' do
+          let(:params) { { created_after: issue2.created_at, created_before: issue3.created_at } }
+
+          it 'returns issues created between the given dates' do
+            expect(issues).to contain_exactly(issue2, issue3)
+          end
+        end
+      end
+
+      context 'filtering by updated_at' do
+        context 'through updated_after' do
+          let(:params) { { updated_after: issue3.updated_at } }
+
+          it 'returns issues updated on or after the given date' do
+            expect(issues).to contain_exactly(issue3)
+          end
+        end
+
+        context 'through updated_before' do
+          let(:params) { { updated_before: issue1.updated_at } }
+
+          it 'returns issues updated on or before the given date' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'through updated_after and updated_before' do
+          let(:params) { { updated_after: issue2.updated_at, updated_before: issue3.updated_at } }
+
+          it 'returns issues updated between the given dates' do
+            expect(issues).to contain_exactly(issue2, issue3)
+          end
+        end
+      end
+
+      context 'filtering by reaction name' do
+        context 'user searches by "thumbsup" reaction' do
+          let(:params) { { my_reaction_emoji: 'thumbsup' } }
+
+          it 'returns issues that the user thumbsup to' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'user2 searches by "thumbsup" reaction' do
+          let(:search_user) { user2 }
+
+          let(:params) { { my_reaction_emoji: 'thumbsup' } }
+
+          it 'returns issues that the user2 thumbsup to' do
+            expect(issues).to contain_exactly(issue2)
+          end
+        end
+
+        context 'user searches by "thumbsdown" reaction' do
+          let(:params) { { my_reaction_emoji: 'thumbsdown' } }
+
+          it 'returns issues that the user thumbsdown to' do
+            expect(issues).to contain_exactly(issue3)
           end
         end
       end
@@ -251,7 +363,7 @@ describe IssuesFinder do
 
       it 'finds issues user can access due to group' do
         group = create(:group)
-        project = create(:empty_project, group: group)
+        project = create(:project, group: group)
         issue = create(:issue, project: project)
         group.add_user(user, :owner)
 
@@ -279,14 +391,14 @@ describe IssuesFinder do
       let(:scope) { nil }
 
       it "doesn't return team-only issues to non team members" do
-        project = create(:empty_project, :public, :issues_private)
+        project = create(:project, :public, :issues_private)
         issue = create(:issue, project: project)
 
         expect(issues).not_to include(issue)
       end
 
       it "doesn't return issues if feature disabled" do
-        [project1, project2].each do |project|
+        [project1, project2, project3].each do |project|
           project.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
         end
 
@@ -295,22 +407,135 @@ describe IssuesFinder do
     end
   end
 
-  describe '.not_restricted_by_confidentiality' do
-    let(:authorized_user) { create(:user) }
-    let(:project) { create(:empty_project, namespace: authorized_user.namespace) }
-    let!(:public_issue) { create(:issue, project: project) }
-    let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
+  describe '#row_count', :request_store do
+    it 'returns the number of rows for the default state' do
+      finder = described_class.new(user)
 
-    it 'returns non confidential issues for nil user' do
-      expect(described_class.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
+      expect(finder.row_count).to eq(4)
     end
 
-    it 'returns non confidential issues for user not authorized for the issues projects' do
-      expect(described_class.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
+    it 'returns the number of rows for a given state' do
+      finder = described_class.new(user, state: 'closed')
+
+      expect(finder.row_count).to be_zero
+    end
+  end
+
+  describe '#with_confidentiality_access_check' do
+    let(:guest) { create(:user) }
+    set(:authorized_user) { create(:user) }
+    set(:project) { create(:project, namespace: authorized_user.namespace) }
+    set(:public_issue) { create(:issue, project: project) }
+    set(:confidential_issue) { create(:issue, project: project, confidential: true) }
+
+    context 'when no project filter is given' do
+      let(:params) { {} }
+
+      context 'for an anonymous user' do
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a user without project membership' do
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a project member with access to view confidential issues' do
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+
+        it 'returns all issues' do
+          expect(subject).to include(public_issue, confidential_issue)
+        end
+      end
     end
 
-    it 'returns all issues for user authorized for the issues projects' do
-      expect(described_class.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
+    context 'when searching within a specific project' do
+      let(:params) { { project_id: project.id } }
+
+      context 'for an anonymous user' do
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+
+        it 'does not filter by confidentiality' do
+          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+
+      context 'for a user without project membership' do
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+
+        it 'filters by confidentiality' do
+          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+
+      context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+
+        it 'filters by confidentiality' do
+          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+
+      context 'for a project member with access to view confidential issues' do
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+
+        it 'returns all issues' do
+          expect(subject).to include(public_issue, confidential_issue)
+        end
+
+        it 'does not filter by confidentiality' do
+          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
     end
   end
 end

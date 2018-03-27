@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Profile > Chat', feature: true do
+feature 'Profile > Chat' do
   given(:user) { create(:user) }
   given(:service) { create(:service) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'uses authorization link' do
@@ -33,7 +33,7 @@ feature 'Profile > Chat', feature: true do
       scenario 'second use of link is denied' do
         visit authorize_path
 
-        expect(page).to have_http_status(:not_found)
+        expect(page).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -51,7 +51,7 @@ feature 'Profile > Chat', feature: true do
       scenario 'second use of link is denied' do
         visit authorize_path
 
-        expect(page).to have_http_status(:not_found)
+        expect(page).to have_gitlab_http_status(:not_found)
       end
     end
   end

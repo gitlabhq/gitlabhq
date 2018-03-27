@@ -1,9 +1,13 @@
+import $ from 'jquery';
+import _ from 'underscore';
+
 import '~/smart_interval';
 
-import timeTracker from './time_tracker';
+import IssuableTimeTracker from './time_tracker.vue';
 
 import Store from '../../stores/sidebar_store';
 import Mediator from '../../sidebar_mediator';
+import eventHub from '../../event_hub';
 
 export default {
   data() {
@@ -13,11 +17,14 @@ export default {
     };
   },
   components: {
-    'issuable-time-tracker': timeTracker,
+    IssuableTimeTracker,
   },
   methods: {
     listenForQuickActions() {
       $(document).on('ajax:success', '.gfm-form', this.quickActionListened);
+      eventHub.$on('timeTrackingUpdated', (data) => {
+        this.quickActionListened(null, data);
+      });
     },
     quickActionListened(e, data) {
       const subscribedCommands = ['spend_time', 'time_estimate'];

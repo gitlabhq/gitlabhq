@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 
 export default () => {
@@ -7,5 +8,8 @@ export default () => {
     Cookies.set(el.name, el.value, {
       expires: 365 * 10,
     });
+
+    document.body.scrollTop = 0;
+    window.location.reload();
   });
 };

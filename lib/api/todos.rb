@@ -12,7 +12,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = "#{type.singularize}_iid".to_sym
 
@@ -59,10 +59,10 @@ module API
         requires :id, type: Integer, desc: 'The ID of the todo being marked as done'
       end
       post ':id/mark_as_done' do
+        TodoService.new.mark_todos_as_done_by_ids(params[:id], current_user)
         todo = current_user.todos.find(params[:id])
-        TodoService.new.mark_todos_as_done([todo], current_user)
 
-        present todo.reload, with: Entities::Todo, current_user: current_user
+        present todo, with: Entities::Todo, current_user: current_user
       end
 
       desc 'Mark all todos as done'

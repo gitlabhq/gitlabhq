@@ -1,34 +1,32 @@
 %div{ class: badge.title.gsub(' ', '-') }
-  .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+  .col-lg-12
+    %h4
       = badge.title.capitalize
-  .col-lg-8
-    .prepend-top-10
-      .panel.panel-default
-        .panel-heading
-          %b
-            = badge.title.capitalize
-            &middot;
-          = badge.to_html
-          .pull-right
-            = render 'shared/ref_switcher', destination: 'badges', align_right: true
-        .panel-body
-          .row
-            .col-md-2.text-center
-              Markdown
-            .col-md-10.code.js-syntax-highlight
-              = highlight('.md', badge.to_markdown)
-          .row
-            %hr
-          .row
-            .col-md-2.text-center
-              HTML
-            .col-md-10.code.js-syntax-highlight
-              = highlight('.html', badge.to_html)
-          .row
-            %hr
-          .row
-            .col-md-2.text-center
-              AsciiDoc
-            .col-md-10.code.js-syntax-highlight
-              = highlight('.adoc', badge.to_asciidoc)
+    .panel.panel-default
+      .panel-heading
+        %b
+          = badge.title.capitalize
+          &middot;
+        = badge.to_html
+        .pull-right
+          = render 'shared/ref_switcher', destination: 'badges', align_right: true
+      .panel-body
+        .row
+          .col-md-2.text-center
+            Markdown
+          .col-md-10.code.js-syntax-highlight
+            = highlight('.md', badge.to_markdown)
+        .row
+          %hr
+        .row
+          .col-md-2.text-center
+            HTML
+          .col-md-10.code.js-syntax-highlight
+            = highlight('.html', badge.to_html)
+        .row
+          %hr
+        .row
+          .col-md-2.text-center
+            AsciiDoc
+          .col-md-10.code.js-syntax-highlight
+            = highlight('.adoc', badge.to_asciidoc)

@@ -4,19 +4,37 @@ module Projects
 
     Error = Class.new(StandardError)
 
+    # Returns true if this importer is supposed to perform its work in the
+    # background.
+    #
+    # This method will only return `true` if async importing is explicitly
+    # supported by an importer class (`Gitlab::GithubImport::ParallelImporter`
+    # for example).
+    def async?
+      has_importer? && !!importer_class.try(:async?)
+    end
+
     def execute
-      add_repository_to_project unless project.gitlab_project_import?
+      add_repository_to_project
 
       import_data
 
       success
     rescue => e
-      error("Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}")
+      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message}")
     end
 
     private
 
     def add_repository_to_project
+      if project.external_import? && !unknown_url?
+        raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url, valid_ports: Project::VALID_IMPORT_PORTS)
+      end
+
+      # We should skip the repository for a GitHub import or GitLab project import,
+      # because these importers fetch the project repositories for us.
+      return if has_importer? && importer_class.try(:imports_repository?)
+
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
         create_repository
@@ -32,15 +50,16 @@ module Projects
     end
 
     def import_repository
-      raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
-
       begin
-        if project.github_import? || project.gitea_import?
-          fetch_repository
+        refmap = importer_class.try(:refmap) if has_importer?
+
+        if refmap
+          project.ensure_repository
+          project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
         else
-          clone_repository
+          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
         end
-      rescue Gitlab::Shell::Error => e
+      rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
         # Expire cache to prevent scenarios such as:
         # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
@@ -48,17 +67,6 @@ module Projects
 
         raise Error, e.message
       end
-    end
-
-    def clone_repository
-      gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
-    end
-
-    def fetch_repository
-      project.create_repository
-      project.repository.add_remote(project.import_type, project.import_url)
-      project.repository.set_remote_as_mirror(project.import_type)
-      project.repository.fetch_remote(project.import_type, forced: true)
     end
 
     def import_data
@@ -71,12 +79,16 @@ module Projects
       end
     end
 
+    def importer_class
+      @importer_class ||= Gitlab::ImportSources.importer(project.import_type)
+    end
+
     def has_importer?
       Gitlab::ImportSources.importer_names.include?(project.import_type)
     end
 
     def importer
-      Gitlab::ImportSources.importer(project.import_type).new(project)
+      importer_class.new(project)
     end
 
     def unknown_url?

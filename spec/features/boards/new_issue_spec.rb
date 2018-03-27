@@ -1,18 +1,18 @@
 require 'rails_helper'
 
-describe 'Issue Boards new issue', feature: true, js: true do
-  let(:project) { create(:empty_project, :public) }
+describe 'Issue Boards new issue', :js do
+  let(:project) { create(:project, :public) }
   let(:board)   { create(:board, project: project) }
   let!(:list)   { create(:list, board: board, position: 0) }
   let(:user)    { create(:user) }
 
   context 'authorized user' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
-      gitlab_sign_in(user)
+      sign_in(user)
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
@@ -83,7 +83,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
   context 'unauthorized user' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 

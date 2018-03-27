@@ -14,16 +14,109 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     my_reaction_emoji: string
+#     public_only: boolean
+#     due_date: date or '0', '', 'overdue', 'week', or 'month'
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class IssuesFinder < IssuableFinder
+  CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
+
+  def self.scalar_params
+    @scalar_params ||= super + [:due_date]
+  end
+
   def klass
-    Issue
+    Issue.includes(:author)
+  end
+
+  def with_confidentiality_access_check
+    return Issue.all if user_can_see_all_confidential_issues?
+    return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
+
+    Issue.where('
+      issues.confidential IS NOT TRUE
+      OR (issues.confidential = TRUE
+        AND (issues.author_id = :user_id
+          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
+          OR issues.project_id IN(:project_ids)))',
+      user_id: current_user.id,
+      project_ids: current_user.authorized_projects(CONFIDENTIAL_ACCESS_LEVEL).select(:id))
   end
 
   private
 
   def init_collection
-    IssuesFinder.not_restricted_by_confidentiality(current_user)
+    if public_only?
+      Issue.public_only
+    else
+      with_confidentiality_access_check
+    end
+  end
+
+  def public_only?
+    params.fetch(:public_only, false)
+  end
+
+  def filter_items(items)
+    by_due_date(super)
+  end
+
+  def by_due_date(items)
+    if due_date?
+      if filter_by_no_due_date?
+        items = items.without_due_date
+      elsif filter_by_overdue?
+        items = items.due_before(Date.today)
+      elsif filter_by_due_this_week?
+        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
+      elsif filter_by_due_this_month?
+        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
+      end
+    end
+
+    items
+  end
+
+  def filter_by_no_due_date?
+    due_date? && params[:due_date] == Issue::NoDueDate.name
+  end
+
+  def filter_by_overdue?
+    due_date? && params[:due_date] == Issue::Overdue.name
+  end
+
+  def filter_by_due_this_week?
+    due_date? && params[:due_date] == Issue::DueThisWeek.name
+  end
+
+  def filter_by_due_this_month?
+    due_date? && params[:due_date] == Issue::DueThisMonth.name
+  end
+
+  def due_date?
+    params[:due_date].present?
+  end
+
+  def user_can_see_all_confidential_issues?
+    return @user_can_see_all_confidential_issues if defined?(@user_can_see_all_confidential_issues)
+
+    return @user_can_see_all_confidential_issues = false if current_user.blank?
+    return @user_can_see_all_confidential_issues = true if current_user.full_private_access?
+
+    @user_can_see_all_confidential_issues =
+      project? &&
+      project &&
+      project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
+  end
+
+  def user_cannot_see_confidential_issues?
+    return false if user_can_see_all_confidential_issues?
+
+    current_user.blank?
   end
 
   def by_assignee(items)
@@ -36,21 +129,6 @@ class IssuesFinder < IssuableFinder
     else
       items
     end
-  end
-
-  def self.not_restricted_by_confidentiality(user)
-    return Issue.where('issues.confidential IS NOT TRUE') if user.blank?
-
-    return Issue.all if user.full_private_access?
-
-    Issue.where('
-      issues.confidential IS NOT TRUE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
-          OR issues.project_id IN(:project_ids)))',
-      user_id: user.id,
-      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
   end
 
   def item_project_ids(items)

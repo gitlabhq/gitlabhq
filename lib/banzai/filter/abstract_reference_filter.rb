@@ -54,48 +54,48 @@ module Banzai
         self.class.references_in(*args, &block)
       end
 
+      # Implement in child class
+      # Example: project.merge_requests.find
       def find_object(project, id)
-        # Implement in child class
-        # Example: project.merge_requests.find
+      end
+
+      # Override if the link reference pattern produces a different ID (global
+      # ID vs internal ID, for instance) to the regular reference pattern.
+      def find_object_from_link(project, id)
+        find_object(project, id)
+      end
+
+      # Implement in child class
+      # Example: project_merge_request_url
+      def url_for_object(object, project)
       end
 
       def find_object_cached(project, id)
-        if RequestStore.active?
-          cache = find_objects_cache[object_class][project.id]
-
-          get_or_set_cache(cache, id) { find_object(project, id) }
-        else
+        cached_call(:banzai_find_object, id, path: [object_class, project.id]) do
           find_object(project, id)
         end
       end
 
-      def project_from_ref_cached(ref)
-        if RequestStore.active?
-          cache = project_refs_cache
-
-          get_or_set_cache(cache, ref) { project_from_ref(ref) }
-        else
-          project_from_ref(ref)
+      def find_object_from_link_cached(project, id)
+        cached_call(:banzai_find_object_from_link, id, path: [object_class, project.id]) do
+          find_object_from_link(project, id)
         end
       end
 
-      def url_for_object(object, project)
-        # Implement in child class
-        # Example: project_merge_request_url
+      def from_ref_cached(ref)
+        cached_call("banzai_#{parent_type}_refs".to_sym, ref) do
+          parent_from_ref(ref)
+        end
       end
 
       def url_for_object_cached(object, project)
-        if RequestStore.active?
-          cache = url_for_object_cache[object_class][project.id]
-
-          get_or_set_cache(cache, object) { url_for_object(object, project) }
-        else
+        cached_call(:banzai_url_for_object, object, path: [object_class, project.id]) do
           url_for_object(object, project)
         end
       end
 
       def call
-        return doc if project.nil?
+        return doc unless project || group
 
         ref_pattern = object_class.reference_pattern
         link_pattern = object_class.link_reference_pattern
@@ -120,7 +120,7 @@ module Banzai
 
               if link == inner_html && inner_html =~ /\A#{link_pattern}/
                 replace_link_node_with_text(node, link) do
-                  object_link_filter(inner_html, link_pattern)
+                  object_link_filter(inner_html, link_pattern, link_reference: true)
                 end
 
                 next
@@ -128,7 +128,7 @@ module Banzai
 
               if link =~ /\A#{link_pattern}\z/
                 replace_link_node_with_href(node, link) do
-                  object_link_filter(link, link_pattern, link_content: inner_html)
+                  object_link_filter(link, link_pattern, link_content: inner_html, link_reference: true)
                 end
 
                 next
@@ -146,25 +146,43 @@ module Banzai
       # text - String text to replace references in.
       # pattern - Reference pattern to match against.
       # link_content - Original content of the link being replaced.
+      # link_reference - True if this was using the link reference pattern,
+      #                  false otherwise.
       #
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
-      def object_link_filter(text, pattern, link_content: nil)
+      def object_link_filter(text, pattern, link_content: nil, link_reference: false)
         references_in(text, pattern) do |match, id, project_ref, namespace_ref, matches|
-          project_path = full_project_path(namespace_ref, project_ref)
-          project = project_from_ref_cached(project_path)
+          parent_path = if parent_type == :group
+                          full_group_path(namespace_ref)
+                        else
+                          full_project_path(namespace_ref, project_ref)
+                        end
 
-          if project && object = find_object_cached(project, id)
+          parent = from_ref_cached(parent_path)
+
+          if parent
+            object =
+              if link_reference
+                find_object_from_link_cached(parent, id)
+              else
+                find_object_cached(parent, id)
+              end
+          end
+
+          if object
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
-            data = data_attributes_for(link_content || match, project, object, link: !!link_content)
+            data = data_attributes_for(link_content || match, parent, object,
+                                       link_content: !!link_content,
+                                       link_reference: link_reference)
 
             url =
               if matches.names.include?("url") && matches[:url]
                 matches[:url]
               else
-                url_for_object_cached(object, project)
+                url_for_object_cached(object, parent)
               end
 
             content = link_content || object_link_text(object, matches)
@@ -178,12 +196,13 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object, link: false)
+      def data_attributes_for(text, project, object, link_content: false, link_reference: false)
         data_attribute(
-          original:     text,
-          link:         link,
-          project:      project.id,
-          object_sym => object.id
+          original:       text,
+          link:           link_content,
+          link_reference: link_reference,
+          project:        project.id,
+          object_sym =>   object.id
         )
       end
 
@@ -202,7 +221,8 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        text = object.reference_link_text(context[:project])
+        parent = context[:project] || context[:group]
+        text = object.reference_link_text(parent)
 
         extras = object_link_text_extras(object, matches)
         text += " (#{extras.join(", ")})" if extras.any?
@@ -212,22 +232,24 @@ module Banzai
 
       # Returns a Hash containing all object references (e.g. issue IDs) per the
       # project they belong to.
-      def references_per_project
-        @references_per_project ||= begin
+      def references_per_parent
+        @references_per ||= {}
+
+        @references_per[parent_type] ||= begin
           refs = Hash.new { |hash, key| hash[key] = Set.new }
 
-          regex =
-            if uses_reference_pattern?
-              Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
-            else
-              object_class.link_reference_pattern
-            end
+          regex = Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
 
           nodes.each do |node|
             node.to_html.scan(regex) do
-              project_path = full_project_path($~[:namespace], $~[:project])
+              path = if parent_type == :project
+                       full_project_path($~[:namespace], $~[:project])
+                     else
+                       full_group_path($~[:group])
+                     end
+
               symbol = $~[object_sym]
-              refs[project_path] << symbol if object_class.reference_valid?(symbol)
+              refs[path] << symbol if object_class.reference_valid?(symbol)
             end
           end
 
@@ -237,35 +259,41 @@ module Banzai
 
       # Returns a Hash containing referenced projects grouped per their full
       # path.
-      def projects_per_reference
-        @projects_per_reference ||= begin
+      def parent_per_reference
+        @per_reference ||= {}
+
+        @per_reference[parent_type] ||= begin
           refs = Set.new
 
-          references_per_project.each do |project_ref, _|
-            refs << project_ref
+          references_per_parent.each do |ref, _|
+            refs << ref
           end
 
-          find_projects_for_paths(refs.to_a).index_by(&:full_path)
+          find_for_paths(refs.to_a).index_by(&:full_path)
         end
       end
 
-      def projects_relation_for_paths(paths)
-        Project.where_full_path_in(paths).includes(:namespace)
+      def relation_for_paths(paths)
+        klass = parent_type.to_s.camelize.constantize
+        result = klass.where_full_path_in(paths)
+        return result if parent_type == :group
+
+        result.includes(:namespace) if parent_type == :project
       end
 
       # Returns projects for the given paths.
-      def find_projects_for_paths(paths)
+      def find_for_paths(paths)
         if RequestStore.active?
-          cache = project_refs_cache
+          cache = refs_cache
           to_query = paths - cache.keys
 
           unless to_query.empty?
-            projects = projects_relation_for_paths(to_query)
+            records = relation_for_paths(to_query)
 
             found = []
-            projects.each do |project|
-              ref = project.path_with_namespace
-              get_or_set_cache(cache, ref) { project }
+            records.each do |record|
+              ref = record.full_path
+              get_or_set_cache(cache, ref) { record }
               found << ref
             end
 
@@ -277,59 +305,37 @@ module Banzai
 
           cache.slice(*paths).values.compact
         else
-          projects_relation_for_paths(paths)
+          relation_for_paths(paths)
         end
       end
 
-      def current_project_path
-        @current_project_path ||= project.path_with_namespace
+      def current_parent_path
+        @current_parent_path ||= parent&.full_path
       end
 
       def current_project_namespace_path
-        @current_project_namespace_path ||= project.namespace.full_path
+        @current_project_namespace_path ||= project&.namespace&.full_path
       end
 
       private
 
       def full_project_path(namespace, project_ref)
-        return current_project_path unless project_ref
+        return current_parent_path unless project_ref
 
         namespace_ref = namespace || current_project_namespace_path
         "#{namespace_ref}/#{project_ref}"
       end
 
-      def project_refs_cache
-        RequestStore[:banzai_project_refs] ||= {}
+      def refs_cache
+        RequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
       end
 
-      def find_objects_cache
-        RequestStore[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
-          hash[key] = Hash.new { |h, k| h[k] = {} }
-        end
+      def parent_type
+        :project
       end
 
-      def url_for_object_cache
-        RequestStore[:banzai_url_for_object] ||= Hash.new do |hash, key|
-          hash[key] = Hash.new { |h, k| h[k] = {} }
-        end
-      end
-
-      def get_or_set_cache(cache, key)
-        if cache.key?(key)
-          cache[key]
-        else
-          value = yield
-          cache[key] = value if key.present?
-          value
-        end
-      end
-
-      # There might be special cases like filters
-      # that should ignore reference pattern
-      # eg: IssueReferenceFilter when using a external issues tracker
-      # In those cases this method should be overridden on the filter subclass
-      def uses_reference_pattern?
-        true
+      def parent
+        parent_type == :project ? project : group
       end
     end
   end

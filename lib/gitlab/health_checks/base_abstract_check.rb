@@ -27,10 +27,10 @@ module Gitlab
         Metric.new(name, value, labels)
       end
 
-      def with_timing(proc)
+      def with_timing
         start = Time.now
-        result = proc.call
-        yield result, Time.now.to_f - start.to_f
+        result = yield
+        [result, Time.now.to_f - start.to_f]
       end
 
       def catch_timeout(seconds, &block)

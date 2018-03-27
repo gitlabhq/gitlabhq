@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AsanaService, models: true do
+describe AsanaService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -18,7 +18,7 @@ describe AsanaService, models: true do
 
   describe 'Execute' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     def create_data_for_commits(*messages)
       {
@@ -35,7 +35,7 @@ describe AsanaService, models: true do
     end
 
     before do
-      @asana = AsanaService.new
+      @asana = described_class.new
       allow(@asana).to receive_messages(
         project: project,
         project_id: project.id,
@@ -47,7 +47,7 @@ describe AsanaService, models: true do
 
     it 'calls Asana service to create a story' do
       data = create_data_for_commits('Message from commit. related to #123456')
-      expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.name_with_namespace} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
+      expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.full_name} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
 
       d1 = double('Asana::Task')
       expect(d1).to receive(:add_comment).with(text: expected_message)

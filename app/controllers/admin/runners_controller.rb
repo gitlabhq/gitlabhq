@@ -2,7 +2,8 @@ class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: :index
 
   def index
-    @runners = Ci::Runner.order('id DESC')
+    sort = params[:sort] == 'contacted_asc' ? { contacted_at: :asc } : { id: :desc }
+    @runners = Ci::Runner.order(sort)
     @runners = @runners.search(params[:search]) if params[:search].present?
     @runners = @runners.page(params[:page]).per(30)
     @active_runners_cnt = Ci::Runner.online.count
@@ -64,6 +65,7 @@ class Admin::RunnersController < Admin::ApplicationController
       else
         Project.all
       end
+
     @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
     @projects = @projects.page(params[:page]).per(30)
   end

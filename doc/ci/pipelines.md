@@ -121,8 +121,9 @@ The basic requirements is that there are two numbers separated with one of
 the following (you can even use them interchangeably):
 
 - a space
-- a backslash (`/`)
+- a forward slash (`/`)
 - a colon (`:`)
+- a dot (`.`)
 
 >**Note:**
 More specifically, [it uses][regexp] this regular expression: `\d+[\s:\/\\]+\d+\s*`.
@@ -221,6 +222,30 @@ total running time should be:
 
 Pipeline status and test coverage report badges are available. You can find their
 respective link in the [Pipelines settings] page.
+
+## Security on protected branches
+
+A strict security model is enforced when pipelines are executed on
+[protected branches](../user/project/protected_branches.md).
+
+The following actions are allowed on protected branches only if the user is
+[allowed to merge or push](../user/project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
+on that specific branch:
+- run **manual pipelines** (using Web UI or Pipelines API)
+- run **scheduled pipelines**
+- run pipelines using **triggers**
+- trigger **manual actions** on existing pipelines
+- **retry/cancel** existing jobs (using Web UI or Pipelines API)
+
+**Secret variables** marked as **protected** are accessible only to jobs that
+run on protected branches, avoiding untrusted users to get unintended access to
+sensitive information like deployment credentials and tokens.
+
+**Runners** marked as **protected** can run jobs only on protected
+branches, avoiding untrusted code to be executed on the protected runner and
+preserving deployment keys and other credentials from being unintentionally
+accessed. In order to ensure that jobs intended to be executed on protected
+runners will not use regular runners, they must be tagged accordingly.
 
 [jobs]: #jobs
 [jobs-yaml]: yaml/README.md#jobs

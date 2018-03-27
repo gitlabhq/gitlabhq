@@ -48,16 +48,28 @@ class NotesFinder
   def init_collection
     if target
       notes_on_target
+    elsif target_type
+      notes_of_target_type
     else
       notes_of_any_type
     end
+  end
+
+  def notes_of_target_type
+    notes = notes_for_type(target_type)
+
+    search(notes)
+  end
+
+  def target_type
+    @params[:target_type]
   end
 
   def notes_of_any_type
     types = %w(commit issue merge_request snippet)
     note_relations = types.map { |t| notes_for_type(t) }
     note_relations.map! { |notes| search(notes) }
-    UnionFinder.new.find_union(note_relations, Note)
+    UnionFinder.new.find_union(note_relations, Note.includes(:author))
   end
 
   def noteables_for_type(noteable_type)
@@ -104,8 +116,7 @@ class NotesFinder
     query = @params[:search]
     return notes unless query
 
-    pattern = "%#{query}%"
-    notes.where(Note.arel_table[:note].matches(pattern))
+    notes.search(query)
   end
 
   # Notes changed since last fetch

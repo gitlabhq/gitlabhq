@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Compare, models: true do
+describe Compare do
   include RepoHelpers
 
   let(:project) { create(:project, :public, :repository) }
@@ -37,33 +37,51 @@ describe Compare, models: true do
     end
   end
 
-  describe '#base_commit' do
-    let(:base_commit) { Commit.new(another_sample_commit, project) }
+  describe '#base_commit_sha' do
+    it 'returns @base_sha if it is present' do
+      expect(project).not_to receive(:merge_base_commit)
 
-    it 'returns project merge base commit' do
-      expect(project).to receive(:merge_base_commit).with(start_commit.id, head_commit.id).and_return(base_commit)
+      sha = double
+      service = described_class.new(raw_compare, project, base_sha: sha)
 
-      expect(subject.base_commit).to eq(base_commit)
+      expect(service.base_commit_sha).to eq(sha)
+    end
+
+    it 'fetches merge base SHA from repo when @base_sha is nil' do
+      expect(project).to receive(:merge_base_commit)
+        .with(start_commit.id, head_commit.id)
+        .once
+        .and_call_original
+
+      expect(subject.base_commit_sha)
+        .to eq(project.repository.merge_base(start_commit.id, head_commit.id))
+    end
+
+    it 'is memoized on first call' do
+      expect(project).to receive(:merge_base_commit)
+        .with(start_commit.id, head_commit.id)
+        .once
+        .and_call_original
+
+      3.times { subject.base_commit_sha }
     end
 
     it 'returns nil if there is no start_commit' do
       expect(subject).to receive(:start_commit).and_return(nil)
 
-      expect(subject.base_commit).to eq(nil)
+      expect(subject.base_commit_sha).to eq(nil)
     end
 
     it 'returns nil if there is no head commit' do
       expect(subject).to receive(:head_commit).and_return(nil)
 
-      expect(subject.base_commit).to eq(nil)
+      expect(subject.base_commit_sha).to eq(nil)
     end
   end
 
   describe '#diff_refs' do
-    it 'uses base_commit sha as base_sha' do
-      expect(subject).to receive(:base_commit).at_least(:once).and_call_original
-
-      expect(subject.diff_refs.base_sha).to eq(subject.base_commit.id)
+    it 'uses base_commit_sha sha as base_sha' do
+      expect(subject.diff_refs.base_sha).to eq(subject.base_commit_sha)
     end
 
     it 'uses start_commit sha as start_sha' do

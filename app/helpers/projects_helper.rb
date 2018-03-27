@@ -13,13 +13,38 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { size: 16, lazy_load: false }
     opts = default_opts.merge(opts)
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+
+    classes = %W[avatar avatar-inline s#{opts[:size]}]
+    classes << opts[:avatar_class] if opts[:avatar_class]
+
+    avatar = avatar_icon_for_user(author, opts[:size])
+    src = opts[:lazy_load] ? nil : avatar
+
+    image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
+  end
+
+  def author_content_tag(author, opts = {})
+    default_opts = { author_class: 'author', tooltip: false, by_username: false }
+    opts = default_opts.merge(opts)
+
+    has_tooltip = !opts[:by_username] && opts[:tooltip]
+
+    username = opts[:by_username] ? author.to_reference : author.name
+    name_tag_options = { class: [opts[:author_class]] }
+
+    if has_tooltip
+      name_tag_options[:title] = author.to_reference
+      name_tag_options[:data] = { placement: 'top' }
+      name_tag_options[:class] << 'has-tooltip'
+    end
+
+    content_tag(:span, sanitize(username), name_tag_options)
   end
 
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false }
+    default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -27,15 +52,10 @@ module ProjectsHelper
     author_html = ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
+    author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
-    if opts[:by_username]
-      author_html << content_tag(:span, sanitize("@#{author.username}"), class: opts[:author_class]) if opts[:name]
-    else
-      tooltip_data = { placement: 'top' }
-      author_html << content_tag(:span, sanitize(author.name), class: [opts[:author_class], ('has-tooltip' if opts[:tooltip])], title: (author.to_reference if opts[:tooltip]), data: (tooltip_data if opts[:tooltip])) if opts[:name]
-    end
+    author_html << author_content_tag(author, opts) if opts[:name]
 
     author_html << capture(&block) if block
 
@@ -52,36 +72,51 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        group_title(project.group)
+        group_title(project.group, nil, nil)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
+    project_link = link_to project_path(project) do
+      output =
+        if project.avatar_url && !Rails.env.test?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
+        else
+          ""
+        end
 
-    if current_user
-      project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
-        icon("chevron-down")
-      end
+      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")
+      output.html_safe
     end
 
-    "#{namespace_link} / #{project_link}".html_safe
+    namespace_link = breadcrumb_list_item(namespace_link) unless project.group
+    project_link = breadcrumb_list_item project_link
+
+    "#{namespace_link} #{project_link}".html_safe
   end
 
   def remove_project_message(project)
-    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
-      { project_name_with_namespace: project.name_with_namespace }
+    _("You are going to remove %{project_full_name}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
+      { project_full_name: project.full_name }
   end
 
   def transfer_project_message(project)
-    _("You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?") %
-      { project_name_with_namespace: project.name_with_namespace }
+    _("You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?") %
+      { project_full_name: project.full_name }
   end
 
   def remove_fork_project_message(project)
     _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
-      { forked_from_project: @project.forked_from_project.name_with_namespace }
+      { forked_from_project: fork_source_name(project) }
+  end
+
+  def fork_source_name(project)
+    if @project.fork_source
+      @project.fork_source.full_name
+    else
+      @project.fork_network&.deleted_root_project_name
+    end
   end
 
   def project_nav_tabs
@@ -111,43 +146,31 @@ module ProjectsHelper
   def can_change_visibility_level?(project, current_user)
     return false unless can?(current_user, :change_visibility_level, project)
 
-    if project.forked?
-      project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
+    if project.fork_source
+      project.fork_source.visibility_level > Gitlab::VisibilityLevel::PRIVATE
     else
       true
     end
   end
 
-  def license_short_name(project)
-    license = project.repository.license
-    license&.nickname || license&.name || 'LICENSE'
-  end
-
   def last_push_event
-    return unless current_user
-    return current_user.recent_push unless @project
-
-    project_ids = [@project.id]
-    if fork = current_user.fork_of(@project)
-      project_ids << fork.id
-    end
-
-    current_user.recent_push(project_ids)
+    current_user&.recent_push(@project)
   end
 
   def project_feature_access_select(field)
     # Don't show option "everyone with access" if project is private
     options = project_feature_options
 
+    level = @project.project_feature.public_send(field) # rubocop:disable GitlabSecurity/PublicSend
+
     if @project.private?
-      level = @project.project_feature.send(field)
       disabled_option = ProjectFeature::ENABLED
       highest_available_option = ProjectFeature::PRIVATE if level == disabled_option
     end
 
     options = options_for_select(
       options.invert,
-      selected: highest_available_option || @project.project_feature.public_send(field),
+      selected: highest_available_option || level,
       disabled: disabled_option
     )
 
@@ -184,8 +207,9 @@ module ProjectsHelper
       project.cache_key,
       controller.controller_name,
       controller.action_name,
-      current_application_settings.cache_key,
-      'v2.4'
+      Gitlab::CurrentSettings.cache_key,
+      "cross-project:#{can?(current_user, :read_cross_project)}",
+      'v2.5'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
@@ -204,15 +228,48 @@ module ProjectsHelper
 
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
-      ( current_user.require_password? || current_user.require_personal_access_token? )
+      current_user.require_extra_setup_for_git_auth?
   end
 
   def link_to_set_password
-    if current_user.require_password?
+    if current_user.require_password_creation_for_git?
       link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
     else
       link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
     end
+  end
+
+  # Returns true if any projects are present.
+  #
+  # If the relation has a LIMIT applied we'll cast the relation to an Array
+  # since repeated any? checks would otherwise result in multiple COUNT queries
+  # being executed.
+  #
+  # If no limit is applied we'll just issue a COUNT since the result set could
+  # be too large to load into memory.
+  def any_projects?(projects)
+    return projects.any? if projects.is_a?(Array)
+
+    if projects.limit_value
+      projects.to_a.any?
+    else
+      projects.except(:offset).any?
+    end
+  end
+
+  def show_projects?(projects, params)
+    !!(params[:personal] || params[:name] || any_projects?(projects))
+  end
+
+  def push_to_create_project_command(user = current_user)
+    repository_url =
+      if Gitlab::CurrentSettings.current_application_settings.enabled_git_access_protocol == 'http'
+        user_url(user)
+      else
+        Gitlab.config.gitlab_shell.ssh_path_prefix + user.username
+      end
+
+    "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)"
   end
 
   private
@@ -246,6 +303,10 @@ module ProjectsHelper
       nav_tabs << :pipelines
     end
 
+    if project.external_issue_tracker
+      nav_tabs << :external_issue_tracker
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -257,15 +318,16 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      environments: :read_environment,
-      milestones:   :read_milestone,
-      snippets:     :read_project_snippet,
-      settings:     :admin_project,
-      builds:       :read_build,
-      labels:       :read_label,
-      issues:       :read_issue,
-      team:         :read_project_member,
-      wiki:         :read_wiki
+      environments:     :read_environment,
+      milestones:       :read_milestone,
+      snippets:         :read_project_snippet,
+      settings:         :admin_project,
+      builds:           :read_build,
+      clusters:         :read_cluster,
+      labels:           :read_label,
+      issues:           :read_issue,
+      project_members:  :read_project_member,
+      wiki:             :read_wiki
     }
   end
 
@@ -292,7 +354,7 @@ module ProjectsHelper
 
   def git_user_name
     if current_user
-      current_user.name
+      current_user.name.gsub('"', '\"')
     else
       _("Your name")
     end
@@ -335,107 +397,25 @@ module ProjectsHelper
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
-    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
-    namespace_project_new_blob_path(
-      project.namespace,
-      project,
-      project.default_branch || 'master',
-      file_name:      file_name,
-      commit_message: commit_message,
-      branch_name: branch_name,
-      context: context
-    )
-  end
-
-  def add_koding_stack_path(project)
-    namespace_project_new_blob_path(
-      project.namespace,
-      project,
-      project.default_branch || 'master',
-      file_name:      '.koding.yml',
-      commit_message: "Add Koding stack script",
-      content: <<-CONTENT.strip_heredoc
-        provider:
-          aws:
-            access_key: '${var.aws_access_key}'
-            secret_key: '${var.aws_secret_key}'
-        resource:
-          aws_instance:
-            #{project.path}-vm:
-              instance_type: t2.nano
-              user_data: |-
-
-                # Created by GitLab UI for :>
-
-                echo _KD_NOTIFY_@Installing Base packages...@
-
-                apt-get update -y
-                apt-get install git -y
-
-                echo _KD_NOTIFY_@Cloning #{project.name}...@
-
-                export KODING_USER=${var.koding_user_username}
-                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
-                export BRANCH=${var.koding_queryString_branch}
-
-                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
-
-                echo _KD_NOTIFY_@#{project.name} cloned.@
-      CONTENT
-    )
-  end
-
   def koding_project_url(project = nil, branch = nil, sha = nil)
     if project
       import_path = "/Home/Stacks/import"
 
-      repo = project.path_with_namespace
+      repo = project.full_path
       branch ||= project.default_branch
       sha ||= project.commit.short_id
 
       path = "#{import_path}?repo=#{repo}&branch=#{branch}&sha=#{sha}"
 
-      return URI.join(current_application_settings.koding_url, path).to_s
+      return URI.join(Gitlab::CurrentSettings.koding_url, path).to_s
     end
 
-    current_application_settings.koding_url
-  end
-
-  def contribution_guide_path(project)
-    if project && contribution_guide = project.repository.contribution_guide
-      namespace_project_blob_path(
-        project.namespace,
-        project,
-        tree_join(project.default_branch,
-                  contribution_guide.name)
-      )
-    end
-  end
-
-  def readme_path(project)
-    filename_path(project, :readme)
-  end
-
-  def changelog_path(project)
-    filename_path(project, :changelog)
-  end
-
-  def license_path(project)
-    filename_path(project, :license_blob)
-  end
-
-  def version_path(project)
-    filename_path(project, :version)
-  end
-
-  def ci_configuration_path(project)
-    filename_path(project, :gitlab_ci_yml)
+    Gitlab::CurrentSettings.koding_url
   end
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
-    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
+    project_wiki_path(proj, page, url_params)
   end
 
   def project_status_css_class(status)
@@ -451,21 +431,11 @@ module ProjectsHelper
 
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
-    [@project.path_with_namespace, sha, "readme"].join('-')
+    [@project.full_path, sha, "readme"].join('-')
   end
 
   def current_ref
     @ref || @repository.try(:root_ref)
-  end
-
-  def filename_path(project, filename)
-    if project && blob = project.repository.send(filename)
-      namespace_project_blob_path(
-        project.namespace,
-        project,
-        tree_join(project.default_branch, blob.name)
-      )
-    end
   end
 
   def sanitize_repo_path(project, message)
@@ -510,6 +480,73 @@ module ProjectsHelper
   def restricted_levels
     return [] if current_user.admin?
 
-    current_application_settings.restricted_visibility_levels || []
+    Gitlab::CurrentSettings.restricted_visibility_levels || []
+  end
+
+  def project_permissions_settings(project)
+    feature = project.project_feature
+    {
+      visibilityLevel: project.visibility_level,
+      requestAccessEnabled: !!project.request_access_enabled,
+      issuesAccessLevel: feature.issues_access_level,
+      repositoryAccessLevel: feature.repository_access_level,
+      mergeRequestsAccessLevel: feature.merge_requests_access_level,
+      buildsAccessLevel: feature.builds_access_level,
+      wikiAccessLevel: feature.wiki_access_level,
+      snippetsAccessLevel: feature.snippets_access_level,
+      containerRegistryEnabled: !!project.container_registry_enabled,
+      lfsEnabled: !!project.lfs_enabled
+    }
+  end
+
+  def project_permissions_panel_data(project)
+    data = {
+      currentSettings: project_permissions_settings(project),
+      canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
+      allowedVisibilityOptions: project_allowed_visibility_levels(project),
+      visibilityHelpPath: help_page_path('public_access/public_access'),
+      registryAvailable: Gitlab.config.registry.enabled,
+      registryHelpPath: help_page_path('user/project/container_registry'),
+      lfsAvailable: Gitlab.config.lfs.enabled && current_user.admin?,
+      lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+    }
+
+    data.to_json.html_safe
+  end
+
+  def project_allowed_visibility_levels(project)
+    Gitlab::VisibilityLevel.values.select do |level|
+      project.visibility_level_allowed?(level) && !restricted_levels.include?(level)
+    end
+  end
+
+  def find_file_path
+    return unless @project && !@project.empty_repo?
+
+    ref = @ref || @project.repository.root_ref
+
+    project_find_file_path(@project, ref)
+  end
+
+  def can_show_last_commit_in_list?(project)
+    can?(current_user, :read_cross_project) && project.commit
+  end
+
+  def pages_https_only_disabled?
+    !@project.pages_domains.all?(&:https?)
+  end
+
+  def pages_https_only_title
+    return unless pages_https_only_disabled?
+
+    "You must enable HTTPS for all your domains first"
+  end
+
+  def pages_https_only_label_class
+    if pages_https_only_disabled?
+      "list-label disabled"
+    else
+      "list-label"
+    end
   end
 end

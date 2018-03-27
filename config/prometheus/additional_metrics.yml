@@ -1,32 +1,159 @@
-- group: Kubernetes
-  priority: 1
+- group: Response metrics (NGINX Ingress)
+  priority: 10
   metrics:
-  - title: "Memory usage"
-    y_label: "Values"
+  - title: "Throughput"
+    y_label: "Requests / Sec"
+    required_metrics:
+      - nginx_upstream_responses_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code)'
+      unit: req / sec
+      label: Status Code
+      series:
+        - label: status_code
+          when:
+            - value: 2xx
+              color: green
+            - value: 4xx
+              color: orange
+            - value: 5xx
+              color: red
+  - title: "Latency"
+    y_label: "Latency (ms)"
+    required_metrics:
+      - nginx_upstream_response_msecs_avg
+    weight: 1
+    queries:
+    - query_range: 'avg(nginx_upstream_response_msecs_avg{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"})'
+      label: Average
+      unit: ms
+  - title: "HTTP Error Rate"
+    y_label: "HTTP 500 Errors / Sec"
+    required_metrics:
+      - nginx_upstream_responses_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m]))'
+      label: HTTP Errors
+      unit: "errors / sec"
+- group: Response metrics (HA Proxy)
+  priority: 10
+  metrics:
+  - title: "Throughput"
+    y_label: "Requests / Sec"
+    required_metrics:
+      - haproxy_frontend_http_requests_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m])) by (code)'
+      unit: req / sec
+      series:
+        - label: code
+          when:
+            - value: 2xx
+              color: green
+            - value: 4xx
+              color: yellow
+            - value: 5xx
+              color: red
+  - title: "HTTP Error Rate"
+    y_label: "Error Rate (%)"
+    required_metrics:
+      - haproxy_frontend_http_responses_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(haproxy_frontend_http_responses_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_responses_total{%{environment_filter}}[2m]))'
+      label: HTTP Errors
+      unit: "%"
+- group: Response metrics (AWS ELB)
+  priority: 10
+  metrics:
+  - title: "Throughput"
+    y_label: "Requests / Sec"
+    required_metrics:
+      - aws_elb_request_count_sum
+    weight: 1
+    queries:
+    - query_range: 'sum(aws_elb_request_count_sum{%{environment_filter}}) / 60'
+      label: Total
+      unit: req / sec
+  - title: "Latency"
+    y_label: "Latency (ms)"
+    required_metrics:
+      - aws_elb_latency_average
+    weight: 1
+    queries:
+    - query_range: 'avg(aws_elb_latency_average{%{environment_filter}}) * 1000'
+      label: Average
+      unit: ms
+  - title: "HTTP Error Rate"
+    y_label: "Error Rate (%)"
+    required_metrics:
+      - aws_elb_request_count_sum
+      - aws_elb_httpcode_backend_5_xx_sum
+    weight: 1
+    queries:
+    - query_range: 'sum(aws_elb_httpcode_backend_5_xx_sum{%{environment_filter}}) / sum(aws_elb_request_count_sum{%{environment_filter}})'
+      label: HTTP Errors
+      unit: "%"
+- group: Response metrics (NGINX)
+  priority: 10
+  metrics:
+  - title: "Throughput"
+    y_label: "Requests / Sec"
+    required_metrics:
+      - nginx_responses_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(nginx_responses_total{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (status_code)'
+      unit: req / sec
+      label: Status Code
+      series:
+        - label: status_code
+          when:
+            - value: 2xx
+              color: green
+            - value: 4xx
+              color: orange
+            - value: 5xx
+              color: red
+  - title: "Latency"
+    y_label: "Latency (ms)"
+    required_metrics:
+      - nginx_upstream_response_msecs_avg
+    weight: 1
+    queries:
+    - query_range: 'avg(nginx_upstream_response_msecs_avg{%{environment_filter}})'
+      label: Upstream
+      unit: ms
+  - title: "HTTP Error Rate"
+    y_label: "HTTP 500 Errors / Sec"
+    required_metrics:
+      - nginx_responses_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(nginx_responses_total{status_code="5xx", %{environment_filter}}[2m]))'
+      label: HTTP Errors
+      unit: "errors / sec"
+- group: System metrics (Kubernetes)
+  priority: 5
+  metrics:
+  - title: "Memory Usage"
+    y_label: "Memory Used per Pod"
     required_metrics:
       - container_memory_usage_bytes
     weight: 1
     queries:
-    - query_range: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20'
-      label: Container memory
-      unit: MiB
-  - title: "Current memory usage"
-    required_metrics:
-     - container_memory_usage_bytes
-    weight: 1
-    queries:
-    - query: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20'
-      display_empty: false
-      unit: MiB
-  - title: "CPU usage"
+    - query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
+      label: Average
+      unit: MB
+  - title: "CPU Usage"
+    y_label: "Cores per Pod"
     required_metrics:
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100'
-  - title: "Current CPU usage"
-    required_metrics:
-     - container_cpu_usage_seconds_total
-    weight: 1
-    queries:
-    - query: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100'
+    - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
+      label: Average
+      unit: "cores"

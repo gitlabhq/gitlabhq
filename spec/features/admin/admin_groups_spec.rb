@@ -1,14 +1,15 @@
 require 'spec_helper'
 
-feature 'Admin Groups', feature: true do
+feature 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
   let(:user) { create :user }
   let!(:group) { create :group }
-  let!(:current_user) { gitlab_sign_in :admin }
+  let!(:current_user) { create(:admin) }
 
   before do
+    sign_in(current_user)
     stub_application_setting(default_group_visibility: internal)
   end
 
@@ -51,7 +52,7 @@ feature 'Admin Groups', feature: true do
       expect_selected_visibility(internal)
     end
 
-    scenario 'when entered in group path, it auto filled the group name', js: true do
+    scenario 'when entered in group path, it auto filled the group name', :js do
       visit admin_groups_path
       click_link "New group"
       group_path = 'gitlab'
@@ -80,7 +81,7 @@ feature 'Admin Groups', feature: true do
       expect_selected_visibility(group.visibility_level)
     end
 
-    scenario 'edit group path does not change group name', js: true do
+    scenario 'edit group path does not change group name', :js do
       group = create(:group, :private)
 
       visit admin_group_edit_path(group)
@@ -92,7 +93,7 @@ feature 'Admin Groups', feature: true do
     end
   end
 
-  describe 'add user into a group', js: true do
+  describe 'add user into a group', :js do
     shared_context 'adds user into a group' do
       it do
         visit admin_group_path(group)
@@ -123,7 +124,7 @@ feature 'Admin Groups', feature: true do
       group.add_user(:user, Gitlab::Access::OWNER)
     end
 
-    it 'adds admin a to a group as developer', js: true do
+    it 'adds admin a to a group as developer', :js do
       visit group_group_members_path(group)
 
       page.within '.users-group-form' do
@@ -140,7 +141,7 @@ feature 'Admin Groups', feature: true do
     end
   end
 
-  describe 'admin remove himself from a group', js: true do
+  describe 'admin remove himself from a group', :js do
     it 'removes admin from the group' do
       group.add_user(current_user, Gitlab::Access::DEVELOPER)
 
@@ -151,7 +152,7 @@ feature 'Admin Groups', feature: true do
         expect(page).to have_content('Developer')
       end
 
-      find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click
+      accept_confirm { find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click }
 
       visit group_group_members_path(group)
 
@@ -164,7 +165,7 @@ feature 'Admin Groups', feature: true do
 
   describe 'shared projects' do
     it 'renders shared project' do
-      empty_project = create(:empty_project)
+      empty_project = create(:project)
       empty_project.project_group_links.create!(
         group_access: Gitlab::Access::MASTER,
         group: group
@@ -172,7 +173,7 @@ feature 'Admin Groups', feature: true do
 
       visit admin_group_path(group)
 
-      expect(page).to have_content(empty_project.name_with_namespace)
+      expect(page).to have_content(empty_project.full_name)
       expect(page).to have_content('Projects shared with')
     end
   end

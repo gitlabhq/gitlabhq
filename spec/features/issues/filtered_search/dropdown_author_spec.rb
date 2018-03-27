@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true, feature: true do
+describe 'Dropdown author', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
-  let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
+  let!(:user_jacob) { create(:user, name: 'Jacob', username: 'ooter32') }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_author) { '#js-dropdown-author' }
 
@@ -28,13 +28,13 @@ describe 'Dropdown author', js: true, feature: true do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user_john, :master]
-    project.team << [user_jacob, :master]
-    gitlab_sign_in(user)
+    project.add_master(user)
+    project.add_master(user_john)
+    project.add_master(user_jacob)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -51,9 +51,11 @@ describe 'Dropdown author', js: true, feature: true do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('author:')
+      slow_requests do
+        filtered_search.set('author:')
 
-      expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do
@@ -82,31 +84,31 @@ describe 'Dropdown author', js: true, feature: true do
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search('ja')
+      send_keys_to_filtered_search('jac')
 
       expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search('Ja')
+      send_keys_to_filtered_search('Jac')
 
       expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by username with symbol' do
-      send_keys_to_filtered_search('@ot')
+      send_keys_to_filtered_search('@oot')
 
       expect(dropdown_author_size).to eq(2)
     end
 
     it 'filters by username without symbol' do
-      send_keys_to_filtered_search('ot')
+      send_keys_to_filtered_search('oot')
 
       expect(dropdown_author_size).to eq(2)
     end
 
     it 'filters by case insensitive username without symbol' do
-      send_keys_to_filtered_search('OT')
+      send_keys_to_filtered_search('OOT')
 
       expect(dropdown_author_size).to eq(2)
     end
@@ -121,16 +123,20 @@ describe 'Dropdown author', js: true, feature: true do
     it 'fills in the author username when the author has not been filtered' do
       click_author(user_jacob.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user_jacob.username}" }])
+      expect_tokens([author_token(user_jacob.name)])
       expect_filtered_search_input_empty
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_tokens([author_token(user.name)])
       expect_filtered_search_input_empty
     end
   end
@@ -149,7 +155,7 @@ describe 'Dropdown author', js: true, feature: true do
       find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: user.username }])
+      expect_tokens([author_token(user.username)])
       expect_filtered_search_input_empty
     end
   end
@@ -189,7 +195,7 @@ describe 'Dropdown author', js: true, feature: true do
       expect(initial_size).to be > 0
 
       new_user = create(:user)
-      project.team << [new_user, :master]
+      project.add_master(new_user)
       find('.filtered-search-box .clear-search').click
       filtered_search.set('author')
       send_keys_to_filtered_search(':')

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Environment', :feature do
-  given(:project) { create(:empty_project) }
+feature 'Environment' do
+  given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
 
   background do
-    gitlab_sign_in(user)
-    project.team << [user, role]
+    sign_in(user)
+    project.add_role(user, role)
   end
 
   feature 'environment details page' do
@@ -101,35 +101,48 @@ feature 'Environment', :feature do
           end
 
           context 'with terminal' do
-            let(:project) { create(:kubernetes_project, :test_repo) }
+            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+              context 'for project master' do
+                let(:role) { :master }
 
-            context 'for project master' do
-              let(:role) { :master }
-
-              scenario 'it shows the terminal button' do
-                expect(page).to have_terminal_button
-              end
-
-              context 'web terminal', :js do
-                before do
-                  # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
-                  allow_any_instance_of(Environment).to receive(:terminals) { nil }
-                  visit terminal_namespace_project_environment_path(project.namespace, project, environment)
+                scenario 'it shows the terminal button' do
+                  expect(page).to have_terminal_button
                 end
 
-                it 'displays a web terminal' do
-                  expect(page).to have_selector('#terminal')
-                  expect(page).to have_link(nil, href: environment.external_url)
+                context 'web terminal', :js do
+                  before do
+                    # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
+                    allow_any_instance_of(Environment).to receive(:terminals) { nil }
+                    visit terminal_project_environment_path(project, environment)
+                  end
+
+                  it 'displays a web terminal' do
+                    expect(page).to have_selector('#terminal')
+                    expect(page).to have_link(nil, href: environment.external_url)
+                  end
+                end
+              end
+
+              context 'for developer' do
+                let(:role) { :developer }
+
+                scenario 'does not show terminal button' do
+                  expect(page).not_to have_terminal_button
                 end
               end
             end
 
-            context 'for developer' do
-              let(:role) { :developer }
+            context 'when user configured kubernetes from Integration > Kubernetes' do
+              let(:project) { create(:kubernetes_project, :test_repo) }
 
-              scenario 'does not show terminal button' do
-                expect(page).not_to have_terminal_button
-              end
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+            end
+
+            context 'when user configured kubernetes from CI/CD > Clusters' do
+              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+              let(:project) { cluster.project }
+
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
           end
 
@@ -193,21 +206,21 @@ feature 'Environment', :feature do
         create(:environment, project: project,
                              name: 'staging-1.0/review',
                              state: :available)
-
-        visit folder_namespace_project_environments_path(project.namespace,
-                                                         project,
-                                                         id: 'staging-1.0')
       end
 
       it 'renders a correct environment folder' do
-        expect(page).to have_http_status(:ok)
+        reqs = inspect_requests do
+          visit folder_project_environments_path(project, id: 'staging-1.0')
+        end
+
+        expect(reqs.first.status_code).to eq(200)
         expect(page).to have_content('Environments / staging-1.0')
       end
     end
   end
 
   feature 'auto-close environment when branch is deleted' do
-    given(:project) { create(:project) }
+    given(:project) { create(:project, :repository) }
 
     given!(:environment) do
       create(:environment, :with_review_app, project: project,
@@ -221,7 +234,7 @@ feature 'Environment', :feature do
     end
 
     scenario 'user deletes the branch with running environment' do
-      visit namespace_project_branches_path(project.namespace, project, search: 'feature')
+      visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') { find('a.btn-remove').click }
@@ -249,12 +262,10 @@ feature 'Environment', :feature do
   end
 
   def visit_environment(environment)
-    visit namespace_project_environment_path(environment.project.namespace,
-                                             environment.project,
-                                             environment)
+    visit project_environment_path(environment.project, environment)
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+    have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 end

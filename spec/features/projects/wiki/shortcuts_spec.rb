@@ -1,15 +1,13 @@
 require 'spec_helper'
 
-feature 'Wiki shortcuts', :feature, :js do
+feature 'Wiki shortcuts', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
-  let(:wiki_page) do
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
-  end
+  let(:project) { create(:project, namespace: user.namespace) }
+  let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: 'Home page' }) }
 
   before do
-    gitlab_sign_in(user)
-    visit namespace_project_wiki_path(project.namespace, project, wiki_page)
+    sign_in(user)
+    visit project_wiki_path(project, wiki_page)
   end
 
   scenario 'Visit edit wiki page using "e" keyboard shortcut' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Issue prioritization', feature: true do
+feature 'Issue prioritization' do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
@@ -28,8 +28,8 @@ feature 'Issue prioritization', feature: true do
       issue_2.labels << label_4
       issue_1.labels << label_5
 
-      gitlab_sign_in user
-      visit namespace_project_issues_path(project.namespace, project, sort: 'label_priority')
+      sign_in user
+      visit project_issues_path(project, sort: 'label_priority')
 
       # Ensure we are indicating that issues are sorted by priority
       expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
@@ -67,8 +67,8 @@ feature 'Issue prioritization', feature: true do
       issue_4.labels << label_4 # 7
       issue_6.labels << label_5 # 8 - No priority
 
-      gitlab_sign_in user
-      visit namespace_project_issues_path(project.namespace, project, sort: 'label_priority')
+      sign_in user
+      visit project_issues_path(project, sort: 'label_priority')
 
       expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
 

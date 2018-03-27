@@ -1,13 +1,10 @@
 !!! 5
-%html{ lang: I18n.locale, class: "#{page_class}" }
+%html{ lang: I18n.locale, class: page_class }
   = render "layouts/head"
-  %body{ class: @body_class, data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}" } }
+  %body{ class: "#{user_application_theme} #{@body_class}", data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}", find_file: find_file_path } }
     = render "layouts/init_auto_complete" if @gfm_form
     = render 'peek/bar'
-    - if show_new_nav?
-      = render "layouts/header/new"
-    - else
-      = render "layouts/header/default", title: header_title
+    = render "layouts/header/default"
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
     = yield :scripts_body

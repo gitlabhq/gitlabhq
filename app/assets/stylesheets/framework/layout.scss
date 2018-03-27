@@ -1,10 +1,16 @@
 html {
   overflow-y: scroll;
 
-  &.touch .tooltip { display: none !important; }
+  &.touch .tooltip {
+    display: none !important;
+  }
 }
 
 body {
+  // Improves readability for dyslexic users; supported only in Chrome/Safari so far
+  // scss-lint:disable PropertySpelling
+  text-decoration-skip: ink;
+  // scss-lint:enable PropertySpelling
   &.navless {
     background-color: $white-light !important;
   }
@@ -24,20 +30,17 @@ body {
 }
 
 .content-wrapper {
+  margin-top: $header-height;
   padding-bottom: 100px;
-
-  &:not(.page-with-layout-nav) {
-    margin-top: $header-height;
-  }
 }
 
 .container {
   padding-top: 0;
   z-index: 5;
-}
 
-.container .content {
-  margin: 0;
+  .content {
+    margin: 0;
+  }
 }
 
 .navless-container {
@@ -86,37 +89,35 @@ body {
     transition: background-color 0.15s, border-color 0.15s;
     background-color: $orange-500;
     border-color: $orange-500;
-  }
 
-  .alert-warning + .alert-warning {
-    background-color: $orange-600;
-    border-color: $orange-600;
-  }
+    &:only-of-type {
+      background-color: $orange-500;
+      border-color: $orange-500;
+    }
 
-  .alert-warning + .alert-warning + .alert-warning {
-    background-color: $orange-700;
-    border-color: $orange-700;
-  }
+    + .alert-warning {
+      background-color: $orange-600;
+      border-color: $orange-600;
 
-  .alert-warning + .alert-warning + .alert-warning + .alert-warning {
-    background-color: $orange-800;
-    border-color: $orange-800;
-  }
+      + .alert-warning {
+        background-color: $orange-700;
+        border-color: $orange-700;
 
-  .alert-warning:only-of-type {
-    background-color: $orange-500;
-    border-color: $orange-500;
+        + .alert-warning {
+          background-color: $orange-800;
+          border-color: $orange-800;
+        }
+      }
+    }
   }
 }
 
+.with-performance-bar .layout-page {
+  margin-top: $header-height + $performance-bar-height;
+}
 
-/* The following prevents side effects related to iOS Safari's implementation of -webkit-overflow-scrolling: touch,
-which is applied to the body by jquery.nicescroling plugin to force hardware acceleration for momentum scrolling. Side
-effects are commonly related to inconsisent z-index behavior (e.g. tooltips). By applying the following to direct children
-of the body element here, we negate cascading side effects but allow momentum scrolling to be applied to the body  */
-
-.navbar,
-.page-gutter,
-.page-with-sidebar {
-  -webkit-overflow-scrolling: auto;
+.vertical-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }

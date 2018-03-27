@@ -2,7 +2,7 @@ module SharedIssuable
   include Spinach::DSL
 
   def edit_issuable
-    find('.issuable-edit', visible: true).click
+    find('.js-issuable-edit', visible: true).click
   end
 
   step 'project "Community" has "Community issue" open issue' do
@@ -51,22 +51,22 @@ module SharedIssuable
 
   step 'I visit issue page "Enterprise issue"' do
     issue = Issue.find_by(title: 'Enterprise issue')
-    visit namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    visit project_issue_path(issue.project, issue)
   end
 
   step 'I visit merge request page "Enterprise fix"' do
     mr = MergeRequest.find_by(title: 'Enterprise fix')
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I visit issue page "Community issue"' do
     issue = Issue.find_by(title: 'Community issue')
-    visit namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    visit project_issue_path(issue.project, issue)
   end
 
   step 'I visit issue page "Community fix"' do
     mr = MergeRequest.find_by(title: 'Community fix')
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I should not see any related merge requests' do
@@ -109,10 +109,10 @@ module SharedIssuable
     edit_issuable
   end
 
-  step 'I sort the list by "Oldest updated"' do
+  step 'I sort the list by "Last updated"' do
     find('button.dropdown-toggle').click
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link "Oldest updated"
+      click_link "Last updated"
     end
   end
 
@@ -124,16 +124,16 @@ module SharedIssuable
     end
   end
 
-  step 'I sort the list by "Most popular"' do
+  step 'I sort the list by "Popularity"' do
     find('button.dropdown-toggle').click
 
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link 'Most popular'
+      click_link 'Popularity'
     end
   end
 
-  step 'The list should be sorted by "Oldest updated"' do
-    expect(find('.issues-filters')).to have_content('Oldest updated')
+  step 'The list should be sorted by "Last updated"' do
+    expect(find('.issues-filters')).to have_content('Last updated')
   end
 
   step 'I click link "Next" in the sidebar' do

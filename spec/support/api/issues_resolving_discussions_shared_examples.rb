@@ -1,6 +1,6 @@
 shared_examples 'creating an issue resolving discussions through the API' do
   it 'creates a new project issue' do
-    expect(response).to have_http_status(:created)
+    expect(response).to have_gitlab_http_status(:created)
   end
 
   it 'resolves the discussions in a merge request' do

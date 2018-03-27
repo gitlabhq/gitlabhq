@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab Training Material
 
 All GitLab training material is stored in markdown format. Slides are

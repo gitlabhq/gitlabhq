@@ -1,4 +1,5 @@
 / Side-by-side diff view
+
 .text-file.diff-wrap-lines.code.js-syntax-highlight{ data: diff_view_data }
   %table
     - diff_file.parallel_diff_lines.each do |line|
@@ -13,19 +14,20 @@
             = diff_match_line left.old_pos, nil, text: left.text, view: :parallel
           - when 'old-nonewline', 'new-nonewline'
             %td.old_line.diff-line-num
-            %td.line_content.match= left.text
+            %td.line_content.match.left-side= left.text
           - else
             - left_line_code = diff_file.line_code(left)
             - left_position = diff_file.position(left)
-            %td.old_line.diff-line-num.js-avatar-container{ id: left_line_code, class: left.type, data: { linenumber: left.old_pos } }
+            %td.old_line.diff-line-num.js-avatar-container{ class: left.type, data: { linenumber: left.old_pos } }
+              = add_diff_note_button(left_line_code, left_position, 'old')
               %a{ href: "##{left_line_code}", data: { linenumber: left.old_pos } }
               - discussion_left = discussions_left.try(:first)
               - if discussion_left && discussion_left.resolvable?
                 %diff-note-avatars{ "discussion-id" => discussion_left.id }
-            %td.line_content.parallel.noteable_line{ class: left.type, data: diff_view_line_data(left_line_code, left_position, 'old') }= diff_line_content(left.text)
+            %td.line_content.parallel.noteable_line.left-side{ id: left_line_code, class: left.type }= diff_line_content(left.text)
         - else
           %td.old_line.diff-line-num.empty-cell
-          %td.line_content.parallel
+          %td.line_content.parallel.left-side
 
         - if right
           - case right.type
@@ -33,19 +35,20 @@
             = diff_match_line nil, right.new_pos, text: left.text, view: :parallel
           - when 'old-nonewline', 'new-nonewline'
             %td.new_line.diff-line-num
-            %td.line_content.match= right.text
+            %td.line_content.match.right-side= right.text
           - else
             - right_line_code = diff_file.line_code(right)
             - right_position = diff_file.position(right)
-            %td.new_line.diff-line-num.js-avatar-container{ id: right_line_code, class: right.type, data: { linenumber: right.new_pos } }
+            %td.new_line.diff-line-num.js-avatar-container{ class: right.type, data: { linenumber: right.new_pos } }
+              = add_diff_note_button(right_line_code, right_position, 'new')
               %a{ href: "##{right_line_code}", data: { linenumber: right.new_pos } }
               - discussion_right = discussions_right.try(:first)
               - if discussion_right && discussion_right.resolvable?
                 %diff-note-avatars{ "discussion-id" => discussion_right.id }
-            %td.line_content.parallel.noteable_line{ class: right.type, data: diff_view_line_data(right_line_code, right_position, 'new') }= diff_line_content(right.text)
+            %td.line_content.parallel.noteable_line.right-side{ id: right_line_code, class: right.type }= diff_line_content(right.text)
         - else
           %td.old_line.diff-line-num.empty-cell
-          %td.line_content.parallel
+          %td.line_content.parallel.right-side
 
       - if discussions_left || discussions_right
         = render "discussions/parallel_diff_discussion", discussions_left: discussions_left, discussions_right: discussions_right

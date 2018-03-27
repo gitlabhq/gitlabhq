@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "basic.json" },
+    {
+      "required" : [
+        "status",
+        "last_pipeline",
+        "project_id"
+      ],
+      "properties": {
+        "stats": { "$ref": "../commit_stats.json" },
+        "status": { "type": ["string", "null"] },
+        "last_pipeline": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "../pipeline/basic.json" }
+          ]
+        },
+        "project_id": { "type": "integer" }
+      }
+    }
+  ]
+}

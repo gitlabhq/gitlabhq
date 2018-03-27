@@ -1,19 +1,22 @@
 module Boards
   module Lists
-    class CreateService < BaseService
+    class CreateService < Boards::BaseService
       def execute(board)
         List.transaction do
-          label    = available_labels.find(params[:label_id])
+          label    = available_labels_for(board).find(params[:label_id])
           position = next_position(board)
-
           create_list(board, label, position)
         end
       end
 
       private
 
-      def available_labels
-        LabelsFinder.new(current_user, project_id: project.id).execute
+      def available_labels_for(board)
+        if board.group_board?
+          parent.labels
+        else
+          LabelsFinder.new(current_user, project_id: parent.id).execute
+        end
       end
 
       def next_position(board)

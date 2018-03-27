@@ -1,13 +1,12 @@
 - page_title "Find File", @ref
-= render "projects/commits/head"
 
-.file-finder-holder.tree-holder.clearfix
+.file-finder-holder.tree-holder.clearfix.js-file-finder{ 'data-file-find-url': "#{escape_javascript(project_files_path(@project, @ref, @options.merge(format: :json)))}", 'data-find-tree-url': escape_javascript(project_tree_path(@project, @ref)), 'data-blob-url-template': escape_javascript(project_blob_path(@project, @id || @commit.id)) }
   .nav-block
     .tree-ref-holder
       = render 'shared/ref_switcher', destination: 'find_file', path: @path
     %ul.breadcrumb.repo-breadcrumb
       %li
-        = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
+        = link_to project_tree_path(@project, @ref) do
           = @project.path
       %li.file-finder
         %input#file_find.form-control.file-finder-input{ type: "text", placeholder: _('Find by path'), autocomplete: 'off' }
@@ -17,11 +16,3 @@
       %table.table.files-slider{ class: "table_#{@hex_path} tree-table table-striped" }
         %tbody
       = spinner nil, true
-
-:javascript
-  var projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
-    url: "#{escape_javascript(namespace_project_files_path(@project.namespace, @project, @ref, @options.merge(format: :json)))}",
-    treeUrl: "#{escape_javascript(namespace_project_tree_path(@project.namespace, @project, @ref))}",
-    blobUrlTemplate: "#{escape_javascript(namespace_project_blob_path(@project.namespace, @project, @id || @commit.id))}"
-  });
-  new ShortcutsFindFile(projectFindFile);

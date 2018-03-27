@@ -6,11 +6,13 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 - [SSH](../../ssh/README.md)
 - [Two-Factor Authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
+- [Why do I keep getting signed out?](../../user/profile/index.md#why-do-i-keep-getting-signed-out)
 - **Articles:**
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/2016/06/22/gitlab-adds-support-for-u2f/)
   - [Security Webcast with Yubico](https://about.gitlab.com/2016/08/31/gitlab-and-yubico-security-webcast/)
 - **Integrations:**
   - [GitLab as OAuth2 authentication service provider](../../integration/oauth_provider.md#introduction-to-oauth)
+  - [GitLab as OpenID Connect identity provider](../../integration/openid_connect_provider.md)
 
 ## GitLab administrators
 
@@ -18,7 +20,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [LDAP (Enterprise Edition)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html)
 - [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
 - **Articles:**
-  - [How to Configure LDAP with GitLab CE](../../articles/how_to_configure_ldap_gitlab_ce/index.md)
+  - [How to Configure LDAP with GitLab CE](../../administration/auth/how_to_configure_ldap_gitlab_ce/index.md)
   - [How to Configure LDAP with GitLab EE](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/)
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.html)
@@ -37,7 +39,6 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [Private Tokens](../../api/README.md#private-tokens)
 - [Impersonation tokens](../../api/README.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
-- [GitLab Runner API - Authentication](../../api/ci/runners.md#authentication)
 
 ## Third-party resources
 

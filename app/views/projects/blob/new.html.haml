@@ -1,16 +1,16 @@
+- breadcrumb_title "Repository"
 - page_title "New File", @path.presence, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_bundle_tag('blob')
 .editor-title-row
   %h3.page-title.blob-new-page-title
     New file
   = render 'template_selectors'
 .file-editor
-  = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal js-edit-blob-form js-new-blob-form js-quick-submit js-requires-input', data: blob_editor_paths) do
+  = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'form-horizontal js-edit-blob-form js-new-blob-form js-quick-submit js-requires-input', data: blob_editor_paths) do
     = render 'projects/blob/editor', ref: @ref
     = render 'shared/new_commit_form', placeholder: "Add new file"
 
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,
-              cancel_path: namespace_project_tree_path(@project.namespace, @project, @id)
+              cancel_path: project_tree_path(@project, @id)

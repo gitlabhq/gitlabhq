@@ -10,7 +10,7 @@ describe API::V3::Pipelines do
                                ref: project.default_branch)
   end
 
-  before { project.team << [user, :master] }
+  before { project.add_master(user) }
 
   shared_examples 'a paginated resources' do
     before do
@@ -32,7 +32,7 @@ describe API::V3::Pipelines do
       it 'returns project pipelines' do
         get v3_api("/projects/#{project.id}/pipelines", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match(/\A\h{40}\z/)
         expect(json_response.first['id']).to eq pipeline.id
@@ -44,7 +44,7 @@ describe API::V3::Pipelines do
       it 'does not return project pipelines' do
         get v3_api("/projects/#{project.id}/pipelines", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response).not_to be_an Array
       end
@@ -61,7 +61,7 @@ describe API::V3::Pipelines do
             post v3_api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
           end.to change { Ci::Pipeline.count }.by(1)
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to be_a Hash
           expect(json_response['sha']).to eq project.commit.id
         end
@@ -69,7 +69,7 @@ describe API::V3::Pipelines do
         it 'fails when using an invalid ref' do
           post v3_api("/projects/#{project.id}/pipeline", user), ref: 'invalid_ref'
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['base'].first).to eq 'Reference not found'
           expect(json_response).not_to be_an Array
         end
@@ -79,7 +79,7 @@ describe API::V3::Pipelines do
         it 'fails to create pipeline' do
           post v3_api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
           expect(json_response).not_to be_an Array
         end
@@ -90,7 +90,7 @@ describe API::V3::Pipelines do
       it 'does not create pipeline' do
         post v3_api("/projects/#{project.id}/pipeline", non_member), ref: project.default_branch
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response).not_to be_an Array
       end
@@ -102,14 +102,14 @@ describe API::V3::Pipelines do
       it 'returns project pipelines' do
         get v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['sha']).to match /\A\h{40}\z/
       end
 
       it 'returns 404 when it does not exist' do
         get v3_api("/projects/#{project.id}/pipelines/123456", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Not found'
         expect(json_response['id']).to be nil
       end
@@ -131,7 +131,7 @@ describe API::V3::Pipelines do
       it 'should not return a project pipeline' do
         get v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response['id']).to be nil
       end
@@ -152,7 +152,7 @@ describe API::V3::Pipelines do
           post v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
         end.to change { pipeline.builds.count }.from(1).to(2)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(build.reload.retried?).to be true
       end
     end
@@ -161,7 +161,7 @@ describe API::V3::Pipelines do
       it 'should not return a project pipeline' do
         post v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response['id']).to be nil
       end
@@ -180,7 +180,7 @@ describe API::V3::Pipelines do
       it 'retries failed builds' do
         post v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq('canceled')
       end
     end
@@ -188,12 +188,12 @@ describe API::V3::Pipelines do
     context 'user without proper access rights' do
       let!(:reporter) { create(:user) }
 
-      before { project.team << [reporter, :reporter] }
+      before { project.add_reporter(reporter) }
 
       it 'rejects the action' do
         post v3_api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", reporter)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
         expect(pipeline.reload.status).to eq('pending')
       end
     end

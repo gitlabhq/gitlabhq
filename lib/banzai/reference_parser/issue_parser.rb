@@ -1,29 +1,39 @@
 module Banzai
   module ReferenceParser
-    class IssueParser < BaseParser
+    class IssueParser < IssuableParser
       self.reference_type = :issue
 
       def nodes_visible_to_user(user, nodes)
-        # It is not possible to check access rights for external issue trackers
-        return nodes if project && project.external_issue_tracker
+        issues = records_for_nodes(nodes)
+        issues_to_check = issues.values
 
-        issues = issues_for_nodes(nodes)
+        unless can?(user, :read_cross_project)
+          issues_to_check, cross_project_issues = issues_to_check.partition do |issue|
+            issue.project == project
+          end
+        end
 
-        readable_issues = Ability
-          .issues_readable_by_user(issues.values, user).to_set
+        readable_issues = Ability.issues_readable_by_user(issues_to_check, user).to_set
 
         nodes.select do |node|
-          readable_issues.include?(issues[node])
+          issue_in_node = issues[node]
+
+          # We check the inclusion of readable issues first because it's faster.
+          #
+          # But we need to fall back to `read_issue_iid` if the user cannot read
+          # cross project, since it might be possible the user can see the IID
+          # but not the issue.
+          if readable_issues.include?(issue_in_node)
+            true
+          elsif cross_project_issues&.include?(issue_in_node)
+            can_read_reference?(user, issue_in_node)
+          else
+            false
+          end
         end
       end
 
-      def referenced_by(nodes)
-        issues = issues_for_nodes(nodes)
-
-        nodes.map { |node| issues[node] }.compact.uniq
-      end
-
-      def issues_for_nodes(nodes)
+      def records_for_nodes(nodes)
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
           Issue.all.includes(
@@ -37,7 +47,8 @@ module Banzai
                 { namespace: :owner },
                 { group: [:owners, :group_members] },
                 :invited_groups,
-                :project_members
+                :project_members,
+                :project_feature
               ]
             }
           ),

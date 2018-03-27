@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Internal Snippets', feature: true, js: true do
+feature 'Internal Snippets', :js do
   let(:internal_snippet) { create(:personal_snippet, :internal) }
 
   describe 'normal user' do
     before do
-      gitlab_sign_in :user
+      sign_in(create(:user))
     end
 
     scenario 'sees internal snippets' do

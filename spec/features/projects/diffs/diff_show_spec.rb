@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Diff file viewer', :js, feature: true do
+feature 'Diff file viewer', :js do
   let(:project) { create(:project, :public, :repository) }
 
   def visit_commit(sha, anchor: nil)
-    visit namespace_project_commit_path(project.namespace, project, sha, anchor: anchor)
+    visit project_commit_path(project, sha, anchor: anchor)
 
     wait_for_requests
   end
@@ -62,13 +62,43 @@ feature 'Diff file viewer', :js, feature: true do
   end
 
   context 'Image file' do
-    before do
-      visit_commit('2f63565e7aac07bcdadb654e253078b727143ec4')
+    context 'Replaced' do
+      before do
+        visit_commit('2f63565e7aac07bcdadb654e253078b727143ec4')
+      end
+
+      it 'shows a rendered image' do
+        within('.diff-file[id="e986451b8f7397b617dbb6fffcb5539328c56921"]') do
+          expect(page).to have_css('img[alt="files/images/6049019_460s.jpg"]')
+        end
+      end
+
+      it 'shows view replaced and view file links' do
+        expect(page.all('.file-actions a').length).to eq 2
+        expect(page.all('.file-actions a')[0]).to have_content 'View replaced file @'
+        expect(page.all('.file-actions a')[1]).to have_content 'View file @'
+      end
     end
 
-    it 'shows a rendered image' do
-      within('.diff-file[id="e986451b8f7397b617dbb6fffcb5539328c56921"]') do
-        expect(page).to have_css('img[alt="files/images/6049019_460s.jpg"]')
+    context 'Added' do
+      before do
+        visit_commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+      end
+
+      it 'shows view file link' do
+        expect(page.all('.file-actions a').length).to eq 1
+        expect(page.all('.file-actions a')[0]).to have_content 'View file @'
+      end
+    end
+
+    context 'Deleted' do
+      before do
+        visit_commit('7fd7a459706ee87be6f855fd98ce8c552b15529a')
+      end
+
+      it 'shows view file link' do
+        expect(page.all('.file-actions a').length).to eq 1
+        expect(page.all('.file-actions a')[0]).to have_content 'View file @'
       end
     end
   end
@@ -108,8 +138,25 @@ feature 'Diff file viewer', :js, feature: true do
     end
   end
 
+  context 'renamed file' do
+    before do
+      visit_commit('6907208d755b60ebeacb2e9dfea74c92c3449a1f')
+    end
+
+    it 'shows the filename with diff highlight' do
+      within('.file-header-content') do
+        expect(page).to have_css('.idiff.left.right.deletion')
+        expect(page).to have_content('files/js/commit.coffee')
+      end
+    end
+  end
+
   context 'binary file that appears to be text in the first 1024 bytes' do
     before do
+      # The file we're visiting is smaller than 10 KB and we want it collapsed
+      # so we need to disable the size increase feature.
+      stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
+
       visit_commit('7b1cf4336b528e0f3d1d140ee50cafdbc703597c')
     end
 

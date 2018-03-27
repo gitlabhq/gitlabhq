@@ -1,6 +1,6 @@
 #js-pipeline-header-vue.pipeline-header-container
 
-- if @commit
+- if @commit.present?
   .commit-box
     %h3.commit-title
       = markdown(@commit.title, pipeline: :single_line)
@@ -8,28 +8,28 @@
       %pre.commit-description
         = preserve(markdown(@commit.description, pipeline: :single_line))
 
-.info-well
-  - if @commit.status
-    .well-segment.pipeline-info
-      .icon-container
-        = icon('clock-o')
-      = pluralize @pipeline.statuses.count(:id), "job"
-      - if @pipeline.ref
-        from
-        = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
-      - if @pipeline.duration
-        in
-        = time_interval_in_words(@pipeline.duration)
-      - if @pipeline.queued_duration
-        = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
+  .info-well
+    - if @commit.status
+      .well-segment.pipeline-info
+        .icon-container
+          = icon('clock-o')
+        = pluralize @pipeline.total_size, "job"
+        - if @pipeline.ref
+          from
+          = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+        - if @pipeline.duration
+          in
+          = time_interval_in_words(@pipeline.duration)
+        - if @pipeline.queued_duration
+          = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
 
-  .well-segment.branch-info
-    .icon-container.commit-icon
-      = custom_icon("icon_commit")
-    = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "commit-sha js-details-short"
-    = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
-      %span.text-expander
-        \...
-    %span.js-details-content.hide
-      = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "commit-sha commit-hash-full"
-    = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
+    .well-segment.branch-info
+      .icon-container.commit-icon
+        = custom_icon("icon_commit")
+      = link_to @commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha js-details-short"
+      = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
+        %span.text-expander
+          \...
+      %span.js-details-content.hide
+        = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
+      = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")

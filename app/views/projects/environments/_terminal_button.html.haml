@@ -1,3 +1,3 @@
 - if environment.has_terminals? && can?(current_user, :admin_environment, @project)
-  = link_to terminal_namespace_project_environment_path(@project.namespace, @project, environment), class: 'btn terminal-button' do
+  = link_to terminal_project_environment_path(@project, environment), class: 'btn terminal-button' do
     = icon('terminal')

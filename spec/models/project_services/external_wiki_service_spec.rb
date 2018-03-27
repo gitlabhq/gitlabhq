@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe ExternalWikiService, models: true do
+describe ExternalWikiService do
   include ExternalWikiHelper
   describe "Associations" do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
@@ -27,7 +27,7 @@ describe ExternalWikiService, models: true do
   end
 
   describe 'External wiki' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when it is active' do
       before do

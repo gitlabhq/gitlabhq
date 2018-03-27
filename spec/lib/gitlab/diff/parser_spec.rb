@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::Parser, lib: true do
+describe Gitlab::Diff::Parser do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.raw_diffs.first }
-  let(:parser) { Gitlab::Diff::Parser.new }
+  let(:parser) { described_class.new }
 
   describe '#parse' do
     let(:diff) do
@@ -142,5 +142,22 @@ eos
   context 'when lines is empty' do
     it { expect(parser.parse([])).to eq([]) }
     it { expect(parser.parse(nil)).to eq([]) }
+  end
+
+  describe 'tolerates special diff markers in a content' do
+    it "counts lines correctly" do
+      diff = <<~END
+        --- a/test
+        +++ b/test
+        @@ -1,2 +1,2 @@
+        +ipsum
+        +++ b
+        -ipsum
+      END
+
+      lines = parser.parse(diff.lines).to_a
+
+      expect(lines.size).to eq(3)
+    end
   end
 end

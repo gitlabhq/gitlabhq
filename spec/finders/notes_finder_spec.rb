@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe NotesFinder do
   let(:user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#execute' do
@@ -43,7 +43,7 @@ describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:empty_project,
+        create(:project,
                :public,
                :issues_private,
                :snippets_private,
@@ -72,6 +72,18 @@ describe NotesFinder do
         notes = described_class.new(project, create(:user)).execute
 
         expect(notes.count).to eq(0)
+      end
+    end
+
+    context 'for target type' do
+      let(:project) { create(:project, :repository) }
+      let!(:note1) { create :note_on_issue, project: project }
+      let!(:note2) { create :note_on_commit, project: project }
+
+      it 'finds only notes for the selected type' do
+        notes = described_class.new(project, user, target_type: 'issue').execute
+
+        expect(notes).to eq([note1])
       end
     end
 
@@ -147,7 +159,7 @@ describe NotesFinder do
 
         it 'raises an error for project members with guest role' do
           user = create(:user)
-          project.team << [user, :guest]
+          project.add_guest(user)
 
           expect { described_class.new(project, user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
         end
@@ -156,7 +168,7 @@ describe NotesFinder do
   end
 
   describe '.search' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:note) { create(:note_on_issue, note: 'WoW', project: project) }
 
     it 'returns notes with matching content' do
@@ -189,7 +201,7 @@ describe NotesFinder do
 
       it "does not return notes with matching content for project members with guest role" do
         user = create(:user)
-        project.team << [user, :guest]
+        project.add_guest(user)
         expect(described_class.new(confidential_note.project, user, search: confidential_note.note).execute).to be_empty
       end
 

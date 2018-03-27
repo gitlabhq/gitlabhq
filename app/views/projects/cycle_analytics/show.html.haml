@@ -1,25 +1,11 @@
 - @no_container = true
 - page_title "Cycle Analytics"
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('cycle_analytics')
-
-= render "projects/head"
 
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
-    .landing.content-block{ "v-if" => "!isOverviewDialogDismissed" }
-      %button.dismiss-button{ type: 'button', 'aria-label': 'Dismiss Cycle Analytics introduction box' }
-        = icon("times", "@click" => "dismissOverviewDialog()")
-      .svg-container
-        = custom_icon('icon_cycle_analytics_splash')
-      .inner-content
-        %h4
-          {{ __('Introducing Cycle Analytics') }}
-        %p
-          {{ __('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.') }}
-        %p
-          = link_to _('Read more'), help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
+    %banner{ "v-if" => "!isOverviewDialogDismissed",
+      "documentation-link": help_page_path('user/project/cycle_analytics'),
+      "v-on:dismiss-overview-dialog" => "dismissOverviewDialog()" }
   = icon("spinner spin", "v-show" => "isLoading")
   .wrapper{ "v-show" => "!isLoading && !hasError" }
     .panel.panel-default
@@ -37,6 +23,9 @@
                   %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
                   %i.fa.fa-chevron-down
                 %ul.dropdown-menu.dropdown-menu-align-right
+                  %li
+                    %a{ "href" => "#", "data-value" => "7" }
+                      {{ n__('Last %d day', 'Last %d days', 7) }}
                   %li
                     %a{ "href" => "#", "data-value" => "30" }
                       {{ n__('Last %d day', 'Last %d days', 30) }}

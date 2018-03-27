@@ -2,28 +2,32 @@
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
+- show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
+- show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 
-%li{ id: label_css_id, data: { id: label.id } }
+%li.label-list-item{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
 
-  .visible-xs.visible-sm-inline-block.visible-md-inline-block.dropdown
+  .visible-xs.visible-sm-inline-block.dropdown
     %button.btn.btn-default.label-options-toggle{ type: 'button', data: { toggle: "dropdown" } }
       Options
       = icon('caret-down')
     .dropdown-menu.dropdown-menu-align-right
       %ul
-        %li
-          = link_to_label(label, subject: subject, type: :merge_request) do
-            view merge requests
-        %li
-          = link_to_label(label, subject: subject) do
-            view open issues
+        - if show_label_merge_requests_link
+          %li
+            = link_to_label(label, subject: subject, type: :merge_request) do
+              View merge requests
+        - if show_label_issues_link
+          %li
+            = link_to_label(label, subject: subject) do
+              View open issues
         - if current_user
           %li.label-subscription
             - if can_subscribe_to_label_in_different_levels?(label)
               %a.js-unsubscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
                 %span Unsubscribe
-              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_project_label_path(@project, label) } }
                 %span Subscribe at project level
               %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
                 %span Subscribe at group level
@@ -35,14 +39,34 @@
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
-            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: {confirm: 'Remove this label? Are you sure?'}
+            = link_to 'Delete',
+              destroy_label_path(label),
+              title: 'Delete',
+              method: :delete,
+              data: {confirm: 'Remove this label? Are you sure?'},
+              class: 'text-danger'
 
-  .pull-right.hidden-xs.hidden-sm.hidden-md
-    = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
-      view merge requests
-    = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
-      view open issues
-
+  .pull-right.hidden-xs.hidden-sm
+    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
+      %button.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
+        disabled: true,
+        type: 'button',
+        data: { url: promote_project_label_path(label.project, label),
+                label_title: label.title,
+                label_color: label.color,
+                label_text_color: label.text_color,
+                target: '#promote-label-modal',
+                container: 'body',
+                toggle: 'modal' } }
+        = sprite_icon('level-up')
+    - if can?(current_user, :admin_label, label)
+      = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
+        %span.sr-only Edit
+        = sprite_icon('pencil')
+      %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
+        = link_to "#", title: "Delete", class: 'btn btn-transparent btn-action remove-row', data: { toggle: "tooltip" } do
+          %span.sr-only Delete
+          = sprite_icon('remove')
     - if current_user
       .label-subscription.inline
         - if can_subscribe_to_label_in_different_levels?(label)
@@ -56,7 +80,7 @@
               = icon('chevron-down')
             %ul.dropdown-menu
               %li
-                %a.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                %a.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_project_label_path(@project, label) } }
                   Project level
                 %a.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
                   Group level
@@ -65,22 +89,4 @@
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
-    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
-      = link_to promote_namespace_project_label_path(label.project.namespace, label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "Promoting this label will make this label available to all projects inside this group. Existing project labels with the same name will be merged. Are you sure?", toggle: "tooltip"}, method: :post do
-        %span.sr-only Promote to Group
-        = icon('level-up')
-    - if can?(current_user, :admin_label, label)
-      = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
-        %span.sr-only Edit
-        = icon('pencil-square-o')
-      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
-        %span.sr-only Delete
-        = icon('trash-o')
-
-  - if current_user
-    - if can_subscribe_to_label_in_different_levels?(label)
-      :javascript
-        new gl.GroupLabelSubscription('##{dom_id(label)} .label-subscription');
-    - else
-      :javascript
-        new gl.ProjectLabelSubscription('##{dom_id(label)} .label-subscription');
+= render 'shared/delete_label_modal', label: label

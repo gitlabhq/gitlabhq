@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title 'Milestones'
-= render "shared/mr_head"
 
 %div{ class: container_class }
   .top-area
@@ -9,10 +8,13 @@
     .nav-controls
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
-        = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: 'btn btn-new', title: 'New milestone' do
+        = link_to new_project_milestone_path(@project), class: "btn btn-new", title: 'New milestone' do
           New milestone
 
   .milestones
+    #delete-milestone-modal
+    #promote-milestone-modal
+
     %ul.content-list
       = render @milestones
 

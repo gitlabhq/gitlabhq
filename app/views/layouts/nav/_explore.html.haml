@@ -1,30 +1,15 @@
-%ul
-  = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
-    = link_to explore_root_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
-      .shortcut-mappings
-        .key
-          = icon('arrow-up', 'aria-label' => 'hidden')
-          P
-      %span
+%ul.list-unstyled.navbar-sub-nav
+  - if explore_nav_link?(:projects)
+    = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
+      = link_to explore_root_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
         Projects
-  = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to explore_groups_path, title: 'Groups', class: 'dashboard-shortcuts-groups' do
-      .shortcut-mappings
-        .key
-          = icon('arrow-up', 'aria-label' => 'hidden')
-          G
-      %span
+  - if explore_nav_link?(:groups)
+    = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
+      = link_to explore_groups_path, title: 'Groups', class: 'dashboard-shortcuts-groups' do
         Groups
-  = nav_link(controller: :snippets) do
-    = link_to explore_snippets_path, title: 'Snippets', class: 'dashboard-shortcuts-snippets' do
-      .shortcut-mappings
-        .key
-          = icon('arrow-up', 'aria-label' => 'hidden')
-          S
-      %span
+  - if explore_nav_link?(:snippets)
+    = nav_link(controller: :snippets) do
+      = link_to explore_snippets_path, title: 'Snippets', class: 'dashboard-shortcuts-snippets' do
         Snippets
-  %li.divider
-  = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
-      %span
-        Help
+  %li
+    = link_to "Help", help_path, title: 'About GitLab CE'

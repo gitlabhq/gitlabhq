@@ -14,7 +14,7 @@ describe Admin::SpamLogsController do
     it 'lists all spam logs' do
       get :index
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -22,14 +22,14 @@ describe Admin::SpamLogsController do
     it 'removes only the spam log when removing log' do
       expect { delete :destroy, id: first_spam.id }.to change { SpamLog.count }.by(-1)
       expect(User.find(user.id)).to be_truthy
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'removes user and his spam logs when removing the user' do
       delete :destroy, id: first_spam.id, remove_user: true
 
       expect(flash[:notice]).to eq "User #{user.username} was successfully removed."
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(SpamLog.count).to eq(0)
       expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -42,7 +42,7 @@ describe Admin::SpamLogsController do
     it 'submits the log as ham' do
       post :mark_as_ham, id: first_spam.id
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(SpamLog.find(first_spam.id).submitted_as_ham).to be_truthy
     end
   end

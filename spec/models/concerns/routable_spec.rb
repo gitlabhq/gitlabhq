@@ -12,6 +12,16 @@ describe Group, 'Routable' do
     it { is_expected.to have_many(:redirect_routes).dependent(:destroy) }
   end
 
+  describe 'GitLab read-only instance' do
+    it 'does not save route if route is not present' do
+      group.route.path = ''
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      expect(group).to receive(:update_route).and_call_original
+
+      expect { group.full_path }.to change { Route.count }.by(0)
+    end
+  end
+
   describe 'Callbacks' do
     it 'creates route record on create' do
       expect(group.route.path).to eq(group.path)
@@ -29,7 +39,7 @@ describe Group, 'Routable' do
       create(:group, parent: group, path: 'xyz')
       duplicate = build(:project, namespace: group, path: 'xyz')
 
-      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Route path has already been taken, Route is invalid')
+      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Path has already been taken')
     end
   end
 
@@ -124,10 +134,24 @@ describe Group, 'Routable' do
 
     context 'with RequestStore active', :request_store do
       it 'does not load the route table more than once' do
+        group.expires_full_path_cache
         expect(group).to receive(:uncached_full_path).once.and_call_original
 
         3.times { group.full_path }
         expect(group.full_path).to eq(group.path)
+      end
+    end
+  end
+
+  describe '#expires_full_path_cache' do
+    context 'with RequestStore active', :request_store do
+      it 'expires the full_path cache' do
+        expect(group.full_path).to eq('foo')
+
+        group.route.update(path: 'bar', name: 'bar')
+        group.expires_full_path_cache
+
+        expect(group.full_path).to eq('bar')
       end
     end
   end
@@ -143,13 +167,13 @@ end
 
 describe Project, 'Routable' do
   describe '#full_path' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
 
     it { expect(project.full_path).to eq "#{project.namespace.full_path}/#{project.path}" }
   end
 
   describe '#full_name' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
 
     it { expect(project.full_name).to eq "#{project.namespace.human_name} / #{project.name}" }
   end

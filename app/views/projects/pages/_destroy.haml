@@ -7,6 +7,6 @@
         %p
           Removing the pages will prevent from exposing them to outside world.
         .form-actions
-          = link_to 'Remove pages', namespace_project_pages_path(@project.namespace, @project), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove"
+          = link_to 'Remove pages', project_pages_path(@project), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove"
   - else
     .nothing-here-block Only the project owner can remove pages

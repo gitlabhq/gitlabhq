@@ -16,15 +16,15 @@
   <fieldset>
     <label
       class="sr-only"
-      for="issue-title">
+      for="issuable-title">
       Title
     </label>
     <input
-      id="issue-title"
+      id="issuable-title"
       class="form-control"
       type="text"
-      placeholder="Issue title"
-      aria-label="Issue title"
+      placeholder="Title"
+      aria-label="Title"
       v-model="formState.title"
       @keydown.meta.enter="updateIssuable"
       @keydown.ctrl.enter="updateIssuable" />

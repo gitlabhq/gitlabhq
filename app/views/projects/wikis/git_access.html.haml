@@ -1,36 +1,34 @@
 - @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
-- page_title "Git Access", "Wiki"
+- page_title s_("WikiClone|Git Access"), _("Wiki")
 
 .wiki-page-header.has-sidebar-toggle
   %button.btn.btn-default.visible-xs.visible-sm.pull-right.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
     = icon('angle-double-left')
 
   .git-access-header
-    Clone repository
-    %strong= @project_wiki.path_with_namespace
+    = _("Clone repository")
+    %strong= @project_wiki.full_path
 
   = render "shared/clone_panel", project: @project_wiki
 
 .wiki-git-access
-  %h3 Install Gollum
+  %h3= s_("WikiClone|Install Gollum")
   %pre.dark
     :preserve
       gem install gollum
   %p
-    It is recommended to install
-    %code github-markdown
-    so that GFM features render locally:
+    = (s_("WikiClone|It is recommended to install %{markdown} so that GFM features render locally:") % { markdown: "<code>github-markdown</code>" }).html_safe
   %pre.dark
     :preserve
       gem install github-markdown
 
-  %h3 Clone your wiki
+  %h3= s_("WikiClone|Clone your wiki")
   %pre.dark
     :preserve
       git clone #{ content_tag(:span, h(default_url_to_repo(@project_wiki)), class: 'clone')}
       cd #{h @project_wiki.path}
 
-  %h3 Start Gollum and edit locally
+  %h3= s_("WikiClone|Start Gollum and edit locally")
   %pre.dark
     :preserve
       gollum

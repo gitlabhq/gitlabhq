@@ -1,6 +1,12 @@
 %li.key-list-item
   .pull-left.append-right-10
-    = icon 'key', class: "settings-list-icon hidden-xs"
+    - if key.valid?
+      = icon 'key', class: 'settings-list-icon hidden-xs'
+    - else
+      = icon 'exclamation-triangle', class: 'settings-list-icon hidden-xs has-tooltip',
+        title: key.errors.full_messages.join(', ')
+
+
   .key-list-item-info
     = link_to path_to_key(key, is_admin), class: "title" do
       = key.title

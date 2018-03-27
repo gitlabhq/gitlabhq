@@ -4,7 +4,7 @@ A separate system for documentation called Wiki, is built right into each
 GitLab project. It is enabled by default on all new projects and you can find
 it under **Wiki** in your project.
 
-Wikis are very convenient if you don't want to keep you documentation in your
+Wikis are very convenient if you don't want to keep your documentation in your
 repository, but you do want to keep it in the same project where your code
 resides.
 
@@ -63,6 +63,18 @@ effect.
 
 You can find the **Delete** button only when editing a page. Click on it and
 confirm you want the page to be deleted.
+
+## Moving a wiki page
+
+You can move a wiki page from one directory to another by specifying the full
+path in the wiki page title in the [edit](#editing-a-wiki-page) form.
+
+![Moving a page](img/wiki_move_page_1.png)
+
+![After moving a page](img/wiki_move_page_2.png)
+
+In order to move a wiki page to the root directory, the wiki page title must
+be preceded by the slash (`/`) character.
 
 ## Viewing a list of all created wiki pages
 

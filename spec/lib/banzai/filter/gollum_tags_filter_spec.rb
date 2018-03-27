@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::Filter::GollumTagsFilter, lib: true do
+describe Banzai::Filter::GollumTagsFilter do
   include FilterSpecHelper
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { double }
   let(:project_wiki) { ProjectWiki.new(project, user) }
 
@@ -15,14 +15,18 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
 
   context 'linking internal images' do
     it 'creates img tag if image exists' do
-      file = Gollum::File.new(project_wiki.wiki)
-      expect(file).to receive(:path).and_return('images/image.jpg')
-      expect(project_wiki).to receive(:find_file).with('images/image.jpg').and_return(file)
+      gollum_file_double = double('Gollum::File',
+                                  mime_type: 'image/jpeg',
+                                  name: 'images/image.jpg',
+                                  path: 'images/image.jpg',
+                                  raw_data: '')
+      wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
+      expect(project_wiki).to receive(:find_file).with('images/image.jpg').and_return(wiki_file)
 
       tag = '[[images/image.jpg]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
 
-      expect(doc.at_css('img')['src']).to eq "#{project_wiki.wiki_base_path}/images/image.jpg"
+      expect(doc.at_css('img')['data-src']).to eq "#{project_wiki.wiki_base_path}/images/image.jpg"
     end
 
     it 'does not creates img tag if image does not exist' do
@@ -40,7 +44,7 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
       tag = '[[http://example.com/image.jpg]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
 
-      expect(doc.at_css('img')['src']).to eq "http://example.com/image.jpg"
+      expect(doc.at_css('img')['data-src']).to eq "http://example.com/image.jpg"
     end
 
     it 'does not creates img tag for invalid URL' do

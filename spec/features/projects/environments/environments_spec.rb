@@ -1,35 +1,34 @@
 require 'spec_helper'
 
-feature 'Environments page', :feature, :js do
-  given(:project) { create(:empty_project) }
+feature 'Environments page', :js do
+  given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
 
   background do
-    project.team << [user, role]
-    gitlab_sign_in(user)
-  end
-
-  given!(:environment) { }
-  given!(:deployment) { }
-  given!(:action) { }
-
-  before do
-    visit_environments(project)
+    project.add_role(user, role)
+    sign_in(user)
   end
 
   describe 'page tabs' do
-    scenario 'shows "Available" and "Stopped" tab with links' do
-      expect(page).to have_link('Available')
-      expect(page).to have_link('Stopped')
+    it 'shows "Available" and "Stopped" tab with links' do
+      visit_environments(project)
+
+      expect(page).to have_selector('.js-environments-tab-available')
+      expect(page).to have_content('Available')
+      expect(page).to have_selector('.js-environments-tab-stopped')
+      expect(page).to have_content('Stopped')
     end
 
     describe 'with one available environment' do
-      given(:environment) { create(:environment, project: project, state: :available) }
+      before do
+        create(:environment, project: project, state: :available)
+      end
 
       describe 'in available tab page' do
         it 'should show one environment' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'available')
+          visit_environments(project, scope: 'available')
+
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
         end
@@ -37,7 +36,8 @@ feature 'Environments page', :feature, :js do
 
       describe 'in stopped tab page' do
         it 'should show no environments' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
+          visit_environments(project, scope: 'stopped')
+
           expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
@@ -45,11 +45,14 @@ feature 'Environments page', :feature, :js do
     end
 
     describe 'with one stopped environment' do
-      given(:environment) { create(:environment, project: project, state: :stopped) }
+      before do
+        create(:environment, project: project, state: :stopped)
+      end
 
       describe 'in available tab page' do
         it 'should show no environments' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'available')
+          visit_environments(project, scope: 'available')
+
           expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
@@ -57,7 +60,8 @@ feature 'Environments page', :feature, :js do
 
       describe 'in stopped tab page' do
         it 'should show one environment' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
+          visit_environments(project, scope: 'stopped')
+
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
         end
@@ -66,108 +70,106 @@ feature 'Environments page', :feature, :js do
   end
 
   context 'without environments' do
-    scenario 'does show no environments' do
-      expect(page).to have_content('You don\'t have any environments right now.')
+    before do
+      visit_environments(project)
     end
 
-    scenario 'does show 0 as counter for environments in both tabs' do
-      expect(page.find('.js-available-environments-count').text).to eq('0')
-      expect(page.find('.js-stopped-environments-count').text).to eq('0')
+    it 'does not show environments and counters are set to zero' do
+      expect(page).to have_content('You don\'t have any environments right now.')
+
+      expect(page.find('.js-environments-tab-available .badge').text).to eq('0')
+      expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
     end
   end
 
-  describe 'when showing the environment' do
-    given(:environment) { create(:environment, project: project) }
-
-    scenario 'does show environment name' do
-      expect(page).to have_link(environment.name)
+  describe 'environments table' do
+    given!(:environment) do
+      create(:environment, project: project, state: :available)
     end
 
-    scenario 'does show number of available and stopped environments' do
-      expect(page.find('.js-available-environments-count').text).to eq('1')
-      expect(page.find('.js-stopped-environments-count').text).to eq('0')
-    end
+    context 'when there are no deployments' do
+      before do
+        visit_environments(project)
+      end
 
-    context 'without deployments' do
-      scenario 'does show no deployments' do
+      it 'shows environments names and counters' do
+        expect(page).to have_link(environment.name)
+
+        expect(page.find('.js-environments-tab-available .badge').text).to eq('1')
+        expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
+      end
+
+      it 'does not show deployments' do
         expect(page).to have_content('No deployments yet')
       end
 
-      context 'for available environment' do
-        given(:environment) { create(:environment, project: project, state: :available) }
-
-        scenario 'does not shows stop button' do
-          expect(page).not_to have_selector('.stop-env-link')
-        end
-      end
-
-      context 'for stopped environment' do
-        given(:environment) { create(:environment, project: project, state: :stopped) }
-
-        scenario 'does not shows stop button' do
-          expect(page).not_to have_selector('.stop-env-link')
-        end
+      it 'does not show stip button when environment is not stoppable' do
+        expect(page).not_to have_selector('.stop-env-link')
       end
     end
 
-    context 'with deployments' do
-      given(:project) { create(:project) }
+    context 'when there are deployments' do
+      given(:project) { create(:project, :repository) }
 
-      given(:deployment) do
+      given!(:deployment) do
         create(:deployment, environment: environment,
                             sha: project.commit.id)
       end
 
-      scenario 'does show deployment SHA' do
-        expect(page).to have_link(deployment.short_sha)
-      end
+      it 'shows deployment SHA and internal ID' do
+        visit_environments(project)
 
-      scenario 'does show deployment internal id' do
+        expect(page).to have_link(deployment.short_sha)
         expect(page).to have_content(deployment.iid)
       end
 
-      context 'with build and manual actions' do
-        given(:pipeline) { create(:ci_pipeline, project: project) }
-        given(:build) { create(:ci_build, pipeline: pipeline) }
+      context 'when builds and manual actions are present' do
+        given!(:pipeline) { create(:ci_pipeline, project: project) }
+        given!(:build) { create(:ci_build, pipeline: pipeline) }
 
-        given(:action) do
+        given!(:action) do
           create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production')
         end
 
-        given(:deployment) do
+        given!(:deployment) do
           create(:deployment, environment: environment,
                               deployable: build,
                               sha: project.commit.id)
         end
 
-        scenario 'does show a play button' do
+        before do
+          visit_environments(project)
+        end
+
+        it 'shows a play button' do
           find('.js-dropdown-play-icon-container').click
+
           expect(page).to have_content(action.name.humanize)
         end
 
-        scenario 'does allow to play manual action', js: true do
+        it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { find('.js-manual-action-link').trigger('click') }
+          expect { find('.js-manual-action-link').click }
             .not_to change { Ci::Pipeline.count }
         end
 
-        scenario 'does show build name and id' do
+        it 'shows build name and id' do
           expect(page).to have_link("#{build.name} ##{build.id}")
         end
 
-        scenario 'does not show stop button' do
+        it 'shows a stop button' do
           expect(page).not_to have_selector('.stop-env-link')
         end
 
-        scenario 'does not show external link button' do
+        it 'does not show external link button' do
           expect(page).not_to have_css('external-url')
         end
 
-        scenario 'does not show terminal button' do
+        it 'does not show terminal button' do
           expect(page).not_to have_terminal_button
         end
 
@@ -176,7 +178,7 @@ feature 'Environments page', :feature, :js do
           given(:build) { create(:ci_build, pipeline: pipeline) }
           given(:deployment) { create(:deployment, environment: environment, deployable: build) }
 
-          scenario 'does show an external link button' do
+          it 'shows an external link button' do
             expect(page).to have_link(nil, href: environment.external_url)
           end
         end
@@ -192,95 +194,147 @@ feature 'Environments page', :feature, :js do
                                 on_stop: 'close_app')
           end
 
-          scenario 'does show stop button' do
+          it 'shows a stop button' do
             expect(page).to have_selector('.stop-env-link')
           end
 
-          context 'for reporter' do
+          context 'when user is a reporter' do
             let(:role) { :reporter }
 
-            scenario 'does not show stop button' do
+            it 'does not show stop button' do
               expect(page).not_to have_selector('.stop-env-link')
             end
           end
         end
 
-        context 'with terminal' do
-          let(:project) { create(:kubernetes_project, :test_repo) }
+        context 'when kubernetes terminal is available' do
+          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+            context 'for project master' do
+              let(:role) { :master }
 
-          context 'for project master' do
-            let(:role) { :master }
+              it 'shows the terminal button' do
+                expect(page).to have_terminal_button
+              end
+            end
 
-            scenario 'it shows the terminal button' do
-              expect(page).to have_terminal_button
+            context 'when user is a developer' do
+              let(:role) { :developer }
+
+              it 'does not show terminal button' do
+                expect(page).not_to have_terminal_button
+              end
             end
           end
 
-          context 'for developer' do
-            let(:role) { :developer }
+          context 'when user configured kubernetes from Integration > Kubernetes' do
+            let(:project) { create(:kubernetes_project, :test_repo) }
 
-            scenario 'does not show terminal button' do
-              expect(page).not_to have_terminal_button
-            end
+            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          end
+
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [create(:project, :repository)]) }
+            let(:project) { cluster.project }
+
+            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
           end
         end
       end
     end
   end
 
-  scenario 'does have a New environment button' do
+  it 'does have a new environment button' do
+    visit_environments(project)
+
     expect(page).to have_link('New environment')
   end
 
-  describe 'when creating a new environment' do
+  describe 'creating a new environment' do
     before do
       visit_environments(project)
     end
 
-    context 'when logged as developer' do
-      before do
-        within(".top-area") do
-          click_link 'New environment'
-        end
+    context 'user is a developer' do
+      given(:role) { :developer }
+
+      scenario 'developer creates a new environment with a valid name' do
+        within(".top-area") { click_link 'New environment' }
+        fill_in('Name', with: 'production')
+        click_on 'Save'
+
+        expect(page).to have_content('production')
       end
 
-      context 'for valid name' do
-        before do
-          fill_in('Name', with: 'production')
-          click_on 'Save'
-        end
+      scenario 'developer creates a new environmetn with invalid name' do
+        within(".top-area") { click_link 'New environment' }
+        fill_in('Name', with: 'name,with,commas')
+        click_on 'Save'
 
-        scenario 'does create a new pipeline' do
-          expect(page).to have_content('production')
-        end
-      end
-
-      context 'for invalid name' do
-        before do
-          fill_in('Name', with: 'name,with,commas')
-          click_on 'Save'
-        end
-
-        scenario 'does show errors' do
-          expect(page).to have_content('Name can contain only letters')
-        end
+        expect(page).to have_content('Name can contain only letters')
       end
     end
 
-    context 'when logged as reporter' do
+    context 'user is a reporter' do
       given(:role) { :reporter }
 
-      scenario 'does not have a New environment link' do
+      scenario 'reporters tries to create a new environment' do
         expect(page).not_to have_link('New environment')
       end
     end
   end
 
-  def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+  describe 'environments folders' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging/review-1',
+                           state: :available)
+      create(:environment, project: project,
+                           name: 'staging/review-2',
+                           state: :available)
+    end
+
+    scenario 'users unfurls an environment folder' do
+      visit_environments(project)
+
+      expect(page).not_to have_content 'review-1'
+      expect(page).not_to have_content 'review-2'
+      expect(page).to have_content 'staging 2'
+
+      within('.folder-row') do
+        find('.folder-name', text: 'staging').click
+      end
+
+      expect(page).to have_content 'review-1'
+      expect(page).to have_content 'review-2'
+    end
   end
 
-  def visit_environments(project)
-    visit namespace_project_environments_path(project.namespace, project)
+  describe 'environments folders view' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging.review/review-1',
+                           state: :available)
+      create(:environment, project: project,
+                           name: 'staging.review/review-2',
+                           state: :available)
+    end
+
+    scenario 'user opens folder view' do
+      visit folder_project_environments_path(project, 'staging.review')
+      wait_for_requests
+
+      expect(page).to have_content('Environments / staging.review')
+      expect(page).to have_content('review-1')
+      expect(page).to have_content('review-2')
+    end
+  end
+
+  def have_terminal_button
+    have_link(nil, href: terminal_project_environment_path(project, environment))
+  end
+
+  def visit_environments(project, **opts)
+    visit project_environments_path(project, **opts)
+    wait_for_requests
   end
 end

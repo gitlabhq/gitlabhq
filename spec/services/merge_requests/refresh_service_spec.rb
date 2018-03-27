@@ -1,9 +1,11 @@
 require 'spec_helper'
 
-describe MergeRequests::RefreshService, services: true do
+describe MergeRequests::RefreshService do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:service) { MergeRequests::RefreshService }
+  let(:service) { described_class }
 
   describe '#execute' do
     before do
@@ -12,7 +14,8 @@ describe MergeRequests::RefreshService, services: true do
       group.add_owner(@user)
 
       @project = create(:project, :repository, namespace: group)
-      @fork_project = Projects::ForkService.new(@project, @user).execute
+      @fork_project = fork_project(@project, @user, repository: true)
+
       @merge_request = create(:merge_request,
                               source_project: @project,
                               source_branch: 'master',
@@ -52,13 +55,14 @@ describe MergeRequests::RefreshService, services: true do
 
       before do
         allow(refresh_service).to receive(:execute_hooks)
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        reload_mrs
       end
 
       it 'executes hooks with update action' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        reload_mrs
+
         expect(refresh_service).to have_received(:execute_hooks)
-          .with(@merge_request, 'update', @oldrev)
+          .with(@merge_request, 'update', old_rev: @oldrev)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
@@ -68,6 +72,48 @@ describe MergeRequests::RefreshService, services: true do
         expect(@fork_merge_request.notes).to be_empty
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+      end
+
+      it 'reloads source branch MRs memoization' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+        expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }.to change {
+          refresh_service.instance_variable_get("@source_merge_requests").first.merge_request_diff
+        }
+      end
+
+      context 'when source branch ref does not exists' do
+        before do
+          DeleteBranchService.new(@project, @user).execute(@merge_request.source_branch)
+        end
+
+        it 'closes MRs without source branch ref' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .to change { @merge_request.reload.state }
+            .from('opened')
+            .to('closed')
+
+          expect(@fork_merge_request.reload).to be_open
+        end
+
+        it 'does not change the merge request diff' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .not_to change { @merge_request.reload.merge_request_diff }
+        end
+      end
+    end
+
+    context 'when pipeline exists for the source branch' do
+      let!(:pipeline) { create(:ci_empty_pipeline, ref: @merge_request.source_branch, project: @project, sha: @commits.first.sha)}
+
+      subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
+
+      it 'updates the head_pipeline_id for @merge_request' do
+        expect { subject }.to change { @merge_request.reload.head_pipeline_id }.from(nil).to(pipeline.id)
+      end
+
+      it 'does not update the head_pipeline_id for @fork_merge_request' do
+        expect { subject }.not_to change { @fork_merge_request.reload.head_pipeline_id }
       end
     end
 
@@ -84,7 +130,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it 'executes hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks)
-          .with(@merge_request, 'update', @oldrev)
+          .with(@merge_request, 'update', old_rev: @oldrev)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
@@ -98,27 +144,59 @@ describe MergeRequests::RefreshService, services: true do
     end
 
     context 'push to origin repo target branch' do
-      before do
-        service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-        reload_mrs
+      context 'when all MRs to the target branch had diffs' do
+        before do
+          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+        end
+
+        it 'updates the merge state' do
+          expect(@merge_request.notes.last.note).to include('merged')
+          expect(@merge_request).to be_merged
+          expect(@fork_merge_request).to be_merged
+          expect(@fork_merge_request.notes.last.note).to include('merged')
+          expect(@build_failed_todo).to be_done
+          expect(@fork_build_failed_todo).to be_done
+        end
       end
 
-      it 'updates the merge state' do
-        expect(@merge_request.notes.last.note).to include('merged')
-        expect(@merge_request).to be_merged
-        expect(@fork_merge_request).to be_merged
-        expect(@fork_merge_request.notes.last.note).to include('merged')
-        expect(@build_failed_todo).to be_done
-        expect(@fork_build_failed_todo).to be_done
+      context 'when an MR to be closed was empty already' do
+        let!(:empty_fork_merge_request) do
+          create(:merge_request,
+                 source_project: @fork_project,
+                 source_branch: 'master',
+                 target_branch: 'master',
+                 target_project: @project)
+        end
+
+        before do
+          # This spec already has a fake push, so pretend that we were targeting
+          # feature all along.
+          empty_fork_merge_request.update_columns(target_branch: 'feature')
+
+          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+          empty_fork_merge_request.reload
+        end
+
+        it 'only updates the non-empty MRs' do
+          expect(@merge_request).to be_merged
+          expect(@merge_request.notes.last.note).to include('merged')
+
+          expect(@fork_merge_request).to be_merged
+          expect(@fork_merge_request.notes.last.note).to include('merged')
+
+          expect(empty_fork_merge_request).to be_open
+          expect(empty_fork_merge_request.merge_request_diff.state).to eq('empty')
+          expect(empty_fork_merge_request.notes).to be_empty
+        end
       end
     end
 
     context 'manual merge of source branch' do
       before do
         # Merge master -> feature branch
-        author = { email: 'test@gitlab.com', time: Time.now, name: "Me" }
-        commit_options = { message: 'Test message', committer: author, author: author }
-        @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, commit_options)
+        @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, 'Test message')
         commit = @project.repository.commit('feature')
         service.new(@project, @user).execute(@oldrev, commit.id, 'refs/heads/feature')
         reload_mrs
@@ -147,7 +225,7 @@ describe MergeRequests::RefreshService, services: true do
 
         it 'executes hooks with update action' do
           expect(refresh_service).to have_received(:execute_hooks)
-            .with(@fork_merge_request, 'update', @oldrev)
+            .with(@fork_merge_request, 'update', old_rev: @oldrev)
 
           expect(@merge_request.notes).to be_empty
           expect(@merge_request).to be_open
@@ -229,7 +307,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it 'refreshes the merge request' do
         expect(refresh_service).to receive(:execute_hooks)
-                                       .with(@fork_merge_request, 'update', Gitlab::Git::BLANK_SHA)
+                                       .with(@fork_merge_request, 'update', old_rev: Gitlab::Git::BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
 
         refresh_service.execute(Gitlab::Git::BLANK_SHA, @newrev, 'refs/heads/master')
@@ -251,8 +329,8 @@ describe MergeRequests::RefreshService, services: true do
       let(:commit) { project.commit }
 
       before do
-        project.team << [commit_author, :developer]
-        project.team << [user, :developer]
+        project.add_developer(commit_author)
+        project.add_developer(user)
 
         allow(commit).to receive_messages(
           safe_message: "Closes #{issue.to_reference}",
@@ -279,8 +357,7 @@ describe MergeRequests::RefreshService, services: true do
 
       context 'when the merge request is sourced from a different project' do
         it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
-          forked_project = create(:project, :repository)
-          create(:forked_project_link, forked_to_project: forked_project, forked_from_project: @project)
+          forked_project = fork_project(@project, @user, repository: true)
 
           merge_request = create(:merge_request,
                                  target_branch: 'master',
@@ -323,37 +400,21 @@ describe MergeRequests::RefreshService, services: true do
       end
 
       it 'references the commit that caused the Work in Progress status' do
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        allow(refresh_service).to receive(:find_new_commits)
-        refresh_service.instance_variable_set("@commits", [
-          double(
-            id: 'aaaaaaa',
-            sha: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e',
-            short_id: 'aaaaaaa',
-            title: 'Fix issue',
-            work_in_progress?: false
-          ),
-          double(
-            id: 'bbbbbbb',
-            sha: '498214de67004b1da3d820901307bed2a68a8ef6',
-            short_id: 'bbbbbbb',
-            title: 'fixup! Fix issue',
-            work_in_progress?: true,
-            to_reference: 'bbbbbbb'
-          ),
-          double(
-            id: 'ccccccc',
-            sha: '1b12f15a11fc6e62177bef08f47bc7b5ce50b141',
-            short_id: 'ccccccc',
-            title: 'fixup! Fix issue',
-            work_in_progress?: true,
-            to_reference: 'ccccccc'
-          )
-        ])
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/wip')
-        reload_mrs
-        expect(@merge_request.notes.last.note).to eq(
-          "marked as a **Work In Progress** from bbbbbbb"
+        wip_merge_request = create(:merge_request,
+                                   source_project: @project,
+                                   source_branch: 'wip',
+                                   target_branch: 'master',
+                                   target_project: @project)
+
+        commits = wip_merge_request.commits
+        oldrev = commits.last.id
+        newrev = commits.first.id
+        wip_commit = wip_merge_request.commits.find(&:work_in_progress?)
+
+        refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
+
+        expect(wip_merge_request.reload.notes.last.note).to eq(
+          "marked as a **Work In Progress** from #{wip_commit.id}"
         )
       end
 

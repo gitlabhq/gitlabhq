@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Tree, models: true do
+describe Tree do
   let(:repository) { create(:project, :repository).repository }
   let(:sha) { repository.root_ref }
 

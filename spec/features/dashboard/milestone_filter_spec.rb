@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard > milestone filter', :feature, :js do
+feature 'Dashboard > milestone filter', :js do
   include FilterItemSelectHelper
 
   let(:user) { create(:user) }
@@ -11,7 +11,7 @@ feature 'Dashboard > milestone filter', :feature, :js do
   let!(:issue2) { create :issue, author: user, project: project, milestone: milestone2 }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     visit issues_dashboard_path(author_id: user.id)
   end
 

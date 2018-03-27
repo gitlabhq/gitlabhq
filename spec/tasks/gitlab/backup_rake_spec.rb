@@ -4,7 +4,15 @@ require 'rake'
 describe 'gitlab:app namespace rake task' do
   let(:enable_registry) { true }
 
-  before :all do
+  def tars_glob
+    Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
+  end
+
+  def backup_tar
+    tars_glob.first
+  end
+
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/helpers'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
@@ -19,7 +27,14 @@ describe 'gitlab:app namespace rake task' do
   end
 
   before do
+    stub_env('force', 'yes')
+    FileUtils.rm(tars_glob, force: true)
+    reenable_backup_sub_tasks
     stub_container_registry_config(enabled: enable_registry)
+  end
+
+  after do
+    FileUtils.rm(tars_glob, force: true)
   end
 
   def run_rake_task(task_name)
@@ -34,22 +49,15 @@ describe 'gitlab:app namespace rake task' do
   end
 
   describe 'backup_restore' do
-    before do
-      # avoid writing task output to spec progress
-      allow($stdout).to receive :write
-    end
-
     context 'gitlab version' do
       before do
         allow(Dir).to receive(:glob).and_return(['1_gitlab_backup.tar'])
-        allow(Dir).to receive(:chdir)
         allow(File).to receive(:exist?).and_return(true)
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)
         allow(Rake::Task["gitlab:shell:setup"])
           .to receive(:invoke).and_return(true)
-        ENV['force'] = 'yes'
       end
 
       let(:gitlab_version) { Gitlab::VERSION }
@@ -58,8 +66,9 @@ describe 'gitlab:app namespace rake task' do
         allow(YAML).to receive(:load_file)
           .and_return({ gitlab_version: "not #{gitlab_version}" })
 
-        expect { run_rake_task('gitlab:backup:restore') }
-          .to raise_error(SystemExit)
+        expect do
+          expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
+        end.to raise_error(SystemExit)
       end
 
       it 'invokes restoration on match' do
@@ -75,72 +84,33 @@ describe 'gitlab:app namespace rake task' do
         expect(Rake::Task['gitlab:backup:lfs:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:registry:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
-        expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
+        expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
       end
     end
   end # backup_restore task
 
   describe 'backup' do
-    before(:all) do
-      ENV['force'] = 'yes'
-    end
-
-    def tars_glob
-      Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
-    end
-
-    def create_backup
-      FileUtils.rm tars_glob
-
+    before do
       # This reconnect makes our project fixture disappear, breaking the restore. Stub it out.
       allow(ActiveRecord::Base.connection).to receive(:reconnect!)
-
-      # Redirect STDOUT and run the rake task
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      reenable_backup_sub_tasks
-      run_rake_task('gitlab:backup:create')
-      reenable_backup_sub_tasks
-      $stdout = orig_stdout
-
-      @backup_tar = tars_glob.first
-    end
-
-    def restore_backup
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      reenable_backup_sub_tasks
-      run_rake_task('gitlab:backup:restore')
-      reenable_backup_sub_tasks
-      $stdout = orig_stdout
     end
 
     describe 'backup creation and deletion using custom_hooks' do
       let(:project) { create(:project, :repository) }
-      let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
+      let(:user_backup_path) { "repositories/#{project.disk_path}" }
 
-      before(:each) do
-        @origin_cd = Dir.pwd
-
-        path = File.join(project.repository.path_to_repo, filename)
+      before do
+        stub_env('SKIP', 'db')
+        path = File.join(project.repository.path_to_repo, 'custom_hooks')
         FileUtils.mkdir_p(path)
         FileUtils.touch(File.join(path, "dummy.txt"))
-
-        ENV["SKIP"] = "db"
-        create_backup
-      end
-
-      after(:each) do
-        ENV["SKIP"] = ""
-        FileUtils.rm(@backup_tar)
-        Dir.chdir(@origin_cd)
       end
 
       context 'project uses custom_hooks and successfully creates backup' do
-        let(:filename) { "custom_hooks" }
-
         it 'creates custom_hooks.tar and project bundle' do
-          tar_contents, exit_status = Gitlab::Popen.popen(%W{tar -tvf #{@backup_tar}})
+          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+          tar_contents, exit_status = Gitlab::Popen.popen(%W{tar -tvf #{backup_tar}})
 
           expect(exit_status).to eq(0)
           expect(tar_contents).to match(user_backup_path)
@@ -149,47 +119,43 @@ describe 'gitlab:app namespace rake task' do
         end
 
         it 'restores files correctly' do
-          restore_backup
+          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+          expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
 
-          expect(Dir.entries(File.join(project.repository.path, "custom_hooks"))).to include("dummy.txt")
+          expect(Dir.entries(File.join(project.repository.path, 'custom_hooks'))).to include("dummy.txt")
         end
       end
     end
 
     context 'tar creation' do
-      before do
-        create_backup
-      end
-
-      after do
-        FileUtils.rm(@backup_tar)
-      end
-
       context 'archive file permissions' do
         it 'sets correct permissions on the tar file' do
-          expect(File.exist?(@backup_tar)).to be_truthy
-          expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100600')
+          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+          expect(File.exist?(backup_tar)).to be_truthy
+          expect(File::Stat.new(backup_tar).mode.to_s(8)).to eq('100600')
         end
 
         context 'with custom archive_permissions' do
           before do
             allow(Gitlab.config.backup).to receive(:archive_permissions).and_return(0651)
-            # We created a backup in a before(:all) so it got the default permissions.
-            # We now need to do some work to create a _new_ backup file using our stub.
-            FileUtils.rm(@backup_tar)
-            create_backup
           end
 
           it 'uses the custom permissions' do
-            expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100651')
+            expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+            expect(File::Stat.new(backup_tar).mode.to_s(8)).to eq('100651')
           end
         end
       end
 
       it 'sets correct permissions on the tar contents' do
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
         tar_contents, exit_status = Gitlab::Popen.popen(
-          %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
+          %W{tar -tvf #{backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
         )
+
         expect(exit_status).to eq(0)
         expect(tar_contents).to match('db/')
         expect(tar_contents).to match('uploads.tar.gz')
@@ -199,10 +165,12 @@ describe 'gitlab:app namespace rake task' do
         expect(tar_contents).to match('pages.tar.gz')
         expect(tar_contents).to match('lfs.tar.gz')
         expect(tar_contents).to match('registry.tar.gz')
-        expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
+        expect(tar_contents).not_to match(%r{^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)/$})
       end
 
       it 'deletes temp directories' do
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
         temp_dirs = Dir.glob(
           File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,pages,lfs,registry}')
         )
@@ -214,9 +182,12 @@ describe 'gitlab:app namespace rake task' do
         let(:enable_registry) { false }
 
         it 'does not create registry.tar.gz' do
+          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
           tar_contents, exit_status = Gitlab::Popen.popen(
-            %W{tar -tvf #{@backup_tar}}
+            %W{tar -tvf #{backup_tar}}
           )
+
           expect(exit_status).to eq(0)
           expect(tar_contents).not_to match('registry.tar.gz')
         end
@@ -224,79 +195,67 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
-      let(:project_a) { create(:project, :repository, repository_storage: 'default') }
-      let(:project_b) { create(:project, :repository, repository_storage: 'custom') }
+      let(:storage_default) do
+        Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/default_storage'))
+      end
+      let(:test_second_storage) do
+        Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/custom_storage'))
+      end
+      let(:storages) do
+        {
+          'default' => storage_default,
+          'test_second_storage' => test_second_storage
+        }
+      end
+
+      before(:all) do
+        @default_storage_hash = Gitlab.config.repositories.storages.default.to_h
+      end
 
       before do
-        FileUtils.mkdir('tmp/tests/default_storage')
-        FileUtils.mkdir('tmp/tests/custom_storage')
-        gitaly_address = Gitlab.config.repositories.storages.default.gitaly_address
-        storages = {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
-          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
-        }
+        # We only need a backup of the repositories for this test
+        stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,registry')
+        FileUtils.mkdir(Settings.absolute('tmp/tests/default_storage'))
+        FileUtils.mkdir(Settings.absolute('tmp/tests/custom_storage'))
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-
-        # Create the projects now, after mocking the settings but before doing the backup
-        project_a
-        project_b
 
         # Avoid asking gitaly about the root ref (which will fail beacuse of the
         # mocked storages)
-        allow_any_instance_of(Repository).to receive(:empty_repo?).and_return(false)
-
-        # We only need a backup of the repositories for this test
-        ENV["SKIP"] = "db,uploads,builds,artifacts,lfs,registry"
-        create_backup
+        allow_any_instance_of(Repository).to receive(:empty?).and_return(false)
       end
 
       after do
-        FileUtils.rm_rf('tmp/tests/default_storage')
-        FileUtils.rm_rf('tmp/tests/custom_storage')
-        FileUtils.rm(@backup_tar)
+        FileUtils.rm_rf(Settings.absolute('tmp/tests/default_storage'))
+        FileUtils.rm_rf(Settings.absolute('tmp/tests/custom_storage'))
       end
 
       it 'includes repositories in all repository storages' do
+        project_a = create(:project, :repository, repository_storage: 'default')
+        project_b = create(:project, :repository, repository_storage: 'test_second_storage')
+
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
         tar_contents, exit_status = Gitlab::Popen.popen(
-          %W{tar -tvf #{@backup_tar} repositories}
+          %W{tar -tvf #{backup_tar} repositories}
         )
+
         expect(exit_status).to eq(0)
-        expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
-        expect(tar_contents).to match("repositories/#{project_b.path_with_namespace}.bundle")
+        expect(tar_contents).to match("repositories/#{project_a.disk_path}.bundle")
+        expect(tar_contents).to match("repositories/#{project_b.disk_path}.bundle")
       end
     end
   end # backup_create task
 
   describe "Skipping items" do
-    def tars_glob
-      Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
-    end
-
-    before :all do
-      @origin_cd = Dir.pwd
-
-      reenable_backup_sub_tasks
-
-      FileUtils.rm tars_glob
-
-      # Redirect STDOUT and run the rake task
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      ENV["SKIP"] = "repositories,uploads"
-      run_rake_task('gitlab:backup:create')
-      $stdout = orig_stdout
-
-      @backup_tar = tars_glob.first
-    end
-
-    after :all do
-      FileUtils.rm(@backup_tar)
-      Dir.chdir @origin_cd
+    before do
+      stub_env('SKIP', 'repositories,uploads')
     end
 
     it "does not contain skipped item" do
+      expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
       tar_contents, _exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
+        %W{tar -tvf #{backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
       )
 
       expect(tar_contents).to match('db/')
@@ -310,9 +269,10 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'does not invoke repositories restore' do
+      expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
-      allow($stdout).to receive :write
 
       expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
       expect(Rake::Task['gitlab:backup:db:restore']).to receive :invoke
@@ -324,38 +284,15 @@ describe 'gitlab:app namespace rake task' do
       expect(Rake::Task['gitlab:backup:lfs:restore']).to receive :invoke
       expect(Rake::Task['gitlab:backup:registry:restore']).to receive :invoke
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
-      expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
+      expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
     end
   end
 
   describe "Human Readable Backup Name" do
-    def tars_glob
-      Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
-    end
-
-    before :all do
-      @origin_cd = Dir.pwd
-
-      reenable_backup_sub_tasks
-
-      FileUtils.rm tars_glob
-
-      # Redirect STDOUT and run the rake task
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      run_rake_task('gitlab:backup:create')
-      $stdout = orig_stdout
-
-      @backup_tar = tars_glob.first
-    end
-
-    after :all do
-      FileUtils.rm(@backup_tar)
-      Dir.chdir @origin_cd
-    end
-
     it 'name has human readable time' do
-      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
+      expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+      expect(backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
     end
   end
 end # gitlab:app namespace

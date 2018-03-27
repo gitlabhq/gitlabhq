@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::Filter::UserReferenceFilter, lib: true do
+describe Banzai::Filter::UserReferenceFilter do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let(:user)      { create(:user) }
   let(:reference) { user.to_reference }
 
@@ -34,20 +34,20 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     let(:reference) { User.reference_prefix + 'all' }
 
     before do
-      project.team << [project.creator, :developer]
+      project.add_developer(project.creator)
     end
 
     it 'supports a special @all mention' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       doc = reference_filter("Hey #{reference}", author: user)
 
       expect(doc.css('a').length).to eq 1
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_url(project.namespace, project)
+        .to eq urls.project_url(project)
     end
 
     it 'includes a data-author attribute when there is an author' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       doc = reference_filter(reference, author: user)
 
       expect(doc.css('a').first.attr('data-author')).to eq(user.id.to_s)
@@ -146,7 +146,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
   it 'links with adjacent text' do
     doc = reference_filter("Mention me (#{reference}.)")
-    expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
+    expect(doc.to_html).to match(%r{\(<a.+>#{reference}</a>\.\)})
   end
 
   it 'includes default classes' do
@@ -172,7 +172,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("Mention me (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>User<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>User</a>\.\)})
     end
 
     it 'includes a data-user attribute' do
@@ -205,6 +205,39 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
         expect(doc).not_to include('a')
       end
+    end
+  end
+
+  context 'in group context' do
+    let(:group) { create(:group) }
+    let(:group_member) { create(:user) }
+
+    before do
+      group.add_developer(group_member)
+    end
+
+    let(:context) { { author: group_member, project: nil, group: group } }
+
+    it 'supports a special @all mention' do
+      reference = User.reference_prefix + 'all'
+      doc = reference_filter("Hey #{reference}", context)
+
+      expect(doc.css('a').length).to eq(1)
+      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+    end
+
+    it 'supports mentioning a single user' do
+      reference = group_member.to_reference
+      doc = reference_filter("Hey #{reference}", context)
+
+      expect(doc.css('a').first.attr('href')).to eq urls.user_url(group_member)
+    end
+
+    it 'supports mentioning a group' do
+      reference = group.to_reference
+      doc = reference_filter("Hey #{reference}", context)
+
+      expect(doc.css('a').first.attr('href')).to eq urls.user_url(group)
     end
   end
 

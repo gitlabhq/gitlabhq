@@ -7,7 +7,7 @@
 class LegacyDiffNote < Note
   include NoteOnDiff
 
-  serialize :st_diff # rubocop:disable Cop/ActiverecordSerialize
+  serialize :st_diff # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :line_code, presence: true, line_code: true
 
@@ -38,11 +38,7 @@ class LegacyDiffNote < Note
   end
 
   def diff_line
-    @diff_line ||= diff_file.line_for_line_code(self.line_code) if diff_file
-  end
-
-  def for_line?(line)
-    line.discussable? && diff_file.line_code(line) == self.line_code
+    @diff_line ||= diff_file&.line_for_line_code(self.line_code)
   end
 
   def original_line_code

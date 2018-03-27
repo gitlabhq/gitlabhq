@@ -1,7 +1,7 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :subscription do
-    user
-    project factory: :empty_project
+    project
+    user { project.creator }
     subscribable factory: :issue
   end
 end

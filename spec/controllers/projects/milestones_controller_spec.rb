@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MilestonesController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
@@ -11,7 +11,7 @@ describe Projects::MilestonesController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
     controller.instance_variable_set(:@project, project)
   end
 
@@ -27,7 +27,41 @@ describe Projects::MilestonesController do
     it 'shows milestone page' do
       view_milestone
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
+    end
+  end
+
+  describe "#index" do
+    context "as html" do
+      before do
+        get :index, namespace_id: project.namespace.id, project_id: project.id
+      end
+
+      it "queries only projects milestones" do
+        milestones = assigns(:milestones)
+
+        expect(milestones.count).to eq(1)
+        expect(milestones.where(project_id: nil)).to be_empty
+      end
+    end
+
+    context "as json" do
+      let!(:group) { create(:group, :public) }
+      let!(:group_milestone) { create(:milestone, group: group) }
+      let!(:group_member) { create(:group_member, group: group, user: user) }
+
+      before do
+        project.update(namespace: group)
+        get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+      end
+
+      it "queries projects milestones and groups milestones" do
+        milestones = assigns(:milestones)
+
+        expect(milestones.count).to eq(2)
+        expect(milestones.where(project_id: nil).first).to eq(group_milestone)
+        expect(milestones.where(group_id: nil).first).to eq(milestone)
+      end
     end
   end
 
@@ -50,6 +84,32 @@ describe Projects::MilestonesController do
       # Check system note left for milestone removal
       last_note = project.issues.find(issue.id).notes[-1].note
       expect(last_note).to eq('removed milestone')
+    end
+  end
+
+  describe '#promote' do
+    context 'promotion succeeds' do
+      before do
+        group = create(:group)
+        group.add_developer(user)
+        milestone.project.update(namespace: group)
+      end
+
+      it 'shows group milestone' do
+        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+
+        expect(flash[:notice]).to eq("#{milestone.title} promoted to group milestone")
+        expect(response).to redirect_to(project_milestones_path(project))
+      end
+    end
+
+    context 'promotion fails' do
+      it 'shows project milestone' do
+        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+
+        expect(response).to redirect_to(project_milestone_path(project, milestone))
+        expect(flash[:alert]).to eq('Promotion failed - Project does not belong to a group.')
+      end
     end
   end
 end

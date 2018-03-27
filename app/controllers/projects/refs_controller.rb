@@ -13,21 +13,21 @@ class Projects::RefsController < Projects::ApplicationController
         new_path =
           case params[:destination]
           when "tree"
-            namespace_project_tree_path(@project.namespace, @project, @id)
+            project_tree_path(@project, @id)
           when "blob"
-            namespace_project_blob_path(@project.namespace, @project, @id)
+            project_blob_path(@project, @id)
           when "graph"
-            namespace_project_network_path(@project.namespace, @project, @id, @options)
+            project_network_path(@project, @id, @options)
           when "graphs"
-            namespace_project_graph_path(@project.namespace, @project, @id)
+            project_graph_path(@project, @id)
           when "find_file"
-            namespace_project_find_file_path(@project.namespace, @project, @id)
+            project_find_file_path(@project, @id)
           when "graphs_commits"
-            commits_namespace_project_graph_path(@project.namespace, @project, @id)
+            commits_project_graph_path(@project, @id)
           when "badges"
-            namespace_project_pipelines_settings_path(@project.namespace, @project, ref: @id)
+            project_pipelines_settings_path(@project, ref: @id)
           else
-            namespace_project_commits_path(@project.namespace, @project, @id)
+            project_commits_path(@project, @id)
           end
 
         redirect_to new_path
@@ -51,22 +51,33 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
 
-    @logs = contents[@offset, @limit].to_a.map do |content|
-      file = @path ? File.join(@path, content.name) : content.name
-      last_commit = @repo.last_commit_for_path(@commit.id, file)
-      {
-        file_name: content.name,
-        commit: last_commit
-      }
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
+    @logs = Gitlab::GitalyClient.allow_n_plus_1_calls do
+      contents[@offset, @limit].to_a.map do |content|
+        file = @path ? File.join(@path, content.name) : content.name
+        last_commit = @repo.last_commit_for_path(@commit.id, file)
+        commit_path = project_commit_path(@project, last_commit) if last_commit
+        {
+          file_name: content.name,
+          commit: last_commit,
+          type: content.type,
+          commit_path: commit_path
+        }
+      end
     end
 
     offset = (@offset + @limit)
     if contents.size > offset
-      @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: offset)
+      @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
     end
 
     respond_to do |format|
       format.html { render_404 }
+      format.json do
+        response.headers["More-Logs-Url"] = @more_log_url
+
+        render json: @logs
+      end
       format.js
     end
   end

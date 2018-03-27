@@ -19,6 +19,7 @@
     "organization",
     "last_sign_in_at",
     "confirmed_at",
+    "theme_id",
     "color_scheme_id",
     "projects_limit",
     "current_sign_in_at",
@@ -26,11 +27,9 @@
     "can_create_group",
     "can_create_project",
     "two_factor_enabled",
-    "external",
-    "private_token"
+    "external"
   ],
   "properties": {
-    "$ref": "full.json",
-    "private_token": { "type": "string" }
+    "$ref": "full.json"
   }
 }

@@ -1,18 +1,19 @@
 require 'spec_helper'
 
-describe MattermostSlashCommandsService, :models do
+describe MattermostSlashCommandsService do
   it_behaves_like "chat slash commands service"
 
   context 'Mattermost API' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:service) { project.build_mattermost_slash_commands_service }
     let(:user) { create(:user) }
 
     before do
-      Mattermost::Session.base_uri("http://mattermost.example.com")
+      session = Mattermost::Session.new(nil)
+      session.base_uri = 'http://mattermost.example.com'
 
       allow_any_instance_of(Mattermost::Client).to receive(:with_session)
-        .and_yield(Mattermost::Session.new(nil))
+        .and_yield(session)
     end
 
     describe '#configure' do
@@ -31,10 +32,10 @@ describe MattermostSlashCommandsService, :models do
               url: 'http://trigger.url',
               icon_url: 'http://icon.url/icon.png',
               auto_complete: true,
-              auto_complete_desc: "Perform common operations on: #{project.name_with_namespace}",
+              auto_complete_desc: "Perform common operations on: #{project.full_name}",
               auto_complete_hint: '[help]',
-              description: "Perform common operations on: #{project.name_with_namespace}",
-              display_name: "GitLab / #{project.name_with_namespace}",
+              description: "Perform common operations on: #{project.full_name}",
+              display_name: "GitLab / #{project.full_name}",
               method: 'P',
               username: 'GitLab'
             }.to_json)

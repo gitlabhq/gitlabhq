@@ -1,13 +1,11 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Issues::UpdateService, services: true do
-  include EmailHelpers
-
+describe Issues::UpdateService, :mailer do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
 
@@ -15,13 +13,14 @@ describe Issues::UpdateService, services: true do
     create(:issue, title: 'Old title',
                    description: "for #{user2.to_reference}",
                    assignee_ids: [user3.id],
-                   project: project)
+                   project: project,
+                   author: create(:user))
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -50,7 +49,8 @@ describe Issues::UpdateService, services: true do
           assignee_ids: [user2.id],
           state_event: 'close',
           label_ids: [label.id],
-          due_date: Date.tomorrow
+          due_date: Date.tomorrow,
+          discussion_locked: true
         }
       end
 
@@ -64,6 +64,14 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
+        expect(issue.discussion_locked).to be_truthy
+      end
+
+      it 'refreshes the number of open issues when the issue is made confidential', :use_clean_rails_memory_store_caching do
+        issue # make sure the issue is created first so our counts are correct.
+
+        expect { update_issue(confidential: true) }
+          .to change { project.open_issues_count }.from(1).to(0)
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do
@@ -82,7 +90,7 @@ describe Issues::UpdateService, services: true do
           issue.save
         end
 
-        opts[:move_between_iids] = [issue1.iid, issue2.iid]
+        opts[:move_between_ids] = [issue1.id, issue2.id]
 
         update_issue(opts)
 
@@ -92,7 +100,7 @@ describe Issues::UpdateService, services: true do
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
@@ -105,6 +113,7 @@ describe Issues::UpdateService, services: true do
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
+          expect(issue.discussion_locked).to be_falsey
         end
       end
 
@@ -142,6 +151,13 @@ describe Issues::UpdateService, services: true do
 
           expect(note).not_to be_nil
           expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
+        end
+
+        it 'creates system note about discussion lock' do
+          note = find_note('locked this issue')
+
+          expect(note).not_to be_nil
+          expect(note.note).to eq 'locked this issue'
         end
       end
     end
@@ -252,14 +268,38 @@ describe Issues::UpdateService, services: true do
         end
       end
 
-      context 'when the milestone change' do
-        before do
-          update_issue(milestone: create(:milestone))
+      context 'when a new assignee added' do
+        subject { update_issue(assignees: issue.assignees + [user2]) }
+
+        it 'creates only 1 new todo' do
+          expect { subject }.to change { Todo.count }.by(1)
         end
 
+        it 'creates a todo for new assignee' do
+          subject
+
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: issue.id,
+            target_type: issue.class.name,
+            action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq(1)
+        end
+      end
+
+      context 'when the milestone change' do
         it 'marks todos as done' do
+          update_issue(milestone: create(:milestone))
+
           expect(todo.reload.done?).to eq true
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do
@@ -279,7 +319,7 @@ describe Issues::UpdateService, services: true do
       let!(:subscriber) do
         create(:user).tap do |u|
           label.toggle_subscription(u, project)
-          project.team << [u, :developer]
+          project.add_developer(u)
         end
       end
 
@@ -480,7 +520,7 @@ describe Issues::UpdateService, services: true do
             feature_visibility_attr = :"#{issue.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
-            expect{ update_issue(assignee_ids: [assignee.id]) }.not_to change{ issue.assignees }
+            expect { update_issue(assignee_ids: [assignee.id]) }.not_to change { issue.assignees }
           end
         end
       end
@@ -488,7 +528,48 @@ describe Issues::UpdateService, services: true do
 
     context 'updating mentions' do
       let(:mentionable) { issue }
-      include_examples 'updating mentions', Issues::UpdateService
+      include_examples 'updating mentions', described_class
+    end
+
+    context 'duplicate issue' do
+      let(:canonical_issue) { create(:issue, project: project) }
+
+      context 'invalid canonical_issue_id' do
+        it 'does not call the duplicate service' do
+          expect(Issues::DuplicateService).not_to receive(:new)
+
+          update_issue(canonical_issue_id: 123456789)
+        end
+      end
+
+      context 'valid canonical_issue_id' do
+        it 'calls the duplicate service with both issues' do
+          expect_any_instance_of(Issues::DuplicateService)
+            .to receive(:execute).with(issue, canonical_issue)
+
+          update_issue(canonical_issue_id: canonical_issue.id)
+        end
+      end
+    end
+
+    context 'move issue to another project' do
+      let(:target_project) { create(:project) }
+
+      context 'valid project' do
+        before do
+          target_project.add_master(user)
+        end
+
+        it 'calls the move service with the proper issue and project' do
+          move_stub = instance_double(Issues::MoveService)
+          allow(Issues::MoveService).to receive(:new).and_return(move_stub)
+          allow(move_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+
+          expect(move_stub).to receive(:execute).with(issue, target_project)
+
+          update_issue(target_project: target_project)
+        end
+      end
     end
 
     include_examples 'issuable update service' do

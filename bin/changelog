@@ -14,54 +14,108 @@ Options = Struct.new(
   :dry_run,
   :force,
   :merge_request,
-  :title
+  :title,
+  :type
 )
+INVALID_TYPE = -1
 
 class ChangelogOptionParser
-  def self.parse(argv)
-    options = Options.new
+  Type = Struct.new(:name, :description)
+  TYPES = [
+    Type.new('added', 'New feature'),
+    Type.new('fixed', 'Bug fix'),
+    Type.new('changed', 'Feature change'),
+    Type.new('deprecated', 'New deprecation'),
+    Type.new('removed', 'Feature removal'),
+    Type.new('security', 'Security fix'),
+    Type.new('performance', 'Performance improvement'),
+    Type.new('other', 'Other')
+  ].freeze
+  TYPES_OFFSET = 1
 
-    parser = OptionParser.new do |opts|
-      opts.banner = "Usage: #{__FILE__} [options] [title]\n\n"
+  class << self
+    def parse(argv)
+      options = Options.new
 
-      # Note: We do not provide a shorthand for this in order to match the `git
-      # commit` interface
-      opts.on('--amend', 'Amend the previous commit') do |value|
-        options.amend = value
+      parser = OptionParser.new do |opts|
+        opts.banner = "Usage: #{__FILE__} [options] [title]\n\n"
+
+        # Note: We do not provide a shorthand for this in order to match the `git
+        # commit` interface
+        opts.on('--amend', 'Amend the previous commit') do |value|
+          options.amend = value
+        end
+
+        opts.on('-f', '--force', 'Overwrite an existing entry') do |value|
+          options.force = value
+        end
+
+        opts.on('-m', '--merge-request [integer]', Integer, 'Merge Request ID') do |value|
+          options.merge_request = value
+        end
+
+        opts.on('-n', '--dry-run', "Don't actually write anything, just print") do |value|
+          options.dry_run = value
+        end
+
+        opts.on('-u', '--git-username', 'Use Git user.name configuration as the author') do |value|
+          options.author = git_user_name if value
+        end
+
+        opts.on('-t', '--type [string]', String, "The category of the change, valid options are: #{TYPES.map(&:name).join(', ')}") do |value|
+          options.type = parse_type(value)
+        end
+
+        opts.on('-h', '--help', 'Print help message') do
+          $stdout.puts opts
+          exit
+        end
       end
 
-      opts.on('-f', '--force', 'Overwrite an existing entry') do |value|
-        options.force = value
-      end
+      parser.parse!(argv)
 
-      opts.on('-m', '--merge-request [integer]', Integer, 'Merge Request ID') do |value|
-        options.merge_request = value
-      end
+      # Title is everything that remains, but let's clean it up a bit
+      options.title = argv.join(' ').strip.squeeze(' ').tr("\r\n", '')
 
-      opts.on('-n', '--dry-run', "Don't actually write anything, just print") do |value|
-        options.dry_run = value
-      end
+      options
+    end
 
-      opts.on('-u', '--git-username', 'Use Git user.name configuration as the author') do |value|
-        options.author = git_user_name if value
-      end
+    def read_type
+      read_type_message
 
-      opts.on('-h', '--help', 'Print help message') do
-        $stdout.puts opts
-        exit
+      type = TYPES[$stdin.getc.to_i - TYPES_OFFSET]
+      assert_valid_type!(type)
+
+      type.name
+    end
+
+    private
+
+    def parse_type(name)
+      type_found = TYPES.find do |type|
+        type.name == name
+      end
+      type_found ? type_found.name : INVALID_TYPE
+    end
+
+    def read_type_message
+      $stdout.puts "\n>> Please specify the index for the category of your change:"
+      TYPES.each_with_index do |type, index|
+        $stdout.puts "#{index + TYPES_OFFSET}. #{type.description}"
+      end
+      $stdout.print "\n?> "
+    end
+
+    def assert_valid_type!(type)
+      unless type
+        $stderr.puts "Invalid category index, please select an index between 1 and #{TYPES.length}"
+        exit 1
       end
     end
 
-    parser.parse!(argv)
-
-    # Title is everything that remains, but let's clean it up a bit
-    options.title = argv.join(' ').strip.squeeze(' ').tr("\r\n", '')
-
-    options
-  end
-
-  def self.git_user_name
-    %x{git config user.name}.strip
+    def git_user_name
+      %x{git config user.name}.strip
+    end
   end
 end
 
@@ -72,8 +126,12 @@ class ChangelogEntry
     @options = options
 
     assert_feature_branch!
-    assert_new_file!
     assert_title!
+    assert_new_file!
+
+    # Read type from $stdin unless is already set
+    options.type ||= ChangelogOptionParser.read_type
+    assert_valid_type!
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"
     $stdout.puts contents
@@ -90,7 +148,8 @@ class ChangelogEntry
     yaml_content = YAML.dump(
       'title'         => title,
       'merge_request' => options.merge_request,
-      'author'        => options.author
+      'author'        => options.author,
+      'type'          => options.type
     )
     remove_trailing_whitespace(yaml_content)
   end
@@ -129,6 +188,12 @@ class ChangelogEntry
       " to use the title from the previous commit."
   end
 
+  def assert_valid_type!
+    return unless options.type && options.type == INVALID_TYPE
+
+    fail_with 'Invalid category given!'
+  end
+
   def title
     if options.title.empty?
       last_commit_subject
@@ -149,9 +214,10 @@ class ChangelogEntry
   end
 
   def unreleased_path
-    File.join('changelogs', 'unreleased').tap do |path|
-      path << '-ee' if ee?
-    end
+    path = File.join('changelogs', 'unreleased')
+    path = File.join('ee', path) if ee?
+
+    path
   end
 
   def ee?

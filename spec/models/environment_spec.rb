@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Environment, models: true do
-  set(:project) { create(:empty_project) }
+describe Environment do
+  let(:project) { create(:project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -18,10 +18,9 @@ describe Environment, models: true do
   it { is_expected.to validate_length_of(:slug).is_at_most(24) }
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
-  it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '.order_by_last_deployed_at' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
     let!(:environment3) { create(:environment, project: project) }
@@ -51,6 +50,28 @@ describe Environment, models: true do
       environment.stop
 
       expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+  end
+
+  describe '#folder_name' do
+    context 'when it is inside a folder' do
+      subject(:environment) do
+        create(:environment, name: 'staging/review-1')
+      end
+
+      it 'returns a top-level folder name' do
+        expect(environment.folder_name).to eq 'staging'
+      end
+    end
+
+    context 'when the environment if a top-level item itself' do
+      subject(:environment) do
+        create(:environment, name: 'production')
+      end
+
+      it 'returns an environment name' do
+        expect(environment.folder_name).to eq 'production'
+      end
     end
   end
 
@@ -120,28 +141,17 @@ describe Environment, models: true do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    context 'Gitaly find_ref_name feature disabled' do
-      it 'returns deployment id for the environment' do
-        expect(environment.first_deployment_for(commit)).to eq deployment1
-      end
-
-      it 'return nil when no deployment is found' do
-        expect(environment.first_deployment_for(head_commit)).to eq nil
-      end
+    it 'returns deployment id for the environment' do
+      expect(environment.first_deployment_for(commit.id)).to eq deployment1
     end
 
-    # TODO: Uncomment when feature is reenabled
-    # context 'Gitaly find_ref_name feature enabled' do
-    #   before do
-    #     allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:find_ref_name).and_return(true)
-    #   end
-    #
-    #   it 'calls GitalyClient' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:find_ref_name)
-    #
-    #     environment.first_deployment_for(commit)
-    #   end
-    # end
+    it 'return nil when no deployment is found' do
+      expect(environment.first_deployment_for(head_commit.id)).to eq nil
+    end
+
+    it 'returns a UTF-8 ref' do
+      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
+    end
   end
 
   describe '#environment_type' do
@@ -317,15 +327,28 @@ describe Environment, models: true do
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:kubernetes_project) }
+        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          context 'and a deployment' do
+            let!(:deployment) { create(:deployment, environment: environment) }
+            it { is_expected.to be_truthy }
+          end
 
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
+          context 'but no deployments' do
+            it { is_expected.to be_falsy }
+          end
         end
 
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          let(:project) { create(:kubernetes_project) }
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+          let(:project) { cluster.project }
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
       end
 
@@ -346,7 +369,6 @@ describe Environment, models: true do
   end
 
   describe '#terminals' do
-    let(:project) { create(:kubernetes_project) }
     subject { environment.terminals }
 
     context 'when the environment has terminals' do
@@ -354,12 +376,27 @@ describe Environment, models: true do
         allow(environment).to receive(:has_terminals?).and_return(true)
       end
 
-      it 'returns the terminals from the deployment service' do
-        expect(project.deployment_service)
-          .to receive(:terminals).with(environment)
-          .and_return(:fake_terminals)
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns the terminals from the deployment service' do
+          expect(project.deployment_platform)
+            .to receive(:terminals).with(environment)
+            .and_return(:fake_terminals)
 
-        is_expected.to eq(:fake_terminals)
+          is_expected.to eq(:fake_terminals)
+        end
+      end
+
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 
@@ -415,8 +452,8 @@ describe Environment, models: true do
       end
 
       it 'returns the metrics from the deployment service' do
-        expect(project.monitoring_service)
-          .to receive(:environment_metrics).with(environment)
+        expect(environment.prometheus_adapter)
+          .to receive(:query).with(:environment, environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -471,12 +508,12 @@ describe Environment, models: true do
 
     context 'when the environment has additional metrics' do
       before do
-        allow(environment).to receive(:has_additional_metrics?).and_return(true)
+        allow(environment).to receive(:has_metrics?).and_return(true)
       end
 
       it 'returns the additional metrics from the deployment service' do
-        expect(project.prometheus_service).to receive(:additional_environment_metrics)
-                                                .with(environment)
+        expect(environment.prometheus_adapter).to receive(:query)
+                                                .with(:additional_metrics_environment, environment)
                                                 .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -485,43 +522,10 @@ describe Environment, models: true do
 
     context 'when the environment does not have metrics' do
       before do
-        allow(environment).to receive(:has_additional_metrics?).and_return(false)
+        allow(environment).to receive(:has_metrics?).and_return(false)
       end
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#has_additional_metrics??' do
-    subject { environment.has_additional_metrics? }
-
-    context 'when the enviroment is available' do
-      context 'with a deployment service' do
-        let(:project) { create(:prometheus_project) }
-
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
-        end
-
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
-        end
-      end
-
-      context 'without a monitoring service' do
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'when the environment is unavailable' do
-      let(:project) { create(:prometheus_project) }
-
-      before do
-        environment.stop
-      end
-
-      it { is_expected.to be_falsy }
     end
   end
 
@@ -535,6 +539,15 @@ describe Environment, models: true do
       environment.update_attributes!(name: environment.name.reverse)
 
       expect(environment.slug).to eq(original_slug)
+    end
+
+    it "regenerates the slug if nil" do
+      environment = build(:environment, slug: nil)
+
+      new_slug = environment.slug
+
+      expect(new_slug).not_to be_nil
+      expect(environment.slug).to eq(new_slug)
     end
   end
 
@@ -564,6 +577,22 @@ describe Environment, models: true do
     end
   end
 
+  describe '#ref_path' do
+    subject(:environment) do
+      create(:environment, name: 'staging / review-1')
+    end
+
+    it 'returns a path that uses the slug and does not have spaces' do
+      expect(environment.ref_path).to start_with('refs/environments/staging-review-1-')
+    end
+
+    it "doesn't change when the slug is nil initially" do
+      environment.slug = nil
+
+      expect(environment.ref_path).to eq(environment.ref_path)
+    end
+  end
+
   describe '#external_url_for' do
     let(:source_path) { 'source/file.html' }
     let(:sha) { RepoHelpers.sample_commit.id }
@@ -590,6 +619,14 @@ describe Environment, models: true do
       it 'returns the full external URL' do
         expect(environment.external_url_for(source_path, sha)).to eq('http://example.com/file.html')
       end
+    end
+  end
+
+  describe '#prometheus_adapter' do
+    it 'calls prometheus adapter service' do
+      expect_any_instance_of(Prometheus::AdapterService).to receive(:prometheus_adapter)
+
+      subject.prometheus_adapter
     end
   end
 end

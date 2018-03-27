@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Template type dropdown selector', js: true do
-  let(:project) { create(:project) }
+feature 'Template type dropdown selector', :js do
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    gitlab_sign_in user
+    project.add_master(user)
+    sign_in user
   end
 
   context 'editing a non-matching file' do
@@ -31,7 +31,7 @@ feature 'Template type dropdown selector', js: true do
 
   context 'editing a matching file' do
     before do
-      visit namespace_project_edit_blob_path(project.namespace, project, File.join(project.default_branch, 'LICENSE'))
+      visit project_edit_blob_path(project, File.join(project.default_branch, 'LICENSE'))
     end
 
     scenario 'displayed' do
@@ -61,7 +61,7 @@ feature 'Template type dropdown selector', js: true do
 
   context 'creating a matching file' do
     before do
-      visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: '.gitignore')
+      visit project_new_blob_path(project, 'master', file_name: '.gitignore')
     end
 
     scenario 'is displayed' do
@@ -79,7 +79,7 @@ feature 'Template type dropdown selector', js: true do
 
   context 'creating a file' do
     before do
-      visit namespace_project_new_blob_path(project.namespace, project, project.default_branch)
+      visit project_new_blob_path(project, project.default_branch)
     end
 
     scenario 'type selector is shown' do
@@ -129,7 +129,7 @@ def check_type_selector_toggle_text(template_type)
 end
 
 def create_and_edit_file(file_name)
-  visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: file_name)
+  visit project_new_blob_path(project, 'master', file_name: file_name)
   click_button "Commit changes"
-  visit namespace_project_edit_blob_path(project.namespace, project, File.join(project.default_branch, file_name))
+  visit project_edit_blob_path(project, File.join(project.default_branch, file_name))
 end

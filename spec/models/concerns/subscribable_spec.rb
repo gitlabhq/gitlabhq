@@ -1,11 +1,17 @@
 require 'spec_helper'
 
 describe Subscribable, 'Subscribable' do
-  let(:project)  { create(:empty_project) }
+  let(:project)  { create(:project) }
   let(:resource) { create(:issue, project: project) }
   let(:user_1)   { create(:user) }
 
   describe '#subscribed?' do
+    context 'without user' do
+      it 'returns false' do
+        expect(resource.subscribed?(nil, project)).to be_falsey
+      end
+    end
+
     context 'without project' do
       it 'returns false when no subscription exists' do
         expect(resource.subscribed?(user_1)).to be_falsey

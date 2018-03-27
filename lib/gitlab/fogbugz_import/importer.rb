@@ -18,6 +18,7 @@ module Gitlab
 
       def execute
         return true unless repo.valid?
+
         client = Gitlab::FogbugzImport::Client.new(token: fb_session[:token], uri: fb_session[:uri])
 
         @cases = client.cases(@repo.id.to_i)
@@ -111,6 +112,7 @@ module Gitlab
           [bug['sCategory'], bug['sPriority']].each do |label|
             unless label.blank?
               labels << label
+
               unless @known_labels.include?(label)
                 create_label(label)
                 @known_labels << label
@@ -206,6 +208,7 @@ module Gitlab
 
       def format_content(raw_content)
         return raw_content if raw_content.nil?
+
         linkify_issues(escape_for_markdown(raw_content))
       end
 
@@ -263,6 +266,7 @@ module Gitlab
         if content.blank?
           content = '*(No description has been entered for this issue)*'
         end
+
         body << content
 
         body.join("\n\n")
@@ -276,6 +280,7 @@ module Gitlab
         if content.blank?
           content = "*(No comment has been entered for this change)*"
         end
+
         body << content
 
         if updates.any?

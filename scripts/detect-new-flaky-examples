@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+report_file = ARGV.shift
+unless report_file
+  puts 'usage: detect-new-flaky-examples <report-file>'
+  exit 1
+end
+
+puts "Loading #{report_file}..."
+report = JSON.parse(File.read(report_file))
+
+if report.any?
+  puts "New flaky examples were detected!\n"
+  puts JSON.pretty_generate(report)
+  exit 1
+else
+  puts "No new flaky examples detected.\n"
+  exit 0
+end

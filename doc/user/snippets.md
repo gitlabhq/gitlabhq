@@ -16,7 +16,7 @@ Comments on snippets was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/is
 
 ## Project snippets
 
-Project snippets are always related to a specific project - see [Project features](../workflow/project_features.md) for more information.
+Project snippets are always related to a specific project - see [Project's features](project/index.md#project-39-s-features) for more information.
 
 ## Personal snippets
 

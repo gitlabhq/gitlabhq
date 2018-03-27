@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitRange, models: true do
+describe CommitRange do
   describe 'modules' do
     subject { described_class }
 
@@ -45,7 +45,7 @@ describe CommitRange, models: true do
   end
 
   describe '#to_reference' do
-    let(:cross) { create(:empty_project, namespace: project.namespace) }
+    let(:cross) { create(:project, namespace: project.namespace) }
 
     it 'returns a String reference to the object' do
       expect(range.to_reference).to eq "#{full_sha_from}...#{full_sha_to}"
@@ -61,7 +61,7 @@ describe CommitRange, models: true do
   end
 
   describe '#reference_link_text' do
-    let(:cross) { create(:empty_project, namespace: project.namespace) }
+    let(:cross) { create(:project, namespace: project.namespace) }
 
     it 'returns a String reference to the object' do
       expect(range.reference_link_text).to eq "#{sha_from}...#{sha_to}"
@@ -151,11 +151,11 @@ describe CommitRange, models: true do
         .with(commit1, user)
         .and_return(true)
 
-      expect(commit1.has_been_reverted?(user, issue)).to eq(true)
+      expect(commit1.has_been_reverted?(user, issue.notes_with_associations)).to eq(true)
     end
 
-    it 'returns false a commit has not been reverted' do
-      expect(commit1.has_been_reverted?(user, issue)).to eq(false)
+    it 'returns false if the commit has not been reverted' do
+      expect(commit1.has_been_reverted?(user, issue.notes_with_associations)).to eq(false)
     end
   end
 end

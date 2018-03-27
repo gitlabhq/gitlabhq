@@ -1,21 +1,30 @@
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, :services do
-  let(:project) { create(:project, :repository) }
+describe Ci::CreatePipelineService do
+  include ProjectForksHelper
+
+  set(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
+  let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_ci_pipeline_to_return_yaml_file
+    stub_repository_ci_yaml_file(sha: anything)
   end
 
   describe '#execute' do
-    def execute_service(source: :push, after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+    def execute_service(
+      source: :push,
+      after: project.commit.id,
+      message: 'Message',
+      ref: ref_name,
+      trigger_request: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }] }
 
-      described_class.new(project, user, params).execute(source)
+      described_class.new(project, user, params).execute(
+        source, trigger_request: trigger_request)
     end
 
     context 'valid params' do
@@ -35,47 +44,89 @@ describe Ci::CreatePipelineService, :services do
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
+        expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
 
       it 'increments the prometheus counter' do
         expect(Gitlab::Metrics).to receive(:counter)
-          .with(:pipelines_created_count, "Pipelines created count")
+          .with(:pipelines_created_total, "Counter of pipelines created")
           .and_call_original
 
         pipeline
       end
 
       context 'when merge requests already exist for this source branch' do
-        it 'updates head pipeline of each merge request' do
-          merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
-          merge_request_2 = create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+        let(:merge_request_1) do
+          create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+        end
+        let(:merge_request_2) do
+          create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+        end
 
-          head_pipeline = pipeline
+        context 'when related merge request is already merged' do
+          let!(:merged_merge_request) do
+            create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project, state: 'merged')
+          end
 
-          expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
-          expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+          it 'does not schedule update head pipeline job' do
+            expect(UpdateHeadPipelineForMergeRequestWorker).not_to receive(:perform_async).with(merged_merge_request.id)
+
+            execute_service
+          end
+        end
+
+        context 'when the head pipeline sha equals merge request sha' do
+          it 'updates head pipeline of each merge request' do
+            merge_request_1
+            merge_request_2
+
+            head_pipeline = execute_service
+
+            expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
+            expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+          end
+        end
+
+        context 'when the head pipeline sha does not equal merge request sha' do
+          it 'does not update the head piepeline of MRs' do
+            merge_request_1
+            merge_request_2
+
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(true)
+
+            expect { execute_service(after: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }.not_to raise_error
+
+            last_pipeline = Ci::Pipeline.last
+
+            expect(merge_request_1.reload.head_pipeline).not_to eq(last_pipeline)
+            expect(merge_request_2.reload.head_pipeline).not_to eq(last_pipeline)
+          end
         end
 
         context 'when there is no pipeline for source branch' do
           it "does not update merge request head pipeline" do
-            merge_request = create(:merge_request, source_branch: 'other_branch', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'feature',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-            head_pipeline = pipeline
+            head_pipeline = execute_service
 
             expect(merge_request.reload.head_pipeline).not_to eq(head_pipeline)
           end
         end
 
         context 'when merge request target project is different from source project' do
-          let!(:target_project) { create(:project) }
-          let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
+          let!(:project) { fork_project(target_project, nil, repository: true) }
+          let!(:target_project) { create(:project, :repository) }
 
           it 'updates head pipeline for merge request' do
-            merge_request =
-              create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project, target_project: target_project)
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project,
+                                                   target_project: target_project)
 
-            head_pipeline = pipeline
+            head_pipeline = execute_service
 
             expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
           end
@@ -83,13 +134,53 @@ describe Ci::CreatePipelineService, :services do
 
         context 'when the pipeline is not the latest for the branch' do
           it 'does not update merge request head pipeline' do
-            merge_request = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
             allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
 
-            pipeline
+            execute_service
 
             expect(merge_request.reload.head_pipeline).to be_nil
+          end
+        end
+
+        context 'when pipeline has errors' do
+          before do
+            stub_ci_pipeline_yaml_file('some invalid syntax')
+          end
+
+          it 'updates merge request head pipeline reference' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_persisted
+            expect(head_pipeline.yaml_errors).to be_present
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
+          end
+        end
+
+        context 'when pipeline has been skipped' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:git_commit_message)
+              .and_return('some commit [ci skip]')
+          end
+
+          it 'updates merge request head pipeline' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_skipped
+            expect(head_pipeline).to be_persisted
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
       end
@@ -318,6 +409,140 @@ describe Ci::CreatePipelineService, :services do
 
           expect(result).to be_persisted
         end.not_to change { Environment.count }
+      end
+    end
+
+    context 'when builds with auto-retries are configured' do
+      before do
+        config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'correctly creates builds with auto-retry value configured' do
+        pipeline = execute_service
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+      end
+    end
+
+    shared_examples 'when ref is protected' do
+      let(:user) { create(:user) }
+
+      context 'when user is developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'does not create a pipeline' do
+          expect(execute_service).not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when user is master' do
+        let(:pipeline) { execute_service }
+
+        before do
+          project.add_master(user)
+        end
+
+        it 'creates a protected pipeline' do
+          expect(pipeline).to be_persisted
+          expect(pipeline).to be_protected
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+
+      context 'when trigger belongs to no one' do
+        let(:user) {}
+        let(:trigger_request) { create(:ci_trigger_request) }
+
+        it 'does not create a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when trigger belongs to a developer' do
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
+
+        before do
+          project.add_developer(user)
+        end
+
+        it 'does not create a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when trigger belongs to a master' do
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
+
+        before do
+          project.add_master(user)
+        end
+
+        it 'creates a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .to be_persisted
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+    end
+
+    context 'when ref is a protected branch' do
+      before do
+        create(:protected_branch, project: project, name: 'master')
+      end
+
+      it_behaves_like 'when ref is protected'
+    end
+
+    context 'when ref is a protected tag' do
+      let(:ref_name) { 'refs/tags/v1.0.0' }
+
+      before do
+        create(:protected_tag, project: project, name: '*')
+      end
+
+      it_behaves_like 'when ref is protected'
+    end
+
+    context 'when ref is not protected' do
+      context 'when trigger belongs to no one' do
+        let(:user) {}
+        let(:trigger) { create(:ci_trigger, owner: nil) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
+        let(:pipeline) { execute_service(trigger_request: trigger_request) }
+
+        it 'creates an unprotected pipeline' do
+          expect(pipeline).to be_persisted
+          expect(pipeline).not_to be_protected
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+    end
+
+    context 'when pipeline is running for a tag' do
+      before do
+        config = YAML.dump(test: { script: 'test', only: ['branches'] },
+                           deploy: { script: 'deploy', only: ['tags'] })
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates a tagged pipeline' do
+        pipeline = execute_service(ref: 'v1.0.0')
+
+        expect(pipeline.tag?).to be true
       end
     end
   end

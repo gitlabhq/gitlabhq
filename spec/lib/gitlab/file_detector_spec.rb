@@ -18,6 +18,10 @@ describe Gitlab::FileDetector do
       expect(described_class.type_of('README.md')).to eq(:readme)
     end
 
+    it 'returns nil for a README file in a directory' do
+      expect(described_class.type_of('foo/README.md')).to be_nil
+    end
+
     it 'returns the type of a changelog file' do
       %w(CHANGELOG HISTORY CHANGES NEWS).each do |file|
         expect(described_class.type_of(file)).to eq(:changelog)
@@ -50,6 +54,14 @@ describe Gitlab::FileDetector do
       %w(logo.gif logo.png logo.jpg).each do |file|
         expect(described_class.type_of(file)).to eq(:avatar)
       end
+    end
+
+    it 'returns the type of an issue template' do
+      expect(described_class.type_of('.gitlab/issue_templates/foo.md')).to eq(:issue_template)
+    end
+
+    it 'returns the type of a merge request template' do
+      expect(described_class.type_of('.gitlab/merge_request_templates/foo.md')).to eq(:merge_request_template)
     end
 
     it 'returns nil for an unknown file' do

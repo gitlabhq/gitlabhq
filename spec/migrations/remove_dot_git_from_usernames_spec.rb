@@ -29,7 +29,9 @@ describe RemoveDotGitFromUsernames do
         update_namespace(user, 'test.git')
         update_namespace(user2, 'test_git')
 
-        storages = { 'default' => 'tmp/tests/custom_repositories' }
+        default_hash = Gitlab.config.repositories.storages.default.to_h
+        default_hash['path'] = 'tmp/tests/custom_repositories'
+        storages = { 'default' => Gitlab::GitalyClient::StorageSettings.new(default_hash) }
 
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
         allow(migration).to receive(:route_exists?).with('test_git').and_return(true)
@@ -51,7 +53,6 @@ describe RemoveDotGitFromUsernames do
     namespace.path = path
     namespace.save!(validate: false)
 
-    user.username = path
-    user.save!(validate: false)
+    user.update_column(:username, path)
   end
 end

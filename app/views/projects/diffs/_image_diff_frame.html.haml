@@ -1,0 +1,5 @@
+- class_name = local_assigns.fetch(:class_name, '')
+- note_type = local_assigns.fetch(:note_type, '')
+
+.frame{ class: class_name, data: { position: position, note_type: note_type } }
+  = image_tag(image_path, alt: alt, draggable: false, lazy: false)

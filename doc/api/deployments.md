@@ -11,6 +11,8 @@ GET /projects/:id/deployments
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `order_by`| string  | no       | Return deployments ordered by `id` or `iid` or `created_at` or `ref` fields. Default is `id` |
+| `sort`    | string  | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc` |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/deployments"

@@ -1,5 +1,6 @@
+
 = render 'shared/milestones/milestone',
-          milestone_path: group_milestone_path(@group, milestone.safe_title, title: milestone.title),
+          milestone_path: group_milestone_route(milestone),
           issues_path: issues_group_path(@group, milestone_title: milestone.title),
           merge_requests_path: merge_requests_group_path(@group, milestone_title: milestone.title),
           milestone: milestone

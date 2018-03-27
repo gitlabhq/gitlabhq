@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Milestones sorting', :feature, :js do
+feature 'Milestones sorting', :js do
   include SortingHelper
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
   before do
     # Milestones
@@ -15,11 +15,11 @@ feature 'Milestones sorting', :feature, :js do
       due_date: 11.days.from_now,
       created_at:  1.hour.ago,
       title: "bbb", project: project)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'visit project milestones and sort by due_date_asc' do
-    visit namespace_project_milestones_path(project.namespace, project)
+    visit project_milestones_path(project)
 
     expect(page).to have_button('Due soon')
 

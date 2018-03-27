@@ -5,7 +5,7 @@ describe NotesHelper do
 
   let(:owner) { create(:owner) }
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:master) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
@@ -17,30 +17,31 @@ describe NotesHelper do
 
   before do
     group.add_owner(owner)
-    project.team << [master, :master]
-    project.team << [reporter, :reporter]
-    project.team << [guest, :guest]
+    project.add_master(master)
+    project.add_reporter(reporter)
+    project.add_guest(guest)
   end
 
   describe "#notes_max_access_for_users" do
-    it 'returns human access levels' do
-      expect(helper.note_max_access_for_user(owner_note)).to eq('Owner')
-      expect(helper.note_max_access_for_user(master_note)).to eq('Master')
-      expect(helper.note_max_access_for_user(reporter_note)).to eq('Reporter')
+    it 'returns access levels' do
+      expect(helper.note_max_access_for_user(owner_note)).to eq(Gitlab::Access::OWNER)
+      expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)
+      expect(helper.note_max_access_for_user(reporter_note)).to eq(Gitlab::Access::REPORTER)
     end
 
     it 'handles access in different projects' do
-      second_project = create(:empty_project)
-      second_project.team << [master, :reporter]
+      second_project = create(:project)
+      second_project.add_reporter(master)
       other_note = create(:note, author: master, project: second_project)
 
-      expect(helper.note_max_access_for_user(master_note)).to eq('Master')
-      expect(helper.note_max_access_for_user(other_note)).to eq('Reporter')
+      expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)
+      expect(helper.note_max_access_for_user(other_note)).to eq(Gitlab::Access::REPORTER)
     end
   end
 
   describe '#discussion_path' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
+    let(:anchor) { discussion.line_code }
 
     context 'for a merge request discusion' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
@@ -53,7 +54,7 @@ describe NotesHelper do
           let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
           it 'returns the diff path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_project_merge_request_path(project, merge_request, anchor: discussion.line_code))
           end
         end
 
@@ -77,7 +78,7 @@ describe NotesHelper do
           end
 
           it 'returns the diff version path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: merge_request_diff1, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff1, anchor: discussion.line_code))
           end
         end
 
@@ -101,7 +102,7 @@ describe NotesHelper do
           end
 
           it 'returns the diff version comparison path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: merge_request_diff3, start_sha: merge_request_diff1.head_commit_sha, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff3, start_sha: merge_request_diff1.head_commit_sha, anchor: discussion.line_code))
           end
         end
 
@@ -129,7 +130,7 @@ describe NotesHelper do
           end
 
           it 'returns the diff path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_project_merge_request_path(project, merge_request, anchor: discussion.line_code))
           end
         end
 
@@ -151,6 +152,15 @@ describe NotesHelper do
           expect(helper.discussion_path(discussion)).to be_nil
         end
       end
+
+      context 'for a contextual commit discussion' do
+        let(:commit) { merge_request.commits.last }
+        let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, commit_id: commit.id).to_discussion }
+
+        it 'returns the merge request diff discussion scoped in the commit' do
+          expect(helper.discussion_path(discussion)).to eq(diffs_project_merge_request_path(project, merge_request, commit_id: commit.id, anchor: anchor))
+        end
+      end
     end
 
     context 'for a commit discussion' do
@@ -160,7 +170,7 @@ describe NotesHelper do
         let(:discussion) { create(:diff_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path with the line code' do
-          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit, anchor: discussion.line_code))
+          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: anchor))
         end
       end
 
@@ -168,7 +178,7 @@ describe NotesHelper do
         let(:discussion) { create(:legacy_diff_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path with the line code' do
-          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit, anchor: discussion.line_code))
+          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: anchor))
         end
       end
 
@@ -176,7 +186,7 @@ describe NotesHelper do
         let(:discussion) { create(:discussion_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path' do
-          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit))
+          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit))
         end
       end
     end
@@ -191,7 +201,7 @@ describe NotesHelper do
 
     it 'return project notes path for project snippet' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @snippet = create(:project_snippet, project: @project)
       @noteable = @snippet
 
@@ -200,7 +210,7 @@ describe NotesHelper do
 
     it 'return project notes path for other noteables' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @noteable = create(:issue, project: @project)
 
       expect(helper.notes_url).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes")
@@ -216,7 +226,7 @@ describe NotesHelper do
 
     it 'return project notes path for project snippet' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       note = create(:note_on_project_snippet, project: @project)
 
       expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
@@ -224,14 +234,14 @@ describe NotesHelper do
 
     it 'return project notes path for other noteables' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       note = create(:note_on_issue, project: @project)
 
       expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
     end
   end
 
-  describe '#form_resurces' do
+  describe '#form_resources' do
     it 'returns note for personal snippet' do
       @snippet = create(:personal_snippet)
       @note = create(:note_on_personal_snippet)
@@ -241,7 +251,7 @@ describe NotesHelper do
 
     it 'returns namespace, project and note for project snippet' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @snippet = create(:project_snippet, project: @project)
       @note = create(:note_on_personal_snippet)
 
@@ -250,7 +260,7 @@ describe NotesHelper do
 
     it 'returns namespace, project and note path for other noteables' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @note = create(:note_on_issue, project: @project)
 
       expect(helper.form_resources).to eq([@project.namespace, @project, @note])
@@ -258,12 +268,30 @@ describe NotesHelper do
   end
 
   describe '#noteable_note_url' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issue) { create(:issue, project: project) }
     let(:note) { create(:note_on_issue, noteable: issue, project: project) }
 
     it 'returns the noteable url with an anchor to the note' do
       expect(noteable_note_url(note)).to match("/#{project.namespace.path}/#{project.path}/issues/#{issue.iid}##{dom_id(note)}")
+    end
+  end
+
+  describe '#discussion_resolved_intro' do
+    context 'when the discussion was resolved by a push' do
+      let(:discussion) { double(:discussion, resolved_by_push?: true) }
+
+      it 'returns "Automatically resolved"' do
+        expect(discussion_resolved_intro(discussion)).to eq('Automatically resolved')
+      end
+    end
+
+    context 'when the discussion was not resolved by a push' do
+      let(:discussion) { double(:discussion, resolved_by_push?: false) }
+
+      it 'returns "Resolved"' do
+        expect(discussion_resolved_intro(discussion)).to eq('Resolved')
+      end
     end
   end
 end

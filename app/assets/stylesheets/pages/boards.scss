@@ -1,4 +1,4 @@
-@import "./issues/issue_count_badge";
+@import './issues/issue_count_badge';
 
 [v-cloak] {
   display: none;
@@ -11,7 +11,7 @@
 
 .is-dragging {
   // Important because plugin sets inline CSS
-  opacity: 1!important;
+  opacity: 1 !important;
 
   * {
     -webkit-user-select: none;
@@ -19,8 +19,8 @@
     -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
-    cursor: -webkit-grabbing!important;
-    cursor: grabbing!important;
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
   }
 }
 
@@ -31,8 +31,12 @@
 .dropdown-menu-issues-board-new {
   width: 320px;
 
+  .open & {
+    max-height: 400px;
+  }
+
   .dropdown-content {
-    max-height: 150px;
+    max-height: 162px;
   }
 }
 
@@ -55,6 +59,15 @@
 
 .boards-app {
   position: relative;
+
+  @media (min-width: $screen-sm-min) {
+    transition: width $sidebar-transition-duration;
+    width: 100%;
+
+    &.is-compact {
+      width: calc(100% - #{$gutter_width});
+    }
+  }
 }
 
 .boards-app-loading {
@@ -63,25 +76,36 @@
 }
 
 .boards-list {
-  height: calc(100vh - 152px);
+  height: calc(100vh - #{$issue-board-list-difference-xs});
   width: 100%;
-  padding-top: 25px;
-  padding-bottom: 25px;
-  padding-right: ($gl-padding / 2);
-  padding-left: ($gl-padding / 2);
+  padding: $gl-padding ($gl-padding / 2);
   overflow-x: scroll;
   white-space: nowrap;
+  min-height: 200px;
 
-  @media (min-width: $screen-sm-min) {
-    height: 475px; // Needed for PhantomJS
-    // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 222px);
-    // scss-lint:enable DuplicateProperty
-    min-height: 475px;
-    transition: width .2s;
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    height: calc(100vh - #{$issue-board-list-difference-sm});
+  }
 
-    &.is-compact {
-      width: calc(100% - 290px);
+  @media (min-width: $screen-md-min) {
+    height: calc(100vh - #{$issue-board-list-difference-md});
+  }
+
+  .with-performance-bar & {
+    height: calc(
+      100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height}
+    );
+
+    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      height: calc(
+        100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height}
+      );
+    }
+
+    @media (min-width: $screen-md-min) {
+      height: calc(
+        100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height}
+      );
     }
   }
 }
@@ -117,13 +141,12 @@
     }
 
     .board-title {
-      position: initial;
       padding: 0;
       border-bottom: 0;
 
       > span {
         display: block;
-        transform: rotate(90deg) translate(25px, 0);
+        transform: rotate(90deg) translate(35px, 10px);
       }
     }
 
@@ -151,11 +174,18 @@
 }
 
 .board-header {
-  border-top-left-radius: $border-radius-default;
-  border-top-right-radius: $border-radius-default;
+  position: relative;
 
-  &.has-border {
+  &.has-border::before {
     border-top: 3px solid;
+    border-color: inherit;
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+    content: '';
+    position: absolute;
+    width: calc(100% + 2px);
+    top: 0;
+    left: 0;
     margin-top: -1px;
     margin-right: -1px;
     margin-left: -1px;
@@ -165,6 +195,7 @@
 
     .board-title {
       padding-top: ($gl-padding - 3px);
+      padding-bottom: $gl-padding;
     }
   }
 }
@@ -175,11 +206,16 @@
 }
 
 .board-title {
-  position: relative;
   margin: 0;
-  padding: $gl-padding;
+  padding: 12px $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+}
+
+.board-title-text {
+  margin-right: auto;
 }
 
 .board-delete {
@@ -219,43 +255,10 @@
   }
 }
 
-.slide-down-enter {
-  transform: translateY(-100%);
-}
-
-.slide-down-enter-active {
-  transition: transform $fade-in-duration;
-
-  + .board-list {
-    transform: translateY(-136px);
-    transition: none;
-  }
-}
-
-.slide-down-enter-to {
-  + .board-list {
-    transform: translateY(0);
-    transition: transform $fade-in-duration ease;
-  }
-}
-
-.slide-down-leave {
-  transform: translateY(0);
-}
-
-.slide-down-leave-active {
-  transition: all $fade-in-duration;
-  transform: translateY(-136px);
-
-  + .board-list {
-    transition: transform $fade-in-duration ease;
-    transform: translateY(-136px);
-  }
-}
-
 .board-list-component {
   height: calc(100% - 49px);
   overflow: hidden;
+  position: relative;
 }
 
 .board-list {
@@ -427,16 +430,11 @@
 }
 
 .board-new-issue-form {
-  z-index: 1;
+  z-index: 4;
   margin: 5px;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
-  &.right-sidebar {
-    top: 0;
-    bottom: 0;
-  }
-
+.page-with-contextual-sidebar.layout-page .issue-boards-sidebar {
   .issuable-sidebar-header {
     position: relative;
   }
@@ -466,7 +464,7 @@
     padding-right: 35px;
 
     > strong {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
   }
 }
@@ -474,8 +472,8 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width .2s,
-                padding .2s;
+    transition: width $sidebar-transition-duration,
+      padding $sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,
@@ -494,7 +492,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba($black, .3);
+  background-color: rgba($black, 0.3);
   z-index: 9999;
 }
 
@@ -511,7 +509,7 @@
   padding: 25px 15px 0;
   background-color: $white-light;
   border-radius: $border-radius-default;
-  box-shadow: 0 2px 12px rgba($black, .5);
+  box-shadow: 0 2px 12px rgba($black, 0.5);
 
   .empty-state {
     display: -webkit-flex;
@@ -589,7 +587,7 @@
 
   .card {
     border: 1px solid $border-gray-dark;
-    box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, .3);
+    box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, 0.3);
     cursor: pointer;
   }
 }
