@@ -1,5 +1,0 @@
----
-title: Geo - Avoid rescheduling the same project again in a backfill condition
-merge_request: 5069
-author:
-type: fixed

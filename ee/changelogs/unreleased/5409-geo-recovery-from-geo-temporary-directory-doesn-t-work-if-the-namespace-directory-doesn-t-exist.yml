@@ -1,6 +1,0 @@
----
-title: 'Geo: Recovery from temporary directory doesn''t work if the namespace directory
-  doesn''t exist'
-merge_request:
-author:
-type: fixed

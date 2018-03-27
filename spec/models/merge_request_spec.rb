@@ -2404,6 +2404,26 @@ describe MergeRequest do
     end
   end
 
+  describe '#base_pipeline' do
+    let(:pipeline_arguments) do
+      {
+        project: project,
+        ref: merge_request.target_branch,
+        sha: merge_request.diff_base_sha
+      }
+    end
+
+    let(:project)       { create(:project, :public, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+    let!(:last_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+
+    it 'returns latest pipeline' do
+      expect(merge_request.base_pipeline).to eq(last_pipeline)
+    end
+  end
+
   describe '#has_commits?' do
     before do
       allow(subject.merge_request_diff).to receive(:commits_count)

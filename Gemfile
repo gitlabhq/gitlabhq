@@ -172,7 +172,7 @@ group :unicorn do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.4.0'
+gem 'state_machines-activerecord', '~> 0.5.1'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 5.0'

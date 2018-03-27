@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.6.1 (2018-03-27)
+
+### Security (1 change)
+
+- Bump rails-html-sanitizer to 1.0.4.
+
+### Fixed (3 changes)
+
+- Prevent auto-retry AccessDenied error from stopping transition to failed. !17862
+- Fix 500 error when trying to resolve non-ASCII conflicts in the editor. !17962
+- Don't capture trailing punctuation when autolinking. !17965
+
+### Performance (1 change)
+
+- Add indexes for user activity queries. !17890
+
+### Other (1 change)
+
+- Add documentation for runner IP address (#44232). !17837
+
+
 ## 10.6.0 (2018-03-22)
 
 ### Security (4 changes)

@@ -1,5 +1,27 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.6.1 (2018-03-27)
+
+### Fixed (8 changes)
+
+- Fix LDAP group sync permission override UI. !5003
+- Hard failing a mirror no longer fails for a blocked user's personal project. !5063
+- Geo - Avoid rescheduling the same project again in a backfill condition. !5069
+- Mark disabled wikis as fully synced. !5104
+- Fix excessive updates to file_registry when wiki is disabled. !5119
+- Geo: Recovery from temporary directory doesn't work if the namespace directory doesn't exist.
+- Define a chat responder for the Slack app.
+- Resolve "undefined method 'log_transfer_error'".
+
+### Added (1 change)
+
+- Also log Geo Prometheus metrics from primary. !5058
+
+### Other (1 change)
+
+- Update Epic documentation to include labels.
+
+
 ## 10.6.0 (2018-03-22)
 
 ### Security (2 changes)

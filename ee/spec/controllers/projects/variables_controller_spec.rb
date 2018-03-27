@@ -19,13 +19,13 @@ describe Projects::VariablesController do
     let(:variable_attributes) do
       { id: variable.id,
         key: variable.key,
-        value: variable.value,
+        secret_value: variable.value,
         protected: variable.protected?.to_s,
         environment_scope: variable.environment_scope }
     end
     let(:new_variable_attributes) do
       { key: 'new_key',
-        value: 'dummy_value',
+        secret_value: 'dummy_value',
         protected: 'false',
         environment_scope: 'new_scope' }
     end

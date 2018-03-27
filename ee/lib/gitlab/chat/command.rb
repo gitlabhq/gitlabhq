@@ -55,24 +55,22 @@ module Gitlab
         )
 
         service.execute(:chat) do |pipeline|
-          create_environment_variables(pipeline)
-          create_chat_data(pipeline)
+          build_environment_variables(pipeline)
+          build_chat_data(pipeline)
         end
       end
 
       # pipeline - The `Ci::Pipeline` to create the environment variables for.
-      def create_environment_variables(pipeline)
-        pipeline.variables.create!(
-          [
-            { key: 'CHAT_INPUT', value: arguments },
-            { key: 'CHAT_CHANNEL', value: channel }
-          ]
+      def build_environment_variables(pipeline)
+        pipeline.variables.build(
+          [{ key: 'CHAT_INPUT', value: arguments },
+           { key: 'CHAT_CHANNEL', value: channel }]
         )
       end
 
       # pipeline - The `Ci::Pipeline` to create the chat data for.
-      def create_chat_data(pipeline)
-        pipeline.create_chat_data!(
+      def build_chat_data(pipeline)
+        pipeline.build_chat_data(
           chat_name_id: chat_name.id,
           response_url: response_url
         )
