@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'GetBlobRequest' => {
@@ -80,7 +80,7 @@ module Gitlab
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
         raise "Repository or ref not found" if params.empty?
 
-        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive)
+        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
           params.merge!(
             'GitalyServer' => gitaly_server_hash(repository),
             'GitalyRepository' => repository.gitaly_repository.to_h
@@ -97,7 +97,7 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'RawDiffRequest' => Gitaly::RawDiffRequest.new(
@@ -115,7 +115,7 @@ module Gitlab
       end
 
       def send_git_patch(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'RawPatchRequest' => Gitaly::RawPatchRequest.new(
