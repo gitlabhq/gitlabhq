@@ -191,6 +191,69 @@ describe Geo::ProjectRegistryFinder, :geo do
     end
   end
 
+  describe '#count_verified_repositories' do
+    it 'delegates to #find_verified_repositories' do
+      expect(subject).to receive(:find_verified_repositories).and_call_original
+
+      subject.count_verified_repositories
+    end
+
+    it 'counts projects that verified' do
+      create(:geo_project_registry, :repository_verified, project: project_repository_verified)
+      create(:geo_project_registry, :repository_verified, project: build(:project))
+      create(:geo_project_registry, :repository_verification_failed, project: project_repository_verification_failed)
+
+      expect(subject.count_verified_repositories).to eq 2
+    end
+
+    context 'with legacy queries' do
+      before do
+        allow(subject).to receive(:use_legacy_queries?).and_return(true)
+      end
+
+      it 'delegates to #legacy_find_verified_repositories' do
+        expect(subject).to receive(:legacy_find_verified_repositories).and_call_original
+
+        subject.count_verified_repositories
+      end
+
+      it 'counts projects that verified' do
+        create(:geo_project_registry, :repository_verified, project: project_repository_verified)
+        create(:geo_project_registry, :repository_verified, project: build(:project))
+        create(:geo_project_registry, :repository_verification_failed, project: project_repository_verification_failed)
+
+        expect(subject.count_verified_repositories).to eq 2
+      end
+    end
+  end
+
+  describe '#count_verified_wikis' do
+    before do
+      allow(subject).to receive(:use_legacy_queries?).and_return(true)
+    end
+
+    it 'delegates to #legacy_find_synced_wikis' do
+      expect(subject).to receive(:legacy_find_verified_wikis).and_call_original
+
+      subject.count_verified_wikis
+    end
+
+    it 'counts wikis that verified' do
+      create(:geo_project_registry, :wiki_verified, project: project_wiki_verified)
+      create(:geo_project_registry, :wiki_verified, project: build(:project))
+      create(:geo_project_registry, :wiki_verification_failed, project: project_wiki_verification_failed)
+
+      expect(subject.count_verified_wikis).to eq 2
+    end
+
+    it 'does not count disabled wikis' do
+      create(:geo_project_registry, :wiki_verified, project: project_wiki_verified)
+      create(:geo_project_registry, :wiki_verified, project: create(:project, :wiki_disabled))
+
+      expect(subject.count_verified_wikis).to eq 1
+    end
+  end
+
   describe '#count_verification_failed_repositories' do
     it 'delegates to #find_verification_failed_project_registries' do
       expect(subject).to receive(:find_verification_failed_project_registries).with('repository').and_call_original
@@ -421,6 +484,17 @@ describe Geo::ProjectRegistryFinder, :geo do
         create(:geo_project_registry, :synced, project: create(:project, :wiki_disabled))
 
         expect(subject.count_synced_wikis).to eq 1
+      end
+    end
+
+    describe '#fdw_find_verified_wikis' do
+      it 'does not count disabled wikis' do
+        expect(subject).to receive(:fdw_find_verified_wikis).and_call_original
+
+        create(:geo_project_registry, :wiki_verified, project: project_wiki_verified)
+        create(:geo_project_registry, :wiki_verified, project: create(:project, :wiki_disabled))
+
+        expect(subject.count_verified_wikis).to eq 1
       end
     end
 
