@@ -29,7 +29,7 @@ module EE
         end
 
         def load_from_service
-          response = Client.build(@user, @label).request_access
+          response = Client.new(@user, @label).request_access
           @access = response.successful?
           @reason = response.reason
           @loaded_at = Time.now

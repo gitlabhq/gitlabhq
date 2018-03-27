@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180320182229) do
+ActiveRecord::Schema.define(version: 20180323150945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -186,6 +186,11 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.float "external_authorization_service_timeout", default: 0.5, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.text "external_auth_client_cert"
+    t.text "encrypted_external_auth_client_key"
+    t.string "encrypted_external_auth_client_key_iv"
+    t.string "encrypted_external_auth_client_key_pass"
+    t.string "encrypted_external_auth_client_key_pass_iv"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1708,6 +1713,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "merge_merge_request"
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
+    t.boolean "push_to_merge_request"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree

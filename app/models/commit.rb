@@ -175,7 +175,7 @@ class Commit
       if safe_message.blank?
         no_commit_message
       else
-        safe_message.split("\n", 2).first
+        safe_message.split(/[\r\n]/, 2).first
       end
   end
 

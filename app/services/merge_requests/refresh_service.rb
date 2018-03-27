@@ -21,7 +21,7 @@ module MergeRequests
         comment_mr_branch_presence_changed
       end
 
-      comment_mr_with_commits
+      notify_about_push
       mark_mr_as_wip_from_commits
       execute_mr_web_hooks
       reset_approvals_for_merge_requests
@@ -158,8 +158,8 @@ module MergeRequests
       end
     end
 
-    # Add comment about pushing new commits to merge requests
-    def comment_mr_with_commits
+    # Add comment about pushing new commits to merge requests and send nofitication emails
+    def notify_about_push
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
@@ -172,6 +172,8 @@ module MergeRequests
         SystemNoteService.add_commits(merge_request, merge_request.project,
                                       @current_user, new_commits,
                                       existing_commits, @oldrev)
+
+        notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
       end
     end
 
