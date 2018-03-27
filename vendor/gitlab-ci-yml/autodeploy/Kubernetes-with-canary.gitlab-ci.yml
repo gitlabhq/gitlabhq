@@ -28,7 +28,7 @@ build:
 canary:
   stage: canary
   script:
-    - CANARY=true command canary
+    - command canary
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_DOMAIN
