@@ -639,6 +639,7 @@ db:rollback-mysql:
 db:rollback-pg-geo: &db-rollback
   <<: *db-rollback
   <<: *use-pg
+  <<: *except-docs
   script:
     - bundle exec rake geo:db:migrate VERSION=20170627195211
     - bundle exec rake geo:db:migrate
