@@ -12,6 +12,14 @@ describe Gitlab::UsageData do
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'SlackService', active: true)
+
+      gcp_cluster = create(:cluster, :provided_by_gcp)
+      create(:cluster, :provided_by_user)
+      create(:cluster, :provided_by_user, :disabled)
+      create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
     end
 
     subject { described_class.data }
@@ -103,6 +111,15 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_jira_active]).to eq(2)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
+
+      expect(count_data[:clusters_enabled]).to eq(6)
+      expect(count_data[:clusters_disabled]).to eq(1)
+      expect(count_data[:clusters_platforms_gke]).to eq(1)
+      expect(count_data[:clusters_platforms_user]).to eq(1)
+      expect(count_data[:clusters_applications_helm]).to eq(1)
+      expect(count_data[:clusters_applications_ingress]).to eq(1)
+      expect(count_data[:clusters_applications_prometheus]).to eq(1)
+      expect(count_data[:clusters_applications_runner]).to eq(1)
     end
   end
 
