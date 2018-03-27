@@ -33,14 +33,15 @@ module Geo
       return if registry.project.wiki_enabled?
 
       registry.last_wiki_sync_failure = nil
-      registry.last_wiki_synced_at = DateTime.now
-      registry.last_wiki_successful_sync_at = DateTime.now
       registry.resync_wiki = false
       registry.wiki_retry_count = nil
       registry.wiki_retry_at = nil
       registry.force_to_redownload_wiki = false
 
-      if registry.changed?
+      if registry.changed? || registry.last_wiki_synced_at.nil? || registry.last_wiki_successful_sync_at.nil?
+        registry.last_wiki_synced_at = DateTime.now
+        registry.last_wiki_successful_sync_at = DateTime.now
+
         success = registry.save
         log_info("#{success ? 'Successfully marked' : 'Failed to mark'} disabled wiki as synced", registry_id: registry.id, project_id: registry.project_id)
       end
