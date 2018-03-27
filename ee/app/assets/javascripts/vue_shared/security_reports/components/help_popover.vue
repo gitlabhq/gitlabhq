@@ -33,7 +33,7 @@ export default {
 <template>
   <button
     type="button"
-    class="btn-transparent btn-blank"
+    class="btn btn-transparent"
     v-popover="popoverOptions"
     tabindex="0"
   >
