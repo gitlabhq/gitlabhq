@@ -269,13 +269,15 @@ When using default setup, minimum configuration requires:
 
 - `REDIS_PASSWORD`. Password used for Redis authentication.
 
-Few notes on the service itself:
+Notes on the service itself:
 
 - The service runs under a system account, by default `gitlab-redis`.
   - If you are using a different username, you will have to specify it. We
 will refer to it with `REDIS_USERNAME`,
 - Passwords will be stored in the following locations:
-  - `/etc/gitlab/gitlab.rb`: plaintext
+  - `/etc/gitlab/gitlab.rb` in plaintext
+  - `/var/opt/gitlab/redis/redis.conf` in plaintext
+
 
 ### Step 1. Configuring the master Redis instance
 
