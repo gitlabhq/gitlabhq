@@ -65,86 +65,87 @@ export default {
 
 <template>
   <div
+    class="js-file-title file-title file-title-flex-parent"
     @click="handleToggle($event, true)"
     ref="header"
-    class="file-header-content"
   >
-    <icon
-      v-if="collapsible"
-      @click.stop="handleToggle"
-      name="chevron-down"
-      aria-hidden="true"
-      :size="16"
-      class="diff-toggle-caret"
-    />
-    <div
-      v-if="diffFile.submodule"
-    >
-      <span>
-        <icon name="archive" />
-        <strong
-          v-html="diffFile.submoduleLink"
-          class="file-title-name"
-        ></strong>
-        <clipboard-button
-          :text="diffFile.submoduleLink"
-          title="Copy file path to clipboard"
-          css-class="btn-default btn-transparent btn-clipboard"
-        />
-      </span>
-    </div>
-    <template v-else>
-      <component
-        ref="titleWrapper"
-        :is="titleTag"
-        :href="`#${diffFile.fileHash}`"
+    <div class="file-header-content">
+      <icon
+        v-if="collapsible"
+        @click.stop="handleToggle"
+        name="chevron-down"
+        aria-hidden="true"
+        :size="16"
+        class="diff-toggle-caret"
+      />
+      <div
+        v-if="diffFile.submodule"
       >
-        <i class="fa fa-fw" :class="`fa-${diffFile.blob.icon}`"></i>
-        <span v-if="diffFile.renamedFile">
+        <span>
+          <icon name="archive" />
           <strong
+            v-html="diffFile.submoduleLink"
+            class="file-title-name"
+          ></strong>
+          <clipboard-button
+            :text="diffFile.submoduleLink"
+            title="Copy file path to clipboard"
+            css-class="btn-default btn-transparent btn-clipboard"
+          />
+        </span>
+      </div>
+      <template v-else>
+        <component
+          ref="titleWrapper"
+          :is="titleTag"
+          :href="`#${diffFile.fileHash}`"
+        >
+          <i class="fa fa-fw" :class="`fa-${diffFile.blob.icon}`"></i>
+          <span v-if="diffFile.renamedFile">
+            <strong
+              class="file-title-name has-tooltip"
+              :title="diffFile.oldPath"
+              data-container="body"
+            >
+              {{ diffFile.oldPath }}
+            </strong>
+            &rarr;
+            <strong
+              class="file-title-name has-tooltip"
+              :title="diffFile.newPath"
+              data-container="body"
+            >
+              {{ diffFile.newPath }}
+            </strong>
+          </span>
+
+          <strong
+            v-else
             class="file-title-name has-tooltip"
             :title="diffFile.oldPath"
             data-container="body"
           >
-            {{ diffFile.oldPath }}
+            {{ diffFile.filePath }}
+            <span v-if="diffFile.deletedFile">
+              deleted
+            </span>
           </strong>
-          &rarr;
-          <strong
-            class="file-title-name has-tooltip"
-            :title="diffFile.newPath"
-            data-container="body"
-          >
-            {{ diffFile.newPath }}
-          </strong>
-        </span>
+        </component>
 
-        <strong
-          v-else
-          class="file-title-name has-tooltip"
-          :title="diffFile.oldPath"
-          data-container="body"
+        <clipboard-button
+          title="Copy file path to clipboard"
+          :text="diffFile.filePath"
+          css-class="btn-default btn-transparent btn-clipboard"
+        />
+
+        <small
+          v-if="diffFile.modeChanged"
+          ref="fileMode"
         >
-          {{ diffFile.filePath }}
-          <span v-if="diffFile.deletedFile">
-            deleted
-          </span>
-        </strong>
-      </component>
-
-      <clipboard-button
-        title="Copy file path to clipboard"
-        :text="diffFile.filePath"
-        css-class="btn-default btn-transparent btn-clipboard"
-      />
-
-      <small
-        v-if="diffFile.modeChanged"
-        ref="fileMode"
-      >
-        {{ diffFile.aMode }} → {{ diffFile.bMode }}
-      </small>
-    </template>
-
+          {{ diffFile.aMode }} → {{ diffFile.bMode }}
+        </small>
+      </template>
+    </div>
 
     <div
       v-if="!diffFile.submodule"

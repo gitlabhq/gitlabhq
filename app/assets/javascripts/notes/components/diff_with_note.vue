@@ -27,7 +27,7 @@ export default {
       return $(this.discussion.truncatedDiffLines);
     },
     diffFile() {
-      return convertObjectPropsToCamelCase(this.discussion.diffFile);
+      return convertObjectPropsToCamelCase(this.discussion.diffFile, {deep: true});
     },
     imageDiffHtml() {
       return this.discussion.imageDiffHtml;
@@ -63,11 +63,9 @@ export default {
     class="diff-file file-holder"
     :class="diffFileClass"
   >
-    <div class="js-file-title file-title file-title-flex-parent">
-      <diff-file-header
-        :diff-file="diffFile"
-      />
-    </div>
+    <diff-file-header
+      :diff-file="diffFile"
+    />
     <div
       v-if="diffFile.text"
       class="diff-content code js-syntax-highlight"
