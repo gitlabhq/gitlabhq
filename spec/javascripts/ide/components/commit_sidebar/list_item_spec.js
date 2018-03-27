@@ -3,7 +3,7 @@ import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import router from '~/ide/ide_router';
 import store from '~/ide/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { file } from '../../helpers';
+import { file, resetStore } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
   let vm;
@@ -23,6 +23,8 @@ describe('Multi-file editor commit sidebar list item', () => {
 
   afterEach(() => {
     vm.$destroy();
+
+    resetStore(store);
   });
 
   it('renders file path', () => {
