@@ -1,5 +1,0 @@
----
-title: Resolve "undefined method 'log_transfer_error'"
-merge_request:
-author:
-type: fixed
