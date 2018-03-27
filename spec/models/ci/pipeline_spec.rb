@@ -238,8 +238,12 @@ describe Ci::Pipeline, :mailer do
 
   describe 'pipeline stages' do
     describe '#stage_seeds' do
+<<<<<<< HEAD
       let(:project) { create(:project, :repository) }
       let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
+=======
+      let(:pipeline) { build(:ci_pipeline, config: config) }
+>>>>>>> upstream/master
       let(:config) { { rspec: { script: 'rake' } } }
 
       it 'returns preseeded stage seeds object' do
@@ -254,10 +258,17 @@ describe Ci::Pipeline, :mailer do
             rspec: { stage: 'test', script: 'rspec' },
             spinach: { stage: 'test', script: 'spinach' } }
         end
+<<<<<<< HEAD
 
         it 'correctly fabricates a stage seeds object' do
           seeds = pipeline.stage_seeds
 
+=======
+
+        it 'correctly fabricates a stage seeds object' do
+          seeds = pipeline.stage_seeds
+
+>>>>>>> upstream/master
           expect(seeds.size).to eq 2
           expect(seeds.first.attributes[:name]).to eq 'test'
           expect(seeds.second.attributes[:name]).to eq 'deploy'
@@ -269,7 +280,11 @@ describe Ci::Pipeline, :mailer do
 
       context 'when refs policy is specified' do
         let(:pipeline) do
+<<<<<<< HEAD
           build(:ci_pipeline, ref: 'feature', tag: true, project: project, config: config)
+=======
+          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+>>>>>>> upstream/master
         end
 
         let(:config) do
@@ -287,9 +302,16 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'when source policy is specified' do
+<<<<<<< HEAD
         let(:pipeline) do
           build(:ci_pipeline, source: :schedule, project: project, config: config)
         end
+
+        let(:config) do
+          { production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
+            spinach: { stage: 'test', script: 'spinach', only: ['schedules'] } }
+=======
+        let(:pipeline) { build(:ci_pipeline, source: :schedule, config: config) }
 
         let(:config) do
           { production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
@@ -302,9 +324,22 @@ describe Ci::Pipeline, :mailer do
           expect(seeds.size).to eq 1
           expect(seeds.first.attributes[:name]).to eq 'test'
           expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+>>>>>>> upstream/master
         end
       end
 
+<<<<<<< HEAD
+        it 'returns stage seeds only assigned to schedules' do
+          seeds = pipeline.stage_seeds
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.attributes[:name]).to eq 'test'
+          expect(seeds.dig(0, 0, :name)).to eq 'spinach'
+        end
+      end
+
+=======
+>>>>>>> upstream/master
       context 'when kubernetes policy is specified' do
         let(:config) do
           {
@@ -316,12 +351,21 @@ describe Ci::Pipeline, :mailer do
             }
           }
         end
+<<<<<<< HEAD
 
         context 'when kubernetes is active' do
           shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
             it 'returns seeds for kubernetes dependent job' do
               seeds = pipeline.stage_seeds
 
+=======
+
+        context 'when kubernetes is active' do
+          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+            it 'returns seeds for kubernetes dependent job' do
+              seeds = pipeline.stage_seeds
+
+>>>>>>> upstream/master
               expect(seeds.size).to eq 2
               expect(seeds.dig(0, 0, :name)).to eq 'spinach'
               expect(seeds.dig(1, 0, :name)).to eq 'production'
@@ -329,7 +373,11 @@ describe Ci::Pipeline, :mailer do
           end
 
           context 'when user configured kubernetes from Integration > Kubernetes' do
+<<<<<<< HEAD
             let(:project) { create(:kubernetes_project, :repository) }
+=======
+            let(:project) { create(:kubernetes_project) }
+>>>>>>> upstream/master
             let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
 
             it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
@@ -357,17 +405,28 @@ describe Ci::Pipeline, :mailer do
 
     describe '#seeds_size' do
       context 'when refs policy is specified' do
+<<<<<<< HEAD
         let(:project) { create(:project, :repository) }
 
+=======
+>>>>>>> upstream/master
         let(:config) do
           { production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
             spinach: { stage: 'test', script: 'spinach', only: ['tags'] } }
         end
+<<<<<<< HEAD
 
         let(:pipeline) do
           build(:ci_pipeline, ref: 'feature', tag: true, project: project, config: config)
         end
 
+=======
+
+        let(:pipeline) do
+          build(:ci_pipeline, ref: 'feature', tag: true, config: config)
+        end
+
+>>>>>>> upstream/master
         it 'returns real seeds size' do
           expect(pipeline.seeds_size).to eq 1
         end

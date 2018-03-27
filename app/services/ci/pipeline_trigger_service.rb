@@ -20,6 +20,7 @@ module Ci
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
           pipeline.trigger_requests.build(trigger: trigger)
           pipeline.variables.build(variables)
+<<<<<<< HEAD
         end
 
       if pipeline.persisted?
@@ -45,6 +46,8 @@ module Ci
 
           pipeline.source_pipeline = source
           pipeline.variables.build(variables)
+=======
+>>>>>>> upstream/master
         end
 
       if pipeline.persisted?
@@ -60,12 +63,15 @@ module Ci
       end
     end
 
+<<<<<<< HEAD
     def job_from_token
       strong_memoize(:job) do
         Ci::Build.find_by_token(params[:token].to_s)
       end
     end
 
+=======
+>>>>>>> upstream/master
     def variables
       params[:variables].to_h.map do |key, value|
         { key: key, value: value }

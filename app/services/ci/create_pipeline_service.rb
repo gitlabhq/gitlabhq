@@ -8,10 +8,15 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
+<<<<<<< HEAD
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Size,
                 Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity].freeze
+=======
+                Gitlab::Ci::Pipeline::Chain::Populate,
+                Gitlab::Ci::Pipeline::Chain::Create].freeze
+>>>>>>> upstream/master
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false, &block)
       @pipeline = Ci::Pipeline.new
