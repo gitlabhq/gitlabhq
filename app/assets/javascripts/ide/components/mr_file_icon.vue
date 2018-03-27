@@ -1,6 +1,6 @@
 <script>
 import icon from '~/vue_shared/components/icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   components: {
