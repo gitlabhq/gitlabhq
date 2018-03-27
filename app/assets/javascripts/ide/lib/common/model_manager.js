@@ -37,10 +37,7 @@ export default class ModelManager {
   removeCachedModel(file) {
     this.models.delete(file.key);
 
-    eventHub.$off(
-      `editor.update.model.dispose.${file.key}`,
-      this.removeCachedModel,
-    );
+    eventHub.$off(`editor.update.model.dispose.${file.key}`, this.removeCachedModel);
   }
 
   dispose() {

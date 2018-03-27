@@ -24,7 +24,9 @@ export default {
     });
 
     if (state.entries[path].opened) {
-      state.openFiles.push(state.entries[path]);
+      Object.assign(state, {
+        openFiles: state.openFiles.filter(f => f.path !== path).concat(state.entries[path]),
+      });
     } else {
       const file = state.entries[path];
 
