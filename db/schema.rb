@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180327101207) do
+ActiveRecord::Schema.define(version: 20180327212724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -705,6 +705,13 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
+
+  create_table "environment_scalings", force: :cascade do |t|
+    t.integer "production_replicas", null: false
+    t.integer "environment_id", null: false
+  end
+
+  add_index "environment_scalings", ["environment_id"], name: "index_environment_scalings_on_environment_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
     t.integer "project_id", null: false
