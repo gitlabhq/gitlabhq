@@ -8,15 +8,18 @@ describe Geo::LfsObjectRegistryFinder, :geo do
   let(:synced_project) { create(:project, group: synced_group) }
   let(:unsynced_project) { create(:project) }
 
-  let!(:lfs_object_1) { create(:lfs_object) }
-  let!(:lfs_object_2) { create(:lfs_object) }
-  let!(:lfs_object_3) { create(:lfs_object) }
-  let!(:lfs_object_4) { create(:lfs_object) }
+  let(:lfs_object_1) { create(:lfs_object) }
+  let(:lfs_object_2) { create(:lfs_object) }
+  let(:lfs_object_3) { create(:lfs_object) }
+  let(:lfs_object_4) { create(:lfs_object) }
+  let(:lfs_object_remote_1) { create(:lfs_object, :object_storage) }
+  let(:lfs_object_remote_2) { create(:lfs_object, :object_storage) }
 
   subject { described_class.new(current_node: secondary) }
 
   before do
     stub_current_geo_node(secondary)
+    stub_lfs_object_storage
   end
 
   describe '#count_synced_lfs_objects' do
@@ -35,10 +38,9 @@ describe Geo::LfsObjectRegistryFinder, :geo do
     end
 
     it 'ignores remote LFS objects' do
-      create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id)
       create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
       create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
-      lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
       expect(subject.count_synced_lfs_objects).to eq 2
     end
@@ -69,10 +71,9 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       end
 
       it 'ignores remote LFS objects' do
-        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
-        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
         expect(subject.count_synced_lfs_objects).to eq 1
       end
@@ -95,10 +96,9 @@ describe Geo::LfsObjectRegistryFinder, :geo do
     end
 
     it 'ignores remote LFS objects' do
-      create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id, success: false)
       create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
       create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-      lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
       expect(subject.count_failed_lfs_objects).to eq 2
     end
@@ -129,10 +129,9 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       end
 
       it 'ignores remote LFS objects' do
-        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
-        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
         expect(subject.count_failed_lfs_objects).to eq 1
       end
@@ -163,6 +162,47 @@ describe Geo::LfsObjectRegistryFinder, :geo do
         lfs_objects = subject.find_unsynced_lfs_objects(batch_size: 10, except_file_ids: [lfs_object_2.id])
 
         expect(lfs_objects).to match_ids(lfs_object_4)
+      end
+    end
+
+    describe '#find_migrated_local_lfs_objects' do
+      it 'delegates to the correct method' do
+        expect(subject).to receive("#{method_prefix}_find_migrated_local_lfs_objects".to_sym).and_call_original
+
+        subject.find_migrated_local_lfs_objects(batch_size: 10)
+      end
+
+      it 'returns LFS objects remotely and successfully synced locally' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id)
+
+        lfs_objects = subject.find_migrated_local_lfs_objects(batch_size: 10)
+
+        expect(lfs_objects).to match_ids(lfs_object_remote_1)
+      end
+
+      it 'excludes LFS objects stored remotely, but not synced yet' do
+        create(:lfs_object, :object_storage)
+
+        lfs_objects = subject.find_migrated_local_lfs_objects(batch_size: 10)
+
+        expect(lfs_objects).to be_empty
+      end
+
+      it 'excludes synced LFS objects that are stored locally' do
+        create(:geo_file_registry, :avatar, file_id: lfs_object_1.id)
+
+        lfs_objects = subject.find_migrated_local_lfs_objects(batch_size: 10)
+
+        expect(lfs_objects).to be_empty
+      end
+
+      it 'excludes except_file_ids' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id)
+        create(:geo_file_registry, :lfs, file_id: lfs_object_remote_2.id)
+
+        lfs_objects = subject.find_migrated_local_lfs_objects(batch_size: 10, except_file_ids: [lfs_object_remote_1.id])
+
+        expect(lfs_objects).to match_ids(lfs_object_remote_2)
       end
     end
   end
