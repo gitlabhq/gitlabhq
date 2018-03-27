@@ -19,7 +19,7 @@ There are various configuration options to help GitLab server administrators:
 * Changing the location of LFS object storage
 * Setting up AWS S3 compatible object storage
 
-### Omnibus packages
+### Configuration for Omnibus installations
 
 In `/etc/gitlab/gitlab.rb`:
 
@@ -33,7 +33,7 @@ gitlab_rails['lfs_enabled'] = false
 gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
 ```
 
-### Installations from source
+### Configuration for installations from source
 
 In `config/gitlab.yml`:
 
@@ -46,7 +46,7 @@ In `config/gitlab.yml`:
 
 ## Storing the LFS objects in an S3-compatible object storage
 
-> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought in GitLab Libre
+> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core
 in 10.7.
 
 It is possible to store LFS objects on a remote object storage which allows you
@@ -81,7 +81,7 @@ The `connection` settings match those provided by [Fog](https://github.com/fog).
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
 
-**For Omnibus installations**
+### S3 for Omnibus installations
 
 On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
 
@@ -114,9 +114,7 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
     will be forwarded to object storage unless
     `gitlab_rails['lfs_object_store_background_upload']` is set to false.
 
----
-
-**For installations from source**
+### S3 for installations from source
 
 For source installations the settings are nested under `lfs:` and then
 `object_store:`:
