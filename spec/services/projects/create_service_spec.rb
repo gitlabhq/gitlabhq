@@ -70,6 +70,16 @@ describe Projects::CreateService, '#execute' do
       opts[:default_branch] = 'master'
       expect(create_project(user, opts)).to eq(nil)
     end
+
+    it 'handles invalid service' do
+      create(:service, type: 'JiraService', project: nil, template: true, active: true)
+
+      project = create_project(user, opts)
+
+      expect(project).not_to be_persisted
+      expect(project.errors.full_messages_for(:base).first).to match(/Unable to save project. Error: Unable to save JiraService/)
+      expect(project.services.count).to eq 0
+    end
   end
 
   context 'wiki_enabled creates repository directory' do
