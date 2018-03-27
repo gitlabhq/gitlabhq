@@ -244,11 +244,12 @@ module API
       params do
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
+        optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
       end
       get '/:id/artifacts' do
         job = authenticate_job!
 
-        present_artifacts!(job.artifacts_file)
+        present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
       end
     end
   end

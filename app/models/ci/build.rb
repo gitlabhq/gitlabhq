@@ -3,6 +3,7 @@ module Ci
     prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
+    include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
 
@@ -45,6 +46,7 @@ module Ci
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
+    scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
@@ -365,13 +367,19 @@ module Ci
       project.running_or_pending_build_count(force: true)
     end
 
-    def artifacts_metadata_entry(path, **options)
-      metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
-        artifacts_metadata.path,
-        path,
-        **options)
+    def browsable_artifacts?
+      artifacts_metadata?
+    end
 
-      metadata.to_entry
+    def artifacts_metadata_entry(path, **options)
+      artifacts_metadata.use_file do |metadata_path|
+        metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
+          metadata_path,
+          path,
+          **options)
+
+        metadata.to_entry
+      end
     end
 
     def erase_artifacts!
