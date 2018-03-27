@@ -1,5 +1,6 @@
 class NoteEntity < API::Entities::Note
   include RequestAwareEntity
+  include NotesHelper
 
   expose :type
 
@@ -55,6 +56,10 @@ class NoteEntity < API::Entities::Note
     else
       project_note_path(note.project, note)
     end
+  end
+
+  expose :noteable_note_url do |note|
+    noteable_note_url(note)
   end
 
   expose :resolve_path, if: -> (note, _) { note.part_of_discussion? && note.resolvable? } do |note|
