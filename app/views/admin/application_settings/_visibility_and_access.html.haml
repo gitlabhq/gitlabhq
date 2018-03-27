@@ -6,6 +6,7 @@
       = f.label :default_branch_protection, class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
+    = render partial: 'admin/application_settings/ee/project_creation_level', locals: { form: f, application_setting: @application_setting }
     .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10
@@ -41,6 +42,19 @@
           = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
           = link_to "(?)", help_page_path("integration/gitlab")
+
+    -# EE-only
+    - if ldap_enabled?
+      .form-group
+        = f.label :allow_group_owners_to_manage_ldap, 'LDAP settings', class: 'control-label col-sm-2'
+        .col-sm-10
+          .checkbox
+            = f.label :allow_group_owners_to_manage_ldap do
+              = f.check_box :allow_group_owners_to_manage_ldap
+              Allow group owners to manage LDAP-related settings
+          %span.help-block
+            If checked, group owners can manage LDAP group links and LDAP member overrides
+            = link_to icon('question-circle'), help_page_path('administration/auth/ldap-ee')
 
     .form-group
       .col-sm-offset-2.col-sm-10

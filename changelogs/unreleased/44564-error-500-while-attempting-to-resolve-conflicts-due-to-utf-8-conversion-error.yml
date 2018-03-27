@@ -1,5 +1,0 @@
----
-title: Fix 500 error when trying to resolve non-ASCII conflicts in the editor
-merge_request: 17962
-author:
-type: fixed

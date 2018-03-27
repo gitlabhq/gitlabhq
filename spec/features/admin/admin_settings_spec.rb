@@ -32,15 +32,16 @@ feature 'Admin updates settings' do
     expect(find('#application_setting_visibility_level_20')).not_to be_checked
   end
 
-<<<<<<< HEAD
   describe 'LDAP settings' do
     context 'with LDAP enabled' do
       scenario 'Change allow group owners to manage ldap' do
         allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
         visit admin_application_settings_path
 
-        find('#application_setting_allow_group_owners_to_manage_ldap').set(false)
-        click_button 'Save'
+        page.within('.as-visibility-access') do
+          find('#application_setting_allow_group_owners_to_manage_ldap').set(false)
+          click_button 'Save'
+        end
 
         expect(page).to have_content('Application settings saved successfully')
         expect(find('#application_setting_allow_group_owners_to_manage_ldap')).not_to be_checked
@@ -56,15 +57,6 @@ feature 'Admin updates settings' do
     end
   end
 
-  scenario 'Change application settings' do
-    uncheck 'Gravatar enabled'
-    fill_in 'Home page URL', with: 'https://about.gitlab.com/'
-    fill_in 'Help page text', with: 'Example text'
-    check 'Hide marketing-related entries from help'
-    fill_in 'Support page URL', with: 'http://example.com/help'
-    uncheck 'Project export enabled'
-    click_button 'Save'
-=======
   scenario 'Change Visibility and Access Controls' do
     page.within('.as-visibility-access') do
       uncheck 'Project export enabled'
@@ -80,7 +72,6 @@ feature 'Admin updates settings' do
       uncheck 'Gravatar enabled'
       click_button 'Save changes'
     end
->>>>>>> upstream/master
 
     expect(Gitlab::CurrentSettings.gravatar_enabled).to be_falsey
     expect(page).to have_content "Application settings saved successfully"

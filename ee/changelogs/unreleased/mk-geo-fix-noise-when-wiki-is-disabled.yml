@@ -1,5 +1,0 @@
----
-title: Fix excessive updates to file_registry when wiki is disabled
-merge_request: 5119
-author:
-type: fixed

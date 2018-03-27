@@ -1,13 +1,13 @@
 # Geo configuration (GitLab Omnibus)
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the [**Geo nodes configuration for installations
 from source**][configuration-source] guide.
 
 ## Configuring a new secondary node
 
->**Note:**
+NOTE: **Note:**
 This is the final step in setting up a secondary Geo node. Stages of the
 setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages][setup-geo-omnibus].
@@ -20,9 +20,9 @@ You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
 
 > **Notes:**
-- **Do not** setup any custom authentication in the secondary nodes, this will be
+> - **Do not** setup any custom authentication in the secondary nodes, this will be
   handled by the primary node.
-- Any change that requires access to the **Admin Area** needs to be done in the
+> - Any change that requires access to the **Admin Area** needs to be done in the
   primary node, as the secondary node is a read-only replica.
 
 ### Step 1. Manually replicate secret GitLab values

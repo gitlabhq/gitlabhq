@@ -1,5 +1,0 @@
----
-title: Also log Geo Prometheus metrics from primary
-merge_request: 5058
-author:
-type: added
