@@ -186,6 +186,11 @@ ActiveRecord::Schema.define(version: 20180323150945) do
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.float "external_authorization_service_timeout", default: 0.5, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.text "external_auth_client_cert"
+    t.text "encrypted_external_auth_client_key"
+    t.string "encrypted_external_auth_client_key_iv"
+    t.string "encrypted_external_auth_client_key_pass"
+    t.string "encrypted_external_auth_client_key_pass_iv"
   end
 
   create_table "approvals", force: :cascade do |t|

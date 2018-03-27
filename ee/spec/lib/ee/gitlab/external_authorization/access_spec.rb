@@ -39,7 +39,7 @@ describe EE::Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache do
     before do
       allow(access).to receive(:load_from_cache)
       allow(fake_client).to receive(:request_access).and_return(fake_response)
-      allow(EE::Gitlab::ExternalAuthorization::Client).to receive(:build) { fake_client }
+      allow(EE::Gitlab::ExternalAuthorization::Client).to receive(:new) { fake_client }
     end
 
     context 'when loading from the webservice' do
