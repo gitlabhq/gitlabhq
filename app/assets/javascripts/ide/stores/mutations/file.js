@@ -114,24 +114,30 @@ export default {
         }),
       });
     } else {
+      const openFile = state.openFiles.find(f => f.path === file.path);
+      const openFiles = state.openFiles
+        .concat(openFile ? null : file)
+        .filter(f => f)
+        .reduce((acc, f) => {
+          if (f.path === file.path) {
+            return acc.concat({
+              ...f,
+              active: true,
+              pending: true,
+              key: `pending-${f.key}`,
+            });
+          }
+
+          return acc.concat(f);
+        }, []);
+
       Object.assign(state, {
         entries: Object.assign(state.entries, {
           [file.path]: Object.assign(state.entries[file.path], {
             opened: false,
           }),
         }),
-        openFiles: state.openFiles.map(f => {
-          if (f.path === file.path) {
-            return {
-              ...f,
-              active: true,
-              pending: true,
-              key: `pending-${f.key}`,
-            };
-          }
-
-          return f;
-        }),
+        openFiles,
       });
     }
   },

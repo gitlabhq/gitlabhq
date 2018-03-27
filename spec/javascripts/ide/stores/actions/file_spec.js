@@ -74,6 +74,22 @@ describe('Multi-file store file actions', () => {
         })
         .catch(done.fail);
     });
+
+    it('removes file if it pending', done => {
+      store.state.openFiles.push({
+        ...localFile,
+        pending: true,
+      });
+
+      store
+        .dispatch('closeFile', localFile)
+        .then(() => {
+          expect(store.state.openFiles.length).toBe(0);
+
+          done();
+        })
+        .catch(done.fail);
+    });
   });
 
   describe('setFileActive', () => {
@@ -415,6 +431,115 @@ describe('Multi-file store file actions', () => {
 
           done();
         })
+        .catch(done.fail);
+    });
+  });
+
+  describe('openPendingTab', () => {
+    let f;
+
+    beforeEach(() => {
+      f = {
+        ...file(),
+        projectId: '123',
+      };
+
+      store.state.entries[f.path] = f;
+    });
+
+    it('makes file pending in openFiles', done => {
+      store
+        .dispatch('openPendingTab', f)
+        .then(() => {
+          expect(store.state.openFiles[0].pending).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('returns true when opened', done => {
+      store
+        .dispatch('openPendingTab', f)
+        .then(added => {
+          expect(added).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('pushes router URL when added', done => {
+      store.state.currentBranchId = 'master';
+
+      store
+        .dispatch('openPendingTab', f)
+        .then(() => {
+          expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('calls scrollToTab', done => {
+      const scrollToTabSpy = jasmine.createSpy('scrollToTab');
+      const oldScrollToTab = store._actions.scrollToTab; // eslint-disable-line
+      store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
+
+      store
+        .dispatch('openPendingTab', f)
+        .then(() => {
+          expect(scrollToTabSpy).toHaveBeenCalled();
+          store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('returns false when passed in file is active & viewer is diff', done => {
+      f.active = true;
+      store.state.openFiles.push(f);
+      store.state.viewer = 'diff';
+
+      store
+        .dispatch('openPendingTab', f)
+        .then(added => {
+          expect(added).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('removePendingTab', () => {
+    let f;
+
+    beforeEach(() => {
+      spyOn(eventHub, '$emit');
+
+      f = {
+        ...file('pendingFile'),
+        pending: true,
+      };
+    });
+
+    it('removes pending file from open files', done => {
+      store.state.openFiles.push(f);
+
+      store
+        .dispatch('removePendingTab', f)
+        .then(() => {
+          expect(store.state.openFiles.length).toBe(0);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('emits event to dispose model', done => {
+      store
+        .dispatch('removePendingTab', f)
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.${f.key}`);
+        })
+        .then(done)
         .catch(done.fail);
     });
   });

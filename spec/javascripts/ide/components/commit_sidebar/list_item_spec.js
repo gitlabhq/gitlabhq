@@ -14,6 +14,8 @@ describe('Multi-file editor commit sidebar list item', () => {
 
     f = file('test-file');
 
+    store.state.entries[f.path] = f;
+
     vm = createComponentWithStore(Component, store, {
       file: f,
     }).$mount();
@@ -24,9 +26,7 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('renders file path', () => {
-    expect(
-      vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim(),
-    ).toBe(f.path);
+    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim()).toBe(f.path);
   });
 
   it('calls discardFileChanges when clicking discard button', () => {
@@ -39,7 +39,6 @@ describe('Multi-file editor commit sidebar list item', () => {
 
   it('opens a closed file in the editor when clicking the file path', done => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
-    spyOn(vm, 'updateViewer').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
@@ -52,14 +51,18 @@ describe('Multi-file editor commit sidebar list item', () => {
     });
   });
 
-  it('calls updateViewer with diff when clicking file', () => {
+  it('calls updateViewer with diff when clicking file', done => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
     spyOn(vm, 'updateViewer').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
 
-    expect(vm.updateViewer).toHaveBeenCalledWith('diff');
+    setTimeout(() => {
+      expect(vm.updateViewer).toHaveBeenCalledWith('diff');
+
+      done();
+    });
   });
 
   describe('computed', () => {

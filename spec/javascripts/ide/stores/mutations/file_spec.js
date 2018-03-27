@@ -22,6 +22,20 @@ describe('Multi-file store file mutations', () => {
 
       expect(localFile.active).toBeTruthy();
     });
+
+    it('sets pending tab as not active', () => {
+      localState.openFiles.push({
+        ...localFile,
+        pending: true,
+      });
+
+      mutations.SET_FILE_ACTIVE(localState, {
+        path: localFile.path,
+        active: true,
+      });
+
+      expect(localState.openFiles[0].active).toBe(false);
+    });
   });
 
   describe('TOGGLE_FILE_OPEN', () => {
@@ -152,6 +166,71 @@ describe('Multi-file store file mutations', () => {
       });
 
       expect(localFile.changed).toBeTruthy();
+    });
+  });
+
+  describe('ADD_PENDING_TAB', () => {
+    beforeEach(() => {
+      const f = {
+        ...file('openFile'),
+        path: 'openFile',
+        active: true,
+        opened: true,
+      };
+
+      localState.entries[f.path] = f;
+      localState.openFiles.push(f);
+    });
+
+    it('adds file into openFiles as pending', () => {
+      mutations.ADD_PENDING_TAB(localState, localFile);
+
+      expect(localState.openFiles.length).toBe(2);
+      expect(localState.openFiles[1].pending).toBe(true);
+      expect(localState.openFiles[1].key).toBe(`pending-${localFile.key}`);
+    });
+
+    it('updates open file to pending', () => {
+      mutations.ADD_PENDING_TAB(localState, localState.openFiles[0]);
+
+      expect(localState.openFiles.length).toBe(1);
+    });
+
+    it('updates pending open file to active', () => {
+      localState.openFiles.push({
+        ...localFile,
+        pending: true,
+      });
+
+      mutations.ADD_PENDING_TAB(localState, localFile);
+
+      expect(localState.openFiles[1].pending).toBe(true);
+      expect(localState.openFiles[1].active).toBe(true);
+    });
+
+    it('sets all openFiles to not active', () => {
+      mutations.ADD_PENDING_TAB(localState, localFile);
+
+      expect(localState.openFiles.length).toBe(2);
+
+      localState.openFiles.forEach(f => {
+        if (f.pending) {
+          expect(f.active).toBe(true);
+        } else {
+          expect(f.active).toBe(false);
+        }
+      });
+    });
+  });
+
+  describe('REMOVE_PENDING_TAB', () => {
+    it('removes pending tab from openFiles', () => {
+      localFile.key = 'testing';
+      localState.openFiles.push(localFile);
+
+      mutations.REMOVE_PENDING_TAB(localState, localFile);
+
+      expect(localState.openFiles.length).toBe(0);
     });
   });
 });
