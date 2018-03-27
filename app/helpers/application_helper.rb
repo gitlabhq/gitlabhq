@@ -283,23 +283,10 @@ module ApplicationHelper
     end
   end
 
-  def appearance
-    @appearance ||= Appearance.current
-  end
-
   def page_class
     class_names = []
     class_names << 'issue-boards-page' if current_controller?(:boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
-    class_names += system_message_class
-
-    class_names
-  end
-
-  def system_message_class
-    class_names = []
-    class_names << 'with-system-header' if appearance.show_header?
-    class_names << 'with-system-footer' if appearance.show_footer?
 
     class_names
   end
