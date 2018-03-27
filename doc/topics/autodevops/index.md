@@ -446,12 +446,13 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `AUTO_DEVOPS_DOMAIN`        | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops). |
 | `AUTO_DEVOPS_CHART`         | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app). |
 | `PRODUCTION_REPLICAS`       | The number of replicas to deploy in the production environment; defaults to 1. |
+| `STAGING_REPLICAS`          | The number of replicas to deploy in the staging environment; defaults to 1. This is only applicable if you've [customized the auto devops template to enable staging](#customizing-gitlab-ci-yml) |
 | `CANARY_PRODUCTION_REPLICAS`| The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) in the production environment. |
-| `POSTGRES_ENABLED`  | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
-| `POSTGRES_USER`     | The PostgreSQL user; defaults to `user`. Set it to use a custom username. |
-| `POSTGRES_PASSWORD` | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`       | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name. |
-| `BUILDPACK_URL`  | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`|
+| `POSTGRES_ENABLED`          | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
+| `POSTGRES_USER`             | The PostgreSQL user; defaults to `user`. Set it to use a custom username. |
+| `POSTGRES_PASSWORD`         | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password. |
+| `POSTGRES_DB`               | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name. |
+| `BUILDPACK_URL`             | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`|
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -462,62 +463,6 @@ CAUTION: **Caution:**
 You should *not* scale your application using Kubernetes directly. This can
 cause confusion with Helm not detecting the change, and subsequent deploys with
 Auto DevOps can undo your changes.
-
-#### Advanced replica variables setup
-
-Apart from the two replica-related variables for production mentioned above,
-you can also use others for different environments.
-
-There's a very specific mapping between Kubernetes' label named `track`,
-GitLab CI/CD environment names, and the replicas environment variable.
-The general rule is: `TRACK_ENV_REPLICAS`. Where:
-
-- `TRACK`: The capitalized value of the `track`
-  [Kubernetes label](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
-  in the Helm Chart app definition. If not set, it will not be taken into account
-  to the variable name.
-- `ENV`: The capitalized environment name of the deploy job that is set in
-  `.gitlab-ci.yml`.
-
-That way, you can define your own `TRACK_ENV_REPLICAS` variables with which
-you will be able to scale the pod's replicas easily.
-
-In the example below, the environment's name is `qa` which would result in
-looking for the `QA_REPLICAS` environment variable:
-
-```yaml
-QA testing:
-  stage: deploy
-  environment:
-    name: qa
-  script:
-  - deploy qa
-```
-
-If, in addition, there was also a `track: foo` defined in the application's Helm
-chart, like:
-
-```yaml
-replicaCount: 1
-image:
-  repository: gitlab.example.com/group/project
-  tag: stable
-  pullPolicy: Always
-  secrets:
-    - name: gitlab-registry
-application:
-  track: foo
-  tier: web
-service:
-  enabled: true
-  name: web
-  type: ClusterIP
-  url: http://my.host.com/
-  externalPort: 5000
-  internalPort: 5000
-```
-
-then the environment variable would be `FOO_QA_REPLICAS`.
 
 ## Currently supported languages
 

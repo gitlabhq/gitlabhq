@@ -236,7 +236,7 @@ stop_review:
     - ensure_namespace
     - install_tiller
     - create_secret
-    - deploy canary
+    - deploy true
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
@@ -336,30 +336,22 @@ production:
   }
 
   function deploy() {
-    track="${1-stable}"
+    is_canary=$1
     name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
-
-    replicas="1"
-    service_enabled="false"
     postgres_enabled="$POSTGRES_ENABLED"
-    # canary uses stable db
-    [[ "$track" == "canary" ]] && postgres_enabled="false"
-
-    env_track=$( echo $track | tr -s  '[:lower:]'  '[:upper:]' )
+    replicas="1"
+    service_enabled="true"
     env_slug=$( echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s  '[:lower:]'  '[:upper:]' )
 
-    if [[ "$track" == "stable" ]]; then
-      # for stable track get number of replicas from `PRODUCTION_REPLICAS`
-      eval new_replicas=\$${env_slug}_REPLICAS
-      service_enabled="true"
+    if [[ "$is_canary" == "true" ]]; then
+      name="$name-canary"
+      postgres_enabled="false" # canary uses the same db
+      service_enabled="false"
+      eval new_replicas=\$CANARY_${env_slug}_REPLICAS
     else
-      # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
-      eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
+      eval new_replicas=\$${env_slug}_REPLICAS
     fi
+
     if [[ -n "$new_replicas" ]]; then
       replicas="$new_replicas"
     fi
