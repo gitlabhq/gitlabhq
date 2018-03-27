@@ -8,8 +8,7 @@ module Gitlab
           end
 
           def satisfied_by?(pipeline, seed)
-            variables = seed.to_resource
-              .evaluable_variables.to_hash
+            variables = seed.to_resource.variables_hash
 
             statements = @expressions.map do |statement|
               ::Gitlab::Ci::Pipeline::Expression::Statement

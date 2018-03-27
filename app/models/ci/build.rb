@@ -23,7 +23,9 @@ module Ci
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
-    # The "environment" field for builds is a String, and is the unexpanded name
+    ##
+    # The "environment" field for builds is a String, and is the unexpanded name!
+    #
     def persisted_environment
       @persisted_environment ||= Environment.find_by(
         name: expanded_environment_name,
@@ -198,7 +200,9 @@ module Ci
     end
 
     def expanded_environment_name
-      ExpandVariables.expand(environment, simple_variables) if environment
+      if has_environment?
+        ExpandVariables.expand(environment, simple_variables)
+      end
     end
 
     def has_environment?
@@ -249,41 +253,46 @@ module Ci
     end
 
     ##
-    # Variables whose value does not depend on environment
+    # Variables in the environment name scope.
     #
-    def simple_variables
-      variables(environment: nil)
-    end
-
-    ##
-    # Variables that are available for evaluation using variables policy.
-    #
-    def evaluable_variables
-      Gitlab::Ci::Variables::Collection.new
-        .concat(simple_variables)
-    end
-
-    ## All variables, including those dependent on environment, which could
-    #  contain unexpanded variables.
-    #
-    def variables(environment: persisted_environment)
-      collection = Gitlab::Ci::Variables::Collection.new.tap do |variables|
+    def scoped_variables(environment: expanded_environment_name)
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
-        variables.concat(project.deployment_variables(environment: environment)) if has_environment?
+        variables.concat(project.deployment_variables(environment: environment)) if environment
         variables.concat(yaml_variables)
         variables.concat(user_variables)
-        variables.concat(project.group.secret_variables_for(ref, project)) if project.group
-        variables.concat(secret_variables(environment: environment))
+        variables.concat(secret_group_variables)
+        variables.concat(secret_project_variables(environment: environment))
         variables.concat(trigger_request.user_variables) if trigger_request
         variables.concat(pipeline.variables)
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
-        variables.concat(persisted_environment_variables) if environment
       end
+    end
 
-      collection.to_runner_variables
+    ##
+    # Variables that do not depend on the environment name.
+    #
+    def simple_variables
+      scoped_variables(environment: nil).to_runner_variables
+    end
+
+    ##
+    # All variables, including persisted environment variables.
+    #
+    def variables
+      scoped_variables
+        .concat(persisted_environment_variables)
+        .to_runner_variables
+    end
+
+    ##
+    # TODO, add specs
+    #
+    def variables_hash
+      scoped_variables.to_hash
     end
 
     def features
@@ -454,9 +463,14 @@ module Ci
       end
     end
 
-    def secret_variables(environment: persisted_environment)
+    def secret_group_variables
+      return [] unless project.group
+
+      project.group.secret_variables_for(ref, project)
+    end
+
+    def secret_project_variables(environment: persisted_environment)
       project.secret_variables_for(ref: ref, environment: environment)
-        .map(&:to_runner_variable)
     end
 
     def steps
@@ -580,7 +594,7 @@ module Ci
 
     def persisted_environment_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        return variables unless persisted_environment
+        return variables unless persisted? && persisted_environment.present?
 
         variables.concat(persisted_environment.predefined_variables)
 

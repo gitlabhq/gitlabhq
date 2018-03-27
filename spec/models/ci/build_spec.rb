@@ -1998,7 +1998,7 @@ describe Ci::Build do
     end
   end
 
-  describe '#evaluable_variables' do
+  describe '#scoped_variables' do
     context 'when build has not been persisted yet' do
       let(:build) do
         described_class.new(
@@ -2014,7 +2014,7 @@ describe Ci::Build do
         expect(build).to be_valid
         expect(build).not_to be_persisted
 
-        variables = build.evaluable_variables
+        build.scoped_variables
 
         expect(build).not_to be_persisted
       end
@@ -2026,7 +2026,7 @@ describe Ci::Build do
                   CI_COMMIT_REF_SLUG
                   CI_JOB_STAGE]
 
-        variables = build.evaluable_variables
+        variables = build.scoped_variables
 
         variables.map { |env| env[:key] }.tap do |names|
           expect(names).to include(*keys)
@@ -2046,7 +2046,7 @@ describe Ci::Build do
                   CI_REPOSITORY_URL
                   CI_ENVIRONMENT_URL]
 
-        build.evaluable_variables.map { |env| env[:key] }.tap do |names|
+        build.scoped_variables.map { |env| env[:key] }.tap do |names|
           expect(names).not_to include(*keys)
         end
       end
