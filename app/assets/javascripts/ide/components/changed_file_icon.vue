@@ -13,8 +13,7 @@ export default {
   },
   computed: {
     changedIcon() {
-      if (this.file.tempFile) return 'file-addition';
-      return this.file.changed ? 'file-modified' : 'git-merge';
+      return this.file.tempFile ? 'file-addition' : 'file-modified';
     },
     changedIconClass() {
       return `multi-${this.changedIcon}`;

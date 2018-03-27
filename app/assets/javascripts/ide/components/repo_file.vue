@@ -6,6 +6,7 @@ import router from '../ide_router';
 import newDropdown from './new_dropdown/index.vue';
 import fileStatusIcon from './repo_file_status_icon.vue';
 import changedFileIcon from './changed_file_icon.vue';
+import mrFileIcon from './mr_file_icon.vue';
 
 export default {
   name: 'RepoFile',
@@ -15,6 +16,7 @@ export default {
     fileStatusIcon,
     fileIcon,
     changedFileIcon,
+    mrFileIcon,
   },
   props: {
     file: {
@@ -99,11 +101,16 @@ export default {
             :file="file"
           />
         </span>
-        <changed-file-icon
-          :file="file"
-          v-if="file.changed || file.tempFile || file.mrChange"
-          class="prepend-top-5 pull-right"
-        />
+        <span class="pull-right">
+          <mr-file-icon
+            :file="file"
+            v-if="file.mrChange"
+          />
+          <changed-file-icon
+            :file="file"
+            v-if="file.changed || file.tempFile"
+          />
+        </span>
         <new-dropdown
           v-if="isTree"
           :project-id="file.projectId"

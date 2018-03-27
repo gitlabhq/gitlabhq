@@ -1,5 +1,6 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+import { __, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -11,10 +12,10 @@ export default {
       required: false,
       default: false,
     },
-    hasMergeRequest: {
-      type: Boolean,
+    mergeRequestId: {
+      type: String,
       required: false,
-      default: false,
+      default: '',
     },
     viewer: {
       type: String,
@@ -48,8 +49,8 @@ export default {
       }"
       data-toggle="dropdown"
     >
-      <template v-if="viewer === 'mrdiff'">
-        {{ __('Reviewing (merge request)') }}
+      <template v-if="viewer === 'mrdiff' && mergeRequestId">
+        {{ sprintf(__('Reviewing (merge request !%{mergeRequestId})'), { mergeRequestId }) }}
       </template>
       <template v-else-if="viewer === 'editor'">
         {{ __('Editing') }}
@@ -65,26 +66,27 @@ export default {
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-open-left">
       <ul>
-        <li v-if="hasMergeRequest">
-          <a
-            href="#"
-            @click.prevent="changeMode('mrdiff')"
-            :class="{
-              'is-active': viewer === 'mrdiff',
-            }"
+        <template v-if="mergeRequestId">
+          <li>
+            <a
+              href="#"
+              @click.prevent="changeMode('mrdiff')"
+              :class="{
+                'is-active': viewer === 'mrdiff',
+              }"
+            >
+              <strong class="dropdown-menu-inner-title">{{ sprintf(__('Reviewing (merge request !%{mergeRequestId})'), { mergeRequestId }) }}</strong>
+              <span class="dropdown-menu-inner-content">
+                {{ __('Compare changes with the merge request target branch') }}
+              </span>
+            </a>
+          </li>
+          <li
+            role="separator"
+            class="divider"
           >
-            <strong class="dropdown-menu-inner-title">{{ __('Reviewing (merge request)') }}</strong>
-            <span class="dropdown-menu-inner-content">
-              {{ __('Compare changes of the merge request') }}
-            </span>
-          </a>
-        </li>
-        <li
-          v-if="hasMergeRequest"
-          role="separator"
-          class="divider"
-        >
-        </li>
+          </li>
+        </template>
         <li>
           <a
             href="#"

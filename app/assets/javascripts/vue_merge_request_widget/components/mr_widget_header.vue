@@ -105,7 +105,7 @@ export default {
         class="btn btn-sm btn-default inline js-web-ide"
         type="button"
       >
-        {{ s__("mrWidget|Open in Web IDE") }}
+        {{ s__("mrWidget|Web IDE") }}
       </a>
       <button
         data-target="#modal_merge_info"

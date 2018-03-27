@@ -21,10 +21,10 @@ export default {
       type: Boolean,
       required: true,
     },
-    hasMergeRequest: {
-      type: Boolean,
-      required: true,
-      default: false,
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -59,7 +59,7 @@ export default {
       :viewer="viewer"
       :show-shadow="showShadow"
       :has-changes="hasChanges"
-      :has-merge-request="hasMergeRequest"
+      :merge-request-id="mergeRequestId"
       @click="updateViewer"
     />
   </div>

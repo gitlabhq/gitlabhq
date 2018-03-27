@@ -144,7 +144,7 @@ describe('MRWidgetHeader', () => {
       it('renders web ide button', () => {
         const button = vm.$el.querySelector('.js-web-ide');
 
-        expect(button.textContent.trim()).toEqual('Open in Web IDE');
+        expect(button.textContent.trim()).toEqual('Web IDE');
         expect(button.getAttribute('href')).toEqual('undefined/-/ide/projectabc');
       });
 
