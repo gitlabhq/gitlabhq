@@ -141,7 +141,7 @@ feature 'Admin updates settings' do
       click_button 'Save changes'
     end
 
-    expect(Gitlab::CurrentSettings.metrics_enabled?).to be true
+    expect(Gitlab::CurrentSettings.prometheus_metrics_enabled?).to be true
     expect(page).to have_content "Application settings saved successfully"
   end
 
