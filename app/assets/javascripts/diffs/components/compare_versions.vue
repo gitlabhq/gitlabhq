@@ -23,7 +23,7 @@ export default {
           </span>
           <Icon
             name="angle-down"
-            size="12"
+            :size="12"
           />
         </a>
       </span>
@@ -37,7 +37,7 @@ export default {
           <span class="ref-name">master</span>
           <Icon
             name="angle-down"
-            size="12"
+            :size="12"
           />
         </a>
       </span>
