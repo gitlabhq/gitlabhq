@@ -74,6 +74,10 @@ describe('Multi-file editor library', () => {
           },
           readOnly: true,
           scrollBeyondLastLine: false,
+          quickSuggestions: false,
+          occurrencesHighlight: false,
+          renderLineHighlight: 'none',
+          hideCursorInOverviewRuler: true,
         },
       );
     });
