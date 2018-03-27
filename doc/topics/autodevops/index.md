@@ -231,6 +231,19 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dependency_scanning.md).
 
+### Auto Dependency Scanning
+
+> Introduced in [GitLab Ultimate][ee] 10.7.
+
+Dependency Scanning uses the
+[Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
+to run analysis on the project dependencies and checks for potential security issues. Once the
+report is created, it's uploaded as an artifact which you can later download and
+check out.
+
+In GitLab Ultimate, any security warnings are also
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html).
+
 ### Auto Container Scanning
 
 > Introduced in GitLab 10.4.

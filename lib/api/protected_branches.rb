@@ -80,7 +80,10 @@ module API
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
-        destroy_conditionally!(protected_branch)
+        destroy_conditionally!(protected_branch) do
+          destroy_service = ::ProtectedBranches::DestroyService.new(user_project, current_user)
+          destroy_service.execute(protected_branch)
+        end
       end
     end
   end
