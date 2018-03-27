@@ -641,9 +641,7 @@ class User < ActiveRecord::Base
   end
 
   def owned_projects
-    @owned_projects ||=
-      Project.where('namespace_id IN (?) OR namespace_id = ?',
-                    owned_groups.select(:id), namespace.id).joins(:namespace)
+    @owned_projects ||= Project.from("(#{owned_projects_union.to_sql}) AS projects")
   end
 
   # Returns projects which user can admin issues on (for example to move an issue to that project).
@@ -1217,6 +1215,15 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  def owned_projects_union
+    Gitlab::SQL::Union.new([
+      Project.where(namespace: namespace),
+      Project.joins(:project_authorizations)
+        .where("projects.namespace_id <> ?", namespace.id)
+        .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
+    ], remove_duplicates: false)
+  end
 
   def ci_projects_union
     scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
