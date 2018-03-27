@@ -105,7 +105,6 @@ module Gitlab
         )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
-        @attributes = Gitlab::Git::InfoAttributes.new(path)
       end
 
       def ==(other)
@@ -993,11 +992,32 @@ module Gitlab
         raise InvalidRef
       end
 
+      def info_attributes
+        return @info_attributes if @info_attributes
+
+        content =
+          gitaly_migrate(:get_info_attributes) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.info_attributes
+            else
+              attributes_path = File.join(File.expand_path(@path), 'info', 'attributes')
+
+              if File.exist?(attributes_path)
+                File.read(attributes_path)
+              else
+                ""
+              end
+            end
+          end
+
+        @info_attributes = AttributesParser.new(content)
+      end
+
       # Returns the Git attributes for the given file path.
       #
       # See `Gitlab::Git::Attributes` for more information.
       def attributes(path)
-        @attributes.attributes(path)
+        info_attributes.attributes(path)
       end
 
       def gitattribute(path, name)
