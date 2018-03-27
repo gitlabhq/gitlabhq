@@ -2,23 +2,23 @@
 
 %fieldset.system_header_footer
   %legend
-    System header and footer:
+    = _('System header and footer:')
   .form-group
-    = form.label :header_message, 'Header message', class: 'control-label'
+    = form.label :header_message, _('Header message'), class: 'control-label'
     .col-sm-10
-      = form.text_area :header_message, placeholder: 'State your message to activate', class: "form-control js-autosize"
+      = form.text_area :header_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
   .form-group
     = form.label :footer_message, 'Footer message', class: 'control-label'
     .col-sm-10
-      = form.text_area :footer_message, placeholder: 'State your message to activate', class: "form-control js-autosize"
+      = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
   .form-group.js-toggle-colors-container
     .col-sm-10.col-sm-offset-2
       = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
   .form-group.js-toggle-colors-container.hide
-    = form.label :background_color, "Background Color", class: 'control-label'
+    = form.label :background_color, _('Background Color'), class: 'control-label'
     .col-sm-10
       = form.color_field :background_color, class: "form-control"
   .form-group.js-toggle-colors-container.hide
-    = form.label :font_color, "Font Color", class: 'control-label'
+    = form.label :font_color, _('Font Color'), class: 'control-label'
     .col-sm-10
       = form.color_field :font_color, class: "form-control"
