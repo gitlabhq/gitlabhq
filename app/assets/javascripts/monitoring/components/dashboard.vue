@@ -73,6 +73,10 @@
         type: String,
         required: true,
       },
+      emptyNoDataSvgPath: {
+        type: String,
+        required: true,
+      },
       emptyUnableToConnectSvgPath: {
         type: String,
         required: true,
@@ -188,6 +192,7 @@
     :clusters-path="clustersPath"
     :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
     :empty-loading-svg-path="emptyLoadingSvgPath"
+    :empty-no-data-svg-path="emptyNoDataSvgPath"
     :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
   />
 </template>

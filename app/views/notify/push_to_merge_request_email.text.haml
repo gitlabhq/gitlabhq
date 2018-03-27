@@ -1,0 +1,13 @@
+New commits were pushed to the merge request #{@merge_request.to_reference} by #{@current_user.name}
+\
+#{url_for(project_merge_request_url(@merge_request.target_project, @merge_request))}
+\
+- if @existing_commits.any?
+  - count = @existing_commits.size
+  - commits_id = count.one? ? @existing_commits.first[:short_id] : "#{@existing_commits.first[:short_id]}...#{@existing_commits.last[:short_id]}"
+  - commits_text = "#{count} commit".pluralize(count)
+
+  * #{commits_id} - #{commits_text} from branch `#{@merge_request.target_branch}`
+\
+- @new_commits.each do |commit|
+  * #{commit[:short_id]} - #{raw commit[:title]}

@@ -93,7 +93,7 @@ module Gitlab
         @relative_path = relative_path
         @gl_repository = gl_repository
 
-        storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
           storage_path,
           relative_path,
@@ -514,10 +514,6 @@ module Gitlab
             count_commits_by_shelling_out(count_commits_options)
           end
         end
-      end
-
-      def sha_from_ref(ref)
-        rev_parse_target(ref).oid
       end
 
       # Return the object that +revspec+ points to.  If +revspec+ is an
@@ -1390,7 +1386,7 @@ module Gitlab
         offset = 2
         args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
-        run_git(args).first.scrub.split(/^--$/)
+        run_git(args).first.scrub.split(/^--\n/)
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -2408,6 +2404,10 @@ module Gitlab
 
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
+      end
+
+      def sha_from_ref(ref)
+        rev_parse_target(ref).oid
       end
     end
   end

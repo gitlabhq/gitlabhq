@@ -23,9 +23,7 @@ const metricsMockData = {
     memory_values: [
       {
         metric: {},
-        values: [
-          [1493716685, '4.30859375'],
-        ],
+        values: [[1493716685, '4.30859375']],
       },
     ],
   },
@@ -53,7 +51,8 @@ const createComponent = () => {
 
 const messages = {
   loadingMetrics: 'Loading deployment statistics',
-  hasMetrics: 'Memory usage unchanged from 0MB to 0MB',
+  hasMetrics:
+    '<a href="/root/acets-review-apps/environments/15/metrics"> Memory </a> usage is <b> unchanged </b> at 0MB',
   loadFailed: 'Failed to load deployment statistics',
   metricsUnavailable: 'Deployment statistics are not available currently',
 };
@@ -92,26 +91,26 @@ describe('MemoryUsage', () => {
   });
 
   describe('computed', () => {
-    describe('memoryChangeType', () => {
-      it('should return "increased" if memoryFrom value is less than memoryTo value', () => {
+    describe('memoryChangeMessage', () => {
+      it('should contain "increased" if memoryFrom value is less than memoryTo value', () => {
         vm.memoryFrom = 4.28;
         vm.memoryTo = 9.13;
 
-        expect(vm.memoryChangeType).toEqual('increased');
+        expect(vm.memoryChangeMessage.indexOf('increased')).not.toEqual('-1');
       });
 
-      it('should return "decreased" if memoryFrom value is less than memoryTo value', () => {
+      it('should contain "decreased" if memoryFrom value is less than memoryTo value', () => {
         vm.memoryFrom = 9.13;
         vm.memoryTo = 4.28;
 
-        expect(vm.memoryChangeType).toEqual('decreased');
+        expect(vm.memoryChangeMessage.indexOf('decreased')).not.toEqual('-1');
       });
 
-      it('should return "unchanged" if memoryFrom value equal to memoryTo value', () => {
+      it('should contain "unchanged" if memoryFrom value equal to memoryTo value', () => {
         vm.memoryFrom = 1;
         vm.memoryTo = 1;
 
-        expect(vm.memoryChangeType).toEqual('unchanged');
+        expect(vm.memoryChangeMessage.indexOf('unchanged')).not.toEqual('-1');
       });
     });
   });
@@ -130,7 +129,13 @@ describe('MemoryUsage', () => {
     describe('computeGraphData', () => {
       it('should populate sparkline graph', () => {
         vm.computeGraphData(metrics, deployment_time);
-        const { hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo } = vm;
+        const {
+          hasMetrics,
+          memoryMetrics,
+          deploymentTime,
+          memoryFrom,
+          memoryTo,
+        } = vm;
 
         expect(hasMetrics).toBeTruthy();
         expect(memoryMetrics.length > 0).toBeTruthy();
@@ -141,20 +146,26 @@ describe('MemoryUsage', () => {
     });
 
     describe('loadMetrics', () => {
-      const returnServicePromise = () => new Promise((resolve) => {
-        resolve({
-          data: metricsMockData,
+      const returnServicePromise = () =>
+        new Promise(resolve => {
+          resolve({
+            data: metricsMockData,
+          });
         });
-      });
 
-      it('should load metrics data using MRWidgetService', (done) => {
-        spyOn(MRWidgetService, 'fetchMetrics').and.returnValue(returnServicePromise(true));
+      it('should load metrics data using MRWidgetService', done => {
+        spyOn(MRWidgetService, 'fetchMetrics').and.returnValue(
+          returnServicePromise(true),
+        );
         spyOn(vm, 'computeGraphData');
 
         vm.loadMetrics();
         setTimeout(() => {
           expect(MRWidgetService.fetchMetrics).toHaveBeenCalledWith(url);
-          expect(vm.computeGraphData).toHaveBeenCalledWith(metrics, deployment_time);
+          expect(vm.computeGraphData).toHaveBeenCalledWith(
+            metrics,
+            deployment_time,
+          );
           done();
         }, 333);
       });
@@ -167,51 +178,67 @@ describe('MemoryUsage', () => {
       expect(el.querySelector('.js-usage-info')).toBeDefined();
     });
 
-    it('should show loading metrics message while metrics are being loaded', (done) => {
+    it('should show loading metrics message while metrics are being loaded', done => {
       vm.loadingMetrics = true;
       vm.hasMetrics = false;
       vm.loadFailed = false;
 
       Vue.nextTick(() => {
-        expect(el.querySelector('.js-usage-info.usage-info-loading')).toBeDefined();
-        expect(el.querySelector('.js-usage-info .usage-info-load-spinner')).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadingMetrics);
+        expect(
+          el.querySelector('.js-usage-info.usage-info-loading'),
+        ).toBeDefined();
+        expect(
+          el.querySelector('.js-usage-info .usage-info-load-spinner'),
+        ).toBeDefined();
+        expect(el.querySelector('.js-usage-info').innerText).toContain(
+          messages.loadingMetrics,
+        );
         done();
       });
     });
 
-    it('should show deployment memory usage when metrics are loaded', (done) => {
+    it('should show deployment memory usage when metrics are loaded', done => {
       vm.loadingMetrics = false;
       vm.hasMetrics = true;
       vm.loadFailed = false;
 
       Vue.nextTick(() => {
         expect(el.querySelector('.memory-graph-container')).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.hasMetrics);
+        expect(el.querySelector('.js-usage-info').innerText).toContain(
+          messages.hasMetrics,
+        );
         done();
       });
     });
 
-    it('should show failure message when metrics loading failed', (done) => {
+    it('should show failure message when metrics loading failed', done => {
       vm.loadingMetrics = false;
       vm.hasMetrics = false;
       vm.loadFailed = true;
 
       Vue.nextTick(() => {
-        expect(el.querySelector('.js-usage-info.usage-info-failed')).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadFailed);
+        expect(
+          el.querySelector('.js-usage-info.usage-info-failed'),
+        ).toBeDefined();
+        expect(el.querySelector('.js-usage-info').innerText).toContain(
+          messages.loadFailed,
+        );
         done();
       });
     });
 
-    it('should show metrics unavailable message when metrics loading failed', (done) => {
+    it('should show metrics unavailable message when metrics loading failed', done => {
       vm.loadingMetrics = false;
       vm.hasMetrics = false;
       vm.loadFailed = false;
 
       Vue.nextTick(() => {
-        expect(el.querySelector('.js-usage-info.usage-info-unavailable')).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.metricsUnavailable);
+        expect(
+          el.querySelector('.js-usage-info.usage-info-unavailable'),
+        ).toBeDefined();
+        expect(el.querySelector('.js-usage-info').innerText).toContain(
+          messages.metricsUnavailable,
+        );
         done();
       });
     });

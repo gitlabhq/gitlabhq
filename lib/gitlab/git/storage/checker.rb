@@ -35,7 +35,7 @@ module Gitlab
         def initialize(storage, logger = Rails.logger)
           @storage = storage
           config = Gitlab.config.repositories.storages[@storage]
-          @storage_path = config['path']
+          @storage_path = config.legacy_disk_path
           @logger = logger
 
           @hostname = Gitlab::Environment.hostname

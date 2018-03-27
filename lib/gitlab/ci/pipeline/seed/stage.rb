@@ -12,7 +12,7 @@ module Gitlab
             @pipeline = pipeline
             @attributes = attributes
 
-            @seeds = attributes.fetch(:builds).map do |attributes|
+            @builds = attributes.fetch(:builds).map do |attributes|
               Seed::Build.new(@pipeline, attributes)
             end
           end
@@ -24,8 +24,8 @@ module Gitlab
           end
 
           def seeds
-            strong_memoize(:seeds_included) do
-              @seeds.select(&:included?)
+            strong_memoize(:seeds) do
+              @builds.select(&:included?)
             end
           end
 

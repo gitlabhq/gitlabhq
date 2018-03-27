@@ -14,6 +14,20 @@ describe WebHookService do
   end
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
+  describe '#initialize' do
+    it 'allow_local_requests is true if hook is a SystemHook' do
+      instance = described_class.new(build(:system_hook), data, :system_hook)
+      expect(instance.request_options[:allow_local_requests]).to be_truthy
+    end
+
+    it 'allow_local_requests is false if hook is not a SystemHook' do
+      %i(project_hook service_hook web_hook_log).each do |hook|
+        instance = described_class.new(build(hook), data, hook)
+        expect(instance.request_options[:allow_local_requests]).to be_falsey
+      end
+    end
+  end
+
   describe '#execute' do
     before do
       project.hooks << [project_hook]

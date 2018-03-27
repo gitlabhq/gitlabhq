@@ -531,4 +531,22 @@ module ProjectsHelper
   def can_show_last_commit_in_list?(project)
     can?(current_user, :read_cross_project) && project.commit
   end
+
+  def pages_https_only_disabled?
+    !@project.pages_domains.all?(&:https?)
+  end
+
+  def pages_https_only_title
+    return unless pages_https_only_disabled?
+
+    "You must enable HTTPS for all your domains first"
+  end
+
+  def pages_https_only_label_class
+    if pages_https_only_disabled?
+      "list-label disabled"
+    else
+      "list-label"
+    end
+  end
 end

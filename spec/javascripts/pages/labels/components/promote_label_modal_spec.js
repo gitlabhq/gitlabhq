@@ -2,7 +2,7 @@ import Vue from 'vue';
 import promoteLabelModal from '~/pages/projects/labels/components/promote_label_modal.vue';
 import eventHub from '~/pages/projects/labels/event_hub';
 import axios from '~/lib/utils/axios_utils';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Promote label modal', () => {
   let vm;

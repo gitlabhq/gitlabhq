@@ -1,5 +1,0 @@
----
-title: Fix settings panels not expanding when fragment hash linked
-merge_request: 17074
-author:
-type: fixed

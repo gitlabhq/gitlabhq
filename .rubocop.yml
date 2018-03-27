@@ -118,6 +118,9 @@ Gitlab/ModuleWithInstanceVariables:
     - spec/support/**/*.rb
     - features/steps/**/*.rb
 
+Gitlab/HTTParty:
+  Enabled: true
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:

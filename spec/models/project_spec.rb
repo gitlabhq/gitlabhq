@@ -922,7 +922,7 @@ describe Project do
 
     it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(project.avatar_type).to eq(['only images allowed'])
+      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff'])
     end
   end
 
@@ -1101,8 +1101,8 @@ describe Project do
 
     before do
       storages = {
-        'default' => { 'path' => 'tmp/tests/repositories' },
-        'picked'  => { 'path' => 'tmp/tests/repositories' }
+        'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
+        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
@@ -3477,6 +3477,51 @@ describe Project do
             .not_to exceed_query_limit(control).with_threshold(2)
         end
       end
+    end
+  end
+
+  describe "#pages_https_only?" do
+    subject { build(:project) }
+
+    context "when HTTPS pages are disabled" do
+      it { is_expected.not_to be_pages_https_only }
+    end
+
+    context "when HTTPS pages are enabled", :https_pages_enabled do
+      it { is_expected.to be_pages_https_only }
+    end
+  end
+
+  describe "#pages_https_only? validation", :https_pages_enabled do
+    subject(:project) do
+      # set-up dirty object:
+      create(:project, pages_https_only: false).tap do |p|
+        p.pages_https_only = true
+      end
+    end
+
+    context "when no domains are associated" do
+      it { is_expected.to be_valid }
+    end
+
+    context "when domains including keys and certificates are associated" do
+      before do
+        allow(project)
+          .to receive(:pages_domains)
+          .and_return([instance_double(PagesDomain, https?: true)])
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context "when domains including no keys or certificates are associated" do
+      before do
+        allow(project)
+          .to receive(:pages_domains)
+          .and_return([instance_double(PagesDomain, https?: false)])
+      end
+
+      it { is_expected.not_to be_valid }
     end
   end
 end

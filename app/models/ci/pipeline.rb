@@ -15,7 +15,7 @@ module Ci
 
     has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :builds, foreign_key: :commit_id
+    has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
 
@@ -478,14 +478,10 @@ module Ci
       end
     end
 
-    # TODO specs
-    #
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(ref) }
     end
 
-    # TODO specs
-    #
     def legacy_trigger
       strong_memoize(:legacy_trigger) { trigger_requests.first }
     end

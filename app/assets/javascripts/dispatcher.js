@@ -53,8 +53,12 @@ function initPageShortcuts(page) {
 
 function initGFMInput() {
   $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
-    const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
-    const enableGFM = convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+    const gfm = new GfmAutoComplete(
+      gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
+    );
+    const enableGFM = convertPermissionToBoolean(
+      el.dataset.supportsAutocomplete,
+    );
     gfm.setup($(el), {
       emojis: true,
       members: enableGFM,
@@ -67,9 +71,9 @@ function initGFMInput() {
 }
 
 function initPerformanceBar() {
-  if (document.querySelector('#peek')) {
+  if (document.querySelector('#js-peek')) {
     import('./performance_bar')
-      .then(m => new m.default({ container: '#peek' })) // eslint-disable-line new-cap
+      .then(m => new m.default({ container: '#js-peek' })) // eslint-disable-line new-cap
       .catch(() => Flash('Error loading performance bar module'));
   }
 }

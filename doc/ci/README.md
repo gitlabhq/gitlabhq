@@ -65,7 +65,8 @@ learn how to leverage its potential even more.
   environments and use them for different purposes like testing, building and
   deploying
 - [Job artifacts](../user/project/pipelines/job_artifacts.md)
-- [Git submodules](git_submodules.md): How to run your CI jobs when Git
+- [Caching dependencies](caching/index.md)
+- [Git submodules](git_submodules.md) - How to run your CI jobs when Git
   submodules are involved
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger pipelines through the GitLab API](triggers/README.md)
