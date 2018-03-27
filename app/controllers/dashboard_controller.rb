@@ -12,7 +12,7 @@ class DashboardController < Dashboard::ApplicationController
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests]
-  before_action :check_filters_presence, only: [:issues, :merge_requests]
+  before_action :check_filters_presence!, only: [:issues, :merge_requests]
 
   respond_to :html
 
@@ -48,9 +48,14 @@ class DashboardController < Dashboard::ApplicationController
     @show_full_reference = true
   end
 
-  def check_filters_presence
+  def check_filters_presence!
     @no_filters_set = FILTER_PARAMS.none? { |k| params.key?(k) }
 
-    render action: action_name if @no_filters_set
+    return unless @no_filters_set
+
+    respond_to do |format|
+      format.html
+      format.atom { head :bad_request }
+    end
   end
 end

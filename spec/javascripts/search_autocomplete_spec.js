@@ -98,8 +98,8 @@ import * as urlUtils from '~/lib/utils/url_utility';
   assertLinks = function(list, issuesPath, mrsPath) {
     var a1, a2, a3, a4, issuesAssignedToMeLink, issuesIHaveCreatedLink, mrsAssignedToMeLink, mrsIHaveCreatedLink;
     if (issuesPath) {
-      issuesAssignedToMeLink = issuesPath + "/?assignee_username=" + userName;
-      issuesIHaveCreatedLink = issuesPath + "/?author_username=" + userName;
+      issuesAssignedToMeLink = issuesPath + "/?assignee_id=" + userId;
+      issuesIHaveCreatedLink = issuesPath + "/?author_id=" + userId;
       a1 = "a[href='" + issuesAssignedToMeLink + "']";
       a2 = "a[href='" + issuesIHaveCreatedLink + "']";
       expect(list.find(a1).length).toBe(1);
@@ -107,8 +107,8 @@ import * as urlUtils from '~/lib/utils/url_utility';
       expect(list.find(a2).length).toBe(1);
       expect(list.find(a2).text()).toBe("Issues I've created");
     }
-    mrsAssignedToMeLink = mrsPath + "/?assignee_username=" + userName;
-    mrsIHaveCreatedLink = mrsPath + "/?author_username=" + userName;
+    mrsAssignedToMeLink = mrsPath + "/?assignee_id=" + userId;
+    mrsIHaveCreatedLink = mrsPath + "/?author_id=" + userId;
     a3 = "a[href='" + mrsAssignedToMeLink + "']";
     a4 = "a[href='" + mrsIHaveCreatedLink + "']";
     expect(list.find(a3).length).toBe(1);
