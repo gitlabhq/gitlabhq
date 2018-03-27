@@ -353,6 +353,20 @@ describe Ci::Pipeline, :mailer do
           end
         end
       end
+
+      context 'when variables policy is specified' do
+        let(:config) do
+          { unit: { script: 'minitest', only: { variables: ['$CI_PIPELINE_SOURCE'] } },
+            feature: { script: 'spinach', only: { variables: ['$UNDEFINED'] } } }
+        end
+
+        it 'returns stage seeds only when variables expression is truthy' do
+          seeds = pipeline.stage_seeds
+
+          expect(seeds.size).to eq 1
+          expect(seeds.dig(0, 0, :name)).to eq 'unit'
+        end
+      end
     end
 
     describe '#seeds_size' do

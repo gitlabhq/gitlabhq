@@ -2019,6 +2019,92 @@ describe Ci::Build do
         end
       end
     end
+
+    context 'when build has not been persisted yet' do
+      let(:build) do
+        described_class.new(
+          name: 'rspec',
+          stage: 'test',
+          ref: 'feature',
+          project: project,
+          pipeline: pipeline
+        )
+      end
+
+      it 'returns static predefined variables' do
+        expect(build.variables.size).to be >= 28
+        expect(build.variables)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+        expect(build).not_to be_persisted
+      end
+    end
+  end
+
+  describe '#scoped_variables' do
+    context 'when build has not been persisted yet' do
+      let(:build) do
+        described_class.new(
+          name: 'rspec',
+          stage: 'test',
+          ref: 'feature',
+          project: project,
+          pipeline: pipeline
+        )
+      end
+
+      it 'does not persist the build' do
+        expect(build).to be_valid
+        expect(build).not_to be_persisted
+
+        build.scoped_variables
+
+        expect(build).not_to be_persisted
+      end
+
+      it 'returns static predefined variables' do
+        keys = %w[CI_JOB_NAME
+                  CI_COMMIT_SHA
+                  CI_COMMIT_REF_NAME
+                  CI_COMMIT_REF_SLUG
+                  CI_JOB_STAGE]
+
+        variables = build.scoped_variables
+
+        variables.map { |env| env[:key] }.tap do |names|
+          expect(names).to include(*keys)
+        end
+
+        expect(variables)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+      end
+
+      it 'does not return prohibited variables' do
+        keys = %w[CI_JOB_ID
+                  CI_JOB_TOKEN
+                  CI_BUILD_ID
+                  CI_BUILD_TOKEN
+                  CI_REGISTRY_USER
+                  CI_REGISTRY_PASSWORD
+                  CI_REPOSITORY_URL
+                  CI_ENVIRONMENT_URL]
+
+        build.scoped_variables.map { |env| env[:key] }.tap do |names|
+          expect(names).not_to include(*keys)
+        end
+      end
+    end
+  end
+
+  describe '#variables_hash' do
+    before do
+      project.variables.create!(key: 'MY_VAR', value: 'my value 1')
+      pipeline.variables.create!(key: 'MY_VAR', value: 'my value 2')
+    end
+
+    it 'returns a regular hash created in valid order' do
+      expect(build.variables_hash).to include('MY_VAR': 'my value 2')
+      expect(build.variables_hash).not_to include('MY_VAR': 'my value 1')
+    end
   end
 
   describe 'state transition: any => [:pending]' do

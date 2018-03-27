@@ -6,7 +6,8 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
 
   let(:pipeline) do
     build(:ci_pipeline_with_one_job, project: project,
-                                     ref: 'master')
+                                     ref: 'master',
+                                     user: user)
   end
 
   let(:command) do
@@ -41,6 +42,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       expect(pipeline.builds.first).not_to be_persisted
       expect(pipeline.stages.first.builds).to be_one
       expect(pipeline.stages.first.builds.first).not_to be_persisted
+    end
+
+    it 'correctly assigns user' do
+      expect(pipeline.builds).to all(have_attributes(user: user))
     end
   end
 

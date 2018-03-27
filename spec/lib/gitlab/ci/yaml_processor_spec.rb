@@ -1311,6 +1311,14 @@ module Gitlab
             Gitlab::Ci::YamlProcessor.new(config)
           end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec dependencies should be an array of strings")
         end
+
+        it 'returns errors if pipeline variables expression is invalid' do
+          config = YAML.dump({ rspec: { script: 'test', only: { variables: ['== null'] } } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'jobs:rspec:only variables invalid expression syntax: equals null')
+        end
       end
 
       describe "Validate configuration templates" do
