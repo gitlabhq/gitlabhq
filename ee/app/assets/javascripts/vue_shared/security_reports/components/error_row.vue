@@ -20,8 +20,8 @@ export default {
 };
 </script>
 <template>
-  <div class="report-block-list-issue">
-    <div class="report-block-list-icon append-right-10 prepend-left-10">
+  <div class="report-block-list-issue prepend-left-default append-right-default">
+    <div class="report-block-list-icon append-right-10 prepend-left-5">
       <ci-icon :status="iconStatus" />
     </div>
     <div class="report-block-list-issue-description">

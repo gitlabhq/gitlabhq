@@ -8,8 +8,10 @@ describe('Summary row', () => {
 
   const props = {
     summary: 'SAST detected 1 new vulnerability and 1 fixed vulnerability',
-    popoverTitle: 'Static Application Security Testing (SAST)',
-    popoverContent: '<a>Learn more about SAST</a>',
+    popoverOptions: {
+      title: 'Static Application Security Testing (SAST)',
+      content: '<a>Learn more about SAST</a>',
+    },
     statusIcon: 'warning',
   };
 
@@ -31,10 +33,5 @@ describe('Summary row', () => {
     expect(vm.$el.querySelector('.report-block-list-icon span').classList).toContain(
       'js-ci-status-icon-warning',
     );
-  });
-
-  it('renders tooltip with provided title and content', () => {
-    expect(vm.popoverOptions.title).toEqual(props.popoverTitle);
-    expect(vm.popoverOptions.content).toEqual(props.popoverContent);
   });
 });

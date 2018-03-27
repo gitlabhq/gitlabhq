@@ -1,7 +1,6 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import popover from '~/vue_shared/directives/popover';
+import Popover from './help_popover.vue';
 
 /**
  * Renders the summary row for each security report
@@ -10,11 +9,8 @@ import popover from '~/vue_shared/directives/popover';
 export default {
   name: 'SecuritySummaryRow',
   components: {
-    Icon,
     CiIcon,
-  },
-  directives: {
-    popover,
+    Popover,
   },
   props: {
     summary: {
@@ -25,26 +21,12 @@ export default {
       type: String,
       required: true,
     },
-    popoverTitle: {
-      type: String,
-      required: true,
-    },
-    popoverContent: {
-      type: String,
+    popoverOptions: {
+      type: Object,
       required: true,
     },
   },
   computed: {
-    popoverOptions() {
-      return {
-        html: true,
-        trigger: 'focus',
-        placement: 'top',
-        title: this.popoverTitle,
-        content: this.popoverContent,
-        template: '<div class="popover" role="tooltip"><div class="arrow"></div><p class="popover-title"></p><div class="popover-content"></div></div>',
-      };
-    },
     iconStatus() {
       return {
         group: this.statusIcon,
@@ -55,24 +37,17 @@ export default {
 };
 </script>
 <template>
-  <div class="report-block-list-issue">
-    <div class="report-block-list-icon append-right-10 prepend-left-10">
+  <div class="report-block-list-issue prepend-left-default append-right-default">
+    <div class="report-block-list-icon append-right-10 prepend-left-5">
       <ci-icon :status="iconStatus" />
     </div>
 
-    <div class="report-block-list-issue-description">
+    <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
       <div class="report-block-list-issue-description-text append-right-5">
         {{ summary }}
       </div>
 
-      <button
-        type="button"
-        class="btn-transparent btn-blank"
-        v-popover="popoverOptions"
-        tabindex="0"
-      >
-        <icon name="question" />
-      </button>
+      <popover :options="popoverOptions" />
     </div>
   </div>
 </template>
