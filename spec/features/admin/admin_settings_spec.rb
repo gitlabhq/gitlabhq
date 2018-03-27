@@ -88,13 +88,35 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change AutoDevOps settings' do
-    check 'Enabled Auto DevOps (Beta) for projects by default'
-    fill_in 'Auto devops domain', with: 'domain.com'
-    click_button 'Save'
+  scenario 'Change CI/CD settings' do
+    page.within('.as-ci-cd') do
+      check 'Enabled Auto DevOps (Beta) for projects by default'
+      fill_in 'Auto devops domain', with: 'domain.com'
+      click_button 'Save changes'
+    end
 
     expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
     expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Influx settings' do
+    page.within('.as-influx') do
+      check 'Enable InfluxDB Metrics'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.metrics_enabled?).to be true
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Prometheus settings' do
+    page.within('.as-prometheus') do
+      check 'Enable Prometheus Metrics'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.metrics_enabled?).to be true
     expect(page).to have_content "Application settings saved successfully"
   end
 
