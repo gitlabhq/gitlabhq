@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-26 15:11+0200\n"
-"PO-Revision-Date: 2018-03-26 15:11+0200\n"
+"POT-Creation-Date: 2018-03-27 14:40+0300\n"
+"PO-Revision-Date: 2018-03-27 14:40+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1411,7 +1411,10 @@ msgstr ""
 msgid "Create directory"
 msgstr ""
 
-msgid "Create empty bare repository"
+msgid "Create empty repository"
+msgstr ""
+
+msgid "Create file"
 msgstr ""
 
 msgid "Create epic"
@@ -1946,6 +1949,9 @@ msgstr ""
 msgid "GeoNodes|Replication slots:"
 msgstr ""
 
+msgid "GroupsTree|Create a project in this group."
+msgstr ""
+
 msgid "GeoNodes|Repositories checksummed:"
 msgstr ""
 
@@ -1990,6 +1996,14 @@ msgstr ""
 
 msgid "GeoNodes|Wiki checksums verified:"
 msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Hide value"
+msgid_plural "Hide values"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "GeoNodes|Wikis checksummed:"
 msgstr ""
@@ -3569,9 +3583,6 @@ msgstr ""
 msgid "Something went wrong on our end"
 msgstr ""
 
-msgid "Something went wrong on our end."
-msgstr ""
-
 msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr ""
 
@@ -3582,6 +3593,9 @@ msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while fetching Dependency Scanning."
+msgstr ""
+
+msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
