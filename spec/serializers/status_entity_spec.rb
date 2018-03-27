@@ -25,5 +25,10 @@ describe StatusEntity do
       allow(Rails.env).to receive(:development?) { true }
       expect(entity.as_json[:favicon]).to match_asset_path('/assets/ci_favicons/dev/favicon_status_success.ico')
     end
+
+    it 'contains a canavary namespaced favicon if canary env' do
+      stub_env('CANARY', 'true')
+      expect(entity.as_json[:favicon]).to match_asset_path('/assets/ci_favicons/canary/favicon_status_success.ico')
+    end
   end
 end
