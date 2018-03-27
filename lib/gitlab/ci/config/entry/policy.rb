@@ -47,7 +47,7 @@ module Gitlab
 
                 statements.each do |statement|
                   unless statement.valid?
-                    errors.add(:variables, "Invalid expression #{statement.inspect}")
+                    errors.add(:variables, "Invalid expression syntax")
                   end
                 end
               end

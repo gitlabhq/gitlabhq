@@ -37,10 +37,6 @@ module Gitlab
             evaluate.present?
           end
 
-          def inspect
-            "syntax: #{@lexer.lexemes.join(' ')}"
-          end
-
           def valid?
             parse_tree.is_a?(Lexeme::Base)
           rescue StatementError
