@@ -138,12 +138,18 @@ export const discardFileChanges = ({ state, commit }, path) => {
   eventHub.$emit(`editor.update.model.content.${file.path}`, file.raw);
 };
 
-export const openPendingTab = ({ commit, dispatch, state }, file) => {
+export const openPendingTab = ({ commit, getters, dispatch, state }, file) => {
+  if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
+    return false;
+  }
+
   commit(types.ADD_PENDING_TAB, file);
 
   dispatch('scrollToTab');
 
   router.push(`/project/${file.projectId}/tree/${state.currentBranchId}/`);
+
+  return true;
 };
 
 export const removePendingTab = ({ commit }, file) => {

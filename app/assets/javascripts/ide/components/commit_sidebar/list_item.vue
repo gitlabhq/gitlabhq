@@ -23,8 +23,10 @@ export default {
   methods: {
     ...mapActions(['discardFileChanges', 'updateViewer', 'openPendingTab']),
     openFileInEditor(file) {
-      return this.updateViewer('diff').then(() => {
-        this.openPendingTab(file);
+      return this.openPendingTab(file).then(changeViewer => {
+        if (changeViewer) {
+          this.updateViewer('diff');
+        }
       });
     },
   },
