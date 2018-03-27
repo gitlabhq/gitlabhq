@@ -18,11 +18,8 @@ describe 'Embedded Snippets' do
     visit("http://#{server.host}:#{server.port}/embedded_snippet.html")
 
     expect(page).to have_content("random_dir.rb")
-
     expect(page).to have_content("require 'fileutils'")
-
     expect(page).to have_link('Open raw')
-
     expect(page).to have_link('Download')
   end
 end
