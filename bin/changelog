@@ -140,6 +140,10 @@ class ChangelogEntry
       write
       amend_commit if options.amend
     end
+
+    if editor
+      system("#{editor} '#{file_path}'")
+    end
   end
 
   private
@@ -156,6 +160,10 @@ class ChangelogEntry
 
   def write
     File.write(file_path, contents)
+  end
+
+  def editor
+    ENV['EDITOR']
   end
 
   def amend_commit
