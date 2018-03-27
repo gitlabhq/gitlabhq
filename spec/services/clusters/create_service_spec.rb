@@ -81,10 +81,8 @@ describe Clusters::CreateService do
     end
 
     context 'when project has a cluster' do
-<<<<<<< HEAD
-=======
       include_context 'valid params'
->>>>>>> upstream/master
+
       let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       before do
