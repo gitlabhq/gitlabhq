@@ -584,6 +584,9 @@ GEM
       multi_json (~> 1.3)
       omniauth (>= 1.1.1)
       omniauth-oauth2 (>= 1.3.1)
+    omniauth-jwt (0.0.2)
+      jwt
+      omniauth (~> 1.1)
     omniauth-kerberos (0.3.0)
       omniauth-multipassword
       timfel-krb5-auth (~> 0.8)
@@ -1153,6 +1156,7 @@ DEPENDENCIES
   omniauth-github (~> 1.1.1)
   omniauth-gitlab (~> 1.0.2)
   omniauth-google-oauth2 (~> 0.5.2)
+  omniauth-jwt (~> 0.0.2)
   omniauth-kerberos (~> 0.3.0)
   omniauth-oauth2-generic (~> 0.2.2)
   omniauth-saml (~> 1.10)
