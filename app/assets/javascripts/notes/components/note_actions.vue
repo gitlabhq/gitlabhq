@@ -27,6 +27,10 @@ export default {
       type: Number,
       required: true,
     },
+    noteUrl: {
+      type: String,
+      required: true,
+    },
     accessLevel: {
       type: String,
       required: false,
@@ -214,6 +218,15 @@ export default {
           <a :href="reportAbusePath">
             Report as abuse
           </a>
+        </li>
+        <li>
+          <button
+            :data-clipboard-text="noteUrl"
+            type="button"
+            css-class="btn-default btn-transparent"
+          >
+            Copy link
+          </button>
         </li>
         <li v-if="canEdit">
           <button

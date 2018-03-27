@@ -47,9 +47,7 @@ export default {
       };
     },
     canReportAsAbuse() {
-      return (
-        this.note.report_abuse_path && this.author.id !== this.getUserData.id
-      );
+      return this.note.report_abuse_path && this.author.id !== this.getUserData.id;
     },
     noteAnchorId() {
       return `note_${this.note.id}`;
@@ -66,12 +64,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'deleteNote',
-      'updateNote',
-      'toggleResolveNote',
-      'scrollToNoteIfNeeded',
-    ]),
+    ...mapActions(['deleteNote', 'updateNote', 'toggleResolveNote', 'scrollToNoteIfNeeded']),
     editHandler() {
       this.isEditing = true;
     },
@@ -85,9 +78,7 @@ export default {
             this.isDeleting = false;
           })
           .catch(() => {
-            Flash(
-              'Something went wrong while deleting your note. Please try again.',
-            );
+            Flash('Something went wrong while deleting your note. Please try again.');
             this.isDeleting = false;
           });
       }
@@ -118,8 +109,7 @@ export default {
           this.isRequesting = false;
           this.isEditing = true;
           this.$nextTick(() => {
-            const msg =
-              'Something went wrong while editing your comment. Please try again.';
+            const msg = 'Something went wrong while editing your comment. Please try again.';
             Flash(msg, 'alert', this.$el);
             this.recoverNoteContent(noteText);
             callback();
@@ -129,8 +119,7 @@ export default {
     formCancelHandler(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         // eslint-disable-next-line no-alert
-        if (!confirm('Are you sure you want to cancel editing this comment?'))
-          return;
+        if (!confirm('Are you sure you want to cancel editing this comment?')) return;
       }
       this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {
@@ -176,6 +165,7 @@ export default {
           <note-actions
             :author-id="author.id"
             :note-id="note.id"
+            :note-url="note.noteable_note_url"
             :access-level="note.human_access"
             :can-edit="note.current_user.can_edit"
             :can-delete="note.current_user.can_edit"
