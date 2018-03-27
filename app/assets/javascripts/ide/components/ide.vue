@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     ...mapState(['changedFiles', 'openFiles', 'viewer']),
-    ...mapGetters(['activeFile', 'hasChanges', 'tabs']),
+    ...mapGetters(['activeFile', 'hasChanges']),
   },
   mounted() {
     const returnValue = 'Are you sure you want to lose unsaved changes?';
@@ -61,7 +61,7 @@ export default {
       >
         <repo-tabs
           :active-file="activeFile"
-          :files="tabs"
+          :files="openFiles"
           :viewer="viewer"
           :has-changes="hasChanges"
         />

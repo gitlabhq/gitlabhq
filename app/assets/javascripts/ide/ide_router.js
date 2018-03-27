@@ -76,11 +76,17 @@ router.beforeEach((to, from, next) => {
             .then(() => {
               if (to.params[0]) {
                 const path =
-                  to.params[0].slice(-1) === '/'
-                    ? to.params[0].slice(0, -1)
-                    : to.params[0];
-                const treeEntry = store.state.entries[path];
-                if (treeEntry) {
+                  to.params[0].slice(-1) === '/' ? to.params[0].slice(0, -1) : to.params[0];
+                const treeEntry = Object.keys(store.state.entries).reduce((acc, key) => {
+                  const file = store.state.entries[key];
+                  if (key === path && !file.pending) {
+                    return file;
+                  }
+
+                  return acc;
+                }, {});
+
+                if (Object.keys(treeEntry).length) {
                   store.dispatch('handleTreeEntryAction', treeEntry);
                 }
               }

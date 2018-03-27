@@ -16,5 +16,4 @@ export default () => ({
   entries: {},
   viewer: 'editor',
   delayViewerUpdated: false,
-  pendingTabs: [],
 });

@@ -6,9 +6,9 @@ import * as types from '../mutation_types';
 import router from '../../ide_router';
 import { setPageTitle } from '../utils';
 
-export const closeFile = ({ commit, state, getters, dispatch }, file) => {
+export const closeFile = ({ commit, state, dispatch }, file) => {
   const path = file.path;
-  const indexOfClosedFile = getters.tabs.findIndex(f => f.key === file.key);
+  const indexOfClosedFile = state.openFiles.findIndex(f => f.key === file.key);
   const fileWasActive = file.active;
 
   if (file.pending) {
@@ -18,9 +18,9 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
     commit(types.SET_FILE_ACTIVE, { path, active: false });
   }
 
-  if (getters.tabs.length > 0 && fileWasActive) {
+  if (state.openFiles.length > 0 && fileWasActive) {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-    const nextFileToOpen = getters.tabs[nextIndexToOpen];
+    const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     if (nextFileToOpen.pending) {
       dispatch('updateViewer', 'diff');
@@ -29,7 +29,7 @@ export const closeFile = ({ commit, state, getters, dispatch }, file) => {
       dispatch('updateDelayViewerUpdated', true);
       router.push(`/project${nextFileToOpen.url}`);
     }
-  } else if (!getters.tabs.length) {
+  } else if (!state.openFiles.length) {
     router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
   }
 
@@ -76,14 +76,7 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
-      flash(
-        'Error loading file data. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
+      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
     });
 };
 
@@ -94,14 +87,7 @@ export const getRawFileData = ({ commit, dispatch }, file) =>
       commit(types.SET_FILE_RAW_DATA, { file, raw });
     })
     .catch(() =>
-      flash(
-        'Error loading file content. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      ),
+      flash('Error loading file content. Please try again.', 'alert', document, null, false, true),
     );
 
 export const changeFileContent = ({ state, commit }, { path, content }) => {
@@ -129,10 +115,7 @@ export const setFileEOL = ({ getters, commit }, { eol }) => {
   }
 };
 
-export const setEditorPosition = (
-  { getters, commit },
-  { editorRow, editorColumn },
-) => {
+export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_POSITION, {
       file: getters.activeFile,

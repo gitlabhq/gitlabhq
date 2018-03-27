@@ -6,12 +6,15 @@ export default {
       active,
     });
 
-    if (active) {
+    if (active && !state.entries[path].pending) {
       Object.assign(state, {
-        pendingTabs: state.pendingTabs.map(f => ({
-          ...f,
-          active: false,
-        })),
+        openFiles: state.openFiles.map(f => {
+          if (f.pending) {
+            return Object.assign(f, { active: false });
+          }
+
+          return f;
+        }),
       });
     }
   },
@@ -23,8 +26,10 @@ export default {
     if (state.entries[path].opened) {
       state.openFiles.push(state.entries[path]);
     } else {
+      const file = state.entries[path];
+
       Object.assign(state, {
-        openFiles: state.openFiles.filter(f => f.path !== path),
+        openFiles: state.openFiles.filter(f => f.key !== file.key),
       });
     }
   },
@@ -90,26 +95,31 @@ export default {
     });
   },
   [types.ADD_PENDING_TAB](state, file) {
-    const pendingTab = state.pendingTabs.find(f => f.path === file.path);
+    const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
 
     Object.assign(state, {
-      openFiles: state.openFiles.map(f =>
-        Object.assign(f, {
-          active: false,
-        }),
-      ),
+      openFiles: state.openFiles.map(f => {
+        if (!f.pending) {
+          return Object.assign(f, { active: false });
+        }
+
+        return f;
+      }),
     });
 
     if (pendingTab) {
       Object.assign(state, {
-        pendingTabs: state.pendingTabs.map(tab => ({
-          ...tab,
-          active: !!pendingTab,
-        })),
+        openFiles: state.openFiles.map(f => {
+          if (f.pending && f.path === file.path) {
+            return Object.assign(f, { active: true });
+          }
+
+          return f;
+        }),
       });
     } else {
       Object.assign(state, {
-        pendingTabs: state.pendingTabs.concat({
+        openFiles: state.openFiles.concat({
           ...file,
           active: true,
           pending: true,
@@ -120,7 +130,7 @@ export default {
   },
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {
-      pendingTabs: state.pendingTabs.filter(f => f.path !== file.path),
+      openFiles: state.openFiles.filter(f => f.key !== file.key),
     });
   },
 };
