@@ -2420,15 +2420,12 @@ describe Project do
         let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
         let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
 
-        subject { project.deployment_variables(environment: environment) }
-
         context 'when environment name is review/name' do
           let!(:environment) { create(:environment, project: project, name: 'review/name') }
 
           it 'returns variables from this service' do
-            expect(subject).to include(
-              { key: 'KUBE_TOKEN', value: 'review-AAA', public: false }
-            )
+            expect(project.deployment_variables(environment: 'review/name'))
+              .to include(key: 'KUBE_TOKEN', value: 'review-AAA', public: false)
           end
         end
 
@@ -2436,9 +2433,8 @@ describe Project do
           let!(:environment) { create(:environment, project: project, name: 'staging/name') }
 
           it 'returns variables from this service' do
-            expect(subject).to include(
-              { key: 'KUBE_TOKEN', value: 'default-AAA', public: false }
-            )
+            expect(project.deployment_variables(environment: 'staging/name'))
+              .to include(key: 'KUBE_TOKEN', value: 'default-AAA', public: false)
           end
         end
       end
