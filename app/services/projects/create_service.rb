@@ -133,8 +133,10 @@ module Projects
 
     def fail(error:)
       message = "Unable to save project. Error: #{error}"
+      log_message = message.dup
 
-      Rails.logger.error(message)
+      log_message << " Project ID: #{@project.id}" if @project&.id
+      Rails.logger.error(log_message)
 
       if @project
         @project.errors.add(:base, message)
