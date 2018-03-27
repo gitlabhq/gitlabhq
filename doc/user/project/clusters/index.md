@@ -71,7 +71,7 @@ You need Master [permissions] and above to access the Kubernetes page.
 To add an existing Kubernetes cluster to your project:
 
 1. Navigate to your project's **CI/CD > Kubernetes** page.
-1. Click on **Add Kuberntes cluster**.
+1. Click on **Add Kubernetes cluster**.
 1. Click on **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
@@ -101,7 +101,7 @@ To add an existing Kubernetes cluster to your project:
       - If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-1. Finally, click the **Create Kuberntes cluster** button.
+1. Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
