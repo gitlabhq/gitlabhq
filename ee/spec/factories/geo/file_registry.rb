@@ -4,17 +4,13 @@ FactoryBot.define do
     file_type :file
     success true
 
-    trait :avatar do
-      file_type :avatar
-    end
-
-    trait :lfs do
-      file_type :lfs
-    end
-
-    trait :job_artifact do
-      file_type :job_artifact
-    end
+    trait(:attachment) { file_type :attachment }
+    trait(:avatar) { file_type :avatar }
+    trait(:file) { file_type :file }
+    trait(:job_artifact) { file_type :job_artifact }
+    trait(:lfs) { file_type :lfs }
+    trait(:namespace_file) { file_type :namespace_file }
+    trait(:personal_file) { file_type :personal_file }
 
     trait :with_file do
       after(:build, :stub) do |registry, _|

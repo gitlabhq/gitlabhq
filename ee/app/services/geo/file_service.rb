@@ -1,5 +1,8 @@
 module Geo
   class FileService
+    include ExclusiveLeaseGuard
+    include ::Gitlab::Geo::LogHelpers
+
     attr_reader :object_type, :object_db_id
 
     DEFAULT_OBJECT_TYPES = %w[attachment avatar file namespace_file personal_file].freeze
@@ -27,19 +30,7 @@ module Geo
       klass_name.camelize
     end
 
-    def log_info(message, details = {})
-      data = log_base_data(message)
-      data.merge!(details) if details
-      Gitlab::Geo::Logger.info(data)
-    end
-
-    def log_error(message, error)
-      data = log_base_data(message)
-      data[:error] = error
-      Gitlab::Geo::Logger.error(data)
-    end
-
-    def log_base_data(message)
+    def base_log_data(message)
       {
         class: self.class.name,
         object_type: object_type,
