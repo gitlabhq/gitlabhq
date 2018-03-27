@@ -126,14 +126,18 @@
 - cronjob:geo_repository_verification_primary_batch
 - cronjob:geo_repository_verification_secondary_scheduler
 - cronjob:geo_sidekiq_cron_config
+- cronjob:geo_scheduler_per_shard_scheduler
+- cronjob:geo_scheduler_primary_per_shard_scheduler
+- cronjob:geo_scheduler_secondary_per_shard_scheduler
+- cronjob:geo_repository_verification_secondary_shard
 - cronjob:historical_data
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync
 - cronjob:update_all_mirrors
 
-- geo:geo_scheduler_base
-- geo:geo_scheduler_primary
-- geo:geo_scheduler_secondary
+- geo:geo_scheduler_scheduler
+- geo:geo_scheduler_primary_scheduler
+- geo:geo_scheduler_secondary_scheduler
 - geo:geo_file_download
 - geo:geo_file_removal
 - geo:geo_hashed_storage_attachments_migration

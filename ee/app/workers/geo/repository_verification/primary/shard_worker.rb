@@ -1,7 +1,7 @@
 module Geo
   module RepositoryVerification
     module Primary
-      class ShardWorker < Geo::Scheduler::PrimaryWorker
+      class ShardWorker < Geo::Scheduler::Primary::SchedulerWorker
         sidekiq_options retry: false
 
         MAX_CAPACITY = 100
