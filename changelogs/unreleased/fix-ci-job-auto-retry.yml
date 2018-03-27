@@ -1,5 +1,0 @@
----
-title: Prevent auto-retry AccessDenied error from stopping transition to failed
-merge_request: 17862
-author:
-type: fixed
