@@ -1850,6 +1850,21 @@ describe User do
 
       it_behaves_like :member
     end
+
+    context 'with subgroup with different owner for project runner', :nested_groups do
+      let(:group) { create(:group) }
+      let(:another_user) { create(:user) }
+      let(:subgroup) { create(:group, parent: group) }
+      let(:project) { create(:project, group: subgroup) }
+
+      def add_user(access)
+        group.add_user(user, access)
+        group.add_user(another_user, :owner)
+        subgroup.add_user(another_user, :owner)
+      end
+
+      it_behaves_like :member
+    end
   end
 
   describe '#projects_with_reporter_access_limited_to' do

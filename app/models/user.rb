@@ -955,6 +955,10 @@ class User < ActiveRecord::Base
     Gitlab::GroupHierarchy.new(owned_and_master_groups).base_and_descendants
   end
 
+  def manageable_group_projects
+    Project.where(namespace: manageable_groups)
+  end
+
   def namespaces
     namespace_ids = groups.pluck(:id)
     namespace_ids.push(namespace.id)
@@ -1205,12 +1209,15 @@ class User < ActiveRecord::Base
   end
 
   def ci_projects_union
-    scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
-    groups = groups_projects.where(members: scope)
-    other  = projects.where(members: scope)
+    manageable_other_projects = projects.where(members: {
+      access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER]
+    })
 
-    Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
-                            other.select(:id)])
+    Gitlab::SQL::Union.new([
+      manageable_group_projects.select(:id),
+      personal_projects.select(:id),
+      manageable_other_projects.select(:id)
+    ])
   end
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
