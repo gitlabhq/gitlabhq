@@ -2053,6 +2053,18 @@ describe Ci::Build do
     end
   end
 
+  describe '#variables_hash' do
+    before do
+      project.variables.create!(key: 'MY_VAR', value: 'my value 1')
+      pipeline.variables.create!(key: 'MY_VAR', value: 'my value 2')
+    end
+
+    it 'returns a regular hash created in valid order' do
+      expect(build.variables_hash).to include('MY_VAR': 'my value 2')
+      expect(build.variables_hash).not_to include('MY_VAR': 'my value 1')
+    end
+  end
+
   describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 

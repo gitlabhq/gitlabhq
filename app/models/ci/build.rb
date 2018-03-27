@@ -288,9 +288,6 @@ module Ci
         .to_runner_variables
     end
 
-    ##
-    # TODO, add specs
-    #
     def variables_hash
       scoped_variables.to_hash
     end
