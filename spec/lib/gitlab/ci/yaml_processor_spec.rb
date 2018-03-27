@@ -1317,7 +1317,7 @@ module Gitlab
 
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'jobs:rspec:only variables invalid expression syntax: equals null')
+                            'jobs:rspec:only variables invalid expression syntax')
         end
       end
 
