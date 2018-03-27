@@ -1,0 +1,5 @@
+---
+title: 'API: Add parameter merge_method to projects'
+merge_request:
+author: Jan Beckmann
+type: added
