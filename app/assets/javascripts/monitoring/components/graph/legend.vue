@@ -23,26 +23,15 @@ export default {
   methods: {
     formatMetricUsage(series) {
       const value =
-        series.values[this.currentDataIndex] &&
-        series.values[this.currentDataIndex].value;
+        series.values[this.currentDataIndex] && series.values[this.currentDataIndex].value;
       if (isNaN(value)) {
         return '-';
       }
       return `${formatRelevantDigits(value)} ${this.unitOfDisplay}`;
     },
 
-    createSeriesString(index, series) {
-      if (series.metricTag) {
-        return `${series.metricTag} ${this.formatMetricUsage(series)}`;
-      }
-      return `${this.legendTitle} series ${index + 1} ${this.formatMetricUsage(
-        series,
-      )}`;
-    },
-
     summaryMetrics(series) {
-      return `Avg: ${formatRelevantDigits(series.average)} ${this.unitOfDisplay},
-      Max: ${formatRelevantDigits(series.max)} ${this.unitOfDisplay}`;
+      return `Avg: ${formatRelevantDigits(series.average)} · Max: ${formatRelevantDigits(series.max)}`;
     },
 
     strokeDashArray(type) {
@@ -80,10 +69,18 @@ export default {
           class="legend-metric-title"
           v-if="timeSeries.length > 1"
         >
-          {{ createSeriesString(index, series) }}, {{ summaryMetrics(series) }}
+          <template v-if="series.metricTag">
+            <strong>{{ series.metricTag }}</strong>
+            {{ formatMetricUsage(series) }} {{ summaryMetrics(series) }}
+          </template>
+          <template v-else>
+            <strong>{{ legendTitle }}</strong>
+            series {{ index + 1 }} {{ formatMetricUsage(series) }} {{ summaryMetrics(series) }}
+          </template>
         </td>
         <td v-else>
-          {{ legendTitle }} {{ formatMetricUsage(series) }}, {{ summaryMetrics(series) }}
+          <strong>{{ legendTitle }}</strong>
+          {{ formatMetricUsage(series) }} {{ summaryMetrics(series) }}
         </td>
       </tr>
     </table>
