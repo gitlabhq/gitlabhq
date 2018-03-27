@@ -17,6 +17,12 @@ feature 'Dashboard Issues filtering', :js do
     visit_issues
   end
 
+  context 'without any filter' do
+    it 'shows error message' do
+      expect(page).to have_content 'Please select at least one filter to see results'
+    end
+  end
+
   context 'filtering by milestone' do
     it 'shows all issues with no milestone' do
       show_milestone_dropdown
@@ -25,15 +31,6 @@ feature 'Dashboard Issues filtering', :js do
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
-    end
-
-    it 'shows all issues with any milestone' do
-      show_milestone_dropdown
-
-      click_link 'Any Milestone'
-
-      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-      expect(page).to have_selector('.issue', count: 2)
     end
 
     it 'shows all issues with the selected milestone' do
@@ -68,13 +65,6 @@ feature 'Dashboard Issues filtering', :js do
     let(:label) { create(:label, project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
-    it 'shows all issues without filter' do
-      page.within 'ul.content-list' do
-        expect(page).to have_content issue.title
-        expect(page).to have_content issue2.title
-      end
-    end
-
     it 'shows all issues with the selected label' do
       page.within '.labels-filter' do
         find('.dropdown').click
@@ -89,9 +79,19 @@ feature 'Dashboard Issues filtering', :js do
   end
 
   context 'sorting' do
+<<<<<<< HEAD
     it 'shows sorted issues' do
       sort_by('Created date')
       visit_issues
+=======
+    before do
+      visit_issues(assignee_id: user.id)
+    end
+
+    it 'remembers last sorting value' do
+      sorting_by('Created date')
+      visit_issues(assignee_id: user.id)
+>>>>>>> 1659071c2b2... Fixed dashboard filtering tests
 
       expect(find('.issues-filters')).to have_content('Created date')
     end
