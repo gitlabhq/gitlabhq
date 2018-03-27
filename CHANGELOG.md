@@ -8,18 +8,11 @@ entry.
 
 - Bump rails-html-sanitizer to 1.0.4.
 
-<<<<<<< HEAD
 ### Fixed (3 changes)
 
 - Prevent auto-retry AccessDenied error from stopping transition to failed. !17862
 - Fix 500 error when trying to resolve non-ASCII conflicts in the editor. !17962
 - Don't capture trailing punctuation when autolinking. !17965
-=======
-### Fixed (2 changes)
-
-- Prevent auto-retry AccessDenied error from stopping transition to failed. !17862
-- Fix 500 error when trying to resolve non-ASCII conflicts in the editor. !17962
->>>>>>> upstream/master
 
 ### Performance (1 change)
 
