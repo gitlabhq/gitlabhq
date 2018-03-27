@@ -17,7 +17,7 @@ describe 'Project show page', :feature do
 
         it '"Kubernetes cluster" button linked to clusters page' do
           create(:cluster, :provided_by_gcp, projects: [project])
-          create(:cluster, :provided_by_gcp, projects: [project])
+          create(:cluster, :provided_by_gcp, :production_environment, projects: [project])
 
           visit project_path(project)
 

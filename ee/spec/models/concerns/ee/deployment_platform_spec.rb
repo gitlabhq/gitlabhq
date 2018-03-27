@@ -4,56 +4,56 @@ describe EE::DeploymentPlatform do
   describe '#deployment_platform' do
     let(:project) { create(:project) }
 
+    shared_examples 'matching environment scope' do
+      context 'when multiple clusters license is available' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        it 'returns environment specific cluster' do
+          is_expected.to eq(cluster.platform_kubernetes)
+        end
+      end
+
+      context 'when multiple clusters licence is unavailable' do
+        before do
+          stub_licensed_features(multiple_clusters: false)
+        end
+
+        it 'returns a kubernetes platform' do
+          is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
+        end
+      end
+    end
+
+    shared_examples 'not matching environment scope' do
+      context 'when multiple clusters license is available' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        it 'returns default cluster' do
+          is_expected.to eq(default_cluster.platform_kubernetes)
+        end
+      end
+
+      context 'when multiple clusters license is unavailable' do
+        before do
+          stub_licensed_features(multiple_clusters: false)
+        end
+
+        it 'returns a kubernetes platform' do
+          is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
+        end
+      end
+    end
+
     context 'when environment is specified' do
-      let(:environment) { create(:environment, project: project, name: 'review/name') }
       let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
       let!(:cluster) { create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project]) }
+      let(:environment) { create(:environment, project: project, name: 'review/name') }
 
       subject { project.deployment_platform(environment: environment) }
-
-      shared_examples 'matching environment scope' do
-        context 'when multiple clusters is available' do
-          before do
-            stub_licensed_features(multiple_clusters: true)
-          end
-
-          it 'returns environment specific cluster' do
-            is_expected.to eq(cluster.platform_kubernetes)
-          end
-        end
-
-        context 'when multiple clusters is unavailable' do
-          before do
-            stub_licensed_features(multiple_clusters: false)
-          end
-
-          it 'returns a kubernetes platform' do
-            is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
-          end
-        end
-      end
-
-      shared_examples 'not matching environment scope' do
-        context 'when multiple clusters is available' do
-          before do
-            stub_licensed_features(multiple_clusters: true)
-          end
-
-          it 'returns default cluster' do
-            is_expected.to eq(default_cluster.platform_kubernetes)
-          end
-        end
-
-        context 'when multiple clusters is unavailable' do
-          before do
-            stub_licensed_features(multiple_clusters: false)
-          end
-
-          it 'returns a kubernetes platform' do
-            is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
-          end
-        end
-      end
 
       context 'when environment scope is exactly matched' do
         before do
@@ -131,6 +131,22 @@ describe EE::DeploymentPlatform do
         it 'returns perfectly matched cluster as highest precedence' do
           is_expected.to eq(perfectly_matched_cluster.platform_kubernetes)
         end
+      end
+    end
+
+    context 'with multiple clusters and multiple environments' do
+      let!(:cluster_1) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'staging/*') }
+      let!(:cluster_2) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'test/*') }
+      let(:environment_1) { create(:environment, project: project, name: 'staging/name') }
+      let(:environment_2) { create(:environment, project: project, name: 'test/name') }
+
+      before do
+        stub_licensed_features(multiple_clusters: true)
+      end
+
+      it 'should return the appropriate cluster' do
+        expect(project.deployment_platform(environment: environment_1)).to eq(cluster_1.platform_kubernetes)
+        expect(project.deployment_platform(environment: environment_2)).to eq(cluster_2.platform_kubernetes)
       end
     end
   end
