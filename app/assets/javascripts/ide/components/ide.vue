@@ -6,7 +6,6 @@ import repoTabs from './repo_tabs.vue';
 import repoFileButtons from './repo_file_buttons.vue';
 import ideStatusBar from './ide_status_bar.vue';
 import repoEditor from './repo_editor.vue';
-import { currentMergeRequest } from '../stores/getters';
 
 export default {
   components: {
@@ -33,7 +32,7 @@ export default {
   },
   computed: {
     ...mapState(['changedFiles', 'openFiles', 'viewer', 'currentMergeRequestId']),
-    ...mapGetters(['activeFile', 'hasChanges', 'currentMergeRequest']),
+    ...mapGetters(['activeFile', 'hasChanges']),
   },
   mounted() {
     const returnValue = 'Are you sure you want to lose unsaved changes?';

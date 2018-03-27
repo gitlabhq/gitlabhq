@@ -26,6 +26,13 @@ export default {
       required: true,
     },
   },
+  computed: {
+    mergeReviewLine() {
+      return sprintf(__('Reviewing (merge request !%{mergeRequestId})'), {
+        mergeRequestId: this.mergeRequestId,
+      });
+    },
+  },
   methods: {
     changeMode(mode) {
       this.$emit('click', mode);
@@ -50,7 +57,7 @@ export default {
       data-toggle="dropdown"
     >
       <template v-if="viewer === 'mrdiff' && mergeRequestId">
-        {{ sprintf(__('Reviewing (merge request !%{mergeRequestId})'), { mergeRequestId }) }}
+        {{ mergeReviewLine }}
       </template>
       <template v-else-if="viewer === 'editor'">
         {{ __('Editing') }}
@@ -75,7 +82,9 @@ export default {
                 'is-active': viewer === 'mrdiff',
               }"
             >
-              <strong class="dropdown-menu-inner-title">{{ sprintf(__('Reviewing (merge request !%{mergeRequestId})'), { mergeRequestId }) }}</strong>
+              <strong class="dropdown-menu-inner-title">
+                {{ mergeReviewLine }}
+              </strong>
               <span class="dropdown-menu-inner-content">
                 {{ __('Compare changes with the merge request target branch') }}
               </span>
