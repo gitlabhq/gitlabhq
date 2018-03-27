@@ -77,7 +77,11 @@ module Gitlab
 
       def write
         stream = Gitlab::Ci::Trace::Stream.new do
-          LiveIO.new(job.id)
+          if current_path
+            current_path
+          else
+            LiveIO.new(job.id)
+          end
         end
 
         yield(stream).tap do
