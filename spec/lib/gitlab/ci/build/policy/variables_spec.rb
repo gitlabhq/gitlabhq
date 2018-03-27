@@ -4,7 +4,7 @@ describe Gitlab::Ci::Build::Policy::Variables do
   set(:project) { create(:project) }
 
   let(:pipeline) do
-    build(:ci_empty_pipeline, project: project, ref: 'master')
+    build(:ci_empty_pipeline, project: project, ref: 'master', source: :push)
   end
 
   let(:ci_build) do
@@ -18,7 +18,7 @@ describe Gitlab::Ci::Build::Policy::Variables do
   end
 
   describe '#satisfied_by?' do
-    it 'is satisfied by a defined and existing variable' do
+    it 'is satisfied by at least one matching statement' do
       policy = described_class.new(['$CI_PROJECT_ID', '$UNDEFINED'])
 
       expect(policy).to be_satisfied_by(pipeline, seed)
@@ -31,7 +31,7 @@ describe Gitlab::Ci::Build::Policy::Variables do
     end
 
     it 'is satisfied by a truthy pipeline expression' do
-      policy = described_class.new([%($CI_PIPELINE_SOURCE == "#{pipeline.source}")])
+      policy = described_class.new([%($CI_PIPELINE_SOURCE == "push")])
 
       expect(policy).to be_satisfied_by(pipeline, seed)
     end
@@ -43,9 +43,15 @@ describe Gitlab::Ci::Build::Policy::Variables do
     end
 
     it 'is satisfied by a truthy expression using undefined variable' do
-      policy = described_class.new(['$UNDEFINED', '$UNDEFINED == null'])
+      policy = described_class.new(['$UNDEFINED == null'])
 
       expect(policy).to be_satisfied_by(pipeline, seed)
+    end
+
+    it 'is not satisfied by a falsy expression using undefined variable' do
+      policy = described_class.new(['$UNDEFINED'])
+
+      expect(policy).not_to be_satisfied_by(pipeline, seed)
     end
 
     it 'allows to evaluate regular secret variables' do
