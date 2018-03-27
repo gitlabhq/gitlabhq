@@ -37,24 +37,23 @@
 
 // System Header
 .with-system-header {
-  .navbar-gitlab,
-  .navbar-fixed-top {
+  .navbar-gitlab, // main navigation
+  .navbar-fixed-top { // login page
     top: $system-header-height;
   }
 
-  .nav-sidebar,
-  .right-sidebar {
+  .nav-sidebar, // left sidebar eg: project page
+  .right-sidebar { // right sidebar eg: MR page
     top: $system-header-height + $header-height;
   }
 }
 
 // System Footer
 .with-system-footer {
-  .nav-sidebar,
-  .right-sidebar,
-  &.devise-layout-html body .footer-container,
-  &.devise-layout-html body hr.footer-fixed.devise-layout-html body .footer-container,
-  &.devise-layout-html body hr.footer-fixed {
+  .nav-sidebar, // left sidebar eg: project page
+  .right-sidebar, // right sidebar eg: MR page
+  &.devise-layout-html body .footer-container, // navless pages' footer eg: login page
+  &.devise-layout-html body hr.footer-fixed { // navless pages' footer border eg: login page
     bottom: $system-footer-height;
   }
 }
@@ -62,7 +61,7 @@
 // Performance Bar
 // System Header
 .with-system-header.with-performance-bar {
-  header.navbar-gitlab {
+  header.navbar-gitlab { // main navigation
     top: $performance-bar-height + $system-header-height;
   }
 
@@ -70,8 +69,8 @@
     margin-top: $header-height + $performance-bar-height + $system-header-height;
   }
 
-  .nav-sidebar,
-  .right-sidebar {
+  .nav-sidebar, // left sidebar eg: project page
+  .right-sidebar { // right sidebar eg: MR page
     top: $header-height + $performance-bar-height + $system-header-height;
   }
 }
