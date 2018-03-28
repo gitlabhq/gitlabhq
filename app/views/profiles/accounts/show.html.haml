@@ -57,20 +57,7 @@
         = succeed '.' do
           = link_to 'Learn more', help_page_path('user/profile/index', anchor: 'changing-your-username'), target: '_blank'
     .col-lg-8
-      = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
-        .form-group
-          = f.label :username, "Path", class: "label-light"
-          .input-group
-            .input-group-addon
-              = root_url
-            = f.text_field :username, required: true, class: 'form-control'
-        .help-block
-          Current path:
-          #{root_url}#{current_user.username}
-        .prepend-top-default
-          = f.button class: "btn btn-warning", type: "submit" do
-            = icon "spinner spin", class: "hidden loading-username"
-            Update username
+      #update-username{ data: { username: current_user.username, root_url: root_url, action_url: update_username_profile_path} }
   %hr
 
 .row.prepend-top-default
