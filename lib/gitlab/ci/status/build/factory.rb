@@ -10,7 +10,7 @@ module Gitlab
               Status::Build::Play,
               Status::Build::Stop],
              [Status::Build::Action],
-             [Status::Build::Action,
+             [Status::Build::Manual,
               Status::Build::Canceled,
               Status::Build::Created,
               Status::Build::Pending,
