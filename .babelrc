@@ -14,7 +14,8 @@
           {
             "process.env.BABEL_ENV": "coverage"
           }
-        ]
+        ],
+        "rewire"
       ]
     }
   }
