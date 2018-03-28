@@ -1,3 +1,5 @@
+import project from '../../ide/stores/mutations/project';
+
 // Returns an array containing the value(s) of the
 // of the key passed as an argument
 export function getParameterValues(sParam) {
@@ -51,7 +53,7 @@ export function removeParams(params) {
   const url = document.createElement('a');
   url.href = window.location.href;
 
-  params.forEach((param) => {
+  params.forEach(param => {
     url.search = removeParamQueryString(url.search, param);
   });
 
@@ -82,4 +84,12 @@ export function refreshCurrentPage() {
 
 export function redirectTo(url) {
   return window.location.assign(url);
+}
+
+export function webIDEUrl(projectUrl = undefined) {
+  let returnUrl = `${gon.relative_url_root}/-/ide/`;
+  if (projectUrl) {
+    returnUrl += `project${projectUrl}`;
+  }
+  return returnUrl;
 }
