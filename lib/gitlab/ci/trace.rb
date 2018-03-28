@@ -61,8 +61,8 @@ module Gitlab
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
             trace_artifact.open
-          elsif LiveTrace.exists?(job.id)
-            LiveTrace.new(job.id, "rb")
+          elsif LiveTraceFile.exists?(job.id)
+            LiveTraceFile.new(job.id, "rb")
           elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
@@ -80,7 +80,7 @@ module Gitlab
           if current_path
             current_path
           else
-            LiveTrace.new(job.id, "a+b")
+            LiveTraceFile.new(job.id, "a+b")
           end
         end
 
@@ -105,10 +105,10 @@ module Gitlab
         raise ArchiveError, 'Already archived' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if LiveTrace.exists?(job.id)
-          LiveTrace.new(job.id, "rb") do |stream|
+        if LiveTraceFile.exists?(job.id)
+          LiveTraceFile.open(job.id, "wb") do |stream|
             archive_stream!(stream)
-            job.erase_old_trace!
+            stream.truncate(0)
           end
         elsif current_path
           File.open(current_path) do |stream|
