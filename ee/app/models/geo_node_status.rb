@@ -171,7 +171,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def load_verification_data
-    return unless self.repository_verification_enabled
+    return unless repository_verification_enabled
 
     finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
     self.repositories_verified_count = finder.count_verified_repositories
