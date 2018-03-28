@@ -21,7 +21,7 @@ module ExternalAuthorizationServiceHelpers
 
     allow(EE::Gitlab::ExternalAuthorization)
       .to receive(:access_allowed?)
-            .with(user, classification_label)
+            .with(user, classification_label, any_args)
             .and_return(allowed)
   end
 
