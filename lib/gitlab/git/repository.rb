@@ -8,6 +8,7 @@ module Gitlab
     class Repository
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
+      include Gitlab::EncodingHelper
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -1498,7 +1499,7 @@ module Gitlab
         names.lines.each do |line|
           next unless line.start_with?(refs_prefix)
 
-          refs << line.rstrip[left_slice_count..-1]
+          refs << encode_utf8(line.rstrip[left_slice_count..-1])
         end
 
         refs
