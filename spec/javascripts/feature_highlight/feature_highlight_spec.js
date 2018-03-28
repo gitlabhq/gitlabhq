@@ -44,7 +44,7 @@ describe('feature highlight', () => {
       expect($(selector).data('content')).toEqual(outerHTML);
     });
 
-    fit('setup mouseenter', () => {
+    it('setup mouseenter', () => {
       const toggleSpy = spyOn(popover.togglePopover, 'call');
       $(selector).trigger('mouseenter');
 
