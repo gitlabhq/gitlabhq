@@ -244,10 +244,11 @@ GEM
       builder
       excon (~> 0.58)
       formatador (~> 0.2)
-    fog-google (0.5.3)
+    fog-google (1.3.3)
       fog-core
       fog-json
       fog-xml
+      google-api-client (~> 0.19.1)
     fog-json (1.0.2)
       fog-core (~> 1.0)
       multi_json (~> 1.10)
@@ -1047,9 +1048,9 @@ DEPENDENCIES
   flipper-active_record (~> 0.13.0)
   flipper-active_support_cache_store (~> 0.13.0)
   fog-aliyun (~> 0.2.0)
-  fog-aws (~> 2.0)
+  fog-aws (~> 2.0.1)
   fog-core (~> 1.44)
-  fog-google (~> 0.5)
+  fog-google (~> 1.3.3)
   fog-local (~> 0.3)
   fog-openstack (~> 0.1)
   fog-rackspace (~> 0.1.1)

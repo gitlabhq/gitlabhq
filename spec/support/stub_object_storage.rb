@@ -1,16 +1,21 @@
 module StubConfiguration
   def stub_object_storage_uploader(
-        config:, uploader:, remote_directory:,
+        config:,
+        uploader:,
+        remote_directory:,
         enabled: true,
         proxy_download: false,
-        background_upload: false)
-    Fog.mock!
-
+        background_upload: false,
+        direct_upload: false
+  )
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:background_upload) { background_upload }
+    allow(config).to receive(:direct_upload) { direct_upload }
 
     return unless enabled
+
+    Fog.mock!
 
     ::Fog::Storage.new(uploader.object_store_credentials).tap do |connection|
       begin
