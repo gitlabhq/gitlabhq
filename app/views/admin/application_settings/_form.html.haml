@@ -1,12 +1,9 @@
 = form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
   = form_errors(@application_setting)
 
-<<<<<<< HEAD
   - if License.feature_available?(:repository_mirrors)
     = render partial: 'repository_mirrors_form', locals: { f: f }
 
-=======
->>>>>>> upstream/master
   - if Gitlab.config.registry.enabled
     %fieldset
       %legend Container Registry
