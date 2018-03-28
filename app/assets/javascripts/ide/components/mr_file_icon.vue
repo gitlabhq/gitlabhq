@@ -1,7 +1,6 @@
 <script>
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import '~/lib/utils/datetime_utility';
 
 export default {
   components: {
@@ -16,24 +15,15 @@ export default {
       required: true,
     },
   },
-  computed: {
-    lockTooltip() {
-      return `Locked by ${this.file.file_lock.user.name}`;
-    },
-  },
 };
 </script>
 
 <template>
-  <span
-    v-if="file.file_lock"
+  <icon
+    name="git-merge"
     v-tooltip
-    :title="lockTooltip"
-    data-container="body"
-  >
-    <icon
-      name="lock"
-      css-classes="file-status-icon"
-    />
-  </span>
+    title="Part of merge request changes"
+    css-classes="ide-file-changed-icon"
+    :size="12"
+  />
 </template>

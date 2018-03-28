@@ -151,6 +151,31 @@ describe('Multi-file editor library', () => {
     });
   });
 
+  describe('attachMergeRequestModel', () => {
+    let model;
+
+    beforeEach(() => {
+      instance.createDiffInstance(document.createElement('div'));
+
+      const f = file();
+      f.mrChanges = { diff: 'ABC' };
+      f.baseRaw = 'testing';
+
+      model = instance.createModel(f);
+    });
+
+    it('sets original & modified', () => {
+      spyOn(instance.instance, 'setModel');
+
+      instance.attachMergeRequestModel(model);
+
+      expect(instance.instance.setModel).toHaveBeenCalledWith({
+        original: model.getBaseModel(),
+        modified: model.getModel(),
+      });
+    });
+  });
+
   describe('clearEditor', () => {
     it('resets the editor model', () => {
       instance.createInstance(document.createElement('div'));

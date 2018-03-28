@@ -2,7 +2,7 @@ import * as getters from '~/ide/stores/getters';
 import state from '~/ide/stores/state';
 import { file } from '../helpers';
 
-describe('Multi-file store getters', () => {
+describe('IDE store getters', () => {
   let localState;
 
   beforeEach(() => {
@@ -50,6 +50,26 @@ describe('Multi-file store getters', () => {
 
       expect(modifiedFiles.length).toBe(1);
       expect(modifiedFiles[0].name).toBe('added');
+    });
+  });
+
+  describe('currentMergeRequest', () => {
+    it('returns Current Merge Request', () => {
+      localState.currentProjectId = 'abcproject';
+      localState.currentMergeRequestId = 1;
+      localState.projects.abcproject = {
+        mergeRequests: {
+          1: { mergeId: 1 },
+        },
+      };
+
+      expect(getters.currentMergeRequest(localState).mergeId).toBe(1);
+    });
+
+    it('returns null if no active Merge Request was found', () => {
+      localState.currentProjectId = 'otherproject';
+
+      expect(getters.currentMergeRequest(localState)).toBeNull();
     });
   });
 });
