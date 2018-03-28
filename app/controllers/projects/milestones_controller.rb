@@ -42,6 +42,10 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def show
     @project_namespace = @project.namespace.becomes(Namespace)
+
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
