@@ -199,12 +199,6 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Performance/HashEachMethods:
-  Enabled: false
-
 # Offense count: 1
 Performance/UnfreezeString:
   Exclude:
