@@ -178,7 +178,7 @@ module Geo
 
       log_info("Created temporary repository")
 
-      repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
+      ::Repository.new(repository.full_path, repository.project, disk_path: disk_path_temp, is_wiki: repository.is_wiki)
     end
 
     def clean_up_temporary_repository
