@@ -81,7 +81,7 @@ export default class Editor {
   }
 
   attachModel(model) {
-    if (this.instance.getEditorType() === 'vs.editor.IDiffEditor') {
+    if (this.isDiffEditorType) {
       this.instance.setModel({
         original: model.getOriginalModel(),
         modified: model.getModel(),
@@ -153,6 +153,7 @@ export default class Editor {
 
   updateDimensions() {
     this.instance.layout();
+    this.updateDiffView();
   }
 
   setPosition({ lineNumber, column }) {
@@ -170,5 +171,17 @@ export default class Editor {
     if (!this.instance.onDidChangeCursorPosition) return;
 
     this.disposable.add(this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)));
+  }
+
+  updateDiffView() {
+    if (!this.isDiffEditorType) return;
+
+    this.instance.updateOptions({
+      renderSideBySide: this.instance.getDomNode().offsetWidth >= 700,
+    });
+  }
+
+  get isDiffEditorType() {
+    return this.instance.getEditorType() === 'vs.editor.IDiffEditor';
   }
 }

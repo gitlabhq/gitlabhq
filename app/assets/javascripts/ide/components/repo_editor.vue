@@ -13,7 +13,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['leftPanelCollapsed', 'rightPanelCollapsed', 'viewer', 'delayViewerUpdated']),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
     ...mapGetters(['currentMergeRequest']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
@@ -26,14 +26,16 @@ export default {
         this.initMonaco();
       }
     },
-    leftPanelCollapsed() {
-      this.editor.updateDimensions();
-    },
     rightPanelCollapsed() {
       this.editor.updateDimensions();
     },
     viewer() {
       this.createEditorInstance();
+    },
+    panelResizing() {
+      if (!this.panelResizing) {
+        this.editor.updateDimensions();
+      }
     },
   },
   beforeDestroy() {
