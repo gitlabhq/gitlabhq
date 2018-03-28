@@ -131,6 +131,7 @@ class NotificationService
 
   # When create a merge request we should send an email to:
   #
+  #  * mr author
   #  * mr assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #  * watchers of the mr's labels
