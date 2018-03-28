@@ -4,8 +4,10 @@
 # protect against Server-side Request Forgery (SSRF).
 class ImportableUrlValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    if Gitlab::UrlBlocker.blocked_url?(value, valid_ports: Project::VALID_IMPORT_PORTS)
-      record.errors.add(attribute, "imports are not allowed from that URL")
+    begin
+      Gitlab::UrlBlocker.validate!(value, valid_ports: Project::VALID_IMPORT_PORTS)
+    rescue Gitlab::UrlBlocker::BlockedUrlError => e
+      record.errors.add(attribute, "is blocked: #{e.message}")
     end
   end
 end

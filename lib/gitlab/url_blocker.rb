@@ -2,34 +2,45 @@ require 'resolv'
 
 module Gitlab
   class UrlBlocker
-    class << self
-      def blocked_url?(url, allow_private_networks: true, valid_ports: [])
-        return false if url.nil?
+    BlockedUrlError = Class.new(StandardError)
 
-        blocked_ips = ["127.0.0.1", "::1", "0.0.0.0"]
-        blocked_ips.concat(Socket.ip_address_list.map(&:ip_address))
+    class << self
+      def validate!(url, allow_localhost: false, allow_private_networks: true, valid_ports: [])
+        return true if url.nil?
 
         begin
           uri = Addressable::URI.parse(url)
           # Allow imports from the GitLab instance itself but only from the configured ports
-          return false if internal?(uri)
+          return true if internal?(uri)
 
-          return true if blocked_port?(uri.port, valid_ports)
-          return true if blocked_user_or_hostname?(uri.user)
-          return true if blocked_user_or_hostname?(uri.hostname)
+          raise BlockedUrlError, "Port is blocked" if blocked_port?(uri.port, valid_ports)
+          raise BlockedUrlError, "User is blocked" if blocked_user_or_hostname?(uri.user)
+          raise BlockedUrlError, "Hostname is blocked" if blocked_user_or_hostname?(uri.hostname)
 
           addrs_info = Addrinfo.getaddrinfo(uri.hostname, 80, nil, :STREAM)
-          server_ips = addrs_info.map(&:ip_address)
 
-          return true if (blocked_ips & server_ips).any?
-          return true if !allow_private_networks && private_network?(addrs_info)
+          if !allow_localhost && localhost?(addrs_info)
+            raise BlockedUrlError, "Requests to localhost are blocked"
+          end
+
+          if !allow_private_networks && private_network?(addrs_info)
+            raise BlockedUrlError, "Requests to the private local network are blocked"
+          end
         rescue Addressable::URI::InvalidURIError
-          return true
+          raise BlockedUrlError, "URI is invalid"
         rescue SocketError
-          return false
+          return
         end
 
+        true
+      end
+
+      def blocked_url?(*args)
+        validate!(*args)
+
         false
+      rescue BlockedUrlError
+        true
       end
 
       private
@@ -58,6 +69,13 @@ module Gitlab
       def internal_shell?(uri)
         uri.hostname == config.gitlab_shell.ssh_host &&
           (uri.port.blank? || uri.port == config.gitlab_shell.ssh_port)
+      end
+
+      def localhost?(addrs_info)
+        blocked_ips = ["127.0.0.1", "::1", "0.0.0.0"]
+        blocked_ips.concat(Socket.ip_address_list.map(&:ip_address))
+
+        (blocked_ips & addrs_info.map(&:ip_address)).any?
       end
 
       def private_network?(addrs_info)
