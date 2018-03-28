@@ -101,6 +101,27 @@ feature 'Edit group settings' do
       end
     end
   end
+
+  describe 'edit group avatar' do
+    before do
+      visit edit_group_path(group)
+
+      attach_file(:group_avatar, Rails.root.join('spec', 'fixtures', 'banana_sample.gif'))
+
+      expect { click_button 'Save group' }.to change { group.reload.avatar? }.to(true)
+    end
+
+    it 'uploads new group avatar' do
+      expect(group.avatar).to be_instance_of AvatarUploader
+      expect(group.avatar.url).to eq "/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif"
+      expect(page).to have_link('Remove avatar')
+    end
+
+    it 'removes group avatar' do
+      expect { click_link 'Remove avatar' }.to change { group.reload.avatar? }.to(false)
+      expect(page).not_to have_link('Remove avatar')
+    end
+  end
 end
 
 def update_path(new_group_path)
