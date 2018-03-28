@@ -104,7 +104,6 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
-<<<<<<< HEAD
   # EE-specific start
   config.before(:all) do
     License.destroy_all
@@ -112,8 +111,6 @@ RSpec.configure do |config|
   end
   # EE-specific stop
 
-=======
->>>>>>> upstream/master
   config.after(:all) do
     TestEnv.clean_test_path
   end
