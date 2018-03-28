@@ -174,7 +174,9 @@ export default {
         :tags-path="tagsPath"
         :show-legend="showLegend"
         :small-graph="forceSmallGraph"
-      />
+      >
+        <!-- EE content -->
+      </graph>
     </graph-group>
   </div>
   <empty-state
