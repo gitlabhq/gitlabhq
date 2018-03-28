@@ -2064,6 +2064,53 @@ describe MergeRequest do
         expect(subject.merge_jid).to be_nil
       end
     end
+
+    describe 'transition to cannot_be_merged' do
+      let(:notification_service) { double(:notification_service) }
+      let(:todo_service) { double(:todo_service) }
+
+      subject { create(:merge_request, merge_status: :unchecked) }
+
+      before do
+        allow(NotificationService).to receive(:new).and_return(notification_service)
+        allow(TodoService).to receive(:new).and_return(todo_service)
+      end
+
+      it 'notifies, but does not notify again if rechecking still results in cannot_be_merged' do
+        expect(notification_service).to receive(:merge_request_unmergeable).with(subject).once
+        expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).once
+
+        subject.mark_as_unmergeable
+        subject.mark_as_unchecked
+        subject.mark_as_unmergeable
+      end
+
+      it 'notifies whenever merge request is newly unmergeable' do
+        expect(notification_service).to receive(:merge_request_unmergeable).with(subject).twice
+        expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).twice
+
+        subject.mark_as_unmergeable
+        subject.mark_as_unchecked
+        subject.mark_as_mergeable
+        subject.mark_as_unchecked
+        subject.mark_as_unmergeable
+      end
+    end
+
+    describe 'check_state?' do
+      it 'indicates whether MR is still checking for mergeability' do
+        state_machine = described_class.state_machines[:merge_status]
+        check_states = [:unchecked, :cannot_be_merged_recheck]
+
+        check_states.each do |merge_status|
+          expect(state_machine.check_state?(merge_status)).to be true
+        end
+
+        (state_machine.states.map(&:name) - check_states).each do |merge_status|
+          expect(state_machine.check_state?(merge_status)).to be false
+        end
+      end
+    end
   end
 
   describe '#should_be_rebased?' do

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::Conflicts::ListService do
   describe '#can_be_resolved_in_ui?' do
     def create_merge_request(source_branch)
-      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
+      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', merge_status: :unchecked) do |mr|
         mr.mark_as_unmergeable
       end
     end
