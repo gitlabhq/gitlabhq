@@ -418,6 +418,14 @@ describe Gitlab::Elastic::SearchResults do
       Gitlab::Elastic::Helper.refresh_index
     end
 
+    def search_for(term)
+      blobs = described_class.new(user, term, [project_1.id]).objects('blobs')
+
+      blobs.map do |blob|
+        blob['_source']['blob']['path']
+      end
+    end
+
     it 'finds blobs' do
       results = described_class.new(user, 'def', limit_project_ids)
       blobs = results.objects('blobs')
@@ -459,14 +467,6 @@ describe Gitlab::Elastic::SearchResults do
         Gitlab::Elastic::Helper.refresh_index
       end
 
-      def search_for(term)
-        blobs = described_class.new(user, term, [project_1.id]).objects('blobs')
-
-        blobs.map do |blob|
-          blob['_source']['blob']['path']
-        end
-      end
-
       it 'find by first word' do
         expect(search_for('write')).to include('test.txt')
       end
@@ -481,6 +481,53 @@ describe Gitlab::Elastic::SearchResults do
 
       it 'find by exact match' do
         expect(search_for('writeStringToFile')).to include('test.txt')
+      end
+    end
+
+    context 'Searches special characters' do
+      let(:file_content) do
+        <<~FILE
+          us
+
+          some other stuff
+
+          dots.also.need.testing
+
+          and;colons:too$
+          wow
+          yeah!
+
+          Foo.bar(x)
+
+          include "bikes-3.4"
+
+          us-east-2
+          bye
+        FILE
+      end
+      let(:file_name) { 'elastic_specialchars_test.md' }
+
+      before do
+        project_1.repository.create_file(user, file_name, file_content, message: 'Some commit message', branch_name: 'master')
+        project_1.repository.index_blobs
+        Gitlab::Elastic::Helper.refresh_index
+      end
+
+      it 'finds files with dashes' do
+        expect(search_for('"us-east-2"')).to include(file_name)
+        expect(search_for('bikes-3.4')).to include(file_name)
+      end
+
+      it 'finds files with dots' do
+        expect(search_for('"dots.also.need.testing"')).to include(file_name)
+        expect(search_for('dots')).to include(file_name)
+        expect(search_for('need')).to include(file_name)
+        expect(search_for('dots.need')).not_to include(file_name)
+      end
+
+      it 'finds files with other special chars' do
+        expect(search_for('"and;colons:too$"')).to include(file_name)
+        expect(search_for('bar\(x\)')).to include(file_name)
       end
     end
   end
