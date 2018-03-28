@@ -8,13 +8,7 @@ export default {
 
     if (active && !state.entries[path].pending) {
       Object.assign(state, {
-        openFiles: state.openFiles.map(f => {
-          if (f.pending) {
-            return Object.assign(f, { active: false });
-          }
-
-          return f;
-        }),
+        openFiles: state.openFiles.map(f => Object.assign(f, { active: !(f.pending && f.active) })),
       });
     }
   },

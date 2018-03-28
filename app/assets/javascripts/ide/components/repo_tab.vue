@@ -87,8 +87,7 @@ export default {
     <div
       class="multi-file-tab"
       :class="{
-        active: tab.active,
-        pending: tab.pending
+        active: tab.active
       }"
       :title="tab.url"
     >

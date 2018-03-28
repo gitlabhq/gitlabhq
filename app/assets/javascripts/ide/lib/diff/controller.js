@@ -3,7 +3,7 @@ import { throttle } from 'underscore';
 import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
 
-export const getDiffChangeType = change => {
+export const getDiffChangeType = (change) => {
   if (change.modified) {
     return 'modified';
   } else if (change.added) {
@@ -16,12 +16,15 @@ export const getDiffChangeType = change => {
 };
 
 export const getDecorator = change => ({
-  range: new monaco.Range(change.lineNumber, 1, change.endLineNumber, 1),
+  range: new monaco.Range(
+    change.lineNumber,
+    1,
+    change.endLineNumber,
+    1,
+  ),
   options: {
     isWholeLine: true,
-    linesDecorationsClassName: `dirty-diff dirty-diff-${getDiffChangeType(
-      change,
-    )}`,
+    linesDecorationsClassName: `dirty-diff dirty-diff-${getDiffChangeType(change)}`,
   },
 });
 
