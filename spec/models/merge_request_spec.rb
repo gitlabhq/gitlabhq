@@ -2463,6 +2463,17 @@ describe MergeRequest do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
       end
     end
+
+    it 'runs a single query on the initial call, and none afterwards' do
+      expect { subject.merge_request_diff_for(merge_request_diff1.diff_refs) }
+        .not_to exceed_query_limit(1)
+
+      expect { subject.merge_request_diff_for(merge_request_diff2.diff_refs) }
+        .not_to exceed_query_limit(0)
+
+      expect { subject.merge_request_diff_for(merge_request_diff3.head_commit_sha) }
+        .not_to exceed_query_limit(0)
+    end
   end
 
   describe '#version_params_for' do
