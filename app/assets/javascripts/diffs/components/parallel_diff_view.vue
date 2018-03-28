@@ -59,6 +59,17 @@ export default {
         this.hoveredSection = null;
       }
     },
+    shouldRenderDiscussions(line, position) {
+      const { lineCode, type } = line[position];
+
+      return type && this.discussionsByLineCode[lineCode] && this.isDiscussionExpanded(lineCode);
+    },
+    hasAnyExpandedDiscussion(line) {
+      const isLeftExpanded = this.isDiscussionExpanded(line.left.lineCode);
+      const isRightExpanded = this.isDiscussionExpanded(line.right.lineCode);
+
+      return isLeftExpanded || isRightExpanded;
+    },
   },
 };
 </script>
@@ -131,14 +142,14 @@ export default {
             </td>
           </tr>
           <tr
-            v-if="hasDiscussion(line)"
+            v-if="hasDiscussion(line) && hasAnyExpandedDiscussion(line)"
             :key="line.left.lineCode || line.right.lineCode"
             class="notes_holder"
           >
             <td class="notes_line old"></td>
             <td class="notes_content parallel old">
               <div
-                v-if="discussionsByLineCode[line.left.lineCode]"
+                v-if="shouldRenderDiscussions(line, 'left')"
                 class="content"
               >
                 <diff-discussions
@@ -149,7 +160,7 @@ export default {
             <td class="notes_line new"></td>
             <td class="notes_content parallel new">
               <div
-                v-if="discussionsByLineCode[line.right.lineCode] && line.right.type"
+                v-if="shouldRenderDiscussions(line, 'right')"
                 class="content"
               >
                 <diff-discussions

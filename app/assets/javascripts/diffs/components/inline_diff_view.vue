@@ -82,7 +82,7 @@ export default {
           </td>
         </tr>
         <tr
-          v-if="discussionsByLineCode[line.lineCode]"
+          v-if="isDiscussionExpanded(line.lineCode)"
           :key="discussionsByLineCode[line.lineCode].id"
           class="notes_holder"
         >

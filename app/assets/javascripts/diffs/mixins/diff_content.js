@@ -89,5 +89,10 @@ export default {
         linePosition,
       });
     },
+    isDiscussionExpanded(lineCode) {
+      const discussions = this.discussionsByLineCode[lineCode];
+
+      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+    },
   },
 };

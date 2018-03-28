@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
+import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import { MATCH_LINE_TYPE, UNFOLD_COUNT, CONTEXT_LINE_TYPE } from '../constants';
 import * as utils from '../store/utils';
 
@@ -51,6 +52,7 @@ export default {
     },
   },
   components: {
+    DiffGutterAvatars,
     Icon,
   },
   computed: {
@@ -58,7 +60,7 @@ export default {
       diffViewType: state => state.diffs.diffViewType,
       diffFiles: state => state.diffs.diffFiles,
     }),
-    ...mapGetters(['isLoggedIn']),
+    ...mapGetters(['isLoggedIn', 'discussionsByLineCode']),
     isMatchLine() {
       return this.lineType === MATCH_LINE_TYPE;
     },
@@ -73,8 +75,15 @@ export default {
         this.isLoggedIn &&
         this.showCommentButton &&
         !this.isMatchLine &&
-        !this.isContextLine
+        !this.isContextLine &&
+        !this.hasDiscussions
       );
+    },
+    discussions() {
+      return this.discussionsByLineCode[this.lineCode] || [];
+    },
+    hasDiscussions() {
+      return this.discussions.length > 0;
     },
   },
   methods: {
@@ -153,6 +162,10 @@ export default {
         :href="getLineHref"
       >
       </a>
+      <diff-gutter-avatars
+        v-if="hasDiscussions && showCommentButton"
+        :discussions="discussions"
+      />
     </template>
   </div>
 </template>

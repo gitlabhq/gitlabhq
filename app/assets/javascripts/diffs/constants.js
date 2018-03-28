@@ -15,3 +15,5 @@ export const DIFF_NOTE_TYPE = 'DiffNote';
 export const NEW_LINE_TYPE = 'new';
 export const OLD_LINE_TYPE = 'old';
 export const UNFOLD_COUNT = 20;
+export const COUNT_OF_AVATARS_IN_GUTTER = 3;
+export const LENGTH_OF_AVATAR_TOOLTIP = 17;
