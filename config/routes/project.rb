@@ -232,6 +232,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :additional_metrics
           end
         end
+
+        resource :environment_scaling, only: [:show, :update]
       end
 
       resource :cycle_analytics, only: [:show]
