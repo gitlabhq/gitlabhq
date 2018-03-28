@@ -1,7 +1,7 @@
 module Gitlab
   module Ci
     class Trace
-      module File
+      module ChunkedFile
         class Remote < ChunkedIO
           BUFFER_SIZE = 128.kilobytes
 
