@@ -143,7 +143,7 @@ export const openPendingTab = ({ commit, getters, dispatch, state }, file) => {
     return false;
   }
 
-  commit(types.ADD_PENDING_TAB, file);
+  commit(types.ADD_PENDING_TAB, { file });
 
   dispatch('scrollToTab');
 

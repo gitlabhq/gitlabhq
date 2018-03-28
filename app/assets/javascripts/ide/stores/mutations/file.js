@@ -96,50 +96,33 @@ export default {
       changed,
     });
   },
-  [types.ADD_PENDING_TAB](state, file) {
+  [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
     const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
+    let openFiles = state.openFiles.map(f =>
+      Object.assign(f, { active: f.path === file.path, opened: false }),
+    );
 
-    Object.assign(state, {
-      openFiles: state.openFiles.map(f => Object.assign(f, { active: false })),
-    });
+    if (!pendingTab) {
+      const openFile = openFiles.find(f => f.path === file.path);
 
-    if (pendingTab) {
-      Object.assign(state, {
-        openFiles: state.openFiles.map(f => {
-          if (f.pending && f.path === file.path) {
-            return Object.assign(f, { active: true });
-          }
+      openFiles = openFiles.concat(openFile ? null : file).reduce((acc, f) => {
+        if (!f) return acc;
 
-          return f;
-        }),
-      });
-    } else {
-      const openFile = state.openFiles.find(f => f.path === file.path);
-      const openFiles = state.openFiles
-        .concat(openFile ? null : file)
-        .filter(f => f)
-        .reduce((acc, f) => {
-          if (f.path === file.path) {
-            return acc.concat({
-              ...f,
-              active: true,
-              pending: true,
-              key: `pending-${f.key}`,
-            });
-          }
+        if (f.path === file.path) {
+          return acc.concat({
+            ...f,
+            active: true,
+            pending: true,
+            opened: true,
+            key: `${keyPrefix}-${f.key}`,
+          });
+        }
 
-          return acc.concat(f);
-        }, []);
-
-      Object.assign(state, {
-        entries: Object.assign(state.entries, {
-          [file.path]: Object.assign(state.entries[file.path], {
-            opened: false,
-          }),
-        }),
-        openFiles,
-      });
+        return acc.concat(f);
+      }, []);
     }
+
+    Object.assign(state, { openFiles });
   },
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {

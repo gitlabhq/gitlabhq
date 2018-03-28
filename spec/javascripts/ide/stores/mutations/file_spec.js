@@ -183,7 +183,7 @@ describe('Multi-file store file mutations', () => {
     });
 
     it('adds file into openFiles as pending', () => {
-      mutations.ADD_PENDING_TAB(localState, localFile);
+      mutations.ADD_PENDING_TAB(localState, { file: localFile });
 
       expect(localState.openFiles.length).toBe(2);
       expect(localState.openFiles[1].pending).toBe(true);
@@ -191,7 +191,7 @@ describe('Multi-file store file mutations', () => {
     });
 
     it('updates open file to pending', () => {
-      mutations.ADD_PENDING_TAB(localState, localState.openFiles[0]);
+      mutations.ADD_PENDING_TAB(localState, { file: localState.openFiles[0] });
 
       expect(localState.openFiles.length).toBe(1);
     });
@@ -202,14 +202,14 @@ describe('Multi-file store file mutations', () => {
         pending: true,
       });
 
-      mutations.ADD_PENDING_TAB(localState, localFile);
+      mutations.ADD_PENDING_TAB(localState, { file: localFile });
 
       expect(localState.openFiles[1].pending).toBe(true);
       expect(localState.openFiles[1].active).toBe(true);
     });
 
     it('sets all openFiles to not active', () => {
-      mutations.ADD_PENDING_TAB(localState, localFile);
+      mutations.ADD_PENDING_TAB(localState, { file: localFile });
 
       expect(localState.openFiles.length).toBe(2);
 
