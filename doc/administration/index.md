@@ -11,8 +11,8 @@ available through [different subscriptions](https://about.gitlab.com/products/).
 
 You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
 but the features you'll have access to depend on the subscription you choose
-(Libre, Starter, Premium, or Ultimate). GitLab Community Edition installations
-only have access to Libre features.
+(Core, Starter, Premium, or Ultimate). GitLab Community Edition installations
+only have access to Core features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
