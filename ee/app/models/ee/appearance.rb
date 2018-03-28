@@ -14,11 +14,11 @@ module EE
     end
 
     def show_header?
-      self.header_message.present?
+      header_message.present?
     end
 
     def show_footer?
-      self.footer_message.present?
+      footer_message.present?
     end
   end
 end
