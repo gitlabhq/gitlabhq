@@ -6,6 +6,7 @@ describe EnvironmentScaling do
   it { is_expected.to belong_to(:environment) }
 
   it { is_expected.to validate_presence_of(:production_replicas) }
+  it { is_expected.to validate_numericality_of(:production_replicas).only_integer }
 
   describe '#available?' do
     subject { environment_scaling.available? }

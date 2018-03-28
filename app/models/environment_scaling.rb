@@ -1,7 +1,7 @@
 class EnvironmentScaling < ActiveRecord::Base
   belongs_to :environment, required: true
 
-  validates :production_replicas, presence: true
+  validates :production_replicas, numericality: { only_integer: true }, presence: true
 
   def available?
     environment.project.variables.find_by(key: 'PRODUCTION_REPLICAS').nil?
