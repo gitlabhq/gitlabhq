@@ -1,5 +1,3 @@
-import project from '../../ide/stores/mutations/project';
-
 // Returns an array containing the value(s) of the
 // of the key passed as an argument
 export function getParameterValues(sParam) {
