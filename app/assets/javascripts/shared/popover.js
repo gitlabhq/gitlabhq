@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { debounce } from 'underscore';
+import _ from 'underscore';
 
 export function togglePopover(show) {
   const isAlreadyShown = this.hasClass('js-popover-show');
@@ -29,5 +29,5 @@ export function mouseenter() {
 }
 
 export function debouncedMouseleave(debounceTimeout = 300) {
-  return debounce(mouseleave, debounceTimeout);
+  return _.debounce(mouseleave, debounceTimeout);
 }
