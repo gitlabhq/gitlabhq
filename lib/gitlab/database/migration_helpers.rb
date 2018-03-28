@@ -900,11 +900,42 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
-      # Rails' index_exists? doesn't work when you only give it a table and index
-      # name. As such we have to use some extra code to check if an index exists for
-      # a given name.
+      # Fetches indexes on a column by name for postgres.
+      #
+      # This will include indexes using an expression on the column, for example:
+      # `CREATE INDEX CONCURRENTLY index_name ON table (LOWER(column));`
+      #
+      # For mysql, it falls back to the default ActiveRecord implementation that
+      # will not find custom indexes. But it will select by name without passing
+      # a column.
+      #
+      # We can remove this when upgrading to Rails 5 with an updated `index_exists?`:
+      # - https://github.com/rails/rails/commit/edc2b7718725016e988089b5fb6d6fb9d6e16882
+      #
+      # Or this can be removed when we no longer support postgres < 9.5, so we
+      # can use `CREATE INDEX IF NOT EXISTS`.
       def index_exists_by_name?(table, index)
-        indexes(table).map(&:name).include?(index)
+        # We can't fall back to the normal `index_exists?` method because that
+        # does not find indexes without passing a column name.
+        if indexes(table).map(&:name).include?(index.to_s)
+          true
+        elsif Gitlab::Database.postgresql?
+          postgres_exists_by_name?(table, index)
+        else
+          false
+        end
+      end
+
+      def postgres_exists_by_name?(table, name)
+        index_sql = <<~SQL
+          SELECT COUNT(*)
+          FROM pg_index
+          JOIN pg_class i ON (indexrelid=i.oid)
+          JOIN pg_class t ON (indrelid=t.oid)
+          WHERE i.relname = '#{name}' AND t.relname = '#{table}'
+        SQL
+
+        connection.select_value(index_sql).to_i > 0
       end
     end
   end

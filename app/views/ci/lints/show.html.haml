@@ -1,27 +1,9 @@
-- page_title "CI Lint"
-- page_description "Validate your GitLab CI configuration file"
-- content_for :library_javascripts do
-  = page_specific_javascript_tag('lib/ace.js')
-
-%h2 Check your .gitlab-ci.yml
-
-.ci-linter
-  .row
-    = form_tag ci_lint_path, method: :post do
-      .form-group
-        .col-sm-12
-          .file-holder
-            .js-file-title.file-title.clearfix
-              Content of .gitlab-ci.yml
-            #ci-editor.ci-editor= @content
-          = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
-      .col-sm-12
-        .pull-left.prepend-top-10
-          = submit_tag('Validate', class: 'btn btn-success submit-yml')
-        .pull-right.prepend-top-10
-          = button_tag('Clear', type: 'button', class: 'btn btn-default clear-yml')
-
-  .row.prepend-top-20
-    .col-sm-12
-      .results.ci-template
-        = render partial: 'create' if defined?(@status)
+.row.empty-state
+  .col-xs-12
+    .svg-content
+      = image_tag 'illustrations/feature_moved.svg'
+  .col-xs-12
+    .text-content.text-center
+      %h4= _("GitLab CI Linter has been moved")
+      %p
+        = _("To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button.")

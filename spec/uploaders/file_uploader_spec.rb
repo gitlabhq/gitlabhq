@@ -11,32 +11,41 @@ describe FileUploader do
   shared_examples 'builds correct legacy storage paths' do
     include_examples 'builds correct paths',
                      store_dir: %r{awesome/project/\h+},
+                     upload_path: %r{\h+/<filename>},
                      absolute_path: %r{#{described_class.root}/awesome/project/secret/foo.jpg}
-  end
-
-  shared_examples 'uses hashed storage' do
-    context 'when rolled out attachments' do
-      let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
-
-      before do
-        allow(project).to receive(:disk_path).and_return('ca/fe/fe/ed')
-      end
-
-      it_behaves_like 'builds correct paths',
-                      store_dir: %r{ca/fe/fe/ed/\h+},
-                      absolute_path: %r{#{described_class.root}/ca/fe/fe/ed/secret/foo.jpg}
-    end
-
-    context 'when only repositories are rolled out' do
-      let(:project) { build_stubbed(:project, namespace: group, name: 'project', storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
-
-      it_behaves_like 'builds correct legacy storage paths'
-    end
   end
 
   context 'legacy storage' do
     it_behaves_like 'builds correct legacy storage paths'
-    include_examples 'uses hashed storage'
+
+    context 'uses hashed storage' do
+      context 'when rolled out attachments' do
+        let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
+
+        include_examples 'builds correct paths',
+                         store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+                         upload_path: %r{\h+/<filename>}
+      end
+
+      context 'when only repositories are rolled out' do
+        let(:project) { build_stubbed(:project, namespace: group, name: 'project', storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
+
+        it_behaves_like 'builds correct legacy storage paths'
+      end
+    end
+  end
+
+  context 'object store is remote' do
+    before do
+      stub_uploads_object_storage
+    end
+
+    include_context 'with storage', described_class::Store::REMOTE
+
+    # always use hashed storage path for remote uploads
+    it_behaves_like 'builds correct paths',
+                     store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+                     upload_path: %r{@hashed/\h{2}/\h{2}/\h+/\h+/<filename>}
   end
 
   describe 'initialize' do
@@ -78,6 +87,16 @@ describe FileUploader do
     end
   end
 
+  describe "#migrate!" do
+    before do
+      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
+      stub_uploads_object_storage
+    end
+
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
+  end
+
   describe '#upload=' do
     let(:secret) { SecureRandom.hex }
     let(:upload) { create(:upload, :issuable_upload, secret: secret, filename: 'file.txt') }
@@ -92,16 +111,6 @@ describe FileUploader do
       expect(uploader).to receive(:apply_context!).with(a_hash_including(secret: secret, identifier: 'file.txt'))
 
       uploader.upload = upload
-    end
-
-    context 'uploader_context is empty' do
-      it 'fallbacks to regex based extraction' do
-        expect(upload).to receive(:uploader_context).and_return({})
-
-        uploader.upload = upload
-        expect(uploader.secret).to eq(secret)
-        expect(uploader.instance_variable_get(:@identifier)).to eq('file.txt')
-      end
     end
   end
 end

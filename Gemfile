@@ -44,7 +44,7 @@ gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.5.2'
+gem 'omniauth-google-oauth2', '~> 0.5.3'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
@@ -52,6 +52,7 @@ gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -117,9 +118,9 @@ gem 'carrierwave', '~> 1.2'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 2.0'
+gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 0.5'
+gem 'fog-google', '~> 1.3.3'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
@@ -145,8 +146,8 @@ gem 'rdoc', '~> 4.2'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
-gem 'asciidoctor', '~> 1.5.2'
-gem 'asciidoctor-plantuml', '0.0.7'
+gem 'asciidoctor', '~> 1.5.6'
+gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
@@ -420,7 +421,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.88.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.91.0', require: 'gitaly'
 gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

@@ -87,10 +87,124 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
+>**Notes:**
+- [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
+- Since version 9.5, artifacts are [browsable], when object storage is enabled. 
+  9.4 lacks this feature.
 > Available in [GitLab Premium](https://about.gitlab.com/products/) and
 [GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
+> Since version 10.6, available in [GitLab CE](https://about.gitlab.com/products/)
 
-Use an [Object storage option][ee-os] like AWS S3 to store job artifacts.
+If you don't want to use the local disk where GitLab is installed to store the
+artifacts, you can use an object storage like AWS S3 instead.
+This configuration relies on valid AWS credentials to be configured already.
+Use an [Object storage option][os] like AWS S3 to store job artifacts.
+
+### Object Storage Settings
+
+For source installations the following settings are nested under `artifacts:` and then `object_store:`. On omnibus installs they are prefixed by `artifacts_object_store_`.
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `enabled` | Enable/disable object storage | `false` |
+| `remote_directory` | The bucket name where Artfacts will be stored| |
+| `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
+| `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
+| `connection` | Various connection options described below | |
+
+#### S3 compatible connection settings
+
+The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `provider` | Always `AWS` for compatible hosts | AWS |
+| `aws_access_key_id` | AWS credentials, or compatible | |
+| `aws_secret_access_key` | AWS credentials, or compatible | |
+| `region` | AWS region | us-east-1 |
+| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
+| `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
+| `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
+
+**In Omnibus installations:**
+
+_The artifacts are stored by default in
+`/var/opt/gitlab/gitlab-rails/shared/artifacts`._
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+   the values you want:
+
+    ```ruby
+    gitlab_rails['artifacts_enabled'] = true
+    gitlab_rails['artifacts_object_store_enabled'] = true
+    gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
+    gitlab_rails['artifacts_object_store_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'eu-central-1',
+      'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
+      'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
+    }
+    ```
+
+    NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
+    AWS access key and secret acces key/value pairs. For example:
+
+    ```ruby
+    gitlab_rails['artifacts_object_store_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'eu-central-1',
+      'use_iam_profile' => true
+    }
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Migrate any existing local artifacts to the object storage:
+
+      ```bash
+      gitlab-rake gitlab:artifacts:migrate
+      ```
+
+      Currently this has to be executed manually and it will allow you to
+      migrate the existing artifacts to the object storage, but all new
+      artifacts will still be stored on the local disk. In the future
+      you will be given an option to define a default storage artifacts for all
+      new files.
+
+---
+
+**In installations from source:**
+
+_The artifacts are stored by default in
+`/home/git/gitlab/shared/artifacts`._
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+    ```yaml
+    artifacts:
+      enabled: true
+      object_store:
+        enabled: true
+        remote_directory: "artifacts" # The bucket name
+        connection:
+          provider: AWS # Only AWS supported at the moment
+          aws_access_key_id: AWS_ACESS_KEY_ID
+          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+          region: eu-central-1
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Migrate any existing local artifacts to the object storage:
+
+      ```bash
+      sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
+      ```
+
+      Currently this has to be executed manually and it will allow you to
+      migrate the existing artifacts to the object storage, but all new
+      artifacts will still be stored on the local disk. In the future
+      you will be given an option to define a default storage artifacts for all
+      new files.
 
 ## Expiring artifacts
 
@@ -194,7 +308,7 @@ When clicking on a specific file, [GitLab Workhorse] extracts it
 from the archive and the download begins. This implementation saves space,
 memory and disk I/O.
 
-[reconfigure gitlab]: restart_gitlab.md "How to restart GitLab"
-[restart gitlab]: restart_gitlab.md "How to restart GitLab"
+[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
+[restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
-[ee-os]: https://docs.gitlab.com/ee/administration/job_artifacts.html#using-object-storage
+[os]: https://docs.gitlab.com/administration/job_artifacts.html#using-object-storage

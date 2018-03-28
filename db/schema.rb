@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323150945) do
+ActiveRecord::Schema.define(version: 20180327101207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,6 +307,8 @@ ActiveRecord::Schema.define(version: 20180323150945) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
+    t.integer "artifacts_file_store"
+    t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
   end
@@ -345,6 +347,7 @@ ActiveRecord::Schema.define(version: 20180323150945) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
+    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -729,7 +732,6 @@ ActiveRecord::Schema.define(version: 20180323150945) do
 
   add_index "events", ["action"], name: "index_events_on_action", using: :btree
   add_index "events", ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
-  add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
   add_index "events", ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
   add_index "events", ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
 
@@ -1009,6 +1011,7 @@ ActiveRecord::Schema.define(version: 20180323150945) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "file"
+    t.integer "file_store"
   end
 
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
@@ -1602,7 +1605,6 @@ ActiveRecord::Schema.define(version: 20180323150945) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
@@ -1824,6 +1826,7 @@ ActiveRecord::Schema.define(version: 20180323150945) do
     t.datetime "created_at", null: false
     t.string "mount_point"
     t.string "secret"
+    t.integer "store"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree

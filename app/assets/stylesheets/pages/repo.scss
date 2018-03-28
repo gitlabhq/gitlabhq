@@ -20,7 +20,6 @@
   display: flex;
   height: calc(100vh - #{$header-height});
   margin-top: 40px;
-  color: $almost-black;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -43,7 +42,11 @@
     cursor: pointer;
 
     &.file-open {
-      background: $white-normal;
+      background: $link-active-background;
+    }
+
+    &.file-active {
+      font-weight: $gl-font-weight-bold;
     }
 
     .ide-file-name {
@@ -72,7 +75,10 @@
       margin-right: -8px;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
+      background: $link-active-background;
+
       .ide-new-btn {
         display: block;
       }
@@ -402,7 +408,7 @@
   }
 
   .branch-container {
-    border-left: 4px solid $indigo-700;
+    border-left: 4px solid;
     margin-bottom: $gl-bar-padding;
   }
 
@@ -414,7 +420,6 @@
   .branch-header-title {
     flex: 1;
     padding: $grid-size $gl-padding;
-    color: $indigo-700;
     font-weight: $gl-font-weight-bold;
 
     svg {
@@ -721,9 +726,7 @@
     }
 
     .ide-view {
-      height: calc(
-        100vh - #{$header-height + $performance-bar-height + $flash-height}
-      );
+      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
     }
   }
 }
@@ -767,20 +770,7 @@
 
 .ide-sidebar-link {
   padding: $gl-padding-8 $gl-padding;
-  background: $indigo-700;
-  color: $white-light;
-  text-decoration: none;
   display: flex;
   align-items: center;
-
-  &:focus,
-  &:hover {
-    color: $white-light;
-    text-decoration: underline;
-    background: $indigo-500;
-  }
-
-  &:active {
-    background: $indigo-800;
-  }
+  font-weight: $gl-font-weight-bold;
 }

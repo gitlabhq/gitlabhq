@@ -12,7 +12,7 @@ module Gitlab
       private
 
       def relation
-        LfsObject.all
+        LfsObject.with_files_stored_locally
       end
 
       def expected_checksum(lfs_object)

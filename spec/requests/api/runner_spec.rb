@@ -200,7 +200,7 @@ describe API::Runner do
     let(:project) { create(:project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner) }
-    let!(:job) do
+    let(:job) do
       create(:ci_build, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
     end
@@ -215,6 +215,7 @@ describe API::Runner do
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
       before do
+        job
         stub_container_registry_config(enabled: false)
       end
 
@@ -888,6 +889,7 @@ describe API::Runner do
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
 
       before do
+        stub_artifacts_object_storage
         job.run!
       end
 
@@ -1179,26 +1181,66 @@ describe API::Runner do
       describe 'GET /api/v4/jobs/:id/artifacts' do
         let(:token) { job.token }
 
-        before do
-          download_artifact
-        end
-
         context 'when job has artifacts' do
-          let(:job) { create(:ci_build, :artifacts) }
-          let(:download_headers) do
-            { 'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+          let(:job) { create(:ci_build) }
+          let(:store) { JobArtifactUploader::Store::LOCAL }
+
+          before do
+            create(:ci_job_artifact, :archive, file_store: store, job: job)
           end
 
           context 'when using job token' do
-            it 'download artifacts' do
-              expect(response).to have_gitlab_http_status(200)
-              expect(response.headers).to include download_headers
+            context 'when artifacts are stored locally' do
+              let(:download_headers) do
+                { 'Content-Transfer-Encoding' => 'binary',
+                  'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+              end
+
+              before do
+                download_artifact
+              end
+
+              it 'download artifacts' do
+                expect(response).to have_http_status(200)
+                expect(response.headers).to include download_headers
+              end
+            end
+
+            context 'when artifacts are stored remotely' do
+              let(:store) { JobArtifactUploader::Store::REMOTE }
+              let!(:job) { create(:ci_build) }
+
+              context 'when proxy download is being used' do
+                before do
+                  download_artifact(direct_download: false)
+                end
+
+                it 'uses workhorse send-url' do
+                  expect(response).to have_gitlab_http_status(200)
+                  expect(response.headers).to include(
+                    'Gitlab-Workhorse-Send-Data' => /send-url:/)
+                end
+              end
+
+              context 'when direct download is being used' do
+                before do
+                  download_artifact(direct_download: true)
+                end
+
+                it 'receive redirect for downloading artifacts' do
+                  expect(response).to have_gitlab_http_status(302)
+                  expect(response.headers).to include('Location')
+                end
+              end
             end
           end
 
           context 'when using runnners token' do
             let(:token) { job.project.runners_token }
+
+            before do
+              download_artifact
+            end
 
             it 'responds with forbidden' do
               expect(response).to have_gitlab_http_status(403)
@@ -1208,12 +1250,16 @@ describe API::Runner do
 
         context 'when job does not has artifacts' do
           it 'responds with not found' do
+            download_artifact
+
             expect(response).to have_gitlab_http_status(404)
           end
         end
 
         def download_artifact(params = {}, request_headers = headers)
           params = params.merge(token: token)
+          job.reload
+
           get api("/jobs/#{job.id}/artifacts"), params, request_headers
         end
       end
