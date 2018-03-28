@@ -4,14 +4,9 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-<<<<<<< HEAD
       prepend EE::Gitlab::Ci::Config
-=======
-      # EE would override this and utilize opts argument
-      def initialize(config, opts = {})
-        @config = Loader.new(config).load!
->>>>>>> upstream/master
 
+      # EE would override this and utilize opts argument
       def initialize(config, opts = {})
         @config = build_config(config, opts)
         @global = Entry::Global.new(@config)
