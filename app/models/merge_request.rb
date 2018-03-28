@@ -108,23 +108,29 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
-      transition [:can_be_merged, :cannot_be_merged] => :unchecked
+      transition [:can_be_merged] => :unchecked
+      transition [:cannot_be_merged] => :cannot_be_merged_recheck
     end
 
     event :mark_as_mergeable do
-      transition [:unchecked, :cannot_be_merged] => :can_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck] => :can_be_merged
     end
 
     event :mark_as_unmergeable do
-      transition [:unchecked, :can_be_merged] => :cannot_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck] => :cannot_be_merged
     end
 
     state :unchecked
+    state :cannot_be_merged_recheck
     state :can_be_merged
     state :cannot_be_merged
 
     around_transition do |merge_request, transition, block|
       Gitlab::Timeless.timeless(merge_request, &block)
+    end
+
+    def check_state?(merge_status)
+      [:unchecked, :cannot_be_merged_recheck].include?(merge_status.to_sym)
     end
   end
 
@@ -628,7 +634,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked? && Gitlab::Database.read_write?
+    return unless self.class.state_machines[:merge_status].check_state?(merge_status) && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
