@@ -315,9 +315,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Two keys are now available: `refs` and `kubernetes`. Refs strategy equals to
-simplified only/except configuration, whereas kubernetes strategy accepts only
-`active` keyword.
+Three keys are now available: `refs`, `kubernetes` and `variables`.
+Refs strategy equals to simplified only/except configuration, whereas
+kubernetes strategy accepts only `active` keyword.
+
+`variables` keyword is used to define variables expressions. In other words
+you can use predefined variables / secret variables / project / group or
+environment-scoped variables to define an expression GitLab is going to
+evaluate in order to decide whether a job should be created or not.
 
 See the example below. Job is going to be created only when pipeline has been
 scheduled or runs for a `master` branch, and only if kubernetes service is
@@ -331,6 +336,20 @@ job:
       - schedules
     kubernetes: active
 ```
+
+Example of using variables expressions:
+
+```yaml
+deploy:
+  only:
+    refs:
+      - branches
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Learn more about variables expressions on [separate page][variables-expressions].
 
 ## `tags`
 
@@ -1549,3 +1568,4 @@ CI with various languages.
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
+[variables expressions]: ../variables#variables-expressions
