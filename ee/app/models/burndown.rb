@@ -82,10 +82,33 @@ class Burndown
 
   def milestone_issues
     @milestone_issues ||=
-      @milestone.issues
-        .where("state = 'closed' OR (state = 'opened' AND closed_at IS NOT NULL)")
-        .reorder("closed_at ASC")
-        .pluck("closed_at, weight, state")
-        .map {|attrs| Issue.new(*attrs) }
+      begin
+        # We make use of `events` table to get the closed_at timestamp.
+        # `issues.closed_at` can't be used once it's nullified if the issue is
+        # reopened.
+        internal_clause =
+          ::Issue
+            .joins("LEFT OUTER JOIN events e ON issues.id = e.target_id AND e.target_type = 'Issue'")
+            .where(milestone: @milestone)
+            .where("state = 'closed' OR (state = 'opened' AND e.action = #{Event::CLOSED})") # rubocop:disable GitlabSecurity/SqlInjection
+
+        rel =
+          if Gitlab::Database.postgresql?
+            ::Issue
+              .select("*")
+              .from(internal_clause.select('DISTINCT ON (issues.id) issues.id, issues.state, issues.weight, e.created_at AS closed_at'))
+          else
+            ::Issue
+              .select("*")
+              .from(internal_clause.select('issues.id, issues.state, issues.weight, e.created_at AS closed_at'))
+              .group('id')
+              .having('closed_at = MIN(closed_at) OR closed_at IS NULL')
+          end
+
+        rel
+          .order('closed_at ASC')
+          .pluck('closed_at, weight, state')
+          .map { |attrs| Issue.new(*attrs) }
+      end
   end
 end
