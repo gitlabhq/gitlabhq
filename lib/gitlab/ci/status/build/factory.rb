@@ -9,7 +9,12 @@ module Gitlab
              [Status::Build::FailedAllowed,
               Status::Build::Play,
               Status::Build::Stop],
-             [Status::Build::Action]]
+             [Status::Build::Action],
+             [Status::Build::Action,
+              Status::Build::Canceled,
+              Status::Build::Created,
+              Status::Build::Pending,
+              Status::Build::Skipped]]
           end
 
           def self.common_helpers

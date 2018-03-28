@@ -17,14 +17,6 @@ module Gitlab
         def favicon
           'favicon_status_canceled'
         end
-
-        def illustration
-          {
-            image: 'illustrations/canceled-job_empty.svg',
-            size: 'svg-430',
-            title: _('This job has been canceled')
-          }
-        end
       end
     end
   end

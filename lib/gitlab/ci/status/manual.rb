@@ -17,15 +17,6 @@ module Gitlab
         def favicon
           'favicon_status_manual'
         end
-
-        def illustration
-          {
-            image: 'illustrations/manual_action.svg',
-            size: 'svg-394',
-            title: _('This job requires a manual action'),
-            content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
-          }
-        end
       end
     end
   end

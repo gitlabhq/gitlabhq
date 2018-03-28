@@ -17,14 +17,6 @@ module Gitlab
         def favicon
           'favicon_status_skipped'
         end
-
-        def illustration
-          {
-            image: 'illustrations/skipped-job_empty.svg',
-            size: 'svg-430',
-            title: _('This job has been skipped')
-          }
-        end
       end
     end
   end
