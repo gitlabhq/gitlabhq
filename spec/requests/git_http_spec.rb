@@ -163,7 +163,7 @@ describe 'Git HTTP requests' do
             download(path) do |response|
               json_body = ActiveSupport::JSON.decode(response.body)
 
-              expect(json_body['RepoPath']).to include(wiki.repository.disk_path)
+              expect(json_body['Repository']['relative_path']).to eq(wiki.repository.relative_path)
             end
           end
         end
