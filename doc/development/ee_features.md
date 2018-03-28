@@ -33,6 +33,26 @@ rest of the code should be as close to the CE files as possible.
 
 [single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
 
+### EE-specific comments
+
+When complete separation can't be achieved with the `ee/` directory, you can wrap
+code in EE specific comments to designate the difference from CE/EE and add
+some context for someone resolving a conflict.
+
+```rb
+# EE-specific start
+stub_licensed_features(variable_environment_scope: true)
+# EE specific end
+```
+
+```haml
+-# EE-specific start
+= render 'ci/variables/environment_scope', form_field: form_field, variable: variable
+-# EE-specific end
+```
+
+EE-specific comments should not be backported to CE.
+
 ### Detection of EE-only files
 
 For each commit (except on `master`), the `ee-files-location-check` CI job tries
@@ -654,12 +674,13 @@ to avoid conflicts during CE to EE merge.
   }
 }
 
-/* EE-specific styles */
+// EE-specific start
 .section-body.ee-section-body {
   .section-title {
     background: $gl-header-color-cyan;
   }
 }
+// EE-specific end
 ```
 
 ## gitlab-svgs
