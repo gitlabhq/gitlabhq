@@ -27,6 +27,7 @@ describe('Multi-file store file mutations', () => {
       localState.openFiles.push({
         ...localFile,
         pending: true,
+        active: true,
       });
 
       mutations.SET_FILE_ACTIVE(localState, {
