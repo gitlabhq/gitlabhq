@@ -1,22 +1,15 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
+import module from './modules';
 
-export default {
-  state: {
-    notes: [],
-    targetNoteHash: null,
-    lastFetchedAt: null,
+Vue.use(Vuex);
 
-    // View layer
-    isToggleStateButtonLoading: false,
-
-    // holds endpoints and permissions provided through haml
-    notesData: {},
-    userData: {},
-    noteableData: {},
-  },
+export default new Vuex.Store({
+  state: module.state,
   actions,
   getters,
   mutations,
-};
+});
