@@ -272,6 +272,7 @@ module Ci
         variables.concat(pipeline.variables)
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
         variables.concat(persisted_environment_variables) if environment
+        variables.concat(environment.scaling.predefined_variables) if environment&.scaling&.available?
       end
 
       collection.to_runner_variables

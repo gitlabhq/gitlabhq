@@ -1605,6 +1605,17 @@ describe Ci::Build do
           it_behaves_like 'containing environment variables'
         end
       end
+
+      context 'when environment has scaling options' do
+        let!(:environment_scaling) { create(:environment_scaling, environment: environment) }
+
+        it 'has the PRODUCTION_REPLICAS variable' do
+          keys = subject.map { |var| var[:key] }
+          expected_keys = environment_scaling.predefined_variables.map { |var| var[:key] }
+
+          expect(keys).to include(*expected_keys)
+        end
+      end
     end
 
     context 'when build started manually' do
