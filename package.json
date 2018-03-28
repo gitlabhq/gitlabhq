@@ -92,7 +92,8 @@
     "webpack": "^3.11.0",
     "webpack-bundle-analyzer": "^2.10.0",
     "webpack-stats-plugin": "^0.1.5",
-    "worker-loader": "^1.1.0"
+    "worker-loader": "^1.1.0",
+    "xterm": "^3.2.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.10.0",
