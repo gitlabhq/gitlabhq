@@ -11,6 +11,13 @@ module EE
           super.limit(1)
         end
       end
+
+      private
+
+      override :boards
+      def boards
+        super.order('LOWER(name) ASC')
+      end
     end
   end
 end
