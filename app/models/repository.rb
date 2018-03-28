@@ -100,10 +100,6 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  def create_hooks
-    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
-  end
-
   def commit(ref = 'HEAD')
     return nil unless exists?
     return ref if ref.is_a?(::Commit)

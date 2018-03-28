@@ -21,12 +21,10 @@ module Gitlab
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         project = repository.project
-        repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
           GL_USERNAME: user&.username,
-          RepoPath: repo_path,
           ShowAllRefs: show_all_refs
         }
         server = {
@@ -44,7 +42,7 @@ module Gitlab
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'GetBlobRequest' => {
@@ -72,7 +70,7 @@ module Gitlab
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
         raise "Repository or ref not found" if params.empty?
 
-        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
+        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive)
           params.merge!(
             'GitalyServer' => gitaly_server_hash(repository),
             'GitalyRepository' => repository.gitaly_repository.to_h
@@ -89,7 +87,7 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'RawDiffRequest' => Gitaly::RawDiffRequest.new(
@@ -107,7 +105,7 @@ module Gitlab
       end
 
       def send_git_patch(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch, Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'RawPatchRequest' => Gitaly::RawPatchRequest.new(
