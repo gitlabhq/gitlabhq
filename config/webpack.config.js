@@ -104,7 +104,7 @@ const config = {
         },
       },
       {
-        test: /katex.css$/,
+        test: /katex.min.css$/,
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
