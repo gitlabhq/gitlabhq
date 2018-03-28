@@ -18,7 +18,7 @@ class JobArtifactUploader < GitlabUploader
     if file_storage?
       File.open(path, "rb") if path
     else
-      ::Gitlab::Ci::Trace::Remote.new(model.job_id, url, size, "rb") if url
+      ::Gitlab::Ci::Trace::RemoteFile.new(model.job_id, url, size, "rb") if url
     end
   end
 

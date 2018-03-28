@@ -136,7 +136,7 @@ module Gitlab
           raise WriteError, 'Already opened by another process' unless write_lock_uuid
 
           removal_chunk_index_start = (offset / BUFFER_SIZE)
-          removal_chunk_index_end = total_chunk_count - 1
+          removal_chunk_index_end = chunks_count - 1
           removal_chunk_offset = offset % BUFFER_SIZE
 
           if removal_chunk_offset > 0
@@ -162,6 +162,10 @@ module Gitlab
 
         def present?
           true
+        end
+
+        def delete_chunks!
+          truncate(0)
         end
 
         private
@@ -207,16 +211,16 @@ module Gitlab
           (tell / BUFFER_SIZE)
         end
 
-        def total_chunk_count
+        def chunks_count
           (size / BUFFER_SIZE) + 1
         end
 
         def last_chunk?
-          chunk_index == (total_chunk_count - 1)
+          chunk_index == (chunks_count - 1)
         end
 
         def write_lock_key
-          "live_trace_write:#{job_id}"
+          "live_trace:operation:write:#{job_id}"
         end
       end
     end
