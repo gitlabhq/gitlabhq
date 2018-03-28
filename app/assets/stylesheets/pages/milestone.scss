@@ -232,6 +232,10 @@
     .illustration {
       display: block;
       margin: $gl-padding 0;
+
+      > img {
+        margin: 0;
+      }
     }
   }
 }
