@@ -103,7 +103,6 @@ export default {
         </span>
         <span class="pull-right">
           <mr-file-icon
-            :file="file"
             v-if="file.mrChange"
           />
           <changed-file-icon

@@ -84,10 +84,10 @@ export function redirectTo(url) {
   return window.location.assign(url);
 }
 
-export function webIDEUrl(projectUrl = undefined) {
+export function webIDEUrl(route = undefined) {
   let returnUrl = `${gon.relative_url_root}/-/ide/`;
-  if (projectUrl) {
-    returnUrl += `project${projectUrl}`;
+  if (route) {
+    returnUrl += `project${route}`;
   }
   return returnUrl;
 }
