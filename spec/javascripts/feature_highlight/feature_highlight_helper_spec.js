@@ -3,12 +3,15 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import {
   getSelector,
-  togglePopover,
   dismiss,
-  mouseleave,
-  mouseenter,
   inserted,
 } from '~/feature_highlight/feature_highlight_helper';
+import {
+  togglePopover,
+  mouseleave,
+  mouseenter,
+} from '~/shared/popover';
+
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('feature highlight helper', () => {
