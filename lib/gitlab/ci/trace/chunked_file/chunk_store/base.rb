@@ -1,7 +1,7 @@
 module Gitlab
   module Ci
     class Trace
-      module File
+      module ChunkedFile
         module ChunkStore
           class Base
             InitializeError = Class.new(StandardError)

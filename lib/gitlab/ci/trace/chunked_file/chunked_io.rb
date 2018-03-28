@@ -119,7 +119,7 @@ module Gitlab
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
                 data_to_write = ''
                 data_to_write += store.get if store.size > 0
-                data_to_write += data.slice!(empty_space)
+                data_to_write += data.slice!(0..empty_space)
 
                 written_size = store.write!(data_to_write)
 

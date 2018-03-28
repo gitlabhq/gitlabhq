@@ -1,14 +1,14 @@
 module Gitlab
   module Ci
     class Trace
-      module File
+      module ChunkedFile
         module ChunkStore
           class Redis < Base
             class << self
               def open(job_id, chunk_index, **params)
                 raise ArgumentError unless job_id && chunk_index
 
-                yield self.class.new(self.buffer_key(job_id, chunk_index), params)
+                yield self.new(self.buffer_key(job_id, chunk_index), params)
               end
 
               def exist?(job_id, chunk_index)
@@ -19,14 +19,16 @@ module Gitlab
 
               def chunks_count(job_id)
                 Gitlab::Redis::Cache.with do |redis|
-                  redis.keys(buffer_key(job_id, '*')).count
+                  redis.scan_each(:match => buffer_key(job_id, '?')).inject(0) do |sum, key|
+                    sum + 1
+                  end
                 end
               end
 
               def chunks_size(job_id)
                 Gitlab::Redis::Cache.with do |redis|
-                  redis.keys(buffer_key(job_id, '*')).inject(0) do |sum, key|
-                    sum + redis.strlen(key)
+                  redis.scan_each(:match => buffer_key(job_id, '?')).inject(0) do |sum, key|
+                    sum += redis.strlen(key)
                   end
                 end
               end
@@ -59,11 +61,14 @@ module Gitlab
             def write!(data)
               Gitlab::Redis::Cache.with do |redis|
                 redis.set(buffer_key, data)
+                redis.strlen(buffer_key)
               end
             end
 
             def truncate!(offset)
               Gitlab::Redis::Cache.with do |redis|
+                return unless redis.exists(buffer_key)
+
                 truncated_data = redis.getrange(buffer_key, 0, offset)
                 redis.set(buffer_key, truncated_data)
               end
