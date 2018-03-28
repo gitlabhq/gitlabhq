@@ -6,4 +6,4 @@
     illustration_size: illustration[:size],
     title: illustration[:title],
     content: illustration[:content],
-    action: @build.playable? ? link_to(_("Trigger this manual action"), detailed_status.action_path, method: detailed_status.action_method, class: 'btn btn-primary', title: _("Trigger this manual action")) : nil
+    action: illustration[:action_path] ? link_to(_("Trigger this manual action"), illustration[:action_path], method: illustration[:action_method], class: 'btn btn-primary', title: _("Trigger this manual action")) : nil
