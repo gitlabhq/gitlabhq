@@ -104,10 +104,10 @@ export default {
         to = lineNumber + UNFOLD_COUNT;
       } else {
         const diffFile = utils.findDiffFile(this.diffFiles, this.fileHash);
-        const indexForInline = utils.findIndexInInlineLines(
-          diffFile.highlightedDiffLines,
-          { oldLineNumber, newLineNumber },
-        );
+        const indexForInline = utils.findIndexInInlineLines(diffFile.highlightedDiffLines, {
+          oldLineNumber,
+          newLineNumber,
+        });
         const prevLine = diffFile.highlightedDiffLines[indexForInline - 2];
         const prevLineNumber = (prevLine && prevLine.newLine) || 0;
 

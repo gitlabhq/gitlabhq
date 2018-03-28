@@ -111,16 +111,12 @@ export default {
     },
     wrapperComponent() {
       const shouldRenderDiffs =
-        this.discussion.diffDiscussion &&
-        this.discussion.diffFile &&
-        this.renderDiffFile;
+        this.discussion.diffDiscussion && this.discussion.diffFile && this.renderDiffFile;
 
       return shouldRenderDiffs ? diffWithNote : 'div';
     },
     wrapperClass() {
-      return this.isDiffDiscussion
-        ? ''
-        : 'panel panel-default discussion-wrapper';
+      return this.isDiffDiscussion ? '' : 'panel panel-default discussion-wrapper';
     },
   },
   mounted() {
@@ -142,12 +138,7 @@ export default {
     this.nextDiscussionsSvg = nextDiscussionsSvg;
   },
   methods: {
-    ...mapActions([
-      'saveNote',
-      'toggleDiscussion',
-      'removePlaceholderNotes',
-      'toggleResolveNote',
-    ]),
+    ...mapActions(['saveNote', 'toggleDiscussion', 'removePlaceholderNotes', 'toggleResolveNote']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -170,9 +161,7 @@ export default {
     cancelReplyForm(shouldConfirm) {
       if (shouldConfirm && this.$refs.noteForm.isDirty) {
         // eslint-disable-next-line no-alert
-        if (
-          !confirm('Are you sure you want to cancel creating this comment?')
-        ) {
+        if (!confirm('Are you sure you want to cancel creating this comment?')) {
           return;
         }
       }

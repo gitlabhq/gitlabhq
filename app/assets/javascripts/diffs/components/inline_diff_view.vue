@@ -20,8 +20,7 @@ export default {
 
       return {
         [line.type]: line.type,
-        [LINE_HOVER_CLASS_NAME]:
-          this.isLoggedIn && isSameLine && !isMatchLine && !isContextLine,
+        [LINE_HOVER_CLASS_NAME]: this.isLoggedIn && isSameLine && !isMatchLine && !isContextLine,
         [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
       };
     },

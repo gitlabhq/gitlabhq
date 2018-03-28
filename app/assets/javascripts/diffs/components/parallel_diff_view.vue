@@ -26,23 +26,20 @@ export default {
   methods: {
     hasDiscussion(line) {
       const discussions = this.discussionsByLineCode;
+      const hasDiscussion = discussions[line.left.lineCode] || discussions[line.right.lineCode];
 
-      return (
-        discussions[line.left.lineCode] || discussions[line.right.lineCode]
-      );
+      return hasDiscussion;
     },
     getClassName(line, position) {
       const { type, lineCode } = line[position];
       const isMatchLine = type === MATCH_LINE_TYPE;
-      const isContextLine =
-        !isMatchLine && type !== EMPTY_CELL_TYPE && type !== CONTEXT_LINE_TYPE;
+      const isContextLine = !isMatchLine && type !== EMPTY_CELL_TYPE && type !== CONTEXT_LINE_TYPE;
       const isSameLine = this.hoveredLineCode === lineCode;
       const isSameSection = position === this.hoveredSection;
 
       return {
         [type]: type,
-        [LINE_HOVER_CLASS_NAME]:
-          this.isLoggedIn && isContextLine && isSameLine && isSameSection,
+        [LINE_HOVER_CLASS_NAME]: this.isLoggedIn && isContextLine && isSameLine && isSameSection,
         [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
       };
     },
