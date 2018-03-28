@@ -2,7 +2,12 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
-import { MATCH_LINE_TYPE, UNFOLD_COUNT, CONTEXT_LINE_TYPE } from '../constants';
+import {
+  MATCH_LINE_TYPE,
+  UNFOLD_COUNT,
+  CONTEXT_LINE_TYPE,
+  LINE_POSITION_RIGHT,
+} from '../constants';
 import * as utils from '../store/utils';
 
 export default {
@@ -85,6 +90,15 @@ export default {
     hasDiscussions() {
       return this.discussions.length > 0;
     },
+    shoulShowAvatarsOnGutter() {
+      let render = this.hasDiscussions && this.showCommentButton;
+
+      if (!this.lineType && this.linePosition === LINE_POSITION_RIGHT) {
+        render = false;
+      }
+
+      return render;
+    },
   },
   methods: {
     ...mapActions(['loadMoreLines']),
@@ -163,7 +177,7 @@ export default {
       >
       </a>
       <diff-gutter-avatars
-        v-if="hasDiscussions && showCommentButton"
+        v-if="shoulShowAvatarsOnGutter"
         :discussions="discussions"
       />
     </template>

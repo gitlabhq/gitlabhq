@@ -6,6 +6,7 @@ import {
   CONTEXT_LINE_TYPE,
   LINE_HOVER_CLASS_NAME,
   LINE_UNFOLD_CLASS_NAME,
+  LINE_POSITION_RIGHT,
 } from '../constants';
 
 export default {
@@ -61,8 +62,14 @@ export default {
     },
     shouldRenderDiscussions(line, position) {
       const { lineCode, type } = line[position];
+      let render = this.discussionsByLineCode[lineCode] && this.isDiscussionExpanded(lineCode);
 
-      return type && this.discussionsByLineCode[lineCode] && this.isDiscussionExpanded(lineCode);
+      // Avoid rendering context line discussions on the right side in parallel view
+      if (position === LINE_POSITION_RIGHT) {
+        render = render && line.right.type;
+      }
+
+      return render;
     },
     hasAnyExpandedDiscussion(line) {
       const isLeftExpanded = this.isDiscussionExpanded(line.left.lineCode);

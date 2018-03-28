@@ -1,7 +1,7 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as utils from './utils';
 import * as types from './mutation_types';
-import * as constants from '../constants';
+import { COMMENT_FORM_TYPE, PARALLEL_DIFF_VIEW_TYPE, LINE_POSITION_LEFT } from '../constants';
 
 export default {
   [types.SET_ENDPOINT](state, endpoint) {
@@ -24,24 +24,29 @@ export default {
     Object.assign(state, { diffViewType });
   },
 
-  [types.ADD_COMMENT_FORM_LINE](state, { diffLines, lineCode, linePosition }) {
+  [types.ADD_COMMENT_FORM_LINE](state, params) {
+    const { diffLines, lineCode } = params;
+    let linePosition = params.linePosition;
+
     const index = utils.findDiffLineIndex({
       diffLines,
       lineCode,
       linePosition,
     });
-    const commentFormType = constants.COMMENT_FORM_TYPE;
 
     if (!diffLines[index]) {
       return;
     }
 
-    const item = linePosition
-      ? diffLines[index][linePosition]
-      : diffLines[index];
+    const item = linePosition ? diffLines[index][linePosition] : diffLines[index];
 
     if (!item) {
       return;
+    }
+
+    // Always render context line comment form on the left side in parallel view
+    if (state.diffViewType === PARALLEL_DIFF_VIEW_TYPE && !item.type) {
+      linePosition = LINE_POSITION_LEFT;
     }
 
     // We add forms as another diff line so they have to have a unique id
@@ -59,7 +64,7 @@ export default {
     // Unique comment form object as a diff line
     const formObj = {
       id,
-      type: commentFormType,
+      type: COMMENT_FORM_TYPE,
     };
 
     if (linePosition) {
@@ -70,15 +75,13 @@ export default {
       const reverseObj = targetLine[reversePosition];
       const lineObj = {
         [linePosition]: formObj,
-        [reversePosition]:
-          reverseObj.type === commentFormType ? reverseObj : {},
+        [reversePosition]: reverseObj.type === COMMENT_FORM_TYPE ? reverseObj : {},
       };
 
       // Check if there is any comment form on the target position
       // If we have, we should to remove it because above lineObj should be final version
       const { left, right } = targetLine;
-      const hasAlreadyForm =
-        left.type === commentFormType || right.type === commentFormType;
+      const hasAlreadyForm = left.type === COMMENT_FORM_TYPE || right.type === COMMENT_FORM_TYPE;
       const spliceCount = hasAlreadyForm ? 1 : 0;
 
       diffLines.splice(targetIndex, spliceCount, lineObj);
@@ -95,7 +98,7 @@ export default {
         const reversePosition = utils.getReversePosition(linePosition);
         const line = diffLines[index];
         const reverse = line[reversePosition];
-        const shouldRemove = reverse.type !== constants.COMMENT_FORM_TYPE;
+        const shouldRemove = reverse.type !== COMMENT_FORM_TYPE;
 
         if (shouldRemove) {
           diffLines.splice(index, 1);
