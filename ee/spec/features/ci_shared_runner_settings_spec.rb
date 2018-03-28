@@ -48,8 +48,11 @@ feature 'CI shared runner settings' do
 
   def set_admin_shared_runners_minutes(limit)
     visit admin_application_settings_path
-    fill_in 'application_setting_shared_runners_minutes', with: limit
-    click_on 'Save'
+
+    page.within('.as-ci-cd') do
+      fill_in 'application_setting_shared_runners_minutes', with: limit
+      click_on 'Save changes'
+    end
   end
 
   def set_group_shared_runners_minutes(limit)
