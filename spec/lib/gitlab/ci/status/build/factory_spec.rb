@@ -104,7 +104,7 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Build::Retryable]
+        .to eq [Gitlab::Ci::Status::Build::Canceled, Gitlab::Ci::Status::Build::Retryable]
     end
 
     it 'fabricates a retryable build status' do
@@ -157,7 +157,7 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Build::Cancelable]
+        .to eq [Gitlab::Ci::Status::Build::Pending, Gitlab::Ci::Status::Build::Cancelable]
     end
 
     it 'fabricates a cancelable build status' do
@@ -182,12 +182,12 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
     end
 
-    it 'does not match extended statuses' do
-      expect(factory.extended_statuses).to be_empty
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses).to eq [Gitlab::Ci::Status::Build::Skipped]
     end
 
-    it 'fabricates a core skipped status' do
-      expect(status).to be_a Gitlab::Ci::Status::Skipped
+    it 'fabricates a skipped build status' do
+      expect(status).to be_a Gitlab::Ci::Status::Build::Skipped
     end
 
     it 'fabricates status with correct details' do
@@ -211,7 +211,8 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Play,
+          .to eq [Gitlab::Ci::Status::Build::Manual,
+                  Gitlab::Ci::Status::Build::Play,
                   Gitlab::Ci::Status::Build::Action]
       end
 
@@ -259,7 +260,8 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Stop,
+          .to eq [Gitlab::Ci::Status::Build::Manual,
+                  Gitlab::Ci::Status::Build::Stop,
                   Gitlab::Ci::Status::Build::Action]
       end
 

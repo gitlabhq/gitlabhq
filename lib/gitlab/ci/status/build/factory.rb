@@ -4,17 +4,17 @@ module Gitlab
       module Build
         class Factory < Status::Factory
           def self.extended_statuses
-            [[Status::Build::Cancelable,
+            [[Status::Build::Manual,
+              Status::Build::Canceled,
+              Status::Build::Created,
+              Status::Build::Pending,
+              Status::Build::Skipped],
+             [Status::Build::Cancelable,
               Status::Build::Retryable],
              [Status::Build::FailedAllowed,
               Status::Build::Play,
               Status::Build::Stop],
-             [Status::Build::Action],
-             [Status::Build::Manual,
-              Status::Build::Canceled,
-              Status::Build::Created,
-              Status::Build::Pending,
-              Status::Build::Skipped]]
+             [Status::Build::Action]]
           end
 
           def self.common_helpers
