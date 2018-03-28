@@ -55,7 +55,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_archive feature is disabled', :disable_gitaly do
+    context 'when Gitaly workhorse_archive feature is disabled', :skip_gitaly_mock do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -100,7 +100,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_send_git_patch feature is disabled', :disable_gitaly do
+    context 'when Gitaly workhorse_send_git_patch feature is disabled', :skip_gitaly_mock do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -173,7 +173,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_send_git_diff feature is disabled', :disable_gitaly do
+    context 'when Gitaly workhorse_send_git_diff feature is disabled', :skip_gitaly_mock do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -452,7 +452,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_raw_show feature is disabled', :disable_gitaly do
+    context 'when Gitaly workhorse_raw_show feature is disabled', :skip_gitaly_mock do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
