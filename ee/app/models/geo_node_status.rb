@@ -3,10 +3,14 @@ class GeoNodeStatus < ActiveRecord::Base
 
   delegate :selective_sync_type, to: :geo_node
 
+  after_initialize :initialize_feature_flags
+
   # Whether we were successful in reaching this node
   attr_accessor :success
-  attr_writer :health_status
+  attr_writer   :health_status
   attr_accessor :storage_shards
+
+  attr_accessor :repository_verification_enabled
 
   # Prometheus metrics, no need to store them in the database
   attr_accessor :event_log_count, :event_log_max_id,
@@ -98,6 +102,10 @@ class GeoNodeStatus < ActiveRecord::Base
     self.column_names - EXCLUDED_PARAMS + EXTRA_PARAMS
   end
 
+  def initialize_feature_flags
+    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+  end
+
   def load_data_from_current_node
     self.status_message =
       begin
@@ -135,6 +143,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
     load_primary_data
     load_secondary_data
+    load_verification_data
 
     self
   end
@@ -144,10 +153,6 @@ class GeoNodeStatus < ActiveRecord::Base
       self.replication_slots_count = geo_node.replication_slots_count
       self.replication_slots_used_count = geo_node.replication_slots_used_count
       self.replication_slots_max_retained_wal_bytes = geo_node.replication_slots_max_retained_wal_bytes
-      self.repositories_verified_count = repository_verification_finder.count_verified_repositories
-      self.repositories_verification_failed_count = repository_verification_finder.count_verification_failed_repositories
-      self.wikis_verified_count = repository_verification_finder.count_verified_wikis
-      self.wikis_verification_failed_count = repository_verification_finder.count_verification_failed_wikis
     end
   end
 
@@ -160,10 +165,6 @@ class GeoNodeStatus < ActiveRecord::Base
       self.repositories_failed_count = projects_finder.count_failed_repositories
       self.wikis_synced_count = projects_finder.count_synced_wikis
       self.wikis_failed_count = projects_finder.count_failed_wikis
-      self.repositories_verified_count = projects_finder.count_verified_repositories
-      self.repositories_verification_failed_count = projects_finder.count_verification_failed_repositories
-      self.wikis_verified_count = projects_finder.count_verified_wikis
-      self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
       self.lfs_objects_registry_count = lfs_objects_finder.count_registry_lfs_objects
@@ -174,6 +175,16 @@ class GeoNodeStatus < ActiveRecord::Base
       self.attachments_failed_count = attachments_finder.count_failed_attachments
       self.attachments_registry_count = attachments_finder.count_registry_attachments
     end
+  end
+
+  def load_verification_data
+    return unless repository_verification_enabled
+
+    finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
+    self.repositories_verified_count = finder.count_verified_repositories
+    self.repositories_verification_failed_count = finder.count_verification_failed_repositories
+    self.wikis_verified_count = finder.count_verified_wikis
+    self.wikis_verification_failed_count = finder.count_verification_failed_wikis
   end
 
   alias_attribute :health, :status_message
