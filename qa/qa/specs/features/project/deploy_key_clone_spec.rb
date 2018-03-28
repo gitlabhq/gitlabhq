@@ -2,16 +2,32 @@ require 'digest/sha1'
 
 module QA
   feature 'cloning code using a deploy key', :core, :docker do
-    let(:runner_name) { "qa-runner-#{Time.now.to_i}" }
+    def login
+      Runtime::Browser.visit(:gitlab, Page::Main::Login)
+      Page::Main::Login.act { sign_in_using_credentials }
+    end
 
-    given(:project) do
-      Factory::Resource::Project.fabricate! do |resource|
+    before(:all) do
+      login
+
+      @runner_name = "qa-runner-#{Time.now.to_i}"
+
+      @project = Factory::Resource::Project.fabricate! do |resource|
         resource.name = 'deploy-key-clone-project'
+      end
+
+      @repository_uri = @project.repository_ssh_uri
+
+      Factory::Resource::Runner.fabricate! do |resource|
+        resource.project = @project
+        resource.name = @runner_name
+        resource.tags = %w[qa docker]
+        resource.image = 'gitlab/gitlab-runner:ubuntu'
       end
     end
 
-    after do
-      Service::Runner.new(runner_name).remove!
+    after(:all) do
+      Service::Runner.new(@runner_name).remove!
     end
 
     keys = [
@@ -22,51 +38,42 @@ module QA
 
     keys.each do |key|
       scenario "user sets up a deploy key with #{key.name}(#{key.bits}) to clone code using pipelines" do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
-
-        Factory::Resource::Runner.fabricate! do |resource|
-          resource.project = project
-          resource.name = runner_name
-          resource.tags = %w[qa docker]
-          resource.image = 'gitlab/gitlab-runner:ubuntu'
-        end
+        login
 
         Factory::Resource::DeployKey.fabricate! do |resource|
-          resource.project = project
-          resource.title = 'deploy key title'
+          resource.project = @project
+          resource.title = "deploy key #{key.name}(#{key.bits})"
           resource.key = key.public_key
         end
 
+        deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
+
         Factory::Resource::SecretVariable.fabricate! do |resource|
-          resource.project = project
-          resource.key = 'DEPLOY_KEY'
+          resource.project = @project
+          resource.key = deploy_key_name
           resource.value = key.private_key
         end
-
-        project.visit!
-
-        repository_uri = project.repository_ssh_uri
 
         gitlab_ci = <<~YAML
           cat-config:
             script:
               - mkdir -p ~/.ssh
-              - ssh-keyscan -p #{repository_uri.port} #{repository_uri.host} >> ~/.ssh/known_hosts
+              - ssh-keyscan -p #{@repository_uri.port} #{@repository_uri.host} >> ~/.ssh/known_hosts
               - eval $(ssh-agent -s)
-              - echo "$DEPLOY_KEY" | ssh-add -
-              - git clone #{repository_uri.git_uri}
-              - sha1sum #{project.name}/.gitlab-ci.yml
+              - echo "$#{deploy_key_name}" | ssh-add -
+              - git clone #{@repository_uri.git_uri}
+              - sha1sum #{@project.name}/.gitlab-ci.yml
             tags:
               - qa
               - docker
         YAML
 
         Factory::Repository::Push.fabricate! do |resource|
-          resource.project = project
+          resource.project = @project
           resource.file_name = '.gitlab-ci.yml'
           resource.commit_message = 'Add .gitlab-ci.yml'
           resource.file_content = gitlab_ci
+          resource.branch_name = deploy_key_name
         end
 
         sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
