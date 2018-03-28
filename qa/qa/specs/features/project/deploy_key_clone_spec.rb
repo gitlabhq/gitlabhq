@@ -46,10 +46,7 @@ module QA
 
         project.visit!
 
-        repository_uri = Page::Project::Show.act do
-          choose_repository_clone_ssh
-          repository_location_uri
-        end
+        repository_uri = project.repository_ssh_uri
 
         gitlab_ci = <<~YAML
           cat-config:

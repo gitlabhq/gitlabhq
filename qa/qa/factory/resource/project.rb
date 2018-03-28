@@ -17,6 +17,13 @@ module QA
           Page::Project::Show.act { project_name }
         end
 
+        product :repository_ssh_uri do
+          Page::Project::Show.act do
+            choose_repository_clone_ssh
+            repository_location_uri
+          end
+        end
+
         def fabricate!
           group.visit!
 
