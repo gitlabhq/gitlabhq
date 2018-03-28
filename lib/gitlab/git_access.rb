@@ -99,8 +99,6 @@ module Gitlab
     end
 
     def check_active_user!
-      return if deploy_key?
-
       if user && !user_access.allowed?
         raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
       end
@@ -219,7 +217,7 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
 
-      if deploy_key
+      if deploy_key?
         unless deploy_key.can_push_to?(project)
           raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
         end
@@ -309,8 +307,10 @@ module Gitlab
         case actor
         when User
           actor
+        when DeployKey
+          nil
         when Key
-          actor.user unless actor.is_a?(DeployKey)
+          actor.user
         when :ci
           nil
         end
