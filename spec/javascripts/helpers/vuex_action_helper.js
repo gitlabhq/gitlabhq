@@ -26,8 +26,29 @@ export default (action, payload, state, expectedMutations, done) => {
     }
   };
 
+  // mock dispatch
+  const dispatch = (type, dispatchPayload) => {
+    const mutation = expectedMutations[count];
+
+    try {
+      expect(mutation.type).to.equal(type);
+
+      if (dispatchPayload) {
+        expect(mutation.payload).to.deep.equal(dispatchPayload);
+      }
+    } catch (error) {
+      done(error);
+    }
+
+    count++;
+
+    if (count >= expectedMutations.length) {
+      done();
+    }
+  };
+
   // call the action with mocked store and arguments
-  action({ commit, state }, payload);
+  action({ commit, state, dispatch }, payload);
 
   // check if no mutations should have been dispatched
   if (expectedMutations.length === 0) {
