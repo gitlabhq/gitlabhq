@@ -288,6 +288,11 @@ production: &base
     geo_file_download_dispatch_worker:
       cron: "*/1 * * * *"
 
+    # GitLab Geo migrated local files clean up worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_migrated_local_files_clean_up_worker:
+      cron: "15 */6 * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com

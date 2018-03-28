@@ -3,8 +3,11 @@ require 'spec_helper'
 feature 'Group issues page' do
   include FilteredSearchHelpers
 
+  let(:group) { create(:group) }
+  let(:project) { create(:project, :public, group: group)}
+  let(:path) { issues_group_path(group) }
+
   context 'with shared examples' do
-    let(:path) { issues_group_path(group) }
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
 
     include_examples 'project features apply to issuables', Issue
@@ -31,7 +34,6 @@ feature 'Group issues page' do
       let(:access_level) { ProjectFeature::ENABLED }
       let(:user) { user_in_group }
       let(:user2) { user_outside_group }
-      let(:path) { issues_group_path(group) }
 
       it 'filters by only group users' do
         filtered_search.set('assignee:')
@@ -43,9 +45,7 @@ feature 'Group issues page' do
   end
 
   context 'issues list', :nested_groups do
-    let(:group) { create(:group)}
     let(:subgroup) { create(:group, parent: group) }
-    let(:project) { create(:project, :public, group: group)}
     let(:subgroup_project) { create(:project, :public, group: subgroup)}
     let!(:issue) { create(:issue, project: project, title: 'root group issue') }
     let!(:subgroup_issue) { create(:issue, project: subgroup_project, title: 'subgroup issue') }
@@ -57,6 +57,18 @@ feature 'Group issues page' do
         expect(page).to have_selector('li.issue', count: 2)
         expect(page).to have_content('root group issue')
         expect(page).to have_content('subgroup issue')
+      end
+    end
+
+    context 'when project is archived' do
+      before do
+        project.archive!
+      end
+
+      it 'does not render issue' do
+        visit path
+
+        expect(page).not_to have_content issue.title
       end
     end
   end

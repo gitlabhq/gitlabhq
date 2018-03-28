@@ -3,8 +3,15 @@ module Geo
     module Secondary
       class SchedulerWorker < Geo::Scheduler::SchedulerWorker
         def perform
-          return unless Gitlab::Geo.geo_database_configured?
-          return unless Gitlab::Geo.secondary?
+          unless Gitlab::Geo.geo_database_configured?
+            log_info('Geo database not configured')
+            return
+          end
+
+          unless Gitlab::Geo.secondary?
+            log_info('Current node not a secondary')
+            return
+          end
 
           super
         end

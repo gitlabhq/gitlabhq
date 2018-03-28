@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Edit group settings', :js do
+  include Select2Helper
+
   given(:user) { create(:user) }
   given(:group) { create(:group, path: 'foo') }
 
@@ -21,6 +23,18 @@ feature 'Edit group settings', :js do
         visit group_ldap_group_links_path(group)
       end
 
+      scenario 'adds new LDAP synchronization', :js do
+        page.within('form#new_ldap_group_link') do
+          select2 'my-group-cn', from: '#ldap_group_link_cn'
+          select 'Developer', from: 'ldap_group_link_group_access'
+
+          click_button 'Add synchronization'
+        end
+
+        expect(page).not_to have_content('No LDAP synchronizations')
+        expect(page).to have_content('As Developer on ldap server')
+      end
+
       scenario 'shows the LDAP filter section' do
         choose('sync_method_filter')
 
@@ -37,7 +51,7 @@ feature 'Edit group settings', :js do
       end
     end
 
-    context 'when the LDAP group sync filter feature is available' do
+    context 'when the LDAP group sync filter feature is not available' do
       before do
         stub_licensed_features(ldap_group_sync_filter: false)
 

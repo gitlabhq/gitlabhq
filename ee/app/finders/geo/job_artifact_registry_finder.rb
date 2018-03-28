@@ -1,6 +1,6 @@
 module Geo
   class JobArtifactRegistryFinder < FileRegistryFinder
-    def count_job_artifacts
+    def count_local_job_artifacts
       local_job_artifacts.count
     end
 
@@ -20,6 +20,10 @@ module Geo
       end
     end
 
+    def count_registry_job_artifacts
+      Geo::FileRegistry.job_artifacts.count
+    end
+
     # Find limited amount of non replicated lfs objects.
     #
     # You can pass a list with `except_file_ids:` so you can exclude items you
@@ -36,6 +40,17 @@ module Geo
           legacy_find_unsynced_job_artifacts(except_file_ids: except_file_ids)
         else
           fdw_find_unsynced_job_artifacts(except_file_ids: except_file_ids)
+        end
+
+      relation.limit(batch_size)
+    end
+
+    def find_migrated_local_job_artifacts(batch_size:, except_file_ids: [])
+      relation =
+        if use_legacy_queries?
+          legacy_find_migrated_local_job_artifacts(except_file_ids: except_file_ids)
+        else
+          fdw_find_migrated_local_job_artifacts(except_file_ids: except_file_ids)
         end
 
       relation.limit(batch_size)
@@ -90,6 +105,13 @@ module Geo
         .where.not(id: except_file_ids)
     end
 
+    def fdw_find_migrated_local_job_artifacts(except_file_ids:)
+      fdw_job_artifacts.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_job_artifacts_table}.id")
+        .with_files_stored_remotely
+        .where.not(id: except_file_ids)
+        .merge(Geo::FileRegistry.job_artifacts)
+    end
+
     def fdw_job_artifacts
       if selective_sync?
         Geo::Fdw::Ci::JobArtifact.joins(:project).where(projects: { id: current_node.projects })
@@ -127,6 +149,16 @@ module Geo
 
       legacy_left_outer_join_registry_ids(
         local_job_artifacts,
+        registry_file_ids,
+        Ci::JobArtifact
+      )
+    end
+
+    def legacy_find_migrated_local_job_artifacts(except_file_ids:)
+      registry_file_ids = Geo::FileRegistry.job_artifacts.pluck(:file_id) - except_file_ids
+
+      legacy_inner_join_registry_ids(
+        job_artifacts.with_files_stored_remotely,
         registry_file_ids,
         Ci::JobArtifact
       )

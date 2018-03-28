@@ -11,6 +11,7 @@ module Ci
     before_save :set_size, if: :file_changed?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
+    scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
 
     mount_uploader :file, JobArtifactUploader
 

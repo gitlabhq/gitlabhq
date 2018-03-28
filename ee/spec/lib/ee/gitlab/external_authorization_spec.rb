@@ -21,7 +21,7 @@ describe EE::Gitlab::ExternalAuthorization, :request_store do
   end
 
   describe '#rejection_reason' do
-    it 'is alwaus nil when the feature is disabled' do
+    it 'is always nil when the feature is disabled' do
       expect(::Gitlab::CurrentSettings.current_application_settings)
         .to receive(:external_authorization_service_enabled?) { false }
 
@@ -38,7 +38,17 @@ describe EE::Gitlab::ExternalAuthorization, :request_store do
       expect(EE::Gitlab::ExternalAuthorization::Access)
         .to receive(:new).with(user, label).once.and_call_original
 
-      2.times { described_class.access_for_user_to_label(user, label) }
+      2.times { described_class.access_for_user_to_label(user, label, nil) }
+    end
+
+    it 'logs the access request once per request' do
+      expect(EE::Gitlab::ExternalAuthorization::Logger)
+        .to receive(:log_access)
+              .with(an_instance_of(EE::Gitlab::ExternalAuthorization::Access),
+                    'the/project/path')
+              .once
+
+      2.times { described_class.access_for_user_to_label(user, label, 'the/project/path') }
     end
   end
 end
