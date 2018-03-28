@@ -16,6 +16,7 @@ class Admin::ProjectsFinder
     items = by_archived(items)
     items = by_personal(items)
     items = by_name(items)
+    items = items.includes(namespace: [:owner])
     sort(items).page(params[:page])
   end
 

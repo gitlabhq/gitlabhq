@@ -52,7 +52,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :pages, only: [:show, :destroy] do
+      resource :pages, only: [:show, :update, :destroy] do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
@@ -279,6 +279,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :raw, path: 'raw/*path', format: false
             post :keep
           end
+        end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
         end
       end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180309160427) do
+ActiveRecord::Schema.define(version: 20180327101207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
+    t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -306,6 +307,8 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
+    t.integer "artifacts_file_store"
+    t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
   end
@@ -344,6 +347,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
+    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -727,7 +731,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
   end
 
   add_index "events", ["action"], name: "index_events_on_action", using: :btree
-  add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
+  add_index "events", ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
   add_index "events", ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
   add_index "events", ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
 
@@ -866,6 +870,14 @@ ActiveRecord::Schema.define(version: 20180309160427) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+  create_table "internal_ids", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "usage", null: false
+    t.integer "last_value", null: false
+  end
+
+  add_index "internal_ids", ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, using: :btree
+
   create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
@@ -999,6 +1011,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "file"
+    t.integer "file_store"
   end
 
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
@@ -1286,6 +1299,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.boolean "merge_merge_request"
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
+    t.boolean "push_to_merge_request"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -1503,6 +1517,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
+    t.boolean "pages_https_only", default: true
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1590,7 +1605,6 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
@@ -1812,6 +1826,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
     t.datetime "created_at", null: false
     t.string "mount_point"
     t.string "secret"
+    t.integer "store"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
@@ -1855,6 +1870,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
   end
 
   add_index "user_interacted_projects", ["project_id", "user_id"], name: "index_user_interacted_projects_on_project_id_and_user_id", unique: true, using: :btree
+  add_index "user_interacted_projects", ["user_id"], name: "index_user_interacted_projects_on_user_id", using: :btree
 
   create_table "user_synced_attributes_metadata", force: :cascade do |t|
     t.boolean "name_synced", default: false
@@ -2058,6 +2074,7 @@ ActiveRecord::Schema.define(version: 20180309160427) do
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "internal_ids", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade

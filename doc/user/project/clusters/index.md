@@ -71,7 +71,7 @@ You need Master [permissions] and above to access the Kubernetes page.
 To add an existing Kubernetes cluster to your project:
 
 1. Navigate to your project's **CI/CD > Kubernetes** page.
-1. Click on **Add Kuberntes cluster**.
+1. Click on **Add Kubernetes cluster**.
 1. Click on **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
@@ -101,7 +101,7 @@ To add an existing Kubernetes cluster to your project:
       - If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-1. Finally, click the **Create Kuberntes cluster** button.
+1. Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
@@ -167,6 +167,17 @@ external IP address with the following procedure. It can be deployed using the
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
 
+### Let GitLab fetch the IP address
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
+
+If you installed the Ingress [via the **Applications**](#installing-applications),
+you should see the Ingress IP address on this same page within a few minutes.
+If you don't see this, GitLab might not be able to determine the IP address of
+your ingress application in which case you should manually determine it.
+
+### Manually determining the IP address
+
 If the cluster is on GKE, click on the **Google Kubernetes Engine** link in the
 **Advanced settings**, or go directly to the
 [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
@@ -192,6 +203,24 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 The output is the external IP address of your cluster. This information can then
 be used to set up DNS entries and forwarding rules that allow external access to
 your deployed applications.
+
+### Using a static IP
+
+By default, an ephemeral external IP address is associated to the cluster's load
+balancer. If you associate the ephemeral IP with your DNS and the IP changes,
+your apps will not be able to be reached, and you'd have to change the DNS
+record again. In order to avoid that, you should change it into a static
+reserved IP.
+
+[Read how to promote an ephemeral external IP address in GKE.](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip)
+
+### Pointing your DNS at the cluster IP
+
+Once you've set up the static IP, you should associate it to a [wildcard DNS
+record](https://en.wikipedia.org/wiki/Wildcard_DNS_record), in order to be able
+to reach your apps. This heavily depends on your domain provider, but in case
+you aren't sure, just create an A record with a wildcard host like
+`*.example.com.`.
 
 ## Setting the environment scope
 

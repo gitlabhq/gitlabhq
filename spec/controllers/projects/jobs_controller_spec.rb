@@ -1,7 +1,9 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Projects::JobsController do
   include ApiHelpers
+  include HttpIOHelpers
 
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -200,6 +202,41 @@ describe Projects::JobsController do
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
         expect(json_response['html']).to include("ヾ(´༎ຶД༎ຶ`)ﾉ")
+      end
+    end
+
+    context 'when trace artifact is in ObjectStorage' do
+      let!(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+
+      before do
+        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+        allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
+        allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+      end
+
+      context 'when there are no network issues' do
+        before do
+          stub_remote_trace_206
+
+          get_trace
+        end
+
+        it 'returns a trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq job.id
+          expect(json_response['status']).to eq job.status
+          expect(json_response['html']).to eq(job.trace.html)
+        end
+      end
+
+      context 'when there is a network issue' do
+        before do
+          stub_remote_trace_500
+        end
+
+        it 'returns a trace' do
+          expect { get_trace }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
+        end
       end
     end
 
@@ -446,14 +483,18 @@ describe Projects::JobsController do
   end
 
   describe 'GET raw' do
-    before do
-      get_raw
+    subject do
+      post :raw, namespace_id: project.namespace,
+                 project_id: project,
+                 id: job.id
     end
 
     context 'when job has a trace artifact' do
       let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it 'returns a trace' do
+        response = subject
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'text/plain; charset=utf-8'
         expect(response.body).to eq job.job_artifacts_trace.open.read
@@ -464,6 +505,8 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'send a trace file' do
+        response = subject
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'text/plain; charset=utf-8'
         expect(response.body).to eq 'BUILD TRACE'
@@ -474,14 +517,22 @@ describe Projects::JobsController do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns not_found' do
+        response = subject
+
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    def get_raw
-      post :raw, namespace_id: project.namespace,
-                 project_id: project,
-                 id: job.id
+    context 'when the trace artifact is in ObjectStorage' do
+      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      before do
+        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+      end
+
+      it 'redirect to the trace file url' do
+        expect(subject).to redirect_to(job.job_artifacts_trace.file.url)
+      end
     end
   end
 end

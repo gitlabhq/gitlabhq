@@ -154,7 +154,7 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
   end
 
   def add_foreign_key_if_not_exists(source, target, column:)
-    return if foreign_key_exists?(source, column)
+    return if foreign_key_exists?(source, target, column: column)
 
     add_concurrent_foreign_key(source, target, column: column)
   end
@@ -173,12 +173,6 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
   def remove_index_without_error(table, column)
     remove_concurrent_index(table, column)
   rescue ArgumentError
-  end
-
-  def foreign_key_exists?(table, column)
-    foreign_keys(table).any? do |key|
-      key.options[:column] == column.to_s
-    end
   end
 
   def connection

@@ -1,5 +1,3 @@
-'use strict';
-
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -27,10 +25,10 @@ let watchAutoEntries = [];
 function generateEntries() {
   // generate automatic entry points
   const autoEntries = {};
-  const pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
-  watchAutoEntries = [
-    path.join(ROOT_PATH, 'app/assets/javascripts/pages/'),
-  ];
+  const pageEntries = glob.sync('pages/**/index.js', {
+    cwd: path.join(ROOT_PATH, 'app/assets/javascripts'),
+  });
+  watchAutoEntries = [path.join(ROOT_PATH, 'app/assets/javascripts/pages/')];
 
   function generateAutoEntries(path, prefix = '.') {
     const chunkPath = path.replace(/\/index\.js$/, '');
@@ -38,15 +36,16 @@ function generateEntries() {
     autoEntries[chunkName] = `${prefix}/${path}`;
   }
 
-  pageEntries.forEach(( path ) => generateAutoEntries(path));
+  pageEntries.forEach(path => generateAutoEntries(path));
 
   autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    common:               './commons/index.js',
-    main:                 './main.js',
-    raven:                './raven/index.js',
-    webpack_runtime:      './webpack.js',
+    common: './commons/index.js',
+    main: './main.js',
+    raven: './raven/index.js',
+    webpack_runtime: './webpack.js',
+    ide: './ide/index.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
@@ -90,8 +89,8 @@ const config = {
           {
             loader: 'worker-loader',
             options: {
-              inline: true
-            }
+              inline: true,
+            },
           },
           { loader: 'babel-loader' },
         ],
@@ -102,7 +101,7 @@ const config = {
         loader: 'file-loader',
         options: {
           name: '[name].[hash].[ext]',
-        }
+        },
       },
       {
         test: /katex.css$/,
@@ -112,8 +111,8 @@ const config = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[hash].[ext]'
-            }
+              name: '[name].[hash].[ext]',
+            },
           },
         ],
       },
@@ -123,7 +122,7 @@ const config = {
         loader: 'file-loader',
         options: {
           name: '[name].[hash].[ext]',
-        }
+        },
       },
       {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
@@ -131,7 +130,7 @@ const config = {
           { loader: 'exports-loader', options: 'l.global' },
           { loader: 'imports-loader', options: 'l=>{},this=>l,AMDLoader=>this,module=>undefined' },
         ],
-      }
+      },
     ],
 
     noParse: [/monaco-editor\/\w+\/vs\//],
@@ -149,10 +148,10 @@ const config = {
           source: false,
           chunks: false,
           modules: false,
-          assets: true
+          assets: true,
         });
         return JSON.stringify(stats, null, 2);
-      }
+      },
     }),
 
     // prevent pikaday from including moment.js
@@ -169,7 +168,7 @@ const config = {
     new NameAllModulesPlugin(),
 
     // assign deterministic chunk ids
-    new webpack.NamedChunksPlugin((chunk) => {
+    new webpack.NamedChunksPlugin(chunk => {
       if (chunk.name) {
         return chunk.name;
       }
@@ -186,9 +185,12 @@ const config = {
         const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
 
         if (m.resource.indexOf(pagesBase) === 0) {
-          moduleNames.push(path.relative(pagesBase, m.resource)
-            .replace(/\/index\.[a-z]+$/, '')
-            .replace(/\//g, '__'));
+          moduleNames.push(
+            path
+              .relative(pagesBase, m.resource)
+              .replace(/\/index\.[a-z]+$/, '')
+              .replace(/\//g, '__')
+          );
         } else {
           moduleNames.push(path.relative(m.context, m.resource));
         }
@@ -196,7 +198,8 @@ const config = {
 
       chunk.forEachModule(collectModuleNames);
 
-      const hash = crypto.createHash('sha256')
+      const hash = crypto
+        .createHash('sha256')
         .update(moduleNames.join('_'))
         .digest('hex');
 
@@ -208,13 +211,13 @@ const config = {
       names: ['main', 'common', 'webpack_runtime'],
     }),
 
-    // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin(),
-
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
-        from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
+        from: path.join(
+          ROOT_PATH,
+          `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`
+        ),
         to: 'monaco-editor/vs',
         transform: function(content, path) {
           if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
@@ -227,23 +230,23 @@ const config = {
             );
           }
           return content;
-        }
-      }
+        },
+      },
     ]),
   ],
 
   resolve: {
     extensions: ['.js'],
     alias: {
-      '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
-      'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
-      'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
-      'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
-      'images':         path.join(ROOT_PATH, 'app/assets/images'),
-      'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.esm.js',
-      'spec':           path.join(ROOT_PATH, 'spec/javascripts'),
-    }
+      '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
+      emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
+      empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
+      icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
+      images: path.join(ROOT_PATH, 'app/assets/images'),
+      vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
+      vue$: 'vue/dist/vue.esm.js',
+      spec: path.join(ROOT_PATH, 'spec/javascripts'),
+    },
   },
 
   // sqljs requires fs
@@ -258,13 +261,14 @@ if (IS_PRODUCTION) {
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
-      debug: false
+      debug: false,
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true
+      sourceMap: true,
     }),
     new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify('production') }
+      'process.env': { NODE_ENV: JSON.stringify('production') },
     })
   );
 
@@ -283,7 +287,7 @@ if (IS_DEV_SERVER) {
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
-    inline: DEV_SERVER_LIVERELOAD
+    inline: DEV_SERVER_LIVERELOAD,
   };
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
@@ -299,10 +303,12 @@ if (IS_DEV_SERVER) {
           ];
 
           // report our auto-generated bundle count
-          console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
+          console.log(
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+          );
 
           callback();
-        })
+        });
       },
     }
   );

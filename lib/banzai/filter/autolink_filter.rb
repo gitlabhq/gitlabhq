@@ -21,12 +21,13 @@ module Banzai
       #
       # See http://en.wikipedia.org/wiki/URI_scheme
       #
-      # The negative lookbehind ensures that users can paste a URL followed by a
-      # period or comma for punctuation without those characters being included
-      # in the generated link.
+      # The negative lookbehind ensures that users can paste a URL followed by
+      # punctuation without those characters being included in the generated
+      # link. It matches the behaviour of Rinku 2.0.1:
+      # https://github.com/vmg/rinku/blob/v2.0.1/ext/rinku/autolink.c#L65
       #
-      # Rubular: http://rubular.com/r/JzPhi6DCZp
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!,|\.)}
+      # Rubular: http://rubular.com/r/nrL3r9yUiq
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}
 
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
@@ -104,8 +105,12 @@ module Banzai
           end
         end
 
-        options = link_options.merge(href: match)
-        content_tag(:a, match.html_safe, options) + dropped
+        # match has come from node.to_html above, so we know it's encoded
+        # correctly.
+        html_safe_match = match.html_safe
+        options = link_options.merge(href: html_safe_match)
+
+        content_tag(:a, html_safe_match, options) + dropped
       end
 
       def autolink_filter(text)

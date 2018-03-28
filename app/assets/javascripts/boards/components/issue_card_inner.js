@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -45,7 +45,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     };
   },
   components: {
-    userAvatarLink,
+    UserAvatarLink,
   },
   computed: {
     numberOverLimit() {

@@ -1,4 +1,4 @@
-import { CopyAsGFM } from '~/behaviors/copy_as_gfm';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 
 describe('CopyAsGFM', () => {
   describe('CopyAsGFM.pasteGFM', () => {

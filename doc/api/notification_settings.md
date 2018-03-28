@@ -24,6 +24,7 @@ reopen_issue
 close_issue
 reassign_issue
 new_merge_request
+push_to_merge_request
 reopen_merge_request
 close_merge_request
 reassign_merge_request
@@ -75,6 +76,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `close_issue` | boolean | no | Enable/disable this notification |
 | `reassign_issue` | boolean | no | Enable/disable this notification |
 | `new_merge_request` | boolean | no | Enable/disable this notification |
+| `push_to_merge_request` | boolean | no | Enable/disable this notification |
 | `reopen_merge_request` | boolean | no | Enable/disable this notification |
 | `close_merge_request` | boolean | no | Enable/disable this notification |
 | `reassign_merge_request` | boolean | no | Enable/disable this notification |
@@ -141,6 +143,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `close_issue` | boolean | no | Enable/disable this notification |
 | `reassign_issue` | boolean | no | Enable/disable this notification |
 | `new_merge_request` | boolean | no | Enable/disable this notification |
+| `push_to_merge_request` | boolean | no | Enable/disable this notification |
 | `reopen_merge_request` | boolean | no | Enable/disable this notification |
 | `close_merge_request` | boolean | no | Enable/disable this notification |
 | `reassign_merge_request` | boolean | no | Enable/disable this notification |
@@ -164,6 +167,7 @@ Example responses:
     "close_issue": false,
     "reassign_issue": false,
     "new_merge_request": false,
+    "push_to_merge_request": false,
     "reopen_merge_request": false,
     "close_merge_request": false,
     "reassign_merge_request": false,

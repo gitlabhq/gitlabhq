@@ -110,8 +110,8 @@ describe Gitlab::Profiler do
         custom_logger.debug('User Load (1.3ms)')
         custom_logger.debug('Project Load (10.4ms)')
 
-        expect(custom_logger.load_times_by_model).to eq('User' => 2.5,
-                                                        'Project' => 10.4)
+        expect(custom_logger.load_times_by_model).to eq('User' => [1.2, 1.3],
+                                                        'Project' => [10.4])
       end
 
       it 'logs the backtrace, ignoring lines as appropriate' do
@@ -162,6 +162,26 @@ describe Gitlab::Profiler do
           .and not_change { ActionController::Base.logger }
           .and not_change { ActiveSupport::LogSubscriber.colorize_logging }
       end
+    end
+  end
+
+  describe '.log_load_times_by_model' do
+    it 'logs the model, query count, and time by slowest first' do
+      expect(null_logger).to receive(:load_times_by_model).and_return(
+        'User' => [1.2, 1.3],
+        'Project' => [10.4]
+      )
+
+      expect(null_logger).to receive(:info).with('Project total (1): 10.4ms')
+      expect(null_logger).to receive(:info).with('User total (2): 2.5ms')
+
+      described_class.log_load_times_by_model(null_logger)
+    end
+
+    it 'does nothing when called with a logger that does not have load times' do
+      expect(null_logger).not_to receive(:info)
+
+      expect(described_class.log_load_times_by_model(null_logger)).to be_nil
     end
   end
 end
