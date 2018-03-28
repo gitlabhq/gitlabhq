@@ -11,10 +11,10 @@ describe Geo::AttachmentRegistryFinder, :geo do
   let(:synced_project) { create(:project, group: synced_group) }
   let(:unsynced_project) { create(:project, group: unsynced_group, repository_storage: 'broken') }
 
-  let!(:upload_1) { create(:upload, model: synced_group) }
-  let!(:upload_2) { create(:upload, model: unsynced_group) }
-  let!(:upload_3) { create(:upload, :issuable_upload, model: synced_project) }
-  let!(:upload_4) { create(:upload, model: unsynced_project) }
+  let(:upload_1) { create(:upload, model: synced_group) }
+  let(:upload_2) { create(:upload, model: unsynced_group) }
+  let(:upload_3) { create(:upload, :issuable_upload, model: synced_project) }
+  let(:upload_4) { create(:upload, model: unsynced_project) }
   let(:upload_5) { create(:upload, model: synced_project) }
   let(:upload_6) { create(:upload, :personal_snippet_upload) }
   let(:upload_7) { create(:upload, model: synced_subgroup) }
@@ -186,6 +186,50 @@ describe Geo::AttachmentRegistryFinder, :geo do
         uploads = subject.find_unsynced_attachments(batch_size: 10)
 
         expect(uploads).to match_ids(upload_2, upload_3, upload_4)
+      end
+    end
+
+    describe '#find_migrated_local_attachments' do
+      it 'delegates to the correct method' do
+        expect(subject).to receive("#{method_prefix}_find_migrated_local_attachments".to_sym).and_call_original
+
+        subject.find_migrated_local_attachments(batch_size: 100)
+      end
+
+      it 'returns uploads stored remotely and successfully synced locally' do
+        upload = create(:upload, :object_storage, model: synced_group)
+        create(:geo_file_registry, :avatar, file_id: upload.id)
+
+        uploads = subject.find_migrated_local_attachments(batch_size: 100)
+
+        expect(uploads).to match_ids(upload)
+      end
+
+      it 'excludes uploads stored remotely, but not synced yet' do
+        create(:upload, :object_storage, model: synced_group)
+
+        uploads = subject.find_migrated_local_attachments(batch_size: 100)
+
+        expect(uploads).to be_empty
+      end
+
+      it 'excludes synced uploads that are stored locally' do
+        create(:geo_file_registry, :avatar, file_id: upload_5.id)
+
+        uploads = subject.find_migrated_local_attachments(batch_size: 100)
+
+        expect(uploads).to be_empty
+      end
+
+      it 'excludes except_file_ids' do
+        upload_a = create(:upload, :object_storage, model: synced_group)
+        upload_b = create(:upload, :object_storage, model: unsynced_group)
+        create(:geo_file_registry, :avatar, file_id: upload_a.id, success: true)
+        create(:geo_file_registry, :avatar, file_id: upload_b.id, success: true)
+
+        uploads = subject.find_migrated_local_attachments(batch_size: 10, except_file_ids: [upload_a.id])
+
+        expect(uploads).to match_ids(upload_b)
       end
     end
   end

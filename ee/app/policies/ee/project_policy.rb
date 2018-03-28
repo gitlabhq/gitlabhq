@@ -19,7 +19,8 @@ module EE
       condition(:classification_label_authorized, score: 32) do
         EE::Gitlab::ExternalAuthorization.access_allowed?(
           @user,
-          @subject.external_authorization_classification_label
+          @subject.external_authorization_classification_label,
+          @subject.full_path
         )
       end
 

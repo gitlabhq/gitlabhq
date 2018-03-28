@@ -71,7 +71,11 @@ module Gitlab
 
           authenticators.compact!
 
-          user if authenticators.find { |auth| auth.login(login, password) }
+          # return found user that was authenticated first for given login credentials
+          authenticators.find do |auth|
+            authenticated_user = auth.login(login, password)
+            break authenticated_user if authenticated_user
+          end
         end
       end
 

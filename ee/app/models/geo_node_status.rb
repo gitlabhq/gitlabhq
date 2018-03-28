@@ -13,6 +13,7 @@ class GeoNodeStatus < ActiveRecord::Base
                 :repository_created_max_id, :repository_updated_max_id,
                 :repository_deleted_max_id, :repository_renamed_max_id, :repositories_changed_max_id,
                 :lfs_object_deleted_max_id, :job_artifact_deleted_max_id,
+                :lfs_objects_registry_count, :job_artifacts_registry_count, :attachments_registry_count,
                 :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id
 
   # Be sure to keep this consistent with Prometheus naming conventions
@@ -31,12 +32,15 @@ class GeoNodeStatus < ActiveRecord::Base
     lfs_objects_count: 'Total number of local LFS objects available on primary',
     lfs_objects_synced_count: 'Number of local LFS objects synced on secondary',
     lfs_objects_failed_count: 'Number of local LFS objects failed to sync on secondary',
+    lfs_objects_registry_count: 'Number of LFS objects in the registry',
     job_artifacts_count: 'Total number of local job artifacts available on primary',
     job_artifacts_synced_count: 'Number of local job artifacts synced on secondary',
     job_artifacts_failed_count: 'Number of local job artifacts failed to sync on secondary',
+    job_artifacts_registry_count: 'Number of job artifacts in the registry',
     attachments_count: 'Total number of local file attachments available on primary',
     attachments_synced_count: 'Number of local file attachments synced on secondary',
     attachments_failed_count: 'Number of local file attachments failed to sync on secondary',
+    attachments_registry_count: 'Number of attachments in the registry',
     replication_slots_count: 'Total number of replication slots on the primary',
     replication_slots_used_count: 'Number of replication slots in use on the primary',
     replication_slots_max_retained_wal_bytes: 'Maximum number of bytes retained in the WAL on the primary',
@@ -107,8 +111,8 @@ class GeoNodeStatus < ActiveRecord::Base
     self.last_event_date = latest_event&.created_at
     self.repositories_count = projects_finder.count_repositories
     self.wikis_count = projects_finder.count_wikis
-    self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
-    self.job_artifacts_count = job_artifacts_finder.count_job_artifacts
+    self.lfs_objects_count = lfs_objects_finder.count_local_lfs_objects
+    self.job_artifacts_count = job_artifacts_finder.count_local_job_artifacts
     self.attachments_count = attachments_finder.count_local_attachments
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
@@ -162,10 +166,13 @@ class GeoNodeStatus < ActiveRecord::Base
       self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
+      self.lfs_objects_registry_count = lfs_objects_finder.count_registry_lfs_objects
       self.job_artifacts_synced_count = job_artifacts_finder.count_synced_job_artifacts
       self.job_artifacts_failed_count = job_artifacts_finder.count_failed_job_artifacts
+      self.job_artifacts_registry_count = job_artifacts_finder.count_registry_job_artifacts
       self.attachments_synced_count = attachments_finder.count_synced_attachments
       self.attachments_failed_count = attachments_finder.count_failed_attachments
+      self.attachments_registry_count = attachments_finder.count_registry_attachments
     end
   end
 

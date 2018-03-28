@@ -49,9 +49,10 @@ gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
-gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -120,7 +121,7 @@ gem 'carrierwave', '~> 1.2'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 2.0'
+gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 1.3.3'
 gem 'fog-local', '~> 0.3'

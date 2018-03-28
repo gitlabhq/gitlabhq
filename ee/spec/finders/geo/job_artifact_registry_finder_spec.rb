@@ -8,15 +8,18 @@ describe Geo::JobArtifactRegistryFinder, :geo do
   let(:synced_project) { create(:project, group: synced_group) }
   let(:unsynced_project) { create(:project) }
 
-  let!(:job_artifact_1) { create(:ci_job_artifact, id: 1, project: synced_project) }
-  let!(:job_artifact_2) { create(:ci_job_artifact, id: 2, project: unsynced_project) }
-  let!(:job_artifact_3) { create(:ci_job_artifact, id: 3, project: synced_project) }
-  let!(:job_artifact_4) { create(:ci_job_artifact, id: 4, project: unsynced_project) }
+  let(:job_artifact_1) { create(:ci_job_artifact, project: synced_project) }
+  let(:job_artifact_2) { create(:ci_job_artifact, project: unsynced_project) }
+  let(:job_artifact_3) { create(:ci_job_artifact, project: synced_project) }
+  let(:job_artifact_4) { create(:ci_job_artifact, project: unsynced_project) }
+  let(:job_artifact_remote_1) { create(:ci_job_artifact, :remote_store, project: synced_project) }
+  let(:job_artifact_remote_2) { create(:ci_job_artifact, :remote_store, project: unsynced_project) }
 
   subject { described_class.new(current_node: secondary) }
 
   before do
     stub_current_geo_node(secondary)
+    stub_artifacts_object_storage
   end
 
   describe '#count_synced_job_artifacts' do
@@ -56,15 +59,22 @@ describe Geo::JobArtifactRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
-    describe '#count_job_artifacts' do
+    describe '#count_local_job_artifacts' do
+      before do
+        job_artifact_1
+        job_artifact_2
+        job_artifact_3
+        job_artifact_4
+      end
+
       it 'counts job artifacts' do
-        expect(subject.count_job_artifacts).to eq 4
+        expect(subject.count_local_job_artifacts).to eq 4
       end
 
       it 'ignores remote job artifacts' do
         job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_job_artifacts).to eq 3
+        expect(subject.count_local_job_artifacts).to eq 3
       end
 
       context 'with selective sync' do
@@ -73,13 +83,13 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'counts job artifacts' do
-          expect(subject.count_job_artifacts).to eq 2
+          expect(subject.count_local_job_artifacts).to eq 2
         end
 
         it 'ignores remote job artifacts' do
           job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
-          expect(subject.count_job_artifacts).to eq 1
+          expect(subject.count_local_job_artifacts).to eq 1
         end
       end
     end
@@ -94,10 +104,9 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'ignores remote job artifacts' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id)
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id)
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
-        job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
         expect(subject.count_synced_job_artifacts).to eq 2
       end
@@ -122,10 +131,9 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'ignores remote job artifacts' do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id)
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id)
           create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
           create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
-          job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
           expect(subject.count_synced_job_artifacts).to eq 1
         end
@@ -142,10 +150,9 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'ignores remote job artifacts' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id, success: false)
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
         create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
-        job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
         expect(subject.count_failed_job_artifacts).to eq 2
       end
@@ -210,6 +217,48 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10, except_file_ids: [job_artifact_2.id])
 
         expect(job_artifacts).to match_ids(job_artifact_4)
+      end
+    end
+
+    describe '#find_migrated_local_job_artifacts' do
+      it 'delegates to the correct method' do
+        expect(subject).to receive("#{method_prefix}_find_migrated_local_job_artifacts".to_sym).and_call_original
+
+        subject.find_migrated_local_job_artifacts(batch_size: 10)
+      end
+
+      it 'returns job artifacts remotely and successfully synced locally' do
+        job_artifact = create(:ci_job_artifact, :remote_store, project: synced_project)
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact.id)
+
+        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10)
+
+        expect(job_artifacts).to match_ids(job_artifact)
+      end
+
+      it 'excludes job artifacts stored remotely, but not synced yet' do
+        create(:ci_job_artifact, :remote_store, project: synced_project)
+
+        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10)
+
+        expect(job_artifacts).to be_empty
+      end
+
+      it 'excludes synced job artifacts that are stored locally' do
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id)
+
+        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10)
+
+        expect(job_artifacts).to be_empty
+      end
+
+      it 'excludes except_file_ids' do
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id)
+        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_2.id)
+
+        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10, except_file_ids: [job_artifact_remote_1.id])
+
+        expect(job_artifacts).to match_ids(job_artifact_remote_2)
       end
     end
   end

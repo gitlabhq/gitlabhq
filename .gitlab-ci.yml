@@ -377,6 +377,7 @@ ee-files-location-check:
   stage: test
   before_script: []
   cache: {}
+  retry: 0
   script:
     - scripts/ee-files-location-check
   only:
@@ -639,6 +640,7 @@ db:rollback-mysql:
 db:rollback-pg-geo: &db-rollback
   <<: *db-rollback
   <<: *use-pg
+  <<: *except-docs
   script:
     - bundle exec rake geo:db:migrate VERSION=20170627195211
     - bundle exec rake geo:db:migrate

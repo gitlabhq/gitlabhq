@@ -42,10 +42,6 @@
           = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
           = link_to "(?)", help_page_path("integration/gitlab")
-    .form-group
-      = f.label :default_branch_protection, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
 
     -# EE-only
     - if ldap_enabled?

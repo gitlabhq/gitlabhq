@@ -1,6 +1,6 @@
 module Geo
   module Scheduler
-    class BaseWorker
+    class SchedulerWorker
       include ApplicationWorker
       include GeoQueue
       include ExclusiveLeaseGuard
