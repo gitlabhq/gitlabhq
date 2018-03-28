@@ -21,12 +21,7 @@ module QA
         def ssh_keygen(name, bits, path)
           cmd = %W[ssh-keygen -t #{name} -b #{bits} -f #{path} -N] << ''
 
-          IO.popen([*cmd, err: %i[child out]]) do |io|
-            out = io.read
-            io.close
-
-            raise "ssh-keygen failed with output: #{out}" unless $?.success?
-          end
+          Service::Shellout.shell(cmd)
         end
 
         def populate_key_data(path)
