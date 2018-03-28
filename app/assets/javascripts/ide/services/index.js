@@ -32,7 +32,7 @@ export default {
     }
 
     return Vue.http
-      .get(file.rawPath.replace(file.branchId, sha), {
+      .get(file.rawPath.replace(`/raw/${file.branchId}/${file.path}`, `/raw/${sha}/${file.path}`), {
         params: { format: 'json' },
       })
       .then(res => res.text());

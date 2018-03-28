@@ -108,60 +108,44 @@ router.beforeEach((to, from, next) => {
                 branchId: mr.source_branch,
               });
 
-              store
-                .dispatch('getFiles', {
-                  projectId: fullProjectId,
-                  branchId: mr.source_branch,
-                })
-                .then(() => {
-                  store
-                    .dispatch('getMergeRequestChanges', {
-                      projectId: fullProjectId,
-                      mergeRequestId: to.params.mrid,
-                    })
-                    .then(mrChanges => {
-                      store
-                        .dispatch('getMergeRequestVersions', {
-                          projectId: fullProjectId,
-                          mergeRequestId: to.params.mrid,
-                        })
-                        .then(() => {
-                          mrChanges.changes.forEach((change, ind) => {
-                            const changeTreeEntry = store.state.entries[change.new_path];
+              return store.dispatch('getFiles', {
+                projectId: fullProjectId,
+                branchId: mr.source_branch,
+              });
+            })
+            .then(() =>
+              store.dispatch('getMergeRequestVersions', {
+                projectId: fullProjectId,
+                mergeRequestId: to.params.mrid,
+              }),
+            )
+            .then(() =>
+              store.dispatch('getMergeRequestChanges', {
+                projectId: fullProjectId,
+                mergeRequestId: to.params.mrid,
+              }),
+            )
+            .then(mrChanges => {
+              mrChanges.changes.forEach((change, ind) => {
+                const changeTreeEntry = store.state.entries[change.new_path];
 
-                            if (changeTreeEntry) {
-                              store.dispatch('setFileMrChange', {
-                                file: changeTreeEntry,
-                                mrChange: change,
-                              });
+                if (changeTreeEntry) {
+                  store.dispatch('setFileMrChange', {
+                    file: changeTreeEntry,
+                    mrChange: change,
+                  });
 
-                              if (ind < 10) {
-                                store.dispatch('getFileData', {
-                                  path: change.new_path,
-                                  makeFileActive: ind === 0,
-                                });
-                              }
-                            }
-                          });
-                        })
-                        .catch(e => {
-                          flash(
-                            'Error while loading the merge request versions. Please try again.',
-                          );
-                          throw e;
-                        });
-                    })
-                    .catch(e => {
-                      flash('Error while loading the merge request changes. Please try again.');
-                      throw e;
+                  if (ind < 10) {
+                    store.dispatch('getFileData', {
+                      path: change.new_path,
+                      makeFileActive: ind === 0,
                     });
-                })
-                .catch(e => {
-                  flash('Error while loading the branch files. Please try again.');
-                  throw e;
-                });
+                  }
+                }
+              });
             })
             .catch(e => {
+              flash('Error while loading the merge request. Please try again.');
               throw e;
             });
         }

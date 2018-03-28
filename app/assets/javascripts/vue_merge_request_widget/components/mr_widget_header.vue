@@ -100,10 +100,9 @@ export default {
 
     <div v-if="mr.isOpen">
       <a
-        :disabled="mr.sourceBranchRemoved"
+        v-if="!mr.sourceBranchRemoved"
         :href="webIdePath"
         class="btn btn-sm btn-default inline js-web-ide"
-        type="button"
       >
         {{ s__("mrWidget|Web IDE") }}
       </a>

@@ -53,7 +53,6 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     .getFileData(file.url)
     .then(res => {
       const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
-
       setPageTitle(pageTitle);
 
       return res.json();
@@ -61,7 +60,7 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     .then(data => {
       commit(types.SET_FILE_DATA, { data, file });
       commit(types.TOGGLE_FILE_OPEN, path);
-      if (makeFileActive) dispatch('setFileActive', file.path);
+      if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {
@@ -71,7 +70,7 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
 };
 
 export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
-  commit(types.SET_FILE_MR_CHANGE, { file, mrChange });
+  commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
 export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {

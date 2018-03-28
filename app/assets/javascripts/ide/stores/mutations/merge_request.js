@@ -7,17 +7,15 @@ export default {
     });
   },
   [types.SET_MERGE_REQUEST](state, { projectPath, mergeRequestId, mergeRequest }) {
-    // Add client side properties
-    Object.assign(mergeRequest, {
-      active: true,
-      changes: [],
-      versions: [],
-      baseCommitSha: null,
-    });
-
     Object.assign(state.projects[projectPath], {
       mergeRequests: {
-        [mergeRequestId]: mergeRequest,
+        [mergeRequestId]: {
+          ...mergeRequest,
+          active: true,
+          changes: [],
+          versions: [],
+          baseCommitSha: null,
+        },
       },
     });
   },

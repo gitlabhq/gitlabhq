@@ -125,9 +125,9 @@ describe('IDE store file mutations', () => {
     });
   });
 
-  describe('SET_FILE_MR_CHANGE', () => {
+  describe('SET_FILE_MERGE_REQUEST_CHANGE', () => {
     it('sets file mr change', () => {
-      mutations.SET_FILE_MR_CHANGE(localState, {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
         file: localFile,
         mrChange: { diff: 'ABC' },
       });

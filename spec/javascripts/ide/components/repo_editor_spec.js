@@ -151,25 +151,25 @@ describe('RepoEditor', () => {
 
   describe('setup editor for merge request viewing', () => {
     beforeEach(done => {
+      // Resetting as the main test setup has already done it
       vm.$destroy();
-
       resetStore(vm.$store);
-
       Editor.editorInstance.modelManager.dispose();
 
-      const f = file();
+      const f = {
+        ...file(),
+        active: true,
+        tempFile: true,
+        html: 'testing',
+        mrChange: { diff: 'ABC' },
+        baseRaw: 'testing',
+        content: 'test',
+      };
       const RepoEditor = Vue.extend(repoEditor);
-
       vm = createComponentWithStore(RepoEditor, store, {
         file: f,
       });
 
-      f.active = true;
-      f.tempFile = true;
-      f.html = 'testing';
-      f.mrChange = { diff: 'ABC' };
-      f.baseRaw = 'testing';
-      f.content = 'test';
       vm.$store.state.openFiles.push(f);
       vm.$store.state.entries[f.path] = f;
 

@@ -25,12 +25,6 @@ describe('IDE changed file icon', () => {
       expect(vm.changedIcon).toBe('file-modified');
     });
 
-    it('equals git-merge when not a temp file and has no changes', () => {
-      vm.file.changed = false;
-
-      expect(vm.changedIcon).toBe('git-merge');
-    });
-
     it('equals file-addition when a temp file', () => {
       vm.file.tempFile = true;
 
@@ -41,12 +35,6 @@ describe('IDE changed file icon', () => {
   describe('changedIconClass', () => {
     it('includes multi-file-modified when not a temp file', () => {
       expect(vm.changedIconClass).toContain('multi-file-modified');
-    });
-
-    it('includes multi-git-merge when a mr changed file', () => {
-      vm.file.changed = false;
-
-      expect(vm.changedIconClass).toContain('multi-git-merge');
     });
 
     it('includes multi-file-addition when a temp file', () => {

@@ -66,8 +66,8 @@ export default {
       editorColumn,
     });
   },
-  [types.SET_FILE_MR_CHANGE](state, { file, mrChange }) {
-    Object.assign(file, {
+  [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
+    Object.assign(state.entries[file.path], {
       mrChange,
     });
   },

@@ -21,7 +21,6 @@ export default class Model {
         new this.monaco.Uri(null, null, this.file.path),
       )),
     );
-
     if (this.file.mrChange) {
       this.disposable.add(
         (this.baseModel = this.monaco.editor.createModel(
