@@ -15,6 +15,7 @@ export default {
       type: String,
       required: true,
     },
+<<<<<<< HEAD
     url: {
       type: String,
       required: true,
@@ -22,6 +23,31 @@ export default {
     groupName: {
       type: String,
       required: true,
+=======
+    props: {
+      milestoneTitle: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+      groupName: {
+        type: String,
+        required: true,
+      },
+    },
+    computed: {
+      title() {
+        return sprintf(s__('Milestones|Promote %{milestoneTitle} to group milestone?'), { milestoneTitle: this.milestoneTitle });
+      },
+      text() {
+        return sprintf(s__(`Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}.
+        Existing project milestones with the same title will be merged.
+        This action cannot be reversed.`), { milestoneTitle: this.milestoneTitle, groupName: this.groupName });
+      },
+>>>>>>> upstream/master
     },
   },
   computed: {

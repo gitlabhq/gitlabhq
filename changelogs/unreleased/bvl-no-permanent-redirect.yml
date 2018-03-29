@@ -1,0 +1,5 @@
+---
+title: Don't create permanent redirect routes
+merge_request: 17521
+author:
+type: changed

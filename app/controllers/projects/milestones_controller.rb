@@ -43,9 +43,14 @@ class Projects::MilestonesController < Projects::ApplicationController
   def show
     @project_namespace = @project.namespace.becomes(Namespace)
 
+<<<<<<< HEAD
     if @project.feature_available?(:burndown_charts, current_user) &&
         @project.feature_available?(:issue_weights, current_user)
       @burndown = Burndown.new(@milestone)
+=======
+    respond_to do |format|
+      format.html
+>>>>>>> upstream/master
     end
   end
 

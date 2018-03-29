@@ -56,7 +56,7 @@ module Gitlab
       ensure_project_on_push!(cmd, changes)
 
       check_project_accessibility!
-      check_project_moved!
+      add_project_moved_message!
       check_repository_existence!
 
       case cmd
@@ -102,8 +102,6 @@ module Gitlab
     end
 
     def check_active_user!
-      return if deploy_key?
-
       if user && !user_access.allowed?
         raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
       end
@@ -128,16 +126,12 @@ module Gitlab
       end
     end
 
-    def check_project_moved!
+    def add_project_moved_message!
       return if redirected_path.nil?
 
       project_moved = Checks::ProjectMoved.new(project, user, protocol, redirected_path)
 
-      if project_moved.permanent_redirect?
-        project_moved.add_message
-      else
-        raise ProjectMovedError, project_moved.message(rejected: true)
-      end
+      project_moved.add_message
     end
 
     def check_command_disabled!(cmd)
@@ -223,7 +217,7 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
 
-      if deploy_key
+      if deploy_key?
         unless deploy_key.can_push_to?(project)
           raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
         end
@@ -332,8 +326,10 @@ module Gitlab
         case actor
         when User
           actor
+        when DeployKey
+          nil
         when Key
-          actor.user unless actor.is_a?(DeployKey)
+          actor.user
         when :ci
           nil
         end

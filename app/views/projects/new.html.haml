@@ -18,11 +18,14 @@
         = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
       %p
         = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
+<<<<<<< HEAD
       -# EE-specific start
       - if ci_cd_projects_available?
         %p
           = _('To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>.').html_safe
       -# EE-specific end
+=======
+>>>>>>> upstream/master
       .md
         = brand_new_project_guidelines
       %p
@@ -46,9 +49,12 @@
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Import project
             %span.visible-xs Import
+<<<<<<< HEAD
         -# EE-specific start
         = render 'new_ci_cd_only_project_tab', active_tab: active_tab
         -# EE-specific end
+=======
+>>>>>>> upstream/master
 
       .tab-content.gitlab-tab-content
         .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
@@ -114,11 +120,14 @@
                       = render "shared/import_form", f: f
                       = render 'new_project_fields', f: f, project_name_id: "import-url-name"
 
+<<<<<<< HEAD
 
         -# EE-specific start
         = render 'new_ci_cd_only_project_pane', active_tab: active_tab
         -# EE-specific end
 
+=======
+>>>>>>> upstream/master
 .save-project-loader.hide
   .center
     %h2

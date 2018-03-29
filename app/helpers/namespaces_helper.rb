@@ -33,7 +33,7 @@ module NamespacesHelper
 
   def namespace_icon(namespace, size = 40)
     if namespace.is_a?(Group)
-      group_icon(namespace)
+      group_icon_url(namespace)
     else
       avatar_icon_for_user(namespace.owner, size)
     end

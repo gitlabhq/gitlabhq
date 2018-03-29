@@ -370,6 +370,255 @@ class beneath the `EE` module just as you would normally.
 For example, if CE has LDAP classes in `lib/gitlab/ldap/` then you would place
 EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
 
+### Code in `lib/api/`
+
+It can be very tricky to extend EE features by a single line of `prepend`,
+and for each different [Grape](https://github.com/ruby-grape/grape) feature,
+we might need different strategies to extend it. To apply different strategies
+easily, we would use `extend ActiveSupport::Concern` in the EE module.
+
+Put the EE module files following
+[EE features based on CE features](#ee-features-based-on-ce-features).
+
+#### EE API routes
+
+For EE API routes, we put them in a `prepended` block:
+
+``` ruby
+module EE
+  module API
+    module MergeRequests
+      extend ActiveSupport::Concern
+
+      prepended do
+        params do
+          requires :id, type: String, desc: 'The ID of a project'
+        end
+        resource :projects, requirements: ::API::API::PROJECT_ENDPOINT_REQUIREMENTS do
+          # ...
+        end
+      end
+    end
+  end
+end
+```
+
+Note that due to namespace differences, we need to use the full qualifier for some
+constants.
+
+#### EE params
+
+We can define `params` and utilize `use` in another `params` definition to
+include params defined in EE. However, we need to define the "interface" first
+in CE in order for EE to override it. We don't have to do this in other places
+due to `prepend`, but Grape is complex internally and we couldn't easily do
+that, so we'll follow regular object-oriented practices that we define the
+interface first here.
+
+For example, suppose we have a few more optional params for EE, given this CE
+API code:
+
+``` ruby
+module API
+  class MergeRequests < Grape::API
+    # EE::API::MergeRequests would override the following helpers
+    helpers do
+      params :optional_params_ee do
+      end
+    end
+
+    prepend EE::API::MergeRequests
+
+    params :optional_params do
+      # CE specific params go here...
+
+      use :optional_params_ee
+    end
+  end
+end
+```
+
+And then we could override it in EE module:
+
+``` ruby
+module EE
+  module API
+    module MergeRequests
+      extend ActiveSupport::Concern
+
+      prepended do
+        helpers do
+          params :optional_params_ee do
+            # EE specific params go here...
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+This way, the only difference between CE and EE for that API file would be
+`prepend EE::API::MergeRequests`.
+
+#### EE helpers
+
+To make it easy for an EE module to override the CE helpers, we need to define
+those helpers we want to extend first. Try to do that immediately after the
+class definition to make it easy and clear:
+
+``` ruby
+module API
+  class JobArtifacts < Grape::API
+    # EE::API::JobArtifacts would override the following helpers
+    helpers do
+      def authorize_download_artifacts!
+        authorize_read_builds!
+      end
+    end
+
+    prepend EE::API::JobArtifacts
+  end
+end
+```
+
+And then we can follow regular object-oriented practices to override it:
+
+``` ruby
+module EE
+  module API
+    module JobArtifacts
+      extend ActiveSupport::Concern
+
+      prepended do
+        helpers do
+          def authorize_download_artifacts!
+            super
+            check_cross_project_pipelines_feature!
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+#### EE-specific behaviour
+
+Sometimes we need EE-specific behaviour in some of the APIs. Normally we could
+use EE methods to override CE methods, however API routes are not methods and
+therefore can't be simply overridden. We need to extract them into a standalone
+method, or introduce some "hooks" where we could inject behavior in the CE
+route. Something like this:
+
+``` ruby
+module API
+  class MergeRequests < Grape::API
+    helpers do
+      # EE::API::MergeRequests would override the following helpers
+      def update_merge_request_ee(merge_request)
+      end
+    end
+
+    prepend EE::API::MergeRequests
+
+    put ':id/merge_requests/:merge_request_iid/merge' do
+      merge_request = find_project_merge_request(params[:merge_request_iid])
+
+      # ...
+
+      update_merge_request_ee(merge_request)
+
+      # ...
+    end
+  end
+end
+```
+
+Note that `update_merge_request_ee` doesn't do anything in CE, but
+then we could override it in EE:
+
+``` ruby
+module EE
+  module API
+    module MergeRequests
+      extend ActiveSupport::Concern
+
+      prepended do
+        helpers do
+          def update_merge_request_ee(merge_request)
+            # ...
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+#### EE `route_setting`
+
+It's very hard to extend this in an EE module, and this is simply storing
+some meta-data for a particular route. Given that, we could simply leave the
+EE `route_setting` in CE as it won't hurt and we are just not going to use
+those meta-data in CE.
+
+We could revisit this policy when we're using `route_setting` more and whether
+or not we really need to extend it from EE. For now we're not using it much.
+
+#### Utilizing class methods for setting up EE-specific data
+
+Sometimes we need to use different arguments for a particular API route, and we
+can't easily extend it with an EE module because Grape has different context in
+different blocks. In order to overcome this, we could use class methods from the
+API class.
+
+For example, in one place we need to pass an extra argument to
+`at_least_one_of` so that the API could consider an EE-only argument as the
+least argument. This is not quite beautiful but it's working:
+
+``` ruby
+module API
+  class MergeRequests < Grape::API
+    def self.update_params_at_least_one_of
+      %i[
+        assignee_id
+        description
+      ]
+    end
+
+    prepend EE::API::MergeRequests
+
+    params do
+      at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
+    end
+  end
+end
+```
+
+And then we could easily extend that argument in the EE class method:
+
+``` ruby
+module EE
+  module API
+    module MergeRequests
+      extend ActiveSupport::Concern
+
+      class_methods do
+        def update_params_at_least_one_of
+          super.push(*%i[
+            squash
+          ])
+        end
+      end
+    end
+  end
+end
+```
+
+It could be annoying if we need this for a lot of routes, but it might be the
+simplest solution right now.
+
 ### Code in `spec/`
 
 When you're testing EE-only features, avoid adding examples to the

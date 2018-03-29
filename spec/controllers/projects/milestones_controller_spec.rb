@@ -20,14 +20,23 @@ describe Projects::MilestonesController do
   describe "#show" do
     render_views
 
-    def view_milestone
-      get :show, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+    def view_milestone(options = {})
+      params = { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
+      get :show, params.merge(options)
     end
 
     it 'shows milestone page' do
       view_milestone
 
       expect(response).to have_gitlab_http_status(200)
+      expect(response.content_type).to eq 'text/html'
+    end
+
+    it 'returns milestone json' do
+      view_milestone format: :json
+
+      expect(response).to have_http_status(404)
+      expect(response.content_type).to eq 'application/json'
     end
   end
 

@@ -55,6 +55,11 @@ describe PageLayoutHelper do
       stub_env('CANARY', 'true')
       expect(helper.favicon).to eq 'favicon-yellow.ico'
     end
+
+    it 'has yellow favicon for canary' do
+      stub_env('CANARY', 'true')
+      expect(helper.favicon).to eq 'favicon-yellow.ico'
+    end
   end
 
   describe 'page_image' do
