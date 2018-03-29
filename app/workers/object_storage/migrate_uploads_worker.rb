@@ -138,21 +138,18 @@ module ObjectStorage
 
     include Report
 
-    def self.enqueue!(uploads, mounted_as, to_store)
-      sanity_check!(uploads, mounted_as)
+    def self.enqueue!(uploads, model_class, mounted_as, to_store)
+      sanity_check!(uploads, model_class, mounted_as)
 
-      perform_async(uploads.ids, mounted_as, to_store)
+      perform_async(uploads.ids, model_class.to_s, mounted_as, to_store)
     end
 
     # We need to be sure all the uploads are for the same uploader and model type
     # and that the mount point exists if provided.
     #
-    def self.sanity_check!(uploads, mounted_as)
+    def self.sanity_check!(uploads, model_class, mounted_as)
       upload = uploads.first
-
       uploader_class = upload.uploader.constantize
-      model_class = uploads.first.model_type.constantize
-
       uploader_types = uploads.map(&:uploader).uniq
       model_types = uploads.map(&:model_type).uniq
       model_has_mount = mounted_as.nil? || model_class.uploaders[mounted_as] == uploader_class
@@ -162,7 +159,8 @@ module ObjectStorage
       raise(SanityCheckError, "Mount point #{mounted_as} not found in #{model_class}.") unless model_has_mount
     end
 
-    def perform(ids, mounted_as, to_store)
+    def perform(ids, model_type, mounted_as, to_store)
+      @model_class = model_type.constantize
       @mounted_as = mounted_as&.to_sym
       @to_store = to_store
 
@@ -178,7 +176,7 @@ module ObjectStorage
     end
 
     def sanity_check!(uploads)
-      self.class.sanity_check!(uploads, @mounted_as)
+      self.class.sanity_check!(uploads, @model_class, @mounted_as)
     end
 
     def build_uploaders(uploads)
