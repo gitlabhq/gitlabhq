@@ -147,7 +147,6 @@ feature 'Dashboard Groups page', :js do
 
     it 'shows only groups admin is member of' do
       group.add_owner(admin)
-      nested_group.add_owner(admin)
       expect(another_group).to be_persisted
 
       sign_in(admin)
@@ -155,7 +154,6 @@ feature 'Dashboard Groups page', :js do
       wait_for_requests
 
       expect(page).to have_content(group.name)
-
       expect(page).not_to have_content(another_group.name)
     end
   end

@@ -1,0 +1,5 @@
+---
+title: In the groups dashboard, Gitlab now only shows the groups which the user is a member of (applies also to admins)
+merge_request: 17884
+author: Roger Rüttimann
+type: changed
