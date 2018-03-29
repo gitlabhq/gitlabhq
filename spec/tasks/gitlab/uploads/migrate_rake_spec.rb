@@ -20,9 +20,20 @@ describe 'gitlab:uploads:migrate rake tasks' do
     run_rake_task("gitlab:uploads:migrate", *args)
   end
 
-  it 'enqueue jobs in batch' do
-    expect(ObjectStorage::MigrateUploadsWorker).to receive(:enqueue!).exactly(4).times
+  shared_examples 'enqueue jobs in batch' do |batch:|
+    it do
+      expect(ObjectStorage::MigrateUploadsWorker)
+        .to receive(:enqueue!).exactly(batch).times
 
-    run
+      run
+    end
+  end
+
+  context 'Upload has store = nil' do
+    before do
+      Upload.where(model: projects.first(5)).update_all(store: nil)
+    end
+
+    it_behaves_like 'enqueue jobs in batch', batch: 4
   end
 end
