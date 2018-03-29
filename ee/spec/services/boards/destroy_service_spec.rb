@@ -1,24 +1,32 @@
 require 'spec_helper'
 
-describe Boards::DestroyService, services: true do
+describe Boards::DestroyService do
   describe '#execute' do
+    let(:project) { create(:project) }
     let(:group) { create(:group) }
-    let!(:board)  { create(:board, group: group) }
 
-    subject(:service) { described_class.new(group, double) }
+    shared_examples 'remove the board' do |parent_name|
+      let(:parent) { public_send(parent_name) }
+      let!(:board) { create(:board, parent_name => parent) }
 
-    context 'when group have more than one board' do
-      it 'removes board from group' do
-        create(:board, group: group)
+      subject(:service) { described_class.new(parent, double) }
 
-        expect { service.execute(board) }.to change(group.boards, :count).by(-1)
+      context "when #{parent_name} have more than one board" do
+        it "removes board from #{parent_name}" do
+          create(:board, parent_name => parent)
+
+          expect { service.execute(board) }.to change(parent.boards, :count).by(-1)
+        end
+      end
+
+      context "when #{parent_name} have one board" do
+        it "does not remove board from #{parent_name}" do
+          expect { service.execute(board) }.not_to change(group.boards, :count)
+        end
       end
     end
 
-    context 'when group have one board' do
-      it 'does not remove board from group' do
-        expect { service.execute(board) }.not_to change(group.boards, :count)
-      end
-    end
+    it_behaves_like 'remove the board', :group
+    it_behaves_like 'remove the board', :project
   end
 end
