@@ -1,12 +1,22 @@
 ##
-# This class is compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
-# source: https://gitlab.com/snippets/1685610
+# This class is designed as it's compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 module Gitlab
   module Ci
     class Trace
       module ChunkedFile
         class ChunkedIO
+          class << self
+            def open(job_id, size, mode)
+              stream = self.new(job_id, size, mode)
+
+              yield stream
+            ensure
+              stream.close
+            end
+          end
+
           WriteError = Class.new(StandardError)
+          FailedToGetChunkError = Class.new(StandardError)
 
           attr_reader :size
           attr_reader :tell
@@ -23,7 +33,10 @@ module Gitlab
 
             if /(w|a)/ =~ mode
               @write_lock_uuid = Gitlab::ExclusiveLease.new(write_lock_key, timeout: 1.hour.to_i).try_obtain
+
               raise WriteError, 'Already opened by another process' unless write_lock_uuid
+
+              seek(0, IO::SEEK_END) if /a/ =~ mode
             end
           end
 
@@ -37,10 +50,6 @@ module Gitlab
 
           def binmode?
             true
-          end
-
-          def path
-            nil
           end
 
           def seek(pos, where = IO::SEEK_SET)
@@ -111,46 +120,56 @@ module Gitlab
           end
 
           def write(data, &block)
-            raise WriteError, 'Already opened by another process' unless write_lock_uuid
+            raise WriteError, 'Could not write without lock' unless write_lock_uuid
+            raise WriteError, 'Could not write empty data' unless data.present?
 
-            while data.present?
-              empty_space = BUFFER_SIZE - chunk_offset
+            data = data.dup
 
-              chunk_store.open(job_id, chunk_index, params_for_store) do |store|
-                data_to_write = ''
-                data_to_write += store.get if store.size > 0
-                data_to_write += data.slice!(0..empty_space)
+            chunk_index_start = chunk_index
+            chunk_index_end = (tell + data.length) / BUFFER_SIZE
+            prev_tell = tell
 
-                written_size = store.write!(data_to_write)
+            (chunk_index_start..chunk_index_end).each do |c_index|
+              chunk_store.open(job_id, c_index, params_for_store) do |store|
+                writable_space = BUFFER_SIZE - chunk_offset
+                writing_size = [writable_space, data.length].min
 
-                raise WriteError, 'Written size mismatch' unless data_to_write.length == written_size
+                if store.size > 0
+                  written_size = store.append!(data.slice!(0...writing_size))
+                else
+                  written_size = store.write!(data.slice!(0...writing_size))
+                end
 
-                block.call(store, chunk_index) if block_given?
+                raise WriteError, 'Written size mismatch' unless writing_size == written_size
 
                 @tell += written_size
-                @size += written_size
+                @size = [tell, size].max
+
+                block.call(store, c_index) if block_given?
               end
             end
+
+            tell - prev_tell
           end
 
-          def truncate(offset)
-            raise WriteError, 'Already opened by another process' unless write_lock_uuid
+          def truncate(offset, &block)
+            raise WriteError, 'Could not write without lock' unless write_lock_uuid
+            raise WriteError, 'Offset is out of bound' if offset > size || offset < 0
 
-            removal_chunk_index_start = (offset / BUFFER_SIZE)
-            removal_chunk_index_end = chunks_count - 1
-            removal_chunk_offset = offset % BUFFER_SIZE
+            chunk_index_start = (offset / BUFFER_SIZE)
+            chunk_index_end = chunks_count - 1
 
-            if removal_chunk_offset > 0
-              chunk_store.open(job_id, removal_chunk_index_start, params_for_store) do |store|
-                store.truncate!(removal_chunk_offset)
-              end
+            (chunk_index_start..chunk_index_end).reverse_each do |c_index|
+              chunk_store.open(job_id, c_index, params_for_store) do |store|
+                c_index_start = c_index * BUFFER_SIZE
 
-              removal_chunk_index_start += 1
-            end
+                if offset <= c_index_start
+                  store.delete!
+                else
+                  store.truncate!(offset - c_index_start) if store.size > 0
+                end
 
-            (removal_chunk_index_start..removal_chunk_index_end).each do |removal_chunk_index|
-              chunk_store.open(job_id, removal_chunk_index, params_for_store) do |store|
-                store.delete!
+                block.call(store, c_index) if block_given?
               end
             end
 
@@ -165,15 +184,8 @@ module Gitlab
             true
           end
 
-          def delete_chunks!
-            truncate(0)
-          end
-
           private
 
-          ##
-          # The below methods are not implemented in IO class
-          #
           def in_range?
             @chunk_range&.include?(tell)
           end
@@ -182,7 +194,10 @@ module Gitlab
             unless in_range?
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
                 @chunk = store.get
-                @chunk_range = (chunk_start...(chunk_start + @chunk.length))
+
+                raise FailedToGetChunkError unless chunk
+
+                @chunk_range = (chunk_start...(chunk_start + chunk.length))
               end
             end
 
@@ -222,6 +237,10 @@ module Gitlab
 
           def write_lock_key
             "live_trace:operation:write:#{job_id}"
+          end
+
+          def chunk_store
+            raise NotImplementedError
           end
         end
       end

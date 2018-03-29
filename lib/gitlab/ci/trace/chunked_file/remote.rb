@@ -6,11 +6,11 @@ module Gitlab
           BUFFER_SIZE = 128.kilobytes
 
           class << self
-            def open(job_id, url, size, mode)
-              stream = self.class.new(job_id, mode)
+            def open(job_id, mode)
+              stream = self.new(job_id, mode)
 
               yield stream
-
+            ensure
               stream.close
             end
           end
