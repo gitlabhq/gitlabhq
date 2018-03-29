@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
+import * as actions from '~/ide/stores/actions/file';
+import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
+import testAction from '../../../helpers/vuex_action_helper';
 
 describe('Multi-file store file actions', () => {
   beforeEach(() => {
@@ -416,6 +419,30 @@ describe('Multi-file store file actions', () => {
           done();
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('stageChange', () => {
+    it('calls STAGE_CHANGE with file path', done => {
+      testAction(
+        actions.stageChange,
+        'path',
+        null,
+        [{ type: types.STAGE_CHANGE, payload: 'path' }],
+        done,
+      );
+    });
+  });
+
+  describe('unstageChange', () => {
+    it('calls UNSTAGE_CHANGE with file path', done => {
+      testAction(
+        actions.unstageChange,
+        'path',
+        null,
+        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
+        done,
+      );
     });
   });
 });
