@@ -12,4 +12,8 @@
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
 
 = render 'shared/issuable/filter', type: :issues
-= render 'shared/issues'
+
+- if current_user && @no_filters_set
+  = render 'shared/dashboard/no_filter_selected'
+- else
+  = render 'shared/issues'
