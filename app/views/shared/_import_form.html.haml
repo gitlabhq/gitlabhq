@@ -17,7 +17,6 @@
         = import_will_timeout_message(ci_cd_only)
       %li
         = import_svn_message(ci_cd_only)
-<<<<<<< HEAD
       %li
         The Git LFS objects will be ignored.
       - unless ci_cd_only
@@ -28,5 +27,3 @@
 -# EE-specific start
 = render 'shared/ee/import_form', f: f unless ci_cd_only
 -# EE-specific end
-=======
->>>>>>> upstream/master
