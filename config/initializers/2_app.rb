@@ -1,3 +1,5 @@
+require_dependency 'gitlab/popen'
+
 module Gitlab
   def self.config
     Settings
