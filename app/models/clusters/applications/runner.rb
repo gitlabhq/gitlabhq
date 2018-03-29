@@ -14,6 +14,8 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      scope :installed, -> { where(status: ::Clusters::Applications::Runner.state_machines[:status].states[:installed].value) }
+
       def chart
         "#{name}/gitlab-runner"
       end

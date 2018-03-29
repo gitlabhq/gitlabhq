@@ -13,6 +13,8 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      scope :installed, -> { where(status: ::Clusters::Applications::Prometheus.state_machines[:status].states[:installed].value) }
+
       state_machine :status do
         after_transition any => [:installed] do |application|
           application.cluster.projects.each do |project|

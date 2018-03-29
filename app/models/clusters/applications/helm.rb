@@ -8,6 +8,8 @@ module Clusters
 
       default_value_for :version, Gitlab::Kubernetes::Helm::HELM_VERSION
 
+      scope :installed, -> { where(status: ::Clusters::Applications::Helm.state_machines[:status].states[:installed].value) }
+
       def set_initial_status
         return unless not_installable?
 
