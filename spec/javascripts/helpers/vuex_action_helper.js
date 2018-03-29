@@ -8,16 +8,13 @@ export default (action, payload, state, expectedMutations, done) => {
   let count = 0;
 
   // mock commit
-  const commit = (type, payload) => {
+  const commit = (type, mutationPayload) => {
     const mutation = expectedMutations[count];
 
-    try {
-      expect(mutation.type).toEqual(type);
-      if (payload) {
-        expect(mutation.payload).toEqual(payload);
-      }
-    } catch (error) {
-      done.fail(error);
+    expect(mutation.type).toEqual(type);
+
+    if (mutation.payload) {
+      expect(mutation.payload).toEqual(mutationPayload);
     }
 
     count++;

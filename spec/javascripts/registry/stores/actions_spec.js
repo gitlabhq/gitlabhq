@@ -29,57 +29,92 @@ describe('Actions Registry Store', () => {
     describe('fetchRepos', () => {
       beforeEach(() => {
         interceptor = (request, next) => {
-          next(request.respondWith(JSON.stringify(reposServerResponse), {
-            status: 200,
-          }));
+          next(
+            request.respondWith(JSON.stringify(reposServerResponse), {
+              status: 200,
+            }),
+          );
         };
 
         Vue.http.interceptors.push(interceptor);
       });
 
-      it('should set receveived repos', (done) => {
-        testAction(actions.fetchRepos, null, mockedState, [
-          { type: types.TOGGLE_MAIN_LOADING },
-          { type: types.SET_REPOS_LIST, payload: reposServerResponse },
-        ], done);
+      it('should set receveived repos', done => {
+        testAction(
+          actions.fetchRepos,
+          null,
+          mockedState,
+          [
+            { type: types.TOGGLE_MAIN_LOADING },
+            { type: types.TOGGLE_MAIN_LOADING },
+            { type: types.SET_REPOS_LIST, payload: reposServerResponse },
+          ],
+          done,
+        );
       });
     });
 
     describe('fetchList', () => {
       beforeEach(() => {
         interceptor = (request, next) => {
-          next(request.respondWith(JSON.stringify(registryServerResponse), {
-            status: 200,
-          }));
+          next(
+            request.respondWith(JSON.stringify(registryServerResponse), {
+              status: 200,
+            }),
+          );
         };
 
         Vue.http.interceptors.push(interceptor);
       });
 
-      it('should set received list', (done) => {
+      it('should set received list', done => {
         mockedState.repos = parsedReposServerResponse;
 
-        testAction(actions.fetchList, { repo: mockedState.repos[1] }, mockedState, [
-          { type: types.TOGGLE_REGISTRY_LIST_LOADING },
-          { type: types.SET_REGISTRY_LIST, payload: registryServerResponse },
-        ], done);
+        const repo = mockedState.repos[1];
+
+        testAction(
+          actions.fetchList,
+          { repo },
+          mockedState,
+          [
+            { type: types.TOGGLE_REGISTRY_LIST_LOADING, payload: repo },
+            { type: types.TOGGLE_REGISTRY_LIST_LOADING, payload: repo },
+            {
+              type: types.SET_REGISTRY_LIST,
+              payload: {
+                repo,
+                resp: registryServerResponse,
+                headers: jasmine.anything(),
+              },
+            },
+          ],
+          done,
+        );
       });
     });
   });
 
   describe('setMainEndpoint', () => {
-    it('should commit set main endpoint', (done) => {
-      testAction(actions.setMainEndpoint, 'endpoint', mockedState, [
-        { type: types.SET_MAIN_ENDPOINT, payload: 'endpoint' },
-      ], done);
+    it('should commit set main endpoint', done => {
+      testAction(
+        actions.setMainEndpoint,
+        'endpoint',
+        mockedState,
+        [{ type: types.SET_MAIN_ENDPOINT, payload: 'endpoint' }],
+        done,
+      );
     });
   });
 
   describe('toggleLoading', () => {
-    it('should commit toggle main loading', (done) => {
-      testAction(actions.toggleLoading, null, mockedState, [
-        { type: types.TOGGLE_MAIN_LOADING },
-      ], done);
+    it('should commit toggle main loading', done => {
+      testAction(
+        actions.toggleLoading,
+        null,
+        mockedState,
+        [{ type: types.TOGGLE_MAIN_LOADING }],
+        done,
+      );
     });
   });
 });
