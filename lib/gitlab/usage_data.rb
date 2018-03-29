@@ -51,7 +51,7 @@ module Gitlab
             clusters: ::Clusters::Cluster.count,
             clusters_enabled: ::Clusters::Cluster.enabled.count,
             clusters_disabled: ::Clusters::Cluster.disabled.count,
-            clusters_platforms_gke: ::Clusters::Cluster.includes(:provider_gcp).gcp_provided.where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }).enabled.count,
+            clusters_platforms_gke: ::Clusters::Cluster.gcp_provided.includes(:provider_gcp).where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }).enabled.count,
             clusters_platforms_user: ::Clusters::Cluster.user_provided.enabled.count,
             clusters_applications_helm: ::Clusters::Applications::Helm.installed.count,
             clusters_applications_ingress: ::Clusters::Applications::Ingress.installed.count,
