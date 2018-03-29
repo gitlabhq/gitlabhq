@@ -80,14 +80,11 @@
               = link_to charts_project_graph_path(@project, current_ref) do
                 #{ _('Charts') }
 
-<<<<<<< HEAD
             - if @project.feature_available?(:file_locks)
               = nav_link(controller: [:path_locks]) do
                 = link_to project_path_locks_path(@project) do
                   #{ _('Locked Files') }
 
-=======
->>>>>>> upstream/master
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
           = link_to project_issues_path(@project), class: 'shortcuts-issues' do
