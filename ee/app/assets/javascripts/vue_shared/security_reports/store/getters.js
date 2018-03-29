@@ -29,7 +29,8 @@ export const groupedDependencyText = ({ dependencyScanning }) =>
     dependencyScanning.resolvedIssues.length,
   );
 
-export const groupedSummaryText = ({ added, fixed }, getters) => {
+export const groupedSummaryText = (state, getters) => {
+  const { added, fixed } = state.summaryCounts;
   // All reports returned error
   if (getters.allReportsHaveError) {
     return s__('ciReport|Security scanning failed loading any results');

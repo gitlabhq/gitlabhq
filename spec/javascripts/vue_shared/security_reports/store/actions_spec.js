@@ -74,6 +74,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -108,6 +109,7 @@ describe('security reports actions', () => {
             type: types.REQUEST_SAST_REPORTS,
           },
         ],
+        [],
         done,
       );
     });
@@ -125,6 +127,7 @@ describe('security reports actions', () => {
             payload: {},
           },
         ],
+        [],
         done,
       );
     });
@@ -214,7 +217,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveSastReports',
-              payload: { head: sastIssues },
+              payload: { head: sastIssues, base: null },
             },
           ],
           done,
@@ -399,7 +402,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveSastContainerReports',
-              payload: { head: dockerReport },
+              payload: { head: dockerReport, base: null },
             },
           ],
           done,
@@ -583,7 +586,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveDastReports',
-              payload: { head: dast },
+              payload: { head: dast, base: null },
             },
           ],
           done,
@@ -767,7 +770,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveDependencyScanningReports',
-              payload: { head: sastIssues },
+              payload: { head: sastIssues, base: null },
             },
           ],
           done,
