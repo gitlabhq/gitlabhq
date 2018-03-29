@@ -25,8 +25,9 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown", selected: selected_labels, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
-        .pull-right
-          = render 'shared/sort_dropdown'
+        - if !@no_filters_set
+          .pull-right
+            = render 'shared/sort_dropdown'
 
   - has_labels = @labels && @labels.any?
   .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }
