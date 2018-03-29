@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.6.2 (2018-03-29)
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Cloning a repository over HTTPS with LDAP credentials causes a HTTP 401 Access denied. (Horatiu Eugen Vlad)
+
+
 ## 10.6.1 (2018-03-27)
 
 ### Security (1 change)
