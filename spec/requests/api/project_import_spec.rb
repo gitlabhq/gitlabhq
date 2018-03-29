@@ -71,7 +71,7 @@ describe API::ProjectImport do
       expect(json_response['error']).to eq('file is invalid')
     end
 
-    it 'allows overriding project params' do
+    it 'stores params that can be overridden' do
       stub_import(namespace)
       override_params = { 'description' => 'Hello world' }
 
@@ -85,7 +85,7 @@ describe API::ProjectImport do
       expect(import_project.import_data.data['override_params']).to eq(override_params)
     end
 
-    it 'does store params that are not allowed' do
+    it 'does not store params that are not allowed' do
       stub_import(namespace)
       override_params = { 'not_allowed' => 'Hello world' }
 
@@ -97,6 +97,21 @@ describe API::ProjectImport do
       import_project = Project.find(json_response['id'])
 
       expect(import_project.import_data.data['override_params']).to be_empty
+    end
+
+    it 'correctly overrides params during the import' do
+      override_params = { 'description' => 'Hello world' }
+
+      Sidekiq::Testing.inline! do
+        post api('/projects/import', user),
+             path: 'test-import',
+             file: fixture_file_upload(file),
+             namespace: namespace.id,
+             override_params: override_params
+      end
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.description).to eq('Hello world')
     end
 
     def stub_import(namespace)
