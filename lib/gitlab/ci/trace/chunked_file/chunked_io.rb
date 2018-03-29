@@ -22,7 +22,7 @@ module Gitlab
             @job_id = job_id
 
             if /(w|a)/ =~ mode
-              @write_lock_uuid = Gitlab::ExclusiveLease.new(write_lock_key, timeout: 5.minutes.to_i).try_obtain
+              @write_lock_uuid = Gitlab::ExclusiveLease.new(write_lock_key, timeout: 1.hour.to_i).try_obtain
               raise WriteError, 'Already opened by another process' unless write_lock_uuid
             end
           end

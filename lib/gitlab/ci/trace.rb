@@ -61,7 +61,7 @@ module Gitlab
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
             trace_artifact.open
-          elsif LiveTraceFile.exists?(job.id)
+          elsif Feature.enabled?('ci_enable_live_trace') && LiveTraceFile.exists?(job.id)
             LiveTraceFile.new(job.id, "rb")
           elsif current_path
             File.open(current_path, "rb")
@@ -77,10 +77,14 @@ module Gitlab
 
       def write
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
-            current_path
+          if Feature.enabled?('ci_enable_live_trace')
+            if current_path
+              current_path
+            else
+              LiveTraceFile.new(job.id, "a+b")
+            end
           else
-            LiveTraceFile.new(job.id, "a+b")
+            File.open(ensure_path, "a+b")
           end
         end
 
@@ -105,7 +109,7 @@ module Gitlab
         raise ArchiveError, 'Already archived' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if LiveTraceFile.exists?(job.id)
+        if Feature.enabled?('ci_enable_live_trace') && LiveTraceFile.exists?(job.id)
           LiveTraceFile.open(job.id, "wb") do |stream|
             archive_stream!(stream)
             stream.truncate(0)
@@ -150,6 +154,19 @@ module Gitlab
             file_type: :trace,
             file: stream,
             file_sha256: Digest::SHA256.file(path).hexdigest)
+        end
+      end
+
+      def ensure_path
+        return current_path if current_path
+
+        ensure_directory
+        default_path
+      end
+
+      def ensure_directory
+        unless Dir.exist?(default_directory)
+          FileUtils.mkdir_p(default_directory)
         end
       end
 

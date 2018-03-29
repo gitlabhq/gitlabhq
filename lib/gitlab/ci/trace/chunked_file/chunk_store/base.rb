@@ -4,9 +4,6 @@ module Gitlab
       module ChunkedFile
         module ChunkStore
           class Base
-            InitializeError = Class.new(StandardError)
-            NotSupportedError = Class.new(StandardError)
-
             attr_reader :buffer_size
             attr_reader :chunk_start
             attr_reader :url
@@ -15,6 +12,10 @@ module Gitlab
               @buffer_size = params[:buffer_size]
               @chunk_start = params[:chunk_start]
               @url = params[:url]
+            end
+
+            def close
+              raise NotImplementedError
             end
 
             def get
