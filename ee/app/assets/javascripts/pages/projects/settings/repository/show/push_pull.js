@@ -50,6 +50,15 @@ export default {
     
     mirrorPull.init();
     mirrorPull.handleRepositoryUrlInput();
+
+    this.initSelect2();
+  },
+
+  initSelect2() {
+    $('.js-mirror-user', this.container).select2({
+      width: 'resolve',
+      dropdownAutoWidth: true,
+    });
   },
 
   registerUpdateListeners() {
