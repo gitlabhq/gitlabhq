@@ -46,6 +46,14 @@
   .right-sidebar { // right sidebar eg: MR page
     top: $system-header-height + $header-height;
   }
+
+  .ide.nav-only { // body element on WebIDE page
+    padding-top: $header-height + $system-header-height;
+
+    .ide-view {
+      height: calc(100vh - #{$header-height + $system-header-height});
+    }
+  }
 }
 
 // System Footer
@@ -72,5 +80,89 @@
   .nav-sidebar, // left sidebar eg: project page
   .right-sidebar { // right sidebar eg: MR page
     top: $header-height + $performance-bar-height + $system-header-height;
+  }
+
+  // IDE adjustments
+  .ide.nav-only { // body element on WebIDe view
+    padding-top: $header-height + $performance-bar-height + $system-header-height;
+  }
+}
+
+@mixin ide-height-with($map) {
+  $height: 0;
+  $height: $height + $header-height; // always present
+
+  @if (map-get($map, performance) == true) {
+    $height: $height + $performance-bar-height;
+  }
+
+  @if (map-get($map, system-header) == true) {
+    $height: $height + $system-header-height;
+  }
+
+  @if (map-get($map, system-footer) == true) {
+    $height: $height + $system-footer-height;
+  }
+
+  @if (map-get($map, flash) == true) {
+    $height: $height + $flash-height;
+  }
+
+  height: calc(100vh - #{$height});
+}
+
+// Space adjustments for the IDE UI
+.ide.nav-only {
+  .ide-view {
+    .with-system-header & {
+      @include ide-height-with((system-header: true));
+    }
+
+    .with-system-footer & {
+      @include ide-height-with((system-footer: true));
+    }
+
+    .with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true));
+    }
+
+    .with-performance-bar.with-system-header & {
+      @include ide-height-with((system-header: true, performance: true));
+    }
+
+    .with-performance-bar.with-system-footer & {
+      @include ide-height-with((system-footer: true, performance: true));
+    }
+
+    .with-performance-bar.with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true, performance: true));
+    }
+  }
+
+  // Repeat previous block of selectors but with addition of Flash
+  &.flash-shown .ide-view {
+    .with-system-header & {
+      @include ide-height-with((system-header: true, flash: true));
+    }
+
+    .with-system-footer & {
+      @include ide-height-with((system-footer: true, flash: true));
+    }
+
+    .with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true, flash: true));
+    }
+
+    .with-performance-bar.with-system-header & {
+      @include ide-height-with((system-header: true, performance: true, flash: true));
+    }
+
+    .with-performance-bar.with-system-footer & {
+      @include ide-height-with((system-footer: true, performance: true, flash: true));
+    }
+
+    .with-performance-bar.with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true, performance: true, flash: true));
+    }
   }
 }
