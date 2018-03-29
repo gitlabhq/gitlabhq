@@ -1,15 +1,16 @@
 import MirrorPull from 'ee/mirrors/mirror_pull';
 
 export default {
-  init() {
-    this.mirrorDirectionSelect = document.querySelector('.js-mirror-direction');
-    this.insertionPoint = document.querySelector('.js-form-insertion-point');
-    this.urlInput = document.querySelector('.js-mirror-url');
-    this.protectedBranchesInput = document.querySelector('.js-mirror-protected');
+  init(container) {
+    this.container = container;
+    this.mirrorDirectionSelect = container.querySelector('.js-mirror-direction');
+    this.insertionPoint = container.querySelector('.js-form-insertion-point');
+    this.urlInput = container.querySelector('.js-mirror-url');
+    this.protectedBranchesInput = container.querySelector('.js-mirror-protected');
 
     this.directionFormMap = {
-      push: document.querySelector('.js-push-mirrors-form').innerHTML,
-      pull: document.querySelector('.js-pull-mirrors-form').innerHTML,
+      push: container.querySelector('.js-push-mirrors-form').innerHTML,
+      pull: container.querySelector('.js-pull-mirrors-form').innerHTML,
     };
 
     this.boundUpdateForm = this.updateForm.bind(this);
@@ -35,11 +36,11 @@ export default {
   },
 
   updateUrl() {
-    document.querySelector('.js-mirror-url-hidden').value = this.urlInput.value;
+    this.container.querySelector('.js-mirror-url-hidden').value = this.urlInput.value;
   },
 
   updateProtectedBranches() {
-    document.querySelector('.js-mirror-protected-hidden').value = this.protectedBranchesInput.checked ? this.protectedBranchesInput.value : '0';
+    this.container.querySelector('.js-mirror-protected-hidden').value = this.protectedBranchesInput.checked ? this.protectedBranchesInput.value : '0';
   },
 
   initMirrorPull() {

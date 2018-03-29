@@ -35,5 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     new CEProtectedTagEditList();
   }
 
-  PushPull.init();
+  const pushPullContainer = document.querySelector('.js-mirror-form');
+
+  if (!pushPullContainer) return;
+
+  PushPull.init(pushPullContainer);
 });
