@@ -320,6 +320,30 @@ describe ObjectStorage do
     it { is_expected.to eq(remote_directory) }
   end
 
+  context 'when file is in use' do
+    def when_file_is_in_use
+      uploader.use_file do
+        yield
+      end
+    end
+
+    it 'cannot migrate' do
+      when_file_is_in_use do
+        expect(uploader).not_to receive(:unsafe_migrate!)
+
+        expect { uploader.migrate!(described_class::Store::REMOTE) }.to raise_error('exclusive lease already taken')
+      end
+    end
+
+    it 'cannot use_file' do
+      when_file_is_in_use do
+        expect(uploader).not_to receive(:unsafe_use_file)
+
+        expect { uploader.use_file }.to raise_error('exclusive lease already taken')
+      end
+    end
+  end
+
   describe '#fog_credentials' do
     let(:connection) { Settingslogic.new("provider" => "AWS") }
 

@@ -288,6 +288,11 @@ production: &base
     geo_file_download_dispatch_worker:
       cron: "*/1 * * * *"
 
+    # GitLab Geo migrated local files clean up worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_migrated_local_files_clean_up_worker:
+      cron: "15 */6 * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com
@@ -610,7 +615,17 @@ production: &base
       # - { name: 'twitter',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      #
+      # - { name: 'jwt',
+      #     app_secret: 'YOUR_APP_SECRET',
+      #     args: {
+      #             algorithm: 'HS256',
+      #             uid_claim: 'email',
+      #             required_claims: ["name", "email"],
+      #             info_map: { name: "name", email: "email" },
+      #             auth_url: 'https://example.com/',
+      #             valid_within: nil,
+      #           }
+      #   }
       # - { name: 'saml',
       #     label: 'Our SAML Provider',
       #     groups_attribute: 'Groups',
@@ -891,6 +906,17 @@ test:
       - { name: 'twitter',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'jwt',
+          app_secret: 'YOUR_APP_SECRET',
+          args: {
+                  algorithm: 'HS256',
+                  uid_claim: 'email',
+                  required_claims: ["name", "email"],
+                  info_map: { name: "name", email: "email" },
+                  auth_url: 'https://example.com/',
+                  valid_within: nil,
+                }
+        }
       - { name: 'auth0',
           args: {
             client_id: 'YOUR_AUTH0_CLIENT_ID',

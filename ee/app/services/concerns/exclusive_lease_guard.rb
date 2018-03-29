@@ -47,6 +47,6 @@ module ExclusiveLeaseGuard
   end
 
   def log_error(message, extra_args = {})
-    logger.error(messages)
+    logger.error(message)
   end
 end

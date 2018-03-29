@@ -21,7 +21,9 @@ describe PreferencesHelper do
         ["Your Projects' Activity", 'project_activity'],
         ["Starred Projects' Activity", 'starred_project_activity'],
         ["Your Groups", 'groups'],
-        ["Your Todos", 'todos']
+        ["Your Todos", 'todos'],
+        ["Assigned Issues", 'issues'],
+        ["Assigned Merge Requests", 'merge_requests']
       ]
     end
   end

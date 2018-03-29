@@ -17,8 +17,8 @@ export default {
     />
     <div class="media-body space-children">
       <span class="bold">
-        The source branch HEAD has recently changed.
-        Please reload the page and review the changes before merging.
+        {{ s__(`mrWidget|The source branch HEAD has recently changed.
+Please reload the page and review the changes before merging`) }}
       </span>
     </div>
   </div>

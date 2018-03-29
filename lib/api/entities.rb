@@ -979,6 +979,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :maximum_timeout
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
@@ -1147,7 +1148,7 @@ module API
       end
 
       class RunnerInfo < Grape::Entity
-        expose :timeout
+        expose :metadata_timeout, as: :timeout
       end
 
       class Step < Grape::Entity

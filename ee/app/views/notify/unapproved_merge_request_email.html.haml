@@ -121,17 +121,18 @@
                                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                                             %a.muted{ href: user_url(@merge_request.author), style: "color:#333333;text-decoration:none;" }
                                               = @merge_request.author.name
-                                %tr
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Assignee
-                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
-                                    %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
-                                      %tbody
-                                        %tr
-                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                                            %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.assignee, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
-                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
-                                            %a.muted{ href: user_url(@merge_request.assignee), style: "color:#333333;text-decoration:none;" }
-                                              = @merge_request.assignee.name
+                                - if @merge_request.assignee
+                                  %tr
+                                    %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Assignee
+                                    %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+                                      %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
+                                        %tbody
+                                          %tr
+                                            %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
+                                              %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.assignee, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+                                            %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
+                                              %a.muted{ href: user_url(@merge_request.assignee), style: "color:#333333;text-decoration:none;" }
+                                                = @merge_request.assignee.name
 
         %tr.footer
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }

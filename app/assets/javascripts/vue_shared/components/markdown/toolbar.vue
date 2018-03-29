@@ -10,6 +10,11 @@
         required: false,
         default: '',
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     computed: {
       hasQuickActionsDocsPath() {
@@ -50,7 +55,10 @@
         are supported
       </template>
     </div>
-    <span class="uploading-container">
+    <span
+      v-if="canAttachFile"
+      class="uploading-container"
+    >
       <span class="uploading-progress-container hide">
         <i
           class="fa fa-file-image-o toolbar-button-icon"

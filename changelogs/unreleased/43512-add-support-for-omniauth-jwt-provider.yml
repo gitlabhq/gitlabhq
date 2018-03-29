@@ -1,0 +1,5 @@
+---
+title: Adds support for OmniAuth JWT provider
+merge_request: 17774
+author:
+type: added

@@ -14,12 +14,17 @@ module EE
         end
 
         should_remove_old_approvers = params.delete(:remove_old_approvers)
+        wiki_was_enabled = project.wiki_enabled?
 
         result = super
 
-        cleanup_approvers(project) if should_remove_old_approvers && result[:status] == :success
+        if result[:status] == :success
+          cleanup_approvers(project) if should_remove_old_approvers
 
-        log_audit_events if result[:status] == :success
+          log_audit_events
+
+          sync_wiki_on_enable if !wiki_was_enabled && project.wiki_enabled?
+        end
 
         result
       end
@@ -35,6 +40,10 @@ module EE
 
       def log_audit_events
         EE::Audit::ProjectChangesAuditor.new(current_user, project).execute
+      end
+
+      def sync_wiki_on_enable
+        ::Geo::RepositoryUpdatedService.new(project, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
       end
     end
   end

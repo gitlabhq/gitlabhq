@@ -32,6 +32,10 @@ module Geo
       end
     end
 
+    def count_registry_attachments
+      Geo::FileRegistry.attachments.count
+    end
+
     def find_synced_attachments
       if use_legacy_queries?
         legacy_find_synced_attachments
@@ -64,6 +68,17 @@ module Geo
           legacy_find_unsynced_attachments(except_file_ids: except_file_ids)
         else
           fdw_find_unsynced_attachments(except_file_ids: except_file_ids)
+        end
+
+      relation.limit(batch_size)
+    end
+
+    def find_migrated_local_attachments(batch_size:, except_file_ids: [])
+      relation =
+        if use_legacy_queries?
+          legacy_find_migrated_local_attachments(except_file_ids: except_file_ids)
+        else
+          fdw_find_migrated_local_attachments(except_file_ids: except_file_ids)
         end
 
       relation.limit(batch_size)
@@ -143,6 +158,13 @@ module Geo
       Geo::Fdw::Upload.table_name
     end
 
+    def fdw_find_migrated_local_attachments(except_file_ids:)
+      fdw_attachments.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_attachments_table}.id")
+        .with_files_stored_remotely
+        .merge(Geo::FileRegistry.attachments)
+        .where.not(id: except_file_ids)
+    end
+
     #
     # Legacy accessors (non FDW)
     #
@@ -168,6 +190,16 @@ module Geo
 
       legacy_left_outer_join_registry_ids(
         local_attachments,
+        registry_file_ids,
+        Upload
+      )
+    end
+
+    def legacy_find_migrated_local_attachments(except_file_ids:)
+      registry_file_ids = Geo::FileRegistry.attachments.pluck(:file_id) - except_file_ids
+
+      legacy_inner_join_registry_ids(
+        attachments.with_files_stored_remotely,
         registry_file_ids,
         Upload
       )

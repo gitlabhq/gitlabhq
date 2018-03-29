@@ -293,6 +293,8 @@ module EE
           number_to_percentage(node.wikis_synced_in_percentage, precision: 2)
         end
 
+        expose :repository_verification_enabled
+
         expose :repositories_verification_failed_count
         expose :repositories_verified_count
         expose :repositories_verified_in_percentage do |node|

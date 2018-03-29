@@ -1290,9 +1290,6 @@ In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and
 `autodevops-template.yml` will be overridden by the ones defined in
 `.gitlab-ci.yml`.
 
-NOTE: **Note:**
-Momentarily the [CI Lint](https://gitlab.com/ci/lint) does not support the `include` keyword.
-
 ## `variables`
 
 > Introduced in GitLab Runner v0.5.0.
@@ -1667,8 +1664,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
-Each instance of GitLab CI has an embedded debug tool called Lint.
-You can find the link under `/ci/lint` of your gitlab instance.
+Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/ci/lint`)
 
 ## Using reserved keywords
 

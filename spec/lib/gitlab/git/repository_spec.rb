@@ -604,17 +604,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'returning the right branches' do
       let(:head_id) { repository.rugged.head.target.oid }
       let(:new_branch) { head_id }
+      let(:utf8_branch) { 'branch-é' }
 
       before do
         repository.create_branch(new_branch, 'master')
+        repository.create_branch(utf8_branch, 'master')
       end
 
       after do
         repository.delete_branch(new_branch)
+        repository.delete_branch(utf8_branch)
       end
 
       it 'displays that branch' do
-        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch)
+        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
       end
     end
 
