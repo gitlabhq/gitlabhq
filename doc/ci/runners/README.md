@@ -231,6 +231,38 @@ To make a Runner pick tagged/untagged jobs:
 1. Check the **Run untagged jobs** option
 1. Click **Save changes** for the changes to take effect
 
+### Setting maximum job timeout for a Runner
+
+For each Runner you can specify a _maximum job timeout_. Such timeout,
+if smaller than [project defined timeout], will take the precedence. This
+feature can be used to prevent Shared Runner from being appropriated
+by a project by setting a ridiculous big timeout (e.g. one week).
+
+When not configured, Runner will not override project timeout.
+
+How this feature will work:
+
+**Example 1 - Runner timeout bigger than project timeout**
+
+1. You set the _maximum job timeout_ for a Runner to 24 hours
+1. You set the _CI/CD Timeout_ for a project to **2 hours**
+1. You start a job
+1. The job, if running longer, will be timeouted after **2 hours**
+
+**Example 2 - Runner timeout not configured**
+
+1. You remove the _maximum job timeout_ configuration from a Runner
+1. You set the _CI/CD Timeout_ for a project to **2 hours**
+1. You start a job
+1. The job, if running longer, will be timeouted after **2 hours**
+
+**Example 3 - Runner timeout smaller than project timeout**
+
+1. You set the _maximum job timeout_ for a Runner to **30 minutes**
+1. You set the _CI/CD Timeout_ for a project to 2 hours
+1. You start a job
+1. The job, if running longer, will be timeouted after **30 minutes**
+
 ### Be careful with sensitive information
 
 With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
@@ -258,12 +290,6 @@ project.
 Mentioned briefly earlier, but the following things of Runners can be exploited.
 We're always looking for contributions that can mitigate these
 [Security Considerations](https://docs.gitlab.com/runner/security/).
-
-[install]: http://docs.gitlab.com/runner/install/
-[fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
-[register]: http://docs.gitlab.com/runner/register/
-[protected branches]: ../../user/project/protected_branches.md
-[protected tags]: ../../user/project/protected_tags.md
 
 ## Determining the IP address of a Runner
 
@@ -297,3 +323,10 @@ You can find the IP address of a Runner for a specific project by:
 1. On the details page you should see a row for "IP Address"
 
 ![specific Runner IP address](img/specific_runner_ip_address.png)
+
+[install]: http://docs.gitlab.com/runner/install/
+[fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
+[register]: http://docs.gitlab.com/runner/register/
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md
+[project defined timeout]: ../../user/project/pipelines/settings.html#timeout
