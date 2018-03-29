@@ -45,7 +45,10 @@ export default {
   initMirrorPull() {
     const mirrorPull = new MirrorPull('.js-mirror-form');
 
-    if (mirrorPull) mirrorPull.init();
+    if (!mirrorPull) return;
+    
+    mirrorPull.init();
+    mirrorPull.handleRepositoryUrlInput();
   },
 
   registerUpdateListeners() {
