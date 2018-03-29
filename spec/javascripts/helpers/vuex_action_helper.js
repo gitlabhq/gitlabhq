@@ -12,9 +12,9 @@ export default (action, payload, state, expectedMutations, done) => {
     const mutation = expectedMutations[count];
 
     try {
-      expect(mutation.type).to.equal(type);
+      expect(mutation.type).toEqual(type);
       if (payload) {
-        expect(mutation.payload).to.deep.equal(payload);
+        expect(mutation.payload).toEqual(payload);
       }
     } catch (error) {
       done.fail(error);
@@ -31,7 +31,7 @@ export default (action, payload, state, expectedMutations, done) => {
 
   // check if no mutations should have been dispatched
   if (expectedMutations.length === 0) {
-    expect(count).to.equal(0);
+    expect(count).toEqual(0);
     done();
   }
 };
