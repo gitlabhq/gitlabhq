@@ -15,6 +15,7 @@ module Gitlab
             end
           end
 
+          BUFFER_SIZE = 128.kilobytes
           WriteError = Class.new(StandardError)
           FailedToGetChunkError = Class.new(StandardError)
 
@@ -134,6 +135,8 @@ module Gitlab
                 writable_space = BUFFER_SIZE - chunk_offset
                 writing_size = [writable_space, data.length].min
 
+                break unless writing_size > 0
+
                 if store.size > 0
                   written_size = store.append!(data.slice!(0...writing_size))
                 else
@@ -228,7 +231,11 @@ module Gitlab
           end
 
           def chunks_count
-            (size / BUFFER_SIZE) + 1
+            (size / BUFFER_SIZE) + (has_extra? ? 1 : 0)
+          end
+
+          def has_extra?
+            (size % BUFFER_SIZE) > 0
           end
 
           def last_chunk?
