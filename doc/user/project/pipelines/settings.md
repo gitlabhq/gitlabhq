@@ -29,7 +29,7 @@ if the job surpasses the threshold, it is marked as failed.
 
 ### Timeout overriding on Runner level
 
-> - [Introduced][ce-17221] in GitLab 10.6.
+> - [Introduced][ce-17221] in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden on Runner level][timeout overriding].
