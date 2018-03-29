@@ -60,6 +60,8 @@ Capybara::Screenshot.register_driver(:chrome) do |driver, path|
 end
 
 RSpec.configure do |config|
+  config.include CapybaraHelpers, type: :feature
+
   config.before(:context, :js) do
     next if $capybara_server_already_started
 

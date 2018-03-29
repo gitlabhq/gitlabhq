@@ -1,4 +1,4 @@
-require_relative '../support/test_env'
+require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
   # Project without repository
