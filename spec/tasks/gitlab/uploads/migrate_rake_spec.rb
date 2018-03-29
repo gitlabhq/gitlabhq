@@ -23,7 +23,8 @@ describe 'gitlab:uploads:migrate rake tasks' do
   shared_examples 'enqueue jobs in batch' do |batch:|
     it do
       expect(ObjectStorage::MigrateUploadsWorker)
-        .to receive(:enqueue!).exactly(batch).times
+        .to receive(:perform_async).exactly(batch).times
+              .and_return("A fake job.")
 
       run
     end
