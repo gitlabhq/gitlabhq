@@ -1545,8 +1545,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
-Each instance of GitLab CI has an embedded debug tool called Lint.
-You can find the link under `/ci/lint` of your gitlab instance.
+Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/ci/lint`)
 
 ## Using reserved keywords
 

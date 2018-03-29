@@ -32,5 +32,9 @@ FactoryBot.define do
     trait :disabled do
       enabled false
     end
+
+    trait :production_environment do
+      sequence(:environment_scope) { |n| "production#{n}/*" }
+    end
   end
 end

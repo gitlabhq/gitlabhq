@@ -10,7 +10,11 @@ class FileMover
 
   def execute
     move
-    uploader.record_upload if update_markdown
+
+    if update_markdown
+      uploader.record_upload
+      uploader.schedule_background_upload
+    end
   end
 
   private
@@ -24,11 +28,8 @@ class FileMover
     updated_text = model.read_attribute(update_field)
                         .gsub(temp_file_uploader.markdown_link, uploader.markdown_link)
     model.update_attribute(update_field, updated_text)
-
-    true
   rescue
     revert
-
     false
   end
 

@@ -1,4 +1,6 @@
 class Projects::JobsController < Projects::ApplicationController
+  include SendFileUpload
+
   before_action :build, except: [:index, :cancel_all]
 
   before_action :authorize_read_build!,
@@ -117,11 +119,17 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    build.trace.read do |stream|
-      if stream.file?
-        send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-      else
-        render_404
+    if trace_artifact_file
+      send_upload(trace_artifact_file,
+                  send_params: raw_send_params,
+                  redirect_params: raw_redirect_params)
+    else
+      build.trace.read do |stream|
+        if stream.file?
+          send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+        else
+          render_404
+        end
       end
     end
   end
@@ -136,9 +144,21 @@ class Projects::JobsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :erase_build, build)
   end
 
+  def raw_send_params
+    { type: 'text/plain; charset=utf-8', disposition: 'inline' }
+  end
+
+  def raw_redirect_params
+    { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
+  end
+
+  def trace_artifact_file
+    @trace_artifact_file ||= build.job_artifacts_trace&.file
+  end
+
   def build
     @build ||= project.builds.find(params[:id])
-      .present(current_user: current_user)
+                 .present(current_user: current_user)
   end
 
   def build_path(build)

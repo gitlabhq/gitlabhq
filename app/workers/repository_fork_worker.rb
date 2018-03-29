@@ -1,3 +1,4 @@
+# Gitaly issue: https://gitlab.com/gitlab-org/gitaly/issues/1110
 class RepositoryForkWorker
   include ApplicationWorker
   include Gitlab::ShellAdapter

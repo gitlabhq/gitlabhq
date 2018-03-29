@@ -410,7 +410,7 @@ module API
       )
     end
 
-    def present_file!(path, filename, content_type = 'application/octet-stream')
+    def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
       header['Content-Disposition'] = "attachment; filename=#{filename}"
       header['Content-Transfer-Encoding'] = 'binary'
@@ -426,13 +426,17 @@ module API
       end
     end
 
-    def present_artifacts!(artifacts_file)
-      return not_found! unless artifacts_file.exists?
+    def present_carrierwave_file!(file, supports_direct_download: true)
+      return not_found! unless file.exists?
 
-      if artifacts_file.file_storage?
-        present_file!(artifacts_file.path, artifacts_file.filename)
+      if file.file_storage?
+        present_disk_file!(file.path, file.filename)
+      elsif supports_direct_download && file.class.direct_download_enabled?
+        redirect(file.url)
       else
-        redirect_to(artifacts_file.url)
+        header(*Gitlab::Workhorse.send_url(file.url))
+        status :ok
+        body
       end
     end
 

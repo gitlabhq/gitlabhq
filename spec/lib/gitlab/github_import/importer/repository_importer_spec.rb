@@ -38,8 +38,12 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(project)
         .to receive(:wiki_repository_exists?)
         .and_return(false)
+      expect(Gitlab::GitalyClient::RemoteService)
+        .to receive(:exists?)
+        .with("foo.wiki.git")
+        .and_return(true)
 
-      expect(importer.import_wiki?).to eq(true)
+      expect(importer.import_wiki?).to be(true)
     end
 
     it 'returns false if the GitHub wiki is disabled' do
