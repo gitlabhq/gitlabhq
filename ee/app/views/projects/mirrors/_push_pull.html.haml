@@ -12,7 +12,7 @@
       = link_to 'Read more', help_page_path('workflow/repository_mirroring'), target: '_blank'
 
   .settings-content
-    = form_for @project, url: project_mirror_path(@project), html: { class: 'js-mirror-form' } do |f|
+    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: { project_mirror_endpoint: ssh_host_keys_project_mirror_path(@project, :json) } } do |f|
       .panel.panel-default
         .panel-heading
           %h3.panel-title Mirror a repository
