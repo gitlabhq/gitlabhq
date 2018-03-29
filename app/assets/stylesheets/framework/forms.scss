@@ -34,6 +34,10 @@ label {
   &.label-light {
     font-weight: $gl-font-weight-bold;
   }
+
+  &.label-light-but-actually-light-i-promise {
+    font-weight: 400;
+  }
 }
 
 .control-label {
