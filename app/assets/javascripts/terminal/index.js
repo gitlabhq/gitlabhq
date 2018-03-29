@@ -1,7 +1,6 @@
 import 'vendor/xterm/encoding-indexes';
 import 'vendor/xterm/encoding';
-import Terminal from 'xterm/xterm';
-import 'xterm/fit/fit';
+import Terminal from 'xterm';
 import './terminal';
 
 window.Terminal = Terminal;
