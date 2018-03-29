@@ -74,6 +74,13 @@ module Gitlab
               end
             end
 
+            def append!(data)
+              Gitlab::Redis::Cache.with do |redis|
+                redis.append(buffer_key, data)
+                data.length
+              end
+            end
+
             def truncate!(offset)
               Gitlab::Redis::Cache.with do |redis|
                 return unless redis.exists(buffer_key)

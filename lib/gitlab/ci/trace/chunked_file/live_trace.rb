@@ -7,7 +7,7 @@ module Gitlab
 
           class << self
             def open(job_id, mode)
-              stream = self.class.new(job_id, mode)
+              stream = self.new(job_id, mode)
 
               yield stream
             ensure

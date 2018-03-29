@@ -61,6 +61,10 @@ module Gitlab
               data.length
             end
 
+            def append!(data)
+              raise NotImplementedError
+            end
+
             def truncate!(offset)
               raise NotImplementedError
             end
