@@ -238,6 +238,11 @@ module Gitlab
     end
 
     def check_change_access!(changes)
+      # If there are worktrees with a HEAD pointing to a non-existent object,
+      # calls to `git rev-list --all` will fail in git 2.15+. This should also
+      # clear stale lock files.
+      project.repository.clean_stale_repository_files
+
       changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied

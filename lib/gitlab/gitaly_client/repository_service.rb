@@ -19,6 +19,11 @@ module Gitlab
         response.exists
       end
 
+      def cleanup
+        request = Gitaly::CleanupRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :cleanup, request)
+      end
+
       def garbage_collect(create_bitmap)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
         GitalyClient.call(@storage, :repository_service, :garbage_collect, request)
