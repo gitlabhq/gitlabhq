@@ -61,7 +61,7 @@ namespace :gitlab do
       puts "Repo base directory exists?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         if File.exist?(repo_base_path)
@@ -86,7 +86,7 @@ namespace :gitlab do
       puts "Repo storage directories are symlinks?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -110,7 +110,7 @@ namespace :gitlab do
       puts "Repo paths access is drwxrws---?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -140,7 +140,7 @@ namespace :gitlab do
       puts "Repo paths owned by #{gitlab_shell_ssh_user}:root, or #{gitlab_shell_ssh_user}:#{Gitlab.config.gitlab_shell.owner_group}?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)

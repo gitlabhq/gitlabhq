@@ -10,6 +10,7 @@ module Clusters
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner
     }.freeze
+    DEFAULT_ENVIRONMENT = '*'.freeze
 
     belongs_to :user
 
@@ -52,6 +53,7 @@ module Clusters
     scope :disabled, -> { where(enabled: false) }
     scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
     scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
+    scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
     def status_name
       if provider

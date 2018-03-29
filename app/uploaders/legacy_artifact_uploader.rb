@@ -1,5 +1,6 @@
 class LegacyArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
+  include ObjectStorage::Concern
 
   storage_options Gitlab.config.artifacts
 

@@ -1,0 +1,5 @@
+---
+title: Use porcelain commit lookup method on CI::CreatePipelineService
+merge_request: 17911
+author:
+type: fixed

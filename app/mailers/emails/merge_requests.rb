@@ -11,6 +11,14 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
+    def push_to_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil, new_commits: [], existing_commits: [])
+      setup_merge_request_mail(merge_request_id, recipient_id)
+      @new_commits = new_commits
+      @existing_commits = existing_commits
+
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+    end
+
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 

@@ -65,7 +65,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def merge_request
-    @merge_request ||= project.merge_requests.find_by(source_branch: 'master', target_branch: 'feature')
+    @merge_request ||= project.merge_requests.first
   end
 
   def user

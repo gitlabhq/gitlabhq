@@ -82,11 +82,8 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
-  has_many :keys, -> do
-    type = Key.arel_table[:type]
-    where(type.not_eq('DeployKey').or(type.eq(nil)))
-  end, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { where(type: ['Key', nil]) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :gpg_keys
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -187,7 +184,7 @@ class User < ActiveRecord::Base
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos, :issues, :merge_requests]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
@@ -623,9 +620,7 @@ class User < ActiveRecord::Base
   end
 
   def owned_projects
-    @owned_projects ||=
-      Project.where('namespace_id IN (?) OR namespace_id = ?',
-                    owned_groups.select(:id), namespace.id).joins(:namespace)
+    @owned_projects ||= Project.from("(#{owned_projects_union.to_sql}) AS projects")
   end
 
   # Returns projects which user can admin issues on (for example to move an issue to that project).
@@ -1195,6 +1190,15 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  def owned_projects_union
+    Gitlab::SQL::Union.new([
+      Project.where(namespace: namespace),
+      Project.joins(:project_authorizations)
+        .where("projects.namespace_id <> ?", namespace.id)
+        .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
+    ], remove_duplicates: false)
+  end
 
   def ci_projects_union
     scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }

@@ -1,0 +1,5 @@
+---
+title: Add 'Assigned Issues' and 'Assigned Merge Requests' as dashboard view choices for users
+merge_request: 17860
+author: Elias Werberich
+type: added

@@ -1,0 +1,5 @@
+---
+title: Fix data race between ObjectStorage background_upload and Pages publishing
+merge_request:
+author:
+type: fixed

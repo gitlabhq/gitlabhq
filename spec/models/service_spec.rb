@@ -58,6 +58,21 @@ describe Service do
   end
 
   describe "Template" do
+    describe '.build_from_template' do
+      context 'when template is invalid' do
+        it 'sets service template to inactive when template is invalid' do
+          project = create(:project)
+          template = JiraService.new(template: true, active: true)
+          template.save(validate: false)
+
+          service = described_class.build_from_template(project.id, template)
+
+          expect(service).to be_valid
+          expect(service.active).to be false
+        end
+      end
+    end
+
     describe "for pushover service" do
       let!(:service_template) do
         PushoverService.create(

@@ -8,10 +8,7 @@ describe Projects::RawController do
       let(:id) { 'master/README.md' }
 
       it 'delivers ASCII file' do
-        get(:show,
-            namespace_id: public_project.namespace.to_param,
-            project_id: public_project,
-            id: id)
+        get_show(public_project, id)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
@@ -25,10 +22,7 @@ describe Projects::RawController do
       let(:id) { 'master/files/images/6049019_460s.jpg' }
 
       it 'sets image content type header' do
-        get(:show,
-            namespace_id: public_project.namespace.to_param,
-            project_id: public_project,
-            id: id)
+        get_show(public_project, id)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.header['Content-Type']).to eq('image/jpeg')
@@ -54,21 +48,40 @@ describe Projects::RawController do
 
           it 'serves the file' do
             expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: 'lfs_object.iso', disposition: 'attachment')
-            get(:show,
-                namespace_id: public_project.namespace.to_param,
-                project_id: public_project,
-                id: id)
+            get_show(public_project, id)
 
             expect(response).to have_gitlab_http_status(200)
+          end
+
+          context 'and lfs uses object storage' do
+            before do
+              lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
+              lfs_object.save!
+              stub_lfs_object_storage
+              lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+            end
+
+            it 'responds with redirect to file' do
+              get_show(public_project, id)
+
+              expect(response).to have_gitlab_http_status(302)
+              expect(response.location).to include(lfs_object.reload.file.path)
+            end
+
+            it 'sets content disposition' do
+              get_show(public_project, id)
+
+              file_uri = URI.parse(response.location)
+              params = CGI.parse(file_uri.query)
+
+              expect(params["response-content-disposition"].first).to eq 'attachment;filename="lfs_object.iso"'
+            end
           end
         end
 
         context 'when project does not have access' do
           it 'does not serve the file' do
-            get(:show,
-                namespace_id: public_project.namespace.to_param,
-                project_id: public_project,
-                id: id)
+            get_show(public_project, id)
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -81,10 +94,7 @@ describe Projects::RawController do
         end
 
         it 'delivers ASCII file' do
-          get(:show,
-              namespace_id: public_project.namespace.to_param,
-              project_id: public_project,
-              id: id)
+          get_show(public_project, id)
 
           expect(response).to have_gitlab_http_status(200)
           expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
@@ -94,5 +104,11 @@ describe Projects::RawController do
         end
       end
     end
+  end
+
+  def get_show(project, id)
+    get(:show, namespace_id: project.namespace.to_param,
+               project_id: project,
+               id: id)
   end
 end

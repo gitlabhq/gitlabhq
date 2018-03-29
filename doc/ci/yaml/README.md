@@ -1132,7 +1132,7 @@ job1:
 
 ## `retry`
 
-> [Introduced][ce-3442] in GitLab 9.5.
+> [Introduced][ce-12909] in GitLab 9.5.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
@@ -1526,8 +1526,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
-Each instance of GitLab CI has an embedded debug tool called Lint.
-You can find the link under `/ci/lint` of your gitlab instance.
+Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/ci/lint`)
 
 ## Using reserved keywords
 
@@ -1547,5 +1548,5 @@ CI with various languages.
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
-[ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
+[ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md

@@ -65,6 +65,10 @@ export default class Editor {
         (this.instance = this.monaco.editor.createDiffEditor(domElement, {
           ...defaultEditorOptions,
           readOnly: true,
+          quickSuggestions: false,
+          occurrencesHighlight: false,
+          renderLineHighlight: 'none',
+          hideCursorInOverviewRuler: true,
         })),
       );
 

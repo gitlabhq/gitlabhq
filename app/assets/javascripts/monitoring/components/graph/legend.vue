@@ -1,127 +1,119 @@
 <script>
-  import { formatRelevantDigits } from '../../../lib/utils/number_utils';
+import { formatRelevantDigits } from '../../../lib/utils/number_utils';
 
-  export default {
-    props: {
-      graphWidth: {
-        type: Number,
-        required: true,
-      },
-      graphHeight: {
-        type: Number,
-        required: true,
-      },
-      margin: {
-        type: Object,
-        required: true,
-      },
-      measurements: {
-        type: Object,
-        required: true,
-      },
-      legendTitle: {
-        type: String,
-        required: true,
-      },
-      yAxisLabel: {
-        type: String,
-        required: true,
-      },
-      timeSeries: {
-        type: Array,
-        required: true,
-      },
-      unitOfDisplay: {
-        type: String,
-        required: true,
-      },
-      currentDataIndex: {
-        type: Number,
-        required: true,
-      },
-      showLegendGroup: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+export default {
+  props: {
+    graphWidth: {
+      type: Number,
+      required: true,
     },
-    data() {
-      return {
-        yLabelWidth: 0,
-        yLabelHeight: 0,
-        seriesXPosition: 0,
-        metricUsageXPosition: 0,
-      };
+    graphHeight: {
+      type: Number,
+      required: true,
     },
-    computed: {
-      textTransform() {
-        const yCoordinate = (((this.graphHeight - this.margin.top)
-                          + this.measurements.axisLabelLineOffset) / 2) || 0;
-
-        return `translate(15, ${yCoordinate}) rotate(-90)`;
-      },
-
-      rectTransform() {
-        const yCoordinate = (((this.graphHeight - this.margin.top)
-                            + this.measurements.axisLabelLineOffset) / 2)
-                            + (this.yLabelWidth / 2) || 0;
-
-        return `translate(0, ${yCoordinate}) rotate(-90)`;
-      },
-
-      xPosition() {
-        return (((this.graphWidth + this.measurements.axisLabelLineOffset) / 2)
-               - this.margin.right) || 0;
-      },
-
-      yPosition() {
-        return ((this.graphHeight - this.margin.top) + this.measurements.axisLabelLineOffset) || 0;
-      },
-
+    margin: {
+      type: Object,
+      required: true,
     },
-    mounted() {
-      this.$nextTick(() => {
-        const bbox = this.$refs.ylabel.getBBox();
-        this.metricUsageXPosition = 0;
-        this.seriesXPosition = 0;
-        if (this.$refs.legendTitleSvg != null) {
-          this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
-        }
-        if (this.$refs.seriesTitleSvg != null) {
-          this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
-        }
-        this.yLabelWidth = bbox.width + 10; // Added some padding
-        this.yLabelHeight = bbox.height + 5;
-      });
+    measurements: {
+      type: Object,
+      required: true,
     },
-    methods: {
-      translateLegendGroup(index) {
-        return `translate(0, ${12 * (index)})`;
-      },
-
-      formatMetricUsage(series) {
-        const value = series.values[this.currentDataIndex] &&
-          series.values[this.currentDataIndex].value;
-        if (isNaN(value)) {
-          return '-';
-        }
-        return `${formatRelevantDigits(value)} ${this.unitOfDisplay}`;
-      },
-
-      createSeriesString(index, series) {
-        if (series.metricTag) {
-          return `${series.metricTag} ${this.formatMetricUsage(series)}`;
-        }
-        return `${this.legendTitle} series ${index + 1} ${this.formatMetricUsage(series)}`;
-      },
-
-      strokeDashArray(type) {
-        if (type === 'dashed') return '6, 3';
-        if (type === 'dotted') return '3, 3';
-        return null;
-      },
+    legendTitle: {
+      type: String,
+      required: true,
     },
-  };
+    yAxisLabel: {
+      type: String,
+      required: true,
+    },
+    timeSeries: {
+      type: Array,
+      required: true,
+    },
+    unitOfDisplay: {
+      type: String,
+      required: true,
+    },
+    currentDataIndex: {
+      type: Number,
+      required: true,
+    },
+    showLegendGroup: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      yLabelWidth: 0,
+      yLabelHeight: 0,
+      seriesXPosition: 0,
+      metricUsageXPosition: 0,
+    };
+  },
+  computed: {
+    textTransform() {
+      const yCoordinate =
+        (this.graphHeight - this.margin.top + this.measurements.axisLabelLineOffset) / 2 || 0;
+
+      return `translate(15, ${yCoordinate}) rotate(-90)`;
+    },
+    rectTransform() {
+      const yCoordinate =
+        (this.graphHeight - this.margin.top + this.measurements.axisLabelLineOffset) / 2 +
+          this.yLabelWidth / 2 || 0;
+
+      return `translate(0, ${yCoordinate}) rotate(-90)`;
+    },
+    xPosition() {
+      return (this.graphWidth + this.measurements.axisLabelLineOffset) / 2 - this.margin.right || 0;
+    },
+    yPosition() {
+      return this.graphHeight - this.margin.top + this.measurements.axisLabelLineOffset || 0;
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      const bbox = this.$refs.ylabel.getBBox();
+      this.metricUsageXPosition = 0;
+      this.seriesXPosition = 0;
+      if (this.$refs.legendTitleSvg != null) {
+        this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
+      }
+      if (this.$refs.seriesTitleSvg != null) {
+        this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
+      }
+      this.yLabelWidth = bbox.width + 10; // Added some padding
+      this.yLabelHeight = bbox.height + 5;
+    });
+  },
+  methods: {
+    translateLegendGroup(index) {
+      return `translate(0, ${12 * index})`;
+    },
+    formatMetricUsage(series) {
+      const value =
+        series.values[this.currentDataIndex] && series.values[this.currentDataIndex].value;
+      if (isNaN(value)) {
+        return '-';
+      }
+      return `${formatRelevantDigits(value)} ${this.unitOfDisplay}`;
+    },
+    createSeriesString(index, series) {
+      if (series.metricTag) {
+        return `${series.metricTag} ${this.formatMetricUsage(series)}`;
+      }
+      return `${this.legendTitle} series ${index + 1} ${this.formatMetricUsage(series)}`;
+    },
+    strokeDashArray(type) {
+      if (type === 'dashed') return '6, 3';
+      if (type === 'dotted') return '3, 3';
+      return null;
+    },
+  },
+};
 </script>
 <template>
   <g class="axis-label-container">

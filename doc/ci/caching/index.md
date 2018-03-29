@@ -454,17 +454,19 @@ next run of the pipeline, the cache will be stored in a different location.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41249) in GitLab 10.4.
 
 If you want to avoid editing `.gitlab-ci.yml`, you can easily clear the cache
-via GitLab's UI. This will have an impact on all caches of your project as
-name of the cache directory will be renamed by appending an integer to it
-(`-1`, `-2`, etc.):
+via GitLab's UI:
 
-1. Navigate to your project's **CI/CD > Pipelines** page.
-1. Click on the **Clear Runner caches** to clean up the cache.
-1. On the next push, your CI/CD job will use a new cache.
+1. Navigate to your project's **CI/CD > Pipelines** page
+1. Click on the **Clear Runner caches** button to clean up the cache
+
+    ![Clear Runners cache](img/clear_runners_cache.png)
+
+1. On the next push, your CI/CD job will use a new cache
 
 Behind the scenes, this works by increasing a counter in the database, and the
-value of that counter is used to create the key for the cache. After a push, a
-new key is generated and the old cache is not valid anymore.
+value of that counter is used to create the key for the cache by appending an
+integer to it: `-1`, `-2`, etc. After a push, a new key is generated and the
+old cache is not valid anymore.
 
 ## Cache vs artifacts
 
