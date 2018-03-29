@@ -474,16 +474,16 @@ Each provided variables expression is going to be evaluated before creating
 a pipeline.
 
 If any of the conditions in `variables` evaluates to truth when using `only`,
-new build is going to be created. If any of the expressions evaluates to truth
-when `except` is being used, a build is not going to be created.
+a new job is going to be created. If any of the expressions evaluates to truth
+when `except` is being used, a job is not going to be created.
 
-This follows usual rules for [`only` / `except` policies][build policies].
+This follows usual rules for `only` / `except` policies.
 
 ### Supported syntax
 
 Below you can find currently supported syntax reference:
 
-1. Equality matching using a string.
+1. Equality matching using a string
 
     Example: `$VARIABLE == "some value"`
 
@@ -492,18 +492,23 @@ Below you can find currently supported syntax reference:
     value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
     are supported. `"some value" == $VARIABLE` is correct too.
 
-1. Checking for an undefined value.
+1. Checking for an undefined value
 
     It sometimes happens that you want to check whether variable is defined or
     not. To do that, you can compare variable to `null` value, like
     `$VARIABLE == null`. This expression is going to evaluate to truth if
     variable is not set.
 
-1. Comparing two variables.
+1. Checking for an empty variable
+
+    If you want to check whether a variable is defined, but is empty, you can
+    simply compare it against an empty string, like `$VAR == ''`.
+
+1. Comparing two variables
 
     It is possible to compare two variables. `$VARIABLE_1 == $VARIABLE_2`.
 
-1. Variable presence check.
+1. Variable presence check
 
     If you only want to create a job when there is some variable present,
     which means that it is defined and non-empty, you can simply use
@@ -520,4 +525,3 @@ Below you can find currently supported syntax reference:
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
-[build policies]: ../yaml/#only-and-except-complex
