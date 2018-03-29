@@ -85,24 +85,9 @@ import CardBoard from 'cardBoard.vue'
 // good
 <component my-prop="prop" />
 ```
-<a name="multiple-attr"></a><a name="2.3"></a>
-- [2.3](#multiple-attr) **Multiple attributes** If an element contains more than one attribute, each attribute should be listed on a new line.
 
-```
-// bad
-<button type="btn" class="btn">
-  Click me
-</button>
-
-// good
-<button
-  type="btn"
-  class="btn">
-  Click me
-</button>
-```
-<a name="single-attr"></a><a name="2.4"></a>
-- [2.4](#single-attr) **Single attributes** If an element has one attribute, the contents (if any), should be on a new line.
+<a name="single-attr"></a><a name="2.3"></a>
+- [2.3](#single-attr) **Single attributes** If an element has one attribute, the contents (if any), should be on a new line.
 
 ```
 // bad
@@ -114,8 +99,8 @@ import CardBoard from 'cardBoard.vue'
 </a>
 ```
 
-<a name="template-attr"></a><a name="2.5"></a>
-- [2.5](#template-attr) **Attribute values inside template** Use double quotes for attribute values inside templates.
+<a name="template-attr"></a><a name="2.4"></a>
+- [2.4](#template-attr) **Attribute values inside template** Use double quotes for attribute values inside templates.
 
 ```
 // bad
@@ -125,8 +110,8 @@ import CardBoard from 'cardBoard.vue'
 <img src="#" />
 ```
 
-<a name="shorthand"></a><a name="2.6"></a>
-- [2.6](#shorthand) **Use shorthand** Use the shorthand syntax whenever it is available
+<a name="shorthand"></a><a name="2.5"></a>
+- [2.5](#shorthand) **Use shorthand** Use the shorthand syntax whenever it is available
 
 ```
 // bad
@@ -136,8 +121,8 @@ import CardBoard from 'cardBoard.vue'
 <component @click="eventHandler"/>
 ```
 
-<a name="self-closing"></a><a name="2.7"></a>
-- [2.7](#self-closing) **Use self closing tags** If a component or element is self closing, use the self closing tag.
+<a name="self-closing"></a><a name="2.6"></a>
+- [2.6](#self-closing) **Use self closing tags** If a component or element is self closing, use the self closing tag.
 
 ```
 // bad
