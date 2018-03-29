@@ -6,16 +6,19 @@ module ChunkedIOHelpers
   end
 
   def sample_trace_raw
-    @sample_trace_raw ||= File.read(expand_fixture_path('trace/sample_trace'))
+    if chunk_store == Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis
+      File.read(expand_fixture_path('trace/sample_trace'))
+    else
+      '01234567' * 32
+    end
   end
 
   def sample_trace_size
     sample_trace_raw.length
   end
 
-  def stub_chunk_store_redis_get_failed
-    allow_any_instance_of(Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis)
-      .to receive(:get).and_return(nil)
+  def stub_chunk_store_get_failed
+    allow_any_instance_of(chunk_store).to receive(:get).and_return(nil)
   end
 
   def set_smaller_buffer_size_than(file_size)
