@@ -4,18 +4,18 @@
 - ssh_public_key_present = import_data.ssh_public_key.present?
 
 .form-group
-  = f.label :auth_method, 'Authentication method', class: 'label-light'
+  = f.label :auth_method, 'Authentication method', class: 'label-light-but-actually-light-i-promise'
   = f.select :auth_method,
-      options_for_select([['Password authentication', 'password'], ['SSH public key authentication', 'ssh_public_key']], import_data.auth_method),
+      options_for_select([['Password', 'password'], ['SSH public key', 'ssh_public_key']], import_data.auth_method),
       {}, { class: "form-control js-pull-mirror-auth-type #{'hidden' unless import_data.ssh_import?}" }
 
 .form-group
-  .account-well.changing-auth-method.hidden.js-well-changing-auth
+  .changing-auth-method.hidden.js-well-changing-auth
     = icon('spinner spin lg')
-  .account-well.well-password-auth.hidden.js-well-password-auth
-    = f.label :password, "Password", class: "label-light"
+  .well-password-auth.hidden.js-well-password-auth
+    = f.label :password, "Password", class: "label-light-but-actually-light-i-promise"
     = f.password_field :password, value: import_data.password, class: 'form-control'
-  .account-well.well-ssh-auth.hidden.js-well-ssh-auth
+  .well-ssh-auth.hidden.js-well-ssh-auth
     %p.js-ssh-public-key-present{ class: ('hidden' unless ssh_public_key_present) }
       Here is the public SSH key that needs to be added to the remote
       server. For more information, please refer to the documentation.

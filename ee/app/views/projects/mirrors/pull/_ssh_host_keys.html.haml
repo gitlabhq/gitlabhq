@@ -3,11 +3,11 @@
 - verified_at = import_data.ssh_known_hosts_verified_at
 
 .form-group.js-ssh-host-keys-section{ class: ('hidden' unless import_data.ssh_import?) }
-  %button.btn.btn-inverted.btn-success.append-bottom-15.js-detect-host-keys{ type: 'button' }
+  %button.btn.btn-inverted.btn-success.inline.js-detect-host-keys{ type: 'button' }
     = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
     Detect host keys
   .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('hidden' unless import_data.ssh_import?) }
-    %label.label-light
+    %label.label-light-but-actually-light-i-promise
       Fingerprints
     .fingerprints-list.js-fingerprints-list
       - import_data.ssh_known_hosts_fingerprints.each do |fp|
@@ -22,13 +22,12 @@
           a deleted user
         #{time_ago_in_words(verified_at)} ago
 
-  .js-ssh-hosts-advanced
-    %button.btn.btn-sm.btn-default.prepend-top-10.append-bottom-15.btn-show-advanced.show-advanced{ type: 'button' }
+  .js-ssh-hosts-advanced.inline
+    %button.btn.btn-default.btn-show-advanced.show-advanced{ type: 'button' }
       %span.label-show
-        Show advanced
+        Input host keys manually
       %span.label-hide
-        Hide advanced
-      = icon('chevron')
-    .js-ssh-known-hosts.hidden
-      = f.label :ssh_known_hosts, 'SSH host keys', class: 'label-light'
-      = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'
+        Hide host keys manual input
+  .js-ssh-known-hosts.hidden.prepend-top-default
+    = f.label :ssh_known_hosts, 'SSH host keys', class: 'label-light-but-actually-light-i-promise'
+    = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'

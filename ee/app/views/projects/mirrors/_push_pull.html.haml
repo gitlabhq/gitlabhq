@@ -20,13 +20,13 @@
           %div= form_errors(@project)
 
           .form-group.has-feedback
-            = label_tag :url, 'Git repository URL', class: 'label-light'
+            = label_tag :url, 'Git repository URL', class: 'label-light-but-actually-light-i-promise'
             = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: 'Input your repository URL'
 
           = render 'projects/mirrors/instructions'
 
           .form-group
-            = label_tag :mirror_direction, 'Mirror direction', class: 'label-light'
+            = label_tag :mirror_direction, 'Mirror direction', class: 'label-light-but-actually-light-i-promise'
             = select_tag :mirror_direction, options_for_select([['Push', 'push'], ['Pull', 'pull']]), class: 'form-control js-mirror-direction'
 
           .js-form-insertion-point
@@ -47,7 +47,7 @@
               = render partial: 'projects/mirrors/pull/authentication_method', locals: { f: import_form }
 
             .form-group
-              = f.label :mirror_user_id, 'Mirror user', class: 'label-light'
+              = f.label :mirror_user_id, 'Mirror user', class: 'label-light-but-actually-light-i-promise'
               = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg', required: true )
               .help-block
                 This user will be the author of all events in the activity feed that are the result of an update,
@@ -57,7 +57,7 @@
             .form-group
               = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left', checked: false
               .prepend-left-20
-                = f.label :mirror_overwrites_diverged_branches, 'Overwrite diverged branches', class: 'label-light'
+                = f.label :mirror_overwrites_diverged_branches, 'Overwrite diverged branches', class: 'label-light-but-actually-light-i-promise'
                 .help-block
                   If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart,
                   to prevent local data loss. If the default branch (#{@project.default_branch}) has diverged and cannot be updated,
@@ -69,7 +69,7 @@
           .form-group
             = check_box_tag :only_protected_branches, '1', false, class: 'pull-left js-mirror-protected'
             .prepend-left-20
-              = label_tag :only_protected_branches, 'Only mirror protected branches', class: 'label-light'
+              = label_tag :only_protected_branches, 'Only mirror protected branches', class: 'label-light-but-actually-light-i-promise'
               = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
