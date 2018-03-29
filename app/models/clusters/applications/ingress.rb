@@ -11,8 +11,6 @@ module Clusters
       default_value_for :ingress_type, :nginx
       default_value_for :version, :nginx
 
-      scope :installed, -> { where(status: ::Clusters::Applications::Ingress.state_machines[:status].states[:installed].value) }
-
       enum ingress_type: {
         nginx: 1
       }
