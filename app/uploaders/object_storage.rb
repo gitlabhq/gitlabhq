@@ -228,16 +228,9 @@ module ObjectStorage
       raise 'Failed to update object store' unless updated
     end
 
-    def use_file
-      if file_storage?
-        return yield path
-      end
-
-      begin
-        cache_stored_file!
-        yield cache_path
-      ensure
-        cache_storage.delete_dir!(cache_path(nil))
+    def use_file(&blk)
+      with_exclusive_lease do
+        unsafe_use_file(&blk)
       end
     end
 
@@ -247,12 +240,9 @@ module ObjectStorage
     #   new_store: Enum (Store::LOCAL, Store::REMOTE)
     #
     def migrate!(new_store)
-      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
-      raise 'Already running' unless uuid
-
-      unsafe_migrate!(new_store)
-    ensure
-      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+      with_exclusive_lease do
+        unsafe_migrate!(new_store)
+      end
     end
 
     def schedule_background_upload(*args)
@@ -384,6 +374,15 @@ module ObjectStorage
       "object_storage_migrate:#{model.class}:#{model.id}"
     end
 
+    def with_exclusive_lease
+      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+      raise 'exclusive lease already taken' unless uuid
+
+      yield uuid
+    ensure
+      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+    end
+
     #
     # Move the file to another store
     #
@@ -416,6 +415,20 @@ module ObjectStorage
       self.object_store = from_object_store
       self.file = file_to_delete
       raise e
+    end
+  end
+
+  def unsafe_use_file
+    if file_storage?
+      return yield path
+    end
+
+    begin
+      cache_stored_file!
+      yield cache_path
+    ensure
+      FileUtils.rm_f(cache_path)
+      cache_storage.delete_dir!(cache_path(nil))
     end
   end
 end
