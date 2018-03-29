@@ -7,7 +7,7 @@ import CEProtectedBranchCreate from '~/protected_branches/protected_branch_creat
 import CEProtectedBranchEditList from '~/protected_branches/protected_branch_edit_list';
 import CEProtectedTagCreate from '~/protected_tags/protected_tag_create';
 import CEProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
-import MirrorPull from 'ee/mirrors/mirror_pull';
+import PushPull from './push_pull';
 
 import ProtectedBranchCreate from 'ee/protected_branches/protected_branch_create';
 import ProtectedBranchEditList from 'ee/protected_branches/protected_branch_edit_list';
@@ -35,9 +35,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new CEProtectedTagEditList();
   }
 
-  const mirrorPull = new MirrorPull('.js-project-mirror-push-form');
-
-  if (mirrorPull) {
-    mirrorPull.init();
-  }
+  PushPull.init();
 });
