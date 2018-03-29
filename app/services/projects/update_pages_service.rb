@@ -74,22 +74,10 @@ module Projects
     end
 
     def extract_archive!(temp_path)
-      if artifacts_filename.ends_with?('.tar.gz') || artifacts_filename.ends_with?('.tgz')
-        extract_tar_archive!(temp_path)
-      elsif artifacts_filename.ends_with?('.zip')
+      if artifacts_filename.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
         raise InvaildStateError, 'unsupported artifacts format'
-      end
-    end
-
-    def extract_tar_archive!(temp_path)
-      build.artifacts_file.use_file do |artifacts_path|
-        results = Open3.pipeline(%W(gunzip -c #{artifacts_path}),
-                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                                %W(tar -x -C #{temp_path} #{SITE_PATH}),
-                                err: '/dev/null')
-        raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
       end
     end
 
