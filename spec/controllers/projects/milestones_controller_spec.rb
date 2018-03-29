@@ -98,7 +98,7 @@ describe Projects::MilestonesController do
       it 'shows group milestone' do
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        expect(flash[:notice]).to eq("#{milestone.title} promoted to group milestone")
+        expect(flash[:notice]).to eq("#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\">group milestone</a>.")
         expect(response).to redirect_to(project_milestones_path(project))
       end
     end
