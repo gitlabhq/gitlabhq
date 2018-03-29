@@ -86,21 +86,8 @@ import CardBoard from 'cardBoard.vue'
 <component my-prop="prop" />
 ```
 
-<a name="single-attr"></a><a name="2.3"></a>
-- [2.3](#single-attr) **Single attributes** If an element has one attribute, the contents (if any), should be on a new line.
-
-```
-// bad
-<a href="#">Link</a>
-
-// good
-<a href="#">
-  Link
-</a>
-```
-
-<a name="template-attr"></a><a name="2.4"></a>
-- [2.4](#template-attr) **Attribute values inside template** Use double quotes for attribute values inside templates.
+<a name="template-attr"></a><a name="2.3"></a>
+- [2.3](#template-attr) **Attribute values inside template** Use double quotes for attribute values inside templates.
 
 ```
 // bad
@@ -110,8 +97,8 @@ import CardBoard from 'cardBoard.vue'
 <img src="#" />
 ```
 
-<a name="shorthand"></a><a name="2.5"></a>
-- [2.5](#shorthand) **Use shorthand** Use the shorthand syntax whenever it is available
+<a name="shorthand"></a><a name="2.4"></a>
+- [2.4](#shorthand) **Use shorthand** Use the shorthand syntax whenever it is available
 
 ```
 // bad
@@ -121,8 +108,8 @@ import CardBoard from 'cardBoard.vue'
 <component @click="eventHandler"/>
 ```
 
-<a name="self-closing"></a><a name="2.6"></a>
-- [2.6](#self-closing) **Use self closing tags** If a component or element is self closing, use the self closing tag.
+<a name="self-closing"></a><a name="2.5"></a>
+- [2.5](#self-closing) **Use self closing tags** If a component or element is self closing, use the self closing tag.
 
 ```
 // bad
