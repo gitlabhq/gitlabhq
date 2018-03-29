@@ -77,6 +77,22 @@ You can [search and filter the results](../../search/index.md#issues-and-merge-r
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
 
+## Removing the source branch
+
+When creating a merge request, select the "Remove source branch when merge
+request accepted" option and the source branch will be removed when the merge
+request is merged.
+
+This option is also visible in an existing merge request next to the merge
+request button and can be selected/deselected before merging. It's only visible
+to users with [Master permissions](../../permissions.md) in the source project.
+
+If the user viewing the merge request does not have the correct permissions to
+remove the source branch and the source branch is set for removal, the merge
+request widget will show the "Removes source branch" text.
+
+![Remove source branch status](img/remove_source_branch_status.png)
+
 ## Authorization for merge requests
 
 There are two main ways to have a merge request flow with GitLab:

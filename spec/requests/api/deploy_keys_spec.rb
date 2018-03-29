@@ -91,6 +91,10 @@ describe API::DeployKeys do
       expect do
         post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
       end.to change { project.deploy_keys.count }.by(1)
+
+      new_key = project.deploy_keys.last
+      expect(new_key.key).to eq(key_attrs[:key])
+      expect(new_key.user).to eq(admin)
     end
 
     it 'returns an existing ssh key when attempting to add a duplicate' do

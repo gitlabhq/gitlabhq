@@ -22,5 +22,16 @@ describe ProtectedBranches::UpdateService do
         expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
+
+    context 'when a policy restricts rule creation' do
+      before do
+        policy = instance_double(ProtectedBranchPolicy, can?: false)
+        expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
+      end
+
+      it "prevents creation of the protected branch rule" do
+        expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
   end
 end

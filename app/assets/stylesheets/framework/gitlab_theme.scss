@@ -2,7 +2,15 @@
  * Styles the GitLab application with a specific color theme
  */
 
-@mixin gitlab-theme($color-100, $color-200, $color-500, $color-700, $color-800, $color-900, $color-alternate) {
+@mixin gitlab-theme(
+  $color-100,
+  $color-200,
+  $color-500,
+  $color-700,
+  $color-800,
+  $color-900,
+  $color-alternate
+) {
   // Header
 
   .navbar-gitlab {
@@ -23,7 +31,7 @@
       > li {
         > a:hover,
         > a:focus {
-          background-color: rgba($color-200, .2);
+          background-color: rgba($color-200, 0.2);
         }
 
         &.active > a,
@@ -33,7 +41,7 @@
         }
 
         &.line-separator {
-          border-left: 1px solid rgba($color-200, .2);
+          border-left: 1px solid rgba($color-200, 0.2);
         }
       }
     }
@@ -56,7 +64,7 @@
           &:hover,
           &:focus {
             @media (min-width: $screen-sm-min) {
-              background-color: rgba($color-200, .2);
+              background-color: rgba($color-200, 0.2);
             }
 
             svg {
@@ -91,34 +99,34 @@
     > a {
       &:hover,
       &:focus {
-        background-color: rgba($color-200, .2);
+        background-color: rgba($color-200, 0.2);
       }
     }
   }
 
   .search {
     form {
-      background-color: rgba($color-200, .2);
+      background-color: rgba($color-200, 0.2);
 
       &:hover {
-        background-color: rgba($color-200, .3);
+        background-color: rgba($color-200, 0.3);
       }
     }
 
     .location-badge {
       color: $color-100;
-      background-color: rgba($color-200, .1);
+      background-color: rgba($color-200, 0.1);
       border-right: 1px solid $color-800;
     }
 
     .search-input::placeholder {
-      color: rgba($color-200, .8);
+      color: rgba($color-200, 0.8);
     }
 
     .search-input-wrap {
       .search-icon,
       .clear-icon {
-        fill: rgba($color-200, .8);
+        fill: rgba($color-200, 0.8);
       }
     }
 
@@ -133,7 +141,7 @@
 
       .search-input-wrap {
         .search-icon {
-          fill: rgba($color-200, .8);
+          fill: rgba($color-200, 0.8);
         }
       }
     }
@@ -143,7 +151,6 @@
     background-color: $color-100;
     color: $color-900;
   }
-
 
   // Sidebar
   .nav-sidebar li.active {
@@ -169,28 +176,94 @@
       font-weight: $gl-font-weight-bold;
     }
   }
-}
 
+  // Web IDE
+  .ide-sidebar-link {
+    color: $color-200;
+    background-color: $color-700;
+
+    &:hover,
+    &:focus {
+      background-color: $color-500;
+    }
+
+    &:active {
+      background: $color-800;
+    }
+  }
+
+  .branch-container {
+    border-left-color: $color-700;
+  }
+
+  .branch-header-title {
+    color: $color-700;
+  }
+
+  .ide-file-list .file.file-active {
+    color: $color-700;
+  }
+}
 
 body {
   &.ui_indigo {
-    @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900, $white-light);
+    @include gitlab-theme(
+      $indigo-100,
+      $indigo-200,
+      $indigo-500,
+      $indigo-700,
+      $indigo-800,
+      $indigo-900,
+      $white-light
+    );
   }
 
   &.ui_dark {
-    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900, $white-light);
+    @include gitlab-theme(
+      $theme-gray-100,
+      $theme-gray-200,
+      $theme-gray-500,
+      $theme-gray-700,
+      $theme-gray-800,
+      $theme-gray-900,
+      $white-light
+    );
   }
 
   &.ui_blue {
-    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900, $white-light);
+    @include gitlab-theme(
+      $theme-blue-100,
+      $theme-blue-200,
+      $theme-blue-500,
+      $theme-blue-700,
+      $theme-blue-800,
+      $theme-blue-900,
+      $white-light
+    );
   }
 
   &.ui_green {
-    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900, $white-light);
+    @include gitlab-theme(
+      $theme-green-100,
+      $theme-green-200,
+      $theme-green-500,
+      $theme-green-700,
+      $theme-green-800,
+      $theme-green-900,
+      $white-light
+    );
   }
 
   &.ui_light {
-    @include gitlab-theme($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-700, $theme-gray-700, $theme-gray-100, $theme-gray-700);
+    @include gitlab-theme(
+      $theme-gray-900,
+      $theme-gray-700,
+      $theme-gray-800,
+      $theme-gray-700,
+      $theme-gray-700,
+      $theme-gray-100,
+      $theme-gray-700
+    );
 
     .navbar-gitlab {
       background-color: $theme-gray-100;
@@ -269,6 +342,10 @@ body {
 
     .sidebar-top-level-items > li.active .badge {
       color: $theme-gray-900;
+    }
+
+    .ide-sidebar-link {
+      color: $white-light;
     }
   }
 }
