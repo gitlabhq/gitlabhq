@@ -28,10 +28,9 @@ A Todo appears in your Todos dashboard when:
 - an issue or merge request is assigned to you,
 - you are `@mentioned` in an issue or merge request, be it the description of
   the issue/merge request or in a comment,
+- you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
-
->**Note:** Commenting on a commit will _not_ trigger a Todo.
 
 ### Directly addressed Todos
 
