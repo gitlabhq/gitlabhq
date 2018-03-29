@@ -1,4 +1,6 @@
-require 'rails_helper'
+require 'fast_spec_helper'
+
+require_dependency 'gitlab'
 
 describe Gitlab do
   describe '.com?' do
