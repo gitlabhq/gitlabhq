@@ -11,13 +11,13 @@ import { n__, s__, sprintf } from '~/locale';
  * @param {String} path
  */
 export const parseSastIssues = (issues = [], path = '') =>
-  issues.map(issue =>
-    Object.assign({}, issue, {
-      name: issue.message,
-      path: issue.file,
-      urlPath: issue.line ? `${path}/${issue.file}#L${issue.line}` : `${path}/${issue.file}`,
-    }),
-  );
+  issues.map(issue => ({
+    ...issue,
+    name: issue.message,
+    path: issue.file,
+    urlPath: issue.line ? `${path}/${issue.file}#L${issue.line}` : `${path}/${issue.file}`,
+  }),
+);
 
 /**
  * Parses Sast Container results into a common format to allow to use the same Vue component
@@ -27,13 +27,13 @@ export const parseSastIssues = (issues = [], path = '') =>
  * @returns {Array}
  */
 export const parseSastContainer = (data = []) =>
-  data.map(el => ({
-    name: el.vulnerability,
-    priority: el.severity,
-    path: el.namespace,
+  data.map(element => ({
+    ...element,
+    name: element.vulnerability,
+    priority: element.severity,
+    path: element.namespace,
     // external link to provide better description
-    nameLink: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${el.vulnerability}`,
-    ...el,
+    nameLink: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${element.vulnerability}`,
   }));
 
 export const parseDastIssues = (issues = []) =>

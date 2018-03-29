@@ -1,48 +1,55 @@
-/* eslint-disable */
-
 /**
- * helper for testing action with expected mutations
+ * helper for testing action with expected mutations inspired in
  * https://vuex.vuejs.org/en/testing.html
+ *
+ * @example
+ * testAction(
+ *   actions.actionName, // action
+ *   { }, // mocked response
+ *   state, // state
+ *   [
+ *    { type: types.MUTATION}
+ *    { type: types.MUTATION_1, payload: {}}
+ *   ], // mutations
+ *   [
+ *    { type: 'actionName', payload: {}},
+ *    { type: 'actionName1', payload: {}}
+ *   ] //actions
+ *   done,
+ * );
  */
-export default (action, payload, state, expectedMutations, done) => {
-  let count = 0;
+export default (action, payload, state, expectedMutations, expectedActions, done) => {
+  let mutationsCount = 0;
+  let actionsCount = 0;
 
   // mock commit
-  const commit = (type, payload) => {
-    const mutation = expectedMutations[count];
+  const commit = (type, mutationPayload) => {
+    const mutation = expectedMutations[mutationsCount];
 
-    try {
-      expect(mutation.type).to.equal(type);
-      if (payload) {
-        expect(mutation.payload).to.deep.equal(payload);
-      }
-    } catch (error) {
-      done(error);
+    expect(mutation.type).toEqual(type);
+
+    if (mutation.payload) {
+      expect(mutation.payload).toEqual(mutationPayload);
     }
 
-    count++;
-    if (count >= expectedMutations.length) {
+    mutationsCount += 1;
+    if (mutationsCount >= expectedMutations.length) {
       done();
     }
   };
 
   // mock dispatch
-  const dispatch = (type, dispatchPayload) => {
-    const mutation = expectedMutations[count];
+  const dispatch = (type, actionPayload) => {
+    const actionExpected = expectedActions[actionsCount];
 
-    try {
-      expect(mutation.type).to.equal(type);
+    expect(actionExpected.type).toEqual(type);
 
-      if (dispatchPayload) {
-        expect(mutation.payload).to.deep.equal(dispatchPayload);
-      }
-    } catch (error) {
-      done(error);
+    if (actionExpected.payload) {
+      expect(actionExpected.payload).toEqual(actionPayload);
     }
 
-    count++;
-
-    if (count >= expectedMutations.length) {
+    actionsCount += 1;
+    if (actionsCount >= expectedActions.length) {
       done();
     }
   };
@@ -52,7 +59,13 @@ export default (action, payload, state, expectedMutations, done) => {
 
   // check if no mutations should have been dispatched
   if (expectedMutations.length === 0) {
-    expect(count).to.equal(0);
+    expect(mutationsCount).toEqual(0);
+    done();
+  }
+
+  // check if no mutations should have been dispatched
+  if (expectedActions.length === 0) {
+    expect(actionsCount).toEqual(0);
     done();
   }
 };

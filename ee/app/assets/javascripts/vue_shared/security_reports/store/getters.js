@@ -1,46 +1,35 @@
 import { n__, s__ } from '~/locale';
 import { textBuilder, statusIcon } from './utils';
 
-export const groupedSastText = state => {
-  const { sast } = state;
-  return textBuilder(
+export const groupedSastText = ({ sast }) =>
+  textBuilder(
     'SAST',
     sast.paths,
     sast.newIssues.length,
     sast.resolvedIssues.length,
     sast.allIssues.length,
   );
-};
 
-export const groupedSastContainerText = state => {
-  const { sastContainer } = state;
-
-  return textBuilder(
+export const groupedSastContainerText = ({ sastContainer }) =>
+  textBuilder(
     'Container scanning',
     sastContainer.paths,
     sastContainer.newIssues.length,
     sastContainer.resolvedIssues.length,
   );
-};
 
-export const groupedDastText = state => {
-  const { dast } = state;
-  return textBuilder('DAST', dast.paths, dast.newIssues.length, dast.resolvedIssues.length);
-};
+export const groupedDastText = ({ dast }) =>
+  textBuilder('DAST', dast.paths, dast.newIssues.length, dast.resolvedIssues.length);
 
-export const groupedDependencyText = state => {
-  const { dependencyScanning } = state;
-  return textBuilder(
+export const groupedDependencyText = ({ dependencyScanning }) =>
+  textBuilder(
     'Dependency scanning',
     dependencyScanning.paths,
     dependencyScanning.newIssues.length,
     dependencyScanning.resolvedIssues.length,
   );
-};
 
-export const groupedSummaryText = (state, getters) => {
-  const { added, fixed } = state.summaryCounts;
-
+export const groupedSummaryText = ({ added, fixed }, getters) => {
   // All reports returned error
   if (getters.allReportsHaveError) {
     return s__('ciReport|Security scanning failed loading any results');
@@ -91,15 +80,15 @@ export const groupedSummaryText = (state, getters) => {
   return text.join(' ');
 };
 
-export const sastStatusIcon = state => statusIcon(state.sast.hasError, state.sast.newIssues.length);
+export const sastStatusIcon = ({ sast }) => statusIcon(sast.hasError, sast.newIssues.length);
 
-export const sastContainerStatusIcon = state =>
-  statusIcon(state.sastContainer.hasError, state.sastContainer.newIssues.length);
+export const sastContainerStatusIcon = ({ sastContainer }) =>
+  statusIcon(sastContainer.hasError, sastContainer.newIssues.length);
 
-export const dastStatusIcon = state => statusIcon(state.dast.hasError, state.dast.newIssues.length);
+export const dastStatusIcon = ({ dast }) => statusIcon(dast.hasError, dast.newIssues.length);
 
-export const dependencyScanningStatusIcon = state =>
-  statusIcon(state.dependencyScanning.hasError, state.dependencyScanning.newIssues.length);
+export const dependencyScanningStatusIcon = ({ dependencyScanning }) =>
+  statusIcon(dependencyScanning.hasError, dependencyScanning.newIssues.length);
 
 export const areReportsLoading = state =>
   state.sast.isLoading ||

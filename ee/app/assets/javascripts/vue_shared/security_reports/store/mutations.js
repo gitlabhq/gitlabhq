@@ -55,16 +55,18 @@ export default {
 
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      Object.assign(state.sast, {
-        newIssues,
-        resolvedIssues,
-        allIssues,
-        isLoading: false,
-      });
-
-      Object.assign(state.summaryCounts, {
-        added: state.summaryCounts.added + newIssues.length,
-        fixed: state.summaryCounts.fixed + resolvedIssues.length,
+      Object.assign(state, {
+        sast: {
+          ...state.sast,
+          newIssues,
+          resolvedIssues,
+          allIssues,
+          isLoading: false,
+        },
+        summaryCounts: {
+          added: state.summaryCounts.added + newIssues.length,
+          fixed: state.summaryCounts.fixed + resolvedIssues.length,
+        },
       });
     } else if (reports.head && !reports.base) {
       const newIssues = parseSastIssues(reports.head, state.blobPath.head);
@@ -114,15 +116,17 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      Object.assign(state.sastContainer, {
-        isLoading: false,
-        newIssues,
-        resolvedIssues,
-      });
-
-      Object.assign(state.summaryCounts, {
-        added: state.summaryCounts.added + newIssues.length,
-        fixed: state.summaryCounts.fixed + resolvedIssues.length,
+      Object.assign(state, {
+        sastContainer: {
+          ...state.sastContainer,
+          isLoading: false,
+          newIssues,
+          resolvedIssues,
+        },
+        summaryCounts: {
+          added: state.summaryCounts.added + newIssues.length,
+          fixed: state.summaryCounts.fixed + resolvedIssues.length,
+        },
       });
     } else if (reports.head && !reports.base) {
       Object.assign(state.sastContainer, {
@@ -164,15 +168,17 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      Object.assign(state.dast, {
-        isLoading: false,
-        newIssues,
-        resolvedIssues,
-      });
-
-      Object.assign(state.summaryCounts, {
-        added: state.summaryCounts.added + newIssues.length,
-        fixed: state.summaryCounts.fixed + resolvedIssues.length,
+      Object.assign(state, {
+        dast: {
+          ...state.dast,
+          isLoading: false,
+          newIssues,
+          resolvedIssues,
+        },
+        summaryCounts: {
+          added: state.summaryCounts.added + newIssues.length,
+          fixed: state.summaryCounts.fixed + resolvedIssues.length,
+        },
       });
     } else if (reports.head && !reports.base) {
       Object.assign(state.dast, {
@@ -228,16 +234,18 @@ export default {
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      Object.assign(state.dependencyScanning, {
-        newIssues,
-        resolvedIssues,
-        allIssues,
-        isLoading: false,
-      });
-
-      Object.assign(state.summaryCounts, {
-        added: state.summaryCounts.added + newIssues.length,
-        fixed: state.summaryCounts.fixed + resolvedIssues.length,
+      Object.assign(state, {
+        dependencyScanning: {
+          ...state.dependencyScanning,
+          newIssues,
+          resolvedIssues,
+          allIssues,
+          isLoading: false,
+        },
+        summaryCounts: {
+          added: state.summaryCounts.added + newIssues.length,
+          fixed: state.summaryCounts.fixed + resolvedIssues.length,
+        },
       });
     } else {
       Object.assign(state.dependencyScanning, {

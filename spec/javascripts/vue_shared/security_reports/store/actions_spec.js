@@ -38,6 +38,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -55,6 +56,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -89,6 +91,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -128,7 +131,7 @@ describe('security reports actions', () => {
   });
 
   describe('receiveSastError', () => {
-    it('should commit sast error mutation', (done) => {
+    it('should commit sast error mutation', done => {
       testAction(
         actions.receiveSastError,
         null,
@@ -138,6 +141,7 @@ describe('security reports actions', () => {
             type: types.RECEIVE_SAST_REPORTS_ERROR,
           },
         ],
+        [],
         done,
       );
     });
@@ -156,12 +160,13 @@ describe('security reports actions', () => {
           actions.fetchSastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_REPORTS,
+              type: 'requestSastReports',
             },
             {
-              type: types.RECEIVE_SAST_REPORTS,
+              type: 'receiveSastReports',
               payload: { head: sastIssues, base: sastIssuesBase },
             },
           ],
@@ -178,12 +183,13 @@ describe('security reports actions', () => {
           actions.fetchSastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_REPORTS,
+              type: 'requestSastReports',
             },
             {
-              type: types.RECEIVE_SAST_REPORTS_ERROR,
+              type: 'receiveSastError',
             },
           ],
           done,
@@ -191,7 +197,7 @@ describe('security reports actions', () => {
       });
     });
 
-    describe('with base', () => {
+    describe('with head', () => {
       it('should dispatch `receiveSastReports`', done => {
         mock.onGet('foo').reply(200, sastIssues);
 
@@ -201,12 +207,13 @@ describe('security reports actions', () => {
           actions.fetchSastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_REPORTS,
+              type: 'requestSastReports',
             },
             {
-              type: types.RECEIVE_SAST_REPORTS,
+              type: 'receiveSastReports',
               payload: { head: sastIssues },
             },
           ],
@@ -222,12 +229,13 @@ describe('security reports actions', () => {
           actions.fetchSastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_REPORTS,
+              type: 'requestSastReports',
             },
             {
-              type: types.RECEIVE_SAST_REPORTS_ERROR,
+              type: 'receiveSastError',
             },
           ],
           done,
@@ -248,6 +256,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -265,6 +274,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -281,6 +291,7 @@ describe('security reports actions', () => {
             type: types.REQUEST_SAST_CONTAINER_REPORTS,
           },
         ],
+        [],
         done,
       );
     });
@@ -298,6 +309,7 @@ describe('security reports actions', () => {
             payload: {},
           },
         ],
+        [],
         done,
       );
     });
@@ -314,6 +326,7 @@ describe('security reports actions', () => {
             type: types.RECEIVE_SAST_CONTAINER_ERROR,
           },
         ],
+        [],
         done,
       );
     });
@@ -332,12 +345,13 @@ describe('security reports actions', () => {
           actions.fetchSastContainerReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_CONTAINER_REPORTS,
+              type: 'requestSastContainerReports',
             },
             {
-              type: types.RECEIVE_SAST_CONTAINER_REPORTS,
+              type: 'receiveSastContainerReports',
               payload: { head: dockerReport, base: dockerBaseReport },
             },
           ],
@@ -354,12 +368,13 @@ describe('security reports actions', () => {
           actions.fetchSastContainerReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_CONTAINER_REPORTS,
+              type: 'requestSastContainerReports',
             },
             {
-              type: types.RECEIVE_SAST_CONTAINER_ERROR,
+              type: 'receiveSastContainerError',
             },
           ],
           done,
@@ -367,7 +382,7 @@ describe('security reports actions', () => {
       });
     });
 
-    describe('with base', () => {
+    describe('with head', () => {
       it('should dispatch `receiveSastContainerReports`', done => {
         mock.onGet('foo').reply(200, dockerReport);
 
@@ -377,12 +392,13 @@ describe('security reports actions', () => {
           actions.fetchSastContainerReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_CONTAINER_REPORTS,
+              type: 'requestSastContainerReports',
             },
             {
-              type: types.RECEIVE_SAST_CONTAINER_REPORTS,
+              type: 'receiveSastContainerReports',
               payload: { head: dockerReport },
             },
           ],
@@ -398,12 +414,13 @@ describe('security reports actions', () => {
           actions.fetchSastContainerReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_SAST_CONTAINER_REPORTS,
+              type: 'requestSastContainerReports',
             },
             {
-              type: types.RECEIVE_SAST_CONTAINER_REPORTS,
+              type: 'receiveSastContainerError',
             },
           ],
           done,
@@ -424,6 +441,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -441,6 +459,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -457,6 +476,7 @@ describe('security reports actions', () => {
             type: types.REQUEST_DAST_REPORTS,
           },
         ],
+        [],
         done,
       );
     });
@@ -474,6 +494,7 @@ describe('security reports actions', () => {
             payload: {},
           },
         ],
+        [],
         done,
       );
     });
@@ -490,6 +511,7 @@ describe('security reports actions', () => {
             type: types.RECEIVE_DAST_ERROR,
           },
         ],
+        [],
         done,
       );
     });
@@ -508,12 +530,13 @@ describe('security reports actions', () => {
           actions.fetchDastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DAST_REPORTS,
+              type: 'requestDastReports',
             },
             {
-              type: types.RECEIVE_DAST_REPORTS,
+              type: 'receiveDastReports',
               payload: { head: dast, base: dastBase },
             },
           ],
@@ -530,12 +553,13 @@ describe('security reports actions', () => {
           actions.fetchDastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DAST_REPORTS,
+              type: 'requestDastReports',
             },
             {
-              type: types.RECEIVE_DAST_ERROR,
+              type: 'receiveDastError',
             },
           ],
           done,
@@ -543,7 +567,7 @@ describe('security reports actions', () => {
       });
     });
 
-    describe('with base', () => {
+    describe('with head', () => {
       it('should dispatch `receiveSastContainerReports`', done => {
         mock.onGet('foo').reply(200, dast);
         mockedState.dast.paths.head = 'foo';
@@ -552,12 +576,13 @@ describe('security reports actions', () => {
           actions.fetchDastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DAST_REPORTS,
+              type: 'requestDastReports',
             },
             {
-              type: types.RECEIVE_DAST_REPORTS,
+              type: 'receiveDastReports',
               payload: { head: dast },
             },
           ],
@@ -573,12 +598,13 @@ describe('security reports actions', () => {
           actions.fetchDastReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DAST_REPORTS,
+              type: 'requestDastReports',
             },
             {
-              type: types.RECEIVE_DAST_ERROR,
+              type: 'receiveDastError',
             },
           ],
           done,
@@ -599,6 +625,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -616,6 +643,7 @@ describe('security reports actions', () => {
             payload: 'path',
           },
         ],
+        [],
         done,
       );
     });
@@ -632,6 +660,7 @@ describe('security reports actions', () => {
             type: types.REQUEST_DEPENDENCY_SCANNING_REPORTS,
           },
         ],
+        [],
         done,
       );
     });
@@ -649,6 +678,7 @@ describe('security reports actions', () => {
             payload: {},
           },
         ],
+        [],
         done,
       );
     });
@@ -665,6 +695,7 @@ describe('security reports actions', () => {
             type: types.RECEIVE_DEPENDENCY_SCANNING_ERROR,
           },
         ],
+        [],
         done,
       );
     });
@@ -683,12 +714,13 @@ describe('security reports actions', () => {
           actions.fetchDependencyScanningReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DEPENDENCY_SCANNING_REPORTS,
+              type: 'requestDependencyScanningReports',
             },
             {
-              type: types.RECEIVE_DEPENDENCY_SCANNING_REPORTS,
+              type: 'receiveDependencyScanningReports',
               payload: { head: sastIssues, base: sastIssuesBase },
             },
           ],
@@ -705,12 +737,13 @@ describe('security reports actions', () => {
           actions.fetchDependencyScanningReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DEPENDENCY_SCANNING_REPORTS,
+              type: 'requestDependencyScanningReports',
             },
             {
-              type: types.RECEIVE_DEPENDENCY_SCANNING_ERROR,
+              type: 'receiveDependencyScanningError',
             },
           ],
           done,
@@ -718,7 +751,7 @@ describe('security reports actions', () => {
       });
     });
 
-    describe('with base', () => {
+    describe('with head', () => {
       it('should dispatch `receiveDependencyScanningReports`', done => {
         mock.onGet('foo').reply(200, sastIssues);
         mockedState.dependencyScanning.paths.head = 'foo';
@@ -727,12 +760,13 @@ describe('security reports actions', () => {
           actions.fetchDependencyScanningReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DEPENDENCY_SCANNING_REPORTS,
+              type: 'requestDependencyScanningReports',
             },
             {
-              type: types.RECEIVE_DEPENDENCY_SCANNING_REPORTS,
+              type: 'receiveDependencyScanningReports',
               payload: { head: sastIssues },
             },
           ],
@@ -748,12 +782,13 @@ describe('security reports actions', () => {
           actions.fetchDependencyScanningReports,
           null,
           mockedState,
+          [],
           [
             {
-              type: types.REQUEST_DEPENDENCY_SCANNING_REPORTS,
+              type: 'requestDependencyScanningReports',
             },
             {
-              type: types.RECEIVE_DEPENDENCY_SCANNING_ERROR,
+              type: 'receiveDependencyScanningError',
             },
           ],
           done,

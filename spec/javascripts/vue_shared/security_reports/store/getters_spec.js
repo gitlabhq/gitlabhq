@@ -305,7 +305,7 @@ describe('Security reports getters', () => {
     });
 
     it('returns added and fixed text', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.summaryCounts = {
         added: 2,
         fixed: 4,
@@ -321,7 +321,7 @@ describe('Security reports getters', () => {
     });
 
     it('returns added text', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.summaryCounts = {
         added: 2,
         fixed: 0,

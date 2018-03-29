@@ -3,9 +3,7 @@ import * as types from './mutation_types';
 
 export const setHeadBlobPath = ({ commit }, blobPath) => commit(types.SET_HEAD_BLOB_PATH, blobPath);
 
-export const setBaseBlobPath = ({ commit }, blobPath) => {
-  commit(types.SET_BASE_BLOB_PATH, blobPath);
-};
+export const setBaseBlobPath = ({ commit }, blobPath) => commit(types.SET_BASE_BLOB_PATH, blobPath);
 
 /**
  * SAST
@@ -28,29 +26,19 @@ export const fetchSastReports = ({ state, dispatch }) => {
 
   dispatch('requestSastReports');
 
-  if (head && base) {
-    Promise.all([axios.get(head), axios.get(base)])
-      .then(values => {
-        dispatch('receiveSastReports', {
-          head: values[0].data,
-          base: values[1].data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveSastError');
-      });
-  } else if (head && !base) {
-    axios
-      .get(head)
-      .then(response => {
-        dispatch('receiveSastReports', {
-          head: response.data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveSastError');
-      });
-  }
+  Promise.all([
+    head ? axios.get(head) : Promise.resolve(),
+    base ? axios.get(base) : Promise.resolve(),
+  ])
+  .then(values => {
+    dispatch('receiveSastReports', {
+      head: values[0] ? values[0].data : null,
+      base: values[1] ? values[1].data : null,
+    });
+  })
+  .catch(() => {
+    dispatch('receiveSastError');
+  });
 };
 
 /**
@@ -77,29 +65,19 @@ export const fetchSastContainerReports = ({ state, dispatch }) => {
 
   dispatch('requestSastContainerReports');
 
-  if (head && base) {
-    Promise.all([axios.get(head), axios.get(base)])
-      .then(values => {
-        dispatch('receiveSastContainerReports', {
-          head: values[0].data,
-          base: values[1].data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveSastContainerError');
-      });
-  } else {
-    axios
-      .get(head)
-      .then(response => {
-        dispatch('receiveSastContainerReports', {
-          head: response.data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveSastContainerError');
-      });
-  }
+  Promise.all([
+    head ? axios.get(head) : Promise.resolve(),
+    base ? axios.get(base) : Promise.resolve(),
+  ])
+  .then(values => {
+    dispatch('receiveSastContainerReports', {
+      head: values[0] ? values[0].data : null,
+      base: values[1] ? values[1].data : null,
+    });
+  })
+  .catch(() => {
+    dispatch('receiveSastContainerError');
+  });
 };
 
 /**
@@ -122,29 +100,19 @@ export const fetchDastReports = ({ state, dispatch }) => {
 
   dispatch('requestDastReports');
 
-  if (head && base) {
-    Promise.all([axios.get(head), axios.get(base)])
-      .then(values => {
-        dispatch('receiveDastReports', {
-          head: values[0].data,
-          base: values[1].data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveDastError');
-      });
-  } else {
-    axios
-      .get(head)
-      .then(response => {
-        dispatch('receiveDastReports', {
-          head: response.data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveDastError');
-      });
-  }
+  Promise.all([
+    head ? axios.get(head) : Promise.resolve(),
+    base ? axios.get(base) : Promise.resolve(),
+  ])
+  .then(values => {
+    dispatch('receiveDastReports', {
+      head: values[0] ? values[0].data : null,
+      base: values[1] ? values[1].data : null,
+    });
+  })
+  .catch(() => {
+    dispatch('receiveDastError');
+  });
 };
 
 /**
@@ -171,27 +139,17 @@ export const fetchDependencyScanningReports = ({ state, dispatch }) => {
 
   dispatch('requestDependencyScanningReports');
 
-  if (head && base) {
-    Promise.all([axios.get(head), axios.get(base)])
-      .then(values => {
-        dispatch('receiveDependencyScanningReports', {
-          head: values[0].data,
-          base: values[1].data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveDependencyScanningError');
-      });
-  } else {
-    axios
-      .get(head)
-      .then(response => {
-        dispatch('receiveDependencyScanningReports', {
-          head: response.data,
-        });
-      })
-      .catch(() => {
-        dispatch('receiveDependencyScanningError');
-      });
-  }
+  Promise.all([
+    head ? axios.get(head) : Promise.resolve(),
+    base ? axios.get(base) : Promise.resolve(),
+  ])
+  .then(values => {
+    dispatch('receiveDependencyScanningReports', {
+      head: values[0] ? values[0].data : null,
+      base: values[1] ? values[1].data : null,
+    });
+  })
+  .catch(() => {
+    dispatch('receiveDependencyScanningError');
+  });
 };
