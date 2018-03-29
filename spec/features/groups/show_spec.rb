@@ -30,18 +30,6 @@ feature 'Group show page' do
       end
 
       it_behaves_like "an autodiscoverable RSS feed without an RSS token"
-<<<<<<< HEAD
-    end
-
-    context 'when group has a public project', :js do
-      let!(:project) { create(:project, :public, namespace: group) }
-
-      it 'renders public project' do
-        visit path
-
-        expect(page).to have_link group.name
-        expect(page).to have_link project.name
-=======
     end
 
     context 'when group has a public project', :js do
@@ -63,7 +51,6 @@ feature 'Group show page' do
 
         expect(page).to have_link group.name
         expect(page).not_to have_link project.name
->>>>>>> upstream/master
       end
     end
   end

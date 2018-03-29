@@ -19,11 +19,7 @@ feature 'Group activity page' do
       it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
     end
 
-<<<<<<< HEAD
-    context 'when project in the group', :js do
-=======
     context 'when project is in the group', :js do
->>>>>>> upstream/master
       let(:project) { create(:project, :public, namespace: group) }
 
       before do
