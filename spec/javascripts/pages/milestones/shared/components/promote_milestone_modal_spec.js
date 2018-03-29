@@ -10,6 +10,7 @@ describe('Promote milestone modal', () => {
   const milestoneMockData = {
     milestoneTitle: 'v1.0',
     url: `${gl.TEST_HOST}/dummy/promote/milestones`,
+    groupName: 'group',
   };
 
   describe('Modal title and description', () => {
@@ -22,7 +23,7 @@ describe('Promote milestone modal', () => {
     });
 
     it('contains the proper description', () => {
-      expect(vm.text).toContain('Promoting this milestone will make it available for all projects inside the group.');
+      expect(vm.text).toContain(`Promoting ${milestoneMockData.milestoneTitle} will make it available for all projects inside ${milestoneMockData.groupName}.`);
     });
 
     it('contains the correct title', () => {

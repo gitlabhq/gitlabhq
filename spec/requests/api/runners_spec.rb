@@ -123,6 +123,7 @@ describe API::Runners do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['description']).to eq(shared_runner.description)
+          expect(json_response['maximum_timeout']).to be_nil
         end
       end
 
@@ -192,7 +193,8 @@ describe API::Runners do
                                                  tag_list: ['ruby2.1', 'pgsql', 'mysql'],
                                                  run_untagged: 'false',
                                                  locked: 'true',
-                                                 access_level: 'ref_protected')
+                                                 access_level: 'ref_protected',
+                                                 maximum_timeout: 1234)
           shared_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
@@ -204,6 +206,7 @@ describe API::Runners do
           expect(shared_runner.ref_protected?).to be_truthy
           expect(shared_runner.ensure_runner_queue_value)
             .not_to eq(runner_queue_value)
+          expect(shared_runner.maximum_timeout).to eq(1234)
         end
       end
 

@@ -9,12 +9,12 @@ FactoryBot.define do
 
     trait :repository_outdated do
       repository_verification_checksum nil
-      last_repository_verification_failure false
+      last_repository_verification_failure nil
     end
 
     trait :repository_verified do
       repository_verification_checksum 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee'
-      last_repository_verification_failure false
+      last_repository_verification_failure nil
     end
 
     trait :wiki_failed do

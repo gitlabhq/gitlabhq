@@ -1,0 +1,5 @@
+---
+title: Move TimeTrackingComparisonPane vue component
+merge_request: 17931
+author: George Tsiolis
+type: performance

@@ -64,22 +64,20 @@ describe('Multi-file editor library', () => {
 
       instance.createDiffInstance(holder);
 
-      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(
-        holder,
-        {
-          model: null,
-          contextmenu: true,
-          minimap: {
-            enabled: false,
-          },
-          readOnly: true,
-          scrollBeyondLastLine: false,
-          quickSuggestions: false,
-          occurrencesHighlight: false,
-          renderLineHighlight: 'none',
-          hideCursorInOverviewRuler: true,
+      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
+        model: null,
+        contextmenu: true,
+        minimap: {
+          enabled: false,
         },
-      );
+        readOnly: true,
+        scrollBeyondLastLine: false,
+        quickSuggestions: false,
+        occurrencesHighlight: false,
+        renderLineHighlight: 'none',
+        hideCursorInOverviewRuler: true,
+        wordWrap: 'bounded',
+      });
     });
   });
 
@@ -117,9 +115,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('sets original & modified when diff editor', () => {
-      spyOn(instance.instance, 'getEditorType').and.returnValue(
-        'vs.editor.IDiffEditor',
-      );
+      spyOn(instance.instance, 'getEditorType').and.returnValue('vs.editor.IDiffEditor');
       spyOn(instance.instance, 'setModel');
 
       instance.attachModel(model);
@@ -135,9 +131,7 @@ describe('Multi-file editor library', () => {
 
       instance.attachModel(model);
 
-      expect(instance.dirtyDiffController.attachModel).toHaveBeenCalledWith(
-        model,
-      );
+      expect(instance.dirtyDiffController.attachModel).toHaveBeenCalledWith(model);
     });
 
     it('re-decorates with the dirty diff controller', () => {
@@ -145,9 +139,7 @@ describe('Multi-file editor library', () => {
 
       instance.attachModel(model);
 
-      expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(
-        model,
-      );
+      expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(model);
     });
   });
 

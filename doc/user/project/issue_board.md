@@ -345,7 +345,7 @@ Different issue board features are available in different [GitLab tiers](https:/
 
 | Tier | Number of project issue boards | Board with configuration in project issue boards | Number of group issue boards | Board with configuration in group issue boards |
 | --- | --- | --- | --- | --- |
-| Libre    | 1        | No  | 1        | No  |
+| Core    | 1        | No  | 1        | No  |
 | Starter  | Multiple | Yes | 1        | No  |
 | Premium  | Multiple | Yes | Multiple | Yes |
 | Ultimate | Multiple | Yes | Multiple | Yes |

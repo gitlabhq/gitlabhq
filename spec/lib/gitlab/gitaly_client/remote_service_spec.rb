@@ -58,4 +58,14 @@ describe Gitlab::GitalyClient::RemoteService do
       client.update_remote_mirror(ref_name, only_branches_matching)
     end
   end
+
+  describe '.exists?' do
+    context "when the remote doesn't exist" do
+      let(:url) { 'https://gitlab.com/gitlab-org/ik-besta-niet-of-ik-word-geplaagd.git' }
+
+      it 'returns false' do
+        expect(described_class.exists?(url)).to be(false)
+      end
+    end
+  end
 end

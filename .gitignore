@@ -51,6 +51,7 @@ eslint-report.html
 /db/data.yml
 /doc/code/*
 /dump.rdb
+/jsconfig.json
 /log/*.log*
 /node_modules/
 /nohup.out

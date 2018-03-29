@@ -37,15 +37,17 @@ module Gitlab
         if status&.zero?
           refs = output.split("\n")
 
-          refs.inject(nil) do |checksum, ref|
-            value = Digest::SHA1.hexdigest(ref)
+          result = refs.inject(nil) do |checksum, ref|
+            value = Digest::SHA1.hexdigest(ref).hex
 
             if checksum.nil?
               value
             else
-              (checksum.hex ^ value.hex).to_s(16)
+              checksum ^ value
             end
           end
+
+          result.to_s(16)
         else
           # Empty repositories return with a non-zero status and an empty output.
           if output&.empty?

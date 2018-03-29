@@ -1,5 +1,5 @@
 ---
-title: Make all workhorse gitaly calls opt-out
-merge_request: 18002
+title: Make all workhorse gitaly calls opt-out, take 2
+merge_request: 18043
 author:
 type: other

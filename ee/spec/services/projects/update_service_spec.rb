@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
+  include EE::GeoHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
 
@@ -119,6 +121,77 @@ describe Projects::UpdateService, '#execute' do
             )
           end
         end
+      end
+    end
+  end
+
+  context 'triggering wiki Geo syncs', :geo do
+    context 'on a Geo primary' do
+      set(:primary)   { create(:geo_node, :primary) }
+      set(:secondary) { create(:geo_node) }
+
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      context 'when enabling a wiki' do
+        it 'creates a RepositoryUpdatedEvent' do
+          project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
+          project.reload
+
+          expect do
+            result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
+            expect(result).to eq({ status: :success })
+          end.to change { Geo::RepositoryUpdatedEvent.count }.by(1)
+
+          expect(project.wiki_enabled?).to be true
+        end
+      end
+
+      context 'when we update project but not enabling a wiki' do
+        context 'when the wiki is disabled' do
+          it 'does not create a RepositoryUpdatedEvent' do
+            project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
+
+            expect do
+              result = update_project(project, user, { name: 'test1' })
+              expect(result).to eq({ status: :success })
+            end.not_to change { Geo::RepositoryUpdatedEvent.count }
+
+            expect(project.wiki_enabled?).to be false
+          end
+        end
+
+        context 'when the wiki was already enabled' do
+          it 'does not create a RepositoryUpdatedEvent' do
+            project.project_feature.update(wiki_access_level: ProjectFeature::ENABLED)
+
+            expect do
+              result = update_project(project, user, { name: 'test1' })
+              expect(result).to eq({ status: :success })
+            end.not_to change { Geo::RepositoryUpdatedEvent.count }
+
+            expect(project.wiki_enabled?).to be true
+          end
+        end
+      end
+    end
+
+    context 'not on a Geo node' do
+      before do
+        allow(::Gitlab::Geo).to receive(:current_node).and_return(nil)
+      end
+
+      it 'does not create a RepositoryUpdatedEvent when enabling a wiki' do
+        project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
+        project.reload
+
+        expect do
+          result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
+          expect(result).to eq({ status: :success })
+        end.not_to change { Geo::RepositoryUpdatedEvent.count }
+
+        expect(project.wiki_enabled?).to be true
       end
     end
   end
