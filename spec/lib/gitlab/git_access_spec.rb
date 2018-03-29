@@ -145,6 +145,33 @@ describe Gitlab::GitAccess do
             expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
+
+        context 'when actor is DeployToken' do
+          context 'when DeployToken is active and belongs to project' do
+            let(:actor) { create(:deploy_token, :read_repo, project: project) }
+
+            it 'allows pull access' do
+              expect { pull_access_check }.not_to raise_error
+            end
+          end
+
+          context 'when DeployToken has been revoked' do
+            let(:actor) { create(:deploy_token, :read_repo, project: project) }
+
+            it 'blocks pull access' do
+              actor.revoke!
+              expect { pull_access_check }.to raise_not_found
+            end
+          end
+
+          context 'when DeployToken does not belong to project' do
+            let(:actor) { create(:deploy_token, :read_repo) }
+
+            it 'blocks pull access' do
+              expect { pull_access_check }.to raise_not_found
+            end
+          end
+        end
       end
 
       context 'when actor is nil' do

@@ -22,4 +22,12 @@ class DeployToken < ActiveRecord::Base
   def self.redis_shared_state_key(user_id)
     "gitlab:personal_access_token:#{user_id}"
   end
+
+  def active?
+    !revoked
+  end
+
+  def username
+    User.ghost.username
+  end
 end

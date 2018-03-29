@@ -5,7 +5,7 @@ module Gitlab
     REGISTRY_SCOPES = [:read_registry].freeze
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user, :sudo].freeze
+    API_SCOPES = [:api, :read_user, :sudo, :read_repo].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
@@ -26,6 +26,7 @@ module Gitlab
           lfs_token_check(login, password, project) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password) ||
+          deploy_token_check(project, password) ||
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
@@ -163,12 +164,23 @@ module Gitlab
       def abilities_for_scopes(scopes)
         abilities_by_scope = {
           api: full_authentication_abilities,
-          read_registry: [:read_container_image]
+          read_registry: [:read_container_image],
+          read_repo: read_authentication_abilities - [:read_container_image]
         }
 
         scopes.flat_map do |scope|
           abilities_by_scope.fetch(scope.to_sym, [])
         end.uniq
+      end
+
+      def deploy_token_check(project, password)
+        return unless project.present? && password.present?
+
+        token = DeployToken.active.find_by(project: project, token: password)
+
+        if token && valid_scoped_token?(token, available_scopes)
+          Gitlab::Auth::Result.new(token, project, :deploy_token, abilities_for_scopes(token.scopes))
+        end
       end
 
       def lfs_token_check(login, password, project)
