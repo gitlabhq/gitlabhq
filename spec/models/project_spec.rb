@@ -1265,6 +1265,34 @@ describe Project do
     end
   end
 
+  describe '#pages_group_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+    let(:port) { 1234 }
+
+    subject { project.pages_group_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://example.com:#{port}")
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com:#{port}") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com:#{port}") }
+    end
+  end
+
   describe '.search' do
     let(:project) { create(:project, description: 'kitten mittens') }
 
