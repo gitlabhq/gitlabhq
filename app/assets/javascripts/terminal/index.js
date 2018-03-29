@@ -1,8 +1,3 @@
-import 'vendor/xterm/encoding-indexes';
-import 'vendor/xterm/encoding';
-import Terminal from 'xterm';
-import './terminal';
+import GLTerminal from './terminal';
 
-window.Terminal = Terminal;
-
-export default () => new gl.Terminal({ selector: '#terminal' });
+export default () => new GLTerminal({ selector: '#terminal' });
