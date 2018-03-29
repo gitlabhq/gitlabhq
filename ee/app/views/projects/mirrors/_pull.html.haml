@@ -35,7 +35,7 @@
 
       .form-group
         = f.label :mirror_user_id, "Mirror user", class: "label-light"
-        = select_tag('project[mirror_user_id]', options_for_mirror_user, class: "select2 lg", required: true)
+        = f.select(:mirror_user_id, options_for_mirror_user, class: "select2 lg", required: true)
         .help-block
           This user will be the author of all events in the activity feed that are the result of an update,
           like new branches being created or new commits being pushed to existing branches.
