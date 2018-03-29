@@ -2,6 +2,8 @@
   display: flex;
   position: relative;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: start;
 
   .banner-close {
     position: absolute;
@@ -16,10 +18,18 @@
   }
 
   .banner-graphic {
-    margin: 20px auto;
+    margin:  0 20px 20px;
   }
 
   &.banner-non-empty-state {
     border-bottom: 1px solid $border-color;
+  }
+
+  .banner-body {
+    text-align: left;
+  }
+
+  .banner-buttons {
+    text-align: center;
   }
 }
