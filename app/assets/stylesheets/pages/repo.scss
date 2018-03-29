@@ -498,6 +498,7 @@
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
+  padding-left: $grid-size;
 
   svg {
     margin-right: $gl-btn-padding;
@@ -770,6 +771,7 @@
 
   &:not(.is-collapsed) {
     flex: 1;
+    min-height: 140px;
   }
 }
 

@@ -34,11 +34,11 @@ export default {
       const type = this.file.tempFile ? 'addition' : 'modification';
 
       if (this.file.changed && !this.file.staged) {
-        return `unstaged ${type}`;
+        return `Unstaged ${type}`;
       } else if (!this.file.changed && this.file.staged) {
-        return `staged ${type}`;
+        return `Staged ${type}`;
       } else if (this.file.changed && this.file.staged) {
-        return `unstaged and staged ${pluralize(type)}`;
+        return `Unstaged and staged ${pluralize(type)}`;
       }
 
       return undefined;

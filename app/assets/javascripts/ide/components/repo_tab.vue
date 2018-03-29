@@ -1,60 +1,61 @@
 <script>
-  import { mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
-  import fileIcon from '~/vue_shared/components/file_icon.vue';
-  import icon from '~/vue_shared/components/icon.vue';
-  import fileStatusIcon from './repo_file_status_icon.vue';
-  import changedFileIcon from './changed_file_icon.vue';
+import fileIcon from '~/vue_shared/components/file_icon.vue';
+import icon from '~/vue_shared/components/icon.vue';
+import fileStatusIcon from './repo_file_status_icon.vue';
+import changedFileIcon from './changed_file_icon.vue';
 
-  export default {
-    components: {
-      fileStatusIcon,
-      fileIcon,
-      icon,
-      changedFileIcon,
+export default {
+  components: {
+    fileStatusIcon,
+    fileIcon,
+    icon,
+    changedFileIcon,
+  },
+  props: {
+    tab: {
+      type: Object,
+      required: true,
     },
-    props: {
-      tab: {
-        type: Object,
-        required: true,
-      },
+  },
+  data() {
+    return {
+      tabMouseOver: false,
+    };
+  },
+  computed: {
+    closeLabel() {
+      if (this.fileHasChanged) {
+        return `${this.tab.name} changed`;
+      }
+      return `Close ${this.tab.name}`;
     },
-    data() {
-      return {
-        tabMouseOver: false,
-      };
+    showChangedIcon() {
+      return this.fileHasChanged ? !this.tabMouseOver : false;
     },
-    computed: {
-      closeLabel() {
-        if (this.tab.changed || this.tab.tempFile) {
-          return `${this.tab.name} changed`;
-        }
-        return `Close ${this.tab.name}`;
-      },
-      showChangedIcon() {
-        return this.tab.changed ? !this.tabMouseOver : false;
-      },
+    fileHasChanged() {
+      return this.tab.changed || this.tab.tempFile || this.tab.staged;
     },
+  },
 
-    methods: {
-      ...mapActions([
-        'closeFile',
-      ]),
-      clickFile(tab) {
-        this.$router.push(`/project${tab.url}`);
-      },
-      mouseOverTab() {
-        if (this.tab.changed) {
-          this.tabMouseOver = true;
-        }
-      },
-      mouseOutTab() {
-        if (this.tab.changed) {
-          this.tabMouseOver = false;
-        }
-      },
+  methods: {
+    ...mapActions(['closeFile']),
+    clickFile(tab) {
+      this.$router.push(`/project${tab.url}`);
     },
-  };
+    mouseOverTab() {
+      if (this.fileHasChanged) {
+        this.tabMouseOver = true;
+      }
+    },
+    mouseOutTab() {
+      if (this.fileHasChanged) {
+        this.tabMouseOver = false;
+      }
+    },
+  },
+};
 </script>
 
 <template>
