@@ -1271,12 +1271,6 @@ describe Ci::Build do
   end
 
   describe 'project settings' do
-    describe '#timeout' do
-      it 'returns project timeout configuration' do
-        expect(build.timeout).to eq(project.build_timeout)
-      end
-    end
-
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
         expect(build.allow_git_fetch).to eq(project.build_allow_git_fetch)
@@ -2008,6 +2002,70 @@ describe Ci::Build do
       expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
+    end
+  end
+
+  describe 'state transition: pending: :running' do
+    let(:runner) { create(:ci_runner) }
+    let(:job) { create(:ci_build, :pending, runner: runner) }
+
+    before do
+      job.project.update_attribute(:build_timeout, 1800)
+    end
+
+    def run_job_without_exception
+      job.run!
+    rescue StateMachines::InvalidTransition
+    end
+
+    shared_examples 'saves data on transition' do
+      it 'saves timeout' do
+        expect { job.run! }.to change { job.reload.ensure_metadata.timeout }.from(nil).to(expected_timeout)
+      end
+
+      it 'saves timeout_source' do
+        expect { job.run! }.to change { job.reload.ensure_metadata.timeout_source }.from('unknown_timeout_source').to(expected_timeout_source)
+      end
+
+      context 'when Ci::BuildMetadata#update_timeout_state fails update' do
+        before do
+          allow_any_instance_of(Ci::BuildMetadata).to receive(:update_timeout_state).and_return(false)
+        end
+
+        it "doesn't save timeout" do
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+        end
+
+        it "doesn't save timeout_source" do
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+        end
+
+        it 'raises an exception' do
+          expect { job.run! }.to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+
+    context 'when runner timeout overrides project timeout' do
+      let(:expected_timeout) { 900 }
+      let(:expected_timeout_source) { 'runner_timeout_source' }
+
+      before do
+        runner.update_attribute(:maximum_timeout, 900)
+      end
+
+      it_behaves_like 'saves data on transition'
+    end
+
+    context "when runner timeout doesn't override project timeout" do
+      let(:expected_timeout) { 1800 }
+      let(:expected_timeout_source) { 'project_timeout_source' }
+
+      before do
+        runner.update_attribute(:maximum_timeout, 3600)
+      end
+
+      it_behaves_like 'saves data on transition'
     end
   end
 

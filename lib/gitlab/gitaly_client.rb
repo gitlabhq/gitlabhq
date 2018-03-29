@@ -83,6 +83,10 @@ module Gitlab
       end
     end
 
+    def self.random_storage
+      Gitlab.config.repositories.storages.keys.sample
+    end
+
     def self.address(storage)
       params = Gitlab.config.repositories.storages[storage]
       raise "storage not found: #{storage.inspect}" if params.nil?

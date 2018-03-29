@@ -69,5 +69,38 @@
   .settings-content
     = render 'pages'
 
+%section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Continuous Integration and Deployment')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Auto DevOps, runners amd job artifacts')
+  .settings-content
+    = render 'ci_cd'
+
+%section.settings.as-influx.no-animate#js-influx-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Influx')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable and configure InfluxDB metrics.')
+  .settings-content
+    = render 'influx'
+
+%section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Prometheus')
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable and configure Prometheus metrics.')
+  .settings-content
+    = render 'prometheus'
+
 .prepend-top-20
   = render 'form'

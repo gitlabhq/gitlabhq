@@ -10,6 +10,9 @@ module ObjectStorage
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
 
+  DIRECT_UPLOAD_TIMEOUT = 4.hours
+  TMP_UPLOAD_PATH = 'tmp/upload'.freeze
+
   module Store
     LOCAL = 1
     REMOTE = 2
@@ -124,6 +127,10 @@ module ObjectStorage
         object_store_options.enabled
       end
 
+      def direct_upload_enabled?
+        object_store_options.direct_upload
+      end
+
       def background_upload_enabled?
         object_store_options.background_upload
       end
@@ -147,6 +154,45 @@ module ObjectStorage
       def serialization_column(model_class, mount_point)
         model_class.uploader_options.dig(mount_point, :mount_on) || mount_point
       end
+
+      def workhorse_authorize
+        if options = workhorse_remote_upload_options
+          { RemoteObject: options }
+        else
+          { TempPath: workhorse_local_upload_path }
+        end
+      end
+
+      def workhorse_local_upload_path
+        File.join(self.root, TMP_UPLOAD_PATH)
+      end
+
+      def workhorse_remote_upload_options
+        return unless self.object_store_enabled?
+        return unless self.direct_upload_enabled?
+
+        id = [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
+        upload_path = File.join(TMP_UPLOAD_PATH, id)
+        connection = ::Fog::Storage.new(self.object_store_credentials)
+        expire_at = Time.now + DIRECT_UPLOAD_TIMEOUT
+        options = { 'Content-Type' => 'application/octet-stream' }
+
+        {
+          ID: id,
+          GetURL: connection.get_object_url(remote_store_path, upload_path, expire_at),
+          DeleteURL: connection.delete_object_url(remote_store_path, upload_path, expire_at),
+          StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
+        }
+      end
+    end
+
+    # allow to configure and overwrite the filename
+    def filename
+      @filename || super || file&.filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
+
+    def filename=(filename)
+      @filename = filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def file_storage?
@@ -182,21 +228,10 @@ module ObjectStorage
       raise 'Failed to update object store' unless updated
     end
 
-    def use_file
-      if file_storage?
-        return yield path
+    def use_file(&blk)
+      with_exclusive_lease do
+        unsafe_use_file(&blk)
       end
-
-      begin
-        cache_stored_file!
-        yield cache_path
-      ensure
-        cache_storage.delete_dir!(cache_path(nil))
-      end
-    end
-
-    def filename
-      super || file&.filename
     end
 
     #
@@ -205,12 +240,9 @@ module ObjectStorage
     #   new_store: Enum (Store::LOCAL, Store::REMOTE)
     #
     def migrate!(new_store)
-      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
-      raise 'Already running' unless uuid
-
-      unsafe_migrate!(new_store)
-    ensure
-      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+      with_exclusive_lease do
+        unsafe_migrate!(new_store)
+      end
     end
 
     def schedule_background_upload(*args)
@@ -253,12 +285,56 @@ module ObjectStorage
       }
     end
 
+    def store_workhorse_file!(params, identifier)
+      filename = params["#{identifier}.name"]
+
+      if remote_object_id = params["#{identifier}.remote_id"]
+        store_remote_file!(remote_object_id, filename)
+      elsif local_path = params["#{identifier}.path"]
+        store_local_file!(local_path, filename)
+      else
+        raise RemoteStoreError, 'Bad file'
+      end
+    end
+
     private
 
     def schedule_background_upload?
       self.class.object_store_enabled? &&
         self.class.background_upload_enabled? &&
         self.file_storage?
+    end
+
+    def store_remote_file!(remote_object_id, filename)
+      raise RemoteStoreError, 'Missing filename' unless filename
+
+      file_path = File.join(TMP_UPLOAD_PATH, remote_object_id)
+      file_path = Pathname.new(file_path).cleanpath.to_s
+      raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(TMP_UPLOAD_PATH + '/')
+
+      self.object_store = Store::REMOTE
+
+      # TODO:
+      # This should be changed to make use of `tmp/cache` mechanism
+      # instead of using custom upload directory,
+      # using tmp/cache makes this implementation way easier than it is today
+      CarrierWave::Storage::Fog::File.new(self, storage, file_path).tap do |file|
+        raise RemoteStoreError, 'Missing file' unless file.exists?
+
+        self.filename = filename
+        self.file = storage.store!(file)
+      end
+    end
+
+    def store_local_file!(local_path, filename)
+      raise RemoteStoreError, 'Missing filename' unless filename
+
+      root_path = File.realpath(self.class.workhorse_local_upload_path)
+      file_path = File.realpath(local_path)
+      raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(root_path)
+
+      self.object_store = Store::LOCAL
+      self.store!(UploadedFile.new(file_path, filename))
     end
 
     # this is a hack around CarrierWave. The #migrate method needs to be
@@ -298,6 +374,15 @@ module ObjectStorage
       "object_storage_migrate:#{model.class}:#{model.id}"
     end
 
+    def with_exclusive_lease
+      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+      raise 'exclusive lease already taken' unless uuid
+
+      yield uuid
+    ensure
+      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+    end
+
     #
     # Move the file to another store
     #
@@ -330,6 +415,20 @@ module ObjectStorage
       self.object_store = from_object_store
       self.file = file_to_delete
       raise e
+    end
+  end
+
+  def unsafe_use_file
+    if file_storage?
+      return yield path
+    end
+
+    begin
+      cache_stored_file!
+      yield cache_path
+    ensure
+      FileUtils.rm_f(cache_path)
+      cache_storage.delete_dir!(cache_path(nil))
     end
   end
 end
