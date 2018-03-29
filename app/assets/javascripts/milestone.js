@@ -47,12 +47,12 @@ export default class Milestone {
   }
 
   static initDeprecationMessage() {
-    const deprecationMesssageContainer = document.querySelector('.milestone-deprecation-message');
+    const deprecationMesssageContainer = document.querySelector('.js-milestone-deprecation-message');
 
     if (!deprecationMesssageContainer) return;
 
-    const deprecationMessage = deprecationMesssageContainer.querySelector('.milestone-deprecation-message-template').innerHTML;
-    const $popover = $('.popover-link', deprecationMesssageContainer);
+    const deprecationMessage = deprecationMesssageContainer.querySelector('.js-milestone-deprecation-message-template').innerHTML;
+    const $popover = $('.js-popover-link', deprecationMesssageContainer);
     const hideOnScroll = togglePopover.bind($popover, false);
 
     $popover.popover({
