@@ -37,17 +37,22 @@
 
 // System Header
 .with-system-header {
-  .navbar-gitlab, // main navigation
-  .navbar-fixed-top { // login page
+  // main navigation
+  // login page
+  .navbar-gitlab,
+  .navbar-fixed-top {
     top: $system-header-height;
   }
 
-  .nav-sidebar, // left sidebar eg: project page
-  .right-sidebar { // right sidebar eg: MR page
+  // left sidebar eg: project page
+  // right sidebar eg: MR page
+  .nav-sidebar,
+  .right-sidebar {
     top: $system-header-height + $header-height;
   }
 
-  .ide.nav-only { // body element on WebIDE page
+  .ide.nav-only {
+    // body element on WebIDE page
     padding-top: $header-height + $system-header-height;
 
     .ide-view {
@@ -58,10 +63,14 @@
 
 // System Footer
 .with-system-footer {
-  .nav-sidebar, // left sidebar eg: project page
-  .right-sidebar, // right sidebar eg: MR page
-  &.devise-layout-html body .footer-container, // navless pages' footer eg: login page
-  &.devise-layout-html body hr.footer-fixed { // navless pages' footer border eg: login page
+  // left sidebar eg: project page
+  // right sidebar eg: mr page
+  .nav-sidebar, 
+  .right-sidebar, 
+  // navless pages' footer eg: login page
+  // navless pages' footer border eg: login page
+  &.devise-layout-html body .footer-container, 
+  &.devise-layout-html body hr.footer-fixed {
     bottom: $system-footer-height;
   }
 }
@@ -69,7 +78,8 @@
 // Performance Bar
 // System Header
 .with-system-header.with-performance-bar {
-  header.navbar-gitlab { // main navigation
+  // main navigation
+  header.navbar-gitlab {
     top: $performance-bar-height + $system-header-height;
   }
 
@@ -77,20 +87,24 @@
     margin-top: $header-height + $performance-bar-height + $system-header-height;
   }
 
-  .nav-sidebar, // left sidebar eg: project page
-  .right-sidebar { // right sidebar eg: MR page
+  // left sidebar eg: project page
+  // right sidebar eg: MR page
+  .nav-sidebar,
+  .right-sidebar {
     top: $header-height + $performance-bar-height + $system-header-height;
   }
 
   // IDE adjustments
-  .ide.nav-only { // body element on WebIDe view
+
+  // body element on WebIDe view
+  .ide.nav-only {
     padding-top: $header-height + $performance-bar-height + $system-header-height;
   }
 }
 
 @mixin ide-height-with($map) {
   $height: 0;
-  $height: $height + $header-height; // always present
+  $height: $height + $header-height; // header is always present
 
   @if (map-get($map, performance) == true) {
     $height: $height + $performance-bar-height;
