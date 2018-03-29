@@ -192,7 +192,9 @@ describe Geo::ProjectRegistryFinder, :geo do
   end
 
   describe '#count_verified_repositories' do
-    it 'delegates to #find_verified_repositories' do
+    it 'delegates to #find_verified_repositories when use_legacy_queries is false' do
+      expect(subject).to receive(:use_legacy_queries?).and_return(false)
+
       expect(subject).to receive(:find_verified_repositories).and_call_original
 
       subject.count_verified_repositories
