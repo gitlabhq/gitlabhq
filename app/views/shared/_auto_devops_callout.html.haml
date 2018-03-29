@@ -2,13 +2,13 @@
   .banner-graphic
     = custom_icon('icon_autodevops')
 
-  .prepend-top-10.prepend-left-10.append-bottom-10
+  .banner-body.prepend-top-10.prepend-left-10.append-bottom-10
     %h5= s_('AutoDevOps|Auto DevOps (Beta)')
     %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
     %p
       - link = link_to(s_('AutoDevOps|Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer')
       = s_('AutoDevOps|Learn more in the %{link_to_documentation}').html_safe % { link_to_documentation: link }
-    .prepend-top-10
+    .banner-buttons
       = link_to s_('AutoDevOps|Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn js-close-callout'
 
   %button.btn-transparent.banner-close.close.js-close-callout{ type: 'button',

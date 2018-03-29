@@ -1,14 +1,12 @@
-.milestone-deprecation-message.prepend-top-default.prepend-left-default
-  .illustration.inline= image_tag 'illustrations/milestone_removing-page.svg', class: 'append-right-default'
-  .inline.vertical-align-middle
-    %strong= _('This page will be removed in a future release.')
-    %p.append-bottom-default.prepend-top-5
-      = _('Use group milestones to manage issues from multiple projects in the same milestone.')
-      %br
-      = button_tag _('Promote these project milestones into a group milestone.'), class: 'btn-link popover-link prepend-left-0'
-    %div= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default', target: '_blank'
+.banner-callout.compact.milestone-deprecation-message.js-milestone-deprecation-message.prepend-top-20
+  .banner-graphic= image_tag 'illustrations/milestone_removing-page.svg'
+  .banner-body.prepend-left-10.append-right-10
+    %h5.prepend-top-0= _('This page will be removed in a future release.')
+    %p= _('Use group milestones to manage issues from multiple projects in the same milestone.')
+    = button_tag _('Promote these project milestones into a group milestone.'), class: 'btn-link js-popover-link text-align-left'
+    .banner-buttons.prepend-top-20= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default', target: '_blank'
 
-  %template.milestone-deprecation-message-template
+  %template.js-milestone-deprecation-message-template
     .milestone-popover-body
       %ol.milestone-popover-instructions-list.append-bottom-0
         %li= _('Click any <strong>project name</strong> in the project list below to navigate to the project milestone.').html_safe
