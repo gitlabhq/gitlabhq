@@ -10,7 +10,7 @@ module Gitlab
               stream = self.class.new(job_id, mode)
 
               yield stream
-
+            ensure
               stream.close
             end
 

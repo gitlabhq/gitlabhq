@@ -8,45 +8,55 @@ module Gitlab
               def open(job_id, chunk_index, **params)
                 raise ArgumentError unless job_id && chunk_index
 
-                job = Ci::JobTraceChunk.find_or_initialize_by(job_id: job_id, chunk_index: chunk_index)
+                job_trace_chunk = ::Ci::JobTraceChunk
+                  .find_or_initialize_by(job_id: job_id, chunk_index: chunk_index)
+                store = self.new(job_trace_chunk, params)
 
-                yield self.class.new(job, params)
+                yield store
+              ensure
+                store&.close
               end
 
               def exist?(job_id, chunk_index)
-                Ci::JobTraceChunk.exists?(job_id: job_id, chunk_index: chunk_index)
+                ::Ci::JobTraceChunk.exists?(job_id: job_id, chunk_index: chunk_index)
               end
 
               def chunks_count(job_id)
-                Ci::JobTraceChunk.where(job_id: job_id).count
+                ::Ci::JobTraceChunk.where(job_id: job_id).count
               end
 
               def chunks_size(job_id)
-                Ci::JobTraceChunk.where(job_id: job_id).pluck('len(data)')
-                  .inject(0){ |sum, data_length| sum + data_length }
+                ::Ci::JobTraceChunk.where(job_id: job_id).pluck('data')
+                  .inject(0) { |sum, data| sum + data.length }
               end
             end
 
-            attr_reader :job
+            attr_reader :job_trace_chunk
 
-            def initialize(job, **params)
+            def initialize(job_trace_chunk, **params)
               super
 
-              @job = job
+              @job_trace_chunk = job_trace_chunk
+            end
+
+            def close
+              @job_trace_chunk = nil
             end
 
             def get
-              job.data
+              job_trace_chunk.data
             end
 
             def size
-              job.data&.length || 0
+              job_trace_chunk.data&.length || 0
             end
 
             def write!(data)
-              raise NotImplementedError, 'Only full size write is supported' unless buffer_size == data.length
+              raise NotImplementedError, 'Partial write is not supported' unless buffer_size == data&.length
+              raise NotImplementedError, 'UPDATE is not supported' if job_trace_chunk.data
 
-              job.create!(data: data)
+              job_trace_chunk.data = data
+              job_trace_chunk.save!
 
               data.length
             end
@@ -56,7 +66,7 @@ module Gitlab
             end
 
             def delete!
-              job.destroy!
+              job_trace_chunk.destroy!
             end
           end
         end

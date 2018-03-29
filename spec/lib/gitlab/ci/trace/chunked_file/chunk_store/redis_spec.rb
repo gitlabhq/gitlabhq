@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_cache do
   let(:job_id) { 1 }
-  let(:buffer_size) { 128.kilobytes }
   let(:chunk_index) { 0 }
+  let(:buffer_size) { 128.kilobytes }
   let(:buffer_key) { described_class.buffer_key(job_id, chunk_index) }
   let(:params) { { buffer_size: buffer_size } }
   let(:trace) { 'Here is the trace' }
@@ -111,16 +111,14 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        Gitlab::Redis::Cache.with do |redis|
-          redis.set(buffer_key, trace)
-        end
+        described_class.new(buffer_key, params).write!(trace)
       end
 
       it { is_expected.to eq(trace) }
     end
 
     context 'when buffer_key does not exist' do
-      it { is_expected.not_to eq(trace) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -129,9 +127,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        Gitlab::Redis::Cache.with do |redis|
-          redis.set(buffer_key, trace)
-        end
+        described_class.new(buffer_key, params).write!(trace)
       end
 
       it { is_expected.to eq(trace.length) }
@@ -147,9 +143,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        Gitlab::Redis::Cache.with do |redis|
-          redis.set(buffer_key, 'Already data in the chunk')
-        end
+        described_class.new(buffer_key, params).write!('Already data in the chunk')
       end
 
       it 'overwrites' do
@@ -187,9 +181,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        Gitlab::Redis::Cache.with do |redis|
-          redis.set(buffer_key, trace)
-        end
+        described_class.new(buffer_key, params).write!(trace)
       end
 
       it 'truncates' do
@@ -241,9 +233,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        Gitlab::Redis::Cache.with do |redis|
-          redis.set(buffer_key, trace)
-        end
+        described_class.new(buffer_key, params).write!(trace)
       end
 
       it 'deletes' do

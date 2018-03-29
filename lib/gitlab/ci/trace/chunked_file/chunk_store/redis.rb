@@ -8,7 +8,12 @@ module Gitlab
               def open(job_id, chunk_index, **params)
                 raise ArgumentError unless job_id && chunk_index
 
-                yield self.new(self.buffer_key(job_id, chunk_index), params)
+                buffer_key = self.buffer_key(job_id, chunk_index)
+                store = self.new(buffer_key, params)
+
+                yield store
+              ensure
+                store&.close
               end
 
               def exist?(job_id, chunk_index)
@@ -44,6 +49,10 @@ module Gitlab
               super
 
               @buffer_key = buffer_key
+            end
+
+            def close
+              @buffer_key = nil
             end
 
             def get
