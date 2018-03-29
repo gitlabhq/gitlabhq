@@ -48,6 +48,11 @@
         required: false,
         default: true,
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       enableAutocomplete: {
         type: Boolean,
         required: false,
@@ -92,6 +97,7 @@
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     />
     <edit-actions
