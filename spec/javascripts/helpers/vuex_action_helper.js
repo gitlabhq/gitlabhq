@@ -17,7 +17,7 @@ export default (action, payload, state, expectedMutations, done) => {
         expect(mutation.payload).to.deep.equal(payload);
       }
     } catch (error) {
-      done(error);
+      done.fail(error);
     }
 
     count++;
