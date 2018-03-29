@@ -17,6 +17,34 @@ describe Geo::ProjectRegistry do
     it { is_expected.to validate_uniqueness_of(:project) }
   end
 
+  describe '.synced_repos' do
+    it 'returns clean projects where last attempt to sync succeeded' do
+      expected = []
+      expected << create(:geo_project_registry, :synced)
+      create(:geo_project_registry, :synced, :dirty)
+      create(:geo_project_registry, :repository_syncing)
+      expected << create(:geo_project_registry, :wiki_syncing)
+      expected << create(:geo_project_registry, :wiki_sync_failed)
+      create(:geo_project_registry, :repository_sync_failed)
+
+      expect(described_class.synced_repos).to match_array(expected)
+    end
+  end
+
+  describe '.synced_wikis' do
+    it 'returns clean projects where last attempt to sync succeeded' do
+      expected = []
+      expected << create(:geo_project_registry, :synced)
+      create(:geo_project_registry, :synced, :dirty)
+      expected << create(:geo_project_registry, :repository_syncing)
+      create(:geo_project_registry, :wiki_syncing)
+      create(:geo_project_registry, :wiki_sync_failed)
+      expected << create(:geo_project_registry, :repository_sync_failed)
+
+      expect(described_class.synced_wikis).to match_array(expected)
+    end
+  end
+
   describe '.failed_repos' do
     it 'returns projects where last attempt to sync failed' do
       create(:geo_project_registry, :synced)
