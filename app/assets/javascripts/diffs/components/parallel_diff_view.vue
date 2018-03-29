@@ -1,4 +1,5 @@
 <script>
+import { mapState } from 'vuex';
 import diffContentMixin from '../mixins/diff_content';
 import {
   EMPTY_CELL_TYPE,
@@ -12,6 +13,9 @@ import {
 export default {
   mixins: [diffContentMixin],
   computed: {
+    ...mapState({
+      diffLineCommentForms: state => state.diffs.diffLineCommentForms
+    }),
     parallelDiffLines() {
       return this.normalizedDiffLines.map(line => {
         if (!line.left) {
@@ -149,7 +153,7 @@ export default {
             </td>
           </tr>
           <tr
-            v-if="hasDiscussion(line) && hasAnyExpandedDiscussion(line)"
+            v-if="(hasDiscussion(line) && hasAnyExpandedDiscussion(line)) || diffLineCommentForms[line.left.lineCode] || diffLineCommentForms[line.right.lineCode]"
             :key="line.left.lineCode || line.right.lineCode"
             class="notes_holder"
           >
@@ -163,6 +167,14 @@ export default {
                   :notes="discussionsByLineCode[line.left.lineCode]"
                 />
               </div>
+              <diff-line-note-form
+                v-if="diffLineCommentForms[line.left.lineCode] && diffLineCommentForms[line.left.lineCode].left"
+                :diff-file="diffFile"
+                :diff-lines="diffLines"
+                :line="line.left"
+                :note-target-line="diffLines[index - 1].left"
+                position="left"
+              />
             </td>
             <td class="notes_line new"></td>
             <td class="notes_content parallel new">
@@ -174,8 +186,17 @@ export default {
                   :notes="discussionsByLineCode[line.right.lineCode]"
                 />
               </div>
+              <diff-line-note-form
+                v-if="diffLineCommentForms[line.right.lineCode] && diffLineCommentForms[line.right.lineCode].right"
+                :diff-file="diffFile"
+                :diff-lines="diffLines"
+                :line="line.right"
+                :note-target-line="diffLines[index - 1].right"
+                position="right"
+              />
             </td>
           </tr>
+          <!--
           <tr
             v-if="line.left.type === 'commentForm' || line.right.type === 'commentForm'"
             :key="line.id"
@@ -203,6 +224,7 @@ export default {
               />
             </td>
           </tr>
+          -->
         </template>
       </tbody>
     </table>

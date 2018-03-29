@@ -44,6 +44,7 @@ export default {
 
       this.cancelCommentForm({
         linePosition: position,
+        lineCode: line.lineCode,
         diffLines,
         formId: line.id,
       });
