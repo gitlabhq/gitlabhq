@@ -1,5 +1,9 @@
+- checked = local_assigns.fetch(:checked, nil)
+- check_box_options = {}
+- check_box_options[:checked] = checked unless checked.nil?
+
 .form-group
-  = f.check_box :mirror_trigger_builds, class: "pull-left"
+  = f.check_box :mirror_trigger_builds, check_box_options.merge(class: "pull-left")
   .prepend-left-20
     = f.label :mirror_trigger_builds, "Trigger pipelines for mirror updates", class: "label-light"
     %p.light.append-bottom-0

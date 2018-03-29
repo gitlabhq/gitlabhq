@@ -55,7 +55,7 @@
                 You can only assign yourself to be the mirror user.
 
             .form-group
-              = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left'
+              = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left', checked: false
               .prepend-left-20
                 = f.label :mirror_overwrites_diverged_branches, 'Overwrite diverged branches', class: 'label-light'
                 .help-block
@@ -64,7 +64,7 @@
                   mirroring will fail. Other diverged branches are silently ignored.
 
             - if @project.builds_enabled?
-              = render 'shared/mirror_trigger_builds_setting', f: f
+              = render 'shared/mirror_trigger_builds_setting', f: f, checked: false
 
           .form-group
             = check_box_tag :only_protected_branches, '1', false, class: 'pull-left js-mirror-protected'
