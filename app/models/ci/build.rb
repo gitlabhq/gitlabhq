@@ -6,6 +6,8 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
+    include Gitlab::Utils::StrongMemoize
+
     prepend EE::Ci::Build
 
     MissingDependenciesError = Class.new(StandardError)
@@ -34,10 +36,11 @@ module Ci
     # The "environment" field for builds is a String, and is the unexpanded name!
     #
     def persisted_environment
-      @persisted_environment ||= Environment.find_by(
-        name: expanded_environment_name,
-        project: project
-      )
+      return unless has_environment?
+
+      strong_memoize(:persisted_environment) do
+        Environment.find_by(name: expanded_environment_name, project: project)
+      end
     end
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
@@ -216,7 +219,9 @@ module Ci
     end
 
     def expanded_environment_name
-      if has_environment?
+      return unless has_environment?
+
+      strong_memoize(:expanded_environment_name) do
         ExpandVariables.expand(environment, simple_variables)
       end
     end
