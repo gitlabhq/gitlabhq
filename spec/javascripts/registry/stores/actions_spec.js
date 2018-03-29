@@ -49,6 +49,7 @@ describe('Actions Registry Store', () => {
             { type: types.TOGGLE_MAIN_LOADING },
             { type: types.SET_REPOS_LIST, payload: reposServerResponse },
           ],
+          [],
           done,
         );
       });
@@ -88,6 +89,7 @@ describe('Actions Registry Store', () => {
               },
             },
           ],
+          [],
           done,
         );
       });
@@ -101,6 +103,7 @@ describe('Actions Registry Store', () => {
         'endpoint',
         mockedState,
         [{ type: types.SET_MAIN_ENDPOINT, payload: 'endpoint' }],
+        [],
         done,
       );
     });
@@ -113,6 +116,7 @@ describe('Actions Registry Store', () => {
         null,
         mockedState,
         [{ type: types.TOGGLE_MAIN_LOADING }],
+        [],
         done,
       );
     });

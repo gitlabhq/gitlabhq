@@ -25,6 +25,7 @@ describe('Actions Notes Store', () => {
         notesDataMock,
         { notesData: {} },
         [{ type: 'SET_NOTES_DATA', payload: notesDataMock }],
+        [],
         done,
       );
     });
@@ -37,6 +38,7 @@ describe('Actions Notes Store', () => {
         noteableDataMock,
         { noteableData: {} },
         [{ type: 'SET_NOTEABLE_DATA', payload: noteableDataMock }],
+        [],
         done,
       );
     });
@@ -49,6 +51,7 @@ describe('Actions Notes Store', () => {
         userDataMock,
         { userData: {} },
         [{ type: 'SET_USER_DATA', payload: userDataMock }],
+        [],
         done,
       );
     });
@@ -61,6 +64,7 @@ describe('Actions Notes Store', () => {
         'timestamp',
         { lastFetchedAt: {} },
         [{ type: 'SET_LAST_FETCHED_AT', payload: 'timestamp' }],
+        [],
         done,
       );
     });
@@ -73,6 +77,7 @@ describe('Actions Notes Store', () => {
         [individualNote],
         { notes: [] },
         [{ type: 'SET_INITIAL_NOTES', payload: [individualNote] }],
+        [],
         done,
       );
     });
@@ -85,6 +90,7 @@ describe('Actions Notes Store', () => {
         'hash',
         { notes: [] },
         [{ type: 'SET_TARGET_NOTE_HASH', payload: 'hash' }],
+        [],
         done,
       );
     });
@@ -97,6 +103,7 @@ describe('Actions Notes Store', () => {
         { discussionId: discussionMock.id },
         { notes: [discussionMock] },
         [{ type: 'TOGGLE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
         done,
       );
     });
@@ -164,6 +171,7 @@ describe('Actions Notes Store', () => {
         true,
         {},
         [{ type: 'TOGGLE_STATE_BUTTON_LOADING', payload: true }],
+        [],
         done,
       );
     });
@@ -174,6 +182,7 @@ describe('Actions Notes Store', () => {
         false,
         {},
         [{ type: 'TOGGLE_STATE_BUTTON_LOADING', payload: false }],
+        [],
         done,
       );
     });
@@ -181,11 +190,11 @@ describe('Actions Notes Store', () => {
 
   describe('toggleIssueLocalState', () => {
     it('sets issue state as closed', done => {
-      testAction(actions.toggleIssueLocalState, 'closed', {}, [{ type: 'CLOSE_ISSUE' }], done);
+      testAction(actions.toggleIssueLocalState, 'closed', {}, [{ type: 'CLOSE_ISSUE' }], [], done);
     });
 
     it('sets issue state as reopened', done => {
-      testAction(actions.toggleIssueLocalState, 'reopened', {}, [{ type: 'REOPEN_ISSUE' }], done);
+      testAction(actions.toggleIssueLocalState, 'reopened', {}, [{ type: 'REOPEN_ISSUE' }], [], done);
     });
   });
 
