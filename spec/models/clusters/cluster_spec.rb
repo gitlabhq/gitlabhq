@@ -39,6 +39,30 @@ describe Clusters::Cluster do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '.user_provided' do
+    subject { described_class.user_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_user) }
+
+    before do
+      create(:cluster, :provided_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_provided' do
+    subject { described_class.gcp_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :provided_by_user)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'validation' do
     subject { cluster.valid? }
 

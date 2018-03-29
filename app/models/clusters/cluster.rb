@@ -50,6 +50,8 @@ module Clusters
 
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
+    scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
+    scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
 
     def status_name
       if provider
