@@ -1,5 +1,5 @@
 <script>
-import diffFileHeader from '../../notes/components/diff_file_header.vue';
+import diffFileHeader from './diff_file_header.vue';
 import diffContent from './diff_content.vue';
 
 export default {

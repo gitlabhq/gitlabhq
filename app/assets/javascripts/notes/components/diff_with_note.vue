@@ -3,7 +3,7 @@ import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import DiffFileHeader from './diff_file_header.vue';
+import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 
 export default {
   components: {
