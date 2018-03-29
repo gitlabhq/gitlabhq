@@ -116,4 +116,35 @@ describe GroupsFinder do
       end
     end
   end
+
+  describe '#all_available?' do
+    let(:params) { nil }
+    let(:group_finder) { described_class.new(nil, params) }
+
+    subject { group_finder.send(:all_available?) }
+
+    context 'with params[:all_available] = true' do
+      let(:params) { { all_available: true } }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with params[:all_available] = false' do
+      let(:params) { { all_available: false } }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with param[:all_available] = nil' do
+      let(:group_finder) { described_class.new(nil) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'without key :all_available' do
+      let(:group_finder) { described_class.new(nil) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end
