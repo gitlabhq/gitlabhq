@@ -1,36 +1,36 @@
 <script>
-  export default {
-    props: {
-      generatedLinePath: {
-        type: String,
-        required: true,
-      },
-      generatedAreaPath: {
-        type: String,
-        required: true,
-      },
-      lineStyle: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      lineColor: {
-        type: String,
-        required: true,
-      },
-      areaColor: {
-        type: String,
-        required: true,
-      },
+export default {
+  props: {
+    generatedLinePath: {
+      type: String,
+      required: true,
     },
-    computed: {
-      strokeDashArray() {
-        if (this.lineStyle === 'dashed') return '3, 1';
-        if (this.lineStyle === 'dotted') return '1, 1';
-        return null;
-      },
+    generatedAreaPath: {
+      type: String,
+      required: true,
     },
-  };
+    lineStyle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lineColor: {
+      type: String,
+      required: true,
+    },
+    areaColor: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    strokeDashArray() {
+      if (this.lineStyle === 'dashed') return '3, 1';
+      if (this.lineStyle === 'dotted') return '1, 1';
+      return null;
+    },
+  },
+};
 </script>
 <template>
   <g>

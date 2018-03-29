@@ -21,22 +21,19 @@ module Gitlab
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         project = repository.project
-        repo_path = repository.path_to_repo
-        params = {
+
+        {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
           GL_USERNAME: user&.username,
-          RepoPath: repo_path,
-          ShowAllRefs: show_all_refs
+          ShowAllRefs: show_all_refs,
+          Repository: repository.gitaly_repository.to_h,
+          RepoPath: 'ignored but not allowed to be empty in gitlab-workhorse',
+          GitalyServer: {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          }
         }
-        server = {
-          address: Gitlab::GitalyClient.address(project.repository_storage),
-          token: Gitlab::GitalyClient.token(project.repository_storage)
-        }
-        params[:Repository] = repository.gitaly_repository.to_h
-        params[:GitalyServer] = server
-
-        params
       end
 
       def artifact_upload_ok

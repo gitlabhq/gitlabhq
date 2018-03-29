@@ -1,0 +1,5 @@
+---
+title: Avoid validation errors when running the Pages domain verification service
+merge_request: 17992
+author:
+type: fixed
