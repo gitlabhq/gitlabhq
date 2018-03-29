@@ -167,6 +167,7 @@ new commits are pushed to the source branch of the merge request:
 NOTE: **Note:**
 Approvals do not get reset when [rebasing a merge request](fast_forward_merge.md)
 from the UI.
+However, approvals will be reset if the target branch is changed.
 
 If you want approvals to persist, independent of changes to the merge request,
 turn this setting to off by unchecking the box and saving the changes.
