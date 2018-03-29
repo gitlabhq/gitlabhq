@@ -44,6 +44,10 @@ describe Gitlab::Ci::Status::Build::Stop do
     describe '#action_title' do
       it { expect(subject.action_title).to eq 'Stop' }
     end
+
+    describe '#action_button_title' do
+      it { expect(subject.action_button_title).to eq 'Stop this environment' }
+    end
   end
 
   describe '.matches?' do

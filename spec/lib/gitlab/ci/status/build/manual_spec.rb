@@ -8,6 +8,6 @@ describe Gitlab::Ci::Status::Build::Manual do
   end
 
   describe '#illustration' do
-    it { expect(subject.illustration).to include(:image, :size, :title, :content, :action_path, :action_method) }
+    it { expect(subject.illustration).to include(:image, :size, :title, :content) }
   end
 end
