@@ -51,12 +51,13 @@ export default {
   methods: {
     ...mapActions(['toggleDiscussion']),
     getTooltipText(noteData) {
-      const truncatedNote =
-        noteData.note.length > LENGTH_OF_AVATAR_TOOLTIP
-          ? truncate(noteData.note, LENGTH_OF_AVATAR_TOOLTIP)
-          : noteData.note;
+      let note = noteData.note;
 
-      return `${noteData.author.name}: ${truncatedNote}`;
+      if (note.length > LENGTH_OF_AVATAR_TOOLTIP) {
+        note = truncate(note, LENGTH_OF_AVATAR_TOOLTIP);
+      }
+
+      return `${noteData.author.name}: ${note}`;
     },
     toggleDiscussions() {
       this.discussions.forEach(discussion => {
