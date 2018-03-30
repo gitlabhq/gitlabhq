@@ -363,7 +363,7 @@ class NotificationService
     end
   end
 
-  def issue_due_email(issue)
+  def issue_due(issue)
     recipients = NotificationRecipientService.build_recipients(
       issue,
       issue.author,

@@ -230,7 +230,7 @@ module NotificationRecipientService
 
         add_subscribed_users
 
-        if [:new_issue, :new_merge_request, :due_date_issue].include?(custom_action)
+        if [:new_issue, :new_merge_request].include?(custom_action)
           # These will all be participants as well, but adding with the :mention
           # type ensures that users with the mention notification level will
           # receive them, too.
@@ -238,7 +238,7 @@ module NotificationRecipientService
 
           # Add the assigned users, if any
           assignees = case custom_action
-                      when :new_issue, :due_date_issue
+                      when :new_issue
                         target.assignees
                       else
                         target.assignee

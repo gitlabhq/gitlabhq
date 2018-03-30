@@ -933,6 +933,37 @@ describe NotificationService, :mailer do
         let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
     end
+
+    describe '#issue_due' do
+      it 'sends email to issue notification recipients' do
+        notification.issue_due(issue)
+
+        should_email(issue.assignees.first)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it 'sends the email from the author' do
+        notification.issue_due(issue)
+        email = find_email_for(@subscriber)
+
+        expect(email.header[:from].display_names).to eq([issue.author.name])
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_due(issue) }
+      end
+    end
   end
 
   describe 'Merge Requests' do
