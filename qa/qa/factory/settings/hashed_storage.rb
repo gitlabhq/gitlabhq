@@ -9,9 +9,11 @@ module QA
           Page::Menu::Main.act { go_to_admin_area }
           Page::Menu::Admin.act { go_to_settings }
 
-          Page::Admin::Settings.act do
-            enable_hashed_storage
-            save_settings
+          Page::Admin::Settings::Main.perform do |setting|
+            setting.expand_repository_storage do |page|
+              enable_hashed_storage
+              save_settings
+            end
           end
 
           QA::Page::Menu::Main.act { sign_out }

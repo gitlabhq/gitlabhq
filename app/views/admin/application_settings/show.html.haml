@@ -136,5 +136,49 @@
   .settings-content
     = render 'spam'
 
+%section.settings.as-abuse.no-animate#js-abuse-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Abuse reports')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Set notification email for abuse reports.')
+  .settings-content
+    = render 'abuse'
+
+%section.settings.as-logging.no-animate#js-logging-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Error Reporting and Logging')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable Sentry for error reporting and logging.')
+  .settings-content
+    = render 'logging'
+
+%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository storage')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure storage path and circuit breaker settings.')
+  .settings-content
+    = render 'repository_storage'
+
+%section.settings.as-repository-check.no-animate#js-repository-check-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository maintenance')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure automatic git checks and housekeeping on repositories.')
+  .settings-content
+    = render 'repository_check'
+
 .prepend-top-20
   = render 'form'
