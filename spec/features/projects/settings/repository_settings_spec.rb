@@ -90,17 +90,16 @@ feature 'Repository settings' do
     end
 
     context 'Deploy tokens' do
-      let(:deploy_token) { create(:deploy_token, project: project, expires_at: Date.today + 2.days) }
+      let(:deploy_token) { create(:deploy_token, project: project) }
 
       before do
         project.deploy_tokens << deploy_token
         visit project_settings_repository_path(project)
-      end 
+      end
 
       scenario 'view deploy tokens' do
         within('.deploy-tokens') do
           expect(page).to have_content(deploy_token.name)
-          expect(page).to have_content('In 1 day')
           expect(page).to have_content(deploy_token.scopes.join(", "))
         end
       end
@@ -121,7 +120,6 @@ feature 'Repository settings' do
           click_link "Revoke #{deploy_token.name}"
 
           expect(page).not_to have_content(deploy_token.name)
-          expect(page).not_to have_content('In 1 day')
           expect(page).not_to have_content(deploy_token.scopes.join(", "))
         end
       end

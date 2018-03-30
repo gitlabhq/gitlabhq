@@ -55,11 +55,9 @@ module Projects
       end
 
       def define_deploy_token
-        @deploy_token = @project.deploy_tokens.build(deploy_token_attributes)
-      end
-
-      def deploy_token_attributes
-        params.fetch(:deploy_token, {}).permit(:name, :expires_at, scopes: [])
+        attributes = @deploy_tokens.attributes_deploy_token
+        @deploy_token = @project.deploy_tokens.build(attributes)
+        @deploy_token.valid? unless attributes.empty?
       end
     end
   end

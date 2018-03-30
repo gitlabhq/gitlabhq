@@ -3,16 +3,12 @@ class Projects::DeployTokensController < Projects::ApplicationController
 
   def create
     @token = DeployTokens::CreateService.new(@project, current_user, deploy_token_params).execute
-    token_params = {}
 
     if @token.valid?
       flash[:notice] = 'Your new project deploy token has been created.'
-    else
-      token_params = @token.attributes.slice("name", "scopes", "expires_at")
-      flash[:alert] = @token.errors.full_messages.join(', ').html_safe
     end
 
-    redirect_to project_settings_repository_path(project, deploy_token: token_params)
+    redirect_to project_settings_repository_path(project)
   end
 
   def revoke

@@ -27,6 +27,11 @@ describe Projects::DeployTokensController do
         subject
         expect(flash[:notice]).to eq('Your new project deploy token has been created.')
       end
+
+      it 'should redirect to project settings repository' do
+        subject
+        expect(response).to redirect_to project_settings_repository_path(project)
+      end
     end
 
     context 'with invalid params' do
@@ -36,9 +41,9 @@ describe Projects::DeployTokensController do
         expect { subject }.not_to change(DeployToken, :count)
       end
 
-      it 'should include a flash alert with the error message' do
+      it 'should redirect to project settings repository' do
         subject
-        expect(flash[:alert]).to eq("Scopes can't be blank")
+        expect(response).to redirect_to project_settings_repository_path(project)
       end
     end
 

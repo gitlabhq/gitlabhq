@@ -19,8 +19,8 @@ class DeployToken < ActiveRecord::Base
     update!(revoked: true)
   end
 
-  def self.redis_shared_state_key(user_id)
-    "gitlab:personal_access_token:#{user_id}"
+  def redis_shared_state_key(user_id)
+    "gitlab:deploy_token:#{project_id}:#{user_id}"
   end
 
   def active?

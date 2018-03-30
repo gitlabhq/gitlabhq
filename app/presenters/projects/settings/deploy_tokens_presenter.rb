@@ -23,11 +23,20 @@ module Projects
         end
       end
 
-      def new_deploy_token
-        @new_deploy_token ||= Gitlab::Redis::SharedState.with do |redis|
+      def temporal_token
+        @temporal_token ||= Gitlab::Redis::SharedState.with do |redis|
           token = redis.get(deploy_token_key)
           redis.del(deploy_token_key)
           token
+        end
+      end
+
+      def attributes_deploy_token
+        @attributes_deploy_token ||= Gitlab::Redis::SharedState.with do |redis|
+          attributes_key = deploy_token_key + ":attributes"
+          attributes_content = redis.get(attributes_key) || '{}'
+          redis.del(attributes_key)
+          JSON.parse(attributes_content)
         end
       end
 
@@ -41,7 +50,7 @@ module Projects
       end
 
       def deploy_token_key
-        DeployToken.redis_shared_state_key(current_user.id)
+        @deploy_token_key ||= project.deploy_tokens.new.redis_shared_state_key(current_user.id)
       end
     end
   end
