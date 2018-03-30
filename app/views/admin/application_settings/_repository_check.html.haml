@@ -1,0 +1,62 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .sub-section
+      %h4 Repository checks
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :repository_checks_enabled do
+              = f.check_box :repository_checks_enabled
+              Enable Repository Checks
+            .help-block
+              GitLab will periodically run
+              %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
+              in all project and wiki repositories to look for silent disk corruption issues.
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
+          .help-block
+            If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+
+    .sub-section
+      %h4 Housekeeping
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :housekeeping_enabled do
+              = f.check_box :housekeeping_enabled
+              Enable automatic repository housekeeping (git repack, git gc)
+            .help-block
+              If you keep automatic housekeeping disabled for a long time Git
+              repository access on your GitLab server will become slower and your
+              repositories will use more disk space. We recommend to always leave
+              this enabled.
+          .checkbox
+            = f.label :housekeeping_bitmaps_enabled do
+              = f.check_box :housekeeping_bitmaps_enabled
+              Enable Git pack file bitmap creation
+            .help-block
+              Creating pack file bitmaps makes housekeeping take a little longer but
+              bitmaps should accelerate 'git clone' performance.
+      .form-group
+        = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :housekeeping_incremental_repack_period, class: 'form-control'
+          .help-block
+            Number of Git pushes after which an incremental 'git repack' is run.
+      .form-group
+        = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :housekeeping_full_repack_period, class: 'form-control'
+          .help-block
+            Number of Git pushes after which a full 'git repack' is run.
+      .form-group
+        = f.label :housekeeping_gc_period, 'Git GC period', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :housekeeping_gc_period, class: 'form-control'
+          .help-block
+            Number of Git pushes after which 'git gc' is run.
+
+  = f.submit 'Save changes', class: "btn btn-success"
