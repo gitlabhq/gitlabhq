@@ -120,7 +120,7 @@ GEM
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
     cause (0.1)
-    charlock_holmes (0.7.5)
+    charlock_holmes (0.7.6)
     childprocess (0.7.0)
       ffi (~> 1.0, >= 1.0.11)
     chronic (0.10.2)
