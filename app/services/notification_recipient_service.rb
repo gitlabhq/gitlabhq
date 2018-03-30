@@ -204,10 +204,11 @@ module NotificationRecipientService
       attr_reader :action
       attr_reader :previous_assignee
       attr_reader :skip_current_user
-      def initialize(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
+      def initialize(target, current_user, action:, custom_action: nil, previous_assignee: nil, skip_current_user: true)
         @target = target
         @current_user = current_user
         @action = action
+        @custom_action = custom_action
         @previous_assignee = previous_assignee
         @skip_current_user = skip_current_user
       end

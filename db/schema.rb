@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180327101207) do
+ActiveRecord::Schema.define(version: 20180330121048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1311,6 +1311,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
+    t.boolean "issue_due"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree

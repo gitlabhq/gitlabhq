@@ -1,6 +1,6 @@
 - if Gitlab::CurrentSettings.email_author_in_body
   %p.details
-    Issue created by #{link_to @issue.author_name, user_url(@issue.author)} is due:
+    #{link_to @issue.author_name, user_url(@issue.author)}'s issue is due soon.
 
 - if @issue.assignees.any?
   %p

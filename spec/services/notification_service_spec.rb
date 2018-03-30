@@ -935,16 +935,23 @@ describe NotificationService, :mailer do
     end
 
     describe '#issue_due' do
-      it 'sends email to issue notification recipients' do
+      before do
+        update_custom_notification(:issue_due, @u_guest_custom, resource: project)
+        update_custom_notification(:issue_due, @u_custom_global)
+      end
+
+      it 'sends email to issue notification recipients, excluding watchers' do
         notification.issue_due(issue)
 
         should_email(issue.assignees.first)
         should_email(issue.author)
-        should_email(@u_watcher)
-        should_email(@u_guest_watcher)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
+        should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)

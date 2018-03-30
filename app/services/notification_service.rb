@@ -377,7 +377,8 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(
       issue,
       issue.author,
-      action: "due_date",
+      action: 'due',
+      custom_action: :issue_due,
       skip_current_user: false
     )
 
