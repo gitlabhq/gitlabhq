@@ -1759,21 +1759,11 @@ module Gitlab
       end
 
       def alternate_object_directories
-        relative_paths = relative_object_directories
-
-        if relative_paths.any?
-          relative_paths.map { |d| File.join(path, d) }
-        else
-          absolute_object_directories.flat_map { |d| d.split(File::PATH_SEPARATOR) }
-        end
+        relative_object_directories.map { |d| File.join(path, d) }
       end
 
       def relative_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      def absolute_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).flatten.compact
+        Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
