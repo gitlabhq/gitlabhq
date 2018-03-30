@@ -5,8 +5,8 @@ module EE
         super + %i[
           header_message
           footer_message
-          background_color
-          font_color
+          message_background_color
+          message_font_color
         ]
       end
     end

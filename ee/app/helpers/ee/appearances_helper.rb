@@ -21,14 +21,14 @@ module EE
       class_names << field_sym.to_s.dasherize
 
       content_tag :div, class: class_names, style: message_style do
-        ::Banzai.render_field(current_appearance, field_sym).html_safe
+        markdown_field(current_appearance, field_sym)
       end
     end
 
     def message_style
       style = ''
-      style << "background-color: #{current_appearance.background_color};"
-      style << "color: #{current_appearance.font_color}"
+      style << "background-color: #{current_appearance.message_background_color};"
+      style << "color: #{current_appearance.message_font_color}"
       style
     end
   end

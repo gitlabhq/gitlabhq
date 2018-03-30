@@ -10,7 +10,7 @@ class AddHeaderAndFooterBannersToAppearancesTable < ActiveRecord::Migration
     add_column :appearances, :footer_message, :text
     add_column :appearances, :footer_message_html, :text
 
-    add_column :appearances, :background_color, :text
-    add_column :appearances, :font_color, :text
+    add_column :appearances, :message_background_color, :text
+    add_column :appearances, :message_font_color, :text
   end
 end
