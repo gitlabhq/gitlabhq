@@ -718,7 +718,7 @@ ActiveRecord::Schema.define(version: 20180327212724) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environment_scalings", force: :cascade do |t|
-    t.integer "production_replicas", null: false
+    t.integer "replicas", null: false
     t.integer "environment_id", null: false
   end
 
@@ -2078,6 +2078,7 @@ ActiveRecord::Schema.define(version: 20180327212724) do
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
+  add_foreign_key "environment_scalings", "environments", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade

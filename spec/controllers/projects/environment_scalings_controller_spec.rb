@@ -43,11 +43,11 @@ describe Projects::EnvironmentScalingsController do
     subject { post :update, namespace_id: project.namespace.to_param, project_id: project, environment_id: environment, environment_scaling: scaling_params, format: :json }
 
     before do
-      environment.create_scaling(production_replicas: 1)
+      environment.create_scaling(replicas: 1)
     end
 
     context 'with valid parameters' do
-      let(:scaling_params) { { production_replicas: '5' } }
+      let(:scaling_params) { { replicas: '5' } }
 
       it 'responds with ok status code' do
         subject
@@ -56,12 +56,12 @@ describe Projects::EnvironmentScalingsController do
       end
 
       it 'updates the scaling options' do
-        expect { subject }.to change { environment.reload.scaling.production_replicas }.to(5)
+        expect { subject }.to change { environment.reload.scaling.replicas }.to(5)
       end
     end
 
     context 'with an invalid parameter' do
-      let(:scaling_params) { { production_replicas: 'hello' } }
+      let(:scaling_params) { { replicas: 'hello' } }
 
       it 'responds with bad_request status code' do
         subject
@@ -70,7 +70,7 @@ describe Projects::EnvironmentScalingsController do
       end
 
       it 'does not update the scaling options' do
-        expect { subject }.not_to change { environment.reload.scaling.production_replicas }
+        expect { subject }.not_to change { environment.reload.scaling.replicas }
       end
     end
   end

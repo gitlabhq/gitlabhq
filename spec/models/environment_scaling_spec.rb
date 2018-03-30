@@ -5,8 +5,8 @@ describe EnvironmentScaling do
 
   it { is_expected.to belong_to(:environment) }
 
-  it { is_expected.to validate_presence_of(:production_replicas) }
-  it { is_expected.to validate_numericality_of(:production_replicas).only_integer }
+  it { is_expected.to validate_presence_of(:replicas) }
+  it { is_expected.to validate_numericality_of(:replicas).only_integer }
 
   describe '#available?' do
     subject { environment_scaling.available? }
@@ -27,6 +27,6 @@ describe EnvironmentScaling do
   describe '#predefined_variables' do
     subject { environment_scaling.predefined_variables }
 
-    it { is_expected.to include({ key: 'PRODUCTION_REPLICAS', value: environment_scaling.production_replicas }) }
+    it { is_expected.to include({ key: 'PRODUCTION_REPLICAS', value: environment_scaling.replicas }) }
   end
 end

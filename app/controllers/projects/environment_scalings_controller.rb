@@ -31,10 +31,10 @@ class Projects::EnvironmentScalingsController < Projects::ApplicationController
 
   def environment_scaling
     environment = project.environments.find(params[:environment_id])
-    @environment_scaling ||= environment.scaling || environment.create_scaling(production_replicas: 1)
+    @environment_scaling ||= environment.scaling || environment.create_scaling(replicas: 1)
   end
 
   def scaling_params
-    params.require(:environment_scaling).permit(:production_replicas)
+    params.require(:environment_scaling).permit(:replicas)
   end
 end
