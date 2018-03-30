@@ -44,6 +44,14 @@
       runnerId() {
         return `#${this.job.runner.id}`;
       },
+      retryButtonClass() {
+        let className = 'js-retry-button pull-right btn btn-retry visible-md-block visible-lg-block';
+        className +=
+          this.job.status && this.job.status.retry_button
+            ? ' btn-primary'
+            : ' btn-inverted-secondary';
+        return className;
+      },
       hasTimeout() {
         return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
       },
@@ -75,6 +83,32 @@
 </script>
 <template>
   <div>
+    <div class="block">
+      <strong class="inline prepend-top-8">
+        {{ job.name }}
+      </strong>
+      <a
+        v-if="job.retry_path"
+        :class="retryButtonClass"
+        :href="job.retry_path"
+        data-method="post"
+        rel="nofollow"
+      >
+        Retry
+      </a>
+      <a
+        aria-label="Toggle Sidebar"
+        class="gutter-toggle pull-right visible-xs-block visible-sm-block js-sidebar-build-toggle"
+        href="#"
+        role="button"
+      >
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-angle-double-right"
+        ></i>
+      </a>
+    </div>
     <template v-if="shouldRenderContent">
       <div
         class="block retry-link"

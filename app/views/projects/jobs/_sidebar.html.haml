@@ -1,13 +1,6 @@
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
-      .block
-        %strong.inline.prepend-top-8
-          = @build.name
-        - if can?(current_user, :update_build, @build) && @build.retryable?
-          = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button pull-right btn btn-inverted-secondary btn-retry visible-md-block visible-lg-block', method: :post
-        %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-build-toggle{ href: "#", 'aria-label': 'Toggle Sidebar', role: 'button' }
-          = icon('angle-double-right')
 
       #js-details-block-vue
 
