@@ -65,7 +65,10 @@ describe('Job details header', () => {
 
     it('should render provided job information', () => {
       expect(
-        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+        vm.$el
+          .querySelector('.header-main-content')
+          .textContent.replace(/\s+/g, ' ')
+          .trim(),
       ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
     });
 
@@ -82,7 +85,10 @@ describe('Job details header', () => {
       vm = mountComponent(HeaderComponent, props);
 
       expect(
-        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+        vm.$el
+          .querySelector('.header-main-content')
+          .textContent.replace(/\s+/g, ' ')
+          .trim(),
       ).toEqual('failed Job #123 created 3 weeks ago by Foo');
     });
   });

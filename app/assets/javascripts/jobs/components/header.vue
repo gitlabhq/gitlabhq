@@ -1,69 +1,70 @@
 <script>
-  import ciHeader from '../../vue_shared/components/header_ci_component.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import jobStatusReason from './job_status_reason.vue';
+import ciHeader from '../../vue_shared/components/header_ci_component.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import jobStatusReason from './job_status_reason.vue';
 
-  export default {
-    name: 'JobHeaderSection',
-    components: {
-      ciHeader,
-      loadingIcon,
-      jobStatusReason,
+export default {
+  name: 'JobHeaderSection',
+  components: {
+    ciHeader,
+    loadingIcon,
+    jobStatusReason,
+  },
+  props: {
+    job: {
+      type: Object,
+      required: true,
     },
-    props: {
-      job: {
-        type: Object,
-        required: true,
-      },
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
+    isLoading: {
+      type: Boolean,
+      required: true,
     },
-    data() {
-      return {
-        actions: this.getActions(),
-      };
+  },
+  data() {
+    return {
+      actions: this.getActions(),
+    };
+  },
+  computed: {
+    status() {
+      return this.job && this.job.status;
     },
-    computed: {
-      status() {
-        return this.job && this.job.status;
-      },
-      shouldRenderContent() {
-        return !this.isLoading && Object.keys(this.job).length;
-      },
-      shouldRenderReason() {
-        return !!(this.job.status && this.job.status.failure_description);
-      },
-      /**
-       * When job has not started the key will be `false`
-       * When job started the key will be a string with a date.
-       */
-      jobStarted() {
-        return !this.job.started === false;
-      },
+    shouldRenderContent() {
+      return !this.isLoading && Object.keys(this.job).length;
     },
-    watch: {
-      job() {
-        this.actions = this.getActions();
-      },
+    shouldRenderReason() {
+      return !!(this.job.status && this.job.status.failure_description);
     },
-    methods: {
-      getActions() {
-        const actions = [];
+    /**
+     * When job has not started the key will be `false`
+     * When job started the key will be a string with a date.
+     */
+    jobStarted() {
+      return !this.job.started === false;
+    },
+  },
+  watch: {
+    job() {
+      this.actions = this.getActions();
+    },
+  },
+  methods: {
+    getActions() {
+      const actions = [];
 
-        if (this.job.new_issue_path) {
-          actions.push({
-            label: 'New issue',
-            path: this.job.new_issue_path,
-            cssClass: 'js-new-issue btn btn-new btn-inverted visible-md-block visible-lg-block',
-            type: 'link',
-          });
-        }
-        return actions;
-      },
+      if (this.job.new_issue_path) {
+        actions.push({
+          label: 'New issue',
+          path: this.job.new_issue_path,
+          cssClass:
+            'js-new-issue btn btn-new btn-inverted visible-md-block visible-lg-block',
+          type: 'link',
+        });
+      }
+      return actions;
     },
-  };
+  },
+};
 </script>
 <template>
   <header>
