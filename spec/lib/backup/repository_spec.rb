@@ -70,6 +70,17 @@ describe Backup::Repository do
         end
       end
     end
+
+    describe 'folders without permissions' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EACCES)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:access_denied_error)
+        subject.restore
+      end
+    end
   end
 
   describe '#empty_repo?' do
