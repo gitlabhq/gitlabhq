@@ -25,11 +25,12 @@ describe UpdateAuthorizedKeysFile, :migration do
           @cutoff_datetime = UpdateAuthorizedKeysFile::DATETIME_9_3_0_RELEASED
           @keys = []
           Timecop.travel(@cutoff_datetime - 1.day) do
-            2.times { @keys << create(:key) } # 2 keys before cutoff
+            # 2 keys before cutoff
+            2.times { @keys << create(:key) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
           end
 
           Timecop.travel(@cutoff_datetime + 1.day) do
-            2.times { @keys << create(:key) } # 2 keys after cutoff
+            2.times { @keys << create(:key) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
           end
         end
 
@@ -50,8 +51,8 @@ describe UpdateAuthorizedKeysFile, :migration do
 
       context 'when an SSH key exists in authorized_keys but not in the DB' do
         before do
-          @key_to_stay = create(:key)
-          @key_to_delete = create(:key)
+          @key_to_stay = create(:key) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+          @key_to_delete = create(:key) # rubocop:disable RSpec/FactoriesInMigrationSpecs
           @key_to_delete.delete
         end
 
