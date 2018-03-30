@@ -115,14 +115,18 @@ in the table below.
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
 | `Transition ID` | This is the ID of a transition that moves issues to the desired state.  **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
-### Getting a Transition ID
+### Getting a transition ID
 
-In the most recent Jira UI, you can no longer see transition IDs in the workflow administration UI. You can get the ID you need in either of the following ways:
+In the most recent JIRA UI, you can no longer see transition IDs in the workflow
+administration UI. You can get the ID you need in either of the following ways:
 
-1. Use the API, with a request like https://yourcompany.atlassian.net/rest/api/2/issue/ISSUE-123/transitions using an issue that is in the appropriate "open" state
-1. By mousing over the link for the transition you want and looking for the "action" parameter in the URL
+1. By using the API, with a request like `https://yourcompany.atlassian.net/rest/api/2/issue/ISSUE-123/transitions`
+   using an issue that is in the appropriate "open" state
+1. By mousing over the link for the transition you want and looking for the
+   "action" parameter in the URL
 
-Note that the transition ID may vary between workflows (i.e. bug vs. story), even if the status you are changing to is the same.
+Note that the transition ID may vary between workflows (e.g., bug vs. story),
+even if the status you are changing to is the same.
 
 After saving the configuration, your GitLab project will be able to interact
 with all JIRA projects in your JIRA instance.
