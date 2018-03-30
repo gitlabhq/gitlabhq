@@ -1346,20 +1346,19 @@ class Project < ActiveRecord::Base
     Dir.exist?(public_pages_path)
   end
 
-  def pages_url
-    subdomain, _, url_path = full_path.partition('/')
-
-    # The hostname always needs to be in downcased
-    # All web servers convert hostname to lowercase
-    host = "#{subdomain}.#{Settings.pages.host}".downcase
-
+  def pages_group_url
     # The host in URL always needs to be downcased
-    url = Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
-      "#{prefix}#{subdomain}."
+    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
+      "#{prefix}#{pages_subdomain}."
     end.downcase
+  end
+
+  def pages_url
+    url = pages_group_url
+    url_path = full_path.partition('/').last
 
     # If the project path is the same as host, we serve it as group page
-    return url if host == url_path
+    return url if url == "#{Settings.pages.protocol}://#{url_path}"
 
     "#{url}/#{url_path}"
   end
