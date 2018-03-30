@@ -63,6 +63,18 @@ describe Clusters::Cluster do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '.gcp_installed' do
+    subject { described_class.gcp_installed }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :providing_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'validation' do
     subject { cluster.valid? }
 

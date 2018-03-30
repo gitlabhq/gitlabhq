@@ -53,6 +53,8 @@ module Clusters
     scope :disabled, -> { where(enabled: false) }
     scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
     scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
+    scope :gcp_installed, -> { gcp_provided.includes(:provider_gcp).where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }) }
+
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
     def status_name
