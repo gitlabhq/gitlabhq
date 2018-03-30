@@ -19,8 +19,9 @@ describe Gitlab::ImportExport::LfsSaver do
   describe '#save' do
     context 'when the project has LFS objects' do
       let(:lfs_object) { create(:lfs_object, :with_file) }
+
       before do
-        project.lfs_objects << lfs_object\
+        project.lfs_objects << lfs_object
       end
 
       it 'does not cause errors' do
