@@ -1,0 +1,5 @@
+---
+title: For group dashboard and other places, we no longer show groups which the visitor is not a member of (this applies to admins and auditors)
+merge_request: 17884
+author: Roger Rüttimann
+type: changed
