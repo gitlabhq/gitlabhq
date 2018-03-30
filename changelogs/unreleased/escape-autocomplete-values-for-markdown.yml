@@ -1,0 +1,5 @@
+---
+title: Escape Markdown characters properly when using autocomplete
+merge_request:
+author:
+type: fixed
