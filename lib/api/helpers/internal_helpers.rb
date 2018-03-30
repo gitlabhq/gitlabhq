@@ -29,18 +29,6 @@ module API
         {}
       end
 
-      def fix_git_env_repository_paths(env, repository_path)
-        if obj_dir_relative = env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence
-          env['GIT_OBJECT_DIRECTORY'] = File.join(repository_path, obj_dir_relative)
-        end
-
-        if alt_obj_dirs_relative = env['GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE'].presence
-          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = alt_obj_dirs_relative.map { |dir| File.join(repository_path, dir) }
-        end
-
-        env
-      end
-
       def log_user_activity(actor)
         commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
 
