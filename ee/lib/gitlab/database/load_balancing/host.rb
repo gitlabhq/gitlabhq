@@ -7,6 +7,20 @@ module Gitlab
 
         delegate :connection, :release_connection, to: :pool
 
+        CONNECTION_ERRORS =
+          if defined?(PG)
+            [
+              ActionView::Template::Error,
+              ActiveRecord::StatementInvalid,
+              PG::Error
+            ].freeze
+          else
+            [
+              ActionView::Template::Error,
+              ActiveRecord::StatementInvalid
+            ].freeze
+          end
+
         # host - The address of the database.
         # load_balancer - The LoadBalancer that manages this Host.
         def initialize(host, load_balancer)
@@ -36,6 +50,9 @@ module Gitlab
           LoadBalancing.log(:info, "Host #{@host} came back online") if @online
 
           @online
+        rescue *CONNECTION_ERRORS
+          offline!
+          false
         end
 
         def refresh_status
