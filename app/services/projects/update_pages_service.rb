@@ -174,6 +174,9 @@ module Projects
 
     def latest_sha
       project.commit(build.ref).try(:sha).to_s
+    ensure
+      # Close any file descriptors that were opened and free libgit2 buffers
+      project.cleanup
     end
 
     def sha
