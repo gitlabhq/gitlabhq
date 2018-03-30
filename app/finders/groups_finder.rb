@@ -67,10 +67,10 @@ class GroupsFinder < UnionFinder
   end
 
   def include_public_groups?
-    current_user.nil? || params.fetch(:all_available, true)
+    current_user.nil? || all_available?
   end
 
   def all_available?
-    params[:all_available].nil? ? true : params[:all_available]
+    params.fetch(:all_available, true)
   end
 end
