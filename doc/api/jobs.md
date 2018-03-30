@@ -316,19 +316,19 @@ Example requests:
 - Using the `PRIVATE-TOKEN` header:
 
     ```
-    curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+    curl --location --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
     ```
 
 - Using the `JOB-TOKEN` header (only inside `.gitlab-ci.yml`):
 
     ```
-    curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+    curl --location --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
     ```
 
 - Using the `job_token` parameter (only inside `.gitlab-ci.yml`):
 
     ```
-    curl --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+    curl --location --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
     ```
 
 Response:
