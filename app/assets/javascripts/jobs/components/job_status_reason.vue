@@ -1,17 +1,12 @@
 <script>
-  import icon from '../../vue_shared/components/icon.vue';
-
-  export default {
-    components: {
-      icon,
+export default {
+  props: {
+    job: {
+      type: Object,
+      required: true,
     },
-    props: {
-      job: {
-        type: Object,
-        required: true,
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div
