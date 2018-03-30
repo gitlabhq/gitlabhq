@@ -28,7 +28,7 @@ gem 'default_value_for', gem_versions['default_value_for']
 gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.26.0'
+gem 'rugged', '~> 0.27'
 gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
@@ -44,7 +44,7 @@ gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.5.2'
+gem 'omniauth-google-oauth2', '~> 0.5.3'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
@@ -388,6 +388,8 @@ group :development, :test do
   gem 'stackprof', '~> 0.2.10', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
+
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :test do
@@ -397,7 +399,6 @@ group :test do
   gem 'webmock', '~> 2.3.2'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
-  gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
 end

@@ -245,6 +245,7 @@
                 %strong.fly-out-top-item-name
                   #{ _('Registry') }
 
+
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
           = link_to get_project_wiki_path(@project), class: 'shortcuts-wiki' do

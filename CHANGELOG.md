@@ -4,8 +4,9 @@ entry.
 
 ## 10.6.2 (2018-03-29)
 
-### Fixed (1 change, 1 of them is from the community)
+### Fixed (2 changes, 1 of them is from the community)
 
+- Don't capture trailing punctuation when autolinking. !17965
 - Cloning a repository over HTTPS with LDAP credentials causes a HTTP 401 Access denied. (Horatiu Eugen Vlad)
 
 

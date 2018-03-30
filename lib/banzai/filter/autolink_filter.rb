@@ -105,8 +105,12 @@ module Banzai
           end
         end
 
-        options = link_options.merge(href: match)
-        content_tag(:a, match.html_safe, options) + dropped
+        # match has come from node.to_html above, so we know it's encoded
+        # correctly.
+        html_safe_match = match.html_safe
+        options = link_options.merge(href: html_safe_match)
+
+        content_tag(:a, html_safe_match, options) + dropped
       end
 
       def autolink_filter(text)

@@ -68,7 +68,7 @@ feature 'Group issues page' do
       it 'does not render issue' do
         visit path
 
-        expect(page).not_to have_content issue.title
+        expect(page).not_to have_content issue.title[0..80]
       end
     end
   end

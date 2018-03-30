@@ -42,6 +42,17 @@ feature 'Group show page' do
         expect(page).to have_link project.name
       end
     end
+
+    context 'when group has a private project', :js do
+      let!(:project) { create(:project, :private, namespace: group) }
+
+      it 'does not render private project' do
+        visit path
+
+        expect(page).to have_link group.name
+        expect(page).not_to have_link project.name
+      end
+    end
   end
 
   context 'subgroup support' do
