@@ -296,8 +296,11 @@ Example of response
 
 > **Notes**:
 - [Introduced][ce-2893] in GitLab 8.5.
+<<<<<<< HEAD
 - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
   in [GitLab Premium][ee] 9.5.
+=======
+>>>>>>> upstream/master
 
 Get job artifacts of a project.
 
@@ -313,6 +316,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 
 Example requests:
 
+<<<<<<< HEAD
 - Using the `PRIVATE-TOKEN` header:
 
     ```
@@ -330,6 +334,11 @@ Example requests:
     ```
     curl --location --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
     ```
+=======
+```
+curl --location --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+```
+>>>>>>> upstream/master
 
 Response:
 
@@ -344,8 +353,11 @@ Response:
 
 > **Notes**:
 - [Introduced][ce-5347] in GitLab 8.10.
+<<<<<<< HEAD
 - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
   in [GitLab Premium][ee] 9.5.
+=======
+>>>>>>> upstream/master
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.

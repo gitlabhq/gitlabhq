@@ -1415,12 +1415,15 @@ msgid "Create empty repository"
 msgstr ""
 
 msgid "Create file"
+<<<<<<< HEAD
 msgstr ""
 
 msgid "Create epic"
 msgstr ""
 
 msgid "Create file"
+=======
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Create group label"
@@ -1468,9 +1471,12 @@ msgstr ""
 msgid "Creates a new branch from %{branchName} and re-directs to create a new merge request"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Creating epic"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Cron Timezone"
 msgstr ""
 
@@ -1554,6 +1560,7 @@ msgstr ""
 msgid "Directory name"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Disable"
 msgstr ""
 
@@ -1563,6 +1570,11 @@ msgstr ""
 msgid "Discover GitLab Geo."
 msgstr ""
 
+=======
+msgid "Discard draft"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
@@ -1680,6 +1692,7 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Epic will be removed! Are you sure?"
 msgstr ""
 
@@ -1692,15 +1705,20 @@ msgstr ""
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Error checking branch data. Please try again."
 msgstr ""
 
 msgid "Error committing changes. Please try again."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Error creating epic"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Error fetching contributors data."
 msgstr ""
 
@@ -1946,9 +1964,12 @@ msgstr ""
 msgid "GeoNodes|Replication slot WAL:"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|Replication slots:"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "GroupsTree|Create a project in this group."
 msgstr ""
 
@@ -1995,6 +2016,9 @@ msgid "GeoNodes|Verified"
 msgstr ""
 
 msgid "GeoNodes|Wiki checksums verified:"
+msgstr ""
+
+msgid "Help"
 msgstr ""
 
 msgid "Help"
@@ -2443,9 +2467,12 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Manage all notifications"
 msgstr ""
 
@@ -3419,12 +3446,15 @@ msgstr ""
 msgid "Reviewing"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Runners"
 msgstr ""
 
@@ -3592,21 +3622,27 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Something went wrong while fetching Dependency Scanning."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Something went wrong. Please try again."
 msgstr ""
 
@@ -4318,9 +4354,12 @@ msgstr ""
 msgid "Upvotes"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Use the following registration token during setup:"
 msgstr ""
 
@@ -4333,9 +4372,12 @@ msgstr ""
 msgid "View and edit lines"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "View epics list"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "View file @ "
 msgstr ""
 
@@ -4381,6 +4423,7 @@ msgstr ""
 msgid "Web IDE"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -4390,6 +4433,8 @@ msgstr ""
 msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Wiki"
 msgstr ""
 
