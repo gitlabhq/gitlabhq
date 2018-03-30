@@ -1,7 +1,10 @@
 require 'open3'
+require_relative 'helper'
 
 module Backup
   class Files
+    include Backup::Helper
+
     attr_reader :name, :app_files_dir, :backup_tarball, :files_parent_dir
 
     def initialize(name, app_files_dir)
@@ -35,15 +38,22 @@ module Backup
 
     def restore
       backup_existing_files_dir
-      create_files_dir
 
-      run_pipeline!([%w(gzip -cd), %W(tar -C #{app_files_dir} -xf -)], in: backup_tarball)
+      run_pipeline!([%w(gzip -cd), %W(tar --unlink-first --recursive-unlink -C #{app_files_dir} -xf -)], in: backup_tarball)
     end
 
     def backup_existing_files_dir
-      timestamped_files_path = File.join(files_parent_dir, "#{name}.#{Time.now.to_i}")
+      timestamped_files_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}.#{Time.now.to_i}")
       if File.exist?(app_files_dir)
-        FileUtils.mv(app_files_dir, File.expand_path(timestamped_files_path))
+        # Move all files in the existing repos directory except . and .. to
+        # repositories.old.<timestamp> directory
+        FileUtils.mkdir_p(timestamped_files_path, mode: 0700)
+        files = Dir.glob(File.join(app_files_dir, "*"), File::FNM_DOTMATCH) - [File.join(app_files_dir, "."), File.join(app_files_dir, "..")]
+        begin
+          FileUtils.mv(files, timestamped_files_path)
+        rescue Errno::EACCES
+          access_denied_error(app_files_dir)
+        end
       end
     end
 
