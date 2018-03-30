@@ -30,9 +30,11 @@ describe 'gitlab:uploads:migrate rake tasks' do
     end
   end
 
+  it_behaves_like 'enqueue jobs in batch', batch: 4
+
   context 'Upload has store = nil' do
     before do
-      Upload.where(model: projects.first(5)).update_all(store: nil)
+      Upload.where(model: projects).update_all(store: nil)
     end
 
     it_behaves_like 'enqueue jobs in batch', batch: 4
