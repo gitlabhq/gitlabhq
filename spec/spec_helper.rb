@@ -69,6 +69,7 @@ RSpec.configure do |config|
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
   config.include StubENV
+  config.include ExpectOffense
 
   # EE only
   config.include EE::LicenseHelpers
