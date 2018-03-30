@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe AppearancesHelper do
+  before do
+    user = create(:user)
+    allow(helper).to receive(:current_user).and_return(user)
+  end
+
   describe '#header_message' do
     it 'returns nil when header message field is not set' do
       create(:appearance)
