@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 14:40+0300\n"
-"PO-Revision-Date: 2018-03-27 14:40+0300\n"
+"POT-Creation-Date: 2018-03-30 17:57+0200\n"
+"PO-Revision-Date: 2018-03-30 17:57+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -146,6 +146,9 @@ msgid "Access to failing storages has been temporarily disabled to allow the mou
 msgstr ""
 
 msgid "Account"
+msgstr ""
+
+msgid "Account and limit settings"
 msgstr ""
 
 msgid "Active"
@@ -385,6 +388,12 @@ msgstr ""
 msgid "Assign to"
 msgstr ""
 
+msgid "Assigned Issues"
+msgstr ""
+
+msgid "Assigned Merge Requests"
+msgstr ""
+
 msgid "Assigned to :name"
 msgstr ""
 
@@ -410,6 +419,9 @@ msgid "Authors: %{authors}"
 msgstr ""
 
 msgid "Auto DevOps enabled"
+msgstr ""
+
+msgid "Auto DevOps, runners amd job artifacts"
 msgstr ""
 
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
@@ -1285,6 +1297,9 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
+msgid "Configure the way a user creates a new account."
+msgstr ""
+
 msgid "Connect"
 msgstr ""
 
@@ -1343,6 +1358,9 @@ msgid "ContainerRegistry|Use different image names"
 msgstr ""
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
+msgstr ""
+
+msgid "Continuous Integration and Deployment"
 msgstr ""
 
 msgid "Contribution"
@@ -1412,9 +1430,6 @@ msgid "Create directory"
 msgstr ""
 
 msgid "Create empty repository"
-msgstr ""
-
-msgid "Create file"
 msgstr ""
 
 msgid "Create epic"
@@ -1627,6 +1642,12 @@ msgid "Enable"
 msgstr ""
 
 msgid "Enable Auto DevOps"
+msgstr ""
+
+msgid "Enable and configure InfluxDB metrics."
+msgstr ""
+
+msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
 msgid "Enable classification control using an external service"
@@ -1949,9 +1970,6 @@ msgstr ""
 msgid "GeoNodes|Replication slots:"
 msgstr ""
 
-msgid "GroupsTree|Create a project in this group."
-msgstr ""
-
 msgid "GeoNodes|Repositories checksummed:"
 msgstr ""
 
@@ -1996,14 +2014,6 @@ msgstr ""
 
 msgid "GeoNodes|Wiki checksums verified:"
 msgstr ""
-
-msgid "Help"
-msgstr ""
-
-msgid "Hide value"
-msgid_plural "Hide values"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "GeoNodes|Wikis checksummed:"
 msgstr ""
@@ -2051,6 +2061,9 @@ msgid "Git version"
 msgstr ""
 
 msgid "GitHub import"
+msgstr ""
+
+msgid "GitLab CI Linter has been moved"
 msgstr ""
 
 msgid "GitLab Runner section"
@@ -2177,6 +2190,12 @@ msgid "HealthCheck|Unhealthy"
 msgstr ""
 
 msgid "Help"
+msgstr ""
+
+msgid "Help page"
+msgstr ""
+
+msgid "Help page text and support page url."
 msgstr ""
 
 msgid "Hide value"
@@ -2348,10 +2367,10 @@ msgstr ""
 msgid "Labels can be applied to issues and merge requests to categorize them."
 msgstr ""
 
-msgid "Labels|Promote Label"
+msgid "Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>"
 msgstr ""
 
-msgid "Labels|Promote label %{labelTitle} to Group Label?"
+msgid "Labels|Promote Label"
 msgstr ""
 
 msgid "Last %d day"
@@ -2500,6 +2519,12 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
+msgid "Metrics - Influx"
+msgstr ""
+
+msgid "Metrics - Prometheus"
+msgstr ""
+
 msgid "Metrics|Business"
 msgstr ""
 
@@ -2588,6 +2613,9 @@ msgid "Milestones|Promote %{milestoneTitle} to group milestone?"
 msgstr ""
 
 msgid "Milestones|Promote Milestone"
+msgstr ""
+
+msgid "Milestones|This action cannot be reversed."
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
@@ -2857,6 +2885,9 @@ msgid "Overview"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Pages"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -3524,7 +3555,16 @@ msgstr ""
 msgid "Service URL"
 msgstr ""
 
+msgid "Session expiration, projects limit and attachment size."
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr ""
+
+msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
+msgstr ""
+
+msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
 msgstr ""
 
 msgid "Set up CI/CD"
@@ -3577,10 +3617,22 @@ msgstr ""
 msgid "Sidebar|Weight"
 msgstr ""
 
+msgid "Sign-in restrictions"
+msgstr ""
+
+msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "Size and domain settings for static websites"
+msgstr ""
+
 msgid "Snippets"
 msgstr ""
 
 msgid "Something went wrong on our end"
+msgstr ""
+
+msgid "Something went wrong on our end."
 msgstr ""
 
 msgid "Something went wrong trying to change the confidentiality of this issue"
@@ -3593,9 +3645,6 @@ msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while fetching Dependency Scanning."
-msgstr ""
-
-msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
@@ -3728,6 +3777,12 @@ msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
 msgid "StarProject|Star"
+msgstr ""
+
+msgid "Starred Projects"
+msgstr ""
+
+msgid "Starred Projects' Activity"
 msgstr ""
 
 msgid "Starred projects"
@@ -3955,6 +4010,9 @@ msgid "There are no merge requests to show"
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "There was an error loading results"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
@@ -4228,6 +4286,9 @@ msgstr ""
 msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
 msgstr ""
 
+msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
+msgstr ""
+
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
@@ -4352,6 +4413,9 @@ msgid "View project labels"
 msgstr ""
 
 msgid "View replaced file @ "
+msgstr ""
+
+msgid "Visibility and access controls"
 msgstr ""
 
 msgid "VisibilityLevel|Internal"
@@ -4600,7 +4664,19 @@ msgstr ""
 msgid "You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}"
 msgstr ""
 
+msgid "Your Groups"
+msgstr ""
+
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
+msgstr ""
+
+msgid "Your Projects (default)"
+msgstr ""
+
+msgid "Your Projects' Activity"
+msgstr ""
+
+msgid "Your Todos"
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
@@ -4624,6 +4700,11 @@ msgstr ""
 msgid "among other things"
 msgstr ""
 
+msgid "and %d fixed vulnerability"
+msgid_plural "and %d fixed vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "assign yourself"
 msgstr ""
 
@@ -4631,6 +4712,12 @@ msgid "branch name"
 msgstr ""
 
 msgid "by"
+msgstr ""
+
+msgid "ciReport|%{type} detected no new security vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{type} detected no security vulnerabilities"
 msgstr ""
 
 msgid "ciReport|Code quality"
@@ -4690,6 +4777,12 @@ msgstr ""
 msgid "ciReport|SAST:container no vulnerabilities were found"
 msgstr ""
 
+msgid "ciReport|Security scanning"
+msgstr ""
+
+msgid "ciReport|Security scanning failed loading any results"
+msgstr ""
+
 msgid "ciReport|Show complete code vulnerabilities report"
 msgstr ""
 
@@ -4719,6 +4812,19 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "detected %d fixed vulnerability"
+msgid_plural "detected %d fixed vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "detected %d new vulnerability"
+msgid_plural "detected %d new vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "detected no vulnerabilities"
+msgstr ""
+
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
 msgstr ""
 
@@ -4726,6 +4832,9 @@ msgid "here"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "in progress"
 msgstr ""
 
 msgid "is invalid because there is downstream lock"

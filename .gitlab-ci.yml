@@ -322,8 +322,17 @@ package-and-qa:
   stage: build
   cache: {}
   when: manual
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    # We need to download the script rather than clone the repo since the
+    # package-and-qa job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
+    - chmod 755 trigger-build-omnibus
   script:
-    - scripts/trigger-build-omnibus
+    - ./trigger-build-omnibus
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
