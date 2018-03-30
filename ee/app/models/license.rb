@@ -26,6 +26,7 @@ class License < ActiveRecord::Base
     multiple_issue_assignees
     multiple_project_issue_boards
     push_rules
+    project_creation_level
     protected_refs_for_users
     related_issues
     repository_mirrors
@@ -53,7 +54,6 @@ class License < ActiveRecord::Base
     variable_environment_scope
     reject_unsigned_commits
     commit_committer_check
-    project_creation_level
     external_authorization_service
     ci_cd_projects
   ].freeze

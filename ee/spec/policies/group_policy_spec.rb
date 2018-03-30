@@ -245,6 +245,10 @@ describe GroupPolicy do
     end
 
     context 'project_creation_level disabled' do
+      before do
+        stub_licensed_features(project_creation_level: false)
+      end
+
       context 'when group has no project creation level set' do
         let(:group) { create(:group, project_creation_level: nil) }
 

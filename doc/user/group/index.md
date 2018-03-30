@@ -154,7 +154,8 @@ There are two different ways to add a new project to a group:
 
 ### Default project creation level
 
-> Introduced in [GitLab Premium](https://about.gitlab.com/products/) 10.5.
+> [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
+> Brought to [GitLab Starter][ee] in 10.7.
 
 Group owners or administrators can set an option that will give users with the
 Developer role the ability to create projects under groups.
@@ -316,3 +317,4 @@ you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
 [ee]: https://about.gitlab.com/products/
+[ee-2534]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2534
