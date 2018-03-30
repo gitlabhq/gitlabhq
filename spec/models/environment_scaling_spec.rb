@@ -27,6 +27,6 @@ describe EnvironmentScaling do
   describe '#predefined_variables' do
     subject { environment_scaling.predefined_variables }
 
-    it { is_expected.to include({ key: 'PRODUCTION_REPLICAS', value: environment_scaling.replicas }) }
+    it { is_expected.to include({ key: "#{environment_scaling.environment.name.upcase}_REPLICAS", value: environment_scaling.replicas }) }
   end
 end
