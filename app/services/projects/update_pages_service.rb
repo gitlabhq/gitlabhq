@@ -51,13 +51,13 @@ module Projects
       super
     end
 
-    def error(message, delete_artifact = true)
+    def error(message, allow_delete_artifact = true)
       register_failure
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop(:script_failure)
-      delete_artifact! if delete_artifact
+      delete_artifact! if allow_delete_artifact
       super
     end
 
