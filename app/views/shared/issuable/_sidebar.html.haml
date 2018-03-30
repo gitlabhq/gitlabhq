@@ -85,7 +85,7 @@
                   = dropdown_content do
                     .js-due-date-calendar
 
-      - if @labels && @labels.any?
+      - if @labels
         - selected_labels = issuable.labels
         .block.labels
           .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
