@@ -87,7 +87,8 @@ describe Projects::UpdatePagesService do
         it 'fails for empty file fails' do
           build.update_attributes(legacy_artifacts_file: empty_file)
 
-          expect(execute).not_to eq(:success)
+          expect { execute }
+            .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
         end
       end
     end
@@ -159,7 +160,8 @@ describe Projects::UpdatePagesService do
       it 'fails for empty file fails' do
         build.job_artifacts_archive.update_attributes(file: empty_file)
 
-        expect(execute).not_to eq(:success)
+        expect { execute }
+          .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
       end
 
       context 'when timeout happens by DNS error' do
@@ -169,7 +171,7 @@ describe Projects::UpdatePagesService do
         end
 
         it 'raises an error' do
-          execute
+          expect { execute }.to raise_error(SocketError)
 
           build.reload
           expect(deploy_status).to be_failed
@@ -185,7 +187,8 @@ describe Projects::UpdatePagesService do
         end
 
         it 'raises an error' do
-          execute
+          expect { execute }
+            .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
 
           build.reload
           expect(deploy_status).to be_failed
@@ -198,7 +201,7 @@ describe Projects::UpdatePagesService do
           allow(build).to receive(:artifacts_metadata?).and_return(false)
         end
 
-        it 'raises an error' do
+        it 'does not raise an error and remove artifacts as failed job' do
           execute
 
           build.reload

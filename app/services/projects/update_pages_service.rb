@@ -31,7 +31,7 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise FailedToExtractError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise InvaildStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
         raise InvaildStateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
@@ -41,6 +41,7 @@ module Projects
       error(e.message)
     rescue => e
       error(e.message, false)
+      raise e
     end
 
     private
