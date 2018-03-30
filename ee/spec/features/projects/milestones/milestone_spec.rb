@@ -13,6 +13,10 @@ describe 'Milestones on EE' do
     visit project_milestone_path(project, milestone)
   end
 
+  def close_issue(issue)
+    Issues::CloseService.new(issue.project, user, {}).execute(issue)
+  end
+
   context 'burndown charts' do
     let(:milestone) do
       create(:milestone,
@@ -36,11 +40,13 @@ describe 'Milestones on EE' do
         end
       end
 
-      context 'when any closed issues do not have closed_at value' do
+      context 'when a closed issue do not have closed events' do
         it 'shows warning' do
-          create(:issue, issue_params)
+          close_issue(create(:issue, issue_params))
+          close_issue(create(:issue, issue_params))
+
+          # Legacy issue: No closed events being created
           create(:closed_issue, issue_params)
-          create(:closed_issue, issue_params.merge(closed_at: nil))
 
           visit_milestone
 
@@ -50,10 +56,10 @@ describe 'Milestones on EE' do
         end
       end
 
-      context 'when all closed issues do not have closed_at value' do
+      context 'when all closed issues do not have closed events' do
         it 'shows warning and hides burndown' do
-          create(:closed_issue, issue_params.merge(closed_at: nil))
-          create(:closed_issue, issue_params.merge(closed_at: nil))
+          create(:closed_issue, issue_params)
+          create(:closed_issue, issue_params)
 
           visit_milestone
 
@@ -66,7 +72,7 @@ describe 'Milestones on EE' do
       context 'data is accurate' do
         it 'does not show warning' do
           create(:issue, issue_params)
-          create(:closed_issue, issue_params)
+          close_issue(create(:issue, issue_params))
 
           visit_milestone
 
