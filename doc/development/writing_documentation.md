@@ -308,9 +308,6 @@ to EE only.
 To preview your changes to documentation locally, please follow
 this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
 
-To preview your changes to documentation locally, please follow
-this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
-
 If you want to preview the doc changes of your merge request live, you can use
 the manual `review-docs-deploy` job in your merge request. You will need at
 least Master permissions to be able to run it and is currently enabled for the
