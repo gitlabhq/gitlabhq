@@ -294,9 +294,10 @@ Example of response
 
 ## Get job artifacts
 
-> [Introduced][ce-2893] in GitLab 8.5
+> **Notes**:
+- [Introduced][ce-2893] in GitLab 8.5.
 
-Get job artifacts of a project
+Get job artifacts of a project.
 
 ```
 GET /projects/:id/jobs/:job_id/artifacts
@@ -307,8 +308,10 @@ GET /projects/:id/jobs/:job_id/artifacts
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id` | integer | yes      | The ID of a job   |
 
+Example requests:
+
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+curl --location --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
 ```
 
 Response:
@@ -322,7 +325,8 @@ Response:
 
 ## Download the artifacts archive
 
-> [Introduced][ce-5347] in GitLab 8.10.
+> **Notes**:
+- [Introduced][ce-5347] in GitLab 8.10.
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.
@@ -339,7 +343,7 @@ Parameters
 | `ref_name`  | string  | yes      | The ref from a repository (can only be branch or tag name, not HEAD or SHA) |
 | `job`       | string  | yes      | The name of the job       |
 
-Example request:
+Example requests:
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
