@@ -11,6 +11,12 @@ class LfsObject < ActiveRecord::Base
 
   mount_uploader :file, LfsObjectUploader
 
+  before_save :update_file_store
+
+  def update_file_store
+    self.file_store = file.object_store
+  end
+
   def project_allowed_access?(project)
     projects.exists?(project.lfs_storage_project.id)
   end

@@ -8,3 +8,4 @@ lib/gitlab/redis/*.rb
 lib/gitlab/gitaly_client/operation_service.rb
 lib/gitlab/background_migration/*
 app/models/project_services/kubernetes_service.rb
+lib/gitlab/workhorse.rb

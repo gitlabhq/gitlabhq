@@ -51,7 +51,7 @@ Below are the settings for [GitLab Pages].
 | TLS certificates support| yes               | no            |
 
 The maximum size of your Pages site is regulated by the artifacts maximum size
-which is part of [GitLab CI](#gitlab-ci).
+which is part of [GitLab CI/CD](#gitlab-ci-cd).
 
 ## GitLab CI/CD
 
@@ -60,6 +60,14 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | Setting                 | GitLab.com        | Default       |
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size  | 1G                | 100M          |
+
+## Repository size limit
+
+The maximum size your Git repository is allowed to be including LFS.
+
+| Setting                 | GitLab.com        | Default       |
+| -----------             | ----------------- | ------------- |
+| Repository size including LFS | 10G         | Unlimited     |
 
 ## Shared Runners
 

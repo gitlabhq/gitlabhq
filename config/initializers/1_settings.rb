@@ -350,6 +350,7 @@ Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] ||
 Settings.lfs['object_store'] ||= Settingslogic.new({})
 Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
 Settings.lfs['object_store']['remote_directory'] ||= nil
+Settings.lfs['object_store']['direct_upload'] = false if Settings.lfs['object_store']['direct_upload'].nil?
 Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
 Settings.lfs['object_store']['proxy_download'] = false if Settings.lfs['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
