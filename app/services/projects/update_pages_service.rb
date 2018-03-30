@@ -37,9 +37,10 @@ module Projects
         deploy_page!(archive_public_path)
         success
       end
-    rescue InvaildStateError, FailedToExtractError => e
-      register_failure
+    rescue InvaildStateError => e
       error(e.message)
+    rescue => e
+      error(e.message, false)
     end
 
     private
@@ -50,12 +51,13 @@ module Projects
       super
     end
 
-    def error(message, http_status = nil)
+    def error(message, delete_artifact = true)
+      register_failure
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop(:script_failure)
-      delete_artifact!
+      delete_artifact! if delete_artifact
       super
     end
 
@@ -76,7 +78,7 @@ module Projects
       elsif artifacts.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
-        raise FailedToExtractError, 'unsupported artifacts format'
+        raise InvaildStateError, 'unsupported artifacts format'
       end
     end
 
@@ -91,13 +93,13 @@ module Projects
     end
 
     def extract_zip_archive!(temp_path)
-      raise FailedToExtractError, 'missing artifacts metadata' unless build.artifacts_metadata?
+      raise InvaildStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
       public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
 
       if public_entry.total_size > max_size
-        raise FailedToExtractError, "artifacts for pages are too large: #{public_entry.total_size}"
+        raise InvaildStateError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.

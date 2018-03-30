@@ -169,10 +169,41 @@ describe Projects::UpdatePagesService do
         end
 
         it 'raises an error' do
-          expect { execute }.to raise_error(SocketError)
+          execute
 
           build.reload
-          expect(build.artifacts?).to eq(true)
+          expect(deploy_status).to be_failed
+          expect(build.artifacts?).to be_truthy
+        end
+      end
+
+      context 'when failed to extract zip artifacts' do
+        before do
+          allow_any_instance_of(described_class)
+            .to receive(:extract_zip_archive!)
+            .and_raise(Projects::UpdatePagesService::FailedToExtractError)
+        end
+
+        it 'raises an error' do
+          execute
+
+          build.reload
+          expect(deploy_status).to be_failed
+          expect(build.artifacts?).to be_truthy
+        end
+      end
+
+      context 'when missing artifacts metadata' do
+        before do
+          allow(build).to receive(:artifacts_metadata?).and_return(false)
+        end
+
+        it 'raises an error' do
+          execute
+
+          build.reload
+          expect(deploy_status).to be_failed
+          expect(build.artifacts?).to be_falsey
         end
       end
     end
