@@ -60,4 +60,69 @@ describe 'Referencing Epics', :js do
       end
     end
   end
+
+  context 'note cross-referencing' do
+    let(:issue) { create(:issue, project: project) }
+
+    before do
+      stub_licensed_features(epics: true)
+      group.add_developer(user)
+
+      sign_in(user)
+    end
+
+    context 'when referencing an epic from an issue note' do
+      let(:note_text) { "Check #{epic.to_reference(full: true)}" }
+
+      before do
+        visit project_issue_path(project, issue)
+
+        fill_in 'note[note]', with: note_text
+        click_button 'Comment'
+
+        wait_for_requests
+      end
+
+      it 'creates a note with reference and cross references the epic' do
+        page.within('div#notes li.note div.note-text') do
+          expect(page).to have_content(note_text)
+          expect(page.find('a')).to have_content(epic.to_reference(full: true))
+        end
+
+        find('div#notes li.note div.note-text a').click
+
+        page.within('div#notes li.note .system-note-message') do
+          expect(page).to have_content('mentioned in issue')
+          expect(page.find('a')).to have_content(issue.to_reference(full: true))
+        end
+      end
+
+      context 'when referencing an issue from an epic' do
+        let(:note_text) { "Check #{issue.to_reference(full: true)}" }
+
+        before do
+          visit group_epic_path(group, epic)
+
+          fill_in 'note[note]', with: note_text
+          click_button 'Comment'
+
+          wait_for_requests
+        end
+
+        it 'creates a note with reference and cross references the issue' do
+          page.within('div#notes li.note div.note-text') do
+            expect(page).to have_content(note_text)
+            expect(page.find('a')).to have_content(issue.to_reference(full: true))
+          end
+
+          find('div#notes li.note div.note-text a').click
+
+          page.within('div#notes li.note .system-note-message') do
+            expect(page).to have_content('mentioned in epic')
+            expect(page.find('a')).to have_content(epic.to_reference(full: true))
+          end
+        end
+      end
+    end
+  end
 end
