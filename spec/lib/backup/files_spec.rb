@@ -18,7 +18,7 @@ describe Backup::Files do
   end
 
   describe '#restore' do
-        subject { described_class.new('registry', '/var/gitlab-registry') }
+    subject { described_class.new('registry', '/var/gitlab-registry') }
     let(:timestamp) { Time.utc(2017, 3, 22) }
 
     around do |example|
@@ -27,7 +27,6 @@ describe Backup::Files do
 
     describe 'folders without permissions' do
       before do
-
         allow(File).to receive(:realpath).with("/var/gitlab-registry").and_return("/var/gitlab-registry")
         allow(File).to receive(:realpath).with("/var/gitlab-registry/..").and_return("/var")
         allow(File).to receive(:exist?).and_return(true)
