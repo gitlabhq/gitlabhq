@@ -159,7 +159,11 @@ module ObjectStorage
       raise(SanityCheckError, "Mount point #{mounted_as} not found in #{model_class}.") unless model_has_mount
     end
 
-    def perform(ids, model_type, mounted_as, to_store)
+    def perform(*args)
+      args_check!(args)
+
+      (ids, model_type, mounted_as, to_store) = args
+
       @model_class = model_type.constantize
       @mounted_as = mounted_as&.to_sym
       @to_store = to_store
@@ -177,6 +181,16 @@ module ObjectStorage
 
     def sanity_check!(uploads)
       self.class.sanity_check!(uploads, @model_class, @mounted_as)
+    end
+
+    def args_check!(args)
+      return if args.count == 4
+
+      case args.count
+      when 3 then raise SanityCheckError, "Job is missing the `model_type` argument."
+      else
+        raise SanityCheckError, "Job has wrong arguments format."
+      end
     end
 
     def build_uploaders(uploads)
