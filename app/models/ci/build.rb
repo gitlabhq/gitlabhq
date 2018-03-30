@@ -289,7 +289,9 @@ module Ci
     # Variables that do not depend on the environment name.
     #
     def simple_variables
-      scoped_variables(environment: nil).to_runner_variables
+      strong_memoize(:simple_variables) do
+        scoped_variables(environment: nil).to_runner_variables
+      end
     end
 
     ##
@@ -303,7 +305,11 @@ module Ci
         .to_runner_variables
     end
 
-    def variables_hash
+    ##
+    # Regular Ruby hash of scoped variables, without duplicates that are
+    # possible to be present in an array of hashes returned from `variables`.
+    #
+    def scoped_variables_hash
       scoped_variables.to_hash
     end
 
