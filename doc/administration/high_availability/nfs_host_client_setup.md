@@ -1,4 +1,4 @@
-### Configuring NFS for GitLab HA
+# Configuring NFS for GitLab HA
 
 Setting up NFS for a GitLab HA setup allows all applications nodes in a cluster 
 to share the same files and maintain data consistency. Application nodes in an HA
@@ -13,7 +13,7 @@ Below are instructions for setting up an application node(client) in an HA clust
 to read from and write to a central NFS server(host).
 
 
-### NFS Server Setup
+## NFS Server Setup
 > Follow  the instructions below to setup and confire your NFS server.
 
 #### Step 1 - Install NFS Server on Host
@@ -53,7 +53,7 @@ $ sudo ufw allow from <client-ip-address> to any port nfs
 
 
 
-### Client/ GitLab application node Setup
+## Client/ GitLab application node Setup
 > Follow the instructions below to connect any GitLab rails application node running
 inside your HA environment to the NFS server configured above.
 
