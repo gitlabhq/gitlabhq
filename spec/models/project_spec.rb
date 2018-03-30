@@ -2560,7 +2560,7 @@ describe Project do
     end
   end
 
-  describe '#remove_exports' do
+  describe '#remove_export' do
     let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
@@ -2605,6 +2605,23 @@ describe Project do
       expect(project).to receive(:remove_exports).and_call_original
 
       project.destroy
+    end
+  end
+
+  describe '#remove_exported_project_file' do
+    let(:project) { create(:project, :with_export) }
+
+    it 'removes the exported project file' do
+      exported_file = project.export_project_path
+
+      expect(File.exist?(exported_file)).to be_truthy
+
+      allow(FileUtils).to receive(:rm_f).and_call_original
+      expect(FileUtils).to receive(:rm_f).with(exported_file).and_call_original
+
+      project.remove_exported_project_file
+
+      expect(File.exist?(exported_file)).to be_falsy
     end
   end
 

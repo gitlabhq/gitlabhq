@@ -1544,8 +1544,8 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user:, params: {})
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, params)
+  def add_export_job(current_user:, after_export_strategy: nil, params: {})
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -1571,6 +1571,8 @@ class Project < ActiveRecord::Base
   def export_status
     if export_in_progress?
       :started
+    elsif after_export_in_progress?
+      :after_export_action
     elsif export_project_path
       :finished
     else
@@ -1582,10 +1584,20 @@ class Project < ActiveRecord::Base
     import_export_shared.active_export_count > 0
   end
 
+  def after_export_in_progress?
+    import_export_shared.after_export_in_progress?
+  end
+
   def remove_exports
     return nil unless export_path.present?
 
     FileUtils.rm_rf(export_path)
+  end
+
+  def remove_exported_project_file
+    return unless export_project_path.present?
+
+    FileUtils.rm_f(export_project_path)
   end
 
   def full_path_slug
