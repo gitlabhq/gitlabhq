@@ -21,9 +21,11 @@ module Gitlab
       CONFIG_WATCHER_CLASS = 'Geo::SidekiqCronConfigWorker'.freeze
 
       def execute
-        if Geo.connected? && Geo.primary?
+        return unless Geo.connected?
+
+        if Geo.primary?
           configure_primary
-        elsif Geo.connected? && Geo.secondary?
+        elsif Geo.secondary?
           configure_secondary
         else
           enable!(all_jobs(except: GEO_JOBS))
