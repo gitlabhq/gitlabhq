@@ -2090,7 +2090,7 @@ describe Ci::Build do
     end
   end
 
-  describe '#variables_hash' do
+  describe '#scoped_variables_hash' do
     context 'when overriding secret variables' do
       before do
         project.variables.create!(key: 'MY_VAR', value: 'my value 1')
@@ -2098,8 +2098,8 @@ describe Ci::Build do
       end
 
       it 'returns a regular hash created using valid ordering' do
-        expect(build.variables_hash).to include('MY_VAR': 'my value 2')
-        expect(build.variables_hash).not_to include('MY_VAR': 'my value 1')
+        expect(build.scoped_variables_hash).to include('MY_VAR': 'my value 2')
+        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'my value 1')
       end
     end
 
@@ -2110,8 +2110,8 @@ describe Ci::Build do
       end
 
       it 'returns a hash including variable with higher precedence' do
-        expect(build.variables_hash).to include('MY_VAR': 'pipeline value')
-        expect(build.variables_hash).not_to include('MY_VAR': 'myvar')
+        expect(build.scoped_variables_hash).to include('MY_VAR': 'pipeline value')
+        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'myvar')
       end
     end
   end
