@@ -12,6 +12,8 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   validates :project, presence: true, uniqueness: true
 
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
+  scope :synced_repos, -> { where(resync_repository: false) }
+  scope :synced_wikis, -> { where(resync_wiki: false) }
   scope :failed_repos, -> { where(arel_table[:repository_retry_count].gt(0)) }
   scope :failed_wikis, -> { where(arel_table[:wiki_retry_count].gt(0)) }
   scope :verified_repos, -> { where.not(repository_verification_checksum: nil) }
@@ -40,16 +42,6 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
         .or(arel_table[:repository_retry_at].eq(nil))
         .or(arel_table[:wiki_retry_at].eq(nil))
     )
-  end
-
-  def self.synced_repos
-    where.not(last_repository_synced_at: nil, last_repository_successful_sync_at: nil)
-        .where(resync_repository: false)
-  end
-
-  def self.synced_wikis
-    where.not(last_wiki_synced_at: nil, last_wiki_successful_sync_at: nil)
-        .where(resync_wiki: false)
   end
 
   def repository_sync_due?(scheduled_time)
