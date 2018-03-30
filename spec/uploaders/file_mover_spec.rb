@@ -36,6 +36,12 @@ describe FileMover do
       it 'creates a new update record' do
         expect { subject }.to change { Upload.count }.by(1)
       end
+
+      it 'schedules a background migration' do
+        expect_any_instance_of(PersonalFileUploader).to receive(:schedule_background_upload).once
+
+        subject
+      end
     end
 
     context 'when update_markdown fails' do

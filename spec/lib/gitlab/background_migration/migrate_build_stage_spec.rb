@@ -51,4 +51,20 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
     expect { described_class.new.perform(1, 6) }
       .to raise_error ActiveRecord::RecordNotUnique
   end
+
+  context 'when invalid class can be loaded due to single table inheritance' do
+    let(:commit_status) do
+      jobs.create!(id: 7, commit_id: 1, project_id: 123, stage_idx: 4,
+                   stage: 'post-deploy', status: :failed)
+    end
+
+    before do
+      commit_status.update_column(:type, 'SomeClass')
+    end
+
+    it 'does ignore single table inheritance type' do
+      expect { described_class.new.perform(1, 7) }.not_to raise_error
+      expect(jobs.find(7)).to have_attributes(stage_id: (a_value > 0))
+    end
+  end
 end

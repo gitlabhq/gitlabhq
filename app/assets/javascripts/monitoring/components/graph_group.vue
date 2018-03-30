@@ -1,17 +1,17 @@
 <script>
-  export default {
-    props: {
-      name: {
-        type: String,
-        required: true,
-      },
-      showPanels: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+export default {
+  props: {
+    name: {
+      type: String,
+      required: true,
     },
-  };
+    showPanels: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+};
 </script>
 
 <template>

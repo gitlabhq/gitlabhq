@@ -1,0 +1,5 @@
+---
+title: Move ci/lint under project's namespace
+merge_request: 17729
+author:
+type: added

@@ -265,7 +265,9 @@ CommitStatus:
 - target_url
 - description
 - artifacts_file
+- artifacts_file_store
 - artifacts_metadata
+- artifacts_metadata_store
 - erased_by_id
 - erased_at
 - artifacts_expire_at

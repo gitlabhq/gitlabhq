@@ -14,9 +14,10 @@ module API
         optional :locked, type: Boolean, desc: 'Should Runner be locked for current project'
         optional :run_untagged, type: Boolean, desc: 'Should Runner handle untagged jobs'
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
+        optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
       post '/' do
-        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list])
+        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list, :maximum_timeout])
           .merge(get_runner_details_from_request)
 
         runner =
@@ -244,11 +245,12 @@ module API
       params do
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
+        optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
       end
       get '/:id/artifacts' do
         job = authenticate_job!
 
-        present_artifacts!(job.artifacts_file)
+        present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
       end
     end
   end

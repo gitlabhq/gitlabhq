@@ -278,6 +278,10 @@ describe Backup::Manager do
       connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
     end
 
+    after do
+      Fog.unmock!
+    end
+
     context 'target path' do
       it 'uses the tar filename by default' do
         expect_any_instance_of(Fog::Collection).to receive(:create)

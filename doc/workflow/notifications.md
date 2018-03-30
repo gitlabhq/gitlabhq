@@ -67,7 +67,7 @@ Below is the table of events users can be notified of:
 
 ### Issue / Merge request events
 
-In all of the below cases, the notification will be sent to:
+In most of the below cases, the notification will be sent to:
 - Participants:
   - the author and assignee of the issue/merge request
   - authors of comments on the issue/merge request
@@ -87,6 +87,7 @@ In all of the below cases, the notification will be sent to:
 | Reassign issue         | The above, plus the old assignee |
 | Reopen issue           | |
 | New merge request      | |
+| Push to merge request  | Participants and Custom notification level with this event selected |
 | Reassign merge request | The above, plus the old assignee |
 | Close merge request    | |
 | Reopen merge request   | |

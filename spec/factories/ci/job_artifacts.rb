@@ -5,6 +5,10 @@ FactoryBot.define do
     job factory: :ci_build
     file_type :archive
 
+    trait :remote_store do
+      file_store JobArtifactUploader::Store::REMOTE
+    end
+
     after :build do |artifact|
       artifact.project ||= artifact.job.project
     end
