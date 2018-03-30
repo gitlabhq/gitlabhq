@@ -1,4 +1,3 @@
-
 export const baseIssues = [
   {
     categories: ['Security'],
@@ -53,7 +52,8 @@ export const sastIssues = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-0752',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
   },
   {
     tool: 'bundler_audit',
@@ -61,7 +61,8 @@ export const sastIssues = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
     cve: 'CVE-2016-0751',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
   },
 ];
 
@@ -72,7 +73,8 @@ export const sastIssuesBase = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-9999',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
   },
   {
     tool: 'bundler_audit',
@@ -80,7 +82,8 @@ export const sastIssuesBase = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-0752',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
   },
 ];
 
@@ -102,7 +105,8 @@ export const parsedSastIssuesStore = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-0752',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
     name: 'Possible Information Leak Vulnerability in Action View',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
@@ -113,7 +117,8 @@ export const parsedSastIssuesStore = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
     cve: 'CVE-2016-0751',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
     name: 'Possible Object Leak and Denial of Service attack in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
@@ -138,42 +143,46 @@ export const parsedSastIssuesHead = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
     cve: 'CVE-2016-0751',
     file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
     name: 'Possible Object Leak and Denial of Service attack in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
   },
 ];
 
-export const parsedSastBaseStore = [{
-  name: 'Test Information Leak Vulnerability in Action View',
-  tool: 'bundler_audit',
-  message: 'Test Information Leak Vulnerability in Action View',
-  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
-  cve: 'CVE-2016-9999',
-  file: 'Gemfile.lock',
-  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-  path: 'Gemfile.lock',
-  urlPath: 'path/Gemfile.lock',
-}];
+export const parsedSastBaseStore = [
+  {
+    name: 'Test Information Leak Vulnerability in Action View',
+    tool: 'bundler_audit',
+    message: 'Test Information Leak Vulnerability in Action View',
+    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    cve: 'CVE-2016-9999',
+    file: 'Gemfile.lock',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    path: 'Gemfile.lock',
+    urlPath: 'path/Gemfile.lock',
+  },
+];
 
-export const allIssuesParsed = [{
-  name: 'Possible Information Leak Vulnerability in Action View',
-  tool: 'bundler_audit',
-  message: 'Possible Information Leak Vulnerability in Action View',
-  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
-  cve: 'CVE-2016-0752',
-  file: 'Gemfile.lock',
-  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-  path: 'Gemfile.lock',
-  urlPath: 'path/Gemfile.lock',
-}];
+export const allIssuesParsed = [
+  {
+    name: 'Possible Information Leak Vulnerability in Action View',
+    tool: 'bundler_audit',
+    message: 'Possible Information Leak Vulnerability in Action View',
+    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    cve: 'CVE-2016-0752',
+    file: 'Gemfile.lock',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    path: 'Gemfile.lock',
+    urlPath: 'path/Gemfile.lock',
+  },
+];
 
 export const dockerReport = {
-  unapproved: [
-    'CVE-2017-12944',
-    'CVE-2017-16232',
-  ],
+  unapproved: ['CVE-2017-12944', 'CVE-2017-16232'],
   vulnerabilities: [
     {
       vulnerability: 'CVE-2017-12944',
@@ -192,6 +201,60 @@ export const dockerReport = {
     },
   ],
 };
+
+export const dockerBaseReport = {
+  unapproved: ['CVE-2017-12944'],
+  vulnerabilities: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium',
+    },
+    {
+      vulnerability: 'CVE-2017-16232',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+    },
+    {
+      vulnerability: 'CVE-2014-8130',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+    },
+  ],
+};
+
+export const dockerNewIssues = [
+  {
+    vulnerability: 'CVE-2017-16232',
+    namespace: 'debian:8',
+    severity: 'Negligible',
+    name: 'CVE-2017-16232',
+    priority: 'Negligible',
+    path: 'debian:8',
+    nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+  },
+];
+
+export const dockerOnlyHeadParsed = [
+  {
+    vulnerability: 'CVE-2017-12944',
+    namespace: 'debian:8',
+    severity: 'Medium',
+    name: 'CVE-2017-12944',
+    priority: 'Medium',
+    path: 'debian:8',
+    nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944',
+  },
+  {
+    vulnerability: 'CVE-2017-16232',
+    namespace: 'debian:8',
+    severity: 'Negligible',
+    name: 'CVE-2017-16232',
+    priority: 'Negligible',
+    path: 'debian:8',
+    nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+  },
+];
 
 export const dockerReportParsed = {
   unapproved: [
@@ -264,16 +327,19 @@ export const dast = {
         riskcode: '1',
         riskdesc: 'Low (Medium)',
         desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
+        pluginid: '123',
         instances: [
           {
             uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
             method: 'GET',
-            evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>',
+            evidence:
+              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
           },
           {
             uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
             method: 'GET',
-            evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>',
+            evidence:
+              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
           },
         ],
       },
@@ -281,12 +347,42 @@ export const dast = {
         alert: 'X-Content-Type-Options Header Missing',
         name: 'X-Content-Type-Options Header Missing',
         riskdesc: 'Low (Medium)',
-        desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
+        desc:
+          '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
+        pluginid: '3456',
         instances: [
           {
             uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
             method: 'GET',
             param: 'X-Content-Type-Options',
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const dastBase = {
+  site: {
+    alerts: [
+      {
+        name: 'Absence of Anti-CSRF Tokens',
+        riskcode: '1',
+        riskdesc: 'Low (Medium)',
+        desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
+        pluginid: '123',
+        instances: [
+          {
+            uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+            method: 'GET',
+            evidence:
+              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+          },
+          {
+            uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+            method: 'GET',
+            evidence:
+              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
           },
         ],
       },
@@ -302,25 +398,49 @@ export const parsedDast = [
     priority: 'Low (Medium)',
     desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
     parsedDescription: ' No Anti-CSRF tokens were found in a HTML submission form. ',
+    pluginid: '123',
     instances: [
       {
         uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
         method: 'GET',
-        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>',
+        evidence: "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
       },
       {
         uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
         method: 'GET',
-        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>',
+        evidence: "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
       },
     ],
-  }, {
+  },
+  {
     alert: 'X-Content-Type-Options Header Missing',
     name: 'X-Content-Type-Options Header Missing',
     riskdesc: 'Low (Medium)',
     priority: 'Low (Medium)',
     desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
-    parsedDescription: ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
+    pluginid: '3456',
+    parsedDescription:
+      ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
+    instances: [
+      {
+        uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+        method: 'GET',
+        param: 'X-Content-Type-Options',
+      },
+    ],
+  },
+];
+
+export const parsedDastNewIssues = [
+  {
+    alert: 'X-Content-Type-Options Header Missing',
+    name: 'X-Content-Type-Options Header Missing',
+    riskdesc: 'Low (Medium)',
+    priority: 'Low (Medium)',
+    desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
+    pluginid: '3456',
+    parsedDescription:
+      ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
     instances: [
       {
         uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
@@ -333,7 +453,7 @@ export const parsedDast = [
 
 /**
  * SAST report API response for no added & fixed issues but with security issues
-*/
+ */
 export const sastHeadAllIssues = [
   {
     tool: 'retire',
