@@ -61,11 +61,17 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     expect { migrate(to) }.not_to change { file.exists? }
   end
 
-  context 'when migrate! is not oqqupied by another process' do
+  context 'when migrate! is not occupied by another process' do
     it 'executes migrate!' do
       expect(subject).to receive(:object_store=).at_least(1)
 
       migrate(to)
+    end
+
+    it 'executes use_file' do
+      expect(subject).to receive(:unsafe_use_file).once
+
+      subject.use_file
     end
   end
 
@@ -79,7 +85,13 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     it 'does not execute migrate!' do
       expect(subject).not_to receive(:unsafe_migrate!)
 
-      expect { migrate(to) }.to raise_error('Already running')
+      expect { migrate(to) }.to raise_error('exclusive lease already taken')
+    end
+
+    it 'does not execute use_file' do
+      expect(subject).not_to receive(:unsafe_use_file)
+
+      expect { subject.use_file }.to raise_error('exclusive lease already taken')
     end
 
     after do

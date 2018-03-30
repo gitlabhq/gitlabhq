@@ -28,7 +28,7 @@ gem 'default_value_for', gem_versions['default_value_for']
 gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.26.0'
+gem 'rugged', '~> 0.27'
 gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
@@ -376,6 +376,8 @@ group :development, :test do
   gem 'stackprof', '~> 0.2.10', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
+
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :test do
@@ -385,7 +387,6 @@ group :test do
   gem 'webmock', '~> 2.3.2'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
-  gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
 end

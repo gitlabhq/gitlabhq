@@ -1,5 +1,0 @@
----
-title: Don't capture trailing punctuation when autolinking
-merge_request: 17965
-author:
-type: fixed

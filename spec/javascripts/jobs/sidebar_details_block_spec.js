@@ -96,6 +96,12 @@ describe('Sidebar details block', () => {
       ).toEqual('Runner: #1');
     });
 
+    it('should render timeout information', () => {
+      expect(
+        trimWhitespace(vm.$el.querySelector('.js-job-timeout')),
+      ).toEqual('Timeout: 1m 40s (from runner)');
+    });
+
     it('should render coverage', () => {
       expect(
         trimWhitespace(vm.$el.querySelector('.js-job-coverage')),
