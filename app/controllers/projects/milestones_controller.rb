@@ -46,6 +46,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     if @project.feature_available?(:burndown_charts, current_user) &&
         @project.feature_available?(:issue_weights, current_user)
       @burndown = Burndown.new(@milestone)
+    end
 
     respond_to do |format|
       format.html

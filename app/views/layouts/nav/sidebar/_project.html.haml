@@ -239,14 +239,12 @@
               = sprite_icon('disk')
             %span.nav-item-name
               Registry
-<<<<<<< HEAD
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(controller: %w[projects/registry/repositories], html_options: { class: "fly-out-top-item" } ) do
               = link_to project_container_registry_index_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Registry') }
-=======
->>>>>>> upstream/master
+
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
