@@ -7,23 +7,23 @@
   = f.label :auth_method, 'Authentication method', class: 'label-light-but-actually-light-i-promise'
   = f.select :auth_method,
       options_for_select([['Password', 'password'], ['SSH public key', 'ssh_public_key']], import_data.auth_method),
-      {}, { class: "form-control js-pull-mirror-auth-type #{'hidden' unless import_data.ssh_import?}" }
+      {}, { class: "form-control js-pull-mirror-auth-type #{'collapse' unless import_data.ssh_import?}" }
 
 .form-group
-  .changing-auth-method.hidden.js-well-changing-auth
-    = icon('spinner spin lg')
-  .well-password-auth.hidden.js-well-password-auth
+  .collapse.js-well-changing-auth
+    .changing-auth-method= icon('spinner spin lg')
+  .well-password-auth.collapse.js-well-password-auth
     = f.label :password, "Password", class: "label-light-but-actually-light-i-promise"
     = f.password_field :password, value: import_data.password, class: 'form-control'
-  .well-ssh-auth.hidden.js-well-ssh-auth
-    %p.js-ssh-public-key-present{ class: ('hidden' unless ssh_public_key_present) }
+  .well-ssh-auth.collapse.js-well-ssh-auth
+    %p.js-ssh-public-key-present{ class: ('collapse' unless ssh_public_key_present) }
       Here is the public SSH key that needs to be added to the remote
       server. For more information, please refer to the documentation.
-    %p.js-ssh-public-key-pending{ class: ('hidden' if ssh_public_key_present) }
+    %p.js-ssh-public-key-pending{ class: ('collapse' if ssh_public_key_present) }
       An SSH key will be automatically generated when the form is
       submitted. For more information, please refer to the documentation.
 
-    .clearfix.js-ssh-public-key-wrap{ class: ('hidden' unless ssh_public_key_present) }
+    .clearfix.js-ssh-public-key-wrap{ class: ('collapse' unless ssh_public_key_present) }
       %code.prepend-top-10.ssh-public-key
         = import_data.ssh_public_key
       = clipboard_button(text: import_data.ssh_public_key, title: _("Copy SSH public key to clipboard"), class: 'prepend-top-10 btn-copy-ssh-public-key')
@@ -31,4 +31,4 @@
     = link_to 'Regenerate key', project_mirror_path(@project, project: { import_data_attributes: regen_data }),
         method: :patch,
         data: { confirm: 'Are you sure you want to regenerate public key? You will have to update the public key on the remote server before mirroring will work again.' },
-        class: "btn btn-inverted btn-warning prepend-top-10 js-btn-regenerate-ssh-key #{ 'hidden' unless ssh_public_key_present }"
+        class: "btn btn-inverted btn-warning prepend-top-10 js-btn-regenerate-ssh-key #{ 'collapse' unless ssh_public_key_present }"

@@ -1,4 +1,6 @@
 import _ from 'underscore';
+import $ from 'jquery';
+import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
@@ -45,12 +47,12 @@ export default class MirrorPull {
     // Validate URL and verify if it consists only supported protocols
     if (this.$form.get(0).checkValidity()) {
       // Hide/Show SSH Host keys section only for SSH URLs
-      this.$sectionSSHHostKeys.toggleClass('hidden', protocol !== 'ssh');
+      this.$sectionSSHHostKeys.collapse(protocol === 'ssh' ? 'show' : 'hide');
       this.$btnDetectHostKeys.enable();
 
       // Verify if URL is http, https or git and hide/show Auth type dropdown
       // as we don't support auth type SSH for non-SSH URLs
-      this.$dropdownAuthType.toggleClass('hidden', protRegEx.test(protocol));
+      this.$dropdownAuthType.collapse(protRegEx.test(protocol) ? 'hide' : 'show');
     }
   }
 
@@ -65,7 +67,7 @@ export default class MirrorPull {
 
     // Disable button while we make request
     this.$btnDetectHostKeys.disable();
-    $btnLoadSpinner.removeClass('hidden');
+    $btnLoadSpinner.collapse('show');
 
     // Make backOff polling to get data
     backOff((next, stop) => {
@@ -85,9 +87,9 @@ export default class MirrorPull {
       .catch(stop);
     })
     .then((res) => {
-      $btnLoadSpinner.addClass('hidden');
+      $btnLoadSpinner.collapse('hide');
       // Once data is received, we show verification info along with Host keys and fingerprints
-      this.$hostKeysInformation.find('.js-fingerprint-verification').toggleClass('hidden', res.changes_project_import_data);
+      this.$hostKeysInformation.find('.js-fingerprint-verification').collapse(res.changes_project_import_data ? 'hide' : 'show');
       if (res.known_hosts && res.fingerprints) {
         this.showSSHInformation(res);
       }
@@ -97,7 +99,7 @@ export default class MirrorPull {
       const failureMessage = response.data ? response.data.message : __('An error occurred while detecting host keys');
       Flash(failureMessage); // eslint-disable-line
 
-      $btnLoadSpinner.addClass('hidden');
+      $btnLoadSpinner.collapse('hide');
       this.$btnDetectHostKeys.enable();
     });
   }
@@ -108,7 +110,7 @@ export default class MirrorPull {
   handleSSHKnownHostsInput() {
     // Strike-out fingerprints and remove verification info if `known hosts` value is altered
     this.$hostKeysInformation.find('.js-fingerprints-list').addClass('invalidate');
-    this.$hostKeysInformation.find('.js-fingerprint-verification').addClass('hidden');
+    this.$hostKeysInformation.find('.js-fingerprint-verification').collapse('hide');
   }
 
   /**
@@ -117,8 +119,8 @@ export default class MirrorPull {
   handleSSHHostsAdvanced() {
     const $knownHost = this.$sectionSSHHostKeys.find('.js-ssh-known-hosts');
 
-    $knownHost.toggleClass('hidden');
-    this.$btnSSHHostsShowAdvanced.toggleClass('show-advanced', $knownHost.hasClass('hidden'));
+    $knownHost.collapse('toggle');
+    this.$btnSSHHostsShowAdvanced.toggleClass('show-advanced', !$knownHost.hasClass('in'));
   }
 
   /**
@@ -139,9 +141,9 @@ export default class MirrorPull {
     };
 
     // Show load spinner and hide other containers
-    this.$wellAuthTypeChanging.removeClass('hidden');
-    this.$wellPasswordAuth.addClass('hidden');
-    this.$wellSSHAuth.addClass('hidden');
+    this.$wellAuthTypeChanging.collapse('show');
+    this.$wellPasswordAuth.collapse('hide');
+    this.$wellSSHAuth.collapse('hide');
 
     // This request should happen only if selected Auth type was SSH
     // and SSH Public key was not present on page load
@@ -160,19 +162,19 @@ export default class MirrorPull {
         this.toggleSSHAuthWellMessage(true);
         this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
 
-        this.$wellAuthTypeChanging.addClass('hidden');
+        this.$wellAuthTypeChanging.collapse('hide');
         this.$dropdownAuthType.enable();
       })
       .catch(() => {
         Flash(__('Something went wrong on our end.'));
 
-        this.$wellAuthTypeChanging.addClass('hidden');
+        this.$wellAuthTypeChanging.collapse('hide');
         this.$dropdownAuthType.enable();
       });
     } else {
-      this.$wellAuthTypeChanging.addClass('hidden');
+      this.$wellAuthTypeChanging.collapse('hide');
       this.toggleAuthWell(selectedAuthType);
-      this.$wellSSHAuth.find('.js-ssh-public-key-present').removeClass('hidden');
+      this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse('show');
     }
   }
 
@@ -188,7 +190,7 @@ export default class MirrorPull {
       fingerprints += `<code>${escFingerprints}</code>`;
     });
 
-    this.$hostKeysInformation.removeClass('hidden');
+    this.$hostKeysInformation.collapse('show');
     $fingerprintsList.removeClass('invalidate');
     $fingerprintsList.html(fingerprints);
     this.$sectionSSHHostKeys.find('.js-known-hosts').val(sshHostKeys.known_hosts);
@@ -198,18 +200,18 @@ export default class MirrorPull {
    * Toggle Auth type information container based on provided `authType`
    */
   toggleAuthWell(authType) {
-    this.$wellPasswordAuth.toggleClass('hidden', authType !== AUTH_METHOD.PASSWORD);
-    this.$wellSSHAuth.toggleClass('hidden', authType !== AUTH_METHOD.SSH);
+    this.$wellPasswordAuth.collapse(authType === AUTH_METHOD.PASSWORD ? 'show' : 'hide');
+    this.$wellSSHAuth.collapse(authType === AUTH_METHOD.PASSWORD ? 'hide' : 'show');
   }
 
   /**
    * Toggle SSH auth information message
    */
   toggleSSHAuthWellMessage(sshKeyPresent) {
-    this.$sshPublicKeyWrap.toggleClass('hidden', !sshKeyPresent);
-    this.$wellSSHAuth.find('.js-ssh-public-key-present').toggleClass('hidden', !sshKeyPresent);
-    this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key').toggleClass('hidden', !sshKeyPresent);
-    this.$wellSSHAuth.find('.js-ssh-public-key-pending').toggleClass('hidden', sshKeyPresent);
+    this.$sshPublicKeyWrap.collapse(sshKeyPresent ? 'show' : 'hide');
+    this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse(sshKeyPresent ? 'show' : 'hide');
+    this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key').collapse(sshKeyPresent ? 'show' : 'hide');
+    this.$wellSSHAuth.find('.js-ssh-public-key-pending').collapse(sshKeyPresent ? 'hide' : 'show');
   }
 
   /**

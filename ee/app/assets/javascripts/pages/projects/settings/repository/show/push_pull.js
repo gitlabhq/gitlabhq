@@ -1,10 +1,14 @@
+import $ from 'jquery';
+import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import MirrorPull from 'ee/mirrors/mirror_pull';
+import { __ } from '~/locale';
+import Flash from '~/flash';
 
 export default {
   init(container) {
     this.container = container;
     this.mirrorDirectionSelect = container.querySelector('.js-mirror-direction');
-    this.insertionPoint = container.querySelector('.js-form-insertion-point');
+    this.$insertionPoint = $('.js-form-insertion-point', container);
     this.urlInput = container.querySelector('.js-mirror-url');
     this.protectedBranchesInput = container.querySelector('.js-mirror-protected');
 
@@ -13,7 +17,7 @@ export default {
       pull: container.querySelector('.js-pull-mirrors-form').innerHTML,
     };
 
-    this.boundUpdateForm = this.updateForm.bind(this);
+    this.boundUpdateForm = this.handleUpdate.bind(this);
     this.boundUpdateUrl = this.updateUrl.bind(this);
     this.boundUpdateProtectedBranches = this.updateProtectedBranches.bind(this);
 
@@ -21,18 +25,38 @@ export default {
     this.registerUpdateListeners();
   },
 
+  handleUpdate() {
+    return this.hideForm()
+      .then(() => {
+        this.updateForm();
+
+        this.$insertionPoint.collapse('show');
+      })
+      .catch(() => {
+        Flash(__('Something went wrong on our end.'));
+      });
+  },
+
+  hideForm() {
+    return new Promise((resolve) => {
+      if (!this.$insertionPoint.hasClass('in')) return resolve();
+
+      return this.$insertionPoint.collapse('hide')
+        .one('hidden.bs.collapse', () => resolve());
+    });
+  },
+
   updateForm() {
     const direction = this.mirrorDirectionSelect.value;
-    this.insertionPoint.innerHTML = this.directionFormMap[direction];
 
-    setTimeout(() => {
-      this.updateUrl();
-      this.updateProtectedBranches();
+    this.$insertionPoint.html(this.directionFormMap[direction]);
 
-      if (direction !== 'pull') return;
+    this.updateUrl();
+    this.updateProtectedBranches();
 
-      this.initMirrorPull();
-    }, 0);
+    if (direction !== 'pull') return;
+
+    this.initMirrorPull();
   },
 
   updateUrl() {
@@ -47,9 +71,9 @@ export default {
     const mirrorPull = new MirrorPull('.js-mirror-form');
 
     if (!mirrorPull) return;
-    
+
+    // mirrorPull.handleRepositoryUrlInput();
     mirrorPull.init();
-    mirrorPull.handleRepositoryUrlInput();
 
     this.initSelect2();
   },
