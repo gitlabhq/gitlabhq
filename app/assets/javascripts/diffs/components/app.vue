@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import compareVersions from './compare_versions.vue';
 import changedFiles from './changed_files.vue';
@@ -35,7 +35,9 @@ export default {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
       diffFiles: state => state.diffs.diffFiles,
+      diffViewType: state => state.diffs.diffViewType,
     }),
+    ...mapGetters(['isParallelView']),
   },
   mounted() {
     this.setEndpoint(this.endpoint);
@@ -51,6 +53,22 @@ export default {
         this.activeFile = '';
       }
     },
+    expandDiffs() {
+      window.mrTabs.expandViewContainer();
+    },
+    shrinkDiffs() {
+      window.mrTabs.resetViewContainer();
+    },
+  },
+  watch: {
+    diffViewType() {
+      return this.isParallelView ? this.expandDiffs() : this.shrinkDiffs();
+    },
+  },
+  created() {
+    if (this.isParallelView) {
+      this.expandDiffs();
+    }
   },
 };
 </script>

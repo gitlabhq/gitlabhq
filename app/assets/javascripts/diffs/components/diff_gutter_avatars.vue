@@ -94,7 +94,8 @@ export default {
         :tooltip-text="getTooltipText(note)"
         :size="19"
       />
-      <span v-if="moreText"
+      <span
+        v-if="moreText"
         v-tooltip
         :title="moreText"
         @click="toggleDiscussions"
