@@ -270,14 +270,6 @@ describe Gitlab::Auth do
           .to eq(auth_success)
       end
 
-      it 'fails if deploy token does not have read_repo as scope' do
-        deploy_token = create(:deploy_token, :read_registry, project: project)
-
-        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-        expect(gl_auth.find_for_git_client('', deploy_token.token, project: project, ip: 'ip'))
-          .to eq(auth_failure)
-      end
-
       it 'fails if token is nil' do
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
         expect(gl_auth.find_for_git_client('', nil, project: project, ip: 'ip'))
@@ -304,6 +296,35 @@ describe Gitlab::Auth do
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'deploy-token')
         expect(gl_auth.find_for_git_client('deploy-token', deploy_token.token, project: project, ip: 'ip'))
           .to eq(auth_failure)
+      end
+
+      context 'when registry enabled' do
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
+        it 'succeeds if deploy token does have read_registry as scope' do
+          deploy_token = create(:deploy_token, :read_registry, project: project)
+          auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:read_container_image])
+
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
+          expect(gl_auth.find_for_git_client('', deploy_token.token, project: project, ip: 'ip'))
+            .to eq(auth_success)
+        end
+      end
+
+      context 'when registry disabled' do
+        before do
+          stub_container_registry_config(enabled: false)
+        end
+
+        it 'fails if deploy token have read_registry as scope' do
+          deploy_token = create(:deploy_token, :read_registry, project: project)
+
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
+          expect(gl_auth.find_for_git_client('', deploy_token.token, project: project, ip: 'ip'))
+            .to eq(auth_failure)
+        end
       end
     end
   end
