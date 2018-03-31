@@ -1603,7 +1603,7 @@ describe Ci::Build do
       context 'when environment has scaling options' do
         let!(:environment_scaling) { create(:environment_scaling, environment: environment) }
 
-        it 'has the PRODUCTION_REPLICAS variable' do
+        it 'has the environment scaling variables' do
           keys = subject.map { |var| var[:key] }
           expected_keys = environment_scaling.predefined_variables.map { |var| var[:key] }
 
