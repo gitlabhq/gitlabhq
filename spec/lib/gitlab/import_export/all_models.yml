@@ -18,11 +18,8 @@ issues:
 - metrics
 - timelogs
 - issue_assignees
-<<<<<<< HEAD
 - epic_issue
 - epic
-=======
->>>>>>> upstream/master
 - closed_by
 events:
 - author
