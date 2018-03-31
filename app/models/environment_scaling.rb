@@ -4,12 +4,22 @@ class EnvironmentScaling < ActiveRecord::Base
   validates :replicas, numericality: { only_integer: true }, presence: true
 
   def available?
-    environment.project.variables.find_by(key: 'PRODUCTION_REPLICAS').nil?
+    if environment.project.group
+      return false unless environment.project.group.variables.where(key: incompatible_variables).empty?
+    end
+
+    environment.project.variables.where(key: incompatible_variables).empty?
   end
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: "#{environment.name.upcase}_REPLICAS", value: replicas)
     end
+  end
+
+  private
+
+  def incompatible_variables
+    predefined_variables.map { |var| var[:key] }.append("PRODUCTION_REPLICAS")
   end
 end
