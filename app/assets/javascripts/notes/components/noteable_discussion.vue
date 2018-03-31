@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionsSvg from 'icons/_next_discussion.svg';
@@ -68,6 +69,7 @@ export default {
       'getNoteableData',
       'discussionCount',
       'resolvedDiscussionCount',
+      'allDiscussions',
       'unresolvedDiscussions',
     ]),
     discussion() {
@@ -200,11 +202,14 @@ Please check your network connection and try again.`;
         });
     },
     jumpToDiscussion() {
+      const discussionIds = this.allDiscussions.map(d => d.id);
       const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
-      const index = unresolvedIds.indexOf(this.note.id);
+      const currentIndex = discussionIds.indexOf(this.note.id);
+      const remainingAfterCurrent = discussionIds.slice(currentIndex + 1);
+      const nextIndex = _.findIndex(remainingAfterCurrent, id => unresolvedIds.indexOf(id) > -1);
 
-      if (index >= 0 && index !== unresolvedIds.length) {
-        const nextId = unresolvedIds[index + 1];
+      if (nextIndex > -1) {
+        const nextId = remainingAfterCurrent[nextIndex];
         const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
 
         if (el) {
