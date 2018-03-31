@@ -8,11 +8,7 @@ import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
-import {
-  parseUrlPathname,
-  handleLocationHash,
-  isMetaClick,
-} from './lib/utils/common_utils';
+import { parseUrlPathname, handleLocationHash, isMetaClick } from './lib/utils/common_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
@@ -108,11 +104,7 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $(document)
-      .on(
-        'shown.bs.tab',
-        '.merge-request-tabs a[data-toggle="tab"]',
-        this.tabShown,
-      )
+      .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
       .on('click', '.js-show-tab', this.showTab);
 
     $('.merge-request-tabs a[data-toggle="tab"]').on('click', this.clickTab);
@@ -121,11 +113,7 @@ export default class MergeRequestTabs {
   // Used in tests
   unbindEvents() {
     $(document)
-      .off(
-        'shown.bs.tab',
-        '.merge-request-tabs a[data-toggle="tab"]',
-        this.tabShown,
-      )
+      .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
       .off('click', '.js-show-tab', this.showTab);
 
     $('.merge-request-tabs a[data-toggle="tab"]').off('click', this.clickTab);
@@ -193,9 +181,7 @@ export default class MergeRequestTabs {
 
   scrollToElement(container) {
     if (location.hash) {
-      const offset =
-        0 -
-        ($('.navbar-gitlab').outerHeight() + $('.js-tabs-affix').outerHeight());
+      const offset = 0 - ($('.navbar-gitlab').outerHeight() + $('.js-tabs-affix').outerHeight());
       const $el = $(`${container} ${location.hash}:not(.match)`);
       if ($el.length) {
         $.scrollTo($el[0], { offset });
@@ -233,10 +219,7 @@ export default class MergeRequestTabs {
     this.currentAction = action;
 
     // Remove a trailing '/commits' '/diffs' '/pipelines'
-    let newState = location.pathname.replace(
-      /\/(commits|diffs|pipelines)(\.html)?\/?$/,
-      '',
-    );
+    let newState = location.pathname.replace(/\/(commits|diffs|pipelines)(\.html)?\/?$/, '');
 
     // Append the new action if we're on a tab other than 'notes'
     if (this.currentAction !== 'show' && this.currentAction !== 'new') {
@@ -291,9 +274,7 @@ export default class MergeRequestTabs {
   }
 
   mountPipelinesView() {
-    const pipelineTableViewEl = document.querySelector(
-      '#commit-pipeline-table-view',
-    );
+    const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
     const CommitPipelinesTable = gl.CommitPipelinesTable;
     this.commitPipelinesTable = new CommitPipelinesTable({
       propsData: {
@@ -339,10 +320,7 @@ export default class MergeRequestTabs {
         localTimeAgo($('.js-timeago', 'div#diffs'));
         syntaxHighlight($('#diffs .js-syntax-highlight'));
 
-        if (
-          this.diffViewType() === 'parallel' &&
-          this.isDiffAction(this.currentAction)
-        ) {
+        if (this.diffViewType() === 'parallel' && this.isDiffAction(this.currentAction)) {
           this.expandViewContainer();
         }
         this.diffsLoaded = true;
@@ -356,9 +334,7 @@ export default class MergeRequestTabs {
             forkButtons: $(el).find('.js-fork-suggestion-button'),
             cancelButtons: $(el).find('.js-cancel-fork-suggestion-button'),
             suggestionSections: $(el).find('.js-file-fork-suggestion-section'),
-            actionTextPieces: $(el).find(
-              '.js-file-fork-suggestion-section-action',
-            ),
+            actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
           }).init();
         });
 
@@ -414,10 +390,7 @@ export default class MergeRequestTabs {
 
   resetViewContainer() {
     if (this.fixedLayoutPref !== null) {
-      $('.content-wrapper .container-fluid').toggleClass(
-        'container-limited',
-        this.fixedLayoutPref,
-      );
+      $('.content-wrapper .container-fluid').toggleClass('container-limited', this.fixedLayoutPref);
     }
   }
 
@@ -470,8 +443,7 @@ export default class MergeRequestTabs {
       .off('affix.bs.affix affix-top.bs.affix')
       .affix({
         offset: {
-          top: () =>
-            $diffTabs.offset().top - $tabs.height() - $fixedNav.height(),
+          top: () => $diffTabs.offset().top - $tabs.height() - $fixedNav.height(),
         },
       })
       .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))
