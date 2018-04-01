@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as utils from './utils';
 import * as types from './mutation_types';
@@ -48,19 +49,18 @@ export default {
       type: COMMENT_FORM_TYPE,
     };
 
-    state.diffLineCommentForms[lineCode] = {
-      ...state.diffLineCommentForms[lineCode],
-      [linePosition]: {
-        formObj,
-      },
-    };
+    if (!state.diffLineCommentForms[lineCode]) {
+      Vue.set(state.diffLineCommentForms, lineCode, { linePosition: {} });
+    }
+
+    Vue.set(state.diffLineCommentForms[lineCode], linePosition, formObj);
   },
 
   [types.REMOVE_COMMENT_FORM_LINE](state, { lineCode, linePosition }) {
     if (linePosition) {
-      delete state.diffLineCommentForms[lineCode][linePosition];
+      Vue.set(state.diffLineCommentForms[lineCode], linePosition, null);
     } else {
-      delete state.diffLineCommentForms[lineCode];
+      Vue.set(state.diffLineCommentForms, lineCode, null);
     }
   },
 
