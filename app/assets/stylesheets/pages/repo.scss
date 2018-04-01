@@ -53,6 +53,7 @@
       flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
+      max-width: inherit;
 
       svg {
         vertical-align: middle;

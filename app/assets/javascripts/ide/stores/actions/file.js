@@ -46,53 +46,63 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
   commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
 
-export const getFileData = ({ state, commit, dispatch }, file) => {
+export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
+  const file = state.entries[path];
   commit(types.TOGGLE_LOADING, { entry: file });
-
   return service
     .getFileData(file.url)
     .then(res => {
       const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
-
       setPageTitle(pageTitle);
 
       return res.json();
     })
     .then(data => {
       commit(types.SET_FILE_DATA, { data, file });
-      commit(types.TOGGLE_FILE_OPEN, file.path);
-      dispatch('setFileActive', file.path);
+      commit(types.TOGGLE_FILE_OPEN, path);
+      if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
-      flash(
-        'Error loading file data. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
+      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
     });
 };
 
-export const getRawFileData = ({ commit, dispatch }, file) =>
-  service
-    .getRawFileData(file)
-    .then(raw => {
-      commit(types.SET_FILE_RAW_DATA, { file, raw });
-    })
-    .catch(() =>
-      flash(
-        'Error loading file content. Please try again.',
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      ),
-    );
+export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
+  commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
+};
+
+export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {
+  const file = state.entries[path];
+  return new Promise((resolve, reject) => {
+    service
+      .getRawFileData(file)
+      .then(raw => {
+        commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (file.mrChange && file.mrChange.new_file === false) {
+          service
+            .getBaseRawFileData(file, baseSha)
+            .then(baseRaw => {
+              commit(types.SET_FILE_BASE_RAW_DATA, {
+                file,
+                baseRaw,
+              });
+              resolve(raw);
+            })
+            .catch(e => {
+              reject(e);
+            });
+        } else {
+          resolve(raw);
+        }
+      })
+      .catch(() => {
+        flash('Error loading file content. Please try again.');
+        reject();
+      });
+  });
+};
 
 export const changeFileContent = ({ state, commit }, { path, content }) => {
   const file = state.entries[path];
@@ -119,10 +129,7 @@ export const setFileEOL = ({ getters, commit }, { eol }) => {
   }
 };
 
-export const setEditorPosition = (
-  { getters, commit },
-  { editorRow, editorColumn },
-) => {
+export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_POSITION, {
       file: getters.activeFile,
