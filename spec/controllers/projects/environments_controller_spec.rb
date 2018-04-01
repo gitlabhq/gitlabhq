@@ -15,6 +15,16 @@ describe Projects::EnvironmentsController do
   end
 
   describe 'GET index' do
+    before do
+      allow(controller).to receive(:load_environments_scaling)
+    end
+
+    it 'loads environment scalings' do
+      expect(controller).to receive(:load_environments_scaling)
+
+      get :index, environment_params
+    end
+
     context 'when a request for the HTML is made' do
       it 'responds with status code 200' do
         get :index, environment_params
