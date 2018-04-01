@@ -20,6 +20,10 @@ describe EnvironmentEntity do
     expect(subject).to include(:folder_path)
   end
 
+  it 'exposes scaling availability' do
+    expect(subject).to include(:scaling_available)
+  end
+
   context 'metrics disabled' do
     before do
       allow(environment).to receive(:has_metrics?).and_return(false)
