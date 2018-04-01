@@ -110,7 +110,7 @@ module Gitlab
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
         if ChunkedFile::LiveTrace.exist?(job.id)
-          ChunkedFile::LiveTrace.open(job.id, "wb") do |stream|
+          ChunkedFile::LiveTrace.open(job.id, 'a+b') do |stream|
             archive_stream!(stream)
             stream.delete
           end
