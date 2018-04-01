@@ -25,7 +25,11 @@ class JobEntity < Grape::Entity
   expose :playable?, as: :playable
   expose :created_at
   expose :updated_at
-  expose :detailed_status, as: :status, with: StatusEntity
+  expose :status do
+    expose :callout_message, if: -> (*) { failed_or_allowed_to_fail? }
+    expose :retry_button, if: -> (*) { failed_or_allowed_to_fail? }
+    expose :detailed_status, merge: true, as: :status, with: StatusEntity
+  end
 
   private
 
@@ -45,6 +49,22 @@ class JobEntity < Grape::Entity
 
   def detailed_status
     build.detailed_status(request.current_user)
+  end
+
+  def failed_or_allowed_to_fail?
+    build.failed? || build.allow_failure?
+  end
+
+  def callout_message
+    build_presenter.callout_failure_message
+  end
+
+  def retry_button
+    build_presenter.show_retry_button?
+  end
+
+  def build_presenter
+    @build_presenter ||= Ci::BuildPresenter.new(build)
   end
 
   def path_to(route, build)

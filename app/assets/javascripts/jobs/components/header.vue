@@ -33,7 +33,7 @@ export default {
       return !this.isLoading && Object.keys(this.job).length;
     },
     shouldRenderReason() {
-      return !!(this.job.status && this.job.status.failure_description);
+      return !!(this.job.status && this.job.status.callout_message);
     },
     /**
      * When job has not started the key will be `false`

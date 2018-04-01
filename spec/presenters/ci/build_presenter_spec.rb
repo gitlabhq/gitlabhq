@@ -217,4 +217,39 @@ describe Ci::BuildPresenter do
       end
     end
   end
+
+  describe '#callout_failure_message' do
+    let(:build) { create(:ci_build, :failed, :script_failure, pipeline: pipeline) }
+
+    it 'returns a verbose reason of failure' do
+      description = subject.callout_failure_message
+      expect(description).to eq('There has been a script failure. Check the job log for more information')
+    end
+  end
+
+  describe '#show_retry_button' do
+    context 'when is a script or missing dependency failure' do
+      let(:build) { create(:ci_build, :failed, :script_failure) }
+      let(:failure_reasons) { %w(script_failure missing_dependency_failure) }
+
+      it 'should return false' do
+        failure_reasons.each do |failure_reason|
+          build.update_attribute(:failure_reason, failure_reason)
+          expect(presenter.show_retry_button?).to be_falsy
+        end
+      end
+    end
+
+    context 'when is any other failure type' do
+      let(:build) { create(:ci_build, :failed) }
+      let(:failure_reasons) { %w(unknown_failure api_failure stuck_or_timeout_failure runner_system_failure) }
+
+      it 'should return true' do
+        failure_reasons.each do |failure_reason|
+          build.update_attribute(:failure_reason, failure_reason)
+          expect(presenter.show_retry_button?).to be_truthy
+        end
+      end
+    end
+  end
 end

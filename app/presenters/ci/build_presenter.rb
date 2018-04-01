@@ -35,6 +35,14 @@ module Ci
       "#{subject.name} - #{detailed_status.status_tooltip}"
     end
 
+    def callout_failure_message
+      failure_messages[failure_reason]
+    end
+
+    def show_retry_button?
+      !not_retryable_failures.include?(failure_reason)
+    end
+
     private
 
     def tooltip_for_badge
@@ -43,6 +51,21 @@ module Ci
 
     def detailed_status
       @detailed_status ||= subject.detailed_status(user)
+    end
+
+    def failure_messages
+      {
+        'unknown_failure' => 'There is an unknown failure, please try again',
+        'script_failure' => 'There has been a script failure. Check the job log for more information',
+        'api_failure' => 'There has been an API failure, please try again',
+        'stuck_or_timeout_failure' => 'There has been a timeout failure or the job got stuck. Check your timeout limits or try again',
+        'runner_system_failure' => 'There has been a runner system failure, please try again',
+        'missing_dependency_failure' => 'There has been a missing dependency failure, check the job log for more information'
+      }
+    end
+
+    def not_retryable_failures
+      %w(script_failure missing_dependency_failure)
     end
   end
 end
