@@ -10,40 +10,36 @@ module Gitlab
             end
           end
 
+          after_callback :write_chunk, :stash_to_database
+
           def initialize(job_id, mode)
             super(job_id, calculate_size(job_id), mode)
           end
 
-          def write(data)
-            raise NotImplementedError, 'Overwrite is not supported' unless tell == size
-
-            super(data) do |store|
-              if store.filled?
-                # Once data is filled into redis, move the data to database
-                ChunkStore::Database.open(job_id, chunk_index, params_for_store) do |to_store|
-                  to_store.write!(store.get)
-                  store.delete!
-                end
+          def stash_to_database(store)
+            # Once data is filled into redis, move the data to database
+            if store.filled? && 
+              ChunkStore::Database.open(job_id, chunk_index, params_for_store) do |to_store|
+                to_store.write!(store.get)
+                store.delete!
               end
             end
           end
 
+          # Efficient process than iterating each
           def truncate(offset)
-            super(offset) do |store|
-              next if chunk_index == 0
-
-              prev_chunk_index = chunk_index - 1
-
-              if ChunkStore::Database.exist?(job_id, prev_chunk_index)
-                # Swap data from Database to Redis to truncate any size than buffer_size
-                ChunkStore::Database.open(job_id, prev_chunk_index, params_for_store(prev_chunk_index)) do |from_store|
-                  ChunkStore::Redis.open(job_id, prev_chunk_index, params_for_store(prev_chunk_index)) do |to_store|
-                    to_store.write!(from_store.get)
-                    from_store.delete!
-                  end
-                end
-              end
+            if truncate == 0
+              self.delete_all(job_id)
+            elsif offset == size
+              # no-op
+            else
+              raise NotImplementedError, 'Unexpected operation'
             end
+          end
+
+          def delete
+            ChunkStores::Redis.delete_all(job_id)
+            ChunkStores::Database.delete_all(job_id)
           end
 
           private

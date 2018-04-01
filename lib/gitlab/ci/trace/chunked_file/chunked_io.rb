@@ -8,43 +8,30 @@ module Gitlab
     class Trace
       module ChunkedFile
         class ChunkedIO
-          class << self
-            def open(*args)
-              stream = self.new(*args)
-
-              yield stream
-            ensure
-              stream&.close
-            end
-          end
-
-          WriteError = Class.new(StandardError)
-          FailedToGetChunkError = Class.new(StandardError)
+          extend ChunkedFile::Concerns::Opener
+          include ChunkedFile::Concerns::Errors
+          include ChunkedFile::Concerns::Hooks
+          include ChunkedFile::Concerns::Callbacks
+          prepend ChunkedFile::Concerns::Permissions
 
           attr_reader :size
           attr_reader :tell
           attr_reader :chunk, :chunk_range
-          attr_reader :write_lock_uuid
           attr_reader :job_id
+          attr_reader :mode
 
           alias_method :pos, :tell
 
-          def initialize(job_id, size, mode)
+          def initialize(job_id, size, mode = 'rb')
             @size = size
             @tell = 0
             @job_id = job_id
+            @mode = mode
 
-            if /(w|a)/ =~ mode
-              @write_lock_uuid = Gitlab::ExclusiveLease.new(write_lock_key, timeout: 1.hour.to_i).try_obtain
-
-              raise WriteError, 'Already opened by another process' unless write_lock_uuid
-
-              seek(0, IO::SEEK_END) if /a/ =~ mode
-            end
+            raise NotImplementedError, "Mode 'w' is not supported" if mode.include?('w')
           end
 
           def close
-            Gitlab::ExclusiveLease.cancel(write_lock_key, write_lock_uuid) if write_lock_uuid
           end
 
           def binmode
@@ -55,20 +42,20 @@ module Gitlab
             true
           end
 
-          def seek(pos, where = IO::SEEK_SET)
+          def seek(amount, where = IO::SEEK_SET)
             new_pos =
               case where
               when IO::SEEK_END
-                size + pos
+                size + amount
               when IO::SEEK_SET
-                pos
+                amount
               when IO::SEEK_CUR
-                tell + pos
+                tell + amount
               else
                 -1
               end
 
-            raise 'new position is outside of file' if new_pos < 0 || new_pos > size
+            raise ArgumentError, 'new position is outside of file' if new_pos < 0 || new_pos > size
 
             @tell = new_pos
           end
@@ -122,42 +109,18 @@ module Gitlab
             out
           end
 
-          def write(data, &block)
-            raise WriteError, 'Could not write without lock' unless write_lock_uuid
-            raise WriteError, 'Could not write empty data' unless data.present?
+          def write(data)
+            raise ArgumentError, 'Could not write empty data' unless data.present?
 
-            _data = data.dup
-            prev_tell = tell
-
-            until _data.empty?
-              writable_space = buffer_size - chunk_offset
-              writing_size = [writable_space, _data.length].min
-              written_size = write_chunk!(_data.slice!(0...writing_size), &block)
-
-              @tell += written_size
-              @size = [tell, size].max
+            if mode.include?('w')
+              write_as_overwrite(data)
+            elsif mode.include?('a')
+              write_as_append(data)
             end
-
-            tell - prev_tell
           end
 
-          def truncate(offset, &block)
-            raise WriteError, 'Could not write without lock' unless write_lock_uuid
-            raise WriteError, 'Offset is out of bound' if offset > size || offset < 0
-
-            @tell = size - 1
-
-            until size == offset
-              truncatable_space = size - chunk_start
-              _chunk_offset = (offset <= chunk_start) ? 0 : offset % buffer_size
-              removed_size = truncate_chunk!(_chunk_offset, &block)
-
-              @tell -= removed_size
-              @size -= removed_size
-            end
-
-            @tell = [tell, 0].max
-            @size = [size, 0].max
+          def truncate(offset)
+            raise NotImplementedError
           end
 
           def flush
@@ -178,9 +141,6 @@ module Gitlab
             unless in_range?
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
                 @chunk = store.get
-
-                raise FailedToGetChunkError unless chunk && chunk.length > 0
-
                 @chunk_range = (chunk_start...(chunk_start + chunk.length))
               end
             end
@@ -188,30 +148,54 @@ module Gitlab
             @chunk[chunk_offset..buffer_size]
           end
 
-          def write_chunk!(data, &block)
+          def write_as_overwrite(data)
+            raise NotImplementedError, "Overwrite is not supported"
+          end
+
+          def write_as_append(data)
+            @tell = size
+
+            data_size = data.size
+            new_tell = tell + data_size
+            data_offset = 0
+
+            until tell == new_tell
+              writable_size = buffer_size - chunk_offset
+              writable_data = data[data_offset...(data_offset + writable_size)]
+              written_size = write_chunk(writable_data)
+
+              data_offset += written_size
+              @tell += written_size
+              @size = [tell, size].max
+            end
+
+            data_size
+          end
+
+          def write_chunk(data)
             chunk_store.open(job_id, chunk_index, params_for_store) do |store|
-              written_size = if buffer_size == data.length
-                               store.write!(data)
-                             else
-                               store.append!(data)
-                             end
+              with_callbacks(:write_chunk, store) do
+                written_size = if buffer_size == data.length
+                                 store.write!(data)
+                               else
+                                 store.append!(data)
+                               end
 
-              raise WriteError, 'Written size mismatch' unless data.length == written_size
+                raise WriteError, 'Written size mismatch' unless data.length == written_size
 
-              block.call(store) if block_given?
-
-              written_size
+                written_size
+              end
             end
           end
 
-          def truncate_chunk!(offset, &block)
+          def truncate_chunk(offset)
             chunk_store.open(job_id, chunk_index, params_for_store) do |store|
-              removed_size = store.size - offset
-              store.truncate!(offset)
+              with_callbacks(:truncate_chunk, store) do
+                removed_size = store.size - offset
+                store.truncate!(offset)
 
-              block.call(store) if block_given?
-
-              removed_size
+                removed_size
+              end
             end
           end
 
@@ -240,19 +224,15 @@ module Gitlab
           end
 
           def chunks_count
-            (size / buffer_size) + (has_extra? ? 1 : 0)
+            (size / buffer_size)
           end
 
-          def has_extra?
-            (size % buffer_size) > 0
+          def first_chunk?
+            chunk_index == 0
           end
 
           def last_chunk?
-            chunks_count == 0 || chunk_index == (chunks_count - 1) || chunk_index == chunks_count
-          end
-
-          def write_lock_key
-            "live_trace:operation:write:#{job_id}"
+            chunks_count == 0 || chunk_index == (chunks_count - 1)
           end
 
           def chunk_store

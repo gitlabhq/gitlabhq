@@ -29,6 +29,10 @@ module Gitlab
                 ::Ci::JobTraceChunk.where(job_id: job_id).pluck('data')
                   .inject(0) { |sum, data| sum + data.length }
               end
+
+              def delete_all(job_id)
+                ::Ci::JobTraceChunk.destroy_all(job_id: job_id)
+              end
             end
 
             attr_reader :job_trace_chunk
@@ -67,9 +71,7 @@ module Gitlab
             end
 
             def truncate!(offset)
-              raise NotImplementedError, 'Partial truncate is not supported' unless offset == 0
-
-              delete!
+              raise NotImplementedError
             end
 
             def delete!

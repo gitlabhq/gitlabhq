@@ -38,6 +38,14 @@ module Gitlab
                 end
               end
 
+              def delete_all(job_id)
+                Gitlab::Redis::Cache.with do |redis|
+                  redis.scan_each(:match => buffer_key(job_id, '?')) do |key|
+                    redis.del(key)
+                  end
+                end
+              end
+
               def buffer_key(job_id, chunk_index)
                 "live_trace_buffer:#{job_id}:#{chunk_index}"
               end
@@ -87,7 +95,6 @@ module Gitlab
               puts "#{self.class.name} - #{__callee__}: offset: #{offset.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
                 return 0 unless redis.exists(buffer_key)
-                return delete! if offset == 0
 
                 truncated_data = redis.getrange(buffer_key, 0, offset)
                 redis.set(buffer_key, truncated_data)
