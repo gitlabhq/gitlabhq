@@ -68,9 +68,7 @@ describe('Multi-file store tree actions', () => {
           expect(projectTree.tree[0].tree[1].name).toBe('fileinfolder.js');
           expect(projectTree.tree[1].type).toBe('blob');
           expect(projectTree.tree[0].tree[0].tree[0].type).toBe('blob');
-          expect(projectTree.tree[0].tree[0].tree[0].name).toBe(
-            'fileinsubfolder.js',
-          );
+          expect(projectTree.tree[0].tree[0].tree[0].name).toBe('fileinsubfolder.js');
 
           done();
         })
@@ -132,9 +130,7 @@ describe('Multi-file store tree actions', () => {
       store
         .dispatch('getLastCommitData', projectTree)
         .then(() => {
-          expect(service.getTreeLastCommit).toHaveBeenCalledWith(
-            'lastcommitpath',
-          );
+          expect(service.getTreeLastCommit).toHaveBeenCalledWith('lastcommitpath');
 
           done();
         })
@@ -160,9 +156,7 @@ describe('Multi-file store tree actions', () => {
         .dispatch('getLastCommitData', projectTree)
         .then(Vue.nextTick)
         .then(() => {
-          expect(projectTree.tree[0].lastCommit.message).not.toBe(
-            'commit message',
-          );
+          expect(projectTree.tree[0].lastCommit.message).not.toBe('commit message');
 
           done();
         })
