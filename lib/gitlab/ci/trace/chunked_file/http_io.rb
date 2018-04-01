@@ -2,18 +2,8 @@ module Gitlab
   module Ci
     class Trace
       module ChunkedFile
-        class Remote < ChunkedIO
+        class HttpIO < ChunkedIO
           BUFFER_SIZE = 128.kilobytes
-
-          class << self
-            def open(job_id, mode)
-              stream = self.new(job_id, mode)
-
-              yield stream
-            ensure
-              stream.close
-            end
-          end
 
           InvalidURLError = Class.new(StandardError)
 

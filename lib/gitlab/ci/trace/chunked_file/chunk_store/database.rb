@@ -52,7 +52,8 @@ module Gitlab
             end
 
             def write!(data)
-              raise NotImplementedError, 'Partial write is not supported' unless buffer_size == data&.length
+              puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
+              raise NotImplementedError, 'Partial write is not supported' unless params[:buffer_size] == data&.length
               raise NotImplementedError, 'UPDATE is not supported' if job_trace_chunk.data
 
               job_trace_chunk.data = data
@@ -66,10 +67,13 @@ module Gitlab
             end
 
             def truncate!(offset)
-              raise NotImplementedError
+              raise NotImplementedError, 'Partial truncate is not supported' unless offset == 0
+
+              delete!
             end
 
             def delete!
+              puts "#{self.class.name} - #{__callee__}: params[:chunk_index]: #{params[:chunk_index]}"
               job_trace_chunk.destroy!
             end
           end

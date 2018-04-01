@@ -1,21 +1,23 @@
 ##
-# This class is designed as it's compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
+# ChunkedIO Engine
+#
+# Choose a chunk_store with your purpose
+# This class is designed that it's compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 module Gitlab
   module Ci
     class Trace
       module ChunkedFile
         class ChunkedIO
           class << self
-            def open(job_id, size, mode)
-              stream = self.new(job_id, size, mode)
+            def open(*args)
+              stream = self.new(*args)
 
               yield stream
             ensure
-              stream.close
+              stream&.close
             end
           end
 
-          BUFFER_SIZE = 128.kilobytes
           WriteError = Class.new(StandardError)
           FailedToGetChunkError = Class.new(StandardError)
 
@@ -124,32 +126,16 @@ module Gitlab
             raise WriteError, 'Could not write without lock' unless write_lock_uuid
             raise WriteError, 'Could not write empty data' unless data.present?
 
-            data = data.dup
-
-            chunk_index_start = chunk_index
-            chunk_index_end = (tell + data.length) / BUFFER_SIZE
+            _data = data.dup
             prev_tell = tell
 
-            (chunk_index_start..chunk_index_end).each do |c_index|
-              chunk_store.open(job_id, c_index, params_for_store) do |store|
-                writable_space = BUFFER_SIZE - chunk_offset
-                writing_size = [writable_space, data.length].min
+            until _data.empty?
+              writable_space = buffer_size - chunk_offset
+              writing_size = [writable_space, _data.length].min
+              written_size = write_chunk!(_data.slice!(0...writing_size), &block)
 
-                break unless writing_size > 0
-
-                if store.size > 0
-                  written_size = store.append!(data.slice!(0...writing_size))
-                else
-                  written_size = store.write!(data.slice!(0...writing_size))
-                end
-
-                raise WriteError, 'Written size mismatch' unless writing_size == written_size
-
-                @tell += written_size
-                @size = [tell, size].max
-
-                block.call(store, c_index) if block_given?
-              end
+              @tell += written_size
+              @size = [tell, size].max
             end
 
             tell - prev_tell
@@ -159,24 +145,19 @@ module Gitlab
             raise WriteError, 'Could not write without lock' unless write_lock_uuid
             raise WriteError, 'Offset is out of bound' if offset > size || offset < 0
 
-            chunk_index_start = (offset / BUFFER_SIZE)
-            chunk_index_end = chunks_count - 1
+            @tell = size - 1
 
-            (chunk_index_start..chunk_index_end).reverse_each do |c_index|
-              chunk_store.open(job_id, c_index, params_for_store) do |store|
-                c_index_start = c_index * BUFFER_SIZE
+            until size == offset
+              truncatable_space = size - chunk_start
+              _chunk_offset = (offset <= chunk_start) ? 0 : offset % buffer_size
+              removed_size = truncate_chunk!(_chunk_offset, &block)
 
-                if offset <= c_index_start
-                  store.delete!
-                else
-                  store.truncate!(offset - c_index_start) if store.size > 0
-                end
-
-                block.call(store, c_index) if block_given?
-              end
+              @tell -= removed_size
+              @size -= removed_size
             end
 
-            @tell = @size = offset
+            @tell = [tell, 0].max
+            @size = [size, 0].max
           end
 
           def flush
@@ -198,48 +179,76 @@ module Gitlab
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
                 @chunk = store.get
 
-                raise FailedToGetChunkError unless chunk
+                raise FailedToGetChunkError unless chunk && chunk.length > 0
 
                 @chunk_range = (chunk_start...(chunk_start + chunk.length))
               end
             end
 
-            @chunk[chunk_offset..BUFFER_SIZE]
+            @chunk[chunk_offset..buffer_size]
           end
 
-          def params_for_store
+          def write_chunk!(data, &block)
+            chunk_store.open(job_id, chunk_index, params_for_store) do |store|
+              written_size = if buffer_size == data.length
+                               store.write!(data)
+                             else
+                               store.append!(data)
+                             end
+
+              raise WriteError, 'Written size mismatch' unless data.length == written_size
+
+              block.call(store) if block_given?
+
+              written_size
+            end
+          end
+
+          def truncate_chunk!(offset, &block)
+            chunk_store.open(job_id, chunk_index, params_for_store) do |store|
+              removed_size = store.size - offset
+              store.truncate!(offset)
+
+              block.call(store) if block_given?
+
+              removed_size
+            end
+          end
+
+          def params_for_store(c_index = chunk_index)
             {
-              buffer_size: BUFFER_SIZE,
-              chunk_start: chunk_start
+              buffer_size: buffer_size,
+              chunk_start: c_index * buffer_size,
+              chunk_index: c_index
             }
           end
 
           def chunk_offset
-            tell % BUFFER_SIZE
+            tell % buffer_size
           end
 
           def chunk_start
-            (tell / BUFFER_SIZE) * BUFFER_SIZE
+            chunk_index * buffer_size
           end
 
           def chunk_end
-            [chunk_start + BUFFER_SIZE, size].min
+            [chunk_start + buffer_size, size].min
           end
 
           def chunk_index
-            (tell / BUFFER_SIZE)
+            (tell / buffer_size)
           end
 
           def chunks_count
-            (size / BUFFER_SIZE) + (has_extra? ? 1 : 0)
+            (size / buffer_size) + (has_extra? ? 1 : 0)
           end
 
           def has_extra?
-            (size % BUFFER_SIZE) > 0
+            (size % buffer_size) > 0
           end
 
           def last_chunk?
-            chunk_index == (chunks_count - 1)
+            chunks_count == 0 || chunk_index == (chunks_count - 1) || chunk_index == chunks_count
           end
 
           def write_lock_key
@@ -247,6 +256,10 @@ module Gitlab
           end
 
           def chunk_store
+            raise NotImplementedError
+          end
+
+          def buffer_size
             raise NotImplementedError
           end
         end

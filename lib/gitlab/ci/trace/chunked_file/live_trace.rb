@@ -3,17 +3,7 @@ module Gitlab
     class Trace
       module ChunkedFile
         class LiveTrace < ChunkedIO
-          BUFFER_SIZE = 128.kilobytes
-
           class << self
-            def open(job_id, mode)
-              stream = self.new(job_id, mode)
-
-              yield stream
-            ensure
-              stream.close
-            end
-
             def exist?(job_id)
               ChunkStores::Redis.chunks_count(job_id) > 0 ||
                 ChunkStores::Database.chunks_count(job_id) > 0
@@ -21,7 +11,7 @@ module Gitlab
           end
 
           def initialize(job_id, mode)
-            super(job_id, calculate_size, mode)
+            super(job_id, calculate_size(job_id), mode)
           end
 
           def write(data)
@@ -29,29 +19,50 @@ module Gitlab
 
             super(data) do |store|
               if store.filled?
-                # Rotate data from redis to database
-                ChunkStores::Database.open(job_id, chunk_index, params_for_store) do |to_store|
+                # Once data is filled into redis, move the data to database
+                ChunkStore::Database.open(job_id, chunk_index, params_for_store) do |to_store|
                   to_store.write!(store.get)
+                  store.delete!
                 end
+              end
+            end
+          end
 
-                store.delete!
+          def truncate(offset)
+            super(offset) do |store|
+              next if chunk_index == 0
+
+              prev_chunk_index = chunk_index - 1
+
+              if ChunkStore::Database.exist?(job_id, prev_chunk_index)
+                # Swap data from Database to Redis to truncate any size than buffer_size
+                ChunkStore::Database.open(job_id, prev_chunk_index, params_for_store(prev_chunk_index)) do |from_store|
+                  ChunkStore::Redis.open(job_id, prev_chunk_index, params_for_store(prev_chunk_index)) do |to_store|
+                    to_store.write!(from_store.get)
+                    from_store.delete!
+                  end
+                end
               end
             end
           end
 
           private
 
-          def calculate_size
-            ChunkStores::Redis.chunks_size(job_id) + 
-              ChunkStores::Database.chunks_size(job_id)
+          def calculate_size(job_id)
+            ChunkStore::Redis.chunks_size(job_id) +
+              ChunkStore::Database.chunks_size(job_id)
           end
 
           def chunk_store
             if last_chunk?
-              ChunkStores::Redis
+              ChunkStore::Redis
             else
-              ChunkStores::Database
+              ChunkStore::Database
             end
+          end
+
+          def buffer_size
+            128.kilobytes
           end
         end
       end
