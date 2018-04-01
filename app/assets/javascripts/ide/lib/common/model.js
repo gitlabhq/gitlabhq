@@ -21,6 +21,15 @@ export default class Model {
         new this.monaco.Uri(null, null, this.file.path),
       )),
     );
+    if (this.file.mrChange) {
+      this.disposable.add(
+        (this.baseModel = this.monaco.editor.createModel(
+          this.file.baseRaw,
+          undefined,
+          new this.monaco.Uri(null, null, `target/${this.file.path}`),
+        )),
+      );
+    }
 
     this.events = new Map();
 
@@ -28,10 +37,7 @@ export default class Model {
     this.dispose = this.dispose.bind(this);
 
     eventHub.$on(`editor.update.model.dispose.${this.file.path}`, this.dispose);
-    eventHub.$on(
-      `editor.update.model.content.${this.file.path}`,
-      this.updateContent,
-    );
+    eventHub.$on(`editor.update.model.content.${this.file.path}`, this.updateContent);
   }
 
   get url() {
@@ -58,6 +64,10 @@ export default class Model {
     return this.originalModel;
   }
 
+  getBaseModel() {
+    return this.baseModel;
+  }
+
   setValue(value) {
     this.getModel().setValue(value);
   }
@@ -78,13 +88,7 @@ export default class Model {
     this.disposable.dispose();
     this.events.clear();
 
-    eventHub.$off(
-      `editor.update.model.dispose.${this.file.path}`,
-      this.dispose,
-    );
-    eventHub.$off(
-      `editor.update.model.content.${this.file.path}`,
-      this.updateContent,
-    );
+    eventHub.$off(`editor.update.model.dispose.${this.file.path}`, this.dispose);
+    eventHub.$off(`editor.update.model.content.${this.file.path}`, this.updateContent);
   }
 }

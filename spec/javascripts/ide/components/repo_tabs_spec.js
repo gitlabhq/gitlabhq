@@ -17,6 +17,7 @@ describe('RepoTabs', () => {
       files: openedFiles,
       viewer: 'editor',
       hasChanges: false,
+      hasMergeRequest: false,
     });
     openedFiles[0].active = true;
 
@@ -56,6 +57,7 @@ describe('RepoTabs', () => {
           files: [],
           viewer: 'editor',
           hasChanges: false,
+          hasMergeRequest: false,
         },
         '#test-app',
       );
