@@ -1,67 +1,64 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
-  import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import { mapActions, mapState } from 'vuex';
+import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 
-  export default {
-    components: {
-      PanelResizer,
+export default {
+  components: {
+    PanelResizer,
+  },
+  props: {
+    collapsible: {
+      type: Boolean,
+      required: true,
     },
-    props: {
-      collapsible: {
-        type: Boolean,
-        required: true,
-      },
-      initialWidth: {
-        type: Number,
-        required: true,
-      },
-      minSize: {
-        type: Number,
-        required: false,
-        default: 200,
-      },
-      side: {
-        type: String,
-        required: true,
-      },
+    initialWidth: {
+      type: Number,
+      required: true,
     },
-    data() {
-      return {
-        width: this.initialWidth,
-      };
+    minSize: {
+      type: Number,
+      required: false,
+      default: 340,
     },
-    computed: {
-      ...mapState({
-        collapsed(state) {
-          return state[`${this.side}PanelCollapsed`];
-        },
-      }),
-      panelStyle() {
-        if (!this.collapsed) {
-          return {
-            width: `${this.width}px`,
-          };
-        }
+    side: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      width: this.initialWidth,
+    };
+  },
+  computed: {
+    ...mapState({
+      collapsed(state) {
+        return state[`${this.side}PanelCollapsed`];
+      },
+    }),
+    panelStyle() {
+      if (!this.collapsed) {
+        return {
+          width: `${this.width}px`,
+        };
+      }
 
-        return {};
-      },
+      return {};
     },
-    methods: {
-      ...mapActions([
-        'setPanelCollapsedStatus',
-        'setResizingStatus',
-      ]),
-      toggleFullbarCollapsed() {
-        if (this.collapsed && this.collapsible) {
-          this.setPanelCollapsedStatus({
-            side: this.side,
-            collapsed: !this.collapsed,
-          });
-        }
-      },
+  },
+  methods: {
+    ...mapActions(['setPanelCollapsedStatus', 'setResizingStatus']),
+    toggleFullbarCollapsed() {
+      if (this.collapsed && this.collapsible) {
+        this.setPanelCollapsedStatus({
+          side: this.side,
+          collapsed: !this.collapsed,
+        });
+      }
     },
-    maxSize: (window.innerWidth / 2),
-  };
+  },
+  maxSize: window.innerWidth / 2,
+};
 </script>
 
 <template>
