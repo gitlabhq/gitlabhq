@@ -1,27 +1,27 @@
 <script>
-  import icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '~/vue_shared/directives/tooltip';
-  import '~/lib/utils/datetime_utility';
+import icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import '~/lib/utils/datetime_utility';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
+  },
+  computed: {
+    lockTooltip() {
+      return `Locked by ${this.file.file_lock.user.name}`;
     },
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
-    },
-    computed: {
-      lockTooltip() {
-        return `Locked by ${this.file.file_lock.user.name}`;
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>
