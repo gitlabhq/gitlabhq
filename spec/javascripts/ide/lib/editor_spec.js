@@ -76,7 +76,7 @@ describe('Multi-file editor library', () => {
         occurrencesHighlight: false,
         renderLineHighlight: 'none',
         hideCursorInOverviewRuler: true,
-        wordWrap: 'bounded',
+        wordWrap: 'on',
       });
     });
   });
