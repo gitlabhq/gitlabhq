@@ -4,14 +4,10 @@ module Gitlab
       module ChunkedFile
         module ChunkStore
           class Base
-            attr_reader :buffer_size
-            attr_reader :chunk_start
-            attr_reader :url
+            attr_reader :params
 
             def initialize(*identifiers, **params)
-              @buffer_size = params[:buffer_size]
-              @chunk_start = params[:chunk_start]
-              @url = params[:url]
+              @params = params
             end
 
             def close
@@ -43,7 +39,7 @@ module Gitlab
             end
 
             def filled?
-              size == buffer_size
+              size == params[:buffer_size]
             end
           end
         end

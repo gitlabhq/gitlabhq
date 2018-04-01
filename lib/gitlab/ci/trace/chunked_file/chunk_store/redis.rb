@@ -68,6 +68,7 @@ module Gitlab
             end
 
             def write!(data)
+              puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
                 redis.set(buffer_key, data)
                 redis.strlen(buffer_key)
@@ -75,6 +76,7 @@ module Gitlab
             end
 
             def append!(data)
+              puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
                 redis.append(buffer_key, data)
                 data.length
@@ -82,8 +84,10 @@ module Gitlab
             end
 
             def truncate!(offset)
+              puts "#{self.class.name} - #{__callee__}: offset: #{offset.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
-                return unless redis.exists(buffer_key)
+                return 0 unless redis.exists(buffer_key)
+                return delete! if offset == 0
 
                 truncated_data = redis.getrange(buffer_key, 0, offset)
                 redis.set(buffer_key, truncated_data)
@@ -91,6 +95,7 @@ module Gitlab
             end
 
             def delete!
+              puts "#{self.class.name} - #{__callee__}: params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
                 redis.del(buffer_key)
               end

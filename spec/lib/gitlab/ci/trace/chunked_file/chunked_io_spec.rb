@@ -14,6 +14,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkedIO, :clean_gitlab_redis_cache do
 
     before do
       allow_any_instance_of(described_class).to receive(:chunk_store).and_return(chunk_store)
+      allow_any_instance_of(described_class).to receive(:buffer_size).and_return(128.kilobytes)
     end
 
     it_behaves_like 'ChunkedIO shared tests'
@@ -24,6 +25,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkedIO, :clean_gitlab_redis_cache do
 
     before do
       allow_any_instance_of(described_class).to receive(:chunk_store).and_return(chunk_store)
+      allow_any_instance_of(described_class).to receive(:buffer_size).and_return(128.kilobytes)
     end
 
     it_behaves_like 'ChunkedIO shared tests'

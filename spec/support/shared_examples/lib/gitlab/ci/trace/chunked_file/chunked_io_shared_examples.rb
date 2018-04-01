@@ -82,7 +82,7 @@ shared_examples "ChunkedIO shared tests" do
   describe '#each_line' do
     let(:string_io) { StringIO.new(sample_trace_raw) }
 
-    context 'when BUFFER_SIZE is smaller than file size' do
+    context 'when buffer size is smaller than file size' do
       before do
         set_smaller_buffer_size_than(size)
         fill_trace_to_chunks(sample_trace_raw)
@@ -94,7 +94,7 @@ shared_examples "ChunkedIO shared tests" do
       end
     end
 
-    context 'when BUFFER_SIZE is larger than file size', :partial_support do
+    context 'when buffer size is larger than file size', :partial_support do
       before do
         set_larger_buffer_size_than(size)
         fill_trace_to_chunks(sample_trace_raw)
@@ -114,7 +114,7 @@ shared_examples "ChunkedIO shared tests" do
     context 'when read whole size' do
       let(:length) { nil }
 
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -125,7 +125,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size', :partial_support do
+      context 'when buffer size is larger than file size', :partial_support do
         before do
           set_larger_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -140,7 +140,7 @@ shared_examples "ChunkedIO shared tests" do
     context 'when read only first 100 bytes' do
       let(:length) { 100 }
 
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -151,7 +151,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size', :partial_support do
+      context 'when buffer size is larger than file size', :partial_support do
         before do
           set_larger_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -166,7 +166,7 @@ shared_examples "ChunkedIO shared tests" do
     context 'when tries to read oversize' do
       let(:length) { size + 1000 }
 
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -177,7 +177,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size', :partial_support do
+      context 'when buffer size is larger than file size', :partial_support do
         before do
           set_larger_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -192,7 +192,7 @@ shared_examples "ChunkedIO shared tests" do
     context 'when tries to read 0 bytes' do
       let(:length) { 0 }
 
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -203,7 +203,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size', :partial_support do
+      context 'when buffer size is larger than file size', :partial_support do
         before do
           set_larger_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -226,7 +226,7 @@ shared_examples "ChunkedIO shared tests" do
       end
 
       it 'reads a trace' do
-        expect { subject }.to raise_error(Gitlab::Ci::Trace::ChunkedFile::ChunkedIO::FailedToGetChunkError)
+        expect { subject }.to raise_error(described_class::FailedToGetChunkError)
       end
     end
   end
@@ -254,11 +254,11 @@ shared_examples "ChunkedIO shared tests" do
       end
 
       it 'reads a trace' do
-        expect { subject }.to raise_error(Gitlab::Ci::Trace::ChunkedFile::ChunkedIO::FailedToGetChunkError)
+        expect { subject }.to raise_error(described_class::FailedToGetChunkError)
       end
     end
 
-    context 'when BUFFER_SIZE is smaller than file size' do
+    context 'when buffer size is smaller than file size' do
       before do
         set_smaller_buffer_size_than(size)
         fill_trace_to_chunks(sample_trace_raw)
@@ -267,7 +267,7 @@ shared_examples "ChunkedIO shared tests" do
       it_behaves_like 'all line matching'
     end
 
-    context 'when BUFFER_SIZE is larger than file size', :partial_support do
+    context 'when buffer size is larger than file size', :partial_support do
       before do
         set_larger_buffer_size_than(size)
         fill_trace_to_chunks(sample_trace_raw)
@@ -296,10 +296,10 @@ shared_examples "ChunkedIO shared tests" do
 
     let(:data) { sample_trace_raw }
 
-    context 'when write mdoe' do
+    context 'when write mode' do
       let(:mode) { 'wb' }
 
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
         end
@@ -307,7 +307,7 @@ shared_examples "ChunkedIO shared tests" do
         it 'writes a trace' do
           is_expected.to eq(data.length)
 
-          Gitlab::Ci::Trace::ChunkedFile::ChunkedIO.open(job_id, size, 'rb') do |stream|
+          described_class.open(job_id, size, 'rb') do |stream|
             expect(stream.read).to eq(data)
             expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
             expect(chunk_store.chunks_size(job_id)).to eq(data.length)
@@ -315,7 +315,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size', :partial_support do
+      context 'when buffer size is larger than file size', :partial_support do
         before do
           set_larger_buffer_size_than(size)
         end
@@ -323,7 +323,7 @@ shared_examples "ChunkedIO shared tests" do
         it 'writes a trace' do
           is_expected.to eq(data.length)
 
-          Gitlab::Ci::Trace::ChunkedFile::ChunkedIO.open(job_id, size, 'rb') do |stream|
+          described_class.open(job_id, size, 'rb') do |stream|
             expect(stream.read).to eq(data)
             expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
             expect(chunk_store.chunks_size(job_id)).to eq(data.length)
@@ -340,11 +340,11 @@ shared_examples "ChunkedIO shared tests" do
       end
     end
 
-    context 'when append mdoe', :partial_support do
+    context 'when append mode', :partial_support do
       let(:original_data) { 'original data' }
       let(:total_size) { original_data.length + data.length }
 
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
           fill_trace_to_chunks(original_data)
@@ -363,7 +363,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size' do
+      context 'when buffer size is larger than file size' do
         before do
           set_larger_buffer_size_than(size)
           fill_trace_to_chunks(original_data)
@@ -386,7 +386,7 @@ shared_examples "ChunkedIO shared tests" do
 
   describe '#truncate' do
     context 'when data exists' do
-      context 'when BUFFER_SIZE is smaller than file size' do
+      context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
@@ -426,7 +426,7 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when BUFFER_SIZE is larger than file size', :partial_support do
+      context 'when buffer size is larger than file size', :partial_support do
         before do
           set_larger_buffer_size_than(size)
           fill_trace_to_chunks(sample_trace_raw)
