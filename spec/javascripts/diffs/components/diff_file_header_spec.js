@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import DiffFileHeader from '~/notes/components/diff_file_header.vue';
+import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
@@ -39,7 +39,9 @@ describe('diff_file_header', () => {
 
     it('has button to copy blob path', () => {
       expect(selectors.copyButton).toExist();
-      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(props.diffFile.submoduleLink);
+      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(
+        props.diffFile.submoduleLink,
+      );
     });
   });
 
@@ -71,10 +73,12 @@ describe('diff_file_header', () => {
 
     it('has button to copy file path', () => {
       expect(selectors.copyButton).toExist();
-      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(props.diffFile.filePath);
+      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(
+        props.diffFile.filePath,
+      );
     });
 
-    it('shows file mode change', (done) => {
+    it('shows file mode change', done => {
       vm.diffFile = {
         ...props.diffFile,
         modeChanged: true,
@@ -83,9 +87,7 @@ describe('diff_file_header', () => {
       };
 
       Vue.nextTick(() => {
-        expect(
-          vm.$refs.fileMode.textContent.trim(),
-        ).toBe('100755 → 100644');
+        expect(vm.$refs.fileMode.textContent.trim()).toBe('100755 → 100644');
         done();
       });
     });

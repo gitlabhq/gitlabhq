@@ -271,3 +271,16 @@ a {
     transform: translateX(468px);
   }
 }
+
+.slide-down-enter-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.slide-down-enter {
+  opacity: 0.2;
+  transform: translateY(-30%);
+}
+
+.slide-down-leave-to {
+  opacity: 0;
+}

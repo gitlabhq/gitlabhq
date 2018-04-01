@@ -148,7 +148,7 @@ export default {
     </div>
 
     <div
-      v-if="!diffFile.submodule"
+      v-if="!diffFile.submodule && addMergeRequestButtons"
       class="file-actions hidden-xs"
     >
       <template

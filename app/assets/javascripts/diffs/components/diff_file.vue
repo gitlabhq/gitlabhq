@@ -1,5 +1,5 @@
 <script>
-import diffFileHeader from '../../notes/components/diff_file_header.vue';
+import diffFileHeader from './diff_file_header.vue';
 import diffContent from './diff_content.vue';
 
 export default {
@@ -36,7 +36,7 @@ export default {
       }
     },
     scrollUpdate() {
-      const header = document.querySelector('.js-diff-files-changed');
+      const header = document.querySelector('.sticky-top-bar');
       if (!header) {
         this.updating = false;
         return;
