@@ -11,34 +11,6 @@ describe Projects::EnvironmentScalingsController do
     sign_in(user)
   end
 
-  describe 'GET show' do
-    subject { get :show, namespace_id: project.namespace.to_param, project_id: project, environment_id: environment, format: :json }
-
-    context 'when scaling is available' do
-      before do
-        allow_any_instance_of(EnvironmentScaling).to receive(:available?).and_return(true)
-      end
-
-      it 'respons with ok status code' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    context 'when scaling is not available' do
-      before do
-        allow_any_instance_of(EnvironmentScaling).to receive(:available?).and_return(false)
-      end
-
-      it 'respons with bad_request status code' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-  end
-
   describe 'POST update' do
     subject { post :update, namespace_id: project.namespace.to_param, project_id: project, environment_id: environment, environment_scaling: scaling_params, format: :json }
 
