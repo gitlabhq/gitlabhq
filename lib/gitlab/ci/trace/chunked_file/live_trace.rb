@@ -18,7 +18,7 @@ module Gitlab
 
           def stash_to_database(store)
             # Once data is filled into redis, move the data to database
-            if store.filled? && 
+            if store.filled?
               ChunkStore::Database.open(job_id, chunk_index, params_for_store) do |to_store|
                 to_store.write!(store.get)
                 store.delete!
@@ -28,7 +28,7 @@ module Gitlab
 
           # Efficient process than iterating each
           def truncate(offset)
-            if truncate == 0
+            if offset == 0
               delete
             elsif offset == size
               # no-op
@@ -54,7 +54,7 @@ module Gitlab
           end
 
           def chunk_store
-            if last_chunk?
+            if last_chunk? || eof?
               ChunkStore::Redis
             else
               ChunkStore::Database

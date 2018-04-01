@@ -236,7 +236,7 @@ module Gitlab
           end
 
           def last_chunk?
-            chunks_count == 0 || chunk_index == (chunks_count - 1)
+            (chunk_start...chunk_end).include?(tell)
           end
 
           def chunk_store
