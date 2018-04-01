@@ -29,12 +29,16 @@ module Gitlab
           # Efficient process than iterating each
           def truncate(offset)
             if truncate == 0
-              self.delete_all(job_id)
+              delete
             elsif offset == size
               # no-op
             else
               raise NotImplementedError, 'Unexpected operation'
             end
+          end
+
+          def present?
+            self.exist?(job_id)
           end
 
           def delete

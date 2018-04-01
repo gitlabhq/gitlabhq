@@ -128,7 +128,11 @@ module Gitlab
           end
 
           def present?
-            true
+            chunk_store.chunks_count(job_id) > 0
+          end
+
+          def delete
+            chunk_store.delete_all
           end
 
           private

@@ -21,6 +21,7 @@ module Gitlab
               # write_lock
               before_method :write, :check_lock!
               before_method :truncate, :check_lock!
+              before_method :delete, :check_lock!
             end
 
             def initialize(job_id, size, mode = 'rb')
@@ -43,7 +44,7 @@ module Gitlab
             end
 
             def check_lock!
-              raise PermissionError, 'Could not write without lock' unless write_lock_uuid
+              raise PermissionError, 'Could not modify the file without lock' unless write_lock_uuid
             end
 
             def can_read!
