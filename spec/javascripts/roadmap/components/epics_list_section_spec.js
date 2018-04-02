@@ -15,6 +15,7 @@ const createComponent = ({
   timeframe = mockTimeframe,
   currentGroupId = mockGroupId,
   shellWidth = mockShellWidth,
+  listScrollable = false,
 }) => {
   const Component = Vue.extend(epicsListSectionComponent);
 
@@ -23,6 +24,7 @@ const createComponent = ({
     timeframe,
     currentGroupId,
     shellWidth,
+    listScrollable,
   });
 };
 
@@ -39,6 +41,8 @@ describe('EpicsListSectionComponent', () => {
       expect(vm.shellHeight).toBe(0);
       expect(vm.emptyRowHeight).toBe(0);
       expect(vm.showEmptyRow).toBe(false);
+      expect(vm.offsetLeft).toBe(0);
+      expect(vm.showBottomShadow).toBe(false);
     });
   });
 
@@ -47,24 +51,21 @@ describe('EpicsListSectionComponent', () => {
       vm = createComponent({});
     });
 
-    describe('calcShellWidth', () => {
-      it('returns shellWidth after deducting predefined scrollbar size', () => {
-        // shellWidth is 2000 (as defined above in mockShellWidth)
-        // SCROLLBAR_SIZE is 15 (as defined in app's constants.js)
-        // Hence, calcShellWidth = shellWidth - SCROLLBAR_SIZE
-        expect(vm.calcShellWidth).toBe(1985);
-      });
-    });
-
-    describe('tbodyStyles', () => {
-      it('returns computed style string based on shellWidth and shellHeight', () => {
-        expect(vm.tbodyStyles).toBe('width: 2015px; height: 0px;');
+    describe('emptyRowContainerStyles', () => {
+      it('returns computed style object based on emptyRowHeight prop value', () => {
+        expect(vm.emptyRowContainerStyles.height).toBe('0px');
       });
     });
 
     describe('emptyRowCellStyles', () => {
-      it('returns computed style string based on emptyRowHeight', () => {
-        expect(vm.emptyRowCellStyles).toBe('height: 0px;');
+      it('returns computed style object based on sectionItemWidth prop value', () => {
+        expect(vm.emptyRowCellStyles.width).toBe('280px');
+      });
+    });
+
+    describe('shadowCellStyles', () => {
+      it('returns computed style object based on `offsetLeft` prop value', () => {
+        expect(vm.shadowCellStyles.left).toBe('0px');
       });
     });
   });
@@ -104,7 +105,7 @@ describe('EpicsListSectionComponent', () => {
     describe('initEmptyRow', () => {
       it('sets `emptyRowHeight` and `showEmptyRow` props when shellHeight is greater than approximate height of epics list', (done) => {
         vm.$nextTick(() => {
-          expect(vm.emptyRowHeight).toBe(599); // total size -1px
+          expect(vm.emptyRowHeight).toBe(600);
           expect(vm.showEmptyRow).toBe(true);
           done();
         });
@@ -122,14 +123,6 @@ describe('EpicsListSectionComponent', () => {
           window.innerHeight = initialHeight; // reset to prevent any side effects
           done();
         });
-      });
-    });
-
-    describe('handleScroll', () => {
-      it('emits `epicsListScrolled` event via eventHub', () => {
-        spyOn(eventHub, '$emit');
-        vm.handleScroll();
-        expect(eventHub.$emit).toHaveBeenCalledWith('epicsListScrolled', jasmine.any(Number), jasmine.any(Number));
       });
     });
 
@@ -154,9 +147,17 @@ describe('EpicsListSectionComponent', () => {
       });
     });
 
-    it('renders component container element with `width` and `left` properties applied via style attribute', (done) => {
+    it('renders component container element with `width` property applied via style attribute', (done) => {
       vm.$nextTick(() => {
-        expect(vm.$el.getAttribute('style')).toBe('width: 2015px; height: 0px;');
+        expect(vm.$el.getAttribute('style')).toBe(`width: ${mockShellWidth}px;`);
+        done();
+      });
+    });
+
+    it('renders bottom shadow element when `showBottomShadow` prop is true', (done) => {
+      vm.showBottomShadow = true;
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.scroll-bottom-shadow')).not.toBe(null);
         done();
       });
     });
