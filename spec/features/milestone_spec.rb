@@ -117,7 +117,7 @@ feature 'Milestone' do
 
       expect(page).to have_selector('.milestone-deprecation-message')
 
-      find('.milestone-deprecation-message .popover-link').click
+      find('.milestone-deprecation-message .js-popover-link').click
 
       expect(page).to have_selector('.milestone-deprecation-message .popover')
     end
