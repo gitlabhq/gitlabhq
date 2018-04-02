@@ -61,15 +61,16 @@
                   = link_to fork_path, method: :post do
                     #{ _('New directory') }
 
-              %li.divider
-              %li.dropdown-header
-                #{ _('This repository') }
-              %li
-                = link_to new_project_branch_path(@project) do
-                  #{ _('New branch') }
-              %li
-                = link_to new_project_tag_path(@project) do
-                  #{ _('New tag') }
+              - if can?(current_user, :push_code, @project)
+                %li.divider
+                %li.dropdown-header
+                  #{ _('This repository') }
+                %li
+                  = link_to new_project_branch_path(@project) do
+                    #{ _('New branch') }
+                %li
+                  = link_to new_project_tag_path(@project) do
+                    #{ _('New tag') }
 
 .tree-controls
 
