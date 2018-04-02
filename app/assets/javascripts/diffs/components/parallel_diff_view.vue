@@ -5,6 +5,8 @@ import {
   EMPTY_CELL_TYPE,
   MATCH_LINE_TYPE,
   CONTEXT_LINE_TYPE,
+  OLD_NO_NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
   LINE_HOVER_CLASS_NAME,
   LINE_UNFOLD_CLASS_NAME,
   LINE_POSITION_RIGHT,
@@ -36,13 +38,15 @@ export default {
       const { type, lineCode } = line[position];
       const isMatchLine = type === MATCH_LINE_TYPE;
       const isContextLine = !isMatchLine && type !== EMPTY_CELL_TYPE && type !== CONTEXT_LINE_TYPE;
+      const isMetaLine = type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE;
       const isSameLine = this.hoveredLineCode === lineCode;
       const isSameSection = position === this.hoveredSection;
 
       return {
         [type]: type,
-        [LINE_HOVER_CLASS_NAME]: this.isLoggedIn && isContextLine && isSameLine && isSameSection,
         [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
+        [LINE_HOVER_CLASS_NAME]:
+          this.isLoggedIn && isContextLine && isSameLine && isSameSection && !isMetaLine,
       };
     },
     handleMouse(e, line, isHover) {

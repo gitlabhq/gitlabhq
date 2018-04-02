@@ -3,6 +3,8 @@ import diffContentMixin from '../mixins/diff_content';
 import {
   MATCH_LINE_TYPE,
   CONTEXT_LINE_TYPE,
+  OLD_NO_NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
   LINE_HOVER_CLASS_NAME,
   LINE_UNFOLD_CLASS_NAME,
 } from '../constants';
@@ -17,11 +19,13 @@ export default {
       const isSameLine = this.hoveredLineCode === line.lineCode;
       const isMatchLine = line.type === MATCH_LINE_TYPE;
       const isContextLine = line.type === CONTEXT_LINE_TYPE;
+      const isMetaLine = line.type === OLD_NO_NEW_LINE_TYPE || line.type === NEW_NO_NEW_LINE_TYPE;
 
       return {
         [line.type]: line.type,
-        [LINE_HOVER_CLASS_NAME]: this.isLoggedIn && isSameLine && !isMatchLine && !isContextLine,
         [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
+        [LINE_HOVER_CLASS_NAME]:
+          this.isLoggedIn && isSameLine && !isMatchLine && !isContextLine && !isMetaLine,
       };
     },
   },
