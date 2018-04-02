@@ -10,6 +10,7 @@ const createComponent = ({
   epics = [mockEpic],
   timeframe = mockTimeframe,
   shellWidth = mockShellWidth,
+  listScrollable = false,
 }) => {
   const Component = Vue.extend(roadmapTimelineSectionComponent);
 
@@ -17,6 +18,7 @@ const createComponent = ({
     epics,
     timeframe,
     shellWidth,
+    listScrollable,
   });
 };
 
@@ -37,33 +39,16 @@ describe('RoadmapTimelineSectionComponent', () => {
     });
   });
 
-  describe('computed', () => {
-    describe('calcShellWidth', () => {
-      it('returns shellWidth by deducting Scrollbar size', () => {
-        // shellWidth is 2000 (as defined above in mockShellWidth)
-        // SCROLLBAR_SIZE is 15 (as defined in app's constants.js)
-        // Hence, calcShellWidth = shellWidth - SCROLLBAR_SIZE
-        expect(vm.calcShellWidth).toBe(1985);
-      });
-    });
-
-    describe('theadStyles', () => {
-      it('returns style string for thead based on calcShellWidth', () => {
-        expect(vm.theadStyles).toBe('width: 1985px;');
-      });
-    });
-  });
-
   describe('methods', () => {
     describe('handleEpicsListScroll', () => {
       it('sets `scrolled-ahead` class on thead element based on provided scrollTop value', () => {
         // vm.$el.clientHeight is 0 during tests
         // hence any value greater than 0 should
         // update scrolledHeaderClass prop
-        vm.handleEpicsListScroll(1);
-        expect(vm.scrolledHeaderClass).toBe('scrolled-ahead');
+        vm.handleEpicsListScroll({ scrollTop: 1 });
+        expect(vm.scrolledHeaderClass).toBe('scroll-top-shadow');
 
-        vm.handleEpicsListScroll(0);
+        vm.handleEpicsListScroll({ scrollTop: 0 });
         expect(vm.scrolledHeaderClass).toBe('');
       });
     });
