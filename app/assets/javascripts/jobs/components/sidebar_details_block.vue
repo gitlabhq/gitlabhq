@@ -107,10 +107,10 @@
         data-method="post"
         rel="nofollow"
       >
-        Retry
+        {{ __('Retry') }}
       </a>
       <button
-        aria-label="Toggle Sidebar"
+        :aria-label="__('Toggle Sidebar')"
         :class="toggleButtonClass"
       >
         <i
@@ -130,7 +130,7 @@
           class="js-new-issue btn btn-new btn-inverted"
           :href="job.new_issue_path"
         >
-          New issue
+          {{ __('New issue') }}
         </a>
         <a
           v-if="canUserRetry"
@@ -139,7 +139,7 @@
           data-method="post"
           rel="nofollow"
         >
-          Retry
+          {{ __('Retry') }}
         </a>
       </div>
       <div :class="{block : renderBlock }">
@@ -148,7 +148,7 @@
           v-if="job.merge_request"
         >
           <span class="build-light-text">
-            Merge Request:
+            {{ __('Merge Request:') }}
           </span>
           <a :href="job.merge_request.path">
             !{{ job.merge_request.iid }}
@@ -203,7 +203,7 @@
           v-if="job.tags.length"
         >
           <span class="build-light-text">
-            Tags:
+            {{ __('Tags:') }}
           </span>
           <span
             v-for="(tag, i) in job.tags"
@@ -223,7 +223,7 @@
             data-method="post"
             rel="nofollow"
           >
-            Cancel
+            {{ __('Cancel') }}
           </a>
         </div>
       </div>
