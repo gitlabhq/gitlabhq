@@ -1,0 +1,5 @@
+---
+title: Replace the `project/issues/weight.feature` spinach test with an rspec analog
+merge_request: 5194
+author: blackst0ne
+type: other
