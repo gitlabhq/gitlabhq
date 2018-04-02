@@ -5,8 +5,10 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 import $ from 'jquery';
 
 export default class GLTerminal {
-  constructor(options) {
-    this.options = options || {};
+  constructor(options = {}) {
+    // Use polyfilled text-encoding if not available
+    this.TextDecoder = window.TextDecoder || TextDecoder;
+    this.TextEncoder = window.TextEncoder || TextEncoder;
 
     if (!Object.prototype.hasOwnProperty.call(this.options, 'cursorBlink')) {
       this.options.cursorBlink = true;
@@ -45,8 +47,8 @@ export default class GLTerminal {
   }
 
   runTerminal() {
-    const decoder = new TextDecoder('utf-8');
-    const encoder = new TextEncoder('utf-8');
+    const decoder = new this.TextDecoder('utf-8');
+    const encoder = new this.TextEncoder('utf-8');
 
     this.terminal.on('data', (data) => {
       this.socket.send(encoder.encode(data));
