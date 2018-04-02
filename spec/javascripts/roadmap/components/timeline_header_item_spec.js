@@ -1,10 +1,9 @@
 import Vue from 'vue';
 
 import timelineHeaderItemComponent from 'ee/roadmap/components/timeline_header_item.vue';
-import { TIMELINE_CELL_MIN_WIDTH } from 'ee/roadmap/constants';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockShellWidth } from '../mock_data';
+import { mockTimeframe, mockShellWidth, mockItemWidth } from '../mock_data';
 
 const mockTimeframeIndex = 0;
 
@@ -13,6 +12,7 @@ const createComponent = ({
   timeframeItem = mockTimeframe[mockTimeframeIndex],
   timeframe = mockTimeframe,
   shellWidth = mockShellWidth,
+  itemWidth = mockItemWidth,
 }) => {
   const Component = Vue.extend(timelineHeaderItemComponent);
 
@@ -21,6 +21,7 @@ const createComponent = ({
     timeframeItem,
     timeframe,
     shellWidth,
+    itemWidth,
   });
 };
 
@@ -42,15 +43,10 @@ describe('TimelineHeaderItemComponent', () => {
   });
 
   describe('computed', () => {
-    describe('thStyles', () => {
-      it('returns style string for th element based on shellWidth, timeframe length and Epic details cell width', () => {
+    describe('itemStyles', () => {
+      it('returns style object for container element based on value of `itemWidth` prop', () => {
         vm = createComponent({});
-        expect(vm.thStyles).toBe('min-width: 280px;');
-      });
-
-      it('returns style string for th element with minimum permissible width when calculated width is lower defined minimum width', () => {
-        vm = createComponent({ shellWidth: 1000 });
-        expect(vm.thStyles).toBe(`min-width: ${TIMELINE_CELL_MIN_WIDTH}px;`);
+        expect(vm.itemStyles.width).toBe('180px');
       });
     });
 
