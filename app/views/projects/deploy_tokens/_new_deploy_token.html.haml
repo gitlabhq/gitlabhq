@@ -1,9 +1,9 @@
 .created-deploy-token-container
   %h5.prepend-top-0
-    Your New Deploy Token
+    = s_('Your New Deploy Token')
   .form-group
-    = text_field_tag 'deploy-token', new_token, readonly: true, class: "deploy-token-field form-control js-select-on-focus", 'aria-describedby' => "deploy-token-help-block"
-    = clipboard_button(text: new_token, title: "Copy deploy token to clipboard", placement: "left")
-    %span.deploy-token.help-block.text-danger Make sure you save it - you won't be able to access it again.
+    = text_field_tag 'deploy-token', new_token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus'
+    = clipboard_button(text: new_token, title: s_('Copy deploy token to clipboard'), placement: 'left')
+    %span.deploy-token-help-block.prepend-top-5.text-danger= s_("Make sure you save it - you won't be able to access it again.")
 
 %hr

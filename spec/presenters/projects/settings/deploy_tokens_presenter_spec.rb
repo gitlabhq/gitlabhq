@@ -28,18 +28,18 @@ describe Projects::Settings::DeployTokensPresenter do
     end
   end
 
-  describe '#new_deploy_token' do
+  describe '#temporal_token' do
     context 'when a deploy token has been created recently' do
       it 'returns the token of the deploy' do
         deploy_token = ::DeployTokens::CreateService.new(project, user, attributes_for(:deploy_token)).execute
 
-        expect(presenter.new_deploy_token).to eq(deploy_token.token)
+        expect(presenter.temporal_token).to eq(deploy_token.token)
       end
     end
 
     context 'when a deploy token has not been created recently' do
       it 'does returns nil' do
-        expect(presenter.new_deploy_token).to be_nil
+        expect(presenter.temporal_token).to be_nil
       end
     end
   end

@@ -5,13 +5,13 @@
         %h4.modal-title.pull-left
           Revoke
           %b #{token.name}?
-        %button.close.pull-right{ "aria-label" => "Close", data: { dismiss: "modal"} }
-          %span{ "aria-hidden" => "true" } ×
+        %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'modal', type: 'button' }
+          %span{ 'aria-hidden' => 'true' } ×
       .modal-body
         %p
-          You are about to revoke
+          = s_('You are about to revoke')
           %b #{token.name}.
-          This action cannot be undone.
+          = s_('This action cannot be undone.')
       .modal-footer
-        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' }= s_('Cancel')
         = link_to "Revoke #{token.name}", revoke_project_deploy_token_path(project, token), method: :put, class: 'btn btn-danger'

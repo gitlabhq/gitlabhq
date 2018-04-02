@@ -37,7 +37,7 @@ the following table.
 | Scope | Description |
 | ----- | ----------- |
 |`read_repo` | Allows read-access to the repository through `git clone` |
-| `read_registry` | Allows read-access to[container registry] images if a project is private and authorization is required. |
+| `read_registry` | Allows read-access to [container registry] images if a project is private and authorization is required. |
 
 ## Usage
 
@@ -69,4 +69,4 @@ Just replace `<username>` and `<deploy_token>` with the proper values.
 
 [ce-17894]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894
 [ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
-[container registry]: ../project/container_registry.md
+[container registry]: ../container_registry.md
