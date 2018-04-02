@@ -1,9 +1,10 @@
+$header-item-height: 60px;
 $item-height: 50px;
-$column-shadow: 15px 0 15px -15px rgba(0, 0, 0, 0.12) inset;
+$details-cell-width: 320px;
+$border-style: 1px solid $border-gray-normal;
 $scroll-top-gradient: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.001) 100%);
 $scroll-bottom-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.001) 0%, rgba(0, 0, 0, 0.15) 100%);
-$border-style: 1px solid $border-gray-normal;
-$details-cell-width: 320px;
+$column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.001) 100%);
 
 .group-epics-roadmap-wrapper {
   padding-bottom: 0;
@@ -17,96 +18,55 @@ $details-cell-width: 320px;
   }
 }
 
-.roadmap-shell {
-  width: 100%;
+.roadmap-container {
   overflow: hidden;
+}
 
-  &,
-  .roadmap-timeline-section,
-  .epics-list-section {
-    display: block;
-    position: relative;
-  }
+.roadmap-shell {
+  overflow-x: auto;
 
-  .epics-list-section .bottom-shadow-cell {
-    position: fixed;
-    bottom: 0;
-    height: 10px;
-    width: $details-cell-width;
-    pointer-events: none;
-    background: $scroll-bottom-gradient;
-    z-index: 3;
-  }
-
-  .epics-list-section .epic-details-cell:after,
-  .roadmap-timeline-section .timeline-header-blank:after,
-  .roadmap-timeline-section.scrolled-ahead .timeline-header-blank:before {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-  }
-
-  .epics-list-section .epic-details-cell:after,
-  .roadmap-timeline-section .timeline-header-blank:after {
-    top: 0;
-    right: -15px;
-    height: 100%;
-    width: 14px;
-    box-shadow: $column-shadow;
-  }
-
-  .roadmap-timeline-section .timeline-header-blank:after {
-    top: -2px;
-    height: 62px;
-  }
-
-  .roadmap-timeline-section.scrolled-ahead .timeline-header-blank:before {
-    bottom: -10px;
-    left: 0;
-    height: 10px;
-    width: 100%;
-    background: $scroll-top-gradient;
-  }
-
-  .roadmap-timeline-section {
-    overflow: visible;
-  }
-
-  .epics-list-section {
-    overflow: auto;
-
-    .epics-list-item-empty {
-      .epic-details-cell {
-        border-bottom: none;
-      }
-    }
-
-    tr:not(.epics-list-item-empty):hover {
-      &,
-      .epic-details-cell {
-        background-color: $theme-gray-100;
-      }
-    }
+  &.prevent-vertical-scroll {
+    overflow-y: hidden;
   }
 }
 
+.roadmap-timeline-section .timeline-header-blank:after,
+.epics-list-section .epic-details-cell:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -$grid-size;
+  width: $grid-size;
+  pointer-events: none;
+  background: $column-right-gradient;
+}
 
 .roadmap-timeline-section {
-  .timeline-header-blank {
-    position: relative;
-    display: block;
-    top: 2px;
-    height: 60px;
-    margin-top: -2px;
-    width: $details-cell-width;
-    background-color: $white-light;
-    border-right: $border-style;
-    z-index: 3;
-  }
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 3;
 
   .timeline-header-blank,
   .timeline-header-item {
+    box-sizing: border-box;
+    float: left;
+    height: $header-item-height;
     border-bottom: $border-style;
+    background-color: $white-light;
+  }
+
+  .timeline-header-blank {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    left: 0;
+    width: $details-cell-width;
+    z-index: 2;
+
+    &:after {
+      height: $header-item-height;
+    }
   }
 
   .timeline-header-item {
@@ -143,9 +103,10 @@ $details-cell-width: 320px;
       display: flex;
 
       .sublabel-value {
-        flex: 1;
+        flex-grow: 1;
         text-align: center;
         font-size: $code_font_size;
+        line-height: 1.5;
         padding: 2px 0;
       }
 
@@ -155,13 +116,12 @@ $details-cell-width: 320px;
         width: 2px;
         background-color: $red-500;
         pointer-events: none;
-        z-index: 1;
       }
 
       .today-bar:before {
         content: '';
         position: absolute;
-        top: -3px;
+        top: -2px;
         left: -3px;
         height: $grid-size;
         width: $grid-size;
@@ -174,27 +134,50 @@ $details-cell-width: 320px;
 
 .epics-list-section {
   .epics-list-item {
-    &.epics-list-item-empty {
+    &:hover {
       .epic-details-cell,
       .epic-timeline-cell {
-        padding: 0;
+        background-color: $theme-gray-100;
+      }
+    }
+
+    &.epics-list-item-empty {
+      &:hover {
+        .epic-details-cell,
+        .epic-timeline-cell {
+          background-color: $white-light;
+          border-bottom: none;
+        }
+      }
+
+      .epic-details-cell,
+      .epic-details-cell:after,
+      .epic-timeline-cell {
+        height: 100%;
       }
     }
 
     .epic-details-cell,
     .epic-timeline-cell {
-      border-right: $border-style;
+      box-sizing: border-box;
+      float: left;
+      height: $item-height;
       border-bottom: $border-style;
     }
 
     .epic-details-cell {
-      position: relative;
-      display: block;
+      position: sticky;
+      position: -webkit-sticky;
+      left: 0;
       width: $details-cell-width;
       padding: $gl-padding-8 $gl-padding;
       font-size: $code_font_size;
       background-color: $white-light;
       z-index: 2;
+
+      &:after {
+        height: $item-height;
+      }
 
       .epic-title {
         display: table;
@@ -225,13 +208,16 @@ $details-cell-width: 320px;
     }
 
     .epic-timeline-cell {
+      background-color: transparent;
+      border-right: $border-style;
+
       .timeline-bar-wrapper {
         position: relative;
       }
 
       .timeline-bar {
         position: absolute;
-        top: -12px;
+        top: 12px;
         height: 24px;
         background-color: $blue-500;
         border-radius: $border-radius-default;
@@ -268,8 +254,8 @@ $details-cell-width: 320px;
           border-bottom-left-radius: 0;
 
           &:before {
-            left: -8px;
-            border-right: 8px solid $blue-500;
+            left: -$grid-size;
+            border-right: $grid-size solid $blue-500;
           }
         }
 
@@ -278,14 +264,14 @@ $details-cell-width: 320px;
           border-bottom-right-radius: 0;
 
           &:after {
-            right: -8px;
-            border-left: 8px solid $blue-500;
+            right: -$grid-size;
+            border-left: $grid-size solid $blue-500;
           }
         }
 
         &.start-date-outside,
         &.start-date-undefined.end-date-outside {
-          left: 8px;
+          left: $grid-size;
         }
       }
 
@@ -294,4 +280,27 @@ $details-cell-width: 320px;
       }
     }
   }
+}
+
+.roadmap-timeline-section.scroll-top-shadow .timeline-header-blank:before,
+.epics-list-section .scroll-bottom-shadow {
+  height: $grid-size;
+  width: $details-cell-width;
+  pointer-events: none;
+}
+
+.roadmap-timeline-section.scroll-top-shadow .timeline-header-blank:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -$grid-size;
+  border-top: 1px solid $white-light;
+  background: $scroll-top-gradient;
+}
+
+.epics-list-section .scroll-bottom-shadow {
+  position: fixed;
+  bottom: 0;
+  background: $scroll-bottom-gradient;
+  z-index: 2;
 }
