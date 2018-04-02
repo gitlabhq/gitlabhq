@@ -46,6 +46,9 @@ export default {
         target: this.targetNoteHash === this.noteAnchorId,
       };
     },
+    canResolve() {
+      return this.note.resolvable && !!this.getUserData.id;
+    },
     canReportAsAbuse() {
       return this.note.report_abuse_path && this.author.id !== this.getUserData.id;
     },
@@ -171,7 +174,7 @@ export default {
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :report-abuse-path="note.report_abuse_path"
-            :resolvable="note.resolvable"
+            :resolvable="canResolve"
             :is-resolved="note.resolved"
             :is-resolving="isResolving"
             :resolved-by="note.resolved_by"
