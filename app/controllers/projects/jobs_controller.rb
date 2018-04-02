@@ -75,6 +75,7 @@ class Projects::JobsController < Projects::ApplicationController
             stream.limit
             state = params[:state].presence
             trace = stream.html_with_state(state)
+            trace[:html] = "No job log" if trace[:html].blank?
             result.merge!(trace.to_h)
           end
 
