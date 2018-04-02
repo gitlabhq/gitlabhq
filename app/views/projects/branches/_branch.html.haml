@@ -66,7 +66,7 @@
           title: s_('Branches|The default branch cannot be deleted') }
           = icon("trash-o")
       - elsif protected_branch?(@project, branch)
-        - if can?(current_user, :delete_protected_branch, @project)
+        - if can?(current_user, :push_to_delete_protected_branch, @project)
           %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
             title: s_('Branches|Delete protected branch'),
             data: { toggle: "modal",

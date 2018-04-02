@@ -43,7 +43,7 @@ describe ProjectPolicy do
 
   let(:base_master_permissions) do
     %i[
-      delete_protected_branch update_project_snippet update_environment
+      push_to_delete_protected_branch update_project_snippet update_environment
       update_deployment admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
