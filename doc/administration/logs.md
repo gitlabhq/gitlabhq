@@ -206,4 +206,12 @@ is populated whenever `gitlab-ctl reconfigure` is run manually or as part of an 
 Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
 was initiated, such as `1509705644.log`
 
+## `sidekiq_exporter.log`
+
+If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq will
+start a Web server and listen to the defined port (default: 3807). Access logs
+will be generated in `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
+installations from source.
+
 [repocheck]: repository_checks.md
