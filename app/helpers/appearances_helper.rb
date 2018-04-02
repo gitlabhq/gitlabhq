@@ -2,11 +2,7 @@ module AppearancesHelper
   prepend EE::AppearancesHelper
 
   def brand_title
-<<<<<<< HEAD
     current_appearance&.title.presence || 'GitLab Enterprise Edition'
-=======
-    current_appearance&.title.presence || 'GitLab Community Edition'
->>>>>>> upstream/master
   end
 
   def brand_image
