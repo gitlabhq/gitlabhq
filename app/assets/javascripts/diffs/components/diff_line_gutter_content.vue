@@ -103,10 +103,7 @@ export default {
   methods: {
     ...mapActions(['loadMoreLines']),
     handleCommentButton() {
-      this.$emit('showCommentForm', {
-        lineCode: this.lineCode,
-        linePosition: this.linePosition,
-      });
+      this.$emit('showCommentForm', { lineCode: this.lineCode });
     },
     handleLoadMoreLines() {
       const endpoint = this.contextLinesPath;

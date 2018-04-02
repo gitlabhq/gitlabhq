@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as utils from './utils';
 import * as types from './mutation_types';
-import { COMMENT_FORM_TYPE, PARALLEL_DIFF_VIEW_TYPE, LINE_POSITION_LEFT } from '../constants';
 
 export default {
   [types.SET_ENDPOINT](state, endpoint) {
@@ -25,43 +24,12 @@ export default {
     Object.assign(state, { diffViewType });
   },
 
-  [types.ADD_COMMENT_FORM_LINE](state, params) {
-    const { lineCode } = params;
-    let linePosition = params.linePosition;
-
-    if (!linePosition) {
-      throw new Error('you should not be here. I expect a line position');
-      return;
-    }
-
-    // Always render context line comment form on the left side in parallel view
-    if (state.diffViewType === PARALLEL_DIFF_VIEW_TYPE && window.TODO) {
-      linePosition = LINE_POSITION_LEFT;
-    }
-
-    // We add forms as another diff line so they have to have a unique id
-    // We later use this id to remove the form from diff lines
-    const id = `${lineCode}_CommentForm_${linePosition || ''}`;
-
-    // Unique comment form object as a diff line
-    const formObj = {
-      id,
-      type: COMMENT_FORM_TYPE,
-    };
-
-    if (!state.diffLineCommentForms[lineCode]) {
-      Vue.set(state.diffLineCommentForms, lineCode, { linePosition: {} });
-    }
-
-    Vue.set(state.diffLineCommentForms[lineCode], linePosition, formObj);
+  [types.ADD_COMMENT_FORM_LINE](state, { lineCode }) {
+    Vue.set(state.diffLineCommentForms, lineCode, true);
   },
 
-  [types.REMOVE_COMMENT_FORM_LINE](state, { lineCode, linePosition }) {
-    if (linePosition) {
-      Vue.set(state.diffLineCommentForms[lineCode], linePosition, null);
-    } else {
-      Vue.set(state.diffLineCommentForms, lineCode, null);
-    }
+  [types.REMOVE_COMMENT_FORM_LINE](state, { lineCode }) {
+    Vue.delete(state.diffLineCommentForms, lineCode);
   },
 
   [types.ADD_CONTEXT_LINES](state, options) {

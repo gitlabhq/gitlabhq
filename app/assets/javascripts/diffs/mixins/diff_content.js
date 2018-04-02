@@ -1,4 +1,4 @@
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import diffDiscussions from '../components/diff_discussions.vue';
 import diffLineGutterContent from '../components/diff_line_gutter_content.vue';
 import diffLineNoteForm from '../components/diff_line_note_form.vue';
@@ -27,6 +27,9 @@ export default {
     diffLineGutterContent,
   },
   computed: {
+    ...mapState({
+      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
+    }),
     ...mapGetters(['discussionsByLineCode', 'isLoggedIn']),
     userColorScheme() {
       return window.gon.user_color_scheme;
@@ -82,11 +85,10 @@ export default {
 
       return line;
     },
-    handleShowCommentForm({ lineCode, linePosition }) {
+    handleShowCommentForm(params) {
       this.showCommentForm({
         diffLines: this.diffLines,
-        lineCode,
-        linePosition,
+        lineCode: params.lineCode,
       });
     },
     isDiscussionExpanded(lineCode) {
