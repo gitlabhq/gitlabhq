@@ -8,14 +8,10 @@ class NotePolicy < BasePolicy
 
   condition(:editable, scope: :subject) { @subject.editable? }
 
-  rule { ~editable | anonymous }.prevent :edit_note
-
-  rule { is_author | admin }.enable :edit_note
-  rule { can?(:master_access) }.enable :edit_note
+  rule { ~editable }.prevent :admin_note
 
   rule { is_author }.policy do
     enable :read_note
-    enable :update_note
     enable :admin_note
     enable :resolve_note
   end
