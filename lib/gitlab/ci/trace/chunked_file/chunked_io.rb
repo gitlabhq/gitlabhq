@@ -202,17 +202,6 @@ module Gitlab
             written_size
           end
 
-          def truncate_chunk(offset)
-            chunk_store.open(job_id, chunk_index, params_for_store) do |store|
-              with_callbacks(:truncate_chunk, store) do
-                removed_size = store.size - offset
-                store.truncate!(offset)
-
-                removed_size
-              end
-            end
-          end
-
           def params_for_store(c_index = chunk_index)
             {
               buffer_size: buffer_size,
@@ -241,12 +230,8 @@ module Gitlab
             (size / buffer_size.to_f).ceil
           end
 
-          def first_chunk?
-            chunk_index == 0
-          end
-
-          def last_chunk?
-            (chunk_start...chunk_end).include?(tell)
+          def last_range
+            ((size / buffer_size) * buffer_size..size)
           end
 
           def chunk_store

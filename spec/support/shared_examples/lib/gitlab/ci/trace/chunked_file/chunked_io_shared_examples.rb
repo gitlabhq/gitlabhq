@@ -1,6 +1,6 @@
 shared_examples "ChunkedIO shared tests" do
   around(:each, :partial_support) do |example|
-    example.run if chunk_store == Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis
+    example.run if chunk_stores.first == Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis
   end
 
   describe '#new' do
@@ -165,7 +165,7 @@ shared_examples "ChunkedIO shared tests" do
       end
 
       it 'calls get_chunk only once' do
-        expect(chunk_store).to receive(:open).once.and_call_original
+        expect(chunk_stores.first).to receive(:open).once.and_call_original
 
         described_class.new(job_id, nil, 'rb').each_line { |line| }
       end
@@ -178,15 +178,19 @@ shared_examples "ChunkedIO shared tests" do
     context 'when read the whole size' do
       let(:length) { nil }
 
+      shared_examples 'reads a trace' do
+        it do
+          is_expected.to eq(sample_trace_raw)
+        end
+      end
+
       context 'when buffer size is smaller than file size' do
         before do
           set_smaller_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
-        it 'reads a trace' do
-          is_expected.to eq(sample_trace_raw)
-        end
+        it_behaves_like 'reads a trace'
       end
 
       context 'when buffer size is larger than file size', :partial_support do
@@ -195,9 +199,16 @@ shared_examples "ChunkedIO shared tests" do
           fill_trace_to_chunks(sample_trace_raw)
         end
 
-        it 'reads a trace' do
-          is_expected.to eq(sample_trace_raw)
+        it_behaves_like 'reads a trace'
+      end
+
+      context 'when buffer size is half of file size' do
+        before do
+          set_half_buffer_size_of(sample_trace_raw.length)
+          fill_trace_to_chunks(sample_trace_raw)
         end
+
+        it_behaves_like 'reads a trace'
       end
     end
 
@@ -286,7 +297,7 @@ shared_examples "ChunkedIO shared tests" do
     let(:string_io) { StringIO.new(sample_trace_raw) }
 
     shared_examples 'all line matching' do
-      it 'reads a line' do
+      it do
         (0...sample_trace_raw.lines.count).each do
           expect(chunked_io.readline).to eq(string_io.readline)
         end
@@ -305,6 +316,15 @@ shared_examples "ChunkedIO shared tests" do
     context 'when buffer size is larger than file size', :partial_support do
       before do
         set_larger_buffer_size_than(sample_trace_raw.length)
+        fill_trace_to_chunks(sample_trace_raw)
+      end
+
+      it_behaves_like 'all line matching'
+    end
+
+    context 'when buffer size is half of file size' do
+      before do
+        set_half_buffer_size_of(sample_trace_raw.length)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -331,24 +351,30 @@ shared_examples "ChunkedIO shared tests" do
 
     let(:data) { sample_trace_raw }
 
-    context 'when append mode', :partial_support do
+    context 'when append mode' do
       let(:mode) { 'a+b' }
 
       context 'when data does not exist' do
-        context 'when buffer size is smaller than file size' do
-          before do
-            set_smaller_buffer_size_than(sample_trace_raw.length)
-          end
-
-          it 'writes a trace' do
+        shared_examples 'writes a trace' do
+          it do
             is_expected.to eq(data.length)
 
             described_class.new(job_id, nil, 'rb') do |stream|
               expect(stream.read).to eq(data)
-              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-              expect(chunk_store.chunks_size(job_id)).to eq(data.length)
+              expect(chunk_stores.inject(0) { |sum, store| sum + store.chunks_count(job_id) })
+                .to eq(stream.send(:chunks_count))
+              expect(chunk_stores.inject(0) { |sum, store| sum + store.chunks_size(job_id) })
+                .to eq(data.length)
             end
           end
+        end
+
+        context 'when buffer size is smaller than file size' do
+          before do
+            set_smaller_buffer_size_than(data.length)
+          end
+
+          it_behaves_like 'writes a trace'
         end
 
         context 'when buffer size is larger than file size', :partial_support do
@@ -356,15 +382,15 @@ shared_examples "ChunkedIO shared tests" do
             set_larger_buffer_size_than(data.length)
           end
 
-          it 'writes a trace' do
-            is_expected.to eq(data.length)
+          it_behaves_like 'writes a trace'
+        end
 
-            described_class.new(job_id, nil, 'rb') do |stream|
-              expect(stream.read).to eq(data)
-              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-              expect(chunk_store.chunks_size(job_id)).to eq(data.length)
-            end
+        context 'when buffer size is half of file size' do
+          before do
+            set_half_buffer_size_of(data.length)
           end
+
+          it_behaves_like 'writes a trace'
         end
 
         context 'when data is nil' do
@@ -376,9 +402,25 @@ shared_examples "ChunkedIO shared tests" do
         end
       end
 
-      context 'when data already exists' do
+      context 'when data already exists', :partial_support do
         let(:exist_data) { 'exist data' }
         let(:total_size) { exist_data.length + data.length }
+
+        shared_examples 'appends a trace' do
+          it do
+            described_class.new(job_id, nil, 'a+b') do |stream|
+              expect(stream.write(data)).to eq(data.length)
+            end
+
+            described_class.new(job_id, nil, 'rb') do |stream|
+              expect(stream.read).to eq(exist_data + data)
+              expect(chunk_stores.inject(0) { |sum, store| sum + store.chunks_count(job_id) })
+                .to eq(stream.send(:chunks_count))
+              expect(chunk_stores.inject(0) { |sum, store| sum + store.chunks_size(job_id) })
+                .to eq(total_size)
+            end
+          end
+        end
 
         context 'when buffer size is smaller than file size' do
           before do
@@ -386,36 +428,25 @@ shared_examples "ChunkedIO shared tests" do
             fill_trace_to_chunks(exist_data)
           end
 
-          it 'appends a trace' do
-            described_class.new(job_id, nil, 'a+b') do |stream|
-              expect(stream.write(data)).to eq(data.length)
-            end
-
-            described_class.new(job_id, nil, 'rb') do |stream|
-              expect(stream.read).to eq(exist_data + data)
-              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-              expect(chunk_store.chunks_size(job_id)).to eq(total_size)
-            end
-          end
+          it_behaves_like 'appends a trace'
         end
 
-        context 'when buffer size is larger than file size' do
+        context 'when buffer size is larger than file size', :partial_support do
           before do
             set_larger_buffer_size_than(data.length)
             fill_trace_to_chunks(exist_data)
           end
 
-          it 'appends a trace' do
-            described_class.new(job_id, nil, 'a+b') do |stream|
-              expect(stream.write(data)).to eq(data.length)
-            end
+          it_behaves_like 'appends a trace'
+        end
 
-            described_class.new(job_id, nil, 'rb') do |stream|
-              expect(stream.read).to eq(exist_data + data)
-              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-              expect(chunk_store.chunks_size(job_id)).to eq(total_size)
-            end
+        context 'when buffer size is half of file size' do
+          before do
+            set_half_buffer_size_of(data.length)
+            fill_trace_to_chunks(exist_data)
           end
+
+          it_behaves_like 'appends a trace'
         end
       end
     end
