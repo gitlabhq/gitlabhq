@@ -19,7 +19,8 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
-  margin-top: 0;
+  margin-top: 40px;
+  color: $almost-black;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -42,18 +43,13 @@
     cursor: pointer;
 
     &.file-open {
-      background: $link-active-background;
-    }
-
-    &.file-active {
-      font-weight: $gl-font-weight-bold;
+      background: $white-normal;
     }
 
     .ide-file-name {
       flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
-      max-width: inherit;
 
       svg {
         vertical-align: middle;
@@ -76,10 +72,7 @@
       margin-right: -8px;
     }
 
-    &:hover,
-    &:focus {
-      background: $link-active-background;
-
+    &:hover {
       .ide-new-btn {
         display: block;
       }
@@ -409,7 +402,7 @@
   }
 
   .branch-container {
-    border-left: 4px solid;
+    border-left: 4px solid $indigo-700;
     margin-bottom: $gl-bar-padding;
   }
 
@@ -421,6 +414,7 @@
   .branch-header-title {
     flex: 1;
     padding: $grid-size $gl-padding;
+    color: $indigo-700;
     font-weight: $gl-font-weight-bold;
 
     svg {
@@ -457,8 +451,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-height: 100%;
-  overflow: auto;
 }
 
 .multi-file-commit-empty-state-container {
@@ -469,7 +461,7 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  margin-bottom: 0;
+  margin-bottom: 12px;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
 
@@ -676,14 +668,8 @@
   overflow: hidden;
 
   &.nav-only {
-    padding-top: $header-height;
-
-    .with-performance-bar & {
-      padding-top: $header-height + $performance-bar-height;
-    }
-
     .flash-container {
-      margin-top: 0;
+      margin-top: $header-height;
       margin-bottom: 0;
     }
 
@@ -693,7 +679,7 @@
     }
 
     .content-wrapper {
-      margin-top: 0;
+      margin-top: $header-height;
       padding-bottom: 0;
     }
 
@@ -717,11 +703,11 @@
 
 .with-performance-bar .ide.nav-only {
   .flash-container {
-    margin-top: 0;
+    margin-top: #{$header-height + $performance-bar-height};
   }
 
   .content-wrapper {
-    margin-top: 0;
+    margin-top: #{$header-height + $performance-bar-height};
     padding-bottom: 0;
   }
 
@@ -730,8 +716,14 @@
   }
 
   &.flash-shown {
+    .content-wrapper {
+      margin-top: 0;
+    }
+
     .ide-view {
-      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
+      height: calc(
+        100vh - #{$header-height + $performance-bar-height + $flash-height}
+      );
     }
   }
 }
@@ -775,7 +767,20 @@
 
 .ide-sidebar-link {
   padding: $gl-padding-8 $gl-padding;
+  background: $indigo-700;
+  color: $white-light;
+  text-decoration: none;
   display: flex;
   align-items: center;
-  font-weight: $gl-font-weight-bold;
+
+  &:focus,
+  &:hover {
+    color: $white-light;
+    text-decoration: underline;
+    background: $indigo-500;
+  }
+
+  &:active {
+    background: $indigo-800;
+  }
 }
