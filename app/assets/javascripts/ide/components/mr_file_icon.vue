@@ -9,12 +9,6 @@ export default {
   directives: {
     tooltip,
   },
-  props: {
-    file: {
-      type: Object,
-      required: true,
-    },
-  },
 };
 </script>
 
@@ -22,7 +16,7 @@ export default {
   <icon
     name="git-merge"
     v-tooltip
-    title="Part of merge request changes"
+    title="__('Part of merge request changes')"
     css-classes="ide-file-changed-icon"
     :size="12"
   />
