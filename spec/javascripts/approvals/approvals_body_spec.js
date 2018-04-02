@@ -41,12 +41,12 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
     });
   }
 
-  describe('Approvals Body Component', function () {
-    beforeEach(function () {
+  describe('Approvals Body Component', function() {
+    beforeEach(function() {
       initApprovalsBodyComponent.call(this);
     });
 
-    it('should correctly set component props', function () {
+    it('should correctly set component props', function() {
       const approvalsBody = this.approvalsBody;
       _.each(approvalsBody, (propValue, propKey) => {
         if (this.initialData[propKey]) {
@@ -55,14 +55,14 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
       });
     });
 
-    describe('Computed properties', function () {
-      describe('approvalsRequiredStringified', function () {
-        it('should display the correct string for 1 possible approver', function () {
+    describe('Computed properties', function() {
+      describe('approvalsRequiredStringified', function() {
+        it('should display the correct string for 1 possible approver', function() {
           const correctText = 'Requires 1 more approval by';
           expect(this.approvalsBody.approvalsRequiredStringified).toBe(correctText);
         });
 
-        it('should display the correct string for 2 possible approvers', function (done) {
+        it('should display the correct string for 2 possible approvers', function(done) {
           this.approvalsBody.approvalsLeft = 2;
           this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
 
@@ -73,7 +73,7 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
           });
         });
 
-        it('shows the "Approved" text message when there is enough approvals in place', function (done) {
+        it('shows the "Approved" text message when there is enough approvals in place', function(done) {
           this.approvalsBody.approvalsLeft = 0;
 
           Vue.nextTick(() => {
@@ -81,10 +81,20 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
             done();
           });
         });
+
+        it('shows the "Requires 1 more approval" without by when no suggested approvals are available', function(done) {
+          const correctText = 'Requires 1 more approval';
+          this.approvalsBody.suggestedApprovers = [];
+
+          Vue.nextTick(() => {
+            expect(this.approvalsBody.approvalsRequiredStringified).toBe(correctText);
+            done();
+          });
+        });
       });
 
-      describe('showApproveButton', function () {
-        it('should not be true when the user cannot approve', function (done) {
+      describe('showApproveButton', function() {
+        it('should not be true when the user cannot approve', function(done) {
           this.approvalsBody.userCanApprove = false;
           this.approvalsBody.userHasApproved = true;
           Vue.nextTick(() => {
@@ -93,7 +103,7 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
           });
         });
 
-        it('should be true when the user can approve', function (done) {
+        it('should be true when the user can approve', function(done) {
           this.approvalsBody.userCanApprove = true;
           this.approvalsBody.userHasApproved = false;
           Vue.nextTick(() => {
@@ -103,8 +113,8 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
         });
       });
 
-      describe('approveButtonText', function () {
-        it('The approve button should have the "Approve" text', function (done) {
+      describe('approveButtonText', function() {
+        it('The approve button should have the "Approve" text', function(done) {
           this.approvalsBody.approvalsLeft = 1;
           this.approvalsBody.userHasApproved = false;
           this.approvalsBody.userCanApprove = true;
@@ -115,7 +125,7 @@ import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/appr
           });
         });
 
-        it('The approve button should have the "Add approval" text', function (done) {
+        it('The approve button should have the "Add approval" text', function(done) {
           this.approvalsBody.approvalsLeft = 0;
           this.approvalsBody.userHasApproved = false;
           this.approvalsBody.userCanApprove = true;

@@ -45,12 +45,27 @@ export default {
   },
   computed: {
     approvalsRequiredStringified() {
-      let approvedString = s__('MergeRequest|Approved');
-      if (this.approvalsLeft >= 1) {
-        approvedString = sprintf(n__('mrWidget|Requires 1 more approval by',
-          'MergeRequest|Requires %d more approvals by', this.approvalsLeft));
+      if (this.approvalsLeft === 0) {
+        return s__('mrWidget|Approved');
       }
-      return approvedString;
+
+      if (this.suggestedApprovers.length >= 1) {
+        return sprintf(
+          n__(
+            'mrWidget|Requires 1 more approval by',
+            'mrWidget|Requires %d more approvals by',
+            this.approvalsLeft,
+          ),
+        );
+      }
+
+      return sprintf(
+        n__(
+          'mrWidget|Requires 1 more approval',
+          'mrWidget|Requires %d more approvals',
+          this.approvalsLeft,
+        ),
+      );
     },
     approveButtonText() {
       let approveButtonText = s__('mrWidget|Approve');
@@ -74,8 +89,9 @@ export default {
   methods: {
     approveMergeRequest() {
       this.approving = true;
-      this.service.approveMergeRequest()
-        .then((data) => {
+      this.service
+        .approveMergeRequest()
+        .then(data => {
           this.mr.setApprovals(data);
           eventHub.$emit('MRWidgetUpdateRequested');
           this.approving = false;
