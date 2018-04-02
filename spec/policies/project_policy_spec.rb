@@ -136,13 +136,49 @@ describe ProjectPolicy do
     end
   end
 
+  shared_examples 'archived project policies' do
+    let(:feature_write_abilities) do
+      described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|
+        described_class.create_update_admin_destroy(feature)
+      end
+    end
+
+    let(:other_write_abilities) do
+      %i[
+        push_to_delete_protected_branch
+        push_code
+        request_access
+        upload_file
+        resolve_note
+      ]
+    end
+
+    context 'when the project is archived' do
+      before do
+        project.archived = true
+      end
+
+      it 'disables write actions on all relevant project features' do
+        expect_disallowed(*feature_write_abilities)
+      end
+
+      it 'disables some other important write actions' do
+        expect_disallowed(*other_write_abilities)
+      end
+
+      it 'does not disable other other abilities' do
+        expect_allowed(*(regular_abilities - feature_write_abilities - other_write_abilities))
+      end
+    end
+  end
+
   shared_examples 'project policies as anonymous' do
     context 'abilities for public projects' do
       context 'when a project has pending invites' do
         let(:group) { create(:group, :public) }
         let(:project) { create(:project, :public, namespace: group) }
         let(:user_permissions) { [:create_project, :create_issue, :create_note, :upload_file] }
-        let(:anonymous_permissions) { guest_permissions - user_permissions }
+        let(:anonymous_permissions) { guest_permissions - user_permissions  }
 
         subject { described_class.new(nil, project) }
 
@@ -153,6 +189,10 @@ describe ProjectPolicy do
         it 'does not grant owner access' do
           expect_allowed(*anonymous_permissions)
           expect_disallowed(*user_permissions)
+        end
+
+        it_behaves_like 'archived project policies' do
+          let(:regular_abilities) { anonymous_permissions }
         end
       end
     end
@@ -182,6 +222,10 @@ describe ProjectPolicy do
         expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { guest_permissions }
       end
 
       context 'public builds enabled' do
@@ -224,11 +268,14 @@ describe ProjectPolicy do
       it do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
-        expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { reporter_permissions }
       end
     end
   end
@@ -245,6 +292,10 @@ describe ProjectPolicy do
         expect_allowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { developer_permissions }
       end
     end
   end
@@ -263,6 +314,10 @@ describe ProjectPolicy do
         expect_allowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { master_permissions }
+      end
     end
   end
 
@@ -280,6 +335,10 @@ describe ProjectPolicy do
         expect_allowed(*master_permissions)
         expect_allowed(*owner_permissions)
       end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { owner_permissions }
+      end
     end
   end
 
@@ -296,6 +355,10 @@ describe ProjectPolicy do
         expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
         expect_allowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { owner_permissions }
       end
     end
   end
