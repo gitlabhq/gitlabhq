@@ -6,6 +6,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import bp from '~/breakpoints';
 import ChangedFilesDropdown from './changed_files_dropdown.vue';
 
 export default {
@@ -29,8 +30,8 @@ export default {
     return {
       searchText: '',
       isStuck: false,
-      showCurrentDiffTitle: false,
       maxWidth: 'auto',
+      top: 0,
     };
   },
   computed: {
@@ -63,6 +64,8 @@ export default {
     },
   },
   mounted() {
+    this.mrTabsEl = document.querySelector('.js-tabs-affix');
+
     this.throttledHandleScroll = _.throttle(this.handleScroll, 50);
     document.addEventListener('scroll', this.throttledHandleScroll);
 
@@ -79,20 +82,19 @@ export default {
     ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
     pluralize,
     setMaxWidth() {
-      const el = document.querySelector('.js-tabs-affix');
-      const { width } = el.getBoundingClientRect();
+      const { width } = this.mrTabsEl.getBoundingClientRect();
       this.maxWidth = `${width}px`;
     },
     handleScroll() {
-      if (!this.$refs.stickyBar) return;
+      const mrTabsBottom = this.mrTabsEl.getBoundingClientRect().bottom;
+      const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom
 
-      const barPosition = this.$refs.stickyBar.offsetTop;
       const scrollPosition = window.scrollY;
 
-      const top = Math.floor(barPosition - scrollPosition);
+      const top = Math.max(mrTabsBottom, wrapperBottom);
 
-      this.isStuck = top < 112;
-      this.showCurrentDiffTitle = top < 0;
+      this.top = `${top}px`;
+      this.isStuck = mrTabsBottom > wrapperBottom;
     },
     sumValues(key) {
       return this.diffFiles.reduce((total, file) => total + file[key], 0);
@@ -132,15 +134,15 @@ export default {
 <template>
   <div
     v-if="diffFiles.length > 0"
-    ref="stickyBar"
+    ref="wrapper"
     class="content-block oneline-block diff-files-changed diff-files-changed-merge-request
     files-changed js-diff-files-changed"
   >
     <transition name="slide-down">
       <div
         v-show="isStuck"
-        :style="{ maxWidth }"
-        class="sticky-top-bar"
+        :style="{ maxWidth, top }"
+        class="sticky-top-bar hidden-xs"
       >
         <changed-files-dropdown
           :diff-files="diffFiles"
@@ -164,7 +166,6 @@ export default {
     </transition>
     <div class="files-changed-inner">
       <div
-        v-show="!showCurrentDiffTitle"
         class="inline-parallel-buttons hidden-xs hidden-sm"
       >
         <a
