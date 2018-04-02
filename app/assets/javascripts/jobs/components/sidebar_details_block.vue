@@ -22,6 +22,11 @@
         type: Boolean,
         required: true,
       },
+      canUserRetry: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
       runnerHelpUrl: {
         type: String,
         required: false,
@@ -88,7 +93,7 @@
         {{ job.name }}
       </strong>
       <a
-        v-if="job.retry_path"
+        v-if="canUserRetry"
         :class="retryButtonClass"
         :href="job.retry_path"
         data-method="post"
@@ -122,7 +127,7 @@
           New issue
         </a>
         <a
-          v-if="job.retry_path"
+          v-if="canUserRetry"
           class="js-retry-job btn btn-inverted-secondary"
           :href="job.retry_path"
           data-method="post"
