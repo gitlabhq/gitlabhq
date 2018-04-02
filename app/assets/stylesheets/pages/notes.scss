@@ -288,10 +288,7 @@ ul.notes {
             position: absolute;
             left: 0;
             bottom: 0;
-            background: linear-gradient(
-              rgba($white-light, 0.1) -100px,
-              $white-light 100%
-            );
+            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
           }
         }
       }
@@ -753,8 +750,7 @@ ul.notes {
   border: 0;
   outline: 0;
   color: $gray-darkest;
-  transition: color $general-hover-transition-duration
-    $general-hover-transition-curve;
+  transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
     cursor: default;
@@ -782,15 +778,15 @@ ul.notes {
   }
 }
 
-.line-resolve-text {
-  vertical-align: middle;
-}
-
 // Vue refactored diff discussion adjustments
 .files {
   .diff-discussions {
     .note-discussion.timeline-entry {
       padding-left: 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
 
       & > .timeline-entry-inner {
         padding: 0;
