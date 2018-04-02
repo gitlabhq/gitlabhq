@@ -1,14 +1,14 @@
-%h5 Active Deploy Tokens (#{active_tokens.length})
+%h5= s_("DeployTokens|Active Deploy Tokens (%{active_tokens})") % { active_tokens: active_tokens.length }
 
 - if active_tokens.present?
   .table-responsive.deploy-tokens
     %table.table
       %thead
         %tr
-          %th Name
-          %th Created
-          %th Expires
-          %th Scopes
+          %th= s_('DeployTokens|Name')
+          %th= s_('DeployTokens|Created')
+          %th= s_('DeployTokens|Expires')
+          %th= s_('DeployTokens|Scopes')
           %th
       %tbody
         - active_tokens.each do |token|
@@ -22,8 +22,8 @@
               - else
                 %span.token-never-expires-label Never
             %td= token.scopes.present? ? token.scopes.join(", ") : "<no scopes selected>"
-            %td= link_to "Revoke", "#", class: "btn btn-danger pull-right", data: { toggle: "modal", target: "#revoke-modal-#{token.id}"}
+            %td= link_to s_('DeployTokens|Revoke'), "#", class: "btn btn-danger pull-right", data: { toggle: "modal", target: "#revoke-modal-#{token.id}"}
             = render 'projects/deploy_tokens/revoke_modal', token: token, project: project
 - else
   .settings-message.text-center
-    This project has no active Deploy Tokens.
+    = s_('DeployTokens|This project has no active Deploy Tokens.')

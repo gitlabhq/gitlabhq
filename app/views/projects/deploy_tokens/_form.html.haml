@@ -1,5 +1,5 @@
 %p.profile-settings-content
-  = s_("Pick a name for the application, and we'll give you a unique deploy token.")
+  = s_("DeployTokens|Pick a name for the application, and we'll give you a unique deploy token.")
 
 = form_for token, url: project_deploy_tokens_path(project), method: :post do |f|
   = form_errors(token)
@@ -18,4 +18,4 @@
       = render 'projects/deploy_tokens/scope_form', token: token, scope: scope, presenter: presenter
 
   .prepend-top-default
-    = f.submit s_('Create deploy token'), class: 'btn btn-success'
+    = f.submit s_('DeployTokens|Create deploy token'), class: 'btn btn-success'

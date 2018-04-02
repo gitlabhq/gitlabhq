@@ -3,15 +3,15 @@
     .modal-content
       .modal-header
         %h4.modal-title.pull-left
-          Revoke
+          = s_('DeployTokens|Revoke')
           %b #{token.name}?
-        %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'modal', type: 'button' }
-          %span{ 'aria-hidden' => 'true' } ×
+        %button.close{ 'aria-label' => _('Close'), 'data-dismiss' => 'modal', type: 'button' }
+          %span{ 'aria-hidden' => 'true' } &times;
       .modal-body
         %p
-          = s_('You are about to revoke')
+          = s_('DeployTokens|You are about to revoke')
           %b #{token.name}.
-          = s_('This action cannot be undone.')
+          = s_('DeployTokens|This action cannot be undone.')
       .modal-footer
-        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' }= s_('Cancel')
-        = link_to "Revoke #{token.name}", revoke_project_deploy_token_path(project, token), method: :put, class: 'btn btn-danger'
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' }= _('Cancel')
+        = link_to s_('DeployTokens|Revoke %{name}') % { name: token.name }, revoke_project_deploy_token_path(project, token), method: :put, class: 'btn btn-danger'
