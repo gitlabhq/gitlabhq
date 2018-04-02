@@ -10,27 +10,26 @@ module Gitlab
 
         begin
           uri = Addressable::URI.parse(url)
-          # Allow imports from the GitLab instance itself but only from the configured ports
-          return true if internal?(uri)
-
-          raise BlockedUrlError, "Port is blocked" if blocked_port?(uri.port, valid_ports)
-          raise BlockedUrlError, "User is blocked" if blocked_user_or_hostname?(uri.user)
-          raise BlockedUrlError, "Hostname is blocked" if blocked_user_or_hostname?(uri.hostname)
-
-          addrs_info = Addrinfo.getaddrinfo(uri.hostname, 80, nil, :STREAM)
-
-          if !allow_localhost && localhost?(addrs_info)
-            raise BlockedUrlError, "Requests to localhost are blocked"
-          end
-
-          if !allow_private_networks && private_network?(addrs_info)
-            raise BlockedUrlError, "Requests to the private local network are blocked"
-          end
         rescue Addressable::URI::InvalidURIError
           raise BlockedUrlError, "URI is invalid"
-        rescue SocketError
-          return
         end
+
+        # Allow imports from the GitLab instance itself but only from the configured ports
+        return true if internal?(uri)
+
+        port = uri.port || uri.default_port
+        validate_port!(port, valid_ports) if valid_ports.any?
+        validate_user!(uri.user)
+        validate_hostname!(uri.hostname)
+
+        begin
+          addrs_info = Addrinfo.getaddrinfo(uri.hostname, port, nil, :STREAM)
+        rescue SocketError
+          return true
+        end
+
+        validate_localhost!(addrs_info) unless allow_localhost
+        validate_local_network!(addrs_info) unless allow_private_networks
 
         true
       end
@@ -45,16 +44,42 @@ module Gitlab
 
       private
 
-      def blocked_port?(port, valid_ports)
-        return false if port.blank? || valid_ports.blank?
+      def validate_port!(port, valid_ports)
+        return if port.blank?
+        # Only ports under 1024 are restricted
+        return if port >= 1024
+        return if valid_ports.include?(port)
 
-        port < 1024 && !valid_ports.include?(port)
+        raise BlockedUrlError, "Only allowed ports are #{valid_ports.join(', ')}, and any over 1024"
       end
 
-      def blocked_user_or_hostname?(value)
-        return false if value.blank?
+      def validate_user!(value)
+        return if value.blank?
+        return if value =~ /\A\p{Alnum}/
 
-        value !~ /\A\p{Alnum}/
+        raise BlockedUrlError, "Username needs to start with an alphanumeric character"
+      end
+
+      def validate_hostname!(value)
+        return if value.blank?
+        return if value =~ /\A\p{Alnum}/
+
+        raise BlockedUrlError, "Hostname needs to start with an alphanumeric character"
+      end
+
+      def validate_localhost!(addrs_info)
+        local_ips = ["127.0.0.1", "::1", "0.0.0.0"]
+        local_ips.concat(Socket.ip_address_list.map(&:ip_address))
+
+        return if (local_ips & addrs_info.map(&:ip_address)).empty?
+
+        raise BlockedUrlError, "Requests to localhost are not allowed"
+      end
+
+      def validate_local_network!(addrs_info)
+        return unless addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? }
+
+        raise BlockedUrlError, "Requests to the local network are not allowed"
       end
 
       def internal?(uri)
@@ -69,17 +94,6 @@ module Gitlab
       def internal_shell?(uri)
         uri.hostname == config.gitlab_shell.ssh_host &&
           (uri.port.blank? || uri.port == config.gitlab_shell.ssh_port)
-      end
-
-      def localhost?(addrs_info)
-        blocked_ips = ["127.0.0.1", "::1", "0.0.0.0"]
-        blocked_ips.concat(Socket.ip_address_list.map(&:ip_address))
-
-        (blocked_ips & addrs_info.map(&:ip_address)).any?
-      end
-
-      def private_network?(addrs_info)
-        addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? }
       end
 
       def config
