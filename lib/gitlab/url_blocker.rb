@@ -5,7 +5,7 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, allow_localhost: false, allow_private_networks: true, valid_ports: [])
+      def validate!(url, allow_localhost: false, allow_local_network: true, valid_ports: [])
         return true if url.nil?
 
         begin
@@ -29,7 +29,7 @@ module Gitlab
         end
 
         validate_localhost!(addrs_info) unless allow_localhost
-        validate_local_network!(addrs_info) unless allow_private_networks
+        validate_local_network!(addrs_info) unless allow_local_network
 
         true
       end

@@ -12,7 +12,7 @@ module Gitlab
     def connection
       unless allow_local_requests?
         begin
-          Gitlab::UrlBlocker.validate!(uri, allow_private_networks: false)
+          Gitlab::UrlBlocker.validate!(uri, allow_local_network: false)
         rescue Gitlab::UrlBlocker::BlockedUrlError => e
           raise Gitlab::HTTP::BlockedUrlError, "URL '#{uri}' is blocked: #{e.message}"
         end
