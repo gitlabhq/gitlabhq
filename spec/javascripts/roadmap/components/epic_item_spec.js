@@ -3,13 +3,14 @@ import Vue from 'vue';
 import epicItemComponent from 'ee/roadmap/components/epic_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockEpic, mockGroupId, mockShellWidth } from '../mock_data';
+import { mockTimeframe, mockEpic, mockGroupId, mockShellWidth, mockItemWidth } from '../mock_data';
 
 const createComponent = ({
   epic = mockEpic,
   timeframe = mockTimeframe,
   currentGroupId = mockGroupId,
   shellWidth = mockShellWidth,
+  itemWidth = mockItemWidth,
 }) => {
   const Component = Vue.extend(epicItemComponent);
 
@@ -18,6 +19,7 @@ const createComponent = ({
     timeframe,
     currentGroupId,
     shellWidth,
+    itemWidth,
   });
 };
 
