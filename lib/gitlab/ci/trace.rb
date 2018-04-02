@@ -54,7 +54,7 @@ module Gitlab
       end
 
       def exist?
-        trace_artifact&.exists? || current_path.present? || old_trace.present?
+        trace_artifact&.exists? || ChunkedFile::LiveTrace.exist?(job.id) || current_path.present? || old_trace.present?
       end
 
       def read
@@ -62,7 +62,7 @@ module Gitlab
           if trace_artifact
             trace_artifact.open
           elsif ChunkedFile::LiveTrace.exist?(job.id)
-            ChunkedFile::LiveTrace.new(job.id, "rb")
+            ChunkedFile::LiveTrace.new(job.id, nil, "rb")
           elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
@@ -81,7 +81,7 @@ module Gitlab
             if current_path
               current_path
             else
-              ChunkedFile::LiveTrace.new(job.id, "a+b")
+              ChunkedFile::LiveTrace.new(job.id, nil, "a+b")
             end
           else
             File.open(ensure_path, "a+b")
@@ -110,9 +110,12 @@ module Gitlab
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
         if ChunkedFile::LiveTrace.exist?(job.id)
-          ChunkedFile::LiveTrace.open(job.id, 'a+b') do |stream|
-            archive_stream!(stream)
-            stream.delete
+          ChunkedFile::LiveTrace.new(job.id, nil, 'a+b') do |live_trace_stream|
+            StringIO.new(live_trace_stream.read, 'rb').tap do |stream|
+              archive_stream!(stream)
+            end
+
+            live_trace_stream.delete
           end
         elsif current_path
           File.open(current_path) do |stream|

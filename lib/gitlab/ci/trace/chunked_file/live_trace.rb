@@ -5,7 +5,7 @@ module Gitlab
         class LiveTrace < ChunkedIO
           class << self
             def exist?(job_id)
-              ChunkStore::Redis.chunks_count(job_id) > 0 || ChunkStore::Database.chunks_count(job_id) > 0
+              ChunkedFile::ChunkStore::Redis.chunks_count(job_id) > 0 || ChunkedFile::ChunkStore::Database.chunks_count(job_id) > 0
             end
           end
 
@@ -14,7 +14,7 @@ module Gitlab
           def stash_to_database(store)
             # Once data is filled into redis, move the data to database
             if store.filled?
-              ChunkStore::Database.open(job_id, chunk_index, params_for_store) do |to_store|
+              ChunkedFile::ChunkStore::Database.open(job_id, chunk_index, params_for_store) do |to_store|
                 to_store.write!(store.get)
                 store.delete!
               end
@@ -33,22 +33,22 @@ module Gitlab
           end
 
           def delete
-            ChunkStore::Redis.delete_all(job_id)
-            ChunkStore::Database.delete_all(job_id)
+            ChunkedFile::ChunkStore::Redis.delete_all(job_id)
+            ChunkedFile::ChunkStore::Database.delete_all(job_id)
           end
 
           private
 
           def calculate_size(job_id)
-            ChunkStore::Redis.chunks_size(job_id) +
-              ChunkStore::Database.chunks_size(job_id)
+            ChunkedFile::ChunkStore::Redis.chunks_size(job_id) +
+              ChunkedFile::ChunkStore::Database.chunks_size(job_id)
           end
 
           def chunk_store
             if last_range.include?(tell)
-              ChunkStore::Redis
+              ChunkedFile::ChunkStore::Redis
             else
-              ChunkStore::Database
+              ChunkedFile::ChunkStore::Database
             end
           end
 

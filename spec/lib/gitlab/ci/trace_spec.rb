@@ -1,8 +1,12 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Trace do
+describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
   let(:build) { create(:ci_build) }
   let(:trace) { described_class.new(build) }
+
+  before do
+    stub_feature_flags(ci_enable_live_trace: true)
+  end
 
   describe "associations" do
     it { expect(trace).to respond_to(:job) }
@@ -403,6 +407,10 @@ describe Gitlab::Ci::Trace do
   describe '#archive!' do
     subject { trace.archive! }
 
+    before do
+      stub_feature_flags(ci_enable_live_trace: false)
+    end
+
     shared_examples 'archive trace file' do
       it do
         expect { subject }.to change { Ci::JobArtifact.count }.by(1)
@@ -455,11 +463,44 @@ describe Gitlab::Ci::Trace do
       end
     end
 
+    shared_examples 'archive trace file in ChunkedIO' do
+      it do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(1)
+
+        build.reload
+        expect(build.trace.exist?).to be_truthy
+        expect(build.job_artifacts_trace.file.exists?).to be_truthy
+        expect(build.job_artifacts_trace.file.filename).to eq('job.log')
+        expect(Gitlab::Ci::Trace::ChunkedFile::LiveTrace.exist?(build.id)).to be_falsy
+        expect(src_checksum)
+          .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).hexdigest)
+        expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
+      end
+    end
+
+    shared_examples 'source trace in ChunkedIO stays intact' do |error:|
+      it do
+        expect { subject }.to raise_error(error)
+
+        build.reload
+        expect(build.trace.exist?).to be_truthy
+        expect(build.job_artifacts_trace).to be_nil
+        Gitlab::Ci::Trace::ChunkedFile::LiveTrace.new(build.id, nil, 'rb') do |stream|
+          expect(stream.read).to eq(trace_raw)
+        end
+      end
+    end
+
     context 'when job does not have trace artifact' do
       context 'when trace file stored in default path' do
-        let!(:build) { create(:ci_build, :success, :trace_live) }
-        let!(:src_path) { trace.read { |s| return s.path } }
-        let!(:src_checksum) { Digest::SHA256.file(src_path).hexdigest }
+        let(:build) { create(:ci_build, :success, :trace_live) }
+        let(:src_path) { trace.read { |s| return s.path } }
+        let(:src_checksum) { Digest::SHA256.file(src_path).hexdigest }
+
+        before do
+          stub_feature_flags(ci_enable_live_trace: false)
+          build; src_path; src_checksum; # Initialize after set feature flag
+        end
 
         it_behaves_like 'archive trace file'
 
@@ -485,9 +526,11 @@ describe Gitlab::Ci::Trace do
       context 'when trace is stored in database' do
         let(:build) { create(:ci_build, :success) }
         let(:trace_content) { 'Sample trace' }
-        let!(:src_checksum) { Digest::SHA256.hexdigest(trace_content) }
+        let(:src_checksum) { Digest::SHA256.hexdigest(trace_content) }
 
         before do
+          stub_feature_flags(ci_enable_live_trace: false)
+          build; trace_content; src_checksum; # Initialize after set feature flag
           build.update_column(:trace, trace_content)
         end
 
@@ -531,6 +574,37 @@ describe Gitlab::Ci::Trace do
           end
 
           it_behaves_like 'archive trace in database'
+        end
+      end
+
+      context 'when trace is stored in ChunkedIO' do
+        let(:build) { create(:ci_build, :success, :trace_live) }
+        let(:trace_raw) { build.trace.raw }
+        let(:src_checksum) { Digest::SHA256.hexdigest(trace_raw) }
+
+        before do
+          stub_feature_flags(ci_enable_live_trace: true)
+          build; trace_raw; src_checksum; # Initialize after set feature flag
+        end
+
+        it_behaves_like 'archive trace file in ChunkedIO'
+
+        context 'when failed to create clone file' do
+          before do
+            allow(IO).to receive(:copy_stream).and_return(0)
+          end
+
+          it_behaves_like 'source trace in ChunkedIO stays intact', error: Gitlab::Ci::Trace::ArchiveError
+        end
+
+        context 'when failed to create job artifact record' do
+          before do
+            allow_any_instance_of(Ci::JobArtifact).to receive(:save).and_return(false)
+            allow_any_instance_of(Ci::JobArtifact).to receive_message_chain(:errors, :full_messages)
+              .and_return(%w[Error Error])
+          end
+
+          it_behaves_like 'source trace in ChunkedIO stays intact', error: ActiveRecord::RecordInvalid
         end
       end
     end
