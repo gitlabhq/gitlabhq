@@ -51,7 +51,7 @@ export function removeParams(params) {
   const url = document.createElement('a');
   url.href = window.location.href;
 
-  params.forEach((param) => {
+  params.forEach(param => {
     url.search = removeParamQueryString(url.search, param);
   });
 
@@ -82,4 +82,12 @@ export function refreshCurrentPage() {
 
 export function redirectTo(url) {
   return window.location.assign(url);
+}
+
+export function webIDEUrl(route = undefined) {
+  let returnUrl = `${gon.relative_url_root}/-/ide/`;
+  if (route) {
+    returnUrl += `project${route}`;
+  }
+  return returnUrl;
 }

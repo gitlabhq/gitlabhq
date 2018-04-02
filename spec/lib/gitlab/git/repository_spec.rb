@@ -120,7 +120,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     describe 'alternates keyword argument' do
       context 'with no Git env stored' do
         before do
-          allow(Gitlab::Git::Env).to receive(:all).and_return({})
+          allow(Gitlab::Git::HookEnv).to receive(:all).and_return({})
         end
 
         it "is passed an empty array" do
@@ -132,7 +132,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       context 'with absolute and relative Git object dir envvars stored' do
         before do
-          allow(Gitlab::Git::Env).to receive(:all).and_return({
+          allow(Gitlab::Git::HookEnv).to receive(:all).and_return({
             'GIT_OBJECT_DIRECTORY_RELATIVE' => './objects/foo',
             'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['./objects/bar', './objects/baz'],
             'GIT_OBJECT_DIRECTORY' => 'ignored',
@@ -144,22 +144,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
         it "is passed the relative object dir envvars after being converted to absolute ones" do
           alternates = %w[foo bar baz].map { |d| File.join(repository.path, './objects', d) }
           expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: alternates)
-
-          repository.rugged
-        end
-      end
-
-      context 'with only absolute Git object dir envvars stored' do
-        before do
-          allow(Gitlab::Git::Env).to receive(:all).and_return({
-            'GIT_OBJECT_DIRECTORY' => 'foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[bar baz],
-            'GIT_OTHER' => 'another_env'
-          })
-        end
-
-        it "is passed the absolute object dir envvars as is" do
-          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: %w[foo bar baz])
 
           repository.rugged
         end

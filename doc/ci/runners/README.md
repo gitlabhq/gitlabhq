@@ -35,7 +35,7 @@ are:
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
 can run jobs for every project that has enabled the option **Allow shared Runners**
-under **Settings ➔ CI/CD**.
+under **Settings > CI/CD**.
 
 Projects with high demand of CI activity can also benefit from using specific
 Runners. By having dedicated Runners you are guaranteed that the Runner is not
@@ -76,7 +76,7 @@ Registering a specific can be done in two ways:
 To create a specific Runner without having admin rights to the GitLab instance,
 visit the project you want to make the Runner work for in GitLab:
 
-1. Go to **Settings ➔ CI/CD** to obtain the token
+1. Go to **Settings > CI/CD** to obtain the token
 1. [Register the Runner][register]
 
 ### Making an existing shared Runner specific
@@ -85,7 +85,7 @@ If you are an admin on your GitLab instance, you can turn any shared Runner into
 a specific one, but not the other way around. Keep in mind that this is a one
 way transition.
 
-1. Go to the Runners in the admin area **Overview ➔ Runners** (`/admin/runners`)
+1. Go to the Runners in the admin area **Overview > Runners** (`/admin/runners`)
    and find your Runner
 1. Enable any projects under **Restrict projects for this Runner** to be used
    with the Runner
@@ -101,7 +101,7 @@ can be changed afterwards under each Runner's settings.
 
 To lock/unlock a Runner:
 
-1. Visit your project's **Settings ➔ CI/CD**
+1. Visit your project's **Settings > CI/CD**
 1. Find the Runner you wish to lock/unlock and make sure it's enabled
 1. Click the pencil button
 1. Check the **Lock to current projects** option
@@ -115,7 +115,7 @@ you can enable the Runner also on any other project where you have Master permis
 
 To enable/disable a Runner in your project:
 
-1. Visit your project's **Settings ➔ CI/CD**
+1. Visit your project's **Settings > CI/CD**
 1. Find the Runner you wish to enable/disable
 1. Click **Enable for this project** or **Disable for this project**
 
@@ -123,6 +123,13 @@ To enable/disable a Runner in your project:
 Consider that if you don't lock your specific Runner to a specific project, any
 user with Master role in you project can assign your runner to another arbitrary
 project without requiring your authorization, so use it with caution.
+
+An admin can enable/disable a specific Runner for projects:
+
+1. Navigate to **Admin > Runners**
+2. Find the Runner you wish to enable/disable
+3. Click edit on the Runner
+4. Click **Enable** or **Disable** on the project
 
 ## Protected Runners
 
@@ -136,7 +143,7 @@ Whenever a Runner is protected, the Runner picks only jobs created on
 
 To protect/unprotect Runners:
 
-1. Visit your project's **Settings ➔ CI/CD**
+1. Visit your project's **Settings > CI/CD**
 1. Find a Runner you want to protect/unprotect and make sure it's enabled
 1. Click the pencil button besides the Runner name
 1. Check the **Protected** option
@@ -231,6 +238,38 @@ To make a Runner pick tagged/untagged jobs:
 1. Check the **Run untagged jobs** option
 1. Click **Save changes** for the changes to take effect
 
+### Setting maximum job timeout for a Runner
+
+For each Runner you can specify a _maximum job timeout_. Such timeout,
+if smaller than [project defined timeout], will take the precedence. This
+feature can be used to prevent Shared Runner from being appropriated
+by a project by setting a ridiculous big timeout (e.g. one week).
+
+When not configured, Runner will not override project timeout.
+
+How this feature will work:
+
+**Example 1 - Runner timeout bigger than project timeout**
+
+1. You set the _maximum job timeout_ for a Runner to 24 hours
+1. You set the _CI/CD Timeout_ for a project to **2 hours**
+1. You start a job
+1. The job, if running longer, will be timeouted after **2 hours**
+
+**Example 2 - Runner timeout not configured**
+
+1. You remove the _maximum job timeout_ configuration from a Runner
+1. You set the _CI/CD Timeout_ for a project to **2 hours**
+1. You start a job
+1. The job, if running longer, will be timeouted after **2 hours**
+
+**Example 3 - Runner timeout smaller than project timeout**
+
+1. You set the _maximum job timeout_ for a Runner to **30 minutes**
+1. You set the _CI/CD Timeout_ for a project to 2 hours
+1. You start a job
+1. The job, if running longer, will be timeouted after **30 minutes**
+
 ### Be careful with sensitive information
 
 With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
@@ -258,12 +297,6 @@ project.
 Mentioned briefly earlier, but the following things of Runners can be exploited.
 We're always looking for contributions that can mitigate these
 [Security Considerations](https://docs.gitlab.com/runner/security/).
-
-[install]: http://docs.gitlab.com/runner/install/
-[fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
-[register]: http://docs.gitlab.com/runner/register/
-[protected branches]: ../../user/project/protected_branches.md
-[protected tags]: ../../user/project/protected_tags.md
 
 ## Determining the IP address of a Runner
 
@@ -297,3 +330,10 @@ You can find the IP address of a Runner for a specific project by:
 1. On the details page you should see a row for "IP Address"
 
 ![specific Runner IP address](img/specific_runner_ip_address.png)
+
+[install]: http://docs.gitlab.com/runner/install/
+[fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
+[register]: http://docs.gitlab.com/runner/register/
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md
+[project defined timeout]: ../../user/project/pipelines/settings.html#timeout

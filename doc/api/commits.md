@@ -412,9 +412,10 @@ Example response:
 
 Since GitLab 8.1, this is the new commit status API.
 
-### Get the status of a commit
+### List the statuses of a commit
 
-Get the statuses of a commit in a project.
+List the statuses of a commit in a project.
+The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
 ```
 GET /projects/:id/repository/commits/:sha/statuses
