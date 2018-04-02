@@ -1,5 +1,4 @@
-import 'vendor/xterm/encoding-indexes';
-import 'vendor/xterm/encoding';
+import { TextEncoder, TextDecoder } from 'text-encoding';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 

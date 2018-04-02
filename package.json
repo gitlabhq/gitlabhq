@@ -76,6 +76,7 @@
     "sql.js": "^0.4.0",
     "style-loader": "^0.20.2",
     "svg4everybody": "2.1.9",
+    "text-encoding": "^0.6.4",
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
