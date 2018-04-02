@@ -13,50 +13,50 @@ describe('popover', () => {
           popover: () => {},
           toggleClass: () => {},
         };
-  
+
         expect(togglePopover.call(context, true)).toEqual(true);
       });
-  
+
       it('returns false when popover is already shown', () => {
         const context = {
           hasClass: () => true,
         };
-  
+
         expect(togglePopover.call(context, true)).toEqual(false);
       });
-  
+
       it('shows popover', (done) => {
         const context = {
           hasClass: () => false,
           popover: () => {},
           toggleClass: () => {},
         };
-  
+
         spyOn(context, 'popover').and.callFake((method) => {
           expect(method).toEqual('show');
           done();
         });
-  
+
         togglePopover.call(context, true);
       });
-  
+
       it('adds disable-animation and js-popover-show class', (done) => {
         const context = {
           hasClass: () => false,
           popover: () => {},
           toggleClass: () => {},
         };
-  
+
         spyOn(context, 'toggleClass').and.callFake((classNames, show) => {
           expect(classNames).toEqual('disable-animation js-popover-show');
           expect(show).toEqual(true);
           done();
         });
-  
+
         togglePopover.call(context, true);
       });
     });
-  
+
     describe('togglePopover(false)', () => {
       it('returns true when popover is hidden', () => {
         const context = {
@@ -64,46 +64,46 @@ describe('popover', () => {
           popover: () => {},
           toggleClass: () => {},
         };
-  
+
         expect(togglePopover.call(context, false)).toEqual(true);
       });
-  
+
       it('returns false when popover is already hidden', () => {
         const context = {
           hasClass: () => false,
         };
-  
+
         expect(togglePopover.call(context, false)).toEqual(false);
       });
-  
+
       it('hides popover', (done) => {
         const context = {
           hasClass: () => true,
           popover: () => {},
           toggleClass: () => {},
         };
-  
+
         spyOn(context, 'popover').and.callFake((method) => {
           expect(method).toEqual('hide');
           done();
         });
-  
+
         togglePopover.call(context, false);
       });
-  
+
       it('removes disable-animation and js-popover-show class', (done) => {
         const context = {
           hasClass: () => true,
           popover: () => {},
           toggleClass: () => {},
         };
-  
+
         spyOn(context, 'toggleClass').and.callFake((classNames, show) => {
           expect(classNames).toEqual('disable-animation js-popover-show');
           expect(show).toEqual(false);
           done();
         });
-  
+
         togglePopover.call(context, false);
       });
     });
