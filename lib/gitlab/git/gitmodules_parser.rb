@@ -46,6 +46,8 @@ module Gitlab
         iterator = State.new
 
         @content.split("\n").each_with_object(iterator) do |text, iterator|
+          text.chomp!
+
           next if text =~ /^\s*#/
 
           if text =~ /\A\[submodule "(?<name>[^"]+)"\]\z/
@@ -55,7 +57,7 @@ module Gitlab
 
             next unless text =~ /\A\s*(?<key>\w+)\s*=\s*(?<value>.*)\z/
 
-            value = $~[:value].chomp
+            value = $~[:value]
             iterator.set_attribute($~[:key], value)
           end
         end
