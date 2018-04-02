@@ -470,6 +470,72 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
+## Variables expressions
+
+> Variables expressions were added in GitLab 10.7.
+
+It is possible to use variables expressions with only / except policies in
+`.gitlab-ci.yml`. By using this approach you can limit what builds are going to
+be created within a pipeline after pushing code to GitLab.
+
+This is particularly useful in combination with secret variables and triggered
+pipeline variables.
+
+```yaml
+deploy:
+  script: cap staging deploy
+  environment: staging
+  only:
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Each provided variables expression is going to be evaluated before creating
+a pipeline.
+
+If any of the conditions in `variables` evaluates to truth when using `only`,
+a new job is going to be created. If any of the expressions evaluates to truth
+when `except` is being used, a job is not going to be created.
+
+This follows usual rules for `only` / `except` policies.
+
+### Supported syntax
+
+Below you can find currently supported syntax reference:
+
+1. Equality matching using a string
+
+    Example: `$VARIABLE == "some value"`
+
+    You can use equality operator `==` to compare a variable content to a
+    string. We support both, double quotes and single quotes to define a string
+    value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
+    are supported. `"some value" == $VARIABLE` is correct too.
+
+1. Checking for an undefined value
+
+    It sometimes happens that you want to check whether variable is defined or
+    not. To do that, you can compare variable to `null` value, like
+    `$VARIABLE == null`. This expression is going to evaluate to truth if
+    variable is not set.
+
+1. Checking for an empty variable
+
+    If you want to check whether a variable is defined, but is empty, you can
+    simply compare it against an empty string, like `$VAR == ''`.
+
+1. Comparing two variables
+
+    It is possible to compare two variables. `$VARIABLE_1 == $VARIABLE_2`.
+
+1. Variable presence check
+
+    If you only want to create a job when there is some variable present,
+    which means that it is defined and non-empty, you can simply use
+    variable name as an expression, like `$STAGING`. If `$STAGING` variable
+    is defined, and is non empty, expression will evaluate to truth.
+
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [premium]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
