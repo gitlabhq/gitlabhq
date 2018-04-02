@@ -30,6 +30,10 @@
         type: Number,
         required: true,
       },
+      itemWidth: {
+        type: Number,
+        required: true,
+      },
     },
     data() {
       return {
@@ -38,8 +42,10 @@
       };
     },
     computed: {
-      tdStyles() {
-        return `min-width: ${this.getCellWidth()}px;`;
+      itemStyles() {
+        return {
+          width: `${this.itemWidth}px`,
+        };
       },
       showTimelineBar() {
         return this.hasStartDate();
@@ -53,15 +59,14 @@
     },
     methods: {
       /**
-       * Gets cell width based on total number cells for
-       * current timeframe and shellWidth.
+       * Gets cell width based on total number months for
+       * current timeframe and shellWidth excluding details cell width.
        *
        * In case cell width is too narrow, we have fixed minimum
        * cell width (TIMELINE_CELL_MIN_WIDTH) to obey.
        */
       getCellWidth() {
-        const minWidth =
-          Math.ceil((this.shellWidth - EPIC_DETAILS_CELL_WIDTH) / this.timeframe.length);
+        const minWidth = (this.shellWidth - EPIC_DETAILS_CELL_WIDTH) / this.timeframe.length;
 
         return Math.max(minWidth, TIMELINE_CELL_MIN_WIDTH);
       },
@@ -229,7 +234,7 @@
         }
 
         // Reduce any offset from total width and round it off.
-        return Math.round(timelineBarWidth - offsetEnd);
+        return timelineBarWidth - offsetEnd;
       },
       /**
        * Renders timeline bar only if current
@@ -246,9 +251,9 @@
 </script>
 
 <template>
-  <td
+  <span
     class="epic-timeline-cell"
-    :style="tdStyles"
+    :style="itemStyles"
   >
     <div class="timeline-bar-wrapper">
       <a
@@ -265,5 +270,5 @@
       >
       </a>
     </div>
-  </td>
+  </span>
 </template>
