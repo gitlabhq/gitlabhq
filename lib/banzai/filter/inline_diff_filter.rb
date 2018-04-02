@@ -4,7 +4,7 @@ module Banzai
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 
       def call
-        search_text_nodes(doc).each do |node|
+        doc.search(".//text()").each do |node|
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
 
           content = node.to_html

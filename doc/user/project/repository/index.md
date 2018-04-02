@@ -132,8 +132,9 @@ Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
 ## Repository size
 
-In GitLab.com, your repository size limit it 10GB. For other instances,
-the repository size is limited by your system administrators.
+On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
+(including LFS). For other instances, the repository size is limited by your
+system administrators.
 
 You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
 
