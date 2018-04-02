@@ -1,6 +1,8 @@
 export const INLINE_DIFF_VIEW_TYPE = 'inline';
 export const PARALLEL_DIFF_VIEW_TYPE = 'parallel';
 export const MATCH_LINE_TYPE = 'match';
+export const OLD_NO_NEW_LINE_TYPE = 'old-nonewline';
+export const NEW_NO_NEW_LINE_TYPE = 'new-nonewline';
 export const CONTEXT_LINE_TYPE = 'context';
 export const DIFF_VIEW_COOKIE_NAME = 'diff_view';
 export const EMPTY_CELL_TYPE = 'empty-cell';
