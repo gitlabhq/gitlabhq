@@ -208,7 +208,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:master_access) }.policy do
-    enable :delete_protected_branch
+    enable :push_to_delete_protected_branch
     enable :update_project_snippet
     enable :update_environment
     enable :update_deployment
@@ -232,8 +232,8 @@ class ProjectPolicy < BasePolicy
 
   rule { archived }.policy do
     prevent :create_merge_request
+    prevent :push_to_delete_protected_branch
     prevent :push_code
-    prevent :delete_protected_branch
     prevent :update_merge_request
     prevent :admin_merge_request
   end
