@@ -8,6 +8,18 @@ describe Clusters::Applications::Runner do
 
   it { is_expected.to belong_to(:runner) }
 
+  describe '.installed' do
+    subject { described_class.installed }
+
+    let!(:cluster) { create(:clusters_applications_runner, :installed) }
+
+    before do
+      create(:clusters_applications_runner, :errored)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe '#install_command' do
     let(:kubeclient) { double('kubernetes client') }
     let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }

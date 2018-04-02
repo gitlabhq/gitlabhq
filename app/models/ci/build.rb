@@ -7,8 +7,11 @@ module Ci
     include Presentable
     include Importable
     include Gitlab::Utils::StrongMemoize
+<<<<<<< HEAD
 
     prepend EE::Ci::Build
+=======
+>>>>>>> upstream/master
 
     MissingDependenciesError = Class.new(StandardError)
 
@@ -288,6 +291,7 @@ module Ci
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
       end
     end
+<<<<<<< HEAD
 
     ##
     # Variables that do not depend on the environment name.
@@ -299,6 +303,19 @@ module Ci
     end
 
     ##
+=======
+
+    ##
+    # Variables that do not depend on the environment name.
+    #
+    def simple_variables
+      strong_memoize(:simple_variables) do
+        scoped_variables(environment: nil).to_runner_variables
+      end
+    end
+
+    ##
+>>>>>>> upstream/master
     # All variables, including persisted environment variables.
     #
     def variables
