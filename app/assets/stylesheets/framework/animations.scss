@@ -273,14 +273,10 @@ a {
 }
 
 .slide-down-enter-active {
-  transition: opacity 0.2s, transform 0.2s;
+  transition: transform 0.2s;
 }
 
-.slide-down-enter {
-  opacity: 0.2;
-  transform: translateY(-30%);
-}
-
+.slide-down-enter,
 .slide-down-leave-to {
-  opacity: 0;
+  transform: translateY(-30%);
 }
