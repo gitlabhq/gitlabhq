@@ -7,7 +7,7 @@
   .settings-header
     %h4
       = _('Visibility and access controls')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
@@ -18,7 +18,7 @@
   .settings-header
     %h4
       = _('Account and limit settings')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Session expiration, projects limit and attachment size.')
@@ -29,7 +29,7 @@
   .settings-header
     %h4
       = _('Sign-up restrictions')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Configure the way a user creates a new account.')
@@ -40,7 +40,7 @@
   .settings-header
     %h4
       = _('Sign-in restrictions')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Set requirements for a user to sign-in. Enable mandatory two-factor authentication.')
@@ -51,7 +51,7 @@
   .settings-header
     %h4
       = _('Help page')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Help page text and support page url.')
@@ -62,7 +62,7 @@
   .settings-header
     %h4
       = _('Pages')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Size and domain settings for static websites')
@@ -73,7 +73,7 @@
   .settings-header
     %h4
       = _('Continuous Integration and Deployment')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Auto DevOps, runners amd job artifacts')
@@ -84,7 +84,7 @@
   .settings-header
     %h4
       = _('Metrics - Influx')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Enable and configure InfluxDB metrics.')
@@ -95,12 +95,46 @@
   .settings-header
     %h4
       = _('Metrics - Prometheus')
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Enable and configure Prometheus metrics.')
   .settings-content
     = render 'prometheus'
+
+%section.settings.as-performance.no-animate#js-performance-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Profiling - Performance bar')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable the Performance Bar for a given group.')
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
+  .settings-content
+    = render 'performance_bar'
+
+%section.settings.as-background.no-animate#js-background-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Background jobs')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure Sidekiq job throttling.')
+  .settings-content
+    = render 'background_jobs'
+
+%section.settings.as-spam.no-animate#js-spam-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Spam and Anti-bot Protection')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable reCAPTCHA or Akismet and set IP limits.')
+  .settings-content
+    = render 'spam'
 
 .prepend-top-20
   = render 'form'
