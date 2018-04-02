@@ -15,21 +15,8 @@ export default {
       type: Number,
       required: true,
     },
-    unitOfDisplay: {
-      type: String,
-      required: true,
-    },
   },
   methods: {
-    formatMetricUsage(series) {
-      const value =
-        series.values[this.currentDataIndex] && series.values[this.currentDataIndex].value;
-      if (isNaN(value)) {
-        return '-';
-      }
-      return `${formatRelevantDigits(value)} ${this.unitOfDisplay}`;
-    },
-
     summaryMetrics(series) {
       return `Avg: ${formatRelevantDigits(series.average)} · Max: ${formatRelevantDigits(series.max)}`;
     },
@@ -49,6 +36,9 @@ export default {
         v-for="(series, index) in timeSeries"
         :key="index"
       >
+        <td>
+          <strong>{{ series.track }}</strong>
+        </td>
         <td>
           <svg
             width="15"
@@ -70,17 +60,15 @@ export default {
           v-if="timeSeries.length > 1"
         >
           <template v-if="series.metricTag">
-            <strong>{{ series.metricTag }}</strong>
-            {{ formatMetricUsage(series) }} {{ summaryMetrics(series) }}
+            <strong>{{ series.metricTag }}</strong> {{ summaryMetrics(series) }}
           </template>
           <template v-else>
             <strong>{{ legendTitle }}</strong>
-            series {{ index + 1 }} {{ formatMetricUsage(series) }} {{ summaryMetrics(series) }}
+            series {{ index + 1 }} {{ summaryMetrics(series) }}
           </template>
         </td>
         <td v-else>
-          <strong>{{ legendTitle }}</strong>
-          {{ formatMetricUsage(series) }} {{ summaryMetrics(series) }}
+          <strong>{{ legendTitle }}</strong> {{ summaryMetrics(series) }}
         </td>
       </tr>
     </table>

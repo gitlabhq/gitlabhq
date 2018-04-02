@@ -1,4 +1,6 @@
 <script>
+import { convertToSentenceCase } from '~/lib/utils/text_utility';
+
 export default {
   props: {
     graphWidth: {
@@ -18,6 +20,10 @@ export default {
       required: true,
     },
     yAxisLabel: {
+      type: String,
+      required: true,
+    },
+    unitOfDisplay: {
       type: String,
       required: true,
     },
@@ -64,6 +70,10 @@ export default {
           this.measurements.axisLabelLineOffset || 0
       );
     },
+
+    yAxisLabelSentenceCase() {
+      return `${convertToSentenceCase(this.yAxisLabel)} (${this.unitOfDisplay})`;
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -106,7 +116,7 @@ export default {
       :transform="textTransform"
       ref="ylabel"
     >
-      {{ yAxisLabel }}
+      {{ yAxisLabelSentenceCase }}
     </text>
     <rect
       class="rect-axis-text"

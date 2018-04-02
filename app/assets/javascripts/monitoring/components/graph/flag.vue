@@ -181,7 +181,7 @@ export default {
                 />
               </svg>
             </td>
-            <td>{{ seriesMetricLabel(index, series) }}</td>
+            <td>{{ series.track }} {{ seriesMetricLabel(index, series) }}</td>
             <td>
               <strong>{{ seriesMetricValue(series) }}</strong>
             </td>

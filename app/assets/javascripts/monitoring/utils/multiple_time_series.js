@@ -3,6 +3,7 @@ import { scaleLinear, scaleTime } from 'd3-scale';
 import { line, area, curveLinear } from 'd3-shape';
 import { extent, max, sum } from 'd3-array';
 import { timeMinute } from 'd3-time';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 const d3 = {
   scaleLinear,
@@ -28,15 +29,7 @@ const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
 
 const defaultStyleOrder = ['solid', 'dashed', 'dotted'];
 
-function queryTimeSeries(
-  query,
-  graphWidth,
-  graphHeight,
-  graphHeightOffset,
-  xDom,
-  yDom,
-  lineStyle,
-) {
+function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle) {
   let usedColors = [];
 
   function pickColor(name) {
@@ -63,12 +56,11 @@ function queryTimeSeries(
     const timeSeriesValues = timeSeries.values.map(d => d.value);
     const maximumValue = d3.max(timeSeriesValues);
     const accum = d3.sum(timeSeriesValues);
+    const track = capitalizeFirstCharacter(query.track ? query.track : 'Stable');
 
     const timeSeriesScaleX = d3.scaleTime().range([0, graphWidth - 70]);
 
-    const timeSeriesScaleY = d3
-      .scaleLinear()
-      .range([graphHeight - graphHeightOffset, 0]);
+    const timeSeriesScaleY = d3.scaleLinear().range([graphHeight - graphHeightOffset, 0]);
 
     timeSeriesScaleX.domain(xDom);
     timeSeriesScaleX.ticks(d3.timeMinute, 60);
@@ -91,25 +83,16 @@ function queryTimeSeries(
       .y0(graphHeight - graphHeightOffset)
       .y1(d => timeSeriesScaleY(d.value));
 
-    const timeSeriesMetricLabel =
-      timeSeries.metric[Object.keys(timeSeries.metric)[0]];
+    const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
     const seriesCustomizationData =
-      query.series != null &&
-      _.findWhere(query.series[0].when, { value: timeSeriesMetricLabel });
+      query.series != null && _.findWhere(query.series[0].when, { value: timeSeriesMetricLabel });
 
     if (seriesCustomizationData) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
-      metricTag =
-        timeSeriesMetricLabel ||
-        query.label ||
-        `series ${timeSeriesNumber + 1}`;
+      metricTag = timeSeriesMetricLabel || query.label || `series ${timeSeriesNumber + 1}`;
       [lineColor, areaColor] = pickColor();
-    }
-
-    if (query.track) {
-      metricTag += ` - ${query.track}`;
     }
 
     return {
@@ -123,23 +106,16 @@ function queryTimeSeries(
       lineColor,
       areaColor,
       metricTag,
+      track,
     };
   });
 }
 
-export default function createTimeSeries(
-  queries,
-  graphWidth,
-  graphHeight,
-  graphHeightOffset,
-) {
+export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
   const allValues = queries.reduce(
     (allQueryResults, query) =>
       allQueryResults.concat(
-        query.result.reduce(
-          (allResults, result) => allResults.concat(result.values),
-          [],
-        ),
+        query.result.reduce((allResults, result) => allResults.concat(result.values), []),
       ),
     [],
   );
@@ -150,15 +126,7 @@ export default function createTimeSeries(
   return queries.reduce((series, query, index) => {
     const lineStyle = defaultStyleOrder[index % defaultStyleOrder.length];
     return series.concat(
-      queryTimeSeries(
-        query,
-        graphWidth,
-        graphHeight,
-        graphHeightOffset,
-        xDom,
-        yDom,
-        lineStyle,
-      ),
+      queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle),
     );
   }, []);
 }
