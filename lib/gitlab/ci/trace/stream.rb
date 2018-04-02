@@ -77,7 +77,7 @@ module Gitlab
 
           match = ""
 
-          matched = reverse_line do |line|
+          reverse_line do |line|
             line.chomp!
             matches = regex.scan(line)
             next unless matches.is_a?(Array)
@@ -85,10 +85,10 @@ module Gitlab
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            break coverage if coverage.present?
+            return coverage if coverage.present? # rubocop:disable Cop/AvoidReturnFromBlocks
           end
 
-          matched.presence
+          nil
         rescue
           # if bad regex or something goes wrong we dont want to interrupt transition
           # so we just silently ignore error for now
