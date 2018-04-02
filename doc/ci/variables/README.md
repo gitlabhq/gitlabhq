@@ -470,9 +470,6 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
-<<<<<<< HEAD
-[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
-=======
 ## Variables expressions
 
 > Variables expressions were added in GitLab 10.7.
@@ -539,7 +536,7 @@ Below you can find currently supported syntax reference:
     variable name as an expression, like `$STAGING`. If `$STAGING` variable
     is defined, and is non empty, expression will evaluate to truth.
 
->>>>>>> upstream/master
+[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [premium]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
 [envs]: ../environments.md
