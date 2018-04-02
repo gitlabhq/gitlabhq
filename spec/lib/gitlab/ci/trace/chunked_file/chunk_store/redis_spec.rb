@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_cache do
-  let(:job_id) { 1 }
+  let(:job) { create(:ci_build) }
+  let(:job_id) { job.id }
   let(:chunk_index) { 0 }
   let(:buffer_size) { 128.kilobytes }
   let(:buffer_key) { described_class.buffer_key(job_id, chunk_index) }
   let(:params) { { buffer_size: buffer_size } }
-  let(:trace) { 'Here is the trace' }
+  let(:data) { 'Here is the trace' }
 
   describe '.open' do
     subject { described_class.open(job_id, chunk_index, params) }
@@ -34,7 +35,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(data)
       end
 
       it { is_expected.to be_truthy }
@@ -50,17 +51,17 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(data)
       end
 
       it { is_expected.to eq(1) }
 
       context 'when two chunks exists' do
         let(:buffer_key_2) { described_class.buffer_key(job_id, chunk_index + 1) }
-        let(:trace_2) { 'Another trace' }
+        let(:data_2) { 'Another data' }
 
         before do
-          described_class.new(buffer_key_2, params).write!(trace_2)
+          described_class.new(buffer_key_2, params).write!(data_2)
         end
 
         it { is_expected.to eq(2) }
@@ -77,18 +78,18 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(data)
       end
 
-      it { is_expected.to eq(trace.length) }
+      it { is_expected.to eq(data.length) }
 
       context 'when two chunks exists' do
         let(:buffer_key_2) { described_class.buffer_key(job_id, chunk_index + 1) }
-        let(:trace_2) { 'Another trace' }
-        let(:chunks_size) { trace.length + trace_2.length }
+        let(:data_2) { 'Another data' }
+        let(:chunks_size) { data.length + data_2.length }
 
         before do
-          described_class.new(buffer_key_2, params).write!(trace_2)
+          described_class.new(buffer_key_2, params).write!(data_2)
         end
 
         it { is_expected.to eq(chunks_size) }
@@ -97,6 +98,39 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key does not exist' do
       it { is_expected.to eq(0) }
+    end
+  end
+
+  describe '.delete_all' do
+    subject { described_class.delete_all(job_id) }
+
+    context 'when buffer_key exists' do
+      before do
+        described_class.new(buffer_key, params).write!(data)
+      end
+
+      it 'deletes all' do
+        expect { subject }.to change { described_class.chunks_count(job_id) }.by(-1)
+      end
+
+      context 'when two chunks exists' do
+        let(:buffer_key_2) { described_class.buffer_key(job_id, chunk_index + 1) }
+        let(:data_2) { 'Another data' }
+
+        before do
+          described_class.new(buffer_key_2, params).write!(data_2)
+        end
+
+        it 'deletes all' do
+          expect { subject }.to change { described_class.chunks_count(job_id) }.by(-2)
+        end
+      end
+    end
+
+    context 'when buffer_key does not exist' do
+      it 'deletes all' do
+        expect { subject }.not_to change { described_class.chunks_count(job_id) }
+      end
     end
   end
 
@@ -111,10 +145,10 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(data)
       end
 
-      it { is_expected.to eq(trace) }
+      it { is_expected.to eq(data) }
     end
 
     context 'when buffer_key does not exist' do
@@ -127,10 +161,10 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(data)
       end
 
-      it { is_expected.to eq(trace.length) }
+      it { is_expected.to eq(data.length) }
     end
 
     context 'when buffer_key does not exist' do
@@ -139,91 +173,72 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
   end
 
   describe '#write!' do
-    subject { described_class.new(buffer_key, params).write!(trace) }
+    subject { described_class.new(buffer_key, params).write!(data) }
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!('Already data in the chunk')
+        described_class.new(buffer_key, params).write!('Already data in the data')
       end
 
       it 'overwrites' do
-        is_expected.to eq(trace.length)
+        is_expected.to eq(data.length)
 
         Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(buffer_key)).to eq(trace)
+          expect(redis.get(buffer_key)).to eq(data)
         end
       end
     end
 
     context 'when buffer_key does not exist' do
       it 'writes' do
-        is_expected.to eq(trace.length)
+        is_expected.to eq(data.length)
 
         Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(buffer_key)).to eq(trace)
+          expect(redis.get(buffer_key)).to eq(data)
         end
       end
     end
 
     context 'when data is nil' do
-      let(:trace) { nil }
+      let(:data) { nil }
 
       it 'clears value' do
-        is_expected.to eq(0)
+        expect { described_class.new(buffer_key, params).write!(data) }
+          .to raise_error('Could not write empty data')
       end
     end
   end
 
-  describe '#truncate!' do
-    subject { described_class.new(buffer_key, params).truncate!(offset) }
-
-    let(:offset) { 5 }
+  describe '#append!' do
+    subject { described_class.new(buffer_key, params).append!(data) }
 
     context 'when buffer_key exists' do
+      let(:written_chunk) { 'Already data in the data' }
+
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(written_chunk)
       end
 
-      it 'truncates' do
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(buffer_key)).to eq(trace)
-        end
-
-        subject
+      it 'appends' do
+        is_expected.to eq(data.length)
 
         Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(buffer_key)).to eq(trace.slice(0..offset))
-        end
-      end
-
-      context 'when offset is larger than data size' do
-        let(:offset) { 100 }
-
-        it 'truncates' do
-          Gitlab::Redis::Cache.with do |redis|
-            expect(redis.get(buffer_key)).to eq(trace)
-          end
-
-          subject
-
-          Gitlab::Redis::Cache.with do |redis|
-            expect(redis.get(buffer_key)).to eq(trace.slice(0..offset))
-          end
+          expect(redis.get(buffer_key)).to eq(written_chunk + data)
         end
       end
     end
 
     context 'when buffer_key does not exist' do
-      it 'truncates' do
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(buffer_key)).to be_nil
-        end
+      it 'raises an error' do
+        expect { subject }.to raise_error(described_class::BufferKeyNotFoundError)
+      end
+    end
 
-        subject
+    context 'when data is nil' do
+      let(:data) { nil }
 
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(buffer_key)).to be_nil
-        end
+      it 'raises an error' do
+        expect { subject }.to raise_error('Could not write empty data')
       end
     end
   end
@@ -233,7 +248,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
 
     context 'when buffer_key exists' do
       before do
-        described_class.new(buffer_key, params).write!(trace)
+        described_class.new(buffer_key, params).write!(data)
       end
 
       it 'deletes' do
@@ -250,16 +265,8 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis, :clean_gitlab_redis_
     end
 
     context 'when buffer_key does not exist' do
-      it 'deletes' do
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis.exists(buffer_key)).to be_falsy
-        end
-
-        subject
-
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis.exists(buffer_key)).to be_falsy
-        end
+      it 'raises an error' do
+        expect { subject }.to raise_error(described_class::BufferKeyNotFoundError)
       end
     end
   end

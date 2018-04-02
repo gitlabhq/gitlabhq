@@ -6,28 +6,19 @@ module Gitlab
           module Permissions
             extend ActiveSupport::Concern
 
+            WRITABLE_MODE = %w[a]
+            READABLE_MODE = %w[r +]
+
             included do
               PermissionError = Class.new(StandardError)
 
               attr_reader :write_lock_uuid
-
-              # mode checks
-              before_method :read, :can_read!
-              before_method :readline, :can_read!
-              before_method :each_line, :can_read!
-              before_method :write, :can_write!
-              before_method :truncate, :can_write!
-
-              # write_lock
-              before_method :write, :check_lock!
-              before_method :truncate, :check_lock!
-              before_method :delete, :check_lock!
             end
 
             def initialize(job_id, size, mode = 'rb')
-              if /(w|a)/ =~ mode
+              if WRITABLE_MODE.any? { |m| mode.include?(m) }
                 @write_lock_uuid = Gitlab::ExclusiveLease
-                  .new(write_lock_key, timeout: 1.hour.to_i).try_obtain
+                  .new(write_lock_key(job_id), timeout: 1.hour.to_i).try_obtain
 
                 raise PermissionError, 'Already opened by another process' unless write_lock_uuid
               end
@@ -37,25 +28,63 @@ module Gitlab
 
             def close
               if write_lock_uuid
-                Gitlab::ExclusiveLease.cancel(write_lock_key, write_lock_uuid)
+                Gitlab::ExclusiveLease.cancel(write_lock_key(job_id), write_lock_uuid)
               end
 
               super
             end
 
-            def check_lock!
-              raise PermissionError, 'Could not modify the file without lock' unless write_lock_uuid
+            def read(*args)
+              can_read!
+
+              super
             end
 
+            def readline(*args)
+              can_read!
+
+              super
+            end
+
+            def each_line(*args)
+              can_read!
+
+              super
+            end
+
+            def write(*args)
+              can_write!
+
+              super
+            end
+
+            def truncate(*args)
+              can_write!
+
+              super
+            end
+
+            def delete(*args)
+              can_write!
+
+              super
+            end
+
+            private
+
             def can_read!
-              raise IOError, 'not opened for reading' unless /(r|+)/ =~ mode
+              unless READABLE_MODE.any? { |m| mode.include?(m) }
+                raise IOError, 'not opened for reading'
+              end
             end
 
             def can_write!
-              raise IOError, 'not opened for writing' unless /(w|a)/ =~ mode
+              unless WRITABLE_MODE.any? { |m| mode.include?(m) }
+                raise IOError, 'not opened for writing'
+              end
             end
 
-            def write_lock_key
+            def write_lock_key(job_id)
               "live_trace:operation:write:#{job_id}"
             end
           end

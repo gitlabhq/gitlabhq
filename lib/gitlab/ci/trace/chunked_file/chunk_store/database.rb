@@ -48,6 +48,8 @@ module Gitlab
             end
 
             def get
+              puts "#{self.class.name} - #{__callee__}: params[:chunk_index]: #{params[:chunk_index]}"
+
               job_trace_chunk.data
             end
 
@@ -56,9 +58,10 @@ module Gitlab
             end
 
             def write!(data)
+              raise NotImplementedError, 'Partial writing is not supported' unless params[:buffer_size] == data&.length
+              raise NotImplementedError, 'UPDATE (Overwriting data) is not supported' if job_trace_chunk.data
+
               puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
-              raise NotImplementedError, 'Partial write is not supported' unless params[:buffer_size] == data&.length
-              raise NotImplementedError, 'UPDATE is not supported' if job_trace_chunk.data
 
               job_trace_chunk.data = data
               job_trace_chunk.save!
@@ -75,7 +78,10 @@ module Gitlab
             end
 
             def delete!
+              raise ActiveRecord::RecordNotFound, 'Could not find deletable record' unless job_trace_chunk.persisted?
+
               puts "#{self.class.name} - #{__callee__}: params[:chunk_index]: #{params[:chunk_index]}"
+
               job_trace_chunk.destroy!
             end
           end

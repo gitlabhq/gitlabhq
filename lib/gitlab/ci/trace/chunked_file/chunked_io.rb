@@ -8,7 +8,7 @@ module Gitlab
     class Trace
       module ChunkedFile
         class ChunkedIO
-          extend ChunkedFile::Concerns::Opener
+          # extend ChunkedFile::Concerns::Opener
           include ChunkedFile::Concerns::Errors
           include ChunkedFile::Concerns::Hooks
           include ChunkedFile::Concerns::Callbacks
@@ -22,13 +22,21 @@ module Gitlab
 
           alias_method :pos, :tell
 
-          def initialize(job_id, size, mode = 'rb')
-            @size = size
+          def initialize(job_id, size = nil, mode = 'rb', &block)
+            raise NotImplementedError, "Mode 'w' is not supported" if mode.include?('w')
+
+            @size = size || calculate_size(job_id)
             @tell = 0
             @job_id = job_id
             @mode = mode
 
-            raise NotImplementedError, "Mode 'w' is not supported" if mode.include?('w')
+            if block_given?
+              begin
+                yield self
+              ensure
+                self.close
+              end
+            end
           end
 
           def close
@@ -128,7 +136,7 @@ module Gitlab
           end
 
           def present?
-            chunk_store.chunks_count(job_id) > 0
+            chunks_count > 0
           end
 
           def delete
@@ -177,19 +185,21 @@ module Gitlab
           end
 
           def write_chunk(data)
+            written_size = 0
+
             chunk_store.open(job_id, chunk_index, params_for_store) do |store|
               with_callbacks(:write_chunk, store) do
-                written_size = if buffer_size == data.length
+                written_size = if buffer_size == data.length || store.size == 0
                                  store.write!(data)
                                else
                                  store.append!(data)
                                end
 
                 raise WriteError, 'Written size mismatch' unless data.length == written_size
-
-                written_size
               end
             end
+
+            written_size
           end
 
           def truncate_chunk(offset)
@@ -228,7 +238,7 @@ module Gitlab
           end
 
           def chunks_count
-            (size / buffer_size)
+            (size / buffer_size.to_f).ceil
           end
 
           def first_chunk?
@@ -245,6 +255,10 @@ module Gitlab
 
           def buffer_size
             raise NotImplementedError
+          end
+
+          def calculate_size(job_id)
+            chunk_store.chunks_size(job_id)
           end
         end
       end

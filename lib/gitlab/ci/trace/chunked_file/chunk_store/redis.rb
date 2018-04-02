@@ -51,6 +51,9 @@ module Gitlab
               end
             end
 
+            BufferKeyNotFoundError = Class.new(StandardError)
+            WriteError = Class.new(StandardError)
+
             attr_reader :buffer_key
 
             def initialize(buffer_key, **params)
@@ -64,6 +67,8 @@ module Gitlab
             end
 
             def get
+              puts "#{self.class.name} - #{__callee__}: params[:chunk_index]: #{params[:chunk_index]}"
+
               Gitlab::Redis::Cache.with do |redis|
                 redis.get(buffer_key)
               end
@@ -76,35 +81,47 @@ module Gitlab
             end
 
             def write!(data)
+              raise ArgumentError, 'Could not write empty data' unless data.present?
+
               puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
-                redis.set(buffer_key, data)
+                unless redis.set(buffer_key, data) == 'OK'
+                  raise WriteError, 'Failed to write'
+                end
+
                 redis.strlen(buffer_key)
               end
             end
 
             def append!(data)
+              raise ArgumentError, 'Could not write empty data' unless data.present?
+
               puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
-                redis.append(buffer_key, data)
-                data.length
+                raise BufferKeyNotFoundError, 'Buffer key is not found' unless redis.exists(buffer_key)
+
+                original_size = size
+                new_size = redis.append(buffer_key, data)
+                appended_size = new_size - original_size
+
+                raise WriteError, 'Failed to append' unless appended_size == data.length
+
+                appended_size
               end
             end
 
             def truncate!(offset)
-              puts "#{self.class.name} - #{__callee__}: offset: #{offset.inspect} params[:chunk_index]: #{params[:chunk_index]}"
-              Gitlab::Redis::Cache.with do |redis|
-                return 0 unless redis.exists(buffer_key)
-
-                truncated_data = redis.getrange(buffer_key, 0, offset)
-                redis.set(buffer_key, truncated_data)
-              end
+              raise NotImplementedError
             end
 
             def delete!
               puts "#{self.class.name} - #{__callee__}: params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
-                redis.del(buffer_key)
+                raise BufferKeyNotFoundError, 'Buffer key is not found' unless redis.exists(buffer_key)
+
+                unless redis.del(buffer_key) == 1
+                  raise WriteError, 'Failed to delete'
+                end
               end
             end
           end
