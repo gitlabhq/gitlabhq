@@ -399,9 +399,9 @@ GEM
     hipchat (1.5.2)
       httparty
       mimemagic
-    html-pipeline (1.11.0)
+    html-pipeline (2.7.1)
       activesupport (>= 2)
-      nokogiri (~> 1.4)
+      nokogiri (>= 1.4)
     html2text (0.2.0)
       nokogiri (~> 1.6)
     htmlentities (4.3.4)
@@ -1083,7 +1083,7 @@ DEPENDENCIES
   hashie-forbidden_attributes
   health_check (~> 2.6.0)
   hipchat (~> 1.5.0)
-  html-pipeline (~> 1.11.0)
+  html-pipeline (~> 2.7.1)
   html2text
   httparty (~> 0.13.3)
   influxdb (~> 0.2)
