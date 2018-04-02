@@ -3,6 +3,8 @@ class Appearance < ActiveRecord::Base
   include AfterCommitQueue
   include ObjectStorage::BackgroundMove
 
+  prepend EE::Appearance
+
   cache_markdown_field :description
   cache_markdown_field :new_project_guidelines
 

@@ -1,0 +1,182 @@
+.header-message,
+.footer-message {
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  z-index: 1000;
+
+  p {
+    @include str-truncated(100%);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.header-message {
+  top: 0;
+  height: $system-header-height;
+  line-height: $system-header-height;
+}
+
+.footer-message {
+  bottom: 0;
+  height: $system-footer-height;
+  line-height: $system-footer-height;
+}
+
+.with-performance-bar {
+  .header-message {
+    top: $performance-bar-height;
+  }
+}
+
+// System Header
+.with-system-header {
+  // main navigation
+  // login page
+  .navbar-gitlab,
+  .navbar-fixed-top {
+    top: $system-header-height;
+  }
+
+  // left sidebar eg: project page
+  // right sidebar eg: MR page
+  .nav-sidebar,
+  .right-sidebar {
+    top: $system-header-height + $header-height;
+  }
+
+  .ide.nav-only {
+    // body element on WebIDE page
+    padding-top: $header-height + $system-header-height;
+
+    .ide-view {
+      height: calc(100vh - #{$header-height + $system-header-height});
+    }
+  }
+}
+
+// System Footer
+.with-system-footer {
+  // left sidebar eg: project page
+  // right sidebar eg: mr page
+  .nav-sidebar, 
+  .right-sidebar, 
+  // navless pages' footer eg: login page
+  // navless pages' footer border eg: login page
+  &.devise-layout-html body .footer-container, 
+  &.devise-layout-html body hr.footer-fixed {
+    bottom: $system-footer-height;
+  }
+}
+
+// Performance Bar
+// System Header
+.with-system-header.with-performance-bar {
+  // main navigation
+  header.navbar-gitlab {
+    top: $performance-bar-height + $system-header-height;
+  }
+
+  .layout-page {
+    margin-top: $header-height + $performance-bar-height + $system-header-height;
+  }
+
+  // left sidebar eg: project page
+  // right sidebar eg: MR page
+  .nav-sidebar,
+  .right-sidebar {
+    top: $header-height + $performance-bar-height + $system-header-height;
+  }
+
+  // IDE adjustments
+
+  // body element on WebIDe view
+  .ide.nav-only {
+    padding-top: $header-height + $performance-bar-height + $system-header-height;
+  }
+}
+
+@mixin ide-height-with($map) {
+  $height: 0;
+  $height: $height + $header-height; // header is always present
+
+  @if (map-get($map, performance) == true) {
+    $height: $height + $performance-bar-height;
+  }
+
+  @if (map-get($map, system-header) == true) {
+    $height: $height + $system-header-height;
+  }
+
+  @if (map-get($map, system-footer) == true) {
+    $height: $height + $system-footer-height;
+  }
+
+  @if (map-get($map, flash) == true) {
+    $height: $height + $flash-height;
+  }
+
+  height: calc(100vh - #{$height});
+}
+
+// Space adjustments for the IDE UI
+.ide.nav-only {
+  .ide-view {
+    .with-system-header & {
+      @include ide-height-with((system-header: true));
+    }
+
+    .with-system-footer & {
+      @include ide-height-with((system-footer: true));
+    }
+
+    .with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true));
+    }
+
+    .with-performance-bar.with-system-header & {
+      @include ide-height-with((system-header: true, performance: true));
+    }
+
+    .with-performance-bar.with-system-footer & {
+      @include ide-height-with((system-footer: true, performance: true));
+    }
+
+    .with-performance-bar.with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true, performance: true));
+    }
+  }
+
+  // Repeat previous block of selectors but with addition of Flash
+  &.flash-shown .ide-view {
+    .with-system-header & {
+      @include ide-height-with((system-header: true, flash: true));
+    }
+
+    .with-system-footer & {
+      @include ide-height-with((system-footer: true, flash: true));
+    }
+
+    .with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true, flash: true));
+    }
+
+    .with-performance-bar.with-system-header & {
+      @include ide-height-with((system-header: true, performance: true, flash: true));
+    }
+
+    .with-performance-bar.with-system-footer & {
+      @include ide-height-with((system-footer: true, performance: true, flash: true));
+    }
+
+    .with-performance-bar.with-system-header.with-system-footer & {
+      @include ide-height-with((system-header: true, system-footer: true, performance: true, flash: true));
+    }
+  }
+}

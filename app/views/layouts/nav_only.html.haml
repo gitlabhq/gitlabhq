@@ -3,6 +3,7 @@
   = render "layouts/head"
   %body{ class: "#{user_application_theme} #{@body_class} nav-only", data: { page: body_data_page } }
     = render 'peek/bar'
+    = header_message
     = render "layouts/header/default"
     = render 'shared/outdated_browser'
     .mobile-overlay
@@ -12,3 +13,4 @@
       = render "layouts/flash"
     .content-wrapper{ id: "content-body" }
       = yield
+    = footer_message
