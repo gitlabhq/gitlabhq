@@ -11,7 +11,11 @@ If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
 NOTE: **Note:**
+<<<<<<< HEAD
 If you have a [mirrored repository where GitLab pulls from](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository),
+=======
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+>>>>>>> upstream/master
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 

@@ -1,4 +1,5 @@
 /* global BoardService */
+<<<<<<< HEAD
 
 export const boardObj = {
   id: 1,
@@ -6,6 +7,8 @@ export const boardObj = {
   milestone_id: null,
 };
 
+=======
+>>>>>>> upstream/master
 export const listObj = {
   id: 300,
   position: 0,
@@ -46,12 +49,15 @@ export const BoardsMockData = {
         },
       ],
     },
+<<<<<<< HEAD
     '/test/issue-boards/milestones.json': [
       {
         id: 1,
         title: 'test',
       },
     ],
+=======
+>>>>>>> upstream/master
   },
   POST: {
     '/test/-/boards/1/lists': listObj,
