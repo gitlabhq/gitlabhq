@@ -9,6 +9,7 @@ export default {
     isLoading: true,
     endpoint: '',
     diffFiles: [],
+    diffLineCommentForms: {},
     diffViewType: Cookies.get(DIFF_VIEW_COOKIE_NAME) || INLINE_DIFF_VIEW_TYPE,
   },
   getters,

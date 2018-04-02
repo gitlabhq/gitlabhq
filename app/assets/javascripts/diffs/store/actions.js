@@ -37,6 +37,7 @@ export const setInlineDiffViewType = ({ commit }) => {
 
 export const setParallelDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
+
   Cookies.set(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
 };
 

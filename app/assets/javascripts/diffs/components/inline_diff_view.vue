@@ -82,8 +82,8 @@ export default {
           </td>
         </tr>
         <tr
-          v-if="isDiscussionExpanded(line.lineCode)"
-          :key="discussionsByLineCode[line.lineCode].id"
+          v-if="isDiscussionExpanded(line.lineCode) || diffLineCommentForms[line.lineCode]"
+          :key="index"
           class="notes_holder"
         >
           <td
@@ -95,25 +95,14 @@ export default {
               <diff-discussions
                 :notes="discussionsByLineCode[line.lineCode]"
               />
+              <diff-line-note-form
+                v-if="diffLineCommentForms[line.lineCode]"
+                :diff-file="diffFile"
+                :diff-lines="diffLines"
+                :line="line"
+                :note-target-line="diffLines[index]"
+              />
             </div>
-          </td>
-        </tr>
-        <tr
-          v-if="line.type === 'commentForm'"
-          :key="line.id"
-          class="notes_holder js-temp-notes-holder"
-        >
-          <td
-            class="notes_line"
-            colspan="2"
-          ></td>
-          <td class="notes_content">
-            <diff-line-note-form
-              :diff-file="diffFile"
-              :diff-lines="diffLines"
-              :line="line"
-              :note-target-line="diffLines[index - 1]"
-            />
           </td>
         </tr>
       </template>

@@ -1,4 +1,5 @@
 <script>
+import { mapState } from 'vuex';
 import diffContentMixin from '../mixins/diff_content';
 import {
   EMPTY_CELL_TYPE,
@@ -149,7 +150,10 @@ export default {
             </td>
           </tr>
           <tr
-            v-if="hasDiscussion(line) && hasAnyExpandedDiscussion(line)"
+            v-if="(
+              (hasDiscussion(line) && hasAnyExpandedDiscussion(line)) ||
+              diffLineCommentForms[line.left.lineCode] || diffLineCommentForms[line.right.lineCode]
+            )"
             :key="line.left.lineCode || line.right.lineCode"
             class="notes_holder"
           >
@@ -163,6 +167,14 @@ export default {
                   :notes="discussionsByLineCode[line.left.lineCode]"
                 />
               </div>
+              <diff-line-note-form
+                v-if="diffLineCommentForms[line.left.lineCode] && diffLineCommentForms[line.left.lineCode]"
+                :diff-file="diffFile"
+                :diff-lines="diffLines"
+                :line="line.left"
+                :note-target-line="diffLines[index].left"
+                position="left"
+              />
             </td>
             <td class="notes_line new"></td>
             <td class="notes_content parallel new">
@@ -174,31 +186,12 @@ export default {
                   :notes="discussionsByLineCode[line.right.lineCode]"
                 />
               </div>
-            </td>
-          </tr>
-          <tr
-            v-if="line.left.type === 'commentForm' || line.right.type === 'commentForm'"
-            :key="line.id"
-            class="notes_holder js-temp-notes-holder">
-            <td class="notes_line old"></td>
-            <td class="notes_content parallel old">
               <diff-line-note-form
-                v-if="line.left.type === 'commentForm'"
-                :diff-file="diffFile"
-                :diff-lines="diffLines"
-                :line="line.left"
-                :note-target-line="diffLines[index - 1].left"
-                position="left"
-              />
-            </td>
-            <td class="notes_line new"></td>
-            <td class="notes_content parallel new">
-              <diff-line-note-form
-                v-if="line.right.type === 'commentForm'"
+                v-if="diffLineCommentForms[line.right.lineCode] && diffLineCommentForms[line.right.lineCode] && line.right.type"
                 :diff-file="diffFile"
                 :diff-lines="diffLines"
                 :line="line.right"
-                :note-target-line="diffLines[index - 1].right"
+                :note-target-line="diffLines[index].right"
                 position="right"
               />
             </td>
