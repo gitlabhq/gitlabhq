@@ -5,7 +5,9 @@
     = render "layouts/init_auto_complete" if @gfm_form
     = render "layouts/init_client_detection_flags"
     = render 'peek/bar'
-    = render  partial: "layouts/header/default", locals: { project: @project, group: @group }
+    = header_message
+    = render partial: "layouts/header/default", locals: { project: @project, group: @group }
     = render 'layouts/page', sidebar: sidebar, nav: nav
+    = footer_message
 
     = yield :scripts_body
