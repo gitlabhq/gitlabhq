@@ -9,6 +9,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
   let!(:projects) { create_list(:project, 10, :with_avatar) }
   let(:uploads) { Upload.all }
+  let(:model_class) { Project }
   let(:mounted_as) { :avatar }
   let(:to_store) { ObjectStorage::Store::REMOTE }
 
@@ -18,7 +19,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
   describe '.enqueue!' do
     def enqueue!
-      described_class.enqueue!(uploads, mounted_as, to_store)
+      described_class.enqueue!(uploads, Project, mounted_as, to_store)
     end
 
     it 'is guarded by .sanity_check!' do
@@ -44,7 +45,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
       let(:mount_point) { nil }
 
       it do
-        expect { described_class.sanity_check!(uploads, mount_point) }
+        expect { described_class.sanity_check!(uploads, model_class, mount_point) }
           .to raise_error(described_class::SanityCheckError)
       end
     end
@@ -70,7 +71,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
   describe '#perform' do
     def perform
-      described_class.new.perform(uploads.ids, mounted_as, to_store)
+      described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, to_store)
     rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
       # swallow
     end
