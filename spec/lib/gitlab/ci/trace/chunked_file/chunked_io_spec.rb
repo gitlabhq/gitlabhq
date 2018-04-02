@@ -3,10 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Trace::ChunkedFile::ChunkedIO, :clean_gitlab_redis_cache do
   include ChunkedIOHelpers
 
-  let(:chunked_io) { described_class.new(job_id, size, mode) }
+  let(:chunked_io) { described_class.new(job_id, nil, mode) }
   let(:job) { create(:ci_build) }
   let(:job_id) { job.id }
-  let(:size) { sample_trace_size }
   let(:mode) { 'rb' }
 
   describe 'ChunkStore is Redis', :partial_support do

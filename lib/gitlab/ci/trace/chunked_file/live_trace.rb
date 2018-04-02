@@ -12,10 +12,6 @@ module Gitlab
 
           after_callback :write_chunk, :stash_to_database
 
-          def initialize(job_id, mode)
-            super(job_id, calculate_size(job_id), mode)
-          end
-
           def stash_to_database(store)
             # Once data is filled into redis, move the data to database
             if store.filled?

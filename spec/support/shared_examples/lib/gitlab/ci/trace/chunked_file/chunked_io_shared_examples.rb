@@ -8,27 +8,80 @@ shared_examples "ChunkedIO shared tests" do
       let(:mode) { 'rb' }
 
       it 'raises no exception' do
-        described_class.new(job_id, size, mode)
-
-        expect { described_class.new(job_id, size, mode) }.not_to raise_error
+        expect { described_class.new(job_id, nil, mode) }.not_to raise_error
+        expect { described_class.new(job_id, nil, mode) }.not_to raise_error
       end
     end
 
-    context 'when mode is write' do
+    context 'when mode is append' do
       let(:mode) { 'a+b' }
 
       it 'raises an exception' do
-        described_class.new(job_id, size, mode)
-
-        expect { described_class.new(job_id, size, mode) }.to raise_error('Already opened by another process')
+        expect { described_class.new(job_id, nil, mode) }.not_to raise_error
+        expect { described_class.new(job_id, nil, mode) }.to raise_error('Already opened by another process')
       end
 
       context 'when closed after open' do
         it 'does not raise an exception' do
-          described_class.new(job_id, size, mode).close
-
-          expect { described_class.new(job_id, size, mode) }.not_to raise_error
+          expect { described_class.new(job_id, nil, mode).close }.not_to raise_error
+          expect { described_class.new(job_id, nil, mode) }.not_to raise_error
         end
+      end
+    end
+
+    context 'when mode is write' do
+      let(:mode) { 'wb' }
+
+      it 'raises no exception' do
+        expect { described_class.new(job_id, nil, mode) }.to raise_error("Mode 'w' is not supported")
+      end
+    end
+  end
+
+  describe 'Permissions', :partial_support do
+    before do
+      fill_trace_to_chunks(sample_trace_raw)
+    end
+
+    context "when mode is 'a+b'" do
+      let(:mode) { 'a+b' }
+
+      it 'can write' do
+        expect { described_class.new(job_id, nil, mode).write('abc') }
+          .not_to raise_error
+      end
+
+      it 'can read' do
+        expect { described_class.new(job_id, nil, mode).read(10) }
+          .not_to raise_error
+      end
+    end
+
+    context "when mode is 'ab'" do
+      let(:mode) { 'ab' }
+
+      it 'can write' do
+        expect { described_class.new(job_id, nil, mode).write('abc') }
+          .not_to raise_error
+      end
+
+      it 'can not read' do
+        expect { described_class.new(job_id, nil, mode).read(10) }
+          .to raise_error('not opened for reading')
+      end
+    end
+
+    context "when mode is 'rb'" do
+      let(:mode) { 'rb' }
+
+      it 'can not write' do
+        expect { described_class.new(job_id, nil, mode).write('abc') }
+          .to raise_error('not opened for writing')
+      end
+
+      it 'can read' do
+        expect { described_class.new(job_id, nil, mode).read(10) }
+          .not_to raise_error
       end
     end
   end
@@ -36,25 +89,31 @@ shared_examples "ChunkedIO shared tests" do
   describe '#seek' do
     subject { chunked_io.seek(pos, where) }
 
+    before do
+      set_smaller_buffer_size_than(sample_trace_raw.length)
+      fill_trace_to_chunks(sample_trace_raw)
+    end
+
     context 'when moves pos to end of the file' do
       let(:pos) { 0 }
       let(:where) { IO::SEEK_END }
 
-      it { is_expected.to eq(size) }
+      it { is_expected.to eq(sample_trace_raw.length) }
     end
 
     context 'when moves pos to middle of the file' do
-      let(:pos) { size / 2 }
+      let(:pos) { sample_trace_raw.length / 2 }
       let(:where) { IO::SEEK_SET }
 
-      it { is_expected.to eq(size / 2) }
+      it { is_expected.to eq(pos) }
     end
 
     context 'when moves pos around' do
       it 'matches the result' do
         expect(chunked_io.seek(0)).to eq(0)
         expect(chunked_io.seek(100, IO::SEEK_CUR)).to eq(100)
-        expect { chunked_io.seek(size + 1, IO::SEEK_CUR) }.to raise_error('new position is outside of file')
+        expect { chunked_io.seek(sample_trace_raw.length + 1, IO::SEEK_CUR) }
+          .to raise_error('new position is outside of file')
       end
     end
   end
@@ -62,9 +121,14 @@ shared_examples "ChunkedIO shared tests" do
   describe '#eof?' do
     subject { chunked_io.eof? }
 
+    before do
+      set_smaller_buffer_size_than(sample_trace_raw.length)
+      fill_trace_to_chunks(sample_trace_raw)
+    end
+
     context 'when current pos is at end of the file' do
       before do
-        chunked_io.seek(size, IO::SEEK_SET)
+        chunked_io.seek(sample_trace_raw.length, IO::SEEK_SET)
       end
 
       it { is_expected.to be_truthy }
@@ -84,39 +148,39 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is smaller than file size' do
       before do
-        set_smaller_buffer_size_than(size)
+        set_smaller_buffer_size_than(sample_trace_raw.length)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
       it 'yields lines' do
-        expect { |b| described_class.new(job_id, size, 'rb').each_line(&b) }
+        expect { |b| described_class.new(job_id, nil, 'rb').each_line(&b) }
           .to yield_successive_args(*string_io.each_line.to_a)
       end
     end
 
     context 'when buffer size is larger than file size', :partial_support do
       before do
-        set_larger_buffer_size_than(size)
+        set_larger_buffer_size_than(sample_trace_raw.length)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
       it 'calls get_chunk only once' do
         expect(chunk_store).to receive(:open).once.and_call_original
 
-        described_class.new(job_id, size, 'rb').each_line { |line| }
+        described_class.new(job_id, nil, 'rb').each_line { |line| }
       end
     end
   end
 
   describe '#read' do
-    subject { described_class.new(job_id, size, 'rb').read(length) }
+    subject { described_class.new(job_id, nil, 'rb').read(length) }
 
-    context 'when read whole size' do
+    context 'when read the whole size' do
       let(:length) { nil }
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(size)
+          set_smaller_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -127,7 +191,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(size)
+          set_larger_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -142,7 +206,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(size)
+          set_smaller_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -153,7 +217,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(size)
+          set_larger_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -164,11 +228,11 @@ shared_examples "ChunkedIO shared tests" do
     end
 
     context 'when tries to read oversize' do
-      let(:length) { size + 1000 }
+      let(:length) { sample_trace_raw.length + 1000 }
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(size)
+          set_smaller_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -179,7 +243,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(size)
+          set_larger_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -194,7 +258,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(size)
+          set_smaller_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -205,28 +269,13 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(size)
+          set_larger_buffer_size_than(sample_trace_raw.length)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
         it 'reads a trace' do
           is_expected.to be_empty
         end
-      end
-    end
-
-    context 'when chunk store failed to get chunk' do
-      let(:length) { nil }
-
-      before do
-        set_smaller_buffer_size_than(size)
-        fill_trace_to_chunks(sample_trace_raw)
-
-        stub_chunk_store_get_failed
-      end
-
-      it 'reads a trace' do
-        expect { subject }.to raise_error(described_class::FailedToGetChunkError)
       end
     end
   end
@@ -244,23 +293,9 @@ shared_examples "ChunkedIO shared tests" do
       end
     end
 
-    context 'when chunk store failed to get chunk' do
-      let(:length) { nil }
-
-      before do
-        set_smaller_buffer_size_than(size)
-        fill_trace_to_chunks(sample_trace_raw)
-        stub_chunk_store_get_failed
-      end
-
-      it 'reads a trace' do
-        expect { subject }.to raise_error(described_class::FailedToGetChunkError)
-      end
-    end
-
     context 'when buffer size is smaller than file size' do
       before do
-        set_smaller_buffer_size_than(size)
+        set_smaller_buffer_size_than(sample_trace_raw.length)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -269,7 +304,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is larger than file size', :partial_support do
       before do
-        set_larger_buffer_size_than(size)
+        set_larger_buffer_size_than(sample_trace_raw.length)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -278,11 +313,11 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when pos is at middle of the file' do
       before do
-        set_smaller_buffer_size_than(size)
+        set_smaller_buffer_size_than(sample_trace_raw.length)
         fill_trace_to_chunks(sample_trace_raw)
 
-        chunked_io.seek(size / 2)
-        string_io.seek(size / 2)
+        chunked_io.seek(chunked_io.size / 2)
+        string_io.seek(string_io.size / 2)
       end
 
       it 'reads from pos' do
@@ -296,171 +331,91 @@ shared_examples "ChunkedIO shared tests" do
 
     let(:data) { sample_trace_raw }
 
-    context 'when write mode' do
-      let(:mode) { 'wb' }
-
-      context 'when buffer size is smaller than file size' do
-        before do
-          set_smaller_buffer_size_than(size)
-        end
-
-        it 'writes a trace' do
-          is_expected.to eq(data.length)
-
-          described_class.open(job_id, size, 'rb') do |stream|
-            expect(stream.read).to eq(data)
-            expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-            expect(chunk_store.chunks_size(job_id)).to eq(data.length)
-          end
-        end
-      end
-
-      context 'when buffer size is larger than file size', :partial_support do
-        before do
-          set_larger_buffer_size_than(size)
-        end
-
-        it 'writes a trace' do
-          is_expected.to eq(data.length)
-
-          described_class.open(job_id, size, 'rb') do |stream|
-            expect(stream.read).to eq(data)
-            expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-            expect(chunk_store.chunks_size(job_id)).to eq(data.length)
-          end
-        end
-      end
-
-      context 'when data is nil' do
-        let(:data) { nil }
-
-        it 'writes a trace' do
-          expect { subject } .to raise_error('Could not write empty data')
-        end
-      end
-    end
-
     context 'when append mode', :partial_support do
-      let(:original_data) { 'original data' }
-      let(:total_size) { original_data.length + data.length }
+      let(:mode) { 'a+b' }
 
-      context 'when buffer size is smaller than file size' do
-        before do
-          set_smaller_buffer_size_than(size)
-          fill_trace_to_chunks(original_data)
-        end
-
-        it 'appends a trace' do
-          described_class.open(job_id, original_data.length, 'a+b') do |stream|
-            expect(stream.write(data)).to eq(data.length)
+      context 'when data does not exist' do
+        context 'when buffer size is smaller than file size' do
+          before do
+            set_smaller_buffer_size_than(sample_trace_raw.length)
           end
 
-          described_class.open(job_id, total_size, 'rb') do |stream|
-            expect(stream.read).to eq(original_data + data)
-            expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-            expect(chunk_store.chunks_size(job_id)).to eq(total_size)
-          end
-        end
-      end
+          it 'writes a trace' do
+            is_expected.to eq(data.length)
 
-      context 'when buffer size is larger than file size' do
-        before do
-          set_larger_buffer_size_than(size)
-          fill_trace_to_chunks(original_data)
-        end
-
-        it 'appends a trace' do
-          described_class.open(job_id, original_data.length, 'a+b') do |stream|
-            expect(stream.write(data)).to eq(data.length)
-          end
-
-          described_class.open(job_id, total_size, 'rb') do |stream|
-            expect(stream.read).to eq(original_data + data)
-            expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
-            expect(chunk_store.chunks_size(job_id)).to eq(total_size)
-          end
-        end
-      end
-    end
-  end
-
-  describe '#truncate' do
-    context 'when data exists' do
-      context 'when buffer size is smaller than file size' do
-        before do
-          set_smaller_buffer_size_than(size)
-          fill_trace_to_chunks(sample_trace_raw)
-        end
-
-        it 'truncates a trace' do
-          described_class.open(job_id, size, 'rb') do |stream|
-            expect(stream.read).to eq(sample_trace_raw)
-          end
-
-          described_class.open(job_id, size, 'wb') do |stream|
-            stream.truncate(0)
-          end
-
-          described_class.open(job_id, 0, 'rb') do |stream|
-            expect(stream.read).to be_empty
-          end
-
-          expect(chunk_store.chunks_count(job_id)).to eq(0)
-          expect(chunk_store.chunks_size(job_id)).to eq(0)
-        end
-
-        context 'when offset is negative' do
-          it 'raises an error' do
-            described_class.open(job_id, size, 'wb') do |stream|
-              expect { stream.truncate(-1) }.to raise_error('Offset is out of bound')
+            described_class.new(job_id, nil, 'rb') do |stream|
+              expect(stream.read).to eq(data)
+              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
+              expect(chunk_store.chunks_size(job_id)).to eq(data.length)
             end
           end
         end
 
-        context 'when offset is larger than file size' do
-          it 'raises an error' do
-            described_class.open(job_id, size, 'wb') do |stream|
-              expect { stream.truncate(size + 1) }.to raise_error('Offset is out of bound')
+        context 'when buffer size is larger than file size', :partial_support do
+          before do
+            set_larger_buffer_size_than(data.length)
+          end
+
+          it 'writes a trace' do
+            is_expected.to eq(data.length)
+
+            described_class.new(job_id, nil, 'rb') do |stream|
+              expect(stream.read).to eq(data)
+              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
+              expect(chunk_store.chunks_size(job_id)).to eq(data.length)
             end
           end
         end
-      end
 
-      context 'when buffer size is larger than file size', :partial_support do
-        before do
-          set_larger_buffer_size_than(size)
-          fill_trace_to_chunks(sample_trace_raw)
-        end
+        context 'when data is nil' do
+          let(:data) { nil }
 
-        it 'truncates a trace' do
-          described_class.open(job_id, size, 'rb') do |stream|
-            expect(stream.read).to eq(sample_trace_raw)
+          it 'writes a trace' do
+            expect { subject } .to raise_error('Could not write empty data')
           end
-
-          described_class.open(job_id, size, 'wb') do |stream|
-            stream.truncate(0)
-          end
-
-          described_class.open(job_id, 0, 'rb') do |stream|
-            expect(stream.read).to be_empty
-          end
-
-          expect(chunk_store.chunks_count(job_id)).to eq(0)
-          expect(chunk_store.chunks_size(job_id)).to eq(0)
         end
       end
-    end
 
-    context 'when data does not exist' do
-      before do
-        set_smaller_buffer_size_than(size)
-      end
+      context 'when data already exists' do
+        let(:exist_data) { 'exist data' }
+        let(:total_size) { exist_data.length + data.length }
 
-      it 'truncates a trace' do
-        described_class.open(job_id, size, 'wb') do |stream|
-          stream.truncate(0)
-          expect(stream.send(:tell)).to eq(0)
-          expect(stream.send(:size)).to eq(0)
+        context 'when buffer size is smaller than file size' do
+          before do
+            set_smaller_buffer_size_than(data.length)
+            fill_trace_to_chunks(exist_data)
+          end
+
+          it 'appends a trace' do
+            described_class.new(job_id, nil, 'a+b') do |stream|
+              expect(stream.write(data)).to eq(data.length)
+            end
+
+            described_class.new(job_id, nil, 'rb') do |stream|
+              expect(stream.read).to eq(exist_data + data)
+              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
+              expect(chunk_store.chunks_size(job_id)).to eq(total_size)
+            end
+          end
+        end
+
+        context 'when buffer size is larger than file size' do
+          before do
+            set_larger_buffer_size_than(data.length)
+            fill_trace_to_chunks(exist_data)
+          end
+
+          it 'appends a trace' do
+            described_class.new(job_id, nil, 'a+b') do |stream|
+              expect(stream.write(data)).to eq(data.length)
+            end
+
+            described_class.new(job_id, nil, 'rb') do |stream|
+              expect(stream.read).to eq(exist_data + data)
+              expect(chunk_store.chunks_count(job_id)).to eq(stream.send(:chunks_count))
+              expect(chunk_store.chunks_size(job_id)).to eq(total_size)
+            end
+          end
         end
       end
     end
