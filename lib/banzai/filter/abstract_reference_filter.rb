@@ -171,7 +171,7 @@ module Banzai
           end
 
           if object
-            title = object_link_title(object)
+            title = object_link_title(object, matches)
             klass = reference_class(object_sym)
 
             data = data_attributes_for(link_content || match, parent, object,
@@ -216,7 +216,7 @@ module Banzai
         extras
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         object.title
       end
 

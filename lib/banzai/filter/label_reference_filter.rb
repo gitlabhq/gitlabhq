@@ -77,7 +77,7 @@ module Banzai
         CGI.unescapeHTML(text.to_s)
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         # use title of wrapped element instead
         nil
       end
