@@ -81,7 +81,7 @@ module Gitlab
             end
           end
 
-          def read(length = nil)
+          def read(length = nil, outbuf = nil)
             out = ""
 
             until eof? || (length && out.length >= length)
