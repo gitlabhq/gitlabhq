@@ -95,17 +95,13 @@ export default {
               <diff-discussions
                 :notes="discussionsByLineCode[line.lineCode]"
               />
-              <div
+              <diff-line-note-form
                 v-if="diffLineCommentForms[line.lineCode]"
-                class="notes_holder"
-              >
-                <diff-line-note-form
-                  :diff-file="diffFile"
-                  :diff-lines="diffLines"
-                  :line="line"
-                  :note-target-line="diffLines[index]"
-                />
-              </div>
+                :diff-file="diffFile"
+                :diff-lines="diffLines"
+                :line="line"
+                :note-target-line="diffLines[index]"
+              />
             </div>
           </td>
         </tr>
