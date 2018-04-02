@@ -1,9 +1,13 @@
 import { getTimeframeWindow } from '~/lib/utils/datetime_utility';
 import { TIMEFRAME_LENGTH } from 'ee/roadmap/constants';
 
+export const mockScrollBarSize = 15;
+
 export const mockGroupId = 2;
 
 export const mockShellWidth = 2000;
+
+export const mockItemWidth = 180;
 
 export const epicsPath = '/groups/gitlab-org/-/epics.json?start_date=2017-11-1&end_date=2018-4-30';
 
