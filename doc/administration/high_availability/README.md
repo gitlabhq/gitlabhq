@@ -120,6 +120,7 @@ separately:
 1. [Configure Redis](redis.md)
   1. [Configure Redis for GitLab source installations](redis_source.md)
 1. [Configure NFS](nfs.md)
+  1. [NFS Client and Host setup](nfs_host_client_setup.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
 
