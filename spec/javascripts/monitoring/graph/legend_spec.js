@@ -30,14 +30,6 @@ describe('Legend Component', () => {
       });
     });
 
-    it('formatMetricUsage should contain the unit of display and the current value selected via "currentDataIndex"', () => {
-      const formattedMetricUsage = vm.formatMetricUsage(timeSeries[0]);
-      const valueFromSeries = timeSeries[0].values[vm.currentDataIndex].value;
-
-      expect(formattedMetricUsage.indexOf(vm.unitOfDisplay)).not.toEqual(-1);
-      expect(formattedMetricUsage.indexOf(valueFromSeries)).not.toEqual(-1);
-    });
-
     it('strokeDashArray', () => {
       const dashedArray = vm.strokeDashArray('dashed');
       const dottedArray = vm.strokeDashArray('dotted');

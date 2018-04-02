@@ -17,6 +17,7 @@ const defaultValuesComponent = {
   margin: measurements.large.margin,
   measurements: measurements.large,
   yAxisLabel: 'Values',
+  unitOfDisplay: 'MB',
 };
 
 function getTextFromNode(component, selector) {
@@ -28,9 +29,7 @@ describe('Axis', () => {
     it('textTransform', () => {
       const component = createComponent(defaultValuesComponent);
 
-      expect(component.textTransform).toContain(
-        'translate(15, 120) rotate(-90)',
-      );
+      expect(component.textTransform).toContain('translate(15, 120) rotate(-90)');
     });
 
     it('xPosition', () => {
@@ -48,9 +47,7 @@ describe('Axis', () => {
     it('rectTransform', () => {
       const component = createComponent(defaultValuesComponent);
 
-      expect(component.rectTransform).toContain(
-        'translate(0, 120) rotate(-90)',
-      );
+      expect(component.rectTransform).toContain('translate(0, 120) rotate(-90)');
     });
   });
 
@@ -63,8 +60,6 @@ describe('Axis', () => {
   it('contains text to signal the usage, title and time with multiple time series', () => {
     const component = createComponent(defaultValuesComponent);
 
-    expect(getTextFromNode(component, '.y-label-text')).toEqual(
-      component.yAxisLabel,
-    );
+    expect(getTextFromNode(component, '.y-label-text')).toEqual('Values (MB)');
   });
 });

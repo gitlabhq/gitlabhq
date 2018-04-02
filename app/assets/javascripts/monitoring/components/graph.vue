@@ -255,6 +255,7 @@ export default {
           :margin="margin"
           :measurements="measurements"
           :y-axis-label="yAxisLabel"
+          :unit-of-display="unitOfDisplay"
         />
         <svg
           class="graph-data"
@@ -304,7 +305,6 @@ export default {
       :legend-title="legendTitle"
       :time-series="timeSeries"
       :current-data-index="currentDataIndex"
-      :unit-of-display="unitOfDisplay"
     />
   </div>
 </template>
