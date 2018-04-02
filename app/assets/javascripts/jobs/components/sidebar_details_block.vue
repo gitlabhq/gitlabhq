@@ -57,6 +57,14 @@
             : ' btn-inverted-secondary';
         return className;
       },
+      toggleButtonClass() {
+        return [
+          'btn btn-blank',
+          'gutter-toggle pull-right',
+          'visible-xs-block visible-sm-block',
+          'js-sidebar-build-toggle',
+        ].join(' ');
+      },
       hasTimeout() {
         return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
       },
@@ -101,18 +109,16 @@
       >
         Retry
       </a>
-      <a
+      <button
         aria-label="Toggle Sidebar"
-        class="gutter-toggle pull-right visible-xs-block visible-sm-block js-sidebar-build-toggle"
-        href="#"
-        role="button"
+        :class="toggleButtonClass"
       >
         <i
           aria-hidden="true"
           data-hidden="true"
           class="fa fa-angle-double-right"
         ></i>
-      </a>
+      </button>
     </div>
     <template v-if="shouldRenderContent">
       <div
