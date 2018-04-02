@@ -68,4 +68,22 @@ describe('LockIssueSidebar', () => {
       done();
     });
   });
+
+  it('displays the edit form when opened from collapsed state', (done) => {
+    expect(vm1.isLockDialogOpen).toBe(false);
+
+    vm1.$el.querySelector('.sidebar-collapsed-icon').click();
+
+    expect(vm1.isLockDialogOpen).toBe(true);
+
+    setTimeout(() => {
+      expect(
+        vm1.$el
+          .innerHTML
+          .includes('Unlock this issue?'),
+      ).toBe(true);
+
+      done();
+    });
+  });
 });
