@@ -206,13 +206,8 @@ describe('Api', () => {
       });
     });
 
-<<<<<<< HEAD
-    it('creates a new group label', (done) => {
-      const namespace = 'some namespace';
-=======
     it('creates a group label', done => {
       const namespace = 'group/subgroup';
->>>>>>> upstream/master
       const labelData = { some: 'data' };
       const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
       const expectedData = {
@@ -229,11 +224,7 @@ describe('Api', () => {
         ];
       });
 
-<<<<<<< HEAD
-      Api.newLabel(namespace, null, labelData, (response) => {
-=======
       Api.newLabel(namespace, undefined, labelData, response => {
->>>>>>> upstream/master
         expect(response.name).toBe('test');
         done();
       });
@@ -352,18 +343,20 @@ describe('Api', () => {
   });
 
   describe('ldap_groups', () => {
-    it('calls callback on completion', (done) => {
+    it('calls callback on completion', done => {
       const query = 'query';
       const provider = 'provider';
       const callback = jasmine.createSpy();
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/ldap/${provider}/groups.json`;
 
-      mock.onGet(expectedUrl).reply(200, [{
-        name: 'test',
-      }]);
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
 
       Api.ldap_groups(query, provider, callback)
-        .then((response) => {
+        .then(response => {
           expect(callback).toHaveBeenCalledWith(response);
         })
         .then(done)
