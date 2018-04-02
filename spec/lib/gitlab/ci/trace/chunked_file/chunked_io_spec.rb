@@ -9,10 +9,10 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkedIO, :clean_gitlab_redis_cache do
   let(:mode) { 'rb' }
 
   describe 'ChunkStore is Redis', :partial_support do
-    let(:chunk_store) { Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis }
+    let(:chunk_stores) { [Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis] }
 
     before do
-      allow_any_instance_of(described_class).to receive(:chunk_store).and_return(chunk_store)
+      allow_any_instance_of(described_class).to receive(:chunk_store).and_return(chunk_stores.first)
       allow_any_instance_of(described_class).to receive(:buffer_size).and_return(128.kilobytes)
     end
 
@@ -20,10 +20,10 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkedIO, :clean_gitlab_redis_cache do
   end
 
   describe 'ChunkStore is Database' do
-    let(:chunk_store) { Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database }
+    let(:chunk_stores) { [Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database] }
 
     before do
-      allow_any_instance_of(described_class).to receive(:chunk_store).and_return(chunk_store)
+      allow_any_instance_of(described_class).to receive(:chunk_store).and_return(chunk_stores.first)
       allow_any_instance_of(described_class).to receive(:buffer_size).and_return(128.kilobytes)
     end
 

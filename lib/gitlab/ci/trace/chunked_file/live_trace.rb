@@ -5,8 +5,7 @@ module Gitlab
         class LiveTrace < ChunkedIO
           class << self
             def exist?(job_id)
-              ChunkStores::Redis.chunks_count(job_id) > 0 ||
-                ChunkStores::Database.chunks_count(job_id) > 0
+              ChunkStore::Redis.chunks_count(job_id) > 0 || ChunkStore::Database.chunks_count(job_id) > 0
             end
           end
 
@@ -22,7 +21,7 @@ module Gitlab
             end
           end
 
-          # Efficient process than iterating each
+          # This is more efficient than iterating each chunk store and deleting
           def truncate(offset)
             if offset == 0
               delete
@@ -33,13 +32,9 @@ module Gitlab
             end
           end
 
-          def present?
-            self.exist?(job_id)
-          end
-
           def delete
-            ChunkStores::Redis.delete_all(job_id)
-            ChunkStores::Database.delete_all(job_id)
+            ChunkStore::Redis.delete_all(job_id)
+            ChunkStore::Database.delete_all(job_id)
           end
 
           private
@@ -50,7 +45,7 @@ module Gitlab
           end
 
           def chunk_store
-            if last_chunk? || eof?
+            if last_range.include?(tell)
               ChunkStore::Redis
             else
               ChunkStore::Database
