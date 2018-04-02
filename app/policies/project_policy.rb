@@ -1,10 +1,38 @@
 class ProjectPolicy < BasePolicy
-  def self.create_read_update_admin(name)
+  READONLY_FEATURES_WHEN_ARCHIVED = %i[
+    issue
+    list
+    merge_request
+    label
+    milestone
+    project_snippet
+    wiki
+    note
+    pipeline
+    pipeline_schedule
+    build
+    trigger
+    environment
+    deployment
+    commit_status
+    container_image
+    pages
+    cluster
+  ].freeze
+
+  def self.create_read_update_admin_destroy(name)
+    [
+      :"read_#{name}",
+      *create_update_admin_destroy(name)
+    ]
+  end
+
+  def self.create_update_admin_destroy(name)
     [
       :"create_#{name}",
-      :"read_#{name}",
       :"update_#{name}",
-      :"admin_#{name}"
+      :"admin_#{name}",
+      :"destroy_#{name}"
     ]
   end
 
@@ -15,7 +43,7 @@ class ProjectPolicy < BasePolicy
   end
 
   desc "Project has public builds enabled"
-  condition(:public_builds, scope: :subject) { project.public_builds? }
+  condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
   # For guest access we use #team_member? so we can use
   # project.members, which gets cached in subject scope.
@@ -35,7 +63,7 @@ class ProjectPolicy < BasePolicy
   condition(:master) { team_access_level >= Gitlab::Access::MASTER }
 
   desc "Project is public"
-  condition(:public_project, scope: :subject) { project.public? }
+  condition(:public_project, scope: :subject, score: 0) { project.public? }
 
   desc "Project is visible to internal users"
   condition(:internal_access) do
@@ -46,7 +74,7 @@ class ProjectPolicy < BasePolicy
   condition(:group_member, scope: :subject) { project_group_member? }
 
   desc "Project is archived"
-  condition(:archived, scope: :subject) { project.archived? }
+  condition(:archived, scope: :subject, score: 0) { project.archived? }
 
   condition(:default_issues_tracker, scope: :subject) { project.default_issues_tracker? }
 
@@ -56,10 +84,10 @@ class ProjectPolicy < BasePolicy
   end
 
   desc "Project has an external wiki"
-  condition(:has_external_wiki, scope: :subject) { project.has_external_wiki? }
+  condition(:has_external_wiki, scope: :subject, score: 0) { project.has_external_wiki? }
 
   desc "Project has request access enabled"
-  condition(:request_access_enabled, scope: :subject) { project.request_access_enabled }
+  condition(:request_access_enabled, scope: :subject, score: 0) { project.request_access_enabled }
 
   desc "Has merge requests allowing pushes to user"
   condition(:has_merge_requests_allowing_pushes, scope: :subject) do
@@ -231,37 +259,45 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { archived }.policy do
-    prevent :create_merge_request
-    prevent :push_to_delete_protected_branch
     prevent :push_code
-    prevent :update_merge_request
-    prevent :admin_merge_request
+    prevent :push_to_delete_protected_branch
+    prevent :request_access
+    prevent :upload_file
+    prevent :resolve_note
+
+    READONLY_FEATURES_WHEN_ARCHIVED.each do |feature|
+      prevent(*create_update_admin_destroy(feature))
+    end
+  end
+
+  rule { issues_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:issue))
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
-    prevent(*create_read_update_admin(:merge_request))
+    prevent(*create_read_update_admin_destroy(:merge_request))
   end
 
   rule { issues_disabled & merge_requests_disabled }.policy do
-    prevent(*create_read_update_admin(:label))
-    prevent(*create_read_update_admin(:milestone))
+    prevent(*create_read_update_admin_destroy(:label))
+    prevent(*create_read_update_admin_destroy(:milestone))
   end
 
   rule { snippets_disabled }.policy do
-    prevent(*create_read_update_admin(:project_snippet))
+    prevent(*create_read_update_admin_destroy(:project_snippet))
   end
 
   rule { wiki_disabled & ~has_external_wiki }.policy do
-    prevent(*create_read_update_admin(:wiki))
+    prevent(*create_read_update_admin_destroy(:wiki))
     prevent(:download_wiki_code)
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    prevent(*create_read_update_admin(:build))
-    prevent(*(create_read_update_admin(:pipeline) - [:read_pipeline]))
-    prevent(*create_read_update_admin(:pipeline_schedule))
-    prevent(*create_read_update_admin(:environment))
-    prevent(*create_read_update_admin(:deployment))
+    prevent(*create_update_admin_destroy(:pipeline))
+    prevent(*create_read_update_admin_destroy(:build))
+    prevent(*create_read_update_admin_destroy(:pipeline_schedule))
+    prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:deployment))
   end
 
   rule { repository_disabled }.policy do
@@ -272,7 +308,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { container_registry_disabled }.policy do
-    prevent(*create_read_update_admin(:container_image))
+    prevent(*create_read_update_admin_destroy(:container_image))
   end
 
   rule { anonymous & ~public_project }.prevent_all
@@ -312,13 +348,6 @@ class ProjectPolicy < BasePolicy
   rule { public_builds & can?(:guest_access) }.policy do
     enable :read_pipeline
     enable :read_pipeline_schedule
-  end
-
-  rule { issues_disabled }.policy do
-    prevent :create_issue
-    prevent :update_issue
-    prevent :admin_issue
-    prevent :read_issue
   end
 
   # These rules are included to allow maintainers of projects to push to certain
