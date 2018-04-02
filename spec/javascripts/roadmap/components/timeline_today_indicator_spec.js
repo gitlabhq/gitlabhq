@@ -46,7 +46,9 @@ describe('TimelineTodayIndicatorComponent', () => {
         vm.handleEpicsListRender({
           height: 100,
         });
-        expect(vm.todayBarStyles).toBe('height: 100px; left: 50%;'); // Current date being 15th
+        const stylesObj = vm.todayBarStyles;
+        expect(stylesObj.height).toBe('120px');
+        expect(stylesObj.left).toBe('50%');
         expect(vm.todayBarReady).toBe(true);
       });
     });
