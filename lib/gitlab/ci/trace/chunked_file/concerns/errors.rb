@@ -8,7 +8,6 @@ module Gitlab
 
             included do
               WriteError = Class.new(StandardError)
-              FailedToGetChunkError = Class.new(StandardError)
             end
           end
         end

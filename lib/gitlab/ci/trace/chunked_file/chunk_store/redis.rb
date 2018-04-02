@@ -24,7 +24,7 @@ module Gitlab
 
               def chunks_count(job_id)
                 Gitlab::Redis::Cache.with do |redis|
-                  redis.scan_each(:match => buffer_key(job_id, '?')).inject(0) do |sum, key|
+                  redis.scan_each(match: buffer_key(job_id, '?')).inject(0) do |sum, key|
                     sum + 1
                   end
                 end
@@ -32,15 +32,15 @@ module Gitlab
 
               def chunks_size(job_id)
                 Gitlab::Redis::Cache.with do |redis|
-                  redis.scan_each(:match => buffer_key(job_id, '?')).inject(0) do |sum, key|
-                    sum += redis.strlen(key)
+                  redis.scan_each(match: buffer_key(job_id, '?')).inject(0) do |sum, key|
+                    sum + redis.strlen(key)
                   end
                 end
               end
 
               def delete_all(job_id)
                 Gitlab::Redis::Cache.with do |redis|
-                  redis.scan_each(:match => buffer_key(job_id, '?')) do |key|
+                  redis.scan_each(match: buffer_key(job_id, '?')) do |key|
                     redis.del(key)
                   end
                 end

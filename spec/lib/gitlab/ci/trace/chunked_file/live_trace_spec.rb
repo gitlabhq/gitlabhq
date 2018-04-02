@@ -10,7 +10,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::LiveTrace, :clean_gitlab_redis_cache do
 
   let(:chunk_stores) do
     [Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Redis,
-      Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database]
+     Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database]
   end
 
   describe 'ChunkStores are Redis and Database', :partial_support do
