@@ -72,7 +72,7 @@ export default {
 
     if (!mirrorPull) return;
 
-    mirrorPull.handleRepositoryUrlInput();
+    if (this.urlInput.value !== '') mirrorPull.handleRepositoryUrlInput();
     mirrorPull.init();
 
     this.initSelect2();
