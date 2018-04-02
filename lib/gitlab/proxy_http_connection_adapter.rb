@@ -10,18 +10,18 @@
 module Gitlab
   class ProxyHTTPConnectionAdapter < HTTParty::ConnectionAdapter
     def connection
-      if !allow_local_requests? && blocked_url?
-        raise URI::InvalidURIError
+      unless allow_local_requests?
+        begin
+          Gitlab::UrlBlocker.validate!(uri, allow_local_network: false)
+        rescue Gitlab::UrlBlocker::BlockedUrlError => e
+          raise Gitlab::HTTP::BlockedUrlError, "URL '#{uri}' is blocked: #{e.message}"
+        end
       end
 
       super
     end
 
     private
-
-    def blocked_url?
-      Gitlab::UrlBlocker.blocked_url?(uri, allow_private_networks: false)
-    end
 
     def allow_local_requests?
       options.fetch(:allow_local_requests, allow_settings_local_requests?)
