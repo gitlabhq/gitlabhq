@@ -6,12 +6,10 @@ module Gitlab
           module Permissions
             extend ActiveSupport::Concern
 
-            WRITABLE_MODE = %w[a]
-            READABLE_MODE = %w[r +]
+            WRITABLE_MODE = %w[a].freeze
+            READABLE_MODE = %w[r +].freeze
 
             included do
-              PermissionError = Class.new(StandardError)
-
               attr_reader :write_lock_uuid
             end
 
@@ -20,7 +18,7 @@ module Gitlab
                 @write_lock_uuid = Gitlab::ExclusiveLease
                   .new(write_lock_key(job_id), timeout: 1.hour.to_i).try_obtain
 
-                raise PermissionError, 'Already opened by another process' unless write_lock_uuid
+                raise IOError, 'Already opened by another process' unless write_lock_uuid
               end
 
               super

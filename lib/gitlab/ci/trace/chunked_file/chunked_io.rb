@@ -189,10 +189,10 @@ module Gitlab
 
             chunk_store.open(job_id, chunk_index, params_for_store) do |store|
               with_callbacks(:write_chunk, store) do
-                written_size = if buffer_size == data.length || store.size == 0
-                                 store.write!(data)
-                               else
+                written_size = if store.size > 0 # # rubocop:disable ZeroLengthPredicate
                                  store.append!(data)
+                               else
+                                 store.write!(data)
                                end
 
                 raise WriteError, 'Written size mismatch' unless data.length == written_size
