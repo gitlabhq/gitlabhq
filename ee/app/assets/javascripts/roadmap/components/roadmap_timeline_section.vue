@@ -1,7 +1,7 @@
 <script>
   import eventHub from '../event_hub';
 
-  import { SCROLL_BAR_SIZE } from '../constants';
+  import SectionMixin from '../mixins/section_mixin';
 
   import timelineHeaderItem from './timeline_header_item.vue';
 
@@ -9,6 +9,9 @@
     components: {
       timelineHeaderItem,
     },
+    mixins: [
+      SectionMixin,
+    ],
     props: {
       epics: {
         type: Array,
@@ -22,19 +25,15 @@
         type: Number,
         required: true,
       },
+      listScrollable: {
+        type: Boolean,
+        required: true,
+      },
     },
     data() {
       return {
         scrolledHeaderClass: '',
       };
-    },
-    computed: {
-      calcShellWidth() {
-        return this.shellWidth - SCROLL_BAR_SIZE;
-      },
-      theadStyles() {
-        return `width: ${this.calcShellWidth}px;`;
-      },
     },
     mounted() {
       eventHub.$on('epicsListScrolled', this.handleEpicsListScroll);
@@ -43,30 +42,28 @@
       eventHub.$off('epicsListScrolled', this.handleEpicsListScroll);
     },
     methods: {
-      handleEpicsListScroll(scrollTop) {
+      handleEpicsListScroll({ scrollTop }) {
         // Add class only when epics list is scrolled at 1% the height of header
-        this.scrolledHeaderClass = (scrollTop > this.$el.clientHeight / 100) ? 'scrolled-ahead' : '';
+        this.scrolledHeaderClass = (scrollTop > this.$el.clientHeight / 100) ? 'scroll-top-shadow' : '';
       },
     },
   };
 </script>
 
 <template>
-  <thead
-    class="roadmap-timeline-section"
+  <div
+    class="roadmap-timeline-section clearfix"
     :class="scrolledHeaderClass"
-    :style="theadStyles"
+    :style="sectionContainerStyles"
   >
-    <tr>
-      <th class="timeline-header-blank"></th>
-      <timeline-header-item
-        v-for="(timeframeItem, index) in timeframe"
-        :key="index"
-        :timeframe-index="index"
-        :timeframe-item="timeframeItem"
-        :timeframe="timeframe"
-        :shell-width="calcShellWidth"
-      />
-    </tr>
-  </thead>
+    <span class="timeline-header-blank"></span>
+    <timeline-header-item
+      v-for="(timeframeItem, index) in timeframe"
+      :key="index"
+      :timeframe-index="index"
+      :timeframe-item="timeframeItem"
+      :timeframe="timeframe"
+      :item-width="sectionItemWidth"
+    />
+  </div>
 </template>

@@ -1,8 +1,7 @@
 <script>
-  import $ from 'jquery';
   import eventHub from '../event_hub';
 
-  import { SCROLL_BAR_SIZE } from '../constants';
+  import SectionMixin from '../mixins/section_mixin';
 
   import epicItem from './epic_item.vue';
 
@@ -10,6 +9,9 @@
     components: {
       epicItem,
     },
+    mixins: [
+      SectionMixin,
+    ],
     props: {
       epics: {
         type: Array,
@@ -27,6 +29,10 @@
         type: Number,
         required: true,
       },
+      listScrollable: {
+        type: Boolean,
+        required: true,
+      },
     },
     data() {
       return {
@@ -38,26 +44,20 @@
       };
     },
     computed: {
-      /**
-       * Return width after reducing scrollbar size
-       * such that Epic item cells do not consider
-       * scrollbar
-       */
-      calcShellWidth() {
-        return this.shellWidth - SCROLL_BAR_SIZE;
-      },
-      /**
-       * Adjust tbody styles while pushing scrollbar further away
-       * from the view
-       */
-      tbodyStyles() {
-        return `width: ${this.shellWidth + SCROLL_BAR_SIZE}px; height: ${this.shellHeight}px;`;
+      emptyRowContainerStyles() {
+        return {
+          height: `${this.emptyRowHeight}px`,
+        };
       },
       emptyRowCellStyles() {
-        return `height: ${this.emptyRowHeight}px;`;
+        return {
+          width: `${this.sectionItemWidth}px`,
+        };
       },
       shadowCellStyles() {
-        return `left: ${this.offsetLeft}px;`;
+        return {
+          left: `${this.offsetLeft}px`,
+        };
       },
     },
     watch: {
@@ -69,14 +69,18 @@
       },
     },
     mounted() {
+      eventHub.$on('epicsListScrolled', this.handleEpicsListScroll);
       this.$nextTick(() => {
         this.initMounted();
       });
     },
+    beforeDestroy() {
+      eventHub.$off('epicsListScrolled', this.handleEpicsListScroll);
+    },
     methods: {
       initMounted() {
         // Get available shell height based on viewport height
-        this.shellHeight = window.innerHeight - (this.$el.offsetTop + this.$root.$el.offsetTop);
+        this.shellHeight = window.innerHeight - this.$el.offsetTop;
 
         // In case there are epics present, initialize empty row
         if (this.epics.length) {
@@ -113,31 +117,11 @@
           });
 
           // set height and show empty row reducing horizontal scrollbar size
-          this.emptyRowHeight = (this.shellHeight - approxChildrenHeight) - 1;
+          this.emptyRowHeight = (this.shellHeight - approxChildrenHeight);
           this.showEmptyRow = true;
         } else {
           this.showBottomShadow = true;
         }
-      },
-      /**
-       * We can easily use `eventHub` and dispatch this event
-       * to all sibling and child components but it adds an overhead/delay
-       * resulting to janky element positioning. Hence, we directly
-       * update raw element properties upon event via jQuery.
-       */
-      handleScroll() {
-        const { scrollTop, scrollLeft, scrollHeight, clientHeight } = this.$el;
-        const tableEl = this.$el.parentElement;
-        if (tableEl) {
-          const $theadEl = $(tableEl).find('thead');
-          const $tbodyEl = $(tableEl).find('tbody');
-
-          $theadEl.css('left', -scrollLeft);
-          $theadEl.find('th:nth-child(1)').css('left', scrollLeft);
-          $tbodyEl.find('td:nth-child(1)').css('left', scrollLeft);
-        }
-        this.showBottomShadow = (Math.ceil(scrollTop) + clientHeight) < scrollHeight;
-        eventHub.$emit('epicsListScrolled', scrollTop, scrollLeft);
       },
       /**
        * `clientWidth` is full width of list section, and we need to
@@ -149,45 +133,45 @@
         const uptoTodayIndicator = Math.ceil((this.$el.clientWidth * 60) / 100);
         this.$el.scrollTo(uptoTodayIndicator, 0);
       },
+      handleEpicsListScroll({ scrollTop, clientHeight, scrollHeight }) {
+        this.showBottomShadow = (Math.ceil(scrollTop) + clientHeight) < scrollHeight;
+      },
     },
   };
 </script>
 
 <template>
-  <tbody
+  <div
     class="epics-list-section"
-    :style="tbodyStyles"
-    @scroll="handleScroll"
+    :style="sectionContainerStyles"
   >
-    <tr
-      v-if="showBottomShadow"
-      class="bottom-shadow-cell"
-      :style="shadowCellStyles"
-    ></tr>
     <epic-item
       v-for="(epic, index) in epics"
       :key="index"
       :epic="epic"
       :timeframe="timeframe"
       :current-group-id="currentGroupId"
-      :shell-width="calcShellWidth"
+      :shell-width="sectionShellWidth"
+      :item-width="sectionItemWidth"
     />
-    <tr
+    <div
       v-if="showEmptyRow"
-      class="epics-list-item epics-list-item-empty"
+      class="epics-list-item epics-list-item-empty clearfix"
+      :style="emptyRowContainerStyles"
     >
-      <td
-        class="epic-details-cell"
-        :style="emptyRowCellStyles"
-      >
-      </td>
-      <td
-        class="epic-timeline-cell"
+      <span class="epic-details-cell"></span>
+      <span
         v-for="(timeframeItem, index) in timeframe"
         :key="index"
+        class="epic-timeline-cell"
         :style="emptyRowCellStyles"
       >
-      </td>
-    </tr>
-  </tbody>
+      </span>
+    </div>
+    <div
+      v-if="showBottomShadow"
+      class="scroll-bottom-shadow"
+      :style="shadowCellStyles"
+    ></div>
+  </div>
 </template>

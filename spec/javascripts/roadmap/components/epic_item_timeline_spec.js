@@ -4,13 +4,14 @@ import epicItemTimelineComponent from 'ee/roadmap/components/epic_item_timeline.
 import { TIMELINE_CELL_MIN_WIDTH, TIMELINE_END_OFFSET_FULL, TIMELINE_END_OFFSET_HALF } from 'ee/roadmap/constants';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockEpic, mockShellWidth } from '../mock_data';
+import { mockTimeframe, mockEpic, mockShellWidth, mockItemWidth } from '../mock_data';
 
 const createComponent = ({
   timeframe = mockTimeframe,
   timeframeItem = mockTimeframe[0],
   epic = mockEpic,
   shellWidth = mockShellWidth,
+  itemWidth = mockItemWidth,
 }) => {
   const Component = Vue.extend(epicItemTimelineComponent);
 
@@ -19,6 +20,7 @@ const createComponent = ({
     timeframeItem,
     epic,
     shellWidth,
+    itemWidth,
   });
 };
 
@@ -38,10 +40,10 @@ describe('EpicItemTimelineComponent', () => {
   });
 
   describe('computed', () => {
-    describe('tdStyles', () => {
+    describe('itemStyles', () => {
       it('returns CSS min-width based on getCellWidth() method', () => {
         vm = createComponent({});
-        expect(vm.tdStyles).toBe('min-width: 280px;');
+        expect(vm.itemStyles.width).toBe(`${mockItemWidth}px`);
       });
     });
   });
@@ -224,7 +226,7 @@ describe('EpicItemTimelineComponent', () => {
 
     it('renders component container element with `min-width` property applied via style attribute', () => {
       vm = createComponent({});
-      expect(vm.$el.getAttribute('style')).toBe('min-width: 280px;');
+      expect(vm.$el.getAttribute('style')).toBe(`width: ${mockItemWidth}px;`);
     });
 
     it('renders timeline bar element with class `timeline-bar` and class `timeline-bar-wrapper` as container element', () => {

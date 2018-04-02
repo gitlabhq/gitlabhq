@@ -24,12 +24,16 @@
         type: Number,
         required: true,
       },
+      itemWidth: {
+        type: Number,
+        required: true,
+      },
     },
   };
 </script>
 
 <template>
-  <tr class="epics-list-item">
+  <div class="epics-list-item clearfix">
     <epic-item-details
       :epic="epic"
       :current-group-id="currentGroupId"
@@ -41,6 +45,7 @@
       :timeframe-item="timeframeItem"
       :epic="epic"
       :shell-width="shellWidth"
+      :item-width="itemWidth"
     />
-  </tr>
+  </div>
 </template>

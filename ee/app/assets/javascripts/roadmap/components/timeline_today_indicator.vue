@@ -38,8 +38,14 @@
         // Get size in % from current date and days in month.
         const left = Math.floor((this.currentDate.getDate() / daysInMonth) * 100);
 
-        // Set styles and reduce scrollbar height from total shell height.
-        this.todayBarStyles = `height: ${height}px; left: ${left}%;`;
+        // We add 20 to height to ensure that
+        // today indicator goes past the bottom
+        // edge of the browser even when
+        // scrollbar is present
+        this.todayBarStyles = {
+          height: `${height + 20}px`,
+          left: `${left}%`,
+        };
         this.todayBarReady = true;
       },
     },
