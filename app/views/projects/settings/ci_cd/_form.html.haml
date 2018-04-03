@@ -19,10 +19,11 @@
                 %strong Enable Auto DevOps
                 %br
                 %span.descr
-                  - if @auto_devops.enabled
+                  - if @project.ci_config_path.empty?
                     The Auto DevOps pipeline configuration is being used
                   - else
                     The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
+                    = link_to "Remove CI file", project_blob_path(@project, 'master', @project.ci_config_path)
 
             .radio
               = form.label :enabled_false do
