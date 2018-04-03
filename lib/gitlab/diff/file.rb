@@ -120,11 +120,13 @@ module Gitlab
 
       # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @diff_lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
+        @diff_lines ||=
+          Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
       end
 
       def highlighted_diff_lines
-        @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+        @highlighted_diff_lines ||=
+          Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted

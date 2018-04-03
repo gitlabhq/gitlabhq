@@ -2,6 +2,8 @@ class DiscussionEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id, :reply_id
+  expose :position, if: -> (d, _) { defined? d.diff_file }
+  expose :line_code, if: -> (d, _) { defined? d.diff_file }
   expose :expanded?, as: :expanded
 
   expose :notes, using: NoteEntity

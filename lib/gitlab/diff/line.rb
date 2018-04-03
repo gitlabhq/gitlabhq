@@ -1,22 +1,26 @@
 module Gitlab
   module Diff
     class Line
-      attr_reader :type, :index, :old_pos, :new_pos
+      attr_reader :line_code, :type, :index, :old_pos, :new_pos, :meta_data
       attr_writer :rich_text
       attr_accessor :text
 
-      def initialize(text, type, index, old_pos, new_pos, parent_file: nil)
+      def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil)
         @text, @type, @index = text, type, index
         @old_pos, @new_pos = old_pos, new_pos
         @parent_file = parent_file
+
+        # When line code is not provided from cache store we build it
+        # using the parent_file(Diff::File or Conflict::File).
+        @line_code = line_code || set_line_code
       end
 
       def self.init_from_hash(hash)
-        new(hash[:text], hash[:type], hash[:index], hash[:old_pos], hash[:new_pos])
+        new(hash[:text], hash[:type], hash[:index], hash[:old_pos], hash[:new_pos], line_code: hash[:line_code])
       end
 
       def serialize_keys
-        @serialize_keys ||= %i(text type index old_pos new_pos)
+        @serialize_keys ||= %i(line_code text type index old_pos new_pos)
       end
 
       def to_hash
@@ -58,19 +62,38 @@ module Gitlab
       end
 
       def rich_text
-        @parent_file.highlight_lines! if @parent_file && !@rich_text
+        @parent_file.try(:highlight_lines!) if @parent_file && !@rich_text
 
         @rich_text
       end
 
+      def meta_data
+        return unless meta?
+
+        {
+          old_pos: old_pos,
+          new_pos: new_pos
+        }
+      end
+
       def as_json(opts = nil)
         {
+          line_code: line_code,
           type: type,
           old_line: old_line,
           new_line: new_line,
           text: text,
-          rich_text: rich_text || text
+          rich_text: rich_text || text,
+          meta_data: meta_data
         }
+      end
+
+      private
+
+      def set_line_code
+        return nil unless @parent_file
+
+        @parent_file.line_code(self)
       end
     end
   end
