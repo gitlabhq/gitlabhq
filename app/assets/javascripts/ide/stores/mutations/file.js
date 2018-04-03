@@ -28,11 +28,18 @@ export default {
       rawPath: data.raw_path,
       binary: data.binary,
       renderError: data.render_error,
+      raw: null,
+      baseRaw: null,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
     Object.assign(state.entries[file.path], {
       raw,
+    });
+  },
+  [types.SET_FILE_BASE_RAW_DATA](state, { file, baseRaw }) {
+    Object.assign(state.entries[file.path], {
+      baseRaw,
     });
   },
   [types.UPDATE_FILE_CONTENT](state, { path, content }) {
@@ -57,6 +64,11 @@ export default {
     Object.assign(state.entries[file.path], {
       editorRow,
       editorColumn,
+    });
+  },
+  [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
+    Object.assign(state.entries[file.path], {
+      mrChange,
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {

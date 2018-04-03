@@ -7,8 +7,7 @@ import FilesDecoratorWorker from './workers/files_decorator_worker';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
-export const setInitialData = ({ commit }, data) =>
-  commit(types.SET_INITIAL_DATA, data);
+export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
   state.changedFiles.forEach(file => {
@@ -60,14 +59,11 @@ export const createTempEntry = (
 ) =>
   new Promise(resolve => {
     const worker = new FilesDecoratorWorker();
-    const fullName =
-      name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
+    const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
     if (state.entries[name]) {
       flash(
-        `The name "${name
-          .split('/')
-          .pop()}" is already taken in this directory.`,
+        `The name "${name.split('/').pop()}" is already taken in this directory.`,
         'alert',
         document,
         null,
@@ -144,3 +140,4 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
+export * from './actions/merge_request';

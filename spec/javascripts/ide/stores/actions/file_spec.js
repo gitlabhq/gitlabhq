@@ -8,7 +8,7 @@ import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
-describe('Multi-file store file actions', () => {
+describe('IDE store file actions', () => {
   beforeEach(() => {
     spyOn(router, 'push');
   });
@@ -192,7 +192,7 @@ describe('Multi-file store file actions', () => {
 
     it('calls the service', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(service.getFileData).toHaveBeenCalledWith('getFileDataURL');
 
@@ -203,7 +203,7 @@ describe('Multi-file store file actions', () => {
 
     it('sets the file data', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(localFile.blamePath).toBe('blame_path');
 
@@ -214,7 +214,7 @@ describe('Multi-file store file actions', () => {
 
     it('sets document title', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(document.title).toBe('testing getFileData');
 
@@ -225,7 +225,7 @@ describe('Multi-file store file actions', () => {
 
     it('sets the file as active', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(localFile.active).toBeTruthy();
 
@@ -234,9 +234,20 @@ describe('Multi-file store file actions', () => {
         .catch(done.fail);
     });
 
+    it('sets the file not as active if we pass makeFileActive false', done => {
+      store
+        .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
+        .then(() => {
+          expect(localFile.active).toBeFalsy();
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
     it('adds the file to open files', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(store.state.openFiles.length).toBe(1);
           expect(store.state.openFiles[0].name).toBe(localFile.name);
@@ -259,7 +270,7 @@ describe('Multi-file store file actions', () => {
 
     it('calls getRawFileData service method', done => {
       store
-        .dispatch('getRawFileData', tmpFile)
+        .dispatch('getRawFileData', { path: tmpFile.path })
         .then(() => {
           expect(service.getRawFileData).toHaveBeenCalledWith(tmpFile);
 
@@ -270,9 +281,25 @@ describe('Multi-file store file actions', () => {
 
     it('updates file raw data', done => {
       store
-        .dispatch('getRawFileData', tmpFile)
+        .dispatch('getRawFileData', { path: tmpFile.path })
         .then(() => {
           expect(tmpFile.raw).toBe('raw');
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('calls also getBaseRawFileData service method', done => {
+      spyOn(service, 'getBaseRawFileData').and.returnValue(Promise.resolve('baseraw'));
+
+      tmpFile.mrChange = { new_file: false };
+
+      store
+        .dispatch('getRawFileData', { path: tmpFile.path, baseSha: 'SHA' })
+        .then(() => {
+          expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
+          expect(tmpFile.baseRaw).toBe('baseraw');
 
           done();
         })

@@ -224,14 +224,14 @@ describe Project do
       project2 = build(:project, import_url: 'http://localhost:9000/t.git')
 
       expect(project2).to be_invalid
-      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+      expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
     end
 
     it "does not allow blocked import_url port" do
       project2 = build(:project, import_url: 'http://github.com:25/t.git')
 
       expect(project2).to be_invalid
-      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+      expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
     end
 
     describe 'project pending deletion' do
@@ -1262,6 +1262,34 @@ describe Project do
       let(:project_name) { 'Project' }
 
       it { is_expected.to eq("http://group.example.com/project") }
+    end
+  end
+
+  describe '#pages_group_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+    let(:port) { 1234 }
+
+    subject { project.pages_group_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://example.com:#{port}")
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com:#{port}") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com:#{port}") }
     end
   end
 
@@ -2532,7 +2560,7 @@ describe Project do
     end
   end
 
-  describe '#remove_exports' do
+  describe '#remove_export' do
     let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
@@ -2577,6 +2605,23 @@ describe Project do
       expect(project).to receive(:remove_exports).and_call_original
 
       project.destroy
+    end
+  end
+
+  describe '#remove_exported_project_file' do
+    let(:project) { create(:project, :with_export) }
+
+    it 'removes the exported project file' do
+      exported_file = project.export_project_path
+
+      expect(File.exist?(exported_file)).to be_truthy
+
+      allow(FileUtils).to receive(:rm_f).and_call_original
+      expect(FileUtils).to receive(:rm_f).with(exported_file).and_call_original
+
+      project.remove_exported_project_file
+
+      expect(File.exist?(exported_file)).to be_falsy
     end
   end
 

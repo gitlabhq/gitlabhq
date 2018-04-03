@@ -1,10 +1,8 @@
-export const activeFile = state =>
-  state.openFiles.find(file => file.active) || null;
+export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
 
-export const modifiedFiles = state =>
-  state.changedFiles.filter(f => !f.tempFile);
+export const modifiedFiles = state => state.changedFiles.filter(f => !f.tempFile);
 
 export const projectsWithTrees = state =>
   Object.keys(state.projects).map(projectId => {
@@ -23,13 +21,21 @@ export const projectsWithTrees = state =>
     };
   });
 
+export const currentMergeRequest = state => {
+  if (state.projects[state.currentProjectId]) {
+    return state.projects[state.currentProjectId].mergeRequests[state.currentMergeRequestId];
+  }
+  return null;
+};
+
 // eslint-disable-next-line no-confusing-arrow
 export const collapseButtonIcon = state =>
   state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
 
-export const hasChanges = state =>
-  !!state.changedFiles.length || !!state.stagedFiles.length;
+export const hasChanges = state => !!state.changedFiles.length || !!state.stagedFiles.length;
 
 // eslint-disable-next-line no-confusing-arrow
 export const collapseButtonTooltip = state =>
   state.rightPanelCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+
+export const hasMergeRequest = state => !!state.currentMergeRequestId;
