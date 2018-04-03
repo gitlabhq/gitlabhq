@@ -69,7 +69,6 @@ $white-il: #099;
 $white-gc-color: #999;
 $white-gc-bg: #eaf2f5;
 
-
 @mixin matchLine {
   color: $black-transparent;
   background-color: $gray-light;
@@ -102,7 +101,6 @@ $white-gc-bg: #eaf2f5;
 
   // Diff line
   .line_holder {
-
     &.match .line_content {
       @include matchLine;
     }
@@ -183,7 +181,9 @@ $white-gc-bg: #eaf2f5;
         }
       }
 
-      &.match {
+      &.match,
+      &.old-nonewline,
+      &.new-nonewline {
         @include matchLine;
       }
 

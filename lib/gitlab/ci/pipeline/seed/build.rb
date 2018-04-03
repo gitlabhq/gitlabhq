@@ -11,21 +11,16 @@ module Gitlab
             @pipeline = pipeline
             @attributes = attributes
 
-            @only = attributes.delete(:only)
-            @except = attributes.delete(:except)
-          end
-
-          def user=(current_user)
-            @attributes.merge!(user: current_user)
+            @only = Gitlab::Ci::Build::Policy
+              .fabricate(attributes.delete(:only))
+            @except = Gitlab::Ci::Build::Policy
+              .fabricate(attributes.delete(:except))
           end
 
           def included?
             strong_memoize(:inclusion) do
-              only_specs = Gitlab::Ci::Build::Policy.fabricate(@only)
-              except_specs = Gitlab::Ci::Build::Policy.fabricate(@except)
-
-              only_specs.all? { |spec| spec.satisfied_by?(@pipeline) } &&
-                except_specs.none? { |spec| spec.satisfied_by?(@pipeline) }
+              @only.all? { |spec| spec.satisfied_by?(@pipeline, self) } &&
+                @except.none? { |spec| spec.satisfied_by?(@pipeline, self) }
             end
           end
 
@@ -33,6 +28,7 @@ module Gitlab
             @attributes.merge(
               pipeline: @pipeline,
               project: @pipeline.project,
+              user: @pipeline.user,
               ref: @pipeline.ref,
               tag: @pipeline.tag,
               trigger_request: @pipeline.legacy_trigger,

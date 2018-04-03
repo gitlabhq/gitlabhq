@@ -21,16 +21,6 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     end
   end
 
-  describe '#user=' do
-    let(:user) { build(:user) }
-
-    it 'assignes user to a build' do
-      subject.user = user
-
-      expect(subject.attributes).to include(user: user)
-    end
-  end
-
   describe '#to_resource' do
     it 'returns a valid build resource' do
       expect(subject.to_resource).to be_a(::Ci::Build)

@@ -6,7 +6,6 @@ end
 gem_versions = {}
 gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
 gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['html-pipeline']                   = rails5? ? '~> 2.6.0' : '~> 1.11.0'
 gem_versions['rails']                           = rails5? ? '5.0.6'    : '4.2.10'
 gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
@@ -28,7 +27,7 @@ gem 'default_value_for', gem_versions['default_value_for']
 gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.26.0'
+gem 'rugged', '~> 0.27'
 gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
@@ -136,7 +135,7 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
-gem 'html-pipeline', gem_versions['html-pipeline']
+gem 'html-pipeline', '~> 2.7.1'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
@@ -310,7 +309,7 @@ end
 
 group :development do
   gem 'foreman', '~> 0.84.0'
-  gem 'brakeman', '~> 3.6.0', require: false
+  gem 'brakeman', '~> 4.2', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
@@ -376,6 +375,8 @@ group :development, :test do
   gem 'stackprof', '~> 0.2.10', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
+
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :test do
@@ -385,7 +386,6 @@ group :test do
   gem 'webmock', '~> 2.3.2'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
-  gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
 end

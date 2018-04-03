@@ -18,6 +18,7 @@ issues:
 - metrics
 - timelogs
 - issue_assignees
+- closed_by
 events:
 - author
 - project

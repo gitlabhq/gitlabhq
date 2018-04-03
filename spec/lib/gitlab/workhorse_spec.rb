@@ -275,12 +275,14 @@ describe Gitlab::Workhorse do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
+    let(:repo_path) { 'ignored but not allowed to be empty in gitlab-workhorse' }
     let(:action) { 'info_refs' }
     let(:params) do
       {
         GL_ID: "user-#{user.id}",
         GL_USERNAME: user.username,
         GL_REPOSITORY: "project-#{project.id}",
+        RepoPath: repo_path,
         ShowAllRefs: false
       }
     end
@@ -295,6 +297,7 @@ describe Gitlab::Workhorse do
           GL_ID: "user-#{user.id}",
           GL_USERNAME: user.username,
           GL_REPOSITORY: "wiki-#{project.id}",
+          RepoPath: repo_path,
           ShowAllRefs: false
         }
       end

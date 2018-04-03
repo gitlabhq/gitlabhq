@@ -111,11 +111,13 @@ export default {
     hasUnresolvedDiscussion() {
       return this.unresolvedDiscussions.length > 0;
     },
-    wrapperComponent() {
-      const shouldRenderDiffs =
-        this.discussion.diffDiscussion && this.discussion.diffFile && this.renderDiffFile;
+    shouldRenderDiffs() {
+      const { diffDiscussion, diffFile } = this.discussion;
 
-      return shouldRenderDiffs ? diffWithNote : 'div';
+      return diffDiscussion && diffFile && this.renderDiffFile;
+    },
+    wrapperComponent() {
+      return this.shouldRenderDiffs ? diffWithNote : 'div';
     },
     wrapperClass() {
       return this.isDiffDiscussion ? '' : 'panel panel-default discussion-wrapper';
@@ -263,7 +265,7 @@ Please check your network connection and try again.`;
             class="discussion-body">
             <component
               :is="wrapperComponent"
-              :discussion="discussion"
+              :discussion="shouldRenderDiffs ? discussion : undefined"
               :class="wrapperClass"
             >
               <div class="discussion-notes">
@@ -309,10 +311,12 @@ Please check your network connection and try again.`;
                         </button>
                       </div>
                       <div
+                        v-if="note.resolvable"
                         class="btn-group discussion-actions"
-                        role="group">
+                        role="group"
+                      >
                         <div
-                          v-if="note.resolvable && !discussionResolved"
+                          v-if="!discussionResolved"
                           class="btn-group"
                           role="group">
                           <a

@@ -4,9 +4,11 @@ import Icon from '~/vue_shared/components/icon.vue';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import {
   MATCH_LINE_TYPE,
-  UNFOLD_COUNT,
   CONTEXT_LINE_TYPE,
+  OLD_NO_NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
   LINE_POSITION_RIGHT,
+  UNFOLD_COUNT,
 } from '../constants';
 import * as utils from '../store/utils';
 
@@ -72,6 +74,9 @@ export default {
     isContextLine() {
       return this.lineType === CONTEXT_LINE_TYPE;
     },
+    isMetaLine() {
+      return this.lineType === OLD_NO_NEW_LINE_TYPE || this.lineType === NEW_NO_NEW_LINE_TYPE;
+    },
     getLineHref() {
       return this.lineCode ? `#${this.lineCode}` : '#';
     },
@@ -81,7 +86,8 @@ export default {
         this.showCommentButton &&
         !this.isMatchLine &&
         !this.isContextLine &&
-        !this.hasDiscussions
+        !this.hasDiscussions &&
+        !this.isMetaLine
       );
     },
     discussions() {
