@@ -74,6 +74,7 @@ module QA
           resource.commit_message = 'Add .gitlab-ci.yml'
           resource.file_content = gitlab_ci
           resource.branch_name = deploy_key_name
+          resource.new_branch = true
         end
 
         sha1sum = Digest::SHA1.hexdigest(gitlab_ci)

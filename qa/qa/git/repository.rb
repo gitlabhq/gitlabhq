@@ -40,6 +40,10 @@ module QA
         `git checkout "#{branch_name}"`
       end
 
+      def checkout_new_branch(branch_name)
+        `git checkout -b "#{branch_name}"`
+      end
+
       def shallow_clone
         clone('--depth 1')
       end

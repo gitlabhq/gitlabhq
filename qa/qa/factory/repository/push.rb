@@ -30,7 +30,12 @@ module QA
             repository.clone
             repository.configure_identity('GitLab QA', 'root@gitlab.com')
 
-            repository.checkout(@branch_name) unless @new_branch
+            if @new_branch
+              repository.checkout_new_branch(@branch_name)
+            else
+              repository.checkout(@branch_name)
+            end
+
             repository.add_file(@file_name, @file_content)
             repository.commit(@commit_message)
             repository.push_changes(@branch_name)
