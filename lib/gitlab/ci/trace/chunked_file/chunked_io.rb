@@ -152,7 +152,7 @@ module Gitlab
           end
 
           def get_chunk
-            return '' unless size > 0
+            return '' if size <= 0 || eof?
 
             unless in_range?
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
@@ -233,8 +233,8 @@ module Gitlab
             (size / buffer_size.to_f).ceil
           end
 
-          def last_range
-            ((size / buffer_size) * buffer_size..size)
+          def last_chunk?
+            ((size / buffer_size) * buffer_size..size).include?(tell)
           end
 
           def chunk_store
