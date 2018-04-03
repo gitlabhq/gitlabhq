@@ -1258,6 +1258,10 @@ module Gitlab
         true
       end
 
+      def create_from_snapshot(url, auth)
+        gitaly_repository_client.create_from_snapshot(url, auth)
+      end
+
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         gitaly_migrate(:rebase) do |is_enabled|
           if is_enabled
