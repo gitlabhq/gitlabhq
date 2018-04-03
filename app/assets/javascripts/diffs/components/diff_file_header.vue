@@ -1,11 +1,15 @@
 <script>
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import Tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   components: {
     ClipboardButton,
     Icon,
+  },
+  directives: {
+    Tooltip,
   },
   props: {
     diffFile: {
@@ -44,6 +48,9 @@ export default {
     },
     replacedFile() {
       return !(this.diffFile.newFile || this.diffFile.deletedFile);
+    },
+    lfs() {
+      return this.diffFile.storedExternally && this.diffFile.externalStorage === 'lfs';
     },
   },
   methods: {
@@ -103,7 +110,8 @@ export default {
           <i class="fa fa-fw" :class="`fa-${diffFile.blob.icon}`"></i>
           <span v-if="diffFile.renamedFile">
             <strong
-              class="file-title-name has-tooltip"
+              class="file-title-name"
+              v-tooltip
               :title="diffFile.oldPath"
               data-container="body"
             >
@@ -111,7 +119,8 @@ export default {
             </strong>
             &rarr;
             <strong
-              class="file-title-name has-tooltip"
+              class="file-title-name"
+              v-tooltip
               :title="diffFile.newPath"
               data-container="body"
             >
@@ -121,7 +130,8 @@ export default {
 
           <strong
             v-else
-            class="file-title-name has-tooltip"
+            class="file-title-name"
+            v-tooltip
             :title="diffFile.oldPath"
             data-container="body"
           >
@@ -144,6 +154,13 @@ export default {
         >
           {{ diffFile.aMode }} → {{ diffFile.bMode }}
         </small>
+
+        <span
+          v-if="lfs"
+          class="label label-lfs append-right-5"
+        >
+          LFS
+        </span>
       </template>
     </div>
 
@@ -174,15 +191,15 @@ export default {
       </template>
 
       <a
-        v-if="imageDiff && replacedFile"
+        v-if="diffFile.replacedViewPath"
         class="btn view-file js-view-file"
-        :href="baseSha"
+        :href="diffFile.replacedViewPath"
       >
         View replaced file @ <span class="commit-sha">{{ truncatedBaseSha }}</span>
       </a>
       <a
         class="btn view-file js-view-file"
-        :href="contentSha"
+        :href="diffFile.viewPath"
       >
         View file @ <span class="commit-sha">{{ truncatedContentSha }}</span>
       </a>

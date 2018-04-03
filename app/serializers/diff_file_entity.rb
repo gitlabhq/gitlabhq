@@ -45,6 +45,8 @@ class DiffFileEntity < Grape::Entity
   expose :removed_lines
   expose :diff_refs
   expose :content_sha
+  expose :stored_externally?, as: :stored_externally
+  expose :external_storage
 
   expose :old_path_html do |diff_file|
     old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
@@ -67,7 +69,16 @@ class DiffFileEntity < Grape::Entity
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    project_blob_path(merge_request.source_project, tree_join(merge_request.source_branch, diff_file.new_path))
+    project_blob_path(merge_request.source_project, tree_join(diff_file.content_sha, diff_file.file_path))
+  end
+
+  expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+    image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
+    image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
+
+    merge_request = options[:merge_request]
+
+    project_blob_path(merge_request.source_project, tree_join(diff_file.old_content_sha, diff_file.old_path)) if image_diff && image_replaced
   end
 
   expose :context_lines_path, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
