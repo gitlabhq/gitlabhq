@@ -293,6 +293,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove unaproved typo check in sast:container report.
 
 
+## 10.4.7 (2018-04-03)
+
+- No changes.
+
 ## 10.4.6 (2018-03-16)
 
 - No changes.
