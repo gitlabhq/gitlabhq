@@ -619,6 +619,9 @@ karma:
 codequality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:latest
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
   before_script: []
   services:
     - docker:dind
