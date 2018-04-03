@@ -1,17 +1,17 @@
 <script>
 import { mapActions } from 'vuex';
 
-import fileIcon from '~/vue_shared/components/file_icon.vue';
-import icon from '~/vue_shared/components/icon.vue';
-import fileStatusIcon from './repo_file_status_icon.vue';
-import changedFileIcon from './changed_file_icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import FileStatusIcon from './repo_file_status_icon.vue';
+import ChangedFileIcon from './changed_file_icon.vue';
 
 export default {
   components: {
-    fileStatusIcon,
-    fileIcon,
-    icon,
-    changedFileIcon,
+    FileStatusIcon,
+    FileIcon,
+    Icon,
+    ChangedFileIcon,
   },
   props: {
     tab: {

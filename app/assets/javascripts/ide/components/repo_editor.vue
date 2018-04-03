@@ -21,6 +21,7 @@ export default {
   },
   watch: {
     file(oldVal, newVal) {
+      // Compare key to allow for files opened in review mode to be cached differently
       if (newVal.key !== this.file.key) {
         this.initMonaco();
       }

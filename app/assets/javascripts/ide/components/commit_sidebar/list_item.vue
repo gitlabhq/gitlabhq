@@ -1,10 +1,10 @@
 <script>
 import { mapActions } from 'vuex';
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    icon,
+    Icon,
   },
   props: {
     file: {
