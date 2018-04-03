@@ -2,7 +2,6 @@
   display: flex;
   position: relative;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: start;
 
   .banner-close {
@@ -18,18 +17,28 @@
   }
 
   .banner-graphic {
-    margin:  0 20px 20px;
+    margin:  0 20px 20px 0;
   }
 
   &.banner-non-empty-state {
     border-bottom: 1px solid $border-color;
   }
 
-  .banner-body {
-    text-align: left;
-  }
+  @media (max-width: $screen-xs-max) {
+    justify-content: center;
 
-  .banner-buttons {
-    text-align: center;
+    .banner-title,
+    .banner-buttons {
+      text-align: center;
+    }
+
+    .banner-text,
+    .banner-link {
+      display: inline;
+    }
+
+    .banner-graphic {
+      margin: 0 20px 20px;
+    }
   }
 }

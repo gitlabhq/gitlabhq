@@ -1,9 +1,9 @@
 .banner-callout.compact.milestone-deprecation-message.js-milestone-deprecation-message.prepend-top-20
   .banner-graphic= image_tag 'illustrations/milestone_removing-page.svg'
   .banner-body.prepend-left-10.append-right-10
-    %h5.prepend-top-0= _('This page will be removed in a future release.')
-    %p= _('Use group milestones to manage issues from multiple projects in the same milestone.')
-    = button_tag _('Promote these project milestones into a group milestone.'), class: 'btn-link js-popover-link text-align-left'
+    %h5.banner-title.prepend-top-0= _('This page will be removed in a future release.')
+    %p.banner-text= _('Use group milestones to manage issues from multiple projects in the same milestone.')
+    = button_tag _('Promote these project milestones into a group milestone.'), class: 'btn-link js-popover-link text-align-left banner-link'
     .banner-buttons.prepend-top-20= link_to _('Learn more'), help_page_url('user/project/milestones/index', anchor: 'promoting-project-milestones-to-group-milestones'), class: 'btn btn-default', target: '_blank'
 
   %template.js-milestone-deprecation-message-template
