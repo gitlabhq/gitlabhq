@@ -198,10 +198,11 @@
 .milestone-deprecation-message {
   .popover {
     padding: 0;
+  }
 
-    .popover-content {
-      padding: 0;
-    }
+  .popover-content {
+    padding: 0;
+  }
 
   .milestone-popover-body {
     padding: $gl-padding-8;
