@@ -97,3 +97,20 @@ You may also consult the [group permissions table][permissions].
 
 [ee]: https://about.gitlab.com/products/
 [permissions]: ../../permissions.md#group-members-permissions
+
+## Thread
+
+- Comments: collaborate on that epic by posting comments in its thread.
+These text fields also fully support
+[GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+
+## Comment, or start a discussion
+
+Once you wrote your comment, you can either:
+
+- Click "Comment" and your comment will be published.
+- Click "Start discussion": start a thread within that epic's thread to discuss specific points.
+
+## Award emoji
+
+- You can [award an emoji](../../award_emojis.md) to that epic or its comments.
