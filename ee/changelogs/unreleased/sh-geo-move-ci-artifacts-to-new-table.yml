@@ -1,0 +1,5 @@
+---
+title: 'Geo: Migrate CI job artifacts into their own registry table'
+merge_request:
+author:
+type: performance

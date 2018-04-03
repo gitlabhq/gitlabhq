@@ -76,10 +76,10 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       it 'performs Geo::FileDownloadWorker for failed-sync job artifacts' do
         artifact = create(:ci_job_artifact)
 
-        Geo::FileRegistry.create!(file_type: :job_artifact, file_id: artifact.id, bytes: 0, success: false)
+        create(:geo_job_artifact_registry, artifact_id: artifact.id, bytes: 0, success: false)
 
         expect(Geo::FileDownloadWorker).to receive(:perform_async)
-          .with('job_artifact', artifact.id).once.and_return(spy)
+          .with(:job_artifact, artifact.id).once.and_return(spy)
 
         subject.perform
       end
@@ -87,7 +87,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       it 'does not perform Geo::FileDownloadWorker for synced job artifacts' do
         artifact = create(:ci_job_artifact)
 
-        Geo::FileRegistry.create!(file_type: :job_artifact, file_id: artifact.id, bytes: 1234, success: true)
+        create(:geo_job_artifact_registry, artifact_id: artifact.id, bytes: 1234, success: true)
 
         expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
 
@@ -97,7 +97,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       it 'does not perform Geo::FileDownloadWorker for synced job artifacts even with 0 bytes downloaded' do
         artifact = create(:ci_job_artifact)
 
-        Geo::FileRegistry.create!(file_type: :job_artifact, file_id: artifact.id, bytes: 0, success: true)
+        create(:geo_job_artifact_registry, artifact_id: artifact.id, bytes: 0, success: true)
 
         expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
 

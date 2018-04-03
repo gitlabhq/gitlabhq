@@ -395,13 +395,13 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
       context 'with a tracking database entry' do
         before do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact.id)
         end
 
         context 'with a file' do
           context 'when the delete succeeds' do
             it 'removes the tracking database entry' do
-              expect { daemon.run_once! }.to change(Geo::FileRegistry.job_artifacts, :count).by(-1)
+              expect { daemon.run_once! }.to change(Geo::JobArtifactRegistry, :count).by(-1)
             end
 
             it 'deletes the file' do
@@ -415,7 +415,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
             end
 
             it 'does not remove the tracking database entry' do
-              expect { daemon.run_once! }.not_to change(Geo::FileRegistry.job_artifacts, :count)
+              expect { daemon.run_once! }.not_to change(Geo::JobArtifactRegistry, :count)
             end
           end
         end
@@ -426,14 +426,14 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           end
 
           it 'removes the tracking database entry' do
-            expect { daemon.run_once! }.to change(Geo::FileRegistry.job_artifacts, :count).by(-1)
+            expect { daemon.run_once! }.to change(Geo::JobArtifactRegistry, :count).by(-1)
           end
         end
       end
 
       context 'without a tracking database entry' do
         it 'does not create a tracking database entry' do
-          expect { daemon.run_once! }.not_to change(Geo::FileRegistry, :count)
+          expect { daemon.run_once! }.not_to change(Geo::JobArtifactRegistry, :count)
         end
 
         it 'does not delete the file (yet, due to possible race condition)' do

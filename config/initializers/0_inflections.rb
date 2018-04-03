@@ -18,6 +18,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     project_auto_devops
     project_registry
     file_registry
+    job_artifact_registry
   )
   inflect.acronym 'EE'
 end

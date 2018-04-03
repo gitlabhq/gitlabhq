@@ -7,7 +7,6 @@ FactoryBot.define do
     trait(:attachment) { file_type :attachment }
     trait(:avatar) { file_type :avatar }
     trait(:file) { file_type :file }
-    trait(:job_artifact) { file_type :job_artifact }
     trait(:lfs) { file_type :lfs }
     trait(:namespace_file) { file_type :namespace_file }
     trait(:personal_file) { file_type :personal_file }
@@ -18,7 +17,7 @@ FactoryBot.define do
           if registry.file_type.to_sym == :lfs
             create(:lfs_object)
           elsif registry.file_type.to_sym == :job_artifact
-            create(:ci_job_artifact)
+            raise NotImplementedError, 'Use create(:geo_job_artifact_registry, :with_artifact) instead'
           else
             create(:upload)
           end

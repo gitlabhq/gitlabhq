@@ -29,10 +29,15 @@ module Geo
     end
 
     def update_registry(bytes_downloaded, success:)
-      transfer = Geo::FileRegistry.find_or_initialize_by(
-        file_type: object_type,
-        file_id: object_db_id
-      )
+      transfer =
+        if object_type.to_sym == :job_artifact
+          Geo::JobArtifactRegistry.find_or_initialize_by(artifact_id: object_db_id)
+        else
+          Geo::FileRegistry.find_or_initialize_by(
+            file_type: object_type,
+            file_id: object_db_id
+          )
+        end
 
       transfer.bytes = bytes_downloaded
       transfer.success = success

@@ -205,9 +205,8 @@ describe GeoNodeStatus, :geo do
       create(:geo_file_registry, :avatar, success: false)
       create(:geo_file_registry, file_type: :attachment, success: true)
       create(:geo_file_registry, :lfs, :with_file, success: true)
-      create(:geo_file_registry, :job_artifact, :with_file, success: false)
-
-      create(:geo_file_registry, :job_artifact, :with_file, success: true)
+      create(:geo_job_artifact_registry, :with_artifact, success: false)
+      create(:geo_job_artifact_registry, :with_artifact, success: true)
 
       expect(subject.job_artifacts_synced_count).to eq(1)
     end
@@ -219,9 +218,8 @@ describe GeoNodeStatus, :geo do
       create(:geo_file_registry, success: false)
       create(:geo_file_registry, :avatar, success: false)
       create(:geo_file_registry, file_type: :attachment, success: false)
-      create(:geo_file_registry, :job_artifact, :with_file, success: true)
-
-      create(:geo_file_registry, :job_artifact, :with_file, success: false)
+      create(:geo_job_artifact_registry, :with_artifact, success: true)
+      create(:geo_job_artifact_registry, :with_artifact, success: false)
 
       expect(subject.job_artifacts_failed_count).to eq(1)
     end
@@ -233,7 +231,8 @@ describe GeoNodeStatus, :geo do
         [project_1, project_2, project_3, project_4].each_with_index do |project, index|
           build = create(:ci_build, project: project)
           job_artifact = create(:ci_job_artifact, job: build)
-          create(:geo_file_registry, :job_artifact, success: index.even?, file_id: job_artifact.id)
+
+          create(:geo_job_artifact_registry, success: index.even?, artifact_id: job_artifact.id)
         end
       end
 
