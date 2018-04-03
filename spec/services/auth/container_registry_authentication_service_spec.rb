@@ -373,7 +373,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     let(:current_user) { create(:user) }
 
     let(:authentication_abilities) do
-      [:build_read_container_image, :build_create_container_image]
+      [:project_read_container_image, :build_create_container_image]
     end
 
     before do

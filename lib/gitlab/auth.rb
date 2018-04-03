@@ -164,7 +164,7 @@ module Gitlab
       def abilities_for_scopes(scopes)
         abilities_by_scope = {
           api: full_authentication_abilities,
-          read_registry: [:read_container_image],
+          read_registry: build_authentication_abilities - [:build_create_container_image],
           read_repo: read_authentication_abilities - [:read_container_image]
         }
 
@@ -173,13 +173,21 @@ module Gitlab
         end.uniq
       end
 
+      # Project is always sent when using read_scope,
+      # but is not sent when using read_registry scope
+      # (since jwt is not context aware of the project)
       def deploy_token_check(project, password)
-        return unless project.present? && password.present?
+        return unless password.present?
 
-        token = DeployToken.active.find_by(project: project, token: password)
+        token =
+          if project.present?
+            DeployToken.active.find_by(project: project, token: password)
+          else
+            DeployToken.active.find_by(token: password)
+          end
 
         if token && valid_scoped_token?(token, available_scopes)
-          Gitlab::Auth::Result.new(token, project, :deploy_token, abilities_for_scopes(token.scopes))
+          Gitlab::Auth::Result.new(token, token.project, :deploy_token, abilities_for_scopes(token.scopes))
         end
       end
 
@@ -234,7 +242,7 @@ module Gitlab
         [
           :read_project,
           :build_download_code,
-          :build_read_container_image,
+          :project_read_container_image,
           :build_create_container_image
         ]
       end

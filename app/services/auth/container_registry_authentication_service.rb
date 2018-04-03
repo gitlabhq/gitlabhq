@@ -127,8 +127,8 @@ module Auth
       # Build can:
       # 1. pull from its own project (for ex. a build)
       # 2. read images from dependent projects if creator of build is a team member
-      has_authentication_ability?(:build_read_container_image) &&
-        (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
+      has_authentication_ability?(:project_read_container_image) &&
+        (requested_project == project || can?(current_user, :project_read_container_image, requested_project))
     end
 
     def user_can_admin?(requested_project)
