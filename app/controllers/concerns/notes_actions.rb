@@ -212,7 +212,7 @@ module NotesActions
   end
 
   def note_serializer
-    NoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
+    ProjectNoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
   end
 
   def note_project
