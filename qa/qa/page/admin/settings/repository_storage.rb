@@ -10,21 +10,11 @@ module QA
           end
 
           def enable_hashed_storage
-            within_repository_storage do
-              check 'Create new projects using hashed storage paths'
-            end
+            check 'Create new projects using hashed storage paths'
           end
 
           def save_settings
-            within_repository_storage do
-              click_button 'Save changes'
-            end
-          end
-
-          def within_repository_storage
-            page.within('.as-repository-storage') do
-              yield
-            end
+            click_button 'Save changes'
           end
         end
       end
