@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import _ from 'underscore';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
 import Flash from '~/flash';
@@ -39,8 +40,8 @@ You are going to change the username %{currentUsernameBold} to %{newUsernameBold
 Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group.
 Please update your Git repository remotes as soon as possible.`),
         {
-          currentUsernameBold: `<strong>${this.username}</strong>`,
-          newUsernameBold: `<strong>${this.newUsername}</strong>`,
+          currentUsernameBold: `<strong>${_.escape(this.username)}</strong>`,
+          newUsernameBold: `<strong>${_.escape(this.newUsername)}</strong>`,
           currentUsername: this.username,
           newUsername: this.newUsername,
         },
