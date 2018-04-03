@@ -8,14 +8,16 @@ module RuboCop
     # @example
     #   # bad
     #   call do
-    #     do_something
-    #     return if something_else
+    #     return if something
+    #
+    #     do_something_else
     #   end
     #
     #   # good
     #   call do
-    #     do_something
-    #     break if something_else
+    #     break if something
+    #
+    #     do_something_else
     #   end
     #
     class AvoidReturnFromBlocks < RuboCop::Cop::Cop
@@ -29,6 +31,7 @@ module RuboCop
         return if WHITELISTED_METHODS.include?(node.method_name)
 
         block_body.each_node(:return) do |return_node|
+          next if container_block_for(return_node) != node
           next if container_block_whitelisted?(return_node)
           next if return_inside_method_definition?(return_node)
 
@@ -38,20 +41,21 @@ module RuboCop
 
       private
 
-      def container_block_whitelisted?(current_node)
-        while current_node = current_node.parent
-          break if current_node.type == :block
-        end
+      def container_block_for(current_node)
+        current_node = current_node.parent until current_node.type == :block
 
-        WHITELISTED_METHODS.include?(current_node.method_name)
+        current_node
+      end
+
+      def container_block_whitelisted?(current_node)
+        WHITELISTED_METHODS.include?(container_block_for(current_node).method_name)
       end
 
       def return_inside_method_definition?(current_node)
-        while current_node = current_node.parent
-          # we found def before the block, that means the return is inside a method definition
-          return true if current_node.type == :def
-          return false if current_node.type == :block
-        end
+        current_node = current_node.parent until %i[def block].include?(current_node.type)
+
+        # if we found :def before :block in the nodes hierarchy
+        current_node.type == :def
       end
     end
   end

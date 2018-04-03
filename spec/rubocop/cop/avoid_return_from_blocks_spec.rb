@@ -25,6 +25,20 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
     expect(offense.message).to eq('Do not return from a block, use next or break instead.')
   end
 
+  it "doesn't call add_offense twice for nested blocks" do
+    source = <<~RUBY
+      call do
+        call do
+          something
+          return if something_else
+        end
+      end
+    RUBY
+    expect_any_instance_of(described_class).to receive(:add_offense).once
+
+    inspect_source(source)
+  end
+
   shared_examples 'examples with whitelisted method' do |whitelisted_method|
     it "doesn't flag violation for return inside #{whitelisted_method}" do
       source = <<~RUBY
