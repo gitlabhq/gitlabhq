@@ -61,6 +61,10 @@ module Gitlab
         def action_title
           raise NotImplementedError
         end
+
+        def action_button_title
+          raise NotImplementedError
+        end
       end
     end
   end
