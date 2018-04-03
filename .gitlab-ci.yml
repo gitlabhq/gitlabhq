@@ -266,6 +266,7 @@ package-and-qa:
   when: manual
   variables:
     GIT_STRATEGY: none
+  retry: 0
   before_script:
     # We need to download the script rather than clone the repo since the
     # package-and-qa job will not be able to run when the branch gets
