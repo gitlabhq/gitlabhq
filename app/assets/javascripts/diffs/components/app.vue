@@ -53,22 +53,24 @@ export default {
         this.activeFile = '';
       }
     },
-    expandDiffs() {
-      window.mrTabs.expandViewContainer();
-    },
-    shrinkDiffs() {
+    adjustView() {
+      if (this.shouldShow && this.isParallelView) {
+        return window.mrTabs.expandViewContainer();
+      }
+
       window.mrTabs.resetViewContainer();
     },
   },
   watch: {
     diffViewType() {
-      return this.isParallelView ? this.expandDiffs() : this.shrinkDiffs();
+      this.adjustView();
+    },
+    shouldShow() {
+      this.adjustView();
     },
   },
   created() {
-    if (this.isParallelView) {
-      this.expandDiffs();
-    }
+    this.adjustView();
   },
 };
 </script>
