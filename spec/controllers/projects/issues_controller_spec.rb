@@ -975,6 +975,7 @@ describe Projects::IssuesController do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
         expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolved])
+<<<<<<< HEAD
       end
 
       it 'filters notes that the user should not see' do
@@ -1040,6 +1041,8 @@ describe Projects::IssuesController do
         let(:project) { create(:project, :public) }
 
         it_behaves_like 'user cannot see confidential issue', Gitlab::Access::NO_ACCESS
+=======
+>>>>>>> upstream/master
       end
 
       context 'with cross-reference system note', :request_store do
