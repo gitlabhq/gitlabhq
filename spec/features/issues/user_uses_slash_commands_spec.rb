@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Issues > User uses quick actions', :js do
-  include QuickActionsHelpers
+  include Spec::Support::Helpers::Features::NotesHelpers
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
     let(:issuable) { create(:issue, project: project) }
@@ -36,7 +36,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the current user can update the due date' do
         it 'does not create a note, and sets the due date accordingly' do
-          write_note("/due 2016-08-28")
+          add_note("/due 2016-08-28")
 
           expect(page).not_to have_content '/due 2016-08-28'
           expect(page).to have_content 'Commands applied'
@@ -57,7 +57,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not create a note, and sets the due date accordingly' do
-          write_note("/due 2016-08-28")
+          add_note("/due 2016-08-28")
 
           expect(page).not_to have_content 'Commands applied'
 
@@ -75,7 +75,7 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not create a note, and removes the due date accordingly' do
           expect(issue.due_date).to eq Date.new(2016, 8, 28)
 
-          write_note("/remove_due_date")
+          add_note("/remove_due_date")
 
           expect(page).not_to have_content '/remove_due_date'
           expect(page).to have_content 'Commands applied'
@@ -96,7 +96,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not create a note, and sets the due date accordingly' do
-          write_note("/remove_due_date")
+          add_note("/remove_due_date")
 
           expect(page).not_to have_content 'Commands applied'
 
@@ -111,7 +111,7 @@ feature 'Issues > User uses quick actions', :js do
       let(:issue) { create(:issue, project: project) }
 
       it 'does not recognize the command nor create a note' do
-        write_note("/wip")
+        add_note("/wip")
 
         expect(page).not_to have_content '/wip'
       end
@@ -122,7 +122,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the user can update the weight' do
         it 'does not create a note, and sets the weight accordingly' do
-          write_note("/weight 5")
+          add_note("/weight 5")
 
           expect(page).not_to have_content '/weight 5'
           expect(page).to have_content 'Commands applied'
@@ -143,7 +143,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not create a note or set the weight' do
-          write_note("/weight 5")
+          add_note("/weight 5")
 
           expect(page).not_to have_content 'Commands applied'
 
@@ -159,7 +159,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the user can update the weight' do
         it 'does not create a note, and removes the weight accordingly' do
-          write_note("/clear_weight")
+          add_note("/clear_weight")
 
           expect(page).not_to have_content '/clear_weight'
           expect(page).to have_content 'Commands applied'
@@ -180,7 +180,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does create a note or set the weight' do
-          write_note("/clear_weight")
+          add_note("/clear_weight")
 
           expect(page).not_to have_content 'Commands applied'
 
@@ -197,7 +197,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the current user can update issues' do
         it 'does not create a note, and marks the issue as a duplicate' do
-          write_note("/duplicate ##{original_issue.to_reference}")
+          add_note("/duplicate ##{original_issue.to_reference}")
 
           expect(page).not_to have_content "/duplicate #{original_issue.to_reference}"
           expect(page).to have_content 'Commands applied'
@@ -217,7 +217,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not create a note, and does not mark the issue as a duplicate' do
-          write_note("/duplicate ##{original_issue.to_reference}")
+          add_note("/duplicate ##{original_issue.to_reference}")
 
           expect(page).not_to have_content 'Commands applied'
           expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
@@ -240,7 +240,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'moves the issue' do
-          write_note("/move #{target_project.full_path}")
+          add_note("/move #{target_project.full_path}")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed
@@ -260,7 +260,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not move the issue' do
-          write_note("/move #{project_unauthorized.full_path}")
+          add_note("/move #{project_unauthorized.full_path}")
 
           expect(page).not_to have_content 'Commands applied'
           expect(issue.reload).to be_open
@@ -274,7 +274,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not move the issue' do
-          write_note("/move not/valid")
+          add_note("/move not/valid")
 
           expect(page).not_to have_content 'Commands applied'
           expect(issue.reload).to be_open
@@ -297,7 +297,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'applies the commands to both issues and moves the issue' do
-          write_note("/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"\n\n/move #{target_project.full_path}")
+          add_note("/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"\n\n/move #{target_project.full_path}")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed
@@ -316,7 +316,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'moves the issue and applies the commands to both issues' do
-          write_note("/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
+          add_note("/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed
