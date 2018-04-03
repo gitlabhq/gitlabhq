@@ -29,7 +29,8 @@ describe Ci::RetryBuildService do
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason
-       artifacts_file_store artifacts_metadata_store].freeze
+       artifacts_file_store artifacts_metadata_store
+       metadata].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

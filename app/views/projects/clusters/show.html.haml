@@ -31,7 +31,7 @@
   %section.settings#js-cluster-details{ class: ('expanded' if expanded) }
     .settings-header
       %h4= s_('ClusterIntegration|Kubernetes cluster details')
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
     .settings-content
@@ -43,7 +43,7 @@
   %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4= _('Advanced settings')
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p= s_("ClusterIntegration|Advanced options on this Kubernetes cluster's integration")
     .settings-content

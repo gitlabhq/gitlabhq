@@ -199,6 +199,10 @@
   .branch-header-title {
     color: $color-700;
   }
+
+  .ide-file-list .file.file-active {
+    color: $color-700;
+  }
 }
 
 body {

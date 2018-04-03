@@ -46,9 +46,13 @@ describe Gitlab::Ci::Variables::Collection::Item do
     end
   end
 
-  describe '#to_hash' do
-    it 'returns a hash representation of a collection item' do
-      expect(described_class.new(**variable).to_hash).to eq variable
+  describe '#to_runner_variable' do
+    it 'returns a runner-compatible hash representation' do
+      runner_variable = described_class
+        .new(**variable)
+        .to_runner_variable
+
+      expect(runner_variable).to eq variable
     end
   end
 end

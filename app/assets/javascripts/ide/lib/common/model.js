@@ -21,6 +21,15 @@ export default class Model {
         new this.monaco.Uri(null, null, this.file.key),
       )),
     );
+    if (this.file.mrChange) {
+      this.disposable.add(
+        (this.baseModel = this.monaco.editor.createModel(
+          this.file.baseRaw,
+          undefined,
+          new this.monaco.Uri(null, null, `target/${this.file.path}`),
+        )),
+      );
+    }
 
     this.events = new Map();
 
@@ -53,6 +62,10 @@ export default class Model {
 
   getOriginalModel() {
     return this.originalModel;
+  }
+
+  getBaseModel() {
+    return this.baseModel;
   }
 
   setValue(value) {

@@ -31,7 +31,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['changedFiles', 'openFiles', 'viewer']),
+    ...mapState(['changedFiles', 'openFiles', 'viewer', 'currentMergeRequestId']),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
   mounted() {
@@ -64,6 +64,7 @@ export default {
           :files="openFiles"
           :viewer="viewer"
           :has-changes="hasChanges"
+          :merge-request-id="currentMergeRequestId"
         />
         <repo-editor
           class="multi-file-edit-pane-content"

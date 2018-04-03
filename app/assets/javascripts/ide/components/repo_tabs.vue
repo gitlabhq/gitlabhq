@@ -26,6 +26,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -70,6 +75,7 @@ export default {
       :viewer="viewer"
       :show-shadow="showShadow"
       :has-changes="hasChanges"
+      :merge-request-id="mergeRequestId"
       @click="openFileViewer"
     />
   </div>

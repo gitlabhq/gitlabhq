@@ -3,7 +3,7 @@
   .settings-header
     %h4
       Deploy Keys
-    %button.btn.js-settings-toggle.qa-expand-deploy-keys
+    %button.btn.js-settings-toggle.qa-expand-deploy-keys{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       Deploy keys allow read-only or read-write (if enabled) access to your repository. Deploy keys can be used for CI, staging or production servers. You can create a deploy key or add an existing one.

@@ -19,8 +19,7 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
-  margin-top: 40px;
-  color: $almost-black;
+  margin-top: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -43,13 +42,18 @@
     cursor: pointer;
 
     &.file-open {
-      background: $white-normal;
+      background: $link-active-background;
+    }
+
+    &.file-active {
+      font-weight: $gl-font-weight-bold;
     }
 
     .ide-file-name {
       flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
+      max-width: inherit;
 
       svg {
         vertical-align: middle;
@@ -72,7 +76,10 @@
       margin-right: -8px;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
+      background: $link-active-background;
+
       .ide-new-btn {
         display: block;
       }
@@ -450,6 +457,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .multi-file-commit-empty-state-container {
@@ -460,7 +469,7 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
 
@@ -667,8 +676,14 @@
   overflow: hidden;
 
   &.nav-only {
+    padding-top: $header-height;
+
+    .with-performance-bar & {
+      padding-top: $header-height + $performance-bar-height;
+    }
+
     .flash-container {
-      margin-top: $header-height;
+      margin-top: 0;
       margin-bottom: 0;
     }
 
@@ -678,7 +693,7 @@
     }
 
     .content-wrapper {
-      margin-top: $header-height;
+      margin-top: 0;
       padding-bottom: 0;
     }
 
@@ -702,11 +717,11 @@
 
 .with-performance-bar .ide.nav-only {
   .flash-container {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
   }
 
   .content-wrapper {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
     padding-bottom: 0;
   }
 
@@ -715,14 +730,8 @@
   }
 
   &.flash-shown {
-    .content-wrapper {
-      margin-top: 0;
-    }
-
     .ide-view {
-      height: calc(
-        100vh - #{$header-height + $performance-bar-height + $flash-height}
-      );
+      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
     }
   }
 }
