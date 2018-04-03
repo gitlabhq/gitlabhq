@@ -63,7 +63,7 @@ Note that with this design, if you create a new issue in the middle of the miles
 (and assign the milestone to the issue), the Burndown Chart will appear as if the 
 issue was already open at the beginning of the milestone. A workaround is to simply 
 close the issue (so that a closed timestamp is stored in the system), and reopen 
-it to ge the desired effect, with a rise in the chart appearing on the day after.
+it to get the desired effect, with a rise in the chart appearing on the day after.
 This is what appears in the example below.
 
 The Burndown Chart can also be toggled to display the cumulative open issue
