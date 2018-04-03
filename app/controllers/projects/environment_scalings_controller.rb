@@ -1,4 +1,6 @@
 class Projects::EnvironmentScalingsController < Projects::ApplicationController
+  include Gitlab::Utils::StrongMemoize
+
   before_action :authorize_read_environment!
   before_action :authorize_admin_environment!, only: [:update]
   before_action :environment_scaling, only: [:show, :update]
@@ -17,9 +19,12 @@ class Projects::EnvironmentScalingsController < Projects::ApplicationController
 
   private
 
+  def environment
+    strong_memoize(:environment) { project.environments.find(params[:environment_id]) }
+  end
+
   def environment_scaling
-    environment = project.environments.find(params[:environment_id])
-    @environment_scaling ||= environment.scaling || environment.create_scaling(replicas: 1)
+    strong_memoize(:environment_scaling) { environment.scaling || environment.create_scaling(replicas: 1) }
   end
 
   def scaling_params
