@@ -119,17 +119,19 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    build.trace.read do |stream|
-      if trace_artifact_file
-        send_upload(trace_artifact_file,
-          send_params: { type: 'text/plain; charset=utf-8', disposition: 'inline' },
-          redirect_params: { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } } )
-      elsif stream.file?
-        send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-      elsif build.old_trace
-        send_data stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
-      else
-        render_404
+    if trace_artifact_file
+      send_upload(trace_artifact_file,
+                  send_params: raw_send_params,
+                  redirect_params: raw_redirect_params)
+    else
+      build.trace.read do |stream|
+        if stream.file?
+          send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+        elsif build.old_trace
+          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
+        else
+          render_404
+        end
       end
     end
   end
@@ -142,6 +144,14 @@ class Projects::JobsController < Projects::ApplicationController
 
   def authorize_erase_build!
     return access_denied! unless can?(current_user, :erase_build, build)
+  end
+
+  def raw_send_params
+    { type: 'text/plain; charset=utf-8', disposition: 'inline' }
+  end
+
+  def raw_redirect_params
+    { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
   end
 
   def trace_artifact_file
