@@ -23,6 +23,10 @@ describe Gitlab::Geo::CronManager, :geo do
       job.enable!
     end
 
+    def count_enabled
+      JOBS.count { |job_name| job(job_name).enabled? }
+    end
+
     JOBS = %w[
       ldap_test
       geo_repository_verification_primary_batch_worker
@@ -76,6 +80,14 @@ describe Gitlab::Geo::CronManager, :geo do
 
       it 'enables non-geo jobs' do
         expect(ldap_test_job).to be_enabled
+      end
+
+      context 'No connection' do
+        it 'does not change current job configuration' do
+          allow(Geo).to receive(:connected?).and_return(false)
+
+          expect { manager.execute }.not_to change { count_enabled }
+        end
       end
     end
 
