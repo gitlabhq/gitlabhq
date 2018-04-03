@@ -98,6 +98,10 @@ module Gitlab
       def erase!
         trace_artifact&.destroy
 
+        ChunkedFile::LiveTrace.new(job.id, nil, 'a+b') do |stream|
+          stream.delete
+        end
+
         paths.each do |trace_path|
           FileUtils.rm(trace_path, force: true)
         end
