@@ -11,7 +11,7 @@ Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `codequali
 codequality:
   image: docker:latest
   variables:
-    DOCKER_DRIVER: overlay
+    DOCKER_DRIVER: overlay2
   services:
     - docker:dind
   script:
