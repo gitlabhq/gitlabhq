@@ -24,6 +24,8 @@ module QA
         resource.tags = %w[qa docker]
         resource.image = 'gitlab/gitlab-runner:ubuntu'
       end
+
+      Page::Menu::Main.act { sign_out }
     end
 
     after(:all) do
@@ -60,6 +62,7 @@ module QA
               - mkdir -p ~/.ssh
               - ssh-keyscan -p #{@repository_uri.port} #{@repository_uri.host} >> ~/.ssh/known_hosts
               - eval $(ssh-agent -s)
+              - ssh-add -D
               - echo "$#{deploy_key_name}" | ssh-add -
               - git clone #{@repository_uri.git_uri}
               - sha1sum #{@project.name}/.gitlab-ci.yml
