@@ -69,7 +69,7 @@ class DiffFileEntity < Grape::Entity
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    project_blob_path(merge_request.source_project, tree_join(diff_file.content_sha, diff_file.file_path))
+    project_blob_path(merge_request.source_project, tree_join(merge_request.source_branch, diff_file.new_path))
   end
 
   expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
