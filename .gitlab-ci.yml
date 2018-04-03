@@ -272,7 +272,7 @@ package-and-qa:
     # package-and-qa job will not be able to run when the branch gets
     # deleted (when merging the MR).
     - apk add --update openssl
-    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
+    - wget https://gitlab.com/$CI_PROJECT_PATH/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
     - chmod 755 trigger-build-omnibus
   script:
     - ./trigger-build-omnibus
