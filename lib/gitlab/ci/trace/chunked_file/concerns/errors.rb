@@ -8,6 +8,7 @@ module Gitlab
 
             included do
               WriteError = Class.new(StandardError)
+              ReadError = Class.new(StandardError)
             end
           end
         end

@@ -77,7 +77,7 @@ module Gitlab
 
       def write
         stream = Gitlab::Ci::Trace::Stream.new do
-          if Feature.enabled?('ci_enable_live_trace')
+          if Feature.enabled?('ci_enable_live_trace') || true
             if current_path
               current_path
             else

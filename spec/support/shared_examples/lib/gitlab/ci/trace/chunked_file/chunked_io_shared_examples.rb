@@ -90,7 +90,7 @@ shared_examples "ChunkedIO shared tests" do
     subject { chunked_io.seek(pos, where) }
 
     before do
-      set_smaller_buffer_size_than(sample_trace_raw.length)
+      set_smaller_buffer_size_than(sample_trace_raw.bytesize)
       fill_trace_to_chunks(sample_trace_raw)
     end
 
@@ -98,11 +98,11 @@ shared_examples "ChunkedIO shared tests" do
       let(:pos) { 0 }
       let(:where) { IO::SEEK_END }
 
-      it { is_expected.to eq(sample_trace_raw.length) }
+      it { is_expected.to eq(sample_trace_raw.bytesize) }
     end
 
     context 'when moves pos to middle of the file' do
-      let(:pos) { sample_trace_raw.length / 2 }
+      let(:pos) { sample_trace_raw.bytesize / 2 }
       let(:where) { IO::SEEK_SET }
 
       it { is_expected.to eq(pos) }
@@ -112,7 +112,7 @@ shared_examples "ChunkedIO shared tests" do
       it 'matches the result' do
         expect(chunked_io.seek(0)).to eq(0)
         expect(chunked_io.seek(100, IO::SEEK_CUR)).to eq(100)
-        expect { chunked_io.seek(sample_trace_raw.length + 1, IO::SEEK_CUR) }
+        expect { chunked_io.seek(sample_trace_raw.bytesize + 1, IO::SEEK_CUR) }
           .to raise_error('new position is outside of file')
       end
     end
@@ -122,13 +122,13 @@ shared_examples "ChunkedIO shared tests" do
     subject { chunked_io.eof? }
 
     before do
-      set_smaller_buffer_size_than(sample_trace_raw.length)
+      set_smaller_buffer_size_than(sample_trace_raw.bytesize)
       fill_trace_to_chunks(sample_trace_raw)
     end
 
     context 'when current pos is at end of the file' do
       before do
-        chunked_io.seek(sample_trace_raw.length, IO::SEEK_SET)
+        chunked_io.seek(sample_trace_raw.bytesize, IO::SEEK_SET)
       end
 
       it { is_expected.to be_truthy }
@@ -148,7 +148,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is smaller than file size' do
       before do
-        set_smaller_buffer_size_than(sample_trace_raw.length)
+        set_smaller_buffer_size_than(sample_trace_raw.bytesize)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -160,7 +160,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is larger than file size', :partial_support do
       before do
-        set_larger_buffer_size_than(sample_trace_raw.length)
+        set_larger_buffer_size_than(sample_trace_raw.bytesize)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -186,7 +186,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(sample_trace_raw.length)
+          set_smaller_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -195,7 +195,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(sample_trace_raw.length)
+          set_larger_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -204,7 +204,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is half of file size' do
         before do
-          set_half_buffer_size_of(sample_trace_raw.length)
+          set_half_buffer_size_of(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -217,7 +217,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(sample_trace_raw.length)
+          set_smaller_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -228,7 +228,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(sample_trace_raw.length)
+          set_larger_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -239,11 +239,11 @@ shared_examples "ChunkedIO shared tests" do
     end
 
     context 'when tries to read oversize' do
-      let(:length) { sample_trace_raw.length + 1000 }
+      let(:length) { sample_trace_raw.bytesize + 1000 }
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(sample_trace_raw.length)
+          set_smaller_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -254,7 +254,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(sample_trace_raw.length)
+          set_larger_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -269,7 +269,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is smaller than file size' do
         before do
-          set_smaller_buffer_size_than(sample_trace_raw.length)
+          set_smaller_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -280,7 +280,7 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when buffer size is larger than file size', :partial_support do
         before do
-          set_larger_buffer_size_than(sample_trace_raw.length)
+          set_larger_buffer_size_than(sample_trace_raw.bytesize)
           fill_trace_to_chunks(sample_trace_raw)
         end
 
@@ -306,7 +306,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is smaller than file size' do
       before do
-        set_smaller_buffer_size_than(sample_trace_raw.length)
+        set_smaller_buffer_size_than(sample_trace_raw.bytesize)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -315,7 +315,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is larger than file size', :partial_support do
       before do
-        set_larger_buffer_size_than(sample_trace_raw.length)
+        set_larger_buffer_size_than(sample_trace_raw.bytesize)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -324,7 +324,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when buffer size is half of file size' do
       before do
-        set_half_buffer_size_of(sample_trace_raw.length)
+        set_half_buffer_size_of(sample_trace_raw.bytesize)
         fill_trace_to_chunks(sample_trace_raw)
       end
 
@@ -333,7 +333,7 @@ shared_examples "ChunkedIO shared tests" do
 
     context 'when pos is at middle of the file' do
       before do
-        set_smaller_buffer_size_than(sample_trace_raw.length)
+        set_smaller_buffer_size_than(sample_trace_raw.bytesize)
         fill_trace_to_chunks(sample_trace_raw)
 
         chunked_io.seek(chunked_io.size / 2)
@@ -357,21 +357,21 @@ shared_examples "ChunkedIO shared tests" do
       context 'when data does not exist' do
         shared_examples 'writes a trace' do
           it do
-            is_expected.to eq(data.length)
+            is_expected.to eq(data.bytesize)
 
             described_class.new(job_id, nil, 'rb') do |stream|
               expect(stream.read).to eq(data)
               expect(chunk_stores.inject(0) { |sum, store| sum + store.chunks_count(job_id) })
                 .to eq(stream.send(:chunks_count))
               expect(chunk_stores.inject(0) { |sum, store| sum + store.chunks_size(job_id) })
-                .to eq(data.length)
+                .to eq(data.bytesize)
             end
           end
         end
 
         context 'when buffer size is smaller than file size' do
           before do
-            set_smaller_buffer_size_than(data.length)
+            set_smaller_buffer_size_than(data.bytesize)
           end
 
           it_behaves_like 'writes a trace'
@@ -379,7 +379,7 @@ shared_examples "ChunkedIO shared tests" do
 
         context 'when buffer size is larger than file size', :partial_support do
           before do
-            set_larger_buffer_size_than(data.length)
+            set_larger_buffer_size_than(data.bytesize)
           end
 
           it_behaves_like 'writes a trace'
@@ -387,7 +387,7 @@ shared_examples "ChunkedIO shared tests" do
 
         context 'when buffer size is half of file size' do
           before do
-            set_half_buffer_size_of(data.length)
+            set_half_buffer_size_of(data.bytesize)
           end
 
           it_behaves_like 'writes a trace'
@@ -404,12 +404,12 @@ shared_examples "ChunkedIO shared tests" do
 
       context 'when data already exists', :partial_support do
         let(:exist_data) { 'exist data' }
-        let(:total_size) { exist_data.length + data.length }
+        let(:total_size) { exist_data.bytesize + data.bytesize }
 
         shared_examples 'appends a trace' do
           it do
             described_class.new(job_id, nil, 'a+b') do |stream|
-              expect(stream.write(data)).to eq(data.length)
+              expect(stream.write(data)).to eq(data.bytesize)
             end
 
             described_class.new(job_id, nil, 'rb') do |stream|
@@ -424,7 +424,7 @@ shared_examples "ChunkedIO shared tests" do
 
         context 'when buffer size is smaller than file size' do
           before do
-            set_smaller_buffer_size_than(data.length)
+            set_smaller_buffer_size_than(data.bytesize)
             fill_trace_to_chunks(exist_data)
           end
 
@@ -433,7 +433,7 @@ shared_examples "ChunkedIO shared tests" do
 
         context 'when buffer size is larger than file size', :partial_support do
           before do
-            set_larger_buffer_size_than(data.length)
+            set_larger_buffer_size_than(data.bytesize)
             fill_trace_to_chunks(exist_data)
           end
 
@@ -442,7 +442,7 @@ shared_examples "ChunkedIO shared tests" do
 
         context 'when buffer size is half of file size' do
           before do
-            set_half_buffer_size_of(data.length)
+            set_half_buffer_size_of(data.bytesize)
             fill_trace_to_chunks(exist_data)
           end
 

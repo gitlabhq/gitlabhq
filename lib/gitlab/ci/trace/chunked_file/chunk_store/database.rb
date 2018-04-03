@@ -27,7 +27,7 @@ module Gitlab
 
               def chunks_size(job_id)
                 ::Ci::JobTraceChunk.where(job_id: job_id).pluck('data')
-                  .inject(0) { |sum, data| sum + data.length }
+                  .inject(0) { |sum, data| sum + data.bytesize }
               end
 
               def delete_all(job_id)
@@ -54,19 +54,19 @@ module Gitlab
             end
 
             def size
-              job_trace_chunk.data&.length || 0
+              job_trace_chunk.data&.bytesize || 0
             end
 
             def write!(data)
-              raise NotImplementedError, 'Partial writing is not supported' unless params[:buffer_size] == data&.length
+              raise NotImplementedError, 'Partial writing is not supported' unless params[:buffer_size] == data&.bytesize
               raise NotImplementedError, 'UPDATE (Overwriting data) is not supported' if job_trace_chunk.data
 
-              puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
+              puts "#{self.class.name} - #{__callee__}: data.bytesize: #{data.bytesize.inspect} params[:chunk_index]: #{params[:chunk_index]}"
 
               job_trace_chunk.data = data
               job_trace_chunk.save!
 
-              data.length
+              data.bytesize
             end
 
             def append!(data)

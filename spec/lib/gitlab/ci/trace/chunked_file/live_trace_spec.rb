@@ -51,7 +51,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::LiveTrace, :clean_gitlab_redis_cache do
     end
 
     context 'when offset is size' do
-      let(:offset) { sample_trace_raw.length }
+      let(:offset) { sample_trace_raw.bytesize }
 
       it 'does nothing' do
         expect { subject }.not_to change { described_class.exist?(job_id) }
