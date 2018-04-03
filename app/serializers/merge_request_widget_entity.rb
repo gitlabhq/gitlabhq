@@ -211,6 +211,15 @@ class MergeRequestWidgetEntity < IssuableEntity
     merge_request.merge_request_diff.merge_request_diff_files.where(new_path: '.gitlab-ci.yml', new_file: true).any?
   end
 
+  expose :merge_request_has_conflicting_custom_ci_yaml do |merge_request|
+    custom_ci_path = merge_request.project.ci_config_path
+    if custom_ci_path
+      merge_request.merge_request_diff.merge_request_diff_files.where(new_path: custom_ci_path, new_file: true).any?
+    else
+      false
+    end
+  end
+
   private
 
   delegate :current_user, to: :request

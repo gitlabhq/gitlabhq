@@ -228,4 +228,44 @@ describe MergeRequestWidgetEntity do
       end
     end
   end
+
+  describe 'merge_request_has_conflicting_custom_ci_yaml' do
+    context 'when project does not have custom_ci_path configured' do
+      before do
+        allow(resource.project).to receive(:ci_config_path).and_return(nil)
+      end
+
+      it 'returns false' do
+        expect(subject[:merge_request_has_conflicting_custom_ci_yaml]).to eq false
+      end
+    end
+
+    context 'when project has custom_ci_path configured' do
+      before do
+        allow(resource.project).to receive(:ci_config_path).and_return('filepath')
+      end
+
+      context 'when merge request has file at custom_ci_path' do
+        before do
+          allow(resource).to receive(:merge_request_diff).and_call_original
+          allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(true)
+        end
+
+        it 'returns true' do
+          expect(subject[:merge_request_has_conflicting_custom_ci_yaml]).to eq true
+        end
+      end
+
+      context 'when merge request does not have file at custom_ci_path' do
+        before do
+          allow(resource).to receive(:merge_request_diff).and_call_original
+          allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(subject[:merge_request_has_conflicting_custom_ci_yaml]).to eq false
+        end
+      end
+    end
+  end
 end
