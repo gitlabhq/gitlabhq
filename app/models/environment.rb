@@ -161,6 +161,10 @@ class Environment < ActiveRecord::Base
     @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
 
+  def ci_name
+    name.upcase
+  end
+
   def slug
     super.presence || generate_slug
   end

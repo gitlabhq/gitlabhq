@@ -530,6 +530,12 @@ describe Environment do
     end
   end
 
+  describe '#ci_name' do
+    it 'upcases the name' do
+      expect(environment.ci_name).to eq environment.name.upcase
+    end
+  end
+
   describe '#slug' do
     it "is automatically generated" do
       expect(environment.slug).not_to be_nil

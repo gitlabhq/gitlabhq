@@ -25,7 +25,7 @@ describe EnvironmentScaling do
 
       context 'when the conflicting variable is a group variable' do
         before do
-          environment_scaling.environment.project.group.variables.create(key: "#{environment.name.upcase}_REPLICAS", value: '2')
+          environment_scaling.environment.project.group.variables.create(key: "#{environment.ci_name}_REPLICAS", value: '2')
         end
 
         it { is_expected.to be false }
@@ -40,6 +40,6 @@ describe EnvironmentScaling do
   describe '#predefined_variables' do
     subject { environment_scaling.predefined_variables }
 
-    it { is_expected.to include({ key: "#{environment_scaling.environment.name.upcase}_REPLICAS", value: environment_scaling.replicas }) }
+    it { is_expected.to include({ key: "#{environment_scaling.environment.ci_name}_REPLICAS", value: environment_scaling.replicas }) }
   end
 end

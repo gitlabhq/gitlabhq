@@ -13,7 +13,7 @@ class EnvironmentScaling < ActiveRecord::Base
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      variables.append(key: "#{environment.name.upcase}_REPLICAS", value: replicas)
+      variables.append(key: "#{environment.ci_name}_REPLICAS", value: replicas)
     end
   end
 
