@@ -65,14 +65,22 @@ module Geo
     end
 
     def find_unsynced_job_artifacts_ids(batch_size:)
-      job_artifacts_finder.find_unsynced_job_artifacts(batch_size: batch_size, except_file_ids: scheduled_file_ids(:job_artifact))
+      job_artifacts_finder.find_unsynced_job_artifacts(batch_size: batch_size, except_artifact_ids: scheduled_file_ids(:job_artifact))
                         .pluck(:id)
                         .map { |id| [:job_artifact, id] }
     end
 
     def find_failed_upload_object_ids(batch_size:)
-      file_registry_finder.find_failed_file_registries(batch_size: batch_size)
-                          .pluck(:file_type, :file_id)
+      file_ids = file_registry_finder.find_failed_file_registries(batch_size: batch_size)
+                                     .pluck(:file_type, :file_id)
+      artifact_ids = find_failed_artifact_ids(batch_size: batch_size)
+
+      take_batch(file_ids, artifact_ids)
+    end
+
+    def find_failed_artifact_ids(batch_size:)
+      job_artifacts_finder.find_failed_job_artifacts_registries.limit(batch_size)
+        .pluck(:artifact_id).map { |id| [:job_artifact, id] }
     end
 
     def scheduled_file_ids(file_types)

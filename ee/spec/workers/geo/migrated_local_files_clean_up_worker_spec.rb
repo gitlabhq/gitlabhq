@@ -122,8 +122,8 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
       before do
         stub_artifacts_object_storage
 
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_local.id)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_local.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_remote.id)
       end
 
       it 'schedules job for artifact stored remotely and synced locally' do

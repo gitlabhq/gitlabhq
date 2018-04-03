@@ -242,7 +242,7 @@ module Gitlab
         end
 
         def handle_job_artifact_deleted_event(event, created_at)
-          file_registry_job_artifacts = ::Geo::FileRegistry.job_artifacts.where(file_id: event.job_artifact_id)
+          file_registry_job_artifacts = ::Geo::JobArtifactRegistry.where(artifact_id: event.job_artifact_id)
           return unless file_registry_job_artifacts.any? # avoid race condition
 
           file_path = File.join(::JobArtifactUploader.root, event.file_path)

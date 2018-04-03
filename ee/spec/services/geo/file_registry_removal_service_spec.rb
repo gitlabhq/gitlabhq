@@ -35,6 +35,22 @@ describe Geo::FileRegistryRemovalService do
       end
     end
 
+    shared_examples 'removes artifact' do
+      subject(:service) { described_class.new('job_artifact', registry.artifact_id) }
+
+      it 'file from disk' do
+        expect do
+          service.execute
+        end.to change { File.exist?(file_path) }.from(true).to(false)
+      end
+
+      it 'registry when file was deleted successfully' do
+        expect do
+          service.execute
+        end.to change(Geo::JobArtifactRegistry, :count).by(-1)
+      end
+    end
+
     context 'with LFS object' do
       let!(:lfs_object) { create(:lfs_object, :with_file) }
       let!(:file_registry) { create(:geo_file_registry, :lfs, file_id: lfs_object.id) }
@@ -54,10 +70,10 @@ describe Geo::FileRegistryRemovalService do
 
     context 'with job artifact' do
       let!(:job_artifact) { create(:ci_job_artifact, :archive) }
-      let!(:file_registry) { create(:geo_file_registry, :job_artifact, file_id: job_artifact.id) }
+      let!(:registry) { create(:geo_job_artifact_registry, artifact_id: job_artifact.id) }
       let!(:file_path) { job_artifact.file.path }
 
-      it_behaves_like 'removes'
+      it_behaves_like 'removes artifact'
 
       context 'migrated to object storage' do
         before do
@@ -65,7 +81,7 @@ describe Geo::FileRegistryRemovalService do
           job_artifact.update_column(:file_store, JobArtifactUploader::Store::REMOTE)
         end
 
-        it_behaves_like 'removes'
+        it_behaves_like 'removes artifact'
       end
     end
 

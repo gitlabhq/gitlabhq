@@ -96,17 +96,17 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
     describe '#count_synced_job_artifacts' do
       it 'counts job artifacts that have been synced' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
 
         expect(subject.count_synced_job_artifacts).to eq 2
       end
 
       it 'ignores remote job artifacts' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
 
         expect(subject.count_synced_job_artifacts).to eq 2
       end
@@ -123,17 +123,17 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'counts job artifacts that has been synced' do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
 
           expect(subject.count_synced_job_artifacts).to eq 1
         end
 
         it 'ignores remote job artifacts' do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
 
           expect(subject.count_synced_job_artifacts).to eq 1
         end
@@ -142,17 +142,17 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
     describe '#count_failed_job_artifacts' do
       it 'counts job artifacts that sync has failed' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
 
         expect(subject.count_failed_job_artifacts).to eq 2
       end
 
       it 'ignores remote job artifacts' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id, success: false)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
 
         expect(subject.count_failed_job_artifacts).to eq 2
       end
@@ -169,22 +169,22 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'counts job artifacts that sync has failed' do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
 
           expect(subject.count_failed_job_artifacts).to eq 1
         end
 
         it 'does not count job artifacts of unsynced projects' do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
 
           expect(subject.count_failed_job_artifacts).to eq 0
         end
 
         it 'ignores remote job artifacts' do
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: false)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_2.id, success: false)
-          create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
           job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
 
           expect(subject.count_failed_job_artifacts).to eq 1
@@ -202,8 +202,8 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'returns job artifacts without an entry on the tracking database' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: true)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: true)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
 
         job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10)
 
@@ -211,10 +211,10 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'excludes job artifacts without an entry on the tracking database' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id, success: true)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_3.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: true)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
 
-        job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10, except_file_ids: [job_artifact_2.id])
+        job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10, except_artifact_ids: [job_artifact_2.id])
 
         expect(job_artifacts).to match_ids(job_artifact_4)
       end
@@ -229,7 +229,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
       it 'returns job artifacts remotely and successfully synced locally' do
         job_artifact = create(:ci_job_artifact, :remote_store, project: synced_project)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact.id)
 
         job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10)
 
@@ -245,7 +245,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'excludes synced job artifacts that are stored locally' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_1.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id)
 
         job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10)
 
@@ -253,8 +253,8 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'excludes except_file_ids' do
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_1.id)
-        create(:geo_file_registry, :job_artifact, file_id: job_artifact_remote_2.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_2.id)
 
         job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10, except_file_ids: [job_artifact_remote_1.id])
 

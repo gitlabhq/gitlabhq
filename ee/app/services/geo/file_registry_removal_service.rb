@@ -11,7 +11,7 @@ module Geo
         log_info('Lease obtained')
 
         unless file_registry
-          log_error('Could not find file_registry', type: object_type, id: object_db_id)
+          log_error('Could not find file_registry')
           return
         end
 
@@ -34,7 +34,11 @@ module Geo
 
     def file_registry
       strong_memoize(:file_registry) do
-        ::Geo::FileRegistry.find_by(file_type: object_type, file_id: object_db_id)
+        if object_type.to_sym == :job_artifact
+          ::Geo::JobArtifactRegistry.find_by(artifact_id: object_db_id)
+        else
+          ::Geo::FileRegistry.find_by(file_type: object_type, file_id: object_db_id)
+        end
       end
     end
 
