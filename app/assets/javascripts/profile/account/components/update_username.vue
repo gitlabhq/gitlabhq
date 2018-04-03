@@ -1,7 +1,8 @@
 <script>
+import axios from 'axios';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
-import csrf from '~/lib/utils/csrf';
+import Flash from '~/flash';
 
 export default {
   components: {
@@ -16,20 +17,18 @@ export default {
       type: String,
       required: true,
     },
-    username: {
+    initialUsername: {
       type: String,
       required: true,
     },
   },
   data() {
     return {
-      newUsername: this.username,
+      username: this.initialUsername,
+      newUsername: this.initialUsername,
     };
   },
   computed: {
-    csrfToken() {
-      return csrf.token;
-    },
     buttonText() {
       return s__('Profiles|Update username');
     },
@@ -51,43 +50,43 @@ Please update your Git repository remotes as soon as possible.`),
   },
   methods: {
     onConfirm() {
-      this.$refs.form.submit();
+      const username = this.newUsername;
+      const putData = {
+        user: {
+          username,
+        },
+      };
+
+      axios
+        .put(this.actionUrl, putData, { maxRedirects: 0 })
+        .then(({ data }) => {
+          Flash(data.message, 'notice');
+          this.username = username;
+        })
+        .catch(error => {
+          Flash(error.response.data.message);
+        });
     },
   },
 };
 </script>
 <template>
   <div>
-    <form
-      ref="form"
-      :action="actionUrl"
-      method="post">
-      <input
-        type="hidden"
-        name="_method"
-        value="put"
-      />
-      <input
-        type="hidden"
-        name="authenticity_token"
-        :value="csrfToken"
-      />
-      <div class="form-group">
-        <label>Path</label>
-        <div class="input-group">
-          <div class="input-group-addon">{{ rootUrl }}</div>
-          <input
-            name="user[username]"
-            class="form-control"
-            required="required"
-            v-model="newUsername"
-          />
-        </div>
-        <p class="help-block">
-          Current path: {{ rootUrl }}{{ username }}
-        </p>
+    <div class="form-group">
+      <label for="modal-username-change-input">Path</label>
+      <div class="input-group">
+        <div class="input-group-addon">{{ rootUrl }}</div>
+        <input
+          id="modal-username-change-input"
+          class="form-control"
+          required="required"
+          v-model="newUsername"
+        />
       </div>
-    </form>
+      <p class="help-block">
+        Current path: {{ rootUrl }}{{ username }}
+      </p>
+    </div>
     <button
       data-target="#modal-username-change-confirmation"
       class="btn btn-warning"
