@@ -35,11 +35,11 @@ export default () => {
   });
 
   // Sidebar information block
-  const detailsBlockId = 'js-details-block-vue';
-  const detailsBlockDataset = document.getElementById(detailsBlockId).dataset;
+  const detailsBlockElement = document.getElementById('js-details-block-vue');
+  const detailsBlockDataset = detailsBlockElement.dataset;
   // eslint-disable-next-line
   new Vue({
-    el: `#${detailsBlockId}`,
+    el: detailsBlockElement,
     components: {
       detailsBlock,
     },

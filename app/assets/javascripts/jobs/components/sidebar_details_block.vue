@@ -57,14 +57,6 @@
             : ' btn-inverted-secondary';
         return className;
       },
-      toggleButtonClass() {
-        return [
-          'btn btn-blank',
-          'gutter-toggle pull-right',
-          'visible-xs-block visible-sm-block',
-          'js-sidebar-build-toggle',
-        ].join(' ');
-      },
       hasTimeout() {
         return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
       },
@@ -110,8 +102,10 @@
         {{ __('Retry') }}
       </a>
       <button
+        type="button"
         :aria-label="__('Toggle Sidebar')"
-        :class="toggleButtonClass"
+        class="btn btn-blank gutter-toggle pull-right
+          visible-xs-block visible-sm-block js-sidebar-build-toggle"
       >
         <i
           aria-hidden="true"
