@@ -513,6 +513,22 @@ describe Projects::JobsController do
       end
     end
 
+    context 'when job has a trace in database' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      before do
+        job.update_column(:trace, 'Sample trace')
+      end
+
+      it 'send a trace file' do
+        response = subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eq 'text/plain; charset=utf-8'
+        expect(response.body).to eq 'Sample trace'
+      end
+    end
+
     context 'when job does not have a trace file' do
       let(:job) { create(:ci_build, pipeline: pipeline) }
 

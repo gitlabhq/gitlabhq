@@ -8,7 +8,7 @@ module Gitlab
 
         attr_reader :stream
 
-        delegate :close, :tell, :seek, :size, :path, :url, :truncate, to: :stream, allow_nil: true
+        delegate :close, :tell, :seek, :size, :url, :truncate, to: :stream, allow_nil: true
 
         delegate :valid?, to: :stream, as: :present?, allow_nil: true
 
@@ -22,7 +22,11 @@ module Gitlab
         end
 
         def file?
-          self.path.present? if respond_to?(:path)
+          self.path.present?
+        end
+
+        def path
+          self.stream.path if self.stream.respond_to?(:path)
         end
 
         def limit(last_bytes = LIMIT_SIZE)
