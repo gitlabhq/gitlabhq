@@ -7,6 +7,7 @@ module EE
       include Issuable
       include Noteable
       include Referable
+      include Awardable
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
@@ -114,6 +115,10 @@ module EE
 
     def mentionable_params
       { group: group }
+    end
+
+    def discussions_rendered_on_frontend?
+      true
     end
   end
 end

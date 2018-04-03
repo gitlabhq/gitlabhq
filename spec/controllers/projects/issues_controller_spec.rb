@@ -974,7 +974,7 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolve_with_issue_path resolved])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolved])
       end
 
       it 'filters notes that the user should not see' do

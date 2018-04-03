@@ -46,7 +46,7 @@ feature 'Update Epic', :js do
         fill_in 'issuable-title', with: 'New epic title'
         fill_in 'issue-description', with: 'New epic description'
 
-        click_link('Preview')
+        page.within('.detail-page-description') { click_link('Preview') }
         expect(find('.md-preview')).to have_content('New epic description')
 
         click_button 'Save changes'
@@ -56,7 +56,7 @@ feature 'Update Epic', :js do
       end
 
       it 'edits full screen' do
-        find('.js-zen-enter').click
+        page.within('.detail-page-description') { find('.js-zen-enter').click }
 
         expect(page).to have_selector('.div-dropzone-wrapper.fullscreen')
       end
@@ -68,7 +68,7 @@ feature 'Update Epic', :js do
 
         expect(page.find_field("issue-description").value).to have_content('banana_sample')
 
-        click_link('Preview')
+        page.within('.detail-page-description') { click_link('Preview') }
         wait_for_requests
 
         within('.md-preview') do

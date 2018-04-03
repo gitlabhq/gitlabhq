@@ -88,10 +88,14 @@ module IssuableActions
 
     discussions = Discussion.build_collection(notes, issuable)
 
-    render json: DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user).represent(discussions, context: self)
+    render json: discussion_serializer.represent(discussions, context: self)
   end
 
   private
+
+  def discussion_serializer
+    DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user, note_entity: ProjectNoteEntity)
+  end
 
   def recaptcha_check_if_spammable(should_redirect = true, &block)
     return yield unless issuable.is_a? Spammable
