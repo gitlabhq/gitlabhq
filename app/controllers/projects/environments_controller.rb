@@ -12,8 +12,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @environments = project.environments
       .with_state(params[:scope] || :available)
 
-    load_environments_scaling(@environments)
-
     respond_to do |format|
       format.html
       format.json do
@@ -156,9 +154,5 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
-  end
-
-  def load_environments_scaling(environments)
-    environments.each { |env| env.create_scaling(replicas: 0) unless env.scaling }
   end
 end
