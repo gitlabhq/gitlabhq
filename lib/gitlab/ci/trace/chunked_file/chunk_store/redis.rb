@@ -83,7 +83,7 @@ module Gitlab
             def write!(data)
               raise ArgumentError, 'Could not write empty data' unless data.present?
 
-              puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
+              puts "#{self.class.name} - #{__callee__}: data.bytesize: #{data.bytesize.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
                 unless redis.set(buffer_key, data) == 'OK'
                   raise WriteError, 'Failed to write'
@@ -96,7 +96,7 @@ module Gitlab
             def append!(data)
               raise ArgumentError, 'Could not write empty data' unless data.present?
 
-              puts "#{self.class.name} - #{__callee__}: data.length: #{data.length.inspect} params[:chunk_index]: #{params[:chunk_index]}"
+              puts "#{self.class.name} - #{__callee__}: data.bytesize: #{data.bytesize.inspect} params[:chunk_index]: #{params[:chunk_index]}"
               Gitlab::Redis::Cache.with do |redis|
                 raise BufferKeyNotFoundError, 'Buffer key is not found' unless redis.exists(buffer_key)
 
@@ -104,7 +104,7 @@ module Gitlab
                 new_size = redis.append(buffer_key, data)
                 appended_size = new_size - original_size
 
-                raise WriteError, 'Failed to append' unless appended_size == data.length
+                raise WriteError, 'Failed to append' unless appended_size == data.bytesize
 
                 appended_size
               end

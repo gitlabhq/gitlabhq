@@ -84,7 +84,7 @@ module Gitlab
           def read(length = nil, outbuf = nil)
             out = ""
 
-            until eof? || (length && out.length >= length)
+            until eof? || (length && out.bytesize >= length)
               data = get_chunk
               break if data.empty?
 
@@ -92,7 +92,7 @@ module Gitlab
               @tell += data.bytesize
             end
 
-            out = out[0, length] if length && out.length > length
+            out = out.byteslice(0, length) if length && out.bytesize > length
 
             out
           end
@@ -104,15 +104,15 @@ module Gitlab
               data = get_chunk
               break if data.empty?
 
-              new_line = data.index("\n")
+              new_line_pos = byte_position(data, "\n")
 
-              if !new_line.nil?
-                out << data[0..new_line]
-                @tell += new_line + 1
-                break
-              else
+              if new_line_pos.nil?
                 out << data
                 @tell += data.bytesize
+              else
+                out << data.byteslice(0..new_line_pos)
+                @tell += new_line_pos + 1
+                break
               end
             end
 
@@ -123,7 +123,7 @@ module Gitlab
             raise ArgumentError, 'Could not write empty data' unless data.present?
 
             if mode.include?('w')
-              write_as_overwrite(data)
+              raise NotImplementedError, "Overwrite is not supported"
             elsif mode.include?('a')
               write_as_append(data)
             end
@@ -157,27 +157,26 @@ module Gitlab
             unless in_range?
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
                 @chunk = store.get
-                @chunk_range = (chunk_start...(chunk_start + chunk.length))
+
+                raise ReadError, 'Could not get a chunk' unless chunk && chunk.present?
+
+                @chunk_range = (chunk_start...(chunk_start + chunk.bytesize))
               end
             end
 
-            @chunk[chunk_offset..buffer_size]
-          end
-
-          def write_as_overwrite(data)
-            raise NotImplementedError, "Overwrite is not supported"
+            @chunk.byteslice(chunk_offset, buffer_size)
           end
 
           def write_as_append(data)
             @tell = size
 
-            data_size = data.size
+            data_size = data.bytesize
             new_tell = tell + data_size
             data_offset = 0
 
             until tell == new_tell
               writable_size = buffer_size - chunk_offset
-              writable_data = data[data_offset...(data_offset + writable_size)]
+              writable_data = data.byteslice(data_offset, writable_size)
               written_size = write_chunk(writable_data)
 
               data_offset += written_size
@@ -199,7 +198,7 @@ module Gitlab
                                  store.write!(data)
                                end
 
-                raise WriteError, 'Written size mismatch' unless data.length == written_size
+                raise WriteError, 'Written size mismatch' unless data.bytesize == written_size
               end
             end
 
@@ -248,6 +247,25 @@ module Gitlab
 
           def calculate_size(job_id)
             chunk_store.chunks_size(job_id)
+          end
+
+          def byte_position(data, pattern_byte)
+            index_as_string = data.index(pattern_byte)
+            return nil unless index_as_string
+
+            if data.getbyte(index_as_string) == pattern_byte.getbyte(0)
+              index_as_string
+            else
+              data2 = data.byteslice(index_as_string, 100)
+              additional_pos = 0
+              data2.each_byte do |b|
+                break if b == pattern_byte.getbyte(0)
+
+                additional_pos += 1
+              end
+
+              index_as_string + additional_pos
+            end
           end
         end
       end
