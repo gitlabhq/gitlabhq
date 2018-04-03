@@ -1,16 +1,14 @@
 require 'spec_helper'
 
 describe 'User browses a job', :js do
-  let!(:build) { create(:ci_build, :running, :coverage, pipeline: pipeline) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:user) { create(:user) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
     project.add_master(user)
     project.enable_ci
-    build.success
-    build.trace.set('job trace')
 
     sign_in(user)
 
