@@ -1,7 +1,7 @@
 %h3
-  New commits were pushed to the merge request
+  = @updated_by_user.name
+  pushed new commits to merge request
   = link_to(@merge_request.to_reference, project_merge_request_url(@merge_request.target_project, @merge_request))
-  by #{@current_user.name}
 
 - if @existing_commits.any?
   - count = @existing_commits.size

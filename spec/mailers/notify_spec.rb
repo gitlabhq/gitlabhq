@@ -400,6 +400,36 @@ describe Notify do
           end
         end
       end
+
+      describe 'that have new commits' do
+        let(:push_user) { create(:user) }
+
+        subject do
+          described_class.push_to_merge_request_email(recipient.id, merge_request.id, push_user.id, new_commits: merge_request.commits)
+        end
+
+        it_behaves_like 'a multiple recipients email'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'is sent as the push user' do
+          sender = subject.header[:from].addrs[0]
+
+          expect(sender.display_name).to eq(push_user.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(merge_request, reply: true)
+            is_expected.to have_body_text("#{push_user.name} pushed new commits")
+            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+          end
+        end
+      end
     end
 
     context 'for issue notes' do

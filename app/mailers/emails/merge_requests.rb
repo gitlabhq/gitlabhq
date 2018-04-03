@@ -15,6 +15,7 @@ module Emails
       setup_merge_request_mail(merge_request_id, recipient_id)
       @new_commits = new_commits
       @existing_commits = existing_commits
+      @updated_by_user = User.find(updated_by_user_id)
 
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end

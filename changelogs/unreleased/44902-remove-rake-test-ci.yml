@@ -1,0 +1,5 @@
+---
+title: Remove test_ci rake task
+merge_request: 18139
+author: Takuya Noguchi
+type: other

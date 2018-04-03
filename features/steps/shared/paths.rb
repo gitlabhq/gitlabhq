@@ -356,11 +356,6 @@ module SharedPaths
     visit project_issue_path(issue.project, issue)
   end
 
-  step 'I visit project "Shop" labels page' do
-    project = Project.find_by(name: 'Shop')
-    visit project_labels_path(project)
-  end
-
   step 'I visit project "Forum" labels page' do
     project = Project.find_by(name: 'Forum')
     visit project_labels_path(project)

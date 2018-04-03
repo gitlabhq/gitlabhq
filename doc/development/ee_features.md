@@ -644,6 +644,7 @@ information on managing page-specific javascript within EE.
 To separate EE-specific styles in SCSS files, if a component you're adding styles for
 is limited to only EE, it is better to have a separate SCSS file in appropriate directory
 within `app/assets/stylesheets`.
+See [backporting changes](#backporting-changes) for instructions on how to merge changes safely.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,
@@ -682,6 +683,19 @@ to avoid conflicts during CE to EE merge.
 }
 // EE-specific end
 ```
+
+### Backporting changes from EE to CE
+
+When working in EE-specific features, you might have to tweak a few files that are not EE-specific. Here is a workflow to make sure those changes end up backported safely into CE too.
+(This approach does not refer to changes introduced via [csslab](https://gitlab.com/gitlab-org/csslab/).)
+
+1. **Make your changes in the EE branch.** If possible, keep a separated commit (to be squashed) to help backporting and review.
+1. **Open merge request to EE project.**
+1. **Apply the changes you made to CE files in a branch of the CE project.** (Tip: Use `patch` with the diff from your commit in EE branch)
+1. **Open merge request to CE project**, referring it's a backport of EE changes and link to MR open in EE.
+1. Once EE MR is merged, the MR towards CE can be merged. **But not before**.
+
+**Note:** regarding SCSS, make sure the files living outside `/ee/` don't diverge between CE and EE projects.
 
 ## gitlab-svgs
 
