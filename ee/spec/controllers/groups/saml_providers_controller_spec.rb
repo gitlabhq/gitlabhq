@@ -80,7 +80,7 @@ describe Groups::SamlProvidersController do
         expect(response).to render_template 'groups/saml_providers/show'
       end
 
-      context 'not on a top level group' do
+      context 'not on a top level group', :nested_groups do
         let(:group) { create(:group, :nested) }
 
         it_behaves_like '404 status'
