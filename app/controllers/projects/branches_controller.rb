@@ -22,9 +22,13 @@ class Projects::BranchesController < Projects::ApplicationController
 
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
-        @max_commits = @branches.reduce(0) do |memo, branch|
-          diverging_commit_counts = repository.diverging_commit_counts(branch)
-          [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+
+        # n+1: https://gitlab.com/gitlab-org/gitaly/issues/992
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          @max_commits = @branches.reduce(0) do |memo, branch|
+            diverging_commit_counts = repository.diverging_commit_counts(branch)
+            [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+          end
         end
 
         render
