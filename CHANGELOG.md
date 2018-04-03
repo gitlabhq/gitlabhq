@@ -227,6 +227,14 @@ entry.
 - Use host URL to build JIRA remote link icon.
 
 
+## 10.5.7 (2018-04-03)
+
+### Security (2 changes)
+
+- Fix XSS on diff view stored on filenames.
+- Adds confidential notes channel for Slack/Mattermost.
+
+
 ## 10.5.6 (2018-03-16)
 
 ### Security (2 changes)
