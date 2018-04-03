@@ -17,7 +17,7 @@ describe Gitlab::ImportExport::LfsSaver do
   end
 
   describe '#save' do
-    context 'when the project has LFS objects' do
+    context 'when the project has LFS objects locally stored' do
       let(:lfs_object) { create(:lfs_object, :with_file) }
 
       before do
@@ -34,6 +34,28 @@ describe Gitlab::ImportExport::LfsSaver do
         saver.save
 
         expect(File).to exist("#{shared.export_path}/lfs-objects/#{lfs_object.oid}")
+      end
+    end
+
+    context 'when the LFS objects are stored in object storage' do
+      let(:lfs_object) { create(:lfs_object, :object_storage) }
+
+      before do
+        allow(LfsObjectUploader).to receive(:object_store_enabled?).and_return(true)
+        allow(lfs_object.file).to receive(:url).and_return('http://my-object-storage.local')
+        project.lfs_objects << lfs_object
+      end
+
+      it 'downloads the file to include in an archive' do
+        fake_uri = double
+        exported_file_path = "#{shared.export_path}/lfs-objects/#{lfs_object.oid}"
+
+        expect(fake_uri).to receive(:open).and_return(StringIO.new('LFS file content'))
+        expect(URI).to receive(:parse).with('http://my-object-storage.local').and_return(fake_uri)
+
+        saver.save
+
+        expect(File.read(exported_file_path)).to eq('LFS file content')
       end
     end
   end

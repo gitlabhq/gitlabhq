@@ -28,7 +28,16 @@ module Gitlab
         if lfs_object.local_store?
           copy_file_for_lfs_object(lfs_object)
         else
-          raise NotImplementedError.new "Exporting files from object storage is not yet supported"
+          download_file_for_lfs_object(lfs_object)
+        end
+      end
+
+      def download_file_for_lfs_object(lfs_object)
+        destination = destination_path_for_object(lfs_object)
+        mkdir_p(File.dirname(destination))
+
+        File.open(destination, 'w') do |file|
+          IO.copy_stream(URI.parse(lfs_object.file.url).open, file)
         end
       end
 
