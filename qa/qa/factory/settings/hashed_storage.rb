@@ -11,8 +11,8 @@ module QA
 
           Page::Admin::Settings::Main.perform do |setting|
             setting.expand_repository_storage do |page|
-              enable_hashed_storage
-              save_settings
+              page.enable_hashed_storage
+              page.save_settings
             end
           end
 
