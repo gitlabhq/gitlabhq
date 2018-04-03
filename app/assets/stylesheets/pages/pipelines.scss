@@ -1003,10 +1003,10 @@ a.linked-pipeline-mini-item {
   .arrow-icon {
     display: inline-block;
     vertical-align: middle;
-    margin: -4px 2px 0 0;
+    margin: -2px 2px 0 0;
 
     svg {
-      fill: $gray-darkest;
+      fill: $border-color;
     }
   }
 
