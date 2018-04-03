@@ -52,8 +52,8 @@ describe('diff_file_header', () => {
 
   describe('changed file', () => {
     beforeEach(() => {
-      props.diffFile.submodule = false;
       props.diffFile.discussionPath = 'some/discussion/id';
+      props.addMergeRequestButtons = true;
 
       vm = mountComponent(Component, props);
     });
@@ -62,18 +62,10 @@ describe('diff_file_header', () => {
       expect(vm.$el.innerHTML).toContain('fa-file-text-o');
     });
 
-    it('links to discussion path', () => {
+    it('links to file hash', () => {
       expect(selectors.titleWrapper).toExist();
       expect(selectors.titleWrapper.tagName).toBe('A');
-      expect(selectors.titleWrapper.getAttribute('href')).toBe(props.diffFile.discussionPath);
-    });
-
-    it('shows plain title if no link given', () => {
-      props.diffFile.discussionPath = undefined;
-      vm = mountComponent(Component, props);
-
-      expect(selectors.titleWrapper.tagName).not.toBe('A');
-      expect(selectors.titleWrapper.href).toBeFalsy();
+      expect(selectors.titleWrapper.getAttribute('href')).toBe(`#${props.diffFile.fileHash}`);
     });
 
     it('has button to copy file path', () => {

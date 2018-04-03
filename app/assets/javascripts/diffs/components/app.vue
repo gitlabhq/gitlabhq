@@ -75,10 +75,12 @@ export default {
 
 <template>
   <div v-if="shouldShow">
-    <loading-icon
+    <div
       v-if="isLoading"
-      size="3"
-    />
+      class="loading"
+    >
+      <loading-icon />
+    </div>
     <div
       v-else
       id="diffs"
