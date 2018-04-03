@@ -204,4 +204,28 @@ describe MergeRequestWidgetEntity do
       expect(entity[:rebase_path]).to be_nil
     end
   end
+
+  describe 'merge_request_has_new_gitlab_ci_yaml' do
+    context 'when merge request has a new gitlab-ci.yml file' do
+      before do
+        allow(resource).to receive(:merge_request_diff).and_call_original
+        allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(subject[:merge_request_has_new_gitlab_ci_yaml]).to eq true
+      end
+    end
+
+    context 'when merge request does not have a new gitlab-ci.yml file' do
+      before do
+        allow(resource).to receive(:merge_request_diff).and_call_original
+        allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(subject[:merge_request_has_new_gitlab_ci_yaml]).to eq false
+      end
+    end
+  end
 end

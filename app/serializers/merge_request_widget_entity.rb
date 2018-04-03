@@ -207,6 +207,10 @@ class MergeRequestWidgetEntity < IssuableEntity
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
 
+  expose :merge_request_has_new_gitlab_ci_yaml do |merge_request|
+    merge_request.merge_request_diff.merge_request_diff_files.where(new_path: '.gitlab-ci.yml', new_file: true).any?
+  end
+
   private
 
   delegate :current_user, to: :request
