@@ -73,6 +73,22 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::String do
         expect(token).not_to be_nil
         expect(token.build.evaluate).to eq 'some " string'
       end
+
+      it 'allows to use an empty string inside single quotes' do
+        scanner = StringScanner.new(%(''))
+
+        token = described_class.scan(scanner)
+
+        expect(token.build.evaluate).to eq ''
+      end
+
+      it 'allow to use an empty string inside double quotes' do
+        scanner = StringScanner.new(%(""))
+
+        token = described_class.scan(scanner)
+
+        expect(token.build.evaluate).to eq ''
+      end
     end
   end
 

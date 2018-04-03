@@ -224,14 +224,14 @@ describe Project do
       project2 = build(:project, import_url: 'http://localhost:9000/t.git')
 
       expect(project2).to be_invalid
-      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+      expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
     end
 
     it "does not allow blocked import_url port" do
       project2 = build(:project, import_url: 'http://github.com:25/t.git')
 
       expect(project2).to be_invalid
-      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+      expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
     end
 
     describe 'project pending deletion' do
