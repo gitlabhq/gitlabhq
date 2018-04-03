@@ -6,6 +6,7 @@ class DashboardController < Dashboard::ApplicationController
     :author_id,
     :assignee_id,
     :milestone_title,
+    :weight,
     :label_name
   ].freeze
 

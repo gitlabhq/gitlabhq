@@ -159,11 +159,7 @@ module IssuablesHelper
     label_names.join(', ')
   end
 
-<<<<<<< HEAD
-  def issuables_state_counter_text(issuable_type, state = :all)
-=======
   def issuables_state_counter_text(issuable_type, state, display_count)
->>>>>>> 37193ac0da0... Check if at least one filter is set on dashboard
     titles = {
       opened: "Open"
     }
@@ -197,20 +193,6 @@ module IssuablesHelper
     end
   end
 
-<<<<<<< HEAD
-  def issuable_filter_params
-    [
-      :search,
-      :author_id,
-      :assignee_id,
-      :milestone_title,
-      :weight,
-      :label_name
-    ]
-  end
-
-=======
->>>>>>> 37193ac0da0... Check if at least one filter is set on dashboard
   def issuable_reference(issuable)
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
   end
