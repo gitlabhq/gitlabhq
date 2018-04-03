@@ -51,15 +51,21 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
-    result = Users::UpdateService.new(current_user, user: @user, username: user_params[:username]).execute
+    respond_to do |format|
+      result = Users::UpdateService.new(current_user, user: @user, username: user_params[:username]).execute
 
-    options = if result[:status] == :success
-                { notice: "Username successfully changed" }
-              else
-                { alert: "Username change failed - #{result[:message]}" }
-              end
+      if result[:status] == :success
+        message = "Username successfully changed"
 
-    redirect_back_or_default(default: { action: 'show' }, options: options)
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
+        format.json { render json: { message: message }, status: :ok }
+      else
+        message = "Username change failed - #{result[:message]}"
+
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: message }) }
+        format.json { render json: result, status: :bad_request }
+      end
+    end
   end
 
   private
