@@ -1,0 +1,29 @@
+%section.saml-settings.info-well.append-bottom-20
+  .well-segment
+    %p= _("To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:")
+    %ol
+      %li
+        = _('Review the process for configuring service providers in your identity provider — in this case, GitLab is the "service provider" or "relying party".')
+        = link_to help_page_path('user/group/saml_sso/index', anchor: 'providers'), target: '_blank' do
+          = _("Documentation for popular identity providers")
+          = icon('external-link')
+      %li
+        = _("During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below.")
+      %li
+        = (_("Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}") % { icon: icon('external-link'), docsLinkStart: "<a href='#{help_page_path('user/group/saml_sso/index', anchor: 'assertions')}' target='_blank'>", docsLinkEnd: '</a>' }).html_safe
+      %li
+        = (_("Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>") % { enable_label: _('Enable SAML authentication for this group'), save_changes: _('Save changes') }).html_safe
+      %li
+        = (_("Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider") % { sso_label: _('GitLab single sign on URL') }).html_safe
+  .well-segment.borderless
+    = render 'info_row', field: :assertion_consumer_service_url, label_text: _('Assertion consumer service URL')
+    .help-block= _('Also called "Relying party service URL" or "Reply URL"')
+  .well-segment.borderless
+    = render 'info_row', field: :issuer, label_text: 'Identifier'
+    .help-block= _('Also called "Issuer" or "Relying party trust identifier"')
+  - if @saml_provider.persisted?
+    .well-segment.borderless
+      %label= _("GitLab single sign on URL")
+      - user_login_url = sso_group_saml_providers_url(@group)
+      %div= link_to user_login_url, user_login_url
+      .help-block= _("Used by members to sign in to your group in GitLab")

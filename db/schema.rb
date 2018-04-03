@@ -2202,6 +2202,15 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_index "routes", ["path"], name: "index_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "routes", ["source_type", "source_id"], name: "index_routes_on_source_type_and_source_id", unique: true, using: :btree
 
+  create_table "saml_providers", force: :cascade do |t|
+    t.integer "group_id", null: false
+    t.boolean "enabled", null: false
+    t.string "certificate_fingerprint", null: false
+    t.string "sso_url", null: false
+  end
+
+  add_index "saml_providers", ["group_id"], name: "index_saml_providers_on_group_id", using: :btree
+
   create_table "sent_notifications", force: :cascade do |t|
     t.integer "project_id"
     t.integer "noteable_id"
@@ -2779,6 +2788,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
+  add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade

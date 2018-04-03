@@ -10,6 +10,8 @@ module EE
     included do
       has_many :epics
 
+      has_one :saml_provider
+
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
         state :started

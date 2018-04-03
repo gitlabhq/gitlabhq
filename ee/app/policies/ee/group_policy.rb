@@ -49,6 +49,8 @@ module EE
       rule { admin }.enable :read_epic
       rule { has_projects }.enable :read_epic
 
+      rule { admin | owner }.enable :admin_group_saml
+
       rule { admin | (can_owners_manage_ldap & owner) }.enable :admin_ldap_group_links
 
       rule { ldap_synced }.prevent :admin_group_member

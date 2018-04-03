@@ -12,6 +12,10 @@
       border-bottom: 1px solid $well-inner-border;
     }
 
+    &.borderless {
+      border-bottom: 0;
+    }
+
     &.branch-info {
       .commit-sha,
       .commit-info {

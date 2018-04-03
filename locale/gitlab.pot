@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-30 17:57+0200\n"
-"PO-Revision-Date: 2018-03-30 17:57+0200\n"
+"POT-Creation-Date: 2018-04-03 12:44+0100\n"
+"PO-Revision-Date: 2018-04-03 12:44+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -256,6 +256,12 @@ msgstr ""
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
+msgid "Also called \"Issuer\" or \"Relying party trust identifier\""
+msgstr ""
+
+msgid "Also called \"Relying party service URL\" or \"Reply URL\""
+msgstr ""
+
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
 msgstr ""
 
@@ -376,6 +382,9 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
+msgid "Assertion consumer service URL"
+msgstr ""
+
 msgid "Assign custom color like #FF0000"
 msgstr ""
 
@@ -464,6 +473,12 @@ msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Average per day: %{average}"
+msgstr ""
+
+msgid "Background Color"
+msgstr ""
+
+msgid "Background jobs"
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -709,6 +724,9 @@ msgid "Cannot be merged automatically"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
+msgstr ""
+
+msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
@@ -1276,6 +1294,9 @@ msgstr ""
 msgid "Compare changes with the last commit"
 msgstr ""
 
+msgid "Compare changes with the merge request target branch"
+msgstr ""
+
 msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
 msgstr ""
 
@@ -1295,6 +1316,9 @@ msgid "Confidential"
 msgstr ""
 
 msgid "Confidentiality"
+msgstr ""
+
+msgid "Configure Sidekiq job throttling."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -1501,6 +1525,9 @@ msgstr ""
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
+msgid "Customize colors"
+msgstr ""
+
 msgid "Cycle Analytics"
 msgstr ""
 
@@ -1584,6 +1611,9 @@ msgstr ""
 msgid "Dismiss Merge Request promotion"
 msgstr ""
 
+msgid "Documentation for popular identity providers"
+msgstr ""
+
 msgid "Don't show again"
 msgstr ""
 
@@ -1623,6 +1653,9 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
+msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below."
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -1644,6 +1677,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable SAML authentication for this group"
+msgstr ""
+
 msgid "Enable and configure InfluxDB metrics."
 msgstr ""
 
@@ -1651,6 +1687,15 @@ msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
 msgid "Enable classification control using an external service"
+msgstr ""
+
+msgid "Enable reCAPTCHA or Akismet and set IP limits."
+msgstr ""
+
+msgid "Enable the Performance Bar for a given group."
+msgstr ""
+
+msgid "Enabled"
 msgstr ""
 
 msgid "Environments|An error occurred while fetching the environments."
@@ -1839,6 +1884,9 @@ msgstr ""
 msgid "Files (%{human_size})"
 msgstr ""
 
+msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr ""
 
@@ -1855,6 +1903,12 @@ msgid "FirstPushedBy|First"
 msgstr ""
 
 msgid "FirstPushedBy|pushed by"
+msgstr ""
+
+msgid "Font Color"
+msgstr ""
+
+msgid "Footer message"
 msgstr ""
 
 msgid "Fork"
@@ -2069,6 +2123,9 @@ msgstr ""
 msgid "GitLab Runner section"
 msgstr ""
 
+msgid "GitLab single sign on URL"
+msgstr ""
+
 msgid "Gitaly Servers"
 msgstr ""
 
@@ -2171,6 +2228,9 @@ msgstr ""
 msgid "Have your users email"
 msgstr ""
 
+msgid "Header message"
+msgstr ""
+
 msgid "Health Check"
 msgstr ""
 
@@ -2207,6 +2267,9 @@ msgid "History"
 msgstr ""
 
 msgid "Housekeeping successfully started"
+msgstr ""
+
+msgid "Identity provider single sign on URL"
 msgstr ""
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
@@ -2477,6 +2540,9 @@ msgstr ""
 msgid "Manage project labels"
 msgstr ""
 
+msgid "Manage your group’s membership while adding another level of security with SAML."
+msgstr ""
+
 msgid "Mar"
 msgstr ""
 
@@ -2498,6 +2564,9 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+msgid "Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
+msgstr ""
+
 msgid "Merge Requests"
 msgstr ""
 
@@ -2508,9 +2577,6 @@ msgid "Merge request"
 msgstr ""
 
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
-msgstr ""
-
-msgid "MergeRequest|Approved"
 msgstr ""
 
 msgid "Merged"
@@ -2902,6 +2968,9 @@ msgstr ""
 msgid "Pagination|« First"
 msgstr ""
 
+msgid "Part of merge request changes"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -3119,6 +3188,9 @@ msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr ""
 
 msgid "Profiles|your account"
+msgstr ""
+
+msgid "Profiling - Performance bar"
 msgstr ""
 
 msgid "Programming languages used in this repository"
@@ -3447,7 +3519,13 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
+msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
+msgstr ""
+
 msgid "Reviewing"
+msgstr ""
+
+msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
 msgid "Roadmap"
@@ -3460,6 +3538,15 @@ msgid "Runners"
 msgstr ""
 
 msgid "Running"
+msgstr ""
+
+msgid "SAML Single Sign On"
+msgstr ""
+
+msgid "SAML Single Sign On Settings"
+msgstr ""
+
+msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr ""
 
 msgid "SSH Keys"
@@ -3573,6 +3660,9 @@ msgstr ""
 msgid "Set up Koding"
 msgstr ""
 
+msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
+msgstr ""
+
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
@@ -3580,6 +3670,9 @@ msgid "Settings"
 msgstr ""
 
 msgid "Setup a specific Runner automatically"
+msgstr ""
+
+msgid "Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
@@ -3773,6 +3866,9 @@ msgstr ""
 msgid "Spam Logs"
 msgstr ""
 
+msgid "Spam and Anti-bot Protection"
+msgstr ""
+
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
@@ -3797,6 +3893,9 @@ msgstr ""
 msgid "Started"
 msgstr ""
 
+msgid "State your message to activate"
+msgstr ""
+
 msgid "Status"
 msgstr ""
 
@@ -3816,6 +3915,9 @@ msgid "System"
 msgstr ""
 
 msgid "System Hooks"
+msgstr ""
+
+msgid "System header and footer:"
 msgstr ""
 
 msgid "Tag (%{tag_count})"
@@ -4286,6 +4388,9 @@ msgstr ""
 msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
 msgstr ""
 
+msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
+msgstr ""
+
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr ""
 
@@ -4386,6 +4491,9 @@ msgid "Use the following registration token during setup:"
 msgstr ""
 
 msgid "Use your global notification setting"
+msgstr ""
+
+msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
@@ -4884,6 +4992,9 @@ msgstr ""
 msgid "mrWidget|Approve"
 msgstr ""
 
+msgid "mrWidget|Approved"
+msgstr ""
+
 msgid "mrWidget|Approved by"
 msgstr ""
 
@@ -5014,6 +5125,9 @@ msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"
+msgstr ""
+
+msgid "mrWidget|Web IDE"
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"
