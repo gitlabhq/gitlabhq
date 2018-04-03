@@ -12,13 +12,16 @@
               %p.settings-message.text-center
                 = message.html_safe
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|
-            .radio
+            .radio.js-enable-autodevops{ data: { auto_devops_enabled: @auto_devops.enabled ? "true" : "false" } }
               = form.label :enabled_true do
                 = form.radio_button :enabled, 'true'
                 %strong Enable Auto DevOps
                 %br
                 %span.descr
-                  The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
+                  - if @auto_devops.enabled
+                    The Auto DevOps pipeline configuration is being used
+                  - else
+                    The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
 
             .radio
               = form.label :enabled_false do
@@ -82,7 +85,7 @@
         %hr
         .form-group
           = f.label :ci_config_path, 'Custom CI config path', class: 'label-light'
-          = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
+          = f.text_field :ci_config_path, class: 'form-control js-ci-config-path', placeholder: '.gitlab-ci.yml'
           %p.help-block
             The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
@@ -152,7 +155,11 @@
                 excoveralls (Elixir) -
                 %code \[TOTAL\]\s+(\d+\.\d+)%
 
-        = f.submit 'Save changes', class: "btn btn-save"
+        = f.submit 'Save changes', class: "btn btn-save js-save-button"
+
+        %btn.btn.btn-save.js-save-button-modal.hidden{ data: { toggle: 'modal', target: '#modal-disable-autodevops' } }
+          Save changes
+        = render 'projects/pipelines_settings/autodevops_modal'
 
 %hr
 

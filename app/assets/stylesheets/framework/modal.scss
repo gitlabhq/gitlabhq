@@ -56,7 +56,7 @@
   }
 
   @media (min-width: $screen-sm-min) {
-    .btn:first-of-type {
+    .btn:first-of-type:not(input) {
       margin-left: auto;
     }
   }

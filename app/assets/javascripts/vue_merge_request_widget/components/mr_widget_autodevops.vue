@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -7,12 +8,40 @@ export default {
   components: {
     Icon,
   },
+  props: {
+    newCiYaml: {
+      type: Boolean,
+      required: true,
+    },
+    customCiYaml: {
+      type: Boolean,
+      required: true,
+    },
+    ciConfigPath: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
-    autoDevopsMsg() {
-      return sprintf(s__(`mrWidget|This branch contains a %{gitlabCiYaml} file. 
-      Merging will disable the Auto Devops pipeline configuration for this project`), {
-        gitlabCiYaml: '<code>gitlab-ci.yml</code>',
-      }, false);
+    warningMessage() {
+      if (this.customCiYaml) {
+        return sprintf(
+          s__(`mrWidget|This branch contains %{filename} which is being used as a custom CI config file.
+      Merging will disable the Auto DevOps pipeline configuration for this project.`),
+          {
+            filename: `<code>${_.escape(this.ciConfigPath)}</code>`,
+          },
+          false,
+        );
+      }
+      return sprintf(
+        s__(`mrWidget|This branch contains a %{gitlabCiYaml} file. 
+      Merging will disable the Auto Devops pipeline configuration for this project.`),
+        {
+          gitlabCiYaml: '<code>gitlab-ci.yml</code>',
+        },
+        false,
+      );
     },
   },
 };
@@ -25,7 +54,7 @@ export default {
       </div>
       <div
         class="media-body"
-        v-html="autoDevopsMsg">
+        v-html="warningMessage">
       </div>
     </div>
   </div>

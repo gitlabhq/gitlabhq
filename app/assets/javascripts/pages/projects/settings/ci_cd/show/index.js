@@ -1,6 +1,7 @@
 import initSettingsPanels from '~/settings_panels';
 import SecretValues from '~/behaviors/secret_values';
 import AjaxVariableList from '~/ci_variable_list/ajax_variable_list';
+import AutoDevopsForm from './ci_autodevops_form';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize expandable settings panels
@@ -22,4 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
     saveEndpoint: variableListEl.dataset.saveEndpoint,
   });
+
+  // eslint-disable-next-line no-new
+  new AutoDevopsForm('#js-general-pipeline-settings');
 });

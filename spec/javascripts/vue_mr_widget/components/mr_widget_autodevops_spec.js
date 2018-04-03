@@ -16,15 +16,34 @@ describe('MRWidgetAutoDevOps', () => {
 
   describe('Computed', () => {
     describe('autoDevopsMsg', () => {
-      it('should contain a warning message when the gitlab-ci.yml is present', () => {
-        vm = mountComponent(Component, {});
-        const componentText = vm.$el.querySelector('.media-body').textContent;
-        const branchMessage = 'This branch contains a gitlab-ci.yml file.';
+      it('should show a warning message when a custom gitlab-ci.yml file is present', () => {
+        vm = mountComponent(Component, {
+          newCiYaml: false,
+          customCiYaml: true,
+          ciConfigPath: 'config/.gitlab-ci.yml',
+        });
+        const branchMessage = `This branch contains <code>${
+          vm.ciConfigPath
+        }</code> which is being used as a custom CI config file.`;
         const mergingMessage =
-          'Merging will disable the Auto Devops pipeline configuration for this project';
+          'Merging will disable the Auto DevOps pipeline configuration for this project.';
 
-        expect(componentText).toContain(branchMessage);
-        expect(componentText).toContain(mergingMessage);
+        expect(vm.warningMessage).toContain(branchMessage);
+        expect(vm.warningMessage).toContain(mergingMessage);
+      });
+
+      it('should show a warning message when a gitlab-ci.yml file is present', () => {
+        vm = mountComponent(Component, {
+          newCiYaml: true,
+          customCiYaml: false,
+          ciConfigPath: '',
+        });
+        const branchMessage = 'This branch contains a <code>gitlab-ci.yml</code> file';
+        const mergingMessage =
+          'Merging will disable the Auto Devops pipeline configuration for this project.';
+
+        expect(vm.warningMessage).toContain(branchMessage);
+        expect(vm.warningMessage).toContain(mergingMessage);
       });
     });
   });

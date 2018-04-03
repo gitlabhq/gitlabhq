@@ -89,12 +89,16 @@ export default class MergeRequestStore {
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
-    this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+    this.isPipelinePassing =
+      this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
+    this.hasNewGitLabCiYaml = data.has_new_gitlab_ci_yaml;
+    this.hasNewCustomCiConfigYaml = data.has_new_custom_ci_config_yaml;
+    this.projectCiConfigPath = data.project_ci_config_path;
 
     this.setState(data);
   }

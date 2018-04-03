@@ -1,0 +1,13 @@
+.modal{ id: 'modal-disable-autodevops', tabindex: -1 }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ data: {dismiss: 'modal' } } &times;
+        %h3.page-title Disable Auto DevOps pipelines?
+
+      .modal-body
+        %p
+          %span Adding a custom CI config path will disable the Auto DevOps pipelines configuration.
+
+      .modal-footer
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
