@@ -90,6 +90,7 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
+    before_create :ensure_metadata
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
