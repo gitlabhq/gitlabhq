@@ -13,6 +13,7 @@ namespace :gitlab do
 
     def enqueue_batch(batch, index)
       job = ObjectStorage::MigrateUploadsWorker.enqueue!(batch,
+                                                         @model_class,
                                                          @mounted_as,
                                                          @to_store)
       puts "Enqueued job ##{index}: #{job}"
@@ -25,8 +26,8 @@ namespace :gitlab do
       Upload.class_eval { include EachBatch } unless Upload < EachBatch
 
       Upload
-        .where.not(store: @to_store)
-        .where(uploader: @uploader_class.to_s,
+        .where(store: [nil, ObjectStorage::Store::LOCAL],
+               uploader: @uploader_class.to_s,
                model_type: @model_class.base_class.sti_name)
     end
   end

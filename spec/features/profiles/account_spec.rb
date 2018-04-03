@@ -43,14 +43,14 @@ feature 'Profile > Account' do
         update_username(new_username)
         visit new_project_path
         expect(current_path).to eq(new_project_path)
-        expect(find('.breadcrumbs-sub-title')).to have_content(project.path)
+        expect(find('.breadcrumbs-sub-title')).to have_content('Details')
       end
 
       scenario 'the old project path redirects to the new path' do
         update_username(new_username)
         visit old_project_path
         expect(current_path).to eq(new_project_path)
-        expect(find('.breadcrumbs-sub-title')).to have_content(project.path)
+        expect(find('.breadcrumbs-sub-title')).to have_content('Details')
       end
     end
   end
