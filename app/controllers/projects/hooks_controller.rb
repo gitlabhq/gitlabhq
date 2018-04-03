@@ -70,6 +70,7 @@ class Projects::HooksController < Projects::ApplicationController
       :confidential_issues_events,
       :merge_requests_events,
       :note_events,
+      :confidential_note_events,
       :push_events,
       :tag_push_events,
       :token,
