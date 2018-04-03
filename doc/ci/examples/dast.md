@@ -17,6 +17,7 @@ dast:
   image: registry.gitlab.com/gitlab-org/security-products/zaproxy
   variables:
     website: "https://example.com"
+  allow_failure: true
   script:
     - mkdir /zap/wrk/
     - /zap/zap-baseline.py -J gl-dast-report.json -t $website || true
@@ -38,6 +39,7 @@ dast:
   variables:
     website: "https://example.com"
     login_url: "https://example.com/sign-in"
+  allow_failure: true
   script:
     - mkdir /zap/wrk/
     - /zap/zap-baseline.py -J gl-dast-report.json -t $website \

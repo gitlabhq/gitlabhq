@@ -9,11 +9,12 @@ Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `codequali
 
 ```yaml
 codequality:
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
+  allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
