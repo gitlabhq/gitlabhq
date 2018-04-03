@@ -267,6 +267,10 @@ class Note < ActiveRecord::Base
     self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
   end
 
+  def confidential?
+    noteable.try(:confidential?)
+  end
+
   def editable?
     !system?
   end

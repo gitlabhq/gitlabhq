@@ -820,7 +820,7 @@ into similar problems in the future (e.g. when new tables are created).
       # Each job is scheduled with a `delay_interval` in between.
       # If you use a small interval, then some jobs may run at the same time.
       #
-      # model_class - The table being iterated over
+      # model_class - The table or relation being iterated over
       # job_class_name - The background migration job class as a string
       # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
       # batch_size - The maximum number of rows per job
