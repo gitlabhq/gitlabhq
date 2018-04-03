@@ -54,9 +54,9 @@ module EmailsHelper
   end
 
   def header_logo
-    if brand_item && brand_item.header_logo?
+    if current_appearance&.header_logo?
       image_tag(
-        brand_item.header_logo,
+        current_appearance.header_logo,
         style: 'height: 50px'
       )
     else

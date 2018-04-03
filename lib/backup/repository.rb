@@ -1,8 +1,11 @@
 require 'yaml'
+require_relative 'helper'
 
 module Backup
   class Repository
+    include Backup::Helper
     # rubocop:disable Metrics/AbcSize
+
     def dump
       prepare
 
@@ -63,18 +66,27 @@ module Backup
       end
     end
 
-    def restore
+    def prepare_directories
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         path = repository_storage.legacy_disk_path
         next unless File.exist?(path)
 
-        # Move repos dir to 'repositories.old' dir
-        bk_repos_path = File.join(path, '..', 'repositories.old.' + Time.now.to_i.to_s)
-        FileUtils.mv(path, bk_repos_path)
-        # This is expected from gitlab:check
-        FileUtils.mkdir_p(path, mode: 02770)
-      end
+        # Move all files in the existing repos directory except . and .. to
+        # repositories.old.<timestamp> directory
+        bk_repos_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}-repositories.old." + Time.now.to_i.to_s)
+        FileUtils.mkdir_p(bk_repos_path, mode: 0700)
+        files = Dir.glob(File.join(path, "*"), File::FNM_DOTMATCH) - [File.join(path, "."), File.join(path, "..")]
 
+        begin
+          FileUtils.mv(files, bk_repos_path)
+        rescue Errno::EACCES
+          access_denied_error(path)
+        end
+      end
+    end
+
+    def restore
+      prepare_directories
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{display_repo_path(project)} ... "
         path_to_project_repo = path_to_repo(project)

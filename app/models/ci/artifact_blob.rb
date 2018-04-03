@@ -36,16 +36,15 @@ module Ci
     def external_url(project, job)
       return unless external_link?(job)
 
-      full_path_parts = project.full_path_components
-      top_level_group = full_path_parts.shift
+      url_project_path = project.full_path.partition('/').last
 
       artifact_path = [
-        '-', *full_path_parts, '-',
+        '-', url_project_path, '-',
         'jobs', job.id,
         'artifacts', path
       ].join('/')
 
-      "#{pages_config.protocol}://#{top_level_group}.#{pages_config.host}/#{artifact_path}"
+      "#{project.pages_group_url}/#{artifact_path}"
     end
 
     def external_link?(job)

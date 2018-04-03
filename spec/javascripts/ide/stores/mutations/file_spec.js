@@ -2,7 +2,7 @@ import mutations from '~/ide/stores/mutations/file';
 import state from '~/ide/stores/state';
 import { file } from '../../helpers';
 
-describe('Multi-file store file mutations', () => {
+describe('IDE store file mutations', () => {
   let localState;
   let localFile;
 
@@ -62,6 +62,8 @@ describe('Multi-file store file mutations', () => {
       expect(localFile.rawPath).toBe('raw');
       expect(localFile.binary).toBeTruthy();
       expect(localFile.renderError).toBe('render_error');
+      expect(localFile.raw).toBeNull();
+      expect(localFile.baseRaw).toBeNull();
     });
   });
 
@@ -73,6 +75,17 @@ describe('Multi-file store file mutations', () => {
       });
 
       expect(localFile.raw).toBe('testing');
+    });
+  });
+
+  describe('SET_FILE_BASE_RAW_DATA', () => {
+    it('sets raw data from base branch', () => {
+      mutations.SET_FILE_BASE_RAW_DATA(localState, {
+        file: localFile,
+        baseRaw: 'testing',
+      });
+
+      expect(localFile.baseRaw).toBe('testing');
     });
   });
 
@@ -109,6 +122,17 @@ describe('Multi-file store file mutations', () => {
       });
 
       expect(localFile.changed).toBeTruthy();
+    });
+  });
+
+  describe('SET_FILE_MERGE_REQUEST_CHANGE', () => {
+    it('sets file mr change', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: { diff: 'ABC' },
+      });
+
+      expect(localFile.mrChange.diff).toBe('ABC');
     });
   });
 

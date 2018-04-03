@@ -1,0 +1,5 @@
+---
+title: Fix `gitlab-rake gitlab:two_factor:disable_for_all_users`
+merge_request: 18154
+author:
+type: fixed

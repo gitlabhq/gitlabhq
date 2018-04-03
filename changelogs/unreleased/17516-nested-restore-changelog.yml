@@ -1,0 +1,5 @@
+---
+title: Enable restore rake task to handle nested storage directories
+merge_request: 17516
+author: Balasankar C
+type: fixed

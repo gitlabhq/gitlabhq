@@ -17,7 +17,7 @@ module Gitlab
           end
 
           def ==(other)
-            to_hash == self.class.fabricate(other).to_hash
+            to_runner_variable == self.class.fabricate(other).to_runner_variable
           end
 
           ##
@@ -25,7 +25,7 @@ module Gitlab
           # don't expose `file` attribute at all (stems from what the runner
           # expects).
           #
-          def to_hash
+          def to_runner_variable
             @variable.reject do |hash_key, hash_value|
               hash_key == :file && hash_value == false
             end

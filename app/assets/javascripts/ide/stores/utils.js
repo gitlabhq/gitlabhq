@@ -38,7 +38,7 @@ export const dataStructure = () => ({
   eol: '',
 });
 
-export const decorateData = (entity) => {
+export const decorateData = entity => {
   const {
     id,
     projectId,
@@ -57,7 +57,6 @@ export const decorateData = (entity) => {
     base64 = false,
 
     file_lock,
-
   } = entity;
 
   return {
@@ -80,17 +79,15 @@ export const decorateData = (entity) => {
     base64,
 
     file_lock,
-
   };
 };
 
-export const findEntry = (tree, type, name, prop = 'name') => tree.find(
-  f => f.type === type && f[prop] === name,
-);
+export const findEntry = (tree, type, name, prop = 'name') =>
+  tree.find(f => f.type === type && f[prop] === name);
 
 export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
-export const setPageTitle = (title) => {
+export const setPageTitle = title => {
   document.title = title;
 };
 
@@ -120,6 +117,11 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
-export const sortTree = sortedTree => sortedTree.map(entity => Object.assign(entity, {
-  tree: entity.tree.length ? sortTree(entity.tree) : [],
-})).sort(sortTreesByTypeAndName);
+export const sortTree = sortedTree =>
+  sortedTree
+    .map(entity =>
+      Object.assign(entity, {
+        tree: entity.tree.length ? sortTree(entity.tree) : [],
+      }),
+    )
+    .sort(sortTreesByTypeAndName);

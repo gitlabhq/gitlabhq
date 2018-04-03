@@ -2,6 +2,11 @@
 
 > Introduced in GitLab 8.8.
 
+NOTE: **Note:**
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+you may need to enable pipeline triggering in your project's
+**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+
 ## Pipelines
 
 A pipeline is a group of [jobs][] that get executed in [stages][](batches).
@@ -121,9 +126,8 @@ The basic requirements is that there are two numbers separated with one of
 the following (you can even use them interchangeably):
 
 - a space
-- a forward slash (`/`)
+- a slash (`/`)
 - a colon (`:`)
-- a dot (`.`)
 
 >**Note:**
 More specifically, [it uses][regexp] this regular expression: `\d+[\s:\/\\]+\d+\s*`.
