@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.4.7 (2018-04-03)
+
+### Security (2 changes)
+
+- Fix XSS on diff view stored on filenames.
+- Adds confidential notes channel for Slack/Mattermost.
+
+
 ## 10.4.6 (2018-03-16)
 
 ### Security (2 changes)
