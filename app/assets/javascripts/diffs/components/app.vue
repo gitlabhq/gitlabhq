@@ -96,11 +96,11 @@ export default {
         />
         <div class="files">
           <diff-file
-            @setActive="setActive(file.filePath)"
-            @unsetActive="unsetActive(file.filePath)"
             v-for="file in diffFiles"
             :key="file.newPath"
             :file="file"
+            @setActive="setActive(file.filePath)"
+            @unsetActive="unsetActive(file.filePath)"
           />
         </div>
       </div>

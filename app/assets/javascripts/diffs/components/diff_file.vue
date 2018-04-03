@@ -43,10 +43,7 @@ export default {
       }
 
       const { top, bottom } = this.$el.getBoundingClientRect();
-      const {
-        top: topOfFixedHeader,
-        bottom: bottomOfFixedHeader,
-      } = header.getBoundingClientRect();
+      const { top: topOfFixedHeader, bottom: bottomOfFixedHeader } = header.getBoundingClientRect();
 
       const headerOverlapsContent = top < topOfFixedHeader && bottom > bottomOfFixedHeader;
       const fullyAboveHeader = bottom < bottomOfFixedHeader;
@@ -60,8 +57,13 @@ export default {
         this.isActive = false;
       }
 
-      this.updating = false
-    }
+      this.updating = false;
+    },
+  },
+  computed: {
+    isDiscussionsExpanded() {
+      return true; // TODO: @fatihacet - Fix this.
+    },
   },
 };
 </script>
@@ -75,6 +77,7 @@ export default {
       :diff-file="file"
       :collapsible="true"
       :expanded="isExpanded"
+      :discussions-expanded="isDiscussionsExpanded"
       :add-merge-request-buttons="true"
       @toggleFile="handleToggle"
       class="js-file-title file-title"
