@@ -63,7 +63,7 @@ class ProfilesController < Profiles::ApplicationController
         message = "Username change failed - #{result[:message]}"
 
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: message }) }
-        format.json { render json: result, status: :bad_request }
+        format.json { render json: { message: message }, status: :bad_request }
       end
     end
   end
