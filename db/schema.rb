@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180223144945) do
-=======
-ActiveRecord::Schema.define(version: 20180122154930) do
->>>>>>> 2b1e4b399c5... Merge branch 'jej/mattermost-notification-confidentiality' into 'security-10-4'
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
