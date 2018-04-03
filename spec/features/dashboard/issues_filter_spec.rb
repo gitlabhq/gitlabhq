@@ -79,19 +79,13 @@ feature 'Dashboard Issues filtering', :js do
   end
 
   context 'sorting' do
-<<<<<<< HEAD
-    it 'shows sorted issues' do
-      sort_by('Created date')
-      visit_issues
-=======
     before do
       visit_issues(assignee_id: user.id)
     end
 
     it 'remembers last sorting value' do
-      sorting_by('Created date')
+      sort_by('Created date')
       visit_issues(assignee_id: user.id)
->>>>>>> Fixed dashboard filtering tests
 
       expect(find('.issues-filters')).to have_content('Created date')
     end
