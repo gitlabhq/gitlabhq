@@ -3,12 +3,20 @@ class EnvironmentScaling < ActiveRecord::Base
 
   validates :replicas, numericality: { only_integer: true }, presence: true
 
-  def available?
+  def self.available_for?(environment)
     if environment.project.group
-      return false unless environment.project.group.variables.where(key: incompatible_variables).empty?
+      return false unless environment.project.group.variables.where(key: incompatible_variables_for(environment)).empty?
     end
 
-    environment.project.variables.where(key: incompatible_variables).empty?
+    environment.project.variables.where(key: incompatible_variables_for(environment)).empty?
+  end
+
+  def self.incompatible_variables_for(environment)
+    ["#{environment.ci_name}_REPLICAS", "PRODUCTION_REPLICAS"]
+  end
+
+  def available?
+    self.class.available_for?(environment)
   end
 
   def predefined_variables
@@ -20,6 +28,6 @@ class EnvironmentScaling < ActiveRecord::Base
   private
 
   def incompatible_variables
-    predefined_variables.map { |var| var[:key] }.append("PRODUCTION_REPLICAS")
+    self.class.incompatible_variables_for(environment)
   end
 end
