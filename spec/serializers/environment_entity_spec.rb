@@ -20,6 +20,10 @@ describe EnvironmentEntity do
     expect(subject).to include(:folder_path)
   end
 
+  it 'exposes scaling availability' do
+    expect(subject).to include(:scaling_available)
+  end
+
   describe 'scaling' do
     context 'when environment has scaling' do
       before do

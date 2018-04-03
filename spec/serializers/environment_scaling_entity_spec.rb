@@ -9,8 +9,4 @@ describe EnvironmentScalingEntity do
   it 'exposes replicas' do
     expect(subject).to include(:replicas)
   end
-
-  it 'exposes availability' do
-    expect(subject).to include(:available)
-  end
 end

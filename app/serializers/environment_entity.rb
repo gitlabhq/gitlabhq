@@ -30,6 +30,9 @@ class EnvironmentEntity < Grape::Entity
     folder_project_environments_path(environment.project, environment.folder_name)
   end
 
+  expose :scaling_available do |environment|
+    EnvironmentScaling.available_for?(environment)
+  end
   expose :scaling, using: EnvironmentScalingEntity, if: -> (environment, _) { environment.scaling.present? }
 
   expose :created_at, :updated_at
