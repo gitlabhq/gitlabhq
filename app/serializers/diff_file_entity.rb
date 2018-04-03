@@ -45,6 +45,8 @@ class DiffFileEntity < Grape::Entity
   expose :removed_lines
   expose :diff_refs
   expose :content_sha
+  expose :stored_externally?, as: :stored_externally
+  expose :external_storage
 
   expose :old_path_html do |diff_file|
     old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)

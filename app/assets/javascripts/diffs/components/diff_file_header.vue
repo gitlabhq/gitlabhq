@@ -49,6 +49,9 @@ export default {
     replacedFile() {
       return !(this.diffFile.newFile || this.diffFile.deletedFile);
     },
+    lfs() {
+      return this.diffFile.storedExternally && this.diffFile.externalStorage === 'lfs';
+    },
   },
   methods: {
     handleToggle(e, checkTarget) {
@@ -151,6 +154,13 @@ export default {
         >
           {{ diffFile.aMode }} → {{ diffFile.bMode }}
         </small>
+
+        <span
+          v-if="lfs"
+          class="label label-lfs append-right-5"
+        >
+          LFS
+        </span>
       </template>
     </div>
 
