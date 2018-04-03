@@ -129,8 +129,6 @@ class Projects::JobsController < Projects::ApplicationController
           send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
         elsif build.old_trace
           send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
-        else
-          render_404
         end
       end
     end
