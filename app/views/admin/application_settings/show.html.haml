@@ -180,5 +180,27 @@
   .settings-content
     = render 'repository_check'
 
+%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('User and IP Rate Limits')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure limits for web and API requests.')
+  .settings-content
+    = render 'ip_limits'
+
+%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Outbound requests')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Allow requests to the local network from hooks and services.')
+  .settings-content
+    = render 'outbound'
+
 .prepend-top-20
   = render 'form'
