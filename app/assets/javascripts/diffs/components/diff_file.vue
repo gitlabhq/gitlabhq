@@ -74,6 +74,7 @@ export default {
     <diff-file-header
       :diff-file="file"
       :collapsible="true"
+      :expanded="isExpanded"
       :add-merge-request-buttons="true"
       @toggleFile="handleToggle"
       class="js-file-title file-title"
