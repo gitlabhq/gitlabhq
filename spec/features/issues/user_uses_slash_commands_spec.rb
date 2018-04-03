@@ -122,7 +122,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the user can update the weight' do
         it 'does not create a note, and sets the weight accordingly' do
-          write_note("/weight 5")
+          add_note("/weight 5")
 
           expect(page).not_to have_content '/weight 5'
           expect(page).to have_content 'Commands applied'
@@ -143,7 +143,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does not create a note or set the weight' do
-          write_note("/weight 5")
+          add_note("/weight 5")
 
           expect(page).not_to have_content 'Commands applied'
 
@@ -159,7 +159,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the user can update the weight' do
         it 'does not create a note, and removes the weight accordingly' do
-          write_note("/clear_weight")
+          add_note("/clear_weight")
 
           expect(page).not_to have_content '/clear_weight'
           expect(page).to have_content 'Commands applied'
@@ -180,7 +180,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'does create a note or set the weight' do
-          write_note("/clear_weight")
+          add_note("/clear_weight")
 
           expect(page).not_to have_content 'Commands applied'
 
