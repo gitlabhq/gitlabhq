@@ -1,4 +1,6 @@
 <script>
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
@@ -112,6 +114,11 @@ export default {
       this.$emit('showCommentForm', { lineCode: this.lineCode });
     },
     handleLoadMoreLines() {
+      if (this.isRequesting) {
+        return;
+      }
+
+      this.isRequesting = true;
       const endpoint = this.contextLinesPath;
       const oldLineNumber = this.metaData.oldPos || 0;
       const newLineNumber = this.metaData.newPos || 0;
@@ -145,7 +152,13 @@ export default {
 
       const params = { since, to, bottom, offset, unfold, view };
       const lineNumbers = { oldLineNumber, newLineNumber };
-      this.loadMoreLines({ endpoint, params, lineNumbers, fileHash });
+      this.loadMoreLines({ endpoint, params, lineNumbers, fileHash })
+        .catch(() => {
+          createFlash(s__('Diffs|Something went wrong while fetching diff lines.'));
+        })
+        .finally(() => {
+          this.isRequesting = false;
+        });
     },
   },
 };
