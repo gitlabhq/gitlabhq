@@ -102,6 +102,8 @@ module Gitlab
 
             until eof?
               data = get_chunk
+              break if data.empty?
+
               new_line = data.index("\n")
 
               if !new_line.nil?
@@ -150,6 +152,8 @@ module Gitlab
           end
 
           def get_chunk
+            return '' unless size > 0
+
             unless in_range?
               chunk_store.open(job_id, chunk_index, params_for_store) do |store|
                 @chunk = store.get
