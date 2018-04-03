@@ -25,6 +25,7 @@ module Gitlab
           def truncate(offset)
             if offset == 0
               delete
+              @size = @tell = 0
             elsif offset == size
               # no-op
             else
@@ -45,7 +46,7 @@ module Gitlab
           end
 
           def chunk_store
-            if last_range.include?(tell)
+            if last_chunk?
               ChunkedFile::ChunkStore::Redis
             else
               ChunkedFile::ChunkStore::Database
