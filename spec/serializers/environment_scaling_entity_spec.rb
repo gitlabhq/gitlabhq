@@ -11,6 +11,6 @@ describe EnvironmentScalingEntity do
   end
 
   it 'exposes availability' do
-    expect(subject).to include(:available?)
+    expect(subject).to include(:available)
   end
 end
