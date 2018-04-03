@@ -11,7 +11,8 @@ module Banzai
       def call
         return doc unless context[:issuable_state_filter_enabled]
 
-        extractor = Banzai::IssuableExtractor.new(project, current_user)
+        context = RenderContext.new(project, current_user)
+        extractor = Banzai::IssuableExtractor.new(context)
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
