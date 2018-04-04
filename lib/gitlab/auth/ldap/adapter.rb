@@ -4,6 +4,9 @@ module Gitlab
       class Adapter
         prepend ::EE::Gitlab::Auth::LDAP::Adapter
 
+        SEARCH_RETRY_FACTOR = [1, 1, 2, 3].freeze
+        MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size.freeze
+
         attr_reader :provider, :ldap
 
         def self.open(provider, &block)
@@ -18,7 +21,7 @@ module Gitlab
 
         def initialize(provider, ldap = nil)
           @provider = provider
-          @ldap = ldap || Net::LDAP.new(config.adapter_options)
+          @ldap = ldap || renew_connection_adapter
         end
 
         def config
@@ -49,8 +52,10 @@ module Gitlab
         end
 
         def ldap_search(*args)
+          retries ||= 0
+
           # Net::LDAP's `time` argument doesn't work. Use Ruby `Timeout` instead.
-          Timeout.timeout(config.timeout) do
+          Timeout.timeout(timeout_time(retries)) do
             results = ldap.search(*args)
 
             if results.nil?
@@ -65,15 +70,25 @@ module Gitlab
               results
             end
           end
-        rescue Net::LDAP::Error => error
-          Rails.logger.warn("LDAP search raised exception #{error.class}: #{error.message}")
-          []
-        rescue Timeout::Error
-          Rails.logger.warn("LDAP search timed out after #{config.timeout} seconds")
-          []
+        rescue Net::LDAP::Error, Timeout::Error => error
+          retries += 1
+          error_message = connection_error_message(error)
+
+          Rails.logger.warn(error_message)
+
+          if retries < MAX_SEARCH_RETRIES
+            renew_connection_adapter
+            retry
+          else
+            raise LDAPConnectionError, error_message
+          end
         end
 
         private
+
+        def timeout_time(retry_number)
+          SEARCH_RETRY_FACTOR[retry_number] * config.timeout
+        end
 
         def user_options(fields, value, limit)
           options = {
@@ -105,6 +120,18 @@ module Gitlab
           else
             filter
           end
+        end
+
+        def connection_error_message(exception)
+          if exception.is_a?(Timeout::Error)
+            "LDAP search timed out after #{config.timeout} seconds"
+          else
+            "LDAP search raised exception #{exception.class}: #{exception.message}"
+          end
+        end
+
+        def renew_connection_adapter
+          @ldap = Net::LDAP.new(config.adapter_options)
         end
       end
     end

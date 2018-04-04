@@ -17,7 +17,7 @@ module EE
 
             def update_permissions
               dns = member_dns
-              return if dns.empty?
+              return true if dns.empty?
 
               current_users_with_attribute = ::User.with_provider(provider).where(attribute => true)
               verified_users_with_attribute = []
@@ -33,6 +33,12 @@ module EE
                 user[attribute] = false
                 user.save
               end
+
+              true
+            rescue ::Gitlab::Auth::LDAP::LDAPConnectionError
+              Rails.logger.warn("Error syncing #{attribute} users for provider '#{provider}'. LDAP connection Error")
+
+              false
             end
 
             private

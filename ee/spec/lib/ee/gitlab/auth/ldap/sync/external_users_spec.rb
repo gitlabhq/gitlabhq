@@ -52,5 +52,21 @@ describe EE::Gitlab::Auth::LDAP::Sync::ExternalUsers do
       expect { sync_external.update_permissions }
         .not_to change { user.reload.external? }
     end
+
+    context 'when ldap connection fails' do
+      before do
+        unstub_ldap_group_find_by_cn
+        raise_ldap_connection_error
+      end
+
+      it 'logs a debug message' do
+        expect(Rails.logger)
+          .to receive(:warn)
+                .with("Error syncing external users for provider 'ldapmain'. LDAP connection Error")
+                .at_least(:once)
+
+        sync_external.update_permissions
+      end
+    end
   end
 end

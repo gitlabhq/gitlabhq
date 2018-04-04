@@ -36,7 +36,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
       execute
     end
 
-    context 'when the group ldap sync is already started' do
+    context 'when the group ldap sync has already started' do
       it 'logs a debug message' do
         group.start_ldap_sync
 
@@ -57,6 +57,26 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
         execute
       end
     end
+
+    context 'when ldap connection fails' do
+      before do
+        unstub_ldap_group_find_by_cn
+        raise_ldap_connection_error
+      end
+
+      it 'logs a debug message' do
+        expect(Rails.logger)
+          .to receive(:warn).at_least(:once)
+
+        execute
+      end
+
+      it 'ensures group state returns to failed_ldap_sync' do
+        execute
+
+        expect(group.ldap_sync_failed?).to be_truthy
+      end
+    end
   end
 
   describe '.execute_all_providers' do
@@ -65,10 +85,10 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
     end
 
     before do
-      stub_ldap_config(providers: %w[main secundary])
+      stub_ldap_config(providers: %w[ldapmain secundary])
 
-      adapter = ldap_adapter('main')
-      proxy = proxy(adapter, 'main')
+      adapter = ldap_adapter('ldapmain')
+      proxy = proxy(adapter, 'ldapmain')
       allow(EE::Gitlab::Auth::LDAP::Sync::Proxy).to receive(:open).and_yield(proxy)
     end
 

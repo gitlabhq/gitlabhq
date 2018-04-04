@@ -102,6 +102,16 @@ describe EE::Gitlab::Auth::LDAP::Sync::Proxy do
         expect(sync_proxy.dns_for_group_cn('ldap_group1')).to match_array(dns)
       end
     end
+
+    context 'when there is a connection problem' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'raises exception' do
+        expect { sync_proxy.dns_for_group_cn('ldap_group1') }.to raise_error(::Gitlab::Auth::LDAP::LDAPConnectionError)
+      end
+    end
   end
 
   describe '#dn_for_uid' do
@@ -185,6 +195,16 @@ describe EE::Gitlab::Auth::LDAP::Sync::Proxy do
           .to receive(:with_secondary_extern_uid)
                 .with(sync_proxy.provider, user.username)
                 .once.and_call_original
+      end
+    end
+
+    context 'when there is a connection problem' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'raises exception' do
+        expect { sync_proxy.dns_for_group_cn('ldap_group1') }.to raise_error(::Gitlab::Auth::LDAP::LDAPConnectionError)
       end
     end
   end

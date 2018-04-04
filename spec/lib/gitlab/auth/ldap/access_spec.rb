@@ -38,6 +38,7 @@ describe Gitlab::Auth::LDAP::Access do
     context 'when the user cannot be found' do
       before do
         allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
       end
 
       it { is_expected.to be_falsey }
@@ -56,8 +57,10 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     context 'when the user is found' do
+      let(:ldap_user) { Gitlab::Auth::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
+
       before do
-        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
       end
 
       context 'and the user is disabled via active directory' do
@@ -120,6 +123,7 @@ describe Gitlab::Auth::LDAP::Access do
         context 'when user cannot be found' do
           before do
             allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+            allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
           end
 
           it { is_expected.to be_falsey }
@@ -142,6 +146,34 @@ describe Gitlab::Auth::LDAP::Access do
             access.allowed?
           end
         end
+
+        context 'when user was previously ldap_blocked' do
+          before do
+            user.ldap_block
+          end
+
+          it 'unblocks the user if it exists' do
+            expect(access).to receive(:unblock_user).with(user, 'is available again')
+
+            access.allowed?
+          end
+        end
+      end
+    end
+
+    context 'when the connection fails' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'does not block the user' do
+        access.allowed?
+
+        expect(user.ldap_blocked?).to be_falsey
+      end
+
+      it 'denies access' do
+        expect(access.allowed?).to be_falsey
       end
     end
   end
