@@ -24,7 +24,7 @@ class Projects::EnvironmentScalingsController < Projects::ApplicationController
   end
 
   def environment_scaling
-    strong_memoize(:environment_scaling) { environment.scaling || environment.build_scaling(replicas: 1) }
+    strong_memoize(:environment_scaling) { environment.scaling || environment.build_scaling }
   end
 
   def scaling_params
