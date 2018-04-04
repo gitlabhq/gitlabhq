@@ -199,9 +199,7 @@
   }
 
   .ci-status-link {
-    display: inline-block;
-    position: relative;
-    top: 2px;
+    display: inline-flex;
   }
 
   > .ci-status-link,
