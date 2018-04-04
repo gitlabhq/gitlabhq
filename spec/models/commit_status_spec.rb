@@ -368,9 +368,7 @@ describe CommitStatus do
       'rspec:windows 0 : / 1' => 'rspec:windows',
       'rspec:windows 0 : / 1 name' => 'rspec:windows name',
       '0 1 name ruby' => 'name ruby',
-      '0 :/ 1 name ruby' => 'name ruby',
-      'golang test 1.8' => 'golang test',
-      '1.9 golang test' => 'golang test'
+      '0 :/ 1 name ruby' => 'name ruby'
     }
 
     tests.each do |name, group_name|
