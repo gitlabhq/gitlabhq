@@ -326,7 +326,7 @@ class Project < ActiveRecord::Base
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
-  chronic_duration_attr :build_timeout_human_readable, :build_timeout
+  chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
 
   validates :build_timeout, allow_nil: true,
                             numericality: { greater_than_or_equal_to: 600,
