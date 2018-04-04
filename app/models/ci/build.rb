@@ -277,7 +277,7 @@ module Ci
         variables.concat(project.deployment_variables(environment: environment)) if environment
         variables.concat(yaml_variables)
         variables.concat(user_variables)
-        variables.concat(environment.scaling.predefined_variables) if environment&.scaling
+        variables.concat(environment_scaling_variables) if environment
         variables.concat(secret_group_variables)
         variables.concat(secret_project_variables(environment: environment))
         variables.concat(trigger_request.user_variables) if trigger_request
@@ -486,6 +486,12 @@ module Ci
         variables.append(key: 'GITLAB_USER_LOGIN', value: user.username)
         variables.append(key: 'GITLAB_USER_NAME', value: user.name)
       end
+    end
+
+    def environment_scaling_variables
+      return [] unless persisted_environment&.scaling
+
+      persisted_environment.scaling.predefined_variables
     end
 
     def secret_group_variables
