@@ -44,7 +44,7 @@ module Projects
 
       def scope_descriptions
         {
-          'read_repo' => s_('DeployTokens|Allows read-only access to the repository'),
+          'read_repository' => s_('DeployTokens|Allows read-only access to the repository'),
           'read_registry' => s_('DeployTokens|Allows read-only access to the registry images')
         }
       end

@@ -5,7 +5,7 @@ module Gitlab
     REGISTRY_SCOPES = [:read_registry].freeze
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user, :sudo, :read_repo].freeze
+    API_SCOPES = [:api, :read_user, :sudo, :read_repository].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
@@ -165,7 +165,7 @@ module Gitlab
         abilities_by_scope = {
           api: full_authentication_abilities,
           read_registry: build_authentication_abilities - [:build_create_container_image],
-          read_repo: read_authentication_abilities - [:read_container_image]
+          read_repository: read_authentication_abilities - [:read_container_image]
         }
 
         scopes.flat_map do |scope|

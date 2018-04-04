@@ -5,14 +5,14 @@ FactoryBot.define do
     sequence(:name) { |n| "PDT #{n}" }
     revoked false
     expires_at { 5.days.from_now }
-    scopes %w(read_repo read_registry)
+    scopes %w(read_repository read_registry)
 
     trait :revoked do
       revoked true
     end
 
-    trait :read_repo do
-      scopes ['read_repo']
+    trait :read_repository do
+      scopes ['read_repository']
     end
 
     trait :read_registry do

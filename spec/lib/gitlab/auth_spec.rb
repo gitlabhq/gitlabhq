@@ -5,7 +5,7 @@ describe Gitlab::Auth do
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to eq %i[api read_user sudo read_repo]
+      expect(subject::API_SCOPES).to eq %i[api read_user sudo read_repository]
     end
 
     it 'OPENID_SCOPES contains all scopes for OpenID Connect' do
@@ -19,7 +19,7 @@ describe Gitlab::Auth do
     it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.optional_scopes).to eq %i[read_user sudo read_repo read_registry openid]
+      expect(subject.optional_scopes).to eq %i[read_user sudo read_repository read_registry openid]
     end
 
     context 'registry_scopes' do
@@ -260,10 +260,10 @@ describe Gitlab::Auth do
       let(:project) { create(:project) }
       let(:auth_failure) { Gitlab::Auth::Result.new(nil, nil) }
 
-      context 'when the deploy token has read_repo as scope' do
-        let(:deploy_token) { create(:deploy_token, :read_repo, project: project) }
+      context 'when the deploy token has read_repository as scope' do
+        let(:deploy_token) { create(:deploy_token, :read_repository, project: project) }
 
-        it 'succeeds when project is present, token is valid and has read_repo as scope' do
+        it 'succeeds when project is present, token is valid and has read_repository as scope' do
           abilities = %i(read_project download_code)
           auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, abilities)
 

@@ -9,7 +9,7 @@ describe Projects::Settings::DeployTokensPresenter do
 
   describe '#available_scopes' do
     it 'returns the all the deploy token scopes' do
-      expect(presenter.available_scopes).to match_array(%w(read_repo read_registry))
+      expect(presenter.available_scopes).to match_array(%w(read_repository read_registry))
     end
   end
 

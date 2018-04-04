@@ -36,7 +36,7 @@ the following table.
 
 | Scope | Description |
 | ----- | ----------- |
-|`read_repo` | Allows read-access to the repository through `git clone` |
+|`read_repository` | Allows read-access to the repository through `git clone` |
 | `read_registry` | Allows read-access to [container registry] images if a project is private and authorization is required. |
 
 ## Usage
@@ -45,7 +45,7 @@ the following table.
 
 To download a repository using a Deploy Token, you just need to:
 
-1. Create a Deploy Token with `read_repo` as a scope.
+1. Create a Deploy Token with `read_repository` as a scope.
 2. `git clone` the project using the Deploy Token:
 
 

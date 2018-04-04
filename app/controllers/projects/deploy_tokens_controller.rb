@@ -23,8 +23,4 @@ class Projects::DeployTokensController < Projects::ApplicationController
   def deploy_token_params
     params.require(:deploy_token).permit(:name, :expires_at, scopes: [])
   end
-
-  def authorize_admin_project!
-    return render_404 unless can?(current_user, :admin_project, @project)
-  end
 end

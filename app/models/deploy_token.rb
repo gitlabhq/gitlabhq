@@ -3,11 +3,12 @@ class DeployToken < ActiveRecord::Base
   include TokenAuthenticatable
   add_authentication_token_field :token
 
-  AVAILABLE_SCOPES = %w(read_repo read_registry).freeze
+  AVAILABLE_SCOPES = %w(read_repository read_registry).freeze
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :scopes, presence: true
+  validates :project, presence: true
 
   belongs_to :project
 
