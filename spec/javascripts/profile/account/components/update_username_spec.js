@@ -87,8 +87,8 @@ describe('UpdateUsername component', () => {
         expect(vm.newUsername).toBe(newUsername);
         confirmModalBtn.click();
       })
-      .then(Vue.nextTick)
-      .then(Vue.nextTick)
+      .then(Vue.nextTick) // first tick to handle the click event properly
+      .then(Vue.nextTick) // second tick to propagate the click username change after success
       .then(() => {
         expect(vm.username).toBe(newUsername);
         expect(vm.newUsername).toBe(newUsername);
