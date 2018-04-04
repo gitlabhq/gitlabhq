@@ -1,6 +1,6 @@
 <script>
-import axios from 'axios';
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
 import Flash from '~/flash';
@@ -59,9 +59,9 @@ Please update your Git repository remotes as soon as possible.`),
       };
 
       axios
-        .put(this.actionUrl, putData, { maxRedirects: 0 })
-        .then(({ data }) => {
-          Flash(data.message, 'notice');
+        .put(this.actionUrl, putData)
+        .then(result => {
+          Flash(result.data.message, 'notice');
           this.username = username;
         })
         .catch(error => {
@@ -99,7 +99,6 @@ Please update your Git repository remotes as soon as possible.`),
     </button>
     <gl-modal
       id="modal-username-change-confirmation"
-      class="performance-bar-modal"
       header-title-text="Change username?"
       footer-primary-button-variant="warning"
       :footer-primary-button-text="buttonText"
