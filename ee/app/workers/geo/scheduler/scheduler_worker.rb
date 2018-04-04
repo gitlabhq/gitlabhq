@@ -107,8 +107,8 @@ module Geo
         (Time.now.utc - start_time) >= run_time
       end
 
-      def take_batch(*arrays)
-        interleave(*arrays).uniq.compact.take(db_retrieve_batch_size)
+      def take_batch(*arrays, batch_size: db_retrieve_batch_size)
+        interleave(*arrays).uniq.compact.take(batch_size)
       end
 
       # Combines the elements of multiple, arbitrary-length arrays into a single array.

@@ -84,6 +84,14 @@ module Geo
       relation.limit(batch_size)
     end
 
+    def find_failed_attachments_registries
+      Geo::FileRegistry.attachments.failed
+    end
+
+    def find_synced_missing_on_primary_attachments_registries
+      Geo::FileRegistry.attachments.synced.missing_on_primary
+    end
+
     private
 
     def group_uploads
@@ -180,7 +188,7 @@ module Geo
     def legacy_find_failed_attachments
       legacy_inner_join_registry_ids(
         local_attachments,
-        Geo::FileRegistry.attachments.failed.pluck(:file_id),
+        find_failed_attachments_registries.pluck(:file_id),
         Upload
       )
     end

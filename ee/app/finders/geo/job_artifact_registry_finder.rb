@@ -24,7 +24,7 @@ module Geo
       Geo::JobArtifactRegistry.count
     end
 
-    # Find limited amount of non replicated lfs objects.
+    # Find limited amount of non replicated job artifacts.
     #
     # You can pass a list with `except_artifact_ids:` so you can exclude items you
     # already scheduled but haven't finished and aren't persisted to the database yet
@@ -45,12 +45,12 @@ module Geo
       relation.limit(batch_size)
     end
 
-    def find_migrated_local_job_artifacts(batch_size:, except_file_ids: [])
+    def find_migrated_local_job_artifacts(batch_size:, except_artifact_ids: [])
       relation =
         if use_legacy_queries?
-          legacy_find_migrated_local_job_artifacts(except_file_ids: except_file_ids)
+          legacy_find_migrated_local_job_artifacts(except_artifact_ids: except_artifact_ids)
         else
-          fdw_find_migrated_local_job_artifacts(except_file_ids: except_file_ids)
+          fdw_find_migrated_local_job_artifacts(except_artifact_ids: except_artifact_ids)
         end
 
       relation.limit(batch_size)
@@ -72,6 +72,10 @@ module Geo
       Geo::JobArtifactRegistry.synced
     end
 
+    def find_synced_missing_on_primary_job_artifacts_registries
+      Geo::JobArtifactRegistry.synced.missing_on_primary
+    end
+
     def find_failed_job_artifacts_registries
       Geo::JobArtifactRegistry.failed
     end
@@ -83,6 +87,14 @@ module Geo
         legacy_find_synced_job_artifacts
       else
         fdw_find_job_artifacts.merge(find_synced_job_artifacts_registries)
+      end
+    end
+
+    def find_synced_missing_on_primary_job_artifacts
+      if use_legacy_queries?
+        legacy_find_synced_missing_on_primary_job_artifacts
+      else
+        fdw_find_job_artifacts.merge(find_synced_missing_on_primary_job_artifacts_registries)
       end
     end
 
@@ -111,10 +123,10 @@ module Geo
         .where.not(id: except_artifact_ids)
     end
 
-    def fdw_find_migrated_local_job_artifacts(except_file_ids:)
+    def fdw_find_migrated_local_job_artifacts(except_artifact_ids:)
       fdw_job_artifacts.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
         .with_files_stored_remotely
-        .where.not(id: except_file_ids)
+        .where.not(id: except_artifact_ids)
         .merge(Geo::JobArtifactRegistry.all)
     end
 
@@ -165,12 +177,20 @@ module Geo
       (ids + include_registry_ids).uniq
     end
 
-    def legacy_find_migrated_local_job_artifacts(except_file_ids:)
-      registry_file_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) - except_file_ids
+    def legacy_find_migrated_local_job_artifacts(except_artifact_ids:)
+      registry_file_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) - except_artifact_ids
 
       legacy_inner_join_registry_ids(
         job_artifacts.with_files_stored_remotely,
         registry_file_ids,
+        Ci::JobArtifact
+      )
+    end
+
+    def legacy_find_synced_missing_on_primary_job_artifacts
+      legacy_inner_join_registry_ids(
+        local_job_artifacts,
+        find_synced_missing_on_primary_job_artifacts_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
     end

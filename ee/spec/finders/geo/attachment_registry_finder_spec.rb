@@ -172,16 +172,14 @@ describe Geo::AttachmentRegistryFinder, :geo do
         expect(uploads).to match_ids(upload_2, upload_3, upload_4)
       end
 
-      it 'excludes uploads without an entry on the tracking database' do
-        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
-
+      it 'excludes uploads in the except_file_ids option' do
         uploads = subject.find_unsynced_attachments(batch_size: 10, except_file_ids: [upload_2.id])
 
-        expect(uploads).to match_ids(upload_3, upload_4)
+        expect(uploads).to match_ids(upload_1, upload_3, upload_4)
       end
 
-      it 'excludes remote uploads without an entry on the tracking database' do
-        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+      it 'excludes remote uploads' do
+        upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
         uploads = subject.find_unsynced_attachments(batch_size: 10)
 

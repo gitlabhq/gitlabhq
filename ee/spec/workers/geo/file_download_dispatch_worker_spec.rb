@@ -56,10 +56,41 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       end
 
       it 'filters S3-backed files' do
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with(:lfs, lfs_object_local_store.id)
-        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with(:lfs, lfs_object_remote_store.id)
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', lfs_object_local_store.id)
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('lfs', lfs_object_remote_store.id)
 
         subject.perform
+      end
+
+      context 'with files missing on the primary that are marked as synced' do
+        let!(:lfs_object_file_missing_on_primary) { create(:lfs_object, :with_file) }
+
+        before do
+          Geo::FileRegistry.create!(file_type: :lfs, file_id: lfs_object_file_missing_on_primary.id, bytes: 1234, success: true, missing_on_primary: true)
+        end
+
+        it 'retries the files if there is spare capacity' do
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', lfs_object_local_store.id)
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', lfs_object_file_missing_on_primary.id)
+
+          subject.perform
+        end
+
+        it 'does not retry those files if there is no spare capacity' do
+          expect(subject).to receive(:db_retrieve_batch_size).and_return(1).twice
+
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', lfs_object_local_store.id)
+
+          subject.perform
+        end
+
+        it 'does not retry those files if they are already scheduled' do
+          scheduled_jobs = [{ type: 'lfs', id: lfs_object_file_missing_on_primary.id, job_id: 'foo' }]
+          expect(subject).to receive(:scheduled_jobs).and_return(scheduled_jobs).at_least(1)
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', lfs_object_local_store.id)
+
+          subject.perform
+        end
       end
     end
 
@@ -67,8 +98,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       it 'performs Geo::FileDownloadWorker for unsynced job artifacts' do
         artifact = create(:ci_job_artifact)
 
-        expect(Geo::FileDownloadWorker).to receive(:perform_async)
-          .with(:job_artifact, artifact.id).once.and_return(spy)
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', artifact.id)
 
         subject.perform
       end
@@ -79,7 +109,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
         create(:geo_job_artifact_registry, artifact_id: artifact.id, bytes: 0, success: false)
 
         expect(Geo::FileDownloadWorker).to receive(:perform_async)
-          .with(:job_artifact, artifact.id).once.and_return(spy)
+          .with('job_artifact', artifact.id).once.and_return(spy)
 
         subject.perform
       end
@@ -107,7 +137,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       it 'does not retry failed artifacts when retry_at is tomorrow' do
         failed_registry = create(:geo_job_artifact_registry, :with_artifact, bytes: 0, success: false, retry_at: Date.tomorrow)
 
-        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with(:job_artifact, failed_registry.artifact_id)
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('job_artifact', failed_registry.artifact_id)
 
         subject.perform
       end
@@ -115,9 +145,58 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       it 'retries failed artifacts when retry_at is in the past' do
         failed_registry = create(:geo_job_artifact_registry, :with_artifact, success: false, retry_at: Date.yesterday)
 
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with(:job_artifact, failed_registry.artifact_id)
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', failed_registry.artifact_id)
 
         subject.perform
+      end
+
+      context 'with files missing on the primary that are marked as synced' do
+        let!(:artifact_file_missing_on_primary) { create(:ci_job_artifact) }
+        let!(:artifact_registry) { create(:geo_job_artifact_registry, artifact_id: artifact_file_missing_on_primary.id, bytes: 1234, success: true, missing_on_primary: true) }
+
+        it 'retries the files if there is spare capacity' do
+          artifact = create(:ci_job_artifact)
+
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', artifact.id)
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', artifact_file_missing_on_primary.id)
+
+          subject.perform
+        end
+
+        it 'retries failed files with retry_at in the past' do
+          artifact_registry.update!(retry_at: Date.yesterday)
+
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', artifact_file_missing_on_primary.id)
+
+          subject.perform
+        end
+
+        it 'does not retry files with later retry_at' do
+          artifact_registry.update!(retry_at: Date.tomorrow)
+
+          expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('job_artifact', artifact_file_missing_on_primary.id)
+
+          subject.perform
+        end
+
+        it 'does not retry those files if there is no spare capacity' do
+          artifact = create(:ci_job_artifact)
+
+          expect(subject).to receive(:db_retrieve_batch_size).and_return(1).twice
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', artifact.id)
+
+          subject.perform
+        end
+
+        it 'does not retry those files if they are already scheduled' do
+          artifact = create(:ci_job_artifact)
+
+          scheduled_jobs = [{ type: 'job_artifact', id: artifact_file_missing_on_primary.id, job_id: 'foo' }]
+          expect(subject).to receive(:scheduled_jobs).and_return(scheduled_jobs).at_least(1)
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('job_artifact', artifact.id)
+
+          subject.perform
+        end
       end
     end
 
@@ -128,7 +207,8 @@ describe Geo::FileDownloadDispatchWorker, :geo do
     it 'attempts to load a new batch without pending downloads' do
       stub_const('Geo::Scheduler::SchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 5)
       secondary.update!(files_max_capacity: 2)
-      allow_any_instance_of(::Gitlab::Geo::Transfer).to receive(:download_from_primary).and_return(100)
+      result_object = double(:result, success: true, bytes_downloaded: 100, primary_missing_file: false)
+      allow_any_instance_of(::Gitlab::Geo::Transfer).to receive(:download_from_primary).and_return(result_object)
 
       avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
       create_list(:lfs_object, 2, :with_file)
@@ -160,8 +240,8 @@ describe Geo::FileDownloadDispatchWorker, :geo do
 
         stub_const('Geo::Scheduler::SchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 1)
 
-        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with(:lfs, failed_registry.file_id)
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with(:lfs, unsynced.id)
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('lfs', failed_registry.file_id)
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', unsynced.id)
 
         subject.perform
       end
@@ -189,6 +269,39 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       end
     end
 
+    context 'with Upload files missing on the primary that are marked as synced' do
+      let(:synced_upload_with_file_missing_on_primary) { create(:upload) }
+
+      before do
+        Geo::FileRegistry.create!(file_type: :avatar, file_id: synced_upload_with_file_missing_on_primary.id, bytes: 1234, success: true, missing_on_primary: true)
+      end
+
+      it 'retries the files if there is spare capacity' do
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', synced_upload_with_file_missing_on_primary.id)
+
+        subject.perform
+      end
+
+      it 'does not retry those files if there is no spare capacity' do
+        unsynced_upload = create(:upload)
+        expect(subject).to receive(:db_retrieve_batch_size).and_return(1).twice
+
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced_upload.id)
+
+        subject.perform
+      end
+
+      it 'does not retry those files if they are already scheduled' do
+        unsynced_upload = create(:upload)
+
+        scheduled_jobs = [{ type: 'avatar', id: synced_upload_with_file_missing_on_primary.id, job_id: 'foo' }]
+        expect(subject).to receive(:scheduled_jobs).and_return(scheduled_jobs).at_least(1)
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced_upload.id)
+
+        subject.perform
+      end
+    end
+
     context 'when node has namespace restrictions' do
       let(:synced_group) { create(:group) }
       let(:project_in_synced_group) { create(:project, group: synced_group) }
@@ -205,7 +318,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
         create(:lfs_objects_project, project: unsynced_project)
 
         expect(Geo::FileDownloadWorker).to receive(:perform_async)
-          .with(:lfs, lfs_object_in_synced_group.lfs_object_id).once.and_return(spy)
+          .with('lfs', lfs_object_in_synced_group.lfs_object_id).once.and_return(spy)
 
         subject.perform
       end
@@ -215,7 +328,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
         job_artifact_in_synced_group = create(:ci_job_artifact, project: project_in_synced_group)
 
         expect(Geo::FileDownloadWorker).to receive(:perform_async)
-          .with(:job_artifact, job_artifact_in_synced_group.id).once.and_return(spy)
+          .with('job_artifact', job_artifact_in_synced_group.id).once.and_return(spy)
 
         subject.perform
       end
@@ -251,57 +364,5 @@ describe Geo::FileDownloadDispatchWorker, :geo do
     end
 
     it_behaves_like '#perform', false
-  end
-
-  describe '#take_batch' do
-    it 'returns a batch of jobs' do
-      a = [[2, :lfs], [3, :lfs]]
-      b = []
-      c = [[3, :job_artifact], [8, :job_artifact], [9, :job_artifact]]
-      expect(subject).to receive(:db_retrieve_batch_size).and_return(4)
-
-      expect(subject.send(:take_batch, a, b, c)).to eq([
-        [3, :job_artifact],
-        [2, :lfs],
-        [8, :job_artifact],
-        [3, :lfs]
-      ])
-    end
-  end
-
-  describe '#interleave' do
-    # Notice ties are resolved by taking the "first" tied element
-    it 'interleaves 2 arrays' do
-      a = %w{1 2 3}
-      b = %w{A B C}
-      expect(subject.send(:interleave, a, b)).to eq(%w{1 A 2 B 3 C})
-    end
-
-    # Notice there are no ties in this call
-    it 'interleaves 2 arrays with a longer second array' do
-      a = %w{1 2}
-      b = %w{A B C}
-      expect(subject.send(:interleave, a, b)).to eq(%w{A 1 B 2 C})
-    end
-
-    it 'interleaves 2 arrays with a longer first array' do
-      a = %w{1 2 3}
-      b = %w{A B}
-      expect(subject.send(:interleave, a, b)).to eq(%w{1 A 2 B 3})
-    end
-
-    it 'interleaves 3 arrays' do
-      a = %w{1 2 3}
-      b = %w{A B C}
-      c = %w{i ii iii}
-      expect(subject.send(:interleave, a, b, c)).to eq(%w{1 A i 2 B ii 3 C iii})
-    end
-
-    it 'interleaves 3 arrays of unequal length' do
-      a = %w{1 2}
-      b = %w{A}
-      c = %w{i ii iii iiii}
-      expect(subject.send(:interleave, a, b, c)).to eq(%w{i 1 ii A iii 2 iiii})
-    end
   end
 end

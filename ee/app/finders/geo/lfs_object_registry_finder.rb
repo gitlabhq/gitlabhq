@@ -68,6 +68,14 @@ module Geo
       lfs_objects.with_files_stored_locally
     end
 
+    def find_failed_lfs_objects_registries
+      Geo::FileRegistry.lfs_objects.failed
+    end
+
+    def find_synced_missing_on_primary_lfs_objects_registries
+      Geo::FileRegistry.lfs_objects.synced.missing_on_primary
+    end
+
     private
 
     def find_synced_lfs_objects
@@ -139,7 +147,7 @@ module Geo
     def legacy_find_failed_lfs_objects
       legacy_inner_join_registry_ids(
         local_lfs_objects,
-        Geo::FileRegistry.lfs_objects.failed.pluck(:file_id),
+        find_failed_lfs_objects_registries.pluck(:file_id),
         LfsObject
       )
     end

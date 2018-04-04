@@ -252,11 +252,11 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         expect(job_artifacts).to be_empty
       end
 
-      it 'excludes except_file_ids' do
+      it 'excludes except_artifact_ids' do
         create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id)
         create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_2.id)
 
-        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10, except_file_ids: [job_artifact_remote_1.id])
+        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10, except_artifact_ids: [job_artifact_remote_1.id])
 
         expect(job_artifacts).to match_ids(job_artifact_remote_2)
       end
