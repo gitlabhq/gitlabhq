@@ -26,6 +26,16 @@ export default {
       required: false,
       default: false,
     },
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    discussionsExpanded: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     titleTag() {
@@ -51,6 +61,12 @@ export default {
     },
     lfs() {
       return this.diffFile.storedExternally && this.diffFile.externalStorage === 'lfs';
+    },
+    collapseIcon() {
+      return this.expanded ? 'chevron-down' : 'chevron-right';
+    },
+    isDiscussionsExpanded() {
+      return this.discussionsExpanded && this.expanded;
     },
   },
   methods: {
@@ -79,10 +95,10 @@ export default {
     <div class="file-header-content">
       <icon
         v-if="collapsible"
+        :name="collapseIcon"
         @click.stop="handleToggle"
-        name="chevron-down"
-        aria-hidden="true"
         :size="16"
+        aria-hidden="true"
         class="diff-toggle-caret"
       />
       <div
@@ -172,12 +188,10 @@ export default {
         v-if="diffFile.blob && diffFile.blob.readableText"
       >
         <button
-          class="js-toggle-diff-comments btn"
+          :class="{ active: isDiscussionsExpanded }"
+          class="btn"
           title="Toggle comments for this file"
           type="button"
-          :class="{
-            active: 'todo'
-          }"
         >
           <icon name="comment" />
         </button>

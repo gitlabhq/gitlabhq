@@ -40,13 +40,8 @@ export default {
   methods: {
     ...mapActions(['cancelCommentForm', 'saveNote', 'fetchNotes']),
     handleCancelCommentForm() {
-      const { diffLines, line, position } = this;
-
       this.cancelCommentForm({
-        linePosition: position,
-        lineCode: line.lineCode,
-        diffLines,
-        formId: line.id,
+        lineCode: this.line.lineCode,
       });
     },
     handleSaveNote(note) {

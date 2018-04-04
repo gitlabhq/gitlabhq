@@ -22,8 +22,7 @@ export default function initMrNotes() {
     },
     store,
     data() {
-      const notesDataset = document.getElementById('js-vue-mr-discussions')
-        .dataset;
+      const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
 
       return {
         noteableData: JSON.parse(notesDataset.noteableData),
