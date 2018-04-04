@@ -12,7 +12,7 @@ module Gitlab
           end
 
           def self.matches?(build, user)
-            build.success?
+            !build.has_trace? && build.success?
           end
         end
       end

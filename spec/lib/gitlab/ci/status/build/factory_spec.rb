@@ -13,7 +13,7 @@ describe Gitlab::Ci::Status::Build::Factory do
   end
 
   context 'when build is successful' do
-    let(:build) { create(:ci_build, :success) }
+    let(:build) { create(:ci_build, :success, :trace_artifact) }
 
     it 'matches correct core status' do
       expect(factory.core_status).to be_a Gitlab::Ci::Status::Success
@@ -39,7 +39,7 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     context 'when job log gets erased' do
       before do
-        build.trace.set(nil)
+        build.erase
       end
 
       it 'matches correct extended statuses' do
