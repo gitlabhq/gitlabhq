@@ -122,7 +122,8 @@ RSpec.configure do |config|
     allow_any_instance_of(Gitlab::Git::GitlabProjects).to receive(:fork_repository).and_wrap_original do |m, *args|
       m.call(*args)
 
-      shard_path, repository_relative_path = args
+      shard_name, repository_relative_path = args
+      shard_path = Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
       # We can't leave the hooks in place after a fork, as those would fail in tests
       # The "internal" API is not available
       FileUtils.rm_rf(File.join(shard_path, repository_relative_path, 'hooks'))

@@ -340,6 +340,18 @@ class IssuableFinder
     params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
   end
 
+  def by_assignee(items)
+    if assignee
+      items = items.where(assignee_id: assignee.id)
+    elsif no_assignee?
+      items = items.where(assignee_id: nil)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items = items.none
+    end
+
+    items
+  end
+
   def by_author(items)
     if author
       items = items.where(author_id: author.id)

@@ -176,6 +176,22 @@ describe Gitlab::Auth::LDAP::Access do
         expect(access.allowed?).to be_falsey
       end
     end
+
+    context 'when the connection fails' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'does not block the user' do
+        access.allowed?
+
+        expect(user.ldap_blocked?).to be_falsey
+      end
+
+      it 'denies access' do
+        expect(access.allowed?).to be_falsey
+      end
+    end
   end
 
   describe '#block_user' do
