@@ -16,7 +16,7 @@ describe EnvironmentScaling do
 
     context 'when project has a conflicting variable' do
       before do
-        project.variables.create(key: 'PRODUCTION_REPLICAS', value: '2')
+        project.variables.create(key: "#{environment.variable_prefix}_REPLICAS", value: '2')
       end
 
       it 'should be false' do
@@ -45,7 +45,7 @@ describe EnvironmentScaling do
     subject { described_class.incompatible_variables_for(environment) }
 
     it 'returns incompatible variables' do
-      expect(subject).to eq(["#{environment.variable_prefix}_REPLICAS", "PRODUCTION_REPLICAS"])
+      expect(subject).to eq(["#{environment.variable_prefix}_REPLICAS"])
     end
   end
 

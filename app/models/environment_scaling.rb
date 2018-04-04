@@ -12,7 +12,7 @@ class EnvironmentScaling < ActiveRecord::Base
   end
 
   def self.incompatible_variables_for(environment)
-    ["#{environment.variable_prefix}_REPLICAS", "PRODUCTION_REPLICAS"]
+    ["#{environment.variable_prefix}_REPLICAS"]
   end
 
   def available?
