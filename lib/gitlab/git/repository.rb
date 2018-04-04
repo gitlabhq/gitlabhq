@@ -885,7 +885,8 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        gitaly_migrate(:delete_refs) do |is_enabled|
+        gitaly_migrate(:delete_refs,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_delete_refs(*ref_names)
           else
