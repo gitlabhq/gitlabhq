@@ -69,6 +69,7 @@ class Environment < ActiveRecord::Base
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI_ENVIRONMENT_NAME', value: name)
       .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
+      .concat(environment_scaling_variables)
   end
 
   def recently_updated_on_branch?(ref)
@@ -240,5 +241,11 @@ class Environment < ActiveRecord::Base
   # but the chance of collisions is vanishingly small
   def random_suffix
     (0..5).map { SUFFIX_CHARS.sample }.join
+  end
+
+  def environment_scaling_variables
+    return [] unless scaling
+
+    scaling.predefined_variables
   end
 end

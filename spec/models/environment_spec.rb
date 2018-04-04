@@ -291,6 +291,24 @@ describe Environment do
     end
   end
 
+  describe '#predefined_variables' do
+    subject { environment.predefined_variables }
+
+    context 'when environment has scaling options' do
+      let!(:scaling) { create(:environment_scaling, environment: environment) }
+
+      it 'includes scaling variables' do
+        expect(subject.map { |var| var[:key] }).to include(*scaling.predefined_variables.map { |var| var[:key] })
+      end
+    end
+
+    context 'when environment does not have scaling options' do
+      it 'does not include scaling variables' do
+        expect(subject.map { |var| var[:key] }).not_to include("#{environment.variable_prefix}_REPLICAS")
+      end
+    end
+  end
+
   describe 'recently_updated_on_branch?' do
     subject { environment.recently_updated_on_branch?('feature') }
 
