@@ -2,11 +2,8 @@ module Gitlab
   module Auth
     module LDAP
       class Adapter
-<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::LDAP::Adapter
 
-=======
->>>>>>> upstream/master
         SEARCH_RETRY_FACTOR = [1, 1, 2, 3].freeze
         MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size.freeze
 
