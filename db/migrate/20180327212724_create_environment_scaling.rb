@@ -9,7 +9,7 @@ class CreateEnvironmentScaling < ActiveRecord::Migration
 
   def change
     create_table :environment_scalings do |t|
-      t.integer :replicas, null: false
+      t.integer :replicas, null: false, default: 1
       t.references :environment, index: true, foreign_key: { on_delete: :cascade }, null: false, unique: true
     end
   end

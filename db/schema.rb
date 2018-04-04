@@ -718,7 +718,7 @@ ActiveRecord::Schema.define(version: 20180327212724) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environment_scalings", force: :cascade do |t|
-    t.integer "replicas", null: false
+    t.integer "replicas", default: 1, null: false
     t.integer "environment_id", null: false
   end
 
