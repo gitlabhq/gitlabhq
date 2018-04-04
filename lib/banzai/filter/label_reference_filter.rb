@@ -41,7 +41,7 @@ module Banzai
       end
 
       def find_labels(project)
-        LabelsFinder.new(nil, project_id: project.id).execute(skip_authorization: true)
+        LabelsFinder.new(nil, project_id: project.id, include_ancestor_groups: true).execute(skip_authorization: true)
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
@@ -77,7 +77,7 @@ module Banzai
         CGI.unescapeHTML(text.to_s)
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         # use title of wrapped element instead
         nil
       end

@@ -27,9 +27,10 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('caches model by file path', () => {
-      instance.addModel(file('path-name'));
+      const f = file('path-name');
+      instance.addModel(f);
 
-      expect(instance.models.keys().next().value).toBe('path-name');
+      expect(instance.models.keys().next().value).toBe(f.key);
     });
 
     it('adds model into disposable', () => {
@@ -56,7 +57,7 @@ describe('Multi-file editor library model manager', () => {
       instance.addModel(f);
 
       expect(eventHub.$on).toHaveBeenCalledWith(
-        `editor.update.model.dispose.${f.path}`,
+        `editor.update.model.dispose.${f.key}`,
         jasmine.anything(),
       );
     });
@@ -68,9 +69,11 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('returns true when model exists', () => {
-      instance.addModel(file('path-name'));
+      const f = file('path-name');
 
-      expect(instance.hasCachedModel('path-name')).toBeTruthy();
+      instance.addModel(f);
+
+      expect(instance.hasCachedModel(f.key)).toBeTruthy();
     });
   });
 
@@ -103,7 +106,7 @@ describe('Multi-file editor library model manager', () => {
       instance.removeCachedModel(f);
 
       expect(eventHub.$off).toHaveBeenCalledWith(
-        `editor.update.model.dispose.${f.path}`,
+        `editor.update.model.dispose.${f.key}`,
         jasmine.anything(),
       );
     });

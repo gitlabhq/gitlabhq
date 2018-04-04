@@ -62,11 +62,7 @@ export default {
         this.toggleTreeOpen(this.file.path);
       }
 
-      const delayPromise = this.file.changed
-        ? Promise.resolve()
-        : this.updateDelayViewerUpdated(true);
-
-      return delayPromise.then(() => {
+      return this.updateDelayViewerUpdated(true).then(() => {
         router.push(`/project${this.file.url}`);
       });
     },

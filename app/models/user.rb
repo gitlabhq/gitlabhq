@@ -256,7 +256,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       order_method = method || 'id_desc'
 
       case order_method.to_s

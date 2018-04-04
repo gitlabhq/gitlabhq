@@ -83,12 +83,13 @@ module API
     end
 
     def available_labels_for(label_parent)
-      search_params =
-        if label_parent.is_a?(Project)
-          { project_id: label_parent.id }
-        else
-          { group_id: label_parent.id, only_group_labels: true }
-        end
+      search_params = { include_ancestor_groups: true }
+
+      if label_parent.is_a?(Project)
+        search_params[:project_id] = label_parent.id
+      else
+        search_params.merge!(group_id: label_parent.id, only_group_labels: true)
+      end
 
       LabelsFinder.new(current_user, search_params).execute
     end
