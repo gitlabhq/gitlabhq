@@ -18,7 +18,7 @@ When using Vuex at GitLab, separate this concerns into different files to improv
   ├── actions.js        # actions
   ├── mutations.js      # mutations
   ├── getters.js        # getters
-  ├── state.js        # getters
+  ├── state.js          # state
   └── mutation_types.js # mutation types
 ```
 The following example shows an application that lists and adds users to the state.
@@ -68,18 +68,16 @@ You can use `mapState` to access state properties in the components.
 
 ### `actions.js`
 An action is a playload of information to send data from our application to our store.
-They are the only source of information for the store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
 Enforcing that every change is described as an action lets us have a clear understanting of what is going on in the app.
 
-An action represents something that will trigger a state change, for example, when the user enters the page we need to load resources.
-
-In this file, we will write the actions (both sync and async) that will call the respective mutations:
+In this file, we will write the actions that will call the respective mutations:
 
 ```javascript
   import * as types from './mutation_types';
   import axios from '~/lib/utils/axios-utils';
+  import createFlash from '~/flash';
 
   export const requestUsers = ({ commit }) => commit(types.REQUEST_USERS);
   export const receiveUsersSuccess = ({ commit }, data) => commit(types.RECEIVE_USERS_SUCCESS, data);
@@ -90,7 +88,10 @@ In this file, we will write the actions (both sync and async) that will call the
 
     axios.get(state.endoint)
       .then(({ data }) => dispatch('receiveUsersSuccess', data))
-      .catch((error) => dispatch('receiveUsersError', error));
+      .catch((error) => {
+        dispatch('receiveUsersError', error)
+        createFlash('There was an error')
+      });
   }
 
   export const requestAddUser = ({ commit }) => commit(types.REQUEST_ADD_USER);
@@ -111,15 +112,15 @@ When a request is made we often want to show a loading state to the user.
 
 Instead of creating an action to toggle the loading state and dispatch it in the component,
 create:
-1. A sync action `requestSomething`, to toggle the loading state
-1. A sync action `receiveSomethingSuccess`, to handle the success callback
-1. A sync action `receiveSomethingError`, to handle the error callback
-1. An async action `fetchSomething` to make the request.
+1. An action `requestSomething`, to toggle the loading state
+1. An action `receiveSomethingSuccess`, to handle the success callback
+1. An action `receiveSomethingError`, to handle the error callback
+1. An action `fetchSomething` to make the request.
 
 The component MUST only dispatch the `fetchNamespace` action.
 The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
 
-By following this patter we guarantee:
+By following this pattern we guarantee:
 1. All aplications follow the same pattern, making it easier for anyone to maintain the code
 1. All data in the application follows the same lifecycle pattern
 1. Actions are contained and human friendly
@@ -148,11 +149,11 @@ import { mapActions } from 'vuex';
 
 #### `mutations.js`
 The mutations specify how the application state changes in response to actions sent to the store.
-The only way to actually change state in a Vuex store is by committing a mutation.
+The only way to change state in a Vuex store should be by committing a mutation.
 
-**It's a good idea to think of the state shape before writing any code.**
+**It's a good idea to think of the state before writing any code.**
 
-Remember that actions only describe the fact that something happened, they don't describe how the application state changes.
+Remember that actions only describe that something happened, they don't describe how the application state changes.
 
 **Never commit a mutation directly from a component**
 
@@ -161,24 +162,26 @@ Remember that actions only describe the fact that something happened, they don't
 
   export default {
     [types.REQUEST_USERS](state) {
-      Object.assign(state, { isLoading: true });
+      state.isLoading = true;
     },
     [types.RECEIVE_USERS_SUCCESS](state, data) {
       // Do any needed data transformation to the received payload here
-      Object.assign(state, { users: data, isLoading: false });
+      state.users = data;
+      state.isLoading = false;
     },
     [types.REQUEST_USERS_ERROR](state, error) {
-      Object.assign(state, { isLoading: false, error});
+      state.isLoading = false;
     },
     [types.REQUEST_ADD_USER](state, user) {
-     Object.assign(state, { isAddingUser: true });
+     state.isAddingUser = true;
     },
     [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
-      Object.assign(state, { isAddingUser: false });
+      state.isAddingUser = false;
       state.users.push(user);
     },
     [types.REQUEST_ADD_USER_ERROR](state, error) {
-      Object.assign(state, { isAddingUser: true , errorAddingUser: error});
+      state.isAddingUser = true;
+      state.errorAddingUser = error∂;
     },
   };
 ```
@@ -189,7 +192,7 @@ This can be done through the `getters`:
 
 ```javascript
 // get all the users with pets
-export getUsersWithPets = (state, getters) => {
+export const getUsersWithPets = (state, getters) => {
   return state.users.filter(user => user.pet !== undefined);
 };
 ```
@@ -259,9 +262,6 @@ export default {
 
   created() {
     this.fetchUsers()
-      .catch(() => {
-        // TODO - Decide where to handle the `createFlash`
-      })
   }
 }
 </script>
@@ -273,13 +273,14 @@ export default {
     <li v-else-if="error">
       {{ error }}
     </li>
-    <li
-      v-else
-      v-for="user in users"
-      :key="user.id"
-    >
-      {{ user }}
-    </li>
+    <template v-else>
+      <li
+        v-for="user in users"
+        :key="user.id"
+      >
+        {{ user }}
+      </li>
+    </template>
   </ul>
 </template>
 ```
