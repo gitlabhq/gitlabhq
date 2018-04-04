@@ -161,7 +161,7 @@ class Environment < ActiveRecord::Base
     @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
 
-  def ci_name
+  def variable_prefix
     name.upcase
   end
 

@@ -26,7 +26,7 @@ describe EnvironmentScaling do
 
     context 'when group has a conflicting variable' do
       before do
-        group.variables.create(key: "#{environment.ci_name}_REPLICAS", value: '2')
+        group.variables.create(key: "#{environment.variable_prefix}_REPLICAS", value: '2')
       end
 
       it 'should be false' do
@@ -45,7 +45,7 @@ describe EnvironmentScaling do
     subject { described_class.incompatible_variables_for(environment) }
 
     it 'returns incompatible variables' do
-      expect(subject).to eq(["#{environment.ci_name}_REPLICAS", "PRODUCTION_REPLICAS"])
+      expect(subject).to eq(["#{environment.variable_prefix}_REPLICAS", "PRODUCTION_REPLICAS"])
     end
   end
 
@@ -62,6 +62,6 @@ describe EnvironmentScaling do
   describe '#predefined_variables' do
     subject { environment_scaling.predefined_variables }
 
-    it { is_expected.to include({ key: "#{environment_scaling.environment.ci_name}_REPLICAS", value: environment_scaling.replicas }) }
+    it { is_expected.to include({ key: "#{environment_scaling.environment.variable_prefix}_REPLICAS", value: environment_scaling.replicas }) }
   end
 end

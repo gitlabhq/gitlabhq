@@ -530,9 +530,9 @@ describe Environment do
     end
   end
 
-  describe '#ci_name' do
+  describe '#variable_prefix' do
     it 'upcases the name' do
-      expect(environment.ci_name).to eq environment.name.upcase
+      expect(environment.variable_prefix).to eq environment.name.upcase
     end
   end
 

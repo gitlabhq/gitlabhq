@@ -12,7 +12,7 @@ class EnvironmentScaling < ActiveRecord::Base
   end
 
   def self.incompatible_variables_for(environment)
-    ["#{environment.ci_name}_REPLICAS", "PRODUCTION_REPLICAS"]
+    ["#{environment.variable_prefix}_REPLICAS", "PRODUCTION_REPLICAS"]
   end
 
   def available?
@@ -21,7 +21,7 @@ class EnvironmentScaling < ActiveRecord::Base
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      variables.append(key: "#{environment.ci_name}_REPLICAS", value: replicas)
+      variables.append(key: "#{environment.variable_prefix}_REPLICAS", value: replicas)
     end
   end
 
