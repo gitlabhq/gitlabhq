@@ -2,6 +2,7 @@
 import { mapActions } from 'vuex';
 import RepoTab from './repo_tab.vue';
 import EditorMode from './editor_mode_dropdown.vue';
+import router from '../ide_router';
 
 export default {
   components: {
@@ -9,6 +10,10 @@ export default {
     EditorMode,
   },
   props: {
+    activeFile: {
+      type: Object,
+      required: true,
+    },
     files: {
       type: Array,
       required: true,
@@ -38,7 +43,18 @@ export default {
     this.showShadow = this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
   },
   methods: {
-    ...mapActions(['updateViewer']),
+    ...mapActions(['updateViewer', 'removePendingTab']),
+    openFileViewer(viewer) {
+      this.updateViewer(viewer);
+
+      if (this.activeFile.pending) {
+        return this.removePendingTab(this.activeFile).then(() => {
+          router.push(`/project${this.activeFile.url}`);
+        });
+      }
+
+      return null;
+    },
   },
 };
 </script>
@@ -60,7 +76,7 @@ export default {
       :show-shadow="showShadow"
       :has-changes="hasChanges"
       :merge-request-id="mergeRequestId"
-      @click="updateViewer"
+      @click="openFileViewer"
     />
   </div>
 </template>
