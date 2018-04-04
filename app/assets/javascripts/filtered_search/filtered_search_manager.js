@@ -21,7 +21,7 @@ export default class FilteredSearchManager {
   constructor({
     page,
     isGroup = false,
-    isGroupAncestor = false,
+    isGroupAncestor = true,
     isGroupDecendent = false,
     filteredSearchTokenKeys = FilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',

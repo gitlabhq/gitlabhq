@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: 'epics',
     isGroup: true,
-    isGroupAncestor: true,
     isGroupDecendent: true,
     filteredSearchTokenKeys: FilteredSearchTokenKeysEpics,
     stateFiltersSelector: '.epics-state-filters',

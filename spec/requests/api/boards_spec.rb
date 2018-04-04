@@ -47,5 +47,36 @@ describe API::Boards do
       expect(json_response['label']['name']).to eq(group_label.title)
       expect(json_response['position']).to eq(3)
     end
+
+    it 'creates a new board list for ancestor group labels' do
+      group = create(:group)
+      sub_group = create(:group, parent: group)
+      group_label = create(:group_label, group: group)
+      board_parent.update(group: sub_group)
+      group.add_developer(user)
+      sub_group.add_developer(user)
+
+      post api(url, user), label_id: group_label.id
+
+      expect(response).to have_gitlab_http_status(201)
+      expect(json_response['label']['name']).to eq(group_label.title)
+    end
+  end
+
+  describe "POST /groups/:id/boards/lists", :nested_groups do
+    set(:group) { create(:group) }
+    set(:board_parent) { create(:group, parent: group ) }
+    let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }
+    set(:board) { create(:board, group: board_parent) }
+
+    it 'creates a new board list for ancestor group labels' do
+      group.add_developer(user)
+      group_label = create(:group_label, group: group)
+
+      post api(url, user), label_id: group_label.id
+
+      expect(response).to have_gitlab_http_status(201)
+      expect(json_response['label']['name']).to eq(group_label.title)
+    end
   end
 end

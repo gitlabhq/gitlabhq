@@ -23,15 +23,6 @@ describe 'Filter issues', :js do
     end
   end
 
-  def expect_issues_list_count(open_count, closed_count = 0)
-    all_count = open_count + closed_count
-
-    expect(page).to have_issuable_counts(open: open_count, closed: closed_count, all: all_count)
-    page.within '.issues-list' do
-      expect(page).to have_selector('.issue', count: open_count)
-    end
-  end
-
   before do
     project.add_master(user)
 
