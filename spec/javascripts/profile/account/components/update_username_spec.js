@@ -11,10 +11,10 @@ describe('UpdateUsername component', () => {
   const username = 'hasnoname';
   let Component;
   let vm;
-  let mock;
+  let axiosMock;
 
   beforeEach(done => {
-    mock = new MockAdapter(axios);
+    axiosMock = new MockAdapter(axios);
     Component = Vue.extend(updateUsername);
     vm = mountComponent(Component, {
       actionUrl,
@@ -31,7 +31,7 @@ describe('UpdateUsername component', () => {
 
   afterEach(() => {
     vm.$destroy();
-    mock.restore();
+    axiosMock.restore();
   });
 
   const findElements = () => ({
@@ -73,7 +73,7 @@ describe('UpdateUsername component', () => {
   });
 
   it('sends a put request when confirming the username change', done => {
-    mock.onPut(actionUrl).reply(() => [200, { message: 'Username changed' }]);
+    axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
 
     const newUsername = 'anything';
 
