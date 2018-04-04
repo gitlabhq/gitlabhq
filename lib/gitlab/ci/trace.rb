@@ -54,15 +54,15 @@ module Gitlab
       end
 
       def exist?
-        trace_artifact&.exists? || ChunkedFile::LiveTrace.exist?(job.id) || current_path.present? || old_trace.present?
+        trace_artifact&.exists? || job.chunks.any? || current_path.present? || old_trace.present?
       end
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
             trace_artifact.open
-          elsif ChunkedFile::LiveTrace.exist?(job.id)
-            ChunkedFile::LiveTrace.new(job.id, nil, "rb")
+          elsif job.chunks.any?
+            Gitlab::Ci::Trace::ChunkedIO.new(job)
           elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
@@ -77,12 +77,10 @@ module Gitlab
 
       def write
         stream = Gitlab::Ci::Trace::Stream.new do
-          if Feature.enabled?('ci_enable_live_trace')
-            if current_path
-              current_path
-            else
-              ChunkedFile::LiveTrace.new(job.id, nil, "a+b")
-            end
+          if current_path
+            current_path
+          elsif Feature.enabled?('ci_enable_live_trace')
+            Gitlab::Ci::Trace::ChunkedIO.new(job)
           else
             File.open(ensure_path, "a+b")
           end
@@ -102,6 +100,7 @@ module Gitlab
           FileUtils.rm(trace_path, force: true)
         end
 
+        job.chunks.destroy_all
         job.erase_old_trace!
       end
 
@@ -109,13 +108,10 @@ module Gitlab
         raise ArchiveError, 'Already archived' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if ChunkedFile::LiveTrace.exist?(job.id)
-          ChunkedFile::LiveTrace.new(job.id, nil, 'a+b') do |live_trace_stream|
-            StringIO.new(live_trace_stream.read, 'rb').tap do |stream|
-              archive_stream!(stream)
-            end
-
-            live_trace_stream.delete
+        if job.chunks.any?
+          Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
+            archive_stream!(stream)
+            stream.destroy!
           end
         elsif current_path
           File.open(current_path) do |stream|

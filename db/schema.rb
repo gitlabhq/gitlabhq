@@ -373,7 +373,8 @@ ActiveRecord::Schema.define(version: 20180327101207) do
   create_table "ci_job_trace_chunks", force: :cascade do |t|
     t.integer "job_id", null: false
     t.integer "chunk_index", null: false
-    t.text "data"
+    t.integer "data_store", null: false
+    t.text "raw_data"
   end
 
   add_index "ci_job_trace_chunks", ["chunk_index", "job_id"], name: "index_ci_job_trace_chunks_on_chunk_index_and_job_id", unique: true, using: :btree

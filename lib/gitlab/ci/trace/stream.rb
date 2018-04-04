@@ -40,8 +40,9 @@ module Gitlab
         end
 
         def set(data)
-          truncate(0)
+          stream.seek(0, IO::SEEK_SET)
           stream.write(data)
+          stream.truncate(data.bytesize)
           stream.flush()
         end
 

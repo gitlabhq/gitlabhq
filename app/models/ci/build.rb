@@ -25,6 +25,8 @@ module Ci
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
+    has_many :chunks, class_name: 'Ci::JobTraceChunk', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
 
