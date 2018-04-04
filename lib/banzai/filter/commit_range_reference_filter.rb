@@ -34,7 +34,7 @@ module Banzai
                                         range.to_param.merge(only_path: context[:only_path]))
       end
 
-      def object_link_title(range)
+      def object_link_title(range, matches)
         nil
       end
     end
