@@ -14,24 +14,38 @@ module Gitlab
         @request_data = request_data
       end
 
-      # Returns number of bytes downloaded or -1 if unsuccessful.
+      # Returns Result object with success boolean and number of bytes downloaded.
       def download_from_primary
-        return unless Gitlab::Geo.secondary?
-        return if File.directory?(filename)
+        return failure unless Gitlab::Geo.secondary?
+        return failure if File.directory?(filename)
 
         primary = Gitlab::Geo.primary_node
 
-        return unless primary
+        return failure unless primary
 
         url = primary.geo_transfers_url(file_type, file_id.to_s)
         req_headers = TransferRequest.new(request_data).headers
 
-        return unless ensure_path_exists
+        return failure unless ensure_path_exists
 
         download_file(url, req_headers)
       end
 
+      class Result
+        attr_reader :success, :bytes_downloaded, :primary_missing_file
+
+        def initialize(success:, bytes_downloaded:, primary_missing_file: false)
+          @success = success
+          @bytes_downloaded = bytes_downloaded
+          @primary_missing_file = primary_missing_file
+        end
+      end
+
       private
+
+      def failure(primary_missing_file: false)
+        Result.new(success: false, bytes_downloaded: 0, primary_missing_file: primary_missing_file)
+      end
 
       def ensure_path_exists
         path = Pathname.new(filename)
@@ -55,7 +69,7 @@ module Gitlab
         file_size = -1
         temp_file = open_temp_file(filename)
 
-        return unless temp_file
+        return failure unless temp_file
 
         begin
           response = Gitlab::HTTP.get(url, allow_local_requests: true, headers: req_headers, stream_body: true) do |fragment|
@@ -65,13 +79,13 @@ module Gitlab
           temp_file.flush
 
           unless response.success?
-            log_error("Unsuccessful download", filename: filename, response_code: response.code, response_msg: response.msg, url: url)
-            return file_size
+            log_error("Unsuccessful download", filename: filename, response_code: response.code, response_msg: response.try(:msg), url: url)
+            return failure(primary_missing_file: primary_missing_file?(response, temp_file))
           end
 
           if File.directory?(filename)
             log_error("Destination file is a directory", filename: filename)
-            return file_size
+            return failure
           end
 
           FileUtils.mv(temp_file.path, filename)
@@ -85,7 +99,18 @@ module Gitlab
           temp_file.unlink
         end
 
-        file_size
+        Result.new(success: file_size > -1, bytes_downloaded: [file_size, 0].max)
+      end
+
+      def primary_missing_file?(response, temp_file)
+        body = File.read(temp_file.path) if File.exist?(temp_file.path)
+
+        if response.code == 404 && body.present?
+          json_response = JSON.parse(body)
+          json_response['geo_code'] == Gitlab::Geo::FileUploader::FILE_NOT_FOUND_GEO_CODE
+        end
+      rescue JSON::ParserError
+        false
       end
 
       def default_permissions
