@@ -1,0 +1,26 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :slack_app_enabled do
+            = f.check_box :slack_app_enabled
+            Enable Slack application
+          .help-block
+            This option is only available on GitLab.com
+    .form-group
+      = f.label :slack_app_id, 'APP_ID', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :slack_app_id, class: 'form-control'
+    .form-group
+      = f.label :slack_app_secret, 'APP_SECRET', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :slack_app_secret, class: 'form-control'
+    .form-group
+      = f.label :slack_app_verification_token, 'Verification token', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :slack_app_verification_token, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success"

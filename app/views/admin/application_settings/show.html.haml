@@ -303,5 +303,29 @@
   .settings-content
     = render 'outbound'
 
-.prepend-top-20
-  = render 'form'
+-# EE-only
+- if Gitlab::Geo.license_allows?
+  %section.settings.as-geo.no-animate#js-geo-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('GitLab Geo')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Geo allows you to replicate your GitLab instance to other geographical locations.')
+    .settings-content
+      = render 'geo'
+
+- if License.feature_available?(:external_authorization_service)
+  = render partial: 'external_authorization_service_form', locals: { f: f }
+
+- if License.feature_available?(:repository_mirrors)
+  = render partial: 'repository_mirrors_form', locals: { f: f }
+
+- if License.feature_available?(:elastic_search)
+  = render partial: 'elasticsearch_form', locals: { f: f }
+
+- if Gitlab.com? || Rails.env.development?
+  %fieldset
+    %legend Slack application
+  = render partial: 'slack', locals: { f: f }
