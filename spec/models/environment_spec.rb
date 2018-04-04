@@ -550,7 +550,7 @@ describe Environment do
 
   describe '#variable_prefix' do
     it 'upcases the name' do
-      expect(environment.variable_prefix).to eq environment.slug.gsub(/-/, '_').upcase
+      expect(environment.variable_prefix).to eq environment.slug.tr('-', '_').upcase
     end
   end
 

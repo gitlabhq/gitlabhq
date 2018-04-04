@@ -163,7 +163,7 @@ class Environment < ActiveRecord::Base
   end
 
   def variable_prefix
-    slug.gsub(/-/, '_').upcase
+    slug.tr('-', '_').upcase
   end
 
   def slug
