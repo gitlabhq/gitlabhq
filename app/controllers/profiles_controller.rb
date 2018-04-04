@@ -51,9 +51,8 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
+    result = Users::UpdateService.new(current_user, user: @user, username: username_param).execute
     respond_to do |format|
-      result = Users::UpdateService.new(current_user, user: @user, username: user_params[:username]).execute
-
       if result[:status] == :success
         message = "Username successfully changed"
 
