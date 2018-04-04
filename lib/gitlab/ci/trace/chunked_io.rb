@@ -15,11 +15,12 @@ module Gitlab
 
         alias_method :pos, :tell
 
-        def initialize(job)
+        def initialize(job, &block)
           @job = job
           @chunks_cache = []
           @tell = 0
           @size = job_chunks.last.try(&:end_offset).to_i
+          yield self if block_given?
         end
 
         def close
@@ -73,18 +74,25 @@ module Gitlab
           end
         end
 
-        def read(length = nil)
+        def read(length = (size - tell), outbuf = "")
           out = ""
+          end_tell = [tell + length, size].min
 
-          until eof? || (length && out.length >= length)
+          until end_tell <= tell
             data = chunk_slice_from_offset
             break if data.empty?
+
+            data = data[0, (length % CHUNK_SIZE)] if data.bytesize + tell >= end_tell
 
             out << data
             @tell += data.bytesize
           end
 
-          out = out[0, length] if length && out.length > length
+          # TODO: If we support `IO::copy_stream`, outbuf must be handled properly
+          # if outbuf
+          #   outbuf.slice!(/.*/)
+          #   outbuf << out
+          # end
 
           out
         end
@@ -110,19 +118,19 @@ module Gitlab
         end
 
         def write(data)
-          start_pos = @tell
+          start_pos = tell
 
-          while @tell < start_pos + data.bytesize
+          while tell < start_pos + data.bytesize
             # get slice from current offset till the end where it falls into chunk
             chunk_bytes = CHUNK_SIZE - chunk_offset
-            chunk_data = data.byteslice(@tell - start_pos, chunk_bytes)
+            chunk_data = data.byteslice(tell - start_pos, chunk_bytes)
 
             # append data to chunk, overwriting from that point
             ensure_chunk.append(chunk_data, chunk_offset)
 
             # move offsets within buffer
             @tell += chunk_bytes
-            @size = [@size, @tell].max
+            @size = [size, tell].max
           end
         end
 
@@ -172,7 +180,7 @@ module Gitlab
             end
           end
 
-          @chunk.byteslice(chunk_offset, CHUNK_SIZE)
+          @chunk[chunk_offset..CHUNK_SIZE]
         end
 
         def chunk_offset
@@ -200,7 +208,7 @@ module Gitlab
         end
 
         def build_chunk
-          @chunks_cache[chunk_index] = Ci::JobTraceChunk.new(job: job, chunk_index: chunk_index)
+          @chunks_cache[chunk_index] = ::Ci::JobTraceChunk.new(job: job, chunk_index: chunk_index)
         end
 
         def ensure_chunk
@@ -208,7 +216,7 @@ module Gitlab
         end
 
         def job_chunks
-          Ci::JobTraceChunk.where(job: job)
+          ::Ci::JobTraceChunk.where(job: job)
         end
       end
     end
