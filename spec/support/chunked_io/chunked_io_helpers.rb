@@ -10,7 +10,7 @@ module ChunkedIOHelpers
     if chunk_stores.first == Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database
       '01234567' * 32 # 256 bytes
     else
-      File.read(expand_fixture_path('trace/sample_trace'))
+      File.read(expand_fixture_path('trace/sample_trace_with_byte'))
     end
   end
 
