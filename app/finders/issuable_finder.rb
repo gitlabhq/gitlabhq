@@ -338,8 +338,6 @@ class IssuableFinder
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
     params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
-<<<<<<< HEAD
-=======
   end
 
   def by_assignee(items)
@@ -352,7 +350,6 @@ class IssuableFinder
     end
 
     items
->>>>>>> upstream/master
   end
 
   def by_author(items)

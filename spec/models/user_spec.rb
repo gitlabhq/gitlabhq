@@ -1479,7 +1479,6 @@ describe User do
     end
   end
 
-<<<<<<< HEAD
   describe "#existing_member?" do
     it "returns true for exisitng user" do
       create :user, email: "bruno@example.com"
@@ -1501,8 +1500,6 @@ describe User do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe '#sort_by_attribute' do
     before do
       described_class.delete_all
