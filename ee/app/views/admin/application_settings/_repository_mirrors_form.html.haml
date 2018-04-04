@@ -1,6 +1,7 @@
-- if License.feature_available?(:repository_mirrors)
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
   %fieldset
-    %legend Repository mirror settings
     .form-group
       = f.label :mirror_available, 'Enable mirror configuration', class: 'control-label col-sm-2'
       .col-sm-10
@@ -34,3 +35,5 @@
         = f.number_field :mirror_capacity_threshold, class: 'form-control', min: 0
         %span.help-block#mirror_capacity_threshold
         Minimum capacity to be available before we schedule more mirrors preemptively.
+
+  = f.submit 'Save changes', class: "btn btn-success"

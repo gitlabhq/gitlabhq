@@ -317,15 +317,49 @@
       = render 'geo'
 
 - if License.feature_available?(:external_authorization_service)
-  = render partial: 'external_authorization_service_form', locals: { f: f }
+  %section.settings.as-external-auth.no-animate#js-external-auth-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('External authentication')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+      = _('External Classification Policy Authorization')
+    .settings-content
+      = render 'external_authorization_service_form'
 
 - if License.feature_available?(:repository_mirrors)
-  = render partial: 'repository_mirrors_form', locals: { f: f }
+  %section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Repository mirror settings')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Time between updates and capacity settings.')
+    .settings-content
+      = render partial: 'repository_mirrors_form'
 
 - if License.feature_available?(:elastic_search)
-  = render partial: 'elasticsearch_form', locals: { f: f }
+  %section.settings.as-elasticsearch.no-animate#js-elasticsearch-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Elasticsearch')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Elasticsearch intergration. Elasticsearch AWS IAM.')
+    .settings-content
+      = render partial: 'elasticsearch_form'
 
 - if Gitlab.com? || Rails.env.development?
-  %fieldset
-    %legend Slack application
-  = render partial: 'slack', locals: { f: f }
+  %section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Slack application')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Geo allows you to replicate your GitLab instance to other geographical locations.')
+    .settings-content
+      = render partial: 'slack'
