@@ -3,7 +3,10 @@ module Geo
     module Primary
       class PerShardSchedulerWorker < Geo::Scheduler::PerShardSchedulerWorker
         def perform
-          return unless Gitlab::Geo.primary?
+          unless Gitlab::Geo.primary?
+            log_info('Current node not a primary')
+            return
+          end
 
           super
         end

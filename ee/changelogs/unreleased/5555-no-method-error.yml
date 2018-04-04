@@ -1,0 +1,5 @@
+---
+title: Fix an exception in the Geo repository sync worker
+merge_request: 5223
+author:
+type: fixed
