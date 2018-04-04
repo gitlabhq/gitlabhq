@@ -1,0 +1,37 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :version_check_enabled do
+            = f.check_box :version_check_enabled
+            Enable version check
+          .help-block
+            GitLab will inform you if a new version is available.
+            = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
+            about what information is shared with GitLab Inc.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        - can_be_configured = @application_setting.usage_ping_can_be_configured?
+        .checkbox
+          = f.label :usage_ping_enabled do
+            = f.check_box :usage_ping_enabled, disabled: !can_be_configured
+            Enable usage ping
+          .help-block
+            - if can_be_configured
+              To help improve GitLab and its user experience, GitLab will
+              periodically collect usage information.
+              = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+              about what information is shared with GitLab Inc. Visit
+              = link_to 'Cohorts', admin_cohorts_path(anchor: 'usage-ping')
+              to see the JSON payload sent.
+            - else
+              The usage ping is disabled, and cannot be configured through this
+              form. For more information, see the documentation on
+              = succeed '.' do
+                = link_to 'deactivating the usage ping', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
+
+  = f.submit 'Save changes', class: "btn btn-success"
+
