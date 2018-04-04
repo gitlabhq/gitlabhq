@@ -12,8 +12,11 @@
         .col-sm-10
           = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
+<<<<<<< HEAD
   = render partial: 'elasticsearch_form', locals: { f: f }
 
+=======
+>>>>>>> upstream/master
   - if koding_enabled?
     %fieldset
       %legend Koding
@@ -174,6 +177,7 @@
             AuthorizedKeysCommand. Click on the help icon for more details.
             = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
 
+<<<<<<< HEAD
   - if Gitlab.com? || Rails.env.development?
     %fieldset
       %legend Slack application
@@ -214,5 +218,7 @@
   - if License.feature_available?(:external_authorization_service)
     = render partial: 'external_authorization_service_form', locals: { f: f }
 
+=======
+>>>>>>> upstream/master
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

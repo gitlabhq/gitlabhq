@@ -16,7 +16,7 @@ describe Gitlab::Git::GitlabProjects do
   let(:tmp_repos_path) { TestEnv.repos_path }
   let(:repo_name) { project.disk_path + '.git' }
   let(:tmp_repo_path) { File.join(tmp_repos_path, repo_name) }
-  let(:gl_projects) { build_gitlab_projects(tmp_repos_path, repo_name) }
+  let(:gl_projects) { build_gitlab_projects(TestEnv::REPOS_STORAGE, repo_name) }
 
   describe '#initialize' do
     it { expect(gl_projects.shard_path).to eq(tmp_repos_path) }
@@ -237,11 +237,12 @@ describe Gitlab::Git::GitlabProjects do
   end
 
   describe '#fork_repository' do
+    let(:dest_repos) { TestEnv::REPOS_STORAGE }
     let(:dest_repos_path) { tmp_repos_path }
     let(:dest_repo_name) { File.join('@hashed', 'aa', 'bb', 'xyz.git') }
     let(:dest_repo) { File.join(dest_repos_path, dest_repo_name) }
 
-    subject { gl_projects.fork_repository(dest_repos_path, dest_repo_name) }
+    subject { gl_projects.fork_repository(dest_repos, dest_repo_name) }
 
     before do
       FileUtils.mkdir_p(dest_repos_path)
@@ -282,7 +283,12 @@ describe Gitlab::Git::GitlabProjects do
       # that is not very straight-forward so I'm leaving this test here for now till
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/41393 is fixed.
       context 'different storages' do
-        let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), 'alternative') }
+        let(:dest_repos) { 'alternative' }
+        let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), dest_repos) }
+
+        before do
+          stub_storage_settings(dest_repos => { 'path' => dest_repos_path })
+        end
 
         it 'forks the repo' do
           is_expected.to be_truthy

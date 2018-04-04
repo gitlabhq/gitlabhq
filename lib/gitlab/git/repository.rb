@@ -96,7 +96,7 @@ module Gitlab
 
         storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
-          storage_path,
+          storage,
           relative_path,
           global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
           logger: Rails.logger
