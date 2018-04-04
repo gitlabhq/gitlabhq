@@ -102,7 +102,7 @@
   .settings-content
     = render 'prometheus'
 
-%section.settings.as-performance.no-animate#js-performance-settings{ class: ('expanded' if expanded) }
+%section.settings.as-performance-bar.no-animate#js-performance-bar-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('Profiling - Performance bar')
@@ -180,6 +180,107 @@
   .settings-content
     = render 'repository_check'
 
+- if Gitlab.config.registry.enabled
+  %section.settings.as-registry.no-animate#js-registry-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Container Registry')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Various container registry settings.')
+    .settings-content
+      = render 'registry'
+
+- if koding_enabled?
+  %section.settings.as-koding.no-animate#js-koding-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Koding')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Online IDE integration settings.')
+    .settings-content
+      = render 'koding'
+
+%section.settings.as-plantuml.no-animate#js-plantuml-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('PlantUML')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Allow rendering of PlantUML diagrams in Asciidoc documents.')
+  .settings-content
+    = render 'plantuml'
+
+%section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded) }
+  .settings-header#usage-statistics
+    %h4
+      = _('Usage statistics')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Enable or disable version check and usage ping.')
+  .settings-content
+    = render 'usage'
+
+%section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Email')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Various email settings.')
+  .settings-content
+    = render 'email'
+
+%section.settings.as-gitaly.no-animate#js-gitaly-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Gitaly')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure Gitaly timeouts.')
+  .settings-content
+    = render 'gitaly'
+
+%section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Web terminal')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Set max session time for web terminal.')
+  .settings-content
+    = render 'terminal'
+
+%section.settings.as-realtime.no-animate#js-realtime-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Real-time features')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Change this value to influence how frequently the GitLab UI polls for updates.')
+  .settings-content
+    = render 'realtime'
+
+%section.settings.as-performance.no-animate#js-performance-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Performance optimization')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Various settings that affect GitLab performance.')
+  .settings-content
+    = render 'performance'
+
 %section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
@@ -202,5 +303,63 @@
   .settings-content
     = render 'outbound'
 
-.prepend-top-20
-  = render 'form'
+-# EE-only
+- if Gitlab::Geo.license_allows?
+  %section.settings.as-geo.no-animate#js-geo-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('GitLab Geo')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Geo allows you to replicate your GitLab instance to other geographical locations.')
+    .settings-content
+      = render 'geo'
+
+- if License.feature_available?(:external_authorization_service)
+  %section.settings.as-external-auth.no-animate#js-external-auth-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('External authentication')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+      = _('External Classification Policy Authorization')
+    .settings-content
+      = render 'external_authorization_service_form'
+
+- if License.feature_available?(:repository_mirrors)
+  %section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Repository mirror settings')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Time between updates and capacity settings.')
+    .settings-content
+      = render partial: 'repository_mirrors_form'
+
+- if License.feature_available?(:elastic_search)
+  %section.settings.as-elasticsearch.no-animate#js-elasticsearch-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Elasticsearch')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Elasticsearch intergration. Elasticsearch AWS IAM.')
+    .settings-content
+      = render partial: 'elasticsearch_form'
+
+- if Gitlab.com? || Rails.env.development?
+  %section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Slack application')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = _('Geo allows you to replicate your GitLab instance to other geographical locations.')
+    .settings-content
+      = render partial: 'slack'

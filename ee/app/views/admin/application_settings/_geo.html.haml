@@ -1,0 +1,15 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    %p
+      These settings will only take effect if Geo is enabled and require a restart to take effect.
+    .form-group
+      = f.label :geo_status_timeout, 'Connection timeout', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :geo_status_timeout, class: 'form-control'
+        .help-block
+          The amount of seconds after which a request to get a secondary node
+          status will time out.
+
+  = f.submit 'Save changes', class: "btn btn-success"
