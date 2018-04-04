@@ -102,8 +102,7 @@ describe 'Profile account page', :js do
       page.find('[data-target="#modal-username-change-confirmation"]').click
 
       page.within('.modal') do
-        # Confirm modal, no better selector at the moment
-        find('.btn-warning').click
+        find('.modal-primary-action').click
       end
 
       expect(page).to have_content('new-username')

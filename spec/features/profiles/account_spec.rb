@@ -65,7 +65,6 @@ def update_username(new_username)
   page.find('[data-target="#modal-username-change-confirmation"]').click
 
   page.within('.modal') do
-    # Confirm modal, no better selector at the moment
-    find('.btn-warning').click
+    find('.modal-primary-action').click
   end
 end

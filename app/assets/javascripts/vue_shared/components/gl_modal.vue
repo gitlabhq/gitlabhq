@@ -60,7 +60,7 @@
           <slot name="header">
             <button
               type="button"
-              class="close"
+              class="close modal-close-action"
               data-dismiss="modal"
               :aria-label="s__('Modal|Close')"
               @click="emitCancel($event)"
@@ -83,7 +83,7 @@
           <slot name="footer">
             <button
               type="button"
-              class="btn"
+              class="btn modal-cancel-action"
               data-dismiss="modal"
               @click="emitCancel($event)"
             >
@@ -91,7 +91,7 @@
             </button>
             <button
               type="button"
-              class="btn"
+              class="btn modal-primary-action"
               :class="`btn-${footerPrimaryButtonVariant}`"
               data-dismiss="modal"
               @click="emitSubmit($event)"
