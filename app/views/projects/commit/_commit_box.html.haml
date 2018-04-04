@@ -49,10 +49,10 @@
 
 .commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
-    = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
+    = markdown_field(@commit, :title)
   - if @commit.description.present?
     %pre.commit-description
-      = preserve(markdown(@commit.description, pipeline: :single_line, author: @commit.author))
+      = preserve(markdown_field(@commit, :description))
 
 .info-well
   .well-segment.branch-info
