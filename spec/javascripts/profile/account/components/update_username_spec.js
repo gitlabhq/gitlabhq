@@ -9,6 +9,7 @@ fdescribe('UpdateUsername component', () => {
   const rootUrl = gl.TEST_HOST;
   const actionUrl = `${gl.TEST_HOST}/update/username`;
   const username = 'hasnoname';
+  const newUsername = 'new_username';
   const modalSelector = '#modal-username-change-confirmation';
   let Component;
   let vm;
@@ -49,7 +50,7 @@ fdescribe('UpdateUsername component', () => {
     Vue.nextTick()
       .then(() => {
         expect(vm.username).toBe(username);
-        expect(vm.newUsername).toBe(input.value);
+        expect(vm.newUsername).toBe(username);
         expect(openModalBtn).toBeDisabled();
       })
       .then(done)
@@ -58,13 +59,13 @@ fdescribe('UpdateUsername component', () => {
 
   it('has an enabled button which if the username was changed', done => {
     const { input, openModalBtn } = findElements();
-    input.value = 'anything';
+    input.value = newUsername;
     input.dispatchEvent(new Event('input'));
 
     Vue.nextTick()
       .then(() => {
         expect(vm.username).toBe(username);
-        expect(vm.newUsername).toBe(input.value);
+        expect(vm.newUsername).toBe(newUsername);
         expect(openModalBtn).not.toBeDisabled();
       })
       .then(done)
@@ -72,8 +73,6 @@ fdescribe('UpdateUsername component', () => {
   });
 
   it('confirmation modal contains proper header and body', done => {
-    const newUsername = 'new username';
-
     const header = vm.$el.querySelector(`${modalSelector} .modal-title`);
     const body = vm.$el.querySelector(`${modalSelector} .modal-body`);
 
@@ -90,23 +89,34 @@ fdescribe('UpdateUsername component', () => {
       .catch(done.fail);
   });
 
-  it('sets the username after a successful update', done => {
+  it('executes API call on confirmation button click', done => {
     axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
+    const { confirmModalBtn } = findElements();
 
-    const newUsername = 'anything';
+    vm.newUsername = newUsername;
 
-    const { input, confirmModalBtn } = findElements();
-    input.value = newUsername;
-    input.dispatchEvent(new Event('input'));
+    spyOn(axios, 'put').and.callThrough();
 
     Vue.nextTick()
       .then(() => {
-        expect(vm.username).toBe(username);
-        expect(vm.newUsername).toBe(newUsername);
         confirmModalBtn.click();
+        expect(axios.put).toHaveBeenCalledWith(actionUrl, { user: { username: newUsername } });
       })
-      .then(Vue.nextTick) // first tick to handle the click event properly
-      .then(Vue.nextTick) // second tick to propagate the click username change after success
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('sets the username after a successful update', done => {
+    axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
+
+    vm.newUsername = newUsername;
+
+    Vue.nextTick()
+      .then(() => {
+        vm.onConfirm();
+      })
+      .then(Vue.nextTick)
+      .then(Vue.nextTick)
       .then(() => {
         expect(vm.username).toBe(newUsername);
         expect(vm.newUsername).toBe(newUsername);
@@ -115,26 +125,21 @@ fdescribe('UpdateUsername component', () => {
       .catch(done.fail);
   });
 
-  it('does not set the username after a successful update', done => {
+  it('does not set the username after a erroneous update', done => {
     axiosMock.onPut(actionUrl).replyOnce(() => [400, { message: 'Invalid username' }]);
 
-    const newUsername = 'anything.git';
-
-    const { input, confirmModalBtn } = findElements();
-    input.value = newUsername;
-    input.dispatchEvent(new Event('input'));
+    const invalidUsername = 'anything.git';
+    vm.newUsername = invalidUsername;
 
     Vue.nextTick()
       .then(() => {
-        expect(vm.username).toBe(username);
-        expect(vm.newUsername).toBe(newUsername);
-        confirmModalBtn.click();
+        vm.onConfirm();
       })
-      .then(Vue.nextTick) // first tick to handle the click event properly
-      .then(Vue.nextTick) // second tick to propagate the click username change after success
+      .then(Vue.nextTick)
+      .then(Vue.nextTick)
       .then(() => {
         expect(vm.username).toBe(username);
-        expect(vm.newUsername).toBe(newUsername);
+        expect(vm.newUsername).toBe(invalidUsername);
       })
       .then(done)
       .catch(done.fail);
