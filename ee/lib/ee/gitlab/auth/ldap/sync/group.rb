@@ -11,35 +11,45 @@ module EE
               def execute_all_providers(group)
                 return unless ldap_sync_ready?(group)
 
-                group.start_ldap_sync
-                Rails.logger.debug { "Started syncing all providers for '#{group.name}' group" }
+                begin
+                  group.start_ldap_sync
+                  Rails.logger.debug { "Started syncing all providers for '#{group.name}' group" }
 
-                # Shuffle providers to prevent a scenario where sync fails after a time
-                # and only the first provider or two get synced. This shuffles the order
-                # so subsequent syncs should eventually get to all providers. Obviously
-                # we should avoid failure, but this is an additional safeguard.
-                ::Gitlab::Auth::LDAP::Config.providers.shuffle.each do |provider|
-                  Sync::Proxy.open(provider) do |proxy|
-                    new(group, proxy).update_permissions
+                  # Shuffle providers to prevent a scenario where sync fails after a time
+                  # and only the first provider or two get synced. This shuffles the order
+                  # so subsequent syncs should eventually get to all providers. Obviously
+                  # we should avoid failure, but this is an additional safeguard.
+                  ::Gitlab::Auth::LDAP::Config.providers.shuffle.each do |provider|
+                    Sync::Proxy.open(provider) do |proxy|
+                      new(group, proxy).update_permissions
+                    end
                   end
-                end
 
-                group.finish_ldap_sync
-                Rails.logger.debug { "Finished syncing all providers for '#{group.name}' group" }
+                  group.finish_ldap_sync
+                  Rails.logger.debug { "Finished syncing all providers for '#{group.name}' group" }
+                rescue ::Gitlab::Auth::LDAP::LDAPConnectionError
+                  Rails.logger.warn("Error syncing all providers for '#{group.name}' group")
+                  group.fail_ldap_sync
+                end
               end
 
               # Sync members across a single provider for the given group.
               def execute(group, proxy)
                 return unless ldap_sync_ready?(group)
 
-                group.start_ldap_sync
-                Rails.logger.debug { "Started syncing '#{proxy.provider}' provider for '#{group.name}' group" }
+                begin
+                  group.start_ldap_sync
+                  Rails.logger.debug { "Started syncing '#{proxy.provider}' provider for '#{group.name}' group" }
 
-                sync_group = new(group, proxy)
-                sync_group.update_permissions
+                  sync_group = new(group, proxy)
+                  sync_group.update_permissions
 
-                group.finish_ldap_sync
-                Rails.logger.debug { "Finished syncing '#{proxy.provider}' provider for '#{group.name}' group" }
+                  group.finish_ldap_sync
+                  Rails.logger.debug { "Finished syncing '#{proxy.provider}' provider for '#{group.name}' group" }
+                rescue ::Gitlab::Auth::LDAP::LDAPConnectionError
+                  Rails.logger.warn("Error syncing '#{proxy.provider}' provider for '#{group.name}' group")
+                  group.fail_ldap_sync
+                end
               end
 
               def ldap_sync_ready?(group)

@@ -22,6 +22,11 @@ module EE
           .with(cn, kind_of(::Gitlab::Auth::LDAP::Adapter)).and_return(return_value)
     end
 
+    def unstub_ldap_group_find_by_cn
+      allow(EE::Gitlab::Auth::LDAP::Group)
+        .to receive(:find_by_cn).and_call_original
+    end
+
     # Create an LDAP group entry with any number of members. By default, creates
     # a groupOfNames style entry. Change the style by specifying the object class
     # and member attribute name. The last example below shows how to specify a
