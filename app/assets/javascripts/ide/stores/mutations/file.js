@@ -5,6 +5,14 @@ export default {
     Object.assign(state.entries[path], {
       active,
     });
+
+    if (active && !state.entries[path].pending) {
+      Object.assign(state, {
+        openFiles: state.openFiles.map(f =>
+          Object.assign(f, { active: f.pending ? false : f.active }),
+        ),
+      });
+    }
   },
   [types.TOGGLE_FILE_OPEN](state, path) {
     Object.assign(state.entries[path], {
@@ -12,10 +20,14 @@ export default {
     });
 
     if (state.entries[path].opened) {
-      state.openFiles.push(state.entries[path]);
-    } else {
       Object.assign(state, {
-        openFiles: state.openFiles.filter(f => f.path !== path),
+        openFiles: state.openFiles.filter(f => f.path !== path).concat(state.entries[path]),
+      });
+    } else {
+      const file = state.entries[path];
+
+      Object.assign(state, {
+        openFiles: state.openFiles.filter(f => f.key !== file.key),
       });
     }
   },
@@ -90,6 +102,39 @@ export default {
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
     Object.assign(state.entries[file.path], {
       changed,
+    });
+  },
+  [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
+    const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
+    let openFiles = state.openFiles.map(f =>
+      Object.assign(f, { active: f.path === file.path, opened: false }),
+    );
+
+    if (!pendingTab) {
+      const openFile = openFiles.find(f => f.path === file.path);
+
+      openFiles = openFiles.concat(openFile ? null : file).reduce((acc, f) => {
+        if (!f) return acc;
+
+        if (f.path === file.path) {
+          return acc.concat({
+            ...f,
+            active: true,
+            pending: true,
+            opened: true,
+            key: `${keyPrefix}-${f.key}`,
+          });
+        }
+
+        return acc.concat(f);
+      }, []);
+    }
+
+    Object.assign(state, { openFiles });
+  },
+  [types.REMOVE_PENDING_TAB](state, file) {
+    Object.assign(state, {
+      openFiles: state.openFiles.filter(f => f.key !== file.key),
     });
   },
 };

@@ -889,8 +889,8 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
-        expect(json_response).not_to have_key('repository_storage')
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
+        expect(json_response).not_to have_key('repository_storage')
       end
 
       it 'returns a project by path name' do
