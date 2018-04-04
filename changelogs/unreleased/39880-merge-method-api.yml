@@ -1,9 +1,5 @@
 ---
 title: 'API: Add parameter merge_method to projects'
-<<<<<<< HEAD
-merge_request:
-=======
 merge_request: 18031
->>>>>>> upstream/master
 author: Jan Beckmann
 type: added
