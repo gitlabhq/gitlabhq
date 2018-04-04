@@ -285,6 +285,10 @@ module ApplicationHelper
     class_names
   end
 
+  # EE feature: System header and footer, unavailable in CE
+  def system_message_class
+  end
+
   # Returns active css class when condition returns true
   # otherwise returns nil.
   #

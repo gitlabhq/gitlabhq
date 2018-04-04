@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Auth::OAuth::User do
+  include LdapHelpers
+
   let(:oauth_user) { described_class.new(auth_hash) }
   let(:gl_user) { oauth_user.gl_user }
   let(:uid) { 'my-uid' }
@@ -38,10 +40,6 @@ describe Gitlab::Auth::OAuth::User do
   end
 
   describe '#save' do
-    def stub_ldap_config(messages)
-      allow(Gitlab::Auth::LDAP::Config).to receive_messages(messages)
-    end
-
     let(:provider) { 'twitter' }
 
     describe 'when account exists on server' do
@@ -269,20 +267,47 @@ describe Gitlab::Auth::OAuth::User do
             end
 
             context 'when an LDAP person is not found by uid' do
-              it 'tries to find an LDAP person by DN and adds the omniauth identity to the user' do
+              it 'tries to find an LDAP person by email and adds the omniauth identity to the user' do
                 allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_uid).and_return(nil)
-                allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
+                allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(ldap_user)
 
                 oauth_user.save
 
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash)
-                  .to match_array(
-                    [
-                      { provider: 'ldapmain', extern_uid: dn },
-                      { provider: 'twitter', extern_uid: uid }
-                    ]
-                  )
+                expect(identities_as_hash).to match_array(result_identities(dn, uid))
+              end
+
+              context 'when also not found by email' do
+                it 'tries to find an LDAP person by DN and adds the omniauth identity to the user' do
+                  allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_uid).and_return(nil)
+                  allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
+                  allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
+
+                  oauth_user.save
+
+                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  expect(identities_as_hash).to match_array(result_identities(dn, uid))
+                end
+              end
+            end
+
+            def result_identities(dn, uid)
+              [
+                { provider: 'ldapmain', extern_uid: dn },
+                { provider: 'twitter', extern_uid: uid }
+              ]
+            end
+
+            context 'when there is an LDAP connection error' do
+              before do
+                raise_ldap_connection_error
+              end
+
+              it 'does not save the identity' do
+                oauth_user.save
+
+                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                expect(identities_as_hash).to match_array([{ provider: 'twitter', extern_uid: uid }])
               end
             end
           end
@@ -737,6 +762,21 @@ describe Gitlab::Auth::OAuth::User do
     it 'normalizes extern_uid' do
       allow(oauth_user.auth_hash).to receive(:uid).and_return('MY-UID')
       expect(oauth_user.find_user).to eql gl_user
+    end
+  end
+
+  describe '#find_ldap_person' do
+    context 'when LDAP connection fails' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'returns nil' do
+        adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain')
+        hash = OmniAuth::AuthHash.new(uid: 'whatever', provider: 'ldapmain')
+
+        expect(oauth_user.send(:find_ldap_person, hash, adapter)).to be_nil
+      end
     end
   end
 end

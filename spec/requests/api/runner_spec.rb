@@ -109,6 +109,26 @@ describe API::Runner do
         end
       end
 
+      context 'when maximum job timeout is specified' do
+        it 'creates runner' do
+          post api('/runners'), token: registration_token,
+                                maximum_timeout: 9000
+
+          expect(response).to have_gitlab_http_status 201
+          expect(Ci::Runner.first.maximum_timeout).to eq(9000)
+        end
+
+        context 'when maximum job timeout is empty' do
+          it 'creates runner' do
+            post api('/runners'), token: registration_token,
+                                  maximum_timeout: ''
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.maximum_timeout).to be_nil
+          end
+        end
+      end
+
       %w(name version revision platform architecture).each do |param|
         context "when info parameter '#{param}' info is present" do
           let(:value) { "#{param}_value" }
@@ -340,12 +360,12 @@ describe API::Runner do
           let(:expected_steps) do
             [{ 'name' => 'script',
                'script' => %w(ls date),
-               'timeout' => job.timeout,
+               'timeout' => job.metadata_timeout,
                'when' => 'on_success',
                'allow_failure' => false },
              { 'name' => 'after_script',
                'script' => %w(ls date),
-               'timeout' => job.timeout,
+               'timeout' => job.metadata_timeout,
                'when' => 'always',
                'allow_failure' => true }]
           end
@@ -645,6 +665,41 @@ describe API::Runner do
 
                 expect(json_response).to have_key('credentials')
                 expect(json_response['credentials']).not_to include(registry_credentials)
+              end
+            end
+          end
+
+          describe 'timeout support' do
+            context 'when project specifies job timeout' do
+              let(:project) { create(:project, shared_runners_enabled: false, build_timeout: 1234) }
+
+              it 'contains info about timeout taken from project' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
+              end
+
+              context 'when runner specifies lower timeout' do
+                let(:runner) { create(:ci_runner, maximum_timeout: 1000) }
+
+                it 'contains info about timeout overridden by runner' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(201)
+                  expect(json_response['runner_info']).to include({ 'timeout' => 1000 })
+                end
+              end
+
+              context 'when runner specifies bigger timeout' do
+                let(:runner) { create(:ci_runner, maximum_timeout: 2000) }
+
+                it 'contains info about timeout not overridden by runner' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(201)
+                  expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
+                end
               end
             end
           end
@@ -1104,11 +1159,13 @@ describe API::Runner do
             let!(:artifacts) { file_upload }
             let!(:artifacts_sha256) { Digest::SHA256.file(artifacts.path).hexdigest }
             let!(:metadata) { file_upload2 }
+            let!(:metadata_sha256) { Digest::SHA256.file(metadata.path).hexdigest }
 
             let(:stored_artifacts_file) { job.reload.artifacts_file.file }
             let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
+            let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
 
             before do
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
@@ -1120,7 +1177,8 @@ describe API::Runner do
                   'file.name' => artifacts.original_filename,
                   'file.sha256' => artifacts_sha256,
                   'metadata.path' => metadata.path,
-                  'metadata.name' => metadata.original_filename }
+                  'metadata.name' => metadata.original_filename,
+                  'metadata.sha256' => metadata_sha256 }
               end
 
               it 'stores artifacts and artifacts metadata' do
@@ -1129,6 +1187,7 @@ describe API::Runner do
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(72821)
                 expect(stored_artifacts_sha256).to eq(artifacts_sha256)
+                expect(stored_metadata_sha256).to eq(metadata_sha256)
               end
             end
 

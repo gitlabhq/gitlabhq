@@ -18,8 +18,6 @@
         = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
       %p
         = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
-      -# EE-specific start
-      -# EE-specific end
       .md
         = brand_new_project_guidelines
       %p
@@ -43,8 +41,6 @@
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.hidden-xs Import project
             %span.visible-xs Import
-        -# EE-specific start
-        -# EE-specific end
 
       .tab-content.gitlab-tab-content
         .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
@@ -109,10 +105,6 @@
                     %hr
                       = render "shared/import_form", f: f
                       = render 'new_project_fields', f: f, project_name_id: "import-url-name"
-
-
-        -# EE-specific start
-        -# EE-specific end
 
 .save-project-loader.hide
   .center

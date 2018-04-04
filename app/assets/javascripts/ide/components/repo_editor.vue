@@ -1,6 +1,6 @@
 <script>
 /* global monaco */
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
@@ -13,19 +13,16 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'leftPanelCollapsed',
-      'rightPanelCollapsed',
-      'viewer',
-      'delayViewerUpdated',
-    ]),
+    ...mapState(['leftPanelCollapsed', 'rightPanelCollapsed', 'viewer', 'delayViewerUpdated']),
+    ...mapGetters(['currentMergeRequest']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
     },
   },
   watch: {
     file(oldVal, newVal) {
-      if (newVal.path !== this.file.path) {
+      // Compare key to allow for files opened in review mode to be cached differently
+      if (newVal.key !== this.file.key) {
         this.initMonaco();
       }
     },
@@ -68,9 +65,14 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getRawFileData(this.file)
+      this.getRawFileData({
+        path: this.file.path,
+        baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
+      })
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
+          const viewerPromise = this.delayViewerUpdated
+            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
+            : Promise.resolve();
 
           return viewerPromise;
         })
@@ -78,7 +80,7 @@ export default {
           this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
-        .catch((err) => {
+        .catch(err => {
           flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
@@ -101,9 +103,13 @@ export default {
 
       this.model = this.editor.createModel(this.file);
 
-      this.editor.attachModel(this.model);
+      if (this.viewer === 'mrdiff') {
+        this.editor.attachMergeRequestModel(this.model);
+      } else {
+        this.editor.attachModel(this.model);
+      }
 
-      this.model.onChange((model) => {
+      this.model.onChange(model => {
         const { file } = model;
 
         if (file.active) {

@@ -264,8 +264,18 @@ package-and-qa:
   stage: build
   cache: {}
   when: manual
+  variables:
+    GIT_STRATEGY: none
+  retry: 0
+  before_script:
+    # We need to download the script rather than clone the repo since the
+    # package-and-qa job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/$CI_PROJECT_PATH/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
+    - chmod 755 trigger-build-omnibus
   script:
-    - scripts/trigger-build-omnibus
+    - ./trigger-build-omnibus
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
@@ -608,21 +618,26 @@ karma:
 
 codequality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: docker:latest
+  image: docker:stable
+  allow_failure: true
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
   before_script: []
   services:
     - docker:dind
   variables:
     SETUP_DB: "false"
     DOCKER_DRIVER: overlay2
-    CODECLIMATE_FORMAT: json
   cache: {}
   dependencies: []
   script:
-    - apk update && apk add jq
-    - ./scripts/codequality analyze -f json > raw_codeclimate.json || true
-    # The following line keeps only the fields used in the MR widget, reducing the JSON artifact size
-    - jq -c 'map({check_name,description,fingerprint,location})' raw_codeclimate.json > codeclimate.json
+    # Get the custom rubocop codeclimate image (https://gitlab.com/gitlab-org/codeclimate-rubocop/wikis/home)
+    - docker pull dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-rubocop-0-52-1
+    - docker tag dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-rubocop-0-52-1 codeclimate/codeclimate-rubocop:gitlab-codeclimate-rubocop-0-52-1
+    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
     paths: [codeclimate.json]
     expire_in: 1 week

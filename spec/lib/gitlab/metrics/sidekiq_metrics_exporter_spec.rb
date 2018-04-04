@@ -38,7 +38,9 @@ describe Gitlab::Metrics::SidekiqMetricsExporter do
 
             expect(::WEBrick::HTTPServer).to have_received(:new).with(
               Port: port,
-              BindAddress: address
+              BindAddress: address,
+              Logger: anything,
+              AccessLog: anything
             )
           end
         end

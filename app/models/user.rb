@@ -82,11 +82,8 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
-  has_many :keys, -> do
-    type = Key.arel_table[:type]
-    where(type.not_eq('DeployKey').or(type.eq(nil)))
-  end, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { where(type: ['Key', nil]) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :gpg_keys
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -259,7 +256,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       order_method = method || 'id_desc'
 
       case order_method.to_s

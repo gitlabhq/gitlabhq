@@ -436,7 +436,7 @@ class Project < ActiveRecord::Base
       Gitlab::VisibilityLevel.options
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       case method.to_s
       when 'storage_size_desc'
         # storage_size is a joined column so we need to
@@ -566,9 +566,7 @@ class Project < ActiveRecord::Base
   def add_import_job
     job_id =
       if forked?
-        RepositoryForkWorker.perform_async(id,
-                                           forked_from_project.repository_storage_path,
-                                           forked_from_project.disk_path)
+        RepositoryForkWorker.perform_async(id)
       elsif gitlab_project_import?
         # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
         RepositoryImportWorker.set(retry: false).perform_async(self.id)
@@ -1346,20 +1344,19 @@ class Project < ActiveRecord::Base
     Dir.exist?(public_pages_path)
   end
 
-  def pages_url
-    subdomain, _, url_path = full_path.partition('/')
-
-    # The hostname always needs to be in downcased
-    # All web servers convert hostname to lowercase
-    host = "#{subdomain}.#{Settings.pages.host}".downcase
-
+  def pages_group_url
     # The host in URL always needs to be downcased
-    url = Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
-      "#{prefix}#{subdomain}."
+    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
+      "#{prefix}#{pages_subdomain}."
     end.downcase
+  end
+
+  def pages_url
+    url = pages_group_url
+    url_path = full_path.partition('/').last
 
     # If the project path is the same as host, we serve it as group page
-    return url if host == url_path
+    return url if url == "#{Settings.pages.protocol}://#{url_path}"
 
     "#{url}/#{url_path}"
   end
@@ -1545,8 +1542,8 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user:, params: {})
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, params)
+  def add_export_job(current_user:, after_export_strategy: nil, params: {})
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -1572,6 +1569,8 @@ class Project < ActiveRecord::Base
   def export_status
     if export_in_progress?
       :started
+    elsif after_export_in_progress?
+      :after_export_action
     elsif export_project_path
       :finished
     else
@@ -1583,10 +1582,20 @@ class Project < ActiveRecord::Base
     import_export_shared.active_export_count > 0
   end
 
+  def after_export_in_progress?
+    import_export_shared.after_export_in_progress?
+  end
+
   def remove_exports
     return nil unless export_path.present?
 
     FileUtils.rm_rf(export_path)
+  end
+
+  def remove_exported_project_file
+    return unless export_project_path.present?
+
+    FileUtils.rm_f(export_project_path)
   end
 
   def full_path_slug

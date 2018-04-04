@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.6.2 (2018-03-29)
+
+### Fixed (2 changes, 1 of them is from the community)
+
+- Don't capture trailing punctuation when autolinking. !17965
+- Cloning a repository over HTTPS with LDAP credentials causes a HTTP 401 Access denied. (Horatiu Eugen Vlad)
+
+
 ## 10.6.1 (2018-03-27)
 
 ### Security (1 change)
@@ -183,7 +191,6 @@ entry.
 - Enable privileged mode for GitLab Runner. !17528
 - Expose GITLAB_FEATURES as CI/CD variable (fixes #40994).
 - Upgrade GitLab Workhorse to 4.0.0.
-- Allow CI/CD Jobs being grouped on version strings.
 - Add discussions API for Issues and Snippets.
 - Add one group board to Libre.
 - Add support for filtering by source and target branch to merge requests API.

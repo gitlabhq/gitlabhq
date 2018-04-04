@@ -22,6 +22,11 @@
         type: Boolean,
         required: true,
       },
+      runnerHelpUrl: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
       shouldRenderContent() {
@@ -38,6 +43,21 @@
       },
       runnerId() {
         return `#${this.job.runner.id}`;
+      },
+      hasTimeout() {
+        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== '';
+      },
+      timeout() {
+        if (this.job.metadata == null) {
+          return '';
+        }
+
+        let t = this.job.metadata.timeout_human_readable;
+        if (this.job.metadata.timeout_source !== '') {
+          t += ` (from ${this.job.metadata.timeout_source})`;
+        }
+
+        return t;
       },
       renderBlock() {
         return this.job.merge_request ||
@@ -113,6 +133,13 @@
           v-if="job.queued"
           title="Queued"
           :value="queued"
+        />
+        <detail-row
+          class="js-job-timeout"
+          v-if="hasTimeout"
+          title="Timeout"
+          :help-url="runnerHelpUrl"
+          :value="timeout"
         />
         <detail-row
           class="js-job-runner"
