@@ -97,7 +97,7 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     bootstrap_form (2.7.0)
-    brakeman (3.6.2)
+    brakeman (4.2.1)
     browser (2.5.3)
     builder (3.2.3)
     bullet (5.5.1)
@@ -400,7 +400,7 @@ GEM
     hipchat (1.5.4)
       httparty
       mimemagic
-    html-pipeline (2.6.0)
+    html-pipeline (2.7.1)
       activesupport (>= 2)
       nokogiri (>= 1.4)
     html2text (0.2.1)
@@ -1013,7 +1013,7 @@ DEPENDENCIES
   binding_of_caller (~> 0.7.2)
   bootstrap-sass (~> 3.3.0)
   bootstrap_form (~> 2.7.0)
-  brakeman (~> 3.6.0)
+  brakeman (~> 4.2)
   browser (~> 2.2)
   bullet (~> 5.5.0)
   bundler-audit (~> 0.5.0)
@@ -1084,7 +1084,7 @@ DEPENDENCIES
   hashie-forbidden_attributes
   health_check (~> 2.6.0)
   hipchat (~> 1.5.0)
-  html-pipeline (~> 2.6.0)
+  html-pipeline (~> 2.7.1)
   html2text
   httparty (~> 0.13.3)
   influxdb (~> 0.2)
