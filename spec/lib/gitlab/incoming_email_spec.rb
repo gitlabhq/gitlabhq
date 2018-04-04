@@ -83,6 +83,25 @@ describe Gitlab::IncomingEmail do
     it "returns reply key" do
       expect(described_class.key_from_address("replies+key@example.com")).to eq("key")
     end
+
+    context "on GitLab.com" do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it "returns the reply key when using @gitlab.com" do
+        expect(described_class.key_from_address("incoming+key@gitlab.com")).to eq("key")
+      end
+
+      it "returns the reply key when using @incoming.gitlab.com" do
+        expect(described_class.key_from_address("incoming+key@incoming.gitlab.com")).to eq("key")
+      end
+
+      it "does not match other addresses" do
+        expect(described_class.key_from_address("fooincoming+key@incoming.gitlab.com")).to be_nil
+        expect(described_class.key_from_address("incoming+key@incoming.gitlab.com.someotherdomain.com")).to be_nil
+      end
+    end
   end
 
   context 'self.key_from_fallback_message_id' do
