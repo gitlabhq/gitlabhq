@@ -78,6 +78,10 @@ class ProfilesController < Profiles::ApplicationController
     return render_404 unless @user.can_change_username?
   end
 
+  def username_param
+    @username_param ||= user_params.require(:username)
+  end
+
   def user_params
     @user_params ||= params.require(:user).permit(
       :avatar,
