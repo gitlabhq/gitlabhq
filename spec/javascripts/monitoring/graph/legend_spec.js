@@ -20,32 +20,6 @@ describe('Legend Component', () => {
     Legend = Vue.extend(GraphLegend);
   });
 
-  describe('Methods', () => {
-    beforeEach(() => {
-      vm = mountComponent(Legend, {
-        legendTitle: 'legend',
-        timeSeries,
-        currentDataIndex: 0,
-        unitOfDisplay: 'Req/Sec',
-      });
-    });
-
-    it('strokeDashArray', () => {
-      const dashedArray = vm.strokeDashArray('dashed');
-      const dottedArray = vm.strokeDashArray('dotted');
-
-      expect(dashedArray).toEqual('6, 3');
-      expect(dottedArray).toEqual('3, 3');
-    });
-
-    it('summaryMetrics gets the average and max of a series', () => {
-      const summary = vm.summaryMetrics(timeSeries[0]);
-
-      expect(summary.indexOf('Max')).not.toEqual(-1);
-      expect(summary.indexOf('Avg')).not.toEqual(-1);
-    });
-  });
-
   describe('View', () => {
     beforeEach(() => {
       vm = mountComponent(Legend, {
