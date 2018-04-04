@@ -116,9 +116,11 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       wait_for_requests
 
       if board
-        pending("Waiting for https://gitlab.com/gitlab-org/gitlab-ce/issues/44270")
-
         select_label_on_dropdown(group_label_3.title)
+
+        expect(page).to have_selector('.card-title') do |card|
+          expect(card).not_to have_selector('a', text: labeled_issue_2.title)
+        end
 
         expect(page).to have_selector('.card-title') do |card|
           expect(card).to have_selector('a', text: labeled_issue_3.title)
