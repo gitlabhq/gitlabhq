@@ -165,7 +165,7 @@ shared_examples "ChunkedIO shared tests" do
       end
 
       it 'calls get_chunk only once' do
-        expect(chunk_stores.first).to receive(:open).once.and_call_original
+        expect(chunk_stores.first).to receive(:new).once.and_call_original
 
         described_class.new(job_id, nil, 'rb').each_line { |line| }
       end

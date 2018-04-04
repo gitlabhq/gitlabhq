@@ -6,8 +6,16 @@ module Gitlab
           class Base
             attr_reader :params
 
-            def initialize(*identifiers, **params)
+            def initialize(*identifiers, **params, &block)
               @params = params
+
+              if block_given?
+                begin
+                  yield self
+                ensure
+                  self.close
+                end
+              end
             end
 
             def close

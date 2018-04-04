@@ -5,17 +5,6 @@ module Gitlab
         module ChunkStore
           class Redis < Base
             class << self
-              def open(job_id, chunk_index, **params)
-                raise ArgumentError unless job_id && chunk_index
-
-                buffer_key = self.buffer_key(job_id, chunk_index)
-                store = self.new(buffer_key, params)
-
-                yield store
-              ensure
-                store&.close
-              end
-
               def exist?(job_id, chunk_index)
                 Gitlab::Redis::Cache.with do |redis|
                   redis.exists(self.buffer_key(job_id, chunk_index))
@@ -56,10 +45,12 @@ module Gitlab
 
             attr_reader :buffer_key
 
-            def initialize(buffer_key, **params)
-              super
+            def initialize(job_id, chunk_index, **params, &block)
+              raise ArgumentError unless job_id && chunk_index
 
-              @buffer_key = buffer_key
+              @buffer_key = self.class.buffer_key(job_id, chunk_index)
+
+              super
             end
 
             def close

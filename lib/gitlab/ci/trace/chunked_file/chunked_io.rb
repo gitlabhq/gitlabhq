@@ -155,7 +155,7 @@ module Gitlab
             return '' if size <= 0 || eof?
 
             unless in_range?
-              chunk_store.open(job_id, chunk_index, params_for_store) do |store|
+              chunk_store.new(job_id, chunk_index, params_for_store) do |store|
                 @chunk = store.get
 
                 raise ReadError, 'Could not get a chunk' unless chunk && chunk.present?
@@ -190,7 +190,7 @@ module Gitlab
           def write_chunk(data)
             written_size = 0
 
-            chunk_store.open(job_id, chunk_index, params_for_store) do |store|
+            chunk_store.new(job_id, chunk_index, params_for_store) do |store|
               with_callbacks(:write_chunk, store) do
                 written_size = if store.size > 0 # # rubocop:disable ZeroLengthPredicate
                                  store.append!(data)

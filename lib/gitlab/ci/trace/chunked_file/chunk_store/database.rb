@@ -5,18 +5,6 @@ module Gitlab
         module ChunkStore
           class Database < Base
             class << self
-              def open(job_id, chunk_index, **params)
-                raise ArgumentError unless job_id && chunk_index
-
-                job_trace_chunk = ::Ci::JobTraceChunk
-                  .find_or_initialize_by(job_id: job_id, chunk_index: chunk_index)
-                store = self.new(job_trace_chunk, params)
-
-                yield store
-              ensure
-                store&.close
-              end
-
               def exist?(job_id, chunk_index)
                 ::Ci::JobTraceChunk.exists?(job_id: job_id, chunk_index: chunk_index)
               end
@@ -37,10 +25,13 @@ module Gitlab
 
             attr_reader :job_trace_chunk
 
-            def initialize(job_trace_chunk, **params)
-              super
+            def initialize(job_id, chunk_index, **params, &block)
+              raise ArgumentError unless job_id && chunk_index
 
-              @job_trace_chunk = job_trace_chunk
+              @job_trace_chunk = ::Ci::JobTraceChunk
+                .find_or_initialize_by(job_id: job_id, chunk_index: chunk_index)
+
+              super
             end
 
             def close
