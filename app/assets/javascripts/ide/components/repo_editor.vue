@@ -21,7 +21,8 @@ export default {
   },
   watch: {
     file(oldVal, newVal) {
-      if (newVal.path !== this.file.path) {
+      // Compare key to allow for files opened in review mode to be cached differently
+      if (newVal.key !== this.file.key) {
         this.initMonaco();
       }
     },
@@ -70,7 +71,7 @@ export default {
       })
         .then(() => {
           const viewerPromise = this.delayViewerUpdated
-            ? this.updateViewer('editor')
+            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
             : Promise.resolve();
 
           return viewerPromise;

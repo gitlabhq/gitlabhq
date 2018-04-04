@@ -454,6 +454,12 @@ Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * 
 Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
 
 #
+# Sidekiq
+#
+Settings['sidekiq'] ||= Settingslogic.new({})
+Settings['sidekiq']['log_format'] ||= 'default'
+
+#
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})

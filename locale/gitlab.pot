@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 14:40+0300\n"
-"PO-Revision-Date: 2018-03-27 14:40+0300\n"
+"POT-Creation-Date: 2018-04-04 18:02+0200\n"
+"PO-Revision-Date: 2018-04-04 18:02+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -133,6 +133,9 @@ msgstr ""
 msgid "Abuse Reports"
 msgstr ""
 
+msgid "Abuse reports"
+msgstr ""
+
 msgid "Access Tokens"
 msgstr ""
 
@@ -140,6 +143,9 @@ msgid "Access to failing storages has been temporarily disabled to allow the mou
 msgstr ""
 
 msgid "Account"
+msgstr ""
+
+msgid "Account and limit settings"
 msgstr ""
 
 msgid "Active"
@@ -233,6 +239,9 @@ msgid "All features are enabled for blank projects, from templates, or when impo
 msgstr ""
 
 msgid "Allow edits from maintainers."
+msgstr ""
+
+msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -343,6 +352,12 @@ msgstr ""
 msgid "Assign to"
 msgstr ""
 
+msgid "Assigned Issues"
+msgstr ""
+
+msgid "Assigned Merge Requests"
+msgstr ""
+
 msgid "Assigned to :name"
 msgstr ""
 
@@ -368,6 +383,9 @@ msgid "Authors: %{authors}"
 msgstr ""
 
 msgid "Auto DevOps enabled"
+msgstr ""
+
+msgid "Auto DevOps, runners and job artifacts"
 msgstr ""
 
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
@@ -410,6 +428,9 @@ msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Average per day: %{average}"
+msgstr ""
+
+msgid "Background jobs"
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -1102,6 +1123,9 @@ msgstr ""
 msgid "Compare changes with the last commit"
 msgstr ""
 
+msgid "Compare changes with the merge request target branch"
+msgstr ""
+
 msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
 msgstr ""
 
@@ -1121,6 +1145,21 @@ msgid "Confidential"
 msgstr ""
 
 msgid "Confidentiality"
+msgstr ""
+
+msgid "Configure Sidekiq job throttling."
+msgstr ""
+
+msgid "Configure automatic git checks and housekeeping on repositories."
+msgstr ""
+
+msgid "Configure limits for web and API requests."
+msgstr ""
+
+msgid "Configure storage path and circuit breaker settings."
+msgstr ""
+
+msgid "Configure the way a user creates a new account."
 msgstr ""
 
 msgid "Connect"
@@ -1172,6 +1211,9 @@ msgid "ContainerRegistry|Use different image names"
 msgstr ""
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
+msgstr ""
+
+msgid "Continuous Integration and Deployment"
 msgstr ""
 
 msgid "Contribution"
@@ -1419,6 +1461,21 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable Sentry for error reporting and logging."
+msgstr ""
+
+msgid "Enable and configure InfluxDB metrics."
+msgstr ""
+
+msgid "Enable and configure Prometheus metrics."
+msgstr ""
+
+msgid "Enable reCAPTCHA or Akismet and set IP limits."
+msgstr ""
+
+msgid "Enable the Performance Bar for a given group."
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -1465,6 +1522,9 @@ msgid "Environments|Updated"
 msgstr ""
 
 msgid "Environments|You don't have any environments right now."
+msgstr ""
+
+msgid "Error Reporting and Logging"
 msgstr ""
 
 msgid "Error checking branch data. Please try again."
@@ -1637,6 +1697,9 @@ msgstr ""
 msgid "GitHub import"
 msgstr ""
 
+msgid "GitLab CI Linter has been moved"
+msgstr ""
+
 msgid "GitLab Runner section"
 msgstr ""
 
@@ -1740,6 +1803,12 @@ msgid "HealthCheck|Unhealthy"
 msgstr ""
 
 msgid "Help"
+msgstr ""
+
+msgid "Help page"
+msgstr ""
+
+msgid "Help page text and support page url."
 msgstr ""
 
 msgid "Hide value"
@@ -1879,10 +1948,10 @@ msgstr ""
 msgid "Labels can be applied to issues and merge requests to categorize them."
 msgstr ""
 
-msgid "Labels|Promote Label"
+msgid "Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>"
 msgstr ""
 
-msgid "Labels|Promote label %{labelTitle} to Group Label?"
+msgid "Labels|Promote Label"
 msgstr ""
 
 msgid "Last %d day"
@@ -1950,9 +2019,6 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
-msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
-msgstr ""
-
 msgid "Locked"
 msgstr ""
 
@@ -2008,6 +2074,12 @@ msgid "Merged"
 msgstr ""
 
 msgid "Messages"
+msgstr ""
+
+msgid "Metrics - Influx"
+msgstr ""
+
+msgid "Metrics - Prometheus"
 msgstr ""
 
 msgid "Milestone"
@@ -2264,10 +2336,16 @@ msgstr ""
 msgid "Otherwise it is recommended you start with one of the options below."
 msgstr ""
 
+msgid "Outbound requests"
+msgstr ""
+
 msgid "Overview"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Pages"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -2280,6 +2358,9 @@ msgid "Pagination|Prev"
 msgstr ""
 
 msgid "Pagination|« First"
+msgstr ""
+
+msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
@@ -2490,6 +2571,9 @@ msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr ""
 
 msgid "Profiles|your account"
+msgstr ""
+
+msgid "Profiling - Performance bar"
 msgstr ""
 
 msgid "Programming languages used in this repository"
@@ -2723,6 +2807,12 @@ msgstr ""
 msgid "Repository"
 msgstr ""
 
+msgid "Repository maintenance"
+msgstr ""
+
+msgid "Repository storage"
+msgstr ""
+
 msgid "Request Access"
 msgstr ""
 
@@ -2750,6 +2840,9 @@ msgid "Revert this merge request"
 msgstr ""
 
 msgid "Reviewing"
+msgstr ""
+
+msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
 msgid "Runners"
@@ -2839,7 +2932,19 @@ msgstr ""
 msgid "Service Templates"
 msgstr ""
 
+msgid "Session expiration, projects limit and attachment size."
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr ""
+
+msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
+msgstr ""
+
+msgid "Set notification email for abuse reports."
+msgstr ""
+
+msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
 msgstr ""
 
 msgid "Set up CI/CD"
@@ -2871,6 +2976,15 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Sign-in restrictions"
+msgstr ""
+
+msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "Size and domain settings for static websites"
+msgstr ""
+
 msgid "Snippets"
 msgstr ""
 
@@ -2878,12 +2992,6 @@ msgid "Something went wrong on our end"
 msgstr ""
 
 msgid "Something went wrong on our end."
-msgstr ""
-
-msgid "Something went wrong trying to change the confidentiality of this issue"
-msgstr ""
-
-msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName}"
 msgstr ""
 
 msgid "Something went wrong when toggling the button"
@@ -3003,10 +3111,19 @@ msgstr ""
 msgid "Spam Logs"
 msgstr ""
 
+msgid "Spam and Anti-bot Protection"
+msgstr ""
+
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
 msgid "StarProject|Star"
+msgstr ""
+
+msgid "Starred Projects"
+msgstr ""
+
+msgid "Starred Projects' Activity"
 msgstr ""
 
 msgid "Starred projects"
@@ -3456,6 +3573,9 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
+msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
+msgstr ""
+
 msgid "Todo"
 msgstr ""
 
@@ -3484,9 +3604,6 @@ msgid "Trigger this manual action"
 msgstr ""
 
 msgid "Unlock"
-msgstr ""
-
-msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
 msgstr ""
 
 msgid "Unlocked"
@@ -3522,6 +3639,9 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
+msgid "User and IP Rate Limits"
+msgstr ""
+
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
@@ -3544,6 +3664,9 @@ msgid "View project labels"
 msgstr ""
 
 msgid "View replaced file @ "
+msgstr ""
+
+msgid "Visibility and access controls"
 msgstr ""
 
 msgid "VisibilityLevel|Internal"
@@ -3762,7 +3885,19 @@ msgstr ""
 msgid "You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}"
 msgstr ""
 
+msgid "Your Groups"
+msgstr ""
+
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
+msgstr ""
+
+msgid "Your Projects (default)"
+msgstr ""
+
+msgid "Your Projects' Activity"
+msgstr ""
+
+msgid "Your Todos"
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
@@ -3795,12 +3930,6 @@ msgstr ""
 msgid "command line instructions"
 msgstr ""
 
-msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
-msgstr ""
-
-msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
-msgstr ""
-
 msgid "connecting"
 msgstr ""
 
@@ -3821,6 +3950,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
+msgstr ""
+
+msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
 msgid "mrWidget|Allows edits from maintainers"
@@ -3850,16 +3988,25 @@ msgstr ""
 msgid "mrWidget|Closes"
 msgstr ""
 
+msgid "mrWidget|Deployment statistics are not available currently"
+msgstr ""
+
 msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Email patches"
 msgstr ""
 
+msgid "mrWidget|Failed to load deployment statistics"
+msgstr ""
+
 msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
+msgstr ""
+
+msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
 msgid "mrWidget|Mentions"
@@ -3941,6 +4088,9 @@ msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"
+msgstr ""
+
+msgid "mrWidget|Web IDE"
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"
