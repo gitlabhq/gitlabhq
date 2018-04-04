@@ -22,8 +22,7 @@
         ":value" => "issue.dueDate" }
       .dropdown
         %button.dropdown-menu-toggle.js-due-date-select.js-issue-boards-due-date{ type: 'button',
-          data: { toggle: 'dropdown', field_name: "issue[due_date]", ability_name: "issue" },
-          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
+          data: { toggle: 'dropdown', field_name: "issue[due_date]", ability_name: "issue" }}
           %span.dropdown-toggle-text Due date
           = icon('chevron-down')
         .dropdown-menu.dropdown-menu-due-date

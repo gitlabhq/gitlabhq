@@ -48,10 +48,8 @@ describe Boards::Issues::ListService do
 
     context 'when parent is a group' do
       let(:user)    { create(:user) }
-      let(:group) { create(:group) }
       let(:project) { create(:project, :empty_repo, namespace: group) }
       let(:project1) { create(:project, :empty_repo, namespace: group) }
-      let(:board)   { create(:board, group: group) }
 
       let(:m1) { create(:milestone, group: group) }
       let(:m2) { create(:milestone, group: group) }
@@ -92,13 +90,30 @@ describe Boards::Issues::ListService do
       let!(:closed_issue4) { create(:labeled_issue, :closed, project: project1, labels: [p1, p1_project1]) }
       let!(:closed_issue5) { create(:labeled_issue, :closed, project: project1, labels: [development]) }
 
-      let(:parent) { group }
-
       before do
         group.add_developer(user)
       end
 
-      it_behaves_like 'issues list service'
+      context 'and group has no parent' do
+        let(:parent) { group }
+        let(:group) { create(:group) }
+        let(:board) { create(:board, group: group) }
+
+        it_behaves_like 'issues list service'
+      end
+
+      context 'and group is an ancestor' do
+        let(:parent) { create(:group) }
+        let(:group) { create(:group, parent: parent) }
+        let!(:backlog) { create(:backlog_list, board: board) }
+        let(:board) { create(:board, group: parent) }
+
+        before do
+          parent.add_developer(user)
+        end
+
+        it_behaves_like 'issues list service'
+      end
     end
   end
 end
