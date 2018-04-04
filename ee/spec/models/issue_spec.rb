@@ -32,12 +32,12 @@ describe Issue do
       let!(:issue4) { create(:issue, weight: 3, project: project) }
 
       it "sorts desc" do
-        issues = project.issues.sort('weight_desc')
+        issues = project.issues.sort_by_attribute('weight_desc')
         expect(issues).to eq([issue4, issue3, issue2, issue])
       end
 
       it "sorts asc" do
-        issues = project.issues.sort('weight_asc')
+        issues = project.issues.sort_by_attribute('weight_asc')
         expect(issues).to eq([issue2, issue3, issue4, issue])
       end
     end
