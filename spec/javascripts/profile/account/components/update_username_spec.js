@@ -108,6 +108,7 @@ fdescribe('UpdateUsername component', () => {
 
   it('sets the username after a successful update', done => {
     axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
+    const { input, openModalBtn } = findElements();
 
     vm.newUsername = newUsername;
 
@@ -116,10 +117,20 @@ fdescribe('UpdateUsername component', () => {
         vm.onConfirm();
       })
       .then(Vue.nextTick)
+      .then(() => {
+        expect(input).toBeDisabled();
+        expect(openModalBtn).toBeDisabled();
+      })
       .then(Vue.nextTick)
       .then(() => {
         expect(vm.username).toBe(newUsername);
         expect(vm.newUsername).toBe(newUsername);
+      })
+      .then(Vue.nextTick)
+      .then(() => {
+        expect(input).not.toBeDisabled();
+        expect(input.value).toBe(newUsername);
+        expect(openModalBtn).toBeDisabled();
       })
       .then(done)
       .catch(done.fail);
@@ -127,6 +138,7 @@ fdescribe('UpdateUsername component', () => {
 
   it('does not set the username after a erroneous update', done => {
     axiosMock.onPut(actionUrl).replyOnce(() => [400, { message: 'Invalid username' }]);
+    const { input, openModalBtn } = findElements();
 
     const invalidUsername = 'anything.git';
     vm.newUsername = invalidUsername;
@@ -136,10 +148,20 @@ fdescribe('UpdateUsername component', () => {
         vm.onConfirm();
       })
       .then(Vue.nextTick)
+      .then(() => {
+        expect(input).toBeDisabled();
+        expect(openModalBtn).toBeDisabled();
+      })
       .then(Vue.nextTick)
       .then(() => {
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(invalidUsername);
+      })
+      .then(Vue.nextTick)
+      .then(() => {
+        expect(input).not.toBeDisabled();
+        expect(input.value).toBe(invalidUsername);
+        expect(openModalBtn).not.toBeDisabled();
       })
       .then(done)
       .catch(done.fail);

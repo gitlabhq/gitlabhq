@@ -25,6 +25,7 @@ export default {
   },
   data() {
     return {
+      inputDisabled: false,
       username: this.initialUsername,
       newUsername: this.initialUsername,
     };
@@ -51,6 +52,7 @@ Please update your Git repository remotes as soon as possible.`),
   },
   methods: {
     onConfirm() {
+      this.inputDisabled = true;
       const username = this.newUsername;
       const putData = {
         user: {
@@ -58,14 +60,18 @@ Please update your Git repository remotes as soon as possible.`),
         },
       };
 
-      axios
+      return axios
         .put(this.actionUrl, putData)
         .then(result => {
           Flash(result.data.message, 'notice');
           this.username = username;
+          this.newUsername = username;
         })
         .catch(error => {
           Flash(error.response.data.message);
+        })
+        .finally(() => {
+          this.inputDisabled = false;
         });
     },
   },
@@ -82,6 +88,7 @@ Please update your Git repository remotes as soon as possible.`),
           class="form-control"
           required="required"
           v-model="newUsername"
+          :disabled="inputDisabled"
         />
       </div>
       <p class="help-block">
@@ -93,7 +100,7 @@ Please update your Git repository remotes as soon as possible.`),
       class="btn btn-warning"
       type="button"
       data-toggle="modal"
-      :disabled="newUsername === username"
+      :disabled="inputDisabled || newUsername === username"
     >
       {{ buttonText }}
     </button>
