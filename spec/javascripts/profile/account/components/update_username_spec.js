@@ -49,7 +49,7 @@ describe('UpdateUsername component', () => {
       .then(() => {
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(input.value);
-        expect(openModalBtn).toHaveAttr('disabled', 'disabled');
+        expect(openModalBtn).toBeDisabled();
         openModalBtn.click();
         expect(modal).toBeHidden();
       })
@@ -66,7 +66,7 @@ describe('UpdateUsername component', () => {
       .then(() => {
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(input.value);
-        expect(openModalBtn).not.toHaveAttr('disabled', 'disabled');
+        expect(openModalBtn).not.toBeDisabled();
       })
       .then(done)
       .catch(done.fail);
@@ -77,7 +77,7 @@ describe('UpdateUsername component', () => {
 
     const newUsername = 'anything';
 
-    const { input, openModalBtn, confirmModalBtn } = findElements();
+    const { input, confirmModalBtn } = findElements();
     input.value = newUsername;
     input.dispatchEvent(new Event('input'));
 
@@ -85,7 +85,6 @@ describe('UpdateUsername component', () => {
       .then(() => {
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(newUsername);
-        expect(openModalBtn).not.toHaveAttr('disabled', 'disabled');
         confirmModalBtn.click();
       })
       .then(Vue.nextTick)
