@@ -159,7 +159,10 @@ feature 'Protected Branches', :js do
         set_allowed_to('push')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content("2 matching branches") }
+        within(".protected-branches-list") do
+          expect(page).to have_content("Protected branch (2)")
+          expect(page).to have_content("2 matching branches")
+        end
       end
 
       it "displays all the branches matching the wildcard" do
