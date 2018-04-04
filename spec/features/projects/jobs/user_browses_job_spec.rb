@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'User browses a job', :js do
   let(:user) { create(:user) }
+  let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
@@ -19,7 +20,9 @@ describe 'User browses a job', :js do
     expect(page).to have_content("Job ##{build.id}")
     expect(page).to have_css('#build-trace')
 
-    accept_confirm { click_link('Erase') }
+    # scroll to the top of the page first
+    execute_script "window.scrollTo(0,0)"
+    accept_confirm { find('.js-erase-link').click }
 
     expect(page).to have_no_css('.artifacts')
     expect(build).not_to have_trace
