@@ -36,6 +36,22 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status).to have_details
       expect(status).to have_action
     end
+
+    context 'when job log gets erased' do
+      before do
+        build.trace.set(nil)
+      end
+
+      it 'matches correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Build::Success,
+                  Gitlab::Ci::Status::Build::Retryable]
+      end
+
+      it 'fabricates a retryable build status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
+      end
+    end
   end
 
   context 'when build is failed' do
