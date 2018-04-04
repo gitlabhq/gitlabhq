@@ -5,15 +5,14 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
   let(:job_id) { job.id }
   let(:chunk_index) { 0 }
   let(:buffer_size) { 256 }
-  let(:job_trace_chunk) { ::Ci::JobTraceChunk.new(job_id: job_id, chunk_index: chunk_index) }
   let(:params) { { buffer_size: buffer_size } }
   let(:data) { 'A' * buffer_size }
 
-  describe '.open' do
-    subject { described_class.open(job_id, chunk_index, params) }
+  describe '.new' do
+    subject { described_class.new(job_id, chunk_index, params) }
 
-    it 'opens' do
-      expect { |b| described_class.open(job_id, chunk_index, params, &b) }
+    it 'new' do
+      expect { |b| described_class.new(job_id, chunk_index, params, &b) }
         .to yield_successive_args(described_class)
     end
 
@@ -35,7 +34,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it { is_expected.to be_truthy }
@@ -51,17 +50,16 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it { is_expected.to eq(1) }
 
       context 'when two chunks exists' do
-        let(:job_trace_chunk_2) { ::Ci::JobTraceChunk.new(job_id: job_id, chunk_index: chunk_index + 1) }
         let(:data_2) { 'B' * buffer_size }
 
         before do
-          described_class.new(job_trace_chunk_2, params).write!(data_2)
+          described_class.new(job_id, chunk_index + 1, params).write!(data_2)
         end
 
         it { is_expected.to eq(2) }
@@ -78,18 +76,17 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it { is_expected.to eq(data.length) }
 
       context 'when two chunks exists' do
-        let(:job_trace_chunk_2) { ::Ci::JobTraceChunk.new(job_id: job_id, chunk_index: chunk_index + 1) }
         let(:data_2) { 'B' * buffer_size }
         let(:chunks_size) { data.length + data_2.length }
 
         before do
-          described_class.new(job_trace_chunk_2, params).write!(data_2)
+          described_class.new(job_id, chunk_index + 1, params).write!(data_2)
         end
 
         it { is_expected.to eq(chunks_size) }
@@ -106,7 +103,7 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it 'deletes all' do
@@ -114,11 +111,10 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
       end
 
       context 'when two chunks exists' do
-        let(:job_trace_chunk_2) { ::Ci::JobTraceChunk.new(job_id: job_id, chunk_index: chunk_index + 1) }
         let(:data_2) { 'B' * buffer_size }
 
         before do
-          described_class.new(job_trace_chunk_2, params).write!(data_2)
+          described_class.new(job_id, chunk_index + 1, params).write!(data_2)
         end
 
         it 'deletes all' do
@@ -135,11 +131,11 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
   end
 
   describe '#get' do
-    subject { described_class.new(job_trace_chunk, params).get }
+    subject { described_class.new(job_id, chunk_index, params).get }
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it { is_expected.to eq(data) }
@@ -151,11 +147,11 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
   end
 
   describe '#size' do
-    subject { described_class.new(job_trace_chunk, params).size }
+    subject { described_class.new(job_id, chunk_index, params).size }
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it { is_expected.to eq(data.length) }
@@ -167,11 +163,11 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
   end
 
   describe '#write!' do
-    subject { described_class.new(job_trace_chunk, params).write!(data) }
+    subject { described_class.new(job_id, chunk_index, params).write!(data) }
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it { expect { subject }.to raise_error('UPDATE (Overwriting data) is not supported') }
@@ -195,11 +191,11 @@ describe Gitlab::Ci::Trace::ChunkedFile::ChunkStore::Database do
   end
 
   describe '#delete!' do
-    subject { described_class.new(job_trace_chunk, params).delete! }
+    subject { described_class.new(job_id, chunk_index, params).delete! }
 
     context 'when job_trace_chunk exists' do
       before do
-        described_class.new(job_trace_chunk, params).write!(data)
+        described_class.new(job_id, chunk_index, params).write!(data)
       end
 
       it 'deletes' do

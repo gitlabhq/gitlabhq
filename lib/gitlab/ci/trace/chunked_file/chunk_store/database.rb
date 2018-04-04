@@ -14,8 +14,8 @@ module Gitlab
               end
 
               def chunks_size(job_id)
-                ::Ci::JobTraceChunk.where(job_id: job_id).pluck('data')
-                  .inject(0) { |sum, data| sum + data.bytesize }
+                ::Ci::JobTraceChunk.where(job_id: job_id)
+                  .pluck('sum(octet_length(data))').first || 0
               end
 
               def delete_all(job_id)
