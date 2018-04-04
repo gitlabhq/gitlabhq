@@ -60,7 +60,7 @@
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
         - if note.system
-          .system-note-commit-list-toggler
+          .system-note-commit-list-toggler.hide
             Toggle commit list
             %i.fa.fa-angle-down
       - if note.attachment.url
