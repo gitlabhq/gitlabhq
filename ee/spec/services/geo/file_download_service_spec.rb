@@ -12,204 +12,260 @@ describe Geo::FileDownloadService do
     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
   end
 
+  shared_examples_for 'a service that downloads the file and registers the sync result' do |file_type|
+    let(:download_service) { described_class.new(file_type, file.id) }
+    let(:registry) { file_type == 'job_artifact' ? Geo::JobArtifactRegistry : Geo::FileRegistry }
+    subject(:execute!) { download_service.execute }
+
+    context 'for a new file' do
+      context 'when the downloader fails before attempting a transfer' do
+        it 'logs that the download failed before attempting a transfer' do
+          result = double(:result, success: false, bytes_downloaded: 0, primary_missing_file: false, failed_before_transfer: true)
+          downloader = double(:downloader, execute: result)
+          expect(download_service).to receive(:downloader).and_return(downloader)
+          expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, download_success: false, bytes_downloaded: 0, failed_before_transfer: true)).and_call_original
+
+          execute!
+        end
+      end
+
+      context 'when the downloader attempts a transfer' do
+        context 'when the file is successfully downloaded' do
+          before do
+            stub_transfer_result(bytes_downloaded: 100, success: true)
+          end
+
+          it 'registers the file' do
+            expect { execute! }.to change { registry.count }.by(1)
+          end
+
+          it 'marks the file as synced' do
+            expect { execute! }.to change { registry.synced.count }.by(1)
+          end
+
+          it 'does not mark the file as missing on the primary' do
+            execute!
+
+            expect(registry.last.missing_on_primary).to be_falsey
+          end
+
+          it 'logs the result' do
+            expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, download_success: true, bytes_downloaded: 100)).and_call_original
+
+            execute!
+          end
+        end
+
+        context 'when the file fails to download' do
+          context 'when the file is missing on the primary' do
+            before do
+              stub_transfer_result(bytes_downloaded: 100, success: true, primary_missing_file: true)
+            end
+
+            it 'registers the file' do
+              expect { execute! }.to change { registry.count }.by(1)
+            end
+
+            it 'marks the file as synced' do
+              expect { execute! }.to change { registry.synced.count }.by(1)
+            end
+
+            it 'marks the file as missing on the primary' do
+              execute!
+
+              expect(registry.last.missing_on_primary).to be_truthy
+            end
+
+            it 'logs the result' do
+              expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, download_success: true, bytes_downloaded: 100, primary_missing_file: true)).and_call_original
+
+              execute!
+            end
+          end
+
+          context 'when the file is not missing on the primary' do
+            before do
+              stub_transfer_result(bytes_downloaded: 0, success: false)
+            end
+
+            it 'registers the file' do
+              expect { execute! }.to change { registry.count }.by(1)
+            end
+
+            it 'marks the file as failed to sync' do
+              expect { execute! }.to change { registry.failed.count }.by(1)
+            end
+
+            it 'does not mark the file as missing on the primary' do
+              execute!
+
+              expect(registry.last.missing_on_primary).to be_falsey
+            end
+
+            it 'sets a retry date and increments the retry count' do
+              execute!
+
+              expect(registry.last.retry_count).to eq(1)
+              expect(registry.last.retry_at).to be_present
+            end
+          end
+        end
+      end
+    end
+
+    context 'for a registered file that failed to sync' do
+      let!(:registry_entry) do
+        if file_type == 'job_artifact'
+          create(:geo_job_artifact_registry, success: false, artifact_id: file.id)
+        else
+          create(:geo_file_registry, file_type.to_sym, success: false, file_id: file.id)
+        end
+      end
+
+      context 'when the file is successfully downloaded' do
+        before do
+          stub_transfer_result(bytes_downloaded: 100, success: true)
+        end
+
+        it 'does not register a new file' do
+          expect { execute! }.not_to change { registry.count }
+        end
+
+        it 'marks the file as synced' do
+          expect { execute! }.to change { registry.synced.count }.by(1)
+        end
+
+        context 'when the file was marked as missing on the primary' do
+          before do
+            registry_entry.update_column(:missing_on_primary, true)
+          end
+
+          it 'marks the file as no longer missing on the primary' do
+            execute!
+
+            expect(registry_entry.reload.missing_on_primary).to be_falsey
+          end
+        end
+
+        context 'when the file was not marked as missing on the primary' do
+          it 'does not mark the file as missing on the primary' do
+            execute!
+
+            expect(registry_entry.reload.missing_on_primary).to be_falsey
+          end
+        end
+      end
+
+      context 'when the file fails to download' do
+        context 'when the file is missing on the primary' do
+          before do
+            stub_transfer_result(bytes_downloaded: 100, success: true, primary_missing_file: true)
+          end
+
+          it 'does not register a new file' do
+            expect { execute! }.not_to change { registry.count }
+          end
+
+          it 'marks the file as synced' do
+            expect { execute! }.to change { registry.synced.count }.by(1)
+          end
+
+          it 'marks the file as missing on the primary' do
+            execute!
+
+            expect(registry_entry.reload.missing_on_primary).to be_truthy
+          end
+
+          it 'logs the result' do
+            expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, download_success: true, bytes_downloaded: 100, primary_missing_file: true)).and_call_original
+
+            execute!
+          end
+        end
+
+        context 'when the file is not missing on the primary' do
+          before do
+            stub_transfer_result(bytes_downloaded: 0, success: false)
+          end
+
+          it 'does not register a new file' do
+            expect { execute! }.not_to change { registry.count }
+          end
+
+          it 'does not change the success flag' do
+            expect { execute! }.not_to change { registry.failed.count }
+          end
+
+          it 'does not mark the file as missing on the primary' do
+            execute!
+
+            expect(registry_entry.reload.missing_on_primary).to be_falsey
+          end
+
+          it 'changes the retry date and increments the retry count' do
+            expect { execute! }.to change { registry_entry.reload.retry_count }.from(nil).to(1)
+          end
+
+          it 'changes the retry date and increments the retry count' do
+            expect { execute! }.to change { registry_entry.reload.retry_at }
+          end
+        end
+      end
+    end
+  end
+
   describe '#execute' do
     context 'user avatar' do
-      let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
-      let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
-
-      subject(:execute!) { described_class.new(:avatar, upload.id).execute }
-
-      it 'downloads a user avatar' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
-        expect(Geo::FileRegistry.last.retry_count).to eq(1)
-        expect(Geo::FileRegistry.last.retry_at).to be_present
-      end
-
-      it 'registers when the download fails with some other error' do
-        stub_transfer(Gitlab::Geo::FileTransfer, nil)
-
-        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'avatar' do
+        let(:file) { create(:upload, model: build(:user)) }
       end
     end
 
     context 'group avatar' do
-      let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
-      let(:upload) { Upload.find_by(model: group, uploader: 'AvatarUploader') }
-
-      subject(:execute!) { described_class.new(:avatar, upload.id).execute }
-
-      it 'downloads a group avatar' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'avatar' do
+        let(:file) { create(:upload, model: build(:group)) }
       end
     end
 
     context 'project avatar' do
-      let(:project) { create(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
-      let(:upload) { Upload.find_by(model: project, uploader: 'AvatarUploader') }
-
-      subject(:execute!) { described_class.new(:avatar, upload.id).execute }
-
-      it 'downloads a project avatar' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'avatar' do
+        let(:file) { create(:upload, model: build(:project)) }
       end
     end
 
     context 'with an attachment' do
-      let(:note) { create(:note, :with_attachment) }
-      let(:upload) { Upload.find_by(model: note, uploader: 'AttachmentUploader') }
-
-      subject(:execute!) { described_class.new(:attachment, upload.id).execute }
-
-      it 'downloads the attachment' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'attachment' do
+        let(:file) { create(:upload, :attachment_upload) }
       end
     end
 
     context 'with a snippet' do
-      let(:upload) { create(:upload, :personal_snippet_upload) }
-
-      subject(:execute!) { described_class.new(:personal_file, upload.id).execute }
-
-      it 'downloads the file' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'personal_file' do
+        let(:file) { create(:upload, :personal_snippet_upload) }
       end
     end
 
     context 'with file upload' do
-      let(:project) { create(:project) }
-      let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
-
-      subject { described_class.new(:file, upload.id) }
-
-      before do
-        FileUploader.new(project).store!(fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
-      end
-
-      it 'downloads the file' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'file' do
+        let(:file) { create(:upload, :issuable_upload) }
       end
     end
 
     context 'with namespace file upload' do
-      let(:group) { create(:group) }
-      let(:upload) { Upload.find_by(model: group, uploader: 'NamespaceFileUploader') }
-
-      subject { described_class.new(:file, upload.id) }
-
-      before do
-        NamespaceFileUploader.new(group).store!(fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
-      end
-
-      it 'downloads the file' do
-        stub_transfer(Gitlab::Geo::FileTransfer, 100)
-
-        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::FileTransfer, -1)
-
-        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
+      it_behaves_like "a service that downloads the file and registers the sync result", 'namespace_file' do
+        let(:file) { create(:upload, :namespace_upload) }
       end
     end
 
     context 'LFS object' do
-      let(:lfs_object) { create(:lfs_object) }
-
-      subject { described_class.new(:lfs, lfs_object.id) }
-
-      it 'downloads an LFS object' do
-        stub_transfer(Gitlab::Geo::LfsTransfer, 100)
-
-        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::LfsTransfer, -1)
-
-        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
-      end
-
-      it 'logs a message' do
-        stub_transfer(Gitlab::Geo::LfsTransfer, 100)
-
-        expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, success: true, bytes_downloaded: 100)).and_call_original
-
-        subject.execute
+      it_behaves_like "a service that downloads the file and registers the sync result", 'lfs' do
+        let(:file) { create(:lfs_object) }
       end
     end
 
     context 'job artifacts' do
-      let(:job_artifact) { create(:ci_job_artifact) }
-
-      subject { described_class.new(:job_artifact, job_artifact.id) }
-
-      it 'downloads a job artifact' do
-        stub_transfer(Gitlab::Geo::JobArtifactTransfer, 100)
-
-        expect { subject.execute }.to change { Geo::JobArtifactRegistry.synced.count }.by(1)
-      end
-
-      it 'registers when the download fails' do
-        stub_transfer(Gitlab::Geo::JobArtifactTransfer, -1)
-
-        expect { subject.execute }.to change { Geo::JobArtifactRegistry.failed.count }.by(1)
-      end
-
-      it 'logs a message' do
-        stub_transfer(Gitlab::Geo::JobArtifactTransfer, 100)
-
-        expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, success: true, bytes_downloaded: 100)).and_call_original
-
-        subject.execute
+      it_behaves_like "a service that downloads the file and registers the sync result", 'job_artifact' do
+        let(:file) { create(:ci_job_artifact) }
       end
     end
 
@@ -219,9 +275,13 @@ describe Geo::FileDownloadService do
       end
     end
 
-    def stub_transfer(kls, result)
-      instance = double("(instance of #{kls})", download_from_primary: result)
-      allow(kls).to receive(:new).and_return(instance)
+    def stub_transfer_result(bytes_downloaded:, success: false, primary_missing_file: false)
+      result = double(:transfer_result,
+                      bytes_downloaded: bytes_downloaded,
+                      success: success,
+                      primary_missing_file: primary_missing_file)
+      instance = double("(instance of Gitlab::Geo::Transfer)", download_from_primary: result)
+      allow(Gitlab::Geo::Transfer).to receive(:new).and_return(instance)
     end
   end
 end
