@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > Account' do
+feature 'Profile > Account', :js do
   given(:user) { create(:user, username: 'foo') }
 
   before do
@@ -59,6 +59,13 @@ end
 def update_username(new_username)
   allow(user.namespace).to receive(:move_dir)
   visit profile_account_path
-  fill_in 'user_username', with: new_username
-  click_button 'Update username'
+
+  fill_in 'modal-username-change-input', with: new_username
+
+  page.find('[data-target="#modal-username-change-confirmation"]').click
+
+  page.within('.modal') do
+    # Confirm modal, no better selector at the moment
+    find('.btn-warning').click
+  end
 end
