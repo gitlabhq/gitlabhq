@@ -204,6 +204,11 @@
     top: 2px;
   }
 
+  > .ci-status-link,
+  > .btn,
+  > .commit-sha-group {
+    margin-left: $gl-padding;
+  }
 }
 
 .commit-sha-group {
@@ -322,7 +327,6 @@
 
 .gpg-status-box {
   padding: 2px 10px;
-  margin-right: $gl-padding;
 
   &:empty {
     display: none;
