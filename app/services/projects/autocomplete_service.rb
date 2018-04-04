@@ -21,7 +21,8 @@ module Projects
     end
 
     def labels(target = nil)
-      labels = LabelsFinder.new(current_user, project_id: project.id).execute.select([:color, :title])
+      labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true)
+        .execute.select([:color, :title])
 
       return labels unless target&.respond_to?(:labels)
 
