@@ -700,10 +700,6 @@ class User < ActiveRecord::Base
     projects_limit - personal_projects_count
   end
 
-  def personal_projects_count
-    @personal_projects_count ||= personal_projects.count
-  end
-
   def recent_push(project = nil)
     service = Users::LastPushEventService.new(self)
 
@@ -1046,6 +1042,18 @@ class User < ActiveRecord::Base
     end
   end
 
+  def personal_projects_count(force: false)
+    Rails.cache.fetch(['users', id, 'personal_projects_count'], force: force, expires_in: 24.hours, raw: true) do
+      personal_projects.count
+    end.to_i
+  end
+
+  def update_cache_counts
+    assigned_open_merge_requests_count(force: true)
+    assigned_open_issues_count(force: true)
+    personal_projects_count(force: true)
+  end
+
   def update_todos_count_cache
     todos_done_count(force: true)
     todos_pending_count(force: true)
@@ -1056,6 +1064,7 @@ class User < ActiveRecord::Base
     invalidate_merge_request_cache_counts
     invalidate_todos_done_count
     invalidate_todos_pending_count
+    invalidate_personal_projects_count
   end
 
   def invalidate_issue_cache_counts
@@ -1072,6 +1081,10 @@ class User < ActiveRecord::Base
 
   def invalidate_todos_pending_count
     Rails.cache.delete(['users', id, 'todos_pending_count'])
+  end
+
+  def invalidate_personal_projects_count
+    Rails.cache.delete(['users', id, 'personal_projects_count'])
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
