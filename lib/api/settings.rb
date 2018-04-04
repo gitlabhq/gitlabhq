@@ -114,6 +114,7 @@ module API
       optional :version_check_enabled, type: Boolean, desc: 'Let GitLab inform you when an update is available.'
       optional :email_author_in_body, type: Boolean, desc: 'Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead.'
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
+      optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
       given housekeeping_enabled: ->(val) { val } do
         requires :housekeeping_bitmaps_enabled, type: Boolean, desc: "Creating pack file bitmaps makes housekeeping take a little longer but bitmaps should accelerate 'git clone' performance."
@@ -168,6 +169,10 @@ module API
 
       unless ::License.feature_available?(:external_authorization_service)
         attrs = attrs.except(*::EE::ApplicationSettingsHelper.external_authorization_service_attributes)
+      end
+
+      unless ::License.feature_available?(:email_additional_text)
+        attrs = attrs.except(:email_additional_text)
       end
 
       # support legacy names, can be removed in v5

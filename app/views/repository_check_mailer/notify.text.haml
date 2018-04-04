@@ -4,3 +4,10 @@ View details: #{admin_projects_url(last_repository_check_failed: 1)}
 
 You are receiving this message because you are a GitLab administrator
 for #{Gitlab.config.gitlab.url}.
+
+-# EE-specific start
+- if Gitlab::CurrentSettings.email_additional_text.present?
+  \
+  = '---'
+  = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
+-# EE-specific end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180327101207) do
+ActiveRecord::Schema.define(version: 20180401213713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.string "encrypted_external_auth_client_key_iv"
     t.string "encrypted_external_auth_client_key_pass"
     t.string "encrypted_external_auth_client_key_pass_iv"
+    t.string "email_additional_text"
   end
 
   create_table "approvals", force: :cascade do |t|

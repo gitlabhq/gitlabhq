@@ -63,6 +63,10 @@
                       %tbody
                         = yield
 
+        -# EE-specific start
+        = render 'layouts/mailer/additional_text'
+        -# EE-specific end
+
         %tr.footer
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
             %img{ alt: "GitLab", height: "33", src: image_url('mailers/gitlab_footer_logo.gif'), style: "display:block;margin:0 auto 1em;", width: "90" }/
