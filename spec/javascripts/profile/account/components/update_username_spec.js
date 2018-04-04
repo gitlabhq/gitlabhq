@@ -9,6 +9,7 @@ describe('UpdateUsername component', () => {
   const rootUrl = gl.TEST_HOST;
   const actionUrl = `${gl.TEST_HOST}/update/username`;
   const username = 'hasnoname';
+  const modalSelector = '#modal-username-change-confirmation';
   let Component;
   let vm;
   let axiosMock;
@@ -36,13 +37,13 @@ describe('UpdateUsername component', () => {
 
   const findElements = () => ({
     input: vm.$el.querySelector('#modal-username-change-input'),
-    openModalBtn: vm.$el.querySelector('[data-target="#modal-username-change-confirmation"]'),
-    modal: vm.$el.querySelector('#modal-username-change-confirmation'),
-    confirmModalBtn: vm.$el.querySelector('#modal-username-change-confirmation .btn-warning'),
+    openModalBtn: vm.$el.querySelector(`[data-target="${modalSelector}"]`),
+    modal: vm.$el.querySelector(modalSelector),
+    confirmModalBtn: vm.$el.querySelector(`${modalSelector} .btn-warning`),
   });
 
   it('has a disabled button if the username was not changed', done => {
-    const { input, openModalBtn, modal } = findElements();
+    const { input, openModalBtn } = findElements();
     input.dispatchEvent(new Event('input'));
 
     Vue.nextTick()
@@ -50,8 +51,6 @@ describe('UpdateUsername component', () => {
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(input.value);
         expect(openModalBtn).toBeDisabled();
-        openModalBtn.click();
-        expect(modal).toBeHidden();
       })
       .then(done)
       .catch(done.fail);
@@ -72,7 +71,26 @@ describe('UpdateUsername component', () => {
       .catch(done.fail);
   });
 
-  it('sends a put request when confirming the username change', done => {
+  it('confirmation modal contains proper header and body', done => {
+    const newUsername = 'new username';
+
+    const header = vm.$el.querySelector(`${modalSelector} .modal-title`);
+    const body = vm.$el.querySelector(`${modalSelector} .modal-body`);
+
+    vm.newUsername = newUsername;
+
+    Vue.nextTick()
+      .then(() => {
+        expect(header.textContent).toContain('Change username?');
+        expect(body.textContent).toContain(
+          `You are going to change the username ${username} to ${newUsername}`,
+        );
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('sets the username after a successful update', done => {
     axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
 
     const newUsername = 'anything';
