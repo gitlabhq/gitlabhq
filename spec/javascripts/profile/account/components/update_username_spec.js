@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import updateUsername from '~/profile/account/components/update_username.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('UpdateUsername component', () => {
+fdescribe('UpdateUsername component', () => {
   const rootUrl = gl.TEST_HOST;
   const actionUrl = `${gl.TEST_HOST}/update/username`;
   const username = 'hasnoname';
@@ -109,6 +109,31 @@ describe('UpdateUsername component', () => {
       .then(Vue.nextTick) // second tick to propagate the click username change after success
       .then(() => {
         expect(vm.username).toBe(newUsername);
+        expect(vm.newUsername).toBe(newUsername);
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('does not set the username after a successful update', done => {
+    axiosMock.onPut(actionUrl).replyOnce(() => [400, { message: 'Invalid username' }]);
+
+    const newUsername = 'anything.git';
+
+    const { input, confirmModalBtn } = findElements();
+    input.value = newUsername;
+    input.dispatchEvent(new Event('input'));
+
+    Vue.nextTick()
+      .then(() => {
+        expect(vm.username).toBe(username);
+        expect(vm.newUsername).toBe(newUsername);
+        confirmModalBtn.click();
+      })
+      .then(Vue.nextTick) // first tick to handle the click event properly
+      .then(Vue.nextTick) // second tick to propagate the click username change after success
+      .then(() => {
+        expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(newUsername);
       })
       .then(done)
