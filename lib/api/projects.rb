@@ -29,14 +29,11 @@ module API
         optional :avatar, type: File, desc: 'Avatar image for project'
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
         optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
-<<<<<<< HEAD
       end
 
       params :optional_params_ee do
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
-=======
->>>>>>> upstream/master
       end
 
       params :optional_params do
