@@ -1,6 +1,7 @@
 <script>
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { axisLeft, axisBottom } from 'd3-axis';
+import _ from 'underscore';
 import { max, extent } from 'd3-array';
 import { select } from 'd3-selection';
 import GraphAxis from './graph/axis.vue';
@@ -179,10 +180,12 @@ export default {
         this.graphHeightOffset,
       );
 
-      const axisXScale = d3.scaleTime()
-        .range([0, this.graphWidth - 70]);
-      const axisYScale = d3.scaleLinear()
-        .range([this.graphHeight - this.graphHeightOffset, 0]);
+      if (_.findWhere(this.timeSeries, { renderCanary: true })) {
+        this.timeSeries = this.timeSeries.map(series => ({ ...series, renderCanary: true }));
+      }
+
+      const axisXScale = d3.scaleTime().range([0, this.graphWidth - 70]);
+      const axisYScale = d3.scaleLinear().range([this.graphHeight - this.graphHeightOffset, 0]);
 
       const allValues = this.timeSeries.reduce((all, { values }) => all.concat(values), []);
       axisXScale.domain(d3.extent(allValues, d => d.time));
@@ -304,7 +307,6 @@ export default {
       v-if="showLegend"
       :legend-title="legendTitle"
       :time-series="timeSeries"
-      :current-data-index="currentDataIndex"
     />
   </div>
 </template>

@@ -31,6 +31,8 @@ const defaultStyleOrder = ['solid', 'dashed', 'dotted'];
 
 function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle) {
   let usedColors = [];
+  let renderCanary = false;
+  const timeSeriesParsed = [];
 
   function pickColor(name) {
     let pick;
@@ -49,14 +51,19 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     return defaultColorPalette[pick];
   }
 
-  return query.result.map((timeSeries, timeSeriesNumber) => {
+  query.result.forEach((timeSeries, timeSeriesNumber) => {
     let metricTag = '';
     let lineColor = '';
     let areaColor = '';
+    let shouldRenderLegend = true;
     const timeSeriesValues = timeSeries.values.map(d => d.value);
     const maximumValue = d3.max(timeSeriesValues);
     const accum = d3.sum(timeSeriesValues);
-    const track = capitalizeFirstCharacter(query.track ? query.track : 'Stable');
+    const trackName = capitalizeFirstCharacter(query.track ? query.track : 'Stable');
+
+    if (trackName === 'Canary') {
+      renderCanary = true;
+    }
 
     const timeSeriesScaleX = d3.scaleTime().range([0, graphWidth - 70]);
 
@@ -90,12 +97,29 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     if (seriesCustomizationData) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
+      shouldRenderLegend = false;
     } else {
       metricTag = timeSeriesMetricLabel || query.label || `series ${timeSeriesNumber + 1}`;
       [lineColor, areaColor] = pickColor();
+      if (timeSeriesParsed.length > 1) {
+        shouldRenderLegend = false;
+      }
     }
 
-    return {
+    if (!shouldRenderLegend) {
+      if (!timeSeriesParsed[0].tracksLegend) {
+        timeSeriesParsed[0].tracksLegend = [];
+      }
+      timeSeriesParsed[0].tracksLegend.push({
+        max: maximumValue,
+        average: accum / timeSeries.values.length,
+        lineStyle,
+        lineColor,
+        metricTag,
+      });
+    }
+
+    timeSeriesParsed.push({
       linePath: lineFunction(timeSeries.values),
       areaPath: areaFunction(timeSeries.values),
       timeSeriesScaleX,
@@ -106,9 +130,13 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       lineColor,
       areaColor,
       metricTag,
-      track,
-    };
+      trackName,
+      shouldRenderLegend,
+      renderCanary,
+    });
   });
+
+  return timeSeriesParsed;
 }
 
 export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {

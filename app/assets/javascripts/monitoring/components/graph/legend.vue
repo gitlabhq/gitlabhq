@@ -1,7 +1,12 @@
 <script>
-import { formatRelevantDigits } from '~/lib/utils/number_utils';
+import TrackLine from './track_line.vue';
+import TrackInfo from './track_info.vue';
 
 export default {
+  components: {
+    TrackLine,
+    TrackInfo,
+  },
   props: {
     legendTitle: {
       type: String,
@@ -10,21 +15,6 @@ export default {
     timeSeries: {
       type: Array,
       required: true,
-    },
-    currentDataIndex: {
-      type: Number,
-      required: true,
-    },
-  },
-  methods: {
-    summaryMetrics(series) {
-      return `Avg: ${formatRelevantDigits(series.average)} · Max: ${formatRelevantDigits(series.max)}`;
-    },
-
-    strokeDashArray(type) {
-      if (type === 'dashed') return '6, 3';
-      if (type === 'dotted') return '3, 3';
-      return null;
     },
   },
 };
@@ -35,41 +25,37 @@ export default {
       <tr
         v-for="(series, index) in timeSeries"
         :key="index"
+        v-if="series.shouldRenderLegend"
       >
         <td>
-          <strong>{{ series.track }}</strong>
+          <strong v-if="series.renderCanary">{{ series.trackName }}</strong>
         </td>
-        <td>
-          <svg
-            width="15"
-            height="6"
-          >
-            <line
-              :stroke-dasharray="strokeDashArray(series.lineStyle)"
-              :stroke="series.lineColor"
-              stroke-width="4"
-              :x1="0"
-              :x2="15"
-              :y1="2"
-              :y2="2"
-            />
-          </svg>
-        </td>
+        <track-line :track="series" />
         <td
           class="legend-metric-title"
-          v-if="timeSeries.length > 1"
-        >
-          <template v-if="series.metricTag">
-            <strong>{{ series.metricTag }}</strong> {{ summaryMetrics(series) }}
-          </template>
-          <template v-else>
-            <strong>{{ legendTitle }}</strong>
-            series {{ index + 1 }} {{ summaryMetrics(series) }}
-          </template>
+          v-if="timeSeries.length > 1">
+          <track-info
+            :track="series"
+            v-if="series.metricTag" />
+          <track-info
+            v-else
+            :track="series">
+            <strong>{{ legendTitle }}</strong> series {{ index + 1 }}
+          </track-info>
         </td>
         <td v-else>
-          <strong>{{ legendTitle }}</strong> {{ summaryMetrics(series) }}
+          <track-info :track="series">
+            <strong>{{ legendTitle }}</strong>
+          </track-info>
         </td>
+        <template v-for="(track, trackIndex) in series.tracksLegend">
+          <track-line
+            :track="track"
+            :key="`track-line-${trackIndex}`"/>
+          <td :key="`track-info-${trackIndex}`">
+            <track-info :track="track" />
+          </td>
+        </template>
       </tr>
     </table>
   </div>

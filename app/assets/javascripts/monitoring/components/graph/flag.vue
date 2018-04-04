@@ -1,11 +1,13 @@
 <script>
 import { dateFormat, timeFormat } from '../../utils/date_time_formatters';
 import { formatRelevantDigits } from '../../../lib/utils/number_utils';
-import icon from '../../../vue_shared/components/icon.vue';
+import Icon from '../../../vue_shared/components/icon.vue';
+import TrackLine from './track_line.vue';
 
 export default {
   components: {
-    icon,
+    Icon,
+    TrackLine,
   },
   props: {
     currentXCoordinate: {
@@ -107,11 +109,6 @@ export default {
       }
       return `series ${index + 1}`;
     },
-    strokeDashArray(type) {
-      if (type === 'dashed') return '6, 3';
-      if (type === 'dotted') return '3, 3';
-      return null;
-    },
   },
 };
 </script>
@@ -165,22 +162,7 @@ export default {
             v-for="(series, index) in timeSeries"
             :key="index"
           >
-            <td>
-              <svg
-                width="15"
-                height="6"
-              >
-                <line
-                  :stroke="series.lineColor"
-                  :stroke-dasharray="strokeDashArray(series.lineStyle)"
-                  stroke-width="4"
-                  x1="0"
-                  x2="15"
-                  y1="2"
-                  y2="2"
-                />
-              </svg>
-            </td>
+            <track-line :track="series"/>
             <td>{{ series.track }} {{ seriesMetricLabel(index, series) }}</td>
             <td>
               <strong>{{ seriesMetricValue(series) }}</strong>
