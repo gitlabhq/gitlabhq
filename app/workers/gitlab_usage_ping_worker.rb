@@ -10,7 +10,7 @@ class GitlabUsagePingWorker
   def perform
     try_obtain_lease do
       SubmitUsagePingService.new.execute
-    end
+    end rescue LeaseNotObtained
   end
 
   private

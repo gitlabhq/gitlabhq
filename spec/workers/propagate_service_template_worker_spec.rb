@@ -25,5 +25,11 @@ describe PropagateServiceTemplateWorker do
 
       subject.perform(template.id)
     end
+
+    it 'silently ignores error when lease could not be obtained' do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(nil)
+
+      subject.perform(service_template.id)
+    end
   end
 end

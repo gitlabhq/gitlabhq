@@ -17,6 +17,8 @@
 module ExclusiveLeaseGuard
   extend ActiveSupport::Concern
 
+  LeaseNotObtained = Class.new(StandardError)
+
   def try_obtain_lease(&block)
     try_obtain_lease_do(exclusive_lease, &block)
   end
@@ -28,10 +30,7 @@ module ExclusiveLeaseGuard
   def try_obtain_lease_do(lease, &block)
     uuid = lease.try_obtain
 
-    unless uuid
-      log_error('Cannot obtain an exclusive lease. There must be another instance already in execution.')
-      return
-    end
+    raise LeaseNotObtained unless uuid
 
     begin
       yield uuid
@@ -67,9 +66,5 @@ module ExclusiveLeaseGuard
 
   def renew_lease!
     exclusive_lease.renew
-  end
-
-  def log_error(message, extra_args = {})
-    Rails.logger.error(message)
   end
 end

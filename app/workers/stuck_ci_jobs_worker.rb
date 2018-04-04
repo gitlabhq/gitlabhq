@@ -18,7 +18,7 @@ class StuckCiJobsWorker
       drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT
       drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT
       drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT
-    end
+    end rescue LeaseNotObtained
   end
 
   private

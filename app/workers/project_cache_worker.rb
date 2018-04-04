@@ -30,7 +30,7 @@ class ProjectCacheWorker
       Rails.logger.info("Updating statistics for project #{project.id}")
 
       project.statistics.refresh!(only: statistics)
-    end
+    end rescue LeaseNotObtained
   end
 
   private
