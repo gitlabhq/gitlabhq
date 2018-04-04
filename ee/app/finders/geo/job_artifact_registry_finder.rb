@@ -20,6 +20,14 @@ module Geo
       end
     end
 
+    def count_synced_missing_on_primary_job_artifacts
+      if aggregate_pushdown_supported?
+        find_synced_missing_on_primary_job_artifacts.count
+      else
+        legacy_find_synced_missing_on_primary_job_artifacts.count
+      end
+    end
+
     def count_registry_job_artifacts
       Geo::JobArtifactRegistry.count
     end

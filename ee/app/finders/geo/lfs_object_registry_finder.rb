@@ -20,6 +20,14 @@ module Geo
       end
     end
 
+    def count_synced_missing_on_primary_lfs_objects
+      if aggregate_pushdown_supported? && !use_legacy_queries?
+        fdw_find_synced_missing_on_primary_lfs_objects.count
+      else
+        legacy_find_synced_missing_on_primary_lfs_objects.count
+      end
+    end
+
     def count_registry_lfs_objects
       Geo::FileRegistry.lfs_objects.count
     end
@@ -82,7 +90,7 @@ module Geo
       if use_legacy_queries?
         legacy_find_synced_lfs_objects
       else
-        fdw_find_lfs_objects.merge(Geo::FileRegistry.synced)
+        fdw_find_synced_lfs_objects
       end
     end
 
@@ -90,7 +98,7 @@ module Geo
       if use_legacy_queries?
         legacy_find_failed_lfs_objects
       else
-        fdw_find_lfs_objects.merge(Geo::FileRegistry.failed)
+        fdw_find_failed_lfs_objects
       end
     end
 
@@ -118,6 +126,18 @@ module Geo
         .with_files_stored_remotely
         .where.not(id: except_file_ids)
         .merge(Geo::FileRegistry.lfs_objects)
+    end
+
+    def fdw_find_synced_lfs_objects
+      fdw_find_lfs_objects.merge(Geo::FileRegistry.synced)
+    end
+
+    def fdw_find_synced_missing_on_primary_lfs_objects
+      fdw_find_lfs_objects.merge(Geo::FileRegistry.synced.missing_on_primary)
+    end
+
+    def fdw_find_failed_lfs_objects
+      fdw_find_lfs_objects.merge(Geo::FileRegistry.failed)
     end
 
     def fdw_lfs_objects
@@ -168,6 +188,14 @@ module Geo
       legacy_inner_join_registry_ids(
         lfs_objects.with_files_stored_remotely,
         registry_file_ids,
+        LfsObject
+      )
+    end
+
+    def legacy_find_synced_missing_on_primary_lfs_objects
+      legacy_inner_join_registry_ids(
+        local_lfs_objects,
+        Geo::FileRegistry.lfs_objects.synced.missing_on_primary.pluck(:file_id),
         LfsObject
       )
     end
