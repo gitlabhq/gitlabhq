@@ -64,18 +64,20 @@ describe('Multi-file editor library', () => {
 
       instance.createDiffInstance(holder);
 
-      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(
-        holder,
-        {
-          model: null,
-          contextmenu: true,
-          minimap: {
-            enabled: false,
-          },
-          readOnly: true,
-          scrollBeyondLastLine: false,
+      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
+        model: null,
+        contextmenu: true,
+        minimap: {
+          enabled: false,
         },
-      );
+        readOnly: true,
+        scrollBeyondLastLine: false,
+        quickSuggestions: false,
+        occurrencesHighlight: false,
+        renderLineHighlight: 'none',
+        hideCursorInOverviewRuler: true,
+        wordWrap: 'bounded',
+      });
     });
   });
 
@@ -113,9 +115,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('sets original & modified when diff editor', () => {
-      spyOn(instance.instance, 'getEditorType').and.returnValue(
-        'vs.editor.IDiffEditor',
-      );
+      spyOn(instance.instance, 'getEditorType').and.returnValue('vs.editor.IDiffEditor');
       spyOn(instance.instance, 'setModel');
 
       instance.attachModel(model);
@@ -131,9 +131,7 @@ describe('Multi-file editor library', () => {
 
       instance.attachModel(model);
 
-      expect(instance.dirtyDiffController.attachModel).toHaveBeenCalledWith(
-        model,
-      );
+      expect(instance.dirtyDiffController.attachModel).toHaveBeenCalledWith(model);
     });
 
     it('re-decorates with the dirty diff controller', () => {
@@ -141,9 +139,32 @@ describe('Multi-file editor library', () => {
 
       instance.attachModel(model);
 
-      expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(
-        model,
-      );
+      expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(model);
+    });
+  });
+
+  describe('attachMergeRequestModel', () => {
+    let model;
+
+    beforeEach(() => {
+      instance.createDiffInstance(document.createElement('div'));
+
+      const f = file();
+      f.mrChanges = { diff: 'ABC' };
+      f.baseRaw = 'testing';
+
+      model = instance.createModel(f);
+    });
+
+    it('sets original & modified', () => {
+      spyOn(instance.instance, 'setModel');
+
+      instance.attachMergeRequestModel(model);
+
+      expect(instance.instance.setModel).toHaveBeenCalledWith({
+        original: model.getBaseModel(),
+        modified: model.getModel(),
+      });
     });
   });
 

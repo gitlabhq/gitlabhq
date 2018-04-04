@@ -1,5 +1,0 @@
----
-title: Cache table_exists?('application_settings') to reduce repeated schema reloads
-merge_request:
-author:
-type: performance

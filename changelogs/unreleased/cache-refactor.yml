@@ -1,5 +1,0 @@
----
-title: Cache MergeRequests can_be_resolved_in_ui? git operations
-merge_request: 17589
-author:
-type: performance

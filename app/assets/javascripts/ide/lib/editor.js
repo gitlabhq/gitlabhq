@@ -65,6 +65,10 @@ export default class Editor {
         (this.instance = this.monaco.editor.createDiffEditor(domElement, {
           ...defaultEditorOptions,
           readOnly: true,
+          quickSuggestions: false,
+          occurrencesHighlight: false,
+          renderLineHighlight: 'none',
+          hideCursorInOverviewRuler: true,
         })),
       );
 
@@ -105,11 +109,19 @@ export default class Editor {
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
+  attachMergeRequestModel(model) {
+    this.instance.setModel({
+      original: model.getBaseModel(),
+      modified: model.getModel(),
+    });
+
+    this.monaco.editor.createDiffNavigator(this.instance, {
+      alwaysRevealFirst: true,
+    });
+  }
+
   setupMonacoTheme() {
-    this.monaco.editor.defineTheme(
-      gitlabTheme.themeName,
-      gitlabTheme.monacoTheme,
-    );
+    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
 
     this.monaco.editor.setTheme('gitlab');
   }
@@ -157,8 +169,6 @@ export default class Editor {
   onPositionChange(cb) {
     if (!this.instance.onDidChangeCursorPosition) return;
 
-    this.disposable.add(
-      this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)),
-    );
+    this.disposable.add(this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)));
   }
 }

@@ -170,7 +170,7 @@ module Gitlab
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     # Gitlab Read-only middleware support
-    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
+    config.middleware.insert_after ActionDispatch::Flash, '::Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
       g.factory_bot false

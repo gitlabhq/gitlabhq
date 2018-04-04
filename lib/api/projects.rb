@@ -28,6 +28,7 @@ module API
         optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
         optional :avatar, type: File, desc: 'Avatar image for project'
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
+        optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
       end
 
       params :optional_params do
@@ -228,11 +229,7 @@ module API
         namespace_id = fork_params[:namespace]
 
         if namespace_id.present?
-          fork_params[:namespace] = if namespace_id =~ /^\d+$/
-                                      Namespace.find_by(id: namespace_id)
-                                    else
-                                      Namespace.find_by_path_or_name(namespace_id)
-                                    end
+          fork_params[:namespace] = find_namespace(namespace_id)
 
           unless fork_params[:namespace] && can?(current_user, :create_projects, fork_params[:namespace])
             not_found!('Target Namespace')
@@ -278,6 +275,7 @@ module API
             :issues_enabled,
             :lfs_enabled,
             :merge_requests_enabled,
+            :merge_method,
             :name,
             :only_allow_merge_if_all_discussions_are_resolved,
             :only_allow_merge_if_pipeline_succeeds,

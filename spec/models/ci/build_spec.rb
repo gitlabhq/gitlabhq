@@ -198,6 +198,16 @@ describe Ci::Build do
     end
 
     context 'when legacy artifacts are used' do
+      let(:build) { create(:ci_build, :legacy_artifacts) }
+
+      subject { build.artifacts? }
+
+      context 'is expired' do
+        let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+
+        it { is_expected.to be_falsy }
+      end
+
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -208,13 +218,25 @@ describe Ci::Build do
         let(:build) { create(:ci_build, :legacy_artifacts) }
 
         it { is_expected.to be_truthy }
-
-        context 'is expired' do
-          let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
-
-          it { is_expected.to be_falsy }
-        end
       end
+    end
+  end
+
+  describe '#browsable_artifacts?' do
+    subject { build.browsable_artifacts? }
+
+    context 'artifacts metadata does not exist' do
+      before do
+        build.update_attributes(legacy_artifacts_metadata: nil)
+      end
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts metadata does exists' do
+      let(:build) { create(:ci_build, :artifacts) }
+
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -1249,12 +1271,6 @@ describe Ci::Build do
   end
 
   describe 'project settings' do
-    describe '#timeout' do
-      it 'returns project timeout configuration' do
-        expect(build.timeout).to eq(project.build_timeout)
-      end
-    end
-
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
         expect(build.allow_git_fetch).to eq(project.build_allow_git_fetch)
@@ -1447,24 +1463,24 @@ describe Ci::Build do
     let(:container_registry_enabled) { false }
     let(:predefined_variables) do
       [
+        { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
+        { key: 'CI_JOB_TOKEN', value: build.token, public: false },
+        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
+        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
         { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
-        { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },
-        { key: 'CI_JOB_TOKEN', value: build.token, public: false },
         { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
-        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
-        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
-        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
-        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
@@ -1929,6 +1945,7 @@ describe Ci::Build do
         before do
           allow(build).to receive(:predefined_variables) { [build_pre_var] }
           allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+          allow(build).to receive(:persisted_variables) { [] }
 
           allow_any_instance_of(Project)
             .to receive(:predefined_variables) { [project_pre_var] }
@@ -1977,6 +1994,106 @@ describe Ci::Build do
         end
       end
     end
+
+    context 'when build has not been persisted yet' do
+      let(:build) do
+        described_class.new(
+          name: 'rspec',
+          stage: 'test',
+          ref: 'feature',
+          project: project,
+          pipeline: pipeline
+        )
+      end
+
+      it 'returns static predefined variables' do
+        expect(build.variables.size).to be >= 28
+        expect(build.variables)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+        expect(build).not_to be_persisted
+      end
+    end
+  end
+
+  describe '#scoped_variables' do
+    context 'when build has not been persisted yet' do
+      let(:build) do
+        described_class.new(
+          name: 'rspec',
+          stage: 'test',
+          ref: 'feature',
+          project: project,
+          pipeline: pipeline
+        )
+      end
+
+      it 'does not persist the build' do
+        expect(build).to be_valid
+        expect(build).not_to be_persisted
+
+        build.scoped_variables
+
+        expect(build).not_to be_persisted
+      end
+
+      it 'returns static predefined variables' do
+        keys = %w[CI_JOB_NAME
+                  CI_COMMIT_SHA
+                  CI_COMMIT_REF_NAME
+                  CI_COMMIT_REF_SLUG
+                  CI_JOB_STAGE]
+
+        variables = build.scoped_variables
+
+        variables.map { |env| env[:key] }.tap do |names|
+          expect(names).to include(*keys)
+        end
+
+        expect(variables)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+      end
+
+      it 'does not return prohibited variables' do
+        keys = %w[CI_JOB_ID
+                  CI_JOB_TOKEN
+                  CI_BUILD_ID
+                  CI_BUILD_TOKEN
+                  CI_REGISTRY_USER
+                  CI_REGISTRY_PASSWORD
+                  CI_REPOSITORY_URL
+                  CI_ENVIRONMENT_URL]
+
+        build.scoped_variables.map { |env| env[:key] }.tap do |names|
+          expect(names).not_to include(*keys)
+        end
+      end
+    end
+  end
+
+  describe '#scoped_variables_hash' do
+    context 'when overriding secret variables' do
+      before do
+        project.variables.create!(key: 'MY_VAR', value: 'my value 1')
+        pipeline.variables.create!(key: 'MY_VAR', value: 'my value 2')
+      end
+
+      it 'returns a regular hash created using valid ordering' do
+        expect(build.scoped_variables_hash).to include('MY_VAR': 'my value 2')
+        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'my value 1')
+      end
+    end
+
+    context 'when overriding user-provided variables' do
+      before do
+        pipeline.variables.build(key: 'MY_VAR', value: 'pipeline value')
+        build.yaml_variables = [{ key: 'MY_VAR', value: 'myvar', public: true }]
+      end
+
+      it 'returns a hash including variable with higher precedence' do
+        expect(build.scoped_variables_hash).to include('MY_VAR': 'pipeline value')
+        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'myvar')
+      end
+    end
   end
 
   describe 'state transition: any => [:pending]' do
@@ -1986,6 +2103,70 @@ describe Ci::Build do
       expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
+    end
+  end
+
+  describe 'state transition: pending: :running' do
+    let(:runner) { create(:ci_runner) }
+    let(:job) { create(:ci_build, :pending, runner: runner) }
+
+    before do
+      job.project.update_attribute(:build_timeout, 1800)
+    end
+
+    def run_job_without_exception
+      job.run!
+    rescue StateMachines::InvalidTransition
+    end
+
+    shared_examples 'saves data on transition' do
+      it 'saves timeout' do
+        expect { job.run! }.to change { job.reload.ensure_metadata.timeout }.from(nil).to(expected_timeout)
+      end
+
+      it 'saves timeout_source' do
+        expect { job.run! }.to change { job.reload.ensure_metadata.timeout_source }.from('unknown_timeout_source').to(expected_timeout_source)
+      end
+
+      context 'when Ci::BuildMetadata#update_timeout_state fails update' do
+        before do
+          allow_any_instance_of(Ci::BuildMetadata).to receive(:update_timeout_state).and_return(false)
+        end
+
+        it "doesn't save timeout" do
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+        end
+
+        it "doesn't save timeout_source" do
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+        end
+
+        it 'raises an exception' do
+          expect { job.run! }.to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+
+    context 'when runner timeout overrides project timeout' do
+      let(:expected_timeout) { 900 }
+      let(:expected_timeout_source) { 'runner_timeout_source' }
+
+      before do
+        runner.update_attribute(:maximum_timeout, 900)
+      end
+
+      it_behaves_like 'saves data on transition'
+    end
+
+    context "when runner timeout doesn't override project timeout" do
+      let(:expected_timeout) { 1800 }
+      let(:expected_timeout_source) { 'project_timeout_source' }
+
+      before do
+        runner.update_attribute(:maximum_timeout, 3600)
+      end
+
+      it_behaves_like 'saves data on transition'
     end
   end
 

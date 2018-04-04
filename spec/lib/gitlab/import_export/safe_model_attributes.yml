@@ -15,6 +15,7 @@ Issue:
 - updated_by_id
 - confidential
 - closed_at
+- closed_by_id
 - due_date
 - moved_to_id
 - lock_version
@@ -265,7 +266,9 @@ CommitStatus:
 - target_url
 - description
 - artifacts_file
+- artifacts_file_store
 - artifacts_metadata
+- artifacts_metadata_store
 - erased_by_id
 - erased_at
 - artifacts_expire_at
@@ -458,6 +461,7 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+- pages_https_only
 Author:
 - name
 ProjectFeature:

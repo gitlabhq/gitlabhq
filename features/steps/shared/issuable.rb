@@ -105,35 +105,12 @@ module SharedIssuable
     edit_issuable
   end
 
-  step 'I click link "Edit" for the issue' do
-    edit_issuable
-  end
-
-  step 'I sort the list by "Last updated"' do
-    find('button.dropdown-toggle').click
-    page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link "Last updated"
-    end
-  end
-
   step 'I sort the list by "Least popular"' do
     find('button.dropdown-toggle').click
 
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
       click_link 'Least popular'
     end
-  end
-
-  step 'I sort the list by "Popularity"' do
-    find('button.dropdown-toggle').click
-
-    page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link 'Popularity'
-    end
-  end
-
-  step 'The list should be sorted by "Last updated"' do
-    expect(find('.issues-filters')).to have_content('Last updated')
   end
 
   step 'I click link "Next" in the sidebar' do

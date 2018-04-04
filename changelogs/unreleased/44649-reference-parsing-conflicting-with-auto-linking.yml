@@ -1,0 +1,5 @@
+---
+title: Fix autolinking URLs containing ampersands
+merge_request: 18045
+author:
+type: fixed

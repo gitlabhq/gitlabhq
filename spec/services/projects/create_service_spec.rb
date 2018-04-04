@@ -70,6 +70,16 @@ describe Projects::CreateService, '#execute' do
       opts[:default_branch] = 'master'
       expect(create_project(user, opts)).to eq(nil)
     end
+
+    it 'sets invalid service as inactive' do
+      create(:service, type: 'JiraService', project: nil, template: true, active: true)
+
+      project = create_project(user, opts)
+      service = project.services.first
+
+      expect(project).to be_persisted
+      expect(service.active).to be false
+    end
   end
 
   context 'wiki_enabled creates repository directory' do
@@ -153,7 +163,7 @@ describe Projects::CreateService, '#execute' do
 
     context 'when another repository already exists on disk' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       let(:opts) do
         {
@@ -232,14 +242,15 @@ describe Projects::CreateService, '#execute' do
   end
 
   context 'when a bad service template is created' do
-    it 'reports an error in the imported project' do
+    it 'sets service to be inactive' do
       opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-ce'
       create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
 
       project = create_project(user, opts)
+      service = project.services.first
 
-      expect(project.errors.full_messages_for(:base).first).to match(/Unable to save project. Error: Unable to save DroneCiService/)
-      expect(project.services.count).to eq 0
+      expect(project).to be_persisted
+      expect(service.active).to be false
     end
   end
 

@@ -1,17 +1,25 @@
 import Vue from 'vue';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import removeBreakLine from 'spec/helpers/vue_component_helper';
 
 describe('ShaMismatch', () => {
-  describe('template', () => {
+  let vm;
+
+  beforeEach(() => {
     const Component = Vue.extend(ShaMismatch);
-    const vm = new Component({
-      el: document.createElement('div'),
-    });
-    it('should have correct elements', () => {
-      expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(vm.$el.innerText).toContain('The source branch HEAD has recently changed.');
-      expect(vm.$el.innerText).toContain('Please reload the page and review the changes before merging.');
-    });
+    vm = mountComponent(Component);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  it('should render information message', () => {
+    expect(vm.$el.querySelector('button').disabled).toEqual(true);
+
+    expect(
+      removeBreakLine(vm.$el.textContent).trim(),
+    ).toContain('The source branch HEAD has recently changed. Please reload the page and review the changes before merging');
   });
 });

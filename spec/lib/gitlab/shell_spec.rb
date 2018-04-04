@@ -14,7 +14,7 @@ describe Gitlab::Shell do
     allow(Project).to receive(:find).and_return(project)
 
     allow(gitlab_shell).to receive(:gitlab_projects)
-      .with(project.repository_storage_path, project.disk_path + '.git')
+      .with(project.repository_storage, project.disk_path + '.git')
       .and_return(gitlab_projects)
   end
 
@@ -405,7 +405,7 @@ describe Gitlab::Shell do
     describe '#create_repository' do
       shared_examples '#create_repository' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
         let(:repo_name) { 'project/path' }
         let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 
@@ -487,21 +487,21 @@ describe Gitlab::Shell do
     describe '#fork_repository' do
       subject do
         gitlab_shell.fork_repository(
-          project.repository_storage_path,
+          project.repository_storage,
           project.disk_path,
-          'new/storage',
+          'nfs-file05',
           'fork/path'
         )
       end
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { true }
+        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { true }
 
         is_expected.to be_truthy
       end
 
       it 'return false when the command fails' do
-        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { false }
+        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { false }
 
         is_expected.to be_falsy
       end
@@ -661,7 +661,7 @@ describe Gitlab::Shell do
       it 'returns true when the command succeeds' do
         expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
 
-        result = gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+        result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
 
         expect(result).to be_truthy
       end
@@ -671,7 +671,7 @@ describe Gitlab::Shell do
         expect(gitlab_projects).to receive(:import_project) { false }
 
         expect do
-          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+          gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
         end.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
@@ -679,7 +679,7 @@ describe Gitlab::Shell do
 
   describe 'namespace actions' do
     subject { described_class.new }
-    let(:storage_path) { Gitlab.config.repositories.storages.default.path }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
 
     describe '#add_namespace' do
       it 'creates a namespace' do

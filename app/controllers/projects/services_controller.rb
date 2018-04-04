@@ -46,6 +46,8 @@ class Projects::ServicesController < Projects::ApplicationController
     else
       { error: true, message: 'Validations failed.', service_response: @service.errors.full_messages.join(',') }
     end
+  rescue Gitlab::HTTP::BlockedUrlError => e
+    { error: true, message: 'Test failed.', service_response: e.message }
   end
 
   def success_message

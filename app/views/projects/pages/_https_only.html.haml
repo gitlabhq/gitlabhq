@@ -1,0 +1,10 @@
+= form_for @project, url: namespace_project_pages_path(@project.namespace.becomes(Namespace), @project), html: { class: 'inline', title: pages_https_only_title } do |f|
+  = f.check_box :pages_https_only, class: 'pull-left', disabled: pages_https_only_disabled?
+
+  .prepend-left-20
+    = f.label :pages_https_only, class: pages_https_only_label_class do
+      %strong Force domains with SSL certificates to use HTTPS
+
+  - unless pages_https_only_disabled?
+    .prepend-top-10
+    = f.submit 'Save', class: 'btn btn-success'

@@ -1,5 +1,0 @@
----
-title: Fix Group labels load failure when there are duplicate labels present
-merge_request: 17353
-author:
-type: fixed

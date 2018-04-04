@@ -1,5 +1,0 @@
----
-title: Adds updated_at filter to issues and merge_requests API
-merge_request: 17417
-author: Jacopo Beschi @jacopo-beschi
-type: added

@@ -231,6 +231,20 @@ module API
           render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
       end
+
+      desc 'Get Merge Requests associated with a commit' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
+        use :pagination
+      end
+      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        commit = user_project.commit(params[:sha])
+        not_found! 'Commit' unless commit
+
+        present paginate(commit.merge_requests), with: Entities::MergeRequestBasic
+      end
     end
   end
 end

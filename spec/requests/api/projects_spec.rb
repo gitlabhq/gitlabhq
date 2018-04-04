@@ -452,7 +452,8 @@ describe API::Projects do
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
-        ci_config_path: 'a/custom/path'
+        ci_config_path: 'a/custom/path',
+        merge_method: 'ff'
       })
 
       post api('/projects', user), project
@@ -567,6 +568,22 @@ describe API::Projects do
       post api('/projects', user), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
+    end
+
+    it 'sets the merge method of a project to rebase merge' do
+      project = attributes_for(:project, merge_method: 'rebase_merge')
+
+      post api('/projects', user), project
+
+      expect(json_response['merge_method']).to eq('rebase_merge')
+    end
+
+    it 'rejects invalid values for merge_method' do
+      project = attributes_for(:project, merge_method: 'totally_not_valid_method')
+
+      post api('/projects', user), project
+
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it 'ignores import_url when it is nil' do
@@ -823,6 +840,7 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response['merge_method']).to eq(project.merge_method.to_s)
       end
 
       it 'returns a project by path name' do
@@ -1474,6 +1492,26 @@ describe API::Projects do
           expect(json_response[k.to_s]).to eq(v)
         end
       end
+
+      it 'updates merge_method' do
+        project_param = { merge_method: 'ff' }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'rejects to update merge_method when merge_method is invalid' do
+        project_param = { merge_method: 'invalid' }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
 
     context 'when authenticated as project master' do
@@ -1491,6 +1529,7 @@ describe API::Projects do
                           wiki_enabled: true,
                           snippets_enabled: true,
                           merge_requests_enabled: true,
+                          merge_method: 'ff',
                           description: 'new description' }
 
         put api("/projects/#{project3.id}", user4), project_param
@@ -1718,6 +1757,12 @@ describe API::Projects do
       group
     end
 
+    let(:group3) do
+      group = create(:group, name: 'group3_name', parent: group2)
+      group.add_owner(user2)
+      group
+    end
+
     before do
       project.add_reporter(user2)
     end
@@ -1811,6 +1856,15 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group2.name)
+      end
+
+      it 'forks to owned subgroup' do
+        full_path = "#{group2.path}/#{group3.path}"
+        post api("/projects/#{project.id}/fork", user2), namespace: full_path
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group3.name)
+        expect(json_response['namespace']['full_path']).to eq(full_path)
       end
 
       it 'fails to fork to not owned group' do
