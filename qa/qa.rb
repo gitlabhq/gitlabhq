@@ -90,6 +90,10 @@ module QA
       autoload :OAuth, 'qa/page/main/oauth'
     end
 
+    module Settings
+      autoload :Common, 'qa/page/settings/common'
+    end
+
     module Menu
       autoload :Main, 'qa/page/menu/main'
       autoload :Side, 'qa/page/menu/side'
@@ -150,7 +154,10 @@ module QA
     end
 
     module Admin
-      autoload :Settings, 'qa/page/admin/settings'
+      module Settings
+        autoload :RepositoryStorage, 'qa/page/admin/settings/repository_storage'
+        autoload :Main, 'qa/page/admin/settings/main'
+      end
     end
 
     module Mattermost
