@@ -53,7 +53,7 @@ describe EnvironmentScaling do
     subject { environment_scaling.available? }
 
     it 'calls the class method for availability' do
-      expect(EnvironmentScaling).to receive(:available_for?)
+      expect(described_class).to receive(:available_for?)
 
       subject
     end
