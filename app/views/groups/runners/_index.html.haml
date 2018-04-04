@@ -1,0 +1,23 @@
+.light.prepend-top-default
+  %p
+    A 'Runner' is a process which runs a job.
+    You can setup as many Runners as you need.
+    %br
+    Runners can be placed on separate users, servers, and even on your local machine.
+
+  %p Each Runner can be in one of the following states:
+  %div
+    %ul
+      %li
+        %span.label.label-success active
+        \- Runner is active and can process any new jobs
+      %li
+        %span.label.label-danger paused
+        \- Runner is paused and will not receive any new jobs
+
+%hr
+
+%p.lead To start serving your jobs you can add Runners to your group
+.row
+  .col-sm-6
+    = render 'groups/runners/group_runners'

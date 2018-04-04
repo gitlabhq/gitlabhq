@@ -1,0 +1,18 @@
+%li.runner{ id: dom_id(runner) }
+  %h4
+    = runner_status_icon(runner)
+
+  %span.commit-sha
+    = runner.short_sha
+
+  .pull-right
+    %small.light
+      \##{runner.id}
+  - if runner.description.present?
+    %p.runner-description
+      = runner.description
+  - if runner.tag_list.present?
+    %p
+      - runner.tag_list.sort.each do |tag|
+        %span.label.label-primary
+          = tag
