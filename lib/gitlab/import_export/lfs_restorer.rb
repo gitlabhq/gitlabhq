@@ -28,7 +28,7 @@ module Gitlab
         lfs_object = LfsObject.find_or_initialize_by(oid: oid, size: size)
         lfs_object.file = File.open(path) unless lfs_object.file&.exists?
 
-        @project.lfs_storage_project.lfs_objects << lfs_object
+        @project.all_lfs_objects << lfs_object
       end
 
       def lfs_file_paths

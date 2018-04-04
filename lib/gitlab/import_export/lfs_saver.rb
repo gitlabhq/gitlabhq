@@ -9,9 +9,7 @@ module Gitlab
       end
 
       def save
-        return true if @project.lfs_objects.empty?
-
-        @project.lfs_storage_project.lfs_objects.each do |lfs_object|
+        @project.all_lfs_objects.each do |lfs_object|
           save_lfs_object(lfs_object)
         end
 
