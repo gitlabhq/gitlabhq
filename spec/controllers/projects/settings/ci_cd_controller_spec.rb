@@ -58,27 +58,27 @@ describe Projects::Settings::CiCdController do
   end
 
   describe 'PATCH update' do
+    let(:params) { { ci_config_path: '' } }
+
     subject do
       patch :update,
             namespace_id: project.namespace.to_param,
             project_id: project,
-            project: {
-                auto_devops_attributes: params
-            }
+            project: params
+    end
+
+    it 'redirects to the settings page' do
+      subject
+
+      expect(response).to have_gitlab_http_status(302)
+      expect(flash[:notice]).to eq("Pipelines settings for '#{project.name}' were successfully updated.")
     end
 
     context 'when updating the auto_devops settings' do
-      let(:params) { { enabled: '', domain: 'mepmep.md' } }
-
-      it 'redirects to the settings page' do
-        subject
-
-        expect(response).to have_gitlab_http_status(302)
-        expect(flash[:notice]).to eq("Pipelines settings for '#{project.name}' were successfully updated.")
-      end
+      let(:params) { { auto_devops_attributes: { enabled: '', domain: 'mepmep.md' } } }
 
       context 'following the instance default' do
-        let(:params) { { enabled: '' } }
+        let(:params) { { auto_devops_attributes: { enabled: '' } } }
 
         it 'allows enabled to be set to nil' do
           subject
@@ -131,6 +131,30 @@ describe Projects::Settings::CiCdController do
           expect(CreatePipelineWorker).not_to receive(:perform_async).with(project.id, user.id, :web, any_args)
 
           subject
+        end
+      end
+    end
+
+    context 'when updating general settings' do
+      context 'when build_timeout_human_readable is not specified' do
+        let(:params) { { build_timeout_human_readable: '' } }
+
+        it 'set default timeout' do
+          subject
+
+          project.reload
+          expect(project.build_timeout).to eq(3600)
+        end
+      end
+
+      context 'when build_timeout_human_readable is specified' do
+        let(:params) { { build_timeout_human_readable: '1h 30m' } }
+
+        it 'set specified timeout' do
+          subject
+
+          project.reload
+          expect(project.build_timeout).to eq(5400)
         end
       end
     end
