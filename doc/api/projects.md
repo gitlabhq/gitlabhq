@@ -124,11 +124,8 @@ GET /projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-<<<<<<< HEAD
-    "approvals_before_merge": 0,
-=======
->>>>>>> upstream/master
     "merge_method": "merge",
+    "approvals_before_merge": 0,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -208,11 +205,8 @@ GET /projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-<<<<<<< HEAD
-    "approvals_before_merge": 0,
-=======
->>>>>>> upstream/master
     "merge_method": "merge",
+    "approvals_before_merge": 0,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -510,11 +504,8 @@ GET /projects/:id
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
-<<<<<<< HEAD
-  "approvals_before_merge": 0,
-=======
->>>>>>> upstream/master
   "merge_method": "merge",
+  "approvals_before_merge": 0,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
