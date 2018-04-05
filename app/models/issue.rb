@@ -38,7 +38,7 @@ class Issue < ActiveRecord::Base
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
-  has_many :assignees, class_name: "User", through: :issue_assignees
+  has_many :assignees, -> { auto_include(false) }, class_name: "User", through: :issue_assignees
 
   has_one :epic_issue
   has_one :epic, through: :epic_issue

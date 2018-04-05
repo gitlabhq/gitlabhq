@@ -98,9 +98,9 @@ class User < ActiveRecord::Base
   # Groups
   has_many :members
   has_many :group_members, -> { where(requested_at: nil) }, source: 'GroupMember'
-  has_many :groups, through: :group_members
-  has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
-  has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
+  has_many :groups, -> { auto_include(false) }, through: :group_members
+  has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }).auto_include(false) }, through: :group_members, source: :group
+  has_many :masters_groups, -> { where(members: { access_level: Gitlab::Access::MASTER }).auto_include(false) }, through: :group_members, source: :group
 
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
