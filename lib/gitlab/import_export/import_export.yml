@@ -114,6 +114,7 @@ excluded_attributes:
     - :only_mirror_protected_branches
     - :pull_mirror_available_overridden
     - :mirror_overwrites_diverged_branches
+    - :description_html
   snippets:
     - :expired_at
   merge_request_diff:
@@ -153,8 +154,6 @@ methods:
     - :diff_head_sha
     - :source_branch_sha
     - :target_branch_sha
-  project:
-    - :description_html
   events:
     - :action
   push_event_payload:

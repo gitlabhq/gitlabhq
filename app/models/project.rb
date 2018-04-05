@@ -643,7 +643,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless import_url.present? && valid_import_url?
+    return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
     if data
@@ -1492,6 +1492,7 @@ class Project < ActiveRecord::Base
     remove_import_jid
     update_project_counter_caches
     after_create_default_branch
+    refresh_markdown_cache!
   end
 
   def update_project_counter_caches

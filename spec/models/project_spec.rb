@@ -3594,6 +3594,7 @@ describe Project do
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
       expect(project).to receive(:after_create_default_branch)
+      expect(project).to receive(:refresh_markdown_cache!)
 
       project.after_import
     end
