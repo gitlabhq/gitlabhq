@@ -1,7 +1,6 @@
 .banner-callout {
   display: flex;
   position: relative;
-  flex-wrap: wrap;
   align-items: start;
 
   .banner-close {
@@ -17,7 +16,7 @@
   }
 
   .banner-graphic {
-    margin: 0 20px 20px 0;
+    margin: 0 $gl-padding $gl-padding 0;
   }
 
   &.banner-non-empty-state {
@@ -26,6 +25,8 @@
 
   @media (max-width: $screen-xs-max) {
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
 
     .banner-title,
     .banner-buttons {
@@ -38,7 +39,7 @@
     }
 
     .banner-graphic {
-      margin: 0 20px 20px;
+      margin-left: 20px;
     }
   }
 }
