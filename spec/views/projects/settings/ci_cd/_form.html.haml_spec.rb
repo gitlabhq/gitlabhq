@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/pipelines_settings/_show' do
+describe 'projects/settings/ci_cd/_form' do
   let(:project) { create(:project, :repository) }
 
   before do
