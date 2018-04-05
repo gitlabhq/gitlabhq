@@ -140,7 +140,7 @@ describe ProjectPolicy do
     let(:feature_write_abilities) do
       described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|
         described_class.create_update_admin_destroy(feature)
-      end
+      end + additional_reporter_permissions + additional_master_permissions
     end
 
     let(:other_write_abilities) do

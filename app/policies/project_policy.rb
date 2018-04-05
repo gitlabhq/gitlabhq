@@ -1,4 +1,20 @@
 class ProjectPolicy < BasePolicy
+  def self.create_read_update_admin_destroy(name)
+    [
+      :"read_#{name}",
+      *create_update_admin_destroy(name)
+    ]
+  end
+
+  def self.create_update_admin_destroy(name)
+    [
+      :"create_#{name}",
+      :"update_#{name}",
+      :"admin_#{name}",
+      :"destroy_#{name}"
+    ]
+  end
+
   prepend EE::ProjectPolicy
 
   READONLY_FEATURES_WHEN_ARCHIVED = %i[
@@ -21,22 +37,6 @@ class ProjectPolicy < BasePolicy
     pages
     cluster
   ].freeze
-
-  def self.create_read_update_admin_destroy(name)
-    [
-      :"read_#{name}",
-      *create_update_admin_destroy(name)
-    ]
-  end
-
-  def self.create_update_admin_destroy(name)
-    [
-      :"create_#{name}",
-      :"update_#{name}",
-      :"admin_#{name}",
-      :"destroy_#{name}"
-    ]
-  end
 
   desc "User is a project owner"
   condition :owner do
