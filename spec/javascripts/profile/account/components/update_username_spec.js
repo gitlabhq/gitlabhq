@@ -10,7 +10,6 @@ describe('UpdateUsername component', () => {
   const actionUrl = `${gl.TEST_HOST}/update/username`;
   const username = 'hasnoname';
   const newUsername = 'new_username';
-  const modalSelector = '#modal-username-change-confirmation';
   let Component;
   let vm;
   let axiosMock;
@@ -24,8 +23,6 @@ describe('UpdateUsername component', () => {
       initialUsername: username,
     });
 
-    vm.isOpen = true;
-
     Vue.nextTick()
       .then(done)
       .catch(done.fail);
@@ -36,12 +33,16 @@ describe('UpdateUsername component', () => {
     axiosMock.restore();
   });
 
-  const findElements = () => ({
-    input: vm.$el.querySelector('#modal-username-change-input'),
-    openModalBtn: vm.$el.querySelector(`[data-target="${modalSelector}"]`),
-    modal: vm.$el.querySelector(modalSelector),
-    confirmModalBtn: vm.$el.querySelector(`${modalSelector} .btn-warning`),
-  });
+  const findElements = () => {
+    const modalSelector = `#${vm.$options.modalId}`;
+
+    return ({
+      input: vm.$el.querySelector(`#${vm.$options.inputId}`),
+      openModalBtn: vm.$el.querySelector(`[data-target="${modalSelector}"]`),
+      modal: vm.$el.querySelector(modalSelector),
+      confirmModalBtn: vm.$el.querySelector(`${modalSelector} .btn-warning`),
+    });
+  };
 
   it('has a disabled button if the username was not changed', done => {
     const { input, openModalBtn } = findElements();
@@ -73,8 +74,8 @@ describe('UpdateUsername component', () => {
   });
 
   it('confirmation modal contains proper header and body', done => {
-    const header = vm.$el.querySelector(`${modalSelector} .modal-title`);
-    const body = vm.$el.querySelector(`${modalSelector} .modal-body`);
+    const header = vm.$el.querySelector(`#${vm.$options.modalId} .modal-title`);
+    const body = vm.$el.querySelector(`#${vm.$options.modalId} .modal-body`);
 
     vm.newUsername = newUsername;
 

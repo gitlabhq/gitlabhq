@@ -79,16 +79,18 @@ Please update your Git repository remotes as soon as possible.`),
         });
     },
   },
+  modalId: 'username-change-confirmation-modal',
+  inputId: 'username-change-input',
 };
 </script>
 <template>
   <div>
     <div class="form-group">
-      <label for="modal-username-change-input">{{ s__('Profiles|Path') }}</label>
+      <label :for="$options.inputId">{{ s__('Profiles|Path') }}</label>
       <div class="input-group">
         <div class="input-group-addon">{{ rootUrl }}</div>
         <input
-          id="modal-username-change-input"
+          :id="$options.inputId"
           class="form-control"
           required="required"
           v-model="newUsername"
@@ -100,7 +102,7 @@ Please update your Git repository remotes as soon as possible.`),
       </p>
     </div>
     <button
-      data-target="#modal-username-change-confirmation"
+      :data-target="`#${$options.modalId}`"
       class="btn btn-warning"
       type="button"
       data-toggle="modal"
@@ -109,7 +111,7 @@ Please update your Git repository remotes as soon as possible.`),
       {{ buttonText }}
     </button>
     <gl-modal
-      id="modal-username-change-confirmation"
+      :id="$options.modalId"
       :header-title-text="s__('Profiles|Change username') + '?'"
       footer-primary-button-variant="warning"
       :footer-primary-button-text="buttonText"
