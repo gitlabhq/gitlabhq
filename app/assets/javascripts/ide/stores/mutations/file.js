@@ -154,9 +154,10 @@ export default {
     });
   },
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
-    const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
+    const key = `${keyPrefix}-${file.key}`;
+    const pendingTab = state.openFiles.find(f => f.key === key && f.pending);
     let openFiles = state.openFiles.map(f =>
-      Object.assign(f, { active: f.path === file.path, opened: false, active: false }),
+      Object.assign(f, { active: f.key === key, opened: false }),
     );
 
     if (!pendingTab) {
@@ -172,7 +173,7 @@ export default {
             active: true,
             pending: true,
             opened: true,
-            key: `${keyPrefix}-${f.key}`,
+            key,
           });
         }
 

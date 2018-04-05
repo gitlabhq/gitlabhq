@@ -50,11 +50,7 @@ export default {
     ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
   },
   methods: {
-    ...mapActions([
-      'toggleRightPanelCollapsed',
-      'stageAllChanges',
-      'unstageAllChanges',
-    ]),
+    ...mapActions(['toggleRightPanelCollapsed', 'stageAllChanges', 'unstageAllChanges']),
     actionBtnClicked() {
       this[this.action]();
     },
@@ -131,6 +127,7 @@ export default {
           <list-item
             :file="file"
             :action-component="itemActionComponent"
+            :key-prefix="title"
           />
         </li>
       </ul>

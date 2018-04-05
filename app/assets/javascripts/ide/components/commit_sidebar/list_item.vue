@@ -19,6 +19,11 @@ export default {
       type: String,
       required: true,
     },
+    keyPrefix: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     iconName() {
@@ -39,7 +44,7 @@ export default {
     openFileInEditor() {
       return this.openPendingTab({
         file: this.file,
-        keyPrefix: this.file.staged ? 'staged' : 'unstaged',
+        keyPrefix: this.keyPrefix.toLowerCase(),
       }).then(changeViewer => {
         if (changeViewer) {
           this.updateViewer('diff');
