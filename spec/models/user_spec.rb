@@ -2071,6 +2071,8 @@ describe User do
 
       expect(ghost).to be_ghost
       expect(ghost).to be_persisted
+      expect(ghost.namespace).not_to be_nil
+      expect(ghost.namespace).to be_persisted
     end
 
     it "does not create a second ghost user if one is already present" do
