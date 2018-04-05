@@ -57,7 +57,8 @@
         = succeed '.' do
           = link_to 'Learn more', help_page_path('user/profile/index', anchor: 'changing-your-username'), target: '_blank'
     .col-lg-8
-      #update-username{ data: { initial_username: current_user.username, root_url: root_url, action_url: update_username_profile_path} }
+      - data = { initial_username: current_user.username, root_url: root_url, action_url: "#{update_username_profile_path}?format=json" }
+      #update-username{ data: data }
   %hr
 
 .row.prepend-top-default
