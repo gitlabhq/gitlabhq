@@ -7,13 +7,14 @@ module Gitlab
 
       Failure = Class.new(StandardError)
 
-      attr_reader :path, :relative_path, :storage, :storage_path
+      attr_reader :path, :relative_path, :storage, :storage_path, :gl_repository
 
-      def initialize(storage, relative_path)
+      def initialize(storage, relative_path, gl_repository)
         @storage       = storage
         @storage_path  = Gitlab.config.repositories.storages[storage].legacy_disk_path
         @relative_path = "#{relative_path}.git"
         @path          = File.join(storage_path, @relative_path)
+        @gl_repository = gl_repository
       end
 
       def calculate
@@ -21,13 +22,23 @@ module Gitlab
           failure!(Gitlab::Git::Repository::NoRepository, 'No repository for such path')
         end
 
-        calculate_checksum_by_shelling_out
+        raw_repository.gitaly_migrate(:calculate_checksum) do |is_enabled|
+          if is_enabled
+            calculate_checksum_gitaly
+          else
+            calculate_checksum_by_shelling_out
+          end
+        end
       end
 
       private
 
       def repository_exists?
         raw_repository.exists?
+      end
+
+      def calculate_checksum_gitaly
+        gitaly_repository_client.calculate_checksum
       end
 
       def calculate_checksum_by_shelling_out
@@ -69,7 +80,11 @@ module Gitlab
       end
 
       def raw_repository
-        Gitlab::Git::Repository.new(storage, relative_path, nil)
+        @raw_repository ||= Gitlab::Git::Repository.new(storage, relative_path, gl_repository)
+      end
+
+      def gitaly_repository_client
+        raw_repository.gitaly_repository_client
       end
 
       def run_git(args)
