@@ -2,6 +2,7 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180405101928_reschedule_builds_stages_migration')
 
 describe RescheduleBuildsStagesMigration, :sidekiq, :migration do
+  let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }
@@ -10,7 +11,8 @@ describe RescheduleBuildsStagesMigration, :sidekiq, :migration do
   before do
     stub_const("#{described_class}::BATCH_SIZE", 1)
 
-    projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce')
+    namespaces.create(id: 12, name: 'gitlab-org', path: 'gitlab-org')
+    projects.create!(id: 123, namespace_id: 12, name: 'gitlab', path: 'gitlab')
     pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
     stages.create!(id: 1, project_id: 123, pipeline_id: 1, name: 'test')
 
