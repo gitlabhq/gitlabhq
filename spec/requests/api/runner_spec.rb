@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe API::Runner do
+describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
 
   let(:registration_token) { 'abcdefg123456' }
 
   before do
+    stub_feature_flags(ci_enable_live_trace: true)
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
     allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)

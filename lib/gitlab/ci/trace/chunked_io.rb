@@ -113,8 +113,6 @@ module Gitlab
         end
 
         def write(data)
-          raise 'Could not write empty data' unless data.present?
-
           start_pos = tell
           data = data.force_encoding(Encoding::BINARY)
 

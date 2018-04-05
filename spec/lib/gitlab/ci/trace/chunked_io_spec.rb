@@ -298,14 +298,6 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
 
         it_behaves_like 'writes a trace'
       end
-
-      context 'when data is nil' do
-        let(:data) { nil }
-
-        it 'writes a trace' do
-          expect { subject } .to raise_error('Could not write empty data')
-        end
-      end
     end
 
     context 'when data already exists' do
