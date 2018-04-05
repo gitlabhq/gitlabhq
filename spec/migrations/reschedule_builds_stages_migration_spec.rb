@@ -1,7 +1,7 @@
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20180212101928_schedule_build_stage_migration')
+require Rails.root.join('db', 'post_migrate', '20180405101928_reschedule_builds_stages_migration')
 
-describe ScheduleBuildStageMigration, :sidekiq, :migration do
+describe RescheduleBuildsStagesMigration, :sidekiq, :migration do
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }
