@@ -13,7 +13,7 @@
               %p.settings-message.text-center
                 = message.html_safe
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|
-            .radio.js-enable-autodevops{ data: { auto_devops_enabled: @auto_devops.enabled?.to_s } }
+            .radio.js-enable-autodevops{ data: { auto_devops_enabled: @auto_devops&.enabled?.to_s } }
               = form.label :enabled_true do
                 = form.radio_button :enabled, 'true'
                 %strong Enable Auto DevOps
@@ -23,7 +23,7 @@
                     The Auto DevOps pipeline configuration is being used
                   - else
                     The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
-                    = link_to "Remove CI file", project_blob_path(@project, 'master', @project.ci_config_path)
+                    = link_to 'Remove custom CI file', project_blob_path(@project, 'master', @project.ci_config_path, branch_name: selected_branch, created_merge_request: 1, commit_message: 'Delete custom gitlab-ci'), method: :delete
 
             .radio
               = form.label :enabled_false do
