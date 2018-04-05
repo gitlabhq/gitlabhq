@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-04-04 19:35+0200\n"
-"PO-Revision-Date: 2018-04-04 19:35+0200\n"
-=======
-"POT-Creation-Date: 2018-04-04 18:02+0200\n"
-"PO-Revision-Date: 2018-04-04 18:02+0200\n"
->>>>>>> upstream/master
+"POT-Creation-Date: 2018-04-05 09:57+0200\n"
+"PO-Revision-Date: 2018-04-05 09:57+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -261,12 +256,9 @@ msgstr ""
 msgid "Allow edits from maintainers."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
@@ -492,12 +484,9 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Background Color"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Background jobs"
 msgstr ""
 
@@ -1341,12 +1330,9 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Configure Gitaly timeouts."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Configure Sidekiq job throttling."
 msgstr ""
 
@@ -1724,12 +1710,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Enable SAML authentication for this group"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Enable Sentry for error reporting and logging."
 msgstr ""
 
@@ -1739,27 +1722,21 @@ msgstr ""
 msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Enable classification control using an external service"
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Enabled"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -1808,7 +1785,6 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Epic will be removed! Are you sure?"
 msgstr ""
 
@@ -1821,8 +1797,6 @@ msgstr ""
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Error Reporting and Logging"
 msgstr ""
 
@@ -2032,14 +2006,7 @@ msgstr ""
 msgid "GeoNodes|Checksummed"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GeoNodes|Database replication lag:"
-=======
-msgid "GitLab CI Linter has been moved"
-msgstr ""
-
-msgid "GitLab Runner section"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Disabling a node stops the sync process. Are you sure?"
@@ -2597,12 +2564,9 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Lock not found"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Locked"
 msgstr ""
 
@@ -2681,7 +2645,6 @@ msgstr ""
 msgid "Metrics - Prometheus"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Metrics|Business"
 msgstr ""
 
@@ -2751,8 +2714,6 @@ msgstr ""
 msgid "Metrics|e.g. req/sec"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Milestone"
 msgstr ""
 
@@ -3595,7 +3556,6 @@ msgstr ""
 msgid "Repository"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Repository has no locks."
 msgstr ""
 
@@ -3605,11 +3565,6 @@ msgstr ""
 msgid "Repository mirror settings"
 msgstr ""
 
-=======
-msgid "Repository maintenance"
-msgstr ""
-
->>>>>>> upstream/master
 msgid "Repository storage"
 msgstr ""
 
@@ -3651,15 +3606,12 @@ msgstr ""
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Runners"
 msgstr ""
 
@@ -3765,12 +3717,9 @@ msgstr ""
 msgid "Service Templates"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Service URL"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Session expiration, projects limit and attachment size."
 msgstr ""
 
@@ -3780,12 +3729,9 @@ msgstr ""
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Set max session time for web terminal."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Set notification email for abuse reports."
 msgstr ""
 
@@ -3836,7 +3782,6 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
-<<<<<<< HEAD
 msgid "Sidebar|Change weight"
 msgstr ""
 
@@ -3862,31 +3807,18 @@ msgid "Slack application"
 msgstr ""
 
 msgid "Snippets"
-=======
-msgid "Sign-in restrictions"
->>>>>>> upstream/master
 msgstr ""
 
-msgid "Sign-up restrictions"
-msgstr ""
-
-msgid "Size and domain settings for static websites"
-msgstr ""
-
-msgid "Snippets"
-msgstr ""
-
-<<<<<<< HEAD
-msgid "Something went wrong when toggling the button"
-msgstr ""
-
-msgid "Something went wrong while fetching Dependency Scanning."
-=======
 msgid "Something went wrong on our end"
 msgstr ""
 
 msgid "Something went wrong on our end."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Something went wrong when toggling the button"
+msgstr ""
+
+msgid "Something went wrong while fetching Dependency Scanning."
 msgstr ""
 
 msgid "Something went wrong while fetching SAST."
@@ -4537,7 +4469,6 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
 msgstr ""
 
@@ -4550,11 +4481,6 @@ msgstr ""
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
-=======
-msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
-msgstr ""
-
->>>>>>> upstream/master
 msgid "Todo"
 msgstr ""
 
@@ -4591,15 +4517,12 @@ msgstr ""
 msgid "Turn on Service Desk"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Unknown"
 msgstr ""
 
 msgid "Unlock"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Unlocked"
 msgstr ""
 
@@ -4654,12 +4577,9 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "User and IP Rate Limits"
 msgstr ""
 
@@ -5076,15 +4996,12 @@ msgstr ""
 msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ciReport|no vulnerabilities"
 msgstr ""
 
 msgid "command line instructions"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "connecting"
 msgstr ""
 
@@ -5150,12 +5067,9 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "mrWidget|Add approval"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "mrWidget|Allows edits from maintainers"
 msgstr ""
 
