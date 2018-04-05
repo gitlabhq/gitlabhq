@@ -28,7 +28,7 @@ module Ci
     end
 
     def set_data(value)
-      raise 'too much data' if value.length > CHUNK_SIZE
+      raise 'too much data' if value.bytesize > CHUNK_SIZE
 
       case
       when redis?
@@ -49,7 +49,8 @@ module Ci
 
     def append(new_data, offset)
       current_data = self.data || ""
-      raise 'Outside of if data' if offset > current_data.bytesize
+      raise 'Offset is out of bound' if offset > current_data.bytesize
+      raise 'Outside of chunk size' if CHUNK_SIZE < offset + new_data.bytesize
 
       self.set_data(current_data.byteslice(0, offset) + new_data)
     end
