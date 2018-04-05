@@ -6,24 +6,34 @@ import * as types from '../mutation_types';
 import router from '../../ide_router';
 import { setPageTitle } from '../utils';
 
-export const closeFile = ({ commit, state, getters, dispatch }, path) => {
-  const indexOfClosedFile = state.openFiles.findIndex(f => f.path === path);
-  const file = state.entries[path];
+export const closeFile = ({ commit, state, dispatch }, file) => {
+  const path = file.path;
+  const indexOfClosedFile = state.openFiles.findIndex(f => f.key === file.key);
   const fileWasActive = file.active;
 
-  commit(types.TOGGLE_FILE_OPEN, path);
-  commit(types.SET_FILE_ACTIVE, { path, active: false });
+  if (file.pending) {
+    commit(types.REMOVE_PENDING_TAB, file);
+  } else {
+    commit(types.TOGGLE_FILE_OPEN, path);
+    commit(types.SET_FILE_ACTIVE, { path, active: false });
+  }
 
   if (state.openFiles.length > 0 && fileWasActive) {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
-    const nextFileToOpen = state.entries[state.openFiles[nextIndexToOpen].path];
+    const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
-    router.push(`/project${nextFileToOpen.url}`);
+    if (nextFileToOpen.pending) {
+      dispatch('updateViewer', 'diff');
+      dispatch('openPendingTab', nextFileToOpen);
+    } else {
+      dispatch('updateDelayViewerUpdated', true);
+      router.push(`/project${nextFileToOpen.url}`);
+    }
   } else if (!state.openFiles.length) {
     router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
   }
 
-  eventHub.$emit(`editor.update.model.dispose.${file.path}`);
+  eventHub.$emit(`editor.update.model.dispose.${file.key}`);
 };
 
 export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
@@ -161,4 +171,24 @@ export const stageChange = ({ commit }, path) => {
 
 export const unstageChange = ({ commit }, path) => {
   commit(types.UNSTAGE_CHANGE, path);
+};
+
+export const openPendingTab = ({ commit, getters, dispatch, state }, file) => {
+  if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
+    return false;
+  }
+
+  commit(types.ADD_PENDING_TAB, { file });
+
+  dispatch('scrollToTab');
+
+  router.push(`/project/${file.projectId}/tree/${state.currentBranchId}/`);
+
+  return true;
+};
+
+export const removePendingTab = ({ commit }, file) => {
+  commit(types.REMOVE_PENDING_TAB, file);
+
+  eventHub.$emit(`editor.update.model.dispose.${file.key}`);
 };

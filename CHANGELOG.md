@@ -191,7 +191,6 @@ entry.
 - Enable privileged mode for GitLab Runner. !17528
 - Expose GITLAB_FEATURES as CI/CD variable (fixes #40994).
 - Upgrade GitLab Workhorse to 4.0.0.
-- Allow CI/CD Jobs being grouped on version strings.
 - Add discussions API for Issues and Snippets.
 - Add one group board to Libre.
 - Add support for filtering by source and target branch to merge requests API.

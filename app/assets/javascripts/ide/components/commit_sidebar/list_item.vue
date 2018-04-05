@@ -3,7 +3,6 @@ import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import StageButton from './stage_button.vue';
 import UnstageButton from './unstage_button.vue';
-import router from '../../ide_router';
 
 export default {
   components: {
@@ -26,17 +25,17 @@ export default {
       return this.file.tempFile ? 'file-addition' : 'file-modified';
     },
     iconClass() {
-      return `multi-file-${
-        this.file.tempFile ? 'addition' : 'modified'
-      } append-right-8`;
+      return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
     },
   },
   methods: {
-    ...mapActions(['updateViewer', 'stageChange', 'unstageChange']),
+    ...mapActions(['discardFileChanges', 'updateViewer', 'openPendingTab']),
     openFileInEditor() {
-      this.updateViewer('diff');
-
-      router.push(`/project${this.file.url}`);
+      return this.openPendingTab(this.file).then(changeViewer => {
+        if (changeViewer) {
+          this.updateViewer('diff');
+        }
+      });
     },
     fileAction() {
       if (this.file.staged) {

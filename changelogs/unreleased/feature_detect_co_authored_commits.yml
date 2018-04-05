@@ -1,0 +1,6 @@
+---
+title: Detect commit message trailers and link users properly to their accounts
+  on Gitlab
+merge_request: 17919
+author: cousine
+type: added

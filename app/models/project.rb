@@ -436,7 +436,7 @@ class Project < ActiveRecord::Base
       Gitlab::VisibilityLevel.options
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       case method.to_s
       when 'storage_size_desc'
         # storage_size is a joined column so we need to
@@ -566,9 +566,7 @@ class Project < ActiveRecord::Base
   def add_import_job
     job_id =
       if forked?
-        RepositoryForkWorker.perform_async(id,
-                                           forked_from_project.repository_storage_path,
-                                           forked_from_project.disk_path)
+        RepositoryForkWorker.perform_async(id)
       elsif gitlab_project_import?
         # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
         RepositoryImportWorker.set(retry: false).perform_async(self.id)
@@ -1066,6 +1064,16 @@ class Project < ActiveRecord::Base
 
       result || self
     end
+  end
+
+  # This will return all `lfs_objects` that are accessible to the project.
+  # So this might be `self.lfs_objects` if the project is not part of a fork
+  # network, or it is the base of the fork network.
+  #
+  # TODO: refactor this to get the correct lfs objects when implementing
+  #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+  def all_lfs_objects
+    lfs_storage_project.lfs_objects
   end
 
   def personal?

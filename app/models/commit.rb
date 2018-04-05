@@ -32,7 +32,8 @@ class Commit
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
   def banzai_render_context(field)
-    context = { pipeline: :single_line, project: self.project }
+    pipeline = field == :description ? :commit_description : :single_line
+    context = { pipeline: pipeline, project: self.project }
     context[:author] = self.author if self.author
 
     context

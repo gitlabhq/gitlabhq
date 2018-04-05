@@ -1,0 +1,5 @@
+---
+title: Fix links to subdirectories of a directory with a plus character in its path
+merge_request:
+author:
+type: fixed

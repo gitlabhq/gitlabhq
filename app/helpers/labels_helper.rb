@@ -129,13 +129,17 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path(only_group_labels = false)
+  def labels_filter_path(only_group_labels = false, include_ancestor_groups: true, include_descendant_groups: false)
     project = @target_project || @project
 
+    options = {}
+    options[:include_ancestor_groups] = include_ancestor_groups if include_ancestor_groups
+    options[:include_descendant_groups] = include_descendant_groups if include_descendant_groups
+
     if project
-      project_labels_path(project, :json)
+      project_labels_path(project, :json, options)
     elsif @group
-      options = { only_group_labels: only_group_labels } if only_group_labels
+      options[:only_group_labels] = only_group_labels if only_group_labels
       group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)

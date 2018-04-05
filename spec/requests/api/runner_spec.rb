@@ -1159,11 +1159,13 @@ describe API::Runner do
             let!(:artifacts) { file_upload }
             let!(:artifacts_sha256) { Digest::SHA256.file(artifacts.path).hexdigest }
             let!(:metadata) { file_upload2 }
+            let!(:metadata_sha256) { Digest::SHA256.file(metadata.path).hexdigest }
 
             let(:stored_artifacts_file) { job.reload.artifacts_file.file }
             let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
+            let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
 
             before do
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
@@ -1175,7 +1177,8 @@ describe API::Runner do
                   'file.name' => artifacts.original_filename,
                   'file.sha256' => artifacts_sha256,
                   'metadata.path' => metadata.path,
-                  'metadata.name' => metadata.original_filename }
+                  'metadata.name' => metadata.original_filename,
+                  'metadata.sha256' => metadata_sha256 }
               end
 
               it 'stores artifacts and artifacts metadata' do
@@ -1184,6 +1187,7 @@ describe API::Runner do
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(72821)
                 expect(stored_artifacts_sha256).to eq(artifacts_sha256)
+                expect(stored_metadata_sha256).to eq(metadata_sha256)
               end
             end
 
