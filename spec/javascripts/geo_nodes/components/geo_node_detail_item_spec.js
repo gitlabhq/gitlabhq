@@ -46,16 +46,6 @@ describe('GeoNodeDetailItemComponent', () => {
       vm.$destroy();
     });
 
-    it('renders health status item value', () => {
-      const vm = createComponent({
-        itemValueType: VALUE_TYPE.CUSTOM,
-        customType: CUSTOM_TYPE.STATUS,
-        itemValue: rawMockNodeDetails.health,
-      });
-      expect(vm.$el.querySelectorAll('.node-health-status').length).not.toBe(0);
-      vm.$destroy();
-    });
-
     it('renders sync settings item value', () => {
       const vm = createComponent({
         itemValueType: VALUE_TYPE.CUSTOM,
