@@ -1,9 +1,15 @@
 .created-deploy-token-container
   %h5.prepend-top-0
     = s_('DeployTokens|Your New Deploy Token')
+
   .form-group
-    = text_field_tag 'deploy-token', new_token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus'
-    = clipboard_button(text: new_token, title: s_('DeployTokens|Copy deploy token to clipboard'), placement: 'left')
-    %span.deploy-token-help-block.prepend-top-5.text-danger= s_("DeployTokens|Make sure you save it - you won't be able to access it again.")
+    = text_field_tag 'deploy-token-user', deploy_token.username, readonly: true, class: 'deploy-token-field form-control js-select-on-focus'
+    = clipboard_button(text: deploy_token.username, title: s_('DeployTokens|Copy deploy token username to clipboard'), placement: 'left')
+    %span.help-block.prepend-top-5.text-success= s_("DeployTokens|Use this username as a login.")
+
+  .form-group
+    = text_field_tag 'deploy-token', deploy_token.token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus'
+    = clipboard_button(text: deploy_token.token, title: s_('DeployTokens|Copy deploy token to clipboard'), placement: 'left')
+    %span.help-block.prepend-top-5.text-danger= s_("DeployTokens|Use this token as a password. Make sure you save it - you won't be able to access it again.")
 
 %hr

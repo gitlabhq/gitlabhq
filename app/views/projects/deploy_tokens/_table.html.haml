@@ -6,6 +6,7 @@
       %thead
         %tr
           %th= s_('DeployTokens|Name')
+          %th= s_('DeployTokens|Username')
           %th= s_('DeployTokens|Created')
           %th= s_('DeployTokens|Expires')
           %th= s_('DeployTokens|Scopes')
@@ -14,6 +15,7 @@
         - active_tokens.each do |token|
           %tr
             %td= token.name
+            %td= token.username
             %td= token.created_at.to_date.to_s(:medium)
             %td
               - if token.expires?

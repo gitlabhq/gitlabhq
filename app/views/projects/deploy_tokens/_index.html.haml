@@ -1,4 +1,4 @@
-- expanded = expand_deploy_tokens_section?(@deploy_tokens.temporal_token, @deploy_token)
+- expanded = expand_deploy_tokens_section?(@new_deploy_token)
 
 %section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -8,11 +8,11 @@
     %p
       = s_('DeployTokens|Deploy tokens allow read-only access to your repository and registry images.')
   .settings-content
-    - if @deploy_tokens.temporal_token
-      = render 'projects/deploy_tokens/new_deploy_token', new_token: @deploy_tokens.temporal_token
-
-    %h5.prepend-top-0
-      = s_('DeployTokens|Add a deploy token')
-    = render 'projects/deploy_tokens/form', project: @project, token: @deploy_token, presenter: @deploy_tokens
-    %hr
+    - if @new_deploy_token.persisted?
+      = render 'projects/deploy_tokens/new_deploy_token', deploy_token: @new_deploy_token
+    - else
+      %h5.prepend-top-0
+        = s_('DeployTokens|Add a deploy token')
+      = render 'projects/deploy_tokens/form', project: @project, token: @new_deploy_token, presenter: @deploy_tokens
+      %hr
     = render 'projects/deploy_tokens/table', project: @project, active_tokens: @deploy_tokens

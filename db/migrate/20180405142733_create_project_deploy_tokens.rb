@@ -7,13 +7,12 @@ class CreateProjectDeployTokens < ActiveRecord::Migration
     create_table :project_deploy_tokens do |t|
       t.integer :project_id, null: false
       t.integer :deploy_token_id, null: false
+      t.timestamps null: false
 
       t.foreign_key :deploy_tokens, column: :deploy_token_id, on_delete: :cascade
       t.foreign_key :projects, column: :project_id, on_delete: :cascade
 
-      t.timestamps null: false
+      t.index [:project_id, :deploy_token_id], unique: true
     end
-
-    add_index :project_deploy_tokens, [:project_id, :deploy_token_id], unique: true
   end
 end

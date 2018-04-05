@@ -1,7 +1,7 @@
 %p.profile-settings-content
   = s_("DeployTokens|Pick a name for the application, and we'll give you a unique deploy token.")
 
-= form_for token, url: project_deploy_tokens_path(project), method: :post do |f|
+= form_for token, url: create_deploy_token_namespace_project_settings_repository_path(project.namespace, project), method: :post do |f|
   = form_errors(token)
 
   .form-group
