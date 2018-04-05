@@ -22,9 +22,12 @@ class Project < ActiveRecord::Base
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
+<<<<<<< HEAD
 
   # EE specific modules
   prepend EE::Project
+=======
+>>>>>>> upstream/master
 
   extend Gitlab::ConfigHelper
 

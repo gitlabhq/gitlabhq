@@ -110,10 +110,13 @@ excluded_attributes:
     - :mirror_user_id
     - :mirror_trigger_builds
     - :storage_version
+<<<<<<< HEAD
     - :remote_mirror_available_overridden
     - :only_mirror_protected_branches
     - :pull_mirror_available_overridden
     - :mirror_overwrites_diverged_branches
+=======
+>>>>>>> upstream/master
     - :description_html
   snippets:
     - :expired_at

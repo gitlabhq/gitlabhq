@@ -28,6 +28,7 @@ module API
             optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
           end
 
+<<<<<<< HEAD
           params :optional_project_params_ee do
             optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
             optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
@@ -37,6 +38,10 @@ module API
           params :optional_project_params do
             use :optional_project_params_ce
             use :optional_project_params_ee
+=======
+          params :optional_project_params do
+            use :optional_project_params_ce
+>>>>>>> upstream/master
           end
         end
       end

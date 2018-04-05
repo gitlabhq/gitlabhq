@@ -199,47 +199,49 @@ describe('RepoEditor', () => {
     });
   });
 
-  describe('setup editor for merge request viewing', () => {
-    beforeEach(done => {
-      // Resetting as the main test setup has already done it
-      vm.$destroy();
-      resetStore(vm.$store);
-      Editor.editorInstance.modelManager.dispose();
+  describe('editor updateDimensions', () => {
+    beforeEach(() => {
+      spyOn(vm.editor, 'updateDimensions').and.callThrough();
+      spyOn(vm.editor, 'updateDiffView');
+    });
 
-      const f = {
-        ...file(),
-        active: true,
-        tempFile: true,
-        html: 'testing',
-        mrChange: { diff: 'ABC' },
-        baseRaw: 'testing',
-        content: 'test',
-      };
-      const RepoEditor = Vue.extend(repoEditor);
-      vm = createComponentWithStore(RepoEditor, store, {
-        file: f,
-      });
+    it('calls updateDimensions when rightPanelCollapsed is changed', done => {
+      vm.$store.state.rightPanelCollapsed = true;
 
-      vm.$store.state.openFiles.push(f);
-      vm.$store.state.entries[f.path] = f;
+      vm.$nextTick(() => {
+        expect(vm.editor.updateDimensions).toHaveBeenCalled();
+        expect(vm.editor.updateDiffView).toHaveBeenCalled();
 
-      vm.$store.state.viewer = 'mrdiff';
-
-      vm.monaco = true;
-
-      vm.$mount();
-
-      monacoLoader(['vs/editor/editor.main'], () => {
-        setTimeout(done, 0);
+        done();
       });
     });
 
-    it('attaches merge request model to editor when merge request diff', () => {
-      spyOn(vm.editor, 'attachMergeRequestModel').and.callThrough();
+    it('calls updateDimensions when panelResizing is false', done => {
+      vm.$store.state.panelResizing = true;
 
-      vm.setupEditor();
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$store.state.panelResizing = false;
+        })
+        .then(vm.$nextTick)
+        .then(() => {
+          expect(vm.editor.updateDimensions).toHaveBeenCalled();
+          expect(vm.editor.updateDiffView).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 
-      expect(vm.editor.attachMergeRequestModel).toHaveBeenCalledWith(vm.model);
+    it('does not call updateDimensions when panelResizing is true', done => {
+      vm.$store.state.panelResizing = true;
+
+      vm.$nextTick(() => {
+        expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
+        expect(vm.editor.updateDiffView).not.toHaveBeenCalled();
+
+        done();
+      });
     });
   });
 });
