@@ -1,122 +1,122 @@
 <script>
-  import $ from 'jquery';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import Modal from '~/vue_shared/components/gl_modal.vue';
-  import ExpandButton from '~/vue_shared/components/expand_button.vue';
-  import PerformanceIssue from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
-  import CodequalityIssue from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
-  import SastIssue from './sast_issue_body.vue';
-  import SastContainerIssue from './sast_container_issue_body.vue';
-  import DastIssue from './dast_issue_body.vue';
+import $ from 'jquery';
+import Icon from '~/vue_shared/components/icon.vue';
+import Modal from '~/vue_shared/components/gl_modal.vue';
+import ExpandButton from '~/vue_shared/components/expand_button.vue';
+import PerformanceIssue from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
+import CodequalityIssue from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
+import SastIssue from './sast_issue_body.vue';
+import SastContainerIssue from './sast_container_issue_body.vue';
+import DastIssue from './dast_issue_body.vue';
 
-  import { SAST, DAST, SAST_CONTAINER } from '../helpers/constants';
+import { SAST, DAST, SAST_CONTAINER } from '../store/constants';
 
-  const modalDefaultData = {
-    modalId: 'modal-mrwidget-issue',
-    modalDesc: '',
-    modalTitle: '',
-    modalInstances: [],
-    modalTargetId: '#modal-mrwidget-issue',
-  };
+const modalDefaultData = {
+  modalId: 'modal-mrwidget-issue',
+  modalDesc: '',
+  modalTitle: '',
+  modalInstances: [],
+  modalTargetId: '#modal-mrwidget-issue',
+};
 
-  export default {
-    name: 'ReportIssues',
-    components: {
-      Modal,
-      Icon,
-      ExpandButton,
-      SastIssue,
-      SastContainerIssue,
-      DastIssue,
-      PerformanceIssue,
-      CodequalityIssue,
+export default {
+  name: 'ReportIssues',
+  components: {
+    Modal,
+    Icon,
+    ExpandButton,
+    SastIssue,
+    SastContainerIssue,
+    DastIssue,
+    PerformanceIssue,
+    CodequalityIssue,
+  },
+  props: {
+    issues: {
+      type: Array,
+      required: true,
     },
-    props: {
-      issues: {
-        type: Array,
-        required: true,
-      },
-      // security || codequality || performance || docker || dast
-      type: {
-        type: String,
-        required: true,
-      },
-      // failed || success
-      status: {
-        type: String,
-        required: true,
-      },
+    // security || codequality || performance || docker || dast
+    type: {
+      type: String,
+      required: true,
     },
-    data() {
-      return modalDefaultData;
+    // failed || success
+    status: {
+      type: String,
+      required: true,
     },
-    computed: {
-      iconName() {
-        if (this.isStatusFailed) {
-          return 'status_failed_borderless';
-        } else if (this.isStatusSuccess) {
-          return 'status_success_borderless';
-        }
+  },
+  data() {
+    return modalDefaultData;
+  },
+  computed: {
+    iconName() {
+      if (this.isStatusFailed) {
+        return 'status_failed_borderless';
+      } else if (this.isStatusSuccess) {
+        return 'status_success_borderless';
+      }
 
-        return 'status_created_borderless';
-      },
-      isStatusFailed() {
-        return this.status === 'failed';
-      },
-      isStatusSuccess() {
-        return this.status === 'success';
-      },
-      isStatusNeutral() {
-        return this.status === 'neutral';
-      },
-      isTypeCodequality() {
-        return this.type === 'codequality';
-      },
-      isTypePerformance() {
-        return this.type === 'performance';
-      },
-      isTypeSast() {
-        return this.type === SAST;
-      },
-      isTypeSastContainer() {
-        return this.type === SAST_CONTAINER;
-      },
-      isTypeDast() {
-        return this.type === DAST;
-      },
+      return 'status_created_borderless';
     },
-    mounted() {
-      $(this.$refs.modal).on('hidden.bs.modal', () => {
-        this.clearModalData();
-      });
+    isStatusFailed() {
+      return this.status === 'failed';
     },
-    methods: {
-      getmodalId(index) {
-        return `modal-mrwidget-issue-${index}`;
-      },
-      modalIdTarget(index) {
-        return `#${this.getmodalId(index)}`;
-      },
-      openDastModal(issue, index) {
-        this.modalId = this.getmodalId(index);
-        this.modalTitle = `${issue.priority}: ${issue.name}`;
-        this.modalTargetId = `#${this.getmodalId(index)}`;
-        this.modalInstances = issue.instances;
-        this.modalDesc = issue.parsedDescription;
-      },
-      /**
-       * Because of https://vuejs.org/v2/guide/list.html#Caveats
-       * we need to clear the instances to make sure everything is properly reset.
-       */
-      clearModalData() {
-        this.modalId = modalDefaultData.modalId;
-        this.modalDesc = modalDefaultData.modalDesc;
-        this.modalTitle = modalDefaultData.modalTitle;
-        this.modalInstances = modalDefaultData.modalInstances;
-        this.modalTargetId = modalDefaultData.modalTargetId;
-      },
+    isStatusSuccess() {
+      return this.status === 'success';
     },
-  };
+    isStatusNeutral() {
+      return this.status === 'neutral';
+    },
+    isTypeCodequality() {
+      return this.type === 'codequality';
+    },
+    isTypePerformance() {
+      return this.type === 'performance';
+    },
+    isTypeSast() {
+      return this.type === SAST;
+    },
+    isTypeSastContainer() {
+      return this.type === SAST_CONTAINER;
+    },
+    isTypeDast() {
+      return this.type === DAST;
+    },
+  },
+  mounted() {
+    $(this.$refs.modal).on('hidden.bs.modal', () => {
+      this.clearModalData();
+    });
+  },
+  methods: {
+    getmodalId(index) {
+      return `modal-mrwidget-issue-${index}`;
+    },
+    modalIdTarget(index) {
+      return `#${this.getmodalId(index)}`;
+    },
+    openDastModal(issue, index) {
+      this.modalId = this.getmodalId(index);
+      this.modalTitle = `${issue.priority}: ${issue.name}`;
+      this.modalTargetId = `#${this.getmodalId(index)}`;
+      this.modalInstances = issue.instances;
+      this.modalDesc = issue.parsedDescription;
+    },
+    /**
+     * Because of https://vuejs.org/v2/guide/list.html#Caveats
+     * we need to clear the instances to make sure everything is properly reset.
+     */
+    clearModalData() {
+      this.modalId = modalDefaultData.modalId;
+      this.modalDesc = modalDefaultData.modalDesc;
+      this.modalTitle = modalDefaultData.modalTitle;
+      this.modalInstances = modalDefaultData.modalInstances;
+      this.modalTargetId = modalDefaultData.modalTargetId;
+    },
+  },
+};
 </script>
 <template>
   <div>

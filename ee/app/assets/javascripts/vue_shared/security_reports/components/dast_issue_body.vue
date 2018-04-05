@@ -1,33 +1,34 @@
 <script>
-  /**
-   * Renders DAST body text
-   * [priority]: [name]
-   */
-  export default {
-    name: 'SastIssueBody',
-    props: {
-      issue: {
-        type: Object,
-        required: true,
-      },
+/**
+ * Renders DAST body text
+ * [priority]: [name]
+ */
 
-      issueIndex: {
-        type: Number,
-        required: true,
-      },
-
-      modalTargetId: {
-        type: String,
-        required: true,
-      },
+export default {
+  name: 'SastIssueBody',
+  props: {
+    issue: {
+      type: Object,
+      required: true,
     },
 
-    methods: {
-      openDastModal() {
-        this.$emit('openDastModal', this.issue, this.issueIndex);
-      },
+    issueIndex: {
+      type: Number,
+      required: true,
     },
-  };
+
+    modalTargetId: {
+      type: String,
+      required: true,
+    },
+  },
+
+  methods: {
+    openDastModal() {
+      this.$emit('openDastModal', this.issue, this.issueIndex);
+    },
+  },
+};
 </script>
 <template>
   <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">

@@ -19,10 +19,11 @@ describe('Report section', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
         type: 'codequality',
-        status: 'loading',
+        status: 'LOADING',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
+        hasIssues: false,
       });
       expect(vm.$el.textContent.trim()).toEqual('Loading codeclimate report');
     });
@@ -32,11 +33,12 @@ describe('Report section', () => {
     it('should render provided data', () => {
       vm = mountComponent(ReportSection, {
         type: 'codequality',
-        status: 'success',
+        status: 'SUCCESS',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         resolvedIssues: codequalityParsedIssues,
+        hasIssues: true,
       });
 
       expect(
@@ -52,18 +54,19 @@ describe('Report section', () => {
       it('toggles issues', (done) => {
         vm = mountComponent(ReportSection, {
           type: 'codequality',
-          status: 'success',
+          status: 'SUCCESS',
           loadingText: 'Loading codeclimate report',
           errorText: 'foo',
           successText: 'Code quality improved on 1 point and degraded on 1 point',
           resolvedIssues: codequalityParsedIssues,
+          hasIssues: true,
         });
 
         vm.$el.querySelector('button').click();
 
         Vue.nextTick(() => {
           expect(
-            vm.$el.querySelector('.report-block-container').getAttribute('style'),
+            vm.$el.querySelector('.js-report-section-container').getAttribute('style'),
           ).toEqual('');
           expect(
             vm.$el.querySelector('button').textContent.trim(),
@@ -73,7 +76,7 @@ describe('Report section', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.report-block-container').getAttribute('style'),
+              vm.$el.querySelector('.js-report-section-container').getAttribute('style'),
             ).toEqual('display: none;');
             expect(
               vm.$el.querySelector('button').textContent.trim(),
@@ -90,10 +93,11 @@ describe('Report section', () => {
     it('should render error indicator', () => {
       vm = mountComponent(ReportSection, {
         type: 'codequality',
-        status: 'error',
+        status: 'ERROR',
         loadingText: 'Loading codeclimate report',
         errorText: 'Failed to load codeclimate report',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
+        hasIssues: false,
       });
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
     });
@@ -102,11 +106,11 @@ describe('Report section', () => {
   describe('With full report', () => {
     beforeEach(() => {
       vm = mountComponent(ReportSection, {
-        status: 'success',
+        status: 'SUCCESS',
         successText: 'SAST improved on 1 security vulnerability and degraded on 1 security vulnerability',
         type: 'SAST',
         errorText: 'Failed to load security report',
-        hasPriority: true,
+        hasIssues: true,
         loadingText: 'Loading security report',
         resolvedIssues: [{
           cve: 'CVE-2016-9999',
@@ -170,30 +174,6 @@ describe('Report section', () => {
           done();
         });
       });
-    });
-  });
-
-  describe('When it is not collapsible', () => {
-    beforeEach(() => {
-      vm = mountComponent(ReportSection, {
-        type: 'codequality',
-        status: 'success',
-        loadingText: 'Loading codeclimate report',
-        errorText: 'foo',
-        successText: 'Code quality improved on 1 point and degraded on 1 point',
-        resolvedIssues: codequalityParsedIssues,
-        isCollapsible: false,
-      });
-    });
-
-    it('should not render collapse button', () => {
-      expect(vm.$el.querySelector('.js-collapse-btn')).toBe(null);
-    });
-
-    it('should show the report by default', () => {
-      expect(
-        vm.$el.querySelectorAll('.report-block-list .report-block-list-issue').length,
-      ).toEqual(codequalityParsedIssues.length);
     });
   });
 });

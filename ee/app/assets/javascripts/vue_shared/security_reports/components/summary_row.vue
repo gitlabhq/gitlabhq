@@ -1,5 +1,6 @@
 <script>
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Popover from './help_popover.vue';
 
 /**
@@ -10,6 +11,7 @@ export default {
   name: 'SecuritySummaryRow',
   components: {
     CiIcon,
+    LoadingIcon,
     Popover,
   },
   props: {
@@ -37,12 +39,19 @@ export default {
 };
 </script>
 <template>
-  <div class="report-block-list-issue prepend-left-default append-right-default">
+  <div class="report-block-list-issue report-block-list-issue-parent">
     <div class="report-block-list-icon append-right-10 prepend-left-5">
-      <ci-icon :status="iconStatus" />
+      <loading-icon
+        v-if="statusIcon === 'loading'"
+        css-class="report-block-list-loading-icon"
+      />
+      <ci-icon
+        v-else
+        :status="iconStatus"
+      />
     </div>
 
-    <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
+    <div class="report-block-list-issue-description">
       <div class="report-block-list-issue-description-text append-right-5">
         {{ summary }}
       </div>

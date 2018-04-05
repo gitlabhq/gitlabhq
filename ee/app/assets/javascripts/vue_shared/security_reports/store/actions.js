@@ -26,14 +26,14 @@ export const fetchSastReports = ({ state, dispatch }) => {
 
   dispatch('requestSastReports');
 
-  Promise.all([
+  return Promise.all([
     head ? axios.get(head) : Promise.resolve(),
     base ? axios.get(base) : Promise.resolve(),
   ])
   .then(values => {
     dispatch('receiveSastReports', {
-      head: values[0] ? values[0].data : null,
-      base: values[1] ? values[1].data : null,
+      head: values && values[0] ? values[0].data : null,
+      base: values && values[1] ? values[1].data : null,
     });
   })
   .catch(() => {
@@ -65,7 +65,7 @@ export const fetchSastContainerReports = ({ state, dispatch }) => {
 
   dispatch('requestSastContainerReports');
 
-  Promise.all([
+  return Promise.all([
     head ? axios.get(head) : Promise.resolve(),
     base ? axios.get(base) : Promise.resolve(),
   ])
@@ -100,14 +100,14 @@ export const fetchDastReports = ({ state, dispatch }) => {
 
   dispatch('requestDastReports');
 
-  Promise.all([
+  return Promise.all([
     head ? axios.get(head) : Promise.resolve(),
     base ? axios.get(base) : Promise.resolve(),
   ])
   .then(values => {
     dispatch('receiveDastReports', {
-      head: values[0] ? values[0].data : null,
-      base: values[1] ? values[1].data : null,
+      head: values && values[0] ? values[0].data : null,
+      base: values && values[1] ? values[1].data : null,
     });
   })
   .catch(() => {
@@ -139,7 +139,7 @@ export const fetchDependencyScanningReports = ({ state, dispatch }) => {
 
   dispatch('requestDependencyScanningReports');
 
-  Promise.all([
+  return Promise.all([
     head ? axios.get(head) : Promise.resolve(),
     base ? axios.get(base) : Promise.resolve(),
   ])

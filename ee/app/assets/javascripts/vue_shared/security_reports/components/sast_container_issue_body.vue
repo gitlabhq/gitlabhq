@@ -1,24 +1,24 @@
 <script>
-  /**
-   * Renders SAST CONTAINER body text
-   * [priority]: [name|link] in [link]:[line]
-   */
-  import ReportLink from './report_link.vue';
+/**
+ * Renders SAST CONTAINER body text
+ * [priority]: [name|link] in [link]:[line]
+ */
+import ReportLink from './report_link.vue';
 
-  export default {
-    name: 'SastContainerIssueBody',
+export default {
+  name: 'SastContainerIssueBody',
 
-    components: {
-      ReportLink,
+  components: {
+    ReportLink,
+  },
+
+  props: {
+    issue: {
+      type: Object,
+      required: true,
     },
-
-    props: {
-      issue: {
-        type: Object,
-        required: true,
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">

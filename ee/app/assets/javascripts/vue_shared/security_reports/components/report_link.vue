@@ -1,13 +1,13 @@
 <script>
-  export default {
-    name: 'ReportIssueLink',
-    props: {
-      issue: {
-        type: Object,
-        required: true,
-      },
+export default {
+  name: 'ReportIssueLink',
+  props: {
+    issue: {
+      type: Object,
+      required: true,
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="report-block-list-issue-description-link">
