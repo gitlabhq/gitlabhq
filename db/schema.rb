@@ -684,14 +684,14 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
   create_table "deploy_tokens", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "token", null: false
-    t.boolean "read_repository", default: false
-    t.boolean "read_registry", default: false
     t.boolean "revoked", default: false
+    t.boolean "read_repository", default: false, null: false
+    t.boolean "read_registry", default: false, null: false
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", null: false
+    t.string "token", null: false
   end
 
   add_index "deploy_tokens", ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
@@ -1450,7 +1450,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", using: :btree
+  add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"
@@ -1639,6 +1639,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
@@ -2094,7 +2095,6 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
-  add_foreign_key "deploy_tokens", "projects"
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
@@ -2160,6 +2160,8 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
+  add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
+  add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade

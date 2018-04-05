@@ -3,22 +3,17 @@ class CreateProjectDeployTokens < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
-  def up
+  def change
     create_table :project_deploy_tokens do |t|
       t.integer :project_id, null: false
       t.integer :deploy_token_id, null: false
 
+      t.foreign_key :deploy_tokens, column: :deploy_token_id, on_delete: :cascade
+      t.foreign_key :projects, column: :project_id, on_delete: :cascade
+
       t.timestamps null: false
     end
 
-    add_concurrent_index :project_deploy_tokens, [:project_id, :deploy_token_id]
-  end
-
-  def down
-    drop_table :project_deploy_tokens
-
-    remove_index :project_deploy_tokens, column: [:project_id, :deploy_token_id] if index_exists?(:project_deploy_tokens, [:project_id, :deploy_token_id])
+    add_index :project_deploy_tokens, [:project_id, :deploy_token_id], unique: true
   end
 end
