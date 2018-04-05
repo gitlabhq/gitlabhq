@@ -19,8 +19,7 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
-  margin-top: 40px;
-  color: $almost-black;
+  margin-top: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -43,13 +42,18 @@
     cursor: pointer;
 
     &.file-open {
-      background: $white-normal;
+      background: $link-active-background;
+    }
+
+    &.file-active {
+      font-weight: $gl-font-weight-bold;
     }
 
     .ide-file-name {
       flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
+      max-width: inherit;
 
       svg {
         vertical-align: middle;
@@ -72,7 +76,10 @@
       margin-right: -8px;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
+      background: $link-active-background;
+
       .ide-new-btn {
         display: block;
       }
@@ -290,6 +297,10 @@
     .margin-view-overlays .delete-sign {
       opacity: 0.4;
     }
+
+    .cursors-layer {
+      display: none;
+    }
   }
 }
 
@@ -297,14 +308,34 @@
   height: 100%;
 }
 
-.multi-file-editor-btn-group {
-  padding: $gl-bar-padding $gl-padding;
-  border-top: 1px solid $white-dark;
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
+}
+
+.ide-mode-tabs {
   border-bottom: 1px solid $white-dark;
-  background: $white-light;
+
+  .nav-links {
+    border-bottom: 0;
+
+    li a {
+      padding: $gl-padding-8 $gl-padding;
+      line-height: $gl-btn-line-height;
+    }
+  }
+}
+
+.ide-btn-group {
+  padding: $gl-padding-4 $gl-vert-padding;
 }
 
 .ide-status-bar {
+  border-top: 1px solid $white-dark;
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
@@ -398,7 +429,7 @@
   }
 
   .branch-container {
-    border-left: 4px solid $indigo-700;
+    border-left: 4px solid;
     margin-bottom: $gl-bar-padding;
   }
 
@@ -410,7 +441,6 @@
   .branch-header-title {
     flex: 1;
     padding: $grid-size $gl-padding;
-    color: $indigo-700;
     font-weight: $gl-font-weight-bold;
 
     svg {
@@ -447,6 +477,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .multi-file-commit-empty-state-container {
@@ -457,7 +489,7 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
 
@@ -664,8 +696,14 @@
   overflow: hidden;
 
   &.nav-only {
+    padding-top: $header-height;
+
+    .with-performance-bar & {
+      padding-top: $header-height + $performance-bar-height;
+    }
+
     .flash-container {
-      margin-top: $header-height;
+      margin-top: 0;
       margin-bottom: 0;
     }
 
@@ -675,7 +713,7 @@
     }
 
     .content-wrapper {
-      margin-top: $header-height;
+      margin-top: 0;
       padding-bottom: 0;
     }
 
@@ -699,11 +737,11 @@
 
 .with-performance-bar .ide.nav-only {
   .flash-container {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
   }
 
   .content-wrapper {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
     padding-bottom: 0;
   }
 
@@ -712,14 +750,8 @@
   }
 
   &.flash-shown {
-    .content-wrapper {
-      margin-top: 0;
-    }
-
     .ide-view {
-      height: calc(
-        100vh - #{$header-height + $performance-bar-height + $flash-height}
-      );
+      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
     }
   }
 }
@@ -763,20 +795,7 @@
 
 .ide-sidebar-link {
   padding: $gl-padding-8 $gl-padding;
-  background: $indigo-700;
-  color: $white-light;
-  text-decoration: none;
   display: flex;
   align-items: center;
-
-  &:focus,
-  &:hover {
-    color: $white-light;
-    text-decoration: underline;
-    background: $indigo-500;
-  }
-
-  &:active {
-    background: $indigo-800;
-  }
+  font-weight: $gl-font-weight-bold;
 }

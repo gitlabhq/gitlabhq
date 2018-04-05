@@ -8,6 +8,7 @@ module Gitlab
     class Repository
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
+      include Gitlab::EncodingHelper
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -95,7 +96,7 @@ module Gitlab
 
         storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
-          storage_path,
+          storage,
           relative_path,
           global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
           logger: Rails.logger
@@ -884,7 +885,8 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        gitaly_migrate(:delete_refs) do |is_enabled|
+        gitaly_migrate(:delete_refs,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_delete_refs(*ref_names)
           else
@@ -1479,7 +1481,7 @@ module Gitlab
         names.lines.each do |line|
           next unless line.start_with?(refs_prefix)
 
-          refs << line.rstrip[left_slice_count..-1]
+          refs << encode_utf8(line.rstrip[left_slice_count..-1])
         end
 
         refs
@@ -1744,21 +1746,11 @@ module Gitlab
       end
 
       def alternate_object_directories
-        relative_paths = relative_object_directories
-
-        if relative_paths.any?
-          relative_paths.map { |d| File.join(path, d) }
-        else
-          absolute_object_directories.flat_map { |d| d.split(File::PATH_SEPARATOR) }
-        end
+        relative_object_directories.map { |d| File.join(path, d) }
       end
 
       def relative_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      def absolute_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).flatten.compact
+        Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit

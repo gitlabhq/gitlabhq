@@ -11,6 +11,7 @@ describe('IDE changed file icon', () => {
     vm = createComponent(component, {
       file: {
         tempFile: false,
+        changed: true,
       },
     });
   });
@@ -20,7 +21,7 @@ describe('IDE changed file icon', () => {
   });
 
   describe('changedIcon', () => {
-    it('equals file-modified when not a temp file', () => {
+    it('equals file-modified when not a temp file and has changes', () => {
       expect(vm.changedIcon).toBe('file-modified');
     });
 

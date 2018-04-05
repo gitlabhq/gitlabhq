@@ -39,4 +39,5 @@ Feature: Project Issues Milestones
 
   Scenario: Headers inside the description should have ids generated for them.
     Given I click link "v2.2"
+    # PLEASE USE the `have_header_with_correct_id_and_link(level, text, id, parent)` matcher on migrating this spec to rspec.
     Then Header "Description header" should have correct id and link

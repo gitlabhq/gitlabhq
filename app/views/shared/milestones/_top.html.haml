@@ -1,4 +1,6 @@
-- page_title milestone.title, "Milestones"
+- page_title milestone.title
+- @breadcrumb_link = dashboard_milestone_path(milestone.safe_title, title: milestone.title)
+
 - group = local_assigns[:group]
 - is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
@@ -17,7 +19,7 @@
     Milestone #{milestone.title}
   - if milestone.due_date || milestone.start_date
     %span.creator
-      &middot;
+      &nbsp;&middot;
       = milestone_date_range(milestone)
   - if group
     .pull-right

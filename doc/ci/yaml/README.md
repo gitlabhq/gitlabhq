@@ -10,6 +10,11 @@ of your repository and contains definitions of how your project should be built.
 If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
+NOTE: **Note:**
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+you may need to enable pipeline triggering in your project's
+**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+
 ## Jobs
 
 The YAML file defines a set of jobs with constraints stating when they should
@@ -315,9 +320,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Two keys are now available: `refs` and `kubernetes`. Refs strategy equals to
-simplified only/except configuration, whereas kubernetes strategy accepts only
-`active` keyword.
+Three keys are now available: `refs`, `kubernetes` and `variables`.
+Refs strategy equals to simplified only/except configuration, whereas
+kubernetes strategy accepts only `active` keyword.
+
+`variables` keyword is used to define variables expressions. In other words
+you can use predefined variables / secret variables / project / group or
+environment-scoped variables to define an expression GitLab is going to
+evaluate in order to decide whether a job should be created or not.
 
 See the example below. Job is going to be created only when pipeline has been
 scheduled or runs for a `master` branch, and only if kubernetes service is
@@ -331,6 +341,20 @@ job:
       - schedules
     kubernetes: active
 ```
+
+Example of using variables expressions:
+
+```yaml
+deploy:
+  only:
+    refs:
+      - branches
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Learn more about variables expressions on a separate page.
 
 ## `tags`
 
@@ -1526,8 +1550,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
-Each instance of GitLab CI has an embedded debug tool called Lint.
-You can find the link under `/ci/lint` of your gitlab instance.
+Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/ci/lint`)
 
 ## Using reserved keywords
 

@@ -1,42 +1,62 @@
 <script>
-  import { mapActions } from 'vuex';
-  import RepoTab from './repo_tab.vue';
-  import EditorMode from './editor_mode_dropdown.vue';
+import { mapActions } from 'vuex';
+import RepoTab from './repo_tab.vue';
+import EditorMode from './editor_mode_dropdown.vue';
+import router from '../ide_router';
 
-  export default {
-    components: {
-      RepoTab,
-      EditorMode,
+export default {
+  components: {
+    RepoTab,
+    EditorMode,
+  },
+  props: {
+    activeFile: {
+      type: Object,
+      required: true,
     },
-    props: {
-      files: {
-        type: Array,
-        required: true,
-      },
-      viewer: {
-        type: String,
-        required: true,
-      },
-      hasChanges: {
-        type: Boolean,
-        required: true,
-      },
+    files: {
+      type: Array,
+      required: true,
     },
-    data() {
-      return {
-        showShadow: false,
-      };
+    viewer: {
+      type: String,
+      required: true,
     },
-    updated() {
-      if (!this.$refs.tabsScroller) return;
+    hasChanges: {
+      type: Boolean,
+      required: true,
+    },
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      showShadow: false,
+    };
+  },
+  updated() {
+    if (!this.$refs.tabsScroller) return;
 
-      this.showShadow =
-        this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+    this.showShadow = this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+  },
+  methods: {
+    ...mapActions(['updateViewer', 'removePendingTab']),
+    openFileViewer(viewer) {
+      this.updateViewer(viewer);
+
+      if (this.activeFile.pending) {
+        return this.removePendingTab(this.activeFile).then(() => {
+          router.push(`/project${this.activeFile.url}`);
+        });
+      }
+
+      return null;
     },
-    methods: {
-      ...mapActions(['updateViewer']),
-    },
-  };
+  },
+};
 </script>
 
 <template>
@@ -55,7 +75,8 @@
       :viewer="viewer"
       :show-shadow="showShadow"
       :has-changes="hasChanges"
-      @click="updateViewer"
+      :merge-request-id="mergeRequestId"
+      @click="openFileViewer"
     />
   </div>
 </template>

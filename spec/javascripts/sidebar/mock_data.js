@@ -1,7 +1,5 @@
-/* eslint-disable quote-props*/
-
 const RESPONSE_MAP = {
-  'GET': {
+  GET: {
     '/gitlab-org/gitlab-shell/issues/5.json': {
       id: 45,
       iid: 5,
@@ -27,7 +25,8 @@ const RESPONSE_MAP = {
           username: 'user0',
           id: 22,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
           web_url: 'http: //localhost:3001/user0',
         },
         {
@@ -35,7 +34,8 @@ const RESPONSE_MAP = {
           username: 'tajuana',
           id: 18,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
           web_url: 'http: //localhost:3001/tajuana',
         },
         {
@@ -43,7 +43,8 @@ const RESPONSE_MAP = {
           username: 'michaele.will',
           id: 16,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
           web_url: 'http: //localhost:3001/michaele.will',
         },
       ],
@@ -72,7 +73,8 @@ const RESPONSE_MAP = {
           username: 'user0',
           id: 22,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
           web_url: 'http://localhost:3001/user0',
         },
         {
@@ -80,7 +82,8 @@ const RESPONSE_MAP = {
           username: 'tajuana',
           id: 18,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
           web_url: 'http://localhost:3001/tajuana',
         },
         {
@@ -88,7 +91,8 @@ const RESPONSE_MAP = {
           username: 'michaele.will',
           id: 16,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
           web_url: 'http://localhost:3001/michaele.will',
         },
       ],
@@ -100,7 +104,8 @@ const RESPONSE_MAP = {
           username: 'user0',
           id: 22,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
           web_url: 'http://localhost:3001/user0',
         },
         {
@@ -108,7 +113,8 @@ const RESPONSE_MAP = {
           username: 'tajuana',
           id: 18,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
           web_url: 'http://localhost:3001/tajuana',
         },
         {
@@ -116,7 +122,8 @@ const RESPONSE_MAP = {
           username: 'michaele.will',
           id: 16,
           state: 'active',
-          avatar_url: 'https://www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
           web_url: 'http://localhost:3001/michaele.will',
         },
       ],
@@ -126,20 +133,21 @@ const RESPONSE_MAP = {
     },
     '/autocomplete/projects?project_id=15': [
       {
-        'id': 0,
-        'name_with_namespace': 'No project',
-      }, {
-        'id': 20,
-        'name_with_namespace': 'foo / bar',
+        id: 0,
+        name_with_namespace: 'No project',
+      },
+      {
+        id: 20,
+        name_with_namespace: 'foo / bar',
       },
     ],
   },
-  'PUT': {
+  PUT: {
     '/gitlab-org/gitlab-shell/issues/5.json': {
       data: {},
     },
   },
-  'POST': {
+  POST: {
     '/gitlab-org/gitlab-shell/issues/5/move': {
       id: 123,
       iid: 5,
@@ -182,7 +190,8 @@ const mockData = {
       id: 1,
       name: 'Administrator',
       username: 'root',
-      avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      avatar_url:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     },
     rootPath: '/',
     fullPath: '/gitlab-org/gitlab-shell',
@@ -201,12 +210,14 @@ const mockData = {
   },
 };
 
-mockData.sidebarMockInterceptor = function (request, next) {
+mockData.sidebarMockInterceptor = function(request, next) {
   const body = this.responseMap[request.method.toUpperCase()][request.url];
 
-  next(request.respondWith(JSON.stringify(body), {
-    status: 200,
-  }));
+  next(
+    request.respondWith(JSON.stringify(body), {
+      status: 200,
+    }),
+  );
 }.bind(mockData);
 
 export default mockData;

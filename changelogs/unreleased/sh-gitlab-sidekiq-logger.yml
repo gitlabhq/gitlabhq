@@ -1,0 +1,5 @@
+---
+title: Add support for Sidekiq JSON logging
+merge_request:
+author:
+type: added

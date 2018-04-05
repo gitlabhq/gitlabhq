@@ -84,7 +84,7 @@ module Banzai
         end
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         nil
       end
     end

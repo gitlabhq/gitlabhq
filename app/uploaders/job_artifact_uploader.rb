@@ -1,5 +1,6 @@
 class JobArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
+  include ObjectStorage::Concern
 
   storage_options Gitlab.config.artifacts
 
@@ -14,9 +15,11 @@ class JobArtifactUploader < GitlabUploader
   end
 
   def open
-    raise 'Only File System is supported' unless file_storage?
-
-    File.open(path, "rb") if path
+    if file_storage?
+      File.open(path, "rb") if path
+    else
+      ::Gitlab::Ci::Trace::HttpIO.new(url, size) if url
+    end
   end
 
   private

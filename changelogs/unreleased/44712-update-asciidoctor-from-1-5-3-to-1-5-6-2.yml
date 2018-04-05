@@ -1,0 +1,5 @@
+---
+title: Update asciidoctor-plantuml to 0.0.8
+merge_request: 18022
+author: Takuya Noguchi
+type: performance

@@ -74,13 +74,13 @@ describe Gitlab::UrlBlocker do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
     end
 
-    context 'when allow_private_networks is' do
-      let(:private_networks) { ['192.168.1.2', '10.0.0.2', '172.16.0.2'] }
+    context 'when allow_local_network is' do
+      let(:local_ips) { ['192.168.1.2', '10.0.0.2', '172.16.0.2'] }
       let(:fake_domain) { 'www.fakedomain.fake' }
 
       context 'true (default)' do
         it 'does not block urls from private networks' do
-          private_networks.each do |ip|
+          local_ips.each do |ip|
             stub_domain_resolv(fake_domain, ip)
 
             expect(described_class).not_to be_blocked_url("http://#{fake_domain}")
@@ -94,14 +94,14 @@ describe Gitlab::UrlBlocker do
 
       context 'false' do
         it 'blocks urls from private networks' do
-          private_networks.each do |ip|
+          local_ips.each do |ip|
             stub_domain_resolv(fake_domain, ip)
 
-            expect(described_class).to be_blocked_url("http://#{fake_domain}", allow_private_networks: false)
+            expect(described_class).to be_blocked_url("http://#{fake_domain}", allow_local_network: false)
 
             unstub_domain_resolv
 
-            expect(described_class).to be_blocked_url("http://#{ip}", allow_private_networks: false)
+            expect(described_class).to be_blocked_url("http://#{ip}", allow_local_network: false)
           end
         end
       end
