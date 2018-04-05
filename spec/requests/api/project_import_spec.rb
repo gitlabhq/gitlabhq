@@ -40,7 +40,7 @@ describe API::ProjectImport do
       expect(response).to have_gitlab_http_status(201)
     end
 
-    it 'schedules an import at the user namespace level' do
+    it 'does not shedule an import for a nampespace that does not exist' do
       expect_any_instance_of(Project).not_to receive(:import_schedule)
       expect(::Projects::CreateService).not_to receive(:new)
 
@@ -69,6 +69,49 @@ describe API::ProjectImport do
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('file is invalid')
+    end
+
+    it 'stores params that can be overridden' do
+      stub_import(namespace)
+      override_params = { 'description' => 'Hello world' }
+
+      post api('/projects/import', user),
+           path: 'test-import',
+           file: fixture_file_upload(file),
+           namespace: namespace.id,
+           override_params: override_params
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.import_data.data['override_params']).to eq(override_params)
+    end
+
+    it 'does not store params that are not allowed' do
+      stub_import(namespace)
+      override_params = { 'not_allowed' => 'Hello world' }
+
+      post api('/projects/import', user),
+           path: 'test-import',
+           file: fixture_file_upload(file),
+           namespace: namespace.id,
+           override_params: override_params
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.import_data.data['override_params']).to be_empty
+    end
+
+    it 'correctly overrides params during the import' do
+      override_params = { 'description' => 'Hello world' }
+
+      Sidekiq::Testing.inline! do
+        post api('/projects/import', user),
+             path: 'test-import',
+             file: fixture_file_upload(file),
+             namespace: namespace.id,
+             override_params: override_params
+      end
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.description).to eq('Hello world')
     end
 
     def stub_import(namespace)

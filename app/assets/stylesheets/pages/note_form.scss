@@ -173,11 +173,7 @@
 }
 
 .discussion-form {
-  background-color: $white-light;
-}
-
-.discussion-form-container {
-  padding: $gl-padding-top $gl-padding $gl-padding;
+  padding-top: $gl-padding-top;
 }
 
 .discussion-notes .disabled-comment {
@@ -237,12 +233,7 @@
 .discussion-body,
 .diff-file {
   .discussion-reply-holder {
-    background-color: $white-light;
-    padding: 10px 16px;
-
-    &.is-replying {
-      padding-bottom: $gl-padding;
-    }
+    padding-top: $gl-padding;
   }
 }
 

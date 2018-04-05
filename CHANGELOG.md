@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.6.3 (2018-04-03)
+
+### Security (2 changes)
+
+- Fix XSS on diff view stored on filenames.
+- Adds confidential notes channel for Slack/Mattermost.
+
+
 ## 10.6.2 (2018-03-29)
 
 ### Fixed (2 changes, 1 of them is from the community)
@@ -215,6 +223,14 @@ entry.
 - Move Ruby endpoints to OPT_OUT.
 - Upgrade Workhorse to version 3.8.0 to support structured logging.
 - Use host URL to build JIRA remote link icon.
+
+
+## 10.5.7 (2018-04-03)
+
+### Security (2 changes)
+
+- Fix XSS on diff view stored on filenames.
+- Adds confidential notes channel for Slack/Mattermost.
 
 
 ## 10.5.6 (2018-03-16)
@@ -482,6 +498,14 @@ entry.
 - Upgrade GitLab Workhorse to v3.6.0.
 - Improve readability of underlined links for dyslexic users.
 - Adds empty state illustration for pending job.
+
+
+## 10.4.7 (2018-04-03)
+
+### Security (2 changes)
+
+- Fix XSS on diff view stored on filenames.
+- Adds confidential notes channel for Slack/Mattermost.
 
 
 ## 10.4.6 (2018-03-16)

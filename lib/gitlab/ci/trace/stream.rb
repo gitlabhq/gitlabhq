@@ -26,7 +26,11 @@ module Gitlab
         end
 
         def file?
-          self.path if self.stream.respond_to?(:path)
+          self.path
+        end
+
+        def path
+          self.stream.path if self.stream.respond_to?(:path)
         end
 
         def limit(last_bytes = LIMIT_SIZE)

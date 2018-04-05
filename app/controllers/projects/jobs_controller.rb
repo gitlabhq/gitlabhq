@@ -128,7 +128,7 @@ class Projects::JobsController < Projects::ApplicationController
         if stream.file?
           send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
         else
-          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline'
+          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
         end
       end
     end
