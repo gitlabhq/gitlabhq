@@ -88,11 +88,11 @@ module Gitlab
             @tell += data.bytesize
           end
 
-          # TODO: If we support `IO::copy_stream`, outbuf must be handled properly
-          # if outbuf
-          #   outbuf.slice!(/.*/)
-          #   outbuf << out
-          # end
+          # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
+          if outbuf
+            outbuf.slice!(0, outbuf.bytesize)
+            outbuf << out
+          end
 
           out
         end
