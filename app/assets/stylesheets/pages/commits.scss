@@ -178,7 +178,7 @@
 .commit-detail {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   flex-grow: 1;
 
   .merge-request-branches & {
