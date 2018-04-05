@@ -28,7 +28,7 @@ describe ProjectPolicy do
   end
 
   let(:team_member_reporter_permissions) do
-    %i[build_download_code project_read_container_image]
+    %i[build_download_code build_read_container_image]
   end
 
   let(:developer_permissions) do
@@ -54,7 +54,7 @@ describe ProjectPolicy do
   let(:public_permissions) do
     %i[
       download_code fork_project read_commit_status read_pipeline
-      read_container_image build_download_code project_read_container_image
+      read_container_image build_download_code build_read_container_image
       download_wiki_code
     ]
   end

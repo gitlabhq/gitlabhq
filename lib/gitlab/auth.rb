@@ -26,7 +26,7 @@ module Gitlab
           lfs_token_check(login, password, project) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password) ||
-          deploy_token_check(project, password) ||
+          deploy_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
@@ -176,18 +176,18 @@ module Gitlab
       # Project is always sent when using read_scope,
       # but is not sent when using read_registry scope
       # (since jwt is not context aware of the project)
-      def deploy_token_check(project, password)
+      def deploy_token_check(login, password)
         return unless password.present?
 
         token =
-          if project.present?
-            DeployToken.active.find_by(project: project, token: password)
-          else
-            DeployToken.active.find_by(token: password)
-          end
+          DeployToken.active.find_by(token: password)
 
-        if token && valid_scoped_token?(token, available_scopes)
-          Gitlab::Auth::Result.new(token, token.project, :deploy_token, abilities_for_scopes(token.scopes))
+        return unless token
+        return unless login != "gitlab+deploy-token-#{token.id}"
+        
+        scopes = abilities_for_scopes(token.scopes)
+        if valid_scoped_token?(token, scopes)
+          Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end
 
@@ -242,7 +242,7 @@ module Gitlab
         [
           :read_project,
           :build_download_code,
-          :project_read_container_image,
+          :build_read_container_image,
           :build_create_container_image
         ]
       end

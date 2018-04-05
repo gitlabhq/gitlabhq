@@ -290,10 +290,10 @@ module Gitlab
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
+      elsif deploy_token?
+        deploy_token.has_access_to?(project)
       elsif user
         user.can?(:read_project, project)
-      elsif deploy_token?
-        deploy_token.active? && deploy_token.project == project
       elsif ci?
         true # allow CI (build without a user) for backwards compatibility
       end || Guest.can?(:read_project, project)

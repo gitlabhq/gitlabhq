@@ -29,6 +29,10 @@ class DeployToken < ActiveRecord::Base
   end
 
   def username
-    User.ghost.username
+    "gitlab+deploy-token-#{id}"
+  end
+
+  def has_access_to?(project)
+    self.project == project
   end
 end
