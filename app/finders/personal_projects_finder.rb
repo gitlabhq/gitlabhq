@@ -13,7 +13,7 @@ class PersonalProjectsFinder < UnionFinder
   def execute(current_user = nil)
     segments = all_projects(current_user)
 
-    find_union(segments, Project).includes(:namespace).order_id_desc
+    find_union(segments, Project).includes(:namespace).order_updated_desc
   end
 
   private
