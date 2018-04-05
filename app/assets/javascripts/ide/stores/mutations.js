@@ -106,6 +106,7 @@ export default {
     Object.assign(state.entries[file.path], {
       raw: file.content,
       changed: !!changedFile,
+      staged: false,
       lastCommit: Object.assign(state.entries[file.path].lastCommit, {
         id: lastCommit.commit.id,
         url: lastCommit.commit_path,
