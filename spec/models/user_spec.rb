@@ -1451,7 +1451,7 @@ describe User do
     end
   end
 
-  describe '#sort' do
+  describe '#sort_by_attribute' do
     before do
       described_class.delete_all
       @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
@@ -1460,7 +1460,7 @@ describe User do
     end
 
     context 'when sort by recent_sign_in' do
-      let(:users) { described_class.sort('recent_sign_in') }
+      let(:users) { described_class.sort_by_attribute('recent_sign_in') }
 
       it 'sorts users by recent sign-in time' do
         expect(users.first).to eq(@user)
@@ -1473,7 +1473,7 @@ describe User do
     end
 
     context 'when sort by oldest_sign_in' do
-      let(:users) { described_class.sort('oldest_sign_in') }
+      let(:users) { described_class.sort_by_attribute('oldest_sign_in') }
 
       it 'sorts users by the oldest sign-in time' do
         expect(users.first).to eq(@user1)
@@ -1486,15 +1486,15 @@ describe User do
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(described_class.sort('created_desc').first).to eq(@user)
+      expect(described_class.sort_by_attribute('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(described_class.sort('created_asc').first).to eq(@user2)
+      expect(described_class.sort_by_attribute('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(described_class.sort(nil).first).to eq(@user2)
+      expect(described_class.sort_by_attribute(nil).first).to eq(@user2)
     end
   end
 
@@ -2071,6 +2071,8 @@ describe User do
 
       expect(ghost).to be_ghost
       expect(ghost).to be_persisted
+      expect(ghost.namespace).not_to be_nil
+      expect(ghost.namespace).to be_persisted
     end
 
     it "does not create a second ghost user if one is already present" do

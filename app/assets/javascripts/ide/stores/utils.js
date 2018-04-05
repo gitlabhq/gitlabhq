@@ -1,5 +1,7 @@
 export const dataStructure = () => ({
   id: '',
+  // Key will contain a mixture of ID and path
+  // it can also contain a prefix `pending-` for files opened in review mode
   key: '',
   type: '',
   projectId: '',
@@ -36,6 +38,8 @@ export const dataStructure = () => ({
   editorColumn: 1,
   fileLanguage: '',
   eol: '',
+  viewMode: 'edit',
+  previewMode: null,
 });
 
 export const decorateData = entity => {
@@ -55,8 +59,9 @@ export const decorateData = entity => {
     changed = false,
     parentTreeUrl = '',
     base64 = false,
-
+    previewMode,
     file_lock,
+    html,
   } = entity;
 
   return {
@@ -77,8 +82,9 @@ export const decorateData = entity => {
     renderError,
     content,
     base64,
-
+    previewMode,
     file_lock,
+    html,
   };
 };
 

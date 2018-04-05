@@ -59,7 +59,7 @@ describe('RepoTab', () => {
 
     vm.$el.querySelector('.multi-file-tab-close').click();
 
-    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab.path);
+    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
   });
 
   it('changes icon on hover', done => {

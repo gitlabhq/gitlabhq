@@ -229,10 +229,6 @@ class ApplicationController < ActionController::Base
     @event_filter ||= EventFilter.new(filters)
   end
 
-  def gitlab_ldap_access(&block)
-    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
-  end
-
   # JSON for infinite scroll via Pager object
   def pager_json(partial, count, locals = {})
     html = render_to_string(

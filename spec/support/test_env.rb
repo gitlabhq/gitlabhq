@@ -62,6 +62,7 @@ module TestEnv
   }.freeze
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
+  REPOS_STORAGE = 'default'.freeze
 
   # Test environment
   #
@@ -225,7 +226,7 @@ module TestEnv
   end
 
   def repos_path
-    Gitlab.config.repositories.storages.default.legacy_disk_path
+    Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
   end
 
   def backup_path

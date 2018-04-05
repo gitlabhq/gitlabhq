@@ -3,8 +3,9 @@
 - page_title "CI / CD"
 
 - expanded = Rails.env.test?
+- general_expanded = @project.errors.empty? ? expanded : true
 
-%section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
   .settings-header
     %h4
       General pipelines settings
@@ -13,7 +14,7 @@
     %p
       Update your CI/CD configuration, like job timeout or Auto DevOps.
   .settings-content
-    = render 'projects/pipelines_settings/show'
+    = render 'form'
 
 %section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header

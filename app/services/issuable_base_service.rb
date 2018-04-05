@@ -106,7 +106,7 @@ class IssuableBaseService < BaseService
   end
 
   def available_labels
-    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: true).execute
   end
 
   def handle_quick_actions_on_create(issuable)

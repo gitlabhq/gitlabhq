@@ -1,0 +1,19 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :polling_interval_multiplier, class: 'form-control'
+        .help-block
+          Change this value to influence how frequently the GitLab UI polls for updates.
+          If you set the value to 2 all polling intervals are multiplied
+          by 2, which means that polling happens half as frequently.
+          The multiplier can also have a decimal value.
+          The default value (1) is a reasonable choice for the majority of GitLab
+          installations. Set to 0 to completely disable polling.
+          = link_to icon('question-circle'), help_page_path('administration/polling')
+
+  = f.submit 'Save changes', class: "btn btn-success"
+
