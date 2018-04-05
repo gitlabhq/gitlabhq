@@ -110,7 +110,10 @@
     "rebase_commit_sha": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
-    "rebase_path": { "type": ["string", "null"] }
+    "rebase_path": { "type": ["string", "null"] },
+    "has_new_gitlab_ci_yaml": { "type": "boolean" },
+    "project_ci_config_path": { "type": ["string", "null"] },
+    "has_new_custom_ci_config_yaml": { "type": "boolean" }
   },
   "additionalProperties": false
 }
