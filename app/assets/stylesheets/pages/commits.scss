@@ -227,7 +227,7 @@
     @extend .monospace;
     user-select: text;
     color: $gl-text-color;
-    background-color: $label-gray-bg;
+    background-color: $input-bg-disabled;
   }
 
   .btn svg {
