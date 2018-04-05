@@ -127,8 +127,6 @@ class Projects::JobsController < Projects::ApplicationController
       build.trace.read do |stream|
         if stream.file?
           send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-        elsif build.old_trace
-          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
         else
           send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
         end
