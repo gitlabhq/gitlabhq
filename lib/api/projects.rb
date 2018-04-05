@@ -267,7 +267,6 @@ module API
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
 
-<<<<<<< HEAD
         # EE
         at_least_one_of_ee = [
           :approvals_before_merge,
@@ -277,10 +276,6 @@ module API
 
         use :optional_project_params
         at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
-=======
-        use :optional_project_params
-        at_least_one_of(*at_least_one_of_ce)
->>>>>>> upstream/master
       end
       put ':id' do
         authorize_admin_project
