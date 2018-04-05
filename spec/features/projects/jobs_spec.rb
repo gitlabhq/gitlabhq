@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs' do
+feature 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -15,6 +15,8 @@ feature 'Jobs' do
   end
 
   before do
+    stub_feature_flags(ci_enable_live_trace: true)
+
     project.add_role(user, user_access_level)
     sign_in(user)
   end
