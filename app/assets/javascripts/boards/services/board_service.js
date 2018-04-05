@@ -20,7 +20,6 @@ export default class BoardService {
 
   static generateIssuePath(boardId, id) {
     return `${gon.relative_url_root}/-/boards/${boardId ? `${boardId}` : ''}/issues${id ? `/${id}` : ''}`;
-<<<<<<< HEAD
   }
 
   allBoards() {
@@ -51,8 +50,6 @@ export default class BoardService {
 
   deleteBoard({ id }) {
     return axios.delete(this.generateBoardsPath(id));
-=======
->>>>>>> upstream/master
   }
 
   all() {
