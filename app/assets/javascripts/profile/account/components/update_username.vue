@@ -33,7 +33,7 @@ export default {
   computed: {
     path() {
       return sprintf(s__('Profiles|Current path: %{path}'), {
-        path: _.escape(`${this.rootUrl}${this.username}`),
+        path: `${this.rootUrl}${this.username}`,
       });
     },
     buttonText() {
