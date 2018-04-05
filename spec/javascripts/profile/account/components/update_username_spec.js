@@ -14,7 +14,7 @@ fdescribe('UpdateUsername component', () => {
   let vm;
   let axiosMock;
 
-  beforeEach(done => {
+  beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     Component = Vue.extend(updateUsername);
     vm = mountComponent(Component, {
@@ -22,10 +22,6 @@ fdescribe('UpdateUsername component', () => {
       rootUrl,
       initialUsername: username,
     });
-
-    Vue.nextTick()
-      .then(done)
-      .catch(done.fail);
   });
 
   afterEach(() => {
