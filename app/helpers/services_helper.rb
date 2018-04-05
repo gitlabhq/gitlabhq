@@ -1,7 +1,6 @@
 module ServicesHelper
-<<<<<<< HEAD
   prepend EE::ServicesHelper
-=======
+
   def service_event_description(event)
     case event
     when "push", "push_events"
@@ -26,7 +25,6 @@ module ServicesHelper
       "Event will be triggered when a commit is created/updated"
     end
   end
->>>>>>> upstream/master
 
   def service_event_field_name(event)
     event = event.pluralize if %w[merge_request issue confidential_issue].include?(event)
