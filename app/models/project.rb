@@ -1885,6 +1885,10 @@ class Project < ActiveRecord::Base
     memoized_results[cache_key]
   end
 
+  def licensed_features
+    []
+  end
+
   private
 
   def storage
