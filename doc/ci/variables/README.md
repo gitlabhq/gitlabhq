@@ -475,8 +475,8 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 > Variables expressions were added in GitLab 10.7.
 
 It is possible to use variables expressions with only / except policies in
-`.gitlab-ci.yml`. By using this approach you can limit what builds are going to
-be created within a pipeline after pushing code to GitLab.
+`.gitlab-ci.yml`. By using this approach you can limit what jobs are going to
+be created within a pipeline after pushing a code to GitLab.
 
 This is particularly useful in combination with secret variables and triggered
 pipeline variables.
@@ -491,22 +491,21 @@ deploy:
       - $STAGING
 ```
 
-Each provided variables expression is going to be evaluated before creating
-a pipeline.
+Each expression provided is going to be evaluated before creating a pipeline.
 
 If any of the conditions in `variables` evaluates to truth when using `only`,
 a new job is going to be created. If any of the expressions evaluates to truth
 when `except` is being used, a job is not going to be created.
 
-This follows usual rules for `only` / `except` policies.
+This follows usual rules for [`only` / `except` policies][builds-policies].
 
 ### Supported syntax
 
-Below you can find currently supported syntax reference:
+Below you can find supported syntax reference:
 
 1. Equality matching using a string
 
-    Example: `$VARIABLE == "some value"`
+    > Example: `$VARIABLE == "some value"`
 
     You can use equality operator `==` to compare a variable content to a
     string. We support both, double quotes and single quotes to define a string
@@ -515,26 +514,78 @@ Below you can find currently supported syntax reference:
 
 1. Checking for an undefined value
 
-    It sometimes happens that you want to check whether variable is defined or
-    not. To do that, you can compare variable to `null` value, like
+    > Example: `$VARIABLE == null`
+
+    It sometimes happens that you want to check whether a variable is defined
+    or not. To do that, you can compare a variable to `null` keyword, like
     `$VARIABLE == null`. This expression is going to evaluate to truth if
-    variable is not set.
+    variable is not defined.
 
 1. Checking for an empty variable
+
+    > Example: `$VARIABLE == ""`
 
     If you want to check whether a variable is defined, but is empty, you can
     simply compare it against an empty string, like `$VAR == ''`.
 
 1. Comparing two variables
 
-    It is possible to compare two variables. `$VARIABLE_1 == $VARIABLE_2`.
+    > Example: `$VARIABLE_1 == $VARIABLE_2`
+
+    It is possible to compare two variables. This is going to compare values
+    of these variables.
 
 1. Variable presence check
+
+    > Example: `$STAGING`
 
     If you only want to create a job when there is some variable present,
     which means that it is defined and non-empty, you can simply use
     variable name as an expression, like `$STAGING`. If `$STAGING` variable
     is defined, and is non empty, expression will evaluate to truth.
+    `$STAGING` value needs to a string, with length higher than zero.
+    Variable that contains only whitespace characters is not an empty variable.
+
+### Unsupported predefined variables
+
+Because GitLab evaluates variables before creating jobs, we do not support a
+few variables that depend on persistence layer, like `$CI_JOB_ID`.
+
+Environments (like `production` or `staging`) are also being created based on
+what jobs pipeline consists of, thus some environment-specific variables are
+not supported as well.
+
+We do not support variables containing tokens because of security reasons.
+
+You can find a full list of unsupported variables below:
+
+- `CI_JOB_ID`
+- `CI_JOB_TOKEN`
+- `CI_BUILD_ID`
+- `CI_BUILD_TOKEN`
+- `CI_REGISTRY_USER`
+- `CI_REGISTRY_PASSWORD`
+- `CI_REPOSITORY_URL`
+- `CI_ENVIRONMENT_URL`
+
+### Secret variables with an environment scope
+
+We do support secret variables defined with an environment scope. Given that
+there is a secret variable `$STAGING_SECRET` defined in a scope of
+`review/staging/*`, following job is going to be created, based on the
+matching variable expression.
+
+```yaml
+my-job:
+  stage: staging
+  environment:
+    name: review/$CI_JOB_STAGE/deploy
+  script:
+    - 'deploy staging'
+  only:
+    variables:
+      - $STAGING_SECRET == 'something'
+```
 
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
@@ -547,4 +598,5 @@ Below you can find currently supported syntax reference:
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
+[builds-policies]: ../yaml/README.md#only-and-except-complex
 [trigger-job-token]: ../triggers/README.md#ci-job-token
