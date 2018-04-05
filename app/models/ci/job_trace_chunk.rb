@@ -39,7 +39,7 @@ module Ci
         raise 'Unsupported data store'
       end
 
-      save if changed?
+      save! if changed?
       schedule_to_db if fullfilled?
     end
 
@@ -49,7 +49,7 @@ module Ci
 
     def append(new_data, offset)
       current_data = self.data || ""
-      raise 'Offset is out of bound' if offset > current_data.bytesize
+      raise 'Offset is out of bound' if offset > current_data.bytesize || offset < 0
       raise 'Outside of chunk size' if CHUNK_SIZE < offset + new_data.bytesize
 
       self.set_data(current_data.byteslice(0, offset) + new_data)
@@ -73,6 +73,7 @@ module Ci
 
     def use_database!
       return if db?
+      return unless size > 0
 
       self.update!(raw_data: data, data_store: :db)
       redis_delete_data
