@@ -6,10 +6,7 @@ import FilteredSearchTokenKeysIssues from 'ee/filtered_search/filtered_search_to
 document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
-<<<<<<< HEAD
     filteredSearchTokenKeys: FilteredSearchTokenKeysIssues,
-=======
->>>>>>> upstream/master
     isGroupDecendent: true,
   });
   projectSelect();
