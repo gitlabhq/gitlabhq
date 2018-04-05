@@ -114,6 +114,9 @@ module EE
         #
         # All other actions should explicitly check read project, which would
         # trigger the `classification_label_authorized` condition.
+        #
+        # `:read_project_for_iids` is not prevented by this condition, as it is
+        # used for cross-project reference checks.
         prevent :guest_access
         prevent :public_access
         prevent :public_user_access
