@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Projects::JobsController do
+describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   include ApiHelpers
   include HttpIOHelpers
 
@@ -10,6 +10,7 @@ describe Projects::JobsController do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(ci_enable_live_trace: true)
     stub_not_protect_default_branch
   end
 
