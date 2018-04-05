@@ -161,7 +161,7 @@ module Gitlab
             @chunk_range ||= (chunk_start...(chunk_start + @chunk.length))
           end
 
-          @chunk.byteslice(chunk_offset, BUFFER_SIZE)
+          @chunk[chunk_offset..BUFFER_SIZE]
         end
 
         def request
