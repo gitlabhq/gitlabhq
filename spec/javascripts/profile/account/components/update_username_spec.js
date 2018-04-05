@@ -36,12 +36,12 @@ describe('UpdateUsername component', () => {
   const findElements = () => {
     const modalSelector = `#${vm.$options.modalId}`;
 
-    return ({
+    return {
       input: vm.$el.querySelector(`#${vm.$options.inputId}`),
       openModalBtn: vm.$el.querySelector(`[data-target="${modalSelector}"]`),
       modal: vm.$el.querySelector(modalSelector),
       confirmModalBtn: vm.$el.querySelector(`${modalSelector} .btn-warning`),
-    });
+    };
   };
 
   it('has a disabled button if the username was not changed', done => {
@@ -91,12 +91,12 @@ describe('UpdateUsername component', () => {
   });
 
   it('executes API call on confirmation button click', done => {
-    axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
     const { confirmModalBtn } = findElements();
 
-    vm.newUsername = newUsername;
-
+    axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
     spyOn(axios, 'put').and.callThrough();
+
+    vm.newUsername = newUsername;
 
     Vue.nextTick()
       .then(() => {
@@ -108,27 +108,24 @@ describe('UpdateUsername component', () => {
   });
 
   it('sets the username after a successful update', done => {
-    axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
     const { input, openModalBtn } = findElements();
+
+    axiosMock.onPut(actionUrl).replyOnce(() => {
+      expect(input).toBeDisabled();
+      expect(openModalBtn).toBeDisabled();
+
+      return [200, { message: 'Username changed' }];
+    });
+    spyOn(axios, 'put').and.callThrough();
 
     vm.newUsername = newUsername;
 
-    Vue.nextTick()
+    vm
+      .onConfirm()
       .then(() => {
-        vm.onConfirm();
-      })
-      .then(Vue.nextTick)
-      .then(() => {
-        expect(input).toBeDisabled();
-        expect(openModalBtn).toBeDisabled();
-      })
-      .then(Vue.nextTick)
-      .then(() => {
+        expect(axios.put).toHaveBeenCalled();
         expect(vm.username).toBe(newUsername);
         expect(vm.newUsername).toBe(newUsername);
-      })
-      .then(Vue.nextTick)
-      .then(() => {
         expect(input).not.toBeDisabled();
         expect(input.value).toBe(newUsername);
         expect(openModalBtn).toBeDisabled();
@@ -138,28 +135,26 @@ describe('UpdateUsername component', () => {
   });
 
   it('does not set the username after a erroneous update', done => {
-    axiosMock.onPut(actionUrl).replyOnce(() => [400, { message: 'Invalid username' }]);
     const { input, openModalBtn } = findElements();
+
+    axiosMock.onPut(actionUrl).replyOnce(() => {
+      expect(input).toBeDisabled();
+      expect(openModalBtn).toBeDisabled();
+
+      return [400, { message: 'Invalid username' }];
+    });
+    spyOn(axios, 'put').and.callThrough();
 
     const invalidUsername = 'anything.git';
     vm.newUsername = invalidUsername;
 
-    Vue.nextTick()
-      .then(() => {
-        vm.onConfirm();
-      })
-      .then(Vue.nextTick)
-      .then(() => {
-        expect(input).toBeDisabled();
-        expect(openModalBtn).toBeDisabled();
-      })
-      .then(Vue.nextTick)
-      .then(() => {
+    vm
+      .onConfirm()
+      .then(() => done.fail('Expected onConfirm to throw!'))
+      .catch(() => {
+        expect(axios.put).toHaveBeenCalled();
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(invalidUsername);
-      })
-      .then(Vue.nextTick)
-      .then(() => {
         expect(input).not.toBeDisabled();
         expect(input.value).toBe(invalidUsername);
         expect(openModalBtn).not.toBeDisabled();

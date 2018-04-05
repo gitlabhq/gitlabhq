@@ -76,6 +76,7 @@ Please update your Git repository remotes as soon as possible.`),
         .catch(error => {
           Flash(error.response.data.message);
           this.inputDisabled = false;
+          throw error;
         });
     },
   },
