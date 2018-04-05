@@ -145,6 +145,7 @@ export const mockNodeDetails = {
   replicationSlotWAL: 502658737,
   missingOAuthApplication: false,
   storageShardsMatch: false,
+  repositoryVerificationEnabled: true,
   replicationSlots: {
     totalCount: null,
     successCount: null,
@@ -171,6 +172,16 @@ export const mockNodeDetails = {
     failureCount: 0,
   },
   attachments: {
+    totalCount: 0,
+    successCount: 0,
+    failureCount: 0,
+  },
+  verifiedRepositories: {
+    totalCount: 0,
+    successCount: 0,
+    failureCount: 0,
+  },
+  verifiedWikis: {
     totalCount: 0,
     successCount: 0,
     failureCount: 0,

@@ -18,7 +18,7 @@ describe('GeoNodesListComponent', () => {
   describe('template', () => {
     it('renders container element correctly', () => {
       const vm = createComponent();
-      expect(vm.$el.classList.contains('well-list', 'geo-nodes')).toBeTruthy();
+      expect(vm.$el.classList.contains('panel', 'panel-default')).toBe(true);
       vm.$destroy();
     });
   });
