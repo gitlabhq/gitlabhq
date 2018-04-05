@@ -305,6 +305,7 @@ describe('Multi-file store actions', () => {
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
         ],
+        [],
         done,
       );
     });
@@ -322,6 +323,7 @@ describe('Multi-file store actions', () => {
           { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[0].path },
           { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[1].path },
         ],
+        [],
         done,
       );
     });

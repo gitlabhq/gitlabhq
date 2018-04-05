@@ -470,8 +470,9 @@ describe('IDE store file actions', () => {
       testAction(
         actions.stageChange,
         'path',
-        null,
+        store.state,
         [{ type: types.STAGE_CHANGE, payload: 'path' }],
+        [],
         done,
       );
     });
@@ -482,8 +483,9 @@ describe('IDE store file actions', () => {
       testAction(
         actions.unstageChange,
         'path',
-        null,
+        store.state,
         [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
+        [],
         done,
       );
     });
@@ -503,7 +505,7 @@ describe('IDE store file actions', () => {
 
     it('makes file pending in openFiles', done => {
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(store.state.openFiles[0].pending).toBe(true);
         })
@@ -513,7 +515,7 @@ describe('IDE store file actions', () => {
 
     it('returns true when opened', done => {
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(added => {
           expect(added).toBe(true);
         })
@@ -525,7 +527,7 @@ describe('IDE store file actions', () => {
       store.state.currentBranchId = 'master';
 
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
         })
@@ -539,7 +541,7 @@ describe('IDE store file actions', () => {
       store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
 
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(scrollToTabSpy).toHaveBeenCalled();
           store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
@@ -554,7 +556,7 @@ describe('IDE store file actions', () => {
       store.state.viewer = 'diff';
 
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(added => {
           expect(added).toBe(false);
         })

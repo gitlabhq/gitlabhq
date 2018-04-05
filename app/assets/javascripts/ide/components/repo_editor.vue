@@ -69,9 +69,7 @@ export default {
         path: this.file.path,
         baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
       })
-        .then(() => {
-          return this.updateViewer(this.file.pending ? 'diff' : 'editor');
-        })
+        .then(() => this.updateViewer(this.file.pending ? 'diff' : this.viewer))
         .then(() => {
           this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
