@@ -83,6 +83,7 @@ stages:
     - mysql:latest
     - redis:alpine
 
+<<<<<<< HEAD
 # BEGIN EE-only service helpers
 
 .use-pg-9-6: &use-pg-9-6
@@ -103,6 +104,8 @@ stages:
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
 # END EE-only service helpers
+=======
+>>>>>>> upstream/master
 .rails5-variables: &rails5-variables
   script:
     - export RAILS5=${RAILS5}
@@ -199,6 +202,7 @@ stages:
   <<: *rspec-metadata-mysql
   <<: *rails5
 
+<<<<<<< HEAD
 .rspec-metadata-ee: &rspec-metadata-ee
   <<: *rspec-metadata
   stage: test
@@ -242,6 +246,8 @@ stages:
   <<: *rspec-metadata-pg-geo
   <<: *rails5
 
+=======
+>>>>>>> upstream/master
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
   <<: *except-docs-and-qa

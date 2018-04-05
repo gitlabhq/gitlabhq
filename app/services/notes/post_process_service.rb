@@ -24,8 +24,10 @@ module Notes
 
     def execute_note_hooks
       note_data = hook_data
-      @note.project.execute_hooks(note_data, :note_hooks)
-      @note.project.execute_services(note_data, :note_hooks)
+      hooks_scope = @note.confidential? ? :confidential_note_hooks : :note_hooks
+
+      @note.project.execute_hooks(note_data, hooks_scope)
+      @note.project.execute_services(note_data, hooks_scope)
     end
   end
 end
