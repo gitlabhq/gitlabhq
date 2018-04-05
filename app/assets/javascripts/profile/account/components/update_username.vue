@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      inputDisabled: false,
+      isRequestPending: false,
       username: this.initialUsername,
       newUsername: this.initialUsername,
     };
@@ -57,7 +57,7 @@ Please update your Git repository remotes as soon as possible.`),
   },
   methods: {
     onConfirm() {
-      this.inputDisabled = true;
+      this.isRequestPending = true;
       const username = this.newUsername;
       const putData = {
         user: {
@@ -71,11 +71,11 @@ Please update your Git repository remotes as soon as possible.`),
           Flash(result.data.message, 'notice');
           this.username = username;
           this.newUsername = username;
-          this.inputDisabled = false;
+          this.isRequestPending = false;
         })
         .catch(error => {
           Flash(error.response.data.message);
-          this.inputDisabled = false;
+          this.isRequestPending = false;
           throw error;
         });
     },
@@ -95,7 +95,7 @@ Please update your Git repository remotes as soon as possible.`),
           class="form-control"
           required="required"
           v-model="newUsername"
-          :disabled="inputDisabled"
+          :disabled="isRequestPending"
         />
       </div>
       <p class="help-block">
@@ -107,7 +107,7 @@ Please update your Git repository remotes as soon as possible.`),
       class="btn btn-warning"
       type="button"
       data-toggle="modal"
-      :disabled="inputDisabled || newUsername === username"
+      :disabled="isRequestPending || newUsername === username"
     >
       {{ buttonText }}
     </button>
