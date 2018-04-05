@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+Bundler.require(:default)
+
+require_relative '../lib/rspec_flaky/flaky_examples_collection'
+require_relative '../lib/rspec_flaky/examples_pruner'
+
+report_file = ARGV.shift
+unless report_file
+  puts 'usage: prune-old-flaky-specs <report-file> <new-report-file>'
+  exit 1
+end
+
+new_report_file = ARGV.shift || report_file
+
+DAYS_THRESHOLD = 90
+
+def days_from_now(days)
+  Time.now - (3600 * 24 * days)
+end
+
+puts "Loading #{report_file}..."
+collection = RspecFlaky::FlakyExamplesCollection.new(JSON.parse(File.read(report_file)))
+
+puts "Current report has #{collection.size} entries."
+
+new_collection = RspecFlaky::ExamplesPruner.new(collection).prune_examples_older_than(days_from_now(DAYS_THRESHOLD))
+
+puts "New report has #{new_collection.size} entries: #{collection.size - new_collection.size} entries older than #{DAYS_THRESHOLD} days were removed."
+
+File.write(new_report_file, JSON.pretty_generate(new_collection.to_report))
+puts "Saved #{new_report_file}."
