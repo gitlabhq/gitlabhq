@@ -326,7 +326,7 @@ class ProjectsController < Projects::ApplicationController
       :avatar,
       :build_allow_git_fetch,
       :build_coverage_regex,
-      :build_timeout_in_minutes,
+      :build_timeout_human_readable,
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :default_branch,

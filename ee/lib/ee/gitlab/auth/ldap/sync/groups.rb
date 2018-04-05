@@ -27,14 +27,10 @@ module EE
             end
 
             def update_permissions
-              logger.debug { "Performing LDAP group sync for '#{provider}' provider" }
               sync_groups
-              logger.debug { "Finished LDAP group sync for '#{provider}' provider" }
 
               if config.admin_group.present?
-                logger.debug { "Syncing admin users for '#{provider}' provider" }
                 sync_admin_users
-                logger.debug { "Finished syncing admin users for '#{provider}' provider" }
               else
                 logger.debug { "No `admin_group` configured for '#{provider}' provider. Skipping" }
               end
@@ -42,9 +38,7 @@ module EE
               if config.external_groups.empty?
                 logger.debug { "No `external_groups` configured for '#{provider}' provider. Skipping" }
               else
-                logger.debug { "Syncing external users for '#{provider}' provider" }
                 sync_external_users
-                logger.debug { "Finished syncing external users for '#{provider}' provider" }
               end
 
               nil
@@ -53,17 +47,33 @@ module EE
             private
 
             def sync_groups
+              logger.debug { "Performing LDAP group sync for '#{provider}' provider" }
+
               groups_where_group_links_with_provider_ordered.each do |group|
                 Sync::Group.execute(group, proxy)
               end
+
+              logger.debug { "Finished LDAP group sync for '#{provider}' provider" }
             end
 
             def sync_admin_users
-              Sync::AdminUsers.execute(proxy)
+              logger.debug { "Syncing admin users for '#{provider}' provider" }
+
+              if Sync::AdminUsers.execute(proxy)
+                logger.debug { "Finished syncing admin users for '#{provider}' provider" }
+              else
+                logger.debug { "Error syncing admin users for '#{provider}' provider. LDAP connection error" }
+              end
             end
 
             def sync_external_users
-              Sync::ExternalUsers.execute(proxy)
+              logger.debug { "Syncing external users for '#{provider}' provider" }
+
+              if Sync::ExternalUsers.execute(proxy)
+                logger.debug { "Finished syncing external users for '#{provider}' provider" }
+              else
+                logger.debug { "Error syncing external users for '#{provider}' provider. LDAP connection error" }
+              end
             end
 
             def groups_where_group_links_with_provider_ordered

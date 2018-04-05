@@ -7,7 +7,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def index
     @groups = Group.with_statistics.with_route
-    @groups = @groups.sort(@sort = params[:sort])
+    @groups = @groups.sort_by_attribute(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
   end

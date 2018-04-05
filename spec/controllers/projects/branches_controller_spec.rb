@@ -416,6 +416,22 @@ describe Projects::BranchesController do
       end
     end
 
+    # We need :request_store because Gitaly only counts the queries whenever
+    # `RequestStore.active?` in GitalyClient.enforce_gitaly_request_limits
+    # And the main goal of this test is making sure TooManyInvocationsError
+    # was not raised whenever the cache is enabled yet cold.
+    context 'when cache is enabled yet cold', :request_store do
+      it 'return with a status 200' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            state: 'all',
+            format: :html
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
     context 'when branch contains an invalid UTF-8 sequence' do
       before do
         project.repository.create_branch("wrong-\xE5-utf8-sequence")
@@ -432,7 +448,7 @@ describe Projects::BranchesController do
       end
     end
 
-    context 'when depreated sort/search/page parameters are specified' do
+    context 'when deprecated sort/search/page parameters are specified' do
       it 'returns with a status 301 when sort specified' do
         get :index,
             namespace_id: project.namespace,

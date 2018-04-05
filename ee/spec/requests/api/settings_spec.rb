@@ -94,4 +94,11 @@ describe API::Settings, 'EE Settings' do
 
     it_behaves_like 'settings for licensed features'
   end
+
+  context 'custom email footer' do
+    let(:settings) { { email_additional_text: 'this is a scary legal footer' } }
+    let(:feature) { :email_additional_text }
+
+    it_behaves_like 'settings for licensed features'
+  end
 end

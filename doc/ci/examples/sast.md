@@ -13,12 +13,12 @@ You can then add a new job to `.gitlab-ci.yml`, called `sast`:
 
 ```yaml
 sast:
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run

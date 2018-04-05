@@ -1,56 +1,116 @@
-require 'spec_helper'
+require "spec_helper"
 
-describe 'User views issues' do
+describe "User views issues" do
+  let!(:closed_issue) { create(:closed_issue, project: project) }
+  let!(:open_issue1) { create(:issue, project: project) }
+  let!(:open_issue2) { create(:issue, project: project) }
   set(:user) { create(:user) }
 
-  shared_examples_for 'shows issues' do
-    it 'shows issues' do
-      expect(page).to have_content(project.name)
-        .and have_content(issue1.title)
-        .and have_content(issue2.title)
-        .and have_no_selector('.js-new-board-list')
+  shared_examples "opens issue from list" do
+    it "opens issue" do
+      click_link(issue.title)
+
+      expect(page).to have_content(issue.title)
     end
   end
 
-  context 'when project is public' do
-    set(:project) { create(:project_empty_repo, :public) }
-    set(:issue1) { create(:issue, project: project) }
-    set(:issue2) { create(:issue, project: project) }
+  shared_examples "open issues" do
+    context "open issues" do
+      let(:label) { create(:label, project: project, title: "bug") }
 
-    context 'when signed in' do
       before do
-        project.add_developer(user)
-        sign_in(user)
+        open_issue1.labels << label
 
-        visit(project_issues_path(project))
+        visit(project_issues_path(project, state: :opened))
       end
 
-      include_examples 'shows issues'
-    end
-
-    context 'when not signed in' do
-      before do
-        visit(project_issues_path(project))
+      it "shows open issues" do
+        expect(page).to have_content(project.name)
+          .and have_content(open_issue1.title)
+          .and have_content(open_issue2.title)
+          .and have_no_content(closed_issue.title)
+          .and have_no_selector(".js-new-board-list")
       end
 
-      include_examples 'shows issues'
+      it "opens issues by label" do
+        page.within(".issues-list") do
+          click_link(label.title)
+        end
+
+        expect(page).to have_content(open_issue1.title)
+          .and have_no_content(open_issue2.title)
+          .and have_no_content(closed_issue.title)
+      end
+
+      include_examples "opens issue from list" do
+        let(:issue) { open_issue1 }
+      end
     end
   end
 
-  context 'when project is internal' do
-    set(:project) { create(:project_empty_repo, :internal) }
-    set(:issue1) { create(:issue, project: project) }
-    set(:issue2) { create(:issue, project: project) }
-
-    context 'when signed in' do
+  shared_examples "closed issues" do
+    context "closed issues" do
       before do
-        project.add_developer(user)
-        sign_in(user)
-
-        visit(project_issues_path(project))
+        visit(project_issues_path(project, state: :closed))
       end
 
-      include_examples 'shows issues'
+      it "shows closed issues" do
+        expect(page).to have_content(project.name)
+          .and have_content(closed_issue.title)
+          .and have_no_content(open_issue1.title)
+          .and have_no_content(open_issue2.title)
+          .and have_no_selector(".js-new-board-list")
+      end
+
+      include_examples "opens issue from list" do
+        let(:issue) { closed_issue }
+      end
     end
+  end
+
+  shared_examples "all issues" do
+    context "all issues" do
+      before do
+        visit(project_issues_path(project, state: :all))
+      end
+
+      it "shows all issues" do
+        expect(page).to have_content(project.name)
+          .and have_content(closed_issue.title)
+          .and have_content(open_issue1.title)
+          .and have_content(open_issue2.title)
+          .and have_no_selector(".js-new-board-list")
+      end
+
+      include_examples "opens issue from list" do
+        let(:issue) { closed_issue }
+      end
+    end
+  end
+
+  %w[internal public].each do |visibility|
+    shared_examples "#{visibility} project" do
+      context "when project is #{visibility}" do
+        let(:project) { create(:project_empty_repo, :"#{visibility}") }
+
+        include_examples "open issues"
+        include_examples "closed issues"
+        include_examples "all issues"
+      end
+    end
+  end
+
+  context "when signed in as developer" do
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    include_examples "public project"
+    include_examples "internal project"
+  end
+
+  context "when not signed in" do
+    include_examples "public project"
   end
 end

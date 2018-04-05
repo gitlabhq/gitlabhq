@@ -176,7 +176,7 @@ describe Issuable do
     end
   end
 
-  describe "#sort" do
+  describe "#sort_by_attribute" do
     let(:project) { create(:project) }
 
     context "by milestone due date" do
@@ -193,12 +193,12 @@ describe Issuable do
       let!(:issue3) { create(:issue, project: project) }
 
       it "sorts desc" do
-        issues = project.issues.sort('milestone_due_desc')
+        issues = project.issues.sort_by_attribute('milestone_due_desc')
         expect(issues).to match_array([issue2, issue1, issue, issue3])
       end
 
       it "sorts asc" do
-        issues = project.issues.sort('milestone_due_asc')
+        issues = project.issues.sort_by_attribute('milestone_due_asc')
         expect(issues).to match_array([issue1, issue2, issue, issue3])
       end
     end
@@ -210,7 +210,7 @@ describe Issuable do
 
       it 'has no duplicates across pages' do
         sorted_issue_ids = 1.upto(10).map do |i|
-          project.issues.sort('milestone_due_desc').page(i).per(1).first.id
+          project.issues.sort_by_attribute('milestone_due_desc').page(i).per(1).first.id
         end
 
         expect(sorted_issue_ids).to eq(sorted_issue_ids.uniq)

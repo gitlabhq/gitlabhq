@@ -118,7 +118,7 @@
     <span
       v-else
       v-tooltip
-      class="node-sync-settings inline"
+      class="node-sync-settings"
       data-placement="bottom"
       :title="syncStatusTooltip"
     >

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-03 12:44+0100\n"
-"PO-Revision-Date: 2018-04-03 12:44+0100\n"
+"POT-Creation-Date: 2018-04-05 09:57+0200\n"
+"PO-Revision-Date: 2018-04-05 09:57+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -139,6 +139,9 @@ msgstr ""
 msgid "Abuse Reports"
 msgstr ""
 
+msgid "Abuse reports"
+msgstr ""
+
 msgid "Access Tokens"
 msgstr ""
 
@@ -251,6 +254,12 @@ msgid "All features are enabled for blank projects, from templates, or when impo
 msgstr ""
 
 msgid "Allow edits from maintainers."
+msgstr ""
+
+msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
+msgstr ""
+
+msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -430,7 +439,7 @@ msgstr ""
 msgid "Auto DevOps enabled"
 msgstr ""
 
-msgid "Auto DevOps, runners amd job artifacts"
+msgid "Auto DevOps, runners and job artifacts"
 msgstr ""
 
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
@@ -730,6 +739,9 @@ msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
+msgstr ""
+
+msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -1318,7 +1330,19 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
+msgid "Configure Gitaly timeouts."
+msgstr ""
+
 msgid "Configure Sidekiq job throttling."
+msgstr ""
+
+msgid "Configure automatic git checks and housekeeping on repositories."
+msgstr ""
+
+msgid "Configure limits for web and API requests."
+msgstr ""
+
+msgid "Configure storage path and circuit breaker settings."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -1668,6 +1692,15 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
+msgid "Elasticsearch"
+msgstr ""
+
+msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
 msgid "Emails"
 msgstr ""
 
@@ -1680,6 +1713,9 @@ msgstr ""
 msgid "Enable SAML authentication for this group"
 msgstr ""
 
+msgid "Enable Sentry for error reporting and logging."
+msgstr ""
+
 msgid "Enable and configure InfluxDB metrics."
 msgstr ""
 
@@ -1687,6 +1723,9 @@ msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
 msgid "Enable classification control using an external service"
+msgstr ""
+
+msgid "Enable or disable version check and usage ping."
 msgstr ""
 
 msgid "Enable reCAPTCHA or Akismet and set IP limits."
@@ -1756,6 +1795,9 @@ msgid "Epics Roadmap"
 msgstr ""
 
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
+msgstr ""
+
+msgid "Error Reporting and Logging"
 msgstr ""
 
 msgid "Error checking branch data. Please try again."
@@ -1831,6 +1873,9 @@ msgid "Explore public groups"
 msgstr ""
 
 msgid "External Classification Policy Authorization"
+msgstr ""
+
+msgid "External authentication"
 msgstr ""
 
 msgid "External authorization denied access to this project"
@@ -1947,6 +1992,9 @@ msgid "Generate a default set of labels"
 msgstr ""
 
 msgid "Geo Nodes"
+msgstr ""
+
+msgid "Geo allows you to replicate your GitLab instance to other geographical locations."
 msgstr ""
 
 msgid "GeoNodeSyncStatus|Node is failing or broken."
@@ -2120,10 +2168,16 @@ msgstr ""
 msgid "GitLab CI Linter has been moved"
 msgstr ""
 
+msgid "GitLab Geo"
+msgstr ""
+
 msgid "GitLab Runner section"
 msgstr ""
 
 msgid "GitLab single sign on URL"
+msgstr ""
+
+msgid "Gitaly"
 msgstr ""
 
 msgid "Gitaly Servers"
@@ -2382,6 +2436,9 @@ msgstr ""
 msgid "June"
 msgstr ""
 
+msgid "Koding"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -2508,9 +2565,6 @@ msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
 msgid "Lock not found"
-msgstr ""
-
-msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
 msgstr ""
 
 msgid "Locked"
@@ -2926,6 +2980,9 @@ msgstr ""
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
 msgstr ""
 
+msgid "Online IDE integration settings."
+msgstr ""
+
 msgid "Only project members can comment."
 msgstr ""
 
@@ -2945,6 +3002,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Otherwise it is recommended you start with one of the options below."
+msgstr ""
+
+msgid "Outbound requests"
 msgstr ""
 
 msgid "Overview"
@@ -2975,6 +3035,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Pending"
+msgstr ""
+
+msgid "Performance optimization"
 msgstr ""
 
 msgid "Personal Access Token"
@@ -3119,6 +3182,9 @@ msgid "Pipeline|with stage"
 msgstr ""
 
 msgid "Pipeline|with stages"
+msgstr ""
+
+msgid "PlantUML"
 msgstr ""
 
 msgid "Play"
@@ -3430,6 +3496,9 @@ msgstr ""
 msgid "Readme"
 msgstr ""
 
+msgid "Real-time features"
+msgstr ""
+
 msgid "RefSwitcher|Branches"
 msgstr ""
 
@@ -3488,6 +3557,15 @@ msgid "Repository"
 msgstr ""
 
 msgid "Repository has no locks."
+msgstr ""
+
+msgid "Repository maintenance"
+msgstr ""
+
+msgid "Repository mirror settings"
+msgstr ""
+
+msgid "Repository storage"
 msgstr ""
 
 msgid "Request Access"
@@ -3651,6 +3729,12 @@ msgstr ""
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
 msgstr ""
 
+msgid "Set max session time for web terminal."
+msgstr ""
+
+msgid "Set notification email for abuse reports."
+msgstr ""
+
 msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
 msgstr ""
 
@@ -3719,6 +3803,9 @@ msgstr ""
 msgid "Size and domain settings for static websites"
 msgstr ""
 
+msgid "Slack application"
+msgstr ""
+
 msgid "Snippets"
 msgstr ""
 
@@ -3726,12 +3813,6 @@ msgid "Something went wrong on our end"
 msgstr ""
 
 msgid "Something went wrong on our end."
-msgstr ""
-
-msgid "Something went wrong trying to change the confidentiality of this issue"
-msgstr ""
-
-msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName}"
 msgstr ""
 
 msgid "Something went wrong when toggling the button"
@@ -4204,6 +4285,9 @@ msgstr ""
 msgid "Time between merge request creation and merge/close"
 msgstr ""
 
+msgid "Time between updates and capacity settings."
+msgstr ""
+
 msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
 msgstr ""
 
@@ -4439,9 +4523,6 @@ msgstr ""
 msgid "Unlock"
 msgstr ""
 
-msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
-msgstr ""
-
 msgid "Unlocked"
 msgstr ""
 
@@ -4484,6 +4565,9 @@ msgstr ""
 msgid "Upvotes"
 msgstr ""
 
+msgid "Usage statistics"
+msgstr ""
+
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
@@ -4496,7 +4580,19 @@ msgstr ""
 msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
+msgid "User and IP Rate Limits"
+msgstr ""
+
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
+msgid "Various container registry settings."
+msgstr ""
+
+msgid "Various email settings."
+msgstr ""
+
+msgid "Various settings that affect GitLab performance."
 msgstr ""
 
 msgid "View and edit lines"
@@ -4551,6 +4647,9 @@ msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
 msgid "Web IDE"
+msgstr ""
+
+msgid "Web terminal"
 msgstr ""
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
@@ -4901,12 +5000,6 @@ msgid "ciReport|no vulnerabilities"
 msgstr ""
 
 msgid "command line instructions"
-msgstr ""
-
-msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
-msgstr ""
-
-msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
 msgstr ""
 
 msgid "connecting"

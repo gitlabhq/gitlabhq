@@ -11,40 +11,16 @@
   .page-subtitle {
     margin-bottom: 24px;
   }
-
-  .health-message {
-    padding: 2px 8px;
-    background-color: $red-100;
-    color: $red-500;
-    border-radius: $border-radius-default;
-    font-weight: normal;
-  }
-}
-
-.well-list.geo-nodes {
-  li {
-    position: relative;
-
-    &:hover {
-      background: $white-light;
-    }
-
-    &.node-action-active {
-      pointer-events: none;
-      opacity: 0.5;
-    }
-  }
 }
 
 .node-badge {
   color: $white-light;
-  display: inline-block;
-  margin-left: 5px;
-  padding: 0 5px;
-  border-radius: 3px;
+  padding: 1px $gl-padding-8;
+  font-size: $label-font-size;
+  border-radius: $label-border-radius;
 
   &.primary-node {
-    background-color: $blue-300;
+    background-color: $blue-600;
   }
 
   &.current-node {
@@ -72,30 +48,57 @@
   color: $gray-darkest;
 }
 
-.geo-nodes {
-  .node-status-icon-warning {
+.geo-node-item {
+  .node-status-icon {
+    height: 35px;
+  }
+
+  .status-icon-warning {
     fill: $gl-warning;
   }
 
-  .node-status-icon-failure {
+  .status-icon-failure {
     fill: $gl-danger;
   }
 }
 
-.node-details-list {
-  .node-detail-item {
-    margin-top: 14px;
+.geo-node-item {
+  .panel-body {
+    padding: 0;
 
-    &:first-child {
-      margin-top: 0;
+    .node-detail-section {
+      padding: $gl-padding 0;
     }
 
-    .node-detail-title,
-    .node-detail-value {
-      padding-left: $gl-col-padding;
-      padding-right: $gl-col-padding;
+    .node-detail-section {
+      &.sync-section,
+      &.verification-section,
+      &.other-section {
+        border-top: 1px solid $border-color;
+      }
+
+      .btn-show-section {
+        padding: 0;
+      }
     }
 
+    .node-health-message-container {
+      max-height: $dropdown-max-height;
+      overflow-y: auto;
+
+      .node-health-message {
+        margin-bottom: 0;
+        padding: 2px $gl-padding-8;
+        background-color: $red-100;
+        color: $red-500;
+      }
+    }
+  }
+}
+
+.node-detail-section {
+  .detail-section-item,
+  .section-items-container {
     .node-detail-title {
       color: $theme-gray-700;
     }
@@ -111,39 +114,22 @@
     .node-detail-value-error {
       color: $gl-danger;
     }
+  }
 
-    .btn-show-advanced {
-      padding-left: 0;
-      border: 0;
-    }
-
-    .node-health-status {
-      display: inline-flex;
-
-      .status-text {
-        line-height: 18px;
+  .section-items-container {
+    .node-detail-item {
+      &:first-child {
+        margin-top: 0;
       }
-    }
-
-    .node-sync-settings {
-      display: inline-flex;
-      cursor: pointer;
-
-      .sync-status-icon {
-        margin-top: 2px;
-        fill: $theme-gray-700;
-      }
-    }
-
-    .sync-status-event-info,
-    .event-status-timestamp {
-      color: $theme-gray-700;
-    }
-
-    .event-status-timestamp {
-      cursor: pointer;
     }
   }
+}
+
+.node-health-status,
+.node-sync-settings,
+.node-detail-section .btn-show-section {
+  display: flex;
+  align-items: center;
 }
 
 .geo-node-actions {

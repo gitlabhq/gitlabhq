@@ -1,6 +1,8 @@
 class Groups::EpicsController < Groups::ApplicationController
   include IssuableActions
   include IssuableCollections
+  include ToggleAwardEmoji
+  include RendersNotes
 
   before_action :check_epics_available!
   before_action :epic, except: [:index, :create]
@@ -23,7 +25,7 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   def create
-    @epic = Epics::CreateService.new(@group, current_user, epic_params).execute
+    @epic = ::Epics::CreateService.new(@group, current_user, epic_params).execute
 
     if @epic.persisted?
       render json: {
@@ -48,6 +50,7 @@ class Groups::EpicsController < Groups::ApplicationController
     @epic
   end
   alias_method :issuable, :epic
+  alias_method :awardable, :epic
 
   def epic_params
     params.require(:epic).permit(*epic_params_attributes)
@@ -67,8 +70,12 @@ class Groups::EpicsController < Groups::ApplicationController
     EpicSerializer.new(current_user: current_user)
   end
 
+  def discussion_serializer
+    DiscussionSerializer.new(project: nil, noteable: issuable, current_user: current_user, note_entity: EpicNoteEntity)
+  end
+
   def update_service
-    Epics::UpdateService.new(@group, current_user, epic_params)
+    ::Epics::UpdateService.new(@group, current_user, epic_params)
   end
 
   def finder_type

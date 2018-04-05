@@ -49,7 +49,12 @@
           "avatar_url": { "type": "uri" }
         }
       }
-    }
+    },
+    "current_user": {
+      "can_create_note": { "type": "boolean" }
+    },
+    "create_note_path": { "type": "string" },
+    "preview_note_path": { "type": "string" }
   },
   "additionalProperties": false
 }

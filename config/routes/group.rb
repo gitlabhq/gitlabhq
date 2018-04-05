@@ -82,12 +82,17 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     resources :billings, only: [:index]
-    resources :epics do
+    resources :epics, concerns: :awardable, constraints: { id: /\d+/ } do
       member do
+        get :discussions, format: :json
         get :realtime_changes
       end
 
       resources :epic_issues, only: [:index, :create, :destroy, :update], as: 'issues', path: 'issues'
+
+      scope module: :epics do
+        resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ }
+      end
     end
 
     # On CE only index and show are needed

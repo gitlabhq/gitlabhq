@@ -1,0 +1,27 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_default, class: 'form-control'
+        .help-block
+          Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
+          for git fetch/push operations or Sidekiq jobs.
+    .form-group
+      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_fast, class: 'form-control'
+        .help-block
+          Fast operation timeout (in seconds). Some Gitaly operations are expected to be fast.
+          If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
+          can help maintain the stability of the GitLab instance.
+    .form-group
+      = f.label :gitaly_timeout_medium, 'Medium Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_medium, class: 'form-control'
+        .help-block
+          Medium operation timeout (in seconds). This should be a value between the Fast and the Default timeout.
+
+  = f.submit 'Save changes', class: "btn btn-success"

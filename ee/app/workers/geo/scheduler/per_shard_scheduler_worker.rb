@@ -4,6 +4,7 @@ module Geo
       include ApplicationWorker
       include CronjobQueue
       include ::Gitlab::Utils::StrongMemoize
+      include ::Gitlab::Geo::LogHelpers
 
       HEALTHY_SHARD_CHECKS = [
         Gitlab::HealthChecks::FsShardsCheck,

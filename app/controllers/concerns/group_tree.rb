@@ -14,7 +14,7 @@ module GroupTree
               end
 
     @groups = @groups.with_selects_for_list(archived: params[:archived])
-                .sort(@sort = params[:sort])
+                .sort_by_attribute(@sort = params[:sort])
                 .page(params[:page])
 
     respond_to do |format|

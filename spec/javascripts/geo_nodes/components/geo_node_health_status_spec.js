@@ -50,10 +50,13 @@ describe('GeoNodeHealthStatusComponent', () => {
   describe('template', () => {
     it('renders container elements correctly', () => {
       const vm = createComponent('Healthy');
-      expect(vm.$el.classList.contains('node-detail-value', 'node-health-status', 'geo-node-healthy')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('svg').length).not.toBe(0);
-      expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('#status_success');
-      expect(vm.$el.querySelector('.status-text').innerText.trim()).toBe('Healthy');
+      expect(vm.$el.classList.contains('detail-section-item')).toBe(true);
+      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('Health status:');
+
+      const iconContainerEl = vm.$el.querySelector('.node-detail-value.node-health-status');
+      expect(iconContainerEl).not.toBeNull();
+      expect(iconContainerEl.querySelector('svg use').getAttribute('xlink:href')).toContain('#status_success');
+      expect(iconContainerEl.querySelector('.status-text').innerText.trim()).toBe('Healthy');
       vm.$destroy();
     });
   });

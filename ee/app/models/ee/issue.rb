@@ -70,7 +70,7 @@ module EE
 
     module ClassMethods
       # override
-      def sort(method, excluded_labels: [])
+      def sort_by_attribute(method, excluded_labels: [])
         case method.to_s
         when 'weight'        then order_weight_asc
         when 'weight_asc'    then order_weight_asc

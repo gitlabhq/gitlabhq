@@ -7,6 +7,7 @@ module EE
       include Issuable
       include Noteable
       include Referable
+      include Awardable
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
@@ -113,7 +114,15 @@ module EE
     end
 
     def mentionable_params
-      { group: group }
+      { group: group, label_url_method: :group_epics_url }
+    end
+
+    def discussions_rendered_on_frontend?
+      true
+    end
+
+    def banzai_render_context(field)
+      super.merge(label_url_method: :group_epics_url)
     end
   end
 end

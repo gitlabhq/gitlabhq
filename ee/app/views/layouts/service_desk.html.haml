@@ -13,3 +13,10 @@
       &mdash;
       %br
       = link_to "Unsubscribe", @unsubscribe_url
+
+      -# EE-specific start
+      - if Gitlab::CurrentSettings.email_additional_text.present?
+        %br
+        %br
+          = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
+      -# EE-specific end

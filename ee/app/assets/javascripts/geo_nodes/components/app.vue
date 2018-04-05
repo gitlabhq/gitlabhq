@@ -10,13 +10,13 @@ import eventHub from '../event_hub';
 
 import { NODE_ACTIONS } from '../constants';
 
-import geoNodesList from './geo_nodes_list.vue';
+import GeoNodeItem from './geo_node_item.vue';
 
 export default {
   components: {
     loadingIcon,
     DeprecatedModal,
-    geoNodesList,
+    GeoNodeItem,
   },
   props: {
     store: {
@@ -46,7 +46,6 @@ export default {
       modalKind: 'warning',
       modalMessage: '',
       modalActionLabel: '',
-      errorMessage: '',
     };
   },
   computed: {
@@ -85,7 +84,6 @@ export default {
       });
     },
     fetchGeoNodes() {
-      this.hasError = false;
       this.service
         .getGeoNodes()
         .then(res => res.data)
@@ -93,9 +91,11 @@ export default {
           this.store.setNodes(nodes);
           this.isLoading = false;
         })
-        .catch(err => {
-          this.hasError = true;
-          this.errorMessage = err;
+        .catch(() => {
+          this.isLoading = false;
+          Flash(
+            s__('GeoNodes|Something went wrong while fetching nodes'),
+          );
         });
     },
     fetchNodeDetails(node) {
@@ -217,28 +217,21 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      Geo nodes ({{ nodes.length }})
-    </div>
+  <div class="geo-nodes-container">
     <loading-icon
       class="loading-animation prepend-top-20 append-bottom-20"
       size="2"
       v-if="isLoading"
       :label="s__('GeoNodes|Loading nodes')"
     />
-    <geo-nodes-list
-      v-if="!isLoading"
-      :nodes="nodes"
+    <geo-node-item
+      v-for="(node, index) in nodes"
+      :key="index"
+      :node="node"
+      :primary-node="node.primary"
       :node-actions-allowed="nodeActionsAllowed"
       :node-edit-allowed="nodeEditAllowed"
     />
-    <p
-      class="health-message prepend-left-15 append-right-15"
-      v-if="hasError"
-    >
-      {{ errorMessage }}
-    </p>
     <deprecated-modal
       v-show="showModal"
       :title="__('Are you sure?')"

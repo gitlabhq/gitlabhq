@@ -1,0 +1,5 @@
+---
+title: Move Sidekiq exporter logs to log/sidekiq_exporter.log
+merge_request:
+author:
+type: other

@@ -1,0 +1,6 @@
+- @gfm_form = true
+
+%section.js-vue-notes-event
+  #js-vue-notes{ data: { notes_data: notes_data(@epic),
+    noteable_data: EpicSerializer.new(current_user: current_user).represent(@epic).to_json,
+    current_user_data: UserSerializer.new.represent(current_user, only_path: true).to_json, noteable_type: 'epic' } }

@@ -96,10 +96,6 @@ module SharedPaths
     visit assigned_issues_dashboard_path
   end
 
-  step 'I visit dashboard merge requests page' do
-    visit assigned_mrs_dashboard_path
-  end
-
   step 'I visit dashboard search page' do
     visit search_path
   end
@@ -215,10 +211,6 @@ module SharedPaths
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
-
-  step "I visit my project's home page" do
-    visit project_path(@project)
-  end
 
   step "I visit my project's settings page" do
     visit edit_project_path(@project)
@@ -359,18 +351,9 @@ module SharedPaths
     visit project_commit_path(@project, sample_commit.id)
   end
 
-  step 'I visit project "Shop" issues page' do
-    visit project_issues_path(project)
-  end
-
   step 'I visit issue page "Release 0.4"' do
     issue = Issue.find_by(title: "Release 0.4")
     visit project_issue_path(issue.project, issue)
-  end
-
-  step 'I visit project "Shop" labels page' do
-    project = Project.find_by(name: 'Shop')
-    visit project_labels_path(project)
   end
 
   step 'I visit project "Forum" labels page' do
@@ -414,10 +397,6 @@ module SharedPaths
     wait_for_requests
   end
 
-  step 'I visit project "Shop" merge requests page' do
-    visit project_merge_requests_path(project)
-  end
-
   step 'I visit forked project "Shop" merge requests page' do
     visit project_merge_requests_path(project)
   end
@@ -438,11 +417,6 @@ module SharedPaths
   # Visibility Projects
   # ----------------------------------------
 
-  step 'I visit project "Community" page' do
-    project = Project.find_by(name: "Community")
-    visit project_path(project)
-  end
-
   step 'I visit project "Community" source page' do
     project = Project.find_by(name: 'Community')
     visit project_tree_path(project, root_ref)
@@ -461,11 +435,6 @@ module SharedPaths
   # ----------------------------------------
   # Empty Projects
   # ----------------------------------------
-
-  step "I visit empty project page" do
-    project = Project.find_by(name: "Empty Public Project")
-    visit project_path(project)
-  end
 
   step "I should not see command line instructions" do
     expect(page).not_to have_css('.empty_wrapper')

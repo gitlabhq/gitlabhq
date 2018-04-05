@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <ul class="well-list geo-nodes">
+  <div class="panel panel-default">
     <geo-node-item
       v-for="(node, index) in nodes"
       :key="index"
@@ -32,5 +32,5 @@ export default {
       :node-actions-allowed="nodeActionsAllowed"
       :node-edit-allowed="nodeEditAllowed"
     />
-  </ul>
+  </div>
 </template>

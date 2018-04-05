@@ -13,3 +13,11 @@
 - page_card_attributes @epic.card_attributes
 
 #epic-show-app{ data: epic_show_app_data(@epic, author_icon: avatar_icon_for_user(@epic.author), initial: issuable_initial_data(@epic)) }
+
+.content-block.emoji-block
+  .row
+    .col-sm-8.js-noteable-awards
+      = render 'award_emoji/awards_block', awardable: @epic, inline: true
+
+%section.issuable-discussion
+  = render 'discussion'
