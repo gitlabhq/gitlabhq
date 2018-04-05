@@ -97,6 +97,37 @@ describe Issues::UpdateService, :mailer do
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
 
+      context 'when moving issue between issues from different projects' do
+        let(:group) { create(:group) }
+        let(:project_1) { create(:project, namespace: group) }
+        let(:project_2) { create(:project, namespace: group) }
+        let(:project_3) { create(:project, namespace: group) }
+
+        let(:issue_1) { create(:issue, project: project_1) }
+        let(:issue_2) { create(:issue, project: project_2) }
+        let(:issue_3) { create(:issue, project: project_3) }
+
+        before do
+          group.add_developer(user)
+        end
+
+        it 'sorts issues as specified by parameters' do
+          # Moving all issues to end here like the last example won't work since
+          # all projects only have the same issue count
+          # so their relative_position will be the same.
+          issue_1.move_to_end
+          issue_2.move_after(issue_1)
+          issue_3.move_after(issue_2)
+          [issue_1, issue_2, issue_3].map(&:save)
+
+          opts[:move_between_ids] = [issue_1.id, issue_2.id]
+          opts[:board_group_id] = group.id
+
+          described_class.new(issue_3.project, user, opts).execute(issue_3)
+          expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
+        end
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do

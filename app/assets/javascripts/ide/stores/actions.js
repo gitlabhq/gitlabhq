@@ -21,7 +21,7 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', file.path));
+  state.openFiles.forEach(file => dispatch('closeFile', file));
 };
 
 export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {

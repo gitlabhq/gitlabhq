@@ -85,7 +85,6 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md
