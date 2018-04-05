@@ -79,7 +79,7 @@ module Geo
     end
 
     def find_failed_artifact_ids(batch_size:)
-      job_artifacts_finder.find_failed_job_artifacts_registries.limit(batch_size)
+      job_artifacts_finder.find_failed_job_artifacts_registries.retry_due.limit(batch_size)
         .pluck(:artifact_id).map { |id| [:job_artifact, id] }
     end
 
