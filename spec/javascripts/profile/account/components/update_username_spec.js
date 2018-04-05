@@ -127,14 +127,12 @@ fdescribe('UpdateUsername component', () => {
 
       return [200, { message: 'Username changed' }];
     });
-    spyOn(axios, 'put').and.callThrough();
 
     vm.newUsername = newUsername;
 
     vm
       .onConfirm()
       .then(() => {
-        expect(axios.put).toHaveBeenCalled();
         expect(vm.username).toBe(newUsername);
         expect(vm.newUsername).toBe(newUsername);
         expect(input).not.toBeDisabled();
@@ -154,7 +152,6 @@ fdescribe('UpdateUsername component', () => {
 
       return [400, { message: 'Invalid username' }];
     });
-    spyOn(axios, 'put').and.callThrough();
 
     const invalidUsername = 'anything.git';
     vm.newUsername = invalidUsername;
@@ -163,7 +160,6 @@ fdescribe('UpdateUsername component', () => {
       .onConfirm()
       .then(() => done.fail('Expected onConfirm to throw!'))
       .catch(() => {
-        expect(axios.put).toHaveBeenCalled();
         expect(vm.username).toBe(username);
         expect(vm.newUsername).toBe(invalidUsername);
         expect(input).not.toBeDisabled();
