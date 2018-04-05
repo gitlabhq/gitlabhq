@@ -19,7 +19,6 @@ describe('RepoEditor', () => {
 
     f.active = true;
     f.tempFile = true;
-    f.html = 'testing';
     vm.$store.state.openFiles.push(f);
     vm.$store.state.entries[f.path] = f;
     vm.monaco = true;
@@ -47,6 +46,61 @@ describe('RepoEditor', () => {
     });
   });
 
+  it('renders only an edit tab', done => {
+    Vue.nextTick(() => {
+      const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+      expect(tabs.length).toBe(1);
+      expect(tabs[0].textContent.trim()).toBe('Edit');
+
+      done();
+    });
+  });
+
+  describe('when file is markdown', () => {
+    beforeEach(done => {
+      vm.file.previewMode = {
+        id: 'markdown',
+        previewTitle: 'Preview Markdown',
+      };
+
+      vm.$nextTick(done);
+    });
+
+    it('renders an Edit and a Preview Tab', done => {
+      Vue.nextTick(() => {
+        const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+        expect(tabs.length).toBe(2);
+        expect(tabs[0].textContent.trim()).toBe('Edit');
+        expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
+
+        done();
+      });
+    });
+  });
+
+  describe('when file is markdown and viewer mode is review', () => {
+    beforeEach(done => {
+      vm.file.previewMode = {
+        id: 'markdown',
+        previewTitle: 'Preview Markdown',
+      };
+      vm.$store.state.viewer = 'diff';
+
+      vm.$nextTick(done);
+    });
+
+    it('renders an Edit and a Preview Tab', done => {
+      Vue.nextTick(() => {
+        const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+        expect(tabs.length).toBe(2);
+        expect(tabs[0].textContent.trim()).toBe('Review');
+        expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
+
+        done();
+      });
+    });
+  });
+
   describe('when open file is binary and not raw', () => {
     beforeEach(done => {
       vm.file.binary = true;
@@ -56,10 +110,6 @@ describe('RepoEditor', () => {
 
     it('does not render the IDE', () => {
       expect(vm.shouldHideEditor).toBeTruthy();
-    });
-
-    it('shows activeFile html', () => {
-      expect(vm.$el.textContent).toContain('testing');
     });
   });
 

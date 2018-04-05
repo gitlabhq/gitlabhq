@@ -128,7 +128,7 @@ module ObjectStorage
       end
 
       def direct_upload_enabled?
-        object_store_options.direct_upload
+        object_store_options&.direct_upload
       end
 
       def background_upload_enabled?
@@ -184,6 +184,14 @@ module ObjectStorage
           StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
         }
       end
+
+      def default_object_store
+        if self.object_store_enabled? && self.direct_upload_enabled?
+          Store::REMOTE
+        else
+          Store::LOCAL
+        end
+      end
     end
 
     # allow to configure and overwrite the filename
@@ -204,12 +212,12 @@ module ObjectStorage
     end
 
     def object_store
-      @object_store ||= model.try(store_serialization_column) || Store::LOCAL
+      @object_store ||= model.try(store_serialization_column) || self.class.default_object_store
     end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def object_store=(value)
-      @object_store = value || Store::LOCAL
+      @object_store = value || self.class.default_object_store
       @storage = storage_for(object_store)
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
