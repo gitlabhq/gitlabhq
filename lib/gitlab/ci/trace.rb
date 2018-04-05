@@ -36,7 +36,7 @@ module Gitlab
       end
 
       def set(data)
-        write do |stream|
+        write('w+b') do |stream|
           data = job.hide_secrets(data)
           stream.set(data)
         end
@@ -75,14 +75,14 @@ module Gitlab
         stream&.close
       end
 
-      def write
+      def write(mode = 'a+b')
         stream = Gitlab::Ci::Trace::Stream.new do
           if current_path
-            current_path
+            File.open(current_path, mode)
           elsif Feature.enabled?('ci_enable_live_trace')
             Gitlab::Ci::Trace::ChunkedIO.new(job)
           else
-            File.open(ensure_path, "a+b")
+            File.open(ensure_path, mode)
           end
         end
 
