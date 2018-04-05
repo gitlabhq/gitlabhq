@@ -535,7 +535,8 @@ describe Projects::JobsController do
       it 'returns not_found' do
         response = subject
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq ''
       end
     end
 
