@@ -232,6 +232,11 @@
 
   .btn svg {
     top: auto;
+    fill: $gray-darkest;
+  }
+
+  .fa-clipboard {
+    color: $gray-darkest;
   }
 
   :first-child {
