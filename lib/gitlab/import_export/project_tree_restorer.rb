@@ -77,24 +77,31 @@ module Gitlab
       end
 
       def default_relation_list
-        Gitlab::ImportExport::Reader.new(shared: @shared).tree.reject do |model|
+        reader.tree.reject do |model|
           model.is_a?(Hash) && model[:project_members]
         end
       end
 
       def restore_project
-        params = project_params
-
-        if params[:description].present?
-          params[:description_html] = nil
-        end
-
-        @project.update_columns(params)
+        @project.update_columns(project_params)
         @project
       end
 
       def project_params
-        @tree_hash.reject do |key, value|
+        @project_params ||= json_params.merge(override_params)
+      end
+
+      def override_params
+        return {} unless params = @project.import_data&.data&.fetch('override_params')
+
+        @override_params ||= params.select do |key, _value|
+          Project.column_names.include?(key.to_s) &&
+            !reader.project_tree[:except].include?(key.to_sym)
+        end
+      end
+
+      def json_params
+        @json_params ||= @tree_hash.reject do |key, value|
           # return params that are not 1 to many or 1 to 1 relations
           value.respond_to?(:each) && !Project.column_names.include?(key)
         end
@@ -180,6 +187,10 @@ module Gitlab
         end
 
         relation_hash.merge(params)
+      end
+
+      def reader
+        @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)
       end
     end
   end
