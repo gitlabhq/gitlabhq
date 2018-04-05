@@ -43,7 +43,7 @@ describe('Issue card component', () => {
       labels: [list.label],
       assignees: [],
       reference_path: '#1',
-      real_path: '/test/1'
+      real_path: '/test/1',
     });
 
     component = new Vue({
