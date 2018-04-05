@@ -24,7 +24,7 @@ module Ci
         raw_data
       else
         raise 'Unsupported data store'
-      end
+      end&.force_encoding(Encoding::BINARY)
     end
 
     def set_data(value)
