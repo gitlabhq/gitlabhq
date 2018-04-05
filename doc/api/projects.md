@@ -637,6 +637,7 @@ POST /projects/user/:user_id
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
+| `external_authorization_classification_label` | string | no | The classification label for the project |
 
 ## Edit project
 
@@ -674,6 +675,7 @@ PUT /projects/:id
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
+| `external_authorization_classification_label` | string | no | The classification label for the project |
 
 ## Fork project
 
