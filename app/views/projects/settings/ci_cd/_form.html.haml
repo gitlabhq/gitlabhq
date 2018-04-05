@@ -13,13 +13,13 @@
               %p.settings-message.text-center
                 = message.html_safe
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|
-            .radio.js-enable-autodevops{ data: { auto_devops_enabled: @auto_devops.enabled ? "true" : "false" } }
+            .radio.js-enable-autodevops{ data: { auto_devops_enabled: @auto_devops.enabled?.to_s } }
               = form.label :enabled_true do
                 = form.radio_button :enabled, 'true'
                 %strong Enable Auto DevOps
                 %br
                 %span.descr
-                  - if @project.ci_config_path.empty?
+                  - if @project.ci_config_path.nil? || @project.ci_config_path.empty?
                     The Auto DevOps pipeline configuration is being used
                   - else
                     The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
