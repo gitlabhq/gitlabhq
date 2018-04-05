@@ -43,8 +43,8 @@ Please update your Git repository remotes as soon as possible.`),
         {
           currentUsernameBold: `<strong>${_.escape(this.username)}</strong>`,
           newUsernameBold: `<strong>${_.escape(this.newUsername)}</strong>`,
-          currentUsername: this.username,
-          newUsername: this.newUsername,
+          currentUsername: _.escape(this.username),
+          newUsername: _.escape(this.newUsername),
         },
         false,
       );
