@@ -1,7 +1,5 @@
 module DeployTokens
   class CreateService < BaseService
-    REDIS_EXPIRY_TIME = 3.minutes
-
     def execute
       @project.deploy_tokens.build.tap do |deploy_token|
         deploy_token.attributes = params
@@ -13,7 +11,7 @@ module DeployTokens
     private
 
     def store_deploy_token_info_in_redis(deploy_token)
-      deploy_token_key = deploy_token.redis_shared_state_key(current_user.id)
+      deploy_token_key = DeployToken.redis_shared_state_key(current_user.id)
 
       if deploy_token.persisted?
         store_in_redis(deploy_token_key, deploy_token.token)
@@ -31,7 +29,7 @@ module DeployTokens
 
     def store_in_redis(key, value)
       Gitlab::Redis::SharedState.with do |redis|
-        redis.set(key, value, ex: REDIS_EXPIRY_TIME)
+        redis.set(key, value, ex: 3.minutes)
       end
     end
   end

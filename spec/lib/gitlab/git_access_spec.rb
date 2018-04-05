@@ -147,25 +147,17 @@ describe Gitlab::GitAccess do
         end
 
         context 'when actor is DeployToken' do
-          context 'when DeployToken is active and belongs to project' do
-            let(:actor) { create(:deploy_token, :read_repo, project: project) }
+          let(:project_deploy_token) { create(:project_deploy_token, project: project) }
+          let(:actor) { project_deploy_token.deploy_token }
 
+          context 'when DeployToken is active and belongs to project' do
             it 'allows pull access' do
               expect { pull_access_check }.not_to raise_error
             end
           end
 
-          context 'when DeployToken has been revoked' do
-            let(:actor) { create(:deploy_token, :read_repo, project: project) }
-
-            it 'blocks pull access' do
-              actor.revoke!
-              expect { pull_access_check }.to raise_not_found
-            end
-          end
-
           context 'when DeployToken does not belong to project' do
-            let(:actor) { create(:deploy_token, :read_repo) }
+            let(:actor) { create(:deploy_token) }
 
             it 'blocks pull access' do
               expect { pull_access_check }.to raise_not_found

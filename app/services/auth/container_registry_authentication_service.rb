@@ -145,7 +145,7 @@ module Auth
       has_authentication_ability?(:read_container_image) &&
         can_user?(:read_container_image, requested_project)
     end
-    
+
     def deploy_token_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
         current_user.is_a?(DeployToken) &&
@@ -165,7 +165,7 @@ module Auth
 
     def user_can_push?(requested_project)
       has_authentication_ability?(:create_container_image) &&
-        can_user?(current_user, :create_container_image, requested_project)
+        can_user?(:create_container_image, requested_project)
     end
 
     def error(code, status:, message: '')

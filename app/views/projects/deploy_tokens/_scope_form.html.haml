@@ -1,4 +1,0 @@
-%fieldset
-  = check_box_tag "deploy_token[scopes][]", scope, token.scopes.include?(scope), id: "deploy_token_scopes_#{scope}"
-  = label_tag ("deploy_token_scopes_#{scope}"), scope
-  %span= presenter.scope_description(scope)

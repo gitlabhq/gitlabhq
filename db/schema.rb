@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405101928) do
+ActiveRecord::Schema.define(version: 20180405142733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -684,17 +684,16 @@ ActiveRecord::Schema.define(version: 20180405101928) do
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
   create_table "deploy_tokens", force: :cascade do |t|
-    t.integer "project_id", null: false
     t.string "name", null: false
     t.string "token", null: false
-    t.string "scopes"
+    t.boolean "read_repository", default: false
+    t.boolean "read_registry", default: false
     t.boolean "revoked", default: false
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_index "deploy_tokens", ["project_id"], name: "index_deploy_tokens_on_project_id", using: :btree
   add_index "deploy_tokens", ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
 
   create_table "deployments", force: :cascade do |t|
@@ -1443,6 +1442,15 @@ ActiveRecord::Schema.define(version: 20180405101928) do
 
   add_index "project_custom_attributes", ["key", "value"], name: "index_project_custom_attributes_on_key_and_value", using: :btree
   add_index "project_custom_attributes", ["project_id", "key"], name: "index_project_custom_attributes_on_project_id_and_key", unique: true, using: :btree
+
+  create_table "project_deploy_tokens", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "deploy_token_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", using: :btree
 
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"

@@ -56,7 +56,7 @@ module Projects
 
       def define_deploy_token
         attributes = @deploy_tokens.attributes_deploy_token
-        @deploy_token = @project.deploy_tokens.build(attributes)
+        @deploy_token = DeployToken.new(attributes)
         @deploy_token.valid? unless attributes.empty?
       end
     end

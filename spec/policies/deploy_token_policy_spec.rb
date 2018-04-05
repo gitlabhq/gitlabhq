@@ -15,7 +15,7 @@ describe DeployTokenPolicy do
 
       it { is_expected.to be_allowed(:create_deploy_token) }
     end
-    
+
     context 'when user is not master' do
       before do
         project.add_developer(current_user)

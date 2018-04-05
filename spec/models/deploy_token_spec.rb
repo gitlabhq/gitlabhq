@@ -1,21 +1,10 @@
 require 'spec_helper'
 
 describe DeployToken do
-  let(:deploy_token) { create(:deploy_token) }
+  subject(:deploy_token) { create(:deploy_token) }
 
-  it { is_expected.to belong_to :project }
-  it { is_expected.to validate_presence_of :project }
-
-  describe 'validations' do
-    context 'with no scopes defined' do
-      it 'should not be valid' do
-        deploy_token.scopes = []
-
-        expect(deploy_token).not_to be_valid
-        expect(deploy_token.errors[:scopes].first).to eq("can't be blank")
-      end
-    end
-  end
+  it { is_expected.to have_many :project_deploy_tokens }
+  it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
 
   describe '#ensure_token' do
     it 'should ensure a token' do
@@ -23,6 +12,38 @@ describe DeployToken do
       deploy_token.save
 
       expect(deploy_token.token).not_to be_empty
+    end
+  end
+
+  describe '#ensure_at_least_one_scope' do
+    context 'with at least one scope' do
+      it 'should be valid' do
+        is_expected.to be_valid
+      end
+    end
+
+    context 'with no scopes' do
+      it 'should be invalid' do
+        deploy_token = build(:deploy_token, read_repository: false, read_registry: false)
+
+        expect(deploy_token).not_to be_valid
+        expect(deploy_token.errors[:base].first).to eq("Scopes can't be blank")
+      end
+    end
+  end
+
+  describe '#scopes' do
+    context 'with all the scopes' do
+      it 'should return scopes assigned to DeployToken' do
+        expect(deploy_token.scopes).to eq([:read_repository, :read_registry])
+      end
+    end
+
+    context 'with only one scope' do
+      it 'should return scopes assigned to DeployToken' do
+        deploy_token = create(:deploy_token, read_registry: false)
+        expect(deploy_token.scopes).to eq([:read_repository])
+      end
     end
   end
 
@@ -50,8 +71,7 @@ describe DeployToken do
 
   describe '#username' do
     it 'returns Ghost username' do
-      ghost = User.ghost
-      expect(deploy_token.username).to eq(ghost.username)
+      expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
     end
   end
 end

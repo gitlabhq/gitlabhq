@@ -5,16 +5,8 @@ module Projects
 
       presents :deploy_tokens
 
-      def available_scopes
-        DeployToken::AVAILABLE_SCOPES
-      end
-
       def length
         deploy_tokens.length
-      end
-
-      def scope_description(scope)
-        scope_descriptions[scope]
       end
 
       def each
@@ -42,15 +34,8 @@ module Projects
 
       private
 
-      def scope_descriptions
-        {
-          'read_repository' => s_('DeployTokens|Allows read-only access to the repository'),
-          'read_registry' => s_('DeployTokens|Allows read-only access to the registry images')
-        }
-      end
-
       def deploy_token_key
-        @deploy_token_key ||= project.deploy_tokens.new.redis_shared_state_key(current_user.id)
+        @deploy_token_key ||= DeployToken.redis_shared_state_key(current_user.id)
       end
     end
   end

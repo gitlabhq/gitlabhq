@@ -184,9 +184,9 @@ module Gitlab
 
         return unless token
         return unless login != "gitlab+deploy-token-#{token.id}"
-        
+
         scopes = abilities_for_scopes(token.scopes)
-        if valid_scoped_token?(token, scopes)
+        if valid_scoped_token?(token, available_scopes)
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end

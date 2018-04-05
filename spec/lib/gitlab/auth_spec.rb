@@ -261,7 +261,7 @@ describe Gitlab::Auth do
       let(:auth_failure) { Gitlab::Auth::Result.new(nil, nil) }
 
       context 'when the deploy token has read_repository as scope' do
-        let(:deploy_token) { create(:deploy_token, :read_repository, project: project) }
+        let(:deploy_token) { create(:deploy_token, read_registry: false, projects: [project]) }
 
         it 'succeeds when project is present, token is valid and has read_repository as scope' do
           abilities = %i(read_project download_code)
@@ -284,13 +284,6 @@ describe Gitlab::Auth do
             .to eq(auth_failure)
         end
 
-        it 'fails for any other project' do
-          another_project = create(:project)
-          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-          expect(gl_auth.find_for_git_client('', deploy_token.token, project: another_project, ip: 'ip'))
-            .to eq(auth_failure)
-        end
-
         it 'fails if token has been revoked' do
           deploy_token.revoke!
 
@@ -302,7 +295,7 @@ describe Gitlab::Auth do
       end
 
       context 'when the deploy token has read_registry as a scope' do
-        let(:deploy_token) { create(:deploy_token, :read_registry, project: project) }
+        let(:deploy_token) { create(:deploy_token, read_repository: false, projects: [project]) }
 
         context 'when registry enabled' do
           before do
