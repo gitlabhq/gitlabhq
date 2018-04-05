@@ -84,7 +84,7 @@ module Ci
     def schedule_to_db
       return if db?
 
-      StashTraceChunkWorker.perform_async(id)
+      SwapTraceChunkWorker.perform_async(id)
     end
 
     def fullfilled?

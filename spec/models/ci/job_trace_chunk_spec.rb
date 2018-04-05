@@ -70,7 +70,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         let(:value) { 'a' * described_class::CHUNK_SIZE }
 
         it 'schedules stashing data' do
-          expect(StashTraceChunkWorker).to receive(:perform_async).once
+          expect(SwapTraceChunkWorker).to receive(:perform_async).once
 
           subject
         end
@@ -107,7 +107,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
 
       context 'when fullfilled chunk size' do
         it 'does not schedule stashing data' do
-          expect(StashTraceChunkWorker).not_to receive(:perform_async)
+          expect(SwapTraceChunkWorker).not_to receive(:perform_async)
 
           subject
         end
