@@ -45,7 +45,7 @@ export default {
       this.updateDelayViewerUpdated(true);
 
       if (tab.pending) {
-        this.openPendingTab(tab);
+        this.openPendingTab({ file: tab, keyPrefix: tab.staged ? 'staged' : 'unstaged' });
       } else {
         this.$router.push(`/project${tab.url}`);
       }
