@@ -2022,6 +2022,22 @@ describe Project do
         expect(forked_project.lfs_storage_project).to eq forked_project
       end
     end
+
+    describe '#all_lfs_objects' do
+      let(:lfs_object) { create(:lfs_object) }
+
+      before do
+        project.lfs_objects << lfs_object
+      end
+
+      it 'returns the lfs object for a project' do
+        expect(project.all_lfs_objects).to contain_exactly(lfs_object)
+      end
+
+      it 'returns the lfs object for a fork' do
+        expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+      end
+    end
   end
 
   describe '#pushes_since_gc' do
