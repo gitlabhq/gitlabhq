@@ -1066,6 +1066,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # This will return all `lfs_objects` that are accessible to the project.
+  # So this might be `self.lfs_objects` if the project is not part of a fork
+  # network, or it is the base of the fork network.
+  #
+  # TODO: refactor this to get the correct lfs objects when implementing
+  #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+  def all_lfs_objects
+    lfs_storage_project.lfs_objects
+  end
+
   def personal?
     !group
   end
