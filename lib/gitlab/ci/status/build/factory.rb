@@ -4,12 +4,12 @@ module Gitlab
       module Build
         class Factory < Status::Factory
           def self.extended_statuses
-            [[Status::Build::Manual,
+            [[Status::Build::Erased,
+              Status::Build::Manual,
               Status::Build::Canceled,
               Status::Build::Created,
               Status::Build::Pending,
-              Status::Build::Skipped,
-              Status::Build::Erased],
+              Status::Build::Skipped],
              [Status::Build::Cancelable,
               Status::Build::Retryable],
              [Status::Build::FailedAllowed,
