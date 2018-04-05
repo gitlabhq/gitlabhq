@@ -102,7 +102,7 @@ describe ProfilesController, :request_store do
           user: { username: 'invalid username.git' },
           format: :json
 
-      expect(response.status).to eq(400)
+      expect(response.status).to eq(422)
       expect(json_response['message']).to match(/Username change failed/)
     end
 
