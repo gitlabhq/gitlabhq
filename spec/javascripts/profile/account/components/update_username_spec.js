@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import updateUsername from '~/profile/account/components/update_username.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-fdescribe('UpdateUsername component', () => {
+describe('UpdateUsername component', () => {
   const rootUrl = gl.TEST_HOST;
   const actionUrl = `${gl.TEST_HOST}/update/username`;
   const username = 'hasnoname';
