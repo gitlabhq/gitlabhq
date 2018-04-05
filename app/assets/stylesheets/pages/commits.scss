@@ -214,10 +214,10 @@
 
   .label,
   .btn {
-    padding: $gl-padding-4 $gl-padding-8;
+    padding: $gl-vert-padding $gl-btn-padding;
     border: 1px $border-color solid;
-    font-size: 14px;
-    line-height: 16px;
+    font-size: $gl-font-size;
+    line-height: $gl-btn-line-height;
     border-radius: 0;
     display: flex;
     align-items: center;
@@ -227,7 +227,7 @@
     @extend .monospace;
     user-select: text;
     color: $gl-text-color;
-    background-color: $input-bg-disabled;
+    background-color: $gray-light;
   }
 
   .btn svg {
