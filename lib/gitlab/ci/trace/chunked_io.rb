@@ -35,14 +35,6 @@ module Gitlab
           true
         end
 
-        def path
-          nil
-        end
-
-        def url
-          nil
-        end
-
         def seek(pos, where = IO::SEEK_SET)
           new_pos =
             case where
@@ -74,18 +66,21 @@ module Gitlab
           end
         end
 
-        def read(length = (size - tell), outbuf = "")
+        def read(length = nil, outbuf = "")
           out = ""
-          end_tell = [tell + length, size].min
 
-          until end_tell <= tell
+          length = size - tell unless length
+
+          until length <= 0 || eof?
             data = chunk_slice_from_offset
             break if data.empty?
 
-            data = data[0, (length % CHUNK_SIZE)] if data.bytesize + tell >= end_tell
+            chunk_bytes = [CHUNK_SIZE - chunk_offset, length].min
+            chunk_data = data.byteslice(0, chunk_bytes)
 
-            out << data
-            @tell += data.bytesize
+            out << chunk_data
+            @tell += chunk_data.bytesize
+            length -= chunk_data.bytesize
           end
 
           # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
@@ -118,7 +113,10 @@ module Gitlab
         end
 
         def write(data)
+          raise 'Could not write empty data' unless data.present?
+
           start_pos = tell
+          data = data.force_encoding(Encoding::BINARY)
 
           while tell < start_pos + data.bytesize
             # get slice from current offset till the end where it falls into chunk
@@ -129,9 +127,13 @@ module Gitlab
             ensure_chunk.append(chunk_data, chunk_offset)
 
             # move offsets within buffer
-            @tell += chunk_bytes
+            @tell += chunk_data.bytesize
             @size = [size, tell].max
           end
+
+          tell - start_pos
+        ensure
+          invalidate_chunk_cache
         end
 
         def truncate(offset)
@@ -139,13 +141,14 @@ module Gitlab
 
           @tell = offset
           @size = offset
-          invalidate_chunk_cache
 
           # remove all next chunks
           job_chunks.where('chunk_index > ?', chunk_index).destroy_all
 
           # truncate current chunk
           current_chunk.truncate(chunk_offset) if chunk_offset != 0
+        ensure
+          invalidate_chunk_cache
         end
 
         def flush
@@ -158,6 +161,8 @@ module Gitlab
 
         def destroy!
           job_chunks.destroy_all
+          @tell = @size = 0
+        ensure
           invalidate_chunk_cache
         end
 
