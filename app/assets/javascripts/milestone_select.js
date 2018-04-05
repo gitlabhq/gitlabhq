@@ -94,10 +94,10 @@ export default class MilestoneSelect {
             if (showMenuAbove) {
               $dropdown.data('glDropdown').positionMenuAbove();
             }
-            $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
+            $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`).addClass('is-active');
           }),
         renderRow: milestone => `
-          <li data-milestone-id="${milestone.name}">
+          <li data-milestone-id="${_.escape(milestone.name)}">
             <a href='#' class='dropdown-menu-milestone-link'>
               ${_.escape(milestone.title)}
             </a>
@@ -125,7 +125,6 @@ export default class MilestoneSelect {
             return milestone.id;
           }
         },
-        isSelected: milestone => milestone.name === selectedMilestone,
         hidden: () => {
           $selectBox.hide();
           // display:block overrides the hide-collapse rule
@@ -137,7 +136,7 @@ export default class MilestoneSelect {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
           }
           $('a.is-active', $el).removeClass('is-active');
-          $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
+          $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: (clickEvent) => {
@@ -158,6 +157,7 @@ export default class MilestoneSelect {
           const isMRIndex = (page === page && page === 'projects:merge_requests:index');
           const isSelecting = (selected.name !== selectedMilestone);
           selectedMilestone = isSelecting ? selected.name : selectedMilestoneDefault;
+
           if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
             e.preventDefault();
             return;

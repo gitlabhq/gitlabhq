@@ -23,5 +23,23 @@ describe Notes::PostProcessService do
 
       described_class.new(@note).execute
     end
+
+    context 'with a confidential issue' do
+      let(:issue) { create(:issue, :confidential, project: project) }
+
+      it "doesn't call note hooks/services" do
+        expect(project).not_to receive(:execute_hooks).with(anything, :note_hooks)
+        expect(project).not_to receive(:execute_services).with(anything, :note_hooks)
+
+        described_class.new(@note).execute
+      end
+
+      it "calls confidential-note hooks/services" do
+        expect(project).to receive(:execute_hooks).with(anything, :confidential_note_hooks)
+        expect(project).to receive(:execute_services).with(anything, :confidential_note_hooks)
+
+        described_class.new(@note).execute
+      end
+    end
   end
 end

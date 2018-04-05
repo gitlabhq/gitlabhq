@@ -72,7 +72,7 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :issues_events, :confidential_issues_events
-      expose :note_events, :pipeline_events, :wiki_page_events
+      expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
 
@@ -822,7 +822,7 @@ module API
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
-      expose :pipeline_events, :wiki_page_events
+      expose :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
