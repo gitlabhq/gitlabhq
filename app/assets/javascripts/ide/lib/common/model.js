@@ -34,10 +34,12 @@ export default class Model {
     this.events = new Map();
 
     this.updateContent = this.updateContent.bind(this);
+    this.updateNewContent = this.updateNewContent.bind(this);
     this.dispose = this.dispose.bind(this);
 
     eventHub.$on(`editor.update.model.dispose.${this.file.key}`, this.dispose);
     eventHub.$on(`editor.update.model.content.${this.file.key}`, this.updateContent);
+    eventHub.$on(`editor.update.model.new.content.${this.file.key}`, this.updateNewContent);
   }
 
   get url() {
@@ -87,11 +89,16 @@ export default class Model {
     }
   }
 
+  updateNewContent(content) {
+    this.getModel().setValue(content);
+  }
+
   dispose() {
     this.disposable.dispose();
     this.events.clear();
 
     eventHub.$off(`editor.update.model.dispose.${this.file.key}`, this.dispose);
     eventHub.$off(`editor.update.model.content.${this.file.key}`, this.updateContent);
+    eventHub.$off(`editor.update.model.new.content.${this.file.key}`, this.updateNewContent);
   }
 }

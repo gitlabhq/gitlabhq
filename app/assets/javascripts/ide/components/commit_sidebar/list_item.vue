@@ -29,7 +29,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['discardFileChanges', 'updateViewer', 'openPendingTab']),
+    ...mapActions([
+      'discardFileChanges',
+      'updateViewer',
+      'openPendingTab',
+      'unstageChange',
+      'stageChange',
+    ]),
     openFileInEditor() {
       return this.openPendingTab({
         file: this.file,

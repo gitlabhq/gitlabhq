@@ -156,7 +156,7 @@ export default {
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
     const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
     let openFiles = state.openFiles.map(f =>
-      Object.assign(f, { active: f.path === file.path, opened: false }),
+      Object.assign(f, { active: f.path === file.path, opened: false, active: false }),
     );
 
     if (!pendingTab) {
@@ -168,6 +168,7 @@ export default {
         if (f.path === file.path) {
           return acc.concat({
             ...f,
+            content: file.content,
             active: true,
             pending: true,
             opened: true,

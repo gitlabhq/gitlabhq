@@ -174,10 +174,7 @@ export const stageChange = ({ commit, state }, path) => {
   commit(types.STAGE_CHANGE, path);
 
   if (stagedFile) {
-    eventHub.$emit(`editor.update.model.content.staged-${stagedFile.key}`, {
-      content: stagedFile.content,
-      changed: false,
-    });
+    eventHub.$emit(`editor.update.model.new.content.staged-${stagedFile.key}`, stagedFile.content);
   }
 };
 
@@ -186,7 +183,7 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-  if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
+  if (getters.activeFile && getters.activeFile === file && state.viewer === 'diff') {
     return false;
   }
 
