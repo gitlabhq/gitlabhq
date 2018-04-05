@@ -53,7 +53,7 @@ module Boards
       end
 
       def set_scope
-        params[:include_subgroups] = true if board.group_board?
+        params[:include_subgroups] = board.group_board?
       end
 
       def board_label_ids

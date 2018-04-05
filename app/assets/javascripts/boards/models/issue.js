@@ -115,7 +115,7 @@ class ListIssue {
     }
 
     const projectPath = this.project ? this.project.path : '';
-    return Vue.http.patch(this.path + '.json', data);
+    return Vue.http.patch(`${this.path}.json`, data);
   }
 }
 
