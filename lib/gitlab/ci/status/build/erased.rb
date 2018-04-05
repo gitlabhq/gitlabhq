@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Success < Status::Extended
+        class Erased < Status::Extended
           def illustration
             {
               image: 'illustrations/skipped-job_empty.svg',
@@ -12,7 +12,7 @@ module Gitlab
           end
 
           def self.matches?(build, user)
-            !build.has_trace? && build.success?
+            build.erased?
           end
         end
       end

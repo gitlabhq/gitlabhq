@@ -9,7 +9,7 @@ module Gitlab
               Status::Build::Created,
               Status::Build::Pending,
               Status::Build::Skipped,
-              Status::Build::Success],
+              Status::Build::Erased],
              [Status::Build::Cancelable,
               Status::Build::Retryable],
              [Status::Build::FailedAllowed,
