@@ -1,10 +1,67 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import CompareVersionsDropdown from './compare_versions_dropdown.vue';
+
+const mergeRequestDiffs = [
+  {
+    path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
+    versionIndex: 2, // version #{version_index(merge_request_diff)}
+    shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
+    commitsCount: 2, // merge_request_diff.commits_count
+    createdAt: '2017-03-14T21:27:21Z', // .created_at
+  },
+  {
+    path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
+    versionIndex: 3, // version #{version_index(merge_request_diff)}
+    shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
+    commitsCount: 3, // merge_request_diff.commits_count
+    createdAt: '2017-03-14T21:27:21Z', // .created_at
+  },
+  {
+    path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
+    versionIndex: 5, // version #{version_index(merge_request_diff)}
+    shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
+    commitsCount: 3, // merge_request_diff.commits_count
+    createdAt: '2017-03-14T21:27:21Z', // .created_at
+  },
+];
+
+const mergeRequestDiff = {
+  latest: true,
+  path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
+  versionIndex: 4, // version #{version_index(merge_request_diff)}
+  shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
+  commitsCount: 3, // merge_request_diff.commits_count
+  createdAt: '2017-03-14T21:27:21Z', // .created_at
+};
+
+const baseVersion = {
+  latest: true,
+  branchName: 'master',
+  path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
+  versionIndex: 4, // version #{version_index(merge_request_diff)}
+  shortCommitSha: 'def1342a', // short_sha(merge_request_diff.head_commit_sha)
+  commitsCount: 3, // merge_request_diff.commits_count
+  createdAt: '2017-03-14T21:27:21Z', // .created_at
+};
 
 export default {
   components: {
-    Icon,
+    CompareVersionsDropdown,
   },
+  computed: {
+    targetVersions() {
+      return mergeRequestDiffs;
+    },
+    baseVersions() {
+      return mergeRequestDiffs;
+    },
+    baseVersion() {
+      return baseVersion;
+    },
+    mergeRequestDiff() {
+      return mergeRequestDiff;
+    }
+  }
 };
 </script>
 
@@ -12,35 +69,15 @@ export default {
   <div class="mr-version-controls">
     <div class="mr-version-menus-container content-block">
       Changes between
-      <span class="dropdown inline mr-version-dropdown">
-        <a
-          class="dropdown-toggle btn btn-default"
-          data-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <span>
-            latest version
-          </span>
-          <Icon
-            name="angle-down"
-            :size="12"
-          />
-        </a>
-      </span>
+      <compare-versions-dropdown
+        :other-versions="targetVersions"
+        :latest-version="mergeRequestDiff"
+      />
       and
-      <span class="dropdown inline mr-version-compare-dropdown">
-        <a
-          class="btn btn-default dropdown-toggle"
-          data-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <span class="ref-name">master</span>
-          <Icon
-            name="angle-down"
-            :size="12"
-          />
-        </a>
-      </span>
+      <compare-versions-dropdown
+        :other-versions="targetVersions"
+        :base-version="baseVersion"
+      />
     </div>
   </div>
 </template>
