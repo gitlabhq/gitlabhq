@@ -40,6 +40,8 @@ fdescribe('UpdateUsername component', () => {
       input: vm.$el.querySelector(`#${vm.$options.inputId}`),
       openModalBtn: vm.$el.querySelector(`[data-target="${modalSelector}"]`),
       modal: vm.$el.querySelector(modalSelector),
+      modalBody: vm.$el.querySelector(`${modalSelector} .modal-body`),
+      modalHeader: vm.$el.querySelector(`${modalSelector} .modal-title`),
       confirmModalBtn: vm.$el.querySelector(`${modalSelector} .btn-warning`),
     };
   };
@@ -74,17 +76,30 @@ fdescribe('UpdateUsername component', () => {
   });
 
   it('confirmation modal contains proper header and body', done => {
-    const header = vm.$el.querySelector(`#${vm.$options.modalId} .modal-title`);
-    const body = vm.$el.querySelector(`#${vm.$options.modalId} .modal-body`);
+    const { modalBody, modalHeader } = findElements();
 
     vm.newUsername = newUsername;
 
     Vue.nextTick()
       .then(() => {
-        expect(header.textContent).toContain('Change username?');
-        expect(body.textContent).toContain(
+        expect(modalHeader.textContent).toContain('Change username?');
+        expect(modalBody.textContent).toContain(
           `You are going to change the username ${username} to ${newUsername}`,
         );
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('confirmation modal should escape usernames properly', done => {
+    const { modalBody } = findElements();
+
+    vm.username = vm.newUsername = '<i>Italic</i>';
+
+    Vue.nextTick()
+      .then(() => {
+        expect(modalBody.innerHTML).toContain('&lt;i&gt;Italic&lt;/i&gt;');
+        expect(modalBody.innerHTML).not.toContain(vm.username);
       })
       .then(done)
       .catch(done.fail);
