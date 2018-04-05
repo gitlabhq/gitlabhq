@@ -156,7 +156,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#lfs_objects_failed' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_failed', :delete do
     it 'counts failed LFS objects' do
       # These four should be ignored
       create(:geo_file_registry, success: false)
@@ -170,7 +172,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#lfs_objects_synced_in_percentage' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_synced_in_percentage', :delete do
     let(:lfs_object_project) { create(:lfs_objects_project, project: project_1) }
 
     before do
@@ -198,7 +202,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#job_artifacts_synced_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_synced_count', :delete do
     it 'counts synced job artifacts' do
       # These should be ignored
       create(:geo_file_registry, success: false)
@@ -212,7 +218,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#job_artifacts_failed_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_failed_count', :delete do
     it 'counts failed job artifacts' do
       # These should be ignored
       create(:geo_file_registry, success: false)
@@ -226,7 +234,9 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#job_artifacts_synced_in_percentage' do
-    context 'when artifacts are available' do
+    # Disable transactions via :delete method because a foreign table
+    # can't see changes inside a transaction of a different connection.
+    context 'when artifacts are available', :delete do
       before do
         [project_1, project_2, project_3, project_4].each_with_index do |project, index|
           build = create(:ci_build, project: project)
