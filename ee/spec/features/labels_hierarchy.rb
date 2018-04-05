@@ -49,7 +49,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         label.issues.each do |issue|
           expect(page).to have_selector('.card-title') do |card|
-            expect(card).to have_selector('a', text:issue.title)
+            expect(card).to have_selector('a', text: issue.title)
           end
         end
       end
