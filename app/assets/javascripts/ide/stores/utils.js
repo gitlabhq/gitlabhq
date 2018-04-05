@@ -88,8 +88,7 @@ export const decorateData = entity => {
 export const findEntry = (tree, type, name, prop = 'name') =>
   tree.find(f => f.type === type && f[prop] === name);
 
-export const findIndexOfFile = (state, file) =>
-  state.findIndex(f => f.path === file.path);
+export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
 export const setPageTitle = title => {
   document.title = title;

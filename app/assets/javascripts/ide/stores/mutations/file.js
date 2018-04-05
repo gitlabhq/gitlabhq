@@ -131,6 +131,7 @@ export default {
     if (!changedFile && stagedFile) {
       Object.assign(state.entries[path], {
         ...stagedFile,
+        key: state.entries[path].key,
         changed: true,
       });
 

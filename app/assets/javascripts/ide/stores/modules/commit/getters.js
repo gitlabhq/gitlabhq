@@ -7,9 +7,9 @@ export const commitButtonDisabled = (state, getters, rootState) =>
   getters.discardDraftButtonDisabled || !rootState.stagedFiles.length;
 
 export const newBranchName = (state, _, rootState) =>
-  `${gon.current_username}-${
-    rootState.currentBranchId
-  }-patch-${`${new Date().getTime()}`.substr(-5)}`;
+  `${gon.current_username}-${rootState.currentBranchId}-patch-${`${new Date().getTime()}`.substr(
+    -5,
+  )}`;
 
 export const branchName = (state, getters, rootState) => {
   if (

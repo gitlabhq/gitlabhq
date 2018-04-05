@@ -71,7 +71,7 @@ export default {
       })
         .then(() => {
           const viewerPromise = this.delayViewerUpdated
-            ? this.updateViewer('editor')
+            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
             : Promise.resolve();
 
           return viewerPromise;
