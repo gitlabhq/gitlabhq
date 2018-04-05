@@ -2,10 +2,16 @@
 /* global monaco */
 import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
+import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
+import IdeFileButtons from './ide_file_buttons.vue';
 
 export default {
+  components: {
+    ContentViewer,
+    IdeFileButtons,
+  },
   props: {
     file: {
       type: Object,
@@ -17,6 +23,16 @@ export default {
     ...mapGetters(['currentMergeRequest']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
+    },
+    editTabCSS() {
+      return {
+        active: this.file.viewMode === 'edit',
+      };
+    },
+    previewTabCSS() {
+      return {
+        active: this.file.viewMode === 'preview',
+      };
     },
   },
   watch: {
@@ -56,6 +72,7 @@ export default {
       'changeFileContent',
       'setFileLanguage',
       'setEditorPosition',
+      'setFileViewMode',
       'setFileEOL',
       'updateViewer',
       'updateDelayViewerUpdated',
@@ -153,15 +170,47 @@ export default {
     class="blob-viewer-container blob-editor-container"
   >
     <div
-      v-if="shouldHideEditor"
-      v-html="file.html"
-    >
+      class="ide-mode-tabs clearfix"
+      v-if="!shouldHideEditor">
+      <ul class="nav-links pull-left">
+        <li :class="editTabCSS">
+          <a
+            href="javascript:void(0);"
+            role="button"
+            @click.prevent="setFileViewMode({ file, viewMode: 'edit' })">
+            <template v-if="viewer === 'editor'">
+              {{ __('Edit') }}
+            </template>
+            <template v-else>
+              {{ __('Review') }}
+            </template>
+          </a>
+        </li>
+        <li
+          v-if="file.previewMode"
+          :class="previewTabCSS">
+          <a
+            href="javascript:void(0);"
+            role="button"
+            @click.prevent="setFileViewMode({ file, viewMode:'preview' })">
+            {{ file.previewMode.previewTitle }}
+          </a>
+        </li>
+      </ul>
+      <ide-file-buttons
+        :file="file"
+      />
     </div>
     <div
-      v-show="!shouldHideEditor"
+      v-show="!shouldHideEditor && file.viewMode === 'edit'"
       ref="editor"
       class="multi-file-editor-holder"
     >
     </div>
+    <content-viewer
+      v-if="!shouldHideEditor && file.viewMode === 'preview'"
+      :content="file.content || file.raw"
+      :path="file.path"
+      :project-path="file.projectId"/>
   </div>
 </template>

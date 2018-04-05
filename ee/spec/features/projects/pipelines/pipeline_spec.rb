@@ -37,8 +37,8 @@ describe 'Pipeline', :js do
         expect(page).to have_css('#js-tab-security')
       end
 
-      it 'shows security report' do
-        expect(page).to have_content('SAST detected no security vulnerabilities')
+      it 'shows security report section' do
+        expect(page).to have_content('SAST is loading')
       end
     end
 

@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import * as types from './mutation_types';
 import {
   parseSastIssues,
@@ -9,24 +11,24 @@ import {
 
 export default {
   [types.SET_HEAD_BLOB_PATH](state, path) {
-    Object.assign(state.blobPath, { head: path });
+    state.blobPath.head = path;
   },
 
   [types.SET_BASE_BLOB_PATH](state, path) {
-    Object.assign(state.blobPath, { base: path });
+    state.blobPath.base = path;
   },
 
   // SAST
   [types.SET_SAST_HEAD_PATH](state, path) {
-    Object.assign(state.sast.paths, { head: path });
+    state.sast.paths.head = path;
   },
 
   [types.SET_SAST_BASE_PATH](state, path) {
-    Object.assign(state.sast.paths, { base: path });
+    state.sast.paths.base = path;
   },
 
   [types.REQUEST_SAST_REPORTS](state) {
-    Object.assign(state.sast, { isLoading: true });
+    state.sast.isLoading = true;
   },
 
   /**
@@ -52,50 +54,39 @@ export default {
 
       const newIssues = filterByKey(parsedHead, parsedBase, filterKey);
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
-
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      Object.assign(state, {
-        sast: {
-          ...state.sast,
-          newIssues,
-          resolvedIssues,
-          allIssues,
-          isLoading: false,
-        },
-        summaryCounts: {
-          added: state.summaryCounts.added + newIssues.length,
-          fixed: state.summaryCounts.fixed + resolvedIssues.length,
-        },
-      });
+      state.sast.newIssues = newIssues;
+      state.sast.resolvedIssues = resolvedIssues;
+      state.sast.allIssues = allIssues;
+      state.sast.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
+      state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
       const newIssues = parseSastIssues(reports.head, state.blobPath.head);
 
-      Object.assign(state.sast, {
-        newIssues,
-        isLoading: false,
-      });
+      state.sast.newIssues = newIssues;
+      state.sast.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_SAST_REPORTS_ERROR](state) {
-    Object.assign(state.sast, {
-      isLoading: false,
-      hasError: true,
-    });
+    state.sast.isLoading = false;
+    state.sast.hasError = true;
   },
 
   // SAST CONTAINER
   [types.SET_SAST_CONTAINER_HEAD_PATH](state, path) {
-    Object.assign(state.sastContainer.paths, { head: path });
+    state.sastContainer.paths.head = path;
   },
 
   [types.SET_SAST_CONTAINER_BASE_PATH](state, path) {
-    Object.assign(state.sastContainer.paths, { base: path });
+    state.sastContainer.paths.base = path;
   },
 
   [types.REQUEST_SAST_CONTAINER_REPORTS](state) {
-    Object.assign(state.sastContainer, { isLoading: true });
+    state.sastContainer.isLoading = true;
   },
 
   /**
@@ -116,48 +107,40 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      Object.assign(state, {
-        sastContainer: {
-          ...state.sastContainer,
-          isLoading: false,
-          newIssues,
-          resolvedIssues,
-        },
-        summaryCounts: {
-          added: state.summaryCounts.added + newIssues.length,
-          fixed: state.summaryCounts.fixed + resolvedIssues.length,
-        },
-      });
+      state.sastContainer.newIssues = newIssues;
+      state.sastContainer.resolvedIssues = resolvedIssues;
+      state.sastContainer.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
+      state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
-      Object.assign(state.sastContainer, {
-        isLoading: false,
-        newIssues: getUnapprovedVulnerabilities(
-          parseSastContainer(reports.head.vulnerabilities),
-          reports.head.unapproved,
-        ),
-      });
+      const newIssues = getUnapprovedVulnerabilities(
+        parseSastContainer(reports.head.vulnerabilities),
+        reports.head.unapproved,
+      );
+
+      state.sastContainer.newIssues = newIssues;
+      state.sastContainer.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_SAST_CONTAINER_ERROR](state) {
-    Object.assign(state.sastContainer, {
-      isLoading: false,
-      hasError: true,
-    });
+    state.sastContainer.isLoading = false;
+    state.sastContainer.hasError = true;
   },
 
   // DAST
 
   [types.SET_DAST_HEAD_PATH](state, path) {
-    Object.assign(state.dast.paths, { head: path });
+    state.dast.paths.head = path;
   },
 
   [types.SET_DAST_BASE_PATH](state, path) {
-    Object.assign(state.dast.paths, { base: path });
+    state.dast.paths.base = path;
   },
 
   [types.REQUEST_DAST_REPORTS](state) {
-    Object.assign(state.dast, { isLoading: true });
+    state.dast.isLoading = true;
   },
 
   [types.RECEIVE_DAST_REPORTS](state, reports) {
@@ -168,45 +151,37 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      Object.assign(state, {
-        dast: {
-          ...state.dast,
-          isLoading: false,
-          newIssues,
-          resolvedIssues,
-        },
-        summaryCounts: {
-          added: state.summaryCounts.added + newIssues.length,
-          fixed: state.summaryCounts.fixed + resolvedIssues.length,
-        },
-      });
+      state.dast.newIssues = newIssues;
+      state.dast.resolvedIssues = resolvedIssues;
+      state.dast.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
+      state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
-      Object.assign(state.dast, {
-        isLoading: false,
-        newIssues: parseDastIssues(reports.head.site.alerts),
-      });
+      const newIssues = parseDastIssues(reports.head.site.alerts);
+
+      state.dast.newIssues = newIssues;
+      state.dast.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_DAST_ERROR](state) {
-    Object.assign(state.dast, {
-      isLoading: false,
-      hasError: true,
-    });
+    state.dast.isLoading = false;
+    state.dast.hasError = true;
   },
 
   // DEPENDECY SCANNING
 
   [types.SET_DEPENDENCY_SCANNING_HEAD_PATH](state, path) {
-    Object.assign(state.dependencyScanning.paths, { head: path });
+    state.dependencyScanning.paths.head = path;
   },
 
   [types.SET_DEPENDENCY_SCANNING_BASE_PATH](state, path) {
-    Object.assign(state.dependencyScanning.paths, { base: path });
+    state.dependencyScanning.paths.base = path;
   },
 
   [types.REQUEST_DEPENDENCY_SCANNING_REPORTS](state) {
-    Object.assign(state.dependencyScanning, { isLoading: true });
+    state.dependencyScanning.isLoading = true;
   },
 
   /**
@@ -234,31 +209,24 @@ export default {
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      Object.assign(state, {
-        dependencyScanning: {
-          ...state.dependencyScanning,
-          newIssues,
-          resolvedIssues,
-          allIssues,
-          isLoading: false,
-        },
-        summaryCounts: {
-          added: state.summaryCounts.added + newIssues.length,
-          fixed: state.summaryCounts.fixed + resolvedIssues.length,
-        },
-      });
-    } else {
-      Object.assign(state.dependencyScanning, {
-        newIssues: parseSastIssues(reports.head, state.blobPath.head),
-        isLoading: false,
-      });
+      state.dependencyScanning.newIssues = newIssues;
+      state.dependencyScanning.resolvedIssues = resolvedIssues;
+      state.dependencyScanning.allIssues = allIssues;
+      state.dependencyScanning.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
+      state.summaryCounts.fixed += resolvedIssues.length;
+    }
+
+    if (reports.head && !reports.base) {
+      const newIssues = parseSastIssues(reports.head, state.blobPath.head);
+      state.dependencyScanning.newIssues = newIssues;
+      state.dependencyScanning.isLoading = false;
+      state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_DEPENDENCY_SCANNING_ERROR](state) {
-    Object.assign(state.dependencyScanning, {
-      isLoading: false,
-      hasError: true,
-    });
+    state.dependencyScanning.isLoading = false;
+    state.dependencyScanning.hasError = true;
   },
 };

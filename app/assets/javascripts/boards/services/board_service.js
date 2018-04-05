@@ -19,7 +19,7 @@ export default class BoardService {
   }
 
   static generateIssuePath(boardId, id) {
-    return `${gon.relative_url_root}/-/boards/${boardId ? `/${boardId}` : ''}/issues${id ? `/${id}` : ''}`;
+    return `${gon.relative_url_root}/-/boards/${boardId ? `${boardId}` : ''}/issues${id ? `/${id}` : ''}`;
   }
 
   allBoards() {

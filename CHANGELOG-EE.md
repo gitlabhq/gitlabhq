@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.6.3 (2018-04-03)
+
+- No changes.
+
 ## 10.6.2 (2018-03-29)
 
 - No changes.
@@ -166,6 +170,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Rename "Approve Additionally" to "Add approval".
 
 
+## 10.5.7 (2018-04-03)
+
+- No changes.
+
 ## 10.5.6 (2018-03-16)
 
 - No changes.
@@ -284,6 +292,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo: Improve replication status. Using pg_stat_wal_receiver.
 - Remove unaproved typo check in sast:container report.
 
+
+## 10.4.7 (2018-04-03)
+
+- No changes.
 
 ## 10.4.6 (2018-03-16)
 

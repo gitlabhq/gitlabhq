@@ -64,30 +64,33 @@ export const textBuilder = (
   resolvedIssues = 0,
   allIssues = 0,
 ) => {
-  // With no issues
-  if (newIssues === 0 && resolvedIssues === 0 && allIssues === 0) {
-    return sprintf(s__('ciReport|%{type} detected no security vulnerabilities'), { type });
-  }
-
   // with no new or fixed but with vulnerabilities
   if (newIssues === 0 && resolvedIssues === 0 && allIssues) {
     return sprintf(s__('ciReport|%{type} detected no new security vulnerabilities'), { type });
   }
 
-  // with new issues and only head
-  if (newIssues > 0 && !paths.base) {
+  if (!paths.base) {
+    if (newIssues > 0) {
+      return sprintf(
+        n__(
+          '%{type} detected %d vulnerability for the source branch only',
+          '%{type} detected %d vulnerabilities for the source branch only',
+          newIssues,
+        ),
+        { type },
+      );
+    }
+
     return sprintf(
-      n__(
-        '%{type} was unable to compare existing and new vulnerabilities. It detected %d vulnerability',
-        '%{type} was unable to compare existing and new vulnerabilities. It detected %d vulnerabilities',
-        newIssues,
-      ),
+      '%{type} detected no vulnerabilities for the source branch only',
       { type },
     );
-  }
+  } else if (paths.base && paths.head) {
+    // With no issues
+    if (newIssues === 0 && resolvedIssues === 0 && allIssues === 0) {
+      return sprintf(s__('ciReport|%{type} detected no security vulnerabilities'), { type });
+    }
 
-  // with head + base
-  if (paths.base && paths.head) {
     // with only new issues
     if (newIssues > 0 && resolvedIssues === 0) {
       return sprintf(
@@ -128,7 +131,11 @@ export const textBuilder = (
   return '';
 };
 
-export const statusIcon = (failed = false, newIssues = 0, neutralIssues = 0) => {
+export const statusIcon = (loading = false, failed = false, newIssues = 0, neutralIssues = 0) => {
+  if (loading) {
+    return 'loading';
+  }
+
   if (failed || newIssues > 0 || neutralIssues > 0) {
     return 'warning';
   }

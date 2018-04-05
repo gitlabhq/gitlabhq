@@ -64,7 +64,7 @@ describe('security reports utils', () => {
   describe('textBuilder', () => {
     describe('with no issues', () => {
       it('should return no vulnerabiltities text', () => {
-        expect(textBuilder()).toEqual(' detected no security vulnerabilities');
+        expect(textBuilder('', { head: 'foo', base: 'bar' }, 0, 0, 0)).toEqual(' detected no security vulnerabilities');
       });
     });
 
@@ -77,7 +77,13 @@ describe('security reports utils', () => {
     describe('with new issues and without base', () => {
       it('should return unable to compare text', () => {
         expect(textBuilder('', { head: 'foo' }, 1, 0, 0)).toEqual(
-          ' was unable to compare existing and new vulnerabilities. It detected 1 vulnerability',
+          ' detected 1 vulnerability for the source branch only',
+        );
+      });
+
+      it('should return unable to compare text with no vulnerability', () => {
+        expect(textBuilder('', { head: 'foo' }, 0, 0, 0)).toEqual(
+          ' detected no vulnerabilities for the source branch only',
         );
       });
     });
@@ -112,19 +118,19 @@ describe('security reports utils', () => {
   describe('statusIcon', () => {
     describe('with failed report', () => {
       it('returns warning', () => {
-        expect(statusIcon(true)).toEqual('warning');
+        expect(statusIcon(false, true)).toEqual('warning');
       });
     });
 
     describe('with new issues', () => {
       it('returns warning', () => {
-        expect(statusIcon(false, 1)).toEqual('warning');
+        expect(statusIcon(false, false, 1)).toEqual('warning');
       });
     });
 
     describe('with neutral issues', () => {
       it('returns warning', () => {
-        expect(statusIcon(false, 0, 1)).toEqual('warning');
+        expect(statusIcon(false, false, 0, 1)).toEqual('warning');
       });
     });
 

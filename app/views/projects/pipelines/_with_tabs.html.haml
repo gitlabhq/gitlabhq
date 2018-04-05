@@ -65,4 +65,6 @@
     #js-tab-security.build-security.tab-pane
       #js-security-report-app{ data: { endpoint: expose_sast_data ? sast_artifact_url(@pipeline) : nil,
       blob_path: blob_path,
-      dependency_scanning_endpoint: expose_dependency_data ? dependency_scanning_artifact_url(@pipeline) : nil} }
+      dependency_scanning_endpoint: expose_dependency_data ? dependency_scanning_artifact_url(@pipeline) : nil,
+      sast_help_path: help_page_path('user/project/merge_requests/sast'),
+      dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning')} }

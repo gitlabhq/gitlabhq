@@ -5,8 +5,8 @@ module Projects
   class GitlabProjectsImportService
     attr_reader :current_user, :params
 
-    def initialize(user, params)
-      @current_user, @params = user, params.dup
+    def initialize(user, import_params, override_params = nil)
+      @current_user, @params, @override_params = user, import_params.dup, override_params
     end
 
     def execute
@@ -17,6 +17,7 @@ module Projects
 
       params[:import_type] = 'gitlab_project'
       params[:import_source] = import_upload_path
+      params[:import_data] = { data: { override_params: @override_params } } if @override_params
 
       ::Projects::CreateService.new(current_user, params).execute
     end

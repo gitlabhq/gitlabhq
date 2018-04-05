@@ -23,7 +23,11 @@ describe('Security reports getters', () => {
   describe('groupedSastText', () => {
     describe('with no issues', () => {
       it('returns no issues text', () => {
-        expect(groupedSastText(state())).toEqual('SAST detected no security vulnerabilities');
+        const newState = state();
+        newState.sast.paths.head = 'foo';
+        newState.sast.paths.base = 'bar';
+
+        expect(groupedSastText(newState)).toEqual('SAST detected no security vulnerabilities');
       });
     });
 
@@ -43,7 +47,7 @@ describe('Security reports getters', () => {
         newState.sast.newIssues = [{}];
 
         expect(groupedSastText(newState)).toEqual(
-          'SAST was unable to compare existing and new vulnerabilities. It detected 1 vulnerability',
+          'SAST detected 1 vulnerability for the source branch only',
         );
       });
     });
@@ -84,13 +88,35 @@ describe('Security reports getters', () => {
           expect(groupedSastText(newState)).toEqual('SAST detected 1 fixed vulnerability');
         });
       });
+
+      describe('with error', () => {
+        it('returns error text', () => {
+          const newState = state();
+          newState.sast.hasError = true;
+
+          expect(groupedSastText(newState)).toEqual('SAST resulted in error while loading results');
+        });
+      });
+
+      describe('while loading', () => {
+        it('returns loading text', () => {
+          const newState = state();
+          newState.sast.isLoading = true;
+
+          expect(groupedSastText(newState)).toEqual('SAST is loading');
+        });
+      });
     });
   });
 
   describe('groupedSastContainerText', () => {
     describe('with no issues', () => {
       it('returns no issues text', () => {
-        expect(groupedSastContainerText(state())).toEqual(
+        const newState = state();
+        newState.sastContainer.paths.head = 'foo';
+        newState.sastContainer.paths.base = 'foo';
+
+        expect(groupedSastContainerText(newState)).toEqual(
           'Container scanning detected no security vulnerabilities',
         );
       });
@@ -103,7 +129,7 @@ describe('Security reports getters', () => {
         newState.sastContainer.newIssues = [{}];
 
         expect(groupedSastContainerText(newState)).toEqual(
-          'Container scanning was unable to compare existing and new vulnerabilities. It detected 1 vulnerability',
+          'Container scanning detected 1 vulnerability for the source branch only',
         );
       });
     });
@@ -154,7 +180,11 @@ describe('Security reports getters', () => {
   describe('groupedDastText', () => {
     describe('with no issues', () => {
       it('returns no issues text', () => {
-        expect(groupedDastText(state())).toEqual('DAST detected no security vulnerabilities');
+        const newState = state();
+        newState.dast.paths.head = 'foo';
+        newState.dast.paths.base = 'foo';
+
+        expect(groupedDastText(newState)).toEqual('DAST detected no security vulnerabilities');
       });
     });
 
@@ -165,7 +195,7 @@ describe('Security reports getters', () => {
         newState.dast.newIssues = [{}];
 
         expect(groupedDastText(newState)).toEqual(
-          'DAST was unable to compare existing and new vulnerabilities. It detected 1 vulnerability',
+          'DAST detected 1 vulnerability for the source branch only',
         );
       });
     });
@@ -211,7 +241,11 @@ describe('Security reports getters', () => {
   describe('groupedDependencyText', () => {
     describe('with no issues', () => {
       it('returns no issues text', () => {
-        expect(groupedDependencyText(state())).toEqual(
+        const newState = state();
+        newState.dependencyScanning.paths.head = 'foo';
+        newState.dependencyScanning.paths.base = 'foo';
+
+        expect(groupedDependencyText(newState)).toEqual(
           'Dependency scanning detected no security vulnerabilities',
         );
       });
@@ -224,7 +258,7 @@ describe('Security reports getters', () => {
         newState.dependencyScanning.newIssues = [{}];
 
         expect(groupedDependencyText(newState)).toEqual(
-          'Dependency scanning was unable to compare existing and new vulnerabilities. It detected 1 vulnerability',
+          'Dependency scanning detected 1 vulnerability for the source branch only',
         );
       });
     });
@@ -290,18 +324,18 @@ describe('Security reports getters', () => {
           areReportsLoading: false,
         }),
       ).toEqual(
-        'Security scanning was unable to compare existing and new vulnerabilities. It detected no vulnerabilities.',
+        'Security scanning detected no vulnerabilities for the source branch only',
       );
     });
 
-    it('returns in progress text', () => {
+    it('returns is loading text', () => {
       expect(
         groupedSummaryText(state(), {
           allReportsHaveError: false,
           noBaseInAllReports: false,
           areReportsLoading: true,
         }),
-      ).toContain('(in progress)');
+      ).toContain('(is loading)');
     });
 
     it('returns added and fixed text', () => {
@@ -337,7 +371,7 @@ describe('Security reports getters', () => {
     });
 
     it('returns fixed text', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.summaryCounts = {
         added: 0,
         fixed: 4,
@@ -353,7 +387,7 @@ describe('Security reports getters', () => {
     });
 
     it('returns added and fixed while loading text', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.summaryCounts = {
         added: 2,
         fixed: 4,
@@ -366,20 +400,20 @@ describe('Security reports getters', () => {
           areReportsLoading: true,
         }),
       ).toContain(
-        'Security scanning (in progress) detected 2 new vulnerabilities and 4 fixed vulnerabilities',
+        'Security scanning (is loading) detected 2 new vulnerabilities and 4 fixed vulnerabilities',
       );
     });
   });
 
   describe('sastStatusIcon', () => {
     it('returns warning with new issues', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sast.newIssues = [{}];
       expect(sastStatusIcon(newState)).toEqual('warning');
     });
 
     it('returns warning with failed report', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sast.hasError = true;
       expect(sastStatusIcon(newState)).toEqual('warning');
     });
@@ -391,13 +425,13 @@ describe('Security reports getters', () => {
 
   describe('dastStatusIcon', () => {
     it('returns warning with new issues', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.dast.newIssues = [{}];
       expect(dastStatusIcon(newState)).toEqual('warning');
     });
 
     it('returns warning with failed report', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.dast.hasError = true;
       expect(dastStatusIcon(newState)).toEqual('warning');
     });
@@ -409,13 +443,13 @@ describe('Security reports getters', () => {
 
   describe('sastContainerStatusIcon', () => {
     it('returns warning with new issues', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sastContainer.newIssues = [{}];
       expect(sastContainerStatusIcon(newState)).toEqual('warning');
     });
 
     it('returns warning with failed report', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sastContainer.hasError = true;
       expect(sastContainerStatusIcon(newState)).toEqual('warning');
     });
@@ -427,13 +461,13 @@ describe('Security reports getters', () => {
 
   describe('dependencyScanningStatusIcon', () => {
     it('returns warning with new issues', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.dependencyScanning.newIssues = [{}];
       expect(dependencyScanningStatusIcon(newState)).toEqual('warning');
     });
 
     it('returns warning with failed report', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.dependencyScanning.hasError = true;
       expect(dependencyScanningStatusIcon(newState)).toEqual('warning');
     });
@@ -445,7 +479,7 @@ describe('Security reports getters', () => {
 
   describe('areReportsLoading', () => {
     it('returns true when any report is loading', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sast.isLoading = true;
       expect(areReportsLoading(newState)).toEqual(true);
     });
@@ -457,7 +491,7 @@ describe('Security reports getters', () => {
 
   describe('allReportsHaveError', () => {
     it('returns true when all reports have error', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sast.hasError = true;
       newState.dast.hasError = true;
       newState.sastContainer.hasError = true;
@@ -466,14 +500,24 @@ describe('Security reports getters', () => {
       expect(allReportsHaveError(newState)).toEqual(true);
     });
 
-    it('returns false when none of the reports has error', () => {
+    it('returns false when none of the reports have error', () => {
       expect(allReportsHaveError(state())).toEqual(false);
+    });
+
+    it('returns false when one of the reports does not have error', () => {
+      const newState = state();
+      newState.sast.hasError = false;
+      newState.dast.hasError = true;
+      newState.sastContainer.hasError = true;
+      newState.dependencyScanning.hasError = true;
+
+      expect(allReportsHaveError(newState)).toEqual(false);
     });
   });
 
   describe('anyReportHasError', () => {
     it('returns true when any of the reports has error', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sast.hasError = true;
 
       expect(anyReportHasError(newState)).toEqual(true);
@@ -490,7 +534,7 @@ describe('Security reports getters', () => {
     });
 
     it('returns false when any of the reports has base', () => {
-      const newState = Object.assign({}, state());
+      const newState = state();
       newState.sast.paths.base = 'foo';
       expect(noBaseInAllReports(newState)).toEqual(false);
     });

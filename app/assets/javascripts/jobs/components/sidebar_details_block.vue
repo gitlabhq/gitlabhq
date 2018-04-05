@@ -45,7 +45,7 @@
         return `#${this.job.runner.id}`;
       },
       hasTimeout() {
-        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== '';
+        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
       },
       timeout() {
         if (this.job.metadata == null) {
