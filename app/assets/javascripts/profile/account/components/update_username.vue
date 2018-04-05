@@ -31,6 +31,11 @@ export default {
     };
   },
   computed: {
+    path() {
+      return sprintf(s__('Profiles|Current path: %{path}'), {
+        path: _.escape(`${this.rootUrl}${this.username}`),
+      });
+    },
     buttonText() {
       return s__('Profiles|Update username');
     },
@@ -79,7 +84,7 @@ Please update your Git repository remotes as soon as possible.`),
 <template>
   <div>
     <div class="form-group">
-      <label for="modal-username-change-input">Path</label>
+      <label for="modal-username-change-input">{{ s__('Profiles|Path') }}</label>
       <div class="input-group">
         <div class="input-group-addon">{{ rootUrl }}</div>
         <input
@@ -91,7 +96,7 @@ Please update your Git repository remotes as soon as possible.`),
         />
       </div>
       <p class="help-block">
-        Current path: {{ rootUrl }}{{ username }}
+        {{ path }}
       </p>
     </div>
     <button
@@ -105,7 +110,7 @@ Please update your Git repository remotes as soon as possible.`),
     </button>
     <gl-modal
       id="modal-username-change-confirmation"
-      header-title-text="Change username?"
+      :header-title-text="s__('Profiles|Change username') + '?'"
       footer-primary-button-variant="warning"
       :footer-primary-button-text="buttonText"
       @submit="onConfirm"

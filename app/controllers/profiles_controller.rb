@@ -55,12 +55,12 @@ class ProfilesController < Profiles::ApplicationController
 
     respond_to do |format|
       if result[:status] == :success
-        message = "Username successfully changed"
+        message = s_("Profiles|Username successfully changed")
 
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
         format.json { render json: { message: message }, status: :ok }
       else
-        message = "Username change failed - #{result[:message]}"
+        message = s_("Profiles|Username change failed - %{message}") % { message: result[:message] }
 
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: message }) }
         format.json { render json: { message: message }, status: :unprocessable_entity }
