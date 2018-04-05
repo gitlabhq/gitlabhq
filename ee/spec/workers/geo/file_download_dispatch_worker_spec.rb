@@ -103,6 +103,22 @@ describe Geo::FileDownloadDispatchWorker, :geo do
 
         subject.perform
       end
+
+      it 'does not retry failed artifacts when retry_at is tomorrow' do
+        failed_registry = create(:geo_job_artifact_registry, :with_artifact, bytes: 0, success: false, retry_at: Date.tomorrow)
+
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with(:job_artifact, failed_registry.artifact_id)
+
+        subject.perform
+      end
+
+      it 'retries failed artifacts when retry_at is in the past' do
+        failed_registry = create(:geo_job_artifact_registry, :with_artifact, success: false, retry_at: Date.yesterday)
+
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with(:job_artifact, failed_registry.artifact_id)
+
+        subject.perform
+      end
     end
 
     # Test the case where we have:
@@ -156,7 +172,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
         subject.perform
       end
 
-      it 'does not retries failed files when retry_at is tomorrow' do
+      it 'does not retry failed files when retry_at is tomorrow' do
         failed_registry = create(:geo_file_registry, :lfs, file_id: 999, success: false, retry_at: Date.tomorrow)
 
         expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('lfs', failed_registry.file_id)
@@ -164,7 +180,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
         subject.perform
       end
 
-      it 'does not retries failed files when retry_at is in the past' do
+      it 'retries failed files when retry_at is in the past' do
         failed_registry = create(:geo_file_registry, :lfs, file_id: 999, success: false, retry_at: Date.yesterday)
 
         expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
