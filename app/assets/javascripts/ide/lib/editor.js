@@ -69,7 +69,7 @@ export default class Editor {
           occurrencesHighlight: false,
           renderLineHighlight: 'none',
           hideCursorInOverviewRuler: true,
-          renderSideBySide: this.renderSideBySide(domElement),
+          renderSideBySide: Editor.renderSideBySide(domElement),
         })),
       );
 
@@ -178,7 +178,7 @@ export default class Editor {
     if (!this.isDiffEditorType) return;
 
     this.instance.updateOptions({
-      renderSideBySide: this.renderSideBySide(this.instance.getDomNode()),
+      renderSideBySide: Editor.renderSideBySide(this.instance.getDomNode()),
     });
   }
 
@@ -186,7 +186,7 @@ export default class Editor {
     return this.instance.getEditorType() === 'vs.editor.IDiffEditor';
   }
 
-  renderSideBySide(domElement) {
+  static renderSideBySide(domElement) {
     return domElement.offsetWidth >= 700;
   }
 }
