@@ -6,8 +6,21 @@ import SearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 
-(function() {
-  var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
+describe('Search autocomplete dropdown', () => {
+  var assertLinks,
+    dashboardIssuesPath,
+    dashboardMRsPath,
+    groupIssuesPath,
+    groupMRsPath,
+    groupName,
+    mockDashboardOptions,
+    mockGroupOptions,
+    mockProjectOptions,
+    projectIssuesPath,
+    projectMRsPath,
+    projectName,
+    userId,
+    widget;
   var userName = 'root';
 
   widget = null;
@@ -66,133 +79,126 @@ import * as urlUtils from '~/lib/utils/url_utility';
   // Mock `gl` object in window for dashboard specific page. App code will need it.
   mockDashboardOptions = function() {
     window.gl || (window.gl = {});
-    return window.gl.dashboardOptions = {
+    return (window.gl.dashboardOptions = {
       issuesPath: dashboardIssuesPath,
-      mrPath: dashboardMRsPath
-    };
+      mrPath: dashboardMRsPath,
+    });
   };
 
   // Mock `gl` object in window for project specific page. App code will need it.
   mockProjectOptions = function() {
     window.gl || (window.gl = {});
-    return window.gl.projectOptions = {
+    return (window.gl.projectOptions = {
       'gitlab-ce': {
         issuesPath: projectIssuesPath,
         mrPath: projectMRsPath,
-        projectName: projectName
-      }
-    };
+        projectName: projectName,
+      },
+    });
   };
 
   mockGroupOptions = function() {
     window.gl || (window.gl = {});
-    return window.gl.groupOptions = {
+    return (window.gl.groupOptions = {
       'gitlab-org': {
         issuesPath: groupIssuesPath,
         mrPath: groupMRsPath,
-        projectName: groupName
-      }
-    };
+        projectName: groupName,
+      },
+    });
   };
 
   assertLinks = function(list, issuesPath, mrsPath) {
-    var a1, a2, a3, a4, issuesAssignedToMeLink, issuesIHaveCreatedLink, mrsAssignedToMeLink, mrsIHaveCreatedLink;
     if (issuesPath) {
-      issuesAssignedToMeLink = issuesPath + "/?assignee_id=" + userId;
-      issuesIHaveCreatedLink = issuesPath + "/?author_id=" + userId;
-      a1 = "a[href='" + issuesAssignedToMeLink + "']";
-      a2 = "a[href='" + issuesIHaveCreatedLink + "']";
-      expect(list.find(a1).length).toBe(1);
-      expect(list.find(a1).text()).toBe('Issues assigned to me');
-      expect(list.find(a2).length).toBe(1);
-      expect(list.find(a2).text()).toBe("Issues I've created");
+      const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_id=${userId}"]`;
+      const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_id=${userId}"]`;
+      expect(list.find(issuesAssignedToMeLink).length).toBe(1);
+      expect(list.find(issuesAssignedToMeLink).text()).toBe('Issues assigned to me');
+      expect(list.find(issuesIHaveCreatedLink).length).toBe(1);
+      expect(list.find(issuesIHaveCreatedLink).text()).toBe("Issues I've created");
     }
-    mrsAssignedToMeLink = mrsPath + "/?assignee_id=" + userId;
-    mrsIHaveCreatedLink = mrsPath + "/?author_id=" + userId;
-    a3 = "a[href='" + mrsAssignedToMeLink + "']";
-    a4 = "a[href='" + mrsIHaveCreatedLink + "']";
-    expect(list.find(a3).length).toBe(1);
-    expect(list.find(a3).text()).toBe('Merge requests assigned to me');
-    expect(list.find(a4).length).toBe(1);
-    return expect(list.find(a4).text()).toBe("Merge requests I've created");
+    const mrsAssignedToMeLink = `a[href="${mrsPath}/?assignee_id=${userId}"]`;
+    const mrsIHaveCreatedLink = `a[href="${mrsPath}/?author_id=${userId}"]`;
+    expect(list.find(mrsAssignedToMeLink).length).toBe(1);
+    expect(list.find(mrsAssignedToMeLink).text()).toBe('Merge requests assigned to me');
+    expect(list.find(mrsIHaveCreatedLink).length).toBe(1);
+    expect(list.find(mrsIHaveCreatedLink).text()).toBe("Merge requests I've created");
   };
 
-  describe('Search autocomplete dropdown', function() {
-    preloadFixtures('static/search_autocomplete.html.raw');
-    beforeEach(function() {
-      loadFixtures('static/search_autocomplete.html.raw');
+  preloadFixtures('static/search_autocomplete.html.raw');
+  beforeEach(function() {
+    loadFixtures('static/search_autocomplete.html.raw');
 
-      // Prevent turbolinks from triggering within gl_dropdown
-      spyOn(urlUtils, 'visitUrl').and.returnValue(true);
+    // Prevent turbolinks from triggering within gl_dropdown
+    spyOn(urlUtils, 'visitUrl').and.returnValue(true);
 
-      window.gon = {};
-      window.gon.current_user_id = userId;
-      window.gon.current_username = userName;
+    window.gon = {};
+    window.gon.current_user_id = userId;
+    window.gon.current_username = userName;
 
-      return widget = new SearchAutocomplete();
-    });
-
-    afterEach(function() {
-      // Undo what we did to the shared <body>
-      removeBodyAttributes();
-      window.gon = {};
-    });
-    it('should show Dashboard specific dropdown menu', function() {
-      var list;
-      addBodyAttributes();
-      mockDashboardOptions();
-      widget.searchInput.triggerHandler('focus');
-      list = widget.wrap.find('.dropdown-menu').find('ul');
-      return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
-    });
-    it('should show Group specific dropdown menu', function() {
-      var list;
-      addBodyAttributes('group');
-      mockGroupOptions();
-      widget.searchInput.triggerHandler('focus');
-      list = widget.wrap.find('.dropdown-menu').find('ul');
-      return assertLinks(list, groupIssuesPath, groupMRsPath);
-    });
-    it('should show Project specific dropdown menu', function() {
-      var list;
-      addBodyAttributes('project');
-      mockProjectOptions();
-      widget.searchInput.triggerHandler('focus');
-      list = widget.wrap.find('.dropdown-menu').find('ul');
-      return assertLinks(list, projectIssuesPath, projectMRsPath);
-    });
-    it('should show only Project mergeRequest dropdown menu items when project issues are disabled', function() {
-      addBodyAttributes('project');
-      disableProjectIssues();
-      mockProjectOptions();
-      widget.searchInput.triggerHandler('focus');
-      const list = widget.wrap.find('.dropdown-menu').find('ul');
-      assertLinks(list, null, projectMRsPath);
-    });
-    it('should not show category related menu if there is text in the input', function() {
-      var link, list;
-      addBodyAttributes('project');
-      mockProjectOptions();
-      widget.searchInput.val('help');
-      widget.searchInput.triggerHandler('focus');
-      list = widget.wrap.find('.dropdown-menu').find('ul');
-      link = "a[href='" + projectIssuesPath + "/?assignee_id=" + userId + "']";
-      return expect(list.find(link).length).toBe(0);
-    });
-    return it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {
-      var ENTER = 13;
-      var DOWN = 40;
-      addBodyAttributes();
-      mockDashboardOptions(true);
-      var submitSpy = spyOnEvent('form', 'submit');
-      widget.searchInput.triggerHandler('focus');
-      widget.wrap.trigger($.Event('keydown', { which: DOWN }));
-      var enterKeyEvent = $.Event('keydown', { which: ENTER });
-      widget.searchInput.trigger(enterKeyEvent);
-      // This does not currently catch failing behavior. For security reasons,
-      // browsers will not trigger default behavior (form submit, in this
-      // example) on JavaScript-created keypresses.
-      expect(submitSpy).not.toHaveBeenTriggered();
-    });
+    return (widget = new SearchAutocomplete());
   });
-}).call(window);
+
+  afterEach(function() {
+    // Undo what we did to the shared <body>
+    removeBodyAttributes();
+    window.gon = {};
+  });
+  it('should show Dashboard specific dropdown menu', function() {
+    var list;
+    addBodyAttributes();
+    mockDashboardOptions();
+    widget.searchInput.triggerHandler('focus');
+    list = widget.wrap.find('.dropdown-menu').find('ul');
+    return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
+  });
+  it('should show Group specific dropdown menu', function() {
+    var list;
+    addBodyAttributes('group');
+    mockGroupOptions();
+    widget.searchInput.triggerHandler('focus');
+    list = widget.wrap.find('.dropdown-menu').find('ul');
+    return assertLinks(list, groupIssuesPath, groupMRsPath);
+  });
+  it('should show Project specific dropdown menu', function() {
+    var list;
+    addBodyAttributes('project');
+    mockProjectOptions();
+    widget.searchInput.triggerHandler('focus');
+    list = widget.wrap.find('.dropdown-menu').find('ul');
+    return assertLinks(list, projectIssuesPath, projectMRsPath);
+  });
+  it('should show only Project mergeRequest dropdown menu items when project issues are disabled', function() {
+    addBodyAttributes('project');
+    disableProjectIssues();
+    mockProjectOptions();
+    widget.searchInput.triggerHandler('focus');
+    const list = widget.wrap.find('.dropdown-menu').find('ul');
+    assertLinks(list, null, projectMRsPath);
+  });
+  it('should not show category related menu if there is text in the input', function() {
+    var link, list;
+    addBodyAttributes('project');
+    mockProjectOptions();
+    widget.searchInput.val('help');
+    widget.searchInput.triggerHandler('focus');
+    list = widget.wrap.find('.dropdown-menu').find('ul');
+    link = "a[href='" + projectIssuesPath + '/?assignee_id=' + userId + "']";
+    return expect(list.find(link).length).toBe(0);
+  });
+  it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {
+    var ENTER = 13;
+    var DOWN = 40;
+    addBodyAttributes();
+    mockDashboardOptions(true);
+    var submitSpy = spyOnEvent('form', 'submit');
+    widget.searchInput.triggerHandler('focus');
+    widget.wrap.trigger($.Event('keydown', { which: DOWN }));
+    var enterKeyEvent = $.Event('keydown', { which: ENTER });
+    widget.searchInput.trigger(enterKeyEvent);
+    // This does not currently catch failing behavior. For security reasons,
+    // browsers will not trigger default behavior (form submit, in this
+    // example) on JavaScript-created keypresses.
+    expect(submitSpy).not.toHaveBeenTriggered();
+  });
+});
