@@ -62,10 +62,12 @@ describe ObjectStorage do
   end
 
   describe '#object_store' do
+    subject { uploader.object_store }
+
     it "delegates to <mount>_store on model" do
       expect(object).to receive(:file_store)
 
-      uploader.object_store
+      subject
     end
 
     context 'when store is null' do
@@ -73,8 +75,36 @@ describe ObjectStorage do
         expect(object).to receive(:file_store).and_return(nil)
       end
 
-      it "returns Store::LOCAL" do
-        expect(uploader.object_store).to eq(described_class::Store::LOCAL)
+      context 'when object storage is enabled' do
+        context 'when direct uploads are enabled' do
+          before do
+            stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: true)
+          end
+
+          it "uses Store::REMOTE" do
+            is_expected.to eq(described_class::Store::REMOTE)
+          end
+        end
+
+        context 'when direct uploads are disabled' do
+          before do
+            stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: false)
+          end
+
+          it "uses Store::LOCAL" do
+            is_expected.to eq(described_class::Store::LOCAL)
+          end
+        end
+      end
+
+      context 'when object storage is disabled' do
+        before do
+          stub_uploads_object_storage(uploader_class, enabled: false)
+        end
+
+        it "uses Store::LOCAL" do
+          is_expected.to eq(described_class::Store::LOCAL)
+        end
       end
     end
 
@@ -84,7 +114,7 @@ describe ObjectStorage do
       end
 
       it "returns the given value" do
-        expect(uploader.object_store).to eq(described_class::Store::REMOTE)
+        is_expected.to eq(described_class::Store::REMOTE)
       end
     end
   end

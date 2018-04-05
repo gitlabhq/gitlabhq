@@ -3,7 +3,6 @@ import { mapState, mapGetters } from 'vuex';
 import ideSidebar from './ide_side_bar.vue';
 import ideContextbar from './ide_context_bar.vue';
 import repoTabs from './repo_tabs.vue';
-import repoFileButtons from './repo_file_buttons.vue';
 import ideStatusBar from './ide_status_bar.vue';
 import repoEditor from './repo_editor.vue';
 
@@ -12,7 +11,6 @@ export default {
     ideSidebar,
     ideContextbar,
     repoTabs,
-    repoFileButtons,
     ideStatusBar,
     repoEditor,
   },
@@ -68,9 +66,6 @@ export default {
         />
         <repo-editor
           class="multi-file-edit-pane-content"
-          :file="activeFile"
-        />
-        <repo-file-buttons
           :file="activeFile"
         />
         <ide-status-bar

@@ -151,6 +151,9 @@
               %li
                 excoveralls (Elixir) -
                 %code \[TOTAL\]\s+(\d+\.\d+)%
+              %li
+                JaCoCo (Java/Kotlin)
+                %code Total.*?([0-9]{1,3})%
 
         = f.submit 'Save changes', class: "btn btn-save"
 

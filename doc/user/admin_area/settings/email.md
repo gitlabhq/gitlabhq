@@ -3,6 +3,7 @@
 ## Custom logo
 
 The logo in the header of some emails can be customized, see the [logo customization section](../../../customization/branded_page_and_email_header.md).
+<<<<<<< HEAD
 
 ## Custom additional text
 
@@ -19,3 +20,5 @@ legal/auditing/compliance reasons.
 
 [ee-5031]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5031
 [eep]: https://about.gitlab.com/pricing/
+=======
+>>>>>>> upstream/master

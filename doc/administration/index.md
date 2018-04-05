@@ -101,7 +101,10 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
+<<<<<<< HEAD
 - **(Premium)** [Additional custom email text](../user/admin_area/settings/email.md): Set a custom message that appears at the bottom of the every email.
+=======
+>>>>>>> upstream/master
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md

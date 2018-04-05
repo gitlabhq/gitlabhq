@@ -872,7 +872,13 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 coverage:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
+  # download artifacts from all the rspec jobs instead of from setup-test-env only
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
+  <<: *pull-cache
+  variables:
+    SETUP_DB: "false"
   stage: post-test
   script:
     - bundle exec scripts/merge-simplecov

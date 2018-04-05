@@ -123,6 +123,7 @@ class NotifyPreview < ActionMailer::Preview
     Notify.pipeline_failed_email(pipeline, pipeline.user.try(:email))
   end
 
+<<<<<<< HEAD
   # EE-specific start
   def add_merge_request_approver_email
     Notify.add_merge_request_approver_email(user.id, merge_request.id, user.id).message
@@ -169,6 +170,8 @@ class NotifyPreview < ActionMailer::Preview
   end
   # EE-specific end
 
+=======
+>>>>>>> upstream/master
   private
 
   def project
@@ -213,10 +216,13 @@ class NotifyPreview < ActionMailer::Preview
 
     email
   end
+<<<<<<< HEAD
 
   # EE-specific start
   def approver
     @user ||= User.first
   end
   # EE-specific end
+=======
+>>>>>>> upstream/master
 end
