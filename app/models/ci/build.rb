@@ -611,7 +611,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI', value: 'true')
         variables.append(key: 'GITLAB_CI', value: 'true')
-        variables.append(key: 'GITLAB_FEATURES', value: project.namespace.features.join(','))
+        variables.append(key: 'GITLAB_FEATURES', value: project.licensed_features.join(','))
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
         variables.append(key: 'CI_SERVER_REVISION', value: Gitlab::REVISION)
