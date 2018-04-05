@@ -107,7 +107,7 @@
         illustration_size: 'svg-430',
         title: _('This job has not started yet'),
         content: _('This job is in pending state and is waiting to be picked by a runner')
-  = render "sidebar"
+  = render "sidebar", builds: @builds
 
 .js-build-options{ data: javascript_build_options }
 
