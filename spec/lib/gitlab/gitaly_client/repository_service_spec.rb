@@ -124,4 +124,15 @@ describe Gitlab::GitalyClient::RepositoryService do
       client.squash_in_progress?(squash_id)
     end
   end
+
+  describe '#calculate_checksum' do
+    it 'sends a calculate_checksum message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:calculate_checksum)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(checksum: 0))
+
+      client.calculate_checksum
+    end
+  end
 end
