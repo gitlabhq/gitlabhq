@@ -42,12 +42,6 @@ module EE
 
         private
 
-        def full_group_path(group_ref)
-          return current_parent_path unless group_ref
-
-          group_ref
-        end
-
         def parent_type
           :group
         end

@@ -325,6 +325,10 @@ class Note < ActiveRecord::Base
     !system? && !for_snippet?
   end
 
+  def can_create_notification?
+    true
+  end
+
   def discussion_class(noteable = nil)
     # When commit notes are rendered on an MR's Discussion page, they are
     # displayed in one discussion instead of individually.
