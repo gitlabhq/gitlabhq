@@ -225,4 +225,11 @@
   .btn-link {
     padding: 0;
   }
+
+  @media (max-width: $screen-xs-max) {
+    .banner-text,
+    .banner-link {
+      display: inline;
+    }
+  }
 }
