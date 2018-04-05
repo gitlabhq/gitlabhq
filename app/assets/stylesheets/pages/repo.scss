@@ -308,14 +308,34 @@
   height: 100%;
 }
 
-.multi-file-editor-btn-group {
-  padding: $gl-bar-padding $gl-padding;
-  border-top: 1px solid $white-dark;
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
+}
+
+.ide-mode-tabs {
   border-bottom: 1px solid $white-dark;
-  background: $white-light;
+
+  .nav-links {
+    border-bottom: 0;
+
+    li a {
+      padding: $gl-padding-8 $gl-padding;
+      line-height: $gl-btn-line-height;
+    }
+  }
+}
+
+.ide-btn-group {
+  padding: $gl-padding-4 $gl-vert-padding;
 }
 
 .ide-status-bar {
+  border-top: 1px solid $white-dark;
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
