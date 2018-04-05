@@ -83,7 +83,7 @@ module Ci
     def schedule_to_db
       return if db?
 
-      self.use_database!
+      StashTraceChunkWorker.perform_async(id)
     end
 
     def fullfilled?
