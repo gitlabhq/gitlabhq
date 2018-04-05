@@ -36,9 +36,6 @@ export default {
         path: `${this.rootUrl}${this.username}`,
       });
     },
-    buttonText() {
-      return s__('Profiles|Update username');
-    },
     modalText() {
       return sprintf(
         s__(`Profiles|
@@ -82,6 +79,7 @@ Please update your Git repository remotes as soon as possible.`),
   },
   modalId: 'username-change-confirmation-modal',
   inputId: 'username-change-input',
+  buttonText: s__('Profiles|Update username'),
 };
 </script>
 <template>
@@ -109,13 +107,13 @@ Please update your Git repository remotes as soon as possible.`),
       data-toggle="modal"
       :disabled="isRequestPending || newUsername === username"
     >
-      {{ buttonText }}
+      {{ $options.buttonText }}
     </button>
     <gl-modal
       :id="$options.modalId"
       :header-title-text="s__('Profiles|Change username') + '?'"
       footer-primary-button-variant="warning"
-      :footer-primary-button-text="buttonText"
+      :footer-primary-button-text="$options.buttonText"
       @submit="onConfirm"
     >
       <span v-html="modalText"></span>
