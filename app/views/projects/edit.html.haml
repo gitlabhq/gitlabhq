@@ -8,7 +8,7 @@
     .settings-header
       %h4
         General project settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Update your project name, description, avatar, and other general settings.
@@ -64,12 +64,13 @@
     .settings-header
       %h4
         Permissions
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
     .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+        -# haml-lint:disable InlineJavaScript
         %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
@@ -78,7 +79,7 @@
     .settings-header
       %h4
         Merge request settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your merge request restrictions.
@@ -93,7 +94,7 @@
     .settings-header
       %h4
         Advanced settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project.

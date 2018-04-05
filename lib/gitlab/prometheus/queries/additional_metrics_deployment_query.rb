@@ -4,7 +4,7 @@ module Gitlab
       class AdditionalMetricsDeploymentQuery < BaseQuery
         include QueryAdditionalMetrics
 
-        def query(environment_id, deployment_id)
+        def query(deployment_id)
           Deployment.find_by(id: deployment_id).try do |deployment|
             query_metrics(
               deployment.project,

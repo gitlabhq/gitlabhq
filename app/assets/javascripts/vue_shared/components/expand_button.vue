@@ -39,7 +39,7 @@
       @click="onClick">
       ...
     </button>
-    <span v-show="!isCollapsed">
+    <span v-if="!isCollapsed">
       <slot name="expanded"></slot>
     </span>
   </span>

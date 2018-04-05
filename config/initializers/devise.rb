@@ -212,56 +212,12 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
-  if Gitlab::LDAP::Config.enabled?
-    Gitlab::LDAP::Config.providers.each do |provider|
-      ldap_config = Gitlab::LDAP::Config.new(provider)
+  if Gitlab::Auth::LDAP::Config.enabled?
+    Gitlab::Auth::LDAP::Config.providers.each do |provider|
+      ldap_config = Gitlab::Auth::LDAP::Config.new(provider)
       config.omniauth(provider, ldap_config.omniauth_options)
     end
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    provider_arguments = []
-
-    %w[app_id app_secret].each do |argument|
-      provider_arguments << provider[argument] if provider[argument]
-    end
-
-    case provider['args']
-    when Array
-      # An Array from the configuration will be expanded.
-      provider_arguments.concat provider['args']
-    when Hash
-      # Add procs for handling SLO
-      if provider['name'] == 'cas3'
-        provider['args'][:on_single_sign_out] = lambda do |request|
-          ticket = request.params[:session_index]
-          raise "Service Ticket not found." unless Gitlab::OAuth::Session.valid?(:cas3, ticket)
-
-          Gitlab::OAuth::Session.destroy(:cas3, ticket)
-          true
-        end
-      end
-
-      if provider['name'] == 'authentiq'
-        provider['args'][:remote_sign_out_handler] = lambda do |request|
-          authentiq_session = request.params['sid']
-          if Gitlab::OAuth::Session.valid?(:authentiq, authentiq_session)
-            Gitlab::OAuth::Session.destroy(:authentiq, authentiq_session)
-            true
-          else
-            false
-          end
-        end
-      end
-
-      if provider['name'] == 'shibboleth'
-        provider['args'][:fail_with_empty_uid] = true
-      end
-
-      # A Hash from the configuration will be passed as is.
-      provider_arguments << provider['args'].symbolize_keys
-    end
-
-    config.omniauth provider['name'].to_sym, *provider_arguments
-  end
+  Gitlab::OmniauthInitializer.new(config).execute(Gitlab.config.omniauth.providers)
 end

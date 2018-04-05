@@ -17,7 +17,7 @@ module Banzai
         issuables.each do |node, issuable|
           next if !can_read_cross_project? && issuable.project != project
 
-          if VISIBLE_STATES.include?(issuable.state) && node.inner_html == issuable.reference_link_text(project)
+          if VISIBLE_STATES.include?(issuable.state) && issuable_reference?(node.inner_html, issuable)
             node.content += " (#{issuable.state})"
           end
         end
@@ -26,6 +26,10 @@ module Banzai
       end
 
       private
+
+      def issuable_reference?(text, issuable)
+        text == issuable.reference_link_text(project || group)
+      end
 
       def can_read_cross_project?
         Ability.allowed?(current_user, :read_cross_project)
@@ -37,6 +41,10 @@ module Banzai
 
       def project
         context[:project]
+      end
+
+      def group
+        context[:group]
       end
     end
   end

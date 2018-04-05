@@ -309,19 +309,25 @@ describe Gitlab::Auth do
 
     context "with ldap enabled" do
       before do
-        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+        allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
       end
 
       it "tries to autheticate with db before ldap" do
-        expect(Gitlab::LDAP::Authentication).not_to receive(:login)
+        expect(Gitlab::Auth::LDAP::Authentication).not_to receive(:login)
 
-        gl_auth.find_with_user_password(username, password)
+        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
       end
 
-      it "uses ldap as fallback to for authentication" do
-        expect(Gitlab::LDAP::Authentication).to receive(:login)
+      it "does not find user by using ldap as fallback to for authentication" do
+        expect(Gitlab::Auth::LDAP::Authentication).to receive(:login).and_return(nil)
 
-        gl_auth.find_with_user_password('ldap_user', 'password')
+        expect(gl_auth.find_with_user_password('ldap_user', 'password')).to be_nil
+      end
+
+      it "find new user by using ldap as fallback to for authentication" do
+        expect(Gitlab::Auth::LDAP::Authentication).to receive(:login).and_return(user)
+
+        expect(gl_auth.find_with_user_password('ldap_user', 'password')).to eq(user)
       end
     end
 
@@ -336,7 +342,7 @@ describe Gitlab::Auth do
 
       context "with ldap enabled" do
         before do
-          allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+          allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
         end
 
         it "does not find non-ldap user by valid login/password" do

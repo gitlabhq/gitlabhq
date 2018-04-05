@@ -2,11 +2,11 @@
 - provider_title = Gitlab::ImportSources.title(provider)
 
 %p.light
-  Select projects you want to import.
+  = import_githubish_choose_repository_message
 %hr
 %p
   = button_tag class: "btn btn-import btn-success js-import-all" do
-    Import all projects
+    = import_all_githubish_repositories_button_label
     = icon("spinner spin", class: "loading-icon")
 
 .table-responsive
@@ -16,9 +16,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From #{provider_title}
-        %th To GitLab
-        %th Status
+        %th= _('From %{provider_title}') % { provider_title: provider_title }
+        %th= _('To GitLab')
+        %th= _('Status')
     %tbody
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
@@ -30,10 +30,12 @@
             - if project.import_status == 'finished'
               %span
                 %i.fa.fa-check
-                done
+                = _('Done')
             - elsif project.import_status == 'started'
               %i.fa.fa-spinner.fa-spin
-              started
+              = _('Started')
+            - elsif project.import_status == 'failed'
+              = _('Failed')
             - else
               = project.human_import_status_name
 
@@ -55,7 +57,9 @@
               = text_field_tag :path, repo.name, class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              Import
+              = has_ci_cd_only_params? ? _('Connect') : _('Import')
               = icon("spinner spin", class: "loading-icon")
 
-.js-importer-status{ data: { jobs_import_path: "#{url_for([:jobs, :import, provider])}", import_path: "#{url_for([:import, provider])}" } }
+.js-importer-status{ data: { jobs_import_path: "#{url_for([:jobs, :import, provider])}",
+                             import_path: "#{url_for([:import, provider])}",
+                             ci_cd_only: "#{has_ci_cd_only_params?}" } }

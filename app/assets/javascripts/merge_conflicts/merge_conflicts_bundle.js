@@ -1,5 +1,6 @@
 /* eslint-disable new-cap, comma-dangle, no-new */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
@@ -12,7 +13,7 @@ import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
 import syntaxHighlight from '../syntax_highlight';
 
-$(() => {
+export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
   const conflictsEl = document.querySelector('#conflicts');
   const mergeConflictsStore = gl.mergeConflicts.mergeConflictsStore;
@@ -91,4 +92,4 @@ $(() => {
       }
     }
   });
-});
+}

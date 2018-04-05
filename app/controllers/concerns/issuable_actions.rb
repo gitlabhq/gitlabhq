@@ -77,7 +77,25 @@ module IssuableActions
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
   end
 
+  def discussions
+    notes = issuable.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
+
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
+    discussions = Discussion.build_collection(notes, issuable)
+
+    render json: discussion_serializer.represent(discussions, context: self)
+  end
+
   private
+
+  def discussion_serializer
+    DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user, note_entity: ProjectNoteEntity)
+  end
 
   def recaptcha_check_if_spammable(should_redirect = true, &block)
     return yield unless issuable.is_a? Spammable

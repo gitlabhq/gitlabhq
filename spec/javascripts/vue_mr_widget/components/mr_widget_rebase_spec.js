@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import component from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Merge request widget rebase component', () => {
   let Component;

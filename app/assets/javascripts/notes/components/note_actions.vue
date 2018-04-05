@@ -1,85 +1,119 @@
 <script>
-  import { mapGetters } from 'vuex';
-  import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
-  import emojiSmile from 'icons/_emoji_smile.svg';
-  import emojiSmiley from 'icons/_emoji_smiley.svg';
-  import editSvg from 'icons/_icon_pencil.svg';
-  import ellipsisSvg from 'icons/_ellipsis_v.svg';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import tooltip from '~/vue_shared/directives/tooltip';
+import { mapGetters } from 'vuex';
+import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
+import emojiSmile from 'icons/_emoji_smile.svg';
+import emojiSmiley from 'icons/_emoji_smiley.svg';
+import editSvg from 'icons/_icon_pencil.svg';
+import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
+import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
+import ellipsisSvg from 'icons/_ellipsis_v.svg';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 
-  export default {
-    name: 'NoteActions',
-    directives: {
-      tooltip,
+export default {
+  name: 'NoteActions',
+  directives: {
+    tooltip,
+  },
+  components: {
+    loadingIcon,
+  },
+  props: {
+    authorId: {
+      type: Number,
+      required: true,
     },
-    components: {
-      loadingIcon,
+    noteId: {
+      type: Number,
+      required: true,
     },
-    props: {
-      authorId: {
-        type: Number,
-        required: true,
-      },
-      noteId: {
-        type: Number,
-        required: true,
-      },
-      accessLevel: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      reportAbusePath: {
-        type: String,
-        required: true,
-      },
-      canEdit: {
-        type: Boolean,
-        required: true,
-      },
-      canDelete: {
-        type: Boolean,
-        required: true,
-      },
-      canReportAsAbuse: {
-        type: Boolean,
-        required: true,
-      },
+    accessLevel: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      ...mapGetters([
-        'getUserDataByProp',
-      ]),
-      shouldShowActionsDropdown() {
-        return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
-      },
-      canAddAwardEmoji() {
-        return this.currentUserId;
-      },
-      isAuthoredByCurrentUser() {
-        return this.authorId === this.currentUserId;
-      },
-      currentUserId() {
-        return this.getUserDataByProp('id');
-      },
+    reportAbusePath: {
+      type: String,
+      required: true,
     },
-    created() {
-      this.emojiSmiling = emojiSmiling;
-      this.emojiSmile = emojiSmile;
-      this.emojiSmiley = emojiSmiley;
-      this.editSvg = editSvg;
-      this.ellipsisSvg = ellipsisSvg;
+    canEdit: {
+      type: Boolean,
+      required: true,
     },
-    methods: {
-      onEdit() {
-        this.$emit('handleEdit');
-      },
-      onDelete() {
-        this.$emit('handleDelete');
-      },
+    canDelete: {
+      type: Boolean,
+      required: true,
     },
-  };
+    resolvable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolving: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    resolvedBy: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    canReportAsAbuse: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapGetters(['getUserDataByProp']),
+    shouldShowActionsDropdown() {
+      return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
+    },
+    canAddAwardEmoji() {
+      return this.currentUserId;
+    },
+    isAuthoredByCurrentUser() {
+      return this.authorId === this.currentUserId;
+    },
+    currentUserId() {
+      return this.getUserDataByProp('id');
+    },
+    resolveButtonTitle() {
+      let title = 'Mark as resolved';
+
+      if (this.resolvedBy) {
+        title = `Resolved by ${this.resolvedBy.name}`;
+      }
+
+      return title;
+    },
+  },
+  created() {
+    this.emojiSmiling = emojiSmiling;
+    this.emojiSmile = emojiSmile;
+    this.emojiSmiley = emojiSmiley;
+    this.editSvg = editSvg;
+    this.ellipsisSvg = ellipsisSvg;
+    this.resolveDiscussionSvg = resolveDiscussionSvg;
+    this.resolvedDiscussionSvg = resolvedDiscussionSvg;
+  },
+  methods: {
+    onEdit() {
+      this.$emit('handleEdit');
+    },
+    onDelete() {
+      this.$emit('handleDelete');
+    },
+    onResolve() {
+      this.$emit('handleResolve');
+    },
+  },
+};
 </script>
 
 <template>
@@ -89,6 +123,31 @@
       class="note-role user-access-role">
       {{ accessLevel }}
     </span>
+    <div
+      v-if="resolvable"
+      class="note-actions-item">
+      <button
+        v-tooltip
+        @click="onResolve"
+        :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
+        :title="resolveButtonTitle"
+        :aria-label="resolveButtonTitle"
+        type="button"
+        class="line-resolve-btn note-action-button">
+        <template v-if="!isResolving">
+          <div
+            v-if="isResolved"
+            v-html="resolvedDiscussionSvg"></div>
+          <div
+            v-else
+            v-html="resolveDiscussionSvg"></div>
+        </template>
+        <loading-icon
+          v-else
+          :inline="true"
+        />
+      </button>
+    </div>
     <div
       v-if="canAddAwardEmoji"
       class="note-actions-item">

@@ -124,8 +124,8 @@ Lint/DuplicateMethods:
     - 'lib/gitlab/git/repository.rb'
     - 'lib/gitlab/git/tree.rb'
     - 'lib/gitlab/git/wiki_page.rb'
-    - 'lib/gitlab/ldap/person.rb'
-    - 'lib/gitlab/o_auth/user.rb'
+    - 'lib/gitlab/auth/ldap/person.rb'
+    - 'lib/gitlab/auth/o_auth/user.rb'
 
 # Offense count: 4
 Lint/InterpolationCheck:
@@ -812,7 +812,7 @@ Style/TrivialAccessors:
   Exclude:
     - 'app/models/external_issue.rb'
     - 'app/serializers/base_serializer.rb'
-    - 'lib/gitlab/ldap/person.rb'
+    - 'lib/gitlab/auth/ldap/person.rb'
     - 'lib/system_check/base_check.rb'
 
 # Offense count: 4

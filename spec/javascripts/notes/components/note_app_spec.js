@@ -1,8 +1,9 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
-import '~/render_gfm';
+import '~/behaviors/markdown/render_gfm';
 import * as mockData from '../mock_data';
 
 const vueMatchers = {
@@ -24,6 +25,7 @@ describe('note_app', () => {
 
   beforeEach(() => {
     jasmine.addMatchers(vueMatchers);
+    $('body').attr('data-page', 'projects:merge_requests:show');
 
     const IssueNotesApp = Vue.extend(notesApp);
 
@@ -119,8 +121,8 @@ describe('note_app', () => {
       vm = mountComponent();
     });
 
-    it('should render loading icon', () => {
-      expect(vm).toIncludeElement('.js-loading');
+    it('renders skeleton notes', () => {
+      expect(vm).toIncludeElement('.animation-container');
     });
 
     it('should render form', () => {

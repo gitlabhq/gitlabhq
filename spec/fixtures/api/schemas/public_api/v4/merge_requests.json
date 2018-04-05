@@ -80,7 +80,8 @@
         "total_time_spent": { "type": "integer" },
         "human_time_estimate": { "type": ["string", "null"] },
         "human_total_time_spent": { "type": ["string", "null"] }
-      }
+      },
+      "allow_maintainer_to_push": { "type": ["boolean", "null"] }
     },
     "required": [
       "id", "iid", "project_id", "title", "description",

@@ -28,13 +28,14 @@ With GitLab merge requests, you can:
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 - [Create new merge requests by email](#create-new-merge-requests-by-email)
+- Allow maintainers of the target project to push directly to the fork by [allowing edits from maintainers](maintainer_access.md)
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Premium)
 - Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Starter)
 - [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Starter)
-- Analise the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
 
 ## Use cases
 
@@ -75,6 +76,22 @@ View merge requests in all projects in the group, including all projects of all 
 You can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group) from here.
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
+
+## Removing the source branch
+
+When creating a merge request, select the "Remove source branch when merge
+request accepted" option and the source branch will be removed when the merge
+request is merged.
+
+This option is also visible in an existing merge request next to the merge
+request button and can be selected/deselected before merging. It's only visible
+to users with [Master permissions](../../permissions.md) in the source project.
+
+If the user viewing the merge request does not have the correct permissions to
+remove the source branch and the source branch is set for removal, the merge
+request widget will show the "Removes source branch" text.
+
+![Remove source branch status](img/remove_source_branch_status.png)
 
 ## Authorization for merge requests
 
@@ -133,6 +150,10 @@ those conflicts in the GitLab UI.
 [Learn more about resolving merge conflicts in the UI.](resolve_conflicts.md)
 
 ## Create new merge requests by email
+
+*This feature needs [incoming email](../../../administration/incoming_email.md)
+to be configured by a GitLab administrator to be available for CE/EE users, and
+it's available on GitLab.com.*
 
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on

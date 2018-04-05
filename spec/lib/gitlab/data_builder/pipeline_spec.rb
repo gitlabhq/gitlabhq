@@ -26,6 +26,7 @@ describe Gitlab::DataBuilder::Pipeline do
     it { expect(attributes[:tag]).to eq(pipeline.tag) }
     it { expect(attributes[:id]).to eq(pipeline.id) }
     it { expect(attributes[:status]).to eq(pipeline.status) }
+    it { expect(attributes[:detailed_status]).to eq('passed') }
 
     it { expect(build_data).to be_a(Hash) }
     it { expect(build_data[:id]).to eq(build.id) }

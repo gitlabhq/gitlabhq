@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import initBlob from '~/blob_edit/blob_bundle';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
 import UserCallout from '~/user_callout';
@@ -18,10 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
     className: 'js-autodevops-banner',
   });
 
-  if ($('#tree-slider').length) new TreeView(); // eslint-disable-line no-new
-  if ($('.blob-viewer').length) new BlobViewer(); // eslint-disable-line no-new
-  if ($('.project-show-activity').length) new Activities(); // eslint-disable-line no-new
-  $('#tree-slider').waitForImages(() => {
+  // Project show page loads different overview content based on user preferences
+  const treeSlider = document.querySelector('#tree-slider');
+  if (treeSlider) {
+    new TreeView(); // eslint-disable-line no-new
+    initBlob();
+  }
+
+  if (document.querySelector('.blob-viewer')) {
+    new BlobViewer(); // eslint-disable-line no-new
+  }
+
+  if (document.querySelector('.project-show-activity')) {
+    new Activities(); // eslint-disable-line no-new
+  }
+
+  $(treeSlider).waitForImages(() => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
   });
 });

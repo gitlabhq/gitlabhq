@@ -7,16 +7,14 @@ export default {
     });
   },
   [types.SET_BRANCH](state, { projectPath, branchName, branch }) {
-    // Add client side properties
-    Object.assign(branch, {
-      treeId: `${projectPath}/${branchName}`,
-      active: true,
-      workingReference: '',
-    });
-
     Object.assign(state.projects[projectPath], {
       branches: {
-        [branchName]: branch,
+        [branchName]: {
+          ...branch,
+          treeId: `${projectPath}/${branchName}`,
+          active: true,
+          workingReference: '',
+        },
       },
     });
   },

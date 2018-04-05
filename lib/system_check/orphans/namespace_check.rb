@@ -6,8 +6,8 @@ module SystemCheck
       def multi_check
         Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
           $stdout.puts
-          $stdout.puts "* Storage: #{storage_name} (#{repository_storage['path']})".color(:yellow)
-          toplevel_namespace_dirs = disk_namespaces(repository_storage['path'])
+          $stdout.puts "* Storage: #{storage_name} (#{repository_storage.legacy_disk_path})".color(:yellow)
+          toplevel_namespace_dirs = disk_namespaces(repository_storage.legacy_disk_path)
 
           orphans = (toplevel_namespace_dirs - existing_namespaces)
           print_orphans(orphans, storage_name)

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe API::Jobs do
+  include HttpIOHelpers
+
   set(:project) do
     create(:project, :repository, public_builds: false)
   end
@@ -112,6 +114,7 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do
+      job
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -335,10 +338,55 @@ describe API::Jobs do
           end
         end
 
+        context 'when artifacts are stored remotely' do
+          let(:proxy_download) { false }
+
+          before do
+            stub_artifacts_object_storage(proxy_download: proxy_download)
+          end
+
+          let(:job) { create(:ci_build, pipeline: pipeline) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+
+          before do
+            job.reload
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          context 'when proxy download is enabled' do
+            let(:proxy_download) { true }
+
+            it 'responds with the workhorse send-url' do
+              expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+            end
+          end
+
+          context 'when proxy download is disabled' do
+            it 'returns location redirect' do
+              expect(response).to have_gitlab_http_status(302)
+            end
+          end
+
+          context 'authorized user' do
+            it 'returns the file remote URL' do
+              expect(response).to redirect_to(artifact.file.url)
+            end
+          end
+
+          context 'unauthorized user' do
+            let(:api_user) { nil }
+
+            it 'does not return specific job artifacts' do
+              expect(response).to have_gitlab_http_status(404)
+            end
+          end
+        end
+
         it 'does not return job artifacts if not uploaded' do
           get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -349,6 +397,7 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
+      stub_artifacts_object_storage
       job.success
     end
 
@@ -412,8 +461,23 @@ describe API::Jobs do
                 "attachment; filename=#{job.artifacts_file.filename}" }
           end
 
-          it { expect(response).to have_gitlab_http_status(200) }
+          it { expect(response).to have_http_status(:ok) }
           it { expect(response.headers).to include(download_headers) }
+        end
+
+        context 'when artifacts are stored remotely' do
+          let(:job) { create(:ci_build, pipeline: pipeline, user: api_user) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+
+          before do
+            job.reload
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          it 'returns location redirect' do
+            expect(response).to have_http_status(:found)
+          end
         end
       end
 
@@ -451,6 +515,22 @@ describe API::Jobs do
     end
 
     context 'authorized user' do
+      context 'when trace is in ObjectStorage' do
+        let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          stub_remote_trace_206
+          allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+          allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
+          allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+        end
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
       context 'when trace is artifact' do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 

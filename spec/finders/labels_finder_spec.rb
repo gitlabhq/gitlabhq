@@ -71,6 +71,24 @@ describe LabelsFinder do
         end
       end
 
+      context 'when group has no projects' do
+        let(:empty_group) { create(:group) }
+        let!(:empty_group_label_1) { create(:group_label, group: empty_group, title: 'Label 1 (empty group)') }
+        let!(:empty_group_label_2) { create(:group_label, group: empty_group, title: 'Label 2 (empty group)') }
+
+        before do
+          empty_group.add_developer(user)
+        end
+
+        context 'when only group labels is false' do
+          it 'returns group labels' do
+            finder = described_class.new(user, group_id: empty_group.id)
+
+            expect(finder.execute).to eq [empty_group_label_1, empty_group_label_2]
+          end
+        end
+      end
+
       context 'when including labels from group ancestors', :nested_groups do
         it 'returns labels from group and its ancestors' do
           private_group_1.add_developer(user)
@@ -89,9 +107,42 @@ describe LabelsFinder do
           expect(finder.execute).to eq [private_subgroup_label_1]
         end
       end
+
+      context 'when including labels from group descendants', :nested_groups do
+        it 'returns labels from group and its descendants' do
+          private_group_1.add_developer(user)
+          private_subgroup_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: private_group_1.id, only_group_labels: true, include_descendant_groups: true)
+
+          expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
+        end
+
+        it 'ignores labels from groups which user can not read' do
+          private_subgroup_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: private_group_1.id, only_group_labels: true, include_descendant_groups: true)
+
+          expect(finder.execute).to eq [private_subgroup_label_1]
+        end
+      end
     end
 
-    context 'filtering by project_id' do
+    context 'filtering by project_id', :nested_groups do
+      context 'when include_ancestor_groups is true' do
+        let!(:sub_project) { create(:project, namespace: private_subgroup_1 ) }
+        let!(:project_label) { create(:label, project: sub_project, title: 'Label 5') }
+        let(:finder) { described_class.new(user, project_id: sub_project.id, include_ancestor_groups: true) }
+
+        before do
+          private_group_1.add_developer(user)
+        end
+
+        it 'returns all ancestor labels' do
+          expect(finder.execute).to match_array([private_subgroup_label_1, private_group_label_1, project_label])
+        end
+      end
+
       it 'returns labels available for the project' do
         finder = described_class.new(user, project_id: project_1.id)
 

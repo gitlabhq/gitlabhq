@@ -57,32 +57,55 @@ describe Notes::CreateService do
       end
     end
 
-    describe 'note with commands' do
-      describe '/close, /label, /assign & /milestone' do
-        let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
+    context 'note with commands' do
+      context 'as a user who can update the target' do
+        context '/close, /label, /assign & /milestone' do
+          let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
 
-        it 'saves the note and does not alter the note text' do
-          expect_any_instance_of(Issues::UpdateService).to receive(:execute).and_call_original
+          it 'saves the note and does not alter the note text' do
+            expect_any_instance_of(Issues::UpdateService).to receive(:execute).and_call_original
 
-          note = described_class.new(project, user, opts.merge(note: note_text)).execute
+            note = described_class.new(project, user, opts.merge(note: note_text)).execute
 
-          expect(note.note).to eq "HELLO\nWORLD"
+            expect(note.note).to eq "HELLO\nWORLD"
+          end
+        end
+
+        context '/merge with sha option' do
+          let(:note_text) { %(HELLO\n/merge\nWORLD) }
+          let(:params) { opts.merge(note: note_text, merge_request_diff_head_sha: 'sha') }
+
+          it 'saves the note and exectues merge command' do
+            note = described_class.new(project, user, params).execute
+
+            expect(note.note).to eq "HELLO\nWORLD"
+          end
         end
       end
 
-      describe '/merge with sha option' do
-        let(:note_text) { %(HELLO\n/merge\nWORLD) }
-        let(:params) { opts.merge(note: note_text, merge_request_diff_head_sha: 'sha') }
+      context 'as a user who cannot update the target' do
+        let(:note_text) { "HELLO\n/todo\n/assign #{user.to_reference}\nWORLD" }
+        let(:note) { described_class.new(project, user, opts.merge(note: note_text)).execute }
 
-        it 'saves the note and exectues merge command' do
-          note = described_class.new(project, user, params).execute
+        before do
+          project.team.find_member(user.id).update!(access_level: Gitlab::Access::GUEST)
+        end
 
+        it 'applies commands the user can execute' do
+          expect { note }.to change { user.todos_pending_count }.from(0).to(1)
+        end
+
+        it 'does not apply commands the user cannot execute' do
+          expect { note }.not_to change { issue.assignees }
+        end
+
+        it 'saves the note' do
           expect(note.note).to eq "HELLO\nWORLD"
         end
       end
     end
 
-    describe 'personal snippet note' do
+    context 'personal snippet note' do
       subject { described_class.new(nil, user, params).execute }
 
       let(:snippet) { create(:personal_snippet) }
@@ -103,7 +126,7 @@ describe Notes::CreateService do
       end
     end
 
-    describe 'note with emoji only' do
+    context 'note with emoji only' do
       it 'creates regular note' do
         opts = {
           note: ':smile: ',

@@ -55,8 +55,8 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
       expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
     end
 
-    context 'because the note was commands only' do
-      let!(:email_raw) { fixture_file("emails/commands_only_reply.eml") }
+    context 'because the note was update commands only' do
+      let!(:email_raw) { fixture_file("emails/update_commands_only_reply.eml") }
 
       context 'and current user cannot update noteable' do
         it 'raises a CommandsOnlyNoteError' do
@@ -70,13 +70,10 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
         end
 
         it 'does not raise an error' do
-          expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
-
           # One system note is created for the 'close' event
           expect { receiver.execute }.to change { noteable.notes.count }.by(1)
 
           expect(noteable.reload).to be_closed
-          expect(TodoService.new.todo_exist?(noteable, user)).to be_truthy
         end
       end
     end
@@ -85,15 +82,13 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
   context 'when the note contains quick actions' do
     let!(:email_raw) { fixture_file("emails/commands_in_reply.eml") }
 
-    context 'and current user cannot update noteable' do
-      it 'post a note and does not update the noteable' do
-        expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
-
-        # One system note is created for the new note
-        expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+    context 'and current user cannot update the noteable' do
+      it 'only executes the commands that the user can perform' do
+        expect { receiver.execute }
+          .to change { noteable.notes.user.count }.by(1)
+          .and change { user.todos_pending_count }.from(0).to(1)
 
         expect(noteable.reload).to be_open
-        expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
       end
     end
 
@@ -102,14 +97,14 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
         project.add_developer(user)
       end
 
-      it 'post a note and updates the noteable' do
+      it 'posts a note and updates the noteable' do
         expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
 
-        # One system note is created for the new note, one for the 'close' event
-        expect { receiver.execute }.to change { noteable.notes.count }.by(2)
+        expect { receiver.execute }
+          .to change { noteable.notes.user.count }.by(1)
+          .and change { user.todos_pending_count }.from(0).to(1)
 
         expect(noteable.reload).to be_closed
-        expect(TodoService.new.todo_exist?(noteable, user)).to be_truthy
       end
     end
   end

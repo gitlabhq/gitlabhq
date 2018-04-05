@@ -64,6 +64,7 @@ describe Deployment do
 
   describe '#metrics' do
     let(:deployment) { create(:deployment) }
+    let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
     subject { deployment.metrics }
 
@@ -76,17 +77,16 @@ describe Deployment do
         {
           success: true,
           metrics: {},
-          last_update: 42,
-          deployment_time: 1494408956
+          last_update: 42
         }
       end
 
       before do
-        allow(deployment.project).to receive_message_chain(:monitoring_service, :deployment_metrics)
-                                       .with(any_args).and_return(simple_metrics)
+        allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(prometheus_adapter).to receive(:query).with(:deployment, deployment).and_return(simple_metrics)
       end
 
-      it { is_expected.to eq(simple_metrics) }
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
     end
   end
 
@@ -109,11 +109,11 @@ describe Deployment do
         }
       end
 
-      let(:prometheus_service) { double('prometheus_service') }
+      let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
       before do
-        allow(project).to receive(:prometheus_service).and_return(prometheus_service)
-        allow(prometheus_service).to receive(:additional_deployment_metrics).and_return(simple_metrics)
+        allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(prometheus_adapter).to receive(:query).with(:additional_metrics_deployment, deployment).and_return(simple_metrics)
       end
 
       it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }

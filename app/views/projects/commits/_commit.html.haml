@@ -20,7 +20,7 @@
     .avatar-cell.hidden-xs
       = author_avatar(commit, size: 36)
 
-    .commit-detail
+    .commit-detail.flex-list
       .commit-content
         = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
         %span.commit-row-message.visible-xs-inline

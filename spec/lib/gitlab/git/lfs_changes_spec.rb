@@ -7,34 +7,36 @@ describe Gitlab::Git::LfsChanges do
 
   subject { described_class.new(project.repository, newrev) }
 
-  describe 'new_pointers' do
-    before do
-      allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects).and_yield([blob_object_id])
+  describe '#new_pointers' do
+    shared_examples 'new pointers' do
+      it 'filters new objects to find lfs pointers' do
+        expect(subject.new_pointers(not_in: []).first.id).to eq(blob_object_id)
+      end
+
+      it 'limits new_objects using object_limit' do
+        expect(subject.new_pointers(object_limit: 1)).to eq([])
+      end
     end
 
-    it 'uses rev-list to find new objects' do
-      rev_list = double
-      allow(Gitlab::Git::RevList).to receive(:new).and_return(rev_list)
-
-      expect(rev_list).to receive(:new_objects).and_return([])
-
-      subject.new_pointers
+    context 'with gitaly enabled' do
+      it_behaves_like 'new pointers'
     end
 
-    it 'filters new objects to find lfs pointers' do
-      expect(Gitlab::Git::Blob).to receive(:batch_lfs_pointers).with(project.repository, [blob_object_id])
+    context 'with gitaly disabled', :skip_gitaly_mock do
+      it_behaves_like 'new pointers'
 
-      subject.new_pointers(object_limit: 1)
-    end
+      it 'uses rev-list to find new objects' do
+        rev_list = double
+        allow(Gitlab::Git::RevList).to receive(:new).and_return(rev_list)
 
-    it 'limits new_objects using object_limit' do
-      expect(Gitlab::Git::Blob).to receive(:batch_lfs_pointers).with(project.repository, [])
+        expect(rev_list).to receive(:new_objects).and_return([])
 
-      subject.new_pointers(object_limit: 0)
+        subject.new_pointers
+      end
     end
   end
 
-  describe 'all_pointers' do
+  describe '#all_pointers', :skip_gitaly_mock do
     it 'uses rev-list to find all objects' do
       rev_list = double
       allow(Gitlab::Git::RevList).to receive(:new).and_return(rev_list)

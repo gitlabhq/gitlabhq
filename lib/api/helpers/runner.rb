@@ -9,16 +9,22 @@ module API
                                                                   Gitlab::CurrentSettings.runners_registration_token)
       end
 
-      def get_runner_version_from_params
-        return unless params['info'].present?
-
-        attributes_for_keys(%w(name version revision platform architecture), params['info'])
-      end
-
       def authenticate_runner!
         forbidden! unless current_runner
 
-        current_runner.update_cached_info(get_runner_version_from_params)
+        current_runner
+          .update_cached_info(get_runner_details_from_request)
+      end
+
+      def get_runner_details_from_request
+        return get_runner_ip unless params['info'].present?
+
+        attributes_for_keys(%w(name version revision platform architecture), params['info'])
+          .merge(get_runner_ip)
+      end
+
+      def get_runner_ip
+        { ip_address: request.ip }
       end
 
       def current_runner

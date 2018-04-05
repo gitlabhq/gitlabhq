@@ -28,9 +28,10 @@ class LabelsFinder < UnionFinder
       if project
         if project.group.present?
           labels_table = Label.arel_table
+          group_ids = group_ids_for(project.group)
 
           label_ids << Label.where(
-            labels_table[:type].eq('GroupLabel').and(labels_table[:group_id].eq(project.group.id)).or(
+            labels_table[:type].eq('GroupLabel').and(labels_table[:group_id].in(group_ids)).or(
               labels_table[:type].eq('ProjectLabel').and(labels_table[:project_id].eq(project.id))
             )
           )
@@ -38,11 +39,14 @@ class LabelsFinder < UnionFinder
           label_ids << project.labels
         end
       end
-    elsif only_group_labels?
-      label_ids << Label.where(group_id: group_ids)
     else
+      if group?
+        group = Group.find(params[:group_id])
+        label_ids << Label.where(group_id: group_ids_for(group))
+      end
+
       label_ids << Label.where(group_id: projects.group_ids)
-      label_ids << Label.where(project_id: projects.select(:id))
+      label_ids << Label.where(project_id: projects.select(:id)) unless only_group_labels?
     end
 
     label_ids
@@ -59,12 +63,31 @@ class LabelsFinder < UnionFinder
     items.where(title: title)
   end
 
-  def group_ids
+  # Gets redacted array of group ids
+  # which can include the ancestors and descendants of the requested group.
+  def group_ids_for(group)
     strong_memoize(:group_ids) do
-      group = Group.find(params[:group_id])
-      groups = params[:include_ancestor_groups].present? ? group.self_and_ancestors : [group]
+      groups = groups_to_include(group)
+
       groups_user_can_read_labels(groups).map(&:id)
     end
+  end
+
+  def groups_to_include(group)
+    groups = [group]
+
+    groups += group.ancestors if include_ancestor_groups?
+    groups += group.descendants if include_descendant_groups?
+
+    groups
+  end
+
+  def include_ancestor_groups?
+    params[:include_ancestor_groups]
+  end
+
+  def include_descendant_groups?
+    params[:include_descendant_groups]
   end
 
   def group?

@@ -165,31 +165,17 @@ describe Notes::QuickActionsService do
 
     let(:note) { create(:note_on_issue, project: project) }
 
-    context 'with no current_user' do
-      it 'returns false' do
-        expect(described_class.supported?(note, nil)).to be_falsy
-      end
-    end
-
-    context 'when current_user cannot update the noteable' do
-      it 'returns false' do
-        user = create(:user)
-
-        expect(described_class.supported?(note, user)).to be_falsy
-      end
-    end
-
-    context 'when current_user can update the noteable' do
+    context 'with a note on an issue' do
       it 'returns true' do
-        expect(described_class.supported?(note, master)).to be_truthy
+        expect(described_class.supported?(note)).to be_truthy
       end
+    end
 
-      context 'with a note on a commit' do
-        let(:note) { create(:note_on_commit, project: project) }
+    context 'with a note on a commit' do
+      let(:note) { create(:note_on_commit, project: project) }
 
-        it 'returns false' do
-          expect(described_class.supported?(note, nil)).to be_falsy
-        end
+      it 'returns false' do
+        expect(described_class.supported?(note)).to be_falsy
       end
     end
   end
@@ -201,7 +187,7 @@ describe Notes::QuickActionsService do
       service = described_class.new(project, master)
       note = create(:note_on_issue, project: project)
 
-      expect(described_class).to receive(:supported?).with(note, master)
+      expect(described_class).to receive(:supported?).with(note)
 
       service.supported?(note)
     end

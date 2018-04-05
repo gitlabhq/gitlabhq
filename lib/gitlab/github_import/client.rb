@@ -197,10 +197,7 @@ module Gitlab
       end
 
       def github_omniauth_provider
-        @github_omniauth_provider ||=
-          Gitlab.config.omniauth.providers
-                .find { |provider| provider.name == 'github' }
-                .to_h
+        @github_omniauth_provider ||= Gitlab::Auth::OAuth::Provider.config_for('github').to_h
       end
 
       def rate_limit_counter

@@ -1,6 +1,9 @@
 module MigrationsHelpers
   def table(name)
-    Class.new(ActiveRecord::Base) { self.table_name = name }
+    Class.new(ActiveRecord::Base) do
+      self.table_name = name
+      self.inheritance_column = :_type_disabled
+    end
   end
 
   def migrations_paths

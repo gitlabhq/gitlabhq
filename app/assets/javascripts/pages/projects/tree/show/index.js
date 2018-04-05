@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import initBlob from '~/blob_edit/blob_bundle';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';

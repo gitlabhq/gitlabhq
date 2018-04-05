@@ -4,12 +4,17 @@ include ImportExport::CommonUtil
 describe Gitlab::ImportExport::ProjectTreeRestorer do
   describe 'restore project tree' do
     before(:context) do
-      @user = create(:user)
+      # Using an admin for import, so we can check assignment of existing members
+      @user = create(:admin)
+      @existing_members = [
+        create(:user, username: 'bernard_willms'),
+        create(:user, username: 'saul_will')
+      ]
 
       RSpec::Mocks.with_temporary_scope do
-        @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
-        allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+        @shared = @project.import_export_shared
+        allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
 
         allow_any_instance_of(Repository).to receive(:fetch_ref).and_return(true)
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
@@ -37,8 +42,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
       end
 
-      it 'has the project html description' do
-        expect(Project.find_by_path('project').description_html).to eq('description')
+      it 'has the project description' do
+        expect(Project.find_by_path('project').description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
       end
 
       it 'has the same label associated to two issues' do
@@ -63,8 +68,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
       end
 
-      it 'has issue assignees' do
-        expect(Issue.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
+      it 'has multiple issue assignees' do
+        expect(Issue.find_by(title: 'Voluptatem').assignees).to contain_exactly(@user, *@existing_members)
+        expect(Issue.find_by(title: 'Issue without assignees').assignees).to be_empty
       end
 
       it 'contains the merge access levels on a protected branch' do
@@ -127,6 +133,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'has custom attributes' do
         expect(@project.custom_attributes.count).to eq(2)
+      end
+
+      it 'has badges' do
+        expect(@project.project_badges.count).to eq(2)
       end
 
       it 'restores the correct service' do
@@ -259,7 +269,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
   context 'Light JSON' do
     let(:user) { create(:user) }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
+    let(:shared) { project.import_export_shared }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
@@ -300,6 +310,24 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it_behaves_like 'restores project successfully'
+      end
+    end
+
+    context 'when the project has overriden params in import data' do
+      it 'overwrites the params stored in the JSON' do
+        project.create_import_data(data: { override_params: { description: "Overridden" } })
+
+        restored_project_json
+
+        expect(project.description).to eq("Overridden")
+      end
+
+      it 'does not allow setting params that are excluded from import_export settings' do
+        project.create_import_data(data: { override_params: { lfs_enabled: true } })
+
+        restored_project_json
+
+        expect(project.lfs_enabled).to be_nil
       end
     end
 

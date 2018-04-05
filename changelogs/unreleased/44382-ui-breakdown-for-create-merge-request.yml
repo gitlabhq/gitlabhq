@@ -1,0 +1,5 @@
+---
+title: Fix UI breakdown for Create merge request button
+merge_request: 17821
+author: Takuya Noguchi
+type: fixed

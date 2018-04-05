@@ -9,6 +9,7 @@ module Gitlab
         license_usage_data.merge(system_usage_data)
                           .merge(features_usage_data)
                           .merge(components_usage_data)
+                          .merge(cycle_analytics_usage_data)
       end
 
       def to_json(force_refresh: false)
@@ -29,6 +30,7 @@ module Gitlab
         usage_data
       end
 
+      # rubocop:disable Metrics/AbcSize
       def system_usage_data
         {
           counts: {
@@ -49,6 +51,12 @@ module Gitlab
             clusters: ::Clusters::Cluster.count,
             clusters_enabled: ::Clusters::Cluster.enabled.count,
             clusters_disabled: ::Clusters::Cluster.disabled.count,
+            clusters_platforms_gke: ::Clusters::Cluster.gcp_installed.enabled.count,
+            clusters_platforms_user: ::Clusters::Cluster.user_provided.enabled.count,
+            clusters_applications_helm: ::Clusters::Applications::Helm.installed.count,
+            clusters_applications_ingress: ::Clusters::Applications::Ingress.installed.count,
+            clusters_applications_prometheus: ::Clusters::Applications::Prometheus.installed.count,
+            clusters_applications_runner: ::Clusters::Applications::Runner.installed.count,
             in_review_folder: ::Environment.in_review_folder.count,
             groups: Group.count,
             issues: Issue.count,
@@ -69,6 +77,10 @@ module Gitlab
             web_hooks: WebHook.count
           }.merge(services_usage)
         }
+      end
+
+      def cycle_analytics_usage_data
+        Gitlab::CycleAnalytics::UsageData.new.to_json
       end
 
       def features_usage_data

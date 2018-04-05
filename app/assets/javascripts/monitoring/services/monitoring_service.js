@@ -40,6 +40,9 @@ export default class MonitoringService {
   }
 
   getDeploymentData() {
+    if (!this.deploymentEndpoint) {
+      return Promise.resolve([]);
+    }
     return backOffRequest(() => axios.get(this.deploymentEndpoint))
       .then(resp => resp.data)
       .then((response) => {

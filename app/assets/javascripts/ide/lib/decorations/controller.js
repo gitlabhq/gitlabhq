@@ -27,6 +27,8 @@ export default class DecorationsController {
   }
 
   decorate(model) {
+    if (!this.editor.instance) return;
+
     const decorations = this.getAllDecorationsForModel(model);
     const oldDecorations = this.editorDecorations.get(model.url) || [];
 

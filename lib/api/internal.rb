@@ -21,8 +21,7 @@ module API
 
         # Stores some Git-specific env thread-safely
         env = parse_env
-        env = fix_git_env_repository_paths(env, repository_path) if project
-        Gitlab::Git::Env.set(env)
+        Gitlab::Git::HookEnv.set(gl_repository, env) if project
 
         actor =
           if params[:key_id]

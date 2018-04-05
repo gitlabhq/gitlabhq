@@ -71,8 +71,8 @@ module API
     end
 
     class ProjectHook < Hook
-      expose :project_id, :issues_events
-      expose :note_events, :pipeline_events, :wiki_page_events
+      expose :project_id, :issues_events, :confidential_issues_events
+      expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
 
@@ -89,6 +89,21 @@ module API
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
       expose :created_at
+    end
+
+    class ProjectExportStatus < ProjectIdentity
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :export_status
+      expose :_links, if: lambda { |project, _options| project.export_status == :finished } do
+        expose :api_url do |project|
+          expose_url(api_v4_projects_export_download_path(id: project.id))
+        end
+
+        expose :web_url do |project|
+          Gitlab::Routing.url_helpers.download_export_project_url(project)
+        end
+      end
     end
 
     class ProjectImportStatus < ProjectIdentity
@@ -191,6 +206,7 @@ module API
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :printing_merge_request_link_enabled
+      expose :merge_method
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
@@ -390,6 +406,7 @@ module API
 
     class IssueBasic < ProjectEntity
       expose :closed_at
+      expose :closed_by, using: Entities::UserBasic
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
@@ -481,6 +498,10 @@ module API
       expose :id
     end
 
+    class PipelineBasic < Grape::Entity
+      expose :id, :sha, :ref, :status
+    end
+
     class MergeRequestSimple < ProjectEntity
       expose :title
       expose :web_url do |merge_request, options|
@@ -528,6 +549,7 @@ module API
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
@@ -545,6 +567,42 @@ module API
 
       expose :changes_count do |merge_request, _options|
         merge_request.merge_request_diff.real_size
+      end
+
+      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.merged_by
+      end
+
+      expose :merged_at do |merge_request, _options|
+        merge_request.metrics&.merged_at
+      end
+
+      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.latest_closed_by
+      end
+
+      expose :closed_at do |merge_request, _options|
+        merge_request.metrics&.latest_closed_at
+      end
+
+      expose :latest_build_started_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.latest_build_started_at
+      end
+
+      expose :latest_build_finished_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.latest_build_finished_at
+      end
+
+      expose :first_deployed_to_production_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.first_deployed_to_production_at
+      end
+
+      expose :pipeline, using: Entities::PipelineBasic, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.pipeline
+      end
+
+      def build_available?(options)
+        options[:project]&.feature_available?(:builds, options[:current_user])
       end
     end
 
@@ -589,6 +647,7 @@ module API
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
 
       expose :id
+      expose :type
       expose :note, as: :body
       expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
@@ -598,6 +657,12 @@ module API
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
+    end
+
+    class Discussion < Grape::Entity
+      expose :id
+      expose :individual_note?, as: :individual_note
+      expose :notes, using: Entities::Note
     end
 
     class AwardEmoji < Grape::Entity
@@ -729,7 +794,7 @@ module API
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
-      expose :pipeline_events, :wiki_page_events
+      expose :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
@@ -888,6 +953,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :maximum_timeout
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
@@ -907,10 +973,6 @@ module API
 
     class JobArtifactFile < Grape::Entity
       expose :filename, :size
-    end
-
-    class PipelineBasic < Grape::Entity
-      expose :id, :sha, :ref, :status
     end
 
     class JobBasic < Grape::Entity
@@ -1060,7 +1122,7 @@ module API
       end
 
       class RunnerInfo < Grape::Entity
-        expose :timeout
+        expose :metadata_timeout, as: :timeout
       end
 
       class Step < Grape::Entity
@@ -1198,6 +1260,24 @@ module API
       expose :ref
       expose :startline
       expose :project_id
+    end
+
+    class BasicBadgeDetails < Grape::Entity
+      expose :link_url
+      expose :image_url
+      expose :rendered_link_url do |badge, options|
+        badge.rendered_link_url(options.fetch(:project, nil))
+      end
+      expose :rendered_image_url do |badge, options|
+        badge.rendered_image_url(options.fetch(:project, nil))
+      end
+    end
+
+    class Badge < BasicBadgeDetails
+      expose :id
+      expose :kind do |badge|
+        badge.type == 'ProjectBadge' ? 'project' : 'group'
+      end
     end
   end
 end

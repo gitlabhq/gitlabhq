@@ -16,7 +16,7 @@ const stateToComponentMap = {
   mergeWhenPipelineSucceeds: 'mr-widget-merge-when-pipeline-succeeds',
   failedToMerge: 'mr-widget-failed-to-merge',
   autoMergeFailed: 'mr-widget-auto-merge-failed',
-  shaMismatch: 'mr-widget-sha-mismatch',
+  shaMismatch: 'sha-mismatch',
   rebase: 'mr-widget-rebase',
 };
 
@@ -49,6 +49,7 @@ export const stateKey = {
   notAllowedToMerge: 'notAllowedToMerge',
   readyToMerge: 'readyToMerge',
   rebase: 'rebase',
+  merged: 'merged',
 };
 
 export default {

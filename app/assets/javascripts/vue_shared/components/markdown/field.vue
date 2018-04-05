@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import Flash from '../../../flash';
   import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';

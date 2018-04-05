@@ -8,6 +8,7 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_helm) }
   it { is_expected.to have_one(:application_ingress) }
   it { is_expected.to have_one(:application_prometheus) }
+  it { is_expected.to have_one(:application_runner) }
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
@@ -33,6 +34,42 @@ describe Clusters::Cluster do
 
     before do
       create(:cluster, enabled: true)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.user_provided' do
+    subject { described_class.user_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_user) }
+
+    before do
+      create(:cluster, :provided_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_provided' do
+    subject { described_class.gcp_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :provided_by_user)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_installed' do
+    subject { described_class.gcp_installed }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :providing_by_gcp)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -196,9 +233,10 @@ describe Clusters::Cluster do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
+      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner)
       end
     end
   end

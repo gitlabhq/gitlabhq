@@ -128,6 +128,24 @@ describe('Filtered Search Visual Tokens', () => {
     });
   });
 
+  describe('getEndpointWithQueryParams', () => {
+    it('returns `endpoint` string as is when second param `endpointQueryParams` is undefined, null or empty string', () => {
+      const endpoint = 'foo/bar/labels.json';
+      expect(subject.getEndpointWithQueryParams(endpoint)).toBe(endpoint);
+      expect(subject.getEndpointWithQueryParams(endpoint, null)).toBe(endpoint);
+      expect(subject.getEndpointWithQueryParams(endpoint, '')).toBe(endpoint);
+    });
+
+    it('returns `endpoint` string with values of `endpointQueryParams`', () => {
+      const endpoint = 'foo/bar/labels.json';
+      const singleQueryParams = '{"foo":"true"}';
+      const multipleQueryParams = '{"foo":"true","bar":"true"}';
+
+      expect(subject.getEndpointWithQueryParams(endpoint, singleQueryParams)).toBe(`${endpoint}?foo=true`);
+      expect(subject.getEndpointWithQueryParams(endpoint, multipleQueryParams)).toBe(`${endpoint}?foo=true&bar=true`);
+    });
+  });
+
   describe('unselectTokens', () => {
     it('does nothing when there are no tokens', () => {
       const beforeHTML = tokensContainer.innerHTML;

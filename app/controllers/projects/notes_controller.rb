@@ -1,5 +1,6 @@
 class Projects::NotesController < Projects::ApplicationController
   include NotesActions
+  include NotesHelper
   include ToggleAwardEmoji
 
   before_action :whitelist_query_limiting, only: [:create]
@@ -38,10 +39,14 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    render json: {
-      resolved_by: note.resolved_by.try(:name),
-      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-    }
+    if serialize_notes?
+      render_json_with_notes_serializer
+    else
+      render json: {
+        resolved_by: note.resolved_by.try(:name),
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
   end
 
   def unresolve
@@ -51,16 +56,27 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    render json: {
-      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-    }
+    if serialize_notes?
+      render_json_with_notes_serializer
+    else
+      render json: {
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
   end
 
   private
 
+  def render_json_with_notes_serializer
+    Notes::RenderService.new(current_user).execute([note], project)
+
+    render json: note_serializer.represent(note)
+  end
+
   def note
     @note ||= @project.notes.find(params[:id])
   end
+
   alias_method :awardable, :note
 
   def finder_params

@@ -21,32 +21,9 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    @project_members = present_members(@project_members.sort(@sort).page(params[:page]))
+    @project_members = present_members(@project_members.sort_by_attribute(@sort).page(params[:page]))
     @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
     @project_member = @project.project_members.new
-  end
-
-  def update
-    @project_member = @project.members_and_requesters.find(params[:id])
-      .present(current_user: current_user)
-
-    return render_403 unless can?(current_user, :update_project_member, @project_member)
-
-    @project_member.update_attributes(member_params)
-  end
-
-  def resend_invite
-    redirect_path = project_project_members_path(@project)
-
-    @project_member = @project.project_members.find(params[:id])
-
-    if @project_member.invite?
-      @project_member.resend_invite
-
-      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
-    else
-      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
-    end
   end
 
   def import
@@ -65,12 +42,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     redirect_to(project_project_members_path(project),
                 notice: notice)
-  end
-
-  protected
-
-  def member_params
-    params.require(:project_member).permit(:user_id, :access_level, :expires_at)
   end
 
   # MembershipActions concern

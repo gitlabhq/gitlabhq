@@ -24,6 +24,7 @@
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:check_gcp_project_billing
+- gcp_cluster:cluster_wait_for_ingress_ip_address
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -38,16 +39,19 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- object_storage_upload
+- object_storage:object_storage_background_move
+- object_storage:object_storage_migrate_uploads
+
 - pipeline_cache:expire_job_cache
 - pipeline_cache:expire_pipeline_cache
 - pipeline_creation:create_pipeline
 - pipeline_creation:run_pipeline_schedule
+- pipeline_background:archive_trace
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
-- pipeline_default:create_trace_artifact
 - pipeline_default:pipeline_metrics
 - pipeline_default:pipeline_notification
-- pipeline_default:update_head_pipeline_for_merge_request
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
@@ -57,6 +61,7 @@
 - pipeline_processing:pipeline_success
 - pipeline_processing:pipeline_update
 - pipeline_processing:stage_update
+- pipeline_processing:update_head_pipeline_for_merge_request
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_single_repository
@@ -84,6 +89,7 @@
 - new_note
 - pages
 - pages_domain_verification
+- plugin
 - post_receive
 - process_commit
 - project_cache

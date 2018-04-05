@@ -4,9 +4,8 @@ import groupsComponent from '~/groups/components/groups.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { mockGroups, mockPageInfo } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (searchEmpty = false) => {
   const Component = Vue.extend(groupsComponent);

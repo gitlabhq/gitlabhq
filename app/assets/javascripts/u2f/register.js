@@ -1,8 +1,6 @@
-/* eslint-disable func-names, wrap-iife */
-/* global u2f */
-
+import $ from 'jquery';
 import _ from 'underscore';
-import isU2FSupported from './util';
+import importU2FLibrary from './util';
 import U2FError from './error';
 
 // Register U2F (universal 2nd factor) devices for users to authenticate with.
@@ -11,6 +9,7 @@ import U2FError from './error';
 // State Flow #2: setup -> in_progress -> error -> setup
 export default class U2FRegister {
   constructor(container, u2fParams) {
+    this.u2fUtils = null;
     this.container = container;
     this.renderNotSupported = this.renderNotSupported.bind(this);
     this.renderRegistered = this.renderRegistered.bind(this);
@@ -34,22 +33,23 @@ export default class U2FRegister {
   }
 
   start() {
-    if (isU2FSupported()) {
-      return this.renderSetup();
-    }
-    return this.renderNotSupported();
+    return importU2FLibrary()
+      .then((utils) => {
+        this.u2fUtils = utils;
+        this.renderSetup();
+      })
+      .catch(() => this.renderNotSupported());
   }
 
   register() {
-    return u2f.register(this.appId, this.registerRequests, this.signRequests, (function (_this) {
-      return function (response) {
+    return this.u2fUtils.register(this.appId, this.registerRequests, this.signRequests,
+      (response) => {
         if (response.errorCode) {
           const error = new U2FError(response.errorCode, 'register');
-          return _this.renderError(error);
+          return this.renderError(error);
         }
-        return _this.renderRegistered(JSON.stringify(response));
-      };
-    })(this), 10);
+        return this.renderRegistered(JSON.stringify(response));
+      }, 10);
   }
 
   renderTemplate(name, params) {

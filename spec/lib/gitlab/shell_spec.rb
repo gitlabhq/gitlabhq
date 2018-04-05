@@ -14,13 +14,13 @@ describe Gitlab::Shell do
     allow(Project).to receive(:find).and_return(project)
 
     allow(gitlab_shell).to receive(:gitlab_projects)
-      .with(project.repository_storage_path, project.disk_path + '.git')
+      .with(project.repository_storage, project.disk_path + '.git')
       .and_return(gitlab_projects)
   end
 
   it { is_expected.to respond_to :add_key }
   it { is_expected.to respond_to :remove_key }
-  it { is_expected.to respond_to :add_repository }
+  it { is_expected.to respond_to :create_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
 
@@ -402,10 +402,10 @@ describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
-    describe '#add_repository' do
-      shared_examples '#add_repository' do
+    describe '#create_repository' do
+      shared_examples '#create_repository' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
         let(:repo_name) { 'project/path' }
         let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 
@@ -414,7 +414,7 @@ describe Gitlab::Shell do
         end
 
         it 'creates a repository' do
-          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_truthy
+          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_truthy
 
           expect(File.stat(created_path).mode & 0o777).to eq(0o770)
 
@@ -426,19 +426,19 @@ describe Gitlab::Shell do
         it 'returns false when the command fails' do
           FileUtils.mkdir_p(File.dirname(created_path))
           # This file will block the creation of the repo's .git directory. That
-          # should cause #add_repository to fail.
+          # should cause #create_repository to fail.
           FileUtils.touch(created_path)
 
-          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_falsy
+          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_falsy
         end
       end
 
       context 'with gitaly' do
-        it_behaves_like '#add_repository'
+        it_behaves_like '#create_repository'
       end
 
       context 'without gitaly', :skip_gitaly_mock do
-        it_behaves_like '#add_repository'
+        it_behaves_like '#create_repository'
       end
     end
 
@@ -487,29 +487,29 @@ describe Gitlab::Shell do
     describe '#fork_repository' do
       subject do
         gitlab_shell.fork_repository(
-          project.repository_storage_path,
+          project.repository_storage,
           project.disk_path,
-          'new/storage',
+          'nfs-file05',
           'fork/path'
         )
       end
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { true }
+        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { true }
 
         is_expected.to be_truthy
       end
 
       it 'return false when the command fails' do
-        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { false }
+        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { false }
 
         is_expected.to be_falsy
       end
     end
 
     shared_examples 'fetch_remote' do |gitaly_on|
-      def fetch_remote(ssh_auth = nil)
-        gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth)
+      def fetch_remote(ssh_auth = nil, prune = true)
+        gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth, prune: prune)
       end
 
       def expect_gitlab_projects(fail = false, options = {})
@@ -555,27 +555,33 @@ describe Gitlab::Shell do
       end
 
       it 'returns true when the command succeeds' do
-        expect_call(false, force: false, tags: true)
+        expect_call(false, force: false, tags: true, prune: true)
 
         expect(fetch_remote).to be_truthy
       end
 
+      it 'returns true when the command succeeds' do
+        expect_call(false, force: false, tags: true, prune: false)
+
+        expect(fetch_remote(nil, false)).to be_truthy
+      end
+
       it 'raises an exception when the command fails' do
-        expect_call(true, force: false, tags: true)
+        expect_call(true, force: false, tags: true, prune: true)
 
         expect { fetch_remote }.to raise_error(Gitlab::Shell::Error)
       end
 
       it 'allows forced and no_tags to be changed' do
-        expect_call(false, force: true, tags: false)
+        expect_call(false, force: true, tags: false, prune: true)
 
-        result = gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', forced: true, no_tags: true)
+        result = gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', forced: true, no_tags: true, prune: true)
         expect(result).to be_truthy
       end
 
       context 'SSH auth' do
         it 'passes the SSH key if specified' do
-          expect_call(false, force: false, tags: true, ssh_key: 'foo')
+          expect_call(false, force: false, tags: true, prune: true, ssh_key: 'foo')
 
           ssh_auth = build_ssh_auth(ssh_key_auth?: true, ssh_private_key: 'foo')
 
@@ -583,7 +589,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass an empty SSH key' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: true, ssh_private_key: '')
 
@@ -591,7 +597,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass the key unless SSH key auth is to be used' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: false, ssh_private_key: 'foo')
 
@@ -599,7 +605,7 @@ describe Gitlab::Shell do
         end
 
         it 'passes the known_hosts data if specified' do
-          expect_call(false, force: false, tags: true, known_hosts: 'foo')
+          expect_call(false, force: false, tags: true, prune: true, known_hosts: 'foo')
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: 'foo')
 
@@ -607,7 +613,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass empty known_hosts data' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: '')
 
@@ -615,7 +621,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass known_hosts data unless SSH is to be used' do
-          expect_call(false, force: false, tags: true)
+          expect_call(false, force: false, tags: true, prune: true)
 
           ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
 
@@ -642,7 +648,7 @@ describe Gitlab::Shell do
 
         it 'passes the correct params to the gitaly service' do
           expect(repository.gitaly_repository_client).to receive(:fetch_remote)
-            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, timeout: timeout)
+            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: true, timeout: timeout)
 
           subject
         end
@@ -655,7 +661,7 @@ describe Gitlab::Shell do
       it 'returns true when the command succeeds' do
         expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
 
-        result = gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+        result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
 
         expect(result).to be_truthy
       end
@@ -665,7 +671,7 @@ describe Gitlab::Shell do
         expect(gitlab_projects).to receive(:import_project) { false }
 
         expect do
-          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+          gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
         end.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
@@ -673,7 +679,7 @@ describe Gitlab::Shell do
 
   describe 'namespace actions' do
     subject { described_class.new }
-    let(:storage_path) { Gitlab.config.repositories.storages.default.path }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
 
     describe '#add_namespace' do
       it 'creates a namespace' do

@@ -4,7 +4,7 @@ describe Gitlab::ImportExport::UploadsSaver do
   describe 'bundle a project Git repo' do
     let(:export_path) { "#{Dir.tmpdir}/uploads_saver_spec" }
     let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+    let(:shared) { project.import_export_shared }
 
     before do
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)

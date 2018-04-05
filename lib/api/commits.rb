@@ -18,25 +18,28 @@ module API
         optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
         optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
         optional :path,     type: String, desc: 'The file path'
+        optional :all,      type: Boolean, desc: 'Every commit will be returned'
         use :pagination
       end
       get ':id/repository/commits' do
         path   = params[:path]
         before = params[:until]
         after  = params[:since]
-        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master' unless params[:all]
         offset = (params[:page] - 1) * params[:per_page]
+        all    = params[:all]
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
                                                   limit: params[:per_page],
                                                   offset: offset,
                                                   before: before,
-                                                  after: after)
+                                                  after: after,
+                                                  all: all)
 
         commit_count =
-          if path || before || after
-            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after)
+          if all || path || before || after
+            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after, all: all)
           else
             # Cacheable commit count.
             user_project.repository.commit_count_for_ref(ref)
@@ -227,6 +230,20 @@ module API
         else
           render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
+      end
+
+      desc 'Get Merge Requests associated with a commit' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
+        use :pagination
+      end
+      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        commit = user_project.commit(params[:sha])
+        not_found! 'Commit' unless commit
+
+        present paginate(commit.merge_requests), with: Entities::MergeRequestBasic
       end
     end
   end

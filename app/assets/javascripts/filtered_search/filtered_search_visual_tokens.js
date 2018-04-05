@@ -1,5 +1,6 @@
 import _ from 'underscore';
-import AjaxCache from '../lib/utils/ajax_cache';
+import AjaxCache from '~/lib/utils/ajax_cache';
+import { objectToQueryString } from '~/lib/utils/common_utils';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import UsersCache from '../lib/utils/users_cache';
@@ -14,6 +15,21 @@ export default class FilteredSearchVisualTokens {
       lastVisualToken,
       isLastVisualTokenValid: lastVisualToken === null || lastVisualToken.className.indexOf('filtered-search-term') !== -1 || (lastVisualToken && lastVisualToken.querySelector('.value') !== null),
     };
+  }
+
+  /**
+   * Returns a computed API endpoint
+   * and query string composed of values from endpointQueryParams
+   * @param {String} endpoint
+   * @param {String} endpointQueryParams
+   */
+  static getEndpointWithQueryParams(endpoint, endpointQueryParams) {
+    if (!endpointQueryParams) {
+      return endpoint;
+    }
+
+    const queryString = objectToQueryString(JSON.parse(endpointQueryParams));
+    return `${endpoint}?${queryString}`;
   }
 
   static unselectTokens() {
@@ -86,7 +102,10 @@ export default class FilteredSearchVisualTokens {
   static updateLabelTokenColor(tokenValueContainer, tokenValue) {
     const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
     const baseEndpoint = filteredSearchInput.dataset.baseEndpoint;
-    const labelsEndpoint = `${baseEndpoint}/labels.json`;
+    const labelsEndpoint = FilteredSearchVisualTokens.getEndpointWithQueryParams(
+      `${baseEndpoint}/labels.json`,
+      filteredSearchInput.dataset.endpointQueryParams,
+    );
 
     return AjaxCache.retrieve(labelsEndpoint)
       .then(FilteredSearchVisualTokens.preprocessLabel.bind(null, labelsEndpoint))

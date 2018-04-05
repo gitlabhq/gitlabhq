@@ -21,4 +21,26 @@ class Projects::PagesController < Projects::ApplicationController
       end
     end
   end
+
+  def update
+    result = Projects::UpdateService.new(@project, current_user, project_params).execute
+
+    respond_to do |format|
+      format.html do
+        if result[:status] == :success
+          flash[:notice] = 'Your changes have been saved'
+        else
+          flash[:alert] = 'Something went wrong on our end'
+        end
+
+        redirect_to project_pages_path(@project)
+      end
+    end
+  end
+
+  private
+
+  def project_params
+    params.require(:project).permit(:pages_https_only)
+  end
 end

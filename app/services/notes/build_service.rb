@@ -26,14 +26,19 @@ module Notes
       if project
         project.notes.find_discussion(discussion_id)
       else
-        # only PersonalSnippets can have discussions without project association
         discussion = Note.find_discussion(discussion_id)
         noteable = discussion.noteable
 
-        return nil unless noteable.is_a?(PersonalSnippet) && can?(current_user, :comment_personal_snippet, noteable)
+        return nil unless noteable_without_project?(noteable)
 
         discussion
       end
+    end
+
+    def noteable_without_project?(noteable)
+      return true if noteable.is_a?(PersonalSnippet) && can?(current_user, :comment_personal_snippet, noteable)
+
+      false
     end
   end
 end

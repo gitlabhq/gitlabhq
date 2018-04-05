@@ -1,6 +1,6 @@
 <script>
   import { mapGetters } from 'vuex';
-  import icon from '../../../vue_shared/components/icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
 
   export default {
     components: {

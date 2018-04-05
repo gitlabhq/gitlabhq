@@ -12,7 +12,7 @@ describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'issue boards' do
-    it 'has boards tab when multiple issue boards available' do
+    it 'has board tab' do
       render
 
       expect(rendered).to have_css('a[title="Board"]')

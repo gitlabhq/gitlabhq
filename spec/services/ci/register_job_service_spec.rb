@@ -370,10 +370,89 @@ module Ci
           it_behaves_like 'validation is not active'
         end
       end
+    end
 
-      def execute(runner)
-        described_class.new(runner).execute.build
+    describe '#register_success' do
+      let!(:current_time) { Time.new(2018, 4, 5, 14, 0, 0) }
+      let!(:attempt_counter) { double('Gitlab::Metrics::NullMetric') }
+      let!(:job_queue_duration_seconds) { double('Gitlab::Metrics::NullMetric') }
+
+      before do
+        allow(Time).to receive(:now).and_return(current_time)
+
+        # Stub defaults for any metrics other than the ones we're testing
+        allow(Gitlab::Metrics).to receive(:counter)
+                                    .with(any_args)
+                                    .and_return(Gitlab::Metrics::NullMetric.instance)
+        allow(Gitlab::Metrics).to receive(:histogram)
+                                    .with(any_args)
+                                    .and_return(Gitlab::Metrics::NullMetric.instance)
+
+        # Stub tested metrics
+        allow(Gitlab::Metrics).to receive(:counter)
+                                    .with(:job_register_attempts_total, anything)
+                                    .and_return(attempt_counter)
+        allow(Gitlab::Metrics).to receive(:histogram)
+                                    .with(:job_queue_duration_seconds, anything, anything, anything)
+                                    .and_return(job_queue_duration_seconds)
+
+        project.update(shared_runners_enabled: true)
+        pending_job.update(created_at: current_time - 3600, queued_at: current_time - 1800)
       end
+
+      shared_examples 'metrics collector' do
+        it 'increments attempt counter' do
+          allow(job_queue_duration_seconds).to receive(:observe)
+          expect(attempt_counter).to receive(:increment)
+
+          execute(runner)
+        end
+
+        it 'counts job queuing time histogram with expected labels' do
+          allow(attempt_counter).to receive(:increment)
+          expect(job_queue_duration_seconds).to receive(:observe)
+            .with({ shared_runner: expected_shared_runner,
+                    jobs_running_for_project: expected_jobs_running_for_project_first_job }, 1800)
+
+          execute(runner)
+        end
+
+        context 'when project already has running jobs' do
+          let!(:build2) { create( :ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+          let!(:build3) { create( :ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+
+          it 'counts job queuing time histogram with expected labels' do
+            allow(attempt_counter).to receive(:increment)
+            expect(job_queue_duration_seconds).to receive(:observe)
+              .with({ shared_runner: expected_shared_runner,
+                      jobs_running_for_project: expected_jobs_running_for_project_third_job }, 1800)
+
+            execute(runner)
+          end
+        end
+      end
+
+      context 'when shared runner is used' do
+        let(:runner) { shared_runner }
+        let(:expected_shared_runner) { true }
+        let(:expected_jobs_running_for_project_first_job) { 0 }
+        let(:expected_jobs_running_for_project_third_job) { 2 }
+
+        it_behaves_like 'metrics collector'
+      end
+
+      context 'when specific runner is used' do
+        let(:runner) { specific_runner }
+        let(:expected_shared_runner) { false }
+        let(:expected_jobs_running_for_project_first_job) { '+Inf' }
+        let(:expected_jobs_running_for_project_third_job) { '+Inf' }
+
+        it_behaves_like 'metrics collector'
+      end
+    end
+
+    def execute(runner)
+      described_class.new(runner).execute.build
     end
   end
 end

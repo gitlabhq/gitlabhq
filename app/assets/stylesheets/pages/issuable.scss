@@ -103,6 +103,7 @@
 .issuable-show-labels {
   a {
     margin-bottom: 5px;
+    margin-right: 5px;
     display: inline-block;
 
     .color-label {
@@ -116,6 +117,12 @@
   }
 
   &.has-labels {
+    // this font size is a fix to
+    // prevent unintended spacing between labels
+    // which shows up when rendering markup has white-space
+    // characters present.
+    // see: https://css-tricks.com/fighting-the-space-between-inline-block-elements/#article-header-id-3
+    font-size: 0;
     margin-bottom: -5px;
   }
 }
@@ -130,12 +137,22 @@
   z-index: 200;
   overflow: hidden;
 
-  a:not(.btn-retry),
-  .btn-link {
+  a:not(.btn) {
     color: inherit;
+
+    &:hover {
+      color: $gl-link-hover-color;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
+
+    }
+
   }
 
   .btn-link {
+    color: inherit;
     outline: none;
   }
 
@@ -207,7 +224,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $md-link-color;
+        color: $gl-link-hover-color;
       }
     }
   }
@@ -479,16 +496,6 @@
     }
   }
 
-  a:not(.btn-retry) {
-    &:hover {
-      color: $md-link-color;
-
-      .avatar {
-        border-color: rgba($avatar-border, .2);
-      }
-    }
-  }
-
   .dropdown-menu-toggle {
     width: 100%;
     padding-top: 6px;
@@ -496,15 +503,25 @@
 
   .dropdown-menu {
     width: 100%;
+
+    /*
+     * Overwrite hover style for dropdown items, so that they are not blue
+     * This should be removed during dev of https://gitlab.com/gitlab-org/gitlab-ce/issues/44040
+     */
+    li a {
+      &:hover,
+      &:active,
+      &:focus,
+      &.is-focused {
+        @include dropdown-item-hover;
+      }
+    }
+
   }
 }
 
 .with-performance-bar .right-sidebar {
   top: $header-height + $performance-bar-height;
-
-  .issuable-sidebar {
-    height: calc(100% - #{$performance-bar-height});
-  }
 }
 
 .sidebar-move-issue-confirmation-button {

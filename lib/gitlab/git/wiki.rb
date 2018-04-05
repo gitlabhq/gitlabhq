@@ -29,7 +29,6 @@ module Gitlab
         @repository.gitaly_migrate(:wiki_write_page) do |is_enabled|
           if is_enabled
             gitaly_write_page(name, format, content, commit_details)
-            gollum_wiki.clear_cache
           else
             gollum_write_page(name, format, content, commit_details)
           end
@@ -40,7 +39,6 @@ module Gitlab
         @repository.gitaly_migrate(:wiki_delete_page) do |is_enabled|
           if is_enabled
             gitaly_delete_page(page_path, commit_details)
-            gollum_wiki.clear_cache
           else
             gollum_delete_page(page_path, commit_details)
           end
@@ -51,7 +49,6 @@ module Gitlab
         @repository.gitaly_migrate(:wiki_update_page) do |is_enabled|
           if is_enabled
             gitaly_update_page(page_path, title, format, content, commit_details)
-            gollum_wiki.clear_cache
           else
             gollum_update_page(page_path, title, format, content, commit_details)
           end
@@ -59,7 +56,7 @@ module Gitlab
       end
 
       def pages(limit: nil)
-        @repository.gitaly_migrate(:wiki_get_all_pages, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_get_all_pages) do |is_enabled|
           if is_enabled
             gitaly_get_all_pages
           else
@@ -68,9 +65,8 @@ module Gitlab
         end
       end
 
-      # Disable because of https://gitlab.com/gitlab-org/gitlab-ce/issues/42039
       def page(title:, version: nil, dir: nil)
-        @repository.gitaly_migrate(:wiki_find_page, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_find_page) do |is_enabled|
           if is_enabled
             gitaly_find_page(title: title, version: version, dir: dir)
           else

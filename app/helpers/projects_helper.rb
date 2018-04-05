@@ -97,13 +97,13 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    _("You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
-      { project_name_with_namespace: project.name_with_namespace }
+    _("You are going to remove %{project_full_name}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
+      { project_full_name: project.full_name }
   end
 
   def transfer_project_message(project)
-    _("You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?") %
-      { project_name_with_namespace: project.name_with_namespace }
+    _("You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?") %
+      { project_full_name: project.full_name }
   end
 
   def remove_fork_project_message(project)
@@ -530,5 +530,23 @@ module ProjectsHelper
 
   def can_show_last_commit_in_list?(project)
     can?(current_user, :read_cross_project) && project.commit
+  end
+
+  def pages_https_only_disabled?
+    !@project.pages_domains.all?(&:https?)
+  end
+
+  def pages_https_only_title
+    return unless pages_https_only_disabled?
+
+    "You must enable HTTPS for all your domains first"
+  end
+
+  def pages_https_only_label_class
+    if pages_https_only_disabled?
+      "list-label disabled"
+    else
+      "list-label"
+    end
   end
 end

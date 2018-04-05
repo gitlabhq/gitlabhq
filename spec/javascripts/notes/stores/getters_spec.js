@@ -56,9 +56,9 @@ describe('Getters Notes Store', () => {
     });
   });
 
-  describe('issueState', () => {
+  describe('openState', () => {
     it('should return the issue state', () => {
-      expect(getters.issueState(state)).toEqual(noteableDataMock.state);
+      expect(getters.openState(state)).toEqual(noteableDataMock.state);
     });
   });
 });

@@ -11,14 +11,12 @@
         default: false,
         required: false,
       },
-
       isConfidential: {
         type: Boolean,
         default: false,
         required: false,
       },
     },
-
     computed: {
       warningIcon() {
         if (this.isConfidential) return 'eye-slash';
@@ -26,7 +24,6 @@
 
         return '';
       },
-
       isLockedAndConfidential() {
         return this.isConfidential && this.isLocked;
       },

@@ -1,6 +1,7 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const modalComponent = Vue.extend(GlModal);
 

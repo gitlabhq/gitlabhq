@@ -21,8 +21,16 @@ class ChatNotificationService < Service
     end
   end
 
+  def confidential_issue_channel
+    properties['confidential_issue_channel'].presence || properties['issue_channel']
+  end
+
+  def confidential_note_channel
+    properties['confidential_note_channel'].presence || properties['note_channel']
+  end
+
   def self.supported_events
-    %w[push issue confidential_issue merge_request note tag_push
+    %w[push issue confidential_issue merge_request note confidential_note tag_push
        pipeline wiki_page]
   end
 
@@ -55,7 +63,9 @@ class ChatNotificationService < Service
 
     return false unless message
 
-    channel_name = get_channel_field(object_kind).presence || channel
+    event_type = data[:event_type] || object_kind
+
+    channel_name = get_channel_field(event_type).presence || channel
 
     opts = {}
     opts[:channel] = channel_name if channel_name
@@ -99,7 +109,7 @@ class ChatNotificationService < Service
   def get_message(object_kind, data)
     case object_kind
     when "push", "tag_push"
-      ChatMessage::PushMessage.new(data)
+      ChatMessage::PushMessage.new(data) if notify_for_ref?(data)
     when "issue"
       ChatMessage::IssueMessage.new(data) unless update?(data)
     when "merge_request"
@@ -129,7 +139,7 @@ class ChatNotificationService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url
@@ -145,10 +155,16 @@ class ChatNotificationService < Service
   end
 
   def notify_for_ref?(data)
-    return true if data[:object_attributes][:tag]
+    return true if data.dig(:object_attributes, :tag)
     return true unless notify_only_default_branch?
 
-    data[:object_attributes][:ref] == project.default_branch
+    ref = if data[:ref]
+            Gitlab::Git.ref_name(data[:ref])
+          else
+            data.dig(:object_attributes, :ref)
+          end
+
+    ref == project.default_branch
   end
 
   def notify_for_pipeline?(data)

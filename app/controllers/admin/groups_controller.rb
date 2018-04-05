@@ -5,7 +5,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def index
     @groups = Group.with_statistics.with_route
-    @groups = @groups.sort(@sort = params[:sort])
+    @groups = @groups.sort_by_attribute(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
   end
@@ -48,7 +48,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def members_update
     member_params = params.permit(:user_ids, :access_level, :expires_at)
-    result = Members::CreateService.new(@group, current_user, member_params.merge(limit: -1)).execute
+    result = Members::CreateService.new(current_user, member_params.merge(limit: -1)).execute(@group)
 
     if result[:status] == :success
       redirect_to [:admin, @group], notice: 'Users were successfully added.'

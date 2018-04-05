@@ -16,7 +16,7 @@ describe Gitlab::Git::GitlabProjects do
   let(:tmp_repos_path) { TestEnv.repos_path }
   let(:repo_name) { project.disk_path + '.git' }
   let(:tmp_repo_path) { File.join(tmp_repos_path, repo_name) }
-  let(:gl_projects) { build_gitlab_projects(tmp_repos_path, repo_name) }
+  let(:gl_projects) { build_gitlab_projects(TestEnv::REPOS_STORAGE, repo_name) }
 
   describe '#initialize' do
     it { expect(gl_projects.shard_path).to eq(tmp_repos_path) }
@@ -28,7 +28,7 @@ describe Gitlab::Git::GitlabProjects do
   describe '#push_branches' do
     let(:remote_name) { 'remote-name' }
     let(:branch_name) { 'master' }
-    let(:cmd) { %W(git push -- #{remote_name} #{branch_name}) }
+    let(:cmd) { %W(#{Gitlab.config.git.bin_path} push -- #{remote_name} #{branch_name}) }
     let(:force) { false }
 
     subject { gl_projects.push_branches(remote_name, 600, force, [branch_name]) }
@@ -46,7 +46,7 @@ describe Gitlab::Git::GitlabProjects do
     end
 
     context 'with --force' do
-      let(:cmd) { %W(git push --force -- #{remote_name} #{branch_name}) }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} push --force -- #{remote_name} #{branch_name}) }
       let(:force) { true }
 
       it 'executes the command' do
@@ -61,10 +61,11 @@ describe Gitlab::Git::GitlabProjects do
     let(:remote_name) { 'remote-name' }
     let(:branch_name) { 'master' }
     let(:force) { false }
+    let(:prune) { true }
     let(:tags) { true }
-    let(:args) { { force: force, tags: tags }.merge(extra_args) }
+    let(:args) { { force: force, tags: tags, prune: prune }.merge(extra_args) }
     let(:extra_args) { {} }
-    let(:cmd) { %W(git fetch #{remote_name} --prune --quiet --tags) }
+    let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --prune --tags) }
 
     subject { gl_projects.fetch_remote(remote_name, 600, args) }
 
@@ -97,7 +98,7 @@ describe Gitlab::Git::GitlabProjects do
 
     context 'with --force' do
       let(:force) { true }
-      let(:cmd) { %W(git fetch #{remote_name} --prune --quiet --force --tags) }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --prune --force --tags) }
 
       it 'executes the command with forced option' do
         stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
@@ -108,7 +109,18 @@ describe Gitlab::Git::GitlabProjects do
 
     context 'with --no-tags' do
       let(:tags) { false }
-      let(:cmd) { %W(git fetch #{remote_name} --prune --quiet --no-tags) }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --prune --no-tags) }
+
+      it 'executes the command' do
+        stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
+
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'with no prune' do
+      let(:prune) { false }
+      let(:cmd) { %W(#{Gitlab.config.git.bin_path} fetch #{remote_name} --quiet --tags) }
 
       it 'executes the command' do
         stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
@@ -153,7 +165,7 @@ describe Gitlab::Git::GitlabProjects do
   describe '#import_project' do
     let(:project) { create(:project) }
     let(:import_url) { TestEnv.factory_repo_path_bare }
-    let(:cmd) { %W(git clone --bare -- #{import_url} #{tmp_repo_path}) }
+    let(:cmd) { %W(#{Gitlab.config.git.bin_path} clone --bare -- #{import_url} #{tmp_repo_path}) }
     let(:timeout) { 600 }
 
     subject { gl_projects.import_project(import_url, timeout) }
@@ -211,11 +223,12 @@ describe Gitlab::Git::GitlabProjects do
   end
 
   describe '#fork_repository' do
+    let(:dest_repos) { TestEnv::REPOS_STORAGE }
     let(:dest_repos_path) { tmp_repos_path }
     let(:dest_repo_name) { File.join('@hashed', 'aa', 'bb', 'xyz.git') }
     let(:dest_repo) { File.join(dest_repos_path, dest_repo_name) }
 
-    subject { gl_projects.fork_repository(dest_repos_path, dest_repo_name) }
+    subject { gl_projects.fork_repository(dest_repos, dest_repo_name) }
 
     before do
       FileUtils.mkdir_p(dest_repos_path)
@@ -256,7 +269,12 @@ describe Gitlab::Git::GitlabProjects do
       # that is not very straight-forward so I'm leaving this test here for now till
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/41393 is fixed.
       context 'different storages' do
-        let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), 'alternative') }
+        let(:dest_repos) { 'alternative' }
+        let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), dest_repos) }
+
+        before do
+          stub_storage_settings(dest_repos => { 'path' => dest_repos_path })
+        end
 
         it 'forks the repo' do
           is_expected.to be_truthy

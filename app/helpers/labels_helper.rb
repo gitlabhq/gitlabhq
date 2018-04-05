@@ -1,4 +1,5 @@
 module LabelsHelper
+  extend self
   include ActionView::Helpers::TagHelper
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
@@ -128,13 +129,17 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path(only_group_labels = false)
+  def labels_filter_path(only_group_labels = false, include_ancestor_groups: true, include_descendant_groups: false)
     project = @target_project || @project
 
+    options = {}
+    options[:include_ancestor_groups] = include_ancestor_groups if include_ancestor_groups
+    options[:include_descendant_groups] = include_descendant_groups if include_descendant_groups
+
     if project
-      project_labels_path(project, :json)
+      project_labels_path(project, :json, options)
     elsif @group
-      options = { only_group_labels: only_group_labels } if only_group_labels
+      options[:only_group_labels] = only_group_labels if only_group_labels
       group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)
@@ -170,6 +175,39 @@ module LabelsHelper
     case label
     when GroupLabel then 'Remove this label? This will affect all projects within the group. Are you sure?'
     when ProjectLabel then 'Remove this label? Are you sure?'
+    end
+  end
+
+  def create_label_title(subject)
+    case subject
+    when Group
+      _('Create group label')
+    when Project
+      _('Create project label')
+    else
+      _('Create new label')
+    end
+  end
+
+  def manage_labels_title(subject)
+    case subject
+    when Group
+      _('Manage group labels')
+    when Project
+      _('Manage project labels')
+    else
+      _('Manage labels')
+    end
+  end
+
+  def view_labels_title(subject)
+    case subject
+    when Group
+      _('View group labels')
+    when Project
+      _('View project labels')
+    else
+      _('View labels')
     end
   end
 

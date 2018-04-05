@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Flash from '~/flash';
 import Api from '~/api';
 

@@ -76,7 +76,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
-      metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber + 1}`;
+      metricTag = timeSeriesMetricLabel || query.label || `series ${timeSeriesNumber + 1}`;
       [lineColor, areaColor] = pickColor();
     }
 

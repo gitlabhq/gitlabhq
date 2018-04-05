@@ -23,6 +23,12 @@
             - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
             = deleted_message % { project_name: fork_source_name(@project) }
 
+    .project-badges
+      - @project.badges.each do |badge|
+        - badge_link_url = badge.rendered_link_url(@project)
+        %a{ href: badge_link_url, target: '_blank', rel: 'noopener noreferrer' }
+          %img{ src: badge.rendered_image_url(@project), alt: badge_link_url }
+
     .project-repo-buttons
       .count-buttons
         = render 'projects/buttons/star'

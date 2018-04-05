@@ -69,35 +69,36 @@ module Gitlab
     # name - project disk path
     #
     # Ex.
-    #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
+    #   create_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def add_repository(storage, name)
+    def create_repository(storage, name)
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
-      gitaly_migrate(:create_repository) do |is_enabled|
+      gitaly_migrate(:create_repository,
+                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
         if is_enabled
           repository = Gitlab::Git::Repository.new(storage, relative_path, '')
           repository.gitaly_repository_client.create_repository
           true
         else
-          repo_path = File.join(Gitlab.config.repositories.storages[storage]['path'], relative_path)
+          repo_path = File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, relative_path)
           Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
         end
       end
-    rescue => err
+    rescue => err # Once the Rugged codes gets removes this can be improved
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false
     end
 
     # Import repository
     #
-    # storage - project's storage path
+    # storage - project's storage name
     # name - project disk path
     # url - URL to import from
     #
     # Ex.
-    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
+    #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/874
     def import_repository(storage, name, url)
@@ -125,13 +126,12 @@ module Gitlab
     # Ex.
     #   fetch_remote(my_repo, "upstream")
     #
-    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
+    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
-          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout)
+          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
         else
-          storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
-          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+          local_fetch_remote(repository.storage, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
         end
       end
     end
@@ -155,13 +155,13 @@ module Gitlab
     end
 
     # Fork repository to new path
-    # forked_from_storage - forked-from project's storage path
-    # forked_from_disk_path - project disk path
-    # forked_to_storage - forked-to project's storage path
-    # forked_to_disk_path - forked project disk path
+    # forked_from_storage - forked-from project's storage name
+    # forked_from_disk_path - project disk relative path
+    # forked_to_storage - forked-to project's storage name
+    # forked_to_disk_path - forked project disk relative path
     #
     # Ex.
-    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "new-namespace/gitlab-ci")
+    #  fork_repository("nfs-file06", "gitlab/gitlab-ci", "nfs-file07", "new-namespace/gitlab-ci")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
@@ -419,17 +419,17 @@ module Gitlab
 
     private
 
-    def gitlab_projects(shard_path, disk_path)
+    def gitlab_projects(shard_name, disk_path)
       Gitlab::Git::GitlabProjects.new(
-        shard_path,
+        shard_name,
         disk_path,
         global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
         logger: Rails.logger
       )
     end
 
-    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false)
-      vars = { force: forced, tags: !no_tags }
+    def local_fetch_remote(storage_name, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
+      vars = { force: forced, tags: !no_tags, prune: prune }
 
       if ssh_auth&.ssh_import?
         if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
@@ -441,7 +441,7 @@ module Gitlab
         end
       end
 
-      cmd = gitlab_projects(storage_path, repository_relative_path)
+      cmd = gitlab_projects(storage_name, repository_relative_path)
 
       success = cmd.fetch_remote(remote, git_timeout, vars)
 
@@ -477,7 +477,7 @@ module Gitlab
 
     def gitaly_namespace_client(storage_path)
       storage, _value = Gitlab.config.repositories.storages.find do |storage, value|
-        value['path'] == storage_path
+        value.legacy_disk_path == storage_path
       end
 
       Gitlab::GitalyClient::NamespaceService.new(storage)
@@ -487,8 +487,8 @@ module Gitlab
       Gitlab.config.gitlab_shell.git_timeout
     end
 
-    def gitaly_migrate(method, &block)
-      Gitlab::GitalyClient.migrate(method, &block)
+    def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+      Gitlab::GitalyClient.migrate(method, status: status, &block)
     rescue GRPC::NotFound, GRPC::BadStatus => e
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...

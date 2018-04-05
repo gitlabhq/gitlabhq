@@ -1,82 +1,81 @@
 <script>
-  import noteEditedText from './note_edited_text.vue';
-  import noteAwardsList from './note_awards_list.vue';
-  import noteAttachment from './note_attachment.vue';
-  import noteForm from './note_form.vue';
-  import TaskList from '../../task_list';
-  import autosave from '../mixins/autosave';
+import $ from 'jquery';
+import noteEditedText from './note_edited_text.vue';
+import noteAwardsList from './note_awards_list.vue';
+import noteAttachment from './note_attachment.vue';
+import noteForm from './note_form.vue';
+import TaskList from '../../task_list';
+import autosave from '../mixins/autosave';
 
-  export default {
-    components: {
-      noteEditedText,
-      noteAwardsList,
-      noteAttachment,
-      noteForm,
+export default {
+  components: {
+    noteEditedText,
+    noteAwardsList,
+    noteAttachment,
+    noteForm,
+  },
+  mixins: [autosave],
+  props: {
+    note: {
+      type: Object,
+      required: true,
     },
-    mixins: [
-      autosave,
-    ],
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
-      canEdit: {
-        type: Boolean,
-        required: true,
-      },
-      isEditing: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    canEdit: {
+      type: Boolean,
+      required: true,
     },
-    computed: {
-      noteBody() {
-        return this.note.note;
-      },
+    isEditing: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    mounted() {
-      this.renderGFM();
-      this.initTaskList();
+  },
+  computed: {
+    noteBody() {
+      return this.note.note;
+    },
+  },
+  mounted() {
+    this.renderGFM();
+    this.initTaskList();
 
-      if (this.isEditing) {
-        this.initAutoSave();
+    if (this.isEditing) {
+      this.initAutoSave(this.note.noteable_type);
+    }
+  },
+  updated() {
+    this.initTaskList();
+    this.renderGFM();
+
+    if (this.isEditing) {
+      if (!this.autosave) {
+        this.initAutoSave(this.note.noteable_type);
+      } else {
+        this.setAutoSave();
+      }
+    }
+  },
+  methods: {
+    renderGFM() {
+      $(this.$refs['note-body']).renderGFM();
+    },
+    initTaskList() {
+      if (this.canEdit) {
+        this.taskList = new TaskList({
+          dataType: 'note',
+          fieldName: 'note',
+          selector: '.notes',
+        });
       }
     },
-    updated() {
-      this.initTaskList();
-      this.renderGFM();
-
-      if (this.isEditing) {
-        if (!this.autosave) {
-          this.initAutoSave();
-        } else {
-          this.setAutoSave();
-        }
-      }
+    handleFormUpdate(note, parentElement, callback) {
+      this.$emit('handleFormUpdate', note, parentElement, callback);
     },
-    methods: {
-      renderGFM() {
-        $(this.$refs['note-body']).renderGFM();
-      },
-      initTaskList() {
-        if (this.canEdit) {
-          this.taskList = new TaskList({
-            dataType: 'note',
-            fieldName: 'note',
-            selector: '.notes',
-          });
-        }
-      },
-      handleFormUpdate(note, parentElement, callback) {
-        this.$emit('handleFormUpdate', note, parentElement, callback);
-      },
-      formCancelHandler(shouldConfirm, isDirty) {
-        this.$emit('cancelFormEdition', shouldConfirm, isDirty);
-      },
+    formCancelHandler(shouldConfirm, isDirty) {
+      this.$emit('cancelFormEdition', shouldConfirm, isDirty);
     },
-  };
+  },
+};
 </script>
 
 <template>

@@ -4,6 +4,7 @@
 /* global ListAssignee */
 
 import Vue from 'vue';
+import IssueProject from './project';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
@@ -23,6 +24,12 @@ class ListIssue {
     this.isLoading = {};
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
+    this.milestone_id = obj.milestone_id;
+    this.project_id = obj.project_id;
+
+    if (obj.project) {
+      this.project = new IssueProject(obj.project);
+    }
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -105,8 +112,11 @@ class ListIssue {
       data.issue.label_ids = [''];
     }
 
-    return Vue.http.patch(url, data);
+    const projectPath = this.project ? this.project.path : '';
+    return Vue.http.patch(url.replace(':project_path', projectPath), data);
   }
 }
 
 window.ListIssue = ListIssue;
+
+export default ListIssue;

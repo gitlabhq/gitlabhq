@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import pipelineBlockedComponent from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_blocked.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import removeBreakLine from 'spec/helpers/vue_component_helper';
 
 describe('MRWidgetPipelineBlocked', () => {
   let vm;
@@ -18,6 +19,8 @@ describe('MRWidgetPipelineBlocked', () => {
   });
 
   it('renders information text', () => {
-    expect(vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ')).toContain('Pipeline blocked. The pipeline for this merge request requires a manual action to proceed');
+    expect(
+      removeBreakLine(vm.$el.textContent).trim(),
+    ).toContain('Pipeline blocked. The pipeline for this merge request requires a manual action to proceed');
   });
 });

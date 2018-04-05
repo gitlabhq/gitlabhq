@@ -231,7 +231,8 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+          repo.gitaly_migrate(:list_commits_by_oid,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               repo.gitaly_commit_client.list_commits_by_oid(oids)
             else
@@ -247,6 +248,45 @@ module Gitlab
             else
               rugged_extract_signature(repository, commit_id)
             end
+          end
+        end
+
+        def extract_signature_lazily(repository, commit_id)
+          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
+            items_by_repo = items.group_by { |i| i[:repository] }
+
+            items_by_repo.each do |repo, items|
+              commit_ids = items.map { |i| i[:commit_id] }
+
+              signatures = batch_signature_extraction(repository, commit_ids)
+
+              signatures.each do |commit_sha, signature_data|
+                loader.call({ repository: repository, commit_id: commit_sha }, signature_data)
+              end
+            end
+          end
+        end
+
+        def batch_signature_extraction(repository, commit_ids)
+          repository.gitaly_migrate(:extract_commit_signature_in_batch) do |is_enabled|
+            if is_enabled
+              gitaly_batch_signature_extraction(repository, commit_ids)
+            else
+              rugged_batch_signature_extraction(repository, commit_ids)
+            end
+          end
+        end
+
+        def gitaly_batch_signature_extraction(repository, commit_ids)
+          repository.gitaly_commit_client.get_commit_signatures(commit_ids)
+        end
+
+        def rugged_batch_signature_extraction(repository, commit_ids)
+          commit_ids.each_with_object({}) do |commit_id, signatures|
+            signature_data = rugged_extract_signature(repository, commit_id)
+            next unless signature_data
+
+            signatures[commit_id] = signature_data
           end
         end
 
@@ -308,7 +348,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        Gitlab::GitalyClient.migrate(:commit_patch) do |is_enabled|
+        Gitlab::GitalyClient.migrate(:commit_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             @repository.gitaly_commit_client.patch(id)
           else

@@ -1,15 +1,16 @@
 /* eslint-disable func-names, no-var, object-shorthand, comma-dangle, prefer-arrow-callback */
 
+import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
+
 // MarkdownPreview
 //
 // Handles toggling the "Write" and "Preview" tab clicks, rendering the preview
 // (including the explanation of quick actions), and showing a warning when
 // more than `x` users are referenced.
 //
-
-import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
-import { __ } from '~/locale';
 
 var lastTextareaPreviewed;
 var lastTextareaHeight = null;

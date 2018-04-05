@@ -62,7 +62,7 @@ class InvitesController < ApplicationController
     case source
     when Project
       project = member.source
-      label = "project #{project.name_with_namespace}"
+      label = "project #{project.full_name}"
       path = project_path(project)
     when Group
       group = member.source

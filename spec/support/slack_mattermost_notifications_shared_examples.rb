@@ -4,6 +4,11 @@ RSpec.shared_examples 'slack or mattermost notifications' do
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
+  def execute_with_options(options)
+    receive(:new).with(webhook_url, options)
+     .and_return(double(:slack_service).as_null_object)
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -33,6 +38,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     let(:project) { create(:project, :repository) }
     let(:username) { 'slack_username' }
     let(:channel)  { 'slack_channel' }
+    let(:issue_service_options) { { title: 'Awesome issue', description: 'please fix' } }
 
     let(:push_sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
@@ -48,12 +54,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
       WebMock.stub_request(:post, webhook_url)
 
-      opts = {
-        title: 'Awesome issue',
-        description: 'please fix'
-      }
-
-      issue_service = Issues::CreateService.new(project, user, opts)
+      issue_service = Issues::CreateService.new(project, user, issue_service_options)
       @issue = issue_service.execute
       @issues_sample_data = issue_service.hook_data(@issue, 'open')
 
@@ -164,6 +165,26 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         chat_service.execute(@issues_sample_data)
       end
 
+      context 'for confidential issues' do
+        let(:issue_service_options) { { title: 'Secret', confidential: true } }
+
+        it "uses confidential issue channel" do
+          chat_service.update_attributes(confidential_issue_channel: 'confidential')
+
+          expect(Slack::Notifier).to execute_with_options(channel: 'confidential')
+
+          chat_service.execute(@issues_sample_data)
+        end
+
+        it 'falls back to issue channel' do
+          chat_service.update_attributes(issue_channel: 'fallback_channel')
+
+          expect(Slack::Notifier).to execute_with_options(channel: 'fallback_channel')
+
+          chat_service.execute(@issues_sample_data)
+        end
+      end
+
       it "uses the right channel for wiki event" do
         chat_service.update_attributes(wiki_page_channel: "random")
 
@@ -193,6 +214,32 @@ RSpec.shared_examples 'slack or mattermost notifications' do
            )
 
           chat_service.execute(note_data)
+        end
+
+        context 'for confidential notes' do
+          before do
+            issue_note.noteable.update!(confidential: true)
+          end
+
+          it "uses confidential channel" do
+            chat_service.update_attributes(confidential_note_channel: "confidential")
+
+            note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
+
+            expect(Slack::Notifier).to execute_with_options(channel: 'confidential')
+
+            chat_service.execute(note_data)
+          end
+
+          it 'falls back to note channel' do
+            chat_service.update_attributes(note_channel: "fallback_channel")
+
+            note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
+
+            expect(Slack::Notifier).to execute_with_options(channel: 'fallback_channel')
+
+            chat_service.execute(note_data)
+          end
         end
       end
     end
@@ -248,8 +295,9 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         create(:note_on_issue, project: project, note: "issue note")
       end
 
+      let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
+
       it "calls Slack API for issue comment events" do
-        data = Gitlab::DataBuilder::Note.build(issue_note, user)
         chat_service.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
@@ -337,6 +385,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
         before do
           chat_service.notify_only_default_branch = true
+          WebMock.stub_request(:post, webhook_url)
         end
 
         it 'does not call the Slack/Mattermost API for pipeline events' do
@@ -344,6 +393,23 @@ RSpec.shared_examples 'slack or mattermost notifications' do
           result = chat_service.execute(data)
 
           expect(result).to be_falsy
+        end
+
+        it 'does not notify push events if they are not for the default branch' do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).not_to have_requested(:post, webhook_url)
+        end
+
+        it 'notifies about push events for the default branch' do
+          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
         end
       end
 

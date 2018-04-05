@@ -33,6 +33,8 @@
 
 = render 'shared/issuable/form/merge_params', issuable: issuable
 
+= render 'shared/issuable/form/contribution', issuable: issuable, form: form
+
 - if @merge_request_to_resolve_discussions_of
   .form-group
     .col-sm-10.col-sm-offset-2

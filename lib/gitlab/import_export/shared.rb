@@ -1,11 +1,15 @@
 module Gitlab
   module ImportExport
     class Shared
-      attr_reader :errors, :opts
+      attr_reader :errors, :project
 
-      def initialize(opts)
-        @opts = opts
+      def initialize(project)
+        @project = project
         @errors = []
+      end
+
+      def active_export_count
+        Dir[File.join(archive_path, '*')].count { |name| File.directory?(name) }
       end
 
       def export_path
@@ -18,7 +22,7 @@ module Gitlab
 
       def error(error)
         error_out(error.message, caller[0].dup)
-        @errors << error.message
+        add_error_message(error.message)
 
         # Debug:
         if error.backtrace
@@ -28,18 +32,30 @@ module Gitlab
         end
       end
 
+      def add_error_message(error_message)
+        @errors << error_message
+      end
+
+      def after_export_in_progress?
+        File.exist?(after_export_lock_file)
+      end
+
       private
 
       def relative_path
-        File.join(opts[:relative_path], SecureRandom.hex)
+        File.join(relative_archive_path, SecureRandom.hex)
       end
 
       def relative_archive_path
-        File.join(opts[:relative_path], '..')
+        @project.disk_path
       end
 
       def error_out(message, caller)
         Rails.logger.error("Import/Export error raised on #{caller}: #{message}")
+      end
+
+      def after_export_lock_file
+        AfterExportStrategies::BaseAfterExportStrategy.lock_file_path(project)
       end
     end
   end

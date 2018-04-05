@@ -1,10 +1,8 @@
-require 'constraints/project_url_constrainer'
-
 resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
-constraints(ProjectUrlConstrainer.new) do
+constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
   # the `format` option is not set to false, we need to specify that
@@ -54,8 +52,8 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
+      resource :pages, only: [:show, :update, :destroy] do
+        resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
           end
@@ -69,7 +67,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
         member do
           put :test
         end
@@ -103,6 +101,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :remove_wip
           post :assign_related_issues
+          get :discussions, format: :json
           post :rebase
 
           scope constraints: { format: nil }, action: :show do
@@ -131,7 +130,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :bulk_update
         end
 
-        resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+        resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
             delete :resolve, action: :unresolve
@@ -281,6 +280,10 @@ constraints(ProjectUrlConstrainer.new) do
             post :keep
           end
         end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
+        end
       end
 
       draw :legacy_builds
@@ -380,7 +383,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :boards, only: [:index, :show, :create, :update, :destroy]
+      # On CE only index and show are needed
+      resources :boards, only: [:index, :show]
 
       resources :todos, only: [:create]
 
@@ -416,7 +420,7 @@ constraints(ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
         end
         resource :integrations, only: [:show]

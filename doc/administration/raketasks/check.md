@@ -78,34 +78,45 @@ Example output:
 
 ## Uploaded Files Integrity
 
-The uploads check Rake task will loop through all uploads in the database
-and run two checks to determine the integrity of each file:
+Various types of file can be uploaded to a GitLab installation by users.
+Checksums are generated and stored in the database upon upload, and integrity
+checks using those checksums can be run. These checks also detect missing files.
 
-1. Check if the file exist on the file system.
-1. Check if the checksum of the file on the file system matches the checksum in the database.
+Currently, integrity checks are supported for the following types of file:
+
+* CI artifacts (Available from version 10.7.0)
+* LFS objects (Available from version 10.6.0)
+* User uploads (Available from version 10.6.0)
 
 **Omnibus Installation**
 
 ```
+sudo gitlab-rake gitlab:artifacts:check
+sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
 ```
 
 **Source Installation**
 
 ```bash
+sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
 ```
 
-This task also accepts some environment variables which you can use to override
+These tasks also accept some environment variables which you can use to override
 certain values:
 
-Variable | Type | Description
--------- | ---- | -----------
-`BATCH`   | integer  | Specifies the size of the batch. Defaults to 200.
-`ID_FROM` | integer  | Specifies the ID to start from, inclusive of the value.
-`ID_TO`   | integer  | Specifies the ID value to end at, inclusive of the value.
+Variable  | Type    | Description
+--------- | ------- | -----------
+`BATCH`   | integer | Specifies the size of the batch. Defaults to 200.
+`ID_FROM` | integer | Specifies the ID to start from, inclusive of the value.
+`ID_TO`   | integer | Specifies the ID value to end at, inclusive of the value.
+`VERBOSE` | boolean | Causes failures to be listed individually, rather than being summarized.
 
 ```bash
+sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250
+sudo gitlab-rake gitlab:lfs:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
 ```
 

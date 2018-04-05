@@ -18,10 +18,6 @@ class Groups::ApplicationController < ApplicationController
     @projects ||= GroupProjectsFinder.new(group: group, current_user: current_user).execute
   end
 
-  def group_merge_requests
-    @group_merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id).execute
-  end
-
   def authorize_admin_group!
     unless can?(current_user, :admin_group, group)
       return render_404

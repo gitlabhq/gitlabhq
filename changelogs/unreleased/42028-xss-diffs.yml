@@ -1,0 +1,5 @@
+---
+title: Fix XSS on diff view stored on filenames
+merge_request:
+author:
+type: security

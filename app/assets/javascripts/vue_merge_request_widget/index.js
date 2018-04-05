@@ -6,7 +6,7 @@ import Translate from '../vue_shared/translate';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;
 
   const vm = new Vue(mrWidgetOptions);
@@ -14,4 +14,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.gl.mrWidget = {
     checkStatus: vm.checkStatus,
   };
-});
+};

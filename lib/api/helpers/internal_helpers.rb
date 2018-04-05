@@ -29,18 +29,6 @@ module API
         {}
       end
 
-      def fix_git_env_repository_paths(env, repository_path)
-        if obj_dir_relative = env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence
-          env['GIT_OBJECT_DIRECTORY'] = File.join(repository_path, obj_dir_relative)
-        end
-
-        if alt_obj_dirs_relative = env['GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE'].presence
-          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = alt_obj_dirs_relative.map { |dir| File.join(repository_path, dir) }
-        end
-
-        env
-      end
-
       def log_user_activity(actor)
         commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
 
@@ -109,14 +97,7 @@ module API
 
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
-        return unless %w[git-receive-pack git-upload-pack].include?(action)
-
-        if action == 'git-receive-pack'
-          return unless Gitlab::GitalyClient.feature_enabled?(
-            :ssh_receive_pack,
-            status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
-          )
-        end
+        return unless %w[git-receive-pack git-upload-pack git-upload-archive].include?(action)
 
         {
           repository: repository.gitaly_repository,

@@ -14,37 +14,31 @@ class Projects::CommitsController < Projects::ApplicationController
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: @ref, target_branch: @repository.root_ref)
 
-    # https://gitlab.com/gitlab-org/gitaly/issues/931
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      respond_to do |format|
-        format.html
-        format.atom { render layout: 'xml.atom' }
+    respond_to do |format|
+      format.html
+      format.atom { render layout: 'xml.atom' }
 
-        format.json do
-          pager_json(
-            'projects/commits/_commits',
-            @commits.size,
-            project: @project,
-            ref: @ref)
-        end
+      format.json do
+        pager_json(
+          'projects/commits/_commits',
+          @commits.size,
+          project: @project,
+          ref: @ref)
       end
     end
   end
 
   def signatures
-    # https://gitlab.com/gitlab-org/gitaly/issues/931
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      respond_to do |format|
-        format.json do
-          render json: {
-            signatures: @commits.select(&:has_signature?).map do |commit|
-              {
-                commit_sha: commit.sha,
-                html: view_to_html_string('projects/commit/_signature', signature: commit.signature)
-              }
-            end
-          }
-        end
+    respond_to do |format|
+      format.json do
+        render json: {
+          signatures: @commits.select(&:has_signature?).map do |commit|
+            {
+              commit_sha: commit.sha,
+              html: view_to_html_string('projects/commit/_signature', signature: commit.signature)
+            }
+          end
+        }
       end
     end
   end

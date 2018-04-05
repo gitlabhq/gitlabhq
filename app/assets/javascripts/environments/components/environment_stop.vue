@@ -3,6 +3,8 @@
   * Renders the stop "button" that allows stop an environment.
   * Used in environments table.
   */
+
+  import $ from 'jquery';
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';

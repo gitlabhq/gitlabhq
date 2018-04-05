@@ -138,8 +138,12 @@ module LoginHelpers
     Rails.application.routes.draw do
       post '/users/auth/saml' => 'omniauth_callbacks#saml'
     end
-    allow(Gitlab::OAuth::Provider).to receive_messages(providers: [:saml], config_for: mock_saml_config)
+    allow(Gitlab::Auth::OAuth::Provider).to receive_messages(providers: [:saml], config_for: mock_saml_config)
     stub_omniauth_setting(messages)
+    stub_saml_authorize_path_helpers
+  end
+
+  def stub_saml_authorize_path_helpers
     allow_any_instance_of(Object).to receive(:user_saml_omniauth_authorize_path).and_return('/users/auth/saml')
     allow_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
   end
@@ -149,10 +153,10 @@ module LoginHelpers
   end
 
   def stub_basic_saml_config
-    allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', args: {} } })
+    allow(Gitlab::Auth::Saml::Config).to receive_messages({ options: { name: 'saml', args: {} } })
   end
 
   def stub_saml_group_config(groups)
-    allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
+    allow(Gitlab::Auth::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
   end
 end

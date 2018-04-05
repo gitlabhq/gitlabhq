@@ -8,6 +8,6 @@ module AccessRequestable
   extend ActiveSupport::Concern
 
   def request_access(user)
-    Members::RequestAccessService.new(self, user).execute
+    Members::RequestAccessService.new(user).execute(self)
   end
 end

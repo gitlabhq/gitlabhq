@@ -45,13 +45,21 @@ module StubConfiguration
     allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
   end
 
+  def stub_artifacts_setting(messages)
+    allow(Gitlab.config.artifacts).to receive_messages(to_settings(messages))
+  end
+
   def stub_storage_settings(messages)
     messages.deep_stringify_keys!
 
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages.default
-    messages.each do |storage_name, storage_settings|
-      storage_settings['path'] = TestEnv.repos_path unless storage_settings.key?('path')
+    messages.each do |storage_name, storage_hash|
+      if !storage_hash.key?('path') || storage_hash['path'] == Gitlab::GitalyClient::StorageSettings::Deprecated
+        storage_hash['path'] = TestEnv.repos_path
+      end
+
+      messages[storage_name] = Gitlab::GitalyClient::StorageSettings.new(storage_hash.to_h)
     end
 
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))

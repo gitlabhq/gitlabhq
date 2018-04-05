@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import toggleButton from '~/vue_shared/components/toggle_button.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Toggle Button', () => {
   let vm;

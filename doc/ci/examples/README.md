@@ -32,34 +32,45 @@ There's also a collection of repositories with [example projects](https://gitlab
 - **Debian**: [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
 - **Maven**: [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md)
 
+### Game development
+
+- [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md)
+
 ### Miscellaneous
 
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-### Code quality analysis
+## Code quality analysis
 
 [Analyze code quality with the Code Climate CLI](code_climate.md).
 
-### Static Application Security Testing (SAST)
+## Static Application Security Testing (SAST)
 
-- **(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
-- [Scan your Docker images for vulnerabilities](sast_docker.md)
+**(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
 
-### Dynamic Application Security Testing (DAST)
+## Dependency Scanning
+
+**(Ultimate)** [Scan your dependencies for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html)
+
+## Container Scanning
+
+[Scan your Docker images for vulnerabilities](container_scanning.md)
+
+## Dynamic Application Security Testing (DAST)
 
 Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md).
 
-### Browser Performance Testing with Sitespeed.io
+## Browser Performance Testing with Sitespeed.io
 
 Analyze your [browser performance with Sitespeed.io](browser_performance.md).
 
-### GitLab CI/CD for Review Apps
+## GitLab CI/CD for Review Apps
 
 - [Example project](https://gitlab.com/gitlab-examples/review-apps-nginx/) that shows how to use GitLab CI/CD for [Review Apps](../review_apps/index.html).
 - [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/)
 
-### GitLab CI/CD for GitLab Pages
+## GitLab CI/CD for GitLab Pages
 
 See the documentation on [GitLab Pages](../../user/project/pages/index.md) for a complete overview.
 

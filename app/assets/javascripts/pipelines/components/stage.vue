@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
 
   /**
    * Renders each stage of the pipeline mini graph.

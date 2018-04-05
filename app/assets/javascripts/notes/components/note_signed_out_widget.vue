@@ -1,19 +1,17 @@
 <script>
-  import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
-  export default {
-    computed: {
-      ...mapGetters([
-        'getNotesDataByProp',
-      ]),
-      registerLink() {
-        return this.getNotesDataByProp('registerPath');
-      },
-      signInLink() {
-        return this.getNotesDataByProp('newSessionPath');
-      },
+export default {
+  computed: {
+    ...mapGetters(['getNotesDataByProp']),
+    registerLink() {
+      return this.getNotesDataByProp('registerPath');
     },
-  };
+    signInLink() {
+      return this.getNotesDataByProp('newSessionPath');
+    },
+  },
+};
 </script>
 
 <template>

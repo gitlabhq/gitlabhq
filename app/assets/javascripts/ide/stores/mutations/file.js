@@ -1,74 +1,146 @@
 import * as types from '../mutation_types';
-import { findIndexOfFile } from '../utils';
 
 export default {
-  [types.SET_FILE_ACTIVE](state, { file, active }) {
-    Object.assign(file, {
+  [types.SET_FILE_ACTIVE](state, { path, active }) {
+    Object.assign(state.entries[path], {
       active,
     });
 
-    Object.assign(state, {
-      selectedFile: file,
-    });
+    if (active && !state.entries[path].pending) {
+      Object.assign(state, {
+        openFiles: state.openFiles.map(f =>
+          Object.assign(f, { active: f.pending ? false : f.active }),
+        ),
+      });
+    }
   },
-  [types.TOGGLE_FILE_OPEN](state, file) {
-    Object.assign(file, {
-      opened: !file.opened,
+  [types.TOGGLE_FILE_OPEN](state, path) {
+    Object.assign(state.entries[path], {
+      opened: !state.entries[path].opened,
     });
 
-    if (file.opened) {
-      state.openFiles.push(file);
+    if (state.entries[path].opened) {
+      Object.assign(state, {
+        openFiles: state.openFiles.filter(f => f.path !== path).concat(state.entries[path]),
+      });
     } else {
-      state.openFiles.splice(findIndexOfFile(state.openFiles, file), 1);
+      const file = state.entries[path];
+
+      Object.assign(state, {
+        openFiles: state.openFiles.filter(f => f.key !== file.key),
+      });
     }
   },
   [types.SET_FILE_DATA](state, { data, file }) {
-    Object.assign(file, {
+    Object.assign(state.entries[file.path], {
+      id: data.id,
       blamePath: data.blame_path,
       commitsPath: data.commits_path,
       permalink: data.permalink,
       rawPath: data.raw_path,
       binary: data.binary,
-      html: data.html,
       renderError: data.render_error,
+      raw: null,
+      baseRaw: null,
+      html: data.html,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
-    Object.assign(file, {
+    Object.assign(state.entries[file.path], {
       raw,
     });
   },
-  [types.UPDATE_FILE_CONTENT](state, { file, content }) {
-    const changed = content !== file.raw;
+  [types.SET_FILE_BASE_RAW_DATA](state, { file, baseRaw }) {
+    Object.assign(state.entries[file.path], {
+      baseRaw,
+    });
+  },
+  [types.UPDATE_FILE_CONTENT](state, { path, content }) {
+    const changed = content !== state.entries[path].raw;
 
-    Object.assign(file, {
+    Object.assign(state.entries[path], {
       content,
       changed,
     });
   },
   [types.SET_FILE_LANGUAGE](state, { file, fileLanguage }) {
-    Object.assign(file, {
+    Object.assign(state.entries[file.path], {
       fileLanguage,
     });
   },
   [types.SET_FILE_EOL](state, { file, eol }) {
-    Object.assign(file, {
+    Object.assign(state.entries[file.path], {
       eol,
     });
   },
   [types.SET_FILE_POSITION](state, { file, editorRow, editorColumn }) {
-    Object.assign(file, {
+    Object.assign(state.entries[file.path], {
       editorRow,
       editorColumn,
     });
   },
-  [types.DISCARD_FILE_CHANGES](state, file) {
-    Object.assign(file, {
-      content: file.raw,
+  [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
+    Object.assign(state.entries[file.path], {
+      mrChange,
+    });
+  },
+  [types.SET_FILE_VIEWMODE](state, { file, viewMode }) {
+    Object.assign(state.entries[file.path], {
+      viewMode,
+    });
+  },
+  [types.DISCARD_FILE_CHANGES](state, path) {
+    Object.assign(state.entries[path], {
+      content: state.entries[path].raw,
       changed: false,
     });
   },
-  [types.CREATE_TMP_FILE](state, { file, parent }) {
-    parent.tree.push(file);
+  [types.ADD_FILE_TO_CHANGED](state, path) {
+    Object.assign(state, {
+      changedFiles: state.changedFiles.concat(state.entries[path]),
+    });
+  },
+  [types.REMOVE_FILE_FROM_CHANGED](state, path) {
+    Object.assign(state, {
+      changedFiles: state.changedFiles.filter(f => f.path !== path),
+    });
+  },
+  [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
+    Object.assign(state.entries[file.path], {
+      changed,
+    });
+  },
+  [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
+    const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
+    let openFiles = state.openFiles.map(f =>
+      Object.assign(f, { active: f.path === file.path, opened: false }),
+    );
+
+    if (!pendingTab) {
+      const openFile = openFiles.find(f => f.path === file.path);
+
+      openFiles = openFiles.concat(openFile ? null : file).reduce((acc, f) => {
+        if (!f) return acc;
+
+        if (f.path === file.path) {
+          return acc.concat({
+            ...f,
+            active: true,
+            pending: true,
+            opened: true,
+            key: `${keyPrefix}-${f.key}`,
+          });
+        }
+
+        return acc.concat(f);
+      }, []);
+    }
+
+    Object.assign(state, { openFiles });
+  },
+  [types.REMOVE_PENDING_TAB](state, file) {
+    Object.assign(state, {
+      openFiles: state.openFiles.filter(f => f.key !== file.key),
+    });
   },
 };

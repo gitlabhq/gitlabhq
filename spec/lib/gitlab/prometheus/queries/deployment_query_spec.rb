@@ -31,7 +31,7 @@ describe Gitlab::Prometheus::Queries::DeploymentQuery do
     expect(client).to receive(:query).with('avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="environment-slug"}[30m])) * 100',
                                            time: stop_time)
 
-    expect(subject.query(environment.id, deployment.id)).to eq(memory_values: nil, memory_before: nil, memory_after: nil,
-                                                               cpu_values: nil, cpu_before: nil, cpu_after: nil)
+    expect(subject.query(deployment.id)).to eq(memory_values: nil, memory_before: nil, memory_after: nil,
+                                               cpu_values: nil, cpu_before: nil, cpu_after: nil)
   end
 end

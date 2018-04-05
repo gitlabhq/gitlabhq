@@ -1,7 +1,4 @@
 - todo = issuable_todo(issuable)
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('sidebar')
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
@@ -87,7 +84,7 @@
                   = dropdown_content do
                     .js-due-date-calendar
 
-      - if @labels && @labels.any?
+      - if @labels
         - selected_labels = issuable.labels
         .block.labels
           .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
@@ -110,7 +107,7 @@
             - selected_labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (project_labels_path(@project, :json) if @project) } }
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (labels_filter_path(false) if @project) } }
                 %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                   = multi_label_name(selected_labels, "Labels")
                 = icon('chevron-down', 'aria-hidden': 'true')
@@ -120,10 +117,12 @@
                   = render partial: "shared/issuable/label_page_create"
 
       - if issuable.has_attribute?(:confidential)
+        -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
       - if issuable.has_attribute?(:discussion_locked)
+        -# haml-lint:disable InlineJavaScript
         %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
         #js-lock-entry-point
 
@@ -160,4 +159,5 @@
                   = _('Move')
                   = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 
+    -# haml-lint:disable InlineJavaScript
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable, can_edit_issuable).to_json.html_safe

@@ -41,14 +41,14 @@ module Gitlab
       end
 
       def apply_gitattributes(revision)
-        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: revision)
+        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
 
-      def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:)
+      def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
         request = Gitaly::FetchRemoteRequest.new(
           repository: @gitaly_repo, remote: remote, force: forced,
-          no_tags: no_tags, timeout: timeout
+          no_tags: no_tags, timeout: timeout, no_prune: !prune
         )
 
         if ssh_auth&.ssh_import?
@@ -248,6 +248,14 @@ module Gitlab
         )
 
         raise Gitlab::Git::OSError.new(response.error) unless response.error.empty?
+      end
+
+      def license_short_name
+        request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
+
+        response.license_short_name.presence
       end
     end
   end

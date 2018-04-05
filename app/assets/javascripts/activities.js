@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign, class-methods-use-this */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Pager from './pager';
 import { localTimeAgo } from './lib/utils/datetime_utility';

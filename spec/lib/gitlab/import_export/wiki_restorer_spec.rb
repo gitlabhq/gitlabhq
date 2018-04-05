@@ -6,7 +6,7 @@ describe Gitlab::ImportExport::WikiRestorer do
     let!(:project_without_wiki) { create(:project) }
     let!(:project) { create(:project) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+    let(:shared) { project.import_export_shared }
     let(:bundler) { Gitlab::ImportExport::WikiRepoSaver.new(project: project_with_wiki, shared: shared) }
     let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename) }
     let(:restorer) do

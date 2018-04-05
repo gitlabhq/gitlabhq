@@ -1,27 +1,82 @@
 <script>
-  import { mapState } from 'vuex';
-  import RepoTab from './repo_tab.vue';
+import { mapActions } from 'vuex';
+import RepoTab from './repo_tab.vue';
+import EditorMode from './editor_mode_dropdown.vue';
+import router from '../ide_router';
 
-  export default {
-    components: {
-      'repo-tab': RepoTab,
+export default {
+  components: {
+    RepoTab,
+    EditorMode,
+  },
+  props: {
+    activeFile: {
+      type: Object,
+      required: true,
     },
-    computed: {
-      ...mapState([
-        'openFiles',
-      ]),
+    files: {
+      type: Array,
+      required: true,
     },
-  };
+    viewer: {
+      type: String,
+      required: true,
+    },
+    hasChanges: {
+      type: Boolean,
+      required: true,
+    },
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      showShadow: false,
+    };
+  },
+  updated() {
+    if (!this.$refs.tabsScroller) return;
+
+    this.showShadow = this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+  },
+  methods: {
+    ...mapActions(['updateViewer', 'removePendingTab']),
+    openFileViewer(viewer) {
+      this.updateViewer(viewer);
+
+      if (this.activeFile.pending) {
+        return this.removePendingTab(this.activeFile).then(() => {
+          router.push(`/project${this.activeFile.url}`);
+        });
+      }
+
+      return null;
+    },
+  },
+};
 </script>
 
 <template>
-  <ul
-    class="multi-file-tabs list-unstyled append-bottom-0"
-  >
-    <repo-tab
-      v-for="tab in openFiles"
-      :key="tab.key"
-      :tab="tab"
+  <div class="multi-file-tabs">
+    <ul
+      class="list-unstyled append-bottom-0"
+      ref="tabsScroller"
+    >
+      <repo-tab
+        v-for="tab in files"
+        :key="tab.key"
+        :tab="tab"
+      />
+    </ul>
+    <editor-mode
+      :viewer="viewer"
+      :show-shadow="showShadow"
+      :has-changes="hasChanges"
+      :merge-request-id="mergeRequestId"
+      @click="openFileViewer"
     />
-  </ul>
+  </div>
 </template>

@@ -236,8 +236,8 @@ describe 'cycle analytics events' do
       pipeline.run!
       pipeline.succeed!
 
-      merge_merge_requests_closing_issue(context)
-      deploy_master
+      merge_merge_requests_closing_issue(user, project, context)
+      deploy_master(user, project)
     end
 
     it 'has the name' do
@@ -294,8 +294,8 @@ describe 'cycle analytics events' do
     let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
     before do
-      merge_merge_requests_closing_issue(context)
-      deploy_master
+      merge_merge_requests_closing_issue(user, project, context)
+      deploy_master(user, project)
     end
 
     it 'has the total time' do
@@ -334,7 +334,7 @@ describe 'cycle analytics events' do
   def setup(context)
     milestone = create(:milestone, project: project)
     context.update(milestone: milestone)
-    mr = create_merge_request_closing_issue(context, commit_message: "References #{context.to_reference}")
+    mr = create_merge_request_closing_issue(user, project, context, commit_message: "References #{context.to_reference}")
 
     ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end

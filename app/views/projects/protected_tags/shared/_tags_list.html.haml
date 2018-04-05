@@ -2,7 +2,7 @@
   - if @protected_tags.empty?
     .panel-heading
       %h3.panel-title
-        Protected tag (#{@protected_tags.size})
+        Protected tag (#{@protected_tags_count})
     %p.settings-message.text-center
       There are currently no protected tags, protect a tag with the form above.
   - else
@@ -17,7 +17,7 @@
           %col
       %thead
         %tr
-          %th Protected tag (#{@protected_tags.size})
+          %th Protected tag (#{@protected_tags_count})
           %th Last commit
           %th Allowed to create
           - if can_admin_project

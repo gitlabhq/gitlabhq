@@ -14,7 +14,6 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
-  before_action :group_merge_requests, only: [:merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show, :subgroups]

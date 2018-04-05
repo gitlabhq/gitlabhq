@@ -1,7 +1,5 @@
 - affix_offset = local_assigns.fetch(:affix_offset, "50")
 - project = local_assigns[:project]
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
 
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar.milestone-sidebar

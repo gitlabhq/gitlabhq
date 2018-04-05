@@ -19,6 +19,20 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
+  def group_issues_count(state:)
+    IssuesFinder
+      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
+      .execute
+      .count
+  end
+
+  def group_merge_requests_count(state:)
+    MergeRequestsFinder
+      .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
+      .execute
+      .count
+  end
+
   def group_icon(group, options = {})
     img_path = group_icon_url(group, options)
     image_tag img_path, options
@@ -77,10 +91,6 @@ module GroupsHelper
     end
   end
 
-  def group_issues(group)
-    IssuesFinder.new(current_user, group_id: group.id).execute
-  end
-
   def remove_group_message(group)
     _("You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
@@ -119,7 +129,7 @@ module GroupsHelper
     links = [:overview, :group_members]
 
     if can?(current_user, :read_cross_project)
-      links += [:activity, :issues, :labels, :milestones, :merge_requests]
+      links += [:activity, :issues, :boards, :labels, :milestones, :merge_requests]
     end
 
     if can?(current_user, :admin_group, @group)

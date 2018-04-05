@@ -1,5 +1,6 @@
+import $ from 'jquery';
 import VariableList from '~/ci_variable_list/ci_variable_list';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 const HIDE_CLASS = 'hide';
 

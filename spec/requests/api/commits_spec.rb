@@ -149,6 +149,18 @@ describe API::Commits do
         end
       end
 
+      context 'all optional parameter' do
+        it 'returns all project commits' do
+          commit_count = project.repository.count_commits(all: true)
+
+          get api("/projects/#{project_id}/repository/commits?all=true", user)
+
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count.to_s)
+          expect(response.headers['X-Page']).to eql('1')
+        end
+      end
+
       context 'with pagination params' do
         let(:page) { 1 }
         let(:per_page) { 5 }
@@ -1127,6 +1139,35 @@ describe API::Commits do
           it_behaves_like 'ref new comment'
         end
       end
+    end
+  end
+
+  describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
+    let!(:project) { create(:project, :repository, :private) }
+    let!(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let(:commit) { merged_mr.merge_request_diff.commits.last }
+
+    it 'returns the correct merge request' do
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response.length).to eq(1)
+      expect(json_response[0]['id']).to eq(merged_mr.id)
+    end
+
+    it 'returns 403 for an unauthorized user' do
+      project.add_guest(user)
+
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'responds 404 when the commit does not exist' do
+      get api("/projects/#{project.id}/repository/commits/a7d26f00c35b/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 end

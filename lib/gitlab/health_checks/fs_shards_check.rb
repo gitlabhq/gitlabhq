@@ -77,7 +77,7 @@ module Gitlab
         end
 
         def storage_path(storage_name)
-          storages_paths&.dig(storage_name, 'path')
+          storages_paths[storage_name]&.legacy_disk_path
         end
 
         # All below test methods use shell commands to perform actions on storage volumes.

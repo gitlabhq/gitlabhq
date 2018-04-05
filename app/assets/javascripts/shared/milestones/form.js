@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ZenMode from '../../zen_mode';
 import DueDateSelectors from '../../due_date_select';
 import GLForm from '../../gl_form';

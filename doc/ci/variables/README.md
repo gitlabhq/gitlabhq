@@ -12,7 +12,7 @@ this order:
 1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
 1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
-1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
+1. YAML-defined [job-level variables](../yaml/README.md#variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
 1. [Predefined variables](#predefined-variables-environment-variables) (are the
@@ -56,6 +56,9 @@ future GitLab releases.**
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
 | **CI_RUNNER_TAGS**              | 8.10   | 0.5    | The defined runner tags |
+| **CI_RUNNER_VERSION**           | all    | 10.6   | GitLab Runner version that is executing the current job |
+| **CI_RUNNER_REVISION**          | all    | 10.6   | GitLab Runner revision that is executing the current job |
+| **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
 | **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
@@ -445,6 +448,72 @@ export GITLAB_USER_EMAIL="user@example.com"
 export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
+
+## Variables expressions
+
+> Variables expressions were added in GitLab 10.7.
+
+It is possible to use variables expressions with only / except policies in
+`.gitlab-ci.yml`. By using this approach you can limit what builds are going to
+be created within a pipeline after pushing code to GitLab.
+
+This is particularly useful in combination with secret variables and triggered
+pipeline variables.
+
+```yaml
+deploy:
+  script: cap staging deploy
+  environment: staging
+  only:
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Each provided variables expression is going to be evaluated before creating
+a pipeline.
+
+If any of the conditions in `variables` evaluates to truth when using `only`,
+a new job is going to be created. If any of the expressions evaluates to truth
+when `except` is being used, a job is not going to be created.
+
+This follows usual rules for `only` / `except` policies.
+
+### Supported syntax
+
+Below you can find currently supported syntax reference:
+
+1. Equality matching using a string
+
+    Example: `$VARIABLE == "some value"`
+
+    You can use equality operator `==` to compare a variable content to a
+    string. We support both, double quotes and single quotes to define a string
+    value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
+    are supported. `"some value" == $VARIABLE` is correct too.
+
+1. Checking for an undefined value
+
+    It sometimes happens that you want to check whether variable is defined or
+    not. To do that, you can compare variable to `null` value, like
+    `$VARIABLE == null`. This expression is going to evaluate to truth if
+    variable is not set.
+
+1. Checking for an empty variable
+
+    If you want to check whether a variable is defined, but is empty, you can
+    simply compare it against an empty string, like `$VAR == ''`.
+
+1. Comparing two variables
+
+    It is possible to compare two variables. `$VARIABLE_1 == $VARIABLE_2`.
+
+1. Variable presence check
+
+    If you only want to create a job when there is some variable present,
+    which means that it is defined and non-empty, you can simply use
+    variable name as an expression, like `$STAGING`. If `$STAGING` variable
+    is defined, and is non empty, expression will evaluate to truth.
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"

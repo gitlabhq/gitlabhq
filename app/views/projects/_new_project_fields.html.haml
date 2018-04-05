@@ -1,18 +1,20 @@
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 
 .row{ id: project_name_id }
+  = f.hidden_field :ci_cd_only, value: ci_cd_only
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-light' do
       %span
         Project path
     .input-group
       - if current_user.can_select_namespace?
-        .input-group-addon
+        .input-group-addon.has-tooltip{ title: root_url }
           = root_url
         = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1}
 
       - else
-        .input-group-addon.static-namespace
+        .input-group-addon.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
           #{user_url(current_user.username)}/
         = f.hidden_field :namespace_id, value: current_user.namespace_id
   .form-group.project-path.col-sm-6

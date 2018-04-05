@@ -72,13 +72,12 @@
                   #{ _('New tag') }
 
 .tree-controls
-  - if show_new_ide?
-    = succeed " " do
-      = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-        = _('Web IDE')
-
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
+
+  = succeed " " do
+    = link_to ide_edit_path(@project, @id, ""), class: 'btn btn-default' do
+      = _('Web IDE')
 
   = render 'projects/buttons/download', project: @project, ref: @ref

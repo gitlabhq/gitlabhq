@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class FileTemplateSelector {
   constructor(mediator) {
     this.mediator = mediator;

@@ -1,5 +1,5 @@
 class MergeRequest < ActiveRecord::Base
-  include InternalId
+  include NonatomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -375,15 +375,27 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_start_sha
-    diff_start_commit.try(:sha)
+    if persisted?
+      merge_request_diff.start_commit_sha
+    else
+      target_branch_head.try(:sha)
+    end
   end
 
   def diff_base_sha
-    diff_base_commit.try(:sha)
+    if persisted?
+      merge_request_diff.base_commit_sha
+    else
+      branch_merge_base_commit.try(:sha)
+    end
   end
 
   def diff_head_sha
-    diff_head_commit.try(:sha)
+    if persisted?
+      merge_request_diff.head_commit_sha
+    else
+      source_branch_head.try(:sha)
+    end
   end
 
   # When importing a pull request from GitHub, the old and new branches may no
@@ -524,18 +536,25 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
-  def merge_request_diff_for(diff_refs_or_sha)
-    @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
-      diffs = merge_request_diffs.viewable
-      h[diff_refs_or_sha] =
-        if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
-          diffs.find_by_diff_refs(diff_refs_or_sha)
-        else
-          diffs.find_by(head_commit_sha: diff_refs_or_sha)
-        end
-    end
+  def viewable_diffs
+    @viewable_diffs ||= merge_request_diffs.viewable.to_a
+  end
 
-    @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
+  def merge_request_diff_for(diff_refs_or_sha)
+    matcher =
+      if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
+        {
+          'start_commit_sha' => diff_refs_or_sha.start_sha,
+          'head_commit_sha' => diff_refs_or_sha.head_sha,
+          'base_commit_sha' => diff_refs_or_sha.base_sha
+        }
+      else
+        { 'head_commit_sha' => diff_refs_or_sha }
+      end
+
+    viewable_diffs.find do |diff|
+      diff.attributes.slice(*matcher.keys) == matcher
+    end
   end
 
   def version_params_for(diff_refs)
@@ -567,9 +586,10 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
+    new_diff = create_merge_request_diff
 
-    create_merge_request_diff
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
+
     new_diff_refs = self.diff_refs
 
     update_diff_discussion_positions(
@@ -646,7 +666,7 @@ class MergeRequest < ActiveRecord::Base
     !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
-      diff_head_commit == source_branch_head
+      diff_head_sha == source_branch_head.try(:sha)
   end
 
   def should_remove_source_branch?
@@ -853,7 +873,7 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     access = ::Gitlab::UserAccess.new(user, project: project)
-    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
+    access.can_update_branch?(target_branch)
   end
 
   def can_be_merged_via_command_line_by?(user)
@@ -1074,5 +1094,23 @@ class MergeRequest < ActiveRecord::Base
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
+  def allow_maintainer_to_push
+    maintainer_push_possible? && super
+  end
+
+  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+
+  def maintainer_push_possible?
+    source_project.present? && for_fork? &&
+      target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      !ProtectedBranch.protected?(source_project, source_branch)
+  end
+
+  def can_allow_maintainer_to_push?(user)
+    maintainer_push_possible? &&
+      Ability.allowed?(user, :push_code, source_project)
   end
 end

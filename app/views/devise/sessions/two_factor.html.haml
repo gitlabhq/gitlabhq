@@ -1,7 +1,3 @@
-- if inject_u2f_api?
-  - content_for :page_specific_javascripts do
-    = webpack_bundle_tag('u2f')
-
 %div
   = render 'devise/shared/tab_single', tab_title: 'Two-Factor Authentication'
   .login-box

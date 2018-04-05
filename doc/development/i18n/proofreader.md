@@ -10,17 +10,24 @@ are very appreciative of the work done by translators and proofreaders!
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Chinese Traditional
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
 - Chinese Traditional, Hong Kong
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Dutch
 - Esperanto
 - French
+  - Rémy Coutable - [GitLab](https://gitlab.com/rymai), [Crowdin](https://crowdin.com/profile/rymai)
 - German
+- Indonesian
+  - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
 - Japanese
 - Korean
+  - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+- Polish
+  - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
 - Russian

@@ -4,7 +4,7 @@ import Translate from '../vue_shared/translate';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+export default () => new Vue({
   el: '#js-vue-registry-images',
   components: {
     registryApp,
@@ -22,4 +22,4 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});

@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
+
+import $ from 'jquery';
 import { __ } from '~/locale';
 import TaskList from './task_list';
 import MergeRequestTabs from './merge_request_tabs';

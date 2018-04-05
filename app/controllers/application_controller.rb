@@ -191,7 +191,7 @@ class ApplicationController < ActionController::Base
     return unless signed_in? && session[:service_tickets]
 
     valid = session[:service_tickets].all? do |provider, ticket|
-      Gitlab::OAuth::Session.valid?(provider, ticket)
+      Gitlab::Auth::OAuth::Session.valid?(provider, ticket)
     end
 
     unless valid
@@ -215,7 +215,7 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.requires_ldap_check?
       return unless current_user.try_obtain_ldap_lease
 
-      unless Gitlab::LDAP::Access.allowed?(current_user)
+      unless Gitlab::Auth::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."
         redirect_to new_user_session_path
@@ -227,10 +227,6 @@ class ApplicationController < ActionController::Base
     # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
     filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
-  end
-
-  def gitlab_ldap_access(&block)
-    Gitlab::LDAP::Access.open { |access| yield(access) }
   end
 
   # JSON for infinite scroll via Pager object
@@ -284,7 +280,7 @@ class ApplicationController < ActionController::Base
   end
 
   def github_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:github)
+    Gitlab::Auth::OAuth::Provider.enabled?(:github)
   end
 
   def gitlab_import_enabled?
@@ -292,7 +288,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:gitlab)
+    Gitlab::Auth::OAuth::Provider.enabled?(:gitlab)
   end
 
   def bitbucket_import_enabled?
@@ -300,7 +296,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket)
+    Gitlab::Auth::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?
