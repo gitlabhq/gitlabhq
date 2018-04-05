@@ -69,6 +69,7 @@ export default class Editor {
           occurrencesHighlight: false,
           renderLineHighlight: 'none',
           hideCursorInOverviewRuler: true,
+          renderSideBySide: this.renderSideBySide(domElement),
         })),
       );
 
@@ -177,11 +178,15 @@ export default class Editor {
     if (!this.isDiffEditorType) return;
 
     this.instance.updateOptions({
-      renderSideBySide: this.instance.getDomNode().offsetWidth >= 700,
+      renderSideBySide: this.renderSideBySide(this.instance.getDomNode()),
     });
   }
 
   get isDiffEditorType() {
     return this.instance.getEditorType() === 'vs.editor.IDiffEditor';
+  }
+
+  renderSideBySide(domElement) {
+    return domElement.offsetWidth >= 700;
   }
 }

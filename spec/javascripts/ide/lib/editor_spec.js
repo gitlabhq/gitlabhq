@@ -77,6 +77,7 @@ describe('Multi-file editor library', () => {
         renderLineHighlight: 'none',
         hideCursorInOverviewRuler: true,
         wordWrap: 'on',
+        renderSideBySide: true,
       });
     });
   });
