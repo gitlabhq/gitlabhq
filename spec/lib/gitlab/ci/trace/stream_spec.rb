@@ -228,6 +228,8 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
           File.open(path)
         end
       end
+
+      it_behaves_like 'sets'
     end
 
     context 'when stream is ChunkedIO' do

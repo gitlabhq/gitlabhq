@@ -69,7 +69,7 @@ module Gitlab
         def read(length = nil, outbuf = "")
           out = ""
 
-          length = size - tell unless length
+          length ||= size - tell
 
           until length <= 0 || eof?
             data = chunk_slice_from_offset

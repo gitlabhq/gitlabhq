@@ -13,14 +13,13 @@ module Ci
 
     enum data_store: {
       redis: 1,
-      db: 2,
+      db: 2
     }
 
     def data
-      case 
-      when redis?
+      if redis?
         redis_data
-      when db?
+      elsif db?
         raw_data
       else
         raise 'Unsupported data store'
@@ -30,10 +29,9 @@ module Ci
     def set_data(value)
       raise 'too much data' if value.bytesize > CHUNK_SIZE
 
-      case
-      when redis?
+      if redis?
         redis_set_data(value)
-      when db?
+      elsif db?
         self.raw_data = value
       else
         raise 'Unsupported data store'

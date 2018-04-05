@@ -540,7 +540,9 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
 
         before do
           stub_feature_flags(ci_enable_live_trace: false)
-          build; src_path; src_checksum; # Initialize after set feature flag
+          build # Initialize after set feature flag
+          src_path
+          src_checksum
         end
 
         it_behaves_like 'archive trace file'
@@ -571,7 +573,9 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
 
         before do
           stub_feature_flags(ci_enable_live_trace: false)
-          build; trace_content; src_checksum; # Initialize after set feature flag
+          build # Initialize after set feature flag
+          trace_content
+          src_checksum
           build.update_column(:trace, trace_content)
         end
 
@@ -625,7 +629,9 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
 
         before do
           stub_feature_flags(ci_enable_live_trace: true)
-          build; trace_raw; src_checksum; # Initialize after set feature flag
+          build # Initialize after set feature flag
+          trace_raw
+          src_checksum
         end
 
         it_behaves_like 'archive trace file in ChunkedIO'
