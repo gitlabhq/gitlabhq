@@ -66,11 +66,10 @@ Please update your Git repository remotes as soon as possible.`),
           Flash(result.data.message, 'notice');
           this.username = username;
           this.newUsername = username;
+          this.inputDisabled = false;
         })
         .catch(error => {
           Flash(error.response.data.message);
-        })
-        .finally(() => {
           this.inputDisabled = false;
         });
     },
