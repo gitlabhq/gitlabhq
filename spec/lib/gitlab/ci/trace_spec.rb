@@ -261,6 +261,15 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
       end
     end
 
+    shared_examples 'read successfully with ChunkedIO' do
+      it 'yields with source' do
+        trace.read do |stream|
+          expect(stream).to be_a(Gitlab::Ci::Trace::Stream)
+          expect(stream.stream).to be_a(Gitlab::Ci::Trace::ChunkedIO)
+        end
+      end
+    end
+
     shared_examples 'failed to read' do
       it 'yields without source' do
         trace.read do |stream|
@@ -300,6 +309,16 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
       end
 
       it_behaves_like 'read successfully with StringIO'
+    end
+
+    context 'when live trace exists' do
+      before do
+        Gitlab::Ci::Trace::ChunkedIO.new(build) do |stream|
+          stream.write('abc')
+        end
+      end
+
+      it_behaves_like 'read successfully with ChunkedIO'
     end
 
     context 'when no sources exist' do
@@ -402,6 +421,28 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
         expect(trace.raw).to eq("data")
       end
     end
+
+    context 'stored in database' do
+      before do
+        Gitlab::Ci::Trace::ChunkedIO.new(build) do |stream|
+          stream.write('abc')
+        end
+      end
+
+      it "trace exist" do
+        expect(trace.exist?).to be(true)
+      end
+
+      it "can be erased" do
+        trace.erase!
+        expect(trace.exist?).to be(false)
+        expect(Ci::JobTraceChunk.where(job: build)).not_to be_exist
+      end
+
+      it "returns live trace data" do
+        expect(trace.raw).to eq("abc")
+      end
+    end
   end
 
   describe '#archive!' do
@@ -471,7 +512,7 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
         expect(build.trace.exist?).to be_truthy
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
-        expect(Gitlab::Ci::Trace::ChunkedFile::LiveTrace.exist?(build.id)).to be_falsy
+        expect(Ci::JobTraceChunk.where(job: build)).not_to be_exist
         expect(src_checksum)
           .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).hexdigest)
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
@@ -485,7 +526,7 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
         build.reload
         expect(build.trace.exist?).to be_truthy
         expect(build.job_artifacts_trace).to be_nil
-        Gitlab::Ci::Trace::ChunkedFile::LiveTrace.new(build.id, nil, 'rb') do |stream|
+        Gitlab::Ci::Trace::ChunkedIO.new(build) do |stream|
           expect(stream.read).to eq(trace_raw)
         end
       end
