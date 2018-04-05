@@ -115,9 +115,9 @@ feature 'Labels Hierarchy', :js, :nested_groups do
     it 'filters by descendant group labels' do
       wait_for_requests
 
-      if board
-        select_label_on_dropdown(group_label_3.title)
+      select_label_on_dropdown(group_label_3.title)
 
+      if board
         expect(page).to have_selector('.card-title') do |card|
           expect(card).not_to have_selector('a', text: labeled_issue_2.title)
         end
@@ -126,8 +126,6 @@ feature 'Labels Hierarchy', :js, :nested_groups do
           expect(card).to have_selector('a', text: labeled_issue_3.title)
         end
       else
-        select_label_on_dropdown(group_label_3.title)
-
         expect_issues_list_count(1)
         expect(page).to have_selector('span.issue-title-text', text: labeled_issue_3.title)
       end
