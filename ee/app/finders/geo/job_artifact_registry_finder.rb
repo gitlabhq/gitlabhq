@@ -90,7 +90,7 @@ module Geo
       if use_legacy_queries?
         legacy_find_failed_job_artifacts
       else
-        fdw_find_job_artifacts.merge(find_synced_job_artifacts_registries)
+        fdw_find_job_artifacts.merge(find_failed_job_artifacts_registries)
       end
     end
 

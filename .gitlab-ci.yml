@@ -90,6 +90,11 @@ stages:
     - postgres:9.6
     - redis:alpine
 
+.use-pg-10-2: &use-pg-10-2
+  services:
+    - postgres:10.2
+    - redis:alpine
+
 .use-pg-with-elasticsearch: &use-pg-with-elasticsearch
   services:
     - postgres:9.2
@@ -219,9 +224,20 @@ stages:
   <<: *rspec-metadata-ee
   <<: *use-mysql-with-elasticsearch
 
-.rspec-geo-pg-9-6: &rspec-metadata-pg-geo
+.rspec-geo-pg-9-6: &rspec-metadata-pg-geo-9-6
   <<: *rspec-metadata
   <<: *use-pg-9-6
+  stage: test
+  script:
+    - export NO_KNAPSACK=1
+    - export CACHE_CLASSES=true
+    - source scripts/prepare_postgres_fdw.sh
+    - scripts/gitaly-test-spawn
+    - bundle exec rspec --color --format documentation --tag geo ee/spec/
+
+.rspec-geo-pg-10-2: &rspec-metadata-pg-geo-10-2
+  <<: *rspec-metadata
+  <<: *use-pg-10-2
   stage: test
   script:
     - export NO_KNAPSACK=1
@@ -238,8 +254,12 @@ stages:
   <<: *rspec-ee-mysql
   <<: *rails5
 
-.rspec-geo-pg-9-6-rails5: &rspec-metadata-pg-geo-rails5
-  <<: *rspec-metadata-pg-geo
+.rspec-geo-pg-9-6-rails5: &rspec-metadata-pg-geo-9-6-rails5
+  <<: *rspec-metadata-pg-geo-9-6
+  <<: *rails5
+
+.rspec-geo-pg-10-2-rails5: &rspec-metadata-pg-geo-10-2-rails5
+  <<: *rspec-metadata-pg-geo-10-2
   <<: *rails5
 
 .spinach-metadata: &spinach-metadata
@@ -525,13 +545,15 @@ rspec-pg-ee 0 2: *rspec-ee-pg
 rspec-pg-ee 1 2: *rspec-ee-pg
 rspec-mysql-ee 0 2: *rspec-ee-mysql
 rspec-mysql-ee 1 2: *rspec-ee-mysql
-rspec-pg geo: *rspec-metadata-pg-geo
+rspec-pg geo 0 2: *rspec-metadata-pg-geo-9-6
+rspec-pg geo 1 2: *rspec-metadata-pg-geo-10-2
 
 rspec-pg-ee-rails5 0 2: *rspec-ee-pg-rails5
 rspec-pg-ee-rails5 1 2: *rspec-ee-pg-rails5
 rspec-mysql-ee-rails5 0 2: *rspec-ee-mysql-rails5
 rspec-mysql-ee-rails5 1 2: *rspec-ee-mysql-rails5
-rspec-pg-geo-rails5: *rspec-metadata-pg-geo-rails5
+rspec-pg-geo-rails5 0 2: *rspec-metadata-pg-geo-9-6-rails5
+rspec-pg-geo-rails5 1 2: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
 
 rspec-pg 0 28: *rspec-metadata-pg
