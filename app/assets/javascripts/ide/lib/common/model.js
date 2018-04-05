@@ -37,7 +37,7 @@ export default class Model {
     this.dispose = this.dispose.bind(this);
 
     eventHub.$on(`editor.update.model.dispose.${this.file.key}`, this.dispose);
-    eventHub.$on(`editor.update.model.content.${this.file.path}`, this.updateContent);
+    eventHub.$on(`editor.update.model.content.${this.file.key}`, this.updateContent);
   }
 
   get url() {
@@ -92,6 +92,6 @@ export default class Model {
     this.events.clear();
 
     eventHub.$off(`editor.update.model.dispose.${this.file.key}`, this.dispose);
-    eventHub.$off(`editor.update.model.content.${this.file.path}`, this.updateContent);
+    eventHub.$off(`editor.update.model.content.${this.file.key}`, this.updateContent);
   }
 }

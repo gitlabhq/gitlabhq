@@ -37,9 +37,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commitId: `<a href="${currentProject.web_url}/commit/${
+      commitId: `<a href="${currentProject.web_url}/commit/${data.short_id}" class="commit-sha">${
         data.short_id
-      }" class="commit-sha">${data.short_id}</a>`,
+      }</a>`,
       commitStats,
     },
     false,
@@ -54,9 +54,7 @@ export const checkCommitStatus = ({ rootState }) =>
     .then(({ data }) => {
       const { id } = data.commit;
       const selectedBranch =
-        rootState.projects[rootState.currentProjectId].branches[
-          rootState.currentBranchId
-        ];
+        rootState.projects[rootState.currentProjectId].branches[rootState.currentBranchId];
 
       if (selectedBranch.workingReference !== id) {
         return true;
@@ -112,43 +110,25 @@ export const updateFilesAfterCommit = (
       { root: true },
     );
 
-    eventHub.$emit(`editor.update.model.content.${file.path}`, {
+    eventHub.$emit(`editor.update.model.content.${file.key}`, {
       content: file.content,
       changed: !!changedFile,
     });
   });
 
-  if (
-    state.commitAction === consts.COMMIT_TO_NEW_BRANCH &&
-    rootGetters.activeFile
-  ) {
+  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH && rootGetters.activeFile) {
     router.push(
-      `/project/${rootState.currentProjectId}/blob/${branch}/${
-        rootGetters.activeFile.path
-      }`,
+      `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
     );
   }
 
   dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
 };
 
-export const commitChanges = ({
-  commit,
-  state,
-  getters,
-  dispatch,
-  rootState,
-}) => {
+export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload(
-    getters.branchName,
-    newBranch,
-    state,
-    rootState,
-  );
-  const getCommitStatus = newBranch
-    ? Promise.resolve(false)
-    : dispatch('checkCommitStatus');
+  const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
+  const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
 
   commit(types.UPDATE_LOADING, true);
 

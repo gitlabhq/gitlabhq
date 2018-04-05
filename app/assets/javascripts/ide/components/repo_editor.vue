@@ -70,11 +70,7 @@ export default {
         baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
       })
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated
-            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
-            : Promise.resolve();
-
-          return viewerPromise;
+          return this.updateViewer(this.file.pending ? 'diff' : 'editor');
         })
         .then(() => {
           this.updateDelayViewerUpdated(false);

@@ -31,7 +31,10 @@ export default {
   methods: {
     ...mapActions(['discardFileChanges', 'updateViewer', 'openPendingTab']),
     openFileInEditor() {
-      return this.openPendingTab(this.file).then(changeViewer => {
+      return this.openPendingTab({
+        file: this.file,
+        keyPrefix: this.file.staged ? 'staged' : 'unstaged',
+      }).then(changeViewer => {
         if (changeViewer) {
           this.updateViewer('diff');
         }

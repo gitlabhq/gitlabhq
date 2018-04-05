@@ -24,7 +24,10 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
 
     if (nextFileToOpen.pending) {
       dispatch('updateViewer', 'diff');
-      dispatch('openPendingTab', nextFileToOpen);
+      dispatch('openPendingTab', {
+        file: nextFileToOpen,
+        keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
+      });
     } else {
       dispatch('updateDelayViewerUpdated', true);
       router.push(`/project${nextFileToOpen.url}`);
@@ -159,26 +162,35 @@ export const discardFileChanges = ({ state, commit }, path) => {
     commit(types.TOGGLE_FILE_OPEN, path);
   }
 
-  eventHub.$emit(`editor.update.model.content.${path}`, {
+  eventHub.$emit(`editor.update.model.content.${file.key}`, {
     content: file.raw,
     changed: false,
   });
 };
 
-export const stageChange = ({ commit }, path) => {
+export const stageChange = ({ commit, state }, path) => {
+  const stagedFile = state.stagedFiles.find(f => f.path === path);
+
   commit(types.STAGE_CHANGE, path);
+
+  if (stagedFile) {
+    eventHub.$emit(`editor.update.model.content.staged-${stagedFile.key}`, {
+      content: stagedFile.content,
+      changed: false,
+    });
+  }
 };
 
 export const unstageChange = ({ commit }, path) => {
   commit(types.UNSTAGE_CHANGE, path);
 };
 
-export const openPendingTab = ({ commit, getters, dispatch, state }, file) => {
+export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
   if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
     return false;
   }
 
-  commit(types.ADD_PENDING_TAB, { file });
+  commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 
   dispatch('scrollToTab');
 

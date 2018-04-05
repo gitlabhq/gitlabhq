@@ -133,10 +133,7 @@ describe('IDE commit module actions', () => {
       store
         .dispatch('commit/checkCommitStatus')
         .then(() => {
-          expect(service.getBranchData).toHaveBeenCalledWith(
-            'abcproject',
-            'master',
-          );
+          expect(service.getBranchData).toHaveBeenCalledWith('abcproject', 'master');
 
           done();
         })
@@ -230,9 +227,7 @@ describe('IDE commit module actions', () => {
           branch,
         })
         .then(() => {
-          expect(
-            store.state.projects.abcproject.branches.master.workingReference,
-          ).toBe(data.id);
+          expect(store.state.projects.abcproject.branches.master.workingReference).toBe(data.id);
         })
         .then(done)
         .catch(done.fail);
@@ -286,10 +281,10 @@ describe('IDE commit module actions', () => {
           branch,
         })
         .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith(
-            `editor.update.model.content.${f.path}`,
-            { content: f.content, changed: false },
-          );
+          expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.content.${f.key}`, {
+            content: f.content,
+            changed: false,
+          });
         })
         .then(done)
         .catch(done.fail);
@@ -304,9 +299,7 @@ describe('IDE commit module actions', () => {
           branch,
         })
         .then(() => {
-          expect(router.push).toHaveBeenCalledWith(
-            `/project/abcproject/blob/master/${f.path}`,
-          );
+          expect(router.push).toHaveBeenCalledWith(`/project/abcproject/blob/master/${f.path}`);
         })
         .then(done)
         .catch(done.fail);
@@ -321,9 +314,7 @@ describe('IDE commit module actions', () => {
           branch,
         })
         .then(() => {
-          expect(store.state.commit.commitAction).not.toBe(
-            consts.COMMIT_TO_NEW_BRANCH,
-          );
+          expect(store.state.commit.commitAction).not.toBe(consts.COMMIT_TO_NEW_BRANCH);
         })
         .then(done)
         .catch(done.fail);
@@ -445,9 +436,7 @@ describe('IDE commit module actions', () => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(store.state.openFiles[0].lastCommit.message).toBe(
-              'test message',
-            );
+            expect(store.state.openFiles[0].lastCommit.message).toBe('test message');
 
             done();
           })
