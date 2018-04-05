@@ -105,6 +105,7 @@ module EE
           expose(*EE::ApplicationSettingsHelper.external_authorization_service_attributes, if: ->(_instance, _options) do
             ::License.feature_available?(:external_authorization_service)
           end)
+          expose :email_additional_text, if: ->(_instance, _opts) { ::License.feature_available?(:email_additional_text) }
         end
       end
 

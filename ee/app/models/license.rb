@@ -38,6 +38,7 @@ class License < ActiveRecord::Base
     admin_audit_log
     auditor_user
     cross_project_pipelines
+    email_additional_text
     db_load_balancing
     deploy_board
     extended_audit_events

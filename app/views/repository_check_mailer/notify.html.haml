@@ -6,3 +6,12 @@
 
 %p
   You are receiving this message because you are a GitLab administrator for #{Gitlab.config.gitlab.url}.
+
+-# EE-specific start
+- if Gitlab::CurrentSettings.email_additional_text.present?
+  %p
+    &mdash;
+    %br
+    %br
+      = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
+-# EE-specific end

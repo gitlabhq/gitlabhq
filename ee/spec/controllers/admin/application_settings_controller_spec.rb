@@ -97,6 +97,13 @@ describe Admin::ApplicationSettingsController do
       it_behaves_like 'settings for licensed features'
     end
 
+    context 'additional email footer' do
+      let(:settings) { { email_additional_text: 'scary legal footer' } }
+      let(:feature) { :email_additional_text }
+
+      it_behaves_like 'settings for licensed features'
+    end
+
     it 'updates the default_project_creation for string value' do
       stub_licensed_features(project_creation_level: true)
       put :update, application_setting: { default_project_creation: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS }
