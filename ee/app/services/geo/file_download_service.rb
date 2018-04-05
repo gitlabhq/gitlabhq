@@ -62,10 +62,15 @@ module Geo
       registry.success = mark_as_synced
       registry.missing_on_primary = missing_on_primary
 
-      unless mark_as_synced
+      retry_later = !registry.success || registry.missing_on_primary
+
+      if retry_later
         # We don't limit the amount of retries
         registry.retry_count = (registry.retry_count || 0) + 1
         registry.retry_at = Time.now + delay(registry.retry_count).seconds
+      else
+        registry.retry_count = 0
+        registry.retry_at = nil
       end
 
       registry.save

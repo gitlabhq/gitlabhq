@@ -54,6 +54,13 @@ describe Geo::FileDownloadService do
 
             execute!
           end
+
+          it 'resets the retry fields' do
+            execute!
+
+            expect(registry.last.reload.retry_count).to eq(0)
+            expect(registry.last.retry_at).to be_nil
+          end
         end
 
         context 'when the file fails to download' do
@@ -81,6 +88,15 @@ describe Geo::FileDownloadService do
 
               execute!
             end
+
+            it 'sets a retry date and increments the retry count' do
+              Timecop.freeze do
+                execute!
+
+                expect(registry.last.reload.retry_count).to eq(1)
+                expect(registry.last.retry_at > Time.now).to be_truthy
+              end
+            end
           end
 
           context 'when the file is not missing on the primary' do
@@ -103,10 +119,12 @@ describe Geo::FileDownloadService do
             end
 
             it 'sets a retry date and increments the retry count' do
-              execute!
+              Timecop.freeze do
+                execute!
 
-              expect(registry.last.retry_count).to eq(1)
-              expect(registry.last.retry_at).to be_present
+                expect(registry.last.reload.retry_count).to eq(1)
+                expect(registry.last.retry_at > Time.now).to be_truthy
+              end
             end
           end
         end
@@ -116,9 +134,9 @@ describe Geo::FileDownloadService do
     context 'for a registered file that failed to sync' do
       let!(:registry_entry) do
         if file_type == 'job_artifact'
-          create(:geo_job_artifact_registry, success: false, artifact_id: file.id)
+          create(:geo_job_artifact_registry, success: false, artifact_id: file.id, retry_count: 3, retry_at: 1.hour.ago)
         else
-          create(:geo_file_registry, file_type.to_sym, success: false, file_id: file.id)
+          create(:geo_file_registry, file_type.to_sym, success: false, file_id: file.id, retry_count: 3, retry_at: 1.hour.ago)
         end
       end
 
@@ -133,6 +151,13 @@ describe Geo::FileDownloadService do
 
         it 'marks the file as synced' do
           expect { execute! }.to change { registry.synced.count }.by(1)
+        end
+
+        it 'resets the retry fields' do
+          execute!
+
+          expect(registry_entry.reload.retry_count).to eq(0)
+          expect(registry_entry.retry_at).to be_nil
         end
 
         context 'when the file was marked as missing on the primary' do
@@ -181,6 +206,15 @@ describe Geo::FileDownloadService do
 
             execute!
           end
+
+          it 'sets a retry date and increments the retry count' do
+            Timecop.freeze do
+              execute!
+
+              expect(registry_entry.reload.retry_count).to eq(4)
+              expect(registry_entry.retry_at > Time.now).to be_truthy
+            end
+          end
         end
 
         context 'when the file is not missing on the primary' do
@@ -202,12 +236,13 @@ describe Geo::FileDownloadService do
             expect(registry_entry.reload.missing_on_primary).to be_falsey
           end
 
-          it 'changes the retry date and increments the retry count' do
-            expect { execute! }.to change { registry_entry.reload.retry_count }.from(nil).to(1)
-          end
+          it 'sets a retry date and increments the retry count' do
+            Timecop.freeze do
+              execute!
 
-          it 'changes the retry date and increments the retry count' do
-            expect { execute! }.to change { registry_entry.reload.retry_at }
+              expect(registry_entry.reload.retry_count).to eq(4)
+              expect(registry_entry.retry_at > Time.now).to be_truthy
+            end
           end
         end
       end
