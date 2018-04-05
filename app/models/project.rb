@@ -1478,6 +1478,7 @@ class Project < ActiveRecord::Base
     remove_import_jid
     update_project_counter_caches
     after_create_default_branch
+    refresh_markdown_cache!
   end
 
   def update_project_counter_caches

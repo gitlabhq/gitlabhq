@@ -46,11 +46,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Project.find_by_path('project').description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
       end
 
-      it 'has the project html description' do
-        expected_description_html = "<p dir=\"auto\">Nisi et repellendus ut enim quo accusamus vel magnam.</p>"
-        expect(Project.find_by_path('project').description_html).to eq(expected_description_html)
-      end
-
       it 'has the same label associated to two issues' do
         expect(ProjectLabel.find_by_title('test2').issues.count).to eq(2)
       end

@@ -83,13 +83,7 @@ module Gitlab
       end
 
       def restore_project
-        params = project_params.symbolize_keys
-
-        if params[:description].present?
-          params[:description_html] = nil
-        end
-
-        @project.update_columns(params)
+        @project.update_columns(project_params)
         @project
       end
 
