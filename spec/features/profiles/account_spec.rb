@@ -60,11 +60,11 @@ def update_username(new_username)
   allow(user.namespace).to receive(:move_dir)
   visit profile_account_path
 
-  fill_in 'modal-username-change-input', with: new_username
+  fill_in 'username-change-input', with: new_username
 
   page.find('[data-target="#username-change-confirmation-modal"]').click
 
   page.within('.modal') do
-    find('.modal-primary-action').click
+    find('.js-modal-primary-action').click
   end
 end

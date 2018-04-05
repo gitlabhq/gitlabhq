@@ -97,12 +97,12 @@ describe 'Profile account page', :js do
     end
 
     it 'changes my username' do
-      fill_in 'modal-username-change-input', with: 'new-username'
+      fill_in 'username-change-input', with: 'new-username'
 
       page.find('[data-target="#username-change-confirmation-modal"]').click
 
       page.within('.modal') do
-        find('.modal-primary-action').click
+        find('.js-modal-primary-action').click
       end
 
       expect(page).to have_content('new-username')

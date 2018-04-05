@@ -55,7 +55,7 @@ export default {
           <slot name="header">
             <button
               type="button"
-              class="close modal-close-action"
+              class="close js-modal-close-action"
               data-dismiss="modal"
               :aria-label="s__('Modal|Close')"
               @click="emitCancel($event)"
@@ -78,7 +78,7 @@ export default {
           <slot name="footer">
             <button
               type="button"
-              class="btn modal-cancel-action"
+              class="btn js-modal-cancel-action"
               data-dismiss="modal"
               @click="emitCancel($event)"
             >
@@ -86,7 +86,7 @@ export default {
             </button>
             <button
               type="button"
-              class="btn modal-primary-action"
+              class="btn js-modal-primary-action"
               :class="`btn-${footerPrimaryButtonVariant}`"
               data-dismiss="modal"
               @click="emitSubmit($event)"
