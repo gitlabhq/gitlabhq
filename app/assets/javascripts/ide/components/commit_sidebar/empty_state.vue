@@ -24,9 +24,7 @@ export default {
     ...mapState(['lastCommitMsg', 'rightPanelCollapsed']),
     ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
     statusSvg() {
-      return this.lastCommitMsg
-        ? this.committedStateSvgPath
-        : this.noChangesStateSvgPath;
+      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
     },
   },
   methods: {
@@ -37,7 +35,7 @@ export default {
 
 <template>
   <div
-    class="multi-file-commit-panel-section ide-commity-empty-state js-empty-state"
+    class="multi-file-commit-panel-section ide-commit-empty-state js-empty-state"
   >
     <header
       class="multi-file-commit-panel-header"
