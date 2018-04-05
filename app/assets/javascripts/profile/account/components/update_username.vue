@@ -67,7 +67,6 @@ Please update your Git repository remotes as soon as possible.`),
         .then(result => {
           Flash(result.data.message, 'notice');
           this.username = username;
-          this.newUsername = username;
           this.isRequestPending = false;
         })
         .catch(error => {
