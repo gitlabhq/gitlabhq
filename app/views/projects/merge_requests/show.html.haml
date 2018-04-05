@@ -27,6 +27,11 @@
       window.gl.mrWidgetData.enable_squash_before_merge = '#{@merge_request.project.feature_available?(:merge_request_squash)}' === 'true';
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
 
+      window.gl.mrWidgetData.sast_help_path = '#{help_page_path("user/project/merge_requests/sast")}';
+      window.gl.mrWidgetData.sast_container_help_path = '#{help_page_path("user/project/merge_requests/container_scanning")}';
+      window.gl.mrWidgetData.dast_help_path = '#{help_page_path("user/project/merge_requests/dast")}';
+      window.gl.mrWidgetData.dependency_scanning_help_path = '#{help_page_path("user/project/merge_requests/dependency_scanning")}';
+
     #js-vue-mr-widget.mr-widget
 
     .content-block.content-block-small.emoji-list-container.js-noteable-awards

@@ -1,4 +1,11 @@
-.pipeline-tab-content {
+.split-report-section {
+  border-bottom: 1px solid $gray-darker;
+
+  .report-block-list {
+    max-height: 500px;
+    overflow: auto;
+  }
+
   .space-children,
   .space-children > span {
     display: flex;
@@ -14,11 +21,32 @@
   }
 }
 
+.mr-widget-grouped-section {
+  .report-block-container {
+    max-height: 170px;
+    overflow: auto;
+  }
+
+  .report-block-list-issue-parent {
+    padding: $gl-padding-top $gl-padding;
+    border-top: 1px solid $border-color;
+  }
+
+  .report-block-list-icon .loading-container {
+    position: relative;
+    left: -2px;
+    // needed to make the next element align with the
+    // elements below that have a svg with 16px width
+    .fa-spinner {
+      width: 16px;
+    }
+  }
+}
+
 .report-block-container {
-  border-top: 1px solid $gray-darker;
+  border-top: 1px solid $border-color;
   padding: $gl-padding-top;
   background-color: $gray-light;
-  margin: $gl-padding #{-$gl-padding} #{-$gl-padding};
 
   // Clean MR widget CSS
   line-height: 20px;
@@ -44,6 +72,15 @@
   &.neutral {
     color: $theme-gray-700;
   }
+
+  .ci-status-icon {
+    svg {
+      width: 16px;
+      height: 16px;
+      top: 3px;
+      left: -2px;
+    }
+  }
 }
 
 .report-block-list-issue {
@@ -64,6 +101,10 @@
   .break-link {
     word-wrap: break-word;
     word-break: break-all;
+  }
+
+  .btn-help svg {
+    top: 5px;
   }
 }
 
