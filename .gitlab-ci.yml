@@ -103,6 +103,18 @@ stages:
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
 # END EE-only service helpers
+.rails5-variables: &rails5-variables
+  script:
+    - export RAILS5=${RAILS5}
+    - export BUNDLE_GEMFILE=${BUNDLE_GEMFILE}
+
+.rails5: &rails5
+  allow_failure: true
+  only:
+    - /rails5/
+  variables:
+    BUNDLE_GEMFILE: "Gemfile.rails5"
+    RAILS5: "true"
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
@@ -144,6 +156,7 @@ stages:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -174,9 +187,17 @@ stages:
   <<: *rspec-metadata
   <<: *use-pg
 
+.rspec-metadata-pg-rails5: &rspec-metadata-pg-rails5
+  <<: *rspec-metadata-pg
+  <<: *rails5
+
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
+
+.rspec-metadata-mysql-rails5: &rspec-metadata-mysql-rails5
+  <<: *rspec-metadata-mysql
+  <<: *rails5
 
 .rspec-metadata-ee: &rspec-metadata-ee
   <<: *rspec-metadata
@@ -209,10 +230,23 @@ stages:
     - scripts/gitaly-test-spawn
     - bundle exec rspec --color --format documentation --tag geo ee/spec/
 
+.rspec-ee-pg-rails5: &rspec-ee-pg-rails5
+  <<: *rspec-ee-pg
+  <<: *rails5
+
+.rspec-ee-mysql-rails5: &rspec-ee-mysql-rails5
+  <<: *rspec-ee-mysql
+  <<: *rails5
+
+.rspec-geo-pg-9-6-rails5: &rspec-metadata-pg-geo-rails5
+  <<: *rspec-metadata-pg-geo
+  <<: *rails5
+
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -236,9 +270,17 @@ stages:
   <<: *spinach-metadata
   <<: *use-pg
 
+.spinach-metadata-pg-rails5: &spinach-metadata-pg-rails5
+  <<: *spinach-metadata-pg
+  <<: *rails5
+
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
+
+.spinach-metadata-mysql-rails5: &spinach-metadata-mysql-rails5
+  <<: *spinach-metadata-mysql
+  <<: *rails5
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -484,6 +526,12 @@ rspec-pg-ee 1 2: *rspec-ee-pg
 rspec-mysql-ee 0 2: *rspec-ee-mysql
 rspec-mysql-ee 1 2: *rspec-ee-mysql
 rspec-pg geo: *rspec-metadata-pg-geo
+
+rspec-pg-ee-rails5 0 2: *rspec-ee-pg-rails5
+rspec-pg-ee-rails5 1 2: *rspec-ee-pg-rails5
+rspec-mysql-ee-rails5 0 2: *rspec-ee-mysql-rails5
+rspec-mysql-ee-rails5 1 2: *rspec-ee-mysql-rails5
+rspec-pg-geo-rails5: *rspec-metadata-pg-geo-rails5
 ## EE jobs
 
 rspec-pg 0 28: *rspec-metadata-pg
@@ -549,6 +597,70 @@ spinach-pg 1 2: *spinach-metadata-pg
 
 spinach-mysql 0 2: *spinach-metadata-mysql
 spinach-mysql 1 2: *spinach-metadata-mysql
+
+rspec-pg-rails5 0 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 1 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 2 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 3 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 4 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 5 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 6 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 7 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 8 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 9 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 10 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 11 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 12 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 13 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 14 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 15 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 16 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 17 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 18 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 19 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 20 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 21 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 22 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 23 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 24 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 25 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 26 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 27 28: *rspec-metadata-pg-rails5
+
+rspec-mysql-rails5 0 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 1 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 2 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 3 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 4 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 5 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 6 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 7 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 8 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 9 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 10 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 11 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 12 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 13 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 14 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 15 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 16 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 17 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 18 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 19 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 20 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 21 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 22 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 23 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 24 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 25 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 26 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 27 28: *rspec-metadata-mysql-rails5
+
+spinach-pg-rails5 0 2: *spinach-metadata-pg-rails5
+spinach-pg-rails5 1 2: *spinach-metadata-pg-rails5
+
+spinach-mysql-rails5 0 2: *spinach-metadata-mysql-rails5
+spinach-mysql-rails5 1 2: *spinach-metadata-mysql-rails5
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
