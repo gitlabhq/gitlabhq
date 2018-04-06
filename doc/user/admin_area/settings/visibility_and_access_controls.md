@@ -53,9 +53,6 @@ work in every repository and can only be re-enabled on a per-project basis by an
 ![Mirror settings](img/mirror_settings.png)
 
 [ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
-[ee-3586]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586
-=======
-
-[ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
->>>>>>> upstream/master
 [ce-18021]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021
+[ee-3586]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586
+
