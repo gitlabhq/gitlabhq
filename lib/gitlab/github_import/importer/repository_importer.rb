@@ -16,7 +16,8 @@ module Gitlab
         # Returns true if we should import the wiki for the project.
         def import_wiki?
           client.repository(project.import_source)&.has_wiki &&
-            !project.wiki_repository_exists?
+            !project.wiki_repository_exists? &&
+            Gitlab::GitalyClient::RemoteService.exists?(wiki_url)
         end
 
         # Imports the repository data.
@@ -55,10 +56,8 @@ module Gitlab
 
         def import_wiki_repository
           wiki_path = "#{project.disk_path}.wiki"
-          wiki_url = project.import_url.sub(/\.git\z/, '.wiki.git')
-          storage_path = project.repository_storage_path
 
-          gitlab_shell.import_repository(storage_path, wiki_path, wiki_url)
+          gitlab_shell.import_repository(project.repository_storage, wiki_path, wiki_url)
 
           true
         rescue Gitlab::Shell::Error => e
@@ -68,6 +67,10 @@ module Gitlab
           else
             true
           end
+        end
+
+        def wiki_url
+          project.import_url.sub(/\.git\z/, '.wiki.git')
         end
 
         def update_clone_time

@@ -54,6 +54,7 @@ class GfmAutoComplete {
       alias: 'commands',
       searchKey: 'search',
       skipSpecialCharacterTest: true,
+      skipMarkdownCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
       displayTpl(value) {
         if (GfmAutoComplete.isLoading(value)) return GfmAutoComplete.Loading.template;
@@ -376,15 +377,23 @@ class GfmAutoComplete {
         return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
       },
       beforeInsert(value) {
-        let resultantValue = value;
+        let withoutAt = value.substring(1);
+        const at = value.charAt();
+
         if (value && !this.setting.skipSpecialCharacterTest) {
-          const withoutAt = value.substring(1);
-          const regex = value.charAt() === '~' ? /\W|^\d+$/ : /\W/;
+          const regex = at === '~' ? /\W|^\d+$/ : /\W/;
           if (withoutAt && regex.test(withoutAt)) {
-            resultantValue = `${value.charAt()}"${withoutAt}"`;
+            withoutAt = `"${withoutAt}"`;
           }
         }
-        return resultantValue;
+
+        // We can ignore this for quick actions because they are processed
+        // before Markdown.
+        if (!this.setting.skipMarkdownCharacterTest) {
+          withoutAt = withoutAt.replace(/([~\-_*`])/g, '\\$&');
+        }
+
+        return `${at}${withoutAt}`;
       },
       matcher(flag, subtext) {
         const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);

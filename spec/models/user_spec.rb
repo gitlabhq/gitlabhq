@@ -25,7 +25,7 @@ describe User do
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
-    it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
+    it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
@@ -123,23 +123,6 @@ describe User do
           user.username = 'new_path'
           expect(user).to be_invalid
           expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
-        end
-      end
-
-      context 'when the username was used by another user before' do
-        let(:username) { 'foo' }
-        let!(:other_user) { create(:user, username: username) }
-
-        before do
-          other_user.username = 'bar'
-          other_user.save!
-        end
-
-        it 'is invalid' do
-          user = build(:user, username: username)
-
-          expect(user).not_to be_valid
-          expect(user.errors.full_messages).to eq(['Username has been taken before'])
         end
       end
 
@@ -1222,7 +1205,7 @@ describe User do
     it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
 
-      expect(user.avatar_type).to eq(['only images allowed'])
+      expect(user.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff'])
     end
   end
 
@@ -1468,7 +1451,7 @@ describe User do
     end
   end
 
-  describe '#sort' do
+  describe '#sort_by_attribute' do
     before do
       described_class.delete_all
       @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
@@ -1477,7 +1460,7 @@ describe User do
     end
 
     context 'when sort by recent_sign_in' do
-      let(:users) { described_class.sort('recent_sign_in') }
+      let(:users) { described_class.sort_by_attribute('recent_sign_in') }
 
       it 'sorts users by recent sign-in time' do
         expect(users.first).to eq(@user)
@@ -1490,7 +1473,7 @@ describe User do
     end
 
     context 'when sort by oldest_sign_in' do
-      let(:users) { described_class.sort('oldest_sign_in') }
+      let(:users) { described_class.sort_by_attribute('oldest_sign_in') }
 
       it 'sorts users by the oldest sign-in time' do
         expect(users.first).to eq(@user1)
@@ -1503,15 +1486,15 @@ describe User do
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(described_class.sort('created_desc').first).to eq(@user)
+      expect(described_class.sort_by_attribute('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(described_class.sort('created_asc').first).to eq(@user2)
+      expect(described_class.sort_by_attribute('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(described_class.sort(nil).first).to eq(@user2)
+      expect(described_class.sort_by_attribute(nil).first).to eq(@user2)
     end
   end
 
@@ -2088,6 +2071,8 @@ describe User do
 
       expect(ghost).to be_ghost
       expect(ghost).to be_persisted
+      expect(ghost.namespace).not_to be_nil
+      expect(ghost.namespace).to be_persisted
     end
 
     it "does not create a second ghost user if one is already present" do
@@ -2699,27 +2684,19 @@ describe User do
     end
   end
 
-  describe "#username_previously_taken?" do
-    let(:user1) { create(:user, username: 'foo') }
+  context 'changing a username' do
+    let(:user) { create(:user, username: 'foo') }
 
-    context 'when the username has been taken before' do
-      before do
-        user1.username = 'bar'
-        user1.save!
-      end
-
-      it 'should raise an ActiveRecord::RecordInvalid exception' do
-        user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Username has been taken before/)
-      end
+    it 'creates a redirect route' do
+      expect { user.update!(username: 'bar') }
+        .to change { RedirectRoute.where(path: 'foo').count }.by(1)
     end
 
-    context 'when the username has not been taken before' do
-      it 'should be valid' do
-        expect(RedirectRoute.count).to eq(0)
-        user2 = build(:user, username: 'baz')
-        expect(user2).to be_valid
-      end
+    it 'deletes the redirect when a user with the old username was created' do
+      user.update!(username: 'bar')
+
+      expect { create(:user, username: 'foo') }
+        .to change { RedirectRoute.where(path: 'foo').count }.by(-1)
     end
   end
 end

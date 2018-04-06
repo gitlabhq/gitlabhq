@@ -1,7 +1,7 @@
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
-  include InternalId
+  include AtomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -23,6 +23,9 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+  belongs_to :closed_by, class_name: 'User'
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -76,6 +79,11 @@ class Issue < ActiveRecord::Base
     before_transition any => :closed do |issue|
       issue.closed_at = Time.zone.now
     end
+
+    before_transition closed: :opened do |issue|
+      issue.closed_at = nil
+      issue.closed_by = nil
+    end
   end
 
   class << self
@@ -108,7 +116,7 @@ class Issue < ActiveRecord::Base
     'project_id'
   end
 
-  def self.sort(method, excluded_labels: [])
+  def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'due_date'      then order_due_date_asc
     when 'due_date_asc'  then order_due_date_asc

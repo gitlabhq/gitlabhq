@@ -15,7 +15,7 @@ describe '6_validations' do
   describe 'validate_storages_config' do
     context 'with correct settings' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
       end
 
       it 'passes through' do
@@ -25,7 +25,7 @@ describe '6_validations' do
 
     context 'when one of the settings is incorrect' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number'))
       end
 
       it 'throws an error' do
@@ -35,7 +35,7 @@ describe '6_validations' do
 
     context 'with invalid storage names' do
       before do
-        mock_storages('name with spaces' => { 'path' => 'tmp/tests/paths/a/b/c' })
+        mock_storages('name with spaces' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'))
       end
 
       it 'throws an error' do
@@ -67,7 +67,7 @@ describe '6_validations' do
   describe 'validate_storages_paths' do
     context 'with correct settings' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
       end
 
       it 'passes through' do
@@ -77,7 +77,7 @@ describe '6_validations' do
 
     context 'with nested storage paths' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c/d' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c/d'))
       end
 
       it 'throws an error' do
@@ -87,7 +87,7 @@ describe '6_validations' do
 
     context 'with similar but un-nested storage paths' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c2' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c2'))
       end
 
       it 'passes through' do
@@ -97,7 +97,7 @@ describe '6_validations' do
 
     describe 'inaccessible storage' do
       before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/a/path/that/does/not/exist' })
+        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/a/path/that/does/not/exist'))
       end
 
       it 'passes through with a warning' do

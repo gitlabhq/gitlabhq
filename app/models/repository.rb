@@ -93,10 +93,6 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  def create_hooks
-    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
-  end
-
   def commit(ref = 'HEAD')
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
@@ -253,13 +249,13 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
-    root_ref_hash = raw_repository.commit(root_ref).id
+    @root_ref_hash ||= raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
       number_commits_behind, number_commits_ahead =
         raw_repository.count_commits_between(
-          root_ref_hash,
+          @root_ref_hash,
           branch.dereferenced_target.sha,
           left_right: true,
           max_count: MAX_DIVERGING_COUNT)

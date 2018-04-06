@@ -753,7 +753,7 @@ GitLabDropdown = (function() {
     }
 
     if (this.options.isSelectable && !this.options.isSelectable(selectedObject, el)) {
-      return;
+      return [selectedObject];
     }
 
     if (el.hasClass(ACTIVE_CLASS) && value !== 0) {

@@ -1,6 +1,18 @@
+# --- Special code for migrating to Rails 5.0 ---
+def rails5?
+  %w[1 true].include?(ENV["RAILS5"])
+end
+
+gem_versions = {}
+gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
+gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
+gem_versions['rails']                           = rails5? ? '5.0.6'    : '4.2.10'
+gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
+# --- The end of special code for migrating to Rails 5.0 ---
+
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.10'
+gem 'rails', gem_versions['rails']
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -9,36 +21,37 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', '~> 3.0.0'
+gem 'default_value_for', gem_versions['default_value_for']
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.26.0'
+gem 'rugged', '~> 0.27'
 gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
-gem 'doorkeeper', '~> 4.2.0'
-gem 'doorkeeper-openid_connect', '~> 1.2.0'
-gem 'omniauth', '~> 1.4.2'
-gem 'omniauth-auth0', '~> 1.4.1'
+gem 'doorkeeper', '~> 4.3'
+gem 'doorkeeper-openid_connect', '~> 1.3'
+gem 'omniauth', '~> 1.8'
+gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.5.2'
+gem 'omniauth-google-oauth2', '~> 0.5.3'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml', '~> 1.10.0'
+gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
-gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -104,16 +117,16 @@ gem 'carrierwave', '~> 1.2'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 2.0'
+gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 0.5'
+gem 'fog-google', '~> 1.3.3'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.13.6'
+gem 'google-api-client', '~> 0.19.8'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -122,7 +135,7 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 1.11.0'
+gem 'html-pipeline', '~> 2.7.1'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
@@ -132,8 +145,8 @@ gem 'rdoc', '~> 4.2'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
-gem 'asciidoctor', '~> 1.5.2'
-gem 'asciidoctor-plantuml', '0.0.7'
+gem 'asciidoctor', '~> 1.5.6'
+gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
@@ -149,7 +162,7 @@ group :unicorn do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.4.0'
+gem 'state_machines-activerecord', '~> 0.5.1'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 5.0'
@@ -208,7 +221,7 @@ gem 'asana', '~> 0.6.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 2.2.0'
+gem 'kubeclient', '~> 3.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
@@ -218,10 +231,10 @@ gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.0.3'
+gem 'loofah', '~> 2.2'
 
 # Working with license
-gem 'licensee', '~> 8.7.0'
+gem 'licensee', '~> 8.9'
 
 # Protect against bruteforcing
 gem 'rack-attack', '~> 4.4.1'
@@ -234,9 +247,6 @@ gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
-
-# Faster JSON
-gem 'oj', '~> 2.17.4'
 
 # Faster blank
 gem 'fast_blank'
@@ -269,9 +279,9 @@ gem 'premailer-rails', '~> 1.9.7'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
-gem 'rails-i18n', '~> 4.0.9'
+gem 'rails-i18n', gem_versions['rails-i18n']
 gem 'gettext_i18n_rails', '~> 1.8.0'
-gem 'gettext_i18n_rails_js', '~> 1.2.0'
+gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
 gem 'batch-loader', '~> 1.2.1'
@@ -279,7 +289,6 @@ gem 'batch-loader', '~> 1.2.1'
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-host', '~> 1.0.0'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres
@@ -300,7 +309,7 @@ end
 
 group :development do
   gem 'foreman', '~> 0.84.0'
-  gem 'brakeman', '~> 3.6.0', require: false
+  gem 'brakeman', '~> 4.2', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
@@ -361,11 +370,13 @@ group :development, :test do
   gem 'license_finder', '~> 3.1', require: false
   gem 'knapsack', '~> 1.16'
 
-  gem 'activerecord_sane_schema_dumper', '0.2'
+  gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
 
   gem 'stackprof', '~> 0.2.10', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
+
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :test do
@@ -373,9 +384,8 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
-  gem 'test_after_commit', '~> 1.1'
+  gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
   gem 'sham_rack', '~> 1.3.6'
-  gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
 end
@@ -411,7 +421,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.88.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.91.0', require: 'gitaly'
 gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

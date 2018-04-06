@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import initCopyAsGFM from '~/behaviors/copy_as_gfm';
+import initCopyAsGFM from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/shortcuts_issuable';
 
 initCopyAsGFM();

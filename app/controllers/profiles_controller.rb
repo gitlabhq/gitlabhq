@@ -51,7 +51,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
-    result = Users::UpdateService.new(current_user, user: @user, username: user_params[:username]).execute
+    result = Users::UpdateService.new(current_user, user: @user, username: username_param).execute
 
     options = if result[:status] == :success
                 { notice: "Username successfully changed" }
@@ -70,6 +70,10 @@ class ProfilesController < Profiles::ApplicationController
 
   def authorize_change_username!
     return render_404 unless @user.can_change_username?
+  end
+
+  def username_param
+    @username_param ||= user_params.require(:username)
   end
 
   def user_params

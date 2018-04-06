@@ -9,6 +9,7 @@ module Omnibus
 
   class Trigger
     TOKEN = ENV['BUILD_TRIGGER_TOKEN']
+    TRIGGERER = ENV['CI_PROJECT_NAME']
 
     def initialize
       @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Omnibus::PROJECT_PATH)}/trigger/pipeline")
@@ -32,7 +33,7 @@ module Omnibus
     private
 
     def ee?
-      File.exist?('CHANGELOG-EE.md')
+      TRIGGERER == 'gitlab-ee' || File.exist?('CHANGELOG-EE.md')
     end
 
     def env_params

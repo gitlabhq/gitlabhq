@@ -31,15 +31,17 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise FailedToExtractError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise InvaildStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
         raise InvaildStateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
         success
       end
-    rescue InvaildStateError, FailedToExtractError => e
-      register_failure
+    rescue InvaildStateError => e
       error(e.message)
+    rescue => e
+      error(e.message, false)
+      raise e
     end
 
     private
@@ -50,12 +52,13 @@ module Projects
       super
     end
 
-    def error(message, http_status = nil)
+    def error(message, allow_delete_artifact = true)
+      register_failure
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop(:script_failure)
-      delete_artifact!
+      delete_artifact! if allow_delete_artifact
       super
     end
 
@@ -76,26 +79,28 @@ module Projects
       elsif artifacts.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
-        raise FailedToExtractError, 'unsupported artifacts format'
+        raise InvaildStateError, 'unsupported artifacts format'
       end
     end
 
     def extract_tar_archive!(temp_path)
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
-                               %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} #{SITE_PATH}),
-                               err: '/dev/null')
-      raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
+      build.artifacts_file.use_file do |artifacts_path|
+        results = Open3.pipeline(%W(gunzip -c #{artifacts_path}),
+                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
+                                %W(tar -x -C #{temp_path} #{SITE_PATH}),
+                                err: '/dev/null')
+        raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
+      end
     end
 
     def extract_zip_archive!(temp_path)
-      raise FailedToExtractError, 'missing artifacts metadata' unless build.artifacts_metadata?
+      raise InvaildStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
       public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
 
       if public_entry.total_size > max_size
-        raise FailedToExtractError, "artifacts for pages are too large: #{public_entry.total_size}"
+        raise InvaildStateError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.
@@ -103,8 +108,10 @@ module Projects
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      unless system(*%W(unzip -qq -n #{artifacts} #{site_path} -d #{temp_path}))
-        raise FailedToExtractError, 'pages failed to extract'
+      build.artifacts_file.use_file do |artifacts_path|
+        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
+          raise FailedToExtractError, 'pages failed to extract'
+        end
       end
     end
 
@@ -174,6 +181,9 @@ module Projects
 
     def latest_sha
       project.commit(build.ref).try(:sha).to_s
+    ensure
+      # Close any file descriptors that were opened and free libgit2 buffers
+      project.cleanup
     end
 
     def sha

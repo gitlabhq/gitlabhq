@@ -1,5 +1,8 @@
 class JobArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
+  include ObjectStorage::Concern
+
+  ObjectNotReadyError = Class.new(StandardError)
 
   storage_options Gitlab.config.artifacts
 
@@ -14,14 +17,18 @@ class JobArtifactUploader < GitlabUploader
   end
 
   def open
-    raise 'Only File System is supported' unless file_storage?
-
-    File.open(path, "rb") if path
+    if file_storage?
+      File.open(path, "rb") if path
+    else
+      ::Gitlab::Ci::Trace::HttpIO.new(url, size) if url
+    end
   end
 
   private
 
   def dynamic_segment
+    raise ObjectNotReadyError, 'JobArtifact is not ready' unless model.id
+
     creation_date = model.created_at.utc.strftime('%Y_%m_%d')
 
     File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,

@@ -1,0 +1,5 @@
+---
+title: Fix bug rendering group icons when forking
+merge_request:
+author:
+type: fixed

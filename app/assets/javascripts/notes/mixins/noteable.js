@@ -14,6 +14,8 @@ export default {
           return constants.MERGE_REQUEST_NOTEABLE_TYPE;
         case 'Issue':
           return constants.ISSUE_NOTEABLE_TYPE;
+        case 'Epic':
+          return constants.EPIC_NOTEABLE_TYPE;
         default:
           return '';
       }

@@ -258,9 +258,7 @@ Please check your network connection and try again.`;
                     :key="note.id"
                   />
                 </ul>
-                <div
-                  :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder">
+                <div class="discussion-reply-holder">
                   <template v-if="!isReplying && canReply">
                     <div
                       class="btn-group-justified discussion-with-resolve-btn"
@@ -292,10 +290,12 @@ Please check your network connection and try again.`;
                         </button>
                       </div>
                       <div
+                        v-if="note.resolvable"
                         class="btn-group discussion-actions"
-                        role="group">
+                        role="group"
+                      >
                         <div
-                          v-if="note.resolvable && !discussionResolved"
+                          v-if="!discussionResolved"
                           class="btn-group"
                           role="group">
                           <a

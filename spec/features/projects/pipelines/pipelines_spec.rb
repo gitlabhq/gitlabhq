@@ -349,6 +349,18 @@ describe 'Pipelines', :js do
 
           it { expect(page).not_to have_selector('.build-artifacts') }
         end
+
+        context 'with trace artifact' do
+          before do
+            create(:ci_build, :success, :trace_artifact, pipeline: pipeline)
+
+            visit_project_pipelines
+          end
+
+          it 'does not show trace artifact as artifacts' do
+            expect(page).not_to have_selector('.build-artifacts')
+          end
+        end
       end
 
       context 'mini pipeline graph' do
@@ -380,6 +392,23 @@ describe 'Pipelines', :js do
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
+          end
+        end
+
+        context 'for a failed pipeline' do
+          let!(:build) do
+            create(:ci_build, :failed, pipeline: pipeline,
+                                       stage: 'build',
+                                       name: 'build')
+          end
+
+          it 'should display the failure reason' do
+            find('.js-builds-dropdown-button').click
+
+            within('.js-builds-dropdown-list') do
+              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              expect(build_element['data-title']).to eq('build - failed <br> (unknown failure)')
+            end
           end
         end
       end

@@ -137,7 +137,7 @@ describe Gitlab::BitbucketImport::Importer do
       it 'imports to the project disk_path' do
         expect(project.wiki).to receive(:repository_exists?) { false }
         expect(importer.gitlab_shell).to receive(:import_repository).with(
-          project.repository_storage_path,
+          project.repository_storage,
           project.wiki.disk_path,
           project.import_url + '/wiki'
         )

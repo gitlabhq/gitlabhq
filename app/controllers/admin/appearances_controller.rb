@@ -50,9 +50,19 @@ class Admin::AppearancesController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def appearance_params
-    params.require(:appearance).permit(
-      :title, :description, :logo, :logo_cache, :header_logo, :header_logo_cache,
-      :new_project_guidelines, :updated_by
-    )
+    params.require(:appearance).permit(allowed_appearance_params)
+  end
+
+  def allowed_appearance_params
+    %i[
+      title
+      description
+      logo
+      logo_cache
+      header_logo
+      header_logo_cache
+      new_project_guidelines
+      updated_by
+    ]
   end
 end

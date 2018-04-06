@@ -9,11 +9,17 @@ describe Issue do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:issue) }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :issues }
+    end
   end
 
   subject { create(:issue) }

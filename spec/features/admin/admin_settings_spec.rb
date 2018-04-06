@@ -10,18 +10,21 @@ feature 'Admin updates settings' do
   end
 
   scenario 'Change visibility settings' do
-    choose "application_setting_default_project_visibility_20"
-    click_button 'Save'
+    page.within('.as-visibility-access') do
+      choose "application_setting_default_project_visibility_20"
+      click_button 'Save changes'
+    end
 
     expect(page).to have_content "Application settings saved successfully"
   end
 
   scenario 'Uncheck all restricted visibility levels' do
-    find('#application_setting_visibility_level_0').set(false)
-    find('#application_setting_visibility_level_10').set(false)
-    find('#application_setting_visibility_level_20').set(false)
-
-    click_button 'Save'
+    page.within('.as-visibility-access') do
+      find('#application_setting_visibility_level_0').set(false)
+      find('#application_setting_visibility_level_10').set(false)
+      find('#application_setting_visibility_level_20').set(false)
+      click_button 'Save changes'
+    end
 
     expect(page).to have_content "Application settings saved successfully"
     expect(find('#application_setting_visibility_level_0')).not_to be_checked
@@ -29,32 +32,159 @@ feature 'Admin updates settings' do
     expect(find('#application_setting_visibility_level_20')).not_to be_checked
   end
 
-  scenario 'Change application settings' do
-    uncheck 'Gravatar enabled'
-    fill_in 'Home page URL', with: 'https://about.gitlab.com/'
-    fill_in 'Help page text', with: 'Example text'
-    check 'Hide marketing-related entries from help'
-    fill_in 'Support page URL', with: 'http://example.com/help'
-    uncheck 'Project export enabled'
-    click_button 'Save'
+  scenario 'Change Visibility and Access Controls' do
+    page.within('.as-visibility-access') do
+      uncheck 'Project export enabled'
+      click_button 'Save changes'
+    end
 
-    expect(Gitlab::CurrentSettings.gravatar_enabled).to be_falsey
-    expect(Gitlab::CurrentSettings.home_page_url).to eq "https://about.gitlab.com/"
-    expect(Gitlab::CurrentSettings.help_page_text).to eq "Example text"
-    expect(Gitlab::CurrentSettings.help_page_hide_commercial_content).to be_truthy
-    expect(Gitlab::CurrentSettings.help_page_support_url).to eq "http://example.com/help"
     expect(Gitlab::CurrentSettings.project_export_enabled).to be_falsey
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change AutoDevOps settings' do
-    check 'Enabled Auto DevOps (Beta) for projects by default'
-    fill_in 'Auto devops domain', with: 'domain.com'
-    click_button 'Save'
+  scenario 'Change Account and Limit Settings' do
+    page.within('.as-account-limit') do
+      uncheck 'Gravatar enabled'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.gravatar_enabled).to be_falsey
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Sign-in restrictions' do
+    page.within('.as-signin') do
+      fill_in 'Home page URL', with: 'https://about.gitlab.com/'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.home_page_url).to eq "https://about.gitlab.com/"
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Help page' do
+    page.within('.as-help-page') do
+      fill_in 'Help page text', with: 'Example text'
+      check 'Hide marketing-related entries from help'
+      fill_in 'Support page URL', with: 'http://example.com/help'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.help_page_text).to eq "Example text"
+    expect(Gitlab::CurrentSettings.help_page_hide_commercial_content).to be_truthy
+    expect(Gitlab::CurrentSettings.help_page_support_url).to eq "http://example.com/help"
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Pages settings' do
+    page.within('.as-pages') do
+      fill_in 'Maximum size of pages (MB)', with: 15
+      check 'Require users to prove ownership of custom domains'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.max_pages_size).to eq 15
+    expect(Gitlab::CurrentSettings.pages_domain_verification_enabled?).to be_truthy
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change CI/CD settings' do
+    page.within('.as-ci-cd') do
+      check 'Enabled Auto DevOps (Beta) for projects by default'
+      fill_in 'Auto devops domain', with: 'domain.com'
+      click_button 'Save changes'
+    end
 
     expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
     expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
     expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Influx settings' do
+    page.within('.as-influx') do
+      check 'Enable InfluxDB Metrics'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.metrics_enabled?).to be true
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Prometheus settings' do
+    page.within('.as-prometheus') do
+      check 'Enable Prometheus Metrics'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.prometheus_metrics_enabled?).to be true
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Performance bar settings' do
+    group = create(:group)
+
+    page.within('.as-performance-bar') do
+      check 'Enable the Performance Bar'
+      fill_in 'Allowed group', with: group.path
+      click_on 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(find_field('Enable the Performance Bar')).to be_checked
+    expect(find_field('Allowed group').value).to eq group.path
+
+    page.within('.as-performance-bar') do
+      uncheck 'Enable the Performance Bar'
+      click_on 'Save changes'
+    end
+
+    expect(page).to have_content 'Application settings saved successfully'
+    expect(find_field('Enable the Performance Bar')).not_to be_checked
+    expect(find_field('Allowed group').value).to be_nil
+  end
+
+  scenario 'Change Background jobs settings' do
+    page.within('.as-background') do
+      fill_in 'Throttling Factor', with: 1
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.sidekiq_throttling_factor).to eq(1)
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Spam settings' do
+    page.within('.as-spam') do
+      check 'Enable reCAPTCHA'
+      fill_in 'reCAPTCHA Site Key', with: 'key'
+      fill_in 'reCAPTCHA Private Key', with: 'key'
+      fill_in 'IPs per user', with: 15
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.recaptcha_enabled).to be true
+    expect(Gitlab::CurrentSettings.unique_ips_limit_per_user).to eq(15)
+  end
+
+  scenario 'Configure web terminal' do
+    page.within('.as-terminal') do
+      fill_in 'Max session time', with: 15
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.terminal_max_session_time).to eq(15)
+  end
+
+  scenario 'Enable outbound requests' do
+    page.within('.as-outbound') do
+      check 'Allow requests to the local network from hooks and services'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
   end
 
   scenario 'Change Slack Notifications Service template settings' do
@@ -83,18 +213,22 @@ feature 'Admin updates settings' do
 
   context 'sign-in restrictions', :js do
     it 'de-activates oauth sign-in source' do
-      find('input#application_setting_enabled_oauth_sign_in_sources_[value=gitlab]').send_keys(:return)
+      page.within('.as-signin') do
+        find('input#application_setting_enabled_oauth_sign_in_sources_[value=gitlab]').send_keys(:return)
 
-      expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
+        expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
+      end
     end
   end
 
   scenario 'Change Keys settings' do
-    select 'Are forbidden', from: 'RSA SSH keys'
-    select 'Are allowed', from: 'DSA SSH keys'
-    select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
-    select 'Are forbidden', from: 'ED25519 SSH keys'
-    click_on 'Save'
+    page.within('.as-visibility-access') do
+      select 'Are forbidden', from: 'RSA SSH keys'
+      select 'Are allowed', from: 'DSA SSH keys'
+      select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
+      select 'Are forbidden', from: 'ED25519 SSH keys'
+      click_on 'Save changes'
+    end
 
     forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
 
@@ -103,29 +237,6 @@ feature 'Admin updates settings' do
     expect(find_field('DSA SSH keys').value).to eq('0')
     expect(find_field('ECDSA SSH keys').value).to eq('384')
     expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
-  end
-
-  scenario 'Change Performance Bar settings' do
-    group = create(:group)
-
-    check 'Enable the Performance Bar'
-    fill_in 'Allowed group', with: group.path
-
-    click_on 'Save'
-
-    expect(page).to have_content 'Application settings saved successfully'
-
-    expect(find_field('Enable the Performance Bar')).to be_checked
-    expect(find_field('Allowed group').value).to eq group.path
-
-    uncheck 'Enable the Performance Bar'
-
-    click_on 'Save'
-
-    expect(page).to have_content 'Application settings saved successfully'
-
-    expect(find_field('Enable the Performance Bar')).not_to be_checked
-    expect(find_field('Allowed group').value).to be_nil
   end
 
   def check_all_events

@@ -1,10 +1,13 @@
 require 'rake_helper'
 
 describe 'gitlab:git rake tasks' do
+  before(:all) do
+    @default_storage_hash = Gitlab.config.repositories.storages.default.to_h
+  end
+
   before do
     Rake.application.rake_require 'tasks/gitlab/git'
-
-    storages = { 'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') } }
+    storages = { 'default' => Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/default_storage')) }
 
     FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/@hashed/1/2/test.git'))
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)

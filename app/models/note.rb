@@ -268,6 +268,10 @@ class Note < ActiveRecord::Base
     self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
   end
 
+  def confidential?
+    noteable.try(:confidential?)
+  end
+
   def editable?
     !system?
   end
@@ -311,6 +315,10 @@ class Note < ActiveRecord::Base
   def can_create_todo?
     # Skip system notes, and notes on project snippet
     !system? && !for_snippet?
+  end
+
+  def can_create_notification?
+    true
   end
 
   def discussion_class(noteable = nil)
@@ -379,12 +387,15 @@ class Note < ActiveRecord::Base
   def expire_etag_cache
     return unless noteable&.discussions_rendered_on_frontend?
 
-    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
+    Gitlab::EtagCaching::Store.new.touch(etag_key)
+  end
+
+  def etag_key
+    Gitlab::Routing.url_helpers.project_noteable_notes_path(
       project,
       target_type: noteable_type.underscore,
       target_id: noteable_id
     )
-    Gitlab::EtagCaching::Store.new.touch(key)
   end
 
   def touch(*args)

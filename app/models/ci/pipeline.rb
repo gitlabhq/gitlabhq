@@ -6,6 +6,7 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Gitlab::OptimisticLocking
+    include Gitlab::Utils::StrongMemoize
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
@@ -14,7 +15,7 @@ module Ci
 
     has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :builds, foreign_key: :commit_id
+    has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
 
@@ -361,19 +362,21 @@ module Ci
     def stage_seeds
       return [] unless config_processor
 
-      @stage_seeds ||= config_processor.stage_seeds(self)
+      strong_memoize(:stage_seeds) do
+        seeds = config_processor.stages_attributes.map do |attributes|
+          Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes)
+        end
+
+        seeds.select(&:included?)
+      end
     end
 
     def seeds_size
-      @seeds_size ||= stage_seeds.sum(&:size)
+      stage_seeds.sum(&:size)
     end
 
     def has_kubernetes_active?
       project.deployment_platform&.active?
-    end
-
-    def has_stage_seeds?
-      stage_seeds.any?
     end
 
     def has_warnings?
@@ -388,6 +391,9 @@ module Ci
       end
     end
 
+    ##
+    # TODO, setting yaml_errors should be moved to the pipeline creation chain.
+    #
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
@@ -472,6 +478,14 @@ module Ci
       end
     end
 
+    def protected_ref?
+      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+    end
+
+    def legacy_trigger
+      strong_memoize(:legacy_trigger) { trigger_requests.first }
+    end
+
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_PIPELINE_ID', value: id.to_s)
@@ -513,7 +527,7 @@ module Ci
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
     end
 
     private

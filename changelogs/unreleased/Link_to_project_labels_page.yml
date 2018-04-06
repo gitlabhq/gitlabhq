@@ -1,0 +1,5 @@
+---
+title: Always display Labels section in issuable sidebar, even when the project has no labels
+merge_request: 18081
+author: Branka Martinovic
+type: fixed

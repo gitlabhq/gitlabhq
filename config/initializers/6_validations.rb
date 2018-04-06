@@ -5,7 +5,7 @@ end
 def find_parent_path(name, path)
   parent = Pathname.new(path).realpath.parent
   Gitlab.config.repositories.storages.detect do |n, rs|
-    name != n && Pathname.new(rs['path']).realpath == parent
+    name != n && Pathname.new(rs.legacy_disk_path).realpath == parent
   end
 rescue Errno::EIO, Errno::ENOENT => e
   warning = "WARNING: couldn't verify #{path} (#{name}). "\
@@ -33,7 +33,7 @@ def validate_storages_config
         "If you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.\n"
     end
 
-    if !repository_storage.is_a?(Hash) || repository_storage['path'].nil?
+    if !repository_storage.is_a?(Gitlab::GitalyClient::StorageSettings) || repository_storage.legacy_disk_path.nil?
       storage_validation_error("#{name} is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example")
     end
 
@@ -50,7 +50,7 @@ end
 
 def validate_storages_paths
   Gitlab.config.repositories.storages.each do |name, repository_storage|
-    parent_name, _parent_path = find_parent_path(name, repository_storage['path'])
+    parent_name, _parent_path = find_parent_path(name, repository_storage.legacy_disk_path)
     if parent_name
       storage_validation_error("#{name} is a nested path of #{parent_name}. Nested paths are not supported for repository storages")
     end

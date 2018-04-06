@@ -3,6 +3,7 @@ module Avatarable
 
   included do
     prepend ShadowMethods
+    include ObjectStorage::BackgroundMove
 
     validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
     validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -21,7 +22,7 @@ module Avatarable
 
   def avatar_type
     unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
+      errors.add :avatar, "file format is not supported. Please try one of the following supported formats: #{AvatarUploader::IMAGE_EXT.join(', ')}"
     end
   end
 

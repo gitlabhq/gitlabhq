@@ -1,0 +1,5 @@
+---
+title: Fix GitLab Auth0 integration signing in the wrong user
+merge_request:
+author:
+type: security
