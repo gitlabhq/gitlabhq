@@ -90,7 +90,7 @@ module Issues
 
       issue =
         if board_group_id
-          IssuesFinder.new(current_user, group_id: board_group_id).find_by(id: id)
+          IssuesFinder.new(current_user, group_id: board_group_id, include_subgroups: true).find_by(id: id)
         else
           project.issues.find(id)
         end

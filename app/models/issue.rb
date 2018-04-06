@@ -272,11 +272,17 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      if options.key?(:sidebar_endpoints) && project
+      if options.key?(:issue_endpoints) && project
         url_helper = Gitlab::Routing.url_helpers
 
-        json.merge!(issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
-                    toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self))
+        issue_reference = options[:include_full_project_path] ? to_reference(full: true) : to_reference
+
+        json.merge!(
+          reference_path: issue_reference,
+          real_path: url_helper.project_issue_path(project, self),
+          issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
+          toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self)
+        )
       end
 
       if options.key?(:labels)
