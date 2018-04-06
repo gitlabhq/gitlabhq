@@ -52,7 +52,7 @@ export default class MirrorPull {
 
       // Verify if URL is http, https or git and hide/show Auth type dropdown
       // as we don't support auth type SSH for non-SSH URLs
-      this.$dropdownAuthType.collapse(protRegEx.test(protocol) ? 'hide' : 'show');
+      this.$dropdownAuthType.attr('disabled', protRegEx.test(protocol));
     }
   }
 
