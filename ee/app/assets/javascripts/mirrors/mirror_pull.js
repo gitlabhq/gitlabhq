@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import $ from 'jquery';
 import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
