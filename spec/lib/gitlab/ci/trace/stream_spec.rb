@@ -17,7 +17,6 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     it { is_expected.to delegate_method(:path).to(:stream) }
     it { is_expected.to delegate_method(:truncate).to(:stream) }
     it { is_expected.to delegate_method(:valid?).to(:stream).as(:present?) }
-    it { is_expected.to delegate_method(:file?).to(:path).as(:present?) }
   end
 
   describe '#limit' do

@@ -25,10 +25,6 @@ module Gitlab
           self.path.present?
         end
 
-        def file?
-          self.path
-        end
-
         def path
           self.stream.path if self.stream.respond_to?(:path)
         end
