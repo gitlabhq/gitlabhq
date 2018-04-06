@@ -2,7 +2,7 @@
 - verified_by = import_data.ssh_known_hosts_verified_by
 - verified_at = import_data.ssh_known_hosts_verified_at
 
-.form-group.js-ssh-host-keys-section{ class: ('hidden' unless import_data.ssh_import?) }
+.form-group.js-ssh-host-keys-section{ class: ('collapse' unless import_data.ssh_import?) }
   %button.btn.btn-inverted.btn-success.inline.js-detect-host-keys{ type: 'button' }
     = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
     Detect host keys

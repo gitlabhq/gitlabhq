@@ -7,7 +7,7 @@
   = f.label :auth_method, 'Authentication method', class: 'label-light-but-actually-light-i-promise'
   = f.select :auth_method,
       options_for_select([['Password', 'password'], ['SSH public key', 'ssh_public_key']], import_data.auth_method),
-      {}, { class: "form-control js-pull-mirror-auth-type #{'collapse' unless import_data.ssh_import?}" }
+      {}, { class: "form-control js-pull-mirror-auth-type" }
 
 .form-group
   .collapse.js-well-changing-auth

@@ -52,7 +52,13 @@ export default class MirrorPull {
 
       // Verify if URL is http, https or git and hide/show Auth type dropdown
       // as we don't support auth type SSH for non-SSH URLs
-      this.$dropdownAuthType.collapse(protRegEx.test(protocol) ? 'hide' : 'show');
+      const matchesProtocol = protRegEx.test(protocol);
+      this.$dropdownAuthType.attr('disabled', matchesProtocol);
+
+      if (matchesProtocol) {
+        this.$dropdownAuthType.val('password');
+        this.toggleAuthWell(AUTH_METHOD.PASSWORD);
+      }
     }
   }
 
@@ -140,8 +146,6 @@ export default class MirrorPull {
       },
     };
 
-    // Show load spinner and hide other containers
-    this.$wellAuthTypeChanging.collapse('show');
     this.$wellPasswordAuth.collapse('hide');
     this.$wellSSHAuth.collapse('hide');
 
@@ -149,6 +153,7 @@ export default class MirrorPull {
     // and SSH Public key was not present on page load
     if (selectedAuthType === AUTH_METHOD.SSH &&
         !$sshPublicKey.text().trim()) {
+      this.$wellAuthTypeChanging.collapse('show');
       this.$dropdownAuthType.disable();
 
       axios.put(projectMirrorAuthTypeEndpoint, JSON.stringify(authTypeData), {
@@ -172,7 +177,6 @@ export default class MirrorPull {
         this.$dropdownAuthType.enable();
       });
     } else {
-      this.$wellAuthTypeChanging.collapse('hide');
       this.toggleAuthWell(selectedAuthType);
       this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse('show');
     }

@@ -1,5 +1,6 @@
 - expanded = Rails.env.test?
 - import_data = @project.import_data || @project.build_import_data
+- protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
 
 %section.settings.project-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -21,7 +22,7 @@
 
           .form-group.has-feedback
             = label_tag :url, 'Git repository URL', class: 'label-light-but-actually-light-i-promise'
-            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: 'Input your repository URL'
+            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: 'Input your repository URL', required: 'required', pattern: "(#{protocols}):\/\/.+"
 
           = render 'projects/mirrors/instructions'
 
@@ -34,12 +35,12 @@
           %template.js-push-mirrors-form
             = f.fields_for :remote_mirrors, @remote_mirror do |rm_f|
               = rm_f.hidden_field :enabled, value: '1'
-              = rm_f.hidden_field :url, class: 'js-mirror-url-hidden'
+              = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: 'required', pattern: "(#{protocols}):\/\/.+"
               = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
 
           %template.js-pull-mirrors-form
             = f.hidden_field :mirror, value: '1'
-            = f.hidden_field :username_only_import_url, class: 'js-mirror-url-hidden'
+            = f.hidden_field :username_only_import_url, class: 'js-mirror-url-hidden', required: 'required', pattern: "(#{protocols}):\/\/.+"
             = f.hidden_field :only_mirror_protected_branches, class: 'js-mirror-protected-hidden'
 
             = f.fields_for :import_data, import_data do |import_form|
