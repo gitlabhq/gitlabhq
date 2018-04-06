@@ -4,6 +4,7 @@ module DeploymentPlatform
   def deployment_platform(environment: nil)
     @deployment_platform ||= {}
 
+    return find_deployment_platform(environment)
     @deployment_platform[environment] ||= find_deployment_platform(environment)
   end
 

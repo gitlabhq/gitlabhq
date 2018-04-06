@@ -368,6 +368,29 @@ describe Environment do
     end
   end
 
+  describe '#deployment_platform' do
+    before do
+      stub_licensed_features(multiple_clusters: true)
+    end
+
+    context 'when there is a deployment platform for environment' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp,
+               projects: [project])
+      end
+
+      it 'finds a deployment platform' do
+        expect(environment.deployment_platform).to eq cluster.platform
+      end
+    end
+
+    context 'when there is no deployment platform for environment' do
+      it 'returns nil' do
+        expect(environment.deployment_platform).to be_nil
+      end
+    end
+  end
+
   describe '#terminals' do
     subject { environment.terminals }
 
