@@ -115,6 +115,8 @@ class Projects::BlobController < Projects::ApplicationController
   # Converts a String array to Gitlab::Diff::Line array
   def render_diff_lines
     @lines.map! do |line|
+      # These are marked as context lines but are loaded from blobs.
+      # We also have context lines loaded from diffs in other places.
       diff_line = Gitlab::Diff::Line.new(line ,'context', nil, nil, nil)
       diff_line.rich_text = line
       diff_line
@@ -135,6 +137,7 @@ class Projects::BlobController < Projects::ApplicationController
       old_pos = new_pos = @form.since
     end
 
+    # Match line is not needed when it reaches the top limit or bottom limit of the file.
     return unless new_pos
 
     @match_line = Gitlab::Diff::Line.new(@match_line ,'match', nil, old_pos, new_pos)
