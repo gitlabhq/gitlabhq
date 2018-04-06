@@ -317,6 +317,17 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe 'ExclusiveLock' do
+    before do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
+      stub_const('Ci::JobTraceChunk::LOCK_RETRY', 1)
+    end
+
+    it 'raise an error' do
+      expect { job_trace_chunk.append('ABC', 0) }.to raise_error('Failed to obtain write lock')
+    end
+  end
+
   describe 'deletes data in redis after chunk record destroyed' do
     let(:project) { create(:project) }
 
