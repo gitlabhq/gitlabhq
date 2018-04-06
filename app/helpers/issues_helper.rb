@@ -82,8 +82,8 @@ module IssuesHelper
     names.to_sentence
   end
 
-  def award_state_class(awards, current_user)
-    if !current_user
+  def award_state_class(awardable, awards, current_user)
+    if !can?(current_user, :award_emoji, awardable)
       "disabled"
     elsif current_user && awards.find { |a| a.user_id == current_user.id }
       "active"

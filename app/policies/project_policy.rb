@@ -155,6 +155,7 @@ class ProjectPolicy < BasePolicy
     enable :create_note
     enable :upload_file
     enable :read_cycle_analytics
+    enable :award_emoji
   end
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -253,6 +254,7 @@ class ProjectPolicy < BasePolicy
     prevent :resolve_note
     prevent :create_merge_request_from
     prevent :create_merge_request_in
+    prevent :award_emoji
 
     READONLY_FEATURES_WHEN_ARCHIVED.each do |feature|
       prevent(*create_update_admin_destroy(feature))

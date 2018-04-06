@@ -101,4 +101,72 @@ describe 'User interacts with awards in an issue', :js do
 
     expect(page).to have_selector('gl-emoji[data-name="smile"]')
   end
+
+  context 'when a project is archived' do
+    let(:project) { create(:project, archived: true) }
+
+    it 'hides the add award button' do
+      page.within('.awards') do
+        expect(page).not_to have_css('.js-add-award')
+      end
+    end
+  end
+
+  context 'awards on a note' do
+    let!(:note) { create(:note, noteable: issue, project: issue.project) }
+    let!(:award_emoji) { create(:award_emoji, awardable: note, name: '100') }
+
+    it 'shows the award on the note' do
+      page.within('.note-awards') do
+        expect(page).to have_selector('gl-emoji[data-name="100"]')
+      end
+    end
+
+    it 'allows adding a vote to an award' do
+      page.within('.note-awards') do
+        find('gl-emoji[data-name="100"]').click
+      end
+      wait_for_requests
+
+      expect(note.reload.award_emoji.size).to eq(2)
+    end
+
+    it 'allows adding a new emoji' do
+      page.within('.note-actions') do
+        find('a.js-add-award').click
+      end
+      page.within('.emoji-menu-content') do
+        find('gl-emoji[data-name="8ball"]').click
+      end
+      wait_for_requests
+
+      page.within('.note-awards') do
+        expect(page).to have_selector('gl-emoji[data-name="8ball"]')
+      end
+      expect(note.reload.award_emoji.size).to eq(2)
+    end
+
+    context 'when the project is archived' do
+      let(:project) { create(:project, archived: true) }
+
+      it 'hides the buttons for adding new emoji' do
+        page.within('.note-awards') do
+          expect(page).not_to have_css('.award-menu-holder')
+        end
+
+        page.within('.note-actions') do
+          expect(page).not_to have_css('a.js-add-award')
+        end
+      end
+
+      it 'does not allow toggling existing emoji' do
+        page.within('.note-awards') do
+          find('gl-emoji[data-name="100"]').click
+        end
+        wait_for_requests
+
+        expect(note.reload.award_emoji.size).to eq(1)
+      end
+    end
+  end
 end
