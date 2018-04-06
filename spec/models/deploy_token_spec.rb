@@ -70,8 +70,27 @@ describe DeployToken do
   end
 
   describe '#username' do
-    it 'returns Ghost username' do
+    it 'returns a harcoded username' do
       expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
+    end
+  end
+
+  describe '#has_access_to?' do
+    let(:project) { create(:project) }
+
+    subject(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+    context 'when the deploy token has access to the project' do
+      it 'should return true' do
+        expect(deploy_token.has_access_to?(project)).to be_truthy
+      end
+    end
+
+    context 'when the deploy token does not have access to the project' do
+      it 'should return false' do
+        another_project = create(:project)
+        expect(deploy_token.has_access_to?(another_project)).to be_falsy
+      end
     end
   end
 end

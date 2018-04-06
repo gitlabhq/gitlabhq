@@ -17,10 +17,6 @@ class DeployToken < ActiveRecord::Base
   scope :read_repository, -> { where(read_repository: true) }
   scope :read_registry, -> { where(read_registry: true) }
 
-  def self.redis_shared_state_key(user_id)
-    "gitlab:deploy_token:user_#{user_id}"
-  end
-
   def revoke!
     update!(revoked: true)
   end
@@ -38,7 +34,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def has_access_to?(requested_project)
-    self.projects.first == requested_project
+    project == requested_project
   end
 
   def project

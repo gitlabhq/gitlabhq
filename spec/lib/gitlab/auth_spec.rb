@@ -195,7 +195,7 @@ describe Gitlab::Auth do
           personal_access_token = create(:personal_access_token, scopes: ['read_registry'])
 
           expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-          expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, [:read_project, :build_download_code, :build_read_container_image]))
+          expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, [:build_read_container_image]))
         end
       end
 
@@ -262,25 +262,38 @@ describe Gitlab::Auth do
 
       context 'when the deploy token has read_repository as scope' do
         let(:deploy_token) { create(:deploy_token, read_registry: false, projects: [project]) }
+        let(:login) { deploy_token.username }
 
-        it 'succeeds when project is present, token is valid and has read_repository as scope' do
-          abilities = %i(download_code)
-          auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, abilities)
+        it 'succeeds when login and token are valid' do
+          auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:download_code])
 
-          expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-          expect(gl_auth.find_for_git_client('', deploy_token.token, project: project, ip: 'ip'))
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: login)
+          expect(gl_auth.find_for_git_client(login, deploy_token.token, project: project, ip: 'ip'))
             .to eq(auth_success)
         end
 
+        it 'fails when login is not valid' do
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'random_login')
+          expect(gl_auth.find_for_git_client('random_login', deploy_token.token, project: project, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+
+        it 'fails when token is not valid' do
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+          expect(gl_auth.find_for_git_client(login, '123123', project: project, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+
         it 'fails if token is nil' do
-          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-          expect(gl_auth.find_for_git_client('', nil, project: project, ip: 'ip'))
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+          expect(gl_auth.find_for_git_client(login, nil, project: project, ip: 'ip'))
             .to eq(auth_failure)
         end
 
         it 'fails if token is not related to project' do
-          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-          expect(gl_auth.find_for_git_client('', 'abcdef', project: project, ip: 'ip'))
+          another_deploy_token = create(:deploy_token)
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+          expect(gl_auth.find_for_git_client(login, another_deploy_token.token, project: project, ip: 'ip'))
             .to eq(auth_failure)
         end
 
@@ -296,30 +309,42 @@ describe Gitlab::Auth do
 
       context 'when the deploy token has read_registry as a scope' do
         let(:deploy_token) { create(:deploy_token, read_repository: false, projects: [project]) }
+        let(:login) { deploy_token.username }
 
         context 'when registry enabled' do
           before do
             stub_container_registry_config(enabled: true)
           end
 
-          it 'succeeds if deploy token does have read_registry as scope' do
-            abilities = %i(read_project build_download_code build_read_container_image)
-            auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, abilities)
+          it 'succeeds when login and token are valid' do
+            auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:build_read_container_image])
 
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-            expect(gl_auth.find_for_git_client('', deploy_token.token, project: nil, ip: 'ip'))
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: login)
+            expect(gl_auth.find_for_git_client(login, deploy_token.token, project: nil, ip: 'ip'))
               .to eq(auth_success)
           end
 
+          it 'fails when login is not valid' do
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'random_login')
+            expect(gl_auth.find_for_git_client('random_login', deploy_token.token, project: project, ip: 'ip'))
+              .to eq(auth_failure)
+          end
+
+          it 'fails when token is not valid' do
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+            expect(gl_auth.find_for_git_client(login, '123123', project: project, ip: 'ip'))
+              .to eq(auth_failure)
+          end
+
           it 'fails if token is nil' do
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-            expect(gl_auth.find_for_git_client('', nil, project: nil, ip: 'ip'))
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+            expect(gl_auth.find_for_git_client(login, nil, project: nil, ip: 'ip'))
               .to eq(auth_failure)
           end
 
           it 'fails if token is not related to project' do
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-            expect(gl_auth.find_for_git_client('', 'abcdef', project: nil, ip: 'ip'))
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+            expect(gl_auth.find_for_git_client(login, 'abcdef', project: nil, ip: 'ip'))
               .to eq(auth_failure)
           end
 
@@ -338,30 +363,9 @@ describe Gitlab::Auth do
             stub_container_registry_config(enabled: false)
           end
 
-          it 'fails if deploy token have read_registry as scope' do
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-            expect(gl_auth.find_for_git_client('', deploy_token.token, project: nil, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails if token is nil' do
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-            expect(gl_auth.find_for_git_client('', nil, project: nil, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails if token is not related to project' do
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
-            expect(gl_auth.find_for_git_client('', 'abcdef', project: nil, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails if token has been revoked' do
-            deploy_token.revoke!
-
-            expect(deploy_token.revoked?).to be_truthy
-            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: 'deploy-token')
-            expect(gl_auth.find_for_git_client('deploy-token', deploy_token.token, project: nil, ip: 'ip'))
+          it 'fails when login and token are valid' do
+            expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
+            expect(gl_auth.find_for_git_client(login, deploy_token.token, project: nil, ip: 'ip'))
               .to eq(auth_failure)
           end
         end

@@ -173,19 +173,17 @@ module Gitlab
         end.uniq
       end
 
-      # Project is always sent when using read_scope,
-      # but is not sent when using read_registry scope
-      # (since jwt is not context aware of the project)
       def deploy_token_check(login, password)
         return unless password.present?
 
         token =
           DeployToken.active.find_by(token: password)
 
-        return unless token
-        return unless login != "gitlab+deploy-token-#{token.id}"
+        return unless token && login
+        return if login != token.username
 
         scopes = abilities_for_scopes(token.scopes)
+
         if valid_scoped_token?(token, available_scopes)
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end

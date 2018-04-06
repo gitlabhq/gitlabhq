@@ -143,7 +143,7 @@ module Auth
 
     def user_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
-        can_user?(:read_container_image, requested_project)
+        can?(current_user, :read_container_image, requested_project)
     end
 
     def deploy_token_can_pull?(requested_project)

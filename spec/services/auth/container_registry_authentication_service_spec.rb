@@ -558,7 +558,6 @@ describe Auth::ContainerRegistryAuthenticationService do
       let(:project) { create(:project, :public) }
 
       context 'when pulling and pushing' do
-        let(:current_user) { create(:deploy_token, projects: [project]) }
         let(:current_params) do
           { scope: "repository:#{project.full_path}:pull,push" }
         end

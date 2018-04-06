@@ -20,20 +20,6 @@ describe DeployTokens::CreateService, :clean_gitlab_redis_shared_state do
       it 'returns a DeployToken' do
         expect(subject).to be_an_instance_of DeployToken
       end
-
-      it 'should store the token on redis' do
-        redis_key = DeployToken.redis_shared_state_key(user.id)
-        subject
-
-        expect(Gitlab::Redis::SharedState.with { |redis| redis.get(redis_key) }).not_to be_nil
-      end
-
-      it 'should not store deploy token attributes on redis' do
-        redis_key = DeployToken.redis_shared_state_key(user.id) + ":attributes"
-        subject
-
-        expect(Gitlab::Redis::SharedState.with { |redis| redis.get(redis_key) }).to be_nil
-      end
     end
 
     context 'when the deploy token is invalid' do
@@ -45,20 +31,6 @@ describe DeployTokens::CreateService, :clean_gitlab_redis_shared_state do
 
       it 'should not create a new ProjectDeployToken' do
         expect { subject }.not_to change { ProjectDeployToken.count }
-      end
-
-      it 'should not store the token on redis' do
-        redis_key = DeployToken.redis_shared_state_key(user.id)
-        subject
-
-        expect(Gitlab::Redis::SharedState.with { |redis| redis.get(redis_key) }).to be_nil
-      end
-
-      it 'should store deploy token attributes on redis' do
-        redis_key = DeployToken.redis_shared_state_key(user.id) + ":attributes"
-        subject
-
-        expect(Gitlab::Redis::SharedState.with { |redis| redis.get(redis_key) }).not_to be_nil
       end
     end
   end

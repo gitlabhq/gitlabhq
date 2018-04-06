@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DeployTokenPolicy do
   let(:current_user) { create(:user) }
   let(:project) { create(:project) }
-  let(:deploy_token) { create(:deploy_token, project: project) }
+  let(:deploy_token) { create(:deploy_token, projects: [project]) }
 
   subject { described_class.new(current_user, deploy_token) }
 

@@ -18,11 +18,12 @@
       = f.check_box :read_repository
       = label_tag ("deploy_token_read_repository"), 'read_repository'
       %span= s_('DeployTokens|Allows read-only access to the repository')
-
-    %fieldset
-      = f.check_box :read_registry
-      = label_tag ("deploy_token_read_registry"), 'read_registry'
-      %span= s_('DeployTokens|Allows read-only access to the registry images')
+    
+    - if container_registry_enabled?
+      %fieldset
+        = f.check_box :read_registry
+        = label_tag ("deploy_token_read_registry"), 'read_registry'
+        %span= s_('DeployTokens|Allows read-only access to the registry images')
 
   .prepend-top-default
     = f.submit s_('DeployTokens|Create deploy token'), class: 'btn btn-success'

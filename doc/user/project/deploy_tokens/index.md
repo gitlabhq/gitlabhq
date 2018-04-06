@@ -46,26 +46,30 @@ the following table.
 To download a repository using a Deploy Token, you just need to:
 
 1. Create a Deploy Token with `read_repository` as a scope.
-2. `git clone` the project using the Deploy Token:
+2. Take note of your `username` and `token`
+3. `git clone` the project using the Deploy Token:
 
 
 ```bash
-git clone http://oauth2:<deploy_token>@gitlab.example.com/tanuki/awesome_project.git
+git clone http://<username>:<deploy_token>@gitlab.example.com/tanuki/awesome_project.git
 ```
 
-Just replace `<deploy_token>` with your real token.
+Just replace `<username>` and `<deploy_token>` with the proper values
 
 ### Read container registry images
 
 To read the container registry images, you'll need to:
 
 1. Create a Deploy Token with `read_registry` as a scope.
-2. Log in to GitLab’s Container Registry using the deploy token:
+2. Take note of your `username` and `token`
+3. Log in to GitLab’s Container Registry using the deploy token:
 
 ```
 docker login registry.example.com -u <username> -p <deploy_token>
 ```
-Just replace `<username>` and `<deploy_token>` with the proper values.
+
+Just replace `<username>` and `<deploy_token>` with the proper values. Then you can simply 
+pull images from your Container Registry.
 
 [ce-17894]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894
 [ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
