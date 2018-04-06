@@ -6,10 +6,7 @@ class DashboardController < Dashboard::ApplicationController
     :author_id,
     :assignee_id,
     :milestone_title,
-<<<<<<< HEAD
     :weight,
-=======
->>>>>>> upstream/master
     :label_name
   ].freeze
 
