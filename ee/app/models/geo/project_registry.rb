@@ -10,8 +10,8 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   ignore_column :repository_verification_checksum
   ignore_column :wiki_verification_checksum
 
-  sha_attribute :repository_verification_checksum_sha
-  sha_attribute :wiki_verification_checksum_sha
+  sha_attribute :repository_verification_checksum_sha, ::Gitlab::Geo.geo_database_configured?
+  sha_attribute :wiki_verification_checksum_sha, ::Gitlab::Geo.geo_database_configured?
 
   belongs_to :project
 
