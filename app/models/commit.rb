@@ -30,6 +30,8 @@ class Commit
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
+  # Used by GFM to match and present link extensions on node texts and hrefs.
+  LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
   def banzai_render_context(field)
     pipeline = field == :description ? :commit_description : :single_line
@@ -143,7 +145,8 @@ class Commit
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
+    @link_reference_pattern ||=
+      super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/)
   end
 
   def to_reference(from = nil, full: false)
