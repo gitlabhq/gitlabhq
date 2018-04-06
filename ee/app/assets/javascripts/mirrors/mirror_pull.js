@@ -56,7 +56,7 @@ export default class MirrorPull {
       this.$dropdownAuthType.attr('disabled', matchesProtocol);
 
       if (matchesProtocol) {
-        this.$dropdownAuthType.val('password');
+        this.$dropdownAuthType.val(AUTH_METHOD.PASSWORD);
         this.toggleAuthWell(AUTH_METHOD.PASSWORD);
       }
     }
