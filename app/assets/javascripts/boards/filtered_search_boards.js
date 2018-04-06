@@ -7,9 +7,13 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
     super({
       page: 'boards',
+<<<<<<< HEAD
       isGroup: true,
       isGroupDecendent: true,
       filteredSearchTokenKeys: FilteredSearchTokenKeysIssues,
+=======
+      isGroupDecendent: true,
+>>>>>>> upstream/master
       stateFiltersSelector: '.issues-state-filters',
     });
 

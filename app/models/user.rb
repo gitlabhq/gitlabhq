@@ -1068,11 +1068,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_cache_counts
-    assigned_open_merge_requests_count(force: true)
-    assigned_open_issues_count(force: true)
-  end
-
   def update_todos_count_cache
     todos_done_count(force: true)
     todos_pending_count(force: true)
