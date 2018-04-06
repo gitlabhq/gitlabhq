@@ -204,32 +204,32 @@
     padding: 0;
   }
 
-  .milestone-popover-body {
-    padding: $gl-padding-8;
-    background-color: $gray-light;
-  }
-
-  .milestone-popover-footer {
-    padding: $gl-padding-8 $gl-padding;
-    border-top: 1px solid $white-dark;
-  }
-
-  .milestone-popover-instructions-list {
-    padding-left: 2em;
-
-    > li {
-      padding-left: 1em;
-    }
-  }
-
   .btn-link {
     padding: 0;
   }
+}
 
-  @media (max-width: $screen-xs-max) {
-    .banner-text,
-    .banner-link {
-      display: inline;
-    }
+.milestone-popover-body {
+  padding: $gl-padding-8;
+  background-color: $gray-light;
+}
+
+.milestone-popover-footer {
+  padding: $gl-padding-8 $gl-padding;
+  border-top: 1px solid $white-dark;
+}
+
+.milestone-popover-instructions-list {
+  padding-left: 2em;
+
+  > li {
+    padding-left: 1em;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .milestone-banner-text,
+  .milestone-banner-link {
+    display: inline;
   }
 }
