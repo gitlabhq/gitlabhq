@@ -375,8 +375,7 @@ describe Environment do
 
     context 'when there is a deployment platform for environment' do
       let!(:cluster) do
-        create(:cluster, :provided_by_gcp,
-               projects: [project])
+        create(:cluster, :provided_by_gcp, projects: [project])
       end
 
       it 'finds a deployment platform' do
@@ -388,6 +387,13 @@ describe Environment do
       it 'returns nil' do
         expect(environment.deployment_platform).to be_nil
       end
+    end
+
+    it 'checks deployment platforms associated with a project' do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name)
+
+      environment.deployment_platform
     end
   end
 
