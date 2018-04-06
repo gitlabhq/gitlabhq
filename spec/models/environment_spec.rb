@@ -368,6 +368,35 @@ describe Environment do
     end
   end
 
+  describe '#deployment_platform' do
+    before do
+      stub_licensed_features(multiple_clusters: true)
+    end
+
+    context 'when there is a deployment platform for environment' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp, projects: [project])
+      end
+
+      it 'finds a deployment platform' do
+        expect(environment.deployment_platform).to eq cluster.platform
+      end
+    end
+
+    context 'when there is no deployment platform for environment' do
+      it 'returns nil' do
+        expect(environment.deployment_platform).to be_nil
+      end
+    end
+
+    it 'checks deployment platforms associated with a project' do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name)
+
+      environment.deployment_platform
+    end
+  end
+
   describe '#terminals' do
     subject { environment.terminals }
 
@@ -378,7 +407,7 @@ describe Environment do
 
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns the terminals from the deployment service' do
-          expect(project.deployment_platform(environment: environment))
+          expect(environment.deployment_platform)
             .to receive(:terminals).with(environment)
             .and_return(:fake_terminals)
 
@@ -419,7 +448,7 @@ describe Environment do
         end
 
         it 'returns the rollout status from the deployment service' do
-          expect(project.deployment_platform(environment: environment))
+          expect(environment.deployment_platform)
             .to receive(:rollout_status).with(environment)
             .and_return(:fake_rollout_status)
 

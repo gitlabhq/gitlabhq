@@ -228,7 +228,7 @@ class Environment < ActiveRecord::Base
   end
 
   def deployment_platform
-    project.deployment_platform(environment: self)
+    project.deployment_platform(environment: self.name)
   end
 
   private
