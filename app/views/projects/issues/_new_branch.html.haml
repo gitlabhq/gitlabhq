@@ -1,4 +1,4 @@
-- can_create_merge_request = can?(current_user, :create_merge_request, @project)
+- can_create_merge_request = can?(current_user, :create_merge_request_from, @project)
 - data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
 - value = can_create_merge_request ? 'Create merge request' : 'Create branch'
 

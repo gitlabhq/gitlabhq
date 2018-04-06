@@ -203,7 +203,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def user_can_collaborate_with_project?
     can_create_merge_request =
-      can?(current_user, :create_merge_request_in_project, project) &&
+      can?(current_user, :create_merge_request_in, project) &&
       current_user.already_forked?(project)
 
     can?(current_user, :push_code, project) ||
