@@ -1,7 +1,6 @@
 @import "framework/variables";
 @import "framework/mixins";
-@import 'framework/tw_bootstrap_variables';
-@import 'framework/tw_bootstrap';
+@import "../../../node_modules/bootstrap/scss/bootstrap";
 @import "framework/layout";
 
 @import "framework/animations";
