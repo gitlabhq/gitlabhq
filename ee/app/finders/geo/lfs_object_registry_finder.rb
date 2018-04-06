@@ -76,6 +76,20 @@ module Geo
       lfs_objects.with_files_stored_locally
     end
 
+    def find_retryable_failed_lfs_objects_registries(batch_size:, except_file_ids: [])
+      find_failed_lfs_objects_registries
+        .retry_due
+        .where.not(file_id: except_file_ids)
+        .limit(batch_size)
+    end
+
+    def find_retryable_synced_missing_on_primary_lfs_objects_registries(batch_size:, except_file_ids: [])
+      find_synced_missing_on_primary_lfs_objects_registries
+        .retry_due
+        .where.not(file_id: except_file_ids)
+        .limit(batch_size)
+    end
+
     def find_failed_lfs_objects_registries
       Geo::FileRegistry.lfs_objects.failed
     end

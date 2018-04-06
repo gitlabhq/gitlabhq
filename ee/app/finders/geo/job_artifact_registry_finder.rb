@@ -76,6 +76,20 @@ module Geo
       job_artifacts.with_files_stored_locally
     end
 
+    def find_retryable_failed_job_artifacts_registries(batch_size:, except_artifact_ids: [])
+      find_failed_job_artifacts_registries
+        .retry_due
+        .where.not(artifact_id: except_artifact_ids)
+        .limit(batch_size)
+    end
+
+    def find_retryable_synced_missing_on_primary_job_artifacts_registries(batch_size:, except_artifact_ids: [])
+      find_synced_missing_on_primary_job_artifacts_registries
+        .retry_due
+        .where.not(artifact_id: except_artifact_ids)
+        .limit(batch_size)
+    end
+
     def find_synced_job_artifacts_registries
       Geo::JobArtifactRegistry.synced
     end

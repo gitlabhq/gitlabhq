@@ -92,6 +92,20 @@ module Geo
       relation.limit(batch_size)
     end
 
+    def find_retryable_failed_attachments_registries(batch_size:, except_file_ids: [])
+      find_failed_attachments_registries
+        .retry_due
+        .where.not(file_id: except_file_ids)
+        .limit(batch_size)
+    end
+
+    def find_retryable_synced_missing_on_primary_attachments_registries(batch_size:, except_file_ids: [])
+      find_synced_missing_on_primary_attachments_registries
+        .retry_due
+        .where.not(file_id: except_file_ids)
+        .limit(batch_size)
+    end
+
     def find_failed_attachments_registries
       Geo::FileRegistry.attachments.failed
     end
