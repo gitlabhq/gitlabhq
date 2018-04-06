@@ -21,7 +21,7 @@
   This group does not provide any group Runners yet.
 
   - if can?(current_user, :admin_pipeline, @project.group)
-    You can register group runners in the
+    Group masters can register group runners in the
     = link_to 'Group CI/CD settings', group_settings_ci_cd_path(@project.group)
   - else
     Ask your group master to setup a group Runner.
