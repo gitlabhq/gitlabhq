@@ -1,5 +1,6 @@
 <script>
 import { convertToSentenceCase } from '~/lib/utils/text_utility';
+import { s__ } from '~/locale';
 
 export default {
   props: {
@@ -74,6 +75,10 @@ export default {
     yAxisLabelSentenceCase() {
       return `${convertToSentenceCase(this.yAxisLabel)} (${this.unitOfDisplay})`;
     },
+
+    timeString() {
+      return s__('PrometheusDashboard|Time');
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -131,7 +136,7 @@ export default {
       :y="yPosition"
       dy=".35em"
     >
-      Time
+      {{ timeString }}
     </text>
   </g>
 </template>

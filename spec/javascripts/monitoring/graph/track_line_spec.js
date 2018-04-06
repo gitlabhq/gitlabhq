@@ -20,16 +20,33 @@ describe('TrackLine component', () => {
   });
 
   describe('Computed props', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, { track: timeSeries[0] });
+    it('stylizedLine for dashed lineStyles', () => {
+      vm = mountComponent(Component, { track: { ...timeSeries[0], lineStyle: 'dashed' } });
+
+      expect(vm.stylizedLine).toEqual('6, 3');
     });
 
-    it('strokeDashArray', () => {
-      const dashedArray = vm.strokeDashArray('dashed');
-      const dottedArray = vm.strokeDashArray('dotted');
+    it('stylizedLine for dotted lineStyles', () => {
+      vm = mountComponent(Component, { track: { ...timeSeries[0], lineStyle: 'dotted' } });
 
-      expect(dashedArray).toEqual('6, 3');
-      expect(dottedArray).toEqual('3, 3');
+      expect(vm.stylizedLine).toEqual('3, 3');
+    });
+  });
+
+  describe('Rendered output', () => {
+    it('has an svg with a line', () => {
+      vm = mountComponent(Component, { track: { ...timeSeries[0] } });
+      const svgEl = vm.$el.querySelector('svg');
+      const lineEl = vm.$el.querySelector('svg line');
+
+      expect(svgEl.getAttribute('width')).toEqual('15');
+      expect(svgEl.getAttribute('height')).toEqual('6');
+
+      expect(lineEl.getAttribute('stroke-width')).toEqual('4');
+      expect(lineEl.getAttribute('x1')).toEqual('0');
+      expect(lineEl.getAttribute('x2')).toEqual('15');
+      expect(lineEl.getAttribute('y1')).toEqual('2');
+      expect(lineEl.getAttribute('y2')).toEqual('2');
     });
   });
 });

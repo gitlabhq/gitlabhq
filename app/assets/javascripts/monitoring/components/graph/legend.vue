@@ -17,6 +17,13 @@ export default {
       required: true,
     },
   },
+  methods: {
+    isStable(track) {
+      return {
+        'prometheus-table-row-highlight': track.trackName !== 'Canary' && track.renderCanary,
+      };
+    },
+  },
 };
 </script>
 <template>
@@ -26,6 +33,7 @@ export default {
         v-for="(series, index) in timeSeries"
         :key="index"
         v-if="series.shouldRenderLegend"
+        :class="isStable(series)"
       >
         <td>
           <strong v-if="series.renderCanary">{{ series.trackName }}</strong>
@@ -53,7 +61,9 @@ export default {
             :track="track"
             :key="`track-line-${trackIndex}`"/>
           <td :key="`track-info-${trackIndex}`">
-            <track-info :track="track" />
+            <track-info
+              class="legend-metric-title"
+              :track="track" />
           </td>
         </template>
       </tr>
