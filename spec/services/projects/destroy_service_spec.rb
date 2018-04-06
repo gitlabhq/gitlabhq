@@ -248,6 +248,28 @@ describe Projects::DestroyService do
     end
   end
 
+  context '#attempt_restore_repositories' do
+    let(:path) { project.disk_path + '.git' }
+
+    before do
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+
+      # Dont run sidekiq to check if renamed repository exists
+      Sidekiq::Testing.fake! { destroy_project(project, user, {}) }
+
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, path)).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_truthy
+    end
+
+    it 'restores the repositories' do
+      Sidekiq::Testing.fake! { described_class.new(project, user).attempt_repositories_rollback }
+
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+    end
+  end
+
   def destroy_project(project, user, params = {})
     if async
       Projects::DestroyService.new(project, user, params).async_execute
