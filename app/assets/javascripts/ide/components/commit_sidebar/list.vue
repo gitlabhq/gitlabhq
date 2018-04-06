@@ -1,15 +1,16 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import listItem from './list_item.vue';
-import listCollapsed from './list_collapsed.vue';
+import ListItem from './list_item.vue';
+import ListCollapsed from './list_collapsed.vue';
+import { __, sprintf } from '~/locale';
 
 export default {
   components: {
-    icon,
-    listItem,
-    listCollapsed,
+    Icon,
+    ListItem,
+    ListCollapsed,
   },
   directives: {
     tooltip,
@@ -48,6 +49,11 @@ export default {
   computed: {
     ...mapState(['rightPanelCollapsed']),
     ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
+    titleText() {
+      return sprintf(__('%{title} changes'), {
+        title: this.title,
+      });
+    },
   },
   methods: {
     ...mapActions(['toggleRightPanelCollapsed', 'stageAllChanges', 'unstageAllChanges']),
@@ -83,7 +89,7 @@ export default {
           :name="icon"
           :size="18"
         />
-        {{ title }} changes
+        {{ titleText }}
         <button
           type="button"
           class="btn btn-blank btn-link ide-staged-action-btn"

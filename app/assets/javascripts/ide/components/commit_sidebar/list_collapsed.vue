@@ -1,7 +1,7 @@
 <script>
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import { sprintf, n__ } from '~/locale';
+import { sprintf, n__, __ } from '~/locale';
 
 export default {
   components: {
@@ -38,27 +38,18 @@ export default {
       return this.modifiedFilesLength ? 'multi-file-modified' : '';
     },
     additionsTooltip() {
-      return sprintf(
-        n__(
-          '1 %{type} addition',
-          '%d %{type} additions',
-          this.addedFilesLength,
-        ),
-        { type: this.title.toLowerCase() },
-      );
+      return sprintf(n__('1 %{type} addition', '%d %{type} additions', this.addedFilesLength), {
+        type: this.title.toLowerCase(),
+      });
     },
     modifiedTooltip() {
       return sprintf(
-        n__(
-          '1 %{type} modification',
-          '%d %{type} modifications',
-          this.modifiedFilesLength,
-        ),
+        n__('1 %{type} modification', '%d %{type} modifications', this.modifiedFilesLength),
         { type: this.title.toLowerCase() },
       );
     },
     titleTooltip() {
-      return `${this.title} changes`;
+      return sprintf(__('%{title} changes'), { title: this.title });
     },
   },
 };

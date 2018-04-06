@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
@@ -36,6 +38,6 @@ export const hasChanges = state => !!state.changedFiles.length || !!state.staged
 
 // eslint-disable-next-line no-confusing-arrow
 export const collapseButtonTooltip = state =>
-  state.rightPanelCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+  state.rightPanelCollapsed ? __('Expand sidebar') : __('Collapse sidebar');
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;

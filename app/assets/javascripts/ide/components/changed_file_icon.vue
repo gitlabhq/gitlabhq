@@ -2,6 +2,7 @@
 import tooltip from '~/vue_shared/directives/tooltip';
 import icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
+import { __, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -34,11 +35,17 @@ export default {
       const type = this.file.tempFile ? 'addition' : 'modification';
 
       if (this.file.changed && !this.file.staged) {
-        return `Unstaged ${type}`;
+        return sprintf(__('Unstaged %{type}'), {
+          type,
+        });
       } else if (!this.file.changed && this.file.staged) {
-        return `Staged ${type}`;
+        return sprintf(__('Staged %{type}'), {
+          type,
+        });
       } else if (this.file.changed && this.file.staged) {
-        return `Unstaged and staged ${pluralize(type)}`;
+        return sprintf(__('Unstaged and staged %{type}'), {
+          type: pluralize(type),
+        });
       }
 
       return undefined;
