@@ -7,11 +7,13 @@ class CreateDeployTokens < ActiveRecord::Migration
       t.boolean :read_repository, null: false, default: false
       t.boolean :read_registry, null: false, default: false
 
-      t.datetime :expires_at
-      t.timestamps null: false
+      t.datetime_with_timezone :expires_at, null: false, default: '3000-01-01'
+      t.datetime_with_timezone :created_at, null: false
 
       t.string :name, null: false
       t.string :token, index: { unique: true }, null: false
+
+      t.index [:token, :expires_at], where: "(revoked IS FALSE)"
     end
   end
 end

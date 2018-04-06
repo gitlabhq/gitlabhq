@@ -7,7 +7,6 @@ RSpec.describe ProjectDeployToken, type: :model do
 
   it { is_expected.to belong_to :project }
   it { is_expected.to belong_to :deploy_token }
-  it { is_expected.to accept_nested_attributes_for :deploy_token }
 
   it { is_expected.to validate_presence_of :deploy_token }
   it { is_expected.to validate_presence_of :project }

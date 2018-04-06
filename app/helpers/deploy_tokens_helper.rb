@@ -5,8 +5,16 @@ module DeployTokensHelper
       Rails.env.test?
   end
 
-  def container_registry_enabled?
+  def container_registry_enabled?(project)
     Gitlab.config.registry.enabled &&
-      can?(current_user, :read_container_image, @project)
+      can?(current_user, :read_container_image, project)
+  end
+
+  def expires_at_value(expires_at)
+    expires_at unless expires_at >= DeployToken::FUTURE_DATE
+  end
+
+  def show_expire_at?(token)
+    token.expires? && token.expires_at != DeployToken::FUTURE_DATE
   end
 end

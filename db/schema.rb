@@ -687,13 +687,13 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.boolean "revoked", default: false
     t.boolean "read_repository", default: false, null: false
     t.boolean "read_registry", default: false, null: false
-    t.datetime "expires_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "expires_at", default: '3000-01-01 00:00:00', null: false
+    t.datetime_with_timezone "created_at", null: false
     t.string "name", null: false
     t.string "token", null: false
   end
 
+  add_index "deploy_tokens", ["token", "expires_at"], name: "index_deploy_tokens_on_token_and_expires_at", where: "(revoked IS FALSE)", using: :btree
   add_index "deploy_tokens", ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
 
   create_table "deployments", force: :cascade do |t|
@@ -1446,8 +1446,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   create_table "project_deploy_tokens", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "deploy_token_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
   end
 
   add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree

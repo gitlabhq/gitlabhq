@@ -124,8 +124,8 @@ module Auth
     end
 
     def can_user?(ability, project)
-      current_user.is_a?(User) &&
-        can?(current_user, ability, project)
+      user = current_user.is_a?(User) ? current_user : nil
+      can?(user, ability, project)
     end
 
     def build_can_pull?(requested_project)
@@ -143,7 +143,7 @@ module Auth
 
     def user_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
-        can?(current_user, :read_container_image, requested_project)
+        can_user?(:read_container_image, requested_project)
     end
 
     def deploy_token_can_pull?(requested_project)

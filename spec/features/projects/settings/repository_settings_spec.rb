@@ -94,6 +94,7 @@ feature 'Repository settings' do
       let!(:deploy_token) { deploy_token_project.deploy_token }
 
       before do
+        stub_container_registry_config(enabled: true)
         visit project_settings_repository_path(project)
       end
 

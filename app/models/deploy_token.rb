@@ -4,6 +4,7 @@ class DeployToken < ActiveRecord::Base
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
+  FUTURE_DATE = Date.new(3000 - 01 - 01)
 
   has_many :project_deploy_tokens, inverse_of: :deploy_token
   has_many :projects, through: :project_deploy_tokens
@@ -13,9 +14,7 @@ class DeployToken < ActiveRecord::Base
 
   accepts_nested_attributes_for :project_deploy_tokens
 
-  scope :active, -> { where("revoked = false AND (expires_at >= NOW() OR expires_at IS NULL)") }
-  scope :read_repository, -> { where(read_repository: true) }
-  scope :read_registry, -> { where(read_registry: true) }
+  scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
 
   def revoke!
     update!(revoked: true)
@@ -26,7 +25,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def scopes
-    AVAILABLE_SCOPES.select { |token_scope| send("#{token_scope}") }  # rubocop:disable GitlabSecurity/PublicSend
+    AVAILABLE_SCOPES.select { |token_scope| read_attribute(token_scope) }
   end
 
   def username
@@ -37,6 +36,9 @@ class DeployToken < ActiveRecord::Base
     project == requested_project
   end
 
+  # This is temporal. Currently we limit DeployToken
+  # to a single project, later we're going to extend
+  # that to be for multiple projects and namespaces.
   def project
     projects.first
   end
