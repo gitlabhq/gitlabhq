@@ -1,6 +1,6 @@
 - @no_container = true
 - @can_bulk_update = can?(current_user, :admin_merge_request, @project)
-- merge_project = can?(current_user, :create_merge_request_from, @project) ? @project : (current_user && current_user.fork_of(@project))
+- merge_project = merge_request_source_project_for_project(@project)
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
