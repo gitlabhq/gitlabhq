@@ -1472,7 +1472,9 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo_notify!
-    send_move_instructions(full_path_was)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_was) unless started?
     expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was
