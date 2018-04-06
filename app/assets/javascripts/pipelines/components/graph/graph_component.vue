@@ -1,6 +1,7 @@
 <script>
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import StageColumnComponent from './stage_column_component.vue';
+<<<<<<< HEAD
 import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/first
 
 export default {
@@ -9,6 +10,15 @@ export default {
     StageColumnComponent,
     LoadingIcon,
   },
+=======
+
+export default {
+  components: {
+    StageColumnComponent,
+    LoadingIcon,
+  },
+
+>>>>>>> upstream/master
   props: {
     isLoading: {
       type: Boolean,
@@ -28,6 +38,7 @@ export default {
   computed: {
     graph() {
       return this.pipeline.details && this.pipeline.details.stages;
+<<<<<<< HEAD
     },
     triggered() {
       return this.pipeline.triggered || [];
@@ -42,6 +53,9 @@ export default {
     hasTriggeredBy() {
       return !!this.triggeredBy.length;
     },
+=======
+    },
+>>>>>>> upstream/master
   },
 
   methods: {
@@ -106,7 +120,10 @@ export default {
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
           :action-disabled="actionDisabled"
+<<<<<<< HEAD
           :has-triggered-by="hasTriggeredBy"
+=======
+>>>>>>> upstream/master
         />
       </ul>
 

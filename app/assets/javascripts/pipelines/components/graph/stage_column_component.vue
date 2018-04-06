@@ -28,8 +28,18 @@ export default {
       type: String,
       required: false,
       default: '',
+<<<<<<< HEAD
+=======
     },
+    actionDisabled: {
+      type: String,
+      required: false,
+      default: null,
+>>>>>>> upstream/master
+    },
+  },
 
+<<<<<<< HEAD
     actionDisabled: {
       type: String,
       required: false,
@@ -46,6 +56,13 @@ export default {
       return list[0];
     },
 
+=======
+  methods: {
+    firstJob(list) {
+      return list[0];
+    },
+
+>>>>>>> upstream/master
     jobId(job) {
       return `ci-badge-${job.name}`;
     },

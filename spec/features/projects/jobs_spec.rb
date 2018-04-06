@@ -113,7 +113,7 @@ feature 'Jobs' do
 
   describe "GET /:project/jobs/:id" do
     context "Job from project" do
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
       before do
         visit project_job_path(project, job)
@@ -136,7 +136,7 @@ feature 'Jobs' do
     end
 
     context 'when job is not running', :js do
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
         visit project_job_path(project, job)
@@ -153,7 +153,7 @@ feature 'Jobs' do
       end
 
       context 'if job failed' do
-        let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
         before do
           visit project_job_path(project, job)
@@ -339,7 +339,7 @@ feature 'Jobs' do
 
       context 'job is successfull and has deployment' do
         let(:deployment) { create(:deployment) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
+        let(:job) { create(:ci_build, :success, :trace_artifact, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
 
         it 'shows a link for the job' do
           visit project_job_path(project, job)
@@ -349,7 +349,7 @@ feature 'Jobs' do
       end
 
       context 'job is complete and not successful' do
-        let(:job) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :failed, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
           visit project_job_path(project, job)
@@ -360,7 +360,7 @@ feature 'Jobs' do
 
       context 'job creates a new deployment' do
         let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :success, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
           visit project_job_path(project, job)
@@ -390,6 +390,7 @@ feature 'Jobs' do
       end
 
       it 'shows manual action empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
         expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
         expect(page).to have_link('Trigger this manual action')
@@ -413,6 +414,7 @@ feature 'Jobs' do
       end
 
       it 'shows empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not been triggered yet')
         expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
@@ -426,8 +428,51 @@ feature 'Jobs' do
       end
 
       it 'shows pending empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not started yet')
         expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+      end
+    end
+
+    context 'Canceled job' do
+      context 'with log' do
+        let(:job) { create(:ci_build, :canceled, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          visit project_job_path(project, job)
+        end
+
+        it 'renders job log' do
+          expect(page).to have_selector('.js-build-output')
+        end
+      end
+
+      context 'without log' do
+        let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+
+        before do
+          visit project_job_path(project, job)
+        end
+
+        it 'renders empty state' do
+          expect(page).to have_content(job.detailed_status(user).illustration[:title])
+          expect(page).not_to have_selector('.js-build-output')
+          expect(page).to have_content('This job has been canceled')
+        end
+      end
+    end
+
+    context 'Skipped job' do
+      let(:job) { create(:ci_build, :skipped, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'renders empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
+        expect(page).not_to have_selector('.js-build-output')
+        expect(page).to have_content('This job has been skipped')
       end
     end
   end
