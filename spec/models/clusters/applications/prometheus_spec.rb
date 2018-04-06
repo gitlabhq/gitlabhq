@@ -4,6 +4,18 @@ describe Clusters::Applications::Prometheus do
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :cluster_application_prometheus
 
+  describe '.installed' do
+    subject { described_class.installed }
+
+    let!(:cluster) { create(:clusters_applications_prometheus, :installed) }
+
+    before do
+      create(:clusters_applications_prometheus, :errored)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'transition to installed' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, projects: [project]) }
@@ -22,11 +34,11 @@ describe Clusters::Applications::Prometheus do
     end
   end
 
-  describe '#proxy_client' do
+  describe '#prometheus_client' do
     context 'cluster is nil' do
       it 'returns nil' do
         expect(subject.cluster).to be_nil
-        expect(subject.proxy_client).to be_nil
+        expect(subject.prometheus_client).to be_nil
       end
     end
 
@@ -35,7 +47,7 @@ describe Clusters::Applications::Prometheus do
       subject { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns nil' do
-        expect(subject.proxy_client).to be_nil
+        expect(subject.prometheus_client).to be_nil
       end
     end
 
@@ -63,15 +75,15 @@ describe Clusters::Applications::Prometheus do
       end
 
       it 'creates proxy prometheus rest client' do
-        expect(subject.proxy_client).to be_instance_of(RestClient::Resource)
+        expect(subject.prometheus_client).to be_instance_of(RestClient::Resource)
       end
 
       it 'creates proper url' do
-        expect(subject.proxy_client.url).to eq('http://example.com/api/v1/proxy/namespaces/gitlab-managed-apps/service/prometheus-prometheus-server:80')
+        expect(subject.prometheus_client.url).to eq('http://example.com/api/v1/proxy/namespaces/gitlab-managed-apps/service/prometheus-prometheus-server:80')
       end
 
       it 'copies options and headers from kube client to proxy client' do
-        expect(subject.proxy_client.options).to eq(kube_client.rest_client.options.merge(headers: kube_client.headers))
+        expect(subject.prometheus_client.options).to eq(kube_client.rest_client.options.merge(headers: kube_client.headers))
       end
     end
   end

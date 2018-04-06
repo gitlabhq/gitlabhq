@@ -22,8 +22,8 @@ class SystemHooksService
   def build_event_data(model, event)
     data = {
       event_name: build_event_name(model, event),
-      created_at: model.created_at.xmlschema,
-      updated_at: model.updated_at.xmlschema
+      created_at: model.created_at&.xmlschema,
+      updated_at: model.updated_at&.xmlschema
     }
 
     case model

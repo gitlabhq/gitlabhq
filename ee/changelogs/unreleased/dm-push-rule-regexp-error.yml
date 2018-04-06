@@ -1,5 +1,0 @@
----
-title: Capture push rule regex errors and present them to user
-merge_request: 4102
-author:
-type: fixed

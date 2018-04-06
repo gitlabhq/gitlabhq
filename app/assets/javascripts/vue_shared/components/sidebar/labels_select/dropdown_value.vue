@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <div class="hide-collapsed value issuable-show-labels">
+  <div class="hide-collapsed value issuable-show-labels js-value">
     <span
       v-if="isEmpty"
       class="text-secondary"

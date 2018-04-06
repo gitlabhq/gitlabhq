@@ -1,62 +1,66 @@
-- if License.feature_available?(:elastic_search)
-  %fieldset
-    %legend Elasticsearch
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_indexing do
-            = f.check_box :elasticsearch_indexing
-            Elasticsearch indexing
-
-    - missing = !Gitlab::Elastic::Indexer.experimental_indexer_present?
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_experimental_indexer do
-            = f.check_box :elasticsearch_experimental_indexer, disabled: missing
-            Use <a href="https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer">experimental repository indexer</a>
-            - if missing
-              (not installed)
-
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_search do
-            = f.check_box :elasticsearch_search
-            Search with Elasticsearch enabled
-
-    .form-group
-      = f.label :elasticsearch_url, 'URL', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
-        .help-block
-          The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
 
   %fieldset
-    %legend Elasticsearch AWS IAM credentials
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_aws do
-            = f.check_box :elasticsearch_aws
-            Using AWS hosted Elasticsearch with IAM credentials
-    .form-group
-      = f.label :elasticsearch_aws_region, 'AWS region', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
-        .help-block
-          Region that elasticsearch is configured
+    .sub-section
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :elasticsearch_indexing do
+              = f.check_box :elasticsearch_indexing
+              Elasticsearch indexing
 
-    .form-group
-      = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
-        .help-block
-          AWS Access Key.  Only required if not using role instance credentials
+      - missing = !Gitlab::Elastic::Indexer.experimental_indexer_present?
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :elasticsearch_experimental_indexer do
+              = f.check_box :elasticsearch_experimental_indexer, disabled: missing
+              Use <a href="https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer">experimental repository indexer</a>
+              - if missing
+                (not installed)
 
-    .form-group
-      = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
-        .help-block
-          AWS Secret Access Key.  Only required if not using role instance credentials
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :elasticsearch_search do
+              = f.check_box :elasticsearch_search
+              Search with Elasticsearch enabled
+
+      .form-group
+        = f.label :elasticsearch_url, 'URL', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
+          .help-block
+            The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
+
+    .sub-section
+      %h4 Elasticsearch AWS IAM credentials
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :elasticsearch_aws do
+              = f.check_box :elasticsearch_aws
+              Using AWS hosted Elasticsearch with IAM credentials
+      .form-group
+        = f.label :elasticsearch_aws_region, 'AWS region', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
+          .help-block
+            Region that elasticsearch is configured
+
+      .form-group
+        = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
+          .help-block
+            AWS Access Key.  Only required if not using role instance credentials
+
+      .form-group
+        = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
+          .help-block
+            AWS Secret Access Key.  Only required if not using role instance credentials
+
+  = f.submit 'Save changes', class: "btn btn-success"

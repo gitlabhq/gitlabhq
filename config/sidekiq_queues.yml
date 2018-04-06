@@ -68,10 +68,15 @@
   - [project_migrate_hashed_storage, 1]
   - [storage_migrator, 1]
   - [pages_domain_verification, 1]
+  - [object_storage_upload, 1]
+  - [object_storage, 1]
   - [plugin, 1]
+  - [pipeline_background, 1]
 
   # EE-specific queues
   - [ldap_group_sync, 2]
+  - [create_github_webhook, 2]
+  - [chat_notification, 2]
   - [geo, 1]
   - [repository_remove_remote, 1]
   - [repository_update_mirror, 1]
@@ -83,5 +88,9 @@
   - [elastic_indexer, 1]
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
-  - [object_storage_upload, 1]
-  - [object_storage, 1]
+
+  # Deprecated queues: Remove after 10.7
+  - geo_base_scheduler
+  - geo_file_download
+  - geo_project_sync
+  - geo_repository_shard_sync

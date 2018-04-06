@@ -8,7 +8,6 @@ describe API::GroupBoards do
   set(:board_parent) { create(:group, :public) }
 
   before do
-    stub_licensed_features(group_issue_boards: true)
     board_parent.add_owner(user)
   end
 
@@ -37,7 +36,6 @@ describe API::GroupBoards do
   set(:milestone) { create(:milestone, group: board_parent) }
   set(:board_label) { create(:group_label, group: board_parent) }
 
-  # EE only
   set(:board) do
     create(:board, group: board_parent,
                    milestone: milestone,
@@ -48,16 +46,4 @@ describe API::GroupBoards do
 
   it_behaves_like 'group and project boards', "/groups/:id/boards", true
   it_behaves_like 'multiple and scoped issue boards', "/groups/:id/boards"
-
-  describe 'POST /groups/:id/boards/lists' do
-    let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }
-
-    it 'does not create lists for child project labels' do
-      project_label = create(:label, project: project)
-
-      post api(url, user), label_id: project_label.id
-
-      expect(response).to have_gitlab_http_status(400)
-    end
-  end
 end

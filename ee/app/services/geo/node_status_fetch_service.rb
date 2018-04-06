@@ -1,7 +1,5 @@
 module Geo
   class NodeStatusFetchService
-    include HTTParty
-
     def call(geo_node)
       return GeoNodeStatus.current_node_status if geo_node.current?
 
@@ -9,7 +7,7 @@ module Geo
       data = data.merge(success: false, health_status: 'Offline')
 
       begin
-        response = self.class.get(geo_node.status_url, headers: headers, timeout: timeout)
+        response = Gitlab::HTTP.get(geo_node.status_url, allow_local_requests: true, headers: headers, timeout: timeout)
         data[:success] = response.success?
 
         if response.success?
@@ -33,7 +31,7 @@ module Geo
       rescue OpenSSL::Cipher::CipherError
         data[:health] = 'Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.'
         data[:health_status] = 'Unhealthy'
-      rescue HTTParty::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
+      rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
         data[:health] = e.message
       end
 

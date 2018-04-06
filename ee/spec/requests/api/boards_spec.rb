@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe API::Boards do
-  set(:user)        { create(:user) }
+  set(:user) { create(:user) }
   set(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
   set(:milestone) { create(:milestone, project: board_parent) }
   set(:board) { create(:board, project: board_parent, milestone: milestone) }

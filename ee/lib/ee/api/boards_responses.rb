@@ -6,7 +6,7 @@ module EE
       included do
         helpers do
           def create_board
-            forbidden! unless ::License.feature_available?(:multiple_issue_boards)
+            forbidden! unless board_parent.multiple_issue_boards_available?
 
             board =
               ::Boards::CreateService.new(board_parent, current_user, { name: params[:name] }).execute
@@ -15,7 +15,7 @@ module EE
           end
 
           def delete_board
-            forbidden! unless ::License.feature_available?(:multiple_issue_boards)
+            forbidden! unless board_parent.multiple_issue_boards_available?
 
             destroy_conditionally!(board) do |board|
               service = ::Boards::DestroyService.new(board_parent, current_user)

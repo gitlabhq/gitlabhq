@@ -14,7 +14,7 @@ describe BuildFinishedWorker do
         expect_any_instance_of(BuildTraceSectionsWorker).to receive(:perform)
         expect_any_instance_of(BuildCoverageWorker).to receive(:perform)
         expect(BuildHooksWorker).to receive(:perform_async)
-        expect(CreateTraceArtifactWorker).to receive(:perform_async)
+        expect(ArchiveTraceWorker).to receive(:perform_async)
 
         described_class.new.perform(build.id)
       end

@@ -1,5 +1,0 @@
----
-title: Fix bug causing 'Import in progress' to be shown while a mirror is updating
-merge_request:
-author:
-type: fixed

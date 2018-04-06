@@ -132,7 +132,9 @@ module API
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
+    mount ::API::GroupBoards
     mount ::API::Groups
+    mount ::API::GroupBoards
     mount ::API::GroupMilestones
     mount ::API::Internal
     mount ::API::Issues
@@ -142,14 +144,17 @@ module API
     mount ::API::Labels
     mount ::API::Lint
     mount ::API::Members
+    mount ::API::MergeRequestApprovals
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::Discussions
     mount ::API::NotificationSettings
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
+    mount ::API::ProjectApprovals
     mount ::API::ProjectExport
     mount ::API::ProjectImport
     mount ::API::ProjectHooks
@@ -178,17 +183,19 @@ module API
     mount ::API::Wikis
 
     ## EE-specific API V4 endpoints START
+    mount ::EE::API::Boards
+    mount ::EE::API::GroupBoards
+
     mount ::API::EpicIssues
     mount ::API::Epics
     mount ::API::Geo
     mount ::API::GeoNodes
-    mount ::API::GroupBoards
     mount ::API::IssueLinks
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
     mount ::API::License
+    mount ::API::ProjectMirror
     mount ::API::ProjectPushRule
-    mount ::EE::API::Boards
     ## EE-specific API V4 endpoints END
 
     route :any, '*path' do

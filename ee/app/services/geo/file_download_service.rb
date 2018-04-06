@@ -3,9 +3,10 @@ module Geo
     LEASE_TIMEOUT = 8.hours.freeze
 
     include Delay
+    include ExclusiveLeaseGuard
 
     def execute
-      try_obtain_lease do |lease|
+      try_obtain_lease do
         start_time = Time.now
         bytes_downloaded = downloader.execute
         success = (bytes_downloaded.present? && bytes_downloaded >= 0)
@@ -27,23 +28,16 @@ module Geo
       raise
     end
 
-    def try_obtain_lease
-      uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
-
-      return unless uuid.present?
-
-      begin
-        yield
-      ensure
-        Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-      end
-    end
-
     def update_registry(bytes_downloaded, success:)
-      transfer = Geo::FileRegistry.find_or_initialize_by(
-        file_type: object_type,
-        file_id: object_db_id
-      )
+      transfer =
+        if object_type.to_sym == :job_artifact
+          Geo::JobArtifactRegistry.find_or_initialize_by(artifact_id: object_db_id)
+        else
+          Geo::FileRegistry.find_or_initialize_by(
+            file_type: object_type,
+            file_id: object_db_id
+          )
+        end
 
       transfer.bytes = bytes_downloaded
       transfer.success = success
@@ -59,6 +53,10 @@ module Geo
 
     def lease_key
       "file_download_service:#{object_type}:#{object_db_id}"
+    end
+
+    def lease_timeout
+      LEASE_TIMEOUT
     end
   end
 end

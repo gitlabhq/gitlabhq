@@ -1,12 +1,13 @@
 /* global monaco */
-import monacoLoader from 'ee/ide/monaco_loader';
-import ModelManager from 'ee/ide/lib/common/model_manager';
+import eventHub from '~/ide/eventhub';
+import monacoLoader from '~/ide/monaco_loader';
+import ModelManager from '~/ide/lib/common/model_manager';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library model manager', () => {
   let instance;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     monacoLoader(['vs/editor/editor.main'], () => {
       instance = new ModelManager(monaco);
 
@@ -26,9 +27,10 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('caches model by file path', () => {
-      instance.addModel(file('path-name'));
+      const f = file('path-name');
+      instance.addModel(f);
 
-      expect(instance.models.keys().next().value).toBe('path-name');
+      expect(instance.models.keys().next().value).toBe(f.key);
     });
 
     it('adds model into disposable', () => {
@@ -47,6 +49,18 @@ describe('Multi-file editor library model manager', () => {
 
       expect(instance.models.get).toHaveBeenCalled();
     });
+
+    it('adds eventHub listener', () => {
+      const f = file();
+      spyOn(eventHub, '$on').and.callThrough();
+
+      instance.addModel(f);
+
+      expect(eventHub.$on).toHaveBeenCalledWith(
+        `editor.update.model.dispose.${f.key}`,
+        jasmine.anything(),
+      );
+    });
   });
 
   describe('hasCachedModel', () => {
@@ -55,9 +69,11 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('returns true when model exists', () => {
-      instance.addModel(file('path-name'));
+      const f = file('path-name');
 
-      expect(instance.hasCachedModel('path-name')).toBeTruthy();
+      instance.addModel(f);
+
+      expect(instance.hasCachedModel(f.key)).toBeTruthy();
     });
   });
 
@@ -66,6 +82,33 @@ describe('Multi-file editor library model manager', () => {
       instance.addModel(file('path-name'));
 
       expect(instance.getModel('path-name')).not.toBeNull();
+    });
+  });
+
+  describe('removeCachedModel', () => {
+    let f;
+
+    beforeEach(() => {
+      f = file();
+
+      instance.addModel(f);
+    });
+
+    it('clears cached model', () => {
+      instance.removeCachedModel(f);
+
+      expect(instance.models.size).toBe(0);
+    });
+
+    it('removes eventHub listener', () => {
+      spyOn(eventHub, '$off').and.callThrough();
+
+      instance.removeCachedModel(f);
+
+      expect(eventHub.$off).toHaveBeenCalledWith(
+        `editor.update.model.dispose.${f.key}`,
+        jasmine.anything(),
+      );
     });
   });
 

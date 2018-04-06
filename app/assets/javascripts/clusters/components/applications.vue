@@ -117,7 +117,10 @@
 </script>
 
 <template>
-  <section class="settings no-animate expanded">
+  <section
+    id="cluster-applications"
+    class="settings no-animate expanded"
+  >
     <div class="settings-header">
       <h4>
         {{ s__('ClusterIntegration|Applications') }}
@@ -183,7 +186,7 @@
                     <clipboard-button
                       :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      css-class="btn btn-default js-clipboard-btn"
+                      class="js-clipboard-btn"
                     />
                   </span>
                 </div>

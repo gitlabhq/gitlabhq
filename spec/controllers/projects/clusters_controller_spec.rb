@@ -18,7 +18,7 @@ describe Projects::ClustersController do
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
+        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
         it 'lists available clusters' do
           go
 
@@ -32,7 +32,7 @@ describe Projects::ClustersController do
 
           before do
             allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, projects: [project])
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, projects: [project])
             get :index, namespace_id: project.namespace, project_id: project, page: last_page
           end
 
@@ -152,6 +152,93 @@ describe Projects::ClustersController do
       get :show, namespace_id: project.namespace,
                  project_id: project,
                  id: cluster
+    end
+  end
+
+  describe 'GET metrics' do
+    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+
+    describe 'functionality' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
+
+      context "Can't query Prometheus" do
+        it 'returns not found' do
+          go
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'can query Prometheus' do
+        let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true, query: nil) }
+
+        before do
+          allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        end
+
+        it 'queries cluster metrics' do
+          go
+
+          expect(prometheus_adapter).to have_received(:query).with(:cluster)
+        end
+
+        context 'when response has content' do
+          let(:query_response) { { response: nil } }
+
+          before do
+            allow(prometheus_adapter).to receive(:query).and_return(query_response)
+          end
+
+          it 'returns prometheus query response' do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to eq(query_response.to_json)
+          end
+        end
+
+        context 'when response has no content' do
+          let(:query_response) { {} }
+
+          before do
+            allow(prometheus_adapter).to receive(:query).and_return(query_response)
+          end
+
+          it 'returns prometheus query response' do
+            go
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+      end
+    end
+
+    def go
+      get :metrics, format: :json,
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    id: cluster
+    end
+
+    describe 'security' do
+      let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true, query: nil) }
+      before do
+        allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+      end
+
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
@@ -333,7 +420,7 @@ describe Projects::ClustersController do
 
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
-          let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+          let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
             expect { go }
@@ -347,7 +434,7 @@ describe Projects::ClustersController do
         end
 
         context 'when cluster is being created' do
-          let!(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
             expect { go }
@@ -361,7 +448,7 @@ describe Projects::ClustersController do
       end
 
       context 'when cluster is provided by user' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, projects: [project]) }
 
         it "destroys and redirects back to clusters list" do
           expect { go }
@@ -376,7 +463,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }

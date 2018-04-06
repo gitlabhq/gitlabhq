@@ -29,9 +29,25 @@ module Geo
 
     def move_repositories!
       project.ensure_storage_path_exists
-      move_project_repository && move_wiki_repository
+
+      unless move_project_repository
+        log_error('Repository cannot be moved')
+        return false
+      end
+
+      # We try to move the wiki repo despite the fact the wiki enabled or not
+      # But we consider the move as failed, only if the wiki is enabled
+      # If the wiki is disabled but repository exists we need to move it anyway as it
+      # can be acquired by the different project if later someone will take the same name.
+      # Once we have hashed storage as the only option this problem will be eliminated
+      if !move_wiki_repository && project.wiki_enabled?
+        log_error('Wiki repository cannot be moved')
+        return false
+      end
+
+      true
     rescue => ex
-      log_error('Repository cannot be renamed', error: ex)
+      log_error('Repository cannot be moved', error: ex)
       false
     end
 

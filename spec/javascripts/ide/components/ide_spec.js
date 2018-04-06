@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import ide from 'ee/ide/components/ide.vue';
+import store from '~/ide/stores';
+import ide from '~/ide/components/ide.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
@@ -27,7 +27,7 @@ describe('ide component', () => {
     expect(vm.$el.querySelector('.panel-right')).toBeNull();
   });
 
-  it('renders panel right when files are open', (done) => {
+  it('renders panel right when files are open', done => {
     vm.$store.state.trees['abcproject/mybranch'] = {
       tree: [file()],
     };

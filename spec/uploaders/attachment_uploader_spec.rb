@@ -12,7 +12,6 @@ describe AttachmentUploader do
                   upload_path: %r[uploads/-/system/note/attachment/],
                   absolute_path: %r[#{CarrierWave.root}/uploads/-/system/note/attachment/]
 
-  # EE-specific
   context "object_store is REMOTE" do
     before do
       stub_uploads_object_storage

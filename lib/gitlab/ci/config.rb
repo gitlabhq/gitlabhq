@@ -6,6 +6,7 @@ module Gitlab
     class Config
       prepend EE::Gitlab::Ci::Config
 
+      # EE would override this and utilize opts argument
       def initialize(config, opts = {})
         @config = build_config(config, opts)
         @global = Entry::Global.new(@config)

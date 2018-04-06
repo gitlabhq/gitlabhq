@@ -34,6 +34,34 @@ describe License do
         end
       end
 
+      context 'without historical data' do
+        before do
+          create_list(:user, 2)
+
+          gl_license.restrictions = {
+            previous_user_count: 1,
+            active_user_count: User.active.count - 1
+          }
+
+          allow(license).to receive(:historical_max).and_return(0)
+        end
+
+        context 'with previous_user_count and active users above of license limit' do
+          it 'is invalid' do
+            expect(license).to be_invalid
+          end
+
+          it 'shows the proper error message' do
+            license.valid?
+
+            error_msg = "This GitLab installation currently has 2 active users, exceeding this license's limit of 1 by 1 user. "
+            error_msg << "Please upload a license for at least 2 users or contact sales at renewals@gitlab.com"
+
+            expect(license.errors[:base].first).to eq(error_msg)
+          end
+        end
+      end
+
       context "when the active user count restriction is exceeded" do
         before do
           gl_license.restrictions = { active_user_count: active_user_count - 1 }

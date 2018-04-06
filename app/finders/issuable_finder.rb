@@ -19,6 +19,10 @@
 #     non_archived: boolean
 #     iids: integer[]
 #     my_reaction_emoji: string
+#     created_after: datetime
+#     created_before: datetime
+#     updated_after: datetime
+#     updated_before: datetime
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
@@ -79,6 +83,7 @@ class IssuableFinder
   def filter_items(items)
     items = by_scope(items)
     items = by_created_at(items)
+    items = by_updated_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -283,6 +288,13 @@ class IssuableFinder
     end
   end
 
+  def by_updated_at(items)
+    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
+    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
+
+    items
+  end
+
   def by_state(items)
     case params[:state].to_s
     when 'closed'
@@ -325,7 +337,19 @@ class IssuableFinder
   def sort(items)
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
-    params[:sort] ? items.sort(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
+    params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
+  end
+
+  def by_assignee(items)
+    if assignee
+      items = items.where(assignee_id: assignee.id)
+    elsif no_assignee?
+      items = items.where(assignee_id: nil)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items = items.none
+    end
+
+    items
   end
 
   def by_author(items)

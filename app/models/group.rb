@@ -36,6 +36,8 @@ class Group < Namespace
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :boards
+
   # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
   # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
   has_many :audit_events, -> { where(entity_type: Group) }, foreign_key: 'entity_id'
@@ -67,7 +69,7 @@ class Group < Namespace
       Gitlab::Database.postgresql?
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
@@ -266,13 +268,13 @@ class Group < Namespace
       end
 
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: source_ids)
   end
 
   def members_with_descendants
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 

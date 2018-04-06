@@ -115,6 +115,13 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
+## CI/CD for external repositories
+
+Instead of importing a repository directly to GitLab, you can connect your repository
+as a CI/CD project.
+
+Read through the documentation on [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md).
+
 ## Project's members
 
 Learn how to [add members to your projects](members/index.md).
@@ -135,11 +142,9 @@ and Git push/pull redirects.
 
 Depending on the situation, different things apply.
 
-When [renaming a user](../profile/index.md#changing-your-username) or
-[changing a group path](../group/index.md#changing-a-group-s-path):
+When [renaming a user](../profile/index.md#changing-your-username),
+[changing a group path](../group/index.md#changing-a-group-s-path) or [renaming a repository](settings/index.md#renaming-a-repository):
 
-- **The redirect to the new URL is permanent**, which means that the original
-  namespace can't be claimed again by any group or user.
 - Existing web URLs for the namespace and anything under it (e.g., projects) will
   redirect to the new URLs.
 - Starting with GitLab 10.3, existing Git remote URLs for projects under the
@@ -148,9 +153,5 @@ When [renaming a user](../profile/index.md#changing-your-username) or
   your remote will be displayed instead of rejecting your action.
   This means that any automation scripts, or Git clients will continue to
   work after a rename, making any transition a lot smoother.
-  To avoid pulling from or pushing to an entirely incorrect repository, the old
-  path will be reserved.
-
-When [renaming-a-repository](settings/index.md#renaming-a-repository), the same
-things apply, except for the Git push/pull actions which will be rejected with a
-warning message to change to the new remote URL.
+- The redirects will be available as long as the original path is not claimed by
+  another group, user or project.

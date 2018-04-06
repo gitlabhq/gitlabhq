@@ -1,0 +1,13 @@
+- page_title _('SAML Single Sign On Settings')
+%section.row.prepend-top-default
+  .col-lg-3.append-bottom-default
+    %h4.page-title
+      = _("SAML Single Sign On")
+    %p
+      = _("Manage your group’s membership while adding another level of security with SAML.")
+    = link_to help_page_path('user/group/saml_sso/index'), target: '_blank' do
+      = _("Learn more")
+      = icon('external-link')
+  .col-lg-9
+    = render 'info'
+    = render 'form', group: @group, saml_provider: @saml_provider

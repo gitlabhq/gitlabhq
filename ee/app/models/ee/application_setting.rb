@@ -9,6 +9,8 @@ module EE
     prepended do
       include IgnorableColumn
 
+      EMAIL_ADDITIONAL_TEXT_CHARACTER_LIMIT = 10_000
+
       ignore_column :minimum_mirror_sync_time
 
       validates :shared_runners_minutes,
@@ -40,14 +42,43 @@ module EE
                 presence: { message: "can't be blank when using aws hosted elasticsearch" },
                 if: ->(setting) { setting.elasticsearch_indexing? && setting.elasticsearch_aws? }
 
-      validates :external_authorization_service_url,
-                :external_authorization_service_default_label,
+      validates :email_additional_text,
+                allow_blank: true,
+                length: { maximum: EMAIL_ADDITIONAL_TEXT_CHARACTER_LIMIT }
+
+      validates :external_authorization_service_default_label,
                 presence: true,
                 if: :external_authorization_service_enabled?
 
       validates :external_authorization_service_url,
-                url: true,
+                url: true, allow_blank: true,
                 if: :external_authorization_service_enabled?
+
+      validates :external_authorization_service_timeout,
+                numericality: { greater_than: 0, less_than_or_equal_to: 10 },
+                if: :external_authorization_service_enabled?
+
+      validates :external_auth_client_key,
+                presence: true,
+                if: -> (setting) { setting.external_auth_client_cert.present? }
+
+      validates_with X509CertificateCredentialsValidator,
+                     certificate: :external_auth_client_cert,
+                     pkey: :external_auth_client_key,
+                     pass: :external_auth_client_key_pass,
+                     if: -> (setting) { setting.external_auth_client_cert.present? }
+
+      attr_encrypted :external_auth_client_key,
+                     mode: :per_attribute_iv,
+                     key: ::Gitlab::Application.secrets.db_key_base,
+                     algorithm: 'aes-256-gcm',
+                     encode: true
+
+      attr_encrypted :external_auth_client_key_pass,
+                     mode: :per_attribute_iv,
+                     key: ::Gitlab::Application.secrets.db_key_base,
+                     algorithm: 'aes-256-gcm',
+                     encode: true
     end
 
     module ClassMethods
@@ -61,6 +92,7 @@ module EE
           elasticsearch_aws: false,
           elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
           elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
+          email_additional_text: nil,
           mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
           mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
           mirror_max_delay: Settings.gitlab['mirror_max_delay'],
@@ -112,6 +144,16 @@ module EE
       }
     end
 
+    def email_additional_text
+      return false unless email_additional_text_column_exists?
+
+      License.feature_available?(:email_additional_text) && super
+    end
+
+    def email_additional_text_character_limit
+      EMAIL_ADDITIONAL_TEXT_CHARACTER_LIMIT
+    end
+
     def external_authorization_service_enabled
       License.feature_available?(:external_authorization_service) && super
     end
@@ -133,11 +175,15 @@ module EE
     end
 
     def elasticsearch_indexing_column_exists?
-      ActiveRecord::Base.connection.column_exists?(:application_settings, :elasticsearch_indexing)
+      ::Gitlab::Database.cached_column_exists?(:application_settings, :elasticsearch_indexing)
     end
 
     def elasticsearch_search_column_exists?
-      ActiveRecord::Base.connection.column_exists?(:application_settings, :elasticsearch_search)
+      ::Gitlab::Database.cached_column_exists?(:application_settings, :elasticsearch_search)
+    end
+
+    def email_additional_text_column_exists?
+      ::Gitlab::Database.cached_column_exists?(:application_settings, :email_additional_text)
     end
   end
 end

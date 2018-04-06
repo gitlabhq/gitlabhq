@@ -7,7 +7,9 @@
       .issue-main-info
         .issue-title.title
           %span.issue-title-text
-            = confidential_icon(issue)
+            - if issue.confidential?
+              %span.has-tooltip{ title: _('Confidential') }
+                = confidential_icon(issue)
             = link_to issue.title, issue_path(issue)
           - if issue.tasks?
             %span.task-status.hidden-xs
@@ -24,11 +26,11 @@
           - if issue.milestone
             %span.issuable-milestone.hidden-xs
               &nbsp;
-              = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 1, toggle: 'tooltip', title: milestone_tooltip_title(issue.milestone) } do
+              = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 1, toggle: 'tooltip', title: issuable_milestone_tooltip_title(issue) } do
                 = icon('clock-o')
                 = issue.milestone.title
           - if issue.due_date
-            %span.issuable-due-date.hidden-xs{ class: "#{'cred' if issue.overdue?}" }
+            %span.issuable-due-date.hidden-xs.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
               &nbsp;
               = icon('calendar')
               = issue.due_date.to_s(:medium)
@@ -38,7 +40,7 @@
               = link_to_label(label, subject: issue.project, css_class: 'label-link')
 
           - if issue.weight
-            %span.issuable-weight
+            %span.issuable-weight.has-tooltip{ data: { container: 'body' }, title: _('Weight') }
               &nbsp;
               = icon('balance-scale')
               = issue.weight

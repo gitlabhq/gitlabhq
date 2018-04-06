@@ -230,7 +230,8 @@
     }
 
     .badge {
-      font-size: inherit;
+      font-size: 12px;
+      line-height: 12px;
     }
 
     .panel-heading .badge-count {
@@ -252,19 +253,29 @@
     }
   }
 
-  .loading-metrics,
-  .empty-metrics {
-    padding: 30px 10px;
+  .custom-monitored-metrics {
+    .panel-title {
+      display: flex;
+      align-items: center;
 
-    p,
-    .btn {
-      margin-top: 10px;
-      margin-bottom: 0;
+      > .btn-success {
+        margin-left: auto;
+      }
+    }
+
+    .custom-metric {
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-metric-link-bold {
+      font-weight: $gl-font-weight-bold;
+      text-decoration: none;
     }
   }
 
   .loading-metrics .metrics-load-spinner {
-    color: $loading-color;
+    color: $gl-text-color-secondary;
   }
 
   .metrics-list {
@@ -283,6 +294,12 @@
         border-top: 1px solid $border-color;
       }
     }
+  }
+}
+
+.saml-settings.info-well {
+  .form-control[readonly] {
+    background: $white-light;
   }
 }
 

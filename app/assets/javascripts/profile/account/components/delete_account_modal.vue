@@ -1,11 +1,11 @@
 <script>
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { __, s__, sprintf } from '~/locale';
   import csrf from '~/lib/utils/csrf';
 
   export default {
     components: {
-      modal,
+      DeprecatedModal,
     },
     props: {
       actionUrl: {
@@ -76,7 +76,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     id="delete-account-modal"
     :title="s__('Profiles|Delete your account?')"
     :text="text"
@@ -131,5 +131,5 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
       </form>
     </template>
 
-  </modal>
+  </deprecated-modal>
 </template>

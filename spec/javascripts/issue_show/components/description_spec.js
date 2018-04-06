@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import descriptionComponent from '~/issue_show/components/description.vue';
 import * as taskList from '~/task_list';

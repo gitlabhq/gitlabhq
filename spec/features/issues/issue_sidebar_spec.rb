@@ -117,22 +117,22 @@ feature 'Issue Sidebar' do
         end
       end
 
-      it 'shows option to create a new label' do
+      it 'shows option to create a project label' do
         page.within('.block.labels') do
-          expect(page).to have_content 'Create new'
+          expect(page).to have_content 'Create project'
         end
       end
 
-      context 'creating a new label', :js do
+      context 'creating a project label', :js do
         before do
           page.within('.block.labels') do
-            click_link 'Create new'
+            click_link 'Create project'
           end
         end
 
         it 'shows dropdown switches to "create label" section' do
           page.within('.block.labels') do
-            expect(page).to have_content 'Create new label'
+            expect(page).to have_content 'Create project label'
           end
         end
 
@@ -159,6 +159,50 @@ feature 'Issue Sidebar' do
             end
           end
         end
+      end
+    end
+
+    context 'interacting with collapsed sidebar', :js do
+      collapsed_sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+      expanded_sidebar_selector = 'aside.right-sidebar.right-sidebar-expanded'
+      confidentiality_sidebar_block = '.block.confidentiality'
+      lock_sidebar_block = '.block.lock'
+      collapsed_sidebar_block_icon = '.sidebar-collapsed-icon'
+
+      before do
+        resize_screen_sm
+      end
+
+      it 'confidentiality block expands then collapses sidebar' do
+        expect(page).to have_css(collapsed_sidebar_selector)
+
+        page.within(confidentiality_sidebar_block) do
+          find(collapsed_sidebar_block_icon).click
+        end
+
+        expect(page).to have_css(expanded_sidebar_selector)
+
+        page.within(confidentiality_sidebar_block) do
+          page.find('button', text: 'Cancel').click
+        end
+
+        expect(page).to have_css(collapsed_sidebar_selector)
+      end
+
+      it 'lock block expands then collapses sidebar' do
+        expect(page).to have_css(collapsed_sidebar_selector)
+
+        page.within(lock_sidebar_block) do
+          find(collapsed_sidebar_block_icon).click
+        end
+
+        expect(page).to have_css(expanded_sidebar_selector)
+
+        page.within(lock_sidebar_block) do
+          page.find('button', text: 'Cancel').click
+        end
+
+        expect(page).to have_css(collapsed_sidebar_selector)
       end
     end
   end

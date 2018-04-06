@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class Group {
   constructor() {
     this.groupPath = $('#group_path');

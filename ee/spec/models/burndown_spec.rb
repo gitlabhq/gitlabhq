@@ -65,9 +65,9 @@ describe Burndown do
     expect(burndown).to be_accurate
   end
 
-  context "when all closed issues does not have closed_at" do
+  context "when all closed issues does not have closed events" do
     before do
-      milestone.issues.update_all(closed_at: nil)
+      Event.where(target: milestone.issues, action: Event::CLOSED).destroy_all
     end
 
     it "considers closed_at as milestone start date" do
@@ -87,9 +87,9 @@ describe Burndown do
     end
   end
 
-  context "when one or more closed issues does not have closed_at" do
+  context "when one or more closed issues does not have a closed event" do
     before do
-      milestone.issues.closed.first.update(closed_at: nil)
+      Event.where(target: milestone.issues.closed.first, action: Event::CLOSED).destroy_all
     end
 
     it "sets attribute accurate to false" do
@@ -112,11 +112,25 @@ describe Burndown do
 
         # Close issues
         closed = issues.slice(0..count / 2)
-        closed.each(&:close)
+        closed.each { |issue| close_issue(issue) }
 
         # Reopen issues
-        closed.slice(0..count / 4).each(&:reopen)
+        reopened_issues = closed.slice(0..count / 4)
+        reopened_issues.each { |issue| reopen_issue(issue) }
+
+        # This generates an issue with multiple closing events
+        issue_closed_twice = reopened_issues.last
+        close_issue(issue_closed_twice)
+        reopen_issue(issue_closed_twice)
       end
     end
+  end
+
+  def close_issue(issue)
+    Issues::CloseService.new(issue.project, user, {}).execute(issue)
+  end
+
+  def reopen_issue(issue)
+    Issues::ReopenService.new(issue.project, user, {}).execute(issue)
   end
 end

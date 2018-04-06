@@ -1,5 +1,0 @@
----
-title: 'Fix: Geo WikiSyncService attempts to sync projects that have no Wiki'
-merge_request:
-author:
-type: fixed

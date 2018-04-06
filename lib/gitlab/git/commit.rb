@@ -231,7 +231,8 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+          repo.gitaly_migrate(:list_commits_by_oid,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               repo.gitaly_commit_client.list_commits_by_oid(oids)
             else
@@ -347,7 +348,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        Gitlab::GitalyClient.migrate(:commit_patch) do |is_enabled|
+        Gitlab::GitalyClient.migrate(:commit_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             @repository.gitaly_commit_client.patch(id)
           else

@@ -46,6 +46,10 @@ module Gitlab
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
 
+    def self.postgresql_9_or_less?
+      postgresql? && version.to_f < 10
+    end
+
     def self.join_lateral_supported?
       postgresql? && version.to_f >= 9.3
     end
@@ -56,6 +60,24 @@ module Gitlab
 
     def self.pg_stat_wal_receiver_supported?
       postgresql? && version.to_f >= 9.6
+    end
+
+    # map some of the function names that changed between PostgreSQL 9 and 10
+    # https://wiki.postgresql.org/wiki/New_in_postgres_10
+    def self.pg_wal_lsn_diff
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_xlog_location_diff' : 'pg_wal_lsn_diff'
+    end
+
+    def self.pg_current_wal_insert_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_current_xlog_insert_location' : 'pg_current_wal_insert_lsn'
+    end
+
+    def self.pg_last_wal_receive_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_receive_location' : 'pg_last_wal_receive_lsn'
+    end
+
+    def self.pg_last_wal_replay_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_replay_location' : 'pg_last_wal_replay_lsn'
     end
 
     def self.nulls_last_order(field, direction = 'ASC')
@@ -197,6 +219,15 @@ module Gitlab
 
     def self.connection
       ActiveRecord::Base.connection
+    end
+
+    def self.cached_column_exists?(table_name, column_name)
+      connection.schema_cache.columns_hash(table_name).has_key?(column_name.to_s)
+    end
+
+    def self.cached_table_exists?(table_name)
+      # Rails 5 uses data_source_exists? instead of table_exists?
+      connection.schema_cache.table_exists?(table_name)
     end
 
     private_class_method :connection

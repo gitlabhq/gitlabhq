@@ -4,7 +4,7 @@ shared_examples_for 'multiple and scoped issue boards' do |route_definition|
   context 'multiple issue boards' do
     before do
       board_parent.add_reporter(user)
-      stub_licensed_features(multiple_issue_boards: true, group_issue_boards: true)
+      stub_licensed_features(multiple_group_issue_boards: true, multiple_project_issue_boards: true)
     end
 
     describe "POST #{route_definition}" do
@@ -30,7 +30,7 @@ shared_examples_for 'multiple and scoped issue boards' do |route_definition|
 
   context 'with the scoped_issue_board-feature available' do
     it 'returns the milestone when the `scoped_issue_board` feature is enabled' do
-      stub_licensed_features(scoped_issue_board: true, group_issue_boards: true)
+      stub_licensed_features(scoped_issue_board: true)
 
       get api(root_url, user)
 
@@ -38,7 +38,7 @@ shared_examples_for 'multiple and scoped issue boards' do |route_definition|
     end
 
     it 'hides the milestone when the `scoped_issue_board` feature is disabled' do
-      stub_licensed_features(scoped_issue_board: false, group_issue_boards: true)
+      stub_licensed_features(scoped_issue_board: false)
 
       get api(root_url, user)
 

@@ -140,7 +140,91 @@ sudo gitlab-ctl reconfigure
 ```
 
 This will increase the timeout to three hours (10800 seconds). Choose a time
-long enough to accomodate a full clone of your largest repositories.
+long enough to accommodate a full clone of your largest repositories.
+
+#### How to reset Geo secondary replication
+
+If you get a secondary node in a broken state and want to reset the replication state,
+to start again from scratch, there are a few steps that can help you:
+
+1. Stop Sidekiq and the Geo LogCursor
+
+    It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
+    wait until the current jobs to finish processing.
+    
+    You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
+    when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
+    
+    ```bash
+    gitlab-ctl status sidekiq
+    # run: sidekiq: (pid 10180) <- this is the PID you will use
+    kill -TSTP 10180 # change to the correct PID
+    
+    gitlab-ctl stop sidekiq
+    gitlab-ctl stop geo-logcursor
+    ```
+    
+    You can watch sidekiq logs to know when sidekiq jobs processing have finished:
+    
+    ```bash
+    gitlab-ctl tail sidekiq
+    ```
+
+1. Rename repository storage folders and create new ones
+
+    ```bash
+    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
+    mkdir -p /var/opt/gitlab/git-data/repositories
+    chown git:git /var/opt/gitlab/git-data/repositories
+    ```
+    
+    TIP: **Tip**
+    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+    as soon as you confirmed that you don't need it anymore, to save disk space.
+    
+1. _(Optional)_ Rename other data folders and create new ones
+
+    CAUTION: **Caution**:
+    You may still have files on the secondary that have been removed from primary but 
+    removal have not been reflected. If you skip this step, they will never be removed
+    from this Geo node.
+    
+    Any uploaded content like file attachments, avatars or LFS objects are stored in a
+    subfolder in one of the two paths below:
+    
+    1. /var/opt/gitlab/gitlab-rails/shared
+    1. /var/opt/gitlab/gitlab-rails/uploads
+    
+    To rename all of them:
+    
+    ```bash
+    gitlab-ctl stop
+ 
+    mv /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared.old
+    mkdir -p /var/opt/gitlab/gitlab-rails/shared
+ 
+    mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
+    mkdir -p /var/opt/gitlab/gitlab-rails/uploads
+    ```
+    
+    Reconfigure in order to recreate the folders and make sure permissions and ownership
+    are correctly
+    
+    ```bash
+    gitlab-ctl reconfigure
+    ```
+
+1. Reset the Tracking Database
+
+    ```bash
+    gitlab-rake geo:db:reset
+    ```
+
+1. Restart previously stopped services
+
+    ```bash
+    gitlab-ctl start
+    ```
 
 [database-start-replication]: database.md#step-3-initiate-the-replication-process
 [database-pg-replication]: database.md#postgresql-replication

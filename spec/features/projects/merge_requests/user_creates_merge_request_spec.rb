@@ -8,13 +8,15 @@ describe 'User creates a merge request', :js do
       merge_requests_template: 'This merge request should contain the following.')
   end
   let(:user) { create(:user) }
+  let(:approver) { create(:user) }
   let(:user2) { create(:user) }
 
   before do
     project.add_master(user)
+    project.add_master(approver)
     sign_in(user)
 
-    project.approvers.create(user_id: user.id)
+    project.approvers.create(user_id: approver.id)
 
     visit(project_new_merge_request_path(project))
   end
@@ -34,7 +36,7 @@ describe 'User creates a merge request', :js do
 
     # Approvers
     page.within('ul .unsaved-approvers') do
-      expect(page).to have_content(user.name)
+      expect(page).to have_content(approver.name)
     end
 
     page.within('.suggested-approvers') do

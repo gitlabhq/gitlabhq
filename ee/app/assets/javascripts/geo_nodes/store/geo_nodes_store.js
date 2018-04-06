@@ -8,7 +8,9 @@ export default class GeoNodesStore {
   }
 
   setNodes(nodes) {
-    this.state.nodes = nodes;
+    this.state.nodes = nodes.map(
+      node => GeoNodesStore.formatNode(node),
+    );
   }
 
   getNodes() {
@@ -17,6 +19,16 @@ export default class GeoNodesStore {
 
   setNodeDetails(nodeId, nodeDetails) {
     this.state.nodeDetails[nodeId] = GeoNodesStore.formatNodeDetails(nodeDetails);
+  }
+
+  removeNode(node) {
+    const indexOfRemovedNode = this.state.nodes.indexOf(node);
+    if (indexOfRemovedNode > -1) {
+      this.state.nodes.splice(indexOfRemovedNode, 1);
+      if (this.state.nodeDetails[node.id]) {
+        delete this.state.nodeDetails[node.id];
+      }
+    }
   }
 
   getPrimaryNodeVersion() {
@@ -30,6 +42,22 @@ export default class GeoNodesStore {
     return this.state.nodeDetails[nodeId];
   }
 
+  static formatNode(rawNode) {
+    const { id, url, primary, current, enabled } = rawNode;
+    return {
+      id,
+      url,
+      primary,
+      current,
+      enabled,
+      nodeActionActive: false,
+      basePath: rawNode._links.self,
+      repairPath: rawNode._links.repair,
+      editPath: rawNode.web_edit_url,
+      statusPath: rawNode._links.status,
+    };
+  }
+
   static formatNodeDetails(rawNodeDetails) {
     return {
       id: rawNodeDetails.geo_node_id,
@@ -41,8 +69,9 @@ export default class GeoNodesStore {
       primaryVersion: rawNodeDetails.primaryVersion,
       primaryRevision: rawNodeDetails.primaryRevision,
       replicationSlotWAL: rawNodeDetails.replication_slots_max_retained_wal_bytes,
-      missingOAuthApplication: rawNodeDetails.missing_oauth_application,
+      missingOAuthApplication: rawNodeDetails.missing_oauth_application || false,
       storageShardsMatch: rawNodeDetails.storage_shards_match,
+      syncStatusUnavailable: rawNodeDetails.sync_status_unavailable || false,
       replicationSlots: {
         totalCount: rawNodeDetails.replication_slots_count || 0,
         successCount: rawNodeDetails.replication_slots_used_count || 0,
@@ -57,6 +86,17 @@ export default class GeoNodesStore {
         totalCount: rawNodeDetails.wikis_count || 0,
         successCount: rawNodeDetails.wikis_synced_count || 0,
         failureCount: rawNodeDetails.wikis_failed_count || 0,
+      },
+      repositoryVerificationEnabled: rawNodeDetails.repository_verification_enabled,
+      verifiedRepositories: {
+        totalCount: rawNodeDetails.repositories_count || 0,
+        successCount: rawNodeDetails.repositories_verified_count || 0,
+        failureCount: rawNodeDetails.repositories_verification_failed_count || 0,
+      },
+      verifiedWikis: {
+        totalCount: rawNodeDetails.wikis_count || 0,
+        successCount: rawNodeDetails.wikis_verified_count || 0,
+        failureCount: rawNodeDetails.wikis_verification_failed_count || 0,
       },
       lfs: {
         totalCount: rawNodeDetails.lfs_objects_count || 0,

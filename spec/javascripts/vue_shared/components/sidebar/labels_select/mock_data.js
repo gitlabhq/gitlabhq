@@ -34,6 +34,7 @@ export const mockSuggestedColors = [
 
 export const mockConfig = {
   showCreate: true,
+  isProject: true,
   abilityName: 'issue',
   context: {
     labels: mockLabels,

@@ -12,6 +12,7 @@ class License < ActiveRecord::Base
     contribution_analytics
     elastic_search
     export_issues
+    external_files_in_gitlab_ci
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
@@ -23,8 +24,9 @@ class License < ActiveRecord::Base
     merge_request_squash
     multiple_ldap_servers
     multiple_issue_assignees
-    multiple_issue_boards
+    multiple_project_issue_boards
     push_rules
+    project_creation_level
     protected_refs_for_users
     related_issues
     repository_mirrors
@@ -36,33 +38,37 @@ class License < ActiveRecord::Base
     admin_audit_log
     auditor_user
     cross_project_pipelines
+    email_additional_text
     db_load_balancing
     deploy_board
     extended_audit_events
-    external_files_in_gitlab_ci
     file_locks
     geo
-    group_issue_boards
+    github_project_service_integration
     jira_dev_panel_integration
     ldap_group_sync_filter
     multiple_clusters
+    multiple_group_issue_boards
     merge_request_performance_metrics
     object_storage
+    group_saml
     service_desk
     variable_environment_scope
     reject_unsigned_commits
     commit_committer_check
-    project_creation_level
     external_authorization_service
     ci_cd_projects
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
+    dependency_scanning
     sast
     sast_container
+    cluster_health
     dast
     epics
     ide
+    chatops
   ].freeze
 
   # List all features available for early adopters,
@@ -87,7 +93,8 @@ class License < ActiveRecord::Base
     merge_request_approvers
     merge_request_squash
     multiple_issue_assignees
-    multiple_issue_boards
+    multiple_project_issue_boards
+    multiple_group_issue_boards
     protected_refs_for_users
     push_rules
     related_issues
@@ -119,6 +126,13 @@ class License < ActiveRecord::Base
     'GitLab_Geo' => :geo,
     'GitLab_ServiceDesk' => :service_desk
   }.freeze
+
+  # Features added here are available for all namespaces.
+  ANY_PLAN_FEATURES = %i[
+    ci_cd_projects
+    repository_mirrors
+    github_project_service_integration
+  ].freeze
 
   # Global features that cannot be restricted to only a subset of projects or namespaces.
   # Use `License.feature_available?(:feature)` to check if these features are available.
@@ -317,6 +331,7 @@ class License < ActiveRecord::Base
 
   def reset_current
     self.class.reset_current
+    Gitlab::Chat.flush_available_cache
   end
 
   def reset_license
@@ -336,6 +351,10 @@ class License < ActiveRecord::Base
     HistoricalData.during(from..to).maximum(:active_user_count) || 0
   end
 
+  def empty_historical_max?
+    historical_max == 0
+  end
+
   def check_users_limit
     return unless restricted_user_count
 
@@ -345,8 +364,9 @@ class License < ActiveRecord::Base
       return if restricted_user_count >= historical_max
     end
 
-    overage = historical_max - restricted_user_count
-    add_limit_error(user_count: historical_max, restricted_user_count: restricted_user_count, overage: overage)
+    user_count = empty_historical_max? ? current_active_users_count : historical_max
+
+    add_limit_error(current_period: empty_historical_max?, user_count: user_count)
   end
 
   def check_trueup
@@ -354,7 +374,6 @@ class License < ActiveRecord::Base
     trueup_from         = Date.parse(restrictions[:trueup_from]) rescue (starts_at - 1.year)
     trueup_to           = Date.parse(restrictions[:trueup_to]) rescue starts_at
     max_historical      = historical_max(trueup_from, trueup_to)
-    overage             = current_active_users_count - restricted_user_count
     expected_trueup_qty = if previous_user_count
                             max_historical - previous_user_count
                           else
@@ -363,7 +382,7 @@ class License < ActiveRecord::Base
 
     if trueup_qty >= expected_trueup_qty
       if restricted_user_count < current_active_users_count
-        add_limit_error(trueup: true, user_count: current_active_users_count, restricted_user_count: restricted_user_count, overage: overage)
+        add_limit_error(user_count: current_active_users_count)
       end
     else
       message = "You have applied a True-up for #{trueup_qty} #{"user".pluralize(trueup_qty)} "
@@ -374,8 +393,10 @@ class License < ActiveRecord::Base
     end
   end
 
-  def add_limit_error(trueup: false, user_count:, restricted_user_count:, overage:)
-    message =  trueup ? "This GitLab installation currently has " : "During the year before this license started, this GitLab installation had "
+  def add_limit_error(current_period: true, user_count:)
+    overage = user_count - restricted_user_count
+
+    message =  current_period ? "This GitLab installation currently has " : "During the year before this license started, this GitLab installation had "
     message << "#{number_with_delimiter(user_count)} active #{"user".pluralize(user_count)}, "
     message << "exceeding this license's limit of #{number_with_delimiter(restricted_user_count)} by "
     message << "#{number_with_delimiter(overage)} #{"user".pluralize(overage)}. "

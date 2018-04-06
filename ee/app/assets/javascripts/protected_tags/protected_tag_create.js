@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';

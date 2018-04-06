@@ -12,6 +12,7 @@ module EE
       include Elastic::ProjectsSearch
       prepend ImportStatusStateMachine
       include EE::DeploymentPlatform
+      include EachBatch
 
       before_validation :mark_remote_mirrors_for_removal
 
@@ -24,11 +25,13 @@ module EE
 
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
+      has_one :repository_state, class_name: 'ProjectRepositoryState', inverse_of: :project
       has_one :mirror_data, autosave: true, class_name: 'ProjectMirrorData'
       has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }
       has_one :index_status
       has_one :jenkins_service
       has_one :jenkins_deprecated_service
+      has_one :github_service
 
       has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -51,7 +54,12 @@ module EE
       end
 
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
-      scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
+      scope :with_wiki_enabled,   -> { with_feature_enabled(:wiki) }
+
+      scope :verified_repos, -> { joins(:repository_state).merge(ProjectRepositoryState.verified_repos) }
+      scope :verified_wikis, -> { joins(:repository_state).merge(ProjectRepositoryState.verified_wikis) }
+      scope :verification_failed_repos, -> { joins(:repository_state).merge(ProjectRepositoryState.verification_failed_repos) }
+      scope :verification_failed_wikis, -> { joins(:repository_state).merge(ProjectRepositoryState.verification_failed_wikis) }
 
       delegate :shared_runners_minutes, :shared_runners_seconds, :shared_runners_seconds_last_reset,
         to: :statistics, allow_nil: true
@@ -83,6 +91,12 @@ module EE
         joins('LEFT JOIN services ON services.project_id = projects.id AND services.type = \'GitlabSlackApplicationService\' AND services.active IS true')
           .where('services.id IS NULL')
       end
+    end
+
+    def ensure_external_webhook_token
+      return if external_webhook_token.present?
+
+      self.external_webhook_token = Devise.friendly_token
     end
 
     def shared_runners_limit_namespace
@@ -223,6 +237,11 @@ module EE
       end
     end
 
+    override :multiple_issue_boards_available?
+    def multiple_issue_boards_available?
+      feature_available?(:multiple_project_issue_boards)
+    end
+
     def service_desk_enabled
       ::EE::Gitlab::ServiceDesk.enabled?(project: self) && super
     end
@@ -267,7 +286,7 @@ module EE
       return super.where(environment_scope: '*') unless
         environment && feature_available?(:variable_environment_scope)
 
-      super.on_environment(environment.name)
+      super.on_environment(environment)
     end
 
     def execute_hooks(data, hooks_scope = :push_hooks)
@@ -312,13 +331,13 @@ module EE
     alias_method :reset_approvals_on_push?, :reset_approvals_on_push
 
     def approver_ids=(value)
-      value.split(",").map(&:strip).each do |user_id|
+      ::Gitlab::Utils.ensure_array_from_string(value).each do |user_id|
         approvers.find_or_create_by(user_id: user_id, target_id: id)
       end
     end
 
     def approver_group_ids=(value)
-      value.split(",").map(&:strip).each do |group_id|
+      ::Gitlab::Utils.ensure_array_from_string(value).each do |group_id|
         approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
       end
     end
@@ -451,6 +470,10 @@ module EE
           disabled_services.push('jenkins', 'jenkins_deprecated')
         end
 
+        unless feature_available?(:github_project_service_integration)
+          disabled_services.push('github')
+        end
+
         disabled_services
       end
     end
@@ -466,7 +489,7 @@ module EE
     end
 
     def external_authorization_classification_label
-      return nil unless feature_available?(:external_authorization_service)
+      return nil unless License.feature_available?(:external_authorization_service)
 
       super || ::Gitlab::CurrentSettings.current_application_settings
                  .external_authorization_service_default_label

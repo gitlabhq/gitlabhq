@@ -77,7 +77,7 @@
                             = icon('gitlab', text: 'GitLab export')
                       %div
                         - if github_import_enabled?
-                          = link_to new_import_github_path, class: 'btn import_github' do
+                          = link_to new_import_github_path, class: 'btn js-import-github' do
                             = icon('github', text: 'GitHub')
                       %div
                         - if bitbucket_import_enabled?
@@ -113,7 +113,6 @@
                     %hr
                       = render "shared/import_form", f: f
                       = render 'new_project_fields', f: f, project_name_id: "import-url-name"
-
 
         -# EE-specific start
         = render 'new_ci_cd_only_project_pane', active_tab: active_tab

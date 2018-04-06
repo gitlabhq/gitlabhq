@@ -1,5 +1,0 @@
----
-title: Fix the background_upload configuration being ignored.
-merge_request: 4507
-author:
-type: fixed

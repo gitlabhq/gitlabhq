@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
 
 let hasUserDefinedProjectPath = false;

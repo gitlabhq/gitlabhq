@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import eventHub from 'ee/related_issues/event_hub';
 import addIssuableForm from 'ee/related_issues/components/add_issuable_form.vue';

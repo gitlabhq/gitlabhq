@@ -21,7 +21,7 @@ module API
 
         if response[:code] == :ok
           file = response[:file]
-          present_file!(file.path, file.filename)
+          present_disk_file!(file.path, file.filename)
         else
           status response[:code]
           response

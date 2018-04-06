@@ -1,6 +1,11 @@
 <script>
+  import LoadingButton from '../../vue_shared/components/loading_button.vue';
+
   export default {
     name: 'PipelineNavControls',
+    components: {
+      LoadingButton,
+    },
     props: {
       newPipelinePath: {
         type: String,
@@ -19,6 +24,17 @@
         required: false,
         default: null,
       },
+
+      isResetCacheButtonLoading: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+    },
+    methods: {
+      onClickResetCache() {
+        this.$emit('resetRunnersCache', this.resetCachePath);
+      },
     },
   };
 </script>
@@ -32,14 +48,13 @@
       {{ s__('Pipelines|Run Pipeline') }}
     </a>
 
-    <a
+    <loading-button
       v-if="resetCachePath"
-      data-method="post"
-      :href="resetCachePath"
+      @click="onClickResetCache"
+      :loading="isResetCacheButtonLoading"
       class="btn btn-default js-clear-cache"
-    >
-      {{ s__('Pipelines|Clear Runner Caches') }}
-    </a>
+      :label="s__('Pipelines|Clear Runner Caches')"
+    />
 
     <a
       v-if="ciLintPath"

@@ -4,26 +4,35 @@
 
 %div{ class: container_class }
   .top-area.adjust
-    - if can?(current_user, :admin_project, @project)
-      .nav-text
-        - project_settings_link = link_to s_('Branches|project settings'), project_protected_branches_path(@project)
-        = s_('Branches|Protected branches can be managed in %{project_settings_link}').html_safe % { project_settings_link: project_settings_link }
+    %ul.nav-links.issues-state-filters
+      %li{ class: active_when(@mode == 'overview') }>
+        = link_to s_('Branches|Overview'), project_branches_path(@project), title: s_('Branches|Show overview of the branches')
+
+      %li{ class: active_when(@mode == 'active') }>
+        = link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), title: s_('Branches|Show active branches')
+
+      %li{ class: active_when(@mode == 'stale') }>
+        = link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), title: s_('Branches|Show stale branches')
+
+      %li{ class: active_when(!%w[overview active stale].include?(@mode)) }>
+        = link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), title: s_('Branches|Show all branches')
 
     .nav-controls
-      = form_tag(filter_branches_path, method: :get) do
+      = form_tag(project_branches_filtered_path(@project, state: 'all'), method: :get) do
         = search_field_tag :search, params[:search], { placeholder: s_('Branches|Filter by branch name'), id: 'branch-search', class: 'form-control search-text-input input-short', spellcheck: false }
 
-      .dropdown.inline>
-        %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-          %span.light
-            = branches_sort_options_hash[@sort]
-          = icon('chevron-down')
-        %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
-          %li.dropdown-header
-            = s_('Branches|Sort by')
-          - branches_sort_options_hash.each do |value, title|
-            %li
-              = link_to title, filter_branches_path(sort: value), class: ("is-active" if @sort == value)
+      - unless @mode == 'overview'
+        .dropdown.inline>
+          %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+            %span.light
+              = branches_sort_options_hash[@sort]
+            = icon('chevron-down')
+          %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+            %li.dropdown-header
+              = s_('Branches|Sort by')
+            - branches_sort_options_hash.each do |value, title|
+              %li
+                = link_to title, project_branches_filtered_path(@project, state: 'all', search: params[:search], sort: value), class: ("is-active" if @sort == value)
 
       - if can? current_user, :push_code, @project
         = link_to project_merged_branches_path(@project),
@@ -38,7 +47,17 @@
 
   = render 'projects/commits/mirror_status'
 
-  - if @branches.any?
+  - if can?(current_user, :admin_project, @project)
+    - project_settings_link = link_to s_('Branches|project settings'), project_protected_branches_path(@project)
+    .row-content-block
+      %h5
+        = s_('Branches|Protected branches can be managed in %{project_settings_link}.').html_safe % { project_settings_link: project_settings_link }
+
+  - if @mode == 'overview' && (@active_branches.any? || @stale_branches.any?)
+    = render "projects/branches/panel", branches: @active_branches, state: 'active', panel_title: s_('Branches|Active branches'), show_more_text: s_('Branches|Show more active branches'), project: @project, overview_max_branches: @overview_max_branches
+    = render "projects/branches/panel", branches: @stale_branches, state: 'stale', panel_title: s_('Branches|Stale branches'), show_more_text: s_('Branches|Show more stale branches'), project: @project, overview_max_branches: @overview_max_branches
+
+  - elsif @branches.any?
     %ul.content-list.all-branches
       - @branches.each do |branch|
         = render "projects/branches/branch", branch: branch, merged: @merged_branch_names.include?(branch.name)

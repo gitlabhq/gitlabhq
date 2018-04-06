@@ -1,10 +1,22 @@
 class PushRule < ActiveRecord::Base
   MatchError = Class.new(StandardError)
 
+  REGEX_COLUMNS = %i[
+    force_push_regex
+    delete_branch_regex
+    commit_message_regex
+    author_email_regex
+    file_name_regex
+    branch_name_regex
+  ].freeze
+
   belongs_to :project
 
   validates :project, presence: true, unless: "is_sample?"
   validates :max_file_size, numericality: { greater_than_or_equal_to: 0, only_integer: true }
+  validates(*REGEX_COLUMNS, untrusted_regexp: true)
+
+  before_update :convert_to_re2
 
   FILES_BLACKLIST = YAML.load_file(Rails.root.join('ee/lib/gitlab/checks/files_blacklist.yml'))
   SETTINGS_WITH_GLOBAL_DEFAULT = %i[
@@ -43,7 +55,7 @@ class PushRule < ActiveRecord::Base
   end
 
   def commit_message_allowed?(message)
-    data_match?(message, commit_message_regex)
+    data_match?(message, commit_message_regex, multiline: true)
   end
 
   def branch_name_allowed?(branch)
@@ -94,14 +106,30 @@ class PushRule < ActiveRecord::Base
 
   private
 
-  def data_match?(data, regex)
+  def data_match?(data, regex, multiline: false)
     if regex.present?
-      !!(data =~ Regexp.new(regex))
+      regexp = if allow_regex_fallback?
+                 Gitlab::UntrustedRegexp.with_fallback(regex, multiline: multiline)
+               else
+                 Gitlab::UntrustedRegexp.new(regex, multiline: multiline)
+               end
+
+      regexp === data
     else
       true
     end
   rescue RegexpError => e
     raise MatchError, "Regular expression '#{regex}' is invalid: #{e.message}"
+  end
+
+  def convert_to_re2
+    self.regexp_uses_re2 = true
+  end
+
+  # Allow fallback to ruby regex library
+  # Only supported for existing regexes due to denial of service risk
+  def allow_regex_fallback?
+    !regexp_uses_re2?
   end
 
   def read_setting_with_global_default(setting)

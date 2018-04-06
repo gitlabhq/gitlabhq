@@ -315,13 +315,19 @@ describe Gitlab::Auth do
       it "tries to autheticate with db before ldap" do
         expect(Gitlab::Auth::LDAP::Authentication).not_to receive(:login)
 
-        gl_auth.find_with_user_password(username, password)
+        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
       end
 
-      it "uses ldap as fallback to for authentication" do
-        expect(Gitlab::Auth::LDAP::Authentication).to receive(:login)
+      it "does not find user by using ldap as fallback to for authentication" do
+        expect(Gitlab::Auth::LDAP::Authentication).to receive(:login).and_return(nil)
 
-        gl_auth.find_with_user_password('ldap_user', 'password')
+        expect(gl_auth.find_with_user_password('ldap_user', 'password')).to be_nil
+      end
+
+      it "find new user by using ldap as fallback to for authentication" do
+        expect(Gitlab::Auth::LDAP::Authentication).to receive(:login).and_return(user)
+
+        expect(gl_auth.find_with_user_password('ldap_user', 'password')).to eq(user)
       end
     end
 

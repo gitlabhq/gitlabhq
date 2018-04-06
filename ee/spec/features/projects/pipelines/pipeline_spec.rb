@@ -7,6 +7,8 @@ describe 'Pipeline', :js do
   before do
     sign_in(user)
     project.add_developer(user)
+
+    allow(License).to receive(:feature_available?).and_return(true)
   end
 
   describe 'GET /:project/pipelines/:id/security' do
@@ -16,6 +18,7 @@ describe 'Pipeline', :js do
       before do
         create(
           :ci_build,
+          :success,
           :artifacts,
           name: 'sast',
           pipeline: pipeline,
@@ -34,8 +37,8 @@ describe 'Pipeline', :js do
         expect(page).to have_css('#js-tab-security')
       end
 
-      it 'shows security report' do
-        expect(page).to have_content('SAST detected no security vulnerabilities')
+      it 'shows security report section' do
+        expect(page).to have_content('SAST is loading')
       end
     end
 

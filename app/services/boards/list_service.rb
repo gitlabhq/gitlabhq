@@ -4,10 +4,14 @@ module Boards
 
     def execute
       create_board! if parent.boards.empty?
-      parent.boards
+      boards
     end
 
     private
+
+    def boards
+      parent.boards
+    end
 
     def create_board!
       Boards::CreateService.new(parent, current_user).execute

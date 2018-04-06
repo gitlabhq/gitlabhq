@@ -20,6 +20,7 @@ issues:
 - issue_assignees
 - epic_issue
 - epic
+- closed_by
 events:
 - author
 - project
@@ -126,6 +127,7 @@ pipelines:
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
+- chat_data # EE only
 pipeline_variables:
 - pipeline
 stages:
@@ -209,6 +211,7 @@ project:
 - mattermost_slash_commands_service
 - slack_slash_commands_service
 - gitlab_slack_application_service
+- github_service
 - irker_service
 - packagist_service
 - pivotaltracker_service
@@ -298,6 +301,7 @@ project:
 - container_repositories
 - uploads
 - mirror_data
+- repository_state
 - source_pipelines
 - sourced_pipelines
 - members_and_requesters
@@ -306,13 +310,18 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- prometheus_metrics
 - lfs_file_locks
 - project_badges
+- source_of_merge_requests
+- internal_ids
 award_emoji:
 - awardable
 - user
 priorities:
 - label
+prometheus_metrics:
+- project
 timelogs:
 - issue
 - merge_request

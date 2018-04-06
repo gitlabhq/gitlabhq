@@ -1,5 +1,5 @@
 module Geo
-  class FileDownloadDispatchWorker < Geo::BaseSchedulerWorker
+  class FileDownloadDispatchWorker < Geo::Scheduler::Secondary::SchedulerWorker
     include CronjobQueue
 
     private
@@ -8,7 +8,7 @@ module Geo
       current_node.files_max_capacity
     end
 
-    def schedule_job(object_db_id, object_type)
+    def schedule_job(object_type, object_db_id)
       job_id = FileDownloadWorker.perform_async(object_type, object_db_id)
 
       { id: object_db_id, type: object_type, job_id: job_id } if job_id
@@ -53,26 +53,34 @@ module Geo
     end
 
     def find_unsynced_lfs_objects_ids(batch_size:)
-      lfs_objects_finder.find_unsynced_lfs_objects(batch_size: batch_size, except_registry_ids: scheduled_file_ids(:lfs))
+      lfs_objects_finder.find_unsynced_lfs_objects(batch_size: batch_size, except_file_ids: scheduled_file_ids(:lfs))
                         .pluck(:id)
-                        .map { |id| [id, :lfs] }
+                        .map { |id| [:lfs, id] }
     end
 
     def find_unsynced_attachments_ids(batch_size:)
-      attachments_finder.find_unsynced_attachments(batch_size: batch_size, except_registry_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
-                        .pluck(:id, :uploader)
-                        .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').underscore] }
+      attachments_finder.find_unsynced_attachments(batch_size: batch_size, except_file_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
+                        .pluck(:uploader, :id)
+                        .map { |uploader, id| [uploader.sub(/Uploader\z/, '').underscore, id] }
     end
 
     def find_unsynced_job_artifacts_ids(batch_size:)
-      job_artifacts_finder.find_unsynced_job_artifacts(batch_size: batch_size, except_registry_ids: scheduled_file_ids(:job_artifact))
+      job_artifacts_finder.find_unsynced_job_artifacts(batch_size: batch_size, except_artifact_ids: scheduled_file_ids(:job_artifact))
                         .pluck(:id)
-                        .map { |id| [id, :job_artifact] }
+                        .map { |id| [:job_artifact, id] }
     end
 
     def find_failed_upload_object_ids(batch_size:)
-      file_registry_finder.find_failed_file_registries(batch_size: batch_size)
-                          .pluck(:file_id, :file_type)
+      file_ids = file_registry_finder.find_failed_file_registries(batch_size: batch_size)
+                                     .pluck(:file_type, :file_id)
+      artifact_ids = find_failed_artifact_ids(batch_size: batch_size)
+
+      take_batch(file_ids, artifact_ids)
+    end
+
+    def find_failed_artifact_ids(batch_size:)
+      job_artifacts_finder.find_failed_job_artifacts_registries.retry_due.limit(batch_size)
+        .pluck(:artifact_id).map { |id| [:job_artifact, id] }
     end
 
     def scheduled_file_ids(file_types)

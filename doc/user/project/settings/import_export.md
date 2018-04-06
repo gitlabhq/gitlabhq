@@ -57,11 +57,11 @@ The following items will be exported:
 - Project configuration including web hooks and services
 - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
   and other project entities
+- LFS objects
 
 The following items will NOT be exported:
 
 - Build traces and artifacts
-- LFS objects
 - Container registry images
 - CI variables
 - Any encrypted tokens

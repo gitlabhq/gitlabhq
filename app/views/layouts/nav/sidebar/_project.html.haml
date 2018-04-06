@@ -85,19 +85,6 @@
                 = link_to project_path_locks_path(@project) do
                   #{ _('Locked Files') }
 
-      - if project_nav_tab? :container_registry
-        = nav_link(controller: %w[projects/registry/repositories]) do
-          = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
-            .nav-icon-container
-              = sprite_icon('disk')
-            %span.nav-item-name
-              Registry
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(controller: %w[projects/registry/repositories], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_container_registry_index_path(@project) do
-                %strong.fly-out-top-item-name
-                  #{ _('Registry') }
-
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
           = link_to project_issues_path(@project), class: 'shortcuts-issues' do
@@ -244,6 +231,20 @@
                 = link_to charts_project_pipelines_path(@project), title: 'Charts', class: 'shortcuts-pipelines-charts' do
                   %span
                     Charts
+
+      - if project_nav_tab? :container_registry
+        = nav_link(controller: %w[projects/registry/repositories]) do
+          = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
+            .nav-icon-container
+              = sprite_icon('disk')
+            %span.nav-item-name
+              Registry
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: %w[projects/registry/repositories], html_options: { class: "fly-out-top-item" } ) do
+              = link_to project_container_registry_index_path(@project) do
+                %strong.fly-out-top-item-name
+                  #{ _('Registry') }
+
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do

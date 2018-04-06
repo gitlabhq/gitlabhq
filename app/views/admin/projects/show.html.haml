@@ -1,8 +1,8 @@
 - add_to_breadcrumbs "Projects", admin_projects_path
-- breadcrumb_title @project.name_with_namespace
-- page_title @project.name_with_namespace, "Projects"
+- breadcrumb_title @project.full_name
+- page_title @project.full_name, "Projects"
 %h3.page-title
-  Project: #{@project.name_with_namespace}
+  Project: #{@project.full_name}
   = link_to edit_project_path(@project), class: "btn btn-nr pull-right" do
     %i.fa.fa-pencil-square-o
     Edit
@@ -62,12 +62,16 @@
             = link_to @project.ssh_url_to_repo, project_path(@project)
         - if @project.repository.exists?
           %li
-            %span.light fs:
+            %span.light Gitaly storage name:
             %strong
-              = @project.repository.path_to_repo
+              = @project.repository.storage
+          %li
+            %span.light Gitaly relative path:
+            %strong
+              = @project.repository.relative_path
 
           %li
-            %span.light Storage:
+            %span.light Storage used:
             %strong= storage_counter(@project.statistics.storage_size)
             (
             = storage_counter(@project.statistics.repository_size)

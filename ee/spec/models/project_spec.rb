@@ -14,6 +14,8 @@ describe Project do
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:shared_runners_limit_namespace) }
 
     it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
+    it { is_expected.to have_one(:repository_state).class_name('ProjectRepositoryState').inverse_of(:project) }
+
     it { is_expected.to have_many(:path_locks) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
@@ -99,6 +101,29 @@ describe Project do
           expect(described_class.mirrors_to_sync(timestamp)).to be_empty
         end
       end
+    end
+  end
+
+  describe '#ensure_external_webhook_token' do
+    let(:project) { create(:project, :repository) }
+
+    it "sets external_webhook_token when it's missing" do
+      project.update_attribute(:external_webhook_token, nil)
+      expect(project.external_webhook_token).to be_blank
+
+      project.ensure_external_webhook_token
+      expect(project.external_webhook_token).to be_present
+    end
+  end
+
+  describe 'hard failing a mirror' do
+    it 'sends a notification' do
+      project = create(:project, :mirror, :import_started)
+      project.mirror_data.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+
+      expect_any_instance_of(EE::NotificationService).to receive(:mirror_was_hard_failed).with(project)
+
+      project.import_fail
     end
   end
 
@@ -827,8 +852,8 @@ describe Project do
         default_branch_protection: Gitlab::Access::PROTECTION_NONE)
     end
 
-    context 'when environment is specified' do
-      let(:environment) { create(:environment, name: 'review/name') }
+    context 'when environment name is specified' do
+      let(:environment) { 'review/name' }
 
       subject do
         project.secret_variables_for(ref: 'ref', environment: environment)
@@ -913,11 +938,14 @@ describe Project do
           is_expected.not_to contain_exactly(secret_variable)
         end
 
-        it 'matches literally for _' do
-          secret_variable.update(environment_scope: 'foo_bar/*')
-          environment.update(name: 'foo_bar/test')
+        context 'when environment name contains underscore' do
+          let(:environment) { 'foo_bar/test' }
 
-          is_expected.to contain_exactly(secret_variable)
+          it 'matches literally for _' do
+            secret_variable.update(environment_scope: 'foo_bar/*')
+
+            is_expected.to contain_exactly(secret_variable)
+          end
         end
       end
 
@@ -936,11 +964,14 @@ describe Project do
           is_expected.not_to contain_exactly(secret_variable)
         end
 
-        it 'matches literally for _' do
-          secret_variable.update(environment_scope: 'foo%bar/*')
-          environment.update_attribute(:name, 'foo%bar/test')
+        context 'when environment name contains a percent' do
+          let(:environment) { 'foo%bar/test' }
 
-          is_expected.to contain_exactly(secret_variable)
+          it 'matches literally for _' do
+            secret_variable.update(environment_scope: 'foo%bar/*')
+
+            is_expected.to contain_exactly(secret_variable)
+          end
         end
       end
 
@@ -1071,6 +1102,8 @@ describe Project do
 
   shared_examples 'project with disabled services' do
     it 'has some disabled services' do
+      stub_const('License::ANY_PLAN_FEATURES', [])
+
       expect(project.disabled_services).to match_array(disabled_services)
     end
   end
@@ -1084,7 +1117,7 @@ describe Project do
   describe '#disabled_services' do
     let(:namespace) { create(:group, :private) }
     let(:project) { create(:project, :private, namespace: namespace) }
-    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated github) }
 
     context 'without a license key' do
       before do
@@ -1095,6 +1128,10 @@ describe Project do
     end
 
     context 'with a license key' do
+      before do
+        allow_any_instance_of(License).to receive(:plan).and_return(License::PREMIUM_PLAN)
+      end
+
       context 'when checking of namespace plan is enabled' do
         before do
           stub_application_setting_on_object(project, should_check_namespace_plan: true)
@@ -1105,7 +1142,7 @@ describe Project do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
+          let(:namespace) { create(:group, :private, plan: :silver_plan) }
 
           it_behaves_like 'project without disabled services'
         end
@@ -1238,7 +1275,7 @@ describe Project do
 
   describe '#external_authorization_classification_label' do
     it 'falls back to the default when none is configured' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
 
       expect(build(:project).external_authorization_classification_label)
         .to eq('default_label')
@@ -1255,13 +1292,21 @@ describe Project do
     end
 
     it 'returns the classification label if it was configured on the project' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
 
       project = build(:project,
                       external_authorization_classification_label: 'hello')
 
       expect(project.external_authorization_classification_label)
         .to eq('hello')
+    end
+
+    it 'does not break when not stubbing the license check' do
+      enable_external_authorization_service_check
+      enable_namespace_license_check!
+      project = build(:project)
+
+      expect { project.external_authorization_classification_label }.not_to raise_error
     end
   end
 
@@ -1273,6 +1318,50 @@ describe Project do
       external_service_deny_access(user, project)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
+    end
+  end
+
+  describe 'project import state transitions' do
+    context 'state transition: [:started] => [:finished]' do
+      context 'elasticsearch indexing disabled' do
+        before do
+          stub_ee_application_setting(elasticsearch_indexing: false)
+        end
+
+        it 'does not index the repository' do
+          project = create(:project, :import_started, import_type: :github)
+
+          expect(ElasticCommitIndexerWorker).not_to receive(:perform_async)
+
+          project.import_finish
+        end
+      end
+
+      context 'elasticsearch indexing enabled' do
+        let(:project) { create(:project, :import_started, import_type: :github) }
+
+        before do
+          stub_ee_application_setting(elasticsearch_indexing: true)
+        end
+
+        context 'no index status' do
+          it 'schedules a full index of the repository' do
+            expect(ElasticCommitIndexerWorker).to receive(:perform_async).with(project.id, nil)
+
+            project.import_finish
+          end
+        end
+
+        context 'with index status' do
+          let!(:index_status) { project.create_index_status!(indexed_at: Time.now, last_commit: 'foo') }
+
+          it 'schedules a progressive index of the repository' do
+            expect(ElasticCommitIndexerWorker).to receive(:perform_async).with(project.id, index_status.last_commit)
+
+            project.import_finish
+          end
+        end
+      end
     end
   end
 end

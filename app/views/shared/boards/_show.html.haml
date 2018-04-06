@@ -7,7 +7,6 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
 
   -# haml-lint:disable InlineJavaScript
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
@@ -29,7 +28,7 @@
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
       ":board-id" => "boardId",
-      ":key" => "_uid" }
+      ":key" => "list.id" }
   = render "shared/boards/components/sidebar", group: group
   - if @project
     %board-add-issues-modal{ "new-issue-path" => new_project_issue_path(@project),

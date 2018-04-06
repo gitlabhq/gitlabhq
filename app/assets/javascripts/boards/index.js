@@ -1,5 +1,6 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 
@@ -13,6 +14,7 @@ import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import
 import './models/issue';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';

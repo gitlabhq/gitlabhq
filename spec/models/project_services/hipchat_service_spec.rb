@@ -29,7 +29,7 @@ describe HipchatService do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }
-    let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
+    let(:project_name) { project.full_name.gsub(/\s/, '') }
     let(:token) { 'verySecret' }
     let(:server_url) { 'https://hipchat.example.com'}
     let(:push_sample_data) do
@@ -266,6 +266,21 @@ describe HipchatService do
               "<b>#{title}</b>" \
               "<pre>issue <strong>note</strong></pre>")
         end
+
+        context 'with confidential issue' do
+          before do
+            issue.update!(confidential: true)
+          end
+
+          it 'calls Hipchat API with issue comment' do
+            data = Gitlab::DataBuilder::Note.build(issue_note, user)
+            hipchat.execute(data)
+
+            message = hipchat.send(:create_message, data)
+
+            expect(message).to include("<pre>issue <strong>note</strong></pre>")
+          end
+        end
       end
 
       context 'when snippet comment event triggered' do
@@ -316,7 +331,7 @@ describe HipchatService do
           message = hipchat.__send__(:create_pipeline_message, data)
 
           project_url = project.web_url
-          project_name = project.name_with_namespace.gsub(/\s/, '')
+          project_name = project.full_name.gsub(/\s/, '')
           pipeline_attributes = data[:object_attributes]
           ref = pipeline_attributes[:ref]
           ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'

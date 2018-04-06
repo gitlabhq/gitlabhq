@@ -90,6 +90,7 @@
               v-if="item.location"
               :title="item.location"
               :text="clipboardText(item.location)"
+              css-class="btn-default btn-transparent btn-clipboard"
             />
           </td>
           <td>

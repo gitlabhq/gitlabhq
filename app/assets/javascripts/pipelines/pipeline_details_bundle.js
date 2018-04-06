@@ -7,8 +7,9 @@ import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 
-import SecurityReportApp from 'ee/pipelines/components/security_reports/security_report_app.vue'; // eslint-disable-line import/first
-import SastSummaryWidget from 'ee/pipelines/components/security_reports/sast_report_summary_widget.vue'; // eslint-disable-line import/first
+import SecurityReportApp from 'ee/vue_shared/security_reports/split_security_reports_app.vue'; // eslint-disable-line import/first
+import SastSummaryWidget from 'ee/pipelines/components/security_reports/report_summary_widget.vue'; // eslint-disable-line import/first
+import store from 'ee/vue_shared/security_reports/store'; // eslint-disable-line import/first
 
 Vue.use(Translate);
 
@@ -81,41 +82,41 @@ export default () => {
   const securityTab = document.getElementById('js-security-report-app');
   const sastSummary = document.querySelector('.js-sast-summary');
 
+  const updateBadgeCount = (count) => {
+    const badge = document.querySelector('.js-sast-counter');
+    if (badge.textContent !== '') {
+      badge.textContent = parseInt(badge.textContent, 10) + count;
+    } else {
+      badge.textContent = count;
+    }
+
+    badge.classList.remove('hidden');
+  };
+
   // They are being rendered under the same condition
   if (securityTab && sastSummary) {
     const datasetOptions = securityTab.dataset;
     const endpoint = datasetOptions.endpoint;
     const blobPath = datasetOptions.blobPath;
-
-    mediator.fetchSastReport(endpoint, blobPath)
-      .then(() => {
-        // update the badge
-        if (mediator.store.state.securityReports.sast.newIssues.length) {
-          const badge = document.querySelector('.js-sast-counter');
-          badge.textContent = mediator.store.state.securityReports.sast.newIssues.length;
-          badge.classList.remove('hidden');
-        }
-      })
-      .catch(() => {
-        Flash(__('Something went wrong while fetching SAST.'));
-      });
+    const dependencyScanningEndpoint = datasetOptions.dependencyScanningEndpoint;
 
     // Widget summary
     // eslint-disable-next-line no-new
     new Vue({
       el: sastSummary,
+      store,
       components: {
         SastSummaryWidget,
       },
-      data() {
-        return {
-          mediator,
-        };
+      methods: {
+        updateBadge(count) {
+          updateBadgeCount(count);
+        },
       },
       render(createElement) {
         return createElement('sast-summary-widget', {
-          props: {
-            unresolvedIssues: this.mediator.store.state.securityReports.sast.newIssues,
+          on: {
+            updateBadgeCount: this.updateBadge,
           },
         });
       },
@@ -125,18 +126,24 @@ export default () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: securityTab,
+      store,
       components: {
         SecurityReportApp,
       },
-      data() {
-        return {
-          mediator,
-        };
+      methods: {
+        updateBadge(count) {
+          updateBadgeCount(count);
+        },
       },
       render(createElement) {
         return createElement('security-report-app', {
           props: {
-            securityReports: this.mediator.store.state.securityReports,
+            headBlobPath: blobPath,
+            sastHeadPath: endpoint,
+            dependencyScanningHeadPath: dependencyScanningEndpoint,
+          },
+          on: {
+            updateBadgeCount: this.updateBadge,
           },
         });
       },

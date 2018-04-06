@@ -21,6 +21,12 @@
           = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
 
   .form-group
+    %h5= s_('ClusterIntegration|Security')
+    %p
+      = s_("ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application.")
+      = link_to s_("ClusterIntegration|Learn more about security configuration"),  help_page_path('user/project/clusters/index.md', anchor: 'security-implications')
+
+  .form-group
     %h5= s_('ClusterIntegration|Environment scope')
     %p
       = s_("ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster.")

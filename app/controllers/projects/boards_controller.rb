@@ -1,6 +1,5 @@
 class Projects::BoardsController < Projects::ApplicationController
   prepend EE::Boards::BoardsController
-  prepend EE::BoardsResponses
   include BoardsResponses
   include IssuableCollections
 

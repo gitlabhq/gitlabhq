@@ -36,6 +36,24 @@ describe GroupPolicy do
     it { is_expected.to be_allowed(:read_epic, :create_epic, :admin_epic, :destroy_epic) }
   end
 
+  describe 'per group SAML' do
+    let(:current_user) { master }
+
+    it { is_expected.to be_disallowed(:admin_group_saml) }
+
+    context 'owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:admin_group_saml) }
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:admin_group_saml) }
+    end
+  end
+
   context 'when LDAP sync is not enabled' do
     context 'owner' do
       let(:current_user) { owner }
@@ -245,6 +263,10 @@ describe GroupPolicy do
     end
 
     context 'project_creation_level disabled' do
+      before do
+        stub_licensed_features(project_creation_level: false)
+      end
+
       context 'when group has no project creation level set' do
         let(:group) { create(:group, project_creation_level: nil) }
 

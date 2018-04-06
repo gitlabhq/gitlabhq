@@ -60,7 +60,7 @@ FactoryBot.define do
 
     repository_storage_name { project.repository_storage }
     repository_storage_path { project.repository_storage_path }
-    deleted_path { project.path_with_namespace }
+    deleted_path { project.full_path }
     deleted_project_name { project.name }
   end
 

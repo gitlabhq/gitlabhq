@@ -1,7 +1,4 @@
 class Label < ActiveRecord::Base
-  # EE specific
-  prepend EE::Label
-
   include CacheMarkdownField
   include Referable
   include Subscribable
@@ -38,6 +35,7 @@ class Label < ActiveRecord::Base
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
+  scope :on_group_boards, ->(group_id) { with_lists_and_board.where(boards: { group_id: group_id }) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
 
   def self.prioritized(project)

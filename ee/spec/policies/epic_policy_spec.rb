@@ -139,7 +139,7 @@ describe EpicPolicy do
     let(:group) { create(:group) }
 
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
       group.add_owner(user)
     end
 

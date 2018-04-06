@@ -1,15 +1,24 @@
 module DeploymentPlatform
+  # EE would override this and utilize environment argument
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def deployment_platform(environment: nil)
-    @deployment_platform ||=
-      find_cluster_platform_kubernetes ||
-      find_kubernetes_service_integration ||
-      build_cluster_and_deployment_platform
+    @deployment_platform ||= {}
+
+    @deployment_platform[environment] ||= find_deployment_platform(environment)
   end
 
   private
 
-  def find_cluster_platform_kubernetes
-    clusters.find_by(enabled: true)&.platform_kubernetes
+  def find_deployment_platform(environment)
+    find_cluster_platform_kubernetes(environment: environment) ||
+      find_kubernetes_service_integration ||
+      build_cluster_and_deployment_platform
+  end
+
+  # EE would override this and utilize environment argument
+  def find_cluster_platform_kubernetes(environment: nil)
+    clusters.enabled.default_environment
+      .last&.platform_kubernetes
   end
 
   def find_kubernetes_service_integration

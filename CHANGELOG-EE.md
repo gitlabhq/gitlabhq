@@ -1,5 +1,216 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.6.3 (2018-04-03)
+
+- No changes.
+
+## 10.6.2 (2018-03-29)
+
+- No changes.
+
+## 10.6.1 (2018-03-27)
+
+### Fixed (8 changes)
+
+- Fix LDAP group sync permission override UI. !5003
+- Hard failing a mirror no longer fails for a blocked user's personal project. !5063
+- Geo - Avoid rescheduling the same project again in a backfill condition. !5069
+- Mark disabled wikis as fully synced. !5104
+- Fix excessive updates to file_registry when wiki is disabled. !5119
+- Geo: Recovery from temporary directory doesn't work if the namespace directory doesn't exist.
+- Define a chat responder for the Slack app.
+- Resolve "undefined method 'log_transfer_error'".
+
+### Added (1 change)
+
+- Also log Geo Prometheus metrics from primary. !5058
+
+### Other (1 change)
+
+- Update Epic documentation to include labels.
+
+
+## 10.6.0 (2018-03-22)
+
+### Security (2 changes)
+
+- Prevent new push rules from using non-RE2 regexes.
+- Project can no longer be shared between groups when both member and group locks are active.
+
+### Fixed (47 changes)
+
+- Geo - Add a rake task to update Geo primary node URL. !4097
+- Capture push rule regex errors and present them to user. !4102
+- Fixed membership Lock should propagate from parent group to sub-groups. !4111
+- Fix Epic sidebar toggle button icon positioning. !4138
+- Update the Geo documentation to replicate all secrets to the secondary. !4188
+- Update Geo documentation to reuse the primary node SSH host key on secondary node. !4198
+- Improve Geo Disaster Recovery docs for systems in multi-secondary configurations. !4285
+- Fix 500 errors caused by large replication slot wal retention. !4347
+- Report the correct version and revision for Geo node status requests. !4353
+- Don't show Member Lock setting for unlicensed system. !4355
+- Fix the background_upload configuration being ignored. !4507
+- Fix canary legends for single series charts. !4522
+- Fixes and enhancements for Geo admin dashboard. !4536
+- Fix license expiration duration to show trial info only for trial license. !4573
+- File uploads in remote storage now support project renaming. !4597
+- Use unique keys for token inputs while add same value twice to an epic. !4618
+- Fix multiple assignees avatar alignment in issues list. !4664
+- Improve security reports to handle big links and to work on mobile devices. !4671
+- Supresses error being raised due to async remote removal being run outside a transaction. !4747
+- Mark empty repos as synced in Geo. !4757
+- Mirror owners now get assigned as mirror users when the assigned mirror users disable their accounts. !4827
+- Geo: Ignore remote stored objects when calculating counts. !4864
+- Fix Epics not getting created in a Group with existing Epics. !4865
+- Generate ObjectStorage URL based on user provided schema. !4932
+- Make Epic start and finish dates on Roadmap to be timezone neutral. !4964
+- Support SendURL for performing indirect download of artifacts if clients does not specify that it supports that.
+- Fix LDAP group sync no longer configurable for regular users.
+- [Geo] Skip attachments that is stored in the object storage.
+- Fix: Geo WikiSyncService attempts to sync projects that have no Wiki.
+- Fix broken CSS in modal for DAST report.
+- Improve SAST description for no new vulnerabilities.
+- Fix 'Geo: Don't attempt to expire the cache after a failed clone'.
+- Geo - Remove duplicated message on on geo:update_primary_node_url rake task.
+- Fix the geo::db:seeds rake task.
+- Geo - Fix repository synchronization order for projects updated recently.
+- Geo - Respect backoff time when repository have never been synced successfully.
+- Ensure mirror can transition out of the started state when last_update_started_at is nil.
+- Fix bug causing 'Import in progress' to be shown while a mirror is updating.
+- Include epics from subgroups on Epic index page.
+- Fix proxy_download support for lfs controller.
+- Fixed IDE command palette options being hidden.
+- Fixed IDE file list when multiple files have same name but different paths.
+- Fixed IDE not showing the correct changes and diff markers.
+- Update epic issue reference when moving an issue.
+- Fix Geo Log Cursor not reconnecting after pgbouncer dies.
+- Fix audit and Geo project deletion events not being logged under certain conditions.
+- Geo: Fix Wiki resync when Wiki repository does not exist.
+
+### Changed (15 changes)
+
+- Geo Logger will use the same log level defined in Rails. !4066
+- Approve merge requests additionally. !4134
+- Geo: sync .gitattributes to info/attributes in secondary nodes. !4159
+- Update behavior of MR widgets that require pipeline artifacts to allow jobs with multiple artifacts. !4203
+- Add details on how to disable GitLab to the DR documentation. !4239
+- Add users stats page for admin area with per role amount. !4539
+- Group Roadmap enhancements. !4651
+- Adds support to show added, fixed and all vulnerabilties for SAST in merge request widget.
+- Ports remote removal to a background job.
+- Update UI for merge widget reports.
+- Geo: Improve formatting of can't push to secondary warning message.
+- Replace check_name key with description in codeclimate results for a more human readable description.
+- Add license ID number to usage ping.
+- Schedule mirror updates in parallel.
+- Geo: Don't attempt to schedule a repository sync for downed Gitaly shards.
+
+### Performance (8 changes, 3 of them are from the community)
+
+- Move Assignees vue component. !4467 (George Tsiolis)
+- Speed up approvals calculations. !4492
+- Move BoardNewIssue vue component. !16947 (George Tsiolis)
+- Move RecentSearchesDropdownContent vue component. !16951 (George Tsiolis)
+- Bump Geo JWT timeout from 1 minute to 10 minutes.
+- Cache column_exists? for Elasticsearch columns.
+- FIx N+1 queries with /api/v4/groups endpoint.
+- Properly memoize ChangeAccess#validate_path_locks? to avoid excessive queries.
+
+### Added (39 changes, 1 of them is from the community)
+
+- Add ability to add Custom Metrics to environment and deployment metrics dashboards. !3799
+- Add object storage support for uploads. !3867
+- Add support within Browser Performance Testing for metrics where smaller is better. !3891 (joshlambert)
+- Add more endpoints for Geo Nodes API. !3923
+- (EEP) Allow developers to create projects in group. !4046
+- Integrate current File Locking feature with LFS File Locking. !4091
+- Add Epic information for selected issue in Issue boards sidebar. !4104
+- Update CI/CD secret variables list to be dynamic and save without reloading the page. !4110
+- Add object storage migration task for uploads. !4215
+- Filtered search support for Epics list page. !4223
+- Add multi-file editor usage metrics. !4226
+- Dry up CI/CD gitlab-ci.yml configuration by allowing inclusion of external files. !4262
+- Geo: FDW issues are displayed in the Geo Node Admin UI. !4266
+- Implement selective synchronization by repository shard for Geo. !4286
+- Show Group level Roadmap. !4361
+- Add Geo Prometheus metrics about the various number of events. !4413
+- Geo - Calculate repositories checksum on primary node. !4428
+- If admin note exists, display it in admin user view. !4546
+- Add option to overwrite diverged branches for pull mirrors. !4559
+- Adds GitHub Service to send status updates for pipelines. !4591
+- Projects and MRs Approvers API. !4636
+- Add CI/CD for external repositories. !4642
+- Authorize project access with an external service. !4675
+- GitHub CI/CD import sets up pipeline notification integration. !4687
+- Add GitHub support to CI/CD for external repositories. !4688
+- Repository mirroring notifies when hard failed. !4699
+- Query cluster status. !4701
+- Geo - Verify repository checksums on the secondary node. !4749
+- Move support of external gitlab-ci files from Premium to Starter. !4841
+- Geo - Improve node status report by adding one more indicator of health: last time when primary pulled the status of the secondary.
+- Render SAST report in Pipeline page.
+- Add system notes when moving issues between epics.
+- Add rake task to print Geo node status.
+- Add basic searching and sorting to Epics API.
+- gitlab:geo:check checks connection to the Geo tracking DB.
+- Added basic implementation of GitLab Chatops.
+- Add discussions API for Epics.
+- Add proxy_download to enable passing all data through Workhorse.
+- Add support for direct uploading of LFS artifacts.
+
+### Other (8 changes)
+
+- Geo: Improve replication status. Using pg_stat_wal_receiver.
+- Remove unaproved typo check in sast:container report.
+- Allow clicking on Staged Files in WebIDE to open them in the Editor.
+- Translate Locked files page.
+- Increase minimum mirror update interval from 15 to 30 minutes.
+- Geo - add documentation about using shared a S3 bucket with GitLab Container Registry.
+- Allow use of system git for git fetch if USE_SYSTEM_GIT_FOR_FETCH is defined.
+- Rename "Approve Additionally" to "Add approval".
+
+
+## 10.5.7 (2018-04-03)
+
+- No changes.
+
+## 10.5.6 (2018-03-16)
+
+- No changes.
+
+## 10.5.5 (2018-03-15)
+
+### Fixed (1 change)
+
+- Geo: Fix Wiki resync when Wiki repository does not exist.
+
+
+## 10.5.4 (2018-03-08)
+
+### Fixed (4 changes)
+
+- Supresses error being raised due to async remote removal being run outside a transaction. !4747
+- Mark empty repos as synced in Geo. !4757
+- Fix: Geo WikiSyncService attempts to sync projects that have no Wiki.
+- Geo - Fix repository synchronization order for projects updated recently.
+
+### Other (1 change)
+
+- Rename "Approve Additionally" to "Add approval".
+
+
+## 10.5.3 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
+
+
 ## 10.5.2 (2018-02-25)
 
 - No changes.
@@ -80,6 +291,26 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo - add documentation about using shared a S3 bucket with GitLab Container Registry.
 - Geo: Improve replication status. Using pg_stat_wal_receiver.
 - Remove unaproved typo check in sast:container report.
+
+
+## 10.4.7 (2018-04-03)
+
+- No changes.
+
+## 10.4.6 (2018-03-16)
+
+- No changes.
+
+## 10.4.5 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
 
 
 ## 10.4.4 (2018-02-16)
@@ -181,6 +412,22 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove unnecessary NTP checks now included in gitlab:geo:check. !3940
 - Move geo status check after db replication to avoid anticipated failures. !3941
 - Make scoped issue board specs more reliable.
+
+
+## 10.3.9 (2018-03-16)
+
+- No changes.
+
+## 10.3.8 (2018-03-01)
+
+### Security (2 changes)
+
+- Project can no longer be shared between groups when both member and group locks are active.
+- Prevent new push rules from using non-RE2 regexes.
+
+### Fixed (1 change)
+
+- Fix LDAP group sync no longer configurable for regular users.
 
 
 ## 10.3.7 (2018-02-05)

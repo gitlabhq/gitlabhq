@@ -6,6 +6,7 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_ready_to_merge.js' do
           element :merge_button
+          element :fast_forward_message, 'Fast-forward merge without a merge commit'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
@@ -14,19 +15,19 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_rebase.vue' do
           element :mr_rebase_button
-          element :fast_forward_nessage, "Fast-forward merge is not possible"
+          element :no_fast_forward_message, 'Fast-forward merge is not possible'
         end
 
         def rebase!
-          wait(reload: false) do
-            click_element :mr_rebase_button
+          click_element :mr_rebase_button
 
-            has_text?("The source branch HEAD has recently changed.")
+          wait(reload: false) do
+            has_text?('Fast-forward merge without a merge commit')
           end
         end
 
         def fast_forward_possible?
-          !has_text?("Fast-forward merge is not possible")
+          !has_text?('Fast-forward merge is not possible')
         end
 
         def has_merge_button?
@@ -36,10 +37,10 @@ module QA
         end
 
         def merge!
-          wait(reload: false) do
-            click_element :merge_button
+          click_element :merge_button
 
-            has_text?("The changes were merged into")
+          wait(reload: false) do
+            has_text?('The changes were merged into')
           end
         end
       end

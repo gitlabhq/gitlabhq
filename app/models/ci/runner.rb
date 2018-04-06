@@ -3,13 +3,14 @@ module Ci
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
     include RedisCacheable
+    include ChronicDurationAttribute
     prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -51,6 +52,12 @@ module Ci
     }
 
     cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
+
+    chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
+
+    validates :maximum_timeout, allow_nil: true,
+                                numericality: { greater_than_or_equal_to: 600,
+                                                message: 'needs to be at least 10 minutes' }
 
     # Searches for runners matching the given query.
     #
@@ -133,11 +140,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_RUNNER_ID', value: id.to_s, public: true },
-        { key: 'CI_RUNNER_DESCRIPTION', value: description, public: true },
-        { key: 'CI_RUNNER_TAGS', value: tag_list.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_RUNNER_ID', value: id.to_s)
+        .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
+        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_s)
     end
 
     def tick_runner_queue

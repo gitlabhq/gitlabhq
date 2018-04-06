@@ -1,5 +1,6 @@
 /* eslint-disable no-new, class-methods-use-this */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
@@ -72,6 +73,7 @@ export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
     const mergeRequestTabs = document.querySelector('.js-tabs-affix');
     const navbar = document.querySelector('.navbar-gitlab');
+    const peek = document.getElementById('peek');
     const paddingTop = 16;
 
     this.diffsLoaded = false;
@@ -84,6 +86,10 @@ export default class MergeRequestTabs {
     this.tabShown = this.tabShown.bind(this);
     this.showTab = this.showTab.bind(this);
     this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
+
+    if (peek) {
+      this.stickyTop += peek.offsetHeight;
+    }
 
     if (mergeRequestTabs) {
       this.stickyTop += mergeRequestTabs.offsetHeight;

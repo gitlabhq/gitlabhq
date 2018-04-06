@@ -1,6 +1,0 @@
----
-title: Update behavior of MR widgets that require pipeline artifacts to allow jobs
-  with multiple artifacts
-merge_request: 4203
-author:
-type: changed

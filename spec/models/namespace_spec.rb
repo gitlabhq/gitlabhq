@@ -204,43 +204,67 @@ describe Namespace do
         expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
 
-      context 'with subgroups' do
+      context 'with subgroups', :nested_groups do
         let(:parent) { create(:group, name: 'parent', path: 'parent') }
+        let(:new_parent) { create(:group, name: 'new_parent', path: 'new_parent') }
         let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
         let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
         let(:uploads_dir) { FileUploader.root }
         let(:pages_dir) { File.join(TestEnv.pages_path) }
 
+        def expect_project_directories_at(namespace_path)
+          expected_repository_path = File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
+          expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
+          expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
+
+          expect(File.directory?(expected_repository_path)).to be_truthy
+          expect(File.directory?(expected_upload_path)).to be_truthy
+          expect(File.directory?(expected_pages_path)).to be_truthy
+        end
+
         before do
+          FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
           FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
           FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
         end
 
         context 'renaming child' do
           it 'correctly moves the repository, uploads and pages' do
-            expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
-            expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
-            expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
+            child.update!(path: 'renamed')
 
-            child.update_attributes!(path: 'renamed')
-
-            expect(File.directory?(expected_repository_path)).to be(true)
-            expect(File.directory?(expected_upload_path)).to be(true)
-            expect(File.directory?(expected_pages_path)).to be(true)
+            expect_project_directories_at('parent/renamed')
           end
         end
 
         context 'renaming parent' do
           it 'correctly moves the repository, uploads and pages' do
-            expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
-            expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
-            expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+            parent.update!(path: 'renamed')
 
-            parent.update_attributes!(path: 'renamed')
+            expect_project_directories_at('renamed/child')
+          end
+        end
 
-            expect(File.directory?(expected_repository_path)).to be(true)
-            expect(File.directory?(expected_upload_path)).to be(true)
-            expect(File.directory?(expected_pages_path)).to be(true)
+        context 'moving from one parent to another' do
+          it 'correctly moves the repository, uploads and pages' do
+            child.update!(parent: new_parent)
+
+            expect_project_directories_at('new_parent/child')
+          end
+        end
+
+        context 'moving from having a parent to root' do
+          it 'correctly moves the repository, uploads and pages' do
+            child.update!(parent: nil)
+
+            expect_project_directories_at('child')
+          end
+        end
+
+        context 'moving from root to having a parent' do
+          it 'correctly moves the repository, uploads and pages' do
+            parent.update!(parent: new_parent)
+
+            expect_project_directories_at('new_parent/parent/child')
           end
         end
       end
@@ -293,7 +317,7 @@ describe Namespace do
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
@@ -537,7 +561,6 @@ describe Namespace do
       end
     end
 
-    # Note: Group transfers are not yet implemented
     context 'when a group is transferred into a root group' do
       context 'when the root group "Share with group lock" is enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }

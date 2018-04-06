@@ -1,7 +1,8 @@
 !!! 5
-%html{ lang: "en" }
+%html{ lang: "en", class: system_message_class }
   = render "layouts/head"
   %body.ui_indigo.login-page.application.navless
+    = header_message
     = render "layouts/header/empty"
     = render "layouts/broadcast"
     .container.navless-container
@@ -15,3 +16,4 @@
         = link_to "Explore", explore_root_path
         = link_to "Help", help_path
         = link_to "About GitLab", "https://about.gitlab.com/"
+    = footer_message

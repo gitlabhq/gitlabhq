@@ -1,5 +1,7 @@
 module Users
   class DestroyService
+    prepend ::EE::Users::DestroyService
+
     attr_accessor :current_user
 
     def initialize(current_user)
@@ -49,11 +51,7 @@ module Users
         ::Projects::DestroyService.new(project, current_user, skip_repo: project.legacy_storage?).execute
       end
 
-      Project.includes(group: :owners).where(mirror_user: user).find_each do |project|
-        if project.group.present?
-          project.update(mirror_user: project.group.owners.first)
-        end
-      end
+      yield(user) if block_given?
 
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 

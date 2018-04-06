@@ -5,10 +5,12 @@ module EE
   # and be included in the `Group` model
   module Group
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
     included do
-      has_many :boards
       has_many :epics
+
+      has_one :saml_provider
 
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
@@ -61,6 +63,11 @@ module EE
 
     def project_creation_level
       super || ::Gitlab::CurrentSettings.default_project_creation
+    end
+
+    override :multiple_issue_boards_available?
+    def multiple_issue_boards_available?
+      feature_available?(:multiple_group_issue_boards)
     end
   end
 end

@@ -1,8 +1,6 @@
 <script>
   import { monthInWords } from '~/lib/utils/datetime_utility';
 
-  import { EPIC_DETAILS_CELL_WIDTH, TIMELINE_CELL_MIN_WIDTH } from '../constants';
-
   import timelineHeaderSubItem from './timeline_header_sub_item.vue';
 
   export default {
@@ -22,7 +20,7 @@
         type: Array,
         required: true,
       },
-      shellWidth: {
+      itemWidth: {
         type: Number,
         required: true,
       },
@@ -36,22 +34,10 @@
       };
     },
     computed: {
-      thStyles() {
-        const timeframeLength = this.timeframe.length;
-
-        // Calculate minimum width for single cell
-        // based on total number of months in current timeframe
-        // and available shellWidth
-        const minWidth =
-          Math.ceil((this.shellWidth - EPIC_DETAILS_CELL_WIDTH) / timeframeLength);
-
-        // When shellWidth is too low, we need to obey global
-        // minimum cell width.
-        if (minWidth < TIMELINE_CELL_MIN_WIDTH) {
-          return `min-width: ${TIMELINE_CELL_MIN_WIDTH}px;`;
-        }
-
-        return `min-width: ${minWidth}px;`;
+      itemStyles() {
+        return {
+          width: `${this.itemWidth}px`,
+        };
       },
       timelineHeaderLabel() {
         const year = this.timeframeItem.getFullYear();
@@ -97,9 +83,9 @@
 </script>
 
 <template>
-  <th
+  <span
     class="timeline-header-item"
-    :style="thStyles"
+    :style="itemStyles"
   >
     <div
       class="item-label"
@@ -111,5 +97,5 @@
       :timeframe-item="timeframeItem"
       :current-date="currentDate"
     />
-  </th>
+  </span>
 </template>

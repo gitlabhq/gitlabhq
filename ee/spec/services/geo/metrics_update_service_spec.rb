@@ -49,6 +49,22 @@ describe Geo::MetricsUpdateService, :geo do
     }
   end
 
+  let(:primary_data) do
+    {
+      success: true,
+      status_message: nil,
+      repositories_count: 10,
+      wikis_count: 10,
+      lfs_objects_count: 100,
+      job_artifacts_count: 100,
+      attachments_count: 30,
+      last_event_id: 2,
+      last_event_date: event_date,
+      event_log_count: 55,
+      event_log_max_id: 555
+    }
+  end
+
   before do
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
   end
@@ -56,7 +72,7 @@ describe Geo::MetricsUpdateService, :geo do
   describe '#execute' do
     before do
       request = double(success?: true, parsed_response: data.stringify_keys, code: 200)
-      allow(Geo::NodeStatusFetchService).to receive(:get).and_return(request)
+      allow(Gitlab::HTTP).to receive(:get).and_return(request)
     end
 
     context 'when current node is nil' do
@@ -65,7 +81,7 @@ describe Geo::MetricsUpdateService, :geo do
       end
 
       it 'skips fetching the status' do
-        expect(Geo::NodeStatusFetchService).to receive(:get).never
+        expect(Gitlab::HTTP).to receive(:get).never
 
         subject.execute
       end
@@ -77,16 +93,19 @@ describe Geo::MetricsUpdateService, :geo do
       end
 
       it 'attempts to retrieve metrics from all nodes' do
+        allow(GeoNodeStatus).to receive(:current_node_status).and_return(GeoNodeStatus.from_json(primary_data.as_json))
+
         subject.execute
 
         expect(Gitlab::Metrics.registry.get(:geo_db_replication_lag_seconds).values.count).to eq(2)
-        expect(Gitlab::Metrics.registry.get(:geo_repositories).values.count).to eq(2)
+        expect(Gitlab::Metrics.registry.get(:geo_repositories).values.count).to eq(3)
         expect(Gitlab::Metrics.registry.get(:geo_repositories).get({ url: secondary.url })).to eq(10)
-        expect(Gitlab::Metrics.registry.get(:geo_repositories).get({ url: secondary.url })).to eq(10)
+        expect(Gitlab::Metrics.registry.get(:geo_repositories).get({ url: another_secondary.url })).to eq(10)
+        expect(Gitlab::Metrics.registry.get(:geo_repositories).get({ url: primary.url })).to eq(10)
       end
 
       it 'updates the GeoNodeStatus entry' do
-        expect { subject.execute }.to change { GeoNodeStatus.count }.by(2)
+        expect { subject.execute }.to change { GeoNodeStatus.count }.by(3)
 
         status = secondary.status.load_data_from_current_node
 
@@ -97,7 +116,7 @@ describe Geo::MetricsUpdateService, :geo do
       it 'updates only the active node' do
         secondary.update_attributes(enabled: false)
 
-        expect { subject.execute }.to change { GeoNodeStatus.count }.by(1)
+        expect { subject.execute }.to change { GeoNodeStatus.count }.by(2)
 
         expect(another_secondary.status).not_to be_nil
       end

@@ -11,10 +11,10 @@ describe ProjectPolicy do
 
   let(:base_guest_permissions) do
     %i[
-      read_project read_board read_list read_wiki read_issue read_label
-      read_milestone read_project_snippet read_project_member
-      read_note create_project create_issue create_note
-      upload_file
+      read_project read_board read_list read_wiki read_issue
+      read_project_for_iids read_issue_iid read_merge_request_iid read_label
+      read_milestone read_project_snippet read_project_member read_note
+      create_project create_issue create_note upload_file
     ]
   end
 
@@ -120,7 +120,7 @@ describe ProjectPolicy do
         project.issues_enabled = false
         project.save!
 
-        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
       end
     end
 
@@ -131,7 +131,7 @@ describe ProjectPolicy do
         project.issues_enabled = false
         project.save!
 
-        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
       end
     end
   end
@@ -315,10 +315,11 @@ describe ProjectPolicy do
     let(:auditor_permissions) do
       %i[
         download_code download_wiki_code read_project read_board read_list
-        read_wiki read_issue read_label read_issue_link read_milestone read_project_snippet
-        read_project_member read_note read_cycle_analytics read_pipeline
-        read_build read_commit_status read_container_image read_environment
-        read_deployment read_merge_request read_pages
+        read_project_for_iids read_issue_iid read_merge_request_iid read_wiki
+        read_issue read_label read_issue_link read_milestone
+        read_project_snippet read_project_member read_note read_cycle_analytics
+        read_pipeline read_build read_commit_status read_container_image
+        read_environment read_deployment read_merge_request read_pages
       ]
     end
 
@@ -358,6 +359,43 @@ describe ProjectPolicy do
           is_expected.to be_allowed(*auditor_permissions)
         end
       end
+    end
+  end
+
+  context 'when a public project has merge requests allowing access' do
+    include ProjectForksHelper
+    let(:user) { create(:user) }
+    let(:target_project) { create(:project, :public) }
+    let(:project) { fork_project(target_project) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        source_project: project,
+        allow_maintainer_to_push: true
+      )
+    end
+    let(:maintainer_abilities) do
+      %w(create_build update_build create_pipeline update_pipeline)
+    end
+
+    subject { described_class.new(user, project) }
+
+    it 'does not allow pushing code' do
+      expect_disallowed(*maintainer_abilities)
+    end
+
+    it 'allows pushing if the user is a member with push access to the target project' do
+      target_project.add_developer(user)
+
+      expect_allowed(*maintainer_abilities)
+    end
+
+    it 'dissallows abilities to a maintainer if the merge request was closed' do
+      target_project.add_developer(user)
+      merge_request.close!
+
+      expect_disallowed(*maintainer_abilities)
     end
   end
 end

@@ -16,10 +16,22 @@ module EE
       delegate :performance_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :sast_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :sast_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
-      delegate :sast_container_artifact, to: :head_pipeline, allow_nil: true
-      delegate :dast_artifact, to: :head_pipeline, allow_nil: true
+      delegate :dependency_scanning_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+      delegate :dependency_scanning_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :sast_container_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+      delegate :sast_container_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :dast_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+      delegate :dast_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :sha, to: :head_pipeline, prefix: :head_pipeline, allow_nil: true
       delegate :sha, to: :base_pipeline, prefix: :base_pipeline, allow_nil: true
+      delegate :has_sast_data?, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :has_dependency_scanning_data?, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :has_sast_container_data?, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :has_dast_data?, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :expose_sast_data?, to: :head_pipeline, allow_nil: true
+      delegate :expose_dependency_scanning_data?, to: :head_pipeline, allow_nil: true
+      delegate :expose_sast_container_data?, to: :head_pipeline, allow_nil: true
+      delegate :expose_dast_data?, to: :head_pipeline, allow_nil: true
     end
 
     def squash_in_progress?
@@ -38,50 +50,14 @@ module EE
       false
     end
 
-    def has_codeclimate_data?
-      !!(head_codeclimate_artifact&.success? &&
-         base_codeclimate_artifact&.success?)
-    end
-
-    def has_performance_data?
-      !!(head_performance_artifact&.success? &&
-         base_performance_artifact&.success?)
-    end
-
-    def has_sast_data?
-      head_sast_artifact&.success?
-    end
-
-    def has_base_sast_data?
-      base_sast_artifact&.success?
-    end
-
-    def has_sast_container_data?
-      sast_container_artifact&.success?
-    end
-
-    def has_dast_data?
-      dast_artifact&.success?
+    def expose_codeclimate_data?
+      !!(head_pipeline&.expose_codeclimate_data? &&
+         base_pipeline&.expose_codeclimate_data?)
     end
 
     def expose_performance_data?
-      project.feature_available?(:merge_request_performance_metrics) &&
-        has_performance_data?
-    end
-
-    def expose_sast_data?
-      project.feature_available?(:sast) &&
-        has_sast_data?
-    end
-
-    def expose_dast_data?
-      project.feature_available?(:dast) &&
-        has_dast_data?
-    end
-
-    def expose_sast_container_data?
-      project.feature_available?(:sast_container) &&
-        has_sast_container_data?
+      !!(head_pipeline&.expose_performance_data? &&
+         base_pipeline&.expose_performance_data?)
     end
   end
 end

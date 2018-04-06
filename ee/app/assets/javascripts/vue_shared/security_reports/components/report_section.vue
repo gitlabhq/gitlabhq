@@ -1,169 +1,169 @@
 <script>
-  import { __ } from '~/locale';
-  import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
-  import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import IssuesBlock from './report_issues.vue';
+import { __ } from '~/locale';
+import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import IssuesList from './issues_list.vue';
+import Popover from './help_popover.vue';
+import { LOADING, ERROR, SUCCESS } from '../store/constants';
 
-  export default {
-    name: 'ReportSection',
-    components: {
-      IssuesBlock,
-      LoadingIcon,
-      StatusIcon,
+export default {
+  name: 'ReportSection',
+  components: {
+    IssuesList,
+    LoadingIcon,
+    StatusIcon,
+    Popover,
+  },
+  props: {
+    type: {
+      type: String,
+      required: false,
+      default: '',
     },
-    props: {
-      isCollapsible: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      // security | codequality | performance | docker
-      type: {
-        type: String,
-        required: true,
-      },
-      // loading | success | error
-      status: {
-        type: String,
-        required: true,
-      },
-      loadingText: {
-        type: String,
-        required: true,
-      },
-      errorText: {
-        type: String,
-        required: true,
-      },
-      successText: {
-        type: String,
-        required: true,
-      },
-      unresolvedIssues: {
-        type: Array,
-        required: false,
-        default: () => ([]),
-      },
-      resolvedIssues: {
-        type: Array,
-        required: false,
-        default: () => ([]),
-      },
-      neutralIssues: {
-        type: Array,
-        required: false,
-        default: () => ([]),
-      },
-      allIssues: {
-        type: Array,
-        required: false,
-        default: () => ([]),
-      },
-      infoText: {
-        type: [String, Boolean],
-        required: false,
-        default: false,
-      },
-      hasPriority: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    status: {
+      type: String,
+      required: true,
     },
+    loadingText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    errorText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    successText: {
+      type: String,
+      required: true,
+    },
+    unresolvedIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    resolvedIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    neutralIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    allIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    infoText: {
+      type: [String, Boolean],
+      required: false,
+      default: false,
+    },
+    hasIssues: {
+      type: Boolean,
+      required: true,
+    },
+    popoverOptions: {
+      type: Object,
+      default: () => ({}),
+      required: false,
+    },
+  },
 
-    data() {
-      if (this.isCollapsible) {
-        return {
-          collapseText: __('Expand'),
-          isCollapsed: true,
-          isFullReportVisible: false,
-        };
+  data() {
+    return {
+      collapseText: __('Expand'),
+      isCollapsed: true,
+      isFullReportVisible: false,
+    };
+  },
+
+  computed: {
+    isLoading() {
+      return this.status === LOADING;
+    },
+    loadingFailed() {
+      return this.status === ERROR;
+    },
+    isSuccess() {
+      return this.status === SUCCESS;
+    },
+    statusIconName() {
+      if (this.loadingFailed || this.unresolvedIssues.length || this.neutralIssues.length) {
+        return 'warning';
+      }
+      return 'success';
+    },
+    headerText() {
+      if (this.isLoading) {
+        return this.loadingText;
       }
 
-      return {
-        isFullReportVisible: true,
-      };
-    },
+      if (this.isSuccess) {
+        return this.successText;
+      }
 
-    computed: {
-      isLoading() {
-        return this.status === 'loading';
-      },
-      loadingFailed() {
-        return this.status === 'error';
-      },
-      isSuccess() {
-        return this.status === 'success';
-      },
-      statusIconName() {
-        if (this.loadingFailed ||
-          this.unresolvedIssues.length ||
-          this.neutralIssues.length) {
-          return 'warning';
-        }
-        return 'success';
-      },
-      hasIssues() {
-        return this.unresolvedIssues.length ||
-          this.resolvedIssues.length ||
-          this.allIssues.length ||
-          this.neutralIssues.length;
-      },
-    },
+      if (this.loadingFailed) {
+        return this.errorText;
+      }
 
-    methods: {
-      toggleCollapsed() {
-        this.isCollapsed = !this.isCollapsed;
-
-        const text = this.isCollapsed ? __('Expand') : __('Collapse');
-        this.collapseText = text;
-      },
-      openFullReport() {
-        this.isFullReportVisible = true;
-      },
+      return '';
     },
-  };
+    hasPopover() {
+      return Object.keys(this.popoverOptions).length > 0;
+    },
+  },
+
+  methods: {
+    toggleCollapsed() {
+      this.isCollapsed = !this.isCollapsed;
+
+      const text = this.isCollapsed ? __('Expand') : __('Collapse');
+      this.collapseText = text;
+    },
+    openFullReport() {
+      this.isFullReportVisible = true;
+    },
+  },
+};
 </script>
 <template>
-  <section class="report-block mr-widget-section">
-
+  <section>
     <div
-      v-if="isLoading"
-      class="media"
+      class="media prepend-top-default prepend-left-default
+ append-right-default append-bottom-default"
     >
-      <div
+      <loading-icon
         class="mr-widget-icon"
-      >
-        <loading-icon />
-      </div>
-      <div
-        class="media-body"
-      >
-        {{ loadingText }}
-      </div>
-    </div>
-
-    <div
-      v-else-if="isSuccess"
-      class="media"
-    >
+        v-if="isLoading"
+      />
       <status-icon
+        v-else
         :status="statusIconName"
       />
-
       <div
         class="media-body space-children"
       >
         <span
-          class="js-code-text"
+          class="js-code-text code-text"
         >
-          {{ successText }}
+          {{ headerText }}
+
+          <popover
+            v-if="hasPopover"
+            class="prepend-left-5"
+            :options="popoverOptions"
+          />
         </span>
 
         <button
           type="button"
           class="js-collapse-btn btn bt-default pull-right btn-sm"
-          v-if="isCollapsible && hasIssues"
+          v-if="hasIssues"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -172,71 +172,28 @@
     </div>
 
     <div
-      class="report-block-container"
+      class="js-report-section-container"
       v-if="hasIssues"
-      v-show="!isCollapsible || (isCollapsible && !isCollapsed)"
+      v-show="!isCollapsed"
     >
+      <slot name="body">
+        <issues-list
+          :unresolved-issues="unresolvedIssues"
+          :resolved-issues="resolvedIssues"
+          :all-issues="allIssues"
+          :type="type"
+          :is-full-report-visible="isFullReportVisible"
+        />
 
-      <p
-        v-if="type === 'docker' && infoText"
-        v-html="infoText"
-        class="js-mr-code-quality-info prepend-left-10 report-block-info"
-      >
-      </p>
-
-      <issues-block
-        class="js-mr-code-new-issues"
-        v-if="unresolvedIssues.length"
-        :type="type"
-        status="failed"
-        :issues="unresolvedIssues"
-        :has-priority="hasPriority"
-      />
-
-      <issues-block
-        class="js-mr-code-all-issues"
-        v-if="isFullReportVisible"
-        :type="type"
-        status="failed"
-        :issues="allIssues"
-        :has-priority="hasPriority"
-      />
-
-      <issues-block
-        class="js-mr-code-non-issues"
-        v-if="neutralIssues.length"
-        :type="type"
-        status="neutral"
-        :issues="neutralIssues"
-        :has-priority="hasPriority"
-      />
-
-      <issues-block
-        class="js-mr-code-resolved-issues"
-        v-if="resolvedIssues.length"
-        :type="type"
-        status="success"
-        :issues="resolvedIssues"
-        :has-priority="hasPriority"
-      />
-
-      <button
-        v-if="allIssues.length && !isFullReportVisible"
-        type="button"
-        class="btn-link btn-blank prepend-left-10 js-expand-full-list break-link"
-        @click="openFullReport"
-      >
-        {{ s__("ciReport|Show complete code vulnerabilities report") }}
-      </button>
-    </div>
-    <div
-      v-else-if="loadingFailed"
-      class="media"
-    >
-      <status-icon status="notfound" />
-      <div class="media-body">
-        {{ errorText }}
-      </div>
+        <button
+          v-if="allIssues.length && !isFullReportVisible"
+          type="button"
+          class="btn-link btn-blank prepend-left-10 js-expand-full-list break-link"
+          @click="openFullReport"
+        >
+          {{ s__("ciReport|Show complete code vulnerabilities report") }}
+        </button>
+      </slot>
     </div>
   </section>
 </template>

@@ -1,4 +1,5 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { parsePikadayDate } from '~/lib/utils/datefix';
 
 export default class RoadmapStore {
   constructor(groupId, timeframe) {
@@ -43,7 +44,7 @@ export default class RoadmapStore {
 
     if (rawEpic.start_date) {
       // If startDate is present
-      const startDate = new Date(rawEpic.start_date);
+      const startDate = parsePikadayDate(rawEpic.start_date);
 
       if (startDate <= firstTimeframeItem) {
         // If startDate is less than first timeframe item
@@ -69,7 +70,7 @@ export default class RoadmapStore {
     // This entire chunk can be moved into generic method
     // but we're keeping it here for the sake of simplicity.
     if (rawEpic.end_date) {
-      const endDate = new Date(rawEpic.end_date);
+      const endDate = parsePikadayDate(rawEpic.end_date);
       if (endDate >= lastTimeframeItem) {
         epicItem.endDateOutOfRange = true;
         epicItem.originalEndDate = endDate;

@@ -156,7 +156,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#lfs_objects_failed' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_failed', :delete do
     it 'counts failed LFS objects' do
       # These four should be ignored
       create(:geo_file_registry, success: false)
@@ -170,7 +172,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#lfs_objects_synced_in_percentage' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_synced_in_percentage', :delete do
     let(:lfs_object_project) { create(:lfs_objects_project, project: project_1) }
 
     before do
@@ -198,42 +202,47 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#job_artifacts_synced_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_synced_count', :delete do
     it 'counts synced job artifacts' do
       # These should be ignored
       create(:geo_file_registry, success: false)
       create(:geo_file_registry, :avatar, success: false)
       create(:geo_file_registry, file_type: :attachment, success: true)
       create(:geo_file_registry, :lfs, :with_file, success: true)
-      create(:geo_file_registry, :job_artifact, :with_file, success: false)
-
-      create(:geo_file_registry, :job_artifact, :with_file, success: true)
+      create(:geo_job_artifact_registry, :with_artifact, success: false)
+      create(:geo_job_artifact_registry, :with_artifact, success: true)
 
       expect(subject.job_artifacts_synced_count).to eq(1)
     end
   end
 
-  describe '#job_artifacts_failed_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_failed_count', :delete do
     it 'counts failed job artifacts' do
       # These should be ignored
       create(:geo_file_registry, success: false)
       create(:geo_file_registry, :avatar, success: false)
       create(:geo_file_registry, file_type: :attachment, success: false)
-      create(:geo_file_registry, :job_artifact, :with_file, success: true)
-
-      create(:geo_file_registry, :job_artifact, :with_file, success: false)
+      create(:geo_job_artifact_registry, :with_artifact, success: true)
+      create(:geo_job_artifact_registry, :with_artifact, success: false)
 
       expect(subject.job_artifacts_failed_count).to eq(1)
     end
   end
 
   describe '#job_artifacts_synced_in_percentage' do
-    context 'when artifacts are available' do
+    # Disable transactions via :delete method because a foreign table
+    # can't see changes inside a transaction of a different connection.
+    context 'when artifacts are available', :delete do
       before do
         [project_1, project_2, project_3, project_4].each_with_index do |project, index|
           build = create(:ci_build, project: project)
           job_artifact = create(:ci_job_artifact, job: build)
-          create(:geo_file_registry, :job_artifact, success: index.even?, file_id: job_artifact.id)
+
+          create(:geo_job_artifact_registry, success: index.even?, artifact_id: job_artifact.id)
         end
       end
 
@@ -385,6 +394,182 @@ describe GeoNodeStatus, :geo do
       allow(primary).to receive(:replication_slots_max_retained_wal_bytes).and_return(900.gigabytes)
 
       expect(subject.replication_slots_max_retained_wal_bytes).to eq(900.gigabytes)
+    end
+  end
+
+  describe '#repositories_verified_count' do
+    context 'on the primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'returns the right number of verified repositories' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:repository_state, :repository_verified)
+        create(:repository_state, :repository_verified)
+
+        expect(subject.repositories_verified_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: primary)
+
+        expect(subject.repositories_verified_count).to eq(501)
+      end
+    end
+
+    context 'on the secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'returns the right number of verified repositories' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:geo_project_registry, :repository_verified)
+        create(:geo_project_registry, :repository_verified)
+
+        expect(subject.repositories_verified_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: secondary)
+
+        expect(subject.repositories_verified_count).to eq(501)
+      end
+    end
+  end
+
+  describe '#repositories_verification_failed_count' do
+    context 'on the primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'returns the right number of failed repositories' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:repository_state, :repository_failed)
+        create(:repository_state, :repository_failed)
+
+        expect(subject.repositories_verification_failed_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: primary)
+
+        expect(subject.repositories_verification_failed_count).to eq(100)
+      end
+    end
+
+    context 'on the secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'returns the right number of failed repositories' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:geo_project_registry, :repository_verification_failed)
+        create(:geo_project_registry, :repository_verification_failed)
+
+        expect(subject.repositories_verification_failed_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: secondary)
+
+        expect(subject.repositories_verification_failed_count).to eq(100)
+      end
+    end
+  end
+
+  describe '#wikis_verified_count' do
+    context 'on the primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'returns the right number of verified wikis' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:repository_state, :wiki_verified)
+        create(:repository_state, :wiki_verified)
+
+        expect(subject.wikis_verified_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: primary)
+
+        expect(subject.wikis_verified_count).to eq(499)
+      end
+    end
+
+    context 'on the secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'returns the right number of verified wikis' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:geo_project_registry, :wiki_verified)
+        create(:geo_project_registry, :wiki_verified)
+
+        expect(subject.wikis_verified_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: secondary)
+
+        expect(subject.wikis_verified_count).to eq(499)
+      end
+    end
+  end
+
+  describe '#wikis_verification_failed_count' do
+    context 'on the primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'returns the right number of failed wikis' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:repository_state, :wiki_failed)
+        create(:repository_state, :wiki_failed)
+
+        expect(subject.wikis_verification_failed_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: primary)
+
+        expect(subject.wikis_verification_failed_count).to eq(99)
+      end
+    end
+
+    context 'on the secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'returns the right number of failed wikis' do
+        stub_feature_flags(geo_repository_verification: true)
+        create(:geo_project_registry, :wiki_verification_failed)
+        create(:geo_project_registry, :wiki_verification_failed)
+
+        expect(subject.wikis_verification_failed_count).to eq(2)
+      end
+
+      it 'returns existing value when feature flag if off' do
+        stub_feature_flags(geo_repository_verification: false)
+        create(:geo_node_status, :healthy, geo_node: secondary)
+
+        expect(subject.wikis_verification_failed_count).to eq(99)
+      end
     end
   end
 

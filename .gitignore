@@ -11,6 +11,7 @@
 eslint-report.html
 /.gitlab_shell_secret
 .idea
+/.vscode/*
 /.rbenv-version
 .rbx/
 /.ruby-gemset
@@ -22,6 +23,9 @@ eslint-report.html
 /.yarn-cache
 /.byebug_history
 /Vagrantfile
+/app/assets/images/icons.json
+/app/assets/images/icons.svg
+/app/assets/images/illustrations/
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
@@ -47,6 +51,7 @@ eslint-report.html
 /db/data.yml
 /doc/code/*
 /dump.rdb
+/jsconfig.json
 /log/*.log*
 /node_modules/
 /nohup.out

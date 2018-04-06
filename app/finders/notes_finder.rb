@@ -1,4 +1,6 @@
 class NotesFinder
+  prepend EE::NotesFinder
+
   FETCH_OVERLAP = 5.seconds
 
   # Used to filter Notes

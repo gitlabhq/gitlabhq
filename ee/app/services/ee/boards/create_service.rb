@@ -5,7 +5,7 @@ module EE
 
       override :can_create_board?
       def can_create_board?
-        parent.feature_available?(:multiple_issue_boards) || super
+        parent.multiple_issue_boards_available? || super
       end
     end
   end

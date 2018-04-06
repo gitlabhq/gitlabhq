@@ -12,7 +12,9 @@
       Add an SSH key
     %p.profile-settings-content
       Before you can add an SSH key you need to
-      = link_to "generate it.", help_page_path("ssh/README")
+      = link_to "generate one", help_page_path("ssh/README", anchor: 'generating-a-new-ssh-key-pair')
+      or use an
+      = link_to "existing key.", help_page_path("ssh/README", anchor: 'locating-an-existing-ssh-key-pair')
     = render 'form'
     %hr
     %h5

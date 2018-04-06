@@ -1,16 +1,16 @@
-# Geo database replication
+# Geo database replication (GitLab Omnibus)
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the
 [**database replication for installations from source**][database-source] guide.
 
->**Note:**
+NOTE: **Note:**
 If your GitLab installation uses external PostgreSQL, the Omnibus roles
 will not be able to perform all necessary configuration steps. Refer to the
 section on [External PostreSQL][external postgresql] for additional instructions.
 
->**Note:**
+NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages][toc].
 
@@ -28,7 +28,7 @@ The GitLab primary node where the write operations happen will connect to
 the primary database server, and the secondary nodes which are read-only will
 connect to the secondary database servers (which are also read-only).
 
->**Note:**
+NOTE: **Note:**
 In database documentation you may see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
@@ -125,7 +125,7 @@ The following guide assumes that:
     ##
     ## Public address
     ##
-    echo "External address: $(curl ipinfo.io/ip)"
+    echo "External address: $(curl --silent ipinfo.io/ip)"
     ```
 
     In most cases, the following addresses will be used to configure GitLab
@@ -155,6 +155,10 @@ The following guide assumes that:
     addresses with addresses appropriate to your network configuration:
 
     ```ruby
+    ##
+    ## Geo Primary role
+    ## - configure dependent flags automatically to enable Geo
+    ##
     geo_primary_role['enable'] = true
 
     ##
@@ -164,10 +168,11 @@ The following guide assumes that:
     postgresql['listen_address'] = '1.2.3.4'
     
     ##
-    # Secondary addresses
+    # Primary and Secondary addresses
+    # - replace '1.2.3.4' with the primary public or VPC address
     # - replace '5.6.7.8' with the secondary public or VPC address
     ##
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+    postgresql['md5_auth_cidr_addresses'] = ['1.2.3.4/32','5.6.7.8/32']
 
     ##
     ## Replication settings
@@ -187,7 +192,7 @@ The following guide assumes that:
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','9.10.11.12/32']
+    postgresql['md5_auth_cidr_addresses'] = ['1.2.3.4/32', '5.6.7.8/32','9.10.11.12/32']
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
@@ -256,7 +261,8 @@ The following guide assumes that:
     gitlab-ctl stop sidekiq
     ```
 
-   > **Note**: This step is important so we don't try to execute anything before the node is fully configured. 
+    NOTE: **Note**: 
+    This step is important so we don't try to execute anything before the node is fully configured. 
 
 1. [Check TCP connectivity][rake-maintenance] to the primary's PostgreSQL server:
 
@@ -264,7 +270,8 @@ The following guide assumes that:
     gitlab-rake gitlab:tcp_check[1.2.3.4,5432]
     ```
 
-    > **Note**: If this step fails, you may be using the wrong IP address, or a firewall may
+    NOTE: **Note**: 
+    If this step fails, you may be using the wrong IP address, or a firewall may
     be preventing access to the server. Check the IP address, paying close
     attention to the difference between public and private addresses and ensure
     that, if a firewall is present, the secondary is permitted to connect to the
@@ -312,19 +319,30 @@ The following guide assumes that:
     addresses with addresses appropriate to your network configuration:
 
     ```ruby
-    # Secondary addresses
-    # - replace '5.6.7.8' with the secondary public or VPC address
+    ##
+    ## Geo Secondary role
+    ## - configure dependent flags automatically to enable Geo
+    ##
+    geo_secondary_role['enable'] = true 
+  
+    ##
+    ## Secondary address
+    ## - replace '5.6.7.8' with the secondary public or VPC address
+    ##
     postgresql['listen_address'] = '5.6.7.8'
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
-    # gitlab database user's password (defined previously)
+    ##
+    ## Database credentials password (defined previously in primary node)
+    ## - replicate same values here as defined in primary node 
+    ##
+    postgresql['sql_user_password'] = 'fca0b89a972d69f00eb3ec98a5838484'
     gitlab_rails['db_password'] = 'mypassword'
 
-    # enable fdw for the geo tracking database
+    ##
+    ## Enable FDW support for the Geo Tracking Database (improves performance)
+    ##
     geo_secondary['db_fdw'] = true
-
-    # make this a secondary Geo node
-    geo_secondary_role['enable'] = true
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
@@ -352,7 +370,7 @@ The directories used are the defaults that are set up in Omnibus. If you have
 changed any defaults or are using a source installation, configure it as you
 see fit replacing the directories and paths.
 
->**Warning:**
+CAUTION: **Warning:**
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
@@ -368,8 +386,8 @@ data before running `pg_basebackup`.
    name as shown in the commands below.
 
 1. Execute the command below to start a backup/restore and begin the replication
-   >**Warning:** Each Geo secondary must have its own unique replication slot name.
-   Using the same slot name between two secondaries will break PostgreSQL replication.
+    CAUTION: **Warning:** Each Geo secondary must have its own unique replication slot name.
+    Using the same slot name between two secondaries will break PostgreSQL replication.
 
     ```bash
     gitlab-ctl replicate-geo-database --slot-name=secondary_example --host=1.2.3.4
@@ -471,16 +489,16 @@ the instructions below:
 
 1. Edit `/etc/gitlab/gitlab.rb` with the connection params and credentials
 
-```ruby
-# note this is shared between both databases, 
-# make sure you define the same password in both
-gitlab_rails['db_password'] = 'mypassword'
-
-geo_secondary['db_host'] = '2.3.4.5' # change to the correct public IP
-geo_secondary['db_port'] = 5431      # change to the correct port
-geo_secondary['db_fdw'] = true       # enable FDW
-geo_postgresql['enable'] = false     # don't use internal managed instance
-```
+    ```ruby
+    # note this is shared between both databases, 
+    # make sure you define the same password in both
+    gitlab_rails['db_password'] = 'mypassword'
+    
+    geo_secondary['db_host'] = '2.3.4.5' # change to the correct public IP
+    geo_secondary['db_port'] = 5431      # change to the correct port
+    geo_secondary['db_fdw'] = true       # enable FDW
+    geo_postgresql['enable'] = false     # don't use internal managed instance
+    ```
 
 1. Reconfigure GitLab for the changes to take effect:
 

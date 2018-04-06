@@ -42,9 +42,9 @@ http://doc.gitlab.com/ee/
 To upgrade from CE, just perform a normal upgrade, but use an EE package:
 https://about.gitlab.com/update/#ee
 
-If you need help with your GitLab installation and for any technical questions please contact us at subscribers@gitlab.com
+If you need help with your GitLab installation and for any technical questions please see the [support page](https://about.gitlab.com/support/)
 
-For all other questions, contact us at sales@gitlab.com
+For all other questions, please see our [contact page](https://about.gitlab.com/contact/)
 
 ## Open source software to collaborate on code
 

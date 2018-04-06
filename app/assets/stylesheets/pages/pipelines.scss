@@ -733,8 +733,8 @@ a.linked-pipeline-mini-item {
 // dropdown content for big and mini pipeline
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
-  width: 195px;
-  max-width: 195px;
+  width: 240px;
+  max-width: 240px;
 
   .scrollable-menu {
     padding: 0;
@@ -777,7 +777,7 @@ a.linked-pipeline-mini-item {
         height: #{$ci-action-icon-size - 6};
         left: -3px;
         position: relative;
-        top: -2px;
+        top: -1px;
 
         &.icon-action-stop,
         &.icon-action-cancel {
@@ -958,13 +958,11 @@ a.linked-pipeline-mini-item {
    */
   &.dropdown-menu {
     transform: translate(-80%, 0);
-    min-width: 150px;
 
     @media(min-width: $screen-md-min) {
       transform: translate(-50%, 0);
       right: auto;
       left: 50%;
-      min-width: 240px;
     }
   }
 }
@@ -1003,10 +1001,10 @@ a.linked-pipeline-mini-item {
   .arrow-icon {
     display: inline-block;
     vertical-align: middle;
-    margin: -4px 2px 0 0;
+    margin: -2px 2px 0 0;
 
     svg {
-      fill: $gray-darkest;
+      fill: $border-color;
     }
   }
 

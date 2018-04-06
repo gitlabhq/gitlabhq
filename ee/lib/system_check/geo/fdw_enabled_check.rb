@@ -2,10 +2,10 @@ module SystemCheck
   module Geo
     class FdwEnabledCheck < SystemCheck::BaseCheck
       set_name 'GitLab Geo tracking database is configured to use Foreign Data Wrapper?'
-      set_skip_reason 'Geo is not enabled'
+      set_skip_reason 'not a secondary node'
 
       def skip?
-        !Gitlab::Geo.enabled?
+        !Gitlab::Geo.secondary?
       end
 
       def check?

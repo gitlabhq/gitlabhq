@@ -86,12 +86,13 @@ module API
     end
 
     def available_labels_for(label_parent)
-      search_params =
-        if label_parent.is_a?(Project)
-          { project_id: label_parent.id }
-        else
-          { group_id: label_parent.id, only_group_labels: true }
-        end
+      search_params = { include_ancestor_groups: true }
+
+      if label_parent.is_a?(Project)
+        search_params[:project_id] = label_parent.id
+      else
+        search_params.merge!(group_id: label_parent.id, only_group_labels: true)
+      end
 
       LabelsFinder.new(current_user, search_params).execute
     end
@@ -423,7 +424,7 @@ module API
       )
     end
 
-    def present_file!(path, filename, content_type = 'application/octet-stream')
+    def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
       header['Content-Disposition'] = "attachment; filename=#{filename}"
       header['Content-Transfer-Encoding'] = 'binary'
@@ -439,15 +440,15 @@ module API
       end
     end
 
-    def present_artifacts!(artifacts_file, direct_download: true)
-      return not_found! unless artifacts_file.exists?
+    def present_carrierwave_file!(file, supports_direct_download: true)
+      return not_found! unless file.exists?
 
-      if artifacts_file.file_storage?
-        present_file!(artifacts_file.path, artifacts_file.filename)
-      elsif direct_download
-        redirect(artifacts_file.url)
+      if file.file_storage?
+        present_disk_file!(file.path, file.filename)
+      elsif supports_direct_download && file.class.direct_download_enabled?
+        redirect(file.url)
       else
-        header(*Gitlab::Workhorse.send_url(artifacts_file.url))
+        header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
         body
       end

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import LabelManager from './label_manager';
 import GroupLabelSubscription from './group_label_subscription';
 import ProjectLabelSubscription from './project_label_subscription';

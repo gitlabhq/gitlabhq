@@ -43,20 +43,24 @@ describe 'layouts/nav/sidebar/_group' do
     end
 
     describe 'group issue boards link' do
-      it 'is not visible when there is no valid license' do
-        stub_licensed_features(group_issue_boards: false)
+      context 'when multiple issue board is disabled' do
+        it 'shows link text in singular' do
+          render
 
-        render
-
-        expect(rendered).not_to have_text 'Boards'
+          expect(rendered).to have_text 'Board'
+        end
       end
 
-      it 'is visible when there is valid license' do
-        stub_licensed_features(group_issue_boards: true)
+      context 'when multiple issue board is enabled' do
+        before do
+          stub_licensed_features(multiple_group_issue_boards: true)
+        end
 
-        render
+        it 'shows link text in plural' do
+          render
 
-        expect(rendered).to have_text 'Boards'
+          expect(rendered).to have_text 'Boards'
+        end
       end
     end
   end

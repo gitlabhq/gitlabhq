@@ -3,9 +3,9 @@ import Vue from 'vue';
 import geoNodeItemComponent from 'ee/geo_nodes/components/geo_node_item.vue';
 import eventHub from 'ee/geo_nodes/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockNodes, mockNodeDetails } from '../mock_data';
+import { mockNode, mockNodeDetails } from '../mock_data';
 
-const createComponent = (node = mockNodes[0]) => {
+const createComponent = (node = mockNode) => {
   const Component = Vue.extend(geoNodeItemComponent);
 
   return mountComponent(Component, {
@@ -29,8 +29,8 @@ describe('GeoNodeItemComponent', () => {
 
   describe('data', () => {
     it('returns default data props', () => {
-      expect(vm.isNodeDetailsLoading).toBeTruthy();
-      expect(vm.isNodeDetailsFailed).toBeFalsy();
+      expect(vm.isNodeDetailsLoading).toBe(true);
+      expect(vm.isNodeDetailsFailed).toBe(false);
       expect(vm.nodeHealthStatus).toBe('');
       expect(vm.errorMessage).toBe('');
       expect(typeof vm.nodeDetails).toBe('object');
@@ -39,55 +39,18 @@ describe('GeoNodeItemComponent', () => {
 
   describe('computed', () => {
     let vmHttps;
-    let mockNode;
+    let httpsNode;
 
     beforeEach(() => {
       // Altered mock data for secure URL
-      mockNode = Object.assign({}, mockNodes[0], {
+      httpsNode = Object.assign({}, mockNode, {
         url: 'https://127.0.0.1:3001/',
       });
-      vmHttps = createComponent(mockNode);
+      vmHttps = createComponent(httpsNode);
     });
 
     afterEach(() => {
       vmHttps.$destroy();
-    });
-
-    describe('isNodeNonHTTPS', () => {
-      it('returns `true` if Node URL protocol is non-HTTPS', () => {
-        // With default mock data
-        expect(vm.isNodeNonHTTPS).toBeTruthy();
-      });
-
-      it('returns `false` is Node URL protocol is HTTPS', () => {
-        // With altered mock data
-        expect(vmHttps.isNodeNonHTTPS).toBeFalsy();
-      });
-    });
-
-    describe('showNodeStatusIcon', () => {
-      it('returns `false` if Node details are still loading', () => {
-        vm.isNodeDetailsLoading = true;
-        expect(vm.showNodeStatusIcon).toBeFalsy();
-      });
-
-      it('returns `true` if Node details failed to load', () => {
-        vm.isNodeDetailsLoading = false;
-        vm.isNodeDetailsFailed = true;
-        expect(vm.showNodeStatusIcon).toBeTruthy();
-      });
-
-      it('returns `true` if Node details loaded and Node URL is non-HTTPS', () => {
-        vm.isNodeDetailsLoading = false;
-        vm.isNodeDetailsFailed = false;
-        expect(vm.showNodeStatusIcon).toBeTruthy();
-      });
-
-      it('returns `false` if Node details loaded and Node URL is HTTPS', () => {
-        vmHttps.isNodeDetailsLoading = false;
-        vmHttps.isNodeDetailsFailed = false;
-        expect(vmHttps.showNodeStatusIcon).toBeFalsy();
-      });
     });
 
     describe('showNodeDetails', () => {
@@ -108,50 +71,17 @@ describe('GeoNodeItemComponent', () => {
         expect(vm.showNodeDetails).toBeTruthy();
       });
     });
-
-    describe('nodeStatusIconClass', () => {
-      it('returns `node-status-icon-failure` along with default classes if Node details failed to load', () => {
-        vm.isNodeDetailsFailed = true;
-        expect(vm.nodeStatusIconClass).toBe('prepend-left-10 pull-left node-status-icon-failure');
-      });
-
-      it('returns `node-status-icon-warning` along with default classes if Node details loaded and Node URL is non-HTTPS', () => {
-        vm.isNodeDetailsFailed = false;
-        expect(vm.nodeStatusIconClass).toBe('prepend-left-10 pull-left node-status-icon-warning');
-      });
-    });
-
-    describe('nodeStatusIconName', () => {
-      it('returns `warning` if Node details loaded and Node URL is non-HTTPS', () => {
-        vm.isNodeDetailsFailed = false;
-        expect(vm.nodeStatusIconName).toBe('warning');
-      });
-
-      it('returns `status_failed_borderless` if Node details failed to load', () => {
-        vm.isNodeDetailsFailed = true;
-        expect(vm.nodeStatusIconName).toBe('status_failed_borderless');
-      });
-    });
-
-    describe('nodeStatusIconTooltip', () => {
-      it('returns empty string if Node details failed to load', () => {
-        vm.isNodeDetailsFailed = true;
-        expect(vm.nodeStatusIconTooltip).toBe('');
-      });
-
-      it('returns tooltip string if Node details loaded and Node URL is non-HTTPS', () => {
-        vm.isNodeDetailsFailed = false;
-        expect(vm.nodeStatusIconTooltip).toBe('You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS.');
-      });
-    });
   });
 
   describe('methods', () => {
     describe('handleNodeDetails', () => {
       it('intializes props based on provided `nodeDetails`', () => {
         // With altered mock data with matching ID
-        const mockNode = Object.assign({}, mockNodes[1]);
-        const vmNodePrimary = createComponent(mockNode);
+        const mockNodeSecondary = Object.assign({}, mockNode, {
+          id: mockNodeDetails.id,
+          primary: false,
+        });
+        const vmNodePrimary = createComponent(mockNodeSecondary);
 
         vmNodePrimary.handleNodeDetails(mockNodeDetails);
         expect(vmNodePrimary.isNodeDetailsLoading).toBeFalsy();
@@ -184,7 +114,7 @@ describe('GeoNodeItemComponent', () => {
         spyOn(eventHub, '$emit');
 
         vm.handleMounted();
-        expect(eventHub.$emit).toHaveBeenCalledWith('pollNodeDetails', mockNodes[0].id);
+        expect(eventHub.$emit).toHaveBeenCalledWith('pollNodeDetails', vm.node);
       });
     });
   });
@@ -212,21 +142,8 @@ describe('GeoNodeItemComponent', () => {
   });
 
   describe('template', () => {
-    it('renders node URL', () => {
-      expect(vm.$el.querySelectorAll('.node-url').length).not.toBe(0);
-    });
-
-    it('renders node details loading animation', () => {
-      vm.isNodeDetailsLoading = true;
-      expect(vm.$el.querySelectorAll('.node-details-loading').length).not.toBe(0);
-    });
-
-    it('renders node badge `Current node`', () => {
-      expect(vm.$el.querySelectorAll('.node-badge.current-node').length).not.toBe(0);
-    });
-
-    it('renders node badge `Primary`', () => {
-      expect(vm.$el.querySelectorAll('.node-badge.primary-node').length).not.toBe(0);
+    it('renders container element', () => {
+      expect(vm.$el.classList.contains('panel', 'panel-default', 'geo-node-item')).toBe(true);
     });
 
     it('renders node error message', (done) => {

@@ -3,8 +3,9 @@
   import issuableApp from '~/issue_show/components/app.vue';
   import relatedIssuesRoot from 'ee/related_issues/components/related_issues_root.vue';
   import issuableAppEventHub from '~/issue_show/event_hub';
-  import epicHeader from './epic_header.vue';
   import epicSidebar from '../../sidebar/components/sidebar_app.vue';
+  import SidebarContext from '../sidebar_context';
+  import epicHeader from './epic_header.vue';
 
   export default {
     name: 'EpicShowApp',
@@ -85,6 +86,27 @@
         type: String,
         required: false,
       },
+      labels: {
+        type: Array,
+        required: true,
+      },
+      namespace: {
+        type: String,
+        required: false,
+        default: '#',
+      },
+      labelsPath: {
+        type: String,
+        required: true,
+      },
+      labelsWebUrl: {
+        type: String,
+        required: true,
+      },
+      epicsWebUrl: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
@@ -93,6 +115,9 @@
         projectPath: this.groupPath,
         projectNamespace: '',
       };
+    },
+    mounted() {
+      this.sidebarContext = new SidebarContext();
     },
     methods: {
       deleteEpic() {
@@ -137,6 +162,12 @@
         :editable="canUpdate"
         :initial-start-date="startDate"
         :initial-end-date="endDate"
+        :initial-labels="labels"
+        :namespace="namespace"
+        :update-path="updateEndpoint"
+        :labels-path="labelsPath"
+        :labels-web-url="labelsWebUrl"
+        :epics-web-url="epicsWebUrl"
       />
       <related-issues-root
         :endpoint="issueLinksEndpoint"

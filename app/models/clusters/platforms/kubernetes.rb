@@ -58,19 +58,19 @@ module Clusters
       def predefined_variables
         config = YAML.dump(kubeconfig)
 
-        variables = [
-          { key: 'KUBE_URL', value: api_url, public: true },
-          { key: 'KUBE_TOKEN', value: token, public: false },
-          { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
-          { key: 'KUBECONFIG', value: config, public: false, file: true }
-        ]
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          variables
+            .append(key: 'KUBE_URL', value: api_url)
+            .append(key: 'KUBE_TOKEN', value: token, public: false)
+            .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
+            .append(key: 'KUBECONFIG', value: config, public: false, file: true)
 
-        if ca_pem.present?
-          variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true }
-          variables << { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
+          if ca_pem.present?
+            variables
+              .append(key: 'KUBE_CA_PEM', value: ca_pem)
+              .append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, file: true)
+          end
         end
-
-        variables
       end
 
       # Constructs a list of terminals from the reactive cache
@@ -136,7 +136,7 @@ module Clusters
         kubeclient = build_kubeclient!
 
         kubeclient.get_pods(namespace: actual_namespace).as_json
-      rescue KubeException => err
+      rescue Kubeclient::HttpError => err
         raise err unless err.error_code == 404
 
         []

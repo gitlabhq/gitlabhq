@@ -3,8 +3,11 @@ module Ci
     prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
+    include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
+    include Gitlab::Utils::StrongMemoize
+
     prepend EE::Ci::Build
 
     MissingDependenciesError = Class.new(StandardError)
@@ -26,12 +29,18 @@ module Ci
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
-    # The "environment" field for builds is a String, and is the unexpanded name
+    has_one :metadata, class_name: 'Ci::BuildMetadata'
+    delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+
+    ##
+    # The "environment" field for builds is a String, and is the unexpanded name!
+    #
     def persisted_environment
-      @persisted_environment ||= Environment.find_by(
-        name: expanded_environment_name,
-        project: project
-      )
+      return unless has_environment?
+
+      strong_memoize(:persisted_environment) do
+        Environment.find_by(name: expanded_environment_name, project: project)
+      end
     end
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
@@ -44,12 +53,13 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() do
+    scope :with_artifacts_archive, ->() do
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
-        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
+        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
-    scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
-    scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
+    scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
+    scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
+    scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
@@ -84,6 +94,7 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
+    before_create :ensure_metadata
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
@@ -143,13 +154,25 @@ module Ci
         next if build.retries_max.zero?
 
         if build.retries_count < build.retries_max
-          Ci::Build.retry(build, build.user)
+          begin
+            Ci::Build.retry(build, build.user)
+          rescue Gitlab::Access::AccessDeniedError => ex
+            Rails.logger.error "Unable to auto-retry job #{build.id}: #{ex}"
+          end
         end
       end
 
       before_transition any => [:running] do |build|
         build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
+
+      before_transition pending: :running do |build|
+        build.ensure_metadata.update_timeout_state
+      end
+    end
+
+    def ensure_metadata
+      metadata || build_metadata(project: project)
     end
 
     def detailed_status(current_user)
@@ -197,7 +220,11 @@ module Ci
     end
 
     def expanded_environment_name
-      ExpandVariables.expand(environment, simple_variables) if environment
+      return unless has_environment?
+
+      strong_memoize(:expanded_environment_name) do
+        ExpandVariables.expand(environment, simple_variables)
+      end
     end
 
     def has_environment?
@@ -228,10 +255,6 @@ module Ci
       latest_builds.where('stage_idx < ?', stage_idx)
     end
 
-    def timeout
-      project.build_timeout
-    end
-
     def triggered_by?(current_user)
       user == current_user
     end
@@ -247,31 +270,52 @@ module Ci
       Gitlab::Utils.slugify(ref.to_s)
     end
 
-    # Variables whose value does not depend on environment
-    def simple_variables
-      variables(environment: nil)
+    ##
+    # Variables in the environment name scope.
+    #
+    def scoped_variables(environment: expanded_environment_name)
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.concat(predefined_variables)
+        variables.concat(project.predefined_variables)
+        variables.concat(pipeline.predefined_variables)
+        variables.concat(runner.predefined_variables) if runner
+        variables.concat(project.deployment_variables(environment: environment)) if environment
+        variables.concat(yaml_variables)
+        variables.concat(user_variables)
+        variables.concat(secret_group_variables)
+        variables.concat(secret_project_variables(environment: environment))
+        variables.concat(trigger_request.user_variables) if trigger_request
+        variables.concat(pipeline.variables)
+        variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+      end
     end
 
-    # All variables, including those dependent on environment, which could
-    # contain unexpanded variables.
-    def variables(environment: persisted_environment)
-      variables = predefined_variables
-      variables += project.predefined_variables
-      variables += pipeline.predefined_variables
-      variables += runner.predefined_variables if runner
-      variables += project.container_registry_variables
-      variables += project.deployment_variables(environment: environment) if has_environment?
-      variables += project.auto_devops_variables
-      variables += yaml_variables
-      variables += user_variables
-      variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
-      variables += secret_variables(environment: environment)
-      variables += trigger_request.user_variables if trigger_request
-      variables += pipeline.variables.map(&:to_runner_variable)
-      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
-      variables += persisted_environment_variables if environment
+    ##
+    # Variables that do not depend on the environment name.
+    #
+    def simple_variables
+      strong_memoize(:simple_variables) do
+        scoped_variables(environment: nil).to_runner_variables
+      end
+    end
 
-      variables
+    ##
+    # All variables, including persisted environment variables.
+    #
+    def variables
+      Gitlab::Ci::Variables::Collection.new
+        .concat(persisted_variables)
+        .concat(scoped_variables)
+        .concat(persisted_environment_variables)
+        .to_runner_variables
+    end
+
+    ##
+    # Regular Ruby hash of scoped variables, without duplicates that are
+    # possible to be present in an array of hashes returned from `variables`.
+    #
+    def scoped_variables_hash
+      scoped_variables.to_hash
     end
 
     def features
@@ -331,8 +375,7 @@ module Ci
     end
 
     def erase_old_trace!
-      write_attribute(:trace, nil)
-      save
+      update_column(:trace, nil)
     end
 
     def needs_touch?
@@ -439,19 +482,24 @@ module Ci
     end
 
     def user_variables
-      return [] if user.blank?
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        return variables if user.blank?
 
-      [
-        { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
-        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
-        { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
-        { key: 'GITLAB_USER_NAME', value: user.name, public: true }
-      ]
+        variables.append(key: 'GITLAB_USER_ID', value: user.id.to_s)
+        variables.append(key: 'GITLAB_USER_EMAIL', value: user.email)
+        variables.append(key: 'GITLAB_USER_LOGIN', value: user.username)
+        variables.append(key: 'GITLAB_USER_NAME', value: user.name)
+      end
     end
 
-    def secret_variables(environment: persisted_environment)
+    def secret_group_variables
+      return [] unless project.group
+
+      project.group.secret_variables_for(ref, project)
+    end
+
+    def secret_project_variables(environment: persisted_environment)
       project.secret_variables_for(ref: ref, environment: environment)
-        .map(&:to_runner_variable)
     end
 
     def steps
@@ -548,61 +596,66 @@ module Ci
 
     CI_REGISTRY_USER = 'gitlab-ci-token'.freeze
 
-    def predefined_variables
-      variables = [
-        { key: 'CI', value: 'true', public: true },
-        { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
-        { key: 'CI_JOB_ID', value: id.to_s, public: true },
-        { key: 'CI_JOB_NAME', value: name, public: true },
-        { key: 'CI_JOB_STAGE', value: stage, public: true },
-        { key: 'CI_JOB_TOKEN', value: token, public: false },
-        { key: 'CI_COMMIT_SHA', value: sha, public: true },
-        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
-        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true },
-        { key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER, public: true },
-        { key: 'CI_REGISTRY_PASSWORD', value: token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: repo_url, public: false }
-      ]
+    def persisted_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        return variables unless persisted?
 
-      variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
-      variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
-      variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
-      variables.concat(legacy_variables)
+        variables
+          .append(key: 'CI_JOB_ID', value: id.to_s)
+          .append(key: 'CI_JOB_TOKEN', value: token, public: false)
+          .append(key: 'CI_BUILD_ID', value: id.to_s)
+          .append(key: 'CI_BUILD_TOKEN', value: token, public: false)
+          .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
+          .append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false)
+          .append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false)
+      end
     end
 
-    def persisted_environment_variables
-      return [] unless persisted_environment
-
-      variables = persisted_environment.predefined_variables
-
-      # Here we're passing unexpanded environment_url for runner to expand,
-      # and we need to make sure that CI_ENVIRONMENT_NAME and
-      # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
-      variables << { key: 'CI_ENVIRONMENT_URL', value: environment_url, public: true } if environment_url
-
-      variables
+    def predefined_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI', value: 'true')
+        variables.append(key: 'GITLAB_CI', value: 'true')
+        variables.append(key: 'GITLAB_FEATURES', value: project.namespace.features.join(','))
+        variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
+        variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
+        variables.append(key: 'CI_SERVER_REVISION', value: Gitlab::REVISION)
+        variables.append(key: 'CI_JOB_NAME', value: name)
+        variables.append(key: 'CI_JOB_STAGE', value: stage)
+        variables.append(key: 'CI_COMMIT_SHA', value: sha)
+        variables.append(key: 'CI_COMMIT_REF_NAME', value: ref)
+        variables.append(key: 'CI_COMMIT_REF_SLUG', value: ref_slug)
+        variables.append(key: "CI_COMMIT_TAG", value: ref) if tag?
+        variables.append(key: "CI_PIPELINE_TRIGGERED", value: 'true') if trigger_request
+        variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
+        variables.concat(legacy_variables)
+      end
     end
 
     def legacy_variables
-      variables = [
-        { key: 'CI_BUILD_ID', value: id.to_s, public: true },
-        { key: 'CI_BUILD_TOKEN', value: token, public: false },
-        { key: 'CI_BUILD_REF', value: sha, public: true },
-        { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true },
-        { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
-        { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
-        { key: 'CI_BUILD_NAME', value: name, public: true },
-        { key: 'CI_BUILD_STAGE', value: stage, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI_BUILD_REF', value: sha)
+        variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
+        variables.append(key: 'CI_BUILD_REF_NAME', value: ref)
+        variables.append(key: 'CI_BUILD_REF_SLUG', value: ref_slug)
+        variables.append(key: 'CI_BUILD_NAME', value: name)
+        variables.append(key: 'CI_BUILD_STAGE', value: stage)
+        variables.append(key: "CI_BUILD_TAG", value: ref) if tag?
+        variables.append(key: "CI_BUILD_TRIGGERED", value: 'true') if trigger_request
+        variables.append(key: "CI_BUILD_MANUAL", value: 'true') if action?
+      end
+    end
 
-      variables << { key: "CI_BUILD_TAG", value: ref, public: true } if tag?
-      variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
-      variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
-      variables
+    def persisted_environment_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        return variables unless persisted? && persisted_environment.present?
+
+        variables.concat(persisted_environment.predefined_variables)
+
+        # Here we're passing unexpanded environment_url for runner to expand,
+        # and we need to make sure that CI_ENVIRONMENT_NAME and
+        # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
+        variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url) if environment_url
+      end
     end
 
     def environment_url

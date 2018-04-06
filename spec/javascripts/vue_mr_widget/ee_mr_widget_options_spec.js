@@ -5,35 +5,48 @@ import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import mockData, {
-  baseIssues,
-  headIssues,
-  basePerformance,
-  headPerformance,
-} from './mock_data';
+import state from 'ee/vue_shared/security_reports/store/state';
+import mockData, { baseIssues, headIssues, basePerformance, headPerformance } from './mock_data';
+
 import {
   sastIssues,
   sastIssuesBase,
   dockerReport,
-  dockerReportParsed,
+  dockerBaseReport,
   dast,
-  parsedDast,
+  dastBase,
   sastBaseAllIssues,
   sastHeadAllIssues,
 } from '../vue_shared/security_reports/mock_data';
 
 describe('ee merge request widget options', () => {
   let vm;
+  let mock;
   let Component;
+
+  function removeBreakLine(data) {
+    return data
+      .replace(/\r?\n|\r/g, '')
+      .replace(/\s\s+/g, ' ')
+      .trim();
+  }
 
   beforeEach(() => {
     delete mrWidgetOptions.extends.el; // Prevent component mounting
 
     Component = Vue.extend(mrWidgetOptions);
+    mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
     vm.$destroy();
+    mock.restore();
+
+    // Clean security reports state
+    Component.mr.sast = state().sast;
+    Component.mr.sastContainer = state().sastContainer;
+    Component.mr.dast = state().dast;
+    Component.mr.dependencyScanning = state().dependencyScanning;
   });
 
   describe('security widget', () => {
@@ -52,56 +65,51 @@ describe('ee merge request widget options', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
+        mock.onGet('path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+
         vm = mountComponent(Component);
-        expect(
-          vm.$el.querySelector('.js-sast-widget').textContent.trim(),
-        ).toContain('Loading security report');
+        expect(vm.$el.querySelector('.js-sast-widget').textContent.trim()).toContain(
+          'SAST is loading',
+        );
       });
     });
 
     describe('with successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('path.json').reply(200, sastIssuesBase);
         mock.onGet('head_path.json').reply(200, sastIssues);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
-          ).toEqual('SAST improved on 1 security vulnerability and degraded on 2 security vulnerabilities');
+            removeBreakLine(
+              vm.$el.querySelector('.js-sast-widget .report-block-list-issue-description')
+                .textContent,
+            ),
+          ).toEqual('SAST detected 2 new vulnerabilities and 1 fixed vulnerability');
           done();
         }, 0);
       });
     });
 
     describe('with full report and no added or fixed issues', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('path.json').reply(200, sastBaseAllIssues);
         mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
 
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('renders no new vulnerabilities message', (done) => {
+      it('renders no new vulnerabilities message', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
+            removeBreakLine(
+              vm.$el.querySelector('.js-sast-widget .report-block-list-issue-description')
+                .textContent,
+            ),
           ).toEqual('SAST detected no new security vulnerabilities');
           done();
         }, 0);
@@ -109,24 +117,20 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('path.json').reply(200, []);
         mock.onGet('head_path.json').reply(200, []);
 
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
+            removeBreakLine(
+              vm.$el.querySelector('.js-sast-widget .report-block-list-issue-description')
+                .textContent,
+            ).trim(),
           ).toEqual('SAST detected no security vulnerabilities');
           done();
         }, 0);
@@ -134,24 +138,128 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('path.json').reply(500, []);
         mock.onGet('head_path.json').reply(500, []);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
+      it('should render error indicator', done => {
+        setTimeout(() => {
+          expect(removeBreakLine(vm.$el.querySelector('.js-sast-widget').textContent)).toContain(
+            'SAST resulted in error while loading results',
+          );
+          done();
+        }, 0);
+      });
+    });
+  });
+
+  describe('dependency scanning widget', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        dependency_scanning: {
+          base_path: 'path.json',
+          head_path: 'head_path.json',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
+    describe('when it is loading', () => {
+      it('should render loading indicator', () => {
+        mock.onGet('path.json').reply(200, sastIssuesBase);
+        mock.onGet('head_path.json').reply(200, sastIssues);
+        vm = mountComponent(Component);
+
+        expect(
+          removeBreakLine(vm.$el.querySelector('.js-dependency-scanning-widget').textContent),
+        ).toContain('Dependency scanning is loading');
+      });
+    });
+
+    describe('with successful request', () => {
+      beforeEach(() => {
+        mock.onGet('path.json').reply(200, sastIssuesBase);
+        mock.onGet('head_path.json').reply(200, sastIssues);
+        vm = mountComponent(Component);
       });
 
-      it('should render error indicator', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-sast-widget').textContent.trim(),
-          ).toContain('Failed to load security report');
+            removeBreakLine(
+              vm.$el.querySelector(
+                '.js-dependency-scanning-widget .report-block-list-issue-description',
+              ).textContent,
+            ),
+          ).toEqual(
+            'Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability',
+          );
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with full report and no added or fixed issues', () => {
+      beforeEach(() => {
+        mock.onGet('path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+
+        vm = mountComponent(Component);
+      });
+
+      it('renders no new vulnerabilities message', done => {
+        setTimeout(() => {
+          expect(
+            removeBreakLine(
+              vm.$el.querySelector(
+                '.js-dependency-scanning-widget .report-block-list-issue-description',
+              ).textContent,
+            ),
+          ).toEqual('Dependency scanning detected no new security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with empty successful request', () => {
+      beforeEach(() => {
+        mock.onGet('path.json').reply(200, []);
+        mock.onGet('head_path.json').reply(200, []);
+
+        vm = mountComponent(Component);
+      });
+
+      it('should render provided data', done => {
+        setTimeout(() => {
+          expect(
+            removeBreakLine(
+              vm.$el.querySelector(
+                '.js-dependency-scanning-widget .report-block-list-issue-description',
+              ).textContent,
+            ),
+          ).toEqual('Dependency scanning detected no security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with failed request', () => {
+      beforeEach(() => {
+        mock.onGet('path.json').reply(500, []);
+        mock.onGet('head_path.json').reply(500, []);
+        vm = mountComponent(Component);
+      });
+
+      it('should render error indicator', done => {
+        setTimeout(() => {
+          expect(
+            removeBreakLine(vm.$el.querySelector('.js-dependency-scanning-widget').textContent),
+          ).toContain('Dependency scanning resulted in error while loading results');
           done();
         }, 0);
       });
@@ -174,56 +282,57 @@ describe('ee merge request widget options', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
+        mock.onGet('head.json').reply(200, headIssues);
+        mock.onGet('base.json').reply(200, baseIssues);
         vm = mountComponent(Component);
         expect(
-          vm.$el.querySelector('.js-codequality-widget').textContent.trim(),
+          removeBreakLine(vm.$el.querySelector('.js-codequality-widget').textContent),
         ).toContain('Loading codeclimate report');
       });
     });
 
     describe('with successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('head.json').reply(200, headIssues);
         mock.onGet('base.json').reply(200, baseIssues);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-code-text').textContent.trim(),
+            removeBreakLine(
+              vm.$el.querySelector('.js-codequality-widget .js-code-text').textContent,
+            ),
           ).toEqual('Code quality improved on 1 point and degraded on 1 point');
           done();
         }, 0);
       });
 
       describe('text connector', () => {
-        it('should only render information about fixed issues', (done) => {
+        it('should only render information about fixed issues', done => {
           setTimeout(() => {
             vm.mr.codeclimateMetrics.newIssues = [];
 
             Vue.nextTick(() => {
               expect(
-                vm.$el.querySelector('.js-code-text').textContent.trim(),
+                removeBreakLine(
+                  vm.$el.querySelector('.js-codequality-widget .js-code-text').textContent,
+                ),
               ).toEqual('Code quality improved on 1 point');
               done();
             });
           }, 0);
         });
 
-        it('should only render information about added issues', (done) => {
+        it('should only render information about added issues', done => {
           setTimeout(() => {
             vm.mr.codeclimateMetrics.resolvedIssues = [];
             Vue.nextTick(() => {
               expect(
-                vm.$el.querySelector('.js-code-text').textContent.trim(),
+                removeBreakLine(
+                  vm.$el.querySelector('.js-codequality-widget .js-code-text').textContent,
+                ),
               ).toEqual('Code quality degraded on 1 point');
               done();
             });
@@ -233,10 +342,7 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('head.json').reply(200, []);
         mock.onGet('base.json').reply(200, []);
         vm = mountComponent(Component);
@@ -246,10 +352,12 @@ describe('ee merge request widget options', () => {
         mock.restore();
       });
 
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-code-text').textContent.trim(),
+            removeBreakLine(
+              vm.$el.querySelector('.js-codequality-widget .js-code-text').textContent,
+            ),
           ).toEqual('No changes to code quality');
           done();
         }, 0);
@@ -257,22 +365,19 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('head.json').reply(500, []);
         mock.onGet('base.json').reply(500, []);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render error indicator', (done) => {
+      it('should render error indicator', done => {
         setTimeout(() => {
-          expect(vm.$el.querySelector('.js-codequality-widget').textContent.trim()).toContain('Failed to load codeclimate report');
+          expect(
+            removeBreakLine(
+              vm.$el.querySelector('.js-codequality-widget .js-code-text').textContent,
+            ),
+          ).toContain('Failed to load codeclimate report');
           done();
         }, 0);
       });
@@ -295,57 +400,63 @@ describe('ee merge request widget options', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
+        mock.onGet('head.json').reply(200, headPerformance);
+        mock.onGet('base.json').reply(200, basePerformance);
         vm = mountComponent(Component);
         expect(
-          vm.$el.querySelector('.js-performance-widget').textContent.trim(),
+          removeBreakLine(vm.$el.querySelector('.js-performance-widget').textContent),
         ).toContain('Loading performance report');
       });
     });
 
     describe('with successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('head.json').reply(200, headPerformance);
         mock.onGet('base.json').reply(200, basePerformance);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+            removeBreakLine(
+              vm.$el.querySelector('.js-performance-widget .js-code-text')
+                .textContent,
+            ),
           ).toEqual('Performance metrics improved on 2 points and degraded on 1 point');
           done();
         }, 0);
       });
 
       describe('text connector', () => {
-        it('should only render information about fixed issues', (done) => {
+        it('should only render information about fixed issues', done => {
           setTimeout(() => {
             vm.mr.performanceMetrics.degraded = [];
 
             Vue.nextTick(() => {
               expect(
-                vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+                removeBreakLine(
+                  vm.$el.querySelector(
+                    '.js-performance-widget .js-code-text',
+                  ).textContent,
+                ),
               ).toEqual('Performance metrics improved on 2 points');
               done();
             });
           }, 0);
         });
 
-        it('should only render information about added issues', (done) => {
+        it('should only render information about added issues', done => {
           setTimeout(() => {
             vm.mr.performanceMetrics.improved = [];
 
             Vue.nextTick(() => {
               expect(
-                vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+                removeBreakLine(
+                  vm.$el.querySelector(
+                    '.js-performance-widget .js-code-text',
+                  ).textContent,
+                ),
               ).toEqual('Performance metrics degraded on 1 point');
               done();
             });
@@ -355,23 +466,19 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('head.json').reply(200, []);
         mock.onGet('base.json').reply(200, []);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+            removeBreakLine(
+              vm.$el.querySelector('.js-performance-widget .js-code-text')
+                .textContent,
+            ),
           ).toEqual('No changes to performance metrics');
           done();
         }, 0);
@@ -379,34 +486,30 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('head.json').reply(500, []);
         mock.onGet('base.json').reply(500, []);
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render error indicator', (done) => {
+      it('should render error indicator', done => {
         setTimeout(() => {
-          expect(vm.$el.querySelector('.js-performance-widget').textContent.trim()).toContain('Failed to load performance report');
+          expect(
+            removeBreakLine(vm.$el.querySelector('.js-performance-widget .js-code-text').textContent),
+          ).toContain('Failed to load performance report');
           done();
         }, 0);
       });
     });
   });
 
-  describe('docker report', () => {
+  describe('sast container report', () => {
     beforeEach(() => {
       gl.mrWidgetData = {
         ...mockData,
         sast_container: {
-          path: 'gl-sast-container.json',
+          head_path: 'gl-sast-container.json',
+          base_path: 'sast-container-base.json',
         },
       };
 
@@ -416,71 +519,50 @@ describe('ee merge request widget options', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
+        mock.onGet('gl-sast-container.json').reply(200, dockerReport);
+        mock.onGet('sast-container-base.json').reply(200, dockerBaseReport);
         vm = mountComponent(Component);
 
-        expect(
-          vm.$el.querySelector('.js-docker-widget').textContent.trim(),
-        ).toContain('Loading sast:container report');
+        expect(removeBreakLine(vm.$el.querySelector('.js-sast-container').textContent)).toContain(
+          'Container scanning is loading',
+        );
       });
     });
 
     describe('with successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('gl-sast-container.json').reply(200, dockerReport);
+        mock.onGet('sast-container-base.json').reply(200, dockerBaseReport);
+
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-docker-widget .js-code-text').textContent.trim(),
-          ).toEqual('SAST:container found 3 vulnerabilities, of which 1 is approved');
-
-          vm.$el.querySelector('.js-docker-widget .js-collapse-btn').click();
-
-          Vue.nextTick(() => {
-            expect(
-              vm.$el.querySelector('.js-docker-widget .report-block-info').textContent.trim(),
-            ).toContain('Unapproved vulnerabilities (red) can be marked as approved.');
-            expect(
-              vm.$el.querySelector('.js-docker-widget .report-block-info a').textContent.trim(),
-            ).toContain('Learn more about whitelisting');
-
-            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .report-block-list').textContent.trim();
-
-            expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].name);
-            expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].path);
-            done();
-          });
+            removeBreakLine(
+              vm.$el.querySelector('.js-sast-container .report-block-list-issue-description')
+                .textContent,
+            ),
+          ).toEqual('Container scanning detected 1 new vulnerability');
+          done();
         }, 0);
       });
     });
 
     describe('with failed request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('gl-sast-container.json').reply(500, {});
+        mock.onGet('sast-container-base.json').reply(500, {});
+
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render error indicator', (done) => {
+      it('should render error indicator', done => {
         setTimeout(() => {
-          expect(
-            vm.$el.querySelector('.js-docker-widget').textContent.trim(),
-          ).toContain('Failed to load sast:container report');
+          expect(vm.$el.querySelector('.js-sast-container').textContent.trim()).toContain(
+            'Container scanning resulted in error while loading results',
+          );
           done();
         }, 0);
       });
@@ -492,7 +574,8 @@ describe('ee merge request widget options', () => {
       gl.mrWidgetData = {
         ...mockData,
         dast: {
-          path: 'dast.json',
+          head_path: 'dast.json',
+          base_path: 'dast_base.json',
         },
       };
 
@@ -502,63 +585,49 @@ describe('ee merge request widget options', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
+        mock.onGet('dast.json').reply(200, dast);
+        mock.onGet('dast_base.json').reply(200, dastBase);
         vm = mountComponent(Component);
 
-        expect(
-          vm.$el.querySelector('.js-dast-widget').textContent.trim(),
-        ).toContain('Loading DAST report');
+        expect(vm.$el.querySelector('.js-dast-widget').textContent.trim()).toContain(
+          'DAST is loading',
+        );
       });
     });
 
     describe('with successful request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('dast.json').reply(200, dast);
+        mock.onGet('dast_base.json').reply(200, dastBase);
+
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render provided data', (done) => {
+      it('should render provided data', done => {
         setTimeout(() => {
           expect(
-            vm.$el.querySelector('.js-dast-widget .js-code-text').textContent.trim(),
-          ).toEqual('DAST detected 2 alerts by analyzing the review app');
-
-          vm.$el.querySelector('.js-dast-widget button').click();
-
-          Vue.nextTick(() => {
-            const firstVulnerability = vm.$el.querySelector('.js-dast-widget .report-block-list').textContent.trim();
-            expect(firstVulnerability).toContain(parsedDast[0].name);
-            expect(firstVulnerability).toContain(parsedDast[0].priority);
-            done();
-          });
+            vm.$el
+              .querySelector('.js-dast-widget .report-block-list-issue-description')
+              .textContent.trim(),
+          ).toEqual('DAST detected 1 new vulnerability');
+          done();
         }, 0);
       });
     });
 
     describe('with failed request', () => {
-      let mock;
-
       beforeEach(() => {
-        mock = mock = new MockAdapter(axios);
         mock.onGet('dast.json').reply(500, {});
+        mock.onGet('dast_base.json').reply(500, {});
+
         vm = mountComponent(Component);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should render error indicator', (done) => {
+      it('should render error indicator', done => {
         setTimeout(() => {
-          expect(
-            vm.$el.querySelector('.js-dast-widget').textContent.trim(),
-          ).toContain('Failed to load DAST report');
+          expect(vm.$el.querySelector('.js-dast-widget').textContent.trim()).toContain(
+            'DAST resulted in error while loading results',
+          );
           done();
         }, 0);
       });
@@ -603,182 +672,84 @@ describe('ee merge request widget options', () => {
         expect(vm.shouldRenderApprovals).toBeTruthy();
       });
     });
+  });
 
-    describe('dockerText', () => {
-      beforeEach(() => {
-        vm = mountComponent(Component, {
-          mrData: {
-            ...mockData,
-            sast_container: {
-              path: 'foo',
-            },
-          },
-        });
+  describe('rendering source branch removal status', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        mrData: {
+          ...mockData,
+        },
+      });
+    });
+
+    it('renders when user cannot remove branch and branch should be removed', done => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'readyToMerge';
+
+      vm.$nextTick(() => {
+        const tooltip = vm.$el.querySelector('.fa-question-circle');
+
+        expect(vm.$el.textContent).toContain('Removes source branch');
+        expect(tooltip.getAttribute('data-original-title')).toBe(
+          'A user with write access to the source branch selected this option',
+        );
+
+        done();
+      });
+    });
+
+    it('does not render in merged state', done => {
+      vm.mr.canRemoveSourceBranch = false;
+      vm.mr.shouldRemoveSourceBranch = true;
+      vm.mr.state = 'merged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.textContent).toContain('The source branch has been removed');
+        expect(vm.$el.textContent).not.toContain('Removes source branch');
+
+        done();
+      });
+    });
+  });
+
+  describe('rendering deployments', () => {
+    const deploymentMockData = {
+      id: 15,
+      name: 'review/diplo',
+      url: '/root/acets-review-apps/environments/15',
+      stop_url: '/root/acets-review-apps/environments/15/stop',
+      metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+      metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
+      external_url: 'http://diplo.',
+      external_url_formatted: 'diplo.',
+      deployed_at: '2017-03-22T22:44:42.258Z',
+      deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+    };
+
+    beforeEach(done => {
+      vm = mountComponent(Component, {
+        mrData: {
+          ...mockData,
+        },
       });
 
-      describe('with no vulnerabilities', () => {
-        it('returns No vulnerabilities found', () => {
-          expect(vm.dockerText).toEqual('SAST:container no vulnerabilities were found');
-        });
-      });
+      vm.mr.deployments.push(
+        {
+          ...deploymentMockData,
+        },
+        {
+          ...deploymentMockData,
+          id: deploymentMockData.id + 1,
+        },
+      );
 
-      describe('without unapproved vulnerabilities', () => {
-        it('returns approved information - single', () => {
-          vm.mr.dockerReport = {
-            vulnerabilities: [{
-              vulnerability: 'CVE-2017-12944',
-              namespace: 'debian:8',
-              severity: 'Medium',
-            }],
-            approved: [{
-              vulnerability: 'CVE-2017-12944',
-              namespace: 'debian:8',
-              severity: 'Medium',
-            }],
-            unapproved: [],
-          };
-          expect(vm.dockerText).toEqual('SAST:container found 1 approved vulnerability');
-        });
+      vm.$nextTick(done);
+    });
 
-        it('returns approved information - plural', () => {
-          vm.mr.dockerReport = {
-            vulnerabilities: [{
-              vulnerability: 'CVE-2017-12944',
-              namespace: 'debian:8',
-              severity: 'Medium',
-            }],
-            approved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-              {
-                vulnerability: 'CVE-2017-13726',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-            unapproved: [],
-          };
-          expect(vm.dockerText).toEqual('SAST:container found 2 approved vulnerabilities');
-        });
-      });
-
-      describe('with only unapproved vulnerabilities', () => {
-        it('returns number of vulnerabilities - single', () => {
-          vm.mr.dockerReport = {
-            vulnerabilities: [{
-              vulnerability: 'CVE-2017-12944',
-              namespace: 'debian:8',
-              severity: 'Medium',
-            }],
-            unapproved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-            approved: [],
-          };
-          expect(vm.dockerText).toEqual('SAST:container found 1 vulnerability');
-        });
-
-        it('returns number of vulnerabilities - plural', () => {
-          vm.mr.dockerReport = {
-            vulnerabilities: [{
-              vulnerability: 'CVE-2017-12944',
-              namespace: 'debian:8',
-              severity: 'Medium',
-            }],
-            unapproved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-            approved: [],
-          };
-          expect(vm.dockerText).toEqual('SAST:container found 2 vulnerabilities');
-        });
-      });
-
-      describe('with approved and unapproved vulnerabilities', () => {
-        it('returns message with information about both - single', () => {
-          vm.mr.dockerReport = {
-            vulnerabilities: [{
-              vulnerability: 'CVE-2017-12944',
-              namespace: 'debian:8',
-              severity: 'Medium',
-            }],
-            unapproved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-            approved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-          };
-
-          expect(vm.dockerText).toEqual('SAST:container found 1 vulnerability, of which 1 is approved');
-        });
-
-        it('returns message with information about both - plural', () => {
-          vm.mr.dockerReport = {
-            vulnerabilities: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-            unapproved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-              {
-                vulnerability: 'CVE-2017-12923',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-            approved: [
-              {
-                vulnerability: 'CVE-2017-12944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-              {
-                vulnerability: 'CVE-2017-13944',
-                namespace: 'debian:8',
-                severity: 'Medium',
-              },
-            ],
-          };
-          expect(vm.dockerText).toEqual('SAST:container found 2 vulnerabilities, of which 2 are approved');
-        });
-      });
+    it('renders multiple deployments', () => {
+      expect(vm.$el.querySelectorAll('.deploy-heading').length).toBe(2);
     });
   });
 });

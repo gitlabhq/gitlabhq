@@ -1,10 +1,8 @@
-require 'constraints/project_url_constrainer'
-
 resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
-constraints(ProjectUrlConstrainer.new) do
+constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
   # the `format` option is not set to false, we need to specify that
@@ -54,7 +52,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :pages, only: [:show, :destroy] do
+      resource :pages, only: [:show, :update, :destroy] do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
@@ -69,7 +67,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
         member do
           put :test
         end
@@ -78,7 +76,8 @@ constraints(ProjectUrlConstrainer.new) do
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
-        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [] do
+        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do
+          post :validate_query, on: :collection
           get :active_common, on: :collection
         end
       end
@@ -146,7 +145,7 @@ constraints(ProjectUrlConstrainer.new) do
         resources :approver_groups, only: :destroy
         ## EE-specific
 
-        resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+        resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
             delete :resolve, action: :unresolve
@@ -244,6 +243,7 @@ constraints(ProjectUrlConstrainer.new) do
 
         member do
           get :status, format: :json
+          get :metrics, format: :json
 
           scope :applications do
             post '/:application', to: 'clusters/applications#create', as: :install_applications
@@ -317,6 +317,10 @@ constraints(ProjectUrlConstrainer.new) do
             get :raw, path: 'raw/*path', format: false
             post :keep
           end
+        end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
         end
       end
 
@@ -422,6 +426,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
+      # On CE only index and show are needed
       resources :boards, only: [:index, :show, :create, :update, :destroy]
 
       resources :todos, only: [:create]
@@ -468,7 +473,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
         end
         resource :integrations, only: [:show]

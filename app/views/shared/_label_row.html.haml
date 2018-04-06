@@ -1,4 +1,5 @@
 - subject = local_assigns[:subject]
+- show_label_epics_link = @group&.feature_available?(:epics)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 
@@ -23,6 +24,9 @@
       .description-text
         = markdown_field(label, :description)
     .hidden-xs.hidden-sm
+      - if show_label_epics_link
+        = link_to 'Epics', group_epics_path(@group, label_name:[label.name])
+        &middot;
       - if show_label_issues_link
         = link_to_label(label, subject: subject) { 'Issues' }
       - if show_label_merge_requests_link

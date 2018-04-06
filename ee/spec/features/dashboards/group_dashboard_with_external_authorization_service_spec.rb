@@ -23,7 +23,7 @@ feature 'The group dashboard' do
     end
 
     it 'hides some links when an external authorization service is enabled' do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
       visit dashboard_groups_path
 
       within('.navbar') do

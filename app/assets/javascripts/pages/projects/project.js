@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';

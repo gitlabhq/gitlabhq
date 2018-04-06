@@ -19,7 +19,8 @@ module EE
       condition(:classification_label_authorized, score: 32) do
         EE::Gitlab::ExternalAuthorization.access_allowed?(
           @user,
-          @subject.external_authorization_classification_label
+          @subject.external_authorization_classification_label,
+          @subject.full_path
         )
       end
 
@@ -113,6 +114,9 @@ module EE
         #
         # All other actions should explicitly check read project, which would
         # trigger the `classification_label_authorized` condition.
+        #
+        # `:read_project_for_iids` is not prevented by this condition, as it is
+        # used for cross-project reference checks.
         prevent :guest_access
         prevent :public_access
         prevent :public_user_access

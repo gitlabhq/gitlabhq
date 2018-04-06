@@ -1,10 +1,8 @@
-require 'constraints/group_url_constrainer'
-
 resources :groups, only: [:index, :new, :create] do
   post :preview_markdown
 end
 
-constraints(GroupUrlConstrainer.new) do
+constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(path: 'groups/*id',
         controller: :groups,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
@@ -69,6 +67,10 @@ constraints(GroupUrlConstrainer.new) do
 
     resources :ldap_group_links, only: [:index, :create, :destroy]
 
+    resource :saml_providers, path: 'saml', only: [:show, :create, :update] do
+      get :sso, to: 'sso#saml'
+    end
+
     resource :notification_setting, only: [:update]
     resources :audit_events, only: [:index]
     resources :pipeline_quota, only: [:index]
@@ -80,14 +82,21 @@ constraints(GroupUrlConstrainer.new) do
     end
 
     resources :billings, only: [:index]
-    resources :boards, only: [:index, :show, :create, :update, :destroy]
-    resources :epics do
+    resources :epics, concerns: :awardable, constraints: { id: /\d+/ } do
       member do
+        get :discussions, format: :json
         get :realtime_changes
       end
 
       resources :epic_issues, only: [:index, :create, :destroy, :update], as: 'issues', path: 'issues'
+
+      scope module: :epics do
+        resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ }
+      end
     end
+
+    # On CE only index and show are needed
+    resources :boards, only: [:index, :show, :create, :update, :destroy]
 
     legacy_ee_group_boards_redirect = redirect do |params, request|
       path = "/groups/#{params[:group_id]}/-/boards"

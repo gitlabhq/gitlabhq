@@ -1,13 +1,13 @@
-# Geo configuration
+# Geo configuration (source)
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for installations from source. For installations
 using the Omnibus GitLab packages, follow the
 [**Omnibus Geo nodes configuration**][configuration] guide.
 
 ## Configuring a new secondary node
 
->**Note:**
+NOTE: **Note:**
 This is the final step in setting up a secondary Geo node. Stages of the setup
 process must be completed in the documented order. Before attempting the steps
 in this stage, [complete all prior stages][setup-geo-source].
@@ -20,7 +20,7 @@ You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
 
 
->**Notes:**
+NOTE: **Notes:**
 - **Do not** setup any custom authentication in the secondary nodes, this will be
   handled by the primary node.
 - **Do not** add anything in the secondaries Geo nodes admin area
@@ -69,6 +69,12 @@ be manually replicated to the secondary.
     chown git:git /home/git/gitlab/config/secrets.yml
     chmod 0600 /home/git/gitlab/config/secrets.yml
     ```
+    
+1. Restart GitLab
+
+    ```bash
+    service gitlab restart
+    ```
 
 Once restarted, the secondary will automatically start replicating missing data
 from the primary in a process known as backfill. Meanwhile, the primary node
@@ -90,7 +96,7 @@ Read [Manually replicate primary SSH host keys][configuration-replicate-ssh]
    'This is a primary node'.
 1. Optionally, choose which namespaces should be replicated by the
    secondary node. Leave blank to replicate all. Read more in
-   [selective replication](#selective-replication).
+   [selective synchronization](#selective-synchronization).
 1. Click the **Add node** button.
 1. SSH into your GitLab **secondary** server and restart the services:
 
@@ -98,11 +104,11 @@ Read [Manually replicate primary SSH host keys][configuration-replicate-ssh]
     service gitlab restart
     ```
    
-   Check if there are any common issue with your Geo setup by running:
+    Check if there are any common issue with your Geo setup by running:
    
-   ```bash
-   bundle exec rake gitlab:geo:check
-   ```
+    ```bash
+    bundle exec rake gitlab:geo:check
+    ```
    
 1. SSH into your GitLab **primary** server and login as root to verify the
    secondary is reachable or there are any common issue with your Geo setup:

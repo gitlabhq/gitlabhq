@@ -3,15 +3,12 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-
 .project-edit-container
   %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         General project settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Update your project name, description, avatar, and other general settings.
@@ -72,7 +69,7 @@
     .settings-header
       %h4
         Permissions
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
@@ -89,7 +86,7 @@
     .settings-header
       %h4
         Merge request settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your merge request restrictions.
@@ -108,7 +105,7 @@
     .settings-header
       %h4
         Advanced settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project.

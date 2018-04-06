@@ -1,4 +1,5 @@
 class SlackSlashCommandsService < SlashCommandsService
+  prepend EE::SlackSlashCommandsService
   include TriggersHelper
 
   def title

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 
 import Translate from '../vue_shared/translate';

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Project do
+  include ProjectForksHelper
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -44,6 +46,7 @@ describe Project do
     it { is_expected.to have_one(:bamboo_service) }
     it { is_expected.to have_one(:teamcity_service) }
     it { is_expected.to have_one(:jira_service) }
+    it { is_expected.to have_one(:github_service) }
     it { is_expected.to have_one(:redmine_service) }
     it { is_expected.to have_one(:custom_issue_tracker_service) }
     it { is_expected.to have_one(:bugzilla_service) }
@@ -248,14 +251,14 @@ describe Project do
       project2 = build(:project, import_url: 'http://localhost:9000/t.git')
 
       expect(project2).to be_invalid
-      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+      expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
     end
 
     it "does not allow blocked import_url port" do
       project2 = build(:project, import_url: 'http://github.com:25/t.git')
 
       expect(project2).to be_invalid
-      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+      expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
     end
 
     it 'creates mirror data when enabled' do
@@ -563,6 +566,20 @@ describe Project do
 
       it 'returns the project\'s last update date if it has no events' do
         expect(project.last_activity_date).to eq(project.updated_at)
+      end
+
+      it 'returns the most recent timestamp' do
+        project.update_attributes(updated_at: nil,
+                                  last_activity_at: timestamp,
+                                  last_repository_updated_at: timestamp - 1.hour)
+
+        expect(project.last_activity_date).to eq(timestamp)
+
+        project.update_attributes(updated_at: timestamp,
+                                  last_activity_at: timestamp - 1.hour,
+                                  last_repository_updated_at: nil)
+
+        expect(project.last_activity_date).to eq(timestamp)
       end
     end
   end
@@ -1038,7 +1055,7 @@ describe Project do
 
     it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(project.avatar_type).to eq(['only images allowed'])
+      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff'])
     end
   end
 
@@ -1217,8 +1234,8 @@ describe Project do
 
     before do
       storages = {
-        'default' => { 'path' => 'tmp/tests/repositories' },
-        'picked'  => { 'path' => 'tmp/tests/repositories' }
+        'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
+        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
@@ -1381,6 +1398,34 @@ describe Project do
     end
   end
 
+  describe '#pages_group_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+    let(:port) { 1234 }
+
+    subject { project.pages_group_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://example.com:#{port}")
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com:#{port}") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com:#{port}") }
+    end
+  end
+
   describe '.search' do
     let(:project) { create(:project, description: 'kitten mittens') }
 
@@ -1494,7 +1539,7 @@ describe Project do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository)
+        expect(shell).to receive(:create_repository)
           .with(project.repository_storage, project.disk_path)
           .and_return(true)
 
@@ -1504,7 +1549,7 @@ describe Project do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository)
+        expect(shell).to receive(:create_repository)
           .with(project.repository_storage, project.disk_path)
           .and_return(false)
 
@@ -1518,7 +1563,7 @@ describe Project do
     context 'using a forked repository' do
       it 'does nothing' do
         expect(project).to receive(:forked?).and_return(true)
-        expect(shell).not_to receive(:add_repository)
+        expect(shell).not_to receive(:create_repository)
 
         project.create_repository
       end
@@ -1537,7 +1582,7 @@ describe Project do
       allow(project).to receive(:repository_exists?)
         .and_return(false)
 
-      allow(shell).to receive(:add_repository)
+      allow(shell).to receive(:create_repository)
         .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
@@ -1561,7 +1606,7 @@ describe Project do
       allow(project).to receive(:repository_exists?)
         .and_return(false)
 
-      expect(shell).to receive(:add_repository)
+      expect(shell).to receive(:create_repository)
         .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
@@ -1755,7 +1800,7 @@ describe Project do
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage_path, project.disk_path, project.import_url)
+        .with(project.repository_storage, project.disk_path, project.import_url)
         .and_return(true)
 
       expect_any_instance_of(Repository).to receive(:after_import)
@@ -1828,46 +1873,6 @@ describe Project do
         project.import_finish
 
         expect(housekeeping_service).not_to have_received(:execute)
-      end
-
-      context 'elasticsearch indexing disabled' do
-        before do
-          stub_ee_application_setting(elasticsearch_indexing: false)
-        end
-
-        it 'does not index the repository' do
-          project = create(:project, :import_started, import_type: :github)
-
-          expect(ElasticCommitIndexerWorker).not_to receive(:perform_async)
-
-          project.import_finish
-        end
-      end
-
-      context 'elasticsearch indexing enabled' do
-        let(:project) { create(:project, :import_started, import_type: :github) }
-
-        before do
-          stub_ee_application_setting(elasticsearch_indexing: true)
-        end
-
-        context 'no index status' do
-          it 'schedules a full index of the repository' do
-            expect(ElasticCommitIndexerWorker).to receive(:perform_async).with(project.id, nil)
-
-            project.import_finish
-          end
-        end
-
-        context 'with index status' do
-          let!(:index_status) { project.create_index_status!(indexed_at: Time.now, last_commit: 'foo') }
-
-          it 'schedules a progressive index of the repository' do
-            expect(ElasticCommitIndexerWorker).to receive(:perform_async).with(project.id, index_status.last_commit)
-
-            project.import_finish
-          end
-        end
       end
     end
   end
@@ -1960,10 +1965,7 @@ describe Project do
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async).with(
-          project.id,
-          forked_from_project.repository_storage_path,
-          forked_from_project.disk_path).and_return(import_jid)
+        expect(RepositoryForkWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
 
         expect(project.add_import_job).to eq(import_jid)
       end
@@ -2303,6 +2305,22 @@ describe Project do
         expect(forked_project.lfs_storage_project).to eq forked_project
       end
     end
+
+    describe '#all_lfs_objects' do
+      let(:lfs_object) { create(:lfs_object) }
+
+      before do
+        project.lfs_objects << lfs_object
+      end
+
+      it 'returns the lfs object for a project' do
+        expect(project.all_lfs_objects).to contain_exactly(lfs_object)
+      end
+
+      it 'returns the lfs object for a fork' do
+        expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+      end
+    end
   end
 
   describe '#pushes_since_gc' do
@@ -2443,15 +2461,12 @@ describe Project do
         let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
         let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
 
-        subject { project.deployment_variables(environment: environment) }
-
         context 'when environment name is review/name' do
           let!(:environment) { create(:environment, project: project, name: 'review/name') }
 
           it 'returns variables from this service' do
-            expect(subject).to include(
-              { key: 'KUBE_TOKEN', value: 'review-AAA', public: false }
-            )
+            expect(project.deployment_variables(environment: 'review/name'))
+              .to include(key: 'KUBE_TOKEN', value: 'review-AAA', public: false)
           end
         end
 
@@ -2459,9 +2474,8 @@ describe Project do
           let!(:environment) { create(:environment, project: project, name: 'staging/name') }
 
           it 'returns variables from this service' do
-            expect(subject).to include(
-              { key: 'KUBE_TOKEN', value: 'default-AAA', public: false }
-            )
+            expect(project.deployment_variables(environment: 'staging/name'))
+              .to include(key: 'KUBE_TOKEN', value: 'default-AAA', public: false)
           end
         end
       end
@@ -2926,7 +2940,7 @@ describe Project do
     end
   end
 
-  describe '#remove_exports' do
+  describe '#remove_export' do
     let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
@@ -2971,6 +2985,23 @@ describe Project do
       expect(project).to receive(:remove_exports).and_call_original
 
       project.destroy
+    end
+  end
+
+  describe '#remove_exported_project_file' do
+    let(:project) { create(:project, :with_export) }
+
+    it 'removes the exported project file' do
+      exported_file = project.export_project_path
+
+      expect(File.exist?(exported_file)).to be_truthy
+
+      allow(FileUtils).to receive(:rm_f).and_call_original
+      expect(FileUtils).to receive(:rm_f).with(exported_file).and_call_original
+
+      project.remove_exported_project_file
+
+      expect(File.exist?(exported_file)).to be_falsy
     end
   end
 
@@ -3579,6 +3610,7 @@ describe Project do
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
       expect(project).to receive(:after_create_default_branch)
+      expect(project).to receive(:refresh_markdown_cache!)
 
       project.after_import
     end
@@ -3795,6 +3827,150 @@ describe Project do
           expect(project.badges.count).to eq 5
         end
       end
+    end
+  end
+
+  context 'with cross project merge requests' do
+    let(:user) { create(:user) }
+    let(:target_project) { create(:project, :repository) }
+    let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        target_project: target_project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_maintainer_to_push: true
+      )
+    end
+
+    before do
+      target_project.add_developer(user)
+    end
+
+    describe '#merge_requests_allowing_push_to_user' do
+      it 'returns open merge requests for which the user has developer access to the target project' do
+        expect(project.merge_requests_allowing_push_to_user(user)).to include(merge_request)
+      end
+
+      it 'does not include closed merge requests' do
+        merge_request.close
+
+        expect(project.merge_requests_allowing_push_to_user(user)).to be_empty
+      end
+
+      it 'does not include merge requests for guest users' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.merge_requests_allowing_push_to_user(guest)).to be_empty
+      end
+
+      it 'does not include the merge request for other users' do
+        other_user = create(:user)
+
+        expect(project.merge_requests_allowing_push_to_user(other_user)).to be_empty
+      end
+
+      it 'is empty when no user is passed' do
+        expect(project.merge_requests_allowing_push_to_user(nil)).to be_empty
+      end
+    end
+
+    describe '#branch_allows_maintainer_push?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
+
+      it 'does not allow guest users access' do
+        guest = create(:user)
+        target_project.add_guest(guest)
+
+        expect(project.branch_allows_maintainer_push?(guest, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'does not allow access to branches for which the merge request was closed' do
+        create(:merge_request, :closed,
+               target_project: target_project,
+               target_branch: 'target-branch',
+               source_project: project,
+               source_branch: 'rejected-feature-1',
+               allow_maintainer_to_push: true)
+
+        expect(project.branch_allows_maintainer_push?(user, 'rejected-feature-1'))
+          .to be_falsy
+      end
+
+      it 'does not allow access if the user cannot merge the merge request' do
+        create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
+
+        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+          .to be_falsy
+      end
+
+      it 'caches the result' do
+        control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
+        expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+          .not_to exceed_query_limit(control)
+      end
+
+      context 'when the requeststore is active', :request_store do
+        it 'only queries per project across instances' do
+          control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+
+          expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+            .not_to exceed_query_limit(control).with_threshold(2)
+        end
+      end
+    end
+  end
+
+  describe "#pages_https_only?" do
+    subject { build(:project) }
+
+    context "when HTTPS pages are disabled" do
+      it { is_expected.not_to be_pages_https_only }
+    end
+
+    context "when HTTPS pages are enabled", :https_pages_enabled do
+      it { is_expected.to be_pages_https_only }
+    end
+  end
+
+  describe "#pages_https_only? validation", :https_pages_enabled do
+    subject(:project) do
+      # set-up dirty object:
+      create(:project, pages_https_only: false).tap do |p|
+        p.pages_https_only = true
+      end
+    end
+
+    context "when no domains are associated" do
+      it { is_expected.to be_valid }
+    end
+
+    context "when domains including keys and certificates are associated" do
+      before do
+        allow(project)
+          .to receive(:pages_domains)
+          .and_return([instance_double(PagesDomain, https?: true)])
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context "when domains including no keys or certificates are associated" do
+      before do
+        allow(project)
+          .to receive(:pages_domains)
+          .and_return([instance_double(PagesDomain, https?: false)])
+      end
+
+      it { is_expected.not_to be_valid }
     end
   end
 end

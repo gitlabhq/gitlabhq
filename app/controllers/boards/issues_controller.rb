@@ -1,8 +1,9 @@
 module Boards
   class IssuesController < Boards::ApplicationController
-    prepend EE::BoardsResponses
-    prepend EE::Boards::IssuesController
     include BoardsResponses
+    include ControllerWithCrossProjectAccessCheck
+
+    requires_cross_project_access if: -> { board&.group_board? }
 
     before_action :whitelist_query_limiting, only: [:index, :update]
     before_action :authorize_read_issue, only: [:index]
@@ -66,11 +67,19 @@ module Boards
     end
 
     def issues_finder
-      IssuesFinder.new(current_user, project_id: board_parent.id)
+      if board.group_board?
+        IssuesFinder.new(current_user, group_id: board_parent.id)
+      else
+        IssuesFinder.new(current_user, project_id: board_parent.id)
+      end
     end
 
     def project
-      board_parent
+      @project ||= if board.group_board?
+                     Project.find(issue_params[:project_id])
+                   else
+                     board_parent
+                   end
     end
 
     def move_params
@@ -85,7 +94,7 @@ module Boards
 
     def serialize_as_json(resource)
       resource.as_json(
-        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
+        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position, :weight],
         labels: true,
         sidebar_endpoints: true,
         include: {

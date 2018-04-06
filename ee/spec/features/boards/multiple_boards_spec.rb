@@ -8,10 +8,6 @@ describe 'Multiple Issue Boards', :js do
   let!(:board2)   { create(:board, project: project) }
 
   context 'with multiple issue boards enabled' do
-    before do
-      stub_licensed_features(multiple_issue_boards: true)
-    end
-
     context 'authorized user' do
       before do
         project.add_master(user)
@@ -150,7 +146,7 @@ describe 'Multiple Issue Boards', :js do
 
   context 'with multiple issue boards disabled' do
     before do
-      stub_licensed_features(multiple_issue_boards: false)
+      stub_licensed_features(multiple_project_issue_boards: false)
       project.add_master(user)
 
       login_as(user)

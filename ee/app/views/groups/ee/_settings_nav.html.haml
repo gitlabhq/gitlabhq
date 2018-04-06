@@ -4,6 +4,12 @@
       %span
         LDAP Synchronization
 
+- if show_saml_in_sidebar?(@group)
+  = nav_link(path: 'saml_providers#show') do
+    = link_to group_saml_providers_path(@group), title: 'SAML SSO' do
+      %span
+        SAML SSO
+
 - if @group.feature_available?(:group_webhooks) || show_promotions?
   = nav_link(path: 'hooks#index') do
     = link_to group_hooks_path(@group), title: 'Webhooks' do

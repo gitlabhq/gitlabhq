@@ -28,6 +28,10 @@
     border-top: solid 1px $border-color;
   }
 
+  .mr-widget-border-top {
+    border-top: 1px solid $border-color;
+  }
+
   .mr-widget-footer {
     padding: 0;
   }
@@ -768,6 +772,8 @@
 }
 
 .mr-memory-usage {
+  width: 100%;
+
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
@@ -778,8 +784,40 @@
   margin-right: -5px;
 }
 
-
 .mr-widget-icon {
   font-size: 22px;
   margin: 0 10px 0 0;
+}
+
+.deploy-heading {
+  .media-body {
+    min-width: 0;
+  }
+}
+
+.deploy-body {
+  display: flex;
+  flex-wrap: wrap;
+
+  @media (min-width: $screen-xs) {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  > *:not(:last-child) {
+    margin-right: .3em;
+  }
+}
+
+.deploy-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 100px;
+  max-width: 150px;
+
+  @media (min-width: $screen-xs) {
+    min-width: 0;
+    max-width: 100%;
+  }
 }

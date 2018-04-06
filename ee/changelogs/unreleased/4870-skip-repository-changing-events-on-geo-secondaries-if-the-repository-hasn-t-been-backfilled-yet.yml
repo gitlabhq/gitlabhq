@@ -1,0 +1,6 @@
+---
+title: Skip repository-changing events on Geo secondaries if the repository hasn't
+  been backfilled yet
+merge_request:
+author:
+type: fixed

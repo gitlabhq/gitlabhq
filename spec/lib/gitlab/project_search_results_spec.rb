@@ -83,19 +83,19 @@ describe Gitlab::ProjectSearchResults do
       end
 
       context 'when the matching filename contains a colon' do
-        let(:search_result) { "\nmaster:testdata/project::function1.yaml\x001\x00---\n" }
+        let(:search_result) { "master:testdata/project::function1.yaml\x001\x00---\n" }
 
         it 'returns a valid FoundBlob' do
           expect(subject.filename).to eq('testdata/project::function1.yaml')
           expect(subject.basename).to eq('testdata/project::function1')
           expect(subject.ref).to eq('master')
           expect(subject.startline).to eq(1)
-          expect(subject.data).to eq('---')
+          expect(subject.data).to eq("---\n")
         end
       end
 
       context 'when the matching content contains a number surrounded by colons' do
-        let(:search_result) { "\nmaster:testdata/foo.txt\x001\x00blah:9:blah" }
+        let(:search_result) { "master:testdata/foo.txt\x001\x00blah:9:blah" }
 
         it 'returns a valid FoundBlob' do
           expect(subject.filename).to eq('testdata/foo.txt')
@@ -106,16 +106,40 @@ describe Gitlab::ProjectSearchResults do
         end
       end
 
+      context 'when the search result ends with an empty line' do
+        let(:results) { project.repository.search_files_by_content('Role models', 'master') }
+
+        it 'returns a valid FoundBlob that ends with an empty line' do
+          expect(subject.filename).to eq('files/markdown/ruby-style-guide.md')
+          expect(subject.basename).to eq('files/markdown/ruby-style-guide')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq("# Prelude\n\n> Role models are important. <br/>\n> -- Officer Alex J. Murphy / RoboCop\n\n")
+        end
+      end
+
       context 'when the search returns non-ASCII data' do
         context 'with UTF-8' do
-          let(:results) { project.repository.search_files_by_content("файл", 'master') }
+          let(:results) { project.repository.search_files_by_content('файл', 'master') }
 
           it 'returns results as UTF-8' do
             expect(subject.filename).to eq('encoding/russian.rb')
             expect(subject.basename).to eq('encoding/russian')
             expect(subject.ref).to eq('master')
             expect(subject.startline).to eq(1)
-            expect(subject.data).to eq("Хороший файл")
+            expect(subject.data).to eq("Хороший файл\n")
+          end
+        end
+
+        context 'with UTF-8 in the filename' do
+          let(:results) { project.repository.search_files_by_content('webhook', 'master') }
+
+          it 'returns results as UTF-8' do
+            expect(subject.filename).to eq('encoding/テスト.txt')
+            expect(subject.basename).to eq('encoding/テスト')
+            expect(subject.ref).to eq('master')
+            expect(subject.startline).to eq(3)
+            expect(subject.data).to include('WebHookの確認')
           end
         end
 
@@ -127,7 +151,7 @@ describe Gitlab::ProjectSearchResults do
             expect(subject.basename).to eq('encoding/iso8859')
             expect(subject.ref).to eq('master')
             expect(subject.startline).to eq(1)
-            expect(subject.data).to eq("Äü\n\nfoo")
+            expect(subject.data).to eq("Äü\n\nfoo\n")
           end
         end
       end

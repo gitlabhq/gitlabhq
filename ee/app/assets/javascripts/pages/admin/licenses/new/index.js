@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 document.addEventListener('DOMContentLoaded', () => {
   const $licenseFile = $('.license-file');
   const $licenseKey = $('.license-key');

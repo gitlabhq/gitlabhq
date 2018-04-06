@@ -1,5 +1,0 @@
----
-title: Bump Geo JWT timeout from 1 minute to 10 minutes
-merge_request:
-author:
-type: performance

@@ -67,6 +67,10 @@ describe Issues::CloseService do
         expect(issue).to be_closed
       end
 
+      it 'records closed user' do
+        expect(issue.closed_by_id).to be(user.id)
+      end
+
       it 'sends email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)

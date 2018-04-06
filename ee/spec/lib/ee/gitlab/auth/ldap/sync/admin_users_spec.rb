@@ -51,5 +51,21 @@ describe EE::Gitlab::Auth::LDAP::Sync::AdminUsers do
       expect { sync_admin.update_permissions }
         .not_to change { admin.reload.admin? }
     end
+
+    context 'when ldap connection fails' do
+      before do
+        unstub_ldap_group_find_by_cn
+        raise_ldap_connection_error
+      end
+
+      it 'logs a debug message' do
+        expect(Rails.logger)
+          .to receive(:warn)
+                .with("Error syncing admin users for provider 'ldapmain'. LDAP connection Error")
+                .at_least(:once)
+
+        sync_admin.update_permissions
+      end
+    end
   end
 end

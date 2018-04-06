@@ -29,8 +29,17 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         project_json(project_tree_saver.full_path)
       end
 
+      context 'with description override' do
+        let(:params) { { description: 'Foo Bar' } }
+        let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
+
+        it 'overrides the project description' do
+          expect(saved_project_json).to include({ 'description' => params[:description] })
+        end
+      end
+
       it 'saves the correct json' do
-        expect(saved_project_json).to include({ "visibility_level" => 20 })
+        expect(saved_project_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
       end
 
       it 'has approvals_before_merge set' do
@@ -240,10 +249,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
       end
 
       context 'project attributes' do
-        it 'contains the html description' do
-          expect(saved_project_json).to include("description_html" => 'description')
-        end
-
         it 'does not contain the runners token' do
           expect(saved_project_json).not_to include("runners_token" => 'token')
         end
@@ -263,13 +268,13 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      :issues_disabled,
                      :wiki_enabled,
                      :builds_private,
+                     description: 'description',
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
                      group: group,
                      approvals_before_merge: 1
                     )
-    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

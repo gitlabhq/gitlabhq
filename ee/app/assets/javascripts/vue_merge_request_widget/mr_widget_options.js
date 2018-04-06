@@ -1,32 +1,26 @@
-import { n__, s__, __ } from '~/locale';
+import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
 import ReportSection from '../vue_shared/security_reports/components/report_section.vue';
-import securityMixin from '../vue_shared/security_reports/mixins/security_report_mixin';
+import GroupedSecurityReportsApp from '../vue_shared/security_reports/grouped_security_reports_app.vue';
+import reportsMixin from '../vue_shared/security_reports/mixins/reports_mixin';
 
 export default {
   extends: CEWidgetOptions,
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
+    GroupedSecurityReportsApp,
     ReportSection,
   },
-  mixins: [
-    securityMixin,
-  ],
+  mixins: [reportsMixin],
   data() {
     return {
       isLoadingCodequality: false,
       isLoadingPerformance: false,
-      isLoadingSecurity: false,
-      isLoadingDocker: false,
-      isLoadingDast: false,
       loadingCodequalityFailed: false,
       loadingPerformanceFailed: false,
-      loadingSecurityFailed: false,
-      loadingDockerFailed: false,
-      loadingDastFailed: false,
     };
   },
   computed: {
@@ -37,18 +31,34 @@ export default {
       const { codeclimate } = this.mr;
       return codeclimate && codeclimate.head_path && codeclimate.base_path;
     },
+    hasCodequalityIssues() {
+      return (
+        this.mr.codeclimateMetrics &&
+        ((this.mr.codeclimateMetrics.newIssues &&
+          this.mr.codeclimateMetrics.newIssues.length > 0) ||
+          (this.mr.codeclimateMetrics.resolvedIssues &&
+            this.mr.codeclimateMetrics.resolvedIssues.length > 0))
+      );
+    },
+    hasPerformanceMetrics() {
+      return (
+        this.mr.performanceMetrics &&
+        ((this.mr.performanceMetrics.degraded && this.mr.performanceMetrics.degraded.length > 0) ||
+          (this.mr.performanceMetrics.improved && this.mr.performanceMetrics.improved.length > 0) ||
+          (this.mr.performanceMetrics.neutral && this.mr.performanceMetrics.neutral.length > 0))
+      );
+    },
     shouldRenderPerformance() {
       const { performance } = this.mr;
       return performance && performance.head_path && performance.base_path;
     },
     shouldRenderSecurityReport() {
-      return this.mr.sast && this.mr.sast.head_path;
-    },
-    shouldRenderDockerReport() {
-      return this.mr.sastContainer;
-    },
-    shouldRenderDastReport() {
-      return this.mr.dast;
+      return (
+        (this.mr.sast && this.mr.sast.head_path) ||
+        (this.mr.sastContainer && this.mr.sastContainer.head_path) ||
+        (this.mr.dast && this.mr.dast.head_path) ||
+        (this.mr.dependencyScanning && this.mr.dependencyScanning.head_path)
+      );
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -60,11 +70,7 @@ export default {
         text.push(s__('ciReport|Code quality'));
 
         if (resolvedIssues.length) {
-          text.push(n__(
-            ' improved on %d point',
-            ' improved on %d points',
-            resolvedIssues.length,
-          ));
+          text.push(n__(' improved on %d point', ' improved on %d points', resolvedIssues.length));
         }
 
         if (newIssues.length > 0 && resolvedIssues.length > 0) {
@@ -72,11 +78,7 @@ export default {
         }
 
         if (newIssues.length) {
-          text.push(n__(
-            ' degraded on %d point',
-            ' degraded on %d points',
-            newIssues.length,
-          ));
+          text.push(n__(' degraded on %d point', ' degraded on %d points', newIssues.length));
         }
       }
 
@@ -93,11 +95,7 @@ export default {
         text.push(s__('ciReport|Performance metrics'));
 
         if (improved.length) {
-          text.push(n__(
-            ' improved on %d point',
-            ' improved on %d points',
-            improved.length,
-          ));
+          text.push(n__(' improved on %d point', ' improved on %d points', improved.length));
         }
 
         if (improved.length > 0 && degraded.length > 0) {
@@ -105,29 +103,11 @@ export default {
         }
 
         if (degraded.length) {
-          text.push(n__(
-            ' degraded on %d point',
-            ' degraded on %d points',
-            degraded.length,
-          ));
+          text.push(n__(' degraded on %d point', ' degraded on %d points', degraded.length));
         }
       }
 
       return text.join('');
-    },
-
-    securityText() {
-      const { newIssues, resolvedIssues, allIssues } = this.mr.securityReport;
-      return this.sastText(newIssues, resolvedIssues, allIssues);
-    },
-
-    dockerText() {
-      const { vulnerabilities, approved, unapproved } = this.mr.dockerReport;
-      return this.sastContainerText(vulnerabilities, approved, unapproved);
-    },
-
-    getDastText() {
-      return this.dastText(this.mr.dastReport);
     },
 
     codequalityStatus() {
@@ -137,18 +117,6 @@ export default {
     performanceStatus() {
       return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
     },
-
-    securityStatus() {
-      return this.checkReportStatus(this.isLoadingSecurity, this.loadingSecurityFailed);
-    },
-
-    dockerStatus() {
-      return this.checkReportStatus(this.isLoadingDocker, this.loadingDockerFailed);
-    },
-
-    dastStatus() {
-      return this.checkReportStatus(this.isLoadingDast, this.loadingDastFailed);
-    },
   },
   methods: {
     fetchCodeQuality() {
@@ -156,11 +124,8 @@ export default {
 
       this.isLoadingCodequality = true;
 
-      Promise.all([
-        this.service.fetchReport(head_path),
-        this.service.fetchReport(base_path),
-      ])
-        .then((values) => {
+      Promise.all([this.service.fetchReport(head_path), this.service.fetchReport(base_path)])
+        .then(values => {
           this.mr.compareCodeclimateMetrics(
             values[0],
             values[1],
@@ -180,11 +145,8 @@ export default {
 
       this.isLoadingPerformance = true;
 
-      Promise.all([
-        this.service.fetchReport(head_path),
-        this.service.fetchReport(base_path),
-      ])
-        .then((values) => {
+      Promise.all([this.service.fetchReport(head_path), this.service.fetchReport(base_path)])
+        .then(values => {
           this.mr.comparePerformanceMetrics(values[0], values[1]);
           this.isLoadingPerformance = false;
         })
@@ -193,79 +155,16 @@ export default {
           this.loadingPerformanceFailed = true;
         });
     },
-    /**
-     * Sast report can either have 2 reports or just 1
-     * When it has 2 we need to compare them
-     * When it has 1 we render the output given
-     */
-    fetchSecurity() {
-      const { sast } = this.mr;
 
-      this.isLoadingSecurity = true;
-
-      if (sast.base_path && sast.head_path) {
-        Promise.all([
-          this.service.fetchReport(sast.head_path),
-          this.service.fetchReport(sast.base_path),
-        ])
-          .then((values) => {
-            this.handleSecuritySuccess({
-              head: values[0],
-              headBlobPath: this.mr.headBlobPath,
-              base: values[1],
-              baseBlobPath: this.mr.baseBlobPath,
-            });
-          })
-          .catch(() => this.handleSecurityError());
-      } else if (sast.head_path) {
-        this.service.fetchReport(sast.head_path)
-          .then((data) => {
-            this.handleSecuritySuccess({
-              head: data,
-              headBlobPath: this.mr.headBlobPath,
-            });
-          })
-          .catch(() => this.handleSecurityError());
-      }
-    },
-
-    handleSecuritySuccess(data) {
-      this.mr.setSecurityReport(data);
-      this.isLoadingSecurity = false;
-    },
-
-    handleSecurityError() {
-      this.isLoadingSecurity = false;
-      this.loadingSecurityFailed = true;
-    },
-
-    fetchDockerReport() {
-      const { path } = this.mr.sastContainer;
-      this.isLoadingDocker = true;
-
-      this.service.fetchReport(path)
-        .then((data) => {
-          this.mr.setDockerReport(data);
-          this.isLoadingDocker = false;
-        })
-        .catch(() => {
-          this.isLoadingDocker = false;
-          this.loadingDockerFailed = true;
-        });
-    },
-
-    fetchDastReport() {
-      this.isLoadingDast = true;
-
-      this.service.fetchReport(this.mr.dast.path)
-        .then((data) => {
-          this.mr.setDastReport(data);
-          this.isLoadingDast = false;
-        })
-        .catch(() => {
-          this.isLoadingDast = false;
-          this.loadingDastFailed = true;
-        });
+    translateText(type) {
+      return {
+        error: sprintf(s__('ciReport|Failed to load %{reportName} report'), {
+          reportName: type,
+        }),
+        loading: sprintf(s__('ciReport|Loading %{reportName} report'), {
+          reportName: type,
+        }),
+      };
     },
   },
   created() {
@@ -275,18 +174,6 @@ export default {
 
     if (this.shouldRenderPerformance) {
       this.fetchPerformance();
-    }
-
-    if (this.shouldRenderSecurityReport) {
-      this.fetchSecurity();
-    }
-
-    if (this.shouldRenderDockerReport) {
-      this.fetchDockerReport();
-    }
-
-    if (this.shouldRenderDastReport) {
-      this.fetchDastReport();
     }
   },
   template: `
@@ -298,16 +185,16 @@ export default {
         :ci-status="mr.ciStatus"
         :has-ci="mr.hasCI"
         />
-      <mr-widget-deployment
-        v-if="shouldRenderDeployments"
-        :mr="mr"
-        :service="service"
-        />
+      <deployment
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :deployment="deployment"
+      />
       <mr-widget-approvals
         v-if="shouldRenderApprovals"
         :mr="mr"
         :service="service"
-        />
+      />
       <report-section
         class="js-codequality-widget"
         v-if="shouldRenderCodeQuality"
@@ -318,7 +205,8 @@ export default {
         :success-text="codequalityText"
         :unresolved-issues="mr.codeclimateMetrics.newIssues"
         :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
-        />
+        :has-issues="hasCodequalityIssues"
+      />
       <report-section
         class="js-performance-widget"
         v-if="shouldRenderPerformance"
@@ -330,53 +218,39 @@ export default {
         :unresolved-issues="mr.performanceMetrics.degraded"
         :resolved-issues="mr.performanceMetrics.improved"
         :neutral-issues="mr.performanceMetrics.neutral"
-        />
-      <report-section
-        class="js-sast-widget"
+        :has-issues="hasPerformanceMetrics"
+      />
+      <grouped-security-reports-app
         v-if="shouldRenderSecurityReport"
-        type="security"
-        :status="securityStatus"
-        :loading-text="translateText('security').loading"
-        :error-text="translateText('security').error"
-        :success-text="securityText"
-        :unresolved-issues="mr.securityReport.newIssues"
-        :resolved-issues="mr.securityReport.resolvedIssues"
-        :all-issues="mr.securityReport.allIssues"
-        :has-priority="true"
-        />
-      <report-section
-        class="js-docker-widget"
-        v-if="shouldRenderDockerReport"
-        type="docker"
-        :status="dockerStatus"
-        :loading-text="translateText('sast:container').loading"
-        :error-text="translateText('sast:container').error"
-        :success-text="dockerText"
-        :unresolved-issues="mr.dockerReport.unapproved"
-        :neutral-issues="mr.dockerReport.approved"
-        :info-text="sastContainerInformationText()"
-        :has-priority="true"
-        />
-      <report-section
-        class="js-dast-widget"
-        v-if="shouldRenderDastReport"
-        type="dast"
-        :status="dastStatus"
-        :loading-text="translateText('DAST').loading"
-        :error-text="translateText('DAST').error"
-        :success-text="getDastText"
-        :unresolved-issues="mr.dastReport"
-        :has-priority="true"
-        />
+        :head-blob-path="mr.headBlobPath"
+        :base-blob-path="mr.baseBlobPath"
+        :sast-head-path="mr.sast.head_path"
+        :sast-base-path="mr.sast.base_path"
+        :sast-help-path="mr.sastHelp"
+        :dast-head-path="mr.dast.head_path"
+        :dast-base-path="mr.dast.base_path"
+        :dast-help-path="mr.dastHelp"
+        :sast-container-head-path="mr.sastContainer.head_path"
+        :sast-container-base-path="mr.sastContainer.base_path"
+        :sast-container-help-path="mr.sastContainerHelp"
+        :dependency-scanning-head-path="mr.dependencyScanning.head_path"
+        :dependency-scanning-base-path="mr.dependencyScanning.base_path"
+        :dependency-scanning-help-path="mr.dependencyScanningHelp"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"
           :mr="mr"
           :service="service" />
+        <mr-widget-maintainer-edit
+          :maintainerEditAllowed="mr.maintainerEditAllowed" />
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
-          :related-links="mr.relatedLinks"
-          />
+          :state="mr.state"
+          :related-links="mr.relatedLinks" />
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
       </div>
       <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
         <mr-widget-merge-help />

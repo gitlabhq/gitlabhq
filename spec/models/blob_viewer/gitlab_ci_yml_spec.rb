@@ -4,7 +4,7 @@ describe BlobViewer::GitlabCiYml do
   include FakeBlobHelpers
   include RepoHelpers
 
-  let(:project) { build_stubbed(:project, :repository) }
+  let(:project) { create(:project, :repository) }
   let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
   let(:blob) { fake_blob(path: '.gitlab-ci.yml', data: data) }
   let(:sha) { sample_commit.id }

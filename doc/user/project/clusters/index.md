@@ -71,7 +71,7 @@ You need Master [permissions] and above to access the Kubernetes page.
 To add an existing Kubernetes cluster to your project:
 
 1. Navigate to your project's **CI/CD > Kubernetes** page.
-1. Click on **Add Kuberntes cluster**.
+1. Click on **Add Kubernetes cluster**.
 1. Click on **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
@@ -101,13 +101,48 @@ To add an existing Kubernetes cluster to your project:
       - If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-1. Finally, click the **Create Kuberntes cluster** button.
+1. Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
 
 You can now proceed to install some pre-defined applications and then
 enable the Kubernetes cluster integration.
+
+## Security implications
+
+CAUTION: **Important:**
+The whole cluster security is based on a model where [developers](../../permissions.md)
+are trusted, so **only trusted users should be allowed to control your clusters**.
+
+The default cluster configuration grants access to a wide set of
+functionalities needed to successfully build and deploy a containerized
+application. Bear in mind that the same credentials are used for all the
+applications running on the cluster.
+
+When GitLab creates the cluster, it enables and uses the legacy
+[Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/).
+The newer [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+authorization will be supported in a
+[future release](https://gitlab.com/gitlab-org/gitlab-ce/issues/29398).
+
+### Security of GitLab Runners
+
+GitLab Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
+enabled by default, which allows them to execute special commands and running
+Docker in Docker. This functionality is needed to run some of the [Auto DevOps]
+jobs. This implies the containers are running in privileged mode and you should,
+therefore, be aware of some important details.
+
+The privileged flag gives all capabilities to the running container, which in
+turn can do almost everything that the host can do. Be aware of the
+inherent security risk associated with performing `docker run` operations on
+arbitrary images as they effectively have root access.
+
+If you don't want to use GitLab Runner in privileged mode, first make sure that
+you don't have it installed via the applications, and then use the
+[Runner's Helm chart](../../../install/kubernetes/gitlab_runner_chart.md) to
+install it manually.
 
 ## Installing applications
 
@@ -118,19 +153,30 @@ added directly to your configured cluster. Those applications are needed for
 | Application | GitLab version | Description |
 | ----------- | :------------: | ----------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. |
 
 ## Getting the external IP address
 
 NOTE: **Note:**
 You need a load balancer installed in your cluster in order to obtain the
 external IP address with the following procedure. It can be deployed using the
-[**Ingress** application](#installing-appplications).
+[**Ingress** application](#installing-applications).
 
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
+
+### Let GitLab fetch the IP address
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
+
+If you installed the Ingress [via the **Applications**](#installing-applications),
+you should see the Ingress IP address on this same page within a few minutes.
+If you don't see this, GitLab might not be able to determine the IP address of
+your ingress application in which case you should manually determine it.
+
+### Manually determining the IP address
 
 If the cluster is on GKE, click on the **Google Kubernetes Engine** link in the
 **Advanced settings**, or go directly to the
@@ -157,6 +203,24 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 The output is the external IP address of your cluster. This information can then
 be used to set up DNS entries and forwarding rules that allow external access to
 your deployed applications.
+
+### Using a static IP
+
+By default, an ephemeral external IP address is associated to the cluster's load
+balancer. If you associate the ephemeral IP with your DNS and the IP changes,
+your apps will not be able to be reached, and you'd have to change the DNS
+record again. In order to avoid that, you should change it into a static
+reserved IP.
+
+[Read how to promote an ephemeral external IP address in GKE.](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip)
+
+### Pointing your DNS at the cluster IP
+
+Once you've set up the static IP, you should associate it to a [wildcard DNS
+record](https://en.wikipedia.org/wiki/Wildcard_DNS_record), in order to be able
+to reach your apps. This heavily depends on your domain provider, but in case
+you aren't sure, just create an A record with a wildcard host like
+`*.example.com.`.
 
 ## Setting the environment scope
 
@@ -244,6 +308,14 @@ GitLab CI/CD build environment.
 | `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
 
+## Monitoring your Kubernetes cluster
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
+
+When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start. 
+
+![Cluster Monitoring](img/k8s_cluster_monitoring.png)
+
 ## Enabling or disabling the Kubernetes cluster integration
 
 After you have successfully added your cluster information, you can enable the
@@ -329,3 +401,4 @@ the deployment variables above, ensuring any pods you create are labelled with
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/
+[Auto DevOps]: ../../../topics/autodevops/index.md

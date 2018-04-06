@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::UserAccess do
+  include ProjectForksHelper
+
   let(:access) { described_class.new(user, project: project) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
@@ -115,6 +117,39 @@ describe Gitlab::UserAccess do
         project.add_reporter(user)
 
         expect(access.can_push_to_branch?(@branch.name)).to be_falsey
+      end
+    end
+
+    describe 'allowing pushes to maintainers of forked projects' do
+      let(:canonical_project) { create(:project, :public, :repository) }
+      let(:project) { fork_project(canonical_project, create(:user), repository: true) }
+
+      before do
+        create(
+          :merge_request,
+          target_project: canonical_project,
+          source_project: project,
+          source_branch: 'awesome-feature',
+          allow_maintainer_to_push: true
+        )
+      end
+
+      it 'allows users that have push access to the canonical project to push to the MR branch' do
+        canonical_project.add_developer(user)
+
+        expect(access.can_push_to_branch?('awesome-feature')).to be_truthy
+      end
+
+      it 'does not allow the user to push to other branches' do
+        canonical_project.add_developer(user)
+
+        expect(access.can_push_to_branch?('master')).to be_falsey
+      end
+
+      it 'does not allow the user to push if he does not have push access to the canonical project' do
+        canonical_project.add_guest(user)
+
+        expect(access.can_push_to_branch?('awesome-feature')).to be_falsey
       end
     end
 

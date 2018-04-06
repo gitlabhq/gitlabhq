@@ -85,10 +85,21 @@ describe Admin::ApplicationSettingsController do
         {
           external_authorization_service_enabled: true,
           external_authorization_service_url: 'https://custom.service/',
-          external_authorization_service_default_label: 'default'
+          external_authorization_service_default_label: 'default',
+          external_authorization_service_timeout: 3,
+          external_auth_client_cert: File.read('ee/spec/fixtures/passphrase_x509_certificate.crt'),
+          external_auth_client_key: File.read('ee/spec/fixtures/passphrase_x509_certificate_pk.key'),
+          external_auth_client_key_pass: "5iveL!fe"
         }
       end
       let(:feature) { :external_authorization_service }
+
+      it_behaves_like 'settings for licensed features'
+    end
+
+    context 'additional email footer' do
+      let(:settings) { { email_additional_text: 'scary legal footer' } }
+      let(:feature) { :email_additional_text }
 
       it_behaves_like 'settings for licensed features'
     end

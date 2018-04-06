@@ -673,6 +673,20 @@ module API
         }
       ],
       # EE-specific services
+      'github' => [
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'GitHub API token with repo:status OAuth scope'
+        },
+        {
+          required: true,
+          name: :repository_url,
+          type: String,
+          desc: "GitHub repository URL"
+        }
+      ],
       'jenkins' => [
         {
           required: true,
@@ -734,6 +748,7 @@ module API
       ExternalWikiService,
       FlowdockService,
       GemnasiumService,
+      GithubService,
       HipchatService,
       IrkerService,
       JiraService,
@@ -783,7 +798,7 @@ module API
           required: false,
           name: event_name.to_sym,
           type: String,
-          desc: ServicesHelper.service_event_description(event_name)
+          desc: service.event_description(event_name)
         }
       end
     end

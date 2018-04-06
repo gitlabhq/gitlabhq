@@ -1,0 +1,5 @@
+---
+title: Update ruby-saml to 1.7.2 and omniauth-saml to 1.10.0
+merge_request: 17734
+author: Takuya Noguchi
+type: security

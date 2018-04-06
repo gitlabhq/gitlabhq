@@ -2,9 +2,6 @@
 - page_title "Repository"
 - @content_class = "limit-container-width" unless fluid_layout
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_vue')
-
 = render "projects/push_rules/index"
 = render "projects/mirrors/show"
 

@@ -1,3 +1,13 @@
+export const mockLabels = [
+  {
+    id: 26,
+    title: 'Foo Label',
+    description: 'Foobar',
+    color: '#BADA55',
+    text_color: '#FFFFFF',
+  },
+];
+
 export const contentProps = {
   endpoint: '',
   updateEndpoint: gl.TEST_HOST,
@@ -8,10 +18,15 @@ export const contentProps = {
   markdownDocsPath: '',
   issueLinksEndpoint: '/',
   groupPath: '',
+  namespace: 'gitlab-org',
+  labelsPath: '',
+  labelsWebUrl: '',
+  epicsWebUrl: '',
   initialTitleHtml: '',
   initialTitleText: '',
   startDate: '2017-01-01',
   endDate: '2017-10-10',
+  labels: mockLabels,
 };
 
 export const headerProps = {

@@ -12,7 +12,12 @@
 
 - page_card_attributes @epic.card_attributes
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
+#epic-show-app{ data: epic_show_app_data(@epic, author_icon: avatar_icon_for_user(@epic.author), initial: issuable_initial_data(@epic)) }
 
-#epic-show-app{ data: { initial: issuable_initial_data(@epic).to_json, meta: epic_meta_data } }
+.content-block.emoji-block
+  .row
+    .col-sm-8.js-noteable-awards
+      = render 'award_emoji/awards_block', awardable: @epic, inline: true
+
+%section.issuable-discussion
+  = render 'discussion'

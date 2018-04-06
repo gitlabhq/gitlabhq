@@ -1,6 +1,6 @@
 - failed_builds = @pipeline.statuses.latest.failed
-- sast_artifact = @pipeline.sast_artifact
-- sast_artifact_url = raw_project_build_artifacts_url(@project, sast_artifact, path: Ci::Build::SAST_FILE) if sast_artifact
+- expose_sast_data = @pipeline.expose_sast_data?
+- expose_dependency_data = @pipeline.expose_dependency_scanning_data?
 - blob_path = project_blob_path(@project, @pipeline.sha)
 
 .tabs-holder
@@ -17,7 +17,7 @@
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           = _("Failed Jobs")
           %span.badge.js-failures-counter= failed_builds.count
-    - if sast_artifact
+    - if expose_sast_data || expose_dependency_data
       %li.js-security-tab-link
         = link_to security_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
           = _("Security report")
@@ -61,6 +61,10 @@
           %span.build-name
             = link_to build.name, pipeline_job_url(pipeline, build)
         %pre.build-log= build_summary(build, skip: index >= 10)
-  - if sast_artifact
+  - if expose_sast_data || expose_dependency_data
     #js-tab-security.build-security.tab-pane
-      #js-security-report-app{ data: { endpoint: sast_artifact_url, blob_path: blob_path } }
+      #js-security-report-app{ data: { endpoint: expose_sast_data ? sast_artifact_url(@pipeline) : nil,
+      blob_path: blob_path,
+      dependency_scanning_endpoint: expose_dependency_data ? dependency_scanning_artifact_url(@pipeline) : nil,
+      sast_help_path: help_page_path('user/project/merge_requests/sast'),
+      dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning')} }

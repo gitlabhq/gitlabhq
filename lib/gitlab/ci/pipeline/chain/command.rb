@@ -1,4 +1,4 @@
-module Gitlab
+module Gitlab # rubocop:disable Naming/FileName
   module Ci
     module Pipeline
       module Chain
@@ -10,7 +10,8 @@ module Gitlab
           :seeds_block,
 
           # EE specific
-          :allow_mirror_update
+          :allow_mirror_update,
+          :chat_data
         ) do
           include Gitlab::Utils::StrongMemoize
 

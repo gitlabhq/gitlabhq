@@ -23,7 +23,6 @@ describe 'Scoped issue boards', :js do
 
   before do
     allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
-    stub_licensed_features(multiple_issue_boards: true)
     stub_licensed_features(scoped_issue_boards: true)
   end
 
@@ -47,7 +46,14 @@ describe 'Scoped issue boards', :js do
           expect(page).to have_selector('.card', count: 1)
         end
 
-        it 'creates board to filtering by Any Milestone' do
+        it 'creates board filtering by No Milestone' do
+          create_board_milestone('No Milestone')
+
+          expect(find('.tokens-container')).to have_content("")
+          expect(page).to have_selector('.card', count: 2)
+        end
+
+        it 'creates board filtering by Any Milestone' do
           create_board_milestone('Any Milestone')
 
           expect(find('.tokens-container')).to have_content("")
@@ -86,7 +92,7 @@ describe 'Scoped issue boards', :js do
         end
 
         it 'only shows group labels in list on group boards' do
-          stub_licensed_features(group_issue_boards: true)
+          stub_licensed_features(multiple_group_issue_boards: true)
 
           visit group_boards_path(group)
           wait_for_requests

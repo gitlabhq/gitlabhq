@@ -60,6 +60,8 @@ To fix this:
    ```
 1. Run `gitlab-ctl reconfigure`
 
+If you still see the errors, you may have to [erase the consul database and reinitialize](#recreate-from-scratch) on the affected node.
+
 ### Consul agents do not start - Multiple private IPs
 
 In the case that a node has multiple private IPs the agent be confused as to which of the private addresses to advertise, and then immediately exit on start.

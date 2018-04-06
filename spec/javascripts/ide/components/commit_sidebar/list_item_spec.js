@@ -1,8 +1,9 @@
 import Vue from 'vue';
-import listItem from 'ee/ide/components/commit_sidebar/list_item.vue';
-import router from 'ee/ide/ide_router';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { file } from '../../helpers';
+import listItem from '~/ide/components/commit_sidebar/list_item.vue';
+import router from '~/ide/ide_router';
+import store from '~/ide/stores';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { file, resetStore } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
   let vm;
@@ -13,13 +14,17 @@ describe('Multi-file editor commit sidebar list item', () => {
 
     f = file('test-file');
 
-    vm = mountComponent(Component, {
+    store.state.entries[f.path] = f;
+
+    vm = createComponentWithStore(Component, store, {
       file: f,
-    });
+    }).$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
+
+    resetStore(store);
   });
 
   it('renders file path', () => {
@@ -34,14 +39,32 @@ describe('Multi-file editor commit sidebar list item', () => {
     expect(vm.discardFileChanges).toHaveBeenCalled();
   });
 
-  it('opens a closed file in the editor when clicking the file path', () => {
+  it('opens a closed file in the editor when clicking the file path', done => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
 
-    expect(vm.openFileInEditor).toHaveBeenCalled();
-    expect(router.push).toHaveBeenCalled();
+    setTimeout(() => {
+      expect(vm.openFileInEditor).toHaveBeenCalled();
+      expect(router.push).toHaveBeenCalled();
+
+      done();
+    });
+  });
+
+  it('calls updateViewer with diff when clicking file', done => {
+    spyOn(vm, 'openFileInEditor').and.callThrough();
+    spyOn(vm, 'updateViewer').and.callThrough();
+    spyOn(router, 'push');
+
+    vm.$el.querySelector('.multi-file-commit-list-path').click();
+
+    setTimeout(() => {
+      expect(vm.updateViewer).toHaveBeenCalledWith('diff');
+
+      done();
+    });
   });
 
   describe('computed', () => {

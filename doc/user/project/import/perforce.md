@@ -48,3 +48,9 @@ Here's a few links to get you started:
 - [git-p4 manual page](https://www.kernel.org/pub/software/scm/git/docs/git-p4.html)
 - [git-p4 example usage](https://git.wiki.kernel.org/index.php/Git-p4_Usage)
 - [Git book migration guide](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git#_perforce_import)
+
+Note that `git p4` and `git filter-branch` are not very good at
+creating small and efficient Git pack files. So it might be a good
+idea to spend time and CPU to properly repack your repository before
+sending it for the first time to your GitLab server. See
+[this StackOverflow question](https://stackoverflow.com/questions/28720151/git-gc-aggressive-vs-git-repack/).

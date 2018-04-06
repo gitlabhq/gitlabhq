@@ -19,10 +19,16 @@ describe 'viewing an issue with cross project references' do
            title: 'I am in another project and confidential',
            project: other_project)
   end
+  let(:other_merge_request) do
+    create(:merge_request, :closed,
+           title: 'I am a merge request in another project',
+           source_project: other_project)
+  end
   let(:description_referencing_other_issue) do
-    "Referencing: #{other_issue.to_reference(project)}, and "\
-    "a confidential issue #{confidential_issue.to_reference}"\
-    "a cross project confidential issue #{other_confidential_issue.to_reference(project)}"
+    "Referencing: #{other_issue.to_reference(project)}, "\
+    "a confidential issue #{confidential_issue.to_reference}, "\
+    "a cross project confidential issue #{other_confidential_issue.to_reference(project)}, and "\
+    "a cross project merge request #{other_merge_request.to_reference(project)}"
   end
   let(:project) { create(:project) }
   let(:issue) do
@@ -73,22 +79,27 @@ describe 'viewing an issue with cross project references' do
 
   context 'when an external authorization service is enabled' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     it 'only hits the external service for the project the user is viewing' do
       expect(EE::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'default_label').at_least(1).and_return(true)
+        .to receive(:access_allowed?).with(user, 'default_label', any_args).at_least(1).and_return(true)
+      expect(EE::Gitlab::ExternalAuthorization)
+        .not_to receive(:access_allowed?).with(user, 'other_label', any_args)
 
       visit project_issue_path(project, issue)
     end
 
-    it 'shows only the link to the cross project reference' do
+    it 'shows only the link to the cross project references' do
       visit project_issue_path(project, issue)
 
       expect(page).to have_link("#{other_issue.to_reference(project)}")
+      expect(page).to have_link("#{other_merge_request.to_reference(project)}")
       expect(page).not_to have_content("#{other_issue.to_reference(project)} (#{other_issue.state})")
       expect(page).not_to have_xpath("//a[@title='#{other_issue.title}']")
+      expect(page).not_to have_content("#{other_merge_request.to_reference(project)} (#{other_merge_request.state})")
+      expect(page).not_to have_xpath("//a[@title='#{other_merge_request.title}']")
     end
 
     it 'does not link a cross project confidential issue if the user does not have access' do

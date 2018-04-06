@@ -26,7 +26,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
   - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
-  - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
+  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#priority-labels-deliverable-stretch-next-patch-release)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
 - [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
@@ -99,8 +99,8 @@ coach is going to finish the merge request we assign the
 
 ## Helping others
 
-Please help other GitLab users when you can. The channels people will reach out
-on can be found on the [getting help page][getting-help].
+Please help other GitLab users when you can.
+The methods people will use to seek help can be found on the [getting help page][getting-help].
 
 Sign up for the mailing list, answer GitLab questions on StackOverflow or
 respond in the IRC channel. You can also sign up on [CodeTriage][codetriage] to help with
@@ -127,7 +127,7 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
-- Priority: ~Deliverable, ~Stretch
+- Priority: ~Deliverable, ~Stretch, ~"Next Patch Release"
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -186,7 +186,7 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable and ~Stretch)
+### Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")
 
 Priority labels help us clearly communicate expectations of the work for the
 release. There are two levels of priority labels:
@@ -196,6 +196,24 @@ release. There are two levels of priority labels:
 - ~Stretch: Issues that are a stretch goal for delivering in the current
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
+- ~"Next Patch Release": Issues to put in the next patch release. Work on these 
+  first, and add the "Pick Into X" label to the merge request, along with the
+  appropriate milestone.
+
+Each issue scheduled for the current milestone should be labeled ~Deliverable
+or ~"Stretch". Any open issue for a previous milestone should be labeled 
+~"Next Patch Release", or otherwise rescheduled to a different milestone.
+
+### Severity labels (~S1, ~S2, etc.)
+
+Severity labels help us clearly communicate the impact of a ~bug on users.
+
+| Label | Meaning                                  | Example |
+|-------|------------------------------------------|---------|
+| ~S1   | Feature broken, no workaround            | Unable to create an issue |
+| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
+| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
+| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
@@ -694,3 +712,4 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.
+      

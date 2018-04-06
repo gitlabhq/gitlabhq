@@ -1,0 +1,5 @@
+---
+title: Geo ensure files moved to object storage are cleaned up
+merge_request: 4689
+author:
+type: added

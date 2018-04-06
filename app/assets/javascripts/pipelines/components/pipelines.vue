@@ -1,6 +1,7 @@
 <script>
   import _ from 'underscore';
   import { __, sprintf, s__ } from '../../locale';
+  import createFlash from '../../flash';
   import PipelinesService from '../services/pipelines_service';
   import pipelinesMixin from '../mixins/pipelines';
   import TablePagination from '../../vue_shared/components/table_pagination.vue';
@@ -92,6 +93,7 @@
         scope: getParameterByName('scope') || 'all',
         page: getParameterByName('page') || '1',
         requestData: {},
+        isResetCacheButtonLoading: false,
       };
     },
     stateMap: {
@@ -265,6 +267,23 @@
             this.poll.restart({ data: this.requestData });
           });
       },
+
+      handleResetRunnersCache(endpoint) {
+        this.isResetCacheButtonLoading = true;
+
+        this.service.postAction(endpoint)
+          .then(() => {
+            this.isResetCacheButtonLoading = false;
+            createFlash(
+              s__('Pipelines|Project cache successfully reset.'),
+              'notice',
+            );
+          })
+          .catch(() => {
+            this.isResetCacheButtonLoading = false;
+            createFlash(s__('Pipelines|Something went wrong while cleaning runners cache.'));
+          });
+      },
     },
   };
 </script>
@@ -301,6 +320,8 @@
         :new-pipeline-path="newPipelinePath"
         :reset-cache-path="resetCachePath"
         :ci-lint-path="ciLintPath"
+        @resetRunnersCache="handleResetRunnersCache"
+        :is-reset-cache-button-loading="isResetCacheButtonLoading"
       />
     </div>
 

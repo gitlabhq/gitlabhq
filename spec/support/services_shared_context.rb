@@ -26,6 +26,14 @@ Service.available_services_names.each do |service|
       end
     end
 
+    before do
+      if service == 'github'
+        stub_licensed_features(github_project_service_integration: true)
+        project.clear_memoization(:disabled_services)
+        project.clear_memoization(:licensed_feature_available)
+      end
+    end
+
     def initialize_service(service)
       service_item = project.find_or_initialize_service(service)
       service_item.properties = service_attrs

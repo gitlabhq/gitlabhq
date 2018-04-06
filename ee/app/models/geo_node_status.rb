@@ -3,16 +3,21 @@ class GeoNodeStatus < ActiveRecord::Base
 
   delegate :selective_sync_type, to: :geo_node
 
+  after_initialize :initialize_feature_flags
+
   # Whether we were successful in reaching this node
   attr_accessor :success
-  attr_writer :health_status
+  attr_writer   :health_status
   attr_accessor :storage_shards
+
+  attr_accessor :repository_verification_enabled
 
   # Prometheus metrics, no need to store them in the database
   attr_accessor :event_log_count, :event_log_max_id,
                 :repository_created_max_id, :repository_updated_max_id,
                 :repository_deleted_max_id, :repository_renamed_max_id, :repositories_changed_max_id,
                 :lfs_object_deleted_max_id, :job_artifact_deleted_max_id,
+                :lfs_objects_registry_count, :job_artifacts_registry_count, :attachments_registry_count,
                 :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id
 
   # Be sure to keep this consistent with Prometheus naming conventions
@@ -24,15 +29,22 @@ class GeoNodeStatus < ActiveRecord::Base
     wikis_count: 'Total number of wikis available on primary',
     wikis_synced_count: 'Number of wikis synced on secondary',
     wikis_failed_count: 'Number of wikis failed to sync on secondary',
+    repositories_verified_count: 'Number of repositories verified on secondary',
+    repositories_verification_failed_count: 'Number of repositories failed to verify on secondary',
+    wikis_verified_count: 'Number of wikis verified on secondary',
+    wikis_verification_failed_count: 'Number of wikis failed to verify on secondary',
     lfs_objects_count: 'Total number of local LFS objects available on primary',
     lfs_objects_synced_count: 'Number of local LFS objects synced on secondary',
     lfs_objects_failed_count: 'Number of local LFS objects failed to sync on secondary',
+    lfs_objects_registry_count: 'Number of LFS objects in the registry',
     job_artifacts_count: 'Total number of local job artifacts available on primary',
     job_artifacts_synced_count: 'Number of local job artifacts synced on secondary',
     job_artifacts_failed_count: 'Number of local job artifacts failed to sync on secondary',
+    job_artifacts_registry_count: 'Number of job artifacts in the registry',
     attachments_count: 'Total number of local file attachments available on primary',
     attachments_synced_count: 'Number of local file attachments synced on secondary',
     attachments_failed_count: 'Number of local file attachments failed to sync on secondary',
+    attachments_registry_count: 'Number of attachments in the registry',
     replication_slots_count: 'Total number of replication slots on the primary',
     replication_slots_used_count: 'Number of replication slots in use on the primary',
     replication_slots_max_retained_wal_bytes: 'Maximum number of bytes retained in the WAL on the primary',
@@ -90,6 +102,10 @@ class GeoNodeStatus < ActiveRecord::Base
     self.column_names - EXCLUDED_PARAMS + EXTRA_PARAMS
   end
 
+  def initialize_feature_flags
+    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+  end
+
   def load_data_from_current_node
     self.status_message =
       begin
@@ -103,9 +119,9 @@ class GeoNodeStatus < ActiveRecord::Base
     self.last_event_date = latest_event&.created_at
     self.repositories_count = projects_finder.count_repositories
     self.wikis_count = projects_finder.count_wikis
-    self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
-    self.job_artifacts_count = job_artifacts_finder.count_job_artifacts
-    self.attachments_count = attachments_finder.count_attachments
+    self.lfs_objects_count = lfs_objects_finder.count_local_lfs_objects
+    self.job_artifacts_count = job_artifacts_finder.count_local_job_artifacts
+    self.attachments_count = attachments_finder.count_local_attachments
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
 
@@ -127,6 +143,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
     load_primary_data
     load_secondary_data
+    load_verification_data
 
     self
   end
@@ -150,11 +167,24 @@ class GeoNodeStatus < ActiveRecord::Base
       self.wikis_failed_count = projects_finder.count_failed_wikis
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
+      self.lfs_objects_registry_count = lfs_objects_finder.count_registry_lfs_objects
       self.job_artifacts_synced_count = job_artifacts_finder.count_synced_job_artifacts
       self.job_artifacts_failed_count = job_artifacts_finder.count_failed_job_artifacts
+      self.job_artifacts_registry_count = job_artifacts_finder.count_registry_job_artifacts
       self.attachments_synced_count = attachments_finder.count_synced_attachments
       self.attachments_failed_count = attachments_finder.count_failed_attachments
+      self.attachments_registry_count = attachments_finder.count_registry_attachments
     end
+  end
+
+  def load_verification_data
+    return unless repository_verification_enabled
+
+    finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
+    self.repositories_verified_count = finder.count_verified_repositories
+    self.repositories_verification_failed_count = finder.count_verification_failed_repositories
+    self.wikis_verified_count = finder.count_verified_wikis
+    self.wikis_verification_failed_count = finder.count_verification_failed_wikis
   end
 
   alias_attribute :health, :status_message
@@ -197,6 +227,14 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def wikis_synced_in_percentage
     calc_percentage(wikis_count, wikis_synced_count)
+  end
+
+  def repositories_verified_in_percentage
+    calc_percentage(repositories_count, repositories_verified_count)
+  end
+
+  def wikis_verified_in_percentage
+    calc_percentage(wikis_count, wikis_verified_count)
   end
 
   def lfs_objects_synced_in_percentage
@@ -275,6 +313,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def projects_finder
     @projects_finder ||= Geo::ProjectRegistryFinder.new(current_node: geo_node)
+  end
+
+  def repository_verification_finder
+    @repository_verification_finder ||= Geo::RepositoryVerificationFinder.new
   end
 
   def calc_percentage(total, count)

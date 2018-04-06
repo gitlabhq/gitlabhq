@@ -9,8 +9,6 @@
       %p
         = _('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown.')
       - if can?(current_user, :create_epic, @group)
-        - content_for :page_specific_javascripts do
-          = webpack_bundle_tag 'common_vue'
         #new-epic-app{ data: { endpoint: request.url } }
       = link_to group_epics_path(@group), title: 'List', class: 'btn' do
         %span= _('View epics list')

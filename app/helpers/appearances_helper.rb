@@ -1,27 +1,29 @@
 module AppearancesHelper
+  prepend EE::AppearancesHelper
+
   def brand_title
-    brand_item&.title.presence || 'GitLab Enterprise Edition'
+    current_appearance&.title.presence || 'GitLab Enterprise Edition'
   end
 
   def brand_image
-    image_tag(brand_item.logo) if brand_item&.logo?
+    image_tag(current_appearance.logo) if current_appearance&.logo?
   end
 
   def brand_text
-    markdown_field(brand_item, :description)
+    markdown_field(current_appearance, :description)
   end
 
   def brand_new_project_guidelines
-    markdown_field(brand_item, :new_project_guidelines)
+    markdown_field(current_appearance, :new_project_guidelines)
   end
 
-  def brand_item
+  def current_appearance
     @appearance ||= Appearance.current
   end
 
   def brand_header_logo
-    if brand_item&.header_logo?
-      image_tag brand_item.header_logo
+    if current_appearance&.header_logo?
+      image_tag current_appearance.header_logo
     else
       render 'shared/logo.svg'
     end
@@ -29,7 +31,7 @@ module AppearancesHelper
 
   # Skip the 'GitLab' type logo when custom brand logo is set
   def brand_header_logo_type
-    unless brand_item&.header_logo?
+    unless current_appearance&.header_logo?
       render 'shared/logo_type.svg'
     end
   end

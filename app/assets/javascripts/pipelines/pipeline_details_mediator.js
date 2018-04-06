@@ -56,15 +56,4 @@ export default class pipelinesMediator {
       .then(response => this.successCallback(response))
       .catch(() => this.errorCallback());
   }
-
-  /**
-   * EE only
-   */
-  fetchSastReport(endpoint, blobPath) {
-    return PipelineService.getSecurityReport(endpoint)
-      .then(response => response.json())
-      .then((data) => {
-        this.store.storeSastReport(data, blobPath);
-      });
-  }
 }

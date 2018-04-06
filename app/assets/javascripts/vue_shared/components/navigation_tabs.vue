@@ -1,4 +1,6 @@
 <script>
+  import $ from 'jquery';
+
   /**
    * Given an array of tabs, renders non linked bootstrap tabs.
    * When a tab is clicked it will trigger an event and provide the clicked scope.

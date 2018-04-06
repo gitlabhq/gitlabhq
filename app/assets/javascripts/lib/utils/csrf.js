@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /*
 This module provides easy access to the CSRF token and caches
 it for re-use. It also exposes some values commonly used in relation

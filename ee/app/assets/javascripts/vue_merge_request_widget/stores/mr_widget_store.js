@@ -1,11 +1,5 @@
 import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
-import {
-  parseIssues,
-  filterByKey,
-  setSastContainerReport,
-  setSastReport,
-  setDastReport,
-} from '../../vue_shared/security_reports/helpers/utils';
+import { filterByKey } from '../../vue_shared/security_reports/store/utils';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
@@ -14,12 +8,17 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     const blobPath = data.blob_path || {};
     this.headBlobPath = blobPath.head_path || '';
     this.baseBlobPath = blobPath.base_path || '';
+    this.sast = data.sast || {};
+    this.sastContainer = data.sast_container || {};
+    this.dast = data.dast || {};
+    this.dependencyScanning = data.dependency_scanning || {};
+    this.sastHelp = data.sast_help_path;
+    this.sastContainerHelp = data.sast_container_help_path;
+    this.dastHelp = data.dast_help_path;
+    this.dependencyScanningHelp = data.dependency_scanning_help_path;
 
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
-    this.initSecurityReport(data);
-    this.initDockerReport(data);
-    this.initDastReport(data);
   }
 
   setData(data) {
@@ -69,53 +68,13 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.performanceMetrics = {
       improved: [],
       degraded: [],
+      neutral: [],
     };
-  }
-
-  initSecurityReport(data) {
-    this.sast = data.sast;
-    this.securityReport = {
-      newIssues: [],
-      resolvedIssues: [],
-      allIssues: [],
-    };
-  }
-
-  initDockerReport(data) {
-    this.sastContainer = data.sast_container;
-    this.dockerReport = {
-      approved: [],
-      unapproved: [],
-      vulnerabilities: [],
-    };
-  }
-
-  initDastReport(data) {
-    this.dast = data.dast;
-    this.dastReport = [];
-  }
-
-  setSecurityReport(data) {
-    const report = setSastReport(data);
-    this.securityReport.newIssues = report.newIssues;
-    this.securityReport.resolvedIssues = report.resolvedIssues;
-    this.securityReport.allIssues = report.allIssues;
-  }
-
-  setDockerReport(data = {}) {
-    const report = setSastContainerReport(data);
-    this.dockerReport.approved = report.approved;
-    this.dockerReport.unapproved = report.unapproved;
-    this.dockerReport.vulnerabilities = report.vulnerabilities;
-  }
-
-  setDastReport(data) {
-    this.dastReport = setDastReport(data);
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
-    const parsedHeadIssues = parseIssues(headIssues, headBlobPath);
-    const parsedBaseIssues = parseIssues(baseIssues, baseBlobPath);
+    const parsedHeadIssues = MergeRequestStore.parseCodeclimateMetrics(headIssues, headBlobPath);
+    const parsedBaseIssues = MergeRequestStore.parseCodeclimateMetrics(baseIssues, baseBlobPath);
 
     this.codeclimateMetrics.newIssues = filterByKey(
       parsedHeadIssues,
@@ -184,5 +143,31 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     });
 
     return indexedSubjects;
+  }
+
+  static parseCodeclimateMetrics(issues = [], path = '') {
+    return issues.map(issue => {
+      const parsedIssue = {
+        ...issue,
+        name: issue.description,
+      };
+
+      if (issue.location) {
+        let parseCodeQualityUrl;
+
+        if (issue.location.path) {
+          parseCodeQualityUrl = `${path}/${issue.location.path}`;
+          parsedIssue.path = issue.location.path;
+
+          if (issue.location.lines && issue.location.lines.begin) {
+            parsedIssue.line = issue.location.lines.begin;
+            parseCodeQualityUrl += `#L${issue.location.lines.begin}`;
+          }
+          parsedIssue.urlPath = parseCodeQualityUrl;
+        }
+      }
+
+      return parsedIssue;
+    });
   }
 }

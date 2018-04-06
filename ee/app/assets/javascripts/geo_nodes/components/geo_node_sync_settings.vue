@@ -14,6 +14,11 @@
       icon,
     },
     props: {
+      syncStatusUnavailable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
       selectiveSyncType: {
         type: String,
         required: false,
@@ -105,8 +110,15 @@
     class="node-detail-value"
   >
     <span
+      v-if="syncStatusUnavailable"
+      class="node-detail-value-bold"
+    >
+      {{ __('Unknown') }}
+    </span>
+    <span
+      v-else
       v-tooltip
-      class="node-sync-settings inline"
+      class="node-sync-settings"
       data-placement="bottom"
       :title="syncStatusTooltip"
     >

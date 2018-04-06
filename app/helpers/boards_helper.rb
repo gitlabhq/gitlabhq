@@ -19,23 +19,35 @@ module BoardsHelper
   end
 
   def build_issue_link_base
-    project_issues_path(@project)
+    if board.group_board?
+      "#{group_path(@board.group)}/:project_path/issues"
+    else
+      project_issues_path(@project)
+    end
   end
 
   def board_base_url
-    project_boards_path(@project)
+    if board.group_board?
+      group_boards_url(@group)
+    else
+      project_boards_path(@project)
+    end
   end
 
   def multiple_boards_available?
-    current_board_parent.multiple_issue_boards_available?(current_user)
+    current_board_parent.multiple_issue_boards_available?
   end
 
   def current_board_path(board)
-    @current_board_path ||= project_board_path(current_board_parent, board)
+    @current_board_path ||= if board.group_board?
+                              group_board_path(current_board_parent, board)
+                            else
+                              project_board_path(current_board_parent, board)
+                            end
   end
 
   def current_board_parent
-    @current_board_parent ||= @project
+    @current_board_parent ||= @group || @project
   end
 
   def can_admin_issue?
@@ -43,13 +55,16 @@ module BoardsHelper
   end
 
   def board_list_data
+    include_descendant_groups = @group&.present?
+
     {
       toggle: "dropdown",
-      list_labels_path: labels_filter_path(true),
-      labels: labels_filter_path(true),
+      list_labels_path: labels_filter_path(true, include_ancestor_groups: true),
+      labels: labels_filter_path(true, include_descendant_groups: include_descendant_groups),
       labels_endpoint: @labels_endpoint,
       namespace_path: @namespace_path,
-      project_path: @project&.try(:path)
+      project_path: @project&.path,
+      group_path: @group&.path
     }
   end
 
@@ -61,7 +76,8 @@ module BoardsHelper
       field_name: 'issue[assignee_ids][]',
       first_user: current_user&.username,
       current_user: 'true',
-      project_id: @project&.try(:id),
+      project_id: @project&.id,
+      group_id: @group&.id,
       null_user: 'true',
       multi_select: 'true',
       'dropdown-header': dropdown_options[:data][:'dropdown-header'],

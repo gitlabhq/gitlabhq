@@ -9,7 +9,7 @@ module Gitlab
             end
           end
 
-          def satisfied_by?(pipeline)
+          def satisfied_by?(pipeline, seed = nil)
             pipeline.has_kubernetes_active?
           end
         end

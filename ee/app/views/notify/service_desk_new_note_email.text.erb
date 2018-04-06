@@ -3,3 +3,4 @@ New response for issue #<%= @issue.iid %>:
 Author: <%= @note.author_name %>
 
 <%= @note.note %>
+<%# EE-specific start %><%= render 'layouts/mailer/additional_text' %><%# EE-specific end %>

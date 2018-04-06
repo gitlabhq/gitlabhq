@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import EETrialBanner from './ee_trial_banner';
 
 export default function initEETrialBanner() {

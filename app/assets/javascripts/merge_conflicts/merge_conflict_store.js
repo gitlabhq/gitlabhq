@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 

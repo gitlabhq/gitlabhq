@@ -1,12 +1,20 @@
 /* global monaco */
-import monacoLoader from 'ee/ide/monaco_loader';
-import editor from 'ee/ide/lib/editor';
+import monacoLoader from '~/ide/monaco_loader';
+import editor from '~/ide/lib/editor';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {
   let instance;
+  let el;
+  let holder;
 
-  beforeEach((done) => {
+  beforeEach(done => {
+    el = document.createElement('div');
+    holder = document.createElement('div');
+    el.appendChild(holder);
+
+    document.body.appendChild(el);
+
     monacoLoader(['vs/editor/editor.main'], () => {
       instance = editor.create(monaco);
 
@@ -16,6 +24,8 @@ describe('Multi-file editor library', () => {
 
   afterEach(() => {
     instance.dispose();
+
+    el.remove();
   });
 
   it('creates instance of editor', () => {
@@ -27,30 +37,48 @@ describe('Multi-file editor library', () => {
   });
 
   describe('createInstance', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
     it('creates editor instance', () => {
       spyOn(instance.monaco.editor, 'create').and.callThrough();
 
-      instance.createInstance(el);
+      instance.createInstance(holder);
 
       expect(instance.monaco.editor.create).toHaveBeenCalled();
     });
 
     it('creates dirty diff controller', () => {
-      instance.createInstance(el);
+      instance.createInstance(holder);
 
       expect(instance.dirtyDiffController).not.toBeNull();
     });
 
     it('creates model manager', () => {
-      instance.createInstance(el);
+      instance.createInstance(holder);
 
       expect(instance.modelManager).not.toBeNull();
+    });
+  });
+
+  describe('createDiffInstance', () => {
+    it('creates editor instance', () => {
+      spyOn(instance.monaco.editor, 'createDiffEditor').and.callThrough();
+
+      instance.createDiffInstance(holder);
+
+      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
+        model: null,
+        contextmenu: true,
+        minimap: {
+          enabled: false,
+        },
+        readOnly: true,
+        scrollBeyondLastLine: false,
+        quickSuggestions: false,
+        occurrencesHighlight: false,
+        renderLineHighlight: 'none',
+        hideCursorInOverviewRuler: true,
+        wordWrap: 'on',
+        renderSideBySide: true,
+      });
     });
   });
 
@@ -87,6 +115,18 @@ describe('Multi-file editor library', () => {
       expect(instance.instance.setModel).toHaveBeenCalledWith(model.getModel());
     });
 
+    it('sets original & modified when diff editor', () => {
+      spyOn(instance.instance, 'getEditorType').and.returnValue('vs.editor.IDiffEditor');
+      spyOn(instance.instance, 'setModel');
+
+      instance.attachModel(model);
+
+      expect(instance.instance.setModel).toHaveBeenCalledWith({
+        original: model.getOriginalModel(),
+        modified: model.getModel(),
+      });
+    });
+
     it('attaches the model to the dirty diff controller', () => {
       spyOn(instance.dirtyDiffController, 'attachModel');
 
@@ -101,6 +141,31 @@ describe('Multi-file editor library', () => {
       instance.attachModel(model);
 
       expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(model);
+    });
+  });
+
+  describe('attachMergeRequestModel', () => {
+    let model;
+
+    beforeEach(() => {
+      instance.createDiffInstance(document.createElement('div'));
+
+      const f = file();
+      f.mrChanges = { diff: 'ABC' };
+      f.baseRaw = 'testing';
+
+      model = instance.createModel(f);
+    });
+
+    it('sets original & modified', () => {
+      spyOn(instance.instance, 'setModel');
+
+      instance.attachMergeRequestModel(model);
+
+      expect(instance.instance.setModel).toHaveBeenCalledWith({
+        original: model.getBaseModel(),
+        modified: model.getModel(),
+      });
     });
   });
 
@@ -149,6 +214,58 @@ describe('Multi-file editor library', () => {
       instance.dispose();
 
       expect(instance.decorationsController.dispose).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('updateDiffView', () => {
+    describe('edit mode', () => {
+      it('does not update options', () => {
+        instance.createInstance(holder);
+
+        spyOn(instance.instance, 'updateOptions');
+
+        instance.updateDiffView();
+
+        expect(instance.instance.updateOptions).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('diff mode', () => {
+      beforeEach(() => {
+        instance.createDiffInstance(holder);
+
+        spyOn(instance.instance, 'updateOptions').and.callThrough();
+      });
+
+      it('sets renderSideBySide to false if el is less than 700 pixels', () => {
+        spyOnProperty(instance.instance.getDomNode(), 'offsetWidth').and.returnValue(600);
+
+        expect(instance.instance.updateOptions).not.toHaveBeenCalledWith({
+          renderSideBySide: false,
+        });
+      });
+
+      it('sets renderSideBySide to false if el is more than 700 pixels', () => {
+        spyOnProperty(instance.instance.getDomNode(), 'offsetWidth').and.returnValue(800);
+
+        expect(instance.instance.updateOptions).not.toHaveBeenCalledWith({
+          renderSideBySide: true,
+        });
+      });
+    });
+  });
+
+  describe('isDiffEditorType', () => {
+    it('returns true when diff editor', () => {
+      instance.createDiffInstance(holder);
+
+      expect(instance.isDiffEditorType).toBe(true);
+    });
+
+    it('returns false when not diff editor', () => {
+      instance.createInstance(holder);
+
+      expect(instance.isDiffEditorType).toBe(false);
     });
   });
 });

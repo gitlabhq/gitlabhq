@@ -39,16 +39,19 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- object_storage_upload
+- object_storage:object_storage_background_move
+- object_storage:object_storage_migrate_uploads
+
 - pipeline_cache:expire_job_cache
 - pipeline_cache:expire_pipeline_cache
 - pipeline_creation:create_pipeline
 - pipeline_creation:run_pipeline_schedule
+- pipeline_background:archive_trace
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
-- pipeline_default:create_trace_artifact
 - pipeline_default:pipeline_metrics
 - pipeline_default:pipeline_notification
-- pipeline_default:update_head_pipeline_for_merge_request
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
@@ -58,6 +61,7 @@
 - pipeline_processing:pipeline_success
 - pipeline_processing:pipeline_update
 - pipeline_processing:stage_update
+- pipeline_processing:update_head_pipeline_for_merge_request
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_single_repository
@@ -107,20 +111,37 @@
 - web_hook
 
 # EE-specific queues
+
+# Deprecated queues: remove after 10.7
+- geo_base_scheduler
+- geo_file_download
+- geo_project_sync
+- geo_repository_shard_sync
+
 - cronjob:clear_shared_runners_minutes
 - cronjob:geo_file_download_dispatch
 - cronjob:geo_metrics_update
 - cronjob:geo_prune_event_log
+- cronjob:geo_migrated_local_files_clean_up
 - cronjob:geo_repository_sync
+- cronjob:geo_repository_verification_primary_batch
+- cronjob:geo_repository_verification_secondary_scheduler
 - cronjob:geo_sidekiq_cron_config
+- cronjob:geo_scheduler_per_shard_scheduler
+- cronjob:geo_scheduler_primary_per_shard_scheduler
+- cronjob:geo_scheduler_secondary_per_shard_scheduler
+- cronjob:geo_repository_verification_secondary_shard
 - cronjob:historical_data
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync
 - cronjob:update_all_mirrors
 
-- geo:geo_base_scheduler
+- geo:geo_scheduler_scheduler
+- geo:geo_scheduler_primary_scheduler
+- geo:geo_scheduler_secondary_scheduler
 - geo:geo_file_download
 - geo:geo_file_removal
+- geo:geo_file_registry_removal
 - geo:geo_hashed_storage_attachments_migration
 - geo:geo_hashed_storage_migration
 - geo:geo_project_sync
@@ -128,12 +149,16 @@
 - geo:geo_repositories_clean_up
 - geo:geo_repository_destroy
 - geo:geo_repository_shard_sync
+- geo:geo_repository_verification_primary_shard
+- geo:geo_repository_verification_primary_single
+- geo:geo_repository_verification_secondary_single
 
 - object_storage_upload
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
 - admin_emails
+- create_github_webhook
 - elastic_batch_project_indexer
 - elastic_commit_indexer
 - elastic_indexer
@@ -144,3 +169,4 @@
 - rebase
 - repository_update_mirror
 - repository_update_remote_mirror
+- chat_notification

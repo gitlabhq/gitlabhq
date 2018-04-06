@@ -19,8 +19,7 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
-  margin-top: 40px;
-  color: $almost-black;
+  margin-top: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -43,22 +42,45 @@
     cursor: pointer;
 
     &.file-open {
-      background: $white-normal;
+      background: $link-active-background;
     }
 
-    .repo-file-name {
+    &.file-active {
+      font-weight: $gl-font-weight-bold;
+    }
+
+    .ide-file-name {
+      flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
+      max-width: inherit;
+
+      svg {
+        vertical-align: middle;
+        margin-right: 2px;
+      }
+
+      .loading-container {
+        margin-right: 4px;
+        display: inline-block;
+      }
     }
 
-    .repo-new-btn {
+    .ide-file-changed-icon {
+      margin-left: auto;
+    }
+
+    .ide-new-btn {
       display: none;
-      margin-top: -4px;
       margin-bottom: -4px;
+      margin-right: -8px;
     }
 
-    &:hover {
-      .repo-new-btn {
+    &:hover,
+    &:focus {
+      background: $link-active-background;
+
+      .ide-new-btn {
         display: block;
       }
     }
@@ -68,7 +90,6 @@
         fill: $gl-text-color-secondary;
       }
     }
-
   }
 
   a {
@@ -81,10 +102,10 @@
   }
 }
 
-.multi-file-table-name,
-.multi-file-table-col-commit-message {
+.file-name,
+.file-col-commit-message {
+  display: flex;
   overflow: visible;
-  max-width: 0;
   padding: 6px 12px;
 }
 
@@ -98,21 +119,6 @@
     div {
       background: $gray-light;
     }
-  }
-}
-
-table.table tr td.multi-file-table-name {
-  width: 350px;
-  padding: 6px 12px;
-
-  svg {
-    vertical-align: middle;
-    margin-right: 2px;
-  }
-
-  .loading-container {
-    margin-right: 4px;
-    display: inline-block;
   }
 }
 
@@ -131,12 +137,34 @@ table.table tr td.multi-file-table-name {
 
 .multi-file-tabs {
   display: flex;
-  overflow-x: auto;
   background-color: $white-normal;
   box-shadow: inset 0 -1px $white-dark;
 
-  > li {
+  > ul {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  li {
     position: relative;
+  }
+
+  .dropdown {
+    display: flex;
+    margin-left: auto;
+    margin-bottom: 1px;
+    padding: 0 $grid-size;
+    border-left: 1px solid $white-dark;
+    background-color: $white-light;
+
+    &.shadow {
+      box-shadow: 0 0 10px $dropdown-shadow-color;
+    }
+
+    .btn {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
   }
 }
 
@@ -206,20 +234,108 @@ table.table tr td.multi-file-table-name {
   .vertical-center {
     min-height: auto;
   }
+
+  .monaco-editor .lines-content .cigr {
+    display: none;
+  }
+
+  .monaco-diff-editor.vs {
+    .editor.modified {
+      box-shadow: none;
+    }
+
+    .diagonal-fill {
+      display: none !important;
+    }
+
+    .diffOverview {
+      background-color: $white-light;
+      border-left: 1px solid $white-dark;
+      cursor: ns-resize;
+    }
+
+    .diffViewport {
+      display: none;
+    }
+
+    .char-insert {
+      background-color: $line-added-dark;
+    }
+
+    .char-delete {
+      background-color: $line-removed-dark;
+    }
+
+    .line-numbers {
+      color: $black-transparent;
+    }
+
+    .view-overlays {
+      .line-insert {
+        background-color: $line-added;
+      }
+
+      .line-delete {
+        background-color: $line-removed;
+      }
+    }
+
+    .margin {
+      background-color: $gray-light;
+      border-right: 1px solid $white-normal;
+
+      .line-insert {
+        border-right: 1px solid $line-added-dark;
+      }
+
+      .line-delete {
+        border-right: 1px solid $line-removed-dark;
+      }
+    }
+
+    .margin-view-overlays .insert-sign,
+    .margin-view-overlays .delete-sign {
+      opacity: 0.4;
+    }
+
+    .cursors-layer {
+      display: none;
+    }
+  }
 }
 
 .multi-file-editor-holder {
   height: 100%;
 }
 
-.multi-file-editor-btn-group {
-  padding: $gl-bar-padding $gl-padding;
-  border-top: 1px solid $white-dark;
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
+}
+
+.ide-mode-tabs {
   border-bottom: 1px solid $white-dark;
-  background: $white-light;
+
+  .nav-links {
+    border-bottom: 0;
+
+    li a {
+      padding: $gl-padding-8 $gl-padding;
+      line-height: $gl-btn-line-height;
+    }
+  }
+}
+
+.ide-btn-group {
+  padding: $gl-padding-4 $gl-vert-padding;
 }
 
 .ide-status-bar {
+  border-top: 1px solid $white-dark;
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
@@ -313,7 +429,7 @@ table.table tr td.multi-file-table-name {
   }
 
   .branch-container {
-    border-left: 4px solid $indigo-700;
+    border-left: 4px solid;
     margin-bottom: $gl-bar-padding;
   }
 
@@ -325,7 +441,6 @@ table.table tr td.multi-file-table-name {
   .branch-header-title {
     flex: 1;
     padding: $grid-size $gl-padding;
-    color: $indigo-700;
     font-weight: $gl-font-weight-bold;
 
     svg {
@@ -362,6 +477,8 @@ table.table tr td.multi-file-table-name {
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .multi-file-commit-empty-state-container {
@@ -372,7 +489,7 @@ table.table tr td.multi-file-table-name {
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
 
@@ -461,7 +578,6 @@ table.table tr td.multi-file-table-name {
     height: 10px;
     margin-left: 3px;
   }
-
 }
 
 .multi-file-commit-list-path {
@@ -539,7 +655,7 @@ table.table tr td.multi-file-table-name {
       top: 0;
       width: 100px;
       height: 1px;
-      background-color: rgba($red-500, .5);
+      background-color: rgba($red-500, 0.5);
     }
   }
 }
@@ -558,7 +674,7 @@ table.table tr td.multi-file-table-name {
   justify-content: center;
 }
 
-.repo-new-btn {
+.ide-new-btn {
   .dropdown-toggle svg {
     margin-top: -2px;
     margin-bottom: 2px;
@@ -580,8 +696,14 @@ table.table tr td.multi-file-table-name {
   overflow: hidden;
 
   &.nav-only {
+    padding-top: $header-height;
+
+    .with-performance-bar & {
+      padding-top: $header-height + $performance-bar-height;
+    }
+
     .flash-container {
-      margin-top: $header-height;
+      margin-top: 0;
       margin-bottom: 0;
     }
 
@@ -591,13 +713,8 @@ table.table tr td.multi-file-table-name {
     }
 
     .content-wrapper {
-      margin-top: $header-height;
+      margin-top: 0;
       padding-bottom: 0;
-    }
-
-    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-      max-height: calc(100vh - #{$header-height + $context-header-height});
-      min-height: calc(100vh - #{$header-height + $context-header-height});
     }
 
     &.flash-shown {
@@ -608,10 +725,11 @@ table.table tr td.multi-file-table-name {
       .ide-view {
         height: calc(100vh - #{$header-height + $flash-height});
       }
+    }
 
-      .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-        max-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
-        min-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
+    .projects-sidebar {
+      .multi-file-commit-panel-inner-scroll {
+        flex: 1;
       }
     }
   }
@@ -619,11 +737,11 @@ table.table tr td.multi-file-table-name {
 
 .with-performance-bar .ide.nav-only {
   .flash-container {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
   }
 
   .content-wrapper {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
     padding-bottom: 0;
   }
 
@@ -631,27 +749,12 @@ table.table tr td.multi-file-table-name {
     height: calc(100vh - #{$header-height + $performance-bar-height});
   }
 
-  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-    max-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
-    min-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
-  }
-
   &.flash-shown {
-    .content-wrapper {
-      margin-top: 0;
-    }
-
     .ide-view {
       height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
     }
-
-    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-      max-height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height + $context-header-height});
-      min-height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height + $context-header-height});
-    }
   }
 }
-
 
 .dragHandle {
   position: absolute;
@@ -682,4 +785,17 @@ table.table tr td.multi-file-table-name {
 
 .ide-commit-new-branch {
   margin-left: 25px;
+}
+
+.ide-external-links {
+  p {
+    margin: 0;
+  }
+}
+
+.ide-sidebar-link {
+  padding: $gl-padding-8 $gl-padding;
+  display: flex;
+  align-items: center;
+  font-weight: $gl-font-weight-bold;
 }

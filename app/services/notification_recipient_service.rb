@@ -280,7 +280,7 @@ module NotificationRecipientService
         add_participants(note.author)
         add_mentions(note.author, target: note)
 
-        unless note.for_personal_snippet?
+        if note.for_project_noteable?
           # Merge project watchers
           add_project_watchers
 

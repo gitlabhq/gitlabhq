@@ -19,7 +19,7 @@
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-                  %input.form-control.filtered-search{ search_filter_input_options(type) }
+                  %input.form-control.filtered-search{ epic_endpoint_query_params(search_filter_input_options(type)) }
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
@@ -46,6 +46,18 @@
                 = render 'shared/issuable/user_dropdown_item',
                   user: User.new(username: '{{username}}', name: '{{name}}'),
                   avatar: { lazy: true, url: '{{avatar_url}}' }
+            #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _("No Label")
+                %li.divider.droplab-item-ignore
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item{ type: 'button' }
+                  %button.btn.btn-link
+                    %span.dropdown-label-box{ style: 'background: {{color}}' }
+                    %span.label-title.js-data-value
+                      {{ title }}
 
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')

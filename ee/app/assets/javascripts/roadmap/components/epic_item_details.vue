@@ -72,7 +72,7 @@
 </script>
 
 <template>
-  <td class="epic-details-cell">
+  <span class="epic-details-cell">
     <div class="epic-title">
       <a
         v-tooltip
@@ -101,5 +101,5 @@
       >
       </span>
     </div>
-  </td>
+  </span>
 </template>

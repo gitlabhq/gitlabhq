@@ -40,8 +40,14 @@ variables:
 
 before_script:
   - bundle --version
+  - date
   - source scripts/utils.sh
+  - date
   - source scripts/prepare_build.sh
+  - date
+
+after_script:
+  - date
 
 stages:
   - build
@@ -71,19 +77,49 @@ stages:
     # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
-    - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
-
-.use-pg-9-6-no-elasticsearch: &use-pg-9-6-no-elasticsearch
-  services:
-    - postgres:9.6
-    - redis:alpine
 
 .use-mysql: &use-mysql
   services:
     - mysql:latest
     - redis:alpine
+
+# BEGIN EE-only service helpers
+
+.use-pg-9-6: &use-pg-9-6
+  services:
+    - postgres:9.6
+    - redis:alpine
+
+.use-pg-10-2: &use-pg-10-2
+  services:
+    - postgres:10.2
+    - redis:alpine
+
+.use-pg-with-elasticsearch: &use-pg-with-elasticsearch
+  services:
+    - postgres:9.2
+    - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
+.use-mysql-with-elasticsearch: &use-mysql-with-elasticsearch
+  services:
+    - mysql:latest
+    - redis:alpine
+    - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+
+# END EE-only service helpers
+.rails5-variables: &rails5-variables
+  script:
+    - export RAILS5=${RAILS5}
+    - export BUNDLE_GEMFILE=${BUNDLE_GEMFILE}
+
+.rails5: &rails5
+  allow_failure: true
+  only:
+    - /rails5/
+  variables:
+    BUNDLE_GEMFILE: "Gemfile.rails5"
+    RAILS5: "true"
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
@@ -101,10 +137,31 @@ stages:
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
 
+# Jobs that only need to pull cache
+.dedicated-no-docs-pull-cache-job: &dedicated-no-docs-pull-cache-job
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
+  <<: *pull-cache
+  dependencies:
+    - setup-test-env
+  stage: test
+
+# Jobs that do not need a DB
+.dedicated-no-docs-no-db-pull-cache-job: &dedicated-no-docs-no-db-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
+  variables:
+    SETUP_DB: "false"
+
+.rake-exec: &rake-exec
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  script:
+    - bundle exec rake $CI_JOB_NAME
+
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -135,9 +192,17 @@ stages:
   <<: *rspec-metadata
   <<: *use-pg
 
+.rspec-metadata-pg-rails5: &rspec-metadata-pg-rails5
+  <<: *rspec-metadata-pg
+  <<: *rails5
+
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
+
+.rspec-metadata-mysql-rails5: &rspec-metadata-mysql-rails5
+  <<: *rspec-metadata-mysql
+  <<: *rails5
 
 .rspec-metadata-ee: &rspec-metadata-ee
   <<: *rspec-metadata
@@ -153,15 +218,15 @@ stages:
 
 .rspec-ee-pg: &rspec-ee-pg
   <<: *rspec-metadata-ee
-  <<: *use-pg
+  <<: *use-pg-with-elasticsearch
 
 .rspec-ee-mysql: &rspec-ee-mysql
   <<: *rspec-metadata-ee
-  <<: *use-mysql
+  <<: *use-mysql-with-elasticsearch
 
-.rspec-geo-pg-9-6: &rspec-metadata-pg-geo
+.rspec-geo-pg-9-6: &rspec-metadata-pg-geo-9-6
   <<: *rspec-metadata
-  <<: *use-pg-9-6-no-elasticsearch
+  <<: *use-pg-9-6
   stage: test
   script:
     - export NO_KNAPSACK=1
@@ -170,10 +235,38 @@ stages:
     - scripts/gitaly-test-spawn
     - bundle exec rspec --color --format documentation --tag geo ee/spec/
 
+.rspec-geo-pg-10-2: &rspec-metadata-pg-geo-10-2
+  <<: *rspec-metadata
+  <<: *use-pg-10-2
+  stage: test
+  script:
+    - export NO_KNAPSACK=1
+    - export CACHE_CLASSES=true
+    - source scripts/prepare_postgres_fdw.sh
+    - scripts/gitaly-test-spawn
+    - bundle exec rspec --color --format documentation --tag geo ee/spec/
+
+.rspec-ee-pg-rails5: &rspec-ee-pg-rails5
+  <<: *rspec-ee-pg
+  <<: *rails5
+
+.rspec-ee-mysql-rails5: &rspec-ee-mysql-rails5
+  <<: *rspec-ee-mysql
+  <<: *rails5
+
+.rspec-geo-pg-9-6-rails5: &rspec-metadata-pg-geo-9-6-rails5
+  <<: *rspec-metadata-pg-geo-9-6
+  <<: *rails5
+
+.rspec-geo-pg-10-2-rails5: &rspec-metadata-pg-geo-10-2-rails5
+  <<: *rspec-metadata-pg-geo-10-2
+  <<: *rails5
+
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -197,9 +290,17 @@ stages:
   <<: *spinach-metadata
   <<: *use-pg
 
+.spinach-metadata-pg-rails5: &spinach-metadata-pg-rails5
+  <<: *spinach-metadata-pg
+  <<: *rails5
+
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
+
+.spinach-metadata-mysql-rails5: &spinach-metadata-mysql-rails5
+  <<: *spinach-metadata-mysql
+  <<: *rails5
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -208,21 +309,24 @@ stages:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
 
-##
-# Trigger a package build in omnibus-gitlab repository
-#
-package-qa:
-  <<: *dedicated-runner
-  image: ruby:2.4-alpine
-  before_script: []
-  stage: build
-  cache: {}
-  when: manual
+.gitlab-setup: &gitlab-setup
+  <<: *dedicated-no-docs-pull-cache-job
+  <<: *use-pg
+  variables:
+    SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
-    - scripts/trigger-build-omnibus
-  only:
-    - //@gitlab-org/gitlab-ce
-    - //@gitlab-org/gitlab-ee
+    # Manually clone gitlab-test and only seed this project in
+    # db/fixtures/development/04_project.rb thanks to SIZE=1 below
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - scripts/gitaly-test-spawn
+    - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 # Review docs base
 .review-docs: &review-docs
@@ -244,6 +348,57 @@ package-qa:
   when: manual
   only:
     - branches
+
+# DB migration, rollback, and seed jobs
+.db-migrate-reset: &db-migrate-reset
+  <<: *dedicated-no-docs-pull-cache-job
+  script:
+    - bundle exec rake db:migrate:reset
+
+.migration-paths: &migration-paths
+  <<: *dedicated-no-docs-pull-cache-job
+  variables:
+    CREATE_DB_USER: "true"
+  script:
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v9.3.0-ee
+    - git checkout -f FETCH_HEAD
+    - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
+    - cp config/gitlab.yml.example config/gitlab.yml
+    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+    - date
+    - git checkout $CI_COMMIT_SHA
+    - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
+    - . scripts/prepare_build.sh
+    - date
+    - bundle exec rake db:migrate
+
+##
+# Trigger a package build in omnibus-gitlab repository
+#
+package-and-qa:
+  <<: *dedicated-runner
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  cache: {}
+  when: manual
+  variables:
+    GIT_STRATEGY: none
+  retry: 0
+  before_script:
+    # We need to download the script rather than clone the repo since the
+    # package-and-qa job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/$CI_PROJECT_PATH/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
+    - chmod 755 trigger-build-omnibus
+  script:
+    - ./trigger-build-omnibus
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
 
 # Trigger a docs build in gitlab-docs
 # Useful to preview the docs changes live
@@ -294,6 +449,7 @@ ee-files-location-check:
   stage: test
   before_script: []
   cache: {}
+  retry: 0
   script:
     - scripts/ee-files-location-check
   only:
@@ -324,7 +480,7 @@ update-tests-metadata:
 
 flaky-examples-check:
   <<: *dedicated-runner
-  image: ruby:2.3-alpine
+  image: ruby:2.4-alpine
   services: []
   before_script: []
   variables:
@@ -358,7 +514,9 @@ compile-assets:
     <<: *default-cache
   script:
     - node --version
+    - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - date
     - bundle exec rake gitlab:assets:compile
   artifacts:
     expire_in: 7d
@@ -387,7 +545,15 @@ rspec-pg-ee 0 2: *rspec-ee-pg
 rspec-pg-ee 1 2: *rspec-ee-pg
 rspec-mysql-ee 0 2: *rspec-ee-mysql
 rspec-mysql-ee 1 2: *rspec-ee-mysql
-rspec-pg geo: *rspec-metadata-pg-geo
+rspec-pg geo 0 2: *rspec-metadata-pg-geo-9-6
+rspec-pg geo 1 2: *rspec-metadata-pg-geo-10-2
+
+rspec-pg-ee-rails5 0 2: *rspec-ee-pg-rails5
+rspec-pg-ee-rails5 1 2: *rspec-ee-pg-rails5
+rspec-mysql-ee-rails5 0 2: *rspec-ee-mysql-rails5
+rspec-mysql-ee-rails5 1 2: *rspec-ee-mysql-rails5
+rspec-pg-geo-rails5 0 2: *rspec-metadata-pg-geo-9-6-rails5
+rspec-pg-geo-rails5 1 2: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
 
 rspec-pg 0 28: *rspec-metadata-pg
@@ -454,26 +620,75 @@ spinach-pg 1 2: *spinach-metadata-pg
 spinach-mysql 0 2: *spinach-metadata-mysql
 spinach-mysql 1 2: *spinach-metadata-mysql
 
-# Static analysis jobs
-.ruby-static-analysis: &ruby-static-analysis
-  variables:
-    SIMPLECOV: "false"
-    SETUP_DB: "false"
+rspec-pg-rails5 0 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 1 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 2 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 3 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 4 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 5 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 6 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 7 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 8 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 9 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 10 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 11 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 12 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 13 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 14 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 15 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 16 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 17 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 18 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 19 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 20 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 21 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 22 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 23 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 24 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 25 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 26 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 27 28: *rspec-metadata-pg-rails5
 
-.rake-exec: &rake-exec
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  <<: *ruby-static-analysis
-  stage: test
-  script:
-    - bundle exec rake $CI_JOB_NAME
+rspec-mysql-rails5 0 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 1 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 2 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 3 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 4 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 5 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 6 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 7 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 8 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 9 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 10 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 11 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 12 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 13 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 14 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 15 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 16 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 17 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 18 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 19 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 20 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 21 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 22 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 23 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 24 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 25 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 26 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 27 28: *rspec-metadata-mysql-rails5
+
+spinach-pg-rails5 0 2: *spinach-metadata-pg-rails5
+spinach-pg-rails5 1 2: *spinach-metadata-pg-rails5
+
+spinach-mysql-rails5 0 2: *spinach-metadata-mysql-rails5
+spinach-mysql-rails5 1 2: *spinach-metadata-mysql-rails5
 
 static-analysis:
-  <<: *dedicated-runner
-  <<: *except-docs
-  <<: *ruby-static-analysis
-  stage: test
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  dependencies:
+    - compile-assets
+    - setup-test-env
   script:
     - scripts/static-analysis
   cache:
@@ -530,15 +745,6 @@ ee_compat_check:
     paths:
       - ee_compat_check/patches/*.patch
 
-# DB migration, rollback, and seed jobs
-.db-migrate-reset: &db-migrate-reset
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
-  script:
-    - bundle exec rake db:migrate:reset
-
 db:migrate:reset-pg:
   <<: *db-migrate-reset
   <<: *use-pg
@@ -553,25 +759,6 @@ db:check-schema-pg:
   script:
     - source scripts/schema_changed.sh
 
-.migration-paths: &migration-paths
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
-  variables:
-    SETUP_DB: "false"
-    CREATE_DB_USER: "true"
-  script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v9.3.0-ee
-    - git checkout -f FETCH_HEAD
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - cp config/gitlab.yml.example config/gitlab.yml
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - git checkout $CI_COMMIT_SHA
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - . scripts/prepare_build.sh
-    - bundle exec rake db:migrate
-
 migration:path-pg:
   <<: *migration-paths
   <<: *use-pg
@@ -581,12 +768,9 @@ migration:path-mysql:
   <<: *use-mysql
 
 .db-rollback: &db-rollback
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
+  <<: *dedicated-no-docs-pull-cache-job
   script:
-    - bundle exec rake db:rollback STEP=119
+    - bundle exec rake db:migrate VERSION=20170523121229
     - bundle exec rake db:migrate
 
 db:rollback-pg:
@@ -597,26 +781,13 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.gitlab-setup: &gitlab-setup
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
-  variables:
-    SIZE: "1"
-    SETUP_DB: "false"
-    CREATE_DB_USER: "true"
-    FIXTURE_PATH: db/fixtures/development
+db:rollback-pg-geo: &db-rollback
+  <<: *db-rollback
+  <<: *use-pg
+  <<: *except-docs
   script:
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - scripts/gitaly-test-spawn
-    - force=yes bundle exec rake gitlab:setup
-  artifacts:
-    when: on_failure
-    expire_in: 1d
-    paths:
-      - log/development.log
+    - bundle exec rake geo:db:migrate VERSION=20170627195211
+    - bundle exec rake geo:db:migrate
 
 gitlab:setup-pg:
   <<: *gitlab-setup
@@ -628,10 +799,7 @@ gitlab:setup-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  stage: test
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -641,7 +809,9 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
   script:
+    - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - date
     - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
@@ -650,17 +820,16 @@ gitlab:assets:compile:
       - webpack-report/
 
 karma:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
+  <<: *dedicated-no-docs-pull-cache-job
   <<: *use-pg
-  stage: test
-  variables:
-    BABEL_ENV: "coverage"
-    CHROME_LOG_FILE: "chrome_debug.log"
+  dependencies:
+    - compile-assets
+    - setup-test-env
   script:
+    - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
+    - date
     - scripts/gitaly-test-spawn
-    - bundle exec rake gettext:po_to_json
+    - date
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
@@ -668,28 +837,28 @@ karma:
     expire_in: 31d
     when: always
     paths:
-    - chrome_debug.log
-    - coverage-javascript/
+      - chrome_debug.log
+      - coverage-javascript/
 
 codequality:
-  <<: *except-docs
-  <<: *pull-cache
-  stage: test
-  image: docker:latest
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: docker:stable
+  allow_failure: true
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
   before_script: []
   services:
     - docker:dind
   variables:
     SETUP_DB: "false"
     DOCKER_DRIVER: overlay2
-    CODECLIMATE_FORMAT: json
   cache: {}
   dependencies: []
   script:
-    - apk update && apk add jq
-    - ./scripts/codequality analyze -f json > raw_codeclimate.json || true
-    # The following line keeps only the fields used in the MR widget, reducing the JSON artifact size
-    - jq -c 'map({check_name,description,fingerprint,location})' raw_codeclimate.json > codeclimate.json
+    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
     paths: [codeclimate.json]
     expire_in: 1 week
@@ -706,11 +875,7 @@ sast:
     paths: [gl-sast-report.json]
 
 qa:internal:
-  <<: *dedicated-runner
-  <<: *except-docs
-  stage: test
-  variables:
-    SETUP_DB: "false"
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   services: []
   script:
     - cd qa/
@@ -718,11 +883,7 @@ qa:internal:
     - bundle exec rspec
 
 qa:selectors:
-  <<: *dedicated-runner
-  <<: *except-docs
-  stage: test
-  variables:
-    SETUP_DB: "false"
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   services: []
   script:
     - cd qa/
@@ -730,14 +891,14 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 coverage:
+  # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
+  # download artifacts from all the rspec jobs instead of from setup-test-env only
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
-  stage: post-test
-  services: []
   variables:
     SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "true"
+  stage: post-test
   script:
     - bundle exec scripts/merge-simplecov
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -749,26 +910,25 @@ coverage:
     - coverage/assets/
 
 lint:javascript:report:
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: post-test
   dependencies:
     - compile-assets
     - setup-test-env
   before_script: []
   script:
+    - date
     - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - date
     - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
     expire_in: 31d
     paths:
-    - eslint-report.html
+      - eslint-report.html
 
 pages:
-  <<: *dedicated-runner
-  <<: *pull-cache
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   before_script: []
   stage: pages
   dependencies:
@@ -793,10 +953,7 @@ pages:
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
 cache gems:
-  <<: *dedicated-runner
-  <<: *pull-cache
-  variables:
-    SETUP_DB: "false"
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   script:
     - bundle package --all --all-platforms
   artifacts:

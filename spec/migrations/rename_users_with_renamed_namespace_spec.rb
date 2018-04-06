@@ -7,9 +7,9 @@ describe RenameUsersWithRenamedNamespace, :delete do
     other_user1 = create(:user, username: 'api0')
 
     user = create(:user, username: "Users0")
-    user.update_attribute(:username, 'Users')
+    user.update_column(:username, 'Users')
     user1 = create(:user, username: "import0")
-    user1.update_attribute(:username, 'import')
+    user1.update_column(:username, 'import')
 
     described_class.new.up
 

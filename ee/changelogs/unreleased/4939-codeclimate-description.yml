@@ -1,6 +1,0 @@
----
-title: Replace check_name key with description in codeclimate results for a more human
-  readable description
-merge_request:
-author:
-type: changed

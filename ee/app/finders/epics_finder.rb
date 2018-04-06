@@ -17,7 +17,13 @@ class EpicsFinder < IssuableFinder
   end
 
   def row_count
-    execute.count
+    count = execute.count
+
+    # When filtering by multiple labels, count returns a hash of
+    # records grouped by id - so we just have to get length of the Hash.
+    # Once we have state for epics, we can use default issuables row_count
+    # method.
+    count.is_a?(Hash) ? count.length : count
   end
 
   # we don't have states for epics for now this method (#4017)

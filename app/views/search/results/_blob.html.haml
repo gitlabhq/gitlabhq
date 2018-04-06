@@ -16,7 +16,7 @@
           - if @project
             = file_name
           - else
-            #{project.name_with_namespace}:
+            #{project.full_name}:
             %i= file_name
     - if blob.data
       .file-content.code.term

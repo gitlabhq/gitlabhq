@@ -12,7 +12,7 @@
     - if show_project_name
       %strong #{project.name} &middot;
     - elsif show_full_project_name
-      %strong #{project.name_with_namespace} &middot;
+      %strong #{project.full_name} &middot;
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
     = link_to issuable.title, issuable_url_args, title: issuable.title

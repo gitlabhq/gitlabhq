@@ -15,6 +15,7 @@ Issue:
 - updated_by_id
 - confidential
 - closed_at
+- closed_by_id
 - due_date
 - moved_to_id
 - lock_version
@@ -172,6 +173,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
+- allow_maintainer_to_push
 MergeRequestDiff:
 - id
 - state
@@ -392,6 +394,7 @@ Service:
 - default
 - wiki_page_events
 - confidential_issues_events
+- confidential_note_events
 ProjectHook:
 - id
 - url
@@ -412,6 +415,7 @@ ProjectHook:
 - token
 - group_id
 - confidential_issues_events
+- confidential_note_events
 - repository_update_events
 ProtectedBranch:
 - id
@@ -474,6 +478,8 @@ Project:
 - merge_requests_rebase_enabled
 - jobs_cache_index
 - external_authorization_classification_label
+- external_webhook_token
+- pages_https_only
 Author:
 - name
 ProjectFeature:
@@ -551,6 +557,17 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+PrometheusMetric:
+- id
+- created_at
+- updated_at
+- project_id
+- y_label
+- unit
+- legend
+- title
+- query
+- group
 LfsFileLock:
 - id
 - path

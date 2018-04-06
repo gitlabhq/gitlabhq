@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Every Sidekiq worker' do
+  DEPRECATED_QUEUES = %w(geo_base_scheduler geo_file_download geo_project_sync geo_repository_shard_sync).freeze
+
   it 'does not use the default queue' do
     expect(Gitlab::SidekiqConfig.workers.map(&:queue)).not_to include('default')
   end
@@ -16,10 +18,10 @@ describe 'Every Sidekiq worker' do
     worker_queues << ActionMailer::DeliveryJob.queue_name
     worker_queues << 'default'
 
-    missing_from_file = worker_queues - file_worker_queues
+    missing_from_file = worker_queues - file_worker_queues - DEPRECATED_QUEUES
     expect(missing_from_file).to be_empty, "expected #{missing_from_file.to_a.inspect} to be in app/workers/all_queues.yml"
 
-    unncessarily_in_file = file_worker_queues - worker_queues
+    unncessarily_in_file = file_worker_queues - worker_queues - DEPRECATED_QUEUES
     expect(unncessarily_in_file).to be_empty, "expected #{unncessarily_in_file.to_a.inspect} not to be in app/workers/all_queues.yml"
   end
 

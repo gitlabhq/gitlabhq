@@ -18,7 +18,7 @@ module EE
     # Runs code after a repository has been synced.
     def after_sync
       expire_all_method_caches
-      expire_branch_cache
+      expire_branch_cache if exists?
       expire_content_cache
     end
 

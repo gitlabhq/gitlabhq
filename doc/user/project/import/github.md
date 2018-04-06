@@ -126,6 +126,12 @@ If you want, you can import all your GitHub projects in one go by hitting
 You can also choose a different name for the project and a different namespace,
 if you have the privileges to do so.
 
+## Mirroring
+
+[Project mirroring](../../../workflow/repository_mirroring.md) can be set up to keep your imported project in sync. Additionally you can configure GitLab to send pipeline status updates back GitHub with the [GitHub Project Integration](../integrations/github.md).
+
+If you import you project using "CI/CD for external repo" then both of the above will be automatically configured.
+
 ## Making the import process go faster
 
 For large projects it may take a while to import all data. To reduce the time

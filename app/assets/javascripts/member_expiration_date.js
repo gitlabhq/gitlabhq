@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Pikaday from 'pikaday';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 

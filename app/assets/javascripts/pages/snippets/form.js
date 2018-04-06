@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import GLForm from '~/gl_form';
 import ZenMode from '~/zen_mode';
 

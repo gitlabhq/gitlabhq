@@ -4,8 +4,8 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   before_action :check_merge_requests_available!
   before_action :merge_request
-  before_action :discussion
-  before_action :authorize_resolve_discussion!
+  before_action :discussion, only: [:resolve, :unresolve]
+  before_action :authorize_resolve_discussion!, only: [:resolve, :unresolve]
 
   def resolve
     Discussions::ResolveService.new(project, current_user, merge_request: merge_request).execute(discussion)
@@ -17,6 +17,12 @@ class Projects::DiscussionsController < Projects::ApplicationController
     discussion.unresolve!
 
     render_discussion
+  end
+
+  def show
+    render json: {
+      discussion_html: view_to_html_string('discussions/_diff_with_notes', discussion: discussion, expanded: true)
+    }
   end
 
   private
@@ -37,7 +43,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_json_with_discussions_serializer
     render json:
-      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user)
+      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user, note_entity:  ProjectNoteEntity)
       .represent(discussion, context: self)
   end
 

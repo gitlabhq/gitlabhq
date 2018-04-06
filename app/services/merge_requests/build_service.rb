@@ -7,6 +7,7 @@ module MergeRequests
       @params_issue_iid = params.delete(:issue_iid)
 
       self.merge_request = MergeRequest.new(params)
+      merge_request.author = current_user
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
       merge_request.target_project  = find_target_project

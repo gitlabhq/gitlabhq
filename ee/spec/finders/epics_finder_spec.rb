@@ -130,4 +130,22 @@ describe EpicsFinder do
       end
     end
   end
+
+  describe '#row_count' do
+    let(:label) { create(:label) }
+    let(:label2) { create(:label) }
+    let!(:labeled_epic) { create(:labeled_epic, group: group, labels: [label]) }
+    let!(:labeled_epic2) { create(:labeled_epic, group: group, labels: [label, label2]) }
+
+    before do
+      group.add_developer(search_user)
+      stub_licensed_features(epics: true)
+    end
+
+    it 'returns number of rows when epics are grouped' do
+      params = { group_id: group.id, label_name: [label.title, label2.title] }
+
+      expect(described_class.new(search_user, params).row_count).to eq(1)
+    end
+  end
 end

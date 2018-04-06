@@ -17,7 +17,7 @@ describe MergeRequest do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
+    it { is_expected.to include_module(NonatomicInternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
@@ -1780,7 +1780,7 @@ describe MergeRequest do
     end
 
     it "executes diff cache service" do
-      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject, an_instance_of(MergeRequestDiff))
 
       subject.reload_diff
     end
@@ -2404,6 +2404,26 @@ describe MergeRequest do
     end
   end
 
+  describe '#base_pipeline' do
+    let(:pipeline_arguments) do
+      {
+        project: project,
+        ref: merge_request.target_branch,
+        sha: merge_request.diff_base_sha
+      }
+    end
+
+    let(:project)       { create(:project, :public, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+    let!(:last_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+
+    it 'returns latest pipeline' do
+      expect(merge_request.base_pipeline).to eq(last_pipeline)
+    end
+  end
+
   describe '#has_commits?' do
     before do
       allow(subject.merge_request_diff).to receive(:commits_count)
@@ -2442,6 +2462,17 @@ describe MergeRequest do
       it 'returns the diffs' do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
       end
+    end
+
+    it 'runs a single query on the initial call, and none afterwards' do
+      expect { subject.merge_request_diff_for(merge_request_diff1.diff_refs) }
+        .not_to exceed_query_limit(1)
+
+      expect { subject.merge_request_diff_for(merge_request_diff2.diff_refs) }
+        .not_to exceed_query_limit(0)
+
+      expect { subject.merge_request_diff_for(merge_request_diff3.head_commit_sha) }
+        .not_to exceed_query_limit(0)
     end
   end
 
@@ -2564,6 +2595,84 @@ describe MergeRequest do
 
     context 'when Gitaly rebase_in_progress is enabled', :disable_gitaly do
       it_behaves_like 'checking whether a rebase is in progress'
+    end
+  end
+
+  describe '#allow_maintainer_to_push' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'fixes', allow_maintainer_to_push: true)
+    end
+
+    it 'is false when pushing by a maintainer is not possible' do
+      expect(merge_request).to receive(:maintainer_push_possible?) { false }
+
+      expect(merge_request.allow_maintainer_to_push).to be_falsy
+    end
+
+    it 'is true when pushing by a maintainer is possible' do
+      expect(merge_request).to receive(:maintainer_push_possible?) { true }
+
+      expect(merge_request.allow_maintainer_to_push).to be_truthy
+    end
+  end
+
+  describe '#maintainer_push_possible?' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'fixes')
+    end
+
+    before do
+      allow(ProtectedBranch).to receive(:protected?) { false }
+    end
+
+    it 'does not allow maintainer to push if the source project is the same as the target' do
+      merge_request.target_project = merge_request.source_project = create(:project, :public)
+
+      expect(merge_request.maintainer_push_possible?).to be_falsy
+    end
+
+    it 'allows maintainer to push when both source and target are public' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+
+      expect(merge_request.maintainer_push_possible?).to be_truthy
+    end
+
+    it 'is not available for protected branches' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+
+      expect(ProtectedBranch).to receive(:protected?)
+                                   .with(merge_request.source_project, 'fixes')
+                                   .and_return(true)
+
+      expect(merge_request.maintainer_push_possible?).to be_falsy
+    end
+  end
+
+  describe '#can_allow_maintainer_to_push?' do
+    let(:target_project) { create(:project, :public) }
+    let(:source_project) { fork_project(target_project) }
+    let(:merge_request) do
+      create(:merge_request,
+             source_project: source_project,
+             source_branch: 'fixes',
+             target_project: target_project)
+    end
+    let(:user) { create(:user) }
+
+    before do
+      allow(merge_request).to receive(:maintainer_push_possible?) { true }
+    end
+
+    it 'is false if the user does not have push access to the source project' do
+      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_falsy
+    end
+
+    it 'is true when the user has push access to the source project' do
+      source_project.add_developer(user)
+
+      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_truthy
     end
   end
 end

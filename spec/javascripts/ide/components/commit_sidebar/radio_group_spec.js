@@ -1,13 +1,13 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import radioGroup from 'ee/ide/components/commit_sidebar/radio_group.vue';
+import store from '~/ide/stores';
+import radioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from 'spec/ide/helpers';
 
 describe('IDE commit sidebar radio group', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const Component = Vue.extend(radioGroup);
 
     store.state.commit.commitAction = '2';
@@ -33,7 +33,7 @@ describe('IDE commit sidebar radio group', () => {
     expect(vm.$el.textContent).toContain('test');
   });
 
-  it('uses slot if label is not present', (done) => {
+  it('uses slot if label is not present', done => {
     vm.$destroy();
 
     vm = new Vue({
@@ -59,7 +59,7 @@ describe('IDE commit sidebar radio group', () => {
     });
   });
 
-  it('updates store when changing radio button', (done) => {
+  it('updates store when changing radio button', done => {
     vm.$el.querySelector('input').dispatchEvent(new Event('change'));
 
     Vue.nextTick(() => {
@@ -69,7 +69,7 @@ describe('IDE commit sidebar radio group', () => {
     });
   });
 
-  it('renders helpText tooltip', (done) => {
+  it('renders helpText tooltip', done => {
     vm.helpText = 'help text';
 
     Vue.nextTick(() => {
@@ -83,7 +83,7 @@ describe('IDE commit sidebar radio group', () => {
   });
 
   describe('with input', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.$destroy();
 
       const Component = Vue.extend(radioGroup);
@@ -106,7 +106,7 @@ describe('IDE commit sidebar radio group', () => {
       expect(vm.$el.querySelector('.form-control')).not.toBeNull();
     });
 
-    it('hides input when commitAction doesnt match value', (done) => {
+    it('hides input when commitAction doesnt match value', done => {
       store.state.commit.commitAction = '2';
 
       Vue.nextTick(() => {
@@ -115,7 +115,7 @@ describe('IDE commit sidebar radio group', () => {
       });
     });
 
-    it('updates branch name in store on input', (done) => {
+    it('updates branch name in store on input', done => {
       const input = vm.$el.querySelector('.form-control');
       input.value = 'testing-123';
       input.dispatchEvent(new Event('input'));

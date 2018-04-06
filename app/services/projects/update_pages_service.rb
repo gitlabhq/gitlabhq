@@ -1,5 +1,8 @@
 module Projects
   class UpdatePagesService < BaseService
+    InvaildStateError = Class.new(StandardError)
+    FailedToExtractError = Class.new(StandardError)
+
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
@@ -11,13 +14,15 @@ module Projects
     end
 
     def execute
+      register_attempt
+
       # Create status notifying the deployment of pages
       @status = create_status
       @status.enqueue!
       @status.run!
 
-      raise 'missing pages artifacts' unless build.artifacts?
-      raise 'pages are outdated' unless latest?
+      raise InvaildStateError, 'missing pages artifacts' unless build.artifacts?
+      raise InvaildStateError, 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
       FileUtils.mkdir_p(tmp_path)
@@ -26,32 +31,34 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, 'public')
-        raise 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-        raise 'pages are outdated' unless latest?
+        raise InvaildStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
+        raise InvaildStateError, 'pages are outdated' unless latest?
 
         deploy_page!(archive_public_path)
         success
       end
-    rescue => e
-      register_failure
+    rescue InvaildStateError => e
       error(e.message)
-    ensure
-      register_attempt
-      build.erase_artifacts! unless build.has_expiring_artifacts?
+    rescue => e
+      error(e.message, false)
+      raise e
     end
 
     private
 
     def success
       @status.success
+      delete_artifact!
       super
     end
 
-    def error(message, http_status = nil)
+    def error(message, allow_delete_artifact = true)
+      register_failure
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop(:script_failure)
+      delete_artifact! if allow_delete_artifact
       super
     end
 
@@ -72,7 +79,7 @@ module Projects
       elsif artifacts_filename.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
-        raise 'unsupported artifacts format'
+        raise InvaildStateError, 'unsupported artifacts format'
       end
     end
 
@@ -82,18 +89,18 @@ module Projects
                                 %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
                                 %W(tar -x -C #{temp_path} #{SITE_PATH}),
                                 err: '/dev/null')
-        raise 'pages failed to extract' unless results.compact.all?(&:success?)
+        raise FailedToExtractError, 'pages failed to extract' unless results.compact.all?(&:success?)
       end
     end
 
     def extract_zip_archive!(temp_path)
-      raise 'missing artifacts metadata' unless build.artifacts_metadata?
+      raise InvaildStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
       public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
 
       if public_entry.total_size > max_size
-        raise "artifacts for pages are too large: #{public_entry.total_size}"
+        raise InvaildStateError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.
@@ -103,7 +110,7 @@ module Projects
       site_path = File.join(SITE_PATH, '*')
       build.artifacts_file.use_file do |artifacts_path|
         unless system(*%W(unzip -qq -n #{artifacts_path} #{site_path} -d #{temp_path}))
-          raise 'pages failed to extract'
+          raise FailedToExtractError, 'pages failed to extract'
         end
       end
     end
@@ -167,8 +174,16 @@ module Projects
       build.ref
     end
 
+    def delete_artifact!
+      build.reload # Reload stable object to prevent erase artifacts with old state
+      build.erase_artifacts! unless build.has_expiring_artifacts?
+    end
+
     def latest_sha
       project.commit(build.ref).try(:sha).to_s
+    ensure
+      # Close any file descriptors that were opened and free libgit2 buffers
+      project.cleanup
     end
 
     def sha

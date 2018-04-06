@@ -8,7 +8,7 @@ class Milestone < ActiveRecord::Base
   Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
-  include InternalId
+  include NonatomicInternalId
   include Sortable
   include Referable
   include StripAttribute
@@ -142,7 +142,7 @@ class Milestone < ActiveRecord::Base
     User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
   end
 
-  def self.sort(method)
+  def self.sort_by_attribute(method)
     case method.to_s
     when 'due_date_asc'
       reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))

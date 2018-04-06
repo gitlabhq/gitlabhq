@@ -129,6 +129,12 @@ describe Geo::RepositorySyncService do
     end
 
     context 'tracking database' do
+      context 'temporary repositories' do
+        include_examples 'cleans temporary repositories' do
+          let(:repository) { project.repository }
+        end
+      end
+
       it 'creates a new registry if does not exists' do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
       end
@@ -152,6 +158,18 @@ describe Geo::RepositorySyncService do
           subject.execute
 
           expect(registry.last_repository_successful_sync_at).not_to be_nil
+        end
+
+        it 'resets the repository_verification_checksum' do
+          subject.execute
+
+          expect(registry.repository_verification_checksum).to be_nil
+        end
+
+        it 'resets the last_repository_verification_failure' do
+          subject.execute
+
+          expect(registry.last_repository_verification_failure).to be_nil
         end
 
         it 'logs success with timings' do
@@ -236,14 +254,21 @@ describe Geo::RepositorySyncService do
 
         expect(subject).to receive(:sync_repository).with(true).and_call_original
         expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
-        expect(subject.gitlab_shell).to receive(:remove_repository).exactly(3).times.and_call_original
+
+        expect(subject.gitlab_shell).to receive(:add_namespace).with(
+          project.repository_storage_path,
+          "@failed-geo-sync/#{repository.disk_path}"
+        ).and_call_original
+
+        expect(subject.gitlab_shell).to receive(:add_namespace).with(
+          project.repository_storage_path,
+          repository.disk_path
+        ).and_call_original
+
+        expect(subject.gitlab_shell).to receive(:remove_repository).exactly(2).times.and_call_original
 
         subject.execute
 
-        # gitlab-shell always appends .git to the end of the repository, so
-        # we're relying on the fact that projects can't contain + in the name
-        deleted_dir = File.join(project.repository_storage_path, project.path) + "+failed-geo-sync.git"
-        expect(File.directory?(deleted_dir)).to be false
         expect(File.directory?(project.repository.path)).to be true
       end
 
@@ -256,6 +281,20 @@ describe Geo::RepositorySyncService do
         )
 
         expect(subject).to receive(:sync_repository).with(true)
+
+        subject.execute
+      end
+
+      it 'cleans temporary repo after redownload' do
+        create(
+          :geo_project_registry,
+          project: project,
+          repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1,
+          force_to_redownload_repository: true
+        )
+
+        expect(subject).to receive(:fetch_geo_mirror)
+        expect(subject).to receive(:clean_up_temporary_repository).twice
 
         subject.execute
       end
@@ -288,6 +327,9 @@ describe Geo::RepositorySyncService do
             project: project,
             force_to_redownload_repository: true
           )
+
+          expect(project.repository).to receive(:expire_exists_cache).twice.and_call_original
+          expect(subject).not_to receive(:fail_registry!)
 
           subject.execute
         end

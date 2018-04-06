@@ -53,10 +53,10 @@ class Member < ActiveRecord::Base
   end
 
   # Like active, but without invites. For when a User is required.
-  scope :active_without_invites, -> do
+  scope :active_without_invites_and_requests, -> do
     left_join_users
       .where(users: { state: 'active' })
-      .where(requested_at: nil)
+      .non_request
       .reorder(nil)
   end
 
@@ -86,6 +86,7 @@ class Member < ActiveRecord::Base
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
   after_update :post_update_hook, unless: [:pending?, :importing?]
+  after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?
   after_commit :refresh_member_authorized_projects
 
@@ -96,7 +97,7 @@ class Member < ActiveRecord::Base
       joins(:user).merge(User.search(query))
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       case method.to_s
       when 'access_level_asc' then reorder(access_level: :asc)
       when 'access_level_desc' then reorder(access_level: :desc)
@@ -321,6 +322,10 @@ class Member < ActiveRecord::Base
 
   def create_notification_setting
     user.notification_settings.find_or_create_for(source)
+  end
+
+  def destroy_notification_setting
+    notification_setting&.destroy
   end
 
   def notification_setting

@@ -117,7 +117,7 @@ When using default setup, minimum configuration requires:
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of consul username/password pair.
 Can be generated with:
     ```sh
-    echo -n 'CONSUL_DATABASE_PASSWORDCONSUL_USERNAME' | md5sum
+    sudo gitlab-ctl pg-password-md5 CONSUL_USERNAME
     ```
 - `CONSUL_SERVER_NODES`.  The IP addresses or DNS records of the Consul server nodes.
 
@@ -159,7 +159,7 @@ We will need the following password information for the application's database u
 - `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
 Can be generated with:
     ```sh
-    echo -n 'POSTGRESQL_USER_PASSWORDPOSTGRESQL_USERNAME' | md5sum
+    sudo gitlab-ctl pg-password-md5 POSTGRESQL_USERNAME
     ```
 
 ##### Pgbouncer information
@@ -171,7 +171,7 @@ When using default setup, minimum configuration requires:
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of pgbouncer username/password pair.
 Can be generated with:
     ```sh
-    echo -n 'PGBOUNCER_PASSWORDPGBOUNCER_USERNAME' | md5sum
+    sudo gitlab-ctl pg-password-md5 PGBOUNCER_USERNAME
     ```
 - `PGBOUNCER_NODE`, is the IP address or a FQDN of the node running Pgbouncer.
 
@@ -228,7 +228,7 @@ On each Consul node perform the following:
       server: true,
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
-    
+
     # Disable auto migrations
     gitlab_rails['auto_migrate'] = false
     #
@@ -296,7 +296,7 @@ On each database node perform the following:
 
     # Replace XXX.XXX.XXX.XXX/YY with Network Address
     postgresql['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY)
-    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY)
+    repmgr['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 XXX.XXX.XXX.XXX/YY)
 
     # Replace placeholders:
     #
@@ -536,6 +536,12 @@ Ensure that all migrations ran:
 ```sh
 gitlab-rake gitlab:db:configure
 ```
+
+> **Note**: If you encounter a `rake aborted!` error stating that PGBouncer is failing to connect to
+PostgreSQL it may be that your PGBouncer node's IP address is missing from
+PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See 
+[PGBouncer error `ERROR:  pgbouncer cannot connect to server`](#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) 
+in the Troubleshooting section before proceeding.
 
 #### Ensure GitLab is running
 
@@ -965,6 +971,34 @@ To restart either service, run `gitlab-ctl restart SERVICE`
 For PostgreSQL, it is usually safe to restart the master node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done. To be safe, you can stop `repmgrd` on the standby nodes first with `gitlab-ctl stop repmgrd`, then start afterwards with `gitlab-ctl start repmgrd`.
 
 On the consul server nodes, it is important to restart the consul service in a controlled fashion. Read our [consul documentation](consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
+
+#### PGBouncer error `ERROR:  pgbouncer cannot connect to server`
+
+You may get this error when running `gitlab-rake gitlab:db:configure` or you 
+may see the error in the PGBouncer log file. 
+
+```
+PG::ConnectionBad: ERROR:  pgbouncer cannot connect to server
+```
+
+The problem may be that your PGBouncer node's IP address is not included in the
+`trust_auth_cidr_addresses` setting in `/etc/gitlab/gitlab.rb` on the database nodes. 
+
+You can confirm that this is the issue by checking the PostgreSQL log on the master
+database node. If you see the following error then `trust_auth_cidr_addresses` 
+is the problem.
+
+```
+2018-03-29_13:59:12.11776 FATAL:  no pg_hba.conf entry for host "123.123.123.123", user "pgbouncer", database "gitlabhq_production", SSL off
+```
+
+To fix the problem, add the IP address to `/etc/gitlab/gitlab.rb`. 
+
+```
+postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
+```
+
+[Reconfigure GitLab] for the changes to take effect.
 
 #### Issues with other components
 

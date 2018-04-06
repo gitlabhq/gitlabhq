@@ -63,7 +63,7 @@ module Gitlab
           log " * Created #{project.name} (#{project_full_path})".color(:green)
 
           project.write_repository_config
-          project.repository.create_hooks
+          Gitlab::Git::Repository.create_hooks(project.repository.path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
 
           ProjectCacheWorker.perform_async(project.id)
         else

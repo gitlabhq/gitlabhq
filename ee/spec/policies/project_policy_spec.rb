@@ -139,7 +139,7 @@ describe ProjectPolicy do
 
     context 'with an external authorization service' do
       before do
-        enable_external_authorization_service
+        enable_external_authorization_service_check
       end
 
       it 'allows access when the external service allows it' do
@@ -164,15 +164,21 @@ describe ProjectPolicy do
       end
 
       it 'prevents all but seeing a public project in a list when access is denied' do
-        external_service_deny_access(owner, project)
-        external_service_deny_access(developer, project)
+        [developer, owner, build(:user), nil].each do |user|
+          external_service_deny_access(user, project)
+          policy = described_class.new(user, project)
 
-        [developer, owner, create(:user), nil].each do |user|
-          policy = described_class.new(owner, project)
           expect(policy).not_to be_allowed(:read_project)
           expect(policy).not_to be_allowed(:owner_access)
           expect(policy).not_to be_allowed(:change_namespace)
         end
+      end
+
+      it 'passes the full path to external authorization for logging purposes' do
+        expect(EE::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(owner, 'default_label', project.full_path).and_call_original
+
+        described_class.new(owner, project).allowed?(:read_project)
       end
     end
   end

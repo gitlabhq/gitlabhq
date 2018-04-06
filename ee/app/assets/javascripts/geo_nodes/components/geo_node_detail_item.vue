@@ -4,14 +4,12 @@
 
   import { VALUE_TYPE, CUSTOM_TYPE } from '../constants';
 
-  import geoNodeHealthStatus from './geo_node_health_status.vue';
   import geoNodeSyncSettings from './geo_node_sync_settings.vue';
   import geoNodeEventStatus from './geo_node_event_status.vue';
 
   export default {
     components: {
       stackedProgressBar,
-      geoNodeHealthStatus,
       geoNodeSyncSettings,
       geoNodeEventStatus,
     },
@@ -53,6 +51,11 @@
         required: false,
         default: '',
       },
+      eventTypeLogStatus: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
     computed: {
       isValueTypePlain() {
@@ -64,9 +67,6 @@
       isValueTypeCustom() {
         return this.itemValueType === VALUE_TYPE.CUSTOM;
       },
-      isCustomTypeStatus() {
-        return this.customType === CUSTOM_TYPE.STATUS;
-      },
       isCustomTypeSync() {
         return this.customType === CUSTOM_TYPE.SYNC;
       },
@@ -75,7 +75,7 @@
 </script>
 
 <template>
-  <li class="row node-detail-item">
+  <div class="node-detail-item prepend-top-15 prepend-left-10">
     <div class="node-detail-title">
       {{ itemTitle }}
     </div>
@@ -100,12 +100,9 @@
       />
     </div>
     <template v-if="isValueTypeCustom">
-      <geo-node-health-status
-        v-if="isCustomTypeStatus"
-        :status="itemValue"
-      />
       <geo-node-sync-settings
-        v-else-if="isCustomTypeSync"
+        v-if="isCustomTypeSync"
+        :sync-status-unavailable="itemValue.syncStatusUnavailable"
         :selective-sync-type="itemValue.selectiveSyncType"
         :last-event="itemValue.lastEvent"
         :cursor-last-event="itemValue.cursorLastEvent"
@@ -114,7 +111,8 @@
         v-else
         :event-id="itemValue.eventId"
         :event-time-stamp="itemValue.eventTimeStamp"
+        :event-type-log-status="eventTypeLogStatus"
       />
     </template>
-  </li>
+  </div>
 </template>

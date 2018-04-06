@@ -96,12 +96,24 @@ Example response:
 }
 ```
 
+## Delete a Geo node
+
+Removes the Geo node.
+
+```
+DELETE /geo_nodes/:id
+```
+
+| Attribute | Type    | Required | Description             |
+|-----------|---------|----------|-------------------------|
+| `id`      | integer | yes      | The ID of the Geo node. |
+
 ## Repair a Geo node
 
 To repair the OAuth authentication of a Geo node.
 
 ```
-PUT /geo_nodes/:id/repair
+POST /geo_nodes/:id/repair
 ```
 
 Example response:
@@ -176,6 +188,10 @@ Example response:
 ```
 GET /geo_nodes/:id/status
 ```
+
+| Attribute | Type    | Required | Description |
+| --------- | ------- | -------- | ----------- |
+| `refresh` | boolean | no       | Attempt to fetch the latest status from the Geo node directly, ignoring the cache |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/2/status

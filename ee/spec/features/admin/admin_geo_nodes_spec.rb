@@ -13,7 +13,7 @@ describe 'admin Geo Nodes', :js do
     wait_for_requests
 
     expect(page).to have_link('New node', href: new_admin_geo_node_path)
-    page.within(find('.geo-nodes', match: :first)) do
+    page.within(find('.geo-node-item', match: :first)) do
       expect(page).to have_content(geo_node.url)
     end
   end
@@ -33,7 +33,7 @@ describe 'admin Geo Nodes', :js do
       expect(current_path).to eq admin_geo_nodes_path
       wait_for_requests
 
-      page.within(find('.geo-nodes', match: :first)) do
+      page.within(find('.geo-node-item', match: :first)) do
         expect(page).to have_content(geo_node.url)
       end
     end
@@ -68,7 +68,7 @@ describe 'admin Geo Nodes', :js do
       expect(current_path).to eq admin_geo_nodes_path
       wait_for_requests
 
-      page.within(find('.geo-nodes', match: :first)) do
+      page.within(find('.geo-node-item', match: :first)) do
         expect(page).to have_content('http://newsite.com')
         expect(page).to have_content('Primary')
       end
@@ -83,12 +83,15 @@ describe 'admin Geo Nodes', :js do
 
     it 'removes an existing Geo Node' do
       page.within(find('.geo-node-actions', match: :first)) do
-        page.click_link('Remove')
+        page.click_button('Remove')
+      end
+      page.within('.modal') do
+        page.click_button('Remove')
       end
 
       expect(current_path).to eq admin_geo_nodes_path
       wait_for_requests
-      expect(page).not_to have_css('.geo-nodes')
+      expect(page).not_to have_css('.geo-node-item')
     end
   end
 end

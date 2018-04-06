@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';

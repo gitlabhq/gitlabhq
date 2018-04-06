@@ -151,7 +151,7 @@ module Approvable
   end
 
   def approver_ids=(value)
-    value.split(",").map(&:strip).each do |user_id|
+    ::Gitlab::Utils.ensure_array_from_string(value).each do |user_id|
       next if author && user_id == author.id
 
       approvers.find_or_initialize_by(user_id: user_id, target_id: id)
@@ -159,7 +159,7 @@ module Approvable
   end
 
   def approver_group_ids=(value)
-    value.split(",").map(&:strip).each do |group_id|
+    ::Gitlab::Utils.ensure_array_from_string(value).each do |group_id|
       approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
     end
   end

@@ -3,11 +3,13 @@ module Ci
     attr_reader :pipeline
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
+                EE::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Size,
+                Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity].freeze
 
@@ -29,7 +31,8 @@ module Ci
         current_user: current_user,
 
         # EE specific
-        allow_mirror_update: mirror_update
+        allow_mirror_update: mirror_update,
+        chat_data: params[:chat_data]
       )
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
@@ -71,7 +74,7 @@ module Ci
       project.pipelines
         .where(ref: pipeline.ref)
         .where.not(id: pipeline.id)
-        .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
+        .where.not(sha: project.commit(pipeline.ref).try(:id))
         .created_or_pending
     end
 
@@ -87,7 +90,7 @@ module Ci
     end
 
     def related_merge_requests
-      MergeRequest.opened.where(source_project: pipeline.project, source_branch: pipeline.ref)
+      pipeline.project.source_of_merge_requests.opened.where(source_branch: pipeline.ref)
     end
   end
 end

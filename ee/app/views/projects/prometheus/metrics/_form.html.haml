@@ -1,0 +1,59 @@
+- project = local_assigns.fetch(:project)
+- metric = local_assigns.fetch(:metric)
+- save_button_text = metric.persisted? ? _('Save changes') : s_('Metrics|Create metric')
+
+.row.prepend-top-default.append-bottom-default
+  %h3.page-title.text-center
+    - if metric.persisted?
+      = s_('Metrics|Edit metric')
+    - else
+      = s_('Metrics|New metric')
+  = form_for [project.namespace.becomes(Namespace), project, metric], html: { class: 'col-lg-8 col-lg-offset-2' } do |f|
+    = form_errors(metric)
+    .form-group
+      = f.label :title, s_('Metrics|Name'), class: 'label-light'
+      = f.text_field :title, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. Throughput'), autofocus: true
+      %span.help-block
+        = s_('Metrics|Used as a title for the chart')
+    .form-group
+      = label_tag :group, s_("Metrics|Type"), class: 'append-bottom-10'
+
+      .form-group.append-bottom-0
+        = f.radio_button :group, :business, checked: true
+        = f.label :group_business, s_("Metrics|Business"), class: 'label-light append-right-10'
+
+        = f.radio_button :group, :response
+        = f.label :group_response, s_("Metrics|Response"), class: 'label-light append-right-10'
+
+        = f.radio_button :group, :system
+        = f.label :group_system, s_("Metrics|System"), class: 'label-light'
+
+      %p.text-tertiary
+        = s_('Metrics|For grouping similar metrics')
+    .form-group
+      = f.label :query, s_('Metrics|Query'), class: 'label-light'
+      = f.text_field :query, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. rate(http_requests_total[5m])')
+      %span.help-block
+        = s_('Metrics|Must be a valid PromQL query.')
+        = link_to "https://prometheus.io/docs/prometheus/latest/querying/basics/", target: "_blank", rel: "noopener noreferrer" do
+          = sprite_icon("external-link", size: 12)
+          = s_('Metrics|Prometheus Query Documentation')
+    .form-group
+      = f.label :y_label, s_('Metrics|Y-axis label'), class: 'label-light'
+      = f.text_field :y_label, class: 'form-control', placeholder: s_('Metrics|e.g. Requests/second')
+      %span.help-block
+        = s_("Metrics|Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time.")
+    .form-group
+      = f.label :unit, s_('Metrics|Unit label'), class: 'label-light'
+      = f.text_field :unit, class: 'form-control', placeholder: s_('Metrics|e.g. req/sec')
+    .form-group
+      = f.label :legend, s_('Metrics|Legend label (optional)'), class: 'label-light'
+      = f.text_field :legend, class: 'form-control', placeholder: s_('Metrics|e.g. HTTP requests')
+      %span.help-block
+        = s_('Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response.')
+
+    .form-actions
+      = f.submit save_button_text, class: 'btn btn-success'
+      = link_to _('Cancel'), edit_project_service_path(project, PrometheusService), class: 'btn btn-default pull-right'
+      - if metric.persisted?
+        = link_to _('Delete'), project_prometheus_metric_path(project, metric), data: { confirm: s_("This will delete the custom metric, Are you sure?") }, method: :delete, class: "btn btn-danger pull-right append-right-default"

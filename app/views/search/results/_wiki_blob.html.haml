@@ -10,7 +10,7 @@
           - if @project
             = wiki_blob.basename
           - else
-            #{project.name_with_namespace}:
+            #{project.full_name}:
             %i= wiki_blob.basename
     .file-content.code.term
       = render 'shared/file_highlight', blob: wiki_blob, first_line_number: wiki_blob.startline

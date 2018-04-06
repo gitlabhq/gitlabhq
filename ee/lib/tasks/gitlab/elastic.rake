@@ -46,7 +46,7 @@ namespace :gitlab do
 
       projects.find_each do |project|
         unless project.wiki.empty?
-          puts "Indexing wiki of #{project.name_with_namespace}..."
+          puts "Indexing wiki of #{project.full_name}..."
 
           begin
             project.wiki.index_blobs

@@ -40,8 +40,7 @@
       createEpic() {
         this.creating = true;
         this.service.createEpic(this.title)
-          .then(res => res.json())
-          .then((data) => {
+          .then(({ data }) => {
             visitUrl(data.web_url);
           })
           .catch(() => {

@@ -8,11 +8,15 @@
     "karma": "karma start config/karma.config.js --single-run",
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
-    "svg": "node config/svg.config.js",
+    "prettier-staged": "node ./scripts/frontend/prettier.js",
+    "prettier-staged-save": "node ./scripts/frontend/prettier.js save",
+    "prettier-all": "node ./scripts/frontend/prettier.js check-all",
+    "prettier-all-save": "node ./scripts/frontend/prettier.js save-all",
     "webpack": "webpack --config config/webpack.config.js",
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "@gitlab-org/gitlab-svgs": "^1.16.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.0",
@@ -93,7 +97,6 @@
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.8.0",
     "axios-mock-adapter": "^1.10.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.5",
@@ -106,6 +109,7 @@
     "eslint-plugin-jasmine": "^2.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-vue": "^4.0.1",
+    "ignore": "^3.3.7",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.0",
     "jasmine-jquery": "^2.1.1",
@@ -117,7 +121,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "2.0.7",
     "nodemon": "^1.15.1",
-    "prettier": "1.9.2",
+    "prettier": "1.11.1",
     "webpack-dev-server": "^2.11.2"
   }
 }

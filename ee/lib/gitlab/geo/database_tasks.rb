@@ -149,9 +149,23 @@ module Gitlab
         {
           database_config: YAML.load_file(GEO_DATABASE_CONFIG),
           db_dir: GEO_DB_DIR,
-          migrations_paths: [Rails.root.join(GEO_DB_DIR, 'migrate')],
+          migrations_paths: geo_migrations_paths,
           seed_loader: SeedLoader.new
         }
+      end
+
+      def geo_migrations_paths
+        migrations_paths = [geo_migrate_path]
+        migrations_paths << geo_post_migration_path unless ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS']
+        migrations_paths
+      end
+
+      def geo_migrate_path
+        Rails.root.join(GEO_DB_DIR, 'migrate')
+      end
+
+      def geo_post_migration_path
+        Rails.root.join(GEO_DB_DIR, 'post_migrate')
       end
 
       def with_geo_db

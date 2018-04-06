@@ -254,8 +254,7 @@ class TodoService
   end
 
   def handle_note(note, author, skip_users = [])
-    # Skip system notes, and notes on project snippet
-    return if note.system? || note.for_snippet?
+    return unless note.can_create_todo?
 
     project = note.project
     target  = note.noteable

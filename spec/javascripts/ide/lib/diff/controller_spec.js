@@ -1,10 +1,13 @@
 /* global monaco */
-import monacoLoader from 'ee/ide/monaco_loader';
-import editor from 'ee/ide/lib/editor';
-import ModelManager from 'ee/ide/lib/common/model_manager';
-import DecorationsController from 'ee/ide/lib/decorations/controller';
-import DirtyDiffController, { getDiffChangeType, getDecorator } from 'ee/ide/lib/diff/controller';
-import { computeDiff } from 'ee/ide/lib/diff/diff';
+import monacoLoader from '~/ide/monaco_loader';
+import editor from '~/ide/lib/editor';
+import ModelManager from '~/ide/lib/common/model_manager';
+import DecorationsController from '~/ide/lib/decorations/controller';
+import DirtyDiffController, {
+  getDiffChangeType,
+  getDecorator,
+} from '~/ide/lib/diff/controller';
+import { computeDiff } from '~/ide/lib/diff/diff';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library dirty diff controller', () => {
@@ -14,7 +17,7 @@ describe('Multi-file editor library dirty diff controller', () => {
   let decorationsController;
   let model;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     monacoLoader(['vs/editor/editor.main'], () => {
       editorInstance = editor.create(monaco);
       editorInstance.createInstance(document.createElement('div'));
@@ -38,7 +41,7 @@ describe('Multi-file editor library dirty diff controller', () => {
   });
 
   describe('getDiffChangeType', () => {
-    ['added', 'removed', 'modified'].forEach((type) => {
+    ['added', 'removed', 'modified'].forEach(type => {
       it(`returns ${type}`, () => {
         const change = {
           [type]: true,
@@ -50,15 +53,15 @@ describe('Multi-file editor library dirty diff controller', () => {
   });
 
   describe('getDecorator', () => {
-    ['added', 'removed', 'modified'].forEach((type) => {
+    ['added', 'removed', 'modified'].forEach(type => {
       it(`returns with linesDecorationsClassName for ${type}`, () => {
         const change = {
           [type]: true,
         };
 
-        expect(
-          getDecorator(change).options.linesDecorationsClassName,
-        ).toBe(`dirty-diff dirty-diff-${type}`);
+        expect(getDecorator(change).options.linesDecorationsClassName).toBe(
+          `dirty-diff dirty-diff-${type}`,
+        );
       });
 
       it('returns with line numbers', () => {
@@ -118,7 +121,9 @@ describe('Multi-file editor library dirty diff controller', () => {
 
       controller.reDecorate(model);
 
-      expect(controller.decorationsController.decorate).toHaveBeenCalledWith(model);
+      expect(controller.decorationsController.decorate).toHaveBeenCalledWith(
+        model,
+      );
     });
   });
 
@@ -126,25 +131,35 @@ describe('Multi-file editor library dirty diff controller', () => {
     it('adds decorations into decorations controller', () => {
       spyOn(controller.decorationsController, 'addDecorations');
 
-      controller.decorate({ data: { changes: [], path: 'path' } });
+      controller.decorate({ data: { changes: [], path: model.path } });
 
-      expect(controller.decorationsController.addDecorations).toHaveBeenCalledWith(model, 'dirtyDiff', jasmine.anything());
+      expect(
+        controller.decorationsController.addDecorations,
+      ).toHaveBeenCalledWith(model, 'dirtyDiff', jasmine.anything());
     });
 
     it('adds decorations into editor', () => {
-      const spy = spyOn(controller.decorationsController.editor.instance, 'deltaDecorations');
+      const spy = spyOn(
+        controller.decorationsController.editor.instance,
+        'deltaDecorations',
+      );
 
-      controller.decorate({ data: { changes: computeDiff('123', '1234'), path: 'path' } });
+      controller.decorate({
+        data: { changes: computeDiff('123', '1234'), path: model.path },
+      });
 
-      expect(spy).toHaveBeenCalledWith([], [{
-        range: new monaco.Range(
-          1, 1, 1, 1,
-        ),
-        options: {
-          isWholeLine: true,
-          linesDecorationsClassName: 'dirty-diff dirty-diff-modified',
-        },
-      }]);
+      expect(spy).toHaveBeenCalledWith(
+        [],
+        [
+          {
+            range: new monaco.Range(1, 1, 1, 1),
+            options: {
+              isWholeLine: true,
+              linesDecorationsClassName: 'dirty-diff dirty-diff-modified',
+            },
+          },
+        ],
+      );
     });
   });
 
@@ -166,11 +181,16 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('removes worker event listener', () => {
-      spyOn(controller.dirtyDiffWorker, 'removeEventListener').and.callThrough();
+      spyOn(
+        controller.dirtyDiffWorker,
+        'removeEventListener',
+      ).and.callThrough();
 
       controller.dispose();
 
-      expect(controller.dirtyDiffWorker.removeEventListener).toHaveBeenCalledWith('message', jasmine.anything());
+      expect(
+        controller.dirtyDiffWorker.removeEventListener,
+      ).toHaveBeenCalledWith('message', jasmine.anything());
     });
   });
 });

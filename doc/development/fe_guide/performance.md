@@ -23,7 +23,7 @@ controlled by the server.
 1. The backend code will most likely be using etags. You do not and should not check for status
 `304 Not Modified`. The browser will transform it for you.
 
-### Lazy Loading
+### Lazy Loading Images
 
 To improve the time to first render we are using lazy loading for images. This works by setting 
 the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded, 
@@ -47,41 +47,103 @@ properties once, and handle the actual animation with transforms.
 
 ## Reducing Asset Footprint
 
+### Universal code
+
+Code that is contained within `main.js` and `commons/index.js` are loaded and
+run on _all_ pages. **DO NOT ADD** anything to these files unless it is truly
+needed _everywhere_. These bundles include ubiquitous libraries like `vue`,
+`axios`, and `jQuery`, as well as code for the main navigation and sidebar.
+Where possible we should aim to remove modules from these bundles to reduce our
+code footprint.
+
 ### Page-specific JavaScript
 
-Certain pages may require the use of a third party library, such as [d3][d3] for
-the User Activity Calendar and [Chart.js][chartjs] for the Graphs pages. These
-libraries increase the page size significantly, and impact load times due to
-bandwidth bottlenecks and the browser needing to parse more JavaScript.
+Webpack has been configured to automatically generate entry point bundles based
+on the file structure within `app/assets/javascripts/pages/*`. The directories
+within the `pages` directory correspond to Rails controllers and actions. These
+auto-generated bundles will be automatically included on the corresponding
+pages.
 
-In cases where libraries are only used on a few specific pages, we use
-"page-specific JavaScript" to prevent the main `main.js` file from
-becoming unnecessarily large.
+For example, if you were to visit [gitlab.com/gitlab-org/gitlab-ce/issues](https://gitlab.com/gitlab-org/gitlab-ce/issues),
+you would be accessing the `app/controllers/projects/issues_controller.rb`
+controller with the `index` action. If a corresponding file exists at
+`pages/projects/issues/index/index.js`, it will be compiled into a webpack
+bundle and included on the page.
 
-Steps to split page-specific JavaScript from the main `main.js`:
+> **Note:** Previously we had encouraged the use of
+> `content_for :page_specific_javascripts` within haml files, along with
+> manually generated webpack bundles. However under this new system you should
+> not ever need to manually add an entry point to the `webpack.config.js` file.
 
-1. Create a directory for the specific page(s), e.g. `graphs/`.
-1. In that directory, create a `namespace_bundle.js` file, e.g. `graphs_bundle.js`.
-1. Add the new "bundle" file to the list of entry files in `config/webpack.config.js`.
-  - For example: `graphs: './graphs/graphs_bundle.js',`.
-1. Move code reliant on these libraries into the `graphs` directory.
-1. In `graphs_bundle.js` add CommonJS `require('./path_to_some_component.js');` statements to load any other files in this directory. Make sure to use relative urls.
-1. In the relevant views, add the scripts to the page with the following:
+> **Tip:**
+> If you are unsure what controller and action corresponds to a given page, you
+> can find this out by inspecting `document.body.dataset.page` within your
+> browser's developer console while on any page within gitlab.
 
-```haml
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'lib_chart'
-  = webpack_bundle_tag 'graphs'
-```
+#### Important Considerations:
 
-The above loads `chart.js` and `graphs_bundle.js` for this page only. `chart.js`
-is separated from the bundle file so it can be cached separately from the bundle
-and reused for other pages that also rely on the library. For an example, see
-[this Haml file][page-specific-js-example].
+- **Keep Entry Points Lite:**
+  Page-specific javascript entry points should be as lite as possible.  These
+  files are exempt from unit tests, and should be used primarily for
+  instantiation and dependency injection of classes and methods that live in
+  modules outside of the entry point script.  Just import, read the DOM,
+  instantiate, and nothing else.
+
+- **Entry Points May Be Asynchronous:**
+  _DO NOT ASSUME_ that the DOM has been fully loaded and available when an
+  entry point script is run.  If you require that some code be run after the
+  DOM has loaded, you should attach an event handler to the `DOMContentLoaded`
+  event with:
+
+    ```javascript
+    import initMyWidget from './my_widget';
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      initMyWidget();
+    });
+    ```
+
+- **Supporting Module Placement:**  
+    - If a class or a module is _specific to a particular route_, try to locate
+      it close to the entry point it will be used. For instance, if
+      `my_widget.js` is only imported within `pages/widget/show/index.js`, you
+      should place the module at `pages/widget/show/my_widget.js` and import it
+      with a relative path (e.g. `import initMyWidget from './my_widget';`).
+      
+    - If a class or module is _used by multiple routes_, place it within a
+      shared directory at the closest common parent directory for the entry
+      points that import it.  For example, if `my_widget.js` is imported within
+      both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
+      place the module at `pages/widget/shared/my_widget.js` and import it with
+      a relative path if possible (e.g. `../shared/my_widget`).
+
+- **Enterprise Edition Caveats:**
+  For GitLab Enterprise Edition, page-specific entry points will override their
+  Community Edition counterparts with the same name, so if
+  `ee/app/assets/javascripts/pages/foo/bar/index.js` exists, it will take
+  precedence over `app/assets/javascripts/pages/foo/bar/index.js`.  If you want
+  to minimize duplicate code, you can import one entry point from the other.
+  This is not done automatically to allow for flexibility in overriding
+  functionality.
 
 ### Code Splitting
 
-> *TODO* flesh out this section once webpack is ready for code-splitting
+For any code that does not need to be run immediately upon page load, (e.g.
+modals, dropdowns, and other behaviors that can be lazy-loaded), you can split
+your module into asynchronous chunks with dynamic import statements.  These
+imports return a Promise which will be resolved once the script has loaded:
+
+```javascript
+import(/* webpackChunkName: 'emoji' */ '~/emoji')
+  .then(/* do something */)
+  .catch(/* report error */)
+```
+
+Please try to use `webpackChunkName` when generating these dynamic imports as
+it will provide a deterministic filename for the chunk which can then be cached
+the browser across GitLab versions.
+
+More information is available in [webpack's code splitting documentation](https://webpack.js.org/guides/code-splitting/#dynamic-imports).
 
 ### Minimizing page size
 
@@ -95,7 +157,8 @@ General tips:
 - Prefer font formats with better compression, e.g. WOFF2 is better than WOFF, which is better than TTF.
 - Compress and minify assets wherever possible (For CSS/JS, Sprockets and webpack do this for us).
 - If some functionality can reasonably be achieved without adding extra libraries, avoid them.
-- Use page-specific JavaScript as described above to dynamically load libraries that are only needed on certain pages.
+- Use page-specific JavaScript as described above to load libraries that are only needed on certain pages.
+- Use code-splitting dynamic imports wherever possible to lazy-load code that is not needed initially.
 - [High Performance Animations][high-perf-animations]
 
 -------
@@ -112,8 +175,5 @@ General tips:
 [pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
 [google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
 [browser-diet]: https://browserdiet.com/
-[d3]: https://d3js.org/
-[chartjs]: http://www.chartjs.org/
-[page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
 [high-perf-animations]: https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/
 [flip]: https://aerotwist.com/blog/flip-your-animations/

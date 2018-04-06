@@ -15,9 +15,9 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 Gets all epics of the requested group and its subgroups.
 
 ```
-GET /groups/:id/-/epics
-GET /groups/:id/-/epics?author_id=5
-GET /groups/:id/-/epics?labels=bug,reproduced
+GET /groups/:id/epics
+GET /groups/:id/epics?author_id=5
+GET /groups/:id/epics?labels=bug,reproduced
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -30,7 +30,7 @@ GET /groups/:id/-/epics?labels=bug,reproduced
 | `search`            | string           | no         | Search epics against their `title` and `description`                                                                                               |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics
 ```
 
 Example response:
@@ -65,7 +65,7 @@ Example response:
 Gets a single epic
 
 ```
-GET /groups/:id/-/epics/:epic_iid
+GET /groups/:id/epics/:epic_iid
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -74,7 +74,7 @@ GET /groups/:id/-/epics/:epic_iid
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5
 ```
 
 Example response:
@@ -106,7 +106,7 @@ Example response:
 Creates a new epic
 
 ```
-POST /groups/:id/-/epics
+POST /groups/:id/epics
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -119,7 +119,7 @@ POST /groups/:id/-/epics
 | `end_date`          | string.          | no         | The end date of the epic |
 
 ```bash
-curl --header POST "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics?title=Epic&description=Epic%20description
+curl --header POST "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description
 ```
 
 Example response:
@@ -152,7 +152,7 @@ Example response:
 Updates an epic
 
 ```
-PUT /groups/:id/-/epics/:epic_iid
+PUT /groups/:id/epics/:epic_iid
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -166,7 +166,7 @@ PUT /groups/:id/-/epics/:epic_iid
 | `end_date`          | string.          | no         | The end date of an epic |
 
 ```bash
-curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5?title=New%20Title
+curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
 ```
 
 Example response:
@@ -199,7 +199,7 @@ Example response:
 Deletes an epic
 
 ```
-DELETE /groups/:id/-/epics/:epic_iid
+DELETE /groups/:id/epics/:epic_iid
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
@@ -208,6 +208,5 @@ DELETE /groups/:id/-/epics/:epic_iid
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
 ```bash
-curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5?title=New%20Title
+curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
 ```
-

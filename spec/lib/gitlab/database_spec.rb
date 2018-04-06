@@ -51,6 +51,28 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.postgresql_9_or_less?' do
+    it 'returns false when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.postgresql_9_or_less?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 9.6' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.6')
+
+      expect(described_class.postgresql_9_or_less?).to eq(true)
+    end
+
+    it 'returns false when using PostgreSQL 10 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('10')
+
+      expect(described_class.postgresql_9_or_less?).to eq(false)
+    end
+  end
+
   describe '.join_lateral_supported?' do
     it 'returns false when using MySQL' do
       allow(described_class).to receive(:postgresql?).and_return(false)
@@ -92,6 +114,70 @@ describe Gitlab::Database do
       allow(described_class).to receive(:version).and_return('9.4.0')
 
       expect(described_class.replication_slots_supported?).to eq(true)
+    end
+  end
+
+  describe '.pg_wal_lsn_diff' do
+    it 'returns old name when using PostgreSQL 9.6' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.6')
+
+      expect(described_class.pg_wal_lsn_diff).to eq('pg_xlog_location_diff')
+    end
+
+    it 'returns new name when using PostgreSQL 10 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('10')
+
+      expect(described_class.pg_wal_lsn_diff).to eq('pg_wal_lsn_diff')
+    end
+  end
+
+  describe '.pg_current_wal_insert_lsn' do
+    it 'returns old name when using PostgreSQL 9.6' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.6')
+
+      expect(described_class.pg_current_wal_insert_lsn).to eq('pg_current_xlog_insert_location')
+    end
+
+    it 'returns new name when using PostgreSQL 10 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('10')
+
+      expect(described_class.pg_current_wal_insert_lsn).to eq('pg_current_wal_insert_lsn')
+    end
+  end
+
+  describe '.pg_last_wal_receive_lsn' do
+    it 'returns old name when using PostgreSQL 9.6' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.6')
+
+      expect(described_class.pg_last_wal_receive_lsn).to eq('pg_last_xlog_receive_location')
+    end
+
+    it 'returns new name when using PostgreSQL 10 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('10')
+
+      expect(described_class.pg_last_wal_receive_lsn).to eq('pg_last_wal_receive_lsn')
+    end
+  end
+
+  describe '.pg_last_wal_replay_lsn' do
+    it 'returns old name when using PostgreSQL 9.6' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.6')
+
+      expect(described_class.pg_last_wal_replay_lsn).to eq('pg_last_xlog_replay_location')
+    end
+
+    it 'returns new name when using PostgreSQL 10 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('10')
+
+      expect(described_class.pg_last_wal_replay_lsn).to eq('pg_last_wal_replay_lsn')
     end
   end
 
@@ -283,6 +369,29 @@ describe Gitlab::Database do
         expect(pool.spec.config[:host]).to eq('127.0.0.1')
       ensure
         pool.disconnect!
+      end
+    end
+  end
+
+  describe '.cached_column_exists?' do
+    it 'only retrieves data once' do
+      expect(ActiveRecord::Base.connection).to receive(:columns).once.and_call_original
+
+      2.times do
+        expect(described_class.cached_column_exists?(:projects, :id)).to be_truthy
+        expect(described_class.cached_column_exists?(:projects, :bogus_column)).to be_falsey
+      end
+    end
+  end
+
+  describe '.cached_table_exists?' do
+    it 'only retrieves data once per table' do
+      expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:projects).once.and_call_original
+      expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:bogus_table_name).once.and_call_original
+
+      2.times do
+        expect(described_class.cached_table_exists?(:projects)).to be_truthy
+        expect(described_class.cached_table_exists?(:bogus_table_name)).to be_falsey
       end
     end
   end

@@ -40,11 +40,6 @@ feature 'Pages' do
       end
 
       context 'when support for external domains is disabled' do
-        before do
-          allow(Gitlab.config.pages).to receive(:external_http).and_return(nil)
-          allow(Gitlab.config.pages).to receive(:external_https).and_return(nil)
-        end
-
         it 'renders message that support is disabled' do
           visit project_pages_path(project)
 
@@ -52,7 +47,9 @@ feature 'Pages' do
         end
       end
 
-      context 'when pages are exposed on external HTTP address' do
+      context 'when pages are exposed on external HTTP address', :http_pages_enabled do
+        given(:project) { create(:project, pages_https_only: false) }
+
         shared_examples 'adds new domain' do
           it 'adds new domain' do
             visit new_project_pages_domain_path(project)
@@ -62,11 +59,6 @@ feature 'Pages' do
 
             expect(page).to have_content('my.test.domain.com')
           end
-        end
-
-        before do
-          allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
-          allow(Gitlab.config.pages).to receive(:external_https).and_return(nil)
         end
 
         it 'allows to add new domain' do
@@ -80,13 +72,13 @@ feature 'Pages' do
         context 'when project in group namespace' do
           it_behaves_like 'adds new domain' do
             let(:group) { create :group }
-            let(:project) { create :project, namespace: group }
+            let(:project) { create(:project, namespace: group, pages_https_only: false) }
           end
         end
 
         context 'when pages domain is added' do
           before do
-            project.pages_domains.create!(domain: 'my.test.domain.com')
+            create(:pages_domain, project: project, domain: 'my.test.domain.com')
 
             visit new_project_pages_domain_path(project)
           end
@@ -104,7 +96,7 @@ feature 'Pages' do
         end
       end
 
-      context 'when pages are exposed on external HTTPS address' do
+      context 'when pages are exposed on external HTTPS address', :https_pages_enabled do
         let(:certificate_pem) do
           <<~PEM
           -----BEGIN CERTIFICATE-----
@@ -145,11 +137,6 @@ feature 'Pages' do
           KEY
         end
 
-        before do
-          allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
-          allow(Gitlab.config.pages).to receive(:external_https).and_return(['1.1.1.1:443'])
-        end
-
         it 'adds new domain with certificate' do
           visit new_project_pages_domain_path(project)
 
@@ -163,7 +150,7 @@ feature 'Pages' do
 
         describe 'updating the certificate for an existing domain' do
           let!(:domain) do
-            create(:pages_domain, :with_key, :with_certificate, project: project)
+            create(:pages_domain, project: project)
           end
 
           it 'allows the certificate to be updated' do
@@ -237,6 +224,70 @@ feature 'Pages' do
     it_behaves_like 'no pages deployed'
   end
 
+  describe 'HTTPS settings', :js, :https_pages_enabled do
+    background do
+      project.namespace.update(owner: user)
+
+      allow_any_instance_of(Project).to receive(:pages_deployed?) { true }
+    end
+
+    scenario 'tries to change the setting' do
+      visit project_pages_path(project)
+      expect(page).to have_content("Force domains with SSL certificates to use HTTPS")
+
+      uncheck :project_pages_https_only
+
+      click_button 'Save'
+
+      expect(page).to have_text('Your changes have been saved')
+      expect(page).not_to have_checked_field('project_pages_https_only')
+    end
+
+    context 'setting could not be updated' do
+      let(:service) { instance_double('Projects::UpdateService') }
+
+      before do
+        allow(Projects::UpdateService).to receive(:new).and_return(service)
+        allow(service).to receive(:execute).and_return(status: :error)
+      end
+
+      scenario 'tries to change the setting' do
+        visit project_pages_path(project)
+
+        uncheck :project_pages_https_only
+
+        click_button 'Save'
+
+        expect(page).to have_text('Something went wrong on our end')
+      end
+    end
+
+    context 'non-HTTPS domain exists' do
+      given(:project) { create(:project, pages_https_only: false) }
+
+      before do
+        create(:pages_domain, :without_key, :without_certificate, project: project)
+      end
+
+      scenario 'the setting is disabled' do
+        visit project_pages_path(project)
+
+        expect(page).to have_field(:project_pages_https_only, disabled: true)
+        expect(page).not_to have_button('Save')
+      end
+    end
+
+    context 'HTTPS pages are disabled', :https_pages_disabled do
+      scenario 'the setting is unavailable' do
+        visit project_pages_path(project)
+
+        expect(page).not_to have_field(:project_pages_https_only)
+        expect(page).not_to have_content('Force domains with SSL certificates to use HTTPS')
+        expect(page).not_to have_button('Save')
+      end
+    end
+  end
+
   describe 'Remove page' do
     context 'when user is the owner' do
       let(:project) { create :project, :repository }
@@ -258,7 +309,7 @@ feature 'Pages' do
         end
 
         let(:ci_build) do
-          build(
+          create(
             :ci_build,
             project: project,
             pipeline: pipeline,

@@ -9,6 +9,4 @@
       %p
         = _('Track groups of issues that share a theme, across projects and milestones')
       - if can?(current_user, :create_epic, @group)
-        - content_for :page_specific_javascripts do
-          = webpack_bundle_tag 'common_vue'
         #new-epic-app{ data: { endpoint: request.url } }

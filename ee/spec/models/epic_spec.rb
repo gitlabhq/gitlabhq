@@ -20,7 +20,7 @@ describe Epic do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
+    it { is_expected.to include_module(NonatomicInternalId) }
   end
 
   describe '.order_start_or_end_date_asc' do

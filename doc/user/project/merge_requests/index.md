@@ -28,13 +28,18 @@ With GitLab merge requests, you can:
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 - [Create new merge requests by email](#create-new-merge-requests-by-email)
+- Allow maintainers of the target project to push directly to the fork by [allowing edits from maintainers](maintainer_access.md)
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Premium)
 - Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Starter)
 - [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Starter)
-- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality](#code-quality) (available in GitLab Starter)
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](#static-application-security-testing) (available in GitLab Ultimate)
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) (available in GitLab Ultimate)
+- Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) (available in GitLab Ultimate)
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) (available in GitLab Ultimate)
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Premium)
 
 ## Use cases
@@ -43,7 +48,7 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](#code-quality-reports)
+1. You work on the implementation optimizing code with [Code Quality](#code-quality)
 1. You build and test your changes with GitLab CI/CD
 1. You request the [approval](#merge-request-approvals) from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
@@ -76,6 +81,22 @@ View merge requests in all projects in the group, including all projects of all 
 You can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group) from here.
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
+
+## Removing the source branch
+
+When creating a merge request, select the "Remove source branch when merge
+request accepted" option and the source branch will be removed when the merge
+request is merged.
+
+This option is also visible in an existing merge request next to the merge
+request button and can be selected/deselected before merging. It's only visible
+to users with [Master permissions](../../permissions.md) in the source project.
+
+If the user viewing the merge request does not have the correct permissions to
+remove the source branch and the source branch is set for removal, the merge
+request widget will show the "Removes source branch" text.
+
+![Remove source branch status](img/remove_source_branch_status.png)
 
 ## Authorization for merge requests
 
@@ -206,7 +227,7 @@ list of approvers that will need to approve every merge request in a project.
 
 [Read more about merge request approvals.](merge_request_approvals.md)
 
-## Code Quality reports
+## Code Quality
 
 > Introduced in [GitLab Starter][products] 9.3.
 
@@ -227,7 +248,18 @@ merge request widget area.
 
 [Read more about Static Application Security Testing reports.](sast.md)
 
-## Static Application Security Testing for Docker containers
+## Dependency Scanning
+
+> Introduced in [GitLab Ultimate][products] 10.7.
+
+If you are using [GitLab CI/CD][ci], you can analyze your dependencies for known
+vulnerabilities using Dependency Scanning.
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about Dependency Scanning reports.](dependency_scanning.md)
+
+## Container Scanning
 
 > Introduced in [GitLab Ultimate][products] 10.4.
 
@@ -236,7 +268,7 @@ vulnerabilities.
 Going a step further, GitLab can show the vulnerability report right in the
 merge request widget area.
 
-[Read more about SAST Docker images reports.](sast_docker.md)
+[Read more about Container Scanning reports.](container_scanning.md)
 
 ## Dynamic Application Security Testing
 

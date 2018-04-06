@@ -1,6 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
@@ -92,10 +94,10 @@ export default class MilestoneSelect {
             if (showMenuAbove) {
               $dropdown.data('glDropdown').positionMenuAbove();
             }
-            $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
+            $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`).addClass('is-active');
           }),
         renderRow: milestone => `
-          <li data-milestone-id="${milestone.name}">
+          <li data-milestone-id="${_.escape(milestone.name)}">
             <a href='#' class='dropdown-menu-milestone-link'>
               ${_.escape(milestone.title)}
             </a>
@@ -123,7 +125,6 @@ export default class MilestoneSelect {
             return milestone.id;
           }
         },
-        isSelected: milestone => milestone.name === selectedMilestone,
         hidden: () => {
           $selectBox.hide();
           // display:block overrides the hide-collapse rule
@@ -135,7 +136,7 @@ export default class MilestoneSelect {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
           }
           $('a.is-active', $el).removeClass('is-active');
-          $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
+          $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: (clickEvent) => {
@@ -156,6 +157,7 @@ export default class MilestoneSelect {
           const isMRIndex = (page === page && page === 'projects:merge_requests:index');
           const isSelecting = (selected.name !== selectedMilestone);
           selectedMilestone = isSelecting ? selected.name : selectedMilestoneDefault;
+
           if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
             e.preventDefault();
             return;
@@ -216,6 +218,9 @@ export default class MilestoneSelect {
                   $value.html(milestoneLinkNoneTemplate);
                   return $sidebarCollapsedValue.find('span').text('No');
                 }
+              })
+              .catch(() => {
+                $loading.fadeOut();
               });
           }
         }

@@ -20,6 +20,10 @@ module Projects
         @protected_tags = @project.protected_tags.order(:name).page(params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
+
+        @protected_branches_count = @protected_branches.reduce(0) { |sum, branch| sum + branch.matching(@project.repository.branches).size }
+        @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(@project.repository.tags).size }
+
         load_gon_index
       end
 

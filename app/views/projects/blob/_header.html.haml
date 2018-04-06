@@ -14,11 +14,7 @@
       = lock_file_link(html_options: { class: 'btn btn-sm path-lock' })
 
       = edit_blob_button
-
-      -# EE-specific
       = ide_edit_button
-      -# EE-specific
-
       - if current_user
         = replace_blob_link
         = delete_blob_link

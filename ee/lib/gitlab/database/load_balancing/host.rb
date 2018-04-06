@@ -7,6 +7,20 @@ module Gitlab
 
         delegate :connection, :release_connection, to: :pool
 
+        CONNECTION_ERRORS =
+          if defined?(PG)
+            [
+              ActionView::Template::Error,
+              ActiveRecord::StatementInvalid,
+              PG::Error
+            ].freeze
+          else
+            [
+              ActionView::Template::Error,
+              ActiveRecord::StatementInvalid
+            ].freeze
+          end
+
         # host - The address of the database.
         # load_balancer - The LoadBalancer that manages this Host.
         def initialize(host, load_balancer)
@@ -36,6 +50,9 @@ module Gitlab
           LoadBalancing.log(:info, "Host #{@host} came back online") if @online
 
           @online
+        rescue *CONNECTION_ERRORS
+          offline!
+          false
         end
 
         def refresh_status
@@ -63,7 +80,7 @@ module Gitlab
         def data_is_recent_enough?
           # It's possible for a replica to not replay WAL data for a while,
           # despite being up to date. This can happen when a primary does not
-          # receive any writes a for a while.
+          # receive any writes for a while.
           #
           # To prevent this from happening we check if the lag size (in bytes)
           # of the replica is small enough for the replica to be useful. We
@@ -92,7 +109,10 @@ module Gitlab
         # This method will return nil if no lag size could be calculated.
         def replication_lag_size
           location = connection.quote(primary_write_location)
-          row = query_and_release("SELECT pg_xlog_location_diff(#{location}, pg_last_xlog_replay_location())::float AS diff")
+          row = query_and_release(<<-SQL.squish)
+            SELECT #{Gitlab::Database.pg_wal_lsn_diff}(#{location}, #{Gitlab::Database.pg_last_wal_replay_lsn}())::float
+              AS diff
+          SQL
 
           row['diff'].to_i if row.any?
         end
@@ -110,11 +130,14 @@ module Gitlab
         def caught_up?(location)
           string = connection.quote(location)
 
-          # In case the host is a primary pg_last_xlog_replay_location() returns
+          # In case the host is a primary pg_last_wal_replay_lsn/pg_last_xlog_replay_location() returns
           # NULL. The recovery check ensures we treat the host as up-to-date in
           # such a case.
-          query = "SELECT NOT pg_is_in_recovery() OR " \
-            "pg_xlog_location_diff(pg_last_xlog_replay_location(), #{string}) >= 0 AS result"
+          query = <<-SQL.squish
+            SELECT NOT pg_is_in_recovery()
+              OR #{Gitlab::Database.pg_wal_lsn_diff}(#{Gitlab::Database.pg_last_wal_replay_lsn}(), #{string}) >= 0
+              AS result
+          SQL
 
           row = query_and_release(query)
 

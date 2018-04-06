@@ -1,13 +1,13 @@
-# Geo configuration
+# Geo configuration (GitLab Omnibus)
 
->**Note:**
+NOTE: **Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the [**Geo nodes configuration for installations
 from source**][configuration-source] guide.
 
 ## Configuring a new secondary node
 
->**Note:**
+NOTE: **Note:**
 This is the final step in setting up a secondary Geo node. Stages of the
 setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages][setup-geo-omnibus].
@@ -20,16 +20,16 @@ You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
 
 > **Notes:**
-- **Do not** setup any custom authentication in the secondary nodes, this will be
+> - **Do not** setup any custom authentication in the secondary nodes, this will be
   handled by the primary node.
-- Any change that requires access to the **Admin Area** needs to be done in the
+> - Any change that requires access to the **Admin Area** needs to be done in the
   primary node, as the secondary node is a read-only replica.
 
 ### Step 1. Manually replicate secret GitLab values
 
 GitLab stores a number of secret values in the `/etc/gitlab/gitlab-secrets.json`
 file which *must* match between the primary and secondary nodes. Until there is
-a means of automatically replicating these between nodes (see issue [gitlab-org/gitlab-ee#3789]), 
+a means of automatically replicating these between nodes (see issue [gitlab-org/gitlab-ee#3789]),
 they must be manually replicated to the secondary.
 
 1. SSH into the **primary** node, and execute the command below:
@@ -73,6 +73,7 @@ they must be manually replicated to the secondary.
 
     ```
     gitlab-ctl reconfigure
+    gitlab-ctl restart
     ```
 
 ### Step 2. Manually replicate primary SSH host keys
@@ -127,7 +128,11 @@ keys must be manually replicated to the secondary node.
 1. Restart sshd:
 
     ```bash
-    service ssh restart
+    # Debian or Ubuntu installations
+    sudo service ssh reload
+
+    # CentOS installations
+    sudo service sshd reload
     ```
 
 ### Step 3. Add the secondary GitLab node
@@ -138,24 +143,24 @@ keys must be manually replicated to the secondary node.
    'This is a primary node'.
 1. Optionally, choose which namespaces should be replicated by the
    secondary node. Leave blank to replicate all. Read more in
-   [selective replication](#selective-replication).
+   [selective synchronization](#selective-synchronization).
 1. Click the **Add node** button.
 1. SSH into your GitLab **secondary** server and restart the services:
 
-   ```
-   gitlab-ctl restart
-   ```
-   
-   Check if there are any common issue with your Geo setup by running:
-   
-   ```
-   gitlab-rake gitlab:geo:check
-   ```
-   
+    ```bash
+    gitlab-ctl restart
+    ```
+
+    Check if there are any common issue with your Geo setup by running:
+
+    ```bash
+    gitlab-rake gitlab:geo:check
+    ```
+
 1. SSH into your GitLab **primary** server and login as root to verify the
    secondary is reachable or there are any common issue with your Geo setup:
 
-    ```
+    ```bash
     gitlab-rake gitlab:geo:check
     ```
 
@@ -164,13 +169,13 @@ replicating missing data from the primary in a process known as **backfill**.
 Meanwhile, the primary node will start to notify the secondary of any changes, so
 that the secondary can act on those notifications immediately.
 
-Make sure the secondary instance is running and accessible. 
+Make sure the secondary instance is running and accessible.
 You can login to the secondary node with the same credentials as used in the primary.
 
 ### Step 4. (Optional) Enabling hashed storage (from GitLab 10.0)
 
 CAUTION: **Warning**:
-Hashed storage is in **Beta**. It is not considered production-ready. See 
+Hashed storage is in **Beta**. It is not considered production-ready. See
 [Hashed Storage] for more detail, and for the latest updates, check
 infrastructure issue [gitlab-com/infrastructure#2821].
 

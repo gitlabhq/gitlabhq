@@ -134,7 +134,8 @@ module Gitlab
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: encode_binary(ref)
+          revision: encode_binary(ref),
+          all: !!options[:all]
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
@@ -269,6 +270,7 @@ module Gitlab
           offset:       options[:offset],
           follow:       options[:follow],
           skip_merges:  options[:skip_merges],
+          all:          !!options[:all],
           disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]

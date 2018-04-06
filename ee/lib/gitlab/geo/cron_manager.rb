@@ -2,19 +2,30 @@ module Gitlab
   module Geo
     class CronManager
       COMMON_JOBS = %w[geo_metrics_update_worker].freeze
+
+      PRIMARY_JOBS = %w[
+        geo_prune_event_log_worker
+        geo_repository_verification_primary_batch_worker
+      ].freeze
+
       SECONDARY_JOBS = %w[
         geo_repository_sync_worker
         geo_file_download_dispatch_worker
+        geo_repository_verification_secondary_scheduler_worker
+        geo_migrated_local_files_clean_up_worker
       ].freeze
-      GEO_JOBS = (COMMON_JOBS + SECONDARY_JOBS).freeze
+
+      GEO_JOBS = (COMMON_JOBS + PRIMARY_JOBS + SECONDARY_JOBS).freeze
 
       CONFIG_WATCHER = 'geo_sidekiq_cron_config_worker'.freeze
       CONFIG_WATCHER_CLASS = 'Geo::SidekiqCronConfigWorker'.freeze
 
       def execute
-        if Geo.connected? && Geo.primary?
+        return unless Geo.connected?
+
+        if Geo.primary?
           configure_primary
-        elsif Geo.connected? && Geo.secondary?
+        elsif Geo.secondary?
           configure_secondary
         else
           enable!(all_jobs(except: GEO_JOBS))

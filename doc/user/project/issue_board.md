@@ -34,7 +34,7 @@ and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
 With [Multiple Issue Boards](#multiple-issue-boards), available
-only in [GitLab Ultimate](https://about.gitlab.com/products/),
+only in [GitLab Enterprise Edition](#features-per-tier),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
@@ -272,13 +272,14 @@ to another list the label changes and a system not is recorded.
 > Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
 
 Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
-for a given project. This is great for large projects with more than one team
+for a given project or group. This is great for large projects with more than one team
 or in situations where a repository is used to host the code of multiple
 products.
 
 Clicking on the current board name in the upper left corner will reveal a
 menu from where you can create another Issue Board and rename or delete the
 existing one.
+Multiple issue boards feature is available for **projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
@@ -327,6 +328,27 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
+
+##  Group Issue Board
+
+>Introduced in GitLab 10.6
+
+Group issue board is analogous to project-level issue board and it is accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
+boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
+group-level objects are available.
+
+## Features per tier
+
+Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
+
+| Tier | Number of project issue boards | Board with configuration in project issue boards | Number of group issue boards | Board with configuration in group issue boards |
+| --- | --- | --- | --- | --- |
+| Core    | 1        | No  | 1        | No  |
+| Starter  | Multiple | Yes | 1        | No  |
+| Premium  | Multiple | Yes | Multiple | Yes |
+| Ultimate | Multiple | Yes | Multiple | Yes |
 
 ## Tips
 

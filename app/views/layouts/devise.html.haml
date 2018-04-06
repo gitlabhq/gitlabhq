@@ -1,7 +1,8 @@
 !!! 5
-%html.devise-layout-html
+%html.devise-layout-html{ class: system_message_class }
   = render "layouts/head"
   %body.ui_indigo.login-page.application.navless{ data: { page: body_data_page } }
+    = header_message
     .page-wrap
       = render "layouts/header/empty"
       .login-page-broadcast
@@ -16,7 +17,7 @@
               %h1
                 = brand_title
               = brand_image
-              - if brand_item&.description?
+              - if current_appearance&.description?
                 = brand_text
               - else
                 %h3 Open source software to collaborate on code
@@ -40,3 +41,4 @@
           = link_to "Explore", explore_root_path
           = link_to "Help", help_path
           = link_to "About GitLab", "https://about.gitlab.com/"
+      = footer_message

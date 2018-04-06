@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "approvals_before_merge": { "type": "integer" },
+    "disable_overriding_approvers_per_merge_request": { "type": ["boolean", "null"] },
+    "reset_approvals_on_push": { "type": "boolean" },
+    "approvers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    "approver_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  },
+  "additionalProperties": false
+}

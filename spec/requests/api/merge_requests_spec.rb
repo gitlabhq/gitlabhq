@@ -172,6 +172,42 @@ describe API::MergeRequests do
         end
       end
 
+      it 'returns merge requests created before a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', created_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?created_before=2000-01-02T00:00:00.060Z', user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests created after a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', created_at: 1.week.from_now)
+
+        get api("/merge_requests?created_after=#{merge_request2.created_at}", user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests updated before a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', updated_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?updated_before=2000-01-02T00:00:00.060Z', user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests updated after a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', updated_at: 1.week.from_now)
+
+        get api("/merge_requests?updated_after=#{merge_request2.updated_at}", user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
       context 'search params' do
         before do
           merge_request.update(title: 'Search title', description: 'Search description')
@@ -581,6 +617,25 @@ describe API::MergeRequests do
         expect(json_response['changes_count']).to eq('5+')
       end
     end
+
+    context 'for forked projects' do
+      let(:user2) { create(:user) }
+      let(:project) { create(:project, :public, :repository) }
+      let(:forked_project) { fork_project(project, user2, repository: true) }
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: forked_project,
+               target_project: project,
+               source_branch: 'fixes',
+               allow_maintainer_to_push: true)
+      end
+
+      it 'includes the `allow_maintainer_to_push` field' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+        expect(json_response['allow_maintainer_to_push']).to be_truthy
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/participants' do
@@ -782,6 +837,7 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
+      let(:project) { create(:project, :public, :repository) }
       let!(:forked_project) { fork_project(project, user2, repository: true) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
@@ -837,6 +893,14 @@ describe API::MergeRequests do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
         target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
         expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'allows setting `allow_maintainer_to_push`' do
+        post api("/projects/#{forked_project.id}/merge_requests", user2),
+          title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
+          author: user2, target_project_id: project.id, allow_maintainer_to_push: true
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['allow_maintainer_to_push']).to be_truthy
       end
 
       context 'when target_branch and target_project_id is specified' do
@@ -1339,125 +1403,6 @@ describe API::MergeRequests do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", guest)
 
       expect(response).to have_gitlab_http_status(403)
-    end
-  end
-
-  describe 'GET :id/merge_requests/:merge_request_iid/approvals' do
-    it 'retrieves the approval status' do
-      approver = create :user
-      project.update_attribute(:approvals_before_merge, 2)
-      project.add_developer(approver)
-      project.add_developer(create(:user))
-      merge_request.approvals.create(user: approver)
-
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['approvals_required']).to eq 2
-      expect(json_response['approvals_left']).to eq 1
-      expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
-      expect(json_response['user_can_approve']).to be false
-      expect(json_response['user_has_approved']).to be false
-    end
-  end
-
-  describe 'POST :id/merge_requests/:merge_request_iid/approve' do
-    before do
-      project.update_attribute(:approvals_before_merge, 2)
-    end
-
-    context 'as the author of the merge request' do
-      before do
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", user)
-      end
-
-      it 'returns a 401' do
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
-
-    context 'as a valid approver' do
-      let(:approver) { create(:user) }
-
-      before do
-        project.add_developer(approver)
-        project.add_developer(create(:user))
-      end
-
-      def approve(extra_params = {})
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", approver), extra_params
-      end
-
-      context 'when the sha param is not set' do
-        before do
-          approve
-        end
-
-        it 'approves the merge request' do
-          expect(response).to have_gitlab_http_status(201)
-          expect(json_response['approvals_left']).to eq(1)
-          expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
-          expect(json_response['user_has_approved']).to be true
-        end
-      end
-
-      context 'when the sha param is correct' do
-        before do
-          approve(sha: merge_request.diff_head_sha)
-        end
-
-        it 'approves the merge request' do
-          expect(response).to have_gitlab_http_status(201)
-          expect(json_response['approvals_left']).to eq(1)
-          expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
-          expect(json_response['user_has_approved']).to be true
-        end
-      end
-
-      context 'when the sha param is incorrect' do
-        before do
-          approve(sha: merge_request.diff_head_sha.reverse)
-        end
-
-        it 'returns a 409' do
-          expect(response).to have_gitlab_http_status(409)
-        end
-
-        it 'does not approve the merge request' do
-          expect(merge_request.reload.approvals_left).to eq(2)
-        end
-      end
-    end
-  end
-
-  describe 'POST :id/merge_requests/:merge_request_iid/unapprove' do
-    before do
-      project.update_attribute(:approvals_before_merge, 2)
-    end
-
-    context 'as a user who has approved the merge request' do
-      let(:approver) { create(:user) }
-      let(:unapprover) { create(:user) }
-
-      before do
-        project.add_developer(approver)
-        project.add_developer(unapprover)
-        project.add_developer(create(:user))
-        merge_request.approvals.create(user: approver)
-        merge_request.approvals.create(user: unapprover)
-
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
-      end
-
-      it 'unapproves the merge request' do
-        expect(response).to have_gitlab_http_status(201)
-        expect(json_response['approvals_left']).to eq(1)
-        usernames = json_response['approved_by'].map { |u| u['user']['username'] }
-        expect(usernames).not_to include(unapprover.username)
-        expect(usernames.size).to be 1
-        expect(json_response['user_has_approved']).to be false
-        expect(json_response['user_can_approve']).to be true
-      end
     end
   end
 

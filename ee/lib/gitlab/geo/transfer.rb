@@ -39,22 +39,17 @@ module Gitlab
 
         return true if File.directory?(dir)
 
-        if File.exist?(dir)
-          log_transfer_error("#{dir} is not a directory, unable to save #{filename}")
-          return false
-        end
-
         begin
           FileUtils.mkdir_p(dir)
         rescue => e
-          log_transfer_error("unable to create directory #{dir}: #{e}")
+          log_error("unable to create directory #{dir}: #{e}")
           return false
         end
 
         true
       end
 
-      # Use HTTParty for now but switch to curb if performance becomes
+      # Use Gitlab::HTTP for now but switch to curb if performance becomes
       # an issue
       def download_file(url, req_headers)
         file_size = -1
@@ -63,7 +58,7 @@ module Gitlab
         return unless temp_file
 
         begin
-          response = HTTParty.get(url, headers: req_headers, stream_body: true) do |fragment|
+          response = Gitlab::HTTP.get(url, allow_local_requests: true, headers: req_headers, stream_body: true) do |fragment|
             temp_file.write(fragment)
           end
 
@@ -83,7 +78,7 @@ module Gitlab
 
           file_size = File.stat(filename).size
           log_info("Successful downloaded", filename: filename, file_size_bytes: file_size)
-        rescue StandardError, HTTParty::Error => e
+        rescue StandardError, Gitlab::HTTP::Error => e
           log_error("Error downloading file", error: e, filename: filename, url: url)
         ensure
           temp_file.close

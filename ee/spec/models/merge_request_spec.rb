@@ -164,78 +164,44 @@ describe MergeRequest do
     end
   end
 
-  describe '#has_codeclimate_data?' do
-    context 'with codeclimate artifact' do
+  %w(sast dast sast_container).each do |type|
+    it { is_expected.to delegate_method(:"expose_#{type}_data?").to(:head_pipeline) }
+    it { is_expected.to delegate_method(:"has_#{type}_data?").to(:base_pipeline).with_prefix(:base) }
+    it { is_expected.to delegate_method(:"#{type}_artifact").to(:head_pipeline).with_prefix(:head) }
+    it { is_expected.to delegate_method(:"#{type}_artifact").to(:base_pipeline).with_prefix(:base) }
+  end
+
+  describe '#expose_codeclimate_data?' do
+    context 'with codeclimate data' do
+      let(:pipeline) { double(expose_codeclimate_data?: true) }
+
       before do
-        artifact = double(success?: true)
-        allow(subject.head_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
-        allow(subject.base_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+        allow(subject).to receive(:head_pipeline).and_return(pipeline)
+        allow(subject).to receive(:base_pipeline).and_return(pipeline)
       end
 
-      it { expect(subject.has_codeclimate_data?).to be_truthy }
+      it { expect(subject.expose_codeclimate_data?).to be_truthy }
     end
 
-    context 'without codeclimate artifact' do
-      it { expect(subject.has_codeclimate_data?).to be_falsey }
+    context 'without codeclimate data' do
+      it { expect(subject.expose_codeclimate_data?).to be_falsey }
     end
   end
 
-  describe '#head_sast_artifact' do
-    it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline).with_prefix(:head) }
-  end
+  describe '#expose_performance_data?' do
+    context 'with performance data' do
+      let(:pipeline) { double(expose_performance_data?: true) }
 
-  describe '#base_sast_artifact' do
-    it { is_expected.to delegate_method(:sast_artifact).to(:base_pipeline).with_prefix(:base) }
-  end
-
-  describe '#has_sast_data?' do
-    let(:artifact) { double(success?: true) }
-
-    before do
-      allow(merge_request).to receive(:head_sast_artifact).and_return(artifact)
-    end
-
-    it { expect(merge_request.has_sast_data?).to be_truthy }
-  end
-
-  describe '#has_base_sast_data?' do
-    let(:artifact) { double(success?: true) }
-
-    before do
-      allow(merge_request).to receive(:base_sast_artifact).and_return(artifact)
-    end
-
-    it { expect(merge_request.has_base_sast_data?).to be_truthy }
-  end
-
-  describe '#sast_container_artifact' do
-    it { is_expected.to delegate_method(:sast_container_artifact).to(:head_pipeline) }
-  end
-
-  describe '#has_dast_data?' do
-    let(:artifact) { double(success?: true) }
-
-    before do
-      allow(merge_request).to receive(:dast_artifact).and_return(artifact)
-    end
-
-    it { expect(merge_request.has_dast_data?).to be_truthy }
-  end
-
-  describe '#dast_artifact' do
-    it { is_expected.to delegate_method(:dast_artifact).to(:head_pipeline) }
-  end
-
-  %w(sast dast performance sast_container).each do |type|
-    method = "expose_#{type}_data?"
-
-    describe "##{method}" do
       before do
-        allow(merge_request).to receive(:"has_#{type}_data?").and_return(true)
-        allow(merge_request.project).to receive(:feature_available?).and_return(true)
+        allow(subject).to receive(:head_pipeline).and_return(pipeline)
+        allow(subject).to receive(:base_pipeline).and_return(pipeline)
       end
 
-      it { expect(merge_request.send(method.to_sym)).to be_truthy }
+      it { expect(subject.expose_performance_data?).to be_truthy }
+    end
+
+    context 'without performance data' do
+      it { expect(subject.expose_performance_data?).to be_falsey }
     end
   end
 end

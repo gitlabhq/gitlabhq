@@ -13,7 +13,7 @@ module EE
         end
       end
 
-      expose :codeclimate, if: -> (mr, _) { mr.has_codeclimate_data? } do
+      expose :codeclimate, if: -> (mr, _) { mr.expose_codeclimate_data? } do
         expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_codeclimate_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
                                           merge_request.head_codeclimate_artifact,
@@ -48,25 +48,51 @@ module EE
                                           path: Ci::Build::SAST_FILE)
         end
 
-        expose :base_path, if: -> (mr, _) { mr.has_base_sast_data? && can?(current_user, :read_build, mr.base_sast_artifact)} do |merge_request|
+        expose :base_path, if: -> (mr, _) { mr.base_has_sast_data? && can?(current_user, :read_build, mr.base_sast_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.target_project,
                                           merge_request.base_sast_artifact,
                                           path: Ci::Build::SAST_FILE)
         end
       end
 
-      expose :sast_container, if: -> (mr, _) { mr.expose_sast_container_data? } do
-        expose :path, if: -> (mr, _) { can?(current_user, :read_build, mr.sast_container_artifact) } do |merge_request|
+      expose :dependency_scanning, if: -> (mr, _) { mr.expose_dependency_scanning_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_dependency_scanning_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.sast_container_artifact,
+                                          merge_request.head_dependency_scanning_artifact,
+                                          path: Ci::Build::DEPENDENCY_SCANNING_FILE)
+        end
+
+        expose :base_path, if: -> (mr, _) { mr.base_has_dependency_scanning_data? && can?(current_user, :read_build, mr.base_dependency_scanning_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_dependency_scanning_artifact,
+                                          path: Ci::Build::DEPENDENCY_SCANNING_FILE)
+        end
+      end
+
+      expose :sast_container, if: -> (mr, _) { mr.expose_sast_container_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_sast_container_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_sast_container_artifact,
+                                          path: Ci::Build::SAST_CONTAINER_FILE)
+        end
+
+        expose :base_path, if: -> (mr, _) { mr.base_has_sast_container_data? && can?(current_user, :read_build, mr.base_sast_container_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_sast_container_artifact,
                                           path: Ci::Build::SAST_CONTAINER_FILE)
         end
       end
 
       expose :dast, if: -> (mr, _) { mr.expose_dast_data? } do
-        expose :path, if: -> (mr, _) { can?(current_user, :read_build, mr.dast_artifact) } do |merge_request|
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_dast_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.dast_artifact,
+                                          merge_request.head_dast_artifact,
+                                          path: Ci::Build::DAST_FILE)
+        end
+
+        expose :base_path, if: -> (mr, _) { mr.base_has_dast_data? && can?(current_user, :read_build, mr.base_dast_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_dast_artifact,
                                           path: Ci::Build::DAST_FILE)
         end
       end

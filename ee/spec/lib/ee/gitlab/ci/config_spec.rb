@@ -14,7 +14,7 @@ describe EE::Gitlab::Ci::Config do
   end
   let(:config) { ::Gitlab::Ci::Config.new(gitlab_ci_yml, { project: project, sha: '12345' }) }
 
-  context 'when the project does not have EEP license' do
+  context 'when the project does not have a valid license' do
     before do
       allow(project).to receive(:feature_available?).with(:external_files_in_gitlab_ci).and_return(false)
     end
@@ -27,7 +27,7 @@ describe EE::Gitlab::Ci::Config do
     end
   end
 
-  context 'when the project has EEP license' do
+  context 'when the project has a valid license' do
     let(:remote_file_content) do
       <<~HEREDOC
       variables:

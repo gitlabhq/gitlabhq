@@ -1,6 +1,7 @@
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
+  prepend EE::Service
   include Sortable
   include Importable
 
@@ -14,6 +15,7 @@ class Service < ActiveRecord::Base
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
+  default_value_for :confidential_note_events, true
   default_value_for :job_events, true
   default_value_for :pipeline_events, true
   default_value_for :wiki_page_events, true
@@ -42,6 +44,7 @@ class Service < ActiveRecord::Base
   scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
+  scope :confidential_note_hooks, -> { where(confidential_note_events: true, active: true) }
   scope :job_hooks, -> { where(job_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
@@ -129,6 +132,17 @@ class Service < ActiveRecord::Base
     fields
   end
 
+  def configurable_events
+    events = self.class.supported_events
+
+    # No need to disable individual triggers when there is only one
+    if events.count == 1
+      []
+    else
+      events
+    end
+  end
+
   def supported_events
     self.class.supported_events
   end
@@ -151,19 +165,16 @@ class Service < ActiveRecord::Base
     true
   end
 
-  # reason why service cannot be tested
-  def disabled_title
-    "Please setup a project repository."
-  end
-
   # Provide convenient accessor methods
   # for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.prop_accessor(*args)
     args.each do |arg|
       class_eval %{
-        def #{arg}
-          properties['#{arg}']
+        unless method_defined?(arg)
+          def #{arg}
+            properties['#{arg}']
+          end
         end
 
         def #{arg}=(value)
@@ -242,8 +253,6 @@ class Service < ActiveRecord::Base
       gemnasium
       hipchat
       irker
-      jenkins
-      jenkins_deprecated
       jira
       kubernetes
       mattermost_slash_commands
@@ -273,6 +282,7 @@ class Service < ActiveRecord::Base
 
   def self.build_from_template(project_id, template)
     service = template.dup
+    service.active = false unless service.valid?
     service.template = false
     service.project_id = project_id
     service
@@ -301,6 +311,29 @@ class Service < ActiveRecord::Base
   def cache_project_has_external_wiki
     if project && !project.destroyed?
       project.cache_has_external_wiki
+    end
+  end
+
+  def self.event_description(event)
+    case event
+    when "push", "push_events"
+      "Event will be triggered by a push to the repository"
+    when "tag_push", "tag_push_events"
+      "Event will be triggered when a new tag is pushed to the repository"
+    when "note", "note_events"
+      "Event will be triggered when someone adds a comment"
+    when "issue", "issue_events"
+      "Event will be triggered when an issue is created/updated/closed"
+    when "confidential_issue", "confidential_issue_events"
+      "Event will be triggered when a confidential issue is created/updated/closed"
+    when "merge_request", "merge_request_events"
+      "Event will be triggered when a merge request is created/updated/merged"
+    when "pipeline", "pipeline_events"
+      "Event will be triggered when a pipeline status changes"
+    when "wiki_page", "wiki_page_events"
+      "Event will be triggered when a wiki page is created/updated"
+    when "commit", "commit_events"
+      "Event will be triggered when a commit is created/updated"
     end
   end
 

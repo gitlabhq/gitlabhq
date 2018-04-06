@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from 'ee/ide/stores';
-import commitSidebarList from 'ee/ide/components/commit_sidebar/list.vue';
+import store from '~/ide/stores';
+import commitSidebarList from '~/ide/components/commit_sidebar/list.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
 
@@ -25,7 +25,7 @@ describe('Multi-file editor commit sidebar list', () => {
   });
 
   describe('with a list of files', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       const f = file('file name');
       f.changed = true;
       vm.fileList.push(f);
@@ -39,7 +39,7 @@ describe('Multi-file editor commit sidebar list', () => {
   });
 
   describe('collapsed', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.$store.state.rightPanelCollapsed = true;
 
       Vue.nextTick(done);

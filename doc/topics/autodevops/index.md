@@ -20,7 +20,8 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
+1. [Auto Dependency Scanning](#auto-dependency-scanning)
+1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Deploy](#auto-deploy)
@@ -95,7 +96,7 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 
 The Auto DevOps base domain is required if you want to make use of [Auto
 Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It is defined
-either under the project's CI/CD settings while 
+either under the project's CI/CD settings while
 [enabling Auto DevOps](#enabling-auto-devops) or in instance-wide settings in
 the CI/CD section.
 It can also be set at the project or group level as a variable, `AUTO_DEVOPS_DOMAIN`.
@@ -217,7 +218,33 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
-### Auto SAST for Docker images
+### Auto Dependency Scanning
+
+> Introduced in [GitLab Ultimate][ee] 10.7.
+
+Dependency Scanning uses the
+[Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
+to run analysis on the project dependencies and checks for potential security issues. Once the
+report is created, it's uploaded as an artifact which you can later download and
+check out.
+
+In GitLab Ultimate, any security warnings are also
+[shown in the merge request widget](../../user/project/merge_requests/dependency_scanning.md).
+
+### Auto Dependency Scanning
+
+> Introduced in [GitLab Ultimate][ee] 10.7.
+
+Dependency Scanning uses the
+[Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
+to run analysis on the project dependencies and checks for potential security issues. Once the
+report is created, it's uploaded as an artifact which you can later download and
+check out.
+
+In GitLab Ultimate, any security warnings are also
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html).
+
+### Auto Container Scanning
 
 > Introduced in GitLab 10.4.
 
@@ -228,7 +255,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
-[shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
+[shown in the merge request widget](../../user/project/merge_requests/container_scanning.md).
 
 ### Auto Review Apps
 
@@ -309,6 +336,18 @@ enable them.
 
 You can make use of [environment variables](#helm-chart-variables) to automatically
 scale your pod replicas.
+
+It's important to note that when a project is deployed to a Kubernetes cluster,
+it relies on a Docker image that has been pushed to the
+[GitLab Container Registry](../../user/project/container_registry.md). Kubernetes
+fetches this image and uses it to run the application. If the project is public,
+the image can be accessed by Kubernetes without any authentication, allowing us
+to have deployments more usable. If the project is private/internal, the
+Registry requires credentials to pull the image. Currently, this is addressed
+by providing `CI_JOB_TOKEN` as the password that can be used, but this token will
+no longer be valid as soon as the deployment job finishes. This means that
+Kubernetes can run the application, but in case it should be restarted or
+executed somewhere else, it cannot be accessed again.
 
 ### Auto Monitoring
 
@@ -442,7 +481,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `POSTGRES_DB`       | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name. |
 | `BUILDPACK_URL`  | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`|
 | `SAST_CONFIDENCE_LEVEL`  | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
-| `SAST_DISABLE_REMOTE_CHECKS`  | Whether remote SAST checks are disabled; defaults to `"false"`. Set to `"true"` to disable SAST checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/sast#remote-checks).|
+| `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
 
 TIP: **Tip:**
 Set up the replica variables using a

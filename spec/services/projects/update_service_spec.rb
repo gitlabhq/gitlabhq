@@ -133,6 +133,15 @@ describe Projects::UpdateService, '#execute' do
         expect(result).to eq({ status: :success })
         expect(project.wiki_repository_exists?).to be false
       end
+
+      it 'handles empty project feature attributes' do
+        project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
+
+        result = update_project(project, user, { name: 'test1' })
+
+        expect(result).to eq({ status: :success })
+        expect(project.wiki_repository_exists?).to be false
+      end
     end
 
     context 'when enabling a wiki' do
@@ -182,13 +191,13 @@ describe Projects::UpdateService, '#execute' do
 
     context 'when renaming a project' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 
         before do
-          gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         after do
@@ -231,6 +240,27 @@ describe Projects::UpdateService, '#execute' do
           status: :error,
           message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
         })
+      end
+    end
+
+    context 'when updating #pages_https_only', :https_pages_enabled do
+      subject(:call_service) do
+        update_project(project, admin, pages_https_only: false)
+      end
+
+      it 'updates the attribute' do
+        expect { call_service }
+          .to change { project.pages_https_only? }
+          .to(false)
+      end
+
+      it 'calls Projects::UpdatePagesConfigurationService' do
+        expect(Projects::UpdatePagesConfigurationService)
+          .to receive(:new)
+          .with(project)
+          .and_call_original
+
+        call_service
       end
     end
   end

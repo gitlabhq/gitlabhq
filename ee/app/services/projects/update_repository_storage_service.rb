@@ -30,7 +30,7 @@ module Projects
       repository = (wiki ? project.wiki.repository : project.repository).raw
 
       # Initialize a git repository on the target path
-      gitlab_shell.add_repository(new_storage_key, repository.relative_path)
+      gitlab_shell.create_repository(new_storage_key, repository.relative_path)
       new_repository = Gitlab::Git::Repository.new(new_storage_key,
                                                    repository.relative_path,
                                                    repository.gl_repository)

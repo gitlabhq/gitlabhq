@@ -66,6 +66,8 @@ module API
             strong_memoize(:geo_node_status) do
               if geo_node.current?
                 GeoNodeStatus.current_node_status
+              elsif to_boolean(declared_params(include_missing: false)[:refresh])
+                ::Geo::NodeStatusFetchService.new.call(geo_node)
               else
                 geo_node.status
               end
@@ -92,6 +94,9 @@ module API
         #   GET /geo_nodes/:id/status
         desc 'Get metrics for a single Geo node' do
           success EE::API::Entities::GeoNodeStatus
+        end
+        params do
+          optional :refresh, type: Boolean, desc: 'Attempt to fetch the latest status from the Geo node directly, ignoring the cache'
         end
         get 'status' do
           not_found!('GeoNode') unless geo_node
@@ -144,6 +149,20 @@ module API
           else
             render_validation_error!(geo_node)
           end
+        end
+
+        # Delete an existing Geo node
+        #
+        # Example request:
+        #   DELETE /geo_nodes/:id
+        desc 'Delete an existing Geo secondary node' do
+          success EE::API::Entities::GeoNode
+        end
+        delete do
+          not_found!('GeoNode') unless geo_node
+
+          geo_node.destroy!
+          status 204
         end
       end
     end

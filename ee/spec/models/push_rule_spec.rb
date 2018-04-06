@@ -13,6 +13,71 @@ describe PushRule do
   describe "Validation" do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_numericality_of(:max_file_size).is_greater_than_or_equal_to(0).only_integer }
+
+    it 'validates RE2 regex syntax' do
+      push_rule = build(:push_rule, branch_name_regex: '(ee|ce).*\1')
+
+      expect(push_rule).not_to be_valid
+      expect(push_rule.errors.full_messages.join).to match /invalid escape sequence/
+    end
+  end
+
+  it 'defaults regexp_uses_re2 to true' do
+    push_rule = create(:push_rule)
+
+    expect(push_rule.regexp_uses_re2).to eq(true)
+  end
+
+  it 'updates regexp_uses_re2 to true on edit' do
+    push_rule = create(:push_rule, regexp_uses_re2: nil)
+
+    expect do
+      push_rule.update!(branch_name_regex: '.*')
+    end.to change(push_rule, :regexp_uses_re2).to true
+  end
+
+  describe '#branch_name_allowed?' do
+    subject(:push_rule) { create(:push_rule, branch_name_regex: '\d+\-.*')}
+
+    it 'checks branch against regex' do
+      expect(subject.branch_name_allowed?('123-feature')).to be true
+      expect(subject.branch_name_allowed?('feature-123')).to be false
+    end
+
+    it 'uses RE2 regex engine' do
+      expect_any_instance_of(Gitlab::UntrustedRegexp).to receive(:===)
+
+      subject.branch_name_allowed?('123-feature')
+    end
+
+    context 'with legacy regex' do
+      before do
+        push_rule.update_column(:regexp_uses_re2, nil)
+      end
+
+      it 'attempts to use safe RE2 regex engine' do
+        expect_any_instance_of(Gitlab::UntrustedRegexp).to receive(:===)
+
+        subject.branch_name_allowed?('ee-feature-ee')
+      end
+
+      it 'falls back to ruby regex engine' do
+        push_rule.update_column(:branch_name_regex, '(ee|ce).*\1')
+
+        expect(subject.branch_name_allowed?('ee-feature-ee')).to be true
+        expect(subject.branch_name_allowed?('ee-feature-ce')).to be false
+      end
+    end
+  end
+
+  describe '#commit_message_allowed?' do
+    subject(:push_rule) { create(:push_rule, commit_message_regex: '^Signed-off-by')}
+
+    it 'uses multiline regex' do
+      commit_message = "Some git commit feature\n\nSigned-off-by: Someone"
+
+      expect(subject.commit_message_allowed?(commit_message)).to be true
+    end
   end
 
   describe '#commit_validation?' do

@@ -105,6 +105,7 @@ module EE
           expose(*EE::ApplicationSettingsHelper.external_authorization_service_attributes, if: ->(_instance, _options) do
             ::License.feature_available?(:external_authorization_service)
           end)
+          expose :email_additional_text, if: ->(_instance, _opts) { ::License.feature_available?(:email_additional_text) }
         end
       end
 
@@ -224,9 +225,17 @@ module EE
           'http'
         end
 
+        expose :web_edit_url do |geo_node|
+          ::Gitlab::Routing.url_helpers.edit_admin_geo_node_url(geo_node)
+        end
+
         expose :_links do
           expose :self do |geo_node|
             expose_url api_v4_geo_nodes_path(id: geo_node.id)
+          end
+
+          expose :status do |geo_node|
+            expose_url api_v4_geo_nodes_status_path(id: geo_node.id)
           end
 
           expose :repair do |geo_node|
@@ -283,6 +292,20 @@ module EE
         expose :wikis_synced_count
         expose :wikis_synced_in_percentage do |node|
           number_to_percentage(node.wikis_synced_in_percentage, precision: 2)
+        end
+
+        expose :repository_verification_enabled
+
+        expose :repositories_verification_failed_count
+        expose :repositories_verified_count
+        expose :repositories_verified_in_percentage do |node|
+          number_to_percentage(node.repositories_verified_in_percentage, precision: 2)
+        end
+
+        expose :wikis_verification_failed_count
+        expose :wikis_verified_count
+        expose :wikis_verified_in_percentage do |node|
+          number_to_percentage(node.wikis_verified_in_percentage, precision: 2)
         end
 
         expose :replication_slots_count

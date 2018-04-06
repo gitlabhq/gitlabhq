@@ -36,6 +36,11 @@ describe('EpicShowApp', () => {
       markdownDocsPath,
       author,
       created,
+      namespace,
+      labelsPath,
+      labelsWebUrl,
+      epicsWebUrl,
+      labels,
     } = props;
 
     const EpicShowApp = Vue.extend(epicShowApp);
@@ -72,6 +77,12 @@ describe('EpicShowApp', () => {
       editable: canUpdate,
       initialStartDate: startDate,
       initialEndDate: endDate,
+      initialLabels: labels,
+      updatePath: updateEndpoint,
+      labelsPath,
+      labelsWebUrl,
+      epicsWebUrl,
+      namespace,
     });
 
     setTimeout(done);

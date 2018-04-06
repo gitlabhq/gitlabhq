@@ -6,7 +6,7 @@ describe ClustersFinder do
 
   describe '#execute' do
     let(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-    let(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
+    let(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
 
     subject { described_class.new(project, user, scope).execute }
 

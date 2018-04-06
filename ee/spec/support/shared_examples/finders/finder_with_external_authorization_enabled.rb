@@ -16,7 +16,7 @@ shared_examples 'a finder with external authorization service' do
 
   context 'with an external authorization service' do
     before do
-      enable_external_authorization_service
+      enable_external_authorization_service_check
     end
 
     it 'does not include the subject when no project was given' do

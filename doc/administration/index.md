@@ -11,8 +11,8 @@ available through [different subscriptions](https://about.gitlab.com/products/).
 
 You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
 but the features you'll have access to depend on the subscription you choose
-(Libre, Starter, Premium, or Ultimate). GitLab Community Edition installations
-only have access to Libre features.
+(Core, Starter, Premium, or Ultimate). GitLab Community Edition installations
+only have access to Core features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
@@ -47,6 +47,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - **(Starter/Premium)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
+- **(Premium)** [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
 
 #### Customizing GitLab's appearance
 
@@ -54,6 +55,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
 - [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
+- **(Premium)** [Additional email text](../user/admin_area/settings/email.md): Set a custom message that appears at the bottom of every email.
 
 ### Maintaining GitLab
 
@@ -99,7 +101,7 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
+- **(Premium)** [Additional custom email text](../user/admin_area/settings/email.md): Set a custom message that appears at the bottom of the every email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md
@@ -127,6 +129,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD admin settings](../user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration time.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
+- [Job traces](job_traces.md): Information about the job traces (logs).
 - [Artifacts size and expiration](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size): Define maximum artifacts limits and expiration date.
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for Shared Runners.

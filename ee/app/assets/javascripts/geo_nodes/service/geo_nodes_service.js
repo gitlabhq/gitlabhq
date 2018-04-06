@@ -3,8 +3,7 @@ import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 
 export default class GeoNodesService {
-  constructor(nodeDetailsBasePath) {
-    this.geoNodeDetailsBasePath = nodeDetailsBasePath;
+  constructor() {
     this.geoNodesPath = Api.buildUrl(Api.geoNodesPath);
   }
 
@@ -12,8 +11,29 @@ export default class GeoNodesService {
     return axios.get(this.geoNodesPath);
   }
 
-  getGeoNodeDetails(nodeId) {
-    const geoNodeDetailsPath = `${this.geoNodeDetailsBasePath}/${nodeId}/status.json`;
-    return axios.get(geoNodeDetailsPath);
+  // eslint-disable-next-line class-methods-use-this
+  getGeoNodeDetails(node) {
+    return axios.get(node.statusPath, {
+      params: {
+        refresh: true,
+      },
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  toggleNode(node) {
+    return axios.put(node.basePath, {
+      enabled: !node.enabled, // toggle from existing status
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  repairNode(node) {
+    return axios.post(node.repairPath);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  removeNode(node) {
+    return axios.delete(node.basePath);
   }
 }

@@ -21,13 +21,13 @@ describe 'label issues', :js do
     wait_for_requests
   end
 
-  it 'adds a new label from sidebar' do
+  it 'adds a new group label from sidebar' do
     card = find('.board:nth-child(2)').first('.card')
     click_card(card)
 
     page.within '.right-sidebar .labels' do
       click_link 'Edit'
-      click_link 'Create new label'
+      click_link 'Create group label'
       fill_in 'new_label_name', with: 'test label'
       first('.suggest-colors-dropdown a').click
       click_button 'Create'
