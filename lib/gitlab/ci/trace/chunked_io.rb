@@ -223,7 +223,7 @@ module Gitlab
         end
 
         def calculate_size
-          job_chunks.order(chunk_index: :desc).last.try(&:end_offset).to_i
+          job_chunks.order(chunk_index: :desc).first.try(&:end_offset).to_i
         end
       end
     end
