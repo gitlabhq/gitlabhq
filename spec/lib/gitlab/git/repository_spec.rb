@@ -2178,6 +2178,55 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#checksum' do
+    shared_examples 'calculating checksum' do
+      it 'calculates the checksum for non-empty repo' do
+        expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
+      end
+
+      it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
+        FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
+
+        system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
+               chdir: storage_path,
+               out:   '/dev/null',
+               err:   '/dev/null')
+
+        empty_repo = described_class.new('default', 'empty-repo.git', '')
+
+        expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
+      end
+
+      it 'raises a no repository exception when there is no repo' do
+        broken_repo = described_class.new('default', 'a/path.git', '')
+
+        expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+    end
+
+    context 'when calculate_checksum Gitaly feature is enabled' do
+      it_behaves_like 'calculating checksum'
+    end
+
+    context 'when calculate_checksum Gitaly feature is disabled', :disable_gitaly do
+      it_behaves_like 'calculating checksum'
+
+      describe 'when storage is broken', :broken_storage  do
+        it 'raises a storage exception when storage is not available' do
+          broken_repo = described_class.new('broken', 'a/path.git', '')
+
+          expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
+        end
+      end
+
+      it "raises a Gitlab::Git::Repository::Failure error if the `popen` call to git returns a non-zero exit code" do
+        allow(repository).to receive(:popen).and_return(['output', nil])
+
+        expect { repository.checksum }.to raise_error Gitlab::Git::Repository::ChecksumError
+      end
+    end
+  end
+
   context 'gitlab_projects commands' do
     let(:gitlab_projects) { repository.gitlab_projects }
     let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }

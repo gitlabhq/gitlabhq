@@ -40,23 +40,19 @@ module Geo
     end
 
     def verify_checksum
-      checksum = calculate_checksum(project.repository_storage, repository_path)
+      checksum = project.repository.checksum
 
       if mismatch?(checksum)
         update_registry!(failure: "#{type.to_s.capitalize} checksum mismatch: #{repository_path}")
       else
         update_registry!(checksum: checksum)
       end
-    rescue ::Gitlab::Git::Repository::NoRepository, ::Gitlab::Git::Checksum::Failure, Timeout::Error => e
+    rescue ::Gitlab::Git::Repository::NoRepository, ::Gitlab::Git::Repository::ChecksumError, Timeout::Error => e
       update_registry!(failure: "Error verifying #{type.to_s.capitalize} checksum: #{repository_path}", exception: e)
     end
 
     def mismatch?(checksum)
       primary_checksum != checksum
-    end
-
-    def calculate_checksum(storage, relative_path)
-      Gitlab::Git::Checksum.new(storage, relative_path).calculate
     end
 
     def update_registry!(checksum: nil, failure: nil, exception: nil, details: {})

@@ -6,6 +6,10 @@ module EE
   module Repository
     extend ActiveSupport::Concern
 
+    included do
+      delegate :checksum, to: :raw_repository
+    end
+
     # Transiently sets a configuration variable
     def with_config(values = {})
       values.each { |k, v| rugged.config[k] = v }

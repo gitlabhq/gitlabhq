@@ -52,12 +52,12 @@ describe Geo::RepositoryUpdatedService do
           expect { described_class.new(create(:project)) }.not_to raise_error
         end
 
-        it 'raises a Gitlab::Git::Checksum error when an error occurs' do
+        it 'raises a Geo::RepositoryUpdatedService::RepositoryUpdateError when an error occurs' do
           allow(subject.repository_state).to receive(:update!)
             .with("#{method_prefix}_verification_checksum" => nil, "last_#{method_prefix}_verification_failure" => nil)
             .and_raise(ActiveRecord::RecordInvalid.new(repository_state))
 
-          expect { subject.execute }.to raise_error Gitlab::Git::Checksum::Failure, /Cannot reset repository checksum/
+          expect { subject.execute }.to raise_error Geo::RepositoryUpdatedService::RepositoryUpdateError, /Cannot reset repository checksum/
         end
       end
     end
