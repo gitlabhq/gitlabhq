@@ -547,6 +547,9 @@ You can find a full list of unsupported variables below:
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
 
+These variables are also not supported in a contex of a
+[dynamic environment name][dynamic-environments].
+
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
 [envs]: ../environments.md
@@ -558,3 +561,4 @@ You can find a full list of unsupported variables below:
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
+[dynamic-environments]: ../environments.md#dynamic-environments
