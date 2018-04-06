@@ -13,7 +13,7 @@ class CreateDeployTokens < ActiveRecord::Migration
       t.string :name, null: false
       t.string :token, index: { unique: true }, null: false
 
-      t.index [:token, :expires_at], where: "(revoked IS FALSE)"
+      t.index [:token, :expires_at, :id], where: "(revoked IS FALSE)"
     end
   end
 end

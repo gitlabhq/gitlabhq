@@ -693,7 +693,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.string "token", null: false
   end
 
-  add_index "deploy_tokens", ["token", "expires_at"], name: "index_deploy_tokens_on_token_and_expires_at", where: "(revoked IS FALSE)", using: :btree
+  add_index "deploy_tokens", ["token", "expires_at", "id"], name: "index_deploy_tokens_on_token_and_expires_at_and_id", where: "(revoked IS FALSE)", using: :btree
   add_index "deploy_tokens", ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
 
   create_table "deployments", force: :cascade do |t|
