@@ -8,6 +8,7 @@ module Ci
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
+    before_save :update_file_store
     before_save :set_size, if: :file_changed?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
@@ -22,6 +23,10 @@ module Ci
       metadata: 2,
       trace: 3
     }
+
+    def update_file_store
+      self.file_store = file.object_store
+    end
 
     def self.artifacts_size_for(project)
       self.where(project: project).sum(:size)

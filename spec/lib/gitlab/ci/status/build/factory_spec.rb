@@ -48,11 +48,11 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Retryable]
+          .to eq [Gitlab::Ci::Status::Build::Retryable, Gitlab::Ci::Status::Build::Failed]
       end
 
-      it 'fabricates a retryable build status' do
-        expect(status).to be_a Gitlab::Ci::Status::Build::Retryable
+      it 'fabricates a failed build status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::Failed
       end
 
       it 'fabricates status with correct details' do
@@ -60,6 +60,7 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.icon).to eq 'status_failed'
         expect(status.favicon).to eq 'favicon_status_failed'
         expect(status.label).to eq 'failed'
+        expect(status.status_tooltip).to eq 'failed <br> (unknown failure)'
         expect(status).to have_details
         expect(status).to have_action
       end
@@ -75,6 +76,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
           .to eq [Gitlab::Ci::Status::Build::Retryable,
+                  Gitlab::Ci::Status::Build::Failed,
                   Gitlab::Ci::Status::Build::FailedAllowed]
       end
 

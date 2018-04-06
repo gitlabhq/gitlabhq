@@ -82,7 +82,7 @@ module Gitlab
         end
 
         def open_file(path, name)
-          ::UploadedFile.new(path, name || File.basename(path), 'application/octet-stream')
+          ::UploadedFile.new(path, filename: name || File.basename(path), content_type: 'application/octet-stream')
         end
       end
 

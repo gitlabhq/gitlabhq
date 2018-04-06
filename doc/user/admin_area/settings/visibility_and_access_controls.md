@@ -41,6 +41,7 @@ _Only SSH_ was selected.
 block access to the server itself. The ports used for the protocol, be it SSH or
 HTTP, will still be accessible. What GitLab does is restrict access on the
 application level.
+<<<<<<< HEAD
 
 ## Allow mirrors to be setup for projects
 
@@ -53,4 +54,8 @@ work in every repository and can only be re-enabled on a per-project basis by an
 
 [ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
 [ee-3586]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586
+=======
+
+[ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
+>>>>>>> upstream/master
 [ce-18021]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021
