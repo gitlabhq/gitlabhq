@@ -17,6 +17,4 @@ class IssuePolicy < IssuablePolicy
     prevent :update_issue
     prevent :admin_issue
   end
-
-  rule { can?(:read_issue) | visible_to_user }.enable :read_issue_iid
 end

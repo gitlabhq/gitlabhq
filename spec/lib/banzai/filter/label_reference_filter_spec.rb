@@ -596,6 +596,27 @@ describe Banzai::Filter::LabelReferenceFilter do
   end
 
   describe 'group context' do
+    it 'points to the page defined in label_url_method' do
+      group = create(:group)
+      label = create(:group_label, group: group)
+      reference = "~#{label.name}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: group, label_url_method: :group_url } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.group_url(group, label_name: label.name))
+    end
+
+    it 'finds labels also in ancestor groups' do
+      group = create(:group)
+      label = create(:group_label, group: group)
+      subgroup = create(:group, parent: group)
+      reference = "~#{label.name}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: subgroup, label_url_method: :group_url } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.group_url(subgroup, label_name: label.name))
+    end
+
     it 'points to referenced project issues page' do
       project = create(:project)
       label = create(:label, project: project)
@@ -604,6 +625,7 @@ describe Banzai::Filter::LabelReferenceFilter do
       result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
 
       expect(result.css('a').first.attr('href')).to eq(urls.project_issues_url(project, label_name: label.name))
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project.full_name}"
     end
   end
 end

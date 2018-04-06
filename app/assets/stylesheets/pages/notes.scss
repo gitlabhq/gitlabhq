@@ -54,7 +54,7 @@ ul.notes {
     }
 
     .timeline-entry-inner {
-      padding: $gl-padding $gl-btn-padding;
+      padding: $gl-padding 0;
       border-bottom: 1px solid $white-normal;
     }
 
@@ -98,12 +98,6 @@ ul.notes {
       .note-headline-light,
       .fa-spinner {
         margin-left: 3px;
-      }
-    }
-
-    &.note-discussion {
-      .timeline-entry-inner {
-        padding: $gl-padding 10px;
       }
     }
 
@@ -357,6 +351,8 @@ ul.notes {
         }
 
         .discussion-notes {
+          background-color: $white-light;
+
           &:not(:first-child) {
             border-top: 1px solid $white-normal;
             margin-top: 20px;
@@ -366,10 +362,6 @@ ul.notes {
             border-bottom: 1px solid $white-normal;
             margin-bottom: 20px;
           }
-        }
-
-        .notes {
-          background-color: $white-light;
         }
 
         a code {
@@ -652,8 +644,6 @@ ul.notes {
     border-bottom: 1px solid $white-normal;
 
     .timeline-entry-inner {
-      padding-left: $gl-padding;
-      padding-right: $gl-padding;
       border-bottom: 0;
     }
   }

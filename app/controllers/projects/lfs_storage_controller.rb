@@ -31,7 +31,9 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
       render plain: 'Unprocessable entity', status: 422
     end
   rescue ActiveRecord::RecordInvalid
-    render_400
+    render_lfs_forbidden
+  rescue UploadedFile::InvalidPathError
+    render_lfs_forbidden
   rescue ObjectStorage::RemoteStoreError
     render_lfs_forbidden
   end
@@ -66,10 +68,11 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def create_file!(oid, size)
-    LfsObject.new(oid: oid, size: size).tap do |object|
-      object.file.store_workhorse_file!(params, :file)
-      object.save!
-    end
+    uploaded_file = UploadedFile.from_params(
+      params, :file, LfsObjectUploader.workhorse_local_upload_path)
+    return unless uploaded_file
+
+    LfsObject.create!(oid: oid, size: size, file: uploaded_file)
   end
 
   def link_to_project!(object)

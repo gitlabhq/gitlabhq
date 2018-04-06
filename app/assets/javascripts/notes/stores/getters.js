@@ -38,7 +38,11 @@ export const discussionsByLineCode = state =>
   }, {});
 
 export const noteableType = state => {
-  const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
+  const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;
+
+  if (state.noteableData.noteableType === EPIC_NOTEABLE_TYPE) {
+    return EPIC_NOTEABLE_TYPE;
+  }
 
   return state.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
 };

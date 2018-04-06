@@ -77,4 +77,24 @@ describe Gitlab::Ci::Status::Build::Stop do
       end
     end
   end
+
+  describe '#status_tooltip' do
+    it 'does not override status status_tooltip' do
+      expect(status).to receive(:status_tooltip)
+
+      subject.status_tooltip
+    end
+  end
+
+  describe '#badge_tooltip' do
+    let(:user) { create(:user) }
+    let(:build) { create(:ci_build, :playable) }
+    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+
+    it 'does not override status badge_tooltip' do
+      expect(status).to receive(:badge_tooltip)
+
+      subject.badge_tooltip
+    end
+  end
 end

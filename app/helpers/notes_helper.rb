@@ -151,16 +151,17 @@ module NotesHelper
     }
   end
 
-  def notes_data(issuable)
-    discussions_path =
-      if issuable.is_a?(Issue)
-        discussions_project_issue_path(@project, issuable, format: :json)
-      else
-        discussions_project_merge_request_path(@project, issuable, format: :json)
-      end
+  def discussions_path(issuable)
+    if issuable.is_a?(Issue)
+      discussions_project_issue_path(@project, issuable, format: :json)
+    else
+      discussions_project_merge_request_path(@project, issuable, format: :json)
+    end
+  end
 
+  def notes_data(issuable)
     {
-      discussionsPath: discussions_path,
+      discussionsPath: discussions_path(issuable),
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
@@ -170,7 +171,6 @@ module NotesHelper
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
       lastFetchedAt: Time.now.to_i
-
     }.to_json
   end
 

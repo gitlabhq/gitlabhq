@@ -128,7 +128,7 @@ module ObjectStorage
       end
 
       def direct_upload_enabled?
-        object_store_options.direct_upload
+        object_store_options&.direct_upload
       end
 
       def background_upload_enabled?
@@ -156,11 +156,10 @@ module ObjectStorage
       end
 
       def workhorse_authorize
-        if options = workhorse_remote_upload_options
-          { RemoteObject: options }
-        else
-          { TempPath: workhorse_local_upload_path }
-        end
+        {
+          RemoteObject: workhorse_remote_upload_options,
+          TempPath: workhorse_local_upload_path
+        }.compact
       end
 
       def workhorse_local_upload_path
@@ -184,6 +183,14 @@ module ObjectStorage
           StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
         }
       end
+
+      def default_object_store
+        if self.object_store_enabled? && self.direct_upload_enabled?
+          Store::REMOTE
+        else
+          Store::LOCAL
+        end
+      end
     end
 
     # allow to configure and overwrite the filename
@@ -204,12 +211,12 @@ module ObjectStorage
     end
 
     def object_store
-      @object_store ||= model.try(store_serialization_column) || Store::LOCAL
+      @object_store ||= model.try(store_serialization_column) || self.class.default_object_store
     end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def object_store=(value)
-      @object_store = value || Store::LOCAL
+      @object_store = value || self.class.default_object_store
       @storage = storage_for(object_store)
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -285,16 +292,14 @@ module ObjectStorage
       }
     end
 
-    def store_workhorse_file!(params, identifier)
-      filename = params["#{identifier}.name"]
-
-      if remote_object_id = params["#{identifier}.remote_id"]
-        store_remote_file!(remote_object_id, filename)
-      elsif local_path = params["#{identifier}.path"]
-        store_local_file!(local_path, filename)
-      else
-        raise RemoteStoreError, 'Bad file'
+    def cache!(new_file = sanitized_file)
+      # We intercept ::UploadedFile which might be stored on remote storage
+      # We use that for "accelerated" uploads, where we store result on remote storage
+      if new_file.is_a?(::UploadedFile) && new_file.remote_id
+        return cache_remote_file!(new_file.remote_id, new_file.original_filename)
       end
+
+      super
     end
 
     private
@@ -305,36 +310,29 @@ module ObjectStorage
         self.file_storage?
     end
 
-    def store_remote_file!(remote_object_id, filename)
-      raise RemoteStoreError, 'Missing filename' unless filename
-
+    def cache_remote_file!(remote_object_id, original_filename)
       file_path = File.join(TMP_UPLOAD_PATH, remote_object_id)
       file_path = Pathname.new(file_path).cleanpath.to_s
       raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(TMP_UPLOAD_PATH + '/')
-
-      self.object_store = Store::REMOTE
 
       # TODO:
       # This should be changed to make use of `tmp/cache` mechanism
       # instead of using custom upload directory,
       # using tmp/cache makes this implementation way easier than it is today
-      CarrierWave::Storage::Fog::File.new(self, storage, file_path).tap do |file|
+      CarrierWave::Storage::Fog::File.new(self, storage_for(Store::REMOTE), file_path).tap do |file|
         raise RemoteStoreError, 'Missing file' unless file.exists?
 
-        self.filename = filename
-        self.file = storage.store!(file)
+        # Remote stored file, we force to store on remote storage
+        self.object_store = Store::REMOTE
+
+        # TODO:
+        # We store file internally and force it to be considered as `cached`
+        # This makes CarrierWave to store file in permament location (copy/delete)
+        # once this object is saved, but not sooner
+        @cache_id = "force-to-use-cache" # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @file = file # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @filename = original_filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
-    end
-
-    def store_local_file!(local_path, filename)
-      raise RemoteStoreError, 'Missing filename' unless filename
-
-      root_path = File.realpath(self.class.workhorse_local_upload_path)
-      file_path = File.realpath(local_path)
-      raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(root_path)
-
-      self.object_store = Store::LOCAL
-      self.store!(UploadedFile.new(file_path, filename))
     end
 
     # this is a hack around CarrierWave. The #migrate method needs to be

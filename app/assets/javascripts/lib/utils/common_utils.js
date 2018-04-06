@@ -37,6 +37,7 @@ export const checkPageAndAction = (page, action) => {
 
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
 
 export const ajaxGet = url =>

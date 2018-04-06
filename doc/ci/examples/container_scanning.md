@@ -11,7 +11,7 @@ called `sast:container`:
 
 ```yaml
 sast:container:
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
@@ -20,7 +20,7 @@ sast:container:
     CI_APPLICATION_TAG: $CI_COMMIT_SHA
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - docker run -d --name db arminc/clair-db:latest
     - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
