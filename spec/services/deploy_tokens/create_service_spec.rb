@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeployTokens::CreateService, :clean_gitlab_redis_shared_state do
+describe DeployTokens::CreateService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:deploy_token_params) { attributes_for(:deploy_token) }
@@ -19,6 +19,14 @@ describe DeployTokens::CreateService, :clean_gitlab_redis_shared_state do
 
       it 'returns a DeployToken' do
         expect(subject).to be_an_instance_of DeployToken
+      end
+    end
+
+    context 'when expires at date is not passed' do
+      let(:deploy_token_params) { attributes_for(:deploy_token, expires_at: '') }
+
+      it 'should set FOREVER date' do
+        expect(subject.expires_at).to eq(DeployToken::FOREVER)
       end
     end
 

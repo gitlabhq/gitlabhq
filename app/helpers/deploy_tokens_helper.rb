@@ -11,10 +11,10 @@ module DeployTokensHelper
   end
 
   def expires_at_value(expires_at)
-    expires_at unless expires_at >= DeployToken::FUTURE_DATE
+    expires_at unless expires_at >= DeployToken::FOREVER
   end
 
   def show_expire_at?(token)
-    token.expires? && token.expires_at != DeployToken::FUTURE_DATE
+    token.expires? && token.expires_at != DeployToken::FOREVER
   end
 end

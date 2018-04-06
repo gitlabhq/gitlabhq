@@ -687,7 +687,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.boolean "revoked", default: false
     t.boolean "read_repository", default: false, null: false
     t.boolean "read_registry", default: false, null: false
-    t.datetime_with_timezone "expires_at", default: '3000-01-01 00:00:00', null: false
+    t.datetime_with_timezone "expires_at", null: false
     t.datetime_with_timezone "created_at", null: false
     t.string "name", null: false
     t.string "token", null: false

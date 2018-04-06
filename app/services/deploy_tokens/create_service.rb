@@ -16,7 +16,7 @@ module DeployTokens
     end
 
     def default_expires_at
-      DeployToken::FUTURE_DATE
+      DeployToken::FOREVER
     end
   end
 end

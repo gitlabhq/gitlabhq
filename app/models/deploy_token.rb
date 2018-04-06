@@ -4,7 +4,9 @@ class DeployToken < ActiveRecord::Base
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
-  FUTURE_DATE = Date.new(3000 - 01 - 01)
+  FOREVER = DateTime.new(3000, 1, 1)
+
+  default_value_for :expires_at, FOREVER
 
   has_many :project_deploy_tokens, inverse_of: :deploy_token
   has_many :projects, through: :project_deploy_tokens
