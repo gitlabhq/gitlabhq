@@ -60,7 +60,7 @@ module Geo
     def find_unsynced_lfs_objects_ids(batch_size:)
       lfs_objects_finder.find_unsynced_lfs_objects(
         batch_size: batch_size,
-        except_file_ids: scheduled_file_ids('lfs'))
+        except_file_ids: scheduled_file_ids(:lfs))
         .pluck(:id)
         .map { |id| ['lfs', id] }
     end
@@ -76,7 +76,7 @@ module Geo
     def find_unsynced_job_artifacts_ids(batch_size:)
       job_artifacts_finder.find_unsynced_job_artifacts(
         batch_size: batch_size,
-        except_artifact_ids: scheduled_file_ids('job_artifact'))
+        except_artifact_ids: scheduled_file_ids(:job_artifact))
         .pluck(:id)
         .map { |id| ['job_artifact', id] }
     end
@@ -92,7 +92,7 @@ module Geo
     def find_failed_lfs_objects_ids(batch_size:)
       lfs_objects_finder.find_failed_lfs_objects_registries
         .retry_due
-        .where.not(file_id: scheduled_file_ids('lfs'))
+        .where.not(file_id: scheduled_file_ids(:lfs))
         .limit(batch_size)
         .pluck(:file_id).map { |id| ['lfs', id] }
     end
@@ -100,7 +100,7 @@ module Geo
     def find_failed_artifacts_ids(batch_size:)
       job_artifacts_finder.find_failed_job_artifacts_registries
         .retry_due
-        .where.not(artifact_id: scheduled_file_ids('job_artifact'))
+        .where.not(artifact_id: scheduled_file_ids(:job_artifact))
         .limit(batch_size)
         .pluck(:artifact_id).map { |id| ['job_artifact', id] }
     end
@@ -116,7 +116,7 @@ module Geo
     def find_synced_missing_on_primary_lfs_objects_ids(batch_size:)
       lfs_objects_finder.find_synced_missing_on_primary_lfs_objects_registries
         .retry_due
-        .where.not(file_id: scheduled_file_ids('lfs'))
+        .where.not(file_id: scheduled_file_ids(:lfs))
         .limit(batch_size)
         .pluck(:file_id).map { |id| ['lfs', id] }
     end
@@ -124,15 +124,16 @@ module Geo
     def find_synced_missing_on_primary_job_artifacts_ids(batch_size:)
       job_artifacts_finder.find_synced_missing_on_primary_job_artifacts_registries
         .retry_due
-        .where.not(artifact_id: scheduled_file_ids('job_artifact'))
+        .where.not(artifact_id: scheduled_file_ids(:job_artifact))
         .limit(batch_size)
         .pluck(:artifact_id).map { |id| ['job_artifact', id] }
     end
 
     def scheduled_file_ids(file_types)
       file_types = Array(file_types)
+      file_types = file_types.map(&:to_s)
 
-      scheduled_jobs.select { |data| file_types.include?(data[:type]) }.map { |data| data[:id] }
+      scheduled_jobs.select { |data| file_types.include?(data[:type].to_s) }.map { |data| data[:id] }
     end
   end
 end
