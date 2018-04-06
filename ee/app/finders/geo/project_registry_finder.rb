@@ -172,18 +172,19 @@ module Geo
     # Find all registries that repository or wiki need verification
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
     def fdw_find_registries_to_verify(batch_size:)
+      repo_condition =
+        local_registry_table[:repository_verification_checksum_sha].eq(nil)
+          .and(local_registry_table[:last_repository_verification_failure].eq(nil))
+          .and(fdw_repository_state_table[:repository_verification_checksum].not_eq(nil))
+      wiki_condition =
+        local_registry_table[:wiki_verification_checksum_sha].eq(nil)
+          .and(local_registry_table[:last_wiki_verification_failure].eq(nil))
+          .and(fdw_repository_state_table[:wiki_verification_checksum].not_eq(nil))
+
       Geo::ProjectRegistry
         .joins(fdw_inner_join_repository_state)
-        .where(
-          local_registry_table[:repository_verification_checksum_sha].eq(nil).or(
-            local_registry_table[:wiki_verification_checksum_sha].eq(nil)
-          )
-        )
-        .where(
-          fdw_repository_state_table[:repository_verification_checksum].not_eq(nil).or(
-            fdw_repository_state_table[:wiki_verification_checksum].not_eq(nil)
-          )
-        ).limit(batch_size)
+        .where(repo_condition.or(wiki_condition))
+        .limit(batch_size)
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
@@ -307,32 +308,41 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
     def legacy_find_registries_to_verify(batch_size:)
-      registries = Geo::ProjectRegistry.where(
-        local_registry_table[:repository_verification_checksum_sha].eq(nil).or(
-          local_registry_table[:wiki_verification_checksum_sha].eq(nil)
-        )
-      ).pluck(:project_id)
+      repo_condition =
+        local_registry_table[:repository_verification_checksum_sha].eq(nil)
+          .and(local_registry_table[:last_repository_verification_failure].eq(nil))
+      wiki_condition =
+        local_registry_table[:wiki_verification_checksum_sha].eq(nil)
+          .and(local_registry_table[:last_wiki_verification_failure].eq(nil))
+
+      registries = Geo::ProjectRegistry
+        .where(repo_condition.or(wiki_condition))
+        .pluck(:project_id, repo_condition.to_sql, wiki_condition.to_sql)
 
       return Geo::ProjectRegistry.none if registries.empty?
 
-      id_and_want_to_sync = registries.map { |project_id| "(#{project_id}, #{quote_value(true)})" }
+      id_and_want_to_sync = registries.map do |project_id, want_to_sync_repo, want_to_sync_wiki|
+        "(#{project_id}, #{quote_value(want_to_sync_repo)}, #{quote_value(want_to_sync_wiki)})"
+      end
+
+      project_registry_sync_table = Arel::Table.new(:project_registry_sync_table)
 
       joined_relation =
-        ProjectRepositoryState.joins(<<~SQL)
+        ProjectRepositoryState.joins(<<~SQL_REPO)
           INNER JOIN
           (VALUES #{id_and_want_to_sync.join(',')})
-          project_registry(project_id, want_to_sync)
-          ON #{legacy_repository_state_table.name}.project_id = project_registry.project_id
-        SQL
+          project_registry_sync_table(project_id, want_to_sync_repo, want_to_sync_wiki)
+          ON #{legacy_repository_state_table.name}.project_id = project_registry_sync_table.project_id
+        SQL_REPO
 
       project_ids = joined_relation
         .where(
-          legacy_repository_state_table[:repository_verification_checksum].not_eq(nil).or(
-            legacy_repository_state_table[:wiki_verification_checksum].not_eq(nil)
-          )
-        ).where(
-          project_registry: { want_to_sync: true }
-        ).limit(batch_size).pluck(:project_id)
+          legacy_repository_state_table[:repository_verification_checksum].not_eq(nil)
+            .and(project_registry_sync_table[:want_to_sync_repo].eq(true))
+          .or(legacy_repository_state_table[:wiki_verification_checksum].not_eq(nil)
+            .and(project_registry_sync_table[:want_to_sync_wiki].eq(true))))
+        .limit(batch_size)
+        .pluck(:project_id)
 
       Geo::ProjectRegistry.where(project_id: project_ids)
     end
