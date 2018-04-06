@@ -28,7 +28,7 @@ describe 'Admin DevOps Score' do
   context 'when there is data to display' do
     it 'shows numbers for each metric' do
       stub_application_setting(usage_ping_enabled: true)
-      create(:devops_score_metric)
+      create(:dev_ops_score_metric)
 
       visit admin_dev_ops_score_path
 

@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :devops_score_metric, class: DevOpsScore::Metric do
+  factory :dev_ops_score_metric, class: DevOpsScore::Metric do
     leader_issues 9.256
     instance_issues 1.234
     percentage_issues 13.331

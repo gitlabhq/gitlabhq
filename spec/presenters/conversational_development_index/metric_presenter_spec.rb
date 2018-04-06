@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DevOpsScore::MetricPresenter do
   subject { described_class.new(metric) }
-  let(:metric) { build(:devops_score_metric) }
+  let(:metric) { build(:dev_ops_score_metric) }
 
   describe '#cards' do
     it 'includes instance score, leader score and percentage score' do

@@ -1,5 +1,5 @@
 Gitlab::Seeder.quiet do
-  devops_score_metric = DevOpsScore::Metric.new(
+  dev_ops_score_metric = DevOpsScore::Metric.new(
     leader_issues: 10.2,
     instance_issues: 3.2,
 
@@ -31,10 +31,10 @@ Gitlab::Seeder.quiet do
     instance_service_desk_issues: 15.1
   )
 
-  if devops_score_metric.save
+  if dev_ops_score_metric.save
     print '.'
   else
-    puts devops_score_metric.errors.full_messages
+    puts dev_ops_score_metric.errors.full_messages
     print 'F'
   end
 end
