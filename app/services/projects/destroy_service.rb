@@ -34,6 +34,8 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was removed")
 
+      current_user.invalidate_personal_projects_count
+
       true
     rescue => error
       attempt_rollback(project, error.message)
