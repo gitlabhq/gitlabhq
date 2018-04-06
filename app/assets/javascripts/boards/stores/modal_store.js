@@ -1,6 +1,3 @@
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
 class ModalStore {
   constructor() {
     this.store = {
@@ -95,4 +92,4 @@ class ModalStore {
   }
 }
 
-gl.issueBoards.ModalStore = new ModalStore();
+export default new ModalStore();

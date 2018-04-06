@@ -3,11 +3,11 @@ import Flash from '../../../flash';
 import { __ } from '../../../locale';
 import './lists_dropdown';
 import { pluralize } from '../../../lib/utils/text_utility';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
+import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalFooter = Vue.extend({
-  mixins: [gl.issueBoards.ModalMixins],
+  mixins: [modalMixin],
   data() {
     return {
       modal: ModalStore.store,
