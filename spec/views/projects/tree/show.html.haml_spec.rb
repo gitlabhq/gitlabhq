@@ -12,7 +12,6 @@ describe 'projects/tree/show' do
     assign(:lfs_blob_ids, [])
 
     allow(view).to receive(:can?).and_return(true)
-    allow(view).to receive(:can_contribute_to_project?).and_return(true)
     allow(view).to receive(:can_collaborate_with_project?).and_return(true)
     allow(view).to receive_message_chain('user_access.can_push_to_branch?').and_return(true)
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
