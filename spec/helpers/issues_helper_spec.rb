@@ -96,13 +96,32 @@ describe IssuesHelper do
 
   describe '#award_state_class' do
     let!(:upvote) { create(:award_emoji) }
+    let(:awardable) { upvote.awardable }
+    let(:user) { upvote.user }
+
+    before do
+      allow(helper).to receive(:can?) do |*args|
+        Ability.allowed?(*args)
+      end
+    end
 
     it "returns disabled string for unauthenticated user" do
-      expect(award_state_class(AwardEmoji.all, nil)).to eq("disabled")
+      expect(helper.award_state_class(awardable, AwardEmoji.all, nil)).to eq("disabled")
+    end
+
+    it "returns disabled for a user that does not have access to the awardable" do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, build(:user))).to eq("disabled")
     end
 
     it "returns active string for author" do
-      expect(award_state_class(AwardEmoji.all, upvote.user)).to eq("active")
+      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq("active")
+    end
+
+    it "is blank for a user that has access to the awardable" do
+      user = build(:user)
+      expect(helper).to receive(:can?).with(user, :award_emoji, awardable).and_return(true)
+
+      expect(helper.award_state_class(awardable, AwardEmoji.all, user)).to be_blank
     end
   end
 

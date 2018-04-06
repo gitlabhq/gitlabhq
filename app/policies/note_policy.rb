@@ -1,6 +1,6 @@
 class NotePolicy < BasePolicy
   delegate { @subject.project }
-  delegate { @subject.noteable if @subject.noteable.lockable? }
+  delegate { @subject.noteable if DeclarativePolicy.has_policy?(@subject.noteable) }
 
   condition(:is_author) { @user && @subject.author == @user }
   condition(:is_noteable_author) { @user && @subject.noteable.author_id == @user.id }
