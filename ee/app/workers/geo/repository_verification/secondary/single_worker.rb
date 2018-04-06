@@ -15,7 +15,9 @@ module Geo
         delegate :project, to: :registry
 
         def perform(registry_id)
-          @registry = Geo::ProjectRegistry.find(registry_id)
+          return unless Gitlab::Geo.secondary?
+
+          @registry = Geo::ProjectRegistry.find_by_id(registry_id)
           return if registry.nil? || project.pending_delete?
 
           try_obtain_lease do

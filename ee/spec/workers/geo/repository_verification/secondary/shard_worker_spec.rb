@@ -5,11 +5,13 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
   let!(:secondary) { create(:geo_node) }
   let(:shard_name) { Gitlab.config.repositories.storages.keys.first }
+  let(:secondary_singleworker) { Geo::RepositoryVerification::Secondary::SingleWorker }
 
   set(:project) { create(:project) }
 
   before do
     stub_current_geo_node(secondary)
+    allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(false)
   end
 
   describe '#perform' do
@@ -20,37 +22,95 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       Gitlab::Geo::ShardHealthCache.update([shard_name])
     end
 
-    it 'schedule job for each project' do
+    it 'schedules job for each project' do
       other_project = create(:project)
       create(:repository_state, :repository_verified, project: project)
       create(:repository_state, :repository_verified, project: other_project)
       create(:geo_project_registry, :repository_verification_outdated, project: project)
       create(:geo_project_registry, :repository_verification_outdated, project: other_project)
 
-      expect(Geo::RepositoryVerification::Secondary::SingleWorker)
-        .to receive(:perform_async).twice
+      expect(secondary_singleworker).to receive(:perform_async).twice
 
       subject.perform(shard_name)
     end
 
-    it 'schedule job for projects missing repository verification' do
-      create(:repository_state, :wiki_verified, project: project)
+    it 'schedules job for projects missing repository verification' do
+      create(:repository_state, :repository_verified, :wiki_verified, project: project)
       missing_repository_verification = create(:geo_project_registry, :wiki_verified, project: project)
 
-      expect(Geo::RepositoryVerification::Secondary::SingleWorker)
-        .to receive(:perform_async).with(missing_repository_verification.id)
+      expect(secondary_singleworker).to receive(:perform_async).with(missing_repository_verification.id)
 
       subject.perform(shard_name)
     end
 
-    it 'schedule job for projects missing wiki verification' do
-      create(:repository_state, :repository_verified, project: project)
+    it 'schedules job for projects missing wiki verification' do
+      create(:repository_state, :repository_verified, :wiki_verified, project: project)
       missing_wiki_verification = create(:geo_project_registry, :repository_verified, project: project)
 
-      expect(Geo::RepositoryVerification::Secondary::SingleWorker)
-        .to receive(:perform_async).with(missing_wiki_verification.id)
+      expect(secondary_singleworker).to receive(:perform_async).with(missing_wiki_verification.id)
 
       subject.perform(shard_name)
+    end
+
+    # test that when jobs are always moving forward and we're not querying the same things
+    # over and over
+    describe 'resource loading' do
+      before do
+        allow(subject).to receive(:db_retrieve_batch_size) { 1 }
+      end
+
+      let(:project1_repo_verified) { create(:repository_state, :repository_verified).project }
+      let(:project2_repo_verified) { create(:repository_state, :repository_verified).project }
+      let(:project3_repo_failed)   { create(:repository_state, :repository_failed).project }
+      let(:project4_wiki_verified) { create(:repository_state, :wiki_verified).project }
+      let(:project5_both_verified) { create(:repository_state, :repository_verified, :wiki_verified).project }
+      let(:project6_both_verified) { create(:repository_state, :repository_verified, :wiki_verified).project }
+
+      it 'handles multiple batches of projects needing verification' do
+        reg1 = create(:geo_project_registry, :repository_verification_outdated, project: project1_repo_verified)
+        reg2 = create(:geo_project_registry, :repository_verification_outdated, project: project2_repo_verified)
+
+        expect(secondary_singleworker).to receive(:perform_async).with(reg1.id).once
+
+        subject.perform(shard_name)
+
+        reg1.update_attributes!(repository_verification_checksum_sha: project1_repo_verified.repository_state.repository_verification_checksum)
+
+        expect(secondary_singleworker).to receive(:perform_async).with(reg2.id).once
+
+        subject.perform(shard_name)
+      end
+
+      it 'handles multiple batches of projects needing verification, skipping failed repos' do
+        reg1 = create(:geo_project_registry, :repository_verification_outdated, project: project1_repo_verified)
+        reg2 = create(:geo_project_registry, :repository_verification_outdated, project: project2_repo_verified)
+        create(:geo_project_registry, :repository_verification_outdated, project: project3_repo_failed)
+        reg4 = create(:geo_project_registry, :wiki_verification_outdated, project: project4_wiki_verified)
+        create(:geo_project_registry, :repository_verification_failed, :wiki_verification_failed, project: project5_both_verified)
+        reg6 = create(:geo_project_registry, project: project6_both_verified)
+
+        expect(secondary_singleworker).to receive(:perform_async).with(reg1.id).once
+
+        subject.perform(shard_name)
+
+        reg1.update_attributes!(repository_verification_checksum_sha: project1_repo_verified.repository_state.repository_verification_checksum)
+
+        expect(secondary_singleworker).to receive(:perform_async).with(reg2.id).once
+
+        subject.perform(shard_name)
+
+        reg2.update_attributes!(repository_verification_checksum_sha: project2_repo_verified.repository_state.repository_verification_checksum)
+
+        expect(secondary_singleworker).to receive(:perform_async).with(reg4.id).once
+
+        subject.perform(shard_name)
+
+        reg4.update_attributes!(last_wiki_verification_failure: 'Failed!')
+
+        expect(secondary_singleworker).to receive(:perform_async).with(reg6.id).once
+
+        subject.perform(shard_name)
+      end
     end
 
     it 'does not schedule jobs when shard becomes unhealthy' do
@@ -58,8 +118,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
       Gitlab::Geo::ShardHealthCache.update([])
 
-      expect(Geo::RepositoryVerification::Secondary::SingleWorker)
-        .not_to receive(:perform_async)
+      expect(secondary_singleworker).not_to receive(:perform_async)
 
       subject.perform(shard_name)
     end
@@ -67,8 +126,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
     it 'does not schedule jobs when no geo database is configured' do
       allow(Gitlab::Geo).to receive(:geo_database_configured?) { false }
 
-      expect(Geo::RepositoryVerification::Secondary::SingleWorker)
-        .not_to receive(:perform_async)
+      expect(secondary_singleworker).not_to receive(:perform_async)
 
       subject.perform(shard_name)
 
@@ -80,8 +138,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
     it 'does not schedule jobs when not running on a secondary' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect(Geo::RepositoryVerification::Secondary::SingleWorker)
-        .not_to receive(:perform_async)
+      expect(secondary_singleworker).not_to receive(:perform_async)
 
       subject.perform(shard_name)
     end

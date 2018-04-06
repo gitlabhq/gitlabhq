@@ -53,10 +53,12 @@ module Geo
 
     def repository_outdated
       repository_state_table[:repository_verification_checksum].eq(nil)
+        .and(repository_state_table[:last_repository_verification_failure].eq(nil))
     end
 
     def wiki_outdated
       repository_state_table[:wiki_verification_checksum].eq(nil)
+        .and(repository_state_table[:last_wiki_verification_failure].eq(nil))
     end
 
     def repository_never_verified

@@ -28,6 +28,10 @@ describe Geo::RepositoryUpdatedService do
         it 'does not reset the repository verification checksum' do
           expect { subject.execute }.not_to change(repository_state.reload, "#{method_prefix}_verification_checksum")
         end
+
+        it 'does not reset the repository verification failure' do
+          expect { subject.execute }.not_to change(repository_state.reload, "last_#{method_prefix}_verification_failure")
+        end
       end
 
       context 'when running on a primary node' do
@@ -39,13 +43,18 @@ describe Geo::RepositoryUpdatedService do
           expect { subject.execute }.to change { repository_state.reload.public_send("#{method_prefix}_verification_checksum") }.to(nil)
         end
 
+        it 'resets the repository verification failure' do
+          repository_state.update!("last_#{method_prefix}_verification_failure" => 'xxxx')
+          expect { subject.execute }.to change { repository_state.reload.public_send("last_#{method_prefix}_verification_failure") }.to(nil)
+        end
+
         it 'does not raise an error when project have never been verified' do
           expect { described_class.new(create(:project)) }.not_to raise_error
         end
 
         it 'raises a Gitlab::Git::Checksum error when an error occurs' do
           allow(subject.repository_state).to receive(:update!)
-            .with("#{method_prefix}_verification_checksum" => nil)
+            .with("#{method_prefix}_verification_checksum" => nil, "last_#{method_prefix}_verification_failure" => nil)
             .and_raise(ActiveRecord::RecordInvalid.new(repository_state))
 
           expect { subject.execute }.to raise_error Gitlab::Git::Checksum::Failure, /Cannot reset repository checksum/
