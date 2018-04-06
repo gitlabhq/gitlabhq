@@ -1,90 +1,90 @@
 <script>
-  import detailRow from './sidebar_detail_row.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import timeagoMixin from '../../vue_shared/mixins/timeago';
-  import { timeIntervalInWords } from '../../lib/utils/datetime_utility';
+import detailRow from './sidebar_detail_row.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import timeagoMixin from '../../vue_shared/mixins/timeago';
+import { timeIntervalInWords } from '../../lib/utils/datetime_utility';
 
-  export default {
-    name: 'SidebarDetailsBlock',
-    components: {
-      detailRow,
-      loadingIcon,
+export default {
+  name: 'SidebarDetailsBlock',
+  components: {
+    detailRow,
+    loadingIcon,
+  },
+  mixins: [timeagoMixin],
+  props: {
+    job: {
+      type: Object,
+      required: true,
     },
-    mixins: [
-      timeagoMixin,
-    ],
-    props: {
-      job: {
-        type: Object,
-        required: true,
-      },
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
-      canUserRetry: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      runnerHelpUrl: {
-        type: String,
-        required: false,
-        default: '',
-      },
+    isLoading: {
+      type: Boolean,
+      required: true,
     },
-    computed: {
-      shouldRenderContent() {
-        return !this.isLoading && Object.keys(this.job).length > 0;
-      },
-      coverage() {
-        return `${this.job.coverage}%`;
-      },
-      duration() {
-        return timeIntervalInWords(this.job.duration);
-      },
-      queued() {
-        return timeIntervalInWords(this.job.queued);
-      },
-      runnerId() {
-        return `#${this.job.runner.id}`;
-      },
-      retryButtonClass() {
-        let className = 'js-retry-button pull-right btn btn-retry visible-md-block visible-lg-block';
-        className +=
-          this.job.status && this.job.status.retry_button
-            ? ' btn-primary'
-            : ' btn-inverted-secondary';
-        return className;
-      },
-      hasTimeout() {
-        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
-      },
-      timeout() {
-        if (this.job.metadata == null) {
-          return '';
-        }
+    canUserRetry: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    runnerHelpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    shouldRenderContent() {
+      return !this.isLoading && Object.keys(this.job).length > 0;
+    },
+    coverage() {
+      return `${this.job.coverage}%`;
+    },
+    duration() {
+      return timeIntervalInWords(this.job.duration);
+    },
+    queued() {
+      return timeIntervalInWords(this.job.queued);
+    },
+    runnerId() {
+      return `#${this.job.runner.id}`;
+    },
+    retryButtonClass() {
+      let className = 'js-retry-button pull-right btn btn-retry visible-md-block visible-lg-block';
+      className +=
+        this.job.status && this.job.status.retry_button
+          ? ' btn-primary'
+          : ' btn-inverted-secondary';
+      return className;
+    },
+    hasTimeout() {
+      return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
+    },
+    timeout() {
+      if (this.job.metadata == null) {
+        return '';
+      }
 
-        let t = this.job.metadata.timeout_human_readable;
-        if (this.job.metadata.timeout_source !== '') {
-          t += ` (from ${this.job.metadata.timeout_source})`;
-        }
+      let t = this.job.metadata.timeout_human_readable;
+      if (this.job.metadata.timeout_source !== '') {
+        t += ` (from ${this.job.metadata.timeout_source})`;
+      }
 
-        return t;
-      },
-      renderBlock() {
-        return this.job.merge_request ||
-          this.job.duration ||
-          this.job.finished_data ||
-          this.job.erased_at ||
-          this.job.queued ||
-          this.job.runner ||
-          this.job.coverage ||
-          this.job.tags.length ||
-          this.job.cancel_path;
-      },
+      return t;
     },
-  };
+    renderBlock() {
+      return (
+        this.job.merge_request ||
+        this.job.duration ||
+        this.job.finished_data ||
+        this.job.erased_at ||
+        this.job.queued ||
+        this.job.runner ||
+        this.job.coverage ||
+        this.job.tags.length ||
+        this.job.cancel_path
+      );
+    },
+  },
+};
 </script>
 <template>
   <div>
