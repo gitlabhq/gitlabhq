@@ -194,6 +194,17 @@ describe('IDE store file mutations', () => {
     });
   });
 
+  describe('SET_FILE_VIEWMODE', () => {
+    it('updates file view mode', () => {
+      mutations.SET_FILE_VIEWMODE(localState, {
+        file: localFile,
+        viewMode: 'preview',
+      });
+
+      expect(localFile.viewMode).toBe('preview');
+    });
+  });
+
   describe('ADD_PENDING_TAB', () => {
     beforeEach(() => {
       const f = {

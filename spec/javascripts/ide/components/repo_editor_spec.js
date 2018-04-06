@@ -19,7 +19,6 @@ describe('RepoEditor', () => {
 
     f.active = true;
     f.tempFile = true;
-    f.html = 'testing';
     vm.$store.state.openFiles.push(f);
     vm.$store.state.entries[f.path] = f;
     vm.monaco = true;
@@ -47,6 +46,61 @@ describe('RepoEditor', () => {
     });
   });
 
+  it('renders only an edit tab', done => {
+    Vue.nextTick(() => {
+      const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+      expect(tabs.length).toBe(1);
+      expect(tabs[0].textContent.trim()).toBe('Edit');
+
+      done();
+    });
+  });
+
+  describe('when file is markdown', () => {
+    beforeEach(done => {
+      vm.file.previewMode = {
+        id: 'markdown',
+        previewTitle: 'Preview Markdown',
+      };
+
+      vm.$nextTick(done);
+    });
+
+    it('renders an Edit and a Preview Tab', done => {
+      Vue.nextTick(() => {
+        const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+        expect(tabs.length).toBe(2);
+        expect(tabs[0].textContent.trim()).toBe('Edit');
+        expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
+
+        done();
+      });
+    });
+  });
+
+  describe('when file is markdown and viewer mode is review', () => {
+    beforeEach(done => {
+      vm.file.previewMode = {
+        id: 'markdown',
+        previewTitle: 'Preview Markdown',
+      };
+      vm.$store.state.viewer = 'diff';
+
+      vm.$nextTick(done);
+    });
+
+    it('renders an Edit and a Preview Tab', done => {
+      Vue.nextTick(() => {
+        const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+        expect(tabs.length).toBe(2);
+        expect(tabs[0].textContent.trim()).toBe('Review');
+        expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
+
+        done();
+      });
+    });
+  });
+
   describe('when open file is binary and not raw', () => {
     beforeEach(done => {
       vm.file.binary = true;
@@ -56,10 +110,6 @@ describe('RepoEditor', () => {
 
     it('does not render the IDE', () => {
       expect(vm.shouldHideEditor).toBeTruthy();
-    });
-
-    it('shows activeFile html', () => {
-      expect(vm.$el.textContent).toContain('testing');
     });
   });
 
@@ -149,47 +199,49 @@ describe('RepoEditor', () => {
     });
   });
 
-  describe('setup editor for merge request viewing', () => {
-    beforeEach(done => {
-      // Resetting as the main test setup has already done it
-      vm.$destroy();
-      resetStore(vm.$store);
-      Editor.editorInstance.modelManager.dispose();
+  describe('editor updateDimensions', () => {
+    beforeEach(() => {
+      spyOn(vm.editor, 'updateDimensions').and.callThrough();
+      spyOn(vm.editor, 'updateDiffView');
+    });
 
-      const f = {
-        ...file(),
-        active: true,
-        tempFile: true,
-        html: 'testing',
-        mrChange: { diff: 'ABC' },
-        baseRaw: 'testing',
-        content: 'test',
-      };
-      const RepoEditor = Vue.extend(repoEditor);
-      vm = createComponentWithStore(RepoEditor, store, {
-        file: f,
-      });
+    it('calls updateDimensions when rightPanelCollapsed is changed', done => {
+      vm.$store.state.rightPanelCollapsed = true;
 
-      vm.$store.state.openFiles.push(f);
-      vm.$store.state.entries[f.path] = f;
+      vm.$nextTick(() => {
+        expect(vm.editor.updateDimensions).toHaveBeenCalled();
+        expect(vm.editor.updateDiffView).toHaveBeenCalled();
 
-      vm.$store.state.viewer = 'mrdiff';
-
-      vm.monaco = true;
-
-      vm.$mount();
-
-      monacoLoader(['vs/editor/editor.main'], () => {
-        setTimeout(done, 0);
+        done();
       });
     });
 
-    it('attaches merge request model to editor when merge request diff', () => {
-      spyOn(vm.editor, 'attachMergeRequestModel').and.callThrough();
+    it('calls updateDimensions when panelResizing is false', done => {
+      vm.$store.state.panelResizing = true;
 
-      vm.setupEditor();
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$store.state.panelResizing = false;
+        })
+        .then(vm.$nextTick)
+        .then(() => {
+          expect(vm.editor.updateDimensions).toHaveBeenCalled();
+          expect(vm.editor.updateDiffView).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 
-      expect(vm.editor.attachMergeRequestModel).toHaveBeenCalledWith(vm.model);
+    it('does not call updateDimensions when panelResizing is true', done => {
+      vm.$store.state.panelResizing = true;
+
+      vm.$nextTick(() => {
+        expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
+        expect(vm.editor.updateDiffView).not.toHaveBeenCalled();
+
+        done();
+      });
     });
   });
 });
