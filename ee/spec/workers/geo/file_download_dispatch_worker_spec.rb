@@ -46,6 +46,117 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       subject.perform
     end
 
+    context 'with attachments (Upload records)' do
+      it 'performs Geo::FileDownloadWorker for unsynced attachments' do
+        upload = create(:upload)
+
+        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', upload.id)
+
+        subject.perform
+      end
+
+      it 'performs Geo::FileDownloadWorker for failed-sync attachments' do
+        upload = create(:upload)
+
+        create(:geo_file_registry, :avatar, file_id: upload.id, bytes: 0, success: false)
+
+        expect(Geo::FileDownloadWorker).to receive(:perform_async)
+          .with('avatar', upload.id).once.and_return(spy)
+
+        subject.perform
+      end
+
+      it 'does not perform Geo::FileDownloadWorker for synced attachments' do
+        upload = create(:upload)
+
+        create(:geo_file_registry, :avatar, file_id: upload.id, bytes: 1234, success: true)
+
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
+
+        subject.perform
+      end
+
+      it 'does not perform Geo::FileDownloadWorker for synced attachments even with 0 bytes downloaded' do
+        upload = create(:upload)
+
+        create(:geo_file_registry, :avatar, file_id: upload.id, bytes: 0, success: true)
+
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
+
+        subject.perform
+      end
+
+      context 'with a failed file' do
+        let(:failed_registry) { create(:geo_file_registry, :avatar, file_id: 999, success: false) }
+
+        it 'does not stall backfill' do
+          unsynced = create(:upload)
+
+          stub_const('Geo::Scheduler::SchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 1)
+
+          expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('avatar', failed_registry.file_id)
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced.id)
+
+          subject.perform
+        end
+
+        it 'retries failed files' do
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', failed_registry.file_id)
+
+          subject.perform
+        end
+
+        it 'does not retry failed files when retry_at is tomorrow' do
+          failed_registry = create(:geo_file_registry, :avatar, file_id: 999, success: false, retry_at: Date.tomorrow)
+
+          expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('avatar', failed_registry.file_id)
+
+          subject.perform
+        end
+
+        it 'retries failed files when retry_at is in the past' do
+          failed_registry = create(:geo_file_registry, :avatar, file_id: 999, success: false, retry_at: Date.yesterday)
+
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', failed_registry.file_id)
+
+          subject.perform
+        end
+      end
+
+      context 'with Upload files missing on the primary that are marked as synced' do
+        let(:synced_upload_with_file_missing_on_primary) { create(:upload) }
+
+        before do
+          Geo::FileRegistry.create!(file_type: :avatar, file_id: synced_upload_with_file_missing_on_primary.id, bytes: 1234, success: true, missing_on_primary: true)
+        end
+
+        it 'retries the files if there is spare capacity' do
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', synced_upload_with_file_missing_on_primary.id)
+
+          subject.perform
+        end
+
+        it 'does not retry those files if there is no spare capacity' do
+          unsynced_upload = create(:upload)
+          expect(subject).to receive(:db_retrieve_batch_size).and_return(1).twice
+
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced_upload.id)
+
+          subject.perform
+        end
+
+        it 'does not retry those files if they are already scheduled' do
+          unsynced_upload = create(:upload)
+
+          scheduled_jobs = [{ type: 'avatar', id: synced_upload_with_file_missing_on_primary.id, job_id: 'foo' }]
+          expect(subject).to receive(:scheduled_jobs).and_return(scheduled_jobs).at_least(1)
+          expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced_upload.id)
+
+          subject.perform
+        end
+      end
+    end
+
     context 'with LFS objects' do
       let!(:lfs_object_local_store) { create(:lfs_object, :with_file) }
       let!(:lfs_object_remote_store) { create(:lfs_object, :with_file) }
@@ -228,76 +339,6 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       expect(subject).to receive(:load_pending_resources).exactly(4).times.and_call_original
 
       Sidekiq::Testing.inline! do
-        subject.perform
-      end
-    end
-
-    context 'with a failed file' do
-      let(:failed_registry) { create(:geo_file_registry, :lfs, file_id: 999, success: false) }
-
-      it 'does not stall backfill' do
-        unsynced = create(:lfs_object, :with_file)
-
-        stub_const('Geo::Scheduler::SchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 1)
-
-        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('lfs', failed_registry.file_id)
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', unsynced.id)
-
-        subject.perform
-      end
-
-      it 'retries failed files' do
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
-
-        subject.perform
-      end
-
-      it 'does not retry failed files when retry_at is tomorrow' do
-        failed_registry = create(:geo_file_registry, :lfs, file_id: 999, success: false, retry_at: Date.tomorrow)
-
-        expect(Geo::FileDownloadWorker).not_to receive(:perform_async).with('lfs', failed_registry.file_id)
-
-        subject.perform
-      end
-
-      it 'retries failed files when retry_at is in the past' do
-        failed_registry = create(:geo_file_registry, :lfs, file_id: 999, success: false, retry_at: Date.yesterday)
-
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
-
-        subject.perform
-      end
-    end
-
-    context 'with Upload files missing on the primary that are marked as synced' do
-      let(:synced_upload_with_file_missing_on_primary) { create(:upload) }
-
-      before do
-        Geo::FileRegistry.create!(file_type: :avatar, file_id: synced_upload_with_file_missing_on_primary.id, bytes: 1234, success: true, missing_on_primary: true)
-      end
-
-      it 'retries the files if there is spare capacity' do
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', synced_upload_with_file_missing_on_primary.id)
-
-        subject.perform
-      end
-
-      it 'does not retry those files if there is no spare capacity' do
-        unsynced_upload = create(:upload)
-        expect(subject).to receive(:db_retrieve_batch_size).and_return(1).twice
-
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced_upload.id)
-
-        subject.perform
-      end
-
-      it 'does not retry those files if they are already scheduled' do
-        unsynced_upload = create(:upload)
-
-        scheduled_jobs = [{ type: 'avatar', id: synced_upload_with_file_missing_on_primary.id, job_id: 'foo' }]
-        expect(subject).to receive(:scheduled_jobs).and_return(scheduled_jobs).at_least(1)
-        expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', unsynced_upload.id)
-
         subject.perform
       end
     end
