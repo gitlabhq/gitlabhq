@@ -10,8 +10,8 @@ module Projects
       def create_deploy_token
         @new_deploy_token = DeployTokens::CreateService.new(@project, current_user, deploy_token_params).execute
 
-        if @new_deploy_token.valid?
-          flash[:notice] = 'Your new project deploy token has been created.'
+        if @new_deploy_token.persisted?
+          flash.now[:notice] = 'Your new project deploy token has been created.'
         end
 
         render_show

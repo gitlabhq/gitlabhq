@@ -264,7 +264,7 @@ describe Gitlab::Auth do
         let(:deploy_token) { create(:deploy_token, read_registry: false, projects: [project]) }
 
         it 'succeeds when project is present, token is valid and has read_repository as scope' do
-          abilities = %i(read_project download_code)
+          abilities = %i(download_code)
           auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, abilities)
 
           expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')

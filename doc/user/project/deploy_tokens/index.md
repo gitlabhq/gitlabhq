@@ -7,7 +7,7 @@ Deploy tokens allow to download (through `git clone`), or read the container reg
 Please note, that the expiration of deploy tokens happens on the date you define,
 at midnight UTC and that they can be only managed by [masters](https://docs.gitlab.com/ee/user/permissions.html).
 
-## Creating a personal access token
+## Creating a Deploy Token
 
 You can create as many deploy tokens as you like from the settings of your project: 
 
@@ -36,7 +36,7 @@ the following table.
 
 | Scope | Description |
 | ----- | ----------- |
-|`read_repository` | Allows read-access to the repository through `git clone` |
+| `read_repository` | Allows read-access to the repository through `git clone` |
 | `read_registry` | Allows read-access to [container registry] images if a project is private and authorization is required. |
 
 ## Usage

@@ -11,6 +11,7 @@ describe Projects::DeployTokensController do
 
   describe 'POST #create' do
     let(:deploy_token_params) { attributes_for(:deploy_token) }
+
     subject do
       post :create,
         namespace_id: project.namespace,
