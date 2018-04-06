@@ -37,7 +37,7 @@ describe 'User browses a job', :js do
   end
 
   context 'with a failed job' do
-    let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason' do
       within('.builds-container') do
@@ -48,7 +48,7 @@ describe 'User browses a job', :js do
   end
 
   context 'when a failed job has been retried' do
-    let!(:build) { create(:ci_build, :failed, :retried, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason and retried label' do
       within('.builds-container') do
