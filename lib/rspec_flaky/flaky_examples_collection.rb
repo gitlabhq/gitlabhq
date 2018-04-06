@@ -1,5 +1,7 @@
 require 'json'
 
+require_relative 'flaky_example'
+
 module RspecFlaky
   class FlakyExamplesCollection < SimpleDelegator
     def self.from_json(json)
