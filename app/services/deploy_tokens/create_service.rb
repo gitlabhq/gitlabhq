@@ -12,7 +12,7 @@ module DeployTokens
     end
 
     def expires_at_date
-      params[:expires_at].present? ? default_expires_at : params[:expires_at]
+      params[:expires_at].presence || default_expires_at
     end
 
     def default_expires_at
