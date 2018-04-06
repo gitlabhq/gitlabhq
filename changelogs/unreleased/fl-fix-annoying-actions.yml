@@ -1,0 +1,5 @@
+---
+title: Stop redirecting the page in pipeline main actions
+merge_request:
+author:
+type: fixed

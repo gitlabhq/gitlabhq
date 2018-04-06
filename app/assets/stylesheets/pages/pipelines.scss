@@ -498,41 +498,44 @@
       @extend .build-content:hover;
     }
 
-    // Action Icons in big pipeline-graph nodes
-    .ci-action-icon-container.ci-action-icon-wrapper {
+    .ci-action-icon-container {
       position: absolute;
       right: 5px;
       top: 5px;
-      height: 30px;
-      width: 30px;
-      background: $white-light;
-      border: 1px solid $border-color;
-      border-radius: 100%;
-      display: block;
 
-      &:hover {
-        background-color: $stage-hover-bg;
-        border: 1px solid $dropdown-toggle-active-border-color;
+      // Action Icons in big pipeline-graph nodes
+      &.ci-action-icon-wrapper {
+        height: 30px;
+        width: 30px;
+        background: $white-light;
+        border: 1px solid $border-color;
+        border-radius: 100%;
+        display: block;
 
-        svg {
-          fill: $gl-text-color;
+        &:hover {
+          background-color: $stage-hover-bg;
+          border: 1px solid $dropdown-toggle-active-border-color;
+
+          svg {
+            fill: $gl-text-color;
+          }
         }
-      }
 
-      svg {
-        fill: $gl-text-color-secondary;
-        position: relative;
-        left: 5px;
-        top: 2px;
-        width: 18px;
-        height: 18px;
-      }
-
-      &.play {
         svg {
-          width: #{$ci-action-icon-size - 8};
-          height: #{$ci-action-icon-size - 8};
-          left: 8px;
+          fill: $gl-text-color-secondary;
+          position: relative;
+          left: 5px;
+          top: 2px;
+          width: 18px;
+          height: 18px;
+        }
+
+        &.play {
+          svg {
+            width: #{$ci-action-icon-size - 8};
+            height: #{$ci-action-icon-size - 8};
+            left: 8px;
+          }
         }
       }
     }
