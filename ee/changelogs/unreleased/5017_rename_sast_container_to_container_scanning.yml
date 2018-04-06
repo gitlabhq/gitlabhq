@@ -1,0 +1,5 @@
+---
+title: Rename SAST:container to Container Scannning
+merge_request:
+author:
+type: deprecated
