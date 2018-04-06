@@ -223,7 +223,8 @@ module IssuablesHelper
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
-      initialTaskStatus: issuable.task_status
+      initialTaskStatus: issuable.task_status,
+      initialLockVersion: issuable.lock_version
     }
 
     if parent.is_a?(Group)

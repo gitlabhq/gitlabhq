@@ -8,6 +8,7 @@ export default {
     updated_at: '2015-05-15T12:31:04.428Z',
     updated_by_name: 'Some User',
     updated_by_path: '/some_user',
+    lock_version: 1,
   },
   secondRequest: {
     title: '<p>2</p>',
@@ -18,5 +19,6 @@ export default {
     updated_at: '2016-05-15T12:31:04.428Z',
     updated_by_name: 'Other User',
     updated_by_path: '/other_user',
+    lock_version: 2,
   },
 };

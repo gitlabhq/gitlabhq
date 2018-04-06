@@ -80,6 +80,11 @@
         required: false,
         default: '',
       },
+      initialLockVersion: {
+        type: Number,
+        required: false,
+        default: -1,
+      },
       updatedAt: {
         type: String,
         required: false,
@@ -137,6 +142,7 @@
         updatedByName: this.updatedByName,
         updatedByPath: this.updatedByPath,
         taskStatus: this.initialTaskStatus,
+        lockVersion: this.initialLockVersion,
       });
 
       return {
@@ -213,6 +219,7 @@
             title: this.state.titleText,
             description: this.state.descriptionText,
             updateLoading: false,
+            lock_version: this.state.lockVersion,
           });
         }
       },
@@ -240,8 +247,6 @@
             if (error && error.name === 'SpamError') {
               this.openRecaptcha();
             } else {
-              eventHub.$emit('close.form');
-
               let errorMessage = `Error updating ${this.issuableType}`;
 
               // A 409 Conflict means multiple users attempted to edit

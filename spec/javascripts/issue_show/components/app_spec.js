@@ -12,10 +12,7 @@ function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
 }
 
-const REALTIME_REQUEST_STACK = [
-  issueShowData.initialRequest,
-  issueShowData.secondRequest,
-];
+const REALTIME_REQUEST_STACK = [issueShowData.initialRequest, issueShowData.secondRequest];
 
 describe('Issuable output', () => {
   let mock;
@@ -24,7 +21,7 @@ describe('Issuable output', () => {
 
   document.body.innerHTML = '<div class="flash-container"></div><span id="task_status"></span>';
 
-  beforeEach((done) => {
+  beforeEach(done => {
     spyOn(eventHub, '$emit');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
@@ -65,65 +62,65 @@ describe('Issuable output', () => {
     vm.$destroy();
   });
 
-  it('should render a title/description/edited and update title/description/edited on update', (done) => {
+  it('should render a title/description/edited and update title/description/edited on update', done => {
     let editedText;
     Vue.nextTick()
-    .then(() => {
-      editedText = vm.$el.querySelector('.edited-text');
-    })
-    .then(() => {
-      expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
-      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
-      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
-      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('this is a description');
-      expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
-      expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
-      expect(editedText.querySelector('time')).toBeTruthy();
-    })
-    .then(() => {
-      vm.poll.makeRequest();
-    })
-    .then(() => new Promise(resolve => setTimeout(resolve)))
-    .then(() => {
-      expect(document.querySelector('title').innerText).toContain('2 (#1)');
-      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
-      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
-      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
-      expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
-      expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
-      expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
-      expect(editedText.querySelector('time')).toBeTruthy();
-    })
-    .then(done)
-    .catch(done.fail);
+      .then(() => {
+        editedText = vm.$el.querySelector('.edited-text');
+      })
+      .then(() => {
+        expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
+        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
+        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
+        expect(vm.$el.querySelector('.js-task-list-field').value).toContain(
+          'this is a description',
+        );
+        expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
+        expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
+        expect(editedText.querySelector('time')).toBeTruthy();
+      })
+      .then(() => {
+        vm.poll.makeRequest();
+      })
+      .then(() => new Promise(resolve => setTimeout(resolve)))
+      .then(() => {
+        expect(document.querySelector('title').innerText).toContain('2 (#1)');
+        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
+        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
+        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
+        expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
+        expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(
+          /Edited[\s\S]+?by Other User/,
+        );
+        expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
+        expect(editedText.querySelector('time')).toBeTruthy();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
-  it('shows actions if permissions are correct', (done) => {
+  it('shows actions if permissions are correct', done => {
     vm.showForm = true;
 
     Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.btn'),
-      ).not.toBeNull();
+      expect(vm.$el.querySelector('.btn')).not.toBeNull();
 
       done();
     });
   });
 
-  it('does not show actions if permissions are incorrect', (done) => {
+  it('does not show actions if permissions are incorrect', done => {
     vm.showForm = true;
     vm.canUpdate = false;
 
     Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.btn'),
-      ).toBeNull();
+      expect(vm.$el.querySelector('.btn')).toBeNull();
 
       done();
     });
   });
 
-  it('does not update formState if form is already open', (done) => {
+  it('does not update formState if form is already open', done => {
     vm.openForm();
 
     vm.state.titleText = 'testing 123';
@@ -131,27 +128,29 @@ describe('Issuable output', () => {
     vm.openForm();
 
     Vue.nextTick(() => {
-      expect(
-        vm.store.formState.title,
-      ).not.toBe('testing 123');
+      expect(vm.store.formState.title).not.toBe('testing 123');
 
       done();
     });
   });
 
   describe('updateIssuable', () => {
-    it('fetches new data after update', (done) => {
+    it('fetches new data after update', done => {
       spyOn(vm.service, 'getData').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          data: {
-            confidential: false,
-            web_url: location.pathname,
-          },
-        });
-      }));
+      spyOn(vm.service, 'updateIssuable').and.callFake(
+        () =>
+          new Promise(resolve => {
+            resolve({
+              data: {
+                confidential: false,
+                web_url: location.pathname,
+              },
+            });
+          }),
+      );
 
-      vm.updateIssuable()
+      vm
+        .updateIssuable()
         .then(() => {
           expect(vm.service.getData).toHaveBeenCalled();
         })
@@ -159,12 +158,16 @@ describe('Issuable output', () => {
         .catch(done.fail);
     });
 
-    it('correctly updates issuable data', (done) => {
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve();
-      }));
+    it('correctly updates issuable data', done => {
+      spyOn(vm.service, 'updateIssuable').and.callFake(
+        () =>
+          new Promise(resolve => {
+            resolve();
+          }),
+      );
 
-      vm.updateIssuable()
+      vm
+        .updateIssuable()
         .then(() => {
           expect(vm.service.updateIssuable).toHaveBeenCalledWith(vm.formState);
           expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
@@ -173,52 +176,54 @@ describe('Issuable output', () => {
         .catch(done.fail);
     });
 
-    it('does not redirect if issue has not moved', (done) => {
+    it('does not redirect if issue has not moved', done => {
       spyOn(urlUtils, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          data: {
-            web_url: location.pathname,
-            confidential: vm.isConfidential,
-          },
-        });
-      }));
+      spyOn(vm.service, 'updateIssuable').and.callFake(
+        () =>
+          new Promise(resolve => {
+            resolve({
+              data: {
+                web_url: location.pathname,
+                confidential: vm.isConfidential,
+              },
+            });
+          }),
+      );
 
       vm.updateIssuable();
 
       setTimeout(() => {
-        expect(
-          urlUtils.visitUrl,
-        ).not.toHaveBeenCalled();
+        expect(urlUtils.visitUrl).not.toHaveBeenCalled();
 
         done();
       });
     });
 
-    it('redirects if returned web_url has changed', (done) => {
+    it('redirects if returned web_url has changed', done => {
       spyOn(urlUtils, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          data: {
-            web_url: '/testing-issue-move',
-            confidential: vm.isConfidential,
-          },
-        });
-      }));
+      spyOn(vm.service, 'updateIssuable').and.callFake(
+        () =>
+          new Promise(resolve => {
+            resolve({
+              data: {
+                web_url: '/testing-issue-move',
+                confidential: vm.isConfidential,
+              },
+            });
+          }),
+      );
 
       vm.updateIssuable();
 
       setTimeout(() => {
-        expect(
-          urlUtils.visitUrl,
-        ).toHaveBeenCalledWith('/testing-issue-move');
+        expect(urlUtils.visitUrl).toHaveBeenCalledWith('/testing-issue-move');
 
         done();
       });
     });
 
     describe('shows dialog when issue has unsaved changed', () => {
-      it('confirms on title change', (done) => {
+      it('confirms on title change', done => {
         vm.showForm = true;
         vm.state.titleText = 'title has changed';
         const e = { returnValue: null };
@@ -229,7 +234,7 @@ describe('Issuable output', () => {
         });
       });
 
-      it('confirms on description change', (done) => {
+      it('confirms on description change', done => {
         vm.showForm = true;
         vm.state.descriptionText = 'description has changed';
         const e = { returnValue: null };
@@ -240,7 +245,7 @@ describe('Issuable output', () => {
         });
       });
 
-      it('does nothing when nothing has changed', (done) => {
+      it('does nothing when nothing has changed', done => {
         const e = { returnValue: null };
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
@@ -253,39 +258,34 @@ describe('Issuable output', () => {
     describe('error when updating', () => {
       beforeEach(() => {
         spyOn(window, 'Flash').and.callThrough();
-        spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
-          reject();
-        }));
+        spyOn(vm.service, 'updateIssuable').and.callFake(
+          () =>
+            new Promise((resolve, reject) => {
+              reject();
+            }),
+        );
       });
 
-      it('closes form on error', (done) => {
+      it('closes form on error', done => {
         vm.updateIssuable();
 
         setTimeout(() => {
-          expect(
-            eventHub.$emit,
-          ).toHaveBeenCalledWith('close.form');
-          expect(
-            window.Flash,
-          ).toHaveBeenCalledWith('Error updating issue');
+          expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+          expect(window.Flash).toHaveBeenCalledWith('Error updating issue');
 
           done();
         });
       });
 
-      it('returns the correct error message for issuableType', (done) => {
+      it('returns the correct error message for issuableType', done => {
         vm.issuableType = 'merge request';
 
         Vue.nextTick(() => {
           vm.updateIssuable();
 
           setTimeout(() => {
-            expect(
-              eventHub.$emit,
-            ).toHaveBeenCalledWith('close.form');
-            expect(
-              window.Flash,
-            ).toHaveBeenCalledWith('Error updating merge request');
+            expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+            expect(window.Flash).toHaveBeenCalledWith('Error updating merge request');
 
             done();
           });
@@ -294,19 +294,20 @@ describe('Issuable output', () => {
     });
   });
 
-  it('shows when a conflict has been detected', (done) => {
+  it('shows when a conflict has been detected', done => {
     spyOn(window, 'Flash').and.callThrough();
-    spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
-      reject({ response: { status: 409, data: { errors: 'there was a conflict' } } });
-    }));
+    spyOn(vm.service, 'updateIssuable').and.callFake(
+      () =>
+        new Promise((resolve, reject) => {
+          reject({ response: { status: 409, data: { errors: 'there was a conflict' } } });
+        }),
+    );
 
     vm.updateIssuable();
 
     setTimeout(() => {
       expect(vm.$el.querySelector('form')).toBe(null);
-      expect(
-        document.querySelector('.flash-container').innerText,
-      ).toContain(
+      expect(document.querySelector('.flash-container').innerText).toContain(
         'there was a conflict',
       );
 
@@ -314,16 +315,40 @@ describe('Issuable output', () => {
     });
   });
 
-  it('opens recaptcha modal if update rejected as spam', (done) => {
+  it('shows error if issue description changed while editing', done => {
+    const errorMessage = 'Someone else has edited the issue';
+    spyOn(window, 'Flash');
+    spyOn(vm.service, 'updateIssuable').and.callFake(() =>
+      Promise.reject({
+        response: {
+          status: 409,
+          data: {
+            errors: errorMessage,
+          },
+        },
+      }),
+    );
+
+    vm
+      .updateIssuable()
+      .then(() => {
+        expect(window.Flash).toHaveBeenCalledWith(errorMessage);
+        done();
+      })
+      .catch(done.fail);
+  });
+
+  it('opens recaptcha modal if update rejected as spam', done => {
     function mockScriptSrc() {
-      const recaptchaChild = vm.$children
-        .find(child => child.$options._componentTag === 'recaptcha-modal'); // eslint-disable-line no-underscore-dangle
+      const recaptchaChild = vm.$children.find(
+        child => child.$options._componentTag === 'recaptcha-modal',
+      ); // eslint-disable-line no-underscore-dangle
 
       recaptchaChild.scriptSrc = '//scriptsrc';
     }
 
     let modal;
-    const promise = new Promise((resolve) => {
+    const promise = new Promise(resolve => {
       resolve({
         data: {
           recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
@@ -336,7 +361,8 @@ describe('Issuable output', () => {
     vm.canUpdate = true;
     vm.showForm = true;
 
-    vm.$nextTick()
+    vm
+      .$nextTick()
       .then(() => mockScriptSrc())
       .then(() => vm.updateIssuable())
       .then(promise)
@@ -359,64 +385,65 @@ describe('Issuable output', () => {
   });
 
   describe('deleteIssuable', () => {
-    it('changes URL when deleted', (done) => {
+    it('changes URL when deleted', done => {
       spyOn(urlUtils, 'visitUrl');
-      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          data: {
-            web_url: '/test',
-          },
-        });
-      }));
+      spyOn(vm.service, 'deleteIssuable').and.callFake(
+        () =>
+          new Promise(resolve => {
+            resolve({
+              data: {
+                web_url: '/test',
+              },
+            });
+          }),
+      );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(
-          urlUtils.visitUrl,
-        ).toHaveBeenCalledWith('/test');
+        expect(urlUtils.visitUrl).toHaveBeenCalledWith('/test');
 
         done();
       });
     });
 
-    it('stops polling when deleting', (done) => {
+    it('stops polling when deleting', done => {
       spyOn(urlUtils, 'visitUrl');
       spyOn(vm.poll, 'stop').and.callThrough();
-      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          data: {
-            web_url: '/test',
-          },
-        });
-      }));
+      spyOn(vm.service, 'deleteIssuable').and.callFake(
+        () =>
+          new Promise(resolve => {
+            resolve({
+              data: {
+                web_url: '/test',
+              },
+            });
+          }),
+      );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(
-          vm.poll.stop,
-        ).toHaveBeenCalledWith();
+        expect(vm.poll.stop).toHaveBeenCalledWith();
 
         done();
       });
     });
 
-    it('closes form on error', (done) => {
+    it('closes form on error', done => {
       spyOn(window, 'Flash').and.callThrough();
-      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve, reject) => {
-        reject();
-      }));
+      spyOn(vm.service, 'deleteIssuable').and.callFake(
+        () =>
+          new Promise((resolve, reject) => {
+            reject();
+          }),
+      );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(
-          eventHub.$emit,
-        ).toHaveBeenCalledWith('close.form');
-        expect(
-          window.Flash,
-        ).toHaveBeenCalledWith('Error deleting issue');
+        expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+        expect(window.Flash).toHaveBeenCalledWith('Error deleting issue');
 
         done();
       });
