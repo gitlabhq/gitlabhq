@@ -1,4 +1,4 @@
-# Deploy Tokens 
+# Deploy Tokens
 
 > [Introduced][ce-17894] in GitLab 10.7.
 
