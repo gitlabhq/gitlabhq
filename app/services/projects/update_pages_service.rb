@@ -74,11 +74,7 @@ module Projects
     end
 
     def extract_archive!(temp_path)
-<<<<<<< HEAD
       if artifacts_filename.ends_with?('.zip')
-=======
-      if artifacts.ends_with?('.zip')
->>>>>>> upstream/master
         extract_zip_archive!(temp_path)
       else
         raise InvaildStateError, 'unsupported artifacts format'
