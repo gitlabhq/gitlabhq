@@ -12,6 +12,27 @@ describe 'Projects > Files > User edits files' do
     sign_in(user)
   end
 
+  shared_examples 'unavailable for an archived project' do
+    it 'does not show the edit link for an archived project', :js do
+      project.update!(archived: true)
+      visit project_tree_path(project, project.repository.root_ref)
+
+      click_link('.gitignore')
+
+      aggregate_failures 'available edit buttons' do
+        # We're showing a link, if the user can edit directly, this is becomes a
+        # button when the user can fork the project.
+        expect(page).not_to have_link('Edit')
+        expect(page).not_to have_button('Edit')
+        expect(page).not_to have_link('Web IDE')
+        expect(page).not_to have_button('Web IDE')
+
+        expect(page).not_to have_button('Replace')
+        expect(page).not_to have_button('Delete')
+      end
+    end
+  end
+
   context 'when an user has write access' do
     before do
       project.add_master(user)
@@ -85,6 +106,8 @@ describe 'Projects > Files > User edits files' do
 
       expect(page).to have_css('.line_holder.new')
     end
+
+    it_behaves_like 'unavailable for an archived project'
   end
 
   context 'when an user does not have write access' do
@@ -167,6 +190,10 @@ describe 'Projects > Files > User edits files' do
         expect(page).to have_content('Another commit')
         expect(page).to have_content("From #{forked_project.full_path}")
         expect(page).to have_content("into #{project2.full_path}")
+      end
+
+      it_behaves_like 'unavailable for an archived project' do
+        let(:project) { project2 }
       end
     end
   end

@@ -59,7 +59,7 @@ module BlobHelper
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
-    elsif can?(current_user, :fork_project, project)
+    elsif can?(current_user, :create_merge_request_in_project, project)
       edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action), action)
     end
   end
@@ -334,7 +334,7 @@ module BlobHelper
       # Web IDE (Beta) requires the user to have this feature enabled
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       edit_link_tag(text, edit_path, common_classes)
-    elsif current_user && can?(current_user, :fork_project, project)
+    elsif can?(current_user, :create_merge_request_in_project, project)
       edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
     end
   end
