@@ -9,7 +9,7 @@ module Ci
     default_value_for :data_store, :redis
 
     CHUNK_SIZE = 128.kilobytes
-    CHUNK_REDIS_TTL = 1.day
+    CHUNK_REDIS_TTL = 1.week
 
     enum data_store: {
       redis: 1,
