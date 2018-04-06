@@ -23,6 +23,7 @@ module Gitlab
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
+      EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -31,6 +32,7 @@ module Gitlab
       DeleteBranchError = Class.new(StandardError)
       CreateTreeError = Class.new(StandardError)
       TagExistsError = Class.new(StandardError)
+      ChecksumError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the repository path
@@ -1502,6 +1504,16 @@ module Gitlab
         FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
       end
 
+      def checksum
+        gitaly_migrate(:calculate_checksum) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.calculate_checksum
+          else
+            calculate_checksum_by_shelling_out
+          end
+        end
+      end
+
       private
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
@@ -2419,6 +2431,34 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
+      end
+
+      def calculate_checksum_by_shelling_out
+        raise NoRepository unless exists?
+
+        args = %W(--git-dir=#{path} show-ref --heads --tags)
+        output, status = run_git(args)
+
+        if status.nil? || !status.zero?
+          # Empty repositories return with a non-zero status and an empty output.
+          return EMPTY_REPOSITORY_CHECKSUM if output&.empty?
+
+          raise ChecksumError, output
+        end
+
+        refs = output.split("\n")
+
+        result = refs.inject(nil) do |checksum, ref|
+          value = Digest::SHA1.hexdigest(ref).hex
+
+          if checksum.nil?
+            value
+          else
+            checksum ^ value
+          end
+        end
+
+        result.to_s(16)
       end
     end
   end
