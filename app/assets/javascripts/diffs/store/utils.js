@@ -10,24 +10,6 @@ import {
   MATCH_LINE_TYPE,
 } from '../constants';
 
-export const findDiffLineIndex = options => {
-  const { diffLines, lineCode, linePosition, formId } = options;
-
-  return _.findIndex(diffLines, l => {
-    const line = linePosition ? l[linePosition] : l;
-
-    if (!line) {
-      return null;
-    }
-
-    if (formId) {
-      return line.id === formId;
-    }
-
-    return line.lineCode === lineCode;
-  });
-};
-
 export const findDiffFile = (files, hash) =>
   files.filter(file => file.fileHash === hash)[0];
 
