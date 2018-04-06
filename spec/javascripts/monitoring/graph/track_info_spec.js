@@ -28,4 +28,17 @@ describe('TrackInfo component', () => {
       expect(vm.summaryMetrics).toEqual('Avg: 0.000 · Max: 0.000');
     });
   });
+
+  describe('Rendered output', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, { track: timeSeries[0] });
+    });
+
+    it('contains metric tag and the summary metrics', () => {
+      const metricTag = vm.$el.querySelector('strong');
+
+      expect(metricTag.textContent.trim()).toEqual(vm.track.metricTag);
+      expect(vm.$el.textContent).toContain('Avg: 0.000 · Max: 0.000');
+    });
+  });
 });

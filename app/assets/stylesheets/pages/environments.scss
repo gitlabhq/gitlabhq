@@ -481,6 +481,11 @@
       vertical-align: top;
     }
   }
+
+  .legend-metric-title {
+    font-size: 12px;
+    vertical-align: middle;
+  }
 }
 
 .prometheus-svg-container {
@@ -568,6 +573,10 @@
       }
     }
   }
+}
+
+.prometheus-table-row-highlight {
+  background-color: $prometheus-table-row-highlight-color;
 }
 
 // EE-only

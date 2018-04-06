@@ -7,10 +7,10 @@ export default {
       required: true,
     },
   },
-  methods: {
-    strokeDashArray(type) {
-      if (type === 'dashed') return '6, 3';
-      if (type === 'dotted') return '3, 3';
+  computed: {
+    stylizedLine() {
+      if (this.track.lineStyle === 'dashed') return '6, 3';
+      if (this.track.lineStyle === 'dotted') return '3, 3';
       return null;
     },
   },
@@ -22,7 +22,7 @@ export default {
       width="15"
       height="6">
       <line
-        :stroke-dasharray="strokeDashArray(track.lineStyle)"
+        :stroke-dasharray="stylizedLine"
         :stroke="track.lineColor"
         stroke-width="4"
         :x1="0"
