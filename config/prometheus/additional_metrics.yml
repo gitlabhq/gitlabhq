@@ -26,7 +26,7 @@
     weight: 1
     queries:
     - query_range: 'avg(nginx_upstream_response_msecs_avg{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"})'
-      label: Average
+      label: Pod average
       unit: ms
   - title: "HTTP Error Rate"
     y_label: "HTTP 500 Errors / Sec"
