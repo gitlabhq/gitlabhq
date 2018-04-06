@@ -38,4 +38,33 @@ describe('ContentViewer', () => {
       done();
     });
   });
+
+  it('renders image preview', done => {
+    createComponent({
+      path: 'test.jpg',
+      fileSize: 1024,
+    });
+
+    setTimeout(() => {
+      expect(vm.$el.querySelector('.image_file img').getAttribute('src')).toBe('test.jpg');
+
+      done();
+    });
+  });
+
+  it('renders fallback download control', done => {
+    createComponent({
+      path: 'test.abc',
+      fileSize: 1024,
+    });
+
+    setTimeout(() => {
+      expect(vm.$el.querySelector('.file-info').textContent.trim()).toContain(
+        'test.abc (1.00 KiB)',
+      );
+      expect(vm.$el.querySelector('.btn.btn-default').textContent.trim()).toContain('Download');
+
+      done();
+    });
+  });
 });
