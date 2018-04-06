@@ -175,8 +175,8 @@ module Geo
       Geo::ProjectRegistry
         .joins(fdw_inner_join_repository_state)
         .where(
-          local_registry_table[:repository_verification_checksum].eq(nil).or(
-            local_registry_table[:wiki_verification_checksum].eq(nil)
+          local_registry_table[:repository_verification_checksum_sha].eq(nil).or(
+            local_registry_table[:wiki_verification_checksum_sha].eq(nil)
           )
         )
         .where(
@@ -308,8 +308,8 @@ module Geo
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
     def legacy_find_registries_to_verify(batch_size:)
       registries = Geo::ProjectRegistry.where(
-        local_registry_table[:repository_verification_checksum].eq(nil).or(
-          local_registry_table[:wiki_verification_checksum].eq(nil)
+        local_registry_table[:repository_verification_checksum_sha].eq(nil).or(
+          local_registry_table[:wiki_verification_checksum_sha].eq(nil)
         )
       ).pluck(:project_id)
 

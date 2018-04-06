@@ -122,7 +122,7 @@ module Geo
         attrs["force_to_redownload_#{type}"] = false
 
         # Indicate that repository verification needs to be done again
-        attrs["#{type}_verification_checksum"] = nil
+        attrs["#{type}_verification_checksum_sha"] = nil
         attrs["last_#{type}_verification_failure"] = nil
       end
 

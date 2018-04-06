@@ -65,10 +65,10 @@ ActiveRecord::Schema.define(version: 20180331055706) do
     t.boolean "force_to_redownload_wiki"
     t.string "last_repository_sync_failure"
     t.string "last_wiki_sync_failure"
-    t.string "repository_verification_checksum"
     t.string "last_repository_verification_failure"
-    t.string "wiki_verification_checksum"
     t.string "last_wiki_verification_failure"
+    t.binary "repository_verification_checksum_sha"
+    t.binary "wiki_verification_checksum_sha"
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
@@ -77,10 +77,10 @@ ActiveRecord::Schema.define(version: 20180331055706) do
   add_index "project_registry", ["project_id"], name: "idx_project_registry_on_wiki_failure_partial", where: "(last_wiki_verification_failure IS NOT NULL)", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", unique: true, using: :btree
   add_index "project_registry", ["repository_retry_at"], name: "index_project_registry_on_repository_retry_at", using: :btree
-  add_index "project_registry", ["repository_verification_checksum"], name: "idx_project_registry_on_repository_checksum_partial", where: "(repository_verification_checksum IS NULL)", using: :btree
+  add_index "project_registry", ["repository_verification_checksum_sha"], name: "idx_project_registry_on_repository_checksum_sha_partial", where: "(repository_verification_checksum_sha IS NULL)", using: :btree
   add_index "project_registry", ["resync_repository"], name: "index_project_registry_on_resync_repository", using: :btree
   add_index "project_registry", ["resync_wiki"], name: "index_project_registry_on_resync_wiki", using: :btree
   add_index "project_registry", ["wiki_retry_at"], name: "index_project_registry_on_wiki_retry_at", using: :btree
-  add_index "project_registry", ["wiki_verification_checksum"], name: "idx_project_registry_on_wiki_checksum_partial", where: "(wiki_verification_checksum IS NULL)", using: :btree
+  add_index "project_registry", ["wiki_verification_checksum_sha"], name: "idx_project_registry_on_wiki_checksum_sha_partial", where: "(wiki_verification_checksum_sha IS NULL)", using: :btree
 
 end

@@ -160,10 +160,10 @@ describe Geo::RepositorySyncService do
           expect(registry.last_repository_successful_sync_at).not_to be_nil
         end
 
-        it 'resets the repository_verification_checksum' do
+        it 'resets the repository_verification_checksum_sha' do
           subject.execute
 
-          expect(registry.repository_verification_checksum).to be_nil
+          expect(registry.repository_verification_checksum_sha).to be_nil
         end
 
         it 'resets the last_repository_verification_failure' do
