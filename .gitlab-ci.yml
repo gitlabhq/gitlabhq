@@ -545,8 +545,8 @@ rspec-pg-ee 0 2: *rspec-ee-pg
 rspec-pg-ee 1 2: *rspec-ee-pg
 rspec-mysql-ee 0 2: *rspec-ee-mysql
 rspec-mysql-ee 1 2: *rspec-ee-mysql
-rspec-pg geo 0 2: *rspec-metadata-pg-geo-9-6
-rspec-pg geo 1 2: *rspec-metadata-pg-geo-10-2
+rspec-pg geo 0 1: *rspec-metadata-pg-geo-9-6
+rspec-pg-10 geo 0 1: *rspec-metadata-pg-geo-10-2
 
 rspec-pg-ee-rails5 0 2: *rspec-ee-pg-rails5
 rspec-pg-ee-rails5 1 2: *rspec-ee-pg-rails5
