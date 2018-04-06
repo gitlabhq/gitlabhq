@@ -76,7 +76,7 @@ namespace :admin do
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
 
-  get 'devops_score' => 'devops_score#show'
+  get 'dev_ops_score' => 'dev_ops_score#show'
 
   resources :projects, only: [:index]
 

@@ -9,7 +9,7 @@ describe 'Admin DevOps Score' do
     it 'shows empty state' do
       stub_application_setting(usage_ping_enabled: false)
 
-      visit admin_devops_score_path
+      visit admin_dev_ops_score_path
 
       expect(page).to have_content('Usage ping is not enabled')
     end
@@ -19,7 +19,7 @@ describe 'Admin DevOps Score' do
     it 'shows empty state' do
       stub_application_setting(usage_ping_enabled: true)
 
-      visit admin_devops_score_path
+      visit admin_dev_ops_score_path
 
       expect(page).to have_content('Data is still calculating')
     end
@@ -30,7 +30,7 @@ describe 'Admin DevOps Score' do
       stub_application_setting(usage_ping_enabled: true)
       create(:devops_score_metric)
 
-      visit admin_devops_score_path
+      visit admin_dev_ops_score_path
 
       expect(page).to have_content(
         'Issues created per active user 1.2 You 9.3 Lead 13.3%'
