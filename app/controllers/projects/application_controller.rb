@@ -35,8 +35,12 @@ class Projects::ApplicationController < ApplicationController
   def can_collaborate_with_project?(project = nil, ref: nil)
     project ||= @project
 
+    can_create_merge_request =
+      can?(current_user, :create_merge_request_in_project, project) &&
+      current_user.already_forked?(project)
+
     can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project)) ||
+      can_create_merge_request ||
       user_access(project).can_push_to_branch?(ref)
   end
 

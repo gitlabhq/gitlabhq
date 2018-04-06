@@ -14,7 +14,7 @@ describe ProjectPolicy do
       read_project read_board read_list read_wiki read_issue
       read_project_for_iids read_issue_iid read_merge_request_iid read_label
       read_milestone read_project_snippet read_project_member read_note
-      create_project create_issue create_note upload_file
+      create_project create_issue create_note upload_file create_merge_request_in_project
     ]
   end
 
@@ -136,6 +136,20 @@ describe ProjectPolicy do
     end
   end
 
+  context 'merge requests feature' do
+    subject { described_class.new(owner, project) }
+
+    it 'disallows all permissions when the feature is disabled' do
+      project.project_feature.update(merge_requests_access_level: ProjectFeature::DISABLED)
+
+      mr_permissions = [:create_merge_request, :read_merge_request,
+                        :update_merge_request, :admin_merge_request,
+                        :create_merge_request_in_project]
+
+      expect_disallowed(*mr_permissions)
+    end
+  end
+
   shared_examples 'archived project policies' do
     let(:feature_write_abilities) do
       described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|
@@ -145,6 +159,7 @@ describe ProjectPolicy do
 
     let(:other_write_abilities) do
       %i[
+        create_merge_request_in_project
         push_to_delete_protected_branch
         push_code
         request_access

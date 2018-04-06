@@ -72,7 +72,7 @@ module MergeRequests
       params.delete(:target_project_id)
 
       unless can?(current_user, :read_project, @source_project) &&
-          can?(current_user, :read_project, @project)
+          can?(current_user, :create_merge_request_in_project, @project)
 
         raise Gitlab::Access::AccessDeniedError
       end
