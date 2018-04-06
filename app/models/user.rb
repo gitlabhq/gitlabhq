@@ -164,12 +164,15 @@ class User < ActiveRecord::Base
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
+  before_save :set_notification_email, if: :email_changed? # in case validation is skipped
   before_validation :set_public_email, if: :public_email_changed?
+  before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
+  before_save :ensure_namespace_correct # in case validation is skipped
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
@@ -408,7 +411,6 @@ class User < ActiveRecord::Base
       unique_internal(where(ghost: true), 'ghost', email) do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
         u.name = 'Ghost User'
-        u.notification_email = email
       end
     end
   end

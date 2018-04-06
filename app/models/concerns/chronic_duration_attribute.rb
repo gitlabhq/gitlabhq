@@ -8,14 +8,14 @@ module ChronicDurationAttribute
       end
     end
 
-    def chronic_duration_attr_writer(virtual_attribute, source_attribute)
+    def chronic_duration_attr_writer(virtual_attribute, source_attribute, parameters = {})
       chronic_duration_attr_reader(virtual_attribute, source_attribute)
 
       define_method("#{virtual_attribute}=") do |value|
-        chronic_duration_attributes[virtual_attribute] = value.presence || ''
+        chronic_duration_attributes[virtual_attribute] = value.presence || parameters[:default].presence.to_s
 
         begin
-          new_value = ChronicDuration.parse(value).to_i if value.present?
+          new_value = value.present? ? ChronicDuration.parse(value).to_i : parameters[:default].presence
           assign_attributes(source_attribute => new_value)
         rescue ChronicDuration::DurationParseError
           # ignore error as it will be caught by validation

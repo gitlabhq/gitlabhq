@@ -42,6 +42,7 @@ export default {
       renderError: data.render_error,
       raw: null,
       baseRaw: null,
+      html: data.html,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
@@ -81,6 +82,11 @@ export default {
   [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
     Object.assign(state.entries[file.path], {
       mrChange,
+    });
+  },
+  [types.SET_FILE_VIEWMODE](state, { file, viewMode }) {
+    Object.assign(state.entries[file.path], {
+      viewMode,
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {

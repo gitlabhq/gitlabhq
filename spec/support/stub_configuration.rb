@@ -45,6 +45,10 @@ module StubConfiguration
     allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
   end
 
+  def stub_artifacts_setting(messages)
+    allow(Gitlab.config.artifacts).to receive_messages(to_settings(messages))
+  end
+
   def stub_storage_settings(messages)
     messages.deep_stringify_keys!
 

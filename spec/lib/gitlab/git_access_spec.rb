@@ -10,12 +10,13 @@ describe Gitlab::GitAccess do
   let(:protocol) { 'ssh' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
+  let(:auth_result_type) { nil }
 
   let(:access) do
     described_class.new(actor, project,
       protocol, authentication_abilities: authentication_abilities,
                 namespace_path: namespace_path, project_path: project_path,
-                redirected_path: redirected_path)
+                redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 
   let(:changes) { '_any' }
@@ -45,12 +46,33 @@ describe Gitlab::GitAccess do
 
       before do
         disable_protocol('http')
+        project.add_master(user)
       end
 
       it 'blocks http push and pull' do
         aggregate_failures do
           expect { push_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
           expect { pull_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+        end
+      end
+
+      context 'when request is made from CI' do
+        let(:auth_result_type) { :build }
+
+        it "doesn't block http pull" do
+          aggregate_failures do
+            expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+          end
+        end
+
+        context 'when legacy CI credentials are used' do
+          let(:auth_result_type) { :ci }
+
+          it "doesn't block http pull" do
+            aggregate_failures do
+              expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+            end
+          end
         end
       end
     end

@@ -1,0 +1,5 @@
+---
+title: Use human readable value build_timeout in Project
+merge_request: 17386
+author:
+type: changed
