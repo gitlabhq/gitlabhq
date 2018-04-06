@@ -233,9 +233,7 @@ module ApplicationHelper
       scope: params[:scope],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
-      assignee_username: params[:assignee_username],
       author_id: params[:author_id],
-      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name],
       weight: params[:weight]

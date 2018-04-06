@@ -1,0 +1,6 @@
+---
+title: Require at least one filter when listing issues or merge requests on dashboard
+  page
+merge_request:
+author:
+type: performance
