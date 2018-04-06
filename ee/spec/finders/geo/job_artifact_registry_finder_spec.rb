@@ -72,7 +72,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'ignores remote job artifacts' do
-        job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+        job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
         expect(subject.count_local_job_artifacts).to eq 3
       end
@@ -87,7 +87,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'ignores remote job artifacts' do
-          job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+          job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
           expect(subject.count_local_job_artifacts).to eq 1
         end
@@ -185,7 +185,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
           create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
-          job_artifact_1.update!(file_store: ObjectStorage::Store::REMOTE)
+          job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
           expect(subject.count_failed_job_artifacts).to eq 1
         end
