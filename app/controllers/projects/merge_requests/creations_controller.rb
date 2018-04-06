@@ -29,6 +29,19 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       define_new_vars
       render action: "new"
     end
+  rescue Gitlab::Access::AccessDeniedError
+    flash[:alert] = 'You do not have permission to create a Merge Request on the target project'
+
+    params = merge_request_params
+    params.delete(:force_remove_source_branch)
+    @merge_request = ::MergeRequests::BuildService.new(project, current_user, params).execute
+
+    @source_project = @merge_request.source_project
+    @target_project = @merge_request.target_project
+
+    define_new_vars
+
+    render action: 'new'
   end
 
   def pipelines

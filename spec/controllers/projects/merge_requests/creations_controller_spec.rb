@@ -31,6 +31,30 @@ describe Projects::MergeRequests::CreationsController do
     end
   end
 
+  describe 'POST create' do
+    context 'merge request to a project the user has no access to' do
+      let(:project) { create(:project, :internal, :merge_requests_private) }
+      let(:user) { create(:user) }
+      let(:opts) do
+        {
+          target_project_id: project.id,
+          source_project_id: fork_project.id,
+          source_branch: 'remove-submodule',
+          target_branch: 'master'
+        }
+      end
+
+      it 'shows a proper error message' do
+        expect do
+          post :create, get_diff_params.merge(merge_request: opts)
+        end.not_to change { MergeRequest.count }
+
+        expect(response).to be_success
+        expect(flash[:alert]).to eq('You do not have permission to create a Merge Request on the target project')
+      end
+    end
+  end
+
   describe 'GET diffs' do
     context 'when merge request cannot be created' do
       it 'does not assign diffs var' do

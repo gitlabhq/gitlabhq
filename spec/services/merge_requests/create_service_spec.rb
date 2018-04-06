@@ -334,6 +334,28 @@ describe MergeRequests::CreateService do
             .to raise_error Gitlab::Access::AccessDeniedError
         end
       end
+
+      context 'when the user is not a member of target project and MR feature is restricted' do
+        let(:target_project) { create(:project, :internal, :merge_requests_private) }
+        let(:service) { described_class.new(project, user, opts) }
+
+        before do
+          project.add_master(user)
+          target_project.add_developer(assignee)
+          allow(service).to receive(:execute_hooks)
+        end
+
+        it 'raises an error' do
+          expect { service.execute }
+            .to raise_error(Gitlab::Access::AccessDeniedError)
+        end
+
+        it 'does not create the MR' do
+          expect do
+            service.execute rescue nil
+          end.not_to change { MergeRequest.count }
+        end
+      end
     end
 
     context 'when user sets source project id' do

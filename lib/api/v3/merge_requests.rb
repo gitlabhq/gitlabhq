@@ -98,12 +98,18 @@ module API
           mr_params = declared_params(include_missing: false)
           mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
 
-          merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
+          begin
+            merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
-          if merge_request.valid?
-            present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
-          else
-            handle_merge_request_errors! merge_request.errors
+            if merge_request.valid?
+              present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
+            else
+              handle_merge_request_errors! merge_request.errors
+            end
+          rescue Gitlab::Access::AccessDeniedError => ex
+            raise ex if Project.find(mr_params[:target_project_id]).merge_requests_enabled?
+
+            error!('Target project has disabled merge requests', 422)
           end
         end
 

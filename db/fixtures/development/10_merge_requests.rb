@@ -21,7 +21,7 @@ Gitlab::Seeder.quiet do
         assignee: project.team.users.sample
       }
 
-      MergeRequests::CreateService.new(project, project.team.users.sample, params).execute
+      MergeRequests::CreateService.new(project, project.team.developers.sample, params).execute
       print '.'
     end
   end

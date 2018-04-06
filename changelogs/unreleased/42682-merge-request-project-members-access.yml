@@ -1,0 +1,5 @@
+---
+title: Do not allow non-members to create MRs via forked projects when MRs are private
+merge_request:
+author:
+type: security

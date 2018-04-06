@@ -127,6 +127,8 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:download_code) }.enable :build_download_code
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
+  rule { ~anonymous & ~merge_requests_disabled }.enable :create_forked_merge_request
+
   rule { can?(:reporter_access) }.policy do
     enable :download_code
     enable :download_wiki_code

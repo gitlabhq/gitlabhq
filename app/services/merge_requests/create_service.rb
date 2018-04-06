@@ -58,6 +58,10 @@ module MergeRequests
       pipelines.order(id: :desc).first
     end
 
+    def forked?
+      @project != @source_project
+    end
+
     def set_projects!
       # @project is used to determine whether the user can set the merge request's
       # assignee, milestone and labels. Whether they can depends on their
@@ -71,8 +75,11 @@ module MergeRequests
       params.delete(:source_project_id)
       params.delete(:target_project_id)
 
+      create_ability = forked? ? :create_forked_merge_request : :create_merge_request
+
       unless can?(current_user, :read_project, @source_project) &&
-          can?(current_user, :read_project, @project)
+          can?(current_user, :read_project, @project) &&
+          can?(current_user, create_ability, @project)
 
         raise Gitlab::Access::AccessDeniedError
       end
