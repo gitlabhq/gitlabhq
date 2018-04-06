@@ -38,7 +38,7 @@
                     Delete board
 
     %board-form{ ":milestone-path" => "milestonePath",
-      "labels-path" => labels_filter_path(true),
+      "labels-path" => labels_filter_path(true, include_descendant_groups: true),
       ":project-id" => "Number(#{@project&.id})",
       ":group-id" => "Number(#{@group&.id})",
       ":can-admin-board" => can?(current_user, :admin_board, parent),

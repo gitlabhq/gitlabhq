@@ -38,8 +38,8 @@ class Milestone < ActiveRecord::Base
 
   scope :for_projects_and_groups, -> (project_ids, group_ids) do
     conditions = []
-    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
-    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
+    conditions << arel_table[:project_id].in(project_ids) if project_ids&.compact&.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids&.compact&.any?
 
     where(conditions.reduce(:or))
   end

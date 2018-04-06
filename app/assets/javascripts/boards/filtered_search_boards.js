@@ -8,6 +8,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
     super({
       page: 'boards',
       isGroup: true,
+      isGroupDecendent: true,
       filteredSearchTokenKeys: FilteredSearchTokenKeysIssues,
       stateFiltersSelector: '.issues-state-filters',
     });
