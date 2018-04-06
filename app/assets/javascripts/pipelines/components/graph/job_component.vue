@@ -17,6 +17,7 @@
    *     "text": "passed",
    *     "label": "passed",
    *     "group": "success",
+   *     "tooltip": "passed",
    *     "details_path": "/root/ci-mock/builds/4256",
    *     "action": {
    *       "icon": "retry",
@@ -69,12 +70,12 @@
           textBuilder.push(this.job.name);
         }
 
-        if (this.job.name && this.status.label) {
+        if (this.job.name && this.status.tooltip) {
           textBuilder.push('-');
         }
 
-        if (this.status.label) {
-          textBuilder.push(`${this.job.status.label}`);
+        if (this.status.tooltip) {
+          textBuilder.push(`${this.job.status.tooltip}`);
         }
 
         return textBuilder.join(' ');
@@ -100,6 +101,7 @@
       :title="tooltipText"
       :class="cssClassJobName"
       data-container="body"
+      data-html="true"
       class="js-pipeline-graph-job-link"
     >
 
@@ -115,6 +117,7 @@
       class="js-job-component-tooltip"
       :title="tooltipText"
       :class="cssClassJobName"
+      data-html="true"
       data-container="body"
     >
 

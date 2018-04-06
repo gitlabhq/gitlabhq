@@ -36,10 +36,6 @@ module Gitlab
         }
       end
 
-      def artifact_upload_ok
-        { TempPath: JobArtifactUploader.workhorse_upload_path }
-      end
-
       def send_git_blob(repository, blob)
         params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
                    {

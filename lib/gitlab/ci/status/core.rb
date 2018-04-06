@@ -57,6 +57,16 @@ module Gitlab
         def action_title
           raise NotImplementedError
         end
+
+        # Hint that appears on all the pipeline graph tooltips and builds on the right sidebar in Job detail view
+        def status_tooltip
+          label
+        end
+
+        # Hint that appears on the build badges
+        def badge_tooltip
+          subject.status
+        end
       end
     end
   end
