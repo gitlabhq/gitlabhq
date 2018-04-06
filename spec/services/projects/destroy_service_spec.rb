@@ -79,6 +79,12 @@ describe Projects::DestroyService do
     end
 
     it_behaves_like 'deleting the project'
+
+    it 'invalidates personal_project_count cache' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      destroy_project(project, user)
+    end
   end
 
   context 'Sidekiq fake' do
