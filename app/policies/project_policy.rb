@@ -140,7 +140,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:guest_access) }.policy do
     enable :read_project
-    enable :create_merge_request_in_project
+    enable :create_merge_request_in
     enable :read_board
     enable :read_list
     enable :read_wiki
@@ -212,7 +212,7 @@ class ProjectPolicy < BasePolicy
     enable :create_pipeline
     enable :update_pipeline
     enable :create_pipeline_schedule
-    enable :create_merge_request
+    enable :create_merge_request_from
     enable :create_wiki
     enable :push_code
     enable :resolve_note
@@ -251,7 +251,8 @@ class ProjectPolicy < BasePolicy
     prevent :request_access
     prevent :upload_file
     prevent :resolve_note
-    prevent :create_merge_request_in_project
+    prevent :create_merge_request_from
+    prevent :create_merge_request_in
 
     READONLY_FEATURES_WHEN_ARCHIVED.each do |feature|
       prevent(*create_update_admin_destroy(feature))
@@ -263,7 +264,8 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
-    prevent :create_merge_request_in_project
+    prevent :create_merge_request_in
+    prevent :create_merge_request_from
     prevent(*create_read_update_admin_destroy(:merge_request))
   end
 
@@ -309,7 +311,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:public_access) }.policy do
     enable :read_project
-    enable :create_merge_request_in_project
     enable :read_board
     enable :read_list
     enable :read_wiki

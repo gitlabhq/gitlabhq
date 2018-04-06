@@ -20,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_update_issuable!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
-  before_action :authorize_create_merge_request!, only: [:create_merge_request]
+  before_action :authorize_create_merge_request_in!, only: [:create_merge_request]
 
   respond_to :html
 

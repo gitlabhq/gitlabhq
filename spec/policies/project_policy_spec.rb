@@ -14,7 +14,7 @@ describe ProjectPolicy do
       read_project read_board read_list read_wiki read_issue
       read_project_for_iids read_issue_iid read_merge_request_iid read_label
       read_milestone read_project_snippet read_project_member read_note
-      create_project create_issue create_note upload_file create_merge_request_in_project
+      create_project create_issue create_note upload_file create_merge_request_in
     ]
   end
 
@@ -35,7 +35,7 @@ describe ProjectPolicy do
     %i[
       admin_milestone admin_merge_request update_merge_request create_commit_status
       update_commit_status create_build update_build create_pipeline
-      update_pipeline create_merge_request create_wiki push_code
+      update_pipeline create_merge_request_from create_wiki push_code
       resolve_note create_container_image update_container_image
       create_environment create_deployment
     ]
@@ -142,9 +142,9 @@ describe ProjectPolicy do
     it 'disallows all permissions when the feature is disabled' do
       project.project_feature.update(merge_requests_access_level: ProjectFeature::DISABLED)
 
-      mr_permissions = [:create_merge_request, :read_merge_request,
+      mr_permissions = [:create_merge_request_from, :read_merge_request,
                         :update_merge_request, :admin_merge_request,
-                        :create_merge_request_in_project]
+                        :create_merge_request_in]
 
       expect_disallowed(*mr_permissions)
     end
@@ -159,7 +159,8 @@ describe ProjectPolicy do
 
     let(:other_write_abilities) do
       %i[
-        create_merge_request_in_project
+        create_merge_request_in
+        create_merge_request_from
         push_to_delete_protected_branch
         push_code
         request_access
@@ -192,7 +193,7 @@ describe ProjectPolicy do
       context 'when a project has pending invites' do
         let(:group) { create(:group, :public) }
         let(:project) { create(:project, :public, namespace: group) }
-        let(:user_permissions) { [:create_project, :create_issue, :create_note, :upload_file] }
+        let(:user_permissions) { [:create_merge_request_in, :create_project, :create_issue, :create_note, :upload_file] }
         let(:anonymous_permissions) { guest_permissions - user_permissions  }
 
         subject { described_class.new(nil, project) }
