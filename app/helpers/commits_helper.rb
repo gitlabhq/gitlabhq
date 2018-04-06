@@ -93,25 +93,18 @@ module CommitsHelper
     return unless current_controller?(:commits)
 
     if @path.blank?
-      return link_to(
-        _("Browse Files"),
-        project_tree_path(project, commit),
-        class: "btn btn-default"
-      )
+      url = project_tree_path(project, commit)
+      tooltip = _("Browse Files")
     elsif @repo.blob_at(commit.id, @path)
-      return link_to(
-        _("Browse File"),
-        project_blob_path(project,
-                                    tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      url = project_blob_path(project, tree_join(commit.id, @path))
+      tooltip = _("Browse File")
     elsif @path.present?
-      return link_to(
-        _("Browse Directory"),
-        project_tree_path(project,
-                                    tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      url = project_tree_path(project, tree_join(commit.id, @path))
+      tooltip = _("Browse Directory")
+    end
+
+    link_to url, class: "btn btn-default has-tooltip", title: tooltip, data: { container: "body" } do
+      sprite_icon('folder-open')
     end
   end
 

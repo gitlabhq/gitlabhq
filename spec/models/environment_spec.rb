@@ -375,7 +375,8 @@ describe Environment do
 
     context 'when there is a deployment platform for environment' do
       let!(:cluster) do
-        create(:cluster, :provided_by_gcp, projects: [project])
+        create(:cluster, :provided_by_gcp,
+               environment_scope: '*', projects: [project])
       end
 
       it 'finds a deployment platform' do

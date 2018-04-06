@@ -26,7 +26,10 @@
 
     .commit-detail.flex-list
       .commit-content
-        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
+        - if view_details && merge_request
+          = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
+        - else
+          = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
         %span.commit-row-message.visible-xs-inline
           &middot;
           = commit.short_id
@@ -59,9 +62,9 @@
           = render_commit_status(commit, ref: ref)
 
         .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id) } }
-        = link_to commit.short_id, link, class: "commit-sha btn btn-transparent btn-link"
-        = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
-        = link_to_browse_code(project, commit)
 
-        - if view_details && merge_request
-          = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"
+        .commit-sha-group
+          .label.label-monospace
+            = commit.short_id
+          = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"), class: "btn btn-default", container: "body")
+          = link_to_browse_code(project, commit)
