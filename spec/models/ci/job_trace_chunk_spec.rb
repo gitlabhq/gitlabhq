@@ -316,4 +316,65 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       end
     end
   end
+
+  describe 'deletes data in redis after chunk record destroyed' do
+    let(:project) { create(:project) }
+
+    before do
+      pipeline = create(:ci_pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+    end
+
+    shared_examples_for 'deletes all job_trace_chunk and data in redis' do
+      it do
+        project.builds.each do |build|
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.scan_each(match: "gitlab:ci:trace:#{build.id}:chunks:?") do |key|
+              expect(redis.exists(key)).to be_truthy
+            end
+          end
+        end
+
+        expect(described_class.count).not_to eq(0)
+
+        subject
+
+        expect(described_class.count).to eq(0)
+
+        project.builds.each do |build|
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.scan_each(match: "gitlab:ci:trace:#{build.id}:chunks:?") do |key|
+              expect(redis.exists(key)).to be_falsey
+            end
+          end
+        end
+      end
+    end
+
+    context 'when job_trace_chunk is destroyed' do
+      let(:subject) do
+        project.builds.each { |build| build.chunks.destroy_all }
+      end
+
+      it_behaves_like 'deletes all job_trace_chunk and data in redis'
+    end
+
+    context 'when job is destroyed' do
+      let(:subject) do
+        project.builds.destroy_all
+      end
+
+      it_behaves_like 'deletes all job_trace_chunk and data in redis'
+    end
+
+    context 'when project is destroyed' do
+      let(:subject) do
+        project.destroy!
+      end
+
+      it_behaves_like 'deletes all job_trace_chunk and data in redis'
+    end
+  end
 end
