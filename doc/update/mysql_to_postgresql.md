@@ -83,6 +83,9 @@ Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
          create no indexes, preserve index names, no foreign keys,
          data only
 
+    set net_read_timeout  = '120'
+    set net_write_timeout = '240'
+
     ALTER SCHEMA 'gitlabhq_production' RENAME TO 'public'
 
     ;
@@ -224,7 +227,10 @@ Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
     WITH include no drop, truncate, disable triggers, create no tables,
          create no indexes, preserve index names, no foreign keys,
          data only
-
+         
+    set net_read_timeout  = '120'
+    set net_write_timeout = '240'
+    
     ALTER SCHEMA 'gitlabhq_production' RENAME TO 'public'
 
     ;
