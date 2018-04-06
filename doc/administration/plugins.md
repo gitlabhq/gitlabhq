@@ -1,5 +1,9 @@
 # Plugins
 
+**Note:** Instead of writing and supporting your own plugin you can make changes
+directly to the GitLab source code and contribute it back to the upstream. This way we can
+ensure functionality is preserved across versions and covered by tests. 
+
 **Note:** Plugins must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [system hooks] or [webhooks] as an option if you do not
