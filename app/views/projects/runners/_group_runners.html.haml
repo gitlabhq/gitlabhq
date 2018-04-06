@@ -7,7 +7,7 @@
   - if @project.group
     %hr
     - if @project.group_runners_enabled?
-      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-warning', method: :post do
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-close', method: :post do
         Disable group Runners
     - else
       = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success', method: :post do
