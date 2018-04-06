@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
+  include ChunkedIOHelpers
 
   let(:registration_token) { 'abcdefg123456' }
 
@@ -863,6 +864,29 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           it 'responds with forbidden' do
             expect(response.status).to eq(403)
+          end
+        end
+
+        context 'when redis had an outage' do
+          it "recovers" do
+            # GitLab-Runner patchs
+            patch_the_trace
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+
+            # GitLab-Rails enxounters an outage on Redis
+            redis_shared_state_outage!
+            expect(job.reload.trace.raw).to eq ''
+
+            # GitLab-Runner patchs
+            patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32" }))
+            expect(response.status).to eq 202
+            expect(response.header).to have_key 'Range'
+            expect(response.header['Range']).to eq '0-0'
+            expect(job.reload.trace.raw).to eq ''
+
+            # GitLab-Runner re-patchs
+            patch_the_trace('BUILD TRACE appended appended hello')
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
           end
         end
       end

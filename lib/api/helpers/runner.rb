@@ -52,6 +52,7 @@ module API
       end
 
       def job_token_valid?(job)
+        # binding.pry
         token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
         token && job.valid_token?(token)
       end
