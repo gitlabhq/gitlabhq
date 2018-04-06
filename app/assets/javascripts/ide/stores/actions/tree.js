@@ -57,8 +57,7 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
 
       service
         .getFiles(selectedProject.web_url, branchId)
-        .then(res => res.json())
-        .then(data => {
+        .then(({ data }) => {
           const worker = new FilesDecoratorWorker();
           worker.addEventListener('message', e => {
             const { entries, treeList } = e.data;

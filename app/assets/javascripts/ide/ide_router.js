@@ -40,6 +40,10 @@ const router = new VueRouter({
       component: EmptyRouterComponent,
       children: [
         {
+          path: ':targetmode/:branch',
+          component: EmptyRouterComponent,
+        },
+        {
           path: ':targetmode/:branch/*',
           component: EmptyRouterComponent,
         },
@@ -63,30 +67,36 @@ router.beforeEach((to, from, next) => {
         const fullProjectId = `${to.params.namespace}/${to.params.project}`;
 
         if (to.params.branch) {
-          store.dispatch('getBranchData', {
-            projectId: fullProjectId,
-            branchId: to.params.branch,
-          });
-
           store
-            .dispatch('getFiles', {
+            .dispatch('getBranchData', {
               projectId: fullProjectId,
               branchId: to.params.branch,
             })
-            .then(() => {
-              if (to.params[0]) {
-                const path =
-                  to.params[0].slice(-1) === '/' ? to.params[0].slice(0, -1) : to.params[0];
-                const treeEntryKey = Object.keys(store.state.entries).find(
-                  key => key === path && !store.state.entries[key].pending,
-                );
-                const treeEntry = store.state.entries[treeEntryKey];
+            .then(() =>
+              store
+                .dispatch('getFiles', {
+                  projectId: fullProjectId,
+                  branchId: to.params.branch,
+                })
+                .then(() => {
+                  if (to.params[0]) {
+                    const path =
+                      to.params[0].slice(-1) === '/' ? to.params[0].slice(0, -1) : to.params[0];
+                    const treeEntryKey = Object.keys(store.state.entries).find(
+                      key => key === path && !store.state.entries[key].pending,
+                    );
+                    const treeEntry = store.state.entries[treeEntryKey];
 
-                if (treeEntry) {
-                  store.dispatch('handleTreeEntryAction', treeEntry);
-                }
-              }
-            })
+                    if (treeEntry) {
+                      return store.dispatch('handleTreeEntryAction', treeEntry).then(next);
+                    }
+
+                    return next();
+                  }
+
+                  return next();
+                }),
+            )
             .catch(e => {
               flash(
                 'Error while loading the branch files. Please try again.',
@@ -148,10 +158,13 @@ router.beforeEach((to, from, next) => {
                 }
               });
             })
+            .then(next)
             .catch(e => {
               flash('Error while loading the merge request. Please try again.');
               throw e;
             });
+        } else {
+          next();
         }
       })
       .catch(e => {
@@ -165,9 +178,9 @@ router.beforeEach((to, from, next) => {
         );
         throw e;
       });
+  } else {
+    next();
   }
-
-  next();
 });
 
 export default router;

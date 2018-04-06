@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import VueResource from 'vue-resource';
 import Api from '~/api';
 
@@ -68,8 +69,7 @@ export default {
     });
   },
   getFiles(projectUrl, branchId) {
-    const url = `${projectUrl}/files/${branchId}`;
-    return Vue.http.get(url, {
+    return axios.get(`${projectUrl}/files/${branchId}`, {
       params: {
         format: 'json',
       },

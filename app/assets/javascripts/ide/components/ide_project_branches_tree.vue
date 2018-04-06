@@ -1,25 +1,25 @@
 <script>
-  import icon from '~/vue_shared/components/icon.vue';
-  import repoTree from './ide_repo_tree.vue';
-  import newDropdown from './new_dropdown/index.vue';
+import icon from '~/vue_shared/components/icon.vue';
+import repoTree from './ide_repo_tree.vue';
+import newDropdown from './new_dropdown/index.vue';
 
-  export default {
-    components: {
-      repoTree,
-      icon,
-      newDropdown,
+export default {
+  components: {
+    repoTree,
+    icon,
+    newDropdown,
+  },
+  props: {
+    projectId: {
+      type: String,
+      required: true,
     },
-    props: {
-      projectId: {
-        type: String,
-        required: true,
-      },
-      branch: {
-        type: Object,
-        required: true,
-      },
+    branch: {
+      type: Object,
+      required: true,
     },
-  };
+  },
+};
 </script>
 
 <template>
@@ -41,6 +41,7 @@
       </div>
     </div>
     <repo-tree
+      v-if="branch.tree"
       :tree="branch.tree"
     />
   </div>
