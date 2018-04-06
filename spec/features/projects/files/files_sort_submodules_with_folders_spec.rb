@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User views files page' do
+describe 'Projects > Files > User views files page' do
   let(:user) { create(:user) }
   let(:project) { create(:forked_project_with_submodules) }
 
@@ -10,7 +10,7 @@ feature 'User views files page' do
     visit project_tree_path(project, project.repository.root_ref)
   end
 
-  scenario 'user sees folders and submodules sorted together, followed by files' do
+  it 'user sees folders and submodules sorted together, followed by files' do
     rows = all('td.tree-item-file-name').map(&:text)
     tree = project.repository.tree
 

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe 'User deletes files' do
+describe 'Projects > Files > User replaces files' do
+  include DropzoneHelper
+
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -21,17 +23,23 @@ describe 'User deletes files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'deletes the file', :js do
+    it 'replaces an existed file with a new one', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
 
-      click_on('Delete')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
-      click_button('Delete file')
+      click_on('Replace')
+      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
-      expect(current_path).to eq(project_tree_path(project, 'master'))
-      expect(page).not_to have_content('.gitignore')
+      page.within('#modal-upload-blob') do
+        fill_in(:commit_message, with: 'Replacement file commit message')
+      end
+
+      click_button('Replace file')
+
+      expect(page).to have_content('Lorem ipsum dolor sit amet')
+      expect(page).to have_content('Sed ut perspiciatis unde omnis')
+      expect(page).to have_content('Replacement file commit message')
     end
   end
 
@@ -41,12 +49,12 @@ describe 'User deletes files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'deletes the file in a forked project', :js do
+    it 'replaces an existed file with a new one in a forked project', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
 
-      click_on('Delete')
+      click_on('Replace')
 
       expect(page).to have_link('Fork')
       expect(page).to have_button('Cancel')
@@ -55,14 +63,25 @@ describe 'User deletes files' do
 
       expect(page).to have_content(fork_message)
 
-      click_on('Delete')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
-      click_button('Delete file')
+      click_on('Replace')
+      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+
+      page.within('#modal-upload-blob') do
+        fill_in(:commit_message, with: 'Replacement file commit message')
+      end
+
+      click_button('Replace file')
+
+      expect(page).to have_content('Replacement file commit message')
 
       fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
-      expect(page).to have_content('New commit message')
+
+      click_link('Changes')
+
+      expect(page).to have_content('Lorem ipsum dolor sit amet')
+      expect(page).to have_content('Sed ut perspiciatis unde omnis')
     end
   end
 end

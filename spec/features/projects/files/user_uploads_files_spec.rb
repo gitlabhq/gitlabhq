@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User uploads files' do
+describe 'Projects > Files > User uploads files' do
   include DropzoneHelper
 
   let(:fork_message) do
@@ -11,7 +11,7 @@ describe 'User uploads files' do
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
-  let(:user) { create(:user) }
+  let(:user) { project.creator }
 
   before do
     project.add_master(user)
@@ -23,7 +23,7 @@ describe 'User uploads files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new file', :js do
+    it 'uploads and commit a new text file', :js do
       find('.add-to-tree').click
       click_link('Upload file')
       drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
@@ -45,6 +45,24 @@ describe 'User uploads files' do
 
       expect(page).to have_content('Lorem ipsum dolor sit amet')
       expect(page).to have_content('Sed ut perspiciatis unde omnis')
+    end
+
+    it 'uploads and commit a new image file', :js do
+      find('.add-to-tree').click
+      click_link('Upload file')
+      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'))
+
+      page.within('#modal-upload-blob') do
+        fill_in(:commit_message, with: 'New commit message')
+        fill_in(:branch_name, with: 'new_branch_name', visible: true)
+        click_button('Upload file')
+      end
+
+      wait_for_all_requests
+
+      visit(project_blob_path(project, 'new_branch_name/logo_sample.svg'))
+
+      expect(page).to have_css('.file-content img')
     end
   end
 
