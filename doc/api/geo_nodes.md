@@ -233,7 +233,7 @@ Example response:
 }
 ```
 
-## Retrieve project sync failures ocurred on the current node
+## Retrieve project sync failures that occurred on the current node
 
 
 ```
