@@ -287,6 +287,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       scope '-' do
+        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all

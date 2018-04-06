@@ -1713,5 +1713,8 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
+<<<<<<< HEAD
 [ee]: https://about.gitlab.com/gitlab-ee/
 [gitlab-versions]: https://about.gitlab.com/products/
+=======
+>>>>>>> upstream/master

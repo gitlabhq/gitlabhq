@@ -16,7 +16,7 @@ describe Gitlab::Workhorse do
     let(:ref) { 'master' }
     let(:format) { 'zip' }
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
-    let(:base_params) { repository.archive_metadata(ref, storage_path, format) }
+    let(:base_params) { repository.archive_metadata(ref, storage_path, format, append_sha: nil) }
     let(:gitaly_params) do
       base_params.merge(
         'GitalyServer' => {
@@ -29,7 +29,7 @@ describe Gitlab::Workhorse do
     let(:cache_disabled) { false }
 
     subject do
-      described_class.send_git_archive(repository, ref: ref, format: format)
+      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil)
     end
 
     before do
