@@ -116,7 +116,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
       end
     end
 
-    context 'when stream is StringIO' do
+    context 'when stream is Tempfile' do
       let(:tempfile) { Tempfile.new }
 
       let(:stream) do

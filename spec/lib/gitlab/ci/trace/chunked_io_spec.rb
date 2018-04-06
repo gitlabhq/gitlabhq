@@ -334,14 +334,12 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
   end
 
   context "#truncate" do
-    subject { chunked_io.truncate(offset) }
-
     let(:offset) { 10 }
 
     context 'when data does not exist' do
       shared_examples 'truncates a trace' do
         it do
-          subject
+          chunked_io.truncate(offset)
 
           chunked_io.seek(0, IO::SEEK_SET)
           expect(chunked_io.read).to eq(sample_trace_raw.byteslice(0, offset))

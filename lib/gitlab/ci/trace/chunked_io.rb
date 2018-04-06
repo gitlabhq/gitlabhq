@@ -19,7 +19,7 @@ module Gitlab
           @job = job
           @chunks_cache = []
           @tell = 0
-          @size = job_chunks.last.try(&:end_offset).to_i
+          @size = calculate_size
           yield self if block_given?
         end
 
@@ -48,7 +48,7 @@ module Gitlab
               -1
             end
 
-          raise 'new position is outside of file' if new_pos < 0 || new_pos > size
+          raise ArgumentError, 'new position is outside of file' if new_pos < 0 || new_pos > size
 
           @tell = new_pos
         end
@@ -135,7 +135,7 @@ module Gitlab
         end
 
         def truncate(offset)
-          raise 'Outside of file' if offset > size
+          raise ArgumentError, 'Outside of file' if offset > size
 
           @tell = offset
           @size = offset
@@ -220,6 +220,10 @@ module Gitlab
 
         def job_chunks
           ::Ci::JobTraceChunk.where(job: job)
+        end
+
+        def calculate_size
+          job_chunks.order(chunk_index: :desc).last.try(&:end_offset).to_i
         end
       end
     end

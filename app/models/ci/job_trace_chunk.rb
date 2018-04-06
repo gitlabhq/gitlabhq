@@ -9,7 +9,7 @@ module Ci
     default_value_for :data_store, :redis
 
     CHUNK_SIZE = 128.kilobytes
-    CHUNK_REDIS_TTL = 1.month
+    CHUNK_REDIS_TTL = 1.day
 
     enum data_store: {
       redis: 1,
@@ -27,7 +27,7 @@ module Ci
     end
 
     def set_data(value)
-      raise 'too much data' if value.bytesize > CHUNK_SIZE
+      raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
 
       if redis?
         redis_set_data(value)
@@ -46,9 +46,9 @@ module Ci
     end
 
     def append(new_data, offset)
-      current_data = self.data || ""
-      raise 'Offset is out of bound' if offset > current_data.bytesize || offset < 0
-      raise 'Outside of chunk size' if CHUNK_SIZE < offset + new_data.bytesize
+      current_data = self.data.to_s
+      raise ArgumentError, 'Offset is out of bound' if offset > current_data.bytesize || offset < 0
+      raise ArgumentError, 'Outside of chunk size' if CHUNK_SIZE < offset + new_data.bytesize
 
       self.set_data(current_data.byteslice(0, offset) + new_data)
     end
