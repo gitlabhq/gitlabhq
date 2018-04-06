@@ -1,6 +1,6 @@
 - @hide_top_links = true
-- page_title "Merge Requests"
-- header_title  "Merge Requests", merge_requests_dashboard_path(assignee_id: current_user.id)
+- page_title _("Merge Requests")
+- @breadcrumb_link = merge_requests_dashboard_path(assignee_id: current_user.id)
 
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests, display_count: !@no_filters_set
