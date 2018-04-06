@@ -14,5 +14,6 @@
         #{time_ago_with_tooltip(event.created_at)}
 
       .flex-right
-        = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm qa-create-merge-request" do
-          #{ _('Create merge request') }
+        - if can?(current_user, :create_merge_request_in, @project)
+          = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm qa-create-merge-request" do
+            #{ _('Create merge request') }

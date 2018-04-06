@@ -4,7 +4,7 @@
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
-- merge_project = can?(current_user, :create_merge_request_from, @project) ? @project : (current_user && current_user.fork_of(@project))
+- merge_project = merge_request_source_project_for_project(@project)
 %li{ class: "branch-item js-branch-#{branch.name}" }
   .branch-info
     .branch-title

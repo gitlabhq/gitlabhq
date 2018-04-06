@@ -1,8 +1,8 @@
-- can_create_merge_request = can?(current_user, :create_merge_request_from, @project)
-- data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
-- value = can_create_merge_request ? 'Create merge request' : 'Create branch'
-
 - if can?(current_user, :push_code, @project)
+  - can_create_merge_request = can?(current_user, :create_merge_request_in, @project)
+  - data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
+  - value = can_create_merge_request ? 'Create merge request' : 'Create branch'
+
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_mr_path = create_merge_request_project_issue_path(@project, @issue, branch_name: @issue.to_branch_name, ref: @project.default_branch)
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid)
