@@ -257,6 +257,12 @@ module Gitlab
 
         response.license_short_name.presence
       end
+
+      def calculate_checksum
+        request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
+        response.checksum.presence
+      end
     end
   end
 end

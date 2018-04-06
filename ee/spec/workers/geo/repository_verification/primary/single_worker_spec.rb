@@ -20,7 +20,7 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'does not calculate the checksum when not running on a primary' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect_any_instance_of(Gitlab::Git::Checksum).not_to receive(:calculate)
+      expect(project_without_repositories.repository).not_to receive(:checksum)
 
       subject.perform(project_without_repositories.id)
     end
@@ -28,7 +28,7 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'does not calculate the checksum when project is pending deletion' do
       project_with_repositories.update!(pending_delete: true)
 
-      expect_any_instance_of(Gitlab::Git::Checksum).not_to receive(:calculate)
+      expect(project_with_repositories.repository).not_to receive(:checksum)
 
       subject.perform(project_with_repositories.id)
     end
@@ -126,9 +126,9 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
 
       expect(project_without_repositories.repository_state).to have_attributes(
         repository_verification_checksum: nil,
-        last_repository_verification_failure: /No repository for such path/,
+        last_repository_verification_failure: /not a git repository/,
         wiki_verification_checksum: nil,
-        last_wiki_verification_failure: /No repository for such path/
+        last_wiki_verification_failure: /not a git repository/
       )
     end
   end

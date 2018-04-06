@@ -26,16 +26,15 @@ module Geo
         private
 
         def calculate_repository_checksum
-          calculate_checksum(:repository, project.disk_path)
+          calculate_checksum(:repository, project.repository)
         end
 
         def calculate_wiki_checksum
-          calculate_checksum(:wiki, project.wiki.disk_path)
+          calculate_checksum(:wiki, project.wiki.repository)
         end
 
-        def calculate_checksum(type, repository_relative_path)
-          checksum = Gitlab::Git::Checksum.new(project.repository_storage, repository_relative_path)
-          update_repository_state!(type, checksum: checksum.calculate)
+        def calculate_checksum(type, repository)
+          update_repository_state!(type, checksum: repository.checksum)
         rescue => e
           log_error('Error calculating the repository checksum', e, type: type)
           update_repository_state!(type, failure: e.message)
