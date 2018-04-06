@@ -36,7 +36,7 @@ module Geo
     end
 
     def secondary_checksum
-      registry.public_send("#{type}_verification_checksum") # rubocop:disable GitlabSecurity/PublicSend
+      registry.public_send("#{type}_verification_checksum_sha") # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def verify_checksum
@@ -61,7 +61,7 @@ module Geo
 
     def update_registry!(checksum: nil, failure: nil, exception: nil, details: {})
       attrs = {
-        "#{type}_verification_checksum"     => checksum,
+        "#{type}_verification_checksum_sha" => checksum,
         "last_#{type}_verification_failure" => failure
       }
 

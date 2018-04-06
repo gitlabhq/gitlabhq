@@ -42,7 +42,7 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
 
     it 'does not verify the checksum if the checksums already match' do
       repository_state.assign_attributes("#{type}_verification_checksum" => 'my_checksum')
-      registry.assign_attributes("#{type}_verification_checksum" => 'my_checksum')
+      registry.assign_attributes("#{type}_verification_checksum_sha" => 'my_checksum')
 
       expect(Gitlab::Git::Checksum).not_to receive(:new).with(storage, relative_path)
 
@@ -53,7 +53,7 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
       expect(Gitlab::Git::Checksum).to receive(:new).with(storage, relative_path) { checksum }
       expect(checksum).to receive(:calculate).and_return('my_checksum')
 
-      expect { service.execute }.to change(registry, "#{type}_verification_checksum")
+      expect { service.execute }.to change(registry, "#{type}_verification_checksum_sha")
         .from(nil).to('my_checksum')
     end
 
