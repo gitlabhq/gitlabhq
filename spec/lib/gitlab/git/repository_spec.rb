@@ -2257,6 +2257,39 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    describe '#clean_stale_repository_files' do
+      let(:worktree_path) { File.join(repository.path, 'worktrees', 'delete-me') }
+
+      it 'cleans up the files' do
+        repository.with_worktree(worktree_path, 'master', env: ENV) do
+          FileUtils.touch(worktree_path, mtime: Time.now - 8.hours)
+          # git rev-list --all will fail in git 2.16 if HEAD is pointing to a non-existent object,
+          # but the HEAD must be 40 characters long or git will ignore it.
+          File.write(File.join(worktree_path, 'HEAD'), Gitlab::Git::BLANK_SHA)
+
+          # git 2.16 fails with "fatal: bad object HEAD"
+          expect { repository.rev_list(including: :all) }.to raise_error(Gitlab::Git::Repository::GitError)
+
+          repository.clean_stale_repository_files
+
+          expect { repository.rev_list(including: :all) }.not_to raise_error
+          expect(File.exist?(worktree_path)).to be_falsey
+        end
+      end
+
+      it 'increments a counter upon an error' do
+        expect(repository.gitaly_repository_client).to receive(:cleanup).and_raise(Gitlab::Git::CommandError)
+
+        counter = double(:counter)
+
+        expect(counter).to receive(:increment)
+        expect(Gitlab::Metrics).to receive(:counter).with(:failed_repository_cleanup_total,
+                                                          'Number of failed repository cleanup events').and_return(counter)
+
+        repository.clean_stale_repository_files
+      end
+    end
+
     describe '#delete_remote_branches' do
       subject do
         repository.delete_remote_branches('downstream-remote', ['master'])

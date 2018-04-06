@@ -1369,6 +1369,18 @@ module Gitlab
         raise CommandError.new(e)
       end
 
+      def clean_stale_repository_files
+        gitaly_migrate(:repository_cleanup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+          gitaly_repository_client.cleanup if is_enabled && exists?
+        end
+      rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
+        Rails.logger.error("Unable to clean repository on storage #{storage} with path #{path}: #{e.message}")
+        Gitlab::Metrics.counter(
+          :failed_repository_cleanup_total,
+          'Number of failed repository cleanup events'
+        ).increment
+      end
+
       def branch_names_contains_sha(sha)
         gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
           if is_enabled
@@ -1463,6 +1475,33 @@ module Gitlab
         run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
       end
 
+      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
+        base_args = %w(worktree add --detach)
+
+        # Note that we _don't_ want to test for `.present?` here: If the caller
+        # passes an non nil empty value it means it still wants sparse checkout
+        # but just isn't interested in any file, perhaps because it wants to
+        # checkout files in by a changeset but that changeset only adds files.
+        if sparse_checkout_files
+          # Create worktree without checking out
+          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
+
+          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
+
+          # After sparse checkout configuration, checkout `branch` in worktree
+          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
+        else
+          # Create worktree and checkout `branch` in it
+          run_git!(base_args + [worktree_path, branch], env: env)
+        end
+
+        yield
+      ensure
+        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
+        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
+      end
+
       private
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
@@ -1547,33 +1586,6 @@ module Gitlab
 
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
-      end
-
-      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
-        base_args = %w(worktree add --detach)
-
-        # Note that we _don't_ want to test for `.present?` here: If the caller
-        # passes an non nil empty value it means it still wants sparse checkout
-        # but just isn't interested in any file, perhaps because it wants to
-        # checkout files in by a changeset but that changeset only adds files.
-        if sparse_checkout_files
-          # Create worktree without checking out
-          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
-
-          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
-
-          # After sparse checkout configuration, checkout `branch` in worktree
-          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
-        else
-          # Create worktree and checkout `branch` in it
-          run_git!(base_args + [worktree_path, branch], env: env)
-        end
-
-        yield
-      ensure
-        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
-        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
       end
 
       def clean_stuck_worktree(path)
