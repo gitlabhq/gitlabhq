@@ -568,12 +568,15 @@ You can find a full list of unsupported variables below:
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
 
+These variables are also not supported in a contex of a
+[dynamic environment name][dynamic-environments].
+
 ### Secret variables with an environment scope
 
 We do support secret variables defined with an environment scope. Given that
 there is a secret variable `$STAGING_SECRET` defined in a scope of
-`review/staging/*`, following job is going to be created, based on the
-matching variable expression.
+`review/staging/*`, following job that is using dynamic environments feature,
+is going to be created, based on the matching variable expression.
 
 ```yaml
 my-job:
@@ -599,4 +602,5 @@ my-job:
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
+[dynamic-environments]: ../environments.md#dynamic-environments
 [trigger-job-token]: ../triggers/README.md#ci-job-token
