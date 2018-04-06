@@ -115,9 +115,13 @@ create:
 1. An action `requestSomething`, to toggle the loading state
 1. An action `receiveSomethingSuccess`, to handle the success callback
 1. An action `receiveSomethingError`, to handle the error callback
-1. An action `fetchSomething` to make the request.
+1. An action `fetchSomething` to make the request. 
+    1. In case your application does more than a `GET` request you can use these as examples: 
+        1. `PUT`: `createSomething`
+        2. `POST`: `updateSomething`
+        3. `DELETE`: `deleteSomething`
 
-The component MUST only dispatch the `fetchNamespace` action.
+The component MUST only dispatch the `fetchNamespace` action. Actions namespaced with `request` or `receive` should not be called from the component
 The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
 
 By following this pattern we guarantee:
@@ -143,9 +147,6 @@ import { mapActions } from 'vuex';
   },
 };
 ```
-
-#### Handling errors with `createFlash`
-// TODO
 
 #### `mutations.js`
 The mutations specify how the application state changes in response to actions sent to the store.
