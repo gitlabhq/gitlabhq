@@ -955,10 +955,6 @@ class User < ActiveRecord::Base
     Gitlab::GroupHierarchy.new(owned_and_master_groups).base_and_descendants
   end
 
-  def manageable_group_projects
-    Project.where(namespace: manageable_groups)
-  end
-
   def namespaces
     namespace_ids = groups.pluck(:id)
     namespace_ids.push(namespace.id)
