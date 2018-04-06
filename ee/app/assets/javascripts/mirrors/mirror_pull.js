@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import _ from 'underscore';
+import $ from 'jquery';
 import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
@@ -52,7 +52,7 @@ export default class MirrorPull {
 
       // Verify if URL is http, https or git and hide/show Auth type dropdown
       // as we don't support auth type SSH for non-SSH URLs
-      this.$dropdownAuthType.attr('disabled', protRegEx.test(protocol));
+      this.$dropdownAuthType.collapse(protRegEx.test(protocol) ? 'hide' : 'show');
     }
   }
 
