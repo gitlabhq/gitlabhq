@@ -977,7 +977,6 @@ describe Gitlab::GitAccess do
       end
     end
 
-<<<<<<< HEAD
     describe "push_rule_check" do
       let(:start_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
       let(:end_sha)   { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
@@ -1127,7 +1126,9 @@ describe Gitlab::GitAccess do
 
           expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
-=======
+      end
+    end
+
     context 'when pushing to a project' do
       let(:project) { create(:project, :public, :repository) }
       let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
@@ -1139,7 +1140,6 @@ describe Gitlab::GitAccess do
       it 'cleans up the files' do
         expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
         expect { push_access_check }.not_to raise_error
->>>>>>> upstream/master
       end
     end
   end
