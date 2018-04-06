@@ -21,7 +21,7 @@ describe 'projects/jobs/show' do
   describe 'environment info in job view' do
     context 'job with latest deployment' do
       let(:build) do
-        create(:ci_build, :success, environment: 'staging')
+        create(:ci_build, :success, :trace_artifact, environment: 'staging')
       end
 
       before do
@@ -40,11 +40,11 @@ describe 'projects/jobs/show' do
 
     context 'job with outdated deployment' do
       let(:build) do
-        create(:ci_build, :success, environment: 'staging', pipeline: pipeline)
+        create(:ci_build, :success, :trace_artifact, environment: 'staging', pipeline: pipeline)
       end
 
       let(:second_build) do
-        create(:ci_build, :success, environment: 'staging', pipeline: pipeline)
+        create(:ci_build, :success, :trace_artifact, environment: 'staging', pipeline: pipeline)
       end
 
       let(:environment) do
@@ -70,7 +70,7 @@ describe 'projects/jobs/show' do
 
     context 'job failed to deploy' do
       let(:build) do
-        create(:ci_build, :failed, environment: 'staging', pipeline: pipeline)
+        create(:ci_build, :failed, :trace_artifact, environment: 'staging', pipeline: pipeline)
       end
 
       let!(:environment) do
@@ -88,7 +88,7 @@ describe 'projects/jobs/show' do
 
     context 'job will deploy' do
       let(:build) do
-        create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
+        create(:ci_build, :running, :trace_live, environment: 'staging', pipeline: pipeline)
       end
 
       context 'when environment exists' do
@@ -136,7 +136,7 @@ describe 'projects/jobs/show' do
 
     context 'job that failed to deploy and environment has not been created' do
       let(:build) do
-        create(:ci_build, :failed, environment: 'staging', pipeline: pipeline)
+        create(:ci_build, :failed, :trace_artifact, environment: 'staging', pipeline: pipeline)
       end
 
       let!(:environment) do
@@ -154,7 +154,7 @@ describe 'projects/jobs/show' do
 
     context 'job that will deploy and environment has not been created' do
       let(:build) do
-        create(:ci_build, :running, environment: 'staging', pipeline: pipeline)
+        create(:ci_build, :running, :trace_live, environment: 'staging', pipeline: pipeline)
       end
 
       let!(:environment) do
@@ -174,8 +174,9 @@ describe 'projects/jobs/show' do
   end
 
   context 'when job is running' do
+    let(:build) { create(:ci_build, :trace_live, :running, pipeline: pipeline) }
+
     before do
-      build.run!
       render
     end
 
