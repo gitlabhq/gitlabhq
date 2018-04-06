@@ -1,5 +1,6 @@
 class Projects::ApplicationController < ApplicationController
   include RoutableActions
+  include ChecksCollaboration
 
   skip_before_action :authenticate_user!
   before_action :project
@@ -29,18 +30,6 @@ class Projects::ApplicationController < ApplicationController
 
   def repository
     @repository ||= project.repository
-  end
-
-  def can_collaborate_with_project?(project = nil, ref: nil)
-    project ||= @project
-
-    can_create_merge_request =
-      can?(current_user, :create_merge_request_in, project) &&
-      current_user.already_forked?(project)
-
-    can?(current_user, :push_code, project) ||
-      can_create_merge_request ||
-      user_access(project).can_push_to_branch?(ref)
   end
 
   def authorize_action!(action)
@@ -94,10 +83,5 @@ class Projects::ApplicationController < ApplicationController
 
   def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user)
-  end
-
-  def user_access(project)
-    @user_access ||= {}
-    @user_access[project] ||= Gitlab::UserAccess.new(current_user, project: project)
   end
 end
