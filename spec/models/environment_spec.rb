@@ -369,20 +369,14 @@ describe Environment do
   end
 
   describe '#deployment_platform' do
-<<<<<<< HEAD
     before do
       stub_licensed_features(multiple_clusters: true)
     end
 
     context 'when there is a deployment platform for environment' do
       let!(:cluster) do
-        create(:cluster, :provided_by_gcp, projects: [project])
-=======
-    context 'when there is a deployment platform for environment' do
-      let!(:cluster) do
         create(:cluster, :provided_by_gcp,
                environment_scope: '*', projects: [project])
->>>>>>> upstream/master
       end
 
       it 'finds a deployment platform' do
