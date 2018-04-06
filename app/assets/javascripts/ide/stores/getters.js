@@ -41,3 +41,5 @@ export const collapseButtonTooltip = state =>
   state.rightPanelCollapsed ? __('Expand sidebar') : __('Collapse sidebar');
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
+
+export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);

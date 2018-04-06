@@ -132,6 +132,8 @@ export default {
       Object.assign(state.entries[path], {
         ...stagedFile,
         key: state.entries[path].key,
+        active: state.entries[path].active,
+        opened: state.entries[path].opened,
         changed: true,
       });
 
@@ -157,9 +159,7 @@ export default {
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
     const key = `${keyPrefix}-${file.key}`;
     const pendingTab = state.openFiles.find(f => f.key === key && f.pending);
-    let openFiles = state.openFiles.map(f =>
-      Object.assign(f, { active: f.key === key, opened: false }),
-    );
+    let openFiles = state.openFiles.map(f => Object.assign(f, { active: false, opened: false }));
 
     if (!pendingTab) {
       const openFile = openFiles.find(f => f.path === file.path);

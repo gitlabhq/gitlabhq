@@ -3,15 +3,16 @@ import Disposable from './disposable';
 import eventHub from '../../eventhub';
 
 export default class Model {
-  constructor(monaco, file) {
+  constructor(monaco, file, head = null) {
     this.monaco = monaco;
     this.disposable = new Disposable();
     this.file = file;
+    this.head = head;
     this.content = file.content !== '' ? file.content : file.raw;
 
     this.disposable.add(
       (this.originalModel = this.monaco.editor.createModel(
-        this.file.raw,
+        head ? head.content : this.file.raw,
         undefined,
         new this.monaco.Uri(null, null, `original/${this.file.key}`),
       )),

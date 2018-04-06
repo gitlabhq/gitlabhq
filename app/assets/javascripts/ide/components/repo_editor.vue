@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     ...mapState(['leftPanelCollapsed', 'rightPanelCollapsed', 'viewer', 'delayViewerUpdated']),
-    ...mapGetters(['currentMergeRequest']),
+    ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
     },
@@ -101,7 +101,12 @@ export default {
     setupEditor() {
       if (!this.file || !this.editor.instance) return;
 
-      this.model = this.editor.createModel(this.file);
+      const head = this.getStagedFile(this.file.path);
+
+      this.model = this.editor.createModel(
+        this.file,
+        this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
+      );
 
       if (this.viewer === 'mrdiff') {
         this.editor.attachMergeRequestModel(this.model);
