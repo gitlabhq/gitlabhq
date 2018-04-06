@@ -570,7 +570,6 @@ You can find a full list of unsupported variables below:
 
 These variables are also not supported in a contex of a
 [dynamic environment name][dynamic-environments].
-<<<<<<< HEAD
 
 ### Secret variables with an environment scope
 
@@ -590,8 +589,6 @@ my-job:
     variables:
       - $STAGING_SECRET == 'something'
 ```
-=======
->>>>>>> upstream/master
 
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
@@ -606,7 +603,4 @@ my-job:
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
-<<<<<<< HEAD
 [trigger-job-token]: ../triggers/README.md#ci-job-token
-=======
->>>>>>> upstream/master
