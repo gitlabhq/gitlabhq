@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 # This is a regression test for https://gitlab.com/gitlab-org/gitlab-ce/issues/37569
-describe 'User browses a tree with a folder containing only a folder' do
+describe 'Projects > Files > User browses a tree with a folder containing only a folder' do
   let(:project) { create(:project, :empty_repo) }
   let(:user) { project.creator }
 

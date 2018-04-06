@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Developer views empty project instructions' do
+feature 'Projects > Show > Developer views empty project instructions' do
   let(:project) { create(:project, :empty_repo) }
   let(:developer) { create(:user) }
 

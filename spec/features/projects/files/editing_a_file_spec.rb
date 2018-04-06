@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User wants to edit a file' do
+describe 'Projects > Files > User wants to edit a file' do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:commit_params) do
@@ -15,14 +15,14 @@ feature 'User wants to edit a file' do
     }
   end
 
-  background do
+  before do
     project.add_master(user)
     sign_in user
     visit project_edit_blob_path(project,
                                            File.join(project.default_branch, '.gitignore'))
   end
 
-  scenario 'file has been updated since the user opened the edit page' do
+  it 'file has been updated since the user opened the edit page' do
     Files::UpdateService.new(project, user, commit_params).execute
 
     click_button 'Commit changes'

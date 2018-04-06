@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User searches for files' do
+describe 'Projects > Files > User searches for files' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
