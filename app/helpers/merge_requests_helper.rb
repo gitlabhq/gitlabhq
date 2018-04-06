@@ -138,6 +138,18 @@ module MergeRequestsHelper
     end
   end
 
+  def merge_request_source_project_for_project(project = @project)
+    unless can?(current_user, :create_merge_request_in, project)
+      return nil
+    end
+
+    if can?(current_user, :create_merge_request_from, project)
+      project
+    else
+      current_user.fork_of(project)
+    end
+  end
+
   def merge_params_ee(merge_request)
     {}
   end
