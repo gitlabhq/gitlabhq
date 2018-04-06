@@ -374,7 +374,7 @@ ActiveRecord::Schema.define(version: 20180405101928) do
     t.integer "job_id", null: false
     t.integer "chunk_index", null: false
     t.integer "data_store", null: false
-    t.text "raw_data"
+    t.text "raw_data", limit: 16.megabytes - 1
   end
 
   add_index "ci_job_trace_chunks", ["job_id", "chunk_index"], name: "index_ci_job_trace_chunks_on_job_id_and_chunk_index", unique: true, using: :btree
