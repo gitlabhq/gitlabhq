@@ -12,10 +12,12 @@ module Gitlab
               Status::Build::Skipped],
              [Status::Build::Cancelable,
               Status::Build::Retryable],
+             [Status::Build::Failed],
              [Status::Build::FailedAllowed,
               Status::Build::Play,
               Status::Build::Stop],
-             [Status::Build::Action]]
+             [Status::Build::Action],
+             [Status::Build::Retried]]
           end
 
           def self.common_helpers

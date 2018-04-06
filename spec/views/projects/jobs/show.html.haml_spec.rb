@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe 'projects/jobs/show' do
+  let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:builds) { project.builds.present(current_user: user) }
 
   let(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
@@ -11,6 +13,7 @@ describe 'projects/jobs/show' do
   before do
     assign(:build, build.present)
     assign(:project, project)
+    assign(:builds, builds)
 
     allow(view).to receive(:can?).and_return(true)
   end

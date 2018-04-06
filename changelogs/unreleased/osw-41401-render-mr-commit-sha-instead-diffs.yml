@@ -1,0 +1,5 @@
+---
+title: Render MR commit SHA instead "diffs" when viable
+merge_request:
+author:
+type: added

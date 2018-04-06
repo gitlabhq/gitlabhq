@@ -25,17 +25,14 @@ describe "User sorts issues" do
     page.within(".issues-list") do
       page.within("li.issue:nth-child(1)") do
         expect(page).to have_content(issue1.title)
-        expect(page).to have_content("2 1")
       end
 
       page.within("li.issue:nth-child(2)") do
         expect(page).to have_content(issue2.title)
-        expect(page).to have_content("1 2")
       end
 
       page.within("li.issue:nth-child(3)") do
         expect(page).to have_content(issue3.title)
-        expect(page).not_to have_content("0 0")
       end
     end
   end

@@ -1,0 +1,20 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :plantuml_enabled do
+            = f.check_box :plantuml_enabled
+            Enable PlantUML
+    .form-group
+      = f.label :plantuml_url, 'PlantUML URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :plantuml_url, class: 'form-control', placeholder: 'http://gitlab.your-plantuml-instance.com:8080'
+        .help-block
+          Allow rendering of
+          = link_to "PlantUML", "http://plantuml.com"
+          diagrams in Asciidoc documents using an external PlantUML service.
+
+  = f.submit 'Save changes', class: "btn btn-success"

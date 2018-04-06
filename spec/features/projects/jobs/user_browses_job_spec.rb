@@ -35,4 +35,26 @@ describe 'User browses a job', :js do
 
     expect(build.project.running_or_pending_build_count).to eq(build.project.builds.running_or_pending.count(:all))
   end
+
+  context 'with a failed job' do
+    let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    it 'displays the failure reason' do
+      within('.builds-container') do
+        build_link = first('.build-job > a')
+        expect(build_link['data-title']).to eq('test - failed <br> (unknown failure)')
+      end
+    end
+  end
+
+  context 'when a failed job has been retried' do
+    let!(:build) { create(:ci_build, :failed, :retried, pipeline: pipeline) }
+
+    it 'displays the failure reason and retried label' do
+      within('.builds-container') do
+        build_link = first('.build-job > a')
+        expect(build_link['data-title']).to eq('test - failed <br> (unknown failure) (retried)')
+      end
+    end
+  end
 end

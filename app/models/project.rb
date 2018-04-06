@@ -21,6 +21,7 @@ class Project < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
+  include ChronicDurationAttribute
 
   extend Gitlab::ConfigHelper
 
@@ -324,6 +325,12 @@ class Project < ActiveRecord::Base
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+
+  chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
+
+  validates :build_timeout, allow_nil: true,
+                            numericality: { greater_than_or_equal_to: 600,
+                                            message: 'needs to be at least 10 minutes' }
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -630,7 +637,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless import_url.present? && valid_import_url?
+    return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
     if data
@@ -1066,6 +1073,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # This will return all `lfs_objects` that are accessible to the project.
+  # So this might be `self.lfs_objects` if the project is not part of a fork
+  # network, or it is the base of the fork network.
+  #
+  # TODO: refactor this to get the correct lfs objects when implementing
+  #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+  def all_lfs_objects
+    lfs_storage_project.lfs_objects
+  end
+
   def personal?
     !group
   end
@@ -1299,14 +1316,6 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def build_timeout_in_minutes
-    build_timeout / 60
-  end
-
-  def build_timeout_in_minutes=(value)
-    self.build_timeout = value.to_i * 60
-  end
-
   def open_issues_count
     Projects::OpenIssuesCountService.new(self).count
   end
@@ -1478,6 +1487,7 @@ class Project < ActiveRecord::Base
     remove_import_jid
     update_project_counter_caches
     after_create_default_branch
+    refresh_markdown_cache!
   end
 
   def update_project_counter_caches

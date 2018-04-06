@@ -190,7 +190,7 @@ To start, we create an `Envoy.blade.php` in the root of our app with a simple ta
 ```php
 @servers(['web' => 'remote_username@remote_host'])
 
-@task('list', [on => 'web'])
+@task('list', ['on' => 'web'])
     ls -l
 @endtask
 ```
