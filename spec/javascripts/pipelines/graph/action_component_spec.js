@@ -1,25 +1,30 @@
 import Vue from 'vue';
 import actionComponent from '~/pipelines/components/graph/action_component.vue';
+import eventHub from '~/pipelines/event_hub';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('pipeline graph action component', () => {
   let component;
 
   beforeEach((done) => {
     const ActionComponent = Vue.extend(actionComponent);
-    component = new ActionComponent({
-      propsData: {
-        tooltipText: 'bar',
-        link: 'foo',
-        actionMethod: 'post',
-        actionIcon: 'cancel',
-      },
-    }).$mount();
+    component = mountComponent(ActionComponent, {
+      tooltipText: 'bar',
+      link: 'foo',
+      actionIcon: 'cancel',
+    });
 
     Vue.nextTick(done);
   });
 
-  it('should render a link', () => {
-    expect(component.$el.getAttribute('href')).toEqual('foo');
+  afterEach(() => {
+    component.$destroy();
+  });
+
+  it('should emit an event with the provided link', () => {
+    eventHub.$on('graphAction', (link) => {
+      expect(link).toEqual('foo');
+    });
   });
 
   it('should render the provided title as a bootstrap tooltip', () => {
