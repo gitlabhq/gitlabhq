@@ -4,9 +4,8 @@ class DeployToken < ActiveRecord::Base
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
-  FOREVER = DateTime.new(3000, 1, 1)
 
-  default_value_for :expires_at, FOREVER
+  default_value_for(:expires_at) { Forever.date }
 
   has_many :project_deploy_tokens, inverse_of: :deploy_token
   has_many :projects, through: :project_deploy_tokens
@@ -43,6 +42,15 @@ class DeployToken < ActiveRecord::Base
   # that to be for multiple projects and namespaces.
   def project
     projects.first
+  end
+
+  def expires_at
+    expires_at = read_attribute(:expires_at)
+    expires_at != Forever.date ? expires_at : nil
+  end
+
+  def expires_at=(value)
+    write_attribute(:expires_at, value.presence || Forever.date)
   end
 
   private

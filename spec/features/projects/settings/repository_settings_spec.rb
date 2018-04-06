@@ -90,8 +90,7 @@ feature 'Repository settings' do
     end
 
     context 'Deploy tokens' do
-      let(:deploy_token_project) { create(:project_deploy_token, project: project) }
-      let!(:deploy_token) { deploy_token_project.deploy_token }
+      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
 
       before do
         stub_container_registry_config(enabled: true)
@@ -114,17 +113,6 @@ feature 'Repository settings' do
         click_button 'Create deploy token'
 
         expect(page).to have_content('Your new project deploy token has been created')
-      end
-
-      scenario 'revoke a deploy token', :js do
-        within('.deploy-tokens') do
-          click_link 'Revoke'
-          click_link "Revoke #{deploy_token.name}"
-
-          expect(page).not_to have_content(deploy_token.name)
-          expect(page).not_to have_content('read_repository')
-          expect(page).not_to have_content('read_registry')
-        end
       end
     end
   end

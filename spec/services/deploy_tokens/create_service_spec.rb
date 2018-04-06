@@ -25,8 +25,8 @@ describe DeployTokens::CreateService do
     context 'when expires at date is not passed' do
       let(:deploy_token_params) { attributes_for(:deploy_token, expires_at: '') }
 
-      it 'should set FOREVER date' do
-        expect(subject.expires_at).to eq(DeployToken::FOREVER)
+      it 'should set Forever.date' do
+        expect(subject.read_attribute(:expires_at)).to eq(Forever.date)
       end
     end
 

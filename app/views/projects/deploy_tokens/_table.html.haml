@@ -18,7 +18,7 @@
             %td= token.username
             %td= token.created_at.to_date.to_s(:medium)
             %td
-              - if show_expire_at?(token)
+              - if token.expires?
                 %span{ class: ('text-warning' if token.expires_soon?) }
                   In #{distance_of_time_in_words_to_now(token.expires_at)}
               - else

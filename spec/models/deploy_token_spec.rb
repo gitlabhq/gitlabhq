@@ -93,4 +93,42 @@ describe DeployToken do
       end
     end
   end
+
+  describe '#expires_at' do
+    context 'when using Forever.date' do
+      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+
+      it 'should return nil' do
+        expect(deploy_token.expires_at).to be_nil
+      end
+    end
+
+    context 'when using a personalized date' do
+      let(:expires_at) { Date.today + 5.months }
+      let(:deploy_token) { create(:deploy_token, expires_at: expires_at) }
+
+      it 'should return the personalized date' do
+        expect(deploy_token.expires_at).to eq(expires_at)
+      end
+    end
+  end
+
+  describe '#expires_at=' do
+    context 'when passing nil' do
+      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+
+      it 'should assign Forever.date' do
+        expect(deploy_token.read_attribute(:expires_at)).to eq(Forever.date)
+      end
+    end
+
+    context 'when passign a value' do
+      let(:expires_at) { Date.today + 5.months }
+      let(:deploy_token) { create(:deploy_token, expires_at: expires_at) }
+
+      it 'should respect the value' do
+        expect(deploy_token.read_attribute(:expires_at)).to eq(expires_at)
+      end
+    end
+  end
 end

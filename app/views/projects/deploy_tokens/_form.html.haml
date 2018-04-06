@@ -10,7 +10,7 @@
 
   .form-group
     = f.label :expires_at, class: 'label-light'
-    = f.text_field :expires_at, class: 'datepicker form-control', value: expires_at_value(token.expires_at)
+    = f.text_field :expires_at, class: 'datepicker form-control', value: f.object.expires_at
 
   .form-group
     = f.label :scopes, class: 'label-light'
