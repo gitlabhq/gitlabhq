@@ -1,0 +1,5 @@
+---
+title: Improve empty state for canceled job
+merge_request: 17646
+author:
+type: fixed

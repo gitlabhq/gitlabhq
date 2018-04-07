@@ -6,7 +6,7 @@ require Rails.root.join('db', 'post_migrate', '20170803090603_calculate_conv_dev
 describe CalculateConvDevIndexPercentages, :delete do
   let(:migration) { described_class.new }
   let!(:conv_dev_index) do
-    create(:dev_ops_score_metric,
+    create(:dev_ops_score_metric, # rubocop:disable RSpec/FactoriesInMigrationSpecs
       leader_notes: 0,
       instance_milestones: 0,
       percentage_issues: 0,

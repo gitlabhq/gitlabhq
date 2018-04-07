@@ -421,7 +421,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.91.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.94.0', require: 'gitaly'
 gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

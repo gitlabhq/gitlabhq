@@ -28,6 +28,14 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  describe 'after create actions' do
+    it 'invalidate personal_projects_count caches' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      create_project(user, opts)
+    end
+  end
+
   context "admin creates project with other user's namespace_id" do
     it 'sets the correct permissions' do
       admin = create(:admin)

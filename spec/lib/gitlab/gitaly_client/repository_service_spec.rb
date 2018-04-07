@@ -17,6 +17,16 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#cleanup' do
+    it 'sends a cleanup message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:cleanup)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+
+      client.cleanup
+    end
+  end
+
   describe '#garbage_collect' do
     it 'sends a garbage_collect message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -122,6 +132,17 @@ describe Gitlab::GitalyClient::RepositoryService do
         .and_return(double(in_progress: true))
 
       client.squash_in_progress?(squash_id)
+    end
+  end
+
+  describe '#calculate_checksum' do
+    it 'sends a calculate_checksum message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:calculate_checksum)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(checksum: 0))
+
+      client.calculate_checksum
     end
   end
 end

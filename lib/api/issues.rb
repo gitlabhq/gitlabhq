@@ -97,7 +97,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = paginate(find_issues(group_id: group.id))
+        issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
 
         options = {
           with: Entities::IssueBasic,
