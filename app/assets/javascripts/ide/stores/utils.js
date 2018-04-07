@@ -40,6 +40,7 @@ export const dataStructure = () => ({
   eol: '',
   viewMode: 'edit',
   previewMode: null,
+  size: 0,
 });
 
 export const decorateData = entity => {
