@@ -163,7 +163,7 @@ describe('RepoEditor', () => {
 
       vm.setupEditor();
 
-      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file);
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file, null);
       expect(vm.model).not.toBeNull();
     });
 
@@ -196,6 +196,20 @@ describe('RepoEditor', () => {
 
         done();
       });
+    });
+
+    it('sets head model as staged file', () => {
+      spyOn(vm.editor, 'createModel').and.callThrough();
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.$store.state.stagedFiles.push({ ...vm.file, key: 'staged' });
+      vm.file.staged = true;
+      vm.file.key = `unstaged-${vm.file.key}`;
+
+      vm.setupEditor();
+
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file, vm.$store.state.stagedFiles[0]);
     });
   });
 

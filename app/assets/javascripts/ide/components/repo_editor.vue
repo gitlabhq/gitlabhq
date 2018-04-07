@@ -19,7 +19,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated']),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
     ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.raw;
