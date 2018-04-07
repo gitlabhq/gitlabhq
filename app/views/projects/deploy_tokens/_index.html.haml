@@ -1,0 +1,18 @@
+- expanded = expand_deploy_tokens_section?(@new_deploy_token)
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4= s_('DeployTokens|Deploy Tokens')
+    %button.btn.js-settings-toggle.qa-expand-deploy-keys{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = s_('DeployTokens|Deploy tokens allow read-only access to your repository and registry images.')
+  .settings-content
+    - if @new_deploy_token.persisted?
+      = render 'projects/deploy_tokens/new_deploy_token', deploy_token: @new_deploy_token
+    - else
+      %h5.prepend-top-0
+        = s_('DeployTokens|Add a deploy token')
+      = render 'projects/deploy_tokens/form', project: @project, token: @new_deploy_token, presenter: @deploy_tokens
+      %hr
+    = render 'projects/deploy_tokens/table', project: @project, active_tokens: @deploy_tokens

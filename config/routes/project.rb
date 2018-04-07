@@ -89,6 +89,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :deploy_tokens, constraints: { id: /\d+/ }, only: [] do
+        member do
+          put :revoke
+        end
+      end
+
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
@@ -484,7 +490,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :slack_auth
         end
 
-        resource :repository, only: [:show], controller: :repository
+        resource :repository, only: [:show], controller: :repository do
+          post :create_deploy_token, path: 'deploy_token/create'
+        end
       end
 
       # Since both wiki and repository routing contains wildcard characters

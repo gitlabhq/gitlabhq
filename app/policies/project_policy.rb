@@ -145,7 +145,7 @@ class ProjectPolicy < BasePolicy
   end
 
   # These abilities are not allowed to admins that are not members of the project,
-  # that's why they are defined separatly.
+  # that's why they are defined separately.
   rule { guest & can?(:download_code) }.enable :build_download_code
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
