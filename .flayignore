@@ -20,4 +20,6 @@ lib/gitlab/workhorse.rb
 ee/db/**/*
 ee/app/serializers/ee/merge_request_widget_entity.rb
 ee/lib/ee/gitlab/ldap/sync/admin_users.rb
+ee/app/workers/geo/file_download_dispatch_worker/job_artifact_job_finder.rb
+ee/app/workers/geo/file_download_dispatch_worker/lfs_object_job_finder.rb
 ee/spec/**/*
