@@ -2,7 +2,7 @@ module DevOpsScore
   class Metric < ActiveRecord::Base
     include Presentable
 
-    self.table_name = 'conversational_development_index_metrics'
+    self.table_name = 'dev_ops_score_metrics'
 
     def instance_score(feature)
       self["instance_#{feature}"]
