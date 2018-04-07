@@ -164,7 +164,7 @@ module Gitlab
       def abilities_for_scopes(scopes)
         abilities_by_scope = {
           api: full_authentication_abilities,
-          read_registry: [:build_read_container_image],
+          read_registry: [:read_container_image],
           read_repository: [:download_code]
         }
 

@@ -195,7 +195,7 @@ describe Gitlab::Auth do
           personal_access_token = create(:personal_access_token, scopes: ['read_registry'])
 
           expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-          expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, [:build_read_container_image]))
+          expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, [:read_container_image]))
         end
       end
 
@@ -317,7 +317,7 @@ describe Gitlab::Auth do
           end
 
           it 'succeeds when login and token are valid' do
-            auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:build_read_container_image])
+            auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:read_container_image])
 
             expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: login)
             expect(gl_auth.find_for_git_client(login, deploy_token.token, project: nil, ip: 'ip'))
