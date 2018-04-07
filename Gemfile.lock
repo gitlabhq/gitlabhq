@@ -587,7 +587,7 @@ GEM
     orm_adapter (0.5.0)
     os (0.9.6)
     parallel (1.12.1)
-    parser (2.5.0.3)
+    parser (2.5.0.5)
       ast (~> 2.4.0)
     parslet (1.5.0)
       blankslate (~> 2.0)
