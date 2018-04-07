@@ -40,12 +40,8 @@ describe RemoveSoftRemovedObjects, :migration do
 
     it 'removes routes of soft removed personal namespaces' do
       namespace = create_with_deleted_at(:namespace)
-<<<<<<< HEAD
       group = groups.create!(name: 'group', path: 'group_path', type: 'Group')
       routes.create!(source_id: group.id, source_type: 'Group', name: 'group', path: 'group_path')
-=======
-      group = create(:group) # rubocop:disable RSpec/FactoriesInMigrationSpecs
->>>>>>> upstream/master
 
       expect(routes.where(source_id: namespace.id).exists?).to eq(true)
       expect(routes.where(source_id: group.id).exists?).to eq(true)
@@ -57,11 +53,7 @@ describe RemoveSoftRemovedObjects, :migration do
     end
 
     it 'schedules the removal of soft removed groups' do
-<<<<<<< HEAD
       group = create_deleted_group
-=======
-      group = create_with_deleted_at(:group)
->>>>>>> upstream/master
       admin = create(:user, admin: true) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       expect_any_instance_of(GroupDestroyWorker)
