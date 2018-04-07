@@ -66,6 +66,7 @@ RSpec.configure do |config|
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
   config.include StubENV
+  config.include ExpectOffense
 
   config.infer_spec_type_from_file_location!
 

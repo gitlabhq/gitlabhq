@@ -10,12 +10,13 @@ describe Gitlab::GitAccess do
   let(:protocol) { 'ssh' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
+  let(:auth_result_type) { nil }
 
   let(:access) do
     described_class.new(actor, project,
       protocol, authentication_abilities: authentication_abilities,
                 namespace_path: namespace_path, project_path: project_path,
-                redirected_path: redirected_path)
+                redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 
   let(:changes) { '_any' }
@@ -45,12 +46,33 @@ describe Gitlab::GitAccess do
 
       before do
         disable_protocol('http')
+        project.add_master(user)
       end
 
       it 'blocks http push and pull' do
         aggregate_failures do
           expect { push_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
           expect { pull_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+        end
+      end
+
+      context 'when request is made from CI' do
+        let(:auth_result_type) { :build }
+
+        it "doesn't block http pull" do
+          aggregate_failures do
+            expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+          end
+        end
+
+        context 'when legacy CI credentials are used' do
+          let(:auth_result_type) { :ci }
+
+          it "doesn't block http pull" do
+            aggregate_failures do
+              expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+            end
+          end
         end
       end
     end
@@ -831,6 +853,20 @@ describe Gitlab::GitAccess do
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+      end
+    end
+
+    context 'when pushing to a project' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'cleans up the files' do
+        expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
+        expect { push_access_check }.not_to raise_error
       end
     end
   end

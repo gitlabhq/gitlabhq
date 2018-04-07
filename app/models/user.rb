@@ -164,12 +164,15 @@ class User < ActiveRecord::Base
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
+  before_save :set_notification_email, if: :email_changed? # in case validation is skipped
   before_validation :set_public_email, if: :public_email_changed?
+  before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
+  before_save :ensure_namespace_correct # in case validation is skipped
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
@@ -408,7 +411,6 @@ class User < ActiveRecord::Base
       unique_internal(where(ghost: true), 'ghost', email) do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
         u.name = 'Ghost User'
-        u.notification_email = email
       end
     end
   end
@@ -696,10 +698,6 @@ class User < ActiveRecord::Base
 
   def projects_limit_left
     projects_limit - personal_projects_count
-  end
-
-  def personal_projects_count
-    @personal_projects_count ||= personal_projects.count
   end
 
   def recent_push(project = nil)
@@ -1044,9 +1042,10 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_cache_counts
-    assigned_open_merge_requests_count(force: true)
-    assigned_open_issues_count(force: true)
+  def personal_projects_count(force: false)
+    Rails.cache.fetch(['users', id, 'personal_projects_count'], force: force, expires_in: 24.hours, raw: true) do
+      personal_projects.count
+    end.to_i
   end
 
   def update_todos_count_cache
@@ -1059,6 +1058,7 @@ class User < ActiveRecord::Base
     invalidate_merge_request_cache_counts
     invalidate_todos_done_count
     invalidate_todos_pending_count
+    invalidate_personal_projects_count
   end
 
   def invalidate_issue_cache_counts
@@ -1075,6 +1075,10 @@ class User < ActiveRecord::Base
 
   def invalidate_todos_pending_count
     Rails.cache.delete(['users', id, 'todos_pending_count'])
+  end
+
+  def invalidate_personal_projects_count
+    Rails.cache.delete(['users', id, 'personal_projects_count'])
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth

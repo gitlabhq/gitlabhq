@@ -7,7 +7,8 @@
  * @param {String} text
  * @returns {String}
  */
-export const addDelimiter = text => (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
+export const addDelimiter = text =>
+  (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
 
 /**
  * Returns '99+' for numbers bigger than 99.
@@ -22,7 +23,8 @@ export const highCountTrim = count => (count > 99 ? '99+' : count);
  * @param {String} string
  * @requires {String}
  */
-export const humanize = string => string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
+export const humanize = string =>
+  string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
 
 /**
  * Adds an 's' to the end of the string when count is bigger than 0
@@ -53,7 +55,7 @@ export const slugify = str => str.trim().toLowerCase();
  * @param {Number} maxLength
  * @returns {String}
  */
-export const truncate = (string, maxLength) => `${string.substr(0, (maxLength - 3))}...`;
+export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3)}...`;
 
 /**
  * Capitalizes first character
@@ -80,3 +82,15 @@ export const stripHtml = (string, replace = '') => string.replace(/<[^>]*>/g, re
  * @param {*} string
  */
 export const convertToCamelCase = string => string.replace(/(_\w)/g, s => s[1].toUpperCase());
+
+/**
+ * Converts a sentence to lower case from the second word onwards
+ * e.g. Hello World => Hello world
+ *
+ * @param {*} string
+ */
+export const convertToSentenceCase = string => {
+  const splitWord = string.split(' ').map((word, index) => (index > 0 ? word.toLowerCase() : word));
+
+  return splitWord.join(' ');
+};

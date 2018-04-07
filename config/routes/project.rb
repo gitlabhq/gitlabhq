@@ -249,6 +249,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       scope '-' do
+        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -420,7 +422,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
         end
         resource :integrations, only: [:show]

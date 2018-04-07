@@ -39,6 +39,9 @@ export const dataStructure = () => ({
   editorColumn: 1,
   fileLanguage: '',
   eol: '',
+  viewMode: 'edit',
+  previewMode: null,
+  size: 0,
 });
 
 export const decorateData = entity => {
@@ -58,8 +61,9 @@ export const decorateData = entity => {
     changed = false,
     parentTreeUrl = '',
     base64 = false,
-
+    previewMode,
     file_lock,
+    html,
   } = entity;
 
   return {
@@ -80,8 +84,9 @@ export const decorateData = entity => {
     renderError,
     content,
     base64,
-
+    previewMode,
     file_lock,
+    html,
   };
 };
 
