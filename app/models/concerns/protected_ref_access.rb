@@ -4,7 +4,8 @@ module ProtectedRefAccess
   ALLOWED_ACCESS_LEVELS = [
     Gitlab::Access::MASTER,
     Gitlab::Access::DEVELOPER,
-    Gitlab::Access::NO_ACCESS
+    Gitlab::Access::NO_ACCESS,
+    Gitlab::Access::ADMIN
   ].freeze
 
   HUMAN_ACCESS_LEVELS = {

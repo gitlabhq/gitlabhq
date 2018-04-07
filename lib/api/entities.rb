@@ -394,6 +394,7 @@ module API
       expose :name
       expose :push_access_levels, using: Entities::ProtectedRefAccess
       expose :merge_access_levels, using: Entities::ProtectedRefAccess
+      expose :unprotect_access_levels, using: Entities::ProtectedRefAccess
     end
 
     class Milestone < Grape::Entity
