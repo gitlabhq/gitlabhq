@@ -25,12 +25,15 @@ describe Geo::MetricsUpdateService, :geo do
       lfs_objects_count: 100,
       lfs_objects_synced_count: 50,
       lfs_objects_failed_count: 12,
+      lfs_objects_synced_missing_on_primary_count: 4,
       job_artifacts_count: 100,
       job_artifacts_synced_count: 50,
       job_artifacts_failed_count: 12,
+      job_artifacts_synced_missing_on_primary_count: 5,
       attachments_count: 30,
       attachments_synced_count: 30,
       attachments_failed_count: 25,
+      attachments_synced_missing_on_primary_count: 6,
       last_event_id: 2,
       last_event_date: event_date,
       cursor_last_event_id: 1,
@@ -143,12 +146,15 @@ describe Geo::MetricsUpdateService, :geo do
         expect(metric_value(:geo_lfs_objects)).to eq(100)
         expect(metric_value(:geo_lfs_objects_synced)).to eq(50)
         expect(metric_value(:geo_lfs_objects_failed)).to eq(12)
+        expect(metric_value(:geo_lfs_objects_synced_missing_on_primary)).to eq(4)
         expect(metric_value(:geo_job_artifacts)).to eq(100)
         expect(metric_value(:geo_job_artifacts_synced)).to eq(50)
         expect(metric_value(:geo_job_artifacts_failed)).to eq(12)
+        expect(metric_value(:geo_job_artifacts_synced_missing_on_primary)).to eq(5)
         expect(metric_value(:geo_attachments)).to eq(30)
         expect(metric_value(:geo_attachments_synced)).to eq(30)
         expect(metric_value(:geo_attachments_failed)).to eq(25)
+        expect(metric_value(:geo_attachments_synced_missing_on_primary)).to eq(6)
         expect(metric_value(:geo_last_event_id)).to eq(2)
         expect(metric_value(:geo_last_event_timestamp)).to eq(event_date.to_i)
         expect(metric_value(:geo_cursor_last_event_id)).to eq(1)

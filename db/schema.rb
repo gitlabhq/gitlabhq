@@ -1077,6 +1077,9 @@ ActiveRecord::Schema.define(version: 20180405101928) do
     t.integer "repositories_verification_failed_count"
     t.integer "wikis_verified_count"
     t.integer "wikis_verification_failed_count"
+    t.integer "lfs_objects_synced_missing_on_primary_count"
+    t.integer "job_artifacts_synced_missing_on_primary_count"
+    t.integer "attachments_synced_missing_on_primary_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree

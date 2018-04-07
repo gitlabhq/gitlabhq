@@ -23,8 +23,7 @@ module API
           file = response[:file]
           present_disk_file!(file.path, file.filename)
         else
-          status response[:code]
-          response
+          error! response, response.delete(:code)
         end
       end
 

@@ -20,7 +20,7 @@ module Geo
     end
 
     def schedule_job(object_type, object_db_id)
-      job_id = ::Geo::FileRegistryRemovalWorker.perform_async(object_type, object_db_id)
+      job_id = ::Geo::FileRegistryRemovalWorker.perform_async(object_type.to_s, object_db_id)
 
       if job_id
         retval = { id: object_db_id, type: object_type, job_id: job_id }
@@ -47,7 +47,7 @@ module Geo
 
       lfs_objects_finder.find_migrated_local_lfs_objects(batch_size: batch_size, except_file_ids: scheduled_file_ids(:lfs))
                         .pluck(:id)
-                        .map { |id| [:lfs, id] }
+                        .map { |id| ['lfs', id] }
     end
 
     def find_migrated_local_attachments_ids(batch_size:)
@@ -61,15 +61,16 @@ module Geo
     def find_migrated_local_job_artifacts_ids(batch_size:)
       return [] unless job_artifacts_object_store_enabled?
 
-      job_artifacts_finder.find_migrated_local_job_artifacts(batch_size: batch_size, except_file_ids: scheduled_file_ids(:job_artifact))
+      job_artifacts_finder.find_migrated_local_job_artifacts(batch_size: batch_size, except_artifact_ids: scheduled_file_ids(:job_artifact))
                           .pluck(:id)
-                          .map { |id| [:job_artifact, id] }
+                          .map { |id| ['job_artifact', id] }
     end
 
     def scheduled_file_ids(file_types)
       file_types = Array(file_types)
+      file_types = file_types.map(&:to_s)
 
-      scheduled_jobs.select { |data| file_types.include?(data[:type]) }.map { |data| data[:id] }
+      scheduled_jobs.select { |data| file_types.include?(data[:type].to_s) }.map { |data| data[:id] }
     end
 
     def attachments_object_store_enabled?

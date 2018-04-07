@@ -39,14 +39,14 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
       end
 
       it 'schedules job for file stored remotely and synced locally' do
-        expect(worker).to receive(:schedule_job).with(:lfs, lfs_object_remote.id)
+        expect(worker).to receive(:schedule_job).with('lfs', lfs_object_remote.id)
         expect(worker).not_to receive(:schedule_job).with(anything, lfs_object_local.id)
 
         worker.perform
       end
 
       it 'schedules worker for file stored remotely and synced locally' do
-        expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with(:lfs, lfs_object_remote.id)
+        expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with('lfs', lfs_object_remote.id)
         expect(Geo::FileRegistryRemovalWorker).not_to receive(:perform_async).with(anything, lfs_object_local.id)
 
         worker.perform
@@ -127,14 +127,14 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
       end
 
       it 'schedules job for artifact stored remotely and synced locally' do
-        expect(worker).to receive(:schedule_job).with(:job_artifact, job_artifact_remote.id)
+        expect(worker).to receive(:schedule_job).with('job_artifact', job_artifact_remote.id)
         expect(worker).not_to receive(:schedule_job).with(anything, job_artifact_local.id)
 
         worker.perform
       end
 
       it 'schedules worker for artifact stored remotely and synced locally' do
-        expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with(:job_artifact, job_artifact_remote.id)
+        expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with('job_artifact', job_artifact_remote.id)
         expect(Geo::FileRegistryRemovalWorker).not_to receive(:perform_async).with(anything, job_artifact_local.id)
 
         worker.perform
