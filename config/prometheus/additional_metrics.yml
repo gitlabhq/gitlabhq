@@ -157,17 +157,12 @@
     - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)'
       label: Total
       unit: "cores"
-<<<<<<< HEAD
   - title: "Memory Usage (Pod Average)"
-=======
-  - title: "Memory Usage (Pod average)"
->>>>>>> upstream/master
     y_label: "Memory Used per Pod"
     required_metrics:
       - container_memory_usage_bytes
     weight: 2
     queries:
-<<<<<<< HEAD
     - query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
       label: Pod average
       unit: MB
@@ -176,18 +171,11 @@
       unit: MB
       track: canary
   - title: "Core Usage (Pod Average)"
-=======
-    - query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
-      label: Pod average
-      unit: MB
-  - title: "Core Usage (Pod average)"
->>>>>>> upstream/master
     y_label: "Cores per Pod"
     required_metrics:
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-<<<<<<< HEAD
     - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
       label: Pod average
       unit: "cores"
@@ -196,8 +184,3 @@
       unit: "cores"
       track: canary
     
-=======
-    - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
-      label: Pod average
-      unit: "cores"
->>>>>>> upstream/master
