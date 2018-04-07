@@ -1491,8 +1491,6 @@ module Gitlab
         run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
       end
 
-<<<<<<< HEAD
-=======
       def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
         base_args = %w(worktree add --detach)
 
@@ -1520,7 +1518,6 @@ module Gitlab
         FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
       end
 
->>>>>>> upstream/master
       def checksum
         gitaly_migrate(:calculate_checksum) do |is_enabled|
           if is_enabled
