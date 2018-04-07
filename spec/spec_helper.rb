@@ -70,13 +70,10 @@ RSpec.configure do |config|
   config.include StubFeatureFlags
   config.include StubENV
   config.include ExpectOffense
-<<<<<<< HEAD
 
   # EE only
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
-=======
->>>>>>> upstream/master
 
   config.infer_spec_type_from_file_location!
 
