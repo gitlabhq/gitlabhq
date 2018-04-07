@@ -10,7 +10,9 @@ import {
   MATCH_LINE_TYPE,
 } from '../constants';
 
-export const findDiffFile = (files, hash) => files.filter(file => file.fileHash === hash)[0];
+export function findDiffFile(files, hash) {
+  return files.filter(file => file.fileHash === hash)[0];
+}
 
 export const getReversePosition = linePosition => {
   if (linePosition === LINE_POSITION_RIGHT) {
@@ -89,16 +91,16 @@ export const findIndexInParallelLines = (lines, lineNumbers) => {
   );
 };
 
-export const removeMatchLine = (diffFile, lineNumbers, bottom) => {
+export function removeMatchLine(diffFile, lineNumbers, bottom) {
   const indexForInline = findIndexInInlineLines(diffFile.highlightedDiffLines, lineNumbers);
   const indexForParallel = findIndexInParallelLines(diffFile.parallelDiffLines, lineNumbers);
   const factor = bottom ? 1 : -1;
 
   diffFile.highlightedDiffLines.splice(indexForInline + factor, 1);
   diffFile.parallelDiffLines.splice(indexForParallel + factor, 1);
-};
+}
 
-export const addLineReferences = (lines, lineNumbers, bottom) => {
+export function addLineReferences(lines, lineNumbers, bottom) {
   const { oldLineNumber, newLineNumber } = lineNumbers;
   const lineCount = lines.length;
   let matchLineIndex = -1;
@@ -133,9 +135,9 @@ export const addLineReferences = (lines, lineNumbers, bottom) => {
   }
 
   return linesWithNumbers;
-};
+}
 
-export const addContextLines = options => {
+export function addContextLines(options) {
   const { inlineLines, parallelLines, contextLines, lineNumbers } = options;
   const normalizedParallelLines = contextLines.map(line => ({
     left: line,
@@ -151,4 +153,4 @@ export const addContextLines = options => {
     inlineLines.splice(inlineIndex, 0, ...contextLines);
     parallelLines.splice(parallelIndex, 0, ...normalizedParallelLines);
   }
-};
+}
