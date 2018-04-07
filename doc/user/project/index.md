@@ -27,6 +27,7 @@ integrated platform
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
+  - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - **(Ultimate)** [Web IDE](web_ide/index.md)
 
 **Issues and merge requests:**
@@ -34,7 +35,6 @@ integrated platform
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
   - [Multiple Issue Boards](issue_board.md#multiple-issue-boards) (**Starter/Premium**): Allow your teams to create their own workflows (Issue Boards) for the same project
-  - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
   - [Merge Request Approvals](merge_requests/merge_request_approvals.md) (**Starter/Premium**): Ask for approval before

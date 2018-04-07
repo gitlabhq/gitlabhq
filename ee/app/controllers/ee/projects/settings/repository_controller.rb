@@ -39,6 +39,19 @@ module EE
 
           gon.push(current_project_id: project.id) if project
         end
+
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        def render_show
+          @deploy_keys = ::Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user)
+          @deploy_tokens = @project.deploy_tokens.active
+
+          define_deploy_token
+          define_protected_refs
+          push_rule
+          remote_mirror
+
+          render 'show'
+        end
       end
     end
   end
