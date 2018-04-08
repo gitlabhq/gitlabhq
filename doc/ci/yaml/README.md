@@ -1276,10 +1276,17 @@ include:
 
 ---
 
-Since external files defined by `include` are evaluated first, the content of
-`.gitlab-ci.yml` will always take precedence over the content of the external
-files, no matter of the position of the `include` keyword. This allows you to
-override values and functions with local definitions. For example:
+Files defined by `include` are always evaluated first and recursively merged
+with the content of `.gitlab-ci.yml`, no matter the position of the `include`
+keyword. You can take advantage of recursive merging to customize and override
+details in included CI configurations with local defintions.
+
+NOTE: **Note:**
+Before GitLab 10.8, the content of `.gitlab-ci.yml` always took precedence
+over the content of external files.
+
+The following example shows specific YAML-defined variables and details of
+the `production` job from an include file being customized in `.gitlab-ci.yml`.
 
 ```yaml
 # Content of https://company.com/autodevops-template.yml
@@ -1311,7 +1318,6 @@ image: alpine:latest
 variables:
   POSTGRES_USER: root
   POSTGRES_PASSWORD: secure_password
-  POSTGRES_DB: company_database
 
 stages:
   - build
@@ -1319,20 +1325,13 @@ stages:
   - production
 
 production:
-  stage: production
-  script:
-    - install_dependencies
-    - deploy
   environment:
-    name: production
     url: https://domain.com
-  only:
-    - master
 ```
 
-In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and
-`POSTGRES_DB` along with the `production` job defined in
-`autodevops-template.yml` will be overridden by the ones defined in
+In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
+with the environment url of the `production` job defined in
+`autodevops-template.yml` have been overridden by new values defined in
 `.gitlab-ci.yml`.
 
 NOTE: **Note:**
