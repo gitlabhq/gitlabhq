@@ -134,7 +134,7 @@ describe EE::Gitlab::Ci::Config do
 
       it 'should merge the variables dictionaries' do
         WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
-        expect(config.to_hash).to eq({ A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' })
+        expect(config.to_hash).to eq({ variables: { A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' }})
       end
     end
 
@@ -161,7 +161,7 @@ describe EE::Gitlab::Ci::Config do
 
       it 'later declarations should take precedence' do
         WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
-        expect(config.to_hash).to eq({ A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' })
+        expect(config.to_hash).to eq({ variables: { A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' }})
       end
     end
   end
