@@ -23,7 +23,6 @@
             - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
             = deleted_message % { project_name: fork_source_name(@project) }
 
-<<<<<<< HEAD
       - if @project.mirror?
         - import_url = @project.safe_import_url
         %p
@@ -31,8 +30,6 @@
           %br
           = render "shared/mirror_status"
 
-=======
->>>>>>> upstream/master
     .project-badges.prepend-top-default.append-bottom-default
       - @project.badges.each do |badge|
         %a.append-right-8{ href: badge.rendered_link_url(@project),
