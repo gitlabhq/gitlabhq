@@ -6,6 +6,9 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
+import { FIXTURES_PATH, TEST_HOST } from './test_constants';
+
+import customMatchers from './matchers';
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
@@ -26,15 +29,17 @@ Vue.config.errorHandler = function (err) {
 Vue.use(VueResource);
 
 // enable test fixtures
-jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
-jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
+jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
+jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
+
+beforeAll(() => jasmine.addMatchers(customMatchers));
 
 // globalize common libraries
 window.$ = window.jQuery = $;
 
 // stub expected globals
 window.gl = window.gl || {};
-window.gl.TEST_HOST = 'http://test.host';
+window.gl.TEST_HOST = TEST_HOST;
 window.gon = window.gon || {};
 window.gon.test_env = true;
 
