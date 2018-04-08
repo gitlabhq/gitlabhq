@@ -190,6 +190,6 @@ class GroupsController < Groups::ApplicationController
 
     params[:id] = group.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 end
