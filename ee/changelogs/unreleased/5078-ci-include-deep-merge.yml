@@ -1,0 +1,5 @@
+---
+title: Allow customization of included CI configurations through deep merging
+merge_request: 5288
+author: King Chung Huang
+type: changed
