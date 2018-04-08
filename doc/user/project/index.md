@@ -81,6 +81,7 @@ website with GitLab Pages
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
+- [Badges](badges.md): Badges for the project overview
 
 ### Project's integrations
 
