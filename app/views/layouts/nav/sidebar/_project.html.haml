@@ -273,11 +273,7 @@
                   #{ _('Snippets') }
 
       - if project_nav_tab? :settings
-<<<<<<< HEAD
         = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show audit_events#index]) do
-=======
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show]) do
->>>>>>> upstream/master
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('settings')
@@ -287,11 +283,7 @@
           %ul.sidebar-sub-level-items
             - can_edit = can?(current_user, :admin_project, @project)
             - if can_edit
-<<<<<<< HEAD
               = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show audit_events#index], html_options: { class: "fly-out-top-item" } ) do
-=======
-              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show], html_options: { class: "fly-out-top-item" } ) do
->>>>>>> upstream/master
                 = link_to edit_project_path(@project) do
                   %strong.fly-out-top-item-name
                     #{ _('Settings') }
