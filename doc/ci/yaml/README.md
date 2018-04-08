@@ -1338,6 +1338,41 @@ NOTE: **Note:**
 Recursive includes are not supported meaning your external files
 should not use the `include` keyword, as it will be ignored.
 
+Recursive merging lets you extend and override dictionary mappings, but
+you cannot add or modify items to an included list. For example, to add
+an additional item to the production job script, you must repeat the
+existing script items.
+
+```yaml
+# Content of https://company.com/autodevops-template.yml
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://company.com/autodevops-template.yml'
+
+stages:
+  - production
+
+production:
+  script:
+    - install_depedencies
+    - deploy
+    - notify_owner
+```
+
+In this case, if `install_dependencies` and `deploy` were not repeated in
+`.gitlab-ci.yml`, they would not be part of the script for the `production`
+job in the combined CI configuration.
+>>>>>>> 9d487fefac... Note that recursive merging applies to dicts
+
 ## `variables`
 
 > Introduced in GitLab Runner v0.5.0.
