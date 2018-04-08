@@ -111,5 +111,31 @@ describe EE::Gitlab::Ci::Config do
         expect(config.to_hash).to eq({ image: 'ruby:2.2' })
       end
     end
+
+    context "when both external files and gitlab_ci.yml define a dictionary of distinct variables" do
+      let(:remote_file_content) do
+        <<~HEREDOC
+        variables:
+          A: 'alpha'
+          B: 'beta'
+        HEREDOC
+      end
+
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+        include:
+          - #{remote_location}
+
+        variables:
+          C: 'gamma'
+          D: 'delta'
+        HEREDOC
+      end
+
+      it 'should merge the variables dictionaries' do
+        WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
+        expect(config.to_hash).to eq({ A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' })
+      end
+    end
   end
 end
