@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe 'Projects > Files > User views files page' do
-  let(:user) { create(:user) }
   let(:project) { create(:forked_project_with_submodules) }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in user
     visit project_tree_path(project, project.repository.root_ref)
   end

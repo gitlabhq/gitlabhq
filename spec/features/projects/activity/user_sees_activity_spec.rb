@@ -15,22 +15,7 @@ feature 'Projects > Activity > User sees activity' do
     visit activity_project_path(project)
   end
 
-  shared_examples 'push appears in activity' do
-    it 'shows the last push in the activity page', :js do
-      expect(page).to have_content "#{user.name} pushed new branch fix"
-    end
-  end
-
-  context 'when signed in' do
-    before do
-      project.add_developer(user)
-      sign_in(user)
-    end
-
-    it_behaves_like 'push appears in activity'
-  end
-
-  context 'when signed out' do
-    it_behaves_like 'push appears in activity'
+  it 'shows the last push in the activity page', :js do
+    expect(page).to have_content "#{user.name} pushed new branch fix"
   end
 end

@@ -1,13 +1,12 @@
 require 'spec_helper'
 
 describe 'Projects > Files > Project owner creates a license file', :js do
-  let(:project_master) { create(:user) }
   let(:project) { create(:project, :repository) }
+  let(:project_master) { project.owner }
 
   before do
     project.repository.delete_file(project_master, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
-    project.add_master(project_master)
     sign_in(project_master)
     visit project_path(project)
   end

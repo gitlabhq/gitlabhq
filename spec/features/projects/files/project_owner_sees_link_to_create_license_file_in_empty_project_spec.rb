@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe 'Projects > Files > Project owner sees a link to create a license file in empty project', :js do
-  let(:project_master) { create(:user) }
   let(:project) { create(:project_empty_repo) }
+  let(:project_master) { project.owner }
 
   before do
-    project.add_master(project_master)
     sign_in(project_master)
   end
 

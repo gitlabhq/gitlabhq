@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe 'Projects > Files > User uses soft wrap whilst editing file', :js do
   before do
-    user = create(:user)
     project = create(:project, :repository)
-    project.add_master(user)
+    user = project.owner
     sign_in user
     visit project_new_blob_path(project, 'master', file_name: 'test_file-name')
     page.within('.file-editor.code') do

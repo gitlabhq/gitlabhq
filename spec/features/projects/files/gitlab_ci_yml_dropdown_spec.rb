@@ -2,24 +2,23 @@ require 'spec_helper'
 
 describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
   before do
-    user = create(:user)
     project = create(:project, :repository)
-    project.add_master(user)
-    sign_in user
+    sign_in project.owner
     visit project_new_blob_path(project, 'master', file_name: '.gitlab-ci.yml')
   end
 
-  it 'user can see .gitlab-ci.yml dropdown' do
-    expect(page).to have_css('.gitlab-ci-yml-selector')
-  end
-
   it 'user can pick a template from the dropdown', :js do
+    expect(page).to have_css('.gitlab-ci-yml-selector')
+
     find('.js-gitlab-ci-yml-selector').click
+
     wait_for_requests
+
     within '.gitlab-ci-yml-selector' do
       find('.dropdown-input-field').set('Jekyll')
       find('.dropdown-content li', text: 'Jekyll').click
     end
+
     wait_for_requests
 
     expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Jekyll')

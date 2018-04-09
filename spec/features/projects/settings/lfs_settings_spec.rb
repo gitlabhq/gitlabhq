@@ -6,11 +6,12 @@ describe 'Projects > Settings > LFS settings' do
 
   context 'LFS enabled setting' do
     before do
+      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+
       sign_in(admin)
     end
 
     it 'displays the correct elements', :js do
-      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
       visit edit_project_path(project)
 
       expect(page).to have_content('Git Large File Storage')

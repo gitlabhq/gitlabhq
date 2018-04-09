@@ -2,10 +2,9 @@ require 'spec_helper'
 
 describe 'Projects > Files > User browses LFS files' do
   let(:project) { create(:project, :repository) }
-  let(:user) { project.creator }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in(user)
   end
 
