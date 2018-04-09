@@ -486,7 +486,7 @@
           {{ model.folderName }}
         </span>
 
-        <span class="badge">
+        <span class="badge badge-pill">
           {{ model.size }}
         </span>
       </span>
