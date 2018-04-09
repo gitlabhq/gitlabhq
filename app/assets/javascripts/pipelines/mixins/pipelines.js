@@ -52,14 +52,29 @@ export default {
     });
 
     eventHub.$on('postAction', this.postAction);
+    eventHub.$on('clickedDropdown', this.updateTable);
   },
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
+    eventHub.$off('clickedDropdown', this.updateTable);
   },
   destroyed() {
     this.poll.stop();
   },
   methods: {
+    updateTable() {
+      // Cancel ongoing request
+      if (this.isMakingRequest) {
+
+      }
+
+      // Stop polling
+      this.poll.stop();
+      // make new request
+      this.fetchPipelines();
+      // restart polling
+      this.poll.restart();
+    },
     fetchPipelines() {
       if (!this.isMakingRequest) {
         this.isLoading = true;
