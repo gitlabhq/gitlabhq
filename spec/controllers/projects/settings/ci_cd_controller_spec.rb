@@ -134,7 +134,7 @@ describe Projects::Settings::CiCdController do
         end
       end
 
-      context 'when auto_devops_conflicts_custom_yml is true' do
+      context 'when auto devops is disabled by custom config' do
         before do
           expect_any_instance_of(Projects::UpdateService).to receive(:auto_devops_conflicts_custom_yml?).and_return(true)
         end
@@ -144,7 +144,7 @@ describe Projects::Settings::CiCdController do
         end
       end
 
-      context 'when auto_devops_conflicts_custom_yml is not true' do
+      context 'when auto devops is not disabled by custom config' do
         before do
           expect_any_instance_of(Projects::UpdateService).to receive(:auto_devops_conflicts_custom_yml?).and_return(false)
         end
