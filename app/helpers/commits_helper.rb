@@ -27,7 +27,7 @@ module CommitsHelper
     return unless @project && @ref
 
     # Add the root project link and the arrow icon
-    crumbs = content_tag(:li) do
+    crumbs = content_tag(:li, class: 'breadcrumb-item') do
       link_to(
         @project.path,
         project_commits_path(@project, @ref)
@@ -38,7 +38,7 @@ module CommitsHelper
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs << content_tag(:li) do
+        crumbs << content_tag(:li, class: 'breadcrumb-item') do
           # The text is just the individual part, but the link needs all the parts before it
           link_to(
             part,

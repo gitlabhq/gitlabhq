@@ -5,11 +5,11 @@
 .tree-holder
   .nav-block
     %ul.breadcrumb.repo-breadcrumb
-      %li
+      %li.breadcrumb-item
         = link_to 'Artifacts', browse_project_job_artifacts_path(@project, @build)
       - path_breadcrumbs do |title, path|
         - title = truncate(title, length: 40)
-        %li
+        %li.breadcrumb-item
           - if path == @path
             = link_to file_project_job_artifacts_path(@project, @build, path) do
               %strong= title

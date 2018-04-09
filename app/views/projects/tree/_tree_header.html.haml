@@ -8,15 +8,15 @@
       - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
 
   %ul.breadcrumb.repo-breadcrumb
-    %li
+    %li.breadcrumb-item
       = link_to project_tree_path(@project, @ref) do
         = @project.path
     - path_breadcrumbs do |title, path|
-      %li
+      %li.breadcrumb-item
         = link_to truncate(title, length: 40), project_tree_path(@project, tree_join(@ref, path))
 
     - if current_user
-      %li
+      %li.breadcrumb-item
         %a.btn.add-to-tree{ addtotree_toggle_attributes }
           = sprite_icon('plus', size: 16, css_class: 'pull-left')
           = sprite_icon('arrow-down', size: 16, css_class: 'pull-left')

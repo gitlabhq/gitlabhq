@@ -1,10 +1,10 @@
 - page_title "By #{@user.name}", "Snippets"
 
 %ol.breadcrumb
-  %li
+  %li.breadcrumb-item
     = link_to snippets_path do
       Snippets
-  %li
+  %li.breadcrumb-item
     = @user.name
   .pull-right.hidden-xs
     = link_to user_path(@user) do

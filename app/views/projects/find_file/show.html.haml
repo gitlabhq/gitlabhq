@@ -5,10 +5,10 @@
     .tree-ref-holder
       = render 'shared/ref_switcher', destination: 'find_file', path: @path
     %ul.breadcrumb.repo-breadcrumb
-      %li
+      %li.breadcrumb-item
         = link_to project_tree_path(@project, @ref) do
           = @project.path
-      %li.file-finder
+      %li.file-finder.breadcrumb-item
         %input#file_find.form-control.file-finder-input{ type: "text", placeholder: _('Find by path'), autocomplete: 'off' }
 
   .tree-content-holder
