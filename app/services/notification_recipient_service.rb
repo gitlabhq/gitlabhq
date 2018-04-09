@@ -51,11 +51,10 @@ module NotificationRecipientService
 
       def add_recipients(users, type, reason)
         if users.is_a?(ActiveRecord::Relation)
-          users = users.includes(:notification_settings).to_a
+          users = users.includes(:notification_settings)
         end
 
-        users = Array(users)
-        users.compact!
+        users = Array(users).compact
         recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
 
