@@ -20,10 +20,7 @@ gl.issueBoards.Board = Vue.extend({
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
     BoardBlankState,
-<<<<<<< HEAD
     boardPromotionState,
-=======
->>>>>>> upstream/master
   },
   props: {
     list: Object,
