@@ -30,11 +30,11 @@
 
   .md-write-holder
     = yield
-  .md.md-preview-holder.js-md-preview.hide.md-preview{ data: { url: url } }
-  .referenced-commands.hide
+  .md.md-preview-holder.js-md-preview.d-none.md-preview{ data: { url: url } }
+  .referenced-commands.d-none
 
   - if referenced_users
-    .referenced-users.hide
+    .referenced-users.d-none
       %span
         = icon("exclamation-triangle")
         You are about to add

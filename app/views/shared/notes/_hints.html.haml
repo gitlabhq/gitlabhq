@@ -11,7 +11,7 @@
     supported
 
   %span.uploading-container
-    %span.uploading-progress-container.hide
+    %span.uploading-progress-container.d-none
       = icon('file-image-o', class: 'toolbar-button-icon')
       %span.attaching-file-message
         -# Populated by app/assets/javascripts/dropzone_input.js
@@ -19,7 +19,7 @@
       %span.uploading-spinner
         = icon('spinner spin', class: 'toolbar-button-icon')
 
-    %span.uploading-error-container.hide
+    %span.uploading-error-container.d-none
       %span.uploading-error-icon
         = icon('file-image-o', class: 'toolbar-button-icon')
       %span.uploading-error-message
@@ -32,4 +32,4 @@
       = icon('file-image-o', class: 'toolbar-button-icon')
       Attach a file
 
-    %button.btn.btn-secondary.btn-xs.hide.button-cancel-uploading-files{ type: 'button' } Cancel
+    %button.btn.btn-secondary.btn-xs.d-none.button-cancel-uploading-files{ type: 'button' } Cancel

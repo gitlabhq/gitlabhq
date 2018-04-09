@@ -7,7 +7,7 @@
 - if @branches.any? || @tags.any? || @tags_limit_exceeded
   %span
     = link_to "…", "#", class: "js-details-expand label label-gray"
-    %span.js-details-content.hide
+    %span.js-details-content.d-none
       = commit_branches_links(@project, @branches)
       - if @tags_limit_exceeded
         = render 'limit_exceeded_message', objects: :tag, label_for_message: "tags"
