@@ -15,6 +15,8 @@ module Ci
     def status_title
       if auto_canceled?
         "Job is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
+      else
+        tooltip_for_badge
       end
     end
 
@@ -27,6 +29,20 @@ module Ci
         else
           trigger_request.user_variables
         end
+    end
+
+    def tooltip_message
+      "#{subject.name} - #{detailed_status.status_tooltip}"
+    end
+
+    private
+
+    def tooltip_for_badge
+      detailed_status.badge_tooltip.capitalize
+    end
+
+    def detailed_status
+      @detailed_status ||= subject.detailed_status(user)
     end
   end
 end

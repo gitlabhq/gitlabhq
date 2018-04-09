@@ -84,6 +84,13 @@ describe ProfilesController, :request_store do
       expect(user.username).to eq(new_username)
     end
 
+    it 'raises a correct error when the username is missing' do
+      sign_in(user)
+
+      expect { put :update_username, user: { gandalf: 'you shall not pass' } }
+        .to raise_error(ActionController::ParameterMissing)
+    end
+
     context 'with legacy storage' do
       it 'moves dependent projects to new namespace' do
         project = create(:project_empty_repo, :legacy_storage, namespace: namespace)

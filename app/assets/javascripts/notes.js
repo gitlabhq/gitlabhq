@@ -1066,12 +1066,12 @@ export default class Notes {
     addForm = false;
     let lineTypeSelector = '';
     rowCssToAdd =
-      '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line" colspan="2"></td><td class="notes_content"><div class="content"></div></td></tr>';
+      '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line" colspan="2"></td><td class="notes_content"><div class="content discussion-notes"></div></td></tr>';
     // In parallel view, look inside the correct left/right pane
     if (this.isParallelView()) {
       lineTypeSelector = `.${lineType}`;
       rowCssToAdd =
-        '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line old"></td><td class="notes_content parallel old"><div class="content"></div></td><td class="notes_line new"></td><td class="notes_content parallel new"><div class="content"></div></td></tr>';
+        '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line old"></td><td class="notes_content parallel old"><div class="content discussion-notes"></div></td><td class="notes_line new"></td><td class="notes_content parallel new"><div class="content discussion-notes"></div></td></tr>';
     }
     const notesContentSelector = `.notes_content${lineTypeSelector} .content`;
     let notesContent = targetRow.find(notesContentSelector);

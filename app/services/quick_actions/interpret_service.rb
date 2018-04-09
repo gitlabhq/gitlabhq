@@ -200,7 +200,7 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
+      available_labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true).execute
 
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         available_labels.any?
@@ -562,7 +562,7 @@ module QuickActions
 
     def find_labels(labels_param)
       extract_references(labels_param, :label) |
-        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute
+        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split, include_ancestor_groups: true).execute
     end
 
     def find_label_references(labels_param)
@@ -593,6 +593,7 @@ module QuickActions
 
     def extract_references(arg, type)
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
+
       ext.analyze(arg, author: current_user)
 
       ext.references(type)

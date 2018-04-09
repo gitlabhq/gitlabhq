@@ -5,7 +5,7 @@ module Gitlab
 
       delegate :old_path, :new_path, :old_sha, :new_sha, to: :diff_file, prefix: :diff
 
-      def initialize(diff_lines, since: nil, from: nil, repository: nil)
+      def initialize(diff_lines, repository: nil)
         @repository = repository
 
         if diff_lines.is_a?(Gitlab::Diff::File)

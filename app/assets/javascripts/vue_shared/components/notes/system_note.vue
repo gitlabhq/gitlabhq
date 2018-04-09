@@ -16,13 +16,18 @@
    *    }"
    *   />
    */
+  import $ from 'jquery';
   import { mapGetters } from 'vuex';
   import noteHeader from '~/notes/components/note_header.vue';
   import { spriteIcon } from '../../../lib/utils/common_utils';
+  import Icon from '~/vue_shared/components/icon.vue'
+
+  const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 
   export default {
     name: 'SystemNote',
     components: {
+      Icon,
       noteHeader,
     },
     props: {
@@ -30,6 +35,11 @@
         type: Object,
         required: true,
       },
+    },
+    data() {
+      return {
+        expanded: false,
+      };
     },
     computed: {
       ...mapGetters([
@@ -43,6 +53,22 @@
       },
       iconHtml() {
         return spriteIcon(this.note.system_note_icon_name);
+      },
+      toggleIcon() {
+        return this.expanded ? 'chevron-up' : 'chevron-down';
+      },
+      // following 2 methods taken from code in `collapseLongCommitList` of notes.js:
+      actionTextHtml() {
+        return $(this.note.note_html)
+          .first()
+          .text()
+          .replace(':', '');
+      },
+      hasMoreCommits() {
+        return $(this.note.note_html)
+           .filter('ul')
+           .children()
+           .length > MAX_VISIBLE_COMMIT_LIST_COUNT;
       },
     },
   };
@@ -64,8 +90,34 @@
             :author="note.author"
             :created-at="note.created_at"
             :note-id="note.id"
-            :action-text-html="note.note_html"
+            :action-text-html="actionTextHtml"
           />
+        </div>
+        <div class="note-body">
+          <div
+            v-html="note.note_html"
+            class="note-text"
+            :class="{
+              'system-note-commit-list': hasMoreCommits,
+              'hide-shade': expanded
+            }"
+          ></div>
+          <div
+            v-if="hasMoreCommits"
+            class="flex-list"
+          >
+            <div
+              @click="expanded = !expanded"
+              class="system-note-commit-list-toggler flex-row"
+            >
+              <Icon
+                :name="toggleIcon"
+                :size="8"
+                class="append-right-5"
+              />
+              <span>Toggle commit list</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
