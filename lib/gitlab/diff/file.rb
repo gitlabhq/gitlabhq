@@ -231,7 +231,30 @@ module Gitlab
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
       end
 
+      # This adds the bottom line to the array which contains
+      # the data to load more context lines.
+      def diff_lines_for_serializer
+        lines = highlighted_diff_lines
+
+        return if lines.empty?
+
+        last_line = lines.last
+
+        return unless last_line.new_pos < total_blob_lines(blob)
+
+        match_line = Gitlab::Diff::Line.new("" ,'match', nil, last_line.old_pos, last_line.new_pos)
+        lines.push(match_line)
+      end
+
       private
+
+      def total_blob_lines(blob)
+        @total_lines ||= begin
+          line_count = blob.lines.size
+          line_count -= 1 if line_count > 0 && blob.lines.last.blank?
+          line_count
+        end
+      end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but
       # from BasicObject (via SimpleDelegator).

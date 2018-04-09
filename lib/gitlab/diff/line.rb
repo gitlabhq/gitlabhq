@@ -1,7 +1,7 @@
 module Gitlab
   module Diff
     class Line
-      attr_reader :line_code, :type, :index, :old_pos, :new_pos, :meta_data
+      attr_reader :line_code, :type, :index, :old_pos, :new_pos, :meta_positions
       attr_writer :rich_text
       attr_accessor :text
 
@@ -12,7 +12,7 @@ module Gitlab
 
         # When line code is not provided from cache store we build it
         # using the parent_file(Diff::File or Conflict::File).
-        @line_code = line_code || set_line_code
+        @line_code = line_code || calculate_line_code
       end
 
       def self.init_from_hash(hash)
@@ -67,7 +67,7 @@ module Gitlab
         @rich_text
       end
 
-      def meta_data
+      def meta_positions
         return unless meta?
 
         {
@@ -84,16 +84,14 @@ module Gitlab
           new_line: new_line,
           text: text,
           rich_text: rich_text || text,
-          meta_data: meta_data
+          meta_data: meta_positions
         }
       end
 
       private
 
-      def set_line_code
-        return nil unless @parent_file
-
-        @parent_file.line_code(self)
+      def calculate_line_code
+        @parent_file&.line_code(self)
       end
     end
   end
