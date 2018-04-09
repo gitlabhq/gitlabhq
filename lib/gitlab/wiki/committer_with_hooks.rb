@@ -20,7 +20,7 @@ module Gitlab
         Gitlab::Git::HooksService.new.execute(
           git_user,
           gl_repository,
-          wiki.repo.commits.first.id,
+          old_rev,
           Gitlab::Git::BLANK_SHA,
           Gitlab::Git::BRANCH_REF_PREFIX + @wiki.ref) do |service|
           yield(service)
@@ -44,6 +44,10 @@ module Gitlab
 
       def gl_repository
         gl_wiki.repository
+      end
+
+      def old_rev
+        wiki.repo.commits.first&.id || Gitlab::Git::BLANK_SHA
       end
     end
   end
