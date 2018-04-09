@@ -77,7 +77,7 @@ export default {
       @click="toggleDiscussions"
       type="button"
       aria-label="Show comments"
-      class="diff-notes-collapse js-diff-comment-avatar"
+      class="diff-notes-collapse js-diff-comment-avatar js-diff-comment-button"
     >
       <icon
         name="collapse"
@@ -99,7 +99,7 @@ export default {
         v-tooltip
         :title="moreText"
         @click="toggleDiscussions"
-        class="diff-comments-more-count has-tooltip js-diff-comment-avatar"
+        class="diff-comments-more-count has-tooltip js-diff-comment-avatar js-diff-comment-plus"
         data-container="body"
         data-placement="top"
         role="button"
