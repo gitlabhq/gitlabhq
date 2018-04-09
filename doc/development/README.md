@@ -42,6 +42,7 @@ comments: false
 - [Issue and merge requests state models](object_state_models.md)
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
+- [Working with Merge Request diffs](diffs.md)
 
 ## Performance guides
 
