@@ -4,7 +4,7 @@ class LfsObject < ActiveRecord::Base
   include ObjectStorage::BackgroundMove
 
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :projects, through: :lfs_objects_projects
+  has_many :projects, -> { auto_include(false) }, through: :lfs_objects_projects
 
   scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
   scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
