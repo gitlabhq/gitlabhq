@@ -13,6 +13,7 @@ describe('pipeline graph job component', () => {
       icon: 'icon_status_success',
       text: 'passed',
       label: 'passed',
+      tooltip: 'passed',
       group: 'success',
       details_path: '/root/ci-mock/builds/4256',
       has_details: true,
@@ -137,6 +138,7 @@ describe('pipeline graph job component', () => {
           status: {
             icon: 'icon_status_success',
             label: 'success',
+            tooltip: 'success',
           },
         },
       });

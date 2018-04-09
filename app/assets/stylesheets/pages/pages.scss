@@ -1,0 +1,60 @@
+.pages-domain-list {
+  &-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .domain-status {
+      display: inline-flex;
+      left: $gl-padding;
+      position: absolute;
+    }
+
+    .domain-name {
+      flex-grow: 1;
+    }
+
+  }
+
+  &.has-verification-status > li {
+    padding-left: 3 * $gl-padding;
+  }
+
+}
+
+.status-badge {
+
+  display: inline-flex;
+  margin-bottom: $gl-padding-8;
+
+  // Most of the following settings "stolen" from btn-sm
+  // Border radius is overwritten for both
+  .label,
+  .btn {
+    padding: $gl-padding-4 $gl-padding-8;
+    font-size: $gl-font-size;
+    line-height: $gl-btn-line-height;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .btn svg {
+    top: auto;
+  }
+
+  :first-child {
+    border-bottom-left-radius: $border-radius-default;
+    border-top-left-radius: $border-radius-default;
+  }
+
+  :not(:first-child) {
+    border-left: 0;
+  }
+
+  :last-child {
+    border-bottom-right-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+  }
+
+}

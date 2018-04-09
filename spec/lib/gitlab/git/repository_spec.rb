@@ -247,38 +247,44 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA')
+      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: nil)
 
       expect(prefix).to eq("#{project_name}-test-branch-SHA")
     end
 
     it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA')
+      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: nil)
 
       expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    end
+
+    it 'returns string with sha when append_sha is false' do
+      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: false)
+
+      expect(prefix).to eq("#{project_name}-test.branch")
     end
   end
 
   describe '#archive' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', append_sha: true) }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
 
   describe '#archive_zip' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip', append_sha: true) }
 
     it_should_behave_like 'archive check', '.zip'
   end
 
   describe '#archive_bz2' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2', append_sha: true) }
 
     it_should_behave_like 'archive check', '.tar.bz2'
   end
 
   describe '#archive_fallback' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup', append_sha: true) }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
@@ -2178,6 +2184,55 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#checksum' do
+    shared_examples 'calculating checksum' do
+      it 'calculates the checksum for non-empty repo' do
+        expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
+      end
+
+      it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
+        FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
+
+        system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
+               chdir: storage_path,
+               out:   '/dev/null',
+               err:   '/dev/null')
+
+        empty_repo = described_class.new('default', 'empty-repo.git', '')
+
+        expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
+      end
+
+      it 'raises a no repository exception when there is no repo' do
+        broken_repo = described_class.new('default', 'a/path.git', '')
+
+        expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+    end
+
+    context 'when calculate_checksum Gitaly feature is enabled' do
+      it_behaves_like 'calculating checksum'
+    end
+
+    context 'when calculate_checksum Gitaly feature is disabled', :disable_gitaly do
+      it_behaves_like 'calculating checksum'
+
+      describe 'when storage is broken', :broken_storage  do
+        it 'raises a storage exception when storage is not available' do
+          broken_repo = described_class.new('broken', 'a/path.git', '')
+
+          expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
+        end
+      end
+
+      it "raises a Gitlab::Git::Repository::Failure error if the `popen` call to git returns a non-zero exit code" do
+        allow(repository).to receive(:popen).and_return(['output', nil])
+
+        expect { repository.checksum }.to raise_error Gitlab::Git::Repository::ChecksumError
+      end
+    end
+  end
+
   context 'gitlab_projects commands' do
     let(:gitlab_projects) { repository.gitlab_projects }
     let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
@@ -2248,6 +2303,39 @@ describe Gitlab::Git::Repository, seed_helper: true do
           .and_return(false)
 
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#clean_stale_repository_files' do
+      let(:worktree_path) { File.join(repository.path, 'worktrees', 'delete-me') }
+
+      it 'cleans up the files' do
+        repository.with_worktree(worktree_path, 'master', env: ENV) do
+          FileUtils.touch(worktree_path, mtime: Time.now - 8.hours)
+          # git rev-list --all will fail in git 2.16 if HEAD is pointing to a non-existent object,
+          # but the HEAD must be 40 characters long or git will ignore it.
+          File.write(File.join(worktree_path, 'HEAD'), Gitlab::Git::BLANK_SHA)
+
+          # git 2.16 fails with "fatal: bad object HEAD"
+          expect { repository.rev_list(including: :all) }.to raise_error(Gitlab::Git::Repository::GitError)
+
+          repository.clean_stale_repository_files
+
+          expect { repository.rev_list(including: :all) }.not_to raise_error
+          expect(File.exist?(worktree_path)).to be_falsey
+        end
+      end
+
+      it 'increments a counter upon an error' do
+        expect(repository.gitaly_repository_client).to receive(:cleanup).and_raise(Gitlab::Git::CommandError)
+
+        counter = double(:counter)
+
+        expect(counter).to receive(:increment)
+        expect(Gitlab::Metrics).to receive(:counter).with(:failed_repository_cleanup_total,
+                                                          'Number of failed repository cleanup events').and_return(counter)
+
+        repository.clean_stale_repository_files
       end
     end
 
