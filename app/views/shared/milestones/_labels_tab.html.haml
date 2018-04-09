@@ -10,7 +10,7 @@
         %span.prepend-description-left
           = markdown_field(label, :description)
 
-      .float-right.hidden-xs.hidden-sm.hidden-md
+      .float-right.d-none.d-lg-block.d-xl-block
         = link_to milestones_label_path(options.merge(state: 'opened')), class: 'btn btn-transparent btn-action' do
           - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), 'open issue'
         = link_to milestones_label_path(options.merge(state: 'closed')), class: 'btn btn-transparent btn-action' do
