@@ -107,7 +107,7 @@
     .tab-content
       - if profile_tab?(:activity)
         #activity.tab-pane
-          .row-content-block.calender-block.white.second-block.hidden-xs
+          .row-content-block.calender-block.white.second-block.d-none.d-sm-block
             .user-calendar{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
               %h4.center.light
                 %i.fa.fa-spinner.fa-spin

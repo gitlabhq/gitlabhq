@@ -31,7 +31,7 @@
         />
       </td>
 
-      <td class="hidden-xs">
+      <td class="d-none d-sm-block">
         <skeleton-loading-container
           class="animation-container-right"
           :small="true"

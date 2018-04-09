@@ -1,6 +1,6 @@
 %li.key-list-item
   .float-left.append-right-10
-    = icon 'key', class: "settings-list-icon hidden-xs"
+    = icon 'key', class: "settings-list-icon d-none d-sm-block"
   .key-list-item-info
     - key.emails_with_verified_status.map do |email, verified|
       = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }

@@ -24,7 +24,7 @@
         \-
   - if can?(current_user, :update_container_image, @project)
     %td.content
-      .controls.hidden-xs.float-right
+      .controls.d-none.d-sm-block.float-right
         = link_to project_registry_repository_tag_path(@project, tag.repository, tag.name),
                   method: :delete,
                   class: 'btn btn-remove has-tooltip',

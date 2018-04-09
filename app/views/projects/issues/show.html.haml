@@ -12,11 +12,11 @@
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
-      %span.hidden-xs
+      %span.d-none.d-sm-block
         Closed
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
       = sprite_icon('issue-open-m', size: 16, css_class: 'd-block d-sm-none')
-      %span.hidden-xs Open
+      %span.d-none.d-sm-block Open
 
     .issuable-meta
       - if @issue.confidential

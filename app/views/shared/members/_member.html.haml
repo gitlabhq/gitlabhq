@@ -53,7 +53,7 @@
         - if member.can_resend_invite?
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
-                    class: 'btn btn-secondary prepend-left-10 hidden-xs',
+                    class: 'btn btn-secondary prepend-left-10 d-none d-sm-block',
                     title: 'Resend invite'
 
         - if user != current_user && member.can_update?
@@ -92,7 +92,7 @@
             %span{ class: ('.d-block.d-sm-none' unless force_mobile_view) }
               Grant access
             - unless force_mobile_view
-              = icon('check inverse', class: 'hidden-xs')
+              = icon('check inverse', class: 'd-none d-sm-block')
 
         - if member.can_remove?
           - if current_user == user
@@ -109,6 +109,6 @@
               %span{ class: ('.d-block.d-sm-none' unless force_mobile_view) }
                 Delete
               - unless force_mobile_view
-                = icon('trash', class: 'hidden-xs')
+                = icon('trash', class: 'd-none d-sm-block')
       - else
         %span.member-access-text= member.human_access

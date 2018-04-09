@@ -1,13 +1,13 @@
 - link_project = local_assigns.fetch(:link_project, false)
 
 %li.snippet-row
-  = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 hidden-xs", alt: ''
+  = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
 
   .title
     = link_to reliable_snippet_path(snippet) do
       = snippet.title
     - if snippet.file_name
-      %span.snippet-filename.monospace.hidden-xs
+      %span.snippet-filename.monospace.d-none.d-sm-block
         = snippet.file_name
 
     %ul.controls
@@ -28,7 +28,7 @@
     = link_to user_snippets_path(snippet.author) do
       = snippet.author_name
     - if link_project && snippet.project_id?
-      %span.hidden-xs
+      %span.d-none.d-sm-block
         in
         = link_to project_path(snippet.project) do
           = snippet.project.full_name

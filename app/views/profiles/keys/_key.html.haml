@@ -1,9 +1,9 @@
 %li.key-list-item
   .float-left.append-right-10
     - if key.valid?
-      = icon 'key', class: 'settings-list-icon hidden-xs'
+      = icon 'key', class: 'settings-list-icon d-none d-sm-block'
     - else
-      = icon 'exclamation-triangle', class: 'settings-list-icon hidden-xs has-tooltip',
+      = icon 'exclamation-triangle', class: 'settings-list-icon d-none d-sm-block has-tooltip',
         title: key.errors.full_messages.join(', ')
 
 

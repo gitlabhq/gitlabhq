@@ -11,11 +11,11 @@
         = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-secondary'
       - if show_whitespace_toggle
         - if current_controller?(:commit)
-          = commit_diff_whitespace_link(diffs.project, @commit, class: 'hidden-xs')
+          = commit_diff_whitespace_link(diffs.project, @commit, class: 'd-none d-sm-block')
         - elsif current_controller?('projects/merge_requests/diffs')
-          = diff_merge_request_whitespace_link(diffs.project, @merge_request, class: 'hidden-xs')
+          = diff_merge_request_whitespace_link(diffs.project, @merge_request, class: 'd-none d-sm-block')
         - elsif current_controller?(:compare)
-          = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'hidden-xs')
+          = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'd-none d-sm-block')
       .btn-group
         = inline_diff_btn
         = parallel_diff_btn

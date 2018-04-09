@@ -18,7 +18,7 @@
         .email-modal-input-group.input-group
           = text_field_tag :issuable_email, email, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-btn
-            = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard btn-transparent hidden-xs')
+            = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard btn-transparent d-none d-sm-block')
             = mail_to email, class: 'btn btn-clipboard btn-transparent',
               subject: _("Enter the #{name} title"),
               body: _("Enter the #{name} description"),

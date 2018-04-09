@@ -1,6 +1,6 @@
 - return unless current_user
 
-.hidden-xs
+.d-none.d-sm-block
   - if can?(current_user, :update_project_snippet, @snippet)
     = link_to edit_project_snippet_path(@project, @snippet), class: "btn btn-grouped" do
       Edit

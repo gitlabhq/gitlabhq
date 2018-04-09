@@ -31,7 +31,7 @@
         .input-group
           = text_field_tag :domain_dns, dns_record , class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-btn
-            = clipboard_button(target: '#domain_dns', class: 'btn-default hidden-xs')
+            = clipboard_button(target: '#domain_dns', class: 'btn-default d-none d-sm-block')
         %p.help-block
           To access this domain create a new DNS record
 
@@ -51,7 +51,7 @@
           .input-group
             = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
             .input-group-btn
-              = clipboard_button(target: '#domain_verification', class: 'btn-default hidden-xs')
+              = clipboard_button(target: '#domain_verification', class: 'btn-default d-none d-sm-block')
           %p.help-block
             - help_link = help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
             To #{link_to 'verify ownership', help_link} of your domain,

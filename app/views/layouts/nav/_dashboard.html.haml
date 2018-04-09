@@ -8,7 +8,7 @@
         = render "layouts/nav/projects_dropdown/show"
 
   - if dashboard_nav_link?(:groups)
-    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "hidden-xs" }) do
+    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "d-none d-sm-block" }) do
       = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups qa-groups-link', title: 'Groups' do
         Groups
 
@@ -61,13 +61,13 @@
         Projects
 
   - if current_controller?('ide')
-    %li.line-separator.hidden-xs
+    %li.line-separator.d-none.d-sm-block
       = nav_link(controller: 'ide') do
         = link_to '#', class: 'dashboard-shortcuts-web-ide', title: 'Web IDE' do
           Web IDE
 
   - if current_user.admin? || Gitlab::Sherlock.enabled?
-    %li.line-separator.hidden-xs
+    %li.line-separator.d-none.d-sm-block
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard') do
       = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

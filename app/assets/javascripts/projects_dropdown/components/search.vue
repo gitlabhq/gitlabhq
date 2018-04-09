@@ -46,7 +46,7 @@
 
 <template>
   <div
-    class="search-input-container hidden-xs"
+    class="search-input-container d-none d-sm-block"
   >
     <input
       type="search"

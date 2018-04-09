@@ -8,7 +8,7 @@
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
       = sprite_icon(@merge_request.state_icon_name, size: 16, css_class: 'd-block d-sm-none')
-      %span.hidden-xs
+      %span.d-none.d-sm-block
         = @merge_request.state_human_name
 
     .issuable-meta

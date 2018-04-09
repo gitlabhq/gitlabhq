@@ -118,7 +118,7 @@
             <button
               v-if="item.canDelete"
               type="button"
-              class="js-delete-registry btn btn-danger hidden-xs float-right"
+              class="js-delete-registry btn btn-danger d-none d-sm-block float-right"
               :title="s__('ContainerRegistry|Remove tag')"
               :aria-label="s__('ContainerRegistry|Remove tag')"
               data-container="body"

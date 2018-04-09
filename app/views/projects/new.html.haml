@@ -31,15 +31,15 @@
       %ul.nav-links.gitlab-tabs{ role: 'tablist' }
         %li{ class: active_when(active_tab == 'blank'), role: 'presentation' }
           %a{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Blank project
+            %span.d-none.d-sm-block Blank project
             %span.visible-xs Blank
         %li{ class: active_when(active_tab == 'template'), role: 'presentation' }
           %a{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Create from template
+            %span.d-none.d-sm-block Create from template
             %span.visible-xs Template
         %li{ class: active_when(active_tab == 'import'), role: 'presentation' }
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Import project
+            %span.d-none.d-sm-block Import project
             %span.visible-xs Import
 
       .tab-content.gitlab-tab-content

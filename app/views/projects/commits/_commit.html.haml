@@ -17,7 +17,7 @@
 = cache(cache_key, expires_in: 1.day) do
   %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
-    .avatar-cell.hidden-xs
+    .avatar-cell.d-none.d-sm-block
       = author_avatar(commit, size: 36)
 
     .commit-detail.flex-list
@@ -33,7 +33,7 @@
           .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
-          %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
+          %button.text-expander.d-none.d-sm-block.js-toggle-button{ type: "button" } ...
 
         - if commit.description?
           %pre.commit-row-description.js-toggle-content
@@ -45,7 +45,7 @@
           - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
           #{ commit_text.html_safe }
 
-      .commit-actions.flex-row.hidden-xs
+      .commit-actions.flex-row.d-none.d-sm-block
         - if request.xhr?
           = render partial: 'projects/commit/signature', object: commit.signature
         - else

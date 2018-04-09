@@ -131,7 +131,7 @@ module IssuablesHelper
     output = ""
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-block", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
     end
 

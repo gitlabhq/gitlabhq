@@ -40,7 +40,7 @@
         .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
         %span.count.count-ahead= diverging_count_label(number_commits_ahead)
 
-  .controls.hidden-xs<
+  .controls.d-none.d-sm-block<
     - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
       = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-secondary' do
         = _('Merge request')

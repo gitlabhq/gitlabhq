@@ -37,7 +37,7 @@
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 
-      %span.hidden-xs
+      %span.d-none.d-sm-block
         - if can?(current_user, :download_code, @project)
           .project-clone-holder
             = render "shared/clone_panel"

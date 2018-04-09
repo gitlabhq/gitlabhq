@@ -18,7 +18,7 @@
           %tr
             %td
               = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
-            %td.hidden-xs
+            %td.d-none.d-sm-block
               %span.label.label-gray.deploy-project-label
                 = hook_log.trigger.singularize.titleize
             %td
