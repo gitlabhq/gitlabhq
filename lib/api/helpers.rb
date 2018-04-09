@@ -389,28 +389,6 @@ module API
 
     # file helpers
 
-    def uploaded_file(field, uploads_path)
-      if params[field]
-        bad_request!("#{field} is not a file") unless params[field][:filename]
-        return params[field]
-      end
-
-      return nil unless params["#{field}.path"] && params["#{field}.name"]
-
-      # sanitize file paths
-      # this requires all paths to exist
-      required_attributes! %W(#{field}.path)
-      uploads_path = File.realpath(uploads_path)
-      file_path = File.realpath(params["#{field}.path"])
-      bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
-
-      UploadedFile.new(
-        file_path,
-        params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream'
-      )
-    end
-
     def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
       header['Content-Disposition'] = "attachment; filename=#{filename}"
@@ -490,8 +468,8 @@ module API
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
-    def send_git_archive(repository, ref:, format:)
-      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    def send_git_archive(repository, **kwargs)
+      header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
     def send_artifacts_entry(build, entry)

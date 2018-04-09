@@ -84,6 +84,8 @@ describe Project do
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
     it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
     it { is_expected.to have_many(:lfs_file_locks) }
+    it { is_expected.to have_many(:project_deploy_tokens) }
+    it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
 
     context 'after initialized' do
       it "has a project_feature" do

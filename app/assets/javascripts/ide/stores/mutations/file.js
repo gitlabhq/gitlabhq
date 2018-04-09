@@ -43,6 +43,7 @@ export default {
       raw: null,
       baseRaw: null,
       html: data.html,
+      size: data.size,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {

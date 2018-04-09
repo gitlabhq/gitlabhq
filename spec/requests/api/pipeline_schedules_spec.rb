@@ -17,6 +17,17 @@ describe API::PipelineSchedules do
         pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
       end
 
+      def create_pipeline_schedules(count)
+        create_list(:ci_pipeline_schedule, count, project: project)
+          .each do |pipeline_schedule|
+          create(:user).tap do |user|
+            project.add_developer(user)
+            pipeline_schedule.update_attributes(owner: user)
+          end
+          pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
+        end
+      end
+
       it 'returns list of pipeline_schedules' do
         get api("/projects/#{project.id}/pipeline_schedules", developer)
 
@@ -26,18 +37,14 @@ describe API::PipelineSchedules do
       end
 
       it 'avoids N + 1 queries' do
+        # We need at least two users to trigger a preload for that relation.
+        create_pipeline_schedules(1)
+
         control_count = ActiveRecord::QueryRecorder.new do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
         end.count
 
-        create_list(:ci_pipeline_schedule, 10, project: project)
-          .each do |pipeline_schedule|
-          create(:user).tap do |user|
-            project.add_developer(user)
-            pipeline_schedule.update_attributes(owner: user)
-          end
-          pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
-        end
+        create_pipeline_schedules(10)
 
         expect do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
