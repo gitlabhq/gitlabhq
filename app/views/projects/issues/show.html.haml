@@ -11,11 +11,11 @@
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
-      = sprite_icon('mobile-issue-close', size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
+      = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
       %span.hidden-xs
         Closed
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
-      = sprite_icon('issue-open-m', size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
+      = sprite_icon('issue-open-m', size: 16, css_class: 'd-block d-sm-none')
       %span.hidden-xs Open
 
     .issuable-meta
@@ -30,10 +30,10 @@
 
   .detail-page-header-actions.js-issuable-actions
     .clearfix.issue-btn-group.dropdown
-      %button.btn.btn-secondary.float-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
+      %button.btn.btn-secondary.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
         Options
         = icon('caret-down')
-      .dropdown-menu.dropdown-menu-align-right.hidden-lg
+      .dropdown-menu.dropdown-menu-align-right.d-lg-none.d-xl-none
         %ul
           - unless current_user == @issue.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @issue.author.id, ref_url: issue_url(@issue))
