@@ -34,6 +34,12 @@ describe Projects::RepositoriesController do
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
       end
 
+      it 'handles legacy queries with no ref' do
+        get :archive, namespace_id: project.namespace, project_id: project, format: "zip"
+
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
       context "when the service raises an error" do
         before do
           allow(Gitlab::Workhorse).to receive(:send_git_archive).and_raise("Archive failed")
