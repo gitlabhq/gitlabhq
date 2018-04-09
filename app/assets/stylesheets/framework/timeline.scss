@@ -4,7 +4,7 @@
   padding: 0;
 
   &::before {
-    @include notes-media('max', $screen-xs-min) {
+    @include notes-media('max', map-get($grid-breakpoints, xs)) {
       background: none;
     }
   }
@@ -34,7 +34,7 @@
   .timeline-entry-inner {
     position: relative;
 
-    @include notes-media('max', $screen-xs-min) {
+    @include notes-media('max', map-get($grid-breakpoints, xs)) {
       .timeline-icon {
         display: none;
       }

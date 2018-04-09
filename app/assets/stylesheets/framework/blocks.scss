@@ -195,7 +195,7 @@
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       text-align: center;
 
       .avatar {
@@ -315,7 +315,7 @@
     }
   }
 
-  @media (max-width: $screen-sm-min) {
+  @include media-breakpoint-down(sm) {
     flex-direction: column;
 
     .inner-content {
@@ -342,7 +342,7 @@
   .btn {
     margin: $btn-side-margin 5px;
 
-    @media(max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
   }

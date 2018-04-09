@@ -72,7 +72,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@include media-breakpoint-down(sm) {
   ul.notes {
     .flash-container.timeline-content {
       margin-left: 0;

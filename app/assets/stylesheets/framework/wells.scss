@@ -5,7 +5,7 @@
   border-radius: $border-radius-default;
   margin-bottom: $gl-padding;
 
-  .well-segment {
+  .card.card-body-segment {
     padding: $gl-padding;
 
     &:not(:last-of-type) {
@@ -58,7 +58,7 @@
     }
   }
 
-  .label.label-gray {
+  .badge.badge-pill.badge.badge-pill-gray {
     background-color: $well-expand-item;
   }
 
@@ -107,7 +107,7 @@
   }
 }
 
-.well-centered {
+.card.card-body-centered {
   h1 {
     font-weight: $gl-font-weight-normal;
     text-align: center;

@@ -198,7 +198,7 @@
   }
 
   .header-action-buttons {
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       .sidebar-toggle-btn {
         margin-top: 0;
         margin-left: 10px;
@@ -288,7 +288,7 @@
     background-color: $white-light;
   }
 
-  .label {
+  .badge.badge-pill {
     margin-left: 2px;
   }
 
@@ -303,7 +303,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       display: block;
 
       .btn {

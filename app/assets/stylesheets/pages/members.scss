@@ -11,7 +11,7 @@
 
 .member {
   .list-item-name {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       float: left;
       width: 50%;
     }
@@ -22,7 +22,7 @@
   }
 
   .controls {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: -webkit-flex;
       display: flex;
     }
@@ -35,7 +35,7 @@
   .form-horizontal {
     margin-top: 20px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: -webkit-flex;
       display: flex;
       margin-top: 3px;
@@ -45,20 +45,20 @@
   .btn-remove {
     width: 100%;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: auto;
     }
   }
 
   &.existing-title {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       float: left;
     }
   }
 }
 
 .member-form-control {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     padding-bottom: 5px;
     margin-left: 0;
     margin-right: 0;
@@ -73,7 +73,7 @@
 .member-search-form {
   position: relative;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     float: right;
   }
 
@@ -86,7 +86,7 @@
       width: 100%;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       margin-top: 0;
       width: 155px;
     }
@@ -96,16 +96,16 @@
     width: 100%;
     padding-right: 35px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: 250px;
     }
 
     &.input-short {
-      @media (min-width: $screen-md-min) {
+      @include media-breakpoint-up(md) {
         width: 170px;
       }
 
-      @media (min-width: $screen-lg-min) {
+      @include media-breakpoint-up(lg) {
         width: 210px;
       }
     }
@@ -124,7 +124,7 @@
   border: 0;
   outline: 0;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     right: 160px;
   }
 }
@@ -135,7 +135,7 @@
   align-items: center;
   justify-content: center;
 
-  @media (max-width: $screen-sm-min) {
+  @include media-breakpoint-down(sm) {
     display: block;
 
     .flex-project-title {
@@ -151,7 +151,7 @@
     text-overflow: ellipsis;
   }
 
-  .badge {
+  .badge.badge-pill {
     height: 17px;
     line-height: 16px;
     margin-right: 5px;
@@ -166,14 +166,14 @@
   }
 }
 
-.panel {
-  .panel-heading {
-    .badge {
+.card {
+  .card-heading {
+    .badge.badge-pill {
       margin-top: 0;
     }
 
-    @media (max-width: $screen-sm-min) {
-      .badge {
+    @include media-breakpoint-down(sm) {
+      .badge.badge-pill {
         margin-right: 0;
         margin-left: 0;
       }
@@ -217,7 +217,7 @@
     margin-right: 0;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
 
     .controls > .btn {
@@ -245,7 +245,7 @@
   }
 }
 
-.panel-mobile {
+.card-mobile {
   .content-list.members-list li {
     display: block;
 

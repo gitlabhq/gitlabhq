@@ -6,7 +6,7 @@
 .gl-responsive-table-row-layout {
   width: 100%;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     display: flex;
     align-items: center;
 
@@ -21,7 +21,7 @@
   margin-top: 10px;
   border: 1px solid $border-color;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     margin: 0;
     padding: $gl-padding 0;
     border: 0;
@@ -44,13 +44,13 @@
     &.section-#{$width} {
       flex: 0 0 #{$width + '%'};
 
-      @media (min-width: $screen-md-min) {
+      @include media-breakpoint-up(md) {
         max-width: #{$width + '%'};
       }
     }
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     display: flex;
     align-self: stretch;
     padding: 10px;
@@ -65,7 +65,7 @@
   &.section-wrap {
     white-space: normal;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       flex-wrap: wrap;
     }
   }
@@ -76,11 +76,11 @@
 }
 
 .table-button-footer {
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     text-align: right;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     display: block;
     align-self: stretch;
     min-height: 0;
@@ -122,7 +122,7 @@
 .table-row-header {
   font-size: 13px;
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     display: none;
   }
 }
@@ -132,13 +132,13 @@
   color: $gl-text-color-secondary;
   text-align: left;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     display: none;
   }
 }
 
 .table-mobile-content {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     @include flex-max-width(60);
     text-align: right;
   }
@@ -154,7 +154,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     flex: 0 0 90%;
   }
 

@@ -41,7 +41,7 @@
     padding: 4px 9px;
   }
 
-  .btn-default {
+  .btn-secondary {
     color: $gl-text-color-secondary;
   }
 
@@ -51,7 +51,7 @@
   }
 }
 
-@media (max-width: $screen-md-max) {
+@include media-breakpoint-down(md) {
   .runners-content {
     width: 100%;
     overflow: auto;

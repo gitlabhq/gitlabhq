@@ -207,9 +207,9 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .login-page {
-    .col-sm-5.pull-right {
+    .col-md-5.float-right {
       float: none !important;
       margin-bottom: 45px;
     }
@@ -259,7 +259,7 @@
     .navless-container {
       padding: 65px 15px; // height of footer + bottom padding of email confirmation link
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         padding: 0 15px 65px;
       }
     }

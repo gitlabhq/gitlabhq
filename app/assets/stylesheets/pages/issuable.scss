@@ -356,7 +356,7 @@
     /* Extra small devices (phones, less than 768px) */
     display: none;
     /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: block;
     }
 
@@ -622,7 +622,7 @@
 }
 
 .issuable-form-padding-top {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-top: 7px;
   }
 }
@@ -636,7 +636,7 @@
   padding-left: 9px;
   padding-right: 9px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     display: inline-block;
     height: auto;
     align-self: center;
@@ -644,7 +644,7 @@
 }
 
 .issuable-gutter-toggle {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     margin-left: $btn-side-margin;
   }
 }
@@ -662,7 +662,7 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     margin-bottom: $gl-padding;
   }
 }
@@ -703,7 +703,7 @@
         }
       }
 
-      @media(max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         .issuable-meta {
           .controls li {
             margin-right: 0;
@@ -738,7 +738,7 @@
       }
     }
 
-    @media(max-width: $screen-md-max) {
+    @media(max-width: map-get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
       .project-ref-path {

@@ -22,7 +22,7 @@ ul.notes {
   .discussion-body {
     padding-top: 8px;
 
-    .panel {
+    .card {
       margin-bottom: 0;
     }
   }
@@ -42,7 +42,7 @@ ul.notes {
     position: relative;
     border-bottom: 0;
 
-    @include notes-media('min', $screen-sm-min) {
+    @include notes-media('min', map-get($grid-breakpoints, sm)) {
       padding-left: $note-icon-gutter-width;
     }
 
@@ -66,7 +66,7 @@ ul.notes {
     }
 
     .timeline-icon {
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: -$note-icon-gutter-width;
       }
     }
@@ -74,7 +74,7 @@ ul.notes {
     .timeline-content {
       margin-left: $note-icon-gutter-width;
 
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 0;
       }
     }
@@ -148,7 +148,7 @@ ul.notes {
 
     .note-header {
 
-      @include notes-media('max', $screen-xs-min) {
+      @include notes-media('max', map-get($grid-breakpoints, xs)) {
         .inline {
           display: block;
         }
@@ -211,7 +211,7 @@ ul.notes {
     .timeline-icon {
       float: left;
 
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 0;
         width: auto;
       }
@@ -225,7 +225,7 @@ ul.notes {
     }
 
     .timeline-content {
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 30px;
       }
     }
@@ -400,7 +400,7 @@ ul.notes {
   display: flex;
   justify-content: space-between;
 
-  @include notes-media('max', $screen-xs-max) {
+  @include notes-media('max', map-get($grid-breakpoints, sm)-1) {
     flex-flow: row wrap;
   }
 }
@@ -419,7 +419,7 @@ ul.notes {
 }
 
 .note-header-author-name {
-  @include notes-media('max', $screen-xs-max) {
+  @include notes-media('max', map-get($grid-breakpoints, sm)-1) {
     display: none;
   }
 }
@@ -427,7 +427,7 @@ ul.notes {
 .note-headline-light {
   display: inline;
 
-  @include notes-media('max', $screen-xs-min) {
+  @include notes-media('max', map-get($grid-breakpoints, xs)) {
     display: block;
   }
 }
@@ -465,7 +465,7 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', $screen-md-max) {
+  @include notes-media('max', map-get($grid-breakpoints, lg)-1) {
     float: none;
     margin-left: 0;
   }
@@ -483,7 +483,7 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', $screen-xs-max) {
+  @include notes-media('max', map-get($grid-breakpoints, sm)-1) {
     float: none;
     margin-left: 0;
   }
@@ -663,7 +663,7 @@ ul.notes {
 }
 
 .line-resolve-all-container {
-  @include notes-media('min', $screen-sm-min) {
+  @include notes-media('min', map-get($grid-breakpoints, sm)) {
     margin-right: 0;
     padding-left: $gl-padding;
   }

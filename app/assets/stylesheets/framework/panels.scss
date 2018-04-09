@@ -1,14 +1,14 @@
-.panel {
+.card {
   margin-bottom: $gl-padding;
 }
 
-.panel-slim {
-  @extend .panel;
+.card-slim {
+  @extend .card;
   margin-bottom: $gl-vert-padding;
 }
 
 
-.panel-heading {
+.card-heading {
   padding: $gl-vert-padding $gl-padding;
   line-height: 36px;
 
@@ -21,7 +21,7 @@
     line-height: 20px;
   }
 
-  .badge {
+  .badge.badge-pill {
     margin-top: -2px;
     margin-left: 5px;
   }
@@ -41,11 +41,11 @@
   }
 }
 
-.panel-empty-heading {
+.card-empty-heading {
   border-bottom: 0;
 }
 
-.panel-body {
+.card-body {
   padding: $gl-padding;
 
   .form-actions {
@@ -54,7 +54,7 @@
   }
 }
 
-.panel-title {
+.card-title {
   font-size: inherit;
   line-height: inherit;
 }

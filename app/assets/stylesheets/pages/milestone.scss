@@ -31,7 +31,7 @@
     }
   }
 
-  .panel-heading {
+  .card-heading {
     line-height: $line-height-base;
     padding: 14px 16px;
     display: -webkit-flex;
@@ -139,7 +139,7 @@
   padding: 20px 0;
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .milestone-actions {
     @include clearfix();
     padding-top: $gl-vert-padding;
@@ -175,7 +175,7 @@
     width: 100%;
   }
 
-  @media (min-width: $screen-xs-min) {
+  @include media-breakpoint-up(xs) {
     .milestone-buttons .verbose {
       display: inline;
     }

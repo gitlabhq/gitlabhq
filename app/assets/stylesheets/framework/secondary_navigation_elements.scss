@@ -27,7 +27,7 @@
         color: $black;
         border-bottom: 2px solid $gray-darkest;
 
-        .badge {
+        .badge.badge-pill {
           color: $black;
         }
       }
@@ -37,7 +37,7 @@
       color: $black;
       font-weight: $gl-font-weight-bold;
 
-      .badge {
+      .badge.badge-pill {
         color: $black;
       }
     }
@@ -56,7 +56,7 @@
     white-space: normal;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
   }
@@ -80,7 +80,7 @@
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
 
       &.mobile-separator {
@@ -124,21 +124,21 @@
       position: relative;
 
       /* Medium devices (desktops, 992px and up) */
-      @media (min-width: $screen-md-min) { width: 200px; }
+      @include media-breakpoint-up(md) { width: 200px; }
 
       /* Large devices (large desktops, 1200px and up) */
-      @media (min-width: $screen-lg-min) { width: 250px; }
+      @include media-breakpoint-up(lg) { width: 250px; }
 
       &.input-short {
         /* Medium devices (desktops, 992px and up) */
-        @media (min-width: $screen-md-min) { width: 170px; }
+        @include media-breakpoint-up(md) { width: 170px; }
 
         /* Large devices (large desktops, 1200px and up) */
-        @media (min-width: $screen-lg-min) { width: 210px; }
+        @include media-breakpoint-up(lg) { width: 210px; }
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       padding-bottom: 0;
       width: 100%;
 
@@ -184,7 +184,7 @@
     .nav-controls {
       width: auto;
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         width: 100%;
       }
     }
@@ -204,7 +204,7 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-flow: row wrap;
 
     .nav-controls {
@@ -368,7 +368,7 @@
     max-width: 300px;
     width: auto;
 
-    @media(max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       max-width: 250px;
     }
   }

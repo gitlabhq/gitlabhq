@@ -18,7 +18,7 @@
 
   .ci-table {
 
-    .label {
+    .badge.badge-pill {
       margin-bottom: 3px;
     }
 
@@ -33,7 +33,7 @@
     .pipeline-actions {
       min-width: 170px; //Guarantees buttons don't break in several lines.
 
-      .btn-default {
+      .btn-secondary {
         color: $gl-text-color-secondary;
       }
 
@@ -64,7 +64,7 @@
 
       .btn-group {
         &.open {
-          .btn-default {
+          .btn-secondary {
             background-color: $white-normal;
             border-color: $border-white-normal;
           }
@@ -82,7 +82,7 @@
   }
 }
 
-@media (max-width: $screen-md-max) {
+@include media-breakpoint-down(md) {
   .content-list {
     &.builds-content-list {
       width: 100%;
@@ -151,14 +151,14 @@
       color: $gl-link-color;
     }
 
-    .label {
+    .badge.badge-pill {
       margin-right: 4px;
     }
 
-    .label-container {
+    .badge.badge-pill-container {
       font-size: 0;
 
-      .label {
+      .badge.badge-pill {
         margin-top: 5px;
       }
     }
@@ -220,14 +220,14 @@
     box-shadow: none;
   }
 
-  .pipeline-tags .label-container {
+  .pipeline-tags .badge.badge-pill-container {
     white-space: normal;
   }
 }
 
 .stage-cell {
   &.table-section {
-    @media (min-width: $screen-md-min) {
+    @include media-breakpoint-up(md) {
       min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
       margin-right: -4px;
     }
@@ -823,7 +823,7 @@ button.mini-pipeline-graph-dropdown-toggle {
           display: block;
         }
 
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           max-width: 60%;
         }
       }
@@ -910,7 +910,7 @@ button.mini-pipeline-graph-dropdown-toggle {
     transform: translate(-50%, 0);
     border-width: 0 5px 6px;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       left: 100%;
       margin-left: -12px;
     }
@@ -932,7 +932,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   &.dropdown-menu {
     transform: translate(-80%, 0);
 
-    @media(min-width: $screen-md-min) {
+    @media(min-width: map-get($grid-breakpoints, md)) {
       transform: translate(-50%, 0);
       right: auto;
       left: 50%;

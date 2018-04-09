@@ -386,7 +386,7 @@ h4 {
 }
 
 .text-right-lg {
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     text-align: right;
   }
 }

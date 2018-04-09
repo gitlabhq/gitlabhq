@@ -143,7 +143,7 @@ ul.related-merge-requests > li {
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .detail-page-header {
     .issuable-meta {
       line-height: 18px;
@@ -247,7 +247,7 @@ ul.related-merge-requests > li {
   display: block;
 }
 
-@media (min-width: $screen-sm-min) {
+@include media-breakpoint-up(sm) {
   .emoji-block .row {
     display: flex;
 

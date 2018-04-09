@@ -57,30 +57,30 @@
   border-bottom-left-radius: $border-radius-base;
 }
 
-.label-row {
-  .label-name {
+.badge.badge-pill-row {
+  .badge.badge-pill-name {
     display: inline-block;
     margin-bottom: 10px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: 200px;
       margin-left: $gl-padding * 2;
       margin-bottom: 0;
     }
 
-    .label {
+    .badge.badge-pill {
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
     }
   }
 
-  .label-type {
+  .badge.badge-pill-type {
     display: block;
     margin-bottom: 10px;
     margin-left: 50px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: inline-block;
       width: 100px;
       margin-left: 10px;
@@ -89,7 +89,7 @@
     }
   }
 
-  .label-description {
+  .badge.badge-pill-description {
     display: block;
     margin-bottom: 10px;
 
@@ -101,7 +101,7 @@
       color: $blue-600;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: inline-block;
       max-width: 50%;
       margin-left: 10px;
@@ -110,7 +110,7 @@
     }
   }
 
-  .label {
+  .badge.badge-pill {
     padding: 4px $grid-size;
     font-size: $label-font-size;
     position: relative;
@@ -132,7 +132,7 @@
 }
 
 .manage-labels-list {
-  @media(min-width: $screen-md-min) {
+  @media(min-width: map-get($grid-breakpoints, md)) {
     &.content-list li {
       padding: $gl-padding 0;
     }
@@ -171,12 +171,12 @@
   }
 
   .dropdown {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       float: right;
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .dropdown-menu {
       min-width: 100%;
     }
@@ -234,7 +234,7 @@
   font-size: 0;
   padding: 12px 16px;
 
-  .label-row {
+  .badge.badge-pill-row {
     margin-top: 4px;
     margin-bottom: 4px;
 
@@ -243,7 +243,7 @@
     }
   }
 
-  .label-remove {
+  .badge.badge-pill-remove {
     border-left: 1px solid $label-remove-border;
     z-index: 3;
     border-radius: $label-border-radius;
@@ -270,11 +270,11 @@
   }
 }
 
-.label-options-toggle {
+.badge.badge-pill-options-toggle {
   width: 100%;
 }
 
-.label-subscription {
+.badge.badge-pill-subscription {
   vertical-align: middle;
 
   .dropdown-group-label a {
@@ -282,39 +282,39 @@
   }
 }
 
-.label-subscribe-button {
-  @media(min-width: $screen-md-min) {
+.badge.badge-pill-subscribe-button {
+  @media(min-width: map-get($grid-breakpoints, md)) {
     min-width: 105px;
     margin-left: $gl-padding;
   }
 
-  .label-subscribe-button-icon {
+  .badge.badge-pill-subscribe-button-icon {
     &[disabled] {
       opacity: 0.5;
       pointer-events: none;
     }
   }
 
-  .label-subscribe-button-loading {
+  .badge.badge-pill-subscribe-button-loading {
     display: none;
   }
 
   &.disabled {
-    .label-subscribe-button-icon {
+    .badge.badge-pill-subscribe-button-icon {
       display: none;
     }
 
-    .label-subscribe-button-loading {
+    .badge.badge-pill-subscribe-button-loading {
       display: block;
     }
   }
 }
 
-.label-link {
+.badge.badge-pill-link {
   display: inline-flex;
   vertical-align: top;
 
-  .label {
+  .badge.badge-pill {
     vertical-align: inherit;
     font-size: $label-font-size;
   }

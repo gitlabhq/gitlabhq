@@ -48,7 +48,7 @@ table {
 }
 
 .responsive-table {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     th {
       width: 100%;
     }

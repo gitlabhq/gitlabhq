@@ -49,15 +49,15 @@
   @include clearfix();
 }
 
-.center-block {
+.mx-auto {
   @include center-block();
 }
 
-.pull-right {
+.float-right {
   float: right !important;
 }
 
-.pull-left {
+.float-left {
   float: left !important;
 }
 
@@ -99,20 +99,20 @@ summary {
 @import "bootstrap/responsive-utilities";
 
 // Labels
-.label {
+.badge.badge-pill {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
   font-weight: $gl-font-weight-normal;
   display: inline-block;
 
-  &.label-gray {
+  &.badge.badge-pill-gray {
     background-color: $label-gray-bg;
     color: $gl-text-color;
     text-shadow: none;
   }
 
-  &.label-inverse {
+  &.badge.badge-pill-inverse {
     background-color: $label-inverse-bg;
   }
 }
@@ -132,10 +132,10 @@ summary {
  *
  */
 
-.panel {
+.card {
   box-shadow: none;
 
-  .panel-body {
+  .card-body {
     form,
     pre {
       margin: 0;
@@ -147,7 +147,7 @@ summary {
     }
   }
 
-  .panel-footer {
+  .card-footer {
     .pagination {
       margin: 0;
     }
@@ -161,8 +161,8 @@ summary {
     }
   }
 
-  &.panel-small {
-    .panel-heading {
+  &.card-small {
+    .card-heading {
       padding: 6px 15px;
       font-size: 13px;
       font-weight: $gl-font-weight-normal;
@@ -173,20 +173,20 @@ summary {
     }
   }
 
-  &.panel-without-border {
+  &.card-without-border {
     border: 0;
   }
 
-  &.panel-without-margin {
+  &.card-without-margin {
     margin: 0;
   }
 }
 
-.panel-succes .panel-heading,
-.panel-info .panel-heading,
-.panel-danger .panel-heading,
-.panel-warning .panel-heading,
-.panel-primary .panel-heading,
+.card-succes .card-heading,
+.card-info .card-heading,
+.card-danger .card-heading,
+.card-warning .card-heading,
+.card-primary .card-heading,
 .alert {
   a:not(.btn) {
     @extend .alert-link;

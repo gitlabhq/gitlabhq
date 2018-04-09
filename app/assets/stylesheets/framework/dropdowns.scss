@@ -32,7 +32,7 @@
     max-height: $dropdown-max-height;
     overflow-y: auto;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
   }
@@ -180,7 +180,7 @@
 
     text-decoration: none;
 
-    .badge {
+    .badge.badge-pill {
       background-color: darken($dropdown-link-hover-bg, 5%);
     }
   }
@@ -324,7 +324,7 @@
     color: $gl-text-color-secondary;
   }
 
-  .badge + span:not(.badge) {
+  .badge.badge-pill + span:not(.badge.badge-pill) {
     // Expects up to 3 digits on the badge
     margin-right: 40px;
   }
@@ -469,7 +469,7 @@
 .dropdown-select {
   width: $dropdown-width;
 
-  @media (max-width: $screen-sm-min) {
+  @include media-breakpoint-down(sm) {
     width: 100%;
   }
 }
@@ -780,7 +780,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .navbar-gitlab {
     li.header-projects,
     li.header-more,
@@ -835,7 +835,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     width: 70%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-direction: column;
     width: 100%;
     height: auto;
@@ -894,7 +894,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     height: 284px;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .projects-list-frequent-container {
       width: auto;
       height: auto;
@@ -936,7 +936,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     color: $gl-text-color-secondary;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .project-item-metadata-container {
       float: none;
     }

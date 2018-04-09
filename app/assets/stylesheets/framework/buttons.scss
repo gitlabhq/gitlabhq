@@ -401,7 +401,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .btn-wide-on-xs {
     width: 100%;
   }

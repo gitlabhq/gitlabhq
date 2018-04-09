@@ -63,7 +63,7 @@
 
           &:hover,
           &:focus {
-            @media (min-width: $screen-sm-min) {
+            @include media-breakpoint-up(sm) {
               background-color: rgba($color-200, 0.2);
             }
 
@@ -165,14 +165,14 @@
     }
   }
 
-  .sidebar-top-level-items > li.active .badge {
+  .sidebar-top-level-items > li.active .badge.badge-pill {
     color: $color-800;
   }
 
   .nav-links li.active a {
     border-bottom-color: $color-500;
 
-    .badge {
+    .badge.badge-pill {
       font-weight: $gl-font-weight-bold;
     }
   }
@@ -340,7 +340,7 @@ body {
       }
     }
 
-    .sidebar-top-level-items > li.active .badge {
+    .sidebar-top-level-items > li.active .badge.badge-pill {
       color: $theme-gray-900;
     }
 

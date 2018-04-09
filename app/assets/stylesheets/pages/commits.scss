@@ -28,7 +28,7 @@
 }
 
 .commit-hash-full {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     width: 80px;
     white-space: nowrap;
     overflow: hidden;
@@ -193,7 +193,7 @@
 }
 
 .commit-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     .fa-spinner {
       font-size: 12px;
     }

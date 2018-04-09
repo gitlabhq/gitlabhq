@@ -15,7 +15,7 @@
         max-width: 480px;
         padding: 0 $gl-padding;
 
-        @media (max-width: $screen-sm-min) {
+        @include media-breakpoint-down(sm) {
           margin: 0 auto;
         }
       }
@@ -75,13 +75,13 @@
     }
   }
 
-  .panel {
+  .card {
     .content-block {
       padding: 24px 0;
       border-bottom: 0;
       position: relative;
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         padding: 6px 0 24px;
       }
     }
@@ -89,7 +89,7 @@
     .column {
       text-align: center;
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         padding: 15px 0;
       }
 
@@ -106,7 +106,7 @@
       }
 
       &:last-child {
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           text-align: center;
         }
       }
@@ -213,7 +213,7 @@
   .stage-panel {
     min-width: 968px;
 
-    .panel-heading {
+    .card-heading {
       padding: 0;
       background-color: transparent;
     }

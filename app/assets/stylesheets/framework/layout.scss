@@ -74,7 +74,7 @@ body {
   }
 
   /* Center alert text and alert action links on smaller screens */
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     .alert {
       text-align: center;
     }

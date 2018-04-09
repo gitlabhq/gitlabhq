@@ -60,7 +60,7 @@
 .boards-app {
   position: relative;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     transition: width $sidebar-transition-duration;
     width: 100%;
 
@@ -83,11 +83,11 @@
   white-space: nowrap;
   min-height: 200px;
 
-  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+  @include media-breakpoint-only(sm) {
     height: calc(100vh - #{$issue-board-list-difference-sm});
   }
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     height: calc(100vh - #{$issue-board-list-difference-md});
   }
 
@@ -96,13 +96,13 @@
       100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height}
     );
 
-    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    @include media-breakpoint-only(sm) {
       height: calc(
         100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height}
       );
     }
 
-    @media (min-width: $screen-md-min) {
+    @include media-breakpoint-up(md) {
       height: calc(
         100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height}
       );
@@ -119,7 +119,7 @@
   white-space: normal;
   vertical-align: top;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     width: 400px;
   }
 
@@ -244,7 +244,7 @@
     margin-bottom: 8px;
   }
 
-  .label-color {
+  .badge.badge-pill-color {
     position: relative;
     top: 2px;
     display: inline-block;
@@ -297,7 +297,7 @@
     }
   }
 
-  .label {
+  .badge.badge-pill {
     border: 0;
     outline: 0;
   }
@@ -399,7 +399,7 @@
 .card-footer {
   margin: 0 0 5px;
 
-  .label {
+  .badge.badge-pill {
     margin-top: 5px;
     margin-right: 6px;
   }
@@ -562,11 +562,11 @@
 .add-issues-list-column {
   width: 100%;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     width: 50%;
   }
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     width: (100% / 3);
   }
 }
@@ -635,7 +635,7 @@
     display: none;
     margin-right: 10px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: block;
     }
   }
@@ -643,7 +643,7 @@
   .dropdown-menu-toggle {
     width: 100px;
 
-    @media (min-width: $screen-md-min) {
+    @include media-breakpoint-up(md) {
       width: 140px;
     }
   }

@@ -70,7 +70,7 @@
     animation: none;
   }
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     padding-right: 20px;
   }
 
@@ -98,12 +98,12 @@
   }
 
   .bs-callout,
-  .checkbox:first-child,
+  .form-check:first-child,
   .help-block {
     margin-top: 0;
   }
 
-  .label-light {
+  .badge.badge-pill-light {
     margin-bottom: 0;
   }
 }
@@ -131,12 +131,12 @@
   color: $gl-danger;
 }
 
-.service-settings .control-label {
+.service-settings .form-control-label {
   padding-top: 0;
 }
 
 .integration-settings-form {
-  .well {
+  .card.card-body {
     padding: $gl-padding / 2;
     box-shadow: none;
   }
@@ -158,7 +158,7 @@
 }
 
 .visibility-level-setting {
-  .radio {
+  .form-check {
     margin-bottom: 10px;
 
     i.fa {
@@ -199,22 +199,22 @@
 }
 
 .prometheus-metrics-monitoring {
-  .panel {
-    .panel-toggle {
+  .card {
+    .card-toggle {
       width: 14px;
     }
 
-    .badge {
+    .badge.badge-pill {
       font-size: 12px;
       line-height: 12px;
     }
 
-    .panel-heading .badge-count {
+    .card-heading .badge.badge-pill-count {
       color: $white-light;
       background: $common-gray-dark;
     }
 
-    .panel-body {
+    .card-body {
       padding: 0;
     }
 
@@ -249,7 +249,7 @@
     li {
       padding: $gl-padding;
 
-      .badge {
+      .badge.badge-pill {
         margin-left: 5px;
         background: $badge-bg;
       }

@@ -53,19 +53,19 @@ $space-between-cards: 8px;
   padding: $space-between-cards / 2;
   position: relative;
 
-  @media (min-width: $screen-xs-min) {
+  @include media-breakpoint-up(xs) {
     width: percentage(1 / 4);
   }
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     width: percentage(1 / 5);
   }
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     width: percentage(1 / 6);
   }
 
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     width: percentage(1 / 10);
   }
 }

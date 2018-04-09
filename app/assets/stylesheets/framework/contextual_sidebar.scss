@@ -1,11 +1,11 @@
 .page-with-contextual-sidebar {
   transition: padding-left $sidebar-transition-duration;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     padding-left: $contextual-sidebar-width;
   }
 
@@ -16,7 +16,7 @@
 }
 
 .page-with-icon-sidebar {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 }
@@ -75,7 +75,7 @@
   transform: translate3d(0, 0, 0);
 
   &:not(.sidebar-collapsed-desktop) {
-    @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
+    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
       box-shadow: inset -2px 0 0 $border-color,
         2px 1px 3px $dropdown-shadow-color;
     }
@@ -88,7 +88,7 @@
       overflow-x: hidden;
     }
 
-    .badge:not(.fly-out-badge),
+    .badge.badge-pill:not(.fly-out-badge),
     .sidebar-context-title,
     .nav-item-name {
       display: none;
@@ -142,7 +142,7 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     left: (-$contextual-sidebar-width);
   }
 
@@ -166,7 +166,7 @@
   width: 100%;
   overflow: auto;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     overflow: hidden;
   }
 }
@@ -207,7 +207,7 @@
 
   > li {
     > a {
-      @media (min-width: $screen-sm-min) {
+      @include media-breakpoint-up(sm) {
         margin-right: 2px;
       }
 
@@ -222,7 +222,7 @@
       }
 
       .sidebar-sub-level-items {
-        @media (min-width: $screen-sm-min) {
+        @include media-breakpoint-up(sm) {
           position: fixed;
           top: 0;
           left: 0;
@@ -277,7 +277,7 @@
       }
     }
 
-    .badge {
+    .badge.badge-pill {
       background-color: $inactive-badge-background;
       color: $gl-text-color-secondary;
     }
@@ -291,7 +291,7 @@
         padding-left: 11px;
       }
 
-      .badge {
+      .badge.badge-pill {
         font-weight: $gl-font-weight-bold;
       }
 
@@ -339,7 +339,7 @@
 }
 
 .toggle-sidebar-button {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: none;
   }
 }
@@ -420,7 +420,7 @@
     color: $gl-text-color-secondary;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: flex;
     align-items: center;
 
@@ -429,7 +429,7 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     + .breadcrumbs-links {
       padding-left: $gl-padding;
       border-left: 1px solid $gl-text-color-quaternary;
@@ -437,7 +437,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .close-nav-button {
     display: flex;
   }

@@ -30,7 +30,7 @@
   }
 }
 
-.panel > .gl-pagination {
+.card > .gl-pagination {
   margin: 0;
 }
 
@@ -57,7 +57,7 @@
 /**
  * Small screen pagination
  */
-@media (max-width: $screen-xs-min) {
+@include media-breakpoint-down(xs) {
   .gl-pagination {
     .pagination li a {
       padding: 6px 10px;
@@ -76,7 +76,7 @@
 /**
  * Medium screen pagination
  */
-@media (min-width: $screen-xs-min) and (max-width: $screen-md-max) {
+@media (min-width: map-get($grid-breakpoints, xs)) and (max-width: map-get($grid-breakpoints, sm)) {
   .gl-pagination {
     .page {
       display: none;

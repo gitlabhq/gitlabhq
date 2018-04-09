@@ -31,13 +31,13 @@ label {
     margin: 0;
   }
 
-  &.label-light {
+  &.badge.badge-pill-light {
     font-weight: $gl-font-weight-bold;
   }
 }
 
-.control-label {
-  @extend .col-sm-2;
+.form-control-label {
+  @extend .col-md-2;
 }
 
 .inline-input-group {
@@ -48,21 +48,21 @@ label {
   width: 150px;
 }
 
-@media (min-width: $screen-sm-min) {
+@include media-breakpoint-up(sm) {
   .custom-form-control {
     width: 150px;
   }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media (min-width: $screen-md-min) {
+@include media-breakpoint-up(md) {
   .custom-form-control {
     width: 170px;
   }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@media (min-width: $screen-lg-min) {
+@include media-breakpoint-up(lg) {
   .custom-form-control {
     width: 200px;
   }
@@ -72,7 +72,7 @@ label {
   margin-left: 0;
   margin-right: 0;
 
-  .control-label {
+  .form-control-label {
     font-weight: $gl-font-weight-bold;
     padding-top: 4px;
   }
@@ -102,10 +102,10 @@ label {
     }
   }
 
-  @media(max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     padding: 0 $gl-padding;
 
-    .control-label,
+    .form-control-label,
     .text-block {
       padding-left: 0;
     }
@@ -155,8 +155,8 @@ label {
   margin-top: 35px;
 }
 
-.form-group .control-label,
-.form-group .control-label-full-width {
+.form-group .form-control-label,
+.form-group .form-control-label-full-width {
   font-weight: $gl-font-weight-normal;
 }
 
@@ -221,7 +221,7 @@ label {
   }
 }
 
-@media(max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .remember-me {
     .remember-me-checkbox {
       margin-top: 0;

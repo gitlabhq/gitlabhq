@@ -75,7 +75,7 @@
     padding: 8px $gl-padding;
     border-bottom: 1px solid $border-color;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       text-align: left;
     }
 
@@ -125,7 +125,7 @@
     &.wiki {
       padding: $gl-padding;
 
-      @media (min-width: $screen-md-min) {
+      @include media-breakpoint-up(md) {
         padding: $gl-padding * 2;
       }
     }
@@ -364,7 +364,7 @@ span.idiff {
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
 
     .file-actions {
@@ -396,7 +396,7 @@ span.idiff {
   margin-right: 1.5em;
 }
 
-.label-lfs {
+.badge.badge-pill-lfs {
   color: $common-gray-light;
   border: 1px solid $common-gray-light;
 }

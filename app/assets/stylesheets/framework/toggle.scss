@@ -121,7 +121,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     width: 50px;
 
     &::before,

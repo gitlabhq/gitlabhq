@@ -36,7 +36,7 @@
     @include make-md-column(6);
     margin-top: 10px;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
 
