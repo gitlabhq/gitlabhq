@@ -11,7 +11,7 @@ module SharedBuilds
 
   step 'project has a recent build' do
     @pipeline = create(:ci_empty_pipeline, project: @project, sha: @project.commit.sha, ref: 'master')
-    @build = create(:ci_build, :running, :coverage, pipeline: @pipeline)
+    @build = create(:ci_build, :running, :coverage, :trace_artifact, pipeline: @pipeline)
   end
 
   step 'recent build is successful' do

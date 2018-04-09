@@ -77,11 +77,27 @@ describe MergeRequests::Conflicts::ListService do
       expect(service.can_be_resolved_in_ui?).to be_falsey
     end
 
+    it 'returns a falsey value when the MR has a missing revision after a force push' do
+      merge_request = create_merge_request('conflict-resolvable')
+      service = conflicts_service(merge_request)
+      allow(merge_request).to receive_message_chain(:target_branch_head, :raw, :id).and_return(Gitlab::Git::BLANK_SHA)
+
+      expect(service.can_be_resolved_in_ui?).to be_falsey
+    end
+
     context 'with gitaly disabled', :skip_gitaly_mock do
       it 'returns a falsey value when the MR has a missing ref after a force push' do
         merge_request = create_merge_request('conflict-resolvable')
         service = conflicts_service(merge_request)
         allow_any_instance_of(Rugged::Repository).to receive(:merge_commits).and_raise(Rugged::OdbError)
+
+        expect(service.can_be_resolved_in_ui?).to be_falsey
+      end
+
+      it 'returns a falsey value when the MR has a missing revision after a force push' do
+        merge_request = create_merge_request('conflict-resolvable')
+        service = conflicts_service(merge_request)
+        allow(merge_request).to receive_message_chain(:target_branch_head, :raw, :id).and_return(Gitlab::Git::BLANK_SHA)
 
         expect(service.can_be_resolved_in_ui?).to be_falsey
       end

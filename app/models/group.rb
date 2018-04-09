@@ -286,6 +286,10 @@ class Group < Namespace
     false
   end
 
+  def refresh_project_authorizations
+    refresh_members_authorized_projects(blocking: false)
+  end
+
   private
 
   def update_two_factor_requirement

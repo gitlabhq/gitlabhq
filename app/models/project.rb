@@ -222,6 +222,8 @@ class Project < ActiveRecord::Base
   has_many :environments
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
+  has_many :project_deploy_tokens
+  has_many :deploy_tokens, through: :project_deploy_tokens
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
@@ -1472,7 +1474,9 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo_notify!
-    send_move_instructions(full_path_was)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_was) unless started?
     expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was

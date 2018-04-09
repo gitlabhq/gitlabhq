@@ -109,7 +109,7 @@ module Auth
 
       case requested_action
       when 'pull'
-        build_can_pull?(requested_project) || user_can_pull?(requested_project)
+        build_can_pull?(requested_project) || user_can_pull?(requested_project) || deploy_token_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
       when '*'
@@ -123,22 +123,33 @@ module Auth
       Gitlab.config.registry
     end
 
+    def can_user?(ability, project)
+      user = current_user.is_a?(User) ? current_user : nil
+      can?(user, ability, project)
+    end
+
     def build_can_pull?(requested_project)
       # Build can:
       # 1. pull from its own project (for ex. a build)
       # 2. read images from dependent projects if creator of build is a team member
       has_authentication_ability?(:build_read_container_image) &&
-        (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
+        (requested_project == project || can_user?(:build_read_container_image, requested_project))
     end
 
     def user_can_admin?(requested_project)
       has_authentication_ability?(:admin_container_image) &&
-        can?(current_user, :admin_container_image, requested_project)
+        can_user?(:admin_container_image, requested_project)
     end
 
     def user_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
-        can?(current_user, :read_container_image, requested_project)
+        can_user?(:read_container_image, requested_project)
+    end
+
+    def deploy_token_can_pull?(requested_project)
+      has_authentication_ability?(:read_container_image) &&
+        current_user.is_a?(DeployToken) &&
+        current_user.has_access_to?(requested_project)
     end
 
     ##
@@ -154,7 +165,7 @@ module Auth
 
     def user_can_push?(requested_project)
       has_authentication_ability?(:create_container_image) &&
-        can?(current_user, :create_container_image, requested_project)
+        can_user?(:create_container_image, requested_project)
     end
 
     def error(code, status:, message: '')

@@ -1,8 +1,10 @@
 <script>
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { axisLeft, axisBottom } from 'd3-axis';
+import _ from 'underscore';
 import { max, extent } from 'd3-array';
 import { select } from 'd3-selection';
+import GraphAxis from './graph/axis.vue';
 import GraphLegend from './graph/legend.vue';
 import GraphFlag from './graph/flag.vue';
 import GraphDeployment from './graph/deployment.vue';
@@ -18,10 +20,11 @@ const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select }
 
 export default {
   components: {
-    GraphLegend,
+    GraphAxis,
     GraphFlag,
     GraphDeployment,
     GraphPath,
+    GraphLegend,
   },
   mixins: [MonitoringMixin],
   props: {
@@ -138,7 +141,7 @@ export default {
       this.legendTitle = query.label || 'Average';
       this.graphWidth = this.$refs.baseSvg.clientWidth - this.margin.left - this.margin.right;
       this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
-      this.baseGraphHeight = this.graphHeight;
+      this.baseGraphHeight = this.graphHeight - 50;
       this.baseGraphWidth = this.graphWidth;
 
       // pixel offsets inside the svg and outside are not 1:1
@@ -177,10 +180,8 @@ export default {
         this.graphHeightOffset,
       );
 
-      if (!this.showLegend) {
-        this.baseGraphHeight -= 50;
-      } else if (this.timeSeries.length > 3) {
-        this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
+      if (_.findWhere(this.timeSeries, { renderCanary: true })) {
+        this.timeSeries = this.timeSeries.map(series => ({ ...series, renderCanary: true }));
       }
 
       const axisXScale = d3.scaleTime().range([0, this.graphWidth - 70]);
@@ -251,17 +252,13 @@ export default {
           class="y-axis"
           transform="translate(70, 20)"
         />
-        <graph-legend
+        <graph-axis
           :graph-width="graphWidth"
           :graph-height="graphHeight"
           :margin="margin"
           :measurements="measurements"
-          :legend-title="legendTitle"
           :y-axis-label="yAxisLabel"
-          :time-series="timeSeries"
           :unit-of-display="unitOfDisplay"
-          :current-data-index="currentDataIndex"
-          :show-legend-group="showLegend"
         />
         <svg
           class="graph-data"
@@ -306,5 +303,10 @@ export default {
         :deployment-flag-data="deploymentFlagData"
       />
     </div>
+    <graph-legend
+      v-if="showLegend"
+      :legend-title="legendTitle"
+      :time-series="timeSeries"
+    />
   </div>
 </template>

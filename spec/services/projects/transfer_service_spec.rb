@@ -37,6 +37,12 @@ describe Projects::TransferService do
       transfer_project(project, user, group)
     end
 
+    it 'invalidates the user\'s personal_project_count cache' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      transfer_project(project, user, group)
+    end
+
     it 'executes system hooks' do
       transfer_project(project, user, group) do |service|
         expect(service).to receive(:execute_system_hooks)
