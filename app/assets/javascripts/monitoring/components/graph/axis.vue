@@ -1,6 +1,9 @@
 <script>
+import Vue from 'vue';
 import { convertToSentenceCase } from '~/lib/utils/text_utility';
-import { s__ } from '~/locale';
+import Translate from '~/vue_shared/translate';
+
+Vue.use(Translate);
 
 export default {
   props: {
@@ -75,10 +78,6 @@ export default {
     yAxisLabelSentenceCase() {
       return `${convertToSentenceCase(this.yAxisLabel)} (${this.unitOfDisplay})`;
     },
-
-    timeString() {
-      return s__('PrometheusDashboard|Time');
-    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -136,7 +135,7 @@ export default {
       :y="yPosition"
       dy=".35em"
     >
-      {{ timeString }}
+      {{ s__('PrometheusDashboard|Time') }}
     </text>
   </g>
 </template>

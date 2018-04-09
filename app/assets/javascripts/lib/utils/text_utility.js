@@ -90,7 +90,7 @@ export const convertToCamelCase = string => string.replace(/(_\w)/g, s => s[1].t
  * @param {*} string
  */
 export const convertToSentenceCase = string => {
-  const splitWord = string.split(' ').map((word, index) => (index > 0 ? word.toLowerCase() : word));
+  const splitWord = string.split(' ').map((word, index) => (index > 0 ? slugify(word) : word));
 
   return splitWord.join(' ');
 };
