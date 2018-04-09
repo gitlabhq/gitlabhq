@@ -292,10 +292,12 @@ Please check your network connection and try again.`;
                         </button>
                       </div>
                       <div
+                        v-if="note.resolvable"
                         class="btn-group discussion-actions"
-                        role="group">
+                        role="group"
+                      >
                         <div
-                          v-if="note.resolvable && !discussionResolved"
+                          v-if="!discussionResolved"
                           class="btn-group"
                           role="group">
                           <a

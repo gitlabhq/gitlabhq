@@ -1,4 +1,4 @@
-shared_examples 'issues move service' do
+shared_examples 'issues move service' do |group|
   context 'when moving an issue between lists' do
     let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
     let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
@@ -82,6 +82,19 @@ shared_examples 'issues move service' do
       described_class.new(parent, user, params).execute(issue)
 
       expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+    end
+
+    if group
+      context 'when on a group board' do
+        it 'sends the board_group_id parameter' do
+          params.merge!(move_after_id: issue1.id, move_before_id: issue2.id)
+
+          match_params = { move_between_ids: [issue1.id, issue2.id], board_group_id: parent.id }
+          expect(Issues::UpdateService).to receive(:new).with(issue.project, user, match_params).and_return(double(execute: build(:issue)))
+
+          described_class.new(parent, user, params).execute(issue)
+        end
+      end
     end
   end
 end

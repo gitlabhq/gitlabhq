@@ -1,0 +1,5 @@
+---
+title: Work around Prometheus Helm chart name changes to fix integration
+merge_request: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18206/
+author: joshlambert
+type: fixed

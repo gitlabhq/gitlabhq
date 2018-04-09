@@ -1,0 +1,5 @@
+---
+title: Fix exceptions raised when migrating pipeline stages in the background
+merge_request: 18076
+author:
+type: fixed
