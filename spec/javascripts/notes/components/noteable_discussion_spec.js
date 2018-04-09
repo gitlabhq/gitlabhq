@@ -40,7 +40,7 @@ describe('issue_discussion component', () => {
       );
     });
 
-    it('should toggle reply form', done => {
+    it('should toggle reply form', (done) => {
       vm.$el.querySelector('.js-vue-discussion-reply').click();
       Vue.nextTick(() => {
         expect(vm.$refs.noteForm).not.toBeNull();
