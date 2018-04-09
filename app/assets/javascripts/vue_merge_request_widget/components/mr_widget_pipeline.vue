@@ -1,17 +1,17 @@
 <script>
   /* eslint-disable vue/require-default-prop */
-  import pipelineStage from '~/pipelines/components/stage.vue';
-  import ciIcon from '~/vue_shared/components/ci_icon.vue';
-  import icon from '~/vue_shared/components/icon.vue';
-  import linkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
+  import PipelineStage from '~/pipelines/components/stage.vue';
+  import CiIcon from '~/vue_shared/components/ci_icon.vue';
+  import Icon from '~/vue_shared/components/icon.vue';
+  import LinkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
 
   export default {
     name: 'MRWidgetPipeline',
     components: {
-      pipelineStage,
-      ciIcon,
-      icon,
-      linkedPipelinesMiniList,
+      PipelineStage,
+      CiIcon,
+      Icon,
+      LinkedPipelinesMiniList,
     },
     props: {
       pipeline: {
@@ -37,15 +37,20 @@
         return this.hasCi && !this.ciStatus;
       },
       status() {
-        return this.pipeline.details &&
-          this.pipeline.details.status ? this.pipeline.details.status : {};
+        return this.pipeline.details && this.pipeline.details.status
+          ? this.pipeline.details.status
+          : {};
       },
       hasStages() {
-        return this.pipeline.details &&
+        return (
+          this.pipeline.details &&
           this.pipeline.details.stages &&
-          this.pipeline.details.stages.length;
+          this.pipeline.details.stages.length
+        );
       },
-
+      hasCommitInfo() {
+        return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
+      },
       /* We typically set defaults ([]) in the store or prop declarations, but because triggered
       * and triggeredBy are appended to `pipeline`, we can't set defaults in the store, and we
       * need to check their length here to prevent initializing linked-pipeline-mini-lists
@@ -63,7 +68,8 @@
 <template>
   <div
     v-if="hasPipeline || hasCIError"
-    class="mr-widget-heading">
+    class="mr-widget-heading"
+  >
     <div class="ci-widget media">
       <template v-if="hasCIError">
         <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-10">
@@ -90,13 +96,17 @@
             #{{ pipeline.id }}
           </a>
 
-          {{ pipeline.details.status.label }} for
+          {{ pipeline.details.status.label }}
 
-          <a
-            :href="pipeline.commit.commit_path"
-            class="commit-sha js-commit-link"
-          >
-          {{ pipeline.commit.short_id }}</a>.
+          <template v-if="hasCommitInfo">
+            for
+
+            <a
+              :href="pipeline.commit.commit_path"
+              class="commit-sha js-commit-link"
+            >
+            {{ pipeline.commit.short_id }}</a>.
+          </template>
 
           <span class="mr-widget-pipeline-graph">
             <span class="stage-cell">
