@@ -22,7 +22,7 @@ It takes inpiration from the innovative work done by [Heroku](https://www.heroku
 1. Auto DevOps works with any Kubernetes cluster, you're not limited to running on our infrastructure (note that many features also work without Kubernetes).
 1. There is no additional cost, there is no markup on the infrastructure costs, you can use self-hosted Kubernetes cluster or Containers as a Service on any public cloud (for example [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
 1. Auto DevOps has more features including security testing, performance testing, and code quality testing.
-1. It has offers an incremental graduation path. If you need advanced customizations you can start modifying the templates without having to start over on a completely different platform. 
+1. It offers an incremental graduation path. If you need advanced customizations you can start modifying the templates without having to start over on a completely different platform. 
 
 ## Features
 
