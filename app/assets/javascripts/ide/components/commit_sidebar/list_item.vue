@@ -24,13 +24,19 @@ export default {
       required: false,
       default: '',
     },
+    stagedList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     iconName() {
-      return this.file.tempFile ? 'file-addition' : 'file-modified';
+      const prefix = this.stagedList ? '-solid' : '';
+      return this.file.tempFile ? `file-additions${prefix}` : `file-modified${prefix}`;
     },
     iconClass() {
-      return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
+      return `multi-file-${this.file.tempFile ? 'additions' : 'modified'} append-right-8`;
     },
   },
   methods: {

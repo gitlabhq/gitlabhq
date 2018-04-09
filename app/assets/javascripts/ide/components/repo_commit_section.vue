@@ -85,6 +85,7 @@ export default {
         :action-btn-text="__('Unstage all')"
         item-action-component="unstage-button"
         :show-toggle="false"
+        :staged-list="true"
       />
       <form
         class="form-horizontal multi-file-commit-form"

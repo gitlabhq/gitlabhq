@@ -57,7 +57,9 @@ export default {
     });
   },
   [types.UPDATE_FILE_CONTENT](state, { path, content }) {
-    const changed = content !== state.entries[path].raw;
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
+    const rawContent = stagedFile ? stagedFile.content : state.entries[path].raw;
+    const changed = content !== rawContent;
 
     Object.assign(state.entries[path], {
       content,
@@ -91,8 +93,10 @@ export default {
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
+
     Object.assign(state.entries[path], {
-      content: state.entries[path].raw,
+      content: stagedFile ? stagedFile.content : state.entries[path].raw,
       changed: false,
     });
   },

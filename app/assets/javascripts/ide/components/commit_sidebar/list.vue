@@ -45,6 +45,11 @@ export default {
       type: String,
       required: true,
     },
+    stagedList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapState(['rightPanelCollapsed']),
@@ -134,6 +139,7 @@ export default {
             :file="file"
             :action-component="itemActionComponent"
             :key-prefix="title"
+            :staged-list="stagedList"
           />
         </li>
       </ul>

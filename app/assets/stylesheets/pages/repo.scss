@@ -608,11 +608,13 @@
   }
 }
 
-.multi-file-addition {
+.multi-file-additions,
+.multi-file-additions-solid {
   fill: $green-500;
 }
 
-.multi-file-modified {
+.multi-file-modified,
+.multi-file-modified-solid {
   fill: $orange-500;
 }
 

@@ -166,10 +166,7 @@ export const discardFileChanges = ({ state, commit }, path) => {
     commit(types.TOGGLE_FILE_OPEN, path);
   }
 
-  eventHub.$emit(`editor.update.model.content.${file.key}`, {
-    content: file.raw,
-    changed: false,
-  });
+  eventHub.$emit(`editor.update.model.new.content.${file.key}`, file.content);
 };
 
 export const stageChange = ({ commit, state }, path) => {

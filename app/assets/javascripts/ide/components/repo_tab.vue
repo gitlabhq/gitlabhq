@@ -32,7 +32,7 @@ export default {
       return `Close ${this.tab.name}`;
     },
     showChangedIcon() {
-      return this.tab.changed ? !this.tabMouseOver : false;
+      return this.fileHasChanged ? !this.tabMouseOver : false;
     },
     fileHasChanged() {
       return this.tab.changed || this.tab.tempFile || this.tab.staged;

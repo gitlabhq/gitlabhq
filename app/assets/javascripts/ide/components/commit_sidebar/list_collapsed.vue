@@ -51,6 +51,12 @@ export default {
     titleTooltip() {
       return sprintf(__('%{title} changes'), { title: this.title });
     },
+    additionIconName() {
+      return this.title.toLowerCase() === 'staged' ? 'file-additions-solid' : 'file-additions';
+    },
+    modifiedIconName() {
+      return this.title.toLowerCase() === 'staged' ? 'file-modified-solid' : 'file-modified';
+    },
   },
 };
 </script>
@@ -80,7 +86,7 @@ export default {
       class="append-bottom-10"
     >
       <icon
-        name="file-addition"
+        :name="additionIconName"
         :size="18"
         :css-classes="addedFilesIconClass"
       />
@@ -94,7 +100,7 @@ export default {
       class="prepend-top-10 append-bottom-10"
     >
       <icon
-        name="file-modified"
+        :name="modifiedIconName"
         :size="18"
         :css-classes="modifiedFilesClass"
       />
