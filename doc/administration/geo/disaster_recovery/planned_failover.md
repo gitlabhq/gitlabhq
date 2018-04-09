@@ -174,13 +174,6 @@ will take to finish syncing. An example message would be:
 > A scheduled maintenance will take place at XX:XX UTC. We expect it to take
   less than 1 hour.
 
-Until [issue #4930][ee-4930] is resolved, you may need to clear the Redis cache
-for the broadcast message to show. On the **secondary**, run:
-
-```
-sudo gitlab-rake cache:clear:redis
-```
-
 ## Prevent updates to the **primary**
 
 Until a [read-only mode][ce-19739] is implemented, updates must be prevented
