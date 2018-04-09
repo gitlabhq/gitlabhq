@@ -19,7 +19,7 @@
                 %strong Enable Auto DevOps
                 %br
                 %span.descr
-                  - if @project.ci_config_path.nil? || @project.ci_config_path.empty?
+                  - unless @project.ci_config_path.present?
                     The Auto DevOps pipeline configuration is being used
                   - else
                     The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
