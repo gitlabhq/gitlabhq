@@ -40,6 +40,6 @@
         method: :delete,
         data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do
-        %span.visible-xs-block
+        %span.d-block.d-sm-none
           Delete
         = icon('trash', class: 'hidden-xs')

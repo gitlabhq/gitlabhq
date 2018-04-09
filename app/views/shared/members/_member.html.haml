@@ -89,7 +89,7 @@
                     method: :post,
                     class: 'btn btn-success prepend-left-10',
                     title: 'Grant access' do
-            %span{ class: ('visible-xs-block' unless force_mobile_view) }
+            %span{ class: ('.d-block.d-sm-none' unless force_mobile_view) }
               Grant access
             - unless force_mobile_view
               = icon('check inverse', class: 'hidden-xs')
@@ -106,7 +106,7 @@
                       data: { confirm: remove_member_message(member) },
                       class: 'btn btn-remove prepend-left-10',
                       title: remove_member_title(member) do
-              %span{ class: ('visible-xs-block' unless force_mobile_view) }
+              %span{ class: ('.d-block.d-sm-none' unless force_mobile_view) }
                 Delete
               - unless force_mobile_view
                 = icon('trash', class: 'hidden-xs')

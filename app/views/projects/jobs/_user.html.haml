@@ -4,4 +4,4 @@ by
     = image_tag avatar_icon_for_user(@build.user, 24), class: "avatar s24"
     %strong{ data: { toggle: 'tooltip', placement: 'top', title: @build.user.to_reference } }
       = @build.user.name
-  %strong.visible-xs-inline= @build.user.to_reference
+  %strong.d-block.d-sm-none= @build.user.to_reference

@@ -26,11 +26,11 @@
           = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
         - else
           = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
-        %span.commit-row-message.visible-xs-inline
+        %span.commit-row-message.d-block.d-sm-none
           &middot;
           = commit.short_id
         - if commit.status(ref)
-          .visible-xs-inline
+          .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
           %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...

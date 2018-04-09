@@ -29,7 +29,7 @@
         %span= _('Options')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
-        %li.visible-xs-block.visible-sm-block
+        %li.d-block.d-sm-none.visible-sm-block
           = link_to project_tree_path(@project, @commit) do
             #{ _('Browse Files') }
         - unless @commit.has_been_reverted?(current_user)
