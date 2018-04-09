@@ -39,7 +39,7 @@
 .table-section {
   white-space: nowrap;
 
-  $section-widths: 10 15 20 25 30 40 100;
+  $section-widths: 10 15 20 25 30 40 50 100;
   @each $width in $section-widths {
     &.section-#{$width} {
       flex: 0 0 #{$width + '%'};

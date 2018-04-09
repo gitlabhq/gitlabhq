@@ -5,9 +5,9 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     %w[fix improve/awesome].each do |source_branch|
       issuable =
         if issuable_type == :issue
-          create(issuable_type, project: project)
+          create(issuable_type, project: project, author: project.creator)
         else
-          create(issuable_type, source_project: project, source_branch: source_branch)
+          create(issuable_type, source_project: project, source_branch: source_branch, author: project.creator)
         end
 
       @issuable_ids << issuable.id
@@ -16,7 +16,7 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
 
   it "creates indexed meta-data object for issuable notes and votes count" do
     if action
-      get action
+      get action, author_id: project.creator.id
     else
       get :index, namespace_id: project.namespace, project_id: project
     end
@@ -35,7 +35,7 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     it "doesn't execute any queries with false conditions" do
       get_action =
         if action
-          proc { get action }
+          proc { get action, author_id: project.creator.id }
         else
           proc { get :index, namespace_id: project2.namespace, project_id: project2 }
         end

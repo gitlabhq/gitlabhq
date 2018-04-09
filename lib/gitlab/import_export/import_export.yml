@@ -125,6 +125,8 @@ excluded_attributes:
     - :trace
     - :token
     - :when
+    - :artifacts_file
+    - :artifacts_metadata
   push_event_payload:
     - :event_id
   project_badges:

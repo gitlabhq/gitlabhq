@@ -495,17 +495,17 @@
         svg {
           fill: $gl-text-color-secondary;
           position: relative;
-          left: 5px;
-          top: 2px;
-          width: 18px;
-          height: 18px;
+          left: 1px;
+          top: -1px;
+          width: 16px;
+          height: 16px;
         }
 
         &.play {
           svg {
-            width: #{$ci-action-icon-size - 8};
-            height: #{$ci-action-icon-size - 8};
-            left: 8px;
+            width: 16px;
+            height: 16px;
+            left: 3px;
           }
         }
       }

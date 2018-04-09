@@ -24,6 +24,10 @@
       color: $list-text-disabled-color;
     }
 
+    &:not(.ui-sort-disabled):hover {
+      background: $row-hover;
+    }
+
     &.unstyled {
       &:hover {
         background: none;
@@ -34,13 +38,14 @@
       background-color: $list-warning-row-bg;
       border-color: $list-warning-row-border;
       color: $list-warning-row-color;
+
+      &:hover {
+        background: $list-warning-row-bg;
+      }
+
     }
 
     &.smoke { background-color: $gray-light; }
-
-    &:not(.ui-sort-disabled):hover {
-      background: $row-hover;
-    }
 
     &:last-child {
       border-bottom: 0;

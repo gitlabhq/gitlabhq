@@ -107,7 +107,6 @@
   }
 }
 
-
 .commits-compare-switch {
   float: left;
   margin-right: 9px;
@@ -179,7 +178,7 @@
 .commit-detail {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   flex-grow: 1;
 
   .merge-request-branches & {
@@ -200,37 +199,63 @@
   }
 
   .ci-status-link {
-    display: inline-block;
-    position: relative;
-    top: 2px;
+    display: inline-flex;
   }
 
-  .btn-clipboard,
-  .btn-transparent {
-    padding-left: 0;
-    padding-right: 0;
+  > .ci-status-link,
+  > .btn,
+  > .commit-sha-group {
+    margin-left: $gl-padding-8;
   }
+}
 
+.commit-sha-group {
+  display: inline-flex;
+
+  .label,
   .btn {
-    &:not(:first-child) {
-      margin-left: $gl-padding;
-    }
+    padding: $gl-vert-padding $gl-btn-padding;
+    border: 1px $border-color solid;
+    font-size: $gl-font-size;
+    line-height: $line-height-base;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
   }
 
-  .commit-sha {
-    font-size: 14px;
-    font-weight: $gl-font-weight-bold;
+  .label-monospace {
+    @extend .monospace;
+    user-select: text;
+    color: $gl-text-color;
+    background-color: $gray-light;
   }
 
-  .ci-status-icon {
-    position: relative;
-    top: 2px;
+  .btn svg {
+    top: auto;
+    fill: $gl-text-color-secondary;
+  }
+
+  .fa-clipboard {
+    color: $gl-text-color-secondary;
+  }
+
+  :first-child {
+    border-bottom-left-radius: $border-radius-default;
+    border-top-left-radius: $border-radius-default;
+  }
+
+  :not(:first-child) {
+    border-left: 0;
+  }
+
+  :last-child {
+    border-bottom-right-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
   }
 }
 
 .commit,
 .generic_commit_status {
-
   a,
   button {
     color: $gl-text-color;
@@ -303,10 +328,8 @@
   }
 }
 
-
 .gpg-status-box {
   padding: 2px 10px;
-  margin-right: $gl-padding;
 
   &:empty {
     display: none;

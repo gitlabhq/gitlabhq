@@ -24,6 +24,8 @@ module Projects
 
       transfer(project)
 
+      current_user.invalidate_personal_projects_count
+
       true
     rescue Projects::TransferService::TransferError => ex
       project.reload

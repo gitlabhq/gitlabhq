@@ -1143,3 +1143,11 @@ pre.light-well {
     white-space: pre-wrap;
   }
 }
+
+.project-badge {
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
+}
