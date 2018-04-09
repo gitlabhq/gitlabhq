@@ -1,7 +1,7 @@
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" } }
   .sidebar-container
     .block.wiki-sidebar-header.append-bottom-default
-      %a.gutter-toggle.float-right.d-block.d-sm-none.visible-sm-block.js-sidebar-wiki-toggle{ href: "#" }
+      %a.gutter-toggle.float-right.d-block.d-sm-none.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
         = icon('angle-double-right')
 
       - git_access_url = project_wikis_git_access_path(@project)

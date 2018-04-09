@@ -23,7 +23,7 @@
           - if header_link?(:search)
             %li.hidden-sm.hidden-xs
               = render 'layouts/search' unless current_controller?(:search)
-            %li.visible-sm-inline-block.d-inline-block.d-sm-none-block
+            %li.d-inline-block.d-sm-none.d-md-none
               = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('search', size: 16)
 

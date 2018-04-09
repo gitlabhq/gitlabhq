@@ -1,7 +1,7 @@
 - reporter = abuse_report.reporter
 - user = abuse_report.user
 %tr
-  %th.d-block.d-sm-none.visible-sm-block
+  %th.d-block.d-sm-none.d-md-none
     %strong User
   %td
     - if user
@@ -11,7 +11,7 @@
     - else
       (removed)
   %td
-    %strong.subheading.d-block.d-sm-none.visible-sm-block Reported by
+    %strong.subheading.d-block.d-sm-none.d-md-none Reported by
     - if reporter
       = link_to reporter.name, reporter
     - else
@@ -19,7 +19,7 @@
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)
   %td
-    %strong.subheading.d-block.d-sm-none.visible-sm-block Message
+    %strong.subheading.d-block.d-sm-none.d-md-none Message
     .message
       = markdown_field(abuse_report, :message)
   %td

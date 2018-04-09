@@ -163,8 +163,8 @@
       <button
         v-if="hasSidebarButton"
         type="button"
-        class="btn btn-secondary d-block d-sm-none
-visible-sm-block sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+        class="btn btn-secondary d-block d-sm-none d-md-none
+sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
         aria-label="Toggle Sidebar"
         id="toggleSidebar"
       >
