@@ -296,7 +296,7 @@
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
-          class="hidden-xs hidden-sm"
+          class="d-none d-sm-none d-md-block"
           :artifacts="pipeline.details.artifacts"
         />
 

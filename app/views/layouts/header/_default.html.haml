@@ -21,7 +21,7 @@
           - if current_user
             = render 'layouts/header/new_dropdown'
           - if header_link?(:search)
-            %li.hidden-sm.hidden-xs
+            %li.d-none.d-sm-none.d-md-block
               = render 'layouts/search' unless current_controller?(:search)
             %li.d-inline-block.d-sm-none.d-md-none
               = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

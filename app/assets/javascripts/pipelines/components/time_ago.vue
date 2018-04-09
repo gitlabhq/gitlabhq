@@ -75,7 +75,7 @@
       </p>
 
       <p
-        class="finished-at hidden-xs hidden-sm"
+        class="finished-at d-none d-sm-none d-md-block"
         v-if="hasFinishedTime"
       >
 

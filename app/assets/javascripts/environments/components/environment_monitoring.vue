@@ -26,7 +26,7 @@
 <template>
   <a
     v-tooltip
-    class="btn monitoring-url hidden-xs hidden-sm"
+    class="btn monitoring-url d-none d-sm-none d-md-block"
     data-container="body"
     rel="noopener noreferrer nofollow"
     :href="monitoringUrl"

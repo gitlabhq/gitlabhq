@@ -493,7 +493,7 @@
     </div>
 
     <div
-      class="table-section section-10 deployment-column hidden-xs hidden-sm"
+      class="table-section section-10 deployment-column d-none d-sm-none d-md-block"
       role="gridcell"
     >
       <span v-if="shouldRenderDeploymentID">
@@ -513,7 +513,7 @@
     </div>
 
     <div
-      class="table-section section-15 hidden-xs hidden-sm"
+      class="table-section section-15 d-none d-sm-none d-md-block"
       role="gridcell"
     >
       <a

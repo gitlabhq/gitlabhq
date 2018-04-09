@@ -35,7 +35,7 @@
 <template>
   <a
     v-tooltip
-    class="btn terminal-button hidden-xs hidden-sm"
+    class="btn terminal-button d-none d-sm-none d-md-block"
     data-container="body"
     :title="title"
     :aria-label="title"

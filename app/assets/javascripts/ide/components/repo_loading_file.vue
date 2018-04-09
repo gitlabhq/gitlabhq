@@ -25,7 +25,7 @@
       />
     </td>
     <template v-if="!leftPanelCollapsed">
-      <td class="hidden-sm hidden-xs">
+      <td class="d-none d-sm-none d-md-block">
         <skeleton-loading-container
           :small="true"
         />

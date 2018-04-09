@@ -6,7 +6,7 @@
 
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed{ class: ("diff-files-changed-merge-request" if merge_request) }
   .files-changed-inner
-    .inline-parallel-buttons.hidden-xs.hidden-sm
+    .inline-parallel-buttons.d-none.d-sm-none.d-md-block
       - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
         = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-secondary'
       - if show_whitespace_toggle

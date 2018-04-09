@@ -46,7 +46,7 @@
   };
 </script>
 <template>
-  <div class="table-section section-15 hidden-xs hidden-sm pipeline-tags">
+  <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">

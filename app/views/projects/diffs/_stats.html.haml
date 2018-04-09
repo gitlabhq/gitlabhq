@@ -10,7 +10,7 @@
     %strong.cgreen= pluralize(sum_added_lines, 'addition')
     and
     %strong.cred= pluralize(sum_removed_lines, 'deletion')
-  .diff-stats-additions-deletions-collapsed.float-right.hidden-xs.hidden-sm{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
+  .diff-stats-additions-deletions-collapsed.float-right.d-none.d-sm-none.d-md-block{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
     %strong.cgreen<
       +#{sum_added_lines}
     %strong.cred<

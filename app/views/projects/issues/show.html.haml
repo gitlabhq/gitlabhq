@@ -49,8 +49,8 @@
     = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue
 
     - if can_report_spam
-      = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
-    = link_to new_project_issue_path(@project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
+      = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-sm-none d-md-block btn btn-grouped btn-spam', title: 'Submit as spam'
+    = link_to new_project_issue_path(@project), class: 'd-none d-sm-none d-md-block btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
       New issue
 
 .issue-details.issuable-details

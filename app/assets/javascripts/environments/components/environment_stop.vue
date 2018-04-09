@@ -55,7 +55,7 @@
   <button
     v-tooltip
     type="button"
-    class="btn stop-env-link hidden-xs hidden-sm"
+    class="btn stop-env-link d-none d-sm-none d-md-block"
     data-container="body"
     @click="onClick"
     :disabled="isLoading"

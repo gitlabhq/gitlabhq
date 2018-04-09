@@ -22,7 +22,7 @@
       %span.btn.disabled.btn-grouped.hidden-xs.append-right-10
         = icon('comment')
         = @notes_count
-    = link_to project_tree_path(@project, @commit), class: "btn btn-secondary append-right-10 hidden-xs hidden-sm" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-secondary append-right-10 d-none d-sm-none d-md-block" do
       #{ _('Browse files') }
     .dropdown.inline
       %a.btn.btn-secondary.dropdown-toggle{ data: { toggle: "dropdown" } }

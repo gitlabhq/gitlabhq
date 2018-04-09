@@ -46,7 +46,7 @@
               data: {confirm: 'Remove this label? Are you sure?'},
               class: 'text-danger'
 
-  .float-right.hidden-xs.hidden-sm
+  .float-right.d-none.d-sm-none.d-md-block
     - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
       %button.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
         disabled: true,

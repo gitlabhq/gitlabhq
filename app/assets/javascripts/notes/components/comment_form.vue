@@ -325,7 +325,7 @@ Please check your network connection and try again.`;
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
           <div class="flash-container error-alert timeline-content"></div>
-          <div class="timeline-icon hidden-xs hidden-sm">
+          <div class="timeline-icon d-none d-sm-none d-md-block">
             <user-avatar-link
               v-if="author"
               :link-href="author.path"
