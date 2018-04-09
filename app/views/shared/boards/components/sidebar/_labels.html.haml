@@ -3,7 +3,7 @@
     Labels
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link pull-right"
+      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
   .value.issuable-show-labels
     %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
       None

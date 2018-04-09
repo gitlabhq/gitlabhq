@@ -9,12 +9,12 @@
     Assignee
     = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
     - if can_edit_issuable
-      = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+      = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
   .value.hide-collapsed
     - if merge_request.assignee
       = link_to_member(@project, merge_request.assignee, size: 32, extra_class: 'bold') do
         - unless merge_request.can_be_merged_by?(merge_request.assignee)
-          %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+          %span.float-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
             = icon('exclamation-triangle', 'aria-hidden': 'true')
         %span.username
           = merge_request.assignee.to_reference

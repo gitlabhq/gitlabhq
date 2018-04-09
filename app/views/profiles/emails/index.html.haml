@@ -32,7 +32,7 @@
     %ul.well-list
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
-        %span.pull-right
+        %span.float-right
           %span.label.label-success Primary email
           - if @primary_email === current_user.public_email
             %span.label.label-info Public email
@@ -41,7 +41,7 @@
       - @emails.each do |email|
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-          %span.pull-right
+          %span.float-right
             - if email.email === current_user.public_email
               %span.label.label-info Public email
             - if email.email === current_user.notification_email

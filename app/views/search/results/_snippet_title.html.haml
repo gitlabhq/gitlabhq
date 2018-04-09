@@ -6,10 +6,10 @@
         %span.label.label-gray
           %i.fa.fa-lock
           private
-    %span.cgray.monospace.tiny.pull-right.term
+    %span.cgray.monospace.tiny.float-right.term
       = snippet_title.file_name
 
-  %small.pull-right.cgray
+  %small.float-right.cgray
     - if snippet_title.project_id?
       = link_to snippet_title.project.full_name, project_path(snippet_title.project)
 

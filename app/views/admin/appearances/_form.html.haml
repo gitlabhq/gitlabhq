@@ -63,5 +63,5 @@
       = link_to 'New project page', new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
 
     - if @appearance.updated_at
-      %span.pull-right
+      %span.float-right
         Last edit #{time_ago_with_tooltip(@appearance.updated_at)}

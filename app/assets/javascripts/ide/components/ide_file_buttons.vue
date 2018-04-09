@@ -32,7 +32,7 @@ export default {
 <template>
   <div
     v-if="showButtons"
-    class="pull-right ide-btn-group"
+    class="float-right ide-btn-group"
   >
     <a
       v-tooltip

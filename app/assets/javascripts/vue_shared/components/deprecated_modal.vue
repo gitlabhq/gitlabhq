@@ -104,7 +104,7 @@
               </h4>
               <button
                 type="button"
-                class="close pull-right"
+                class="close float-right"
                 @click="emitCancel($event)"
                 data-dismiss="modal"
                 aria-label="Close"

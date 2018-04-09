@@ -15,7 +15,7 @@
     .last-used-at
       last used:
       = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : 'n/a'
-  .pull-right
+  .float-right
     %span.key-created-at
       created #{time_ago_with_tooltip(key.created_at)}
     = link_to path_to_key(key, is_admin), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-transparent prepend-left-10" do

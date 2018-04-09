@@ -76,7 +76,7 @@
     </span>
     <toggle-button
       ref="toggleButton"
-      class="pull-right hide-collapsed js-issuable-subscribe-button"
+      class="float-right hide-collapsed js-issuable-subscribe-button"
       :is-loading="showLoadingState"
       :value="subscribed"
       @change="toggleSubscription"

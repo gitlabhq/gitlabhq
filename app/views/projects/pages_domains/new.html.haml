@@ -8,5 +8,5 @@
     = render 'form', { f: f }
     .form-actions
       = f.submit 'Create New Domain', class: "btn btn-save"
-      .pull-right
+      .float-right
         = link_to _('Cancel'), project_pages_path(@project), class: 'btn btn-cancel'

@@ -15,7 +15,7 @@
           %span{ class: visibility_level_color(project.visibility_level) }
             = visibility_level_icon(project.visibility_level)
           %strong= link_to project.full_name, project
-        .pull-right
+        .float-right
           - if project.archived
             %span.label.label-warning archived
           %span.badge.badge-pill

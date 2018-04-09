@@ -72,7 +72,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
         <lists-dropdown></lists-dropdown>
       </div>
       <button
-        class="btn btn-default pull-right"
+        class="btn btn-default float-right"
         type="button"
         @click="toggleModal(false)">
         Cancel

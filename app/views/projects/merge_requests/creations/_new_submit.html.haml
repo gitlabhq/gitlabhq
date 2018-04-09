@@ -7,7 +7,7 @@
   %span into
   %strong.ref-name= target_title
 
-  %span.pull-right
+  %span.float-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
 %hr
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal common-note-form js-requires-input js-quick-submit' } do |f|

@@ -14,7 +14,7 @@
           - key.subkeys.each do |subkey|
             %li
               %code= subkey.fingerprint
-  .pull-right
+  .float-right
     %span.key-created-at
       created #{time_ago_with_tooltip(key.created_at)}
     = link_to profile_gpg_key_path(key), data: { confirm: 'Are you sure? Removing this GPG key does not affect already signed commits.' }, method: :delete, class: "btn btn-danger prepend-left-10" do

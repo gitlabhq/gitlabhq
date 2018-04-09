@@ -21,7 +21,7 @@
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+            %button.board-delete.has-tooltip.float-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
         .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank"' }
           %span.issue-count-badge-count.float-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }

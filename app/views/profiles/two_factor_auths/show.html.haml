@@ -86,7 +86,7 @@
                 %tr
                   %td= registration.name.presence || "<no name set>"
                   %td= registration.created_at.to_date.to_s(:medium)
-                  %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
+                  %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger float-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
 
       - else
         .settings-message.text-center

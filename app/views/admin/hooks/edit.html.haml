@@ -14,7 +14,7 @@
   .form-actions
     = f.submit 'Save changes', class: 'btn btn-create'
     = render 'shared/web_hooks/test_button', triggers: SystemHook.triggers, hook: @hook
-    = link_to 'Remove', admin_hook_path(@hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
+    = link_to 'Remove', admin_hook_path(@hook), method: :delete, class: 'btn btn-remove float-right', data: { confirm: 'Are you sure?' }
 
 %hr
 

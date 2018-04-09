@@ -2,7 +2,7 @@
   .project-limit-message.alert.alert-warning.hidden-xs
     You won't be able to create new projects because you have reached your project limit.
 
-    .pull-right
+    .float-right
       = link_to "Don't show again", profile_path(user: {hide_project_limit: true}), method: :put, class: 'alert-link'
       |
       = link_to 'Remind later', '#', class: 'hide-project-limit-message alert-link'

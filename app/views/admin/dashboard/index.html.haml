@@ -38,35 +38,35 @@
             %h4 Statistics
             %p
               Forks
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(ForkedProjectLink.count)
             %p
               Issues
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(Issue.count)
             %p
               Merge Requests
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(MergeRequest.count)
             %p
               Notes
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(Note.count)
             %p
               Snippets
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(Snippet.count)
             %p
               SSH Keys
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(Key.count)
             %p
               Milestones
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(Milestone.count)
             %p
               Active Users
-              %span.light.pull-right
+              %span.light.float-right
                 = number_with_delimiter(User.active.count)
       .col-md-4
         .info-well
@@ -75,44 +75,44 @@
             - sign_up = "Sign up"
             %p{ "aria-label" => "#{sign_up}: status " + (allow_signup? ? "on" : "off") }
               = sign_up
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon allow_signup?
             - ldap = "LDAP"
             %p{ "aria-label" => "#{ldap}: status " + (Gitlab.config.ldap.enabled ? "on" : "off") }
               = ldap
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon Gitlab.config.ldap.enabled
             - gravatar = "Gravatar"
             %p{ "aria-label" => "#{gravatar}: status " + (gravatar_enabled? ? "on" : "off") }
               = gravatar
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon gravatar_enabled?
             - omniauth = "OmniAuth"
             %p{ "aria-label" => "#{omniauth}: status " + (Gitlab.config.omniauth.enabled ? "on" : "off") }
               = omniauth
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon Gitlab.config.omniauth.enabled
             - reply_email = "Reply by email"
             %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
               = reply_email
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon Gitlab::IncomingEmail.enabled?
             - container_reg = "Container Registry"
             %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
               = container_reg
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon Gitlab.config.registry.enabled
             - gitlab_pages = 'GitLab Pages'
             - gitlab_pages_enabled = Gitlab.config.pages.enabled
             %p{ "aria-label" => "#{gitlab_pages}: status " + (gitlab_pages_enabled ? "on" : "off") }
               = gitlab_pages
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon gitlab_pages_enabled
             - gitlab_shared_runners = 'Shared Runners'
             - gitlab_shared_runners_enabled = Gitlab.config.gitlab_ci.shared_runners_enabled
             %p{ "aria-label" => "#{gitlab_shared_runners}: status " + (gitlab_shared_runners_enabled ? "on" : "off") }
               = gitlab_shared_runners
-              %span.light.pull-right
+              %span.light.float-right
                 = boolean_to_icon gitlab_shared_runners_enabled
       .col-md-4
         .info-well
@@ -120,40 +120,40 @@
             %h4
               Components
               - if Gitlab::CurrentSettings.version_check_enabled
-                .pull-right
+                .float-right
                   = version_status_badge
             %p
               GitLab
-              %span.pull-right
+              %span.float-right
                 = Gitlab::VERSION
             %p
               GitLab Shell
-              %span.pull-right
+              %span.float-right
                 = Gitlab::Shell.new.version
             %p
               GitLab Workhorse
-              %span.pull-right
+              %span.float-right
                 = gitlab_workhorse_version
             %p
               GitLab API
-              %span.pull-right
+              %span.float-right
                 = API::API::version
             - if Gitlab.config.pages.enabled
               %p
                 GitLab Pages
-                %span.pull-right
+                %span.float-right
                   = Gitlab::Pages::VERSION
             %p
               Ruby
-              %span.pull-right
+              %span.float-right
                 #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
             %p
               Rails
-              %span.pull-right
+              %span.float-right
                 #{Rails::VERSION::STRING}
             %p
               = Gitlab::Database.adapter_name
-              %span.pull-right
+              %span.float-right
                 = Gitlab::Database.version
             %p
               = link_to "Gitaly Servers", admin_gitaly_servers_path
@@ -165,7 +165,7 @@
             - @projects.each do |project|
               %p
                 = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
-                %span.light.pull-right
+                %span.light.float-right
                   #{time_ago_with_tooltip(project.created_at)}
       .col-md-4
         .info-well
@@ -175,7 +175,7 @@
               %p
                 = link_to [:admin, user], class: 'str-truncated-60' do
                   = user.name
-                %span.light.pull-right
+                %span.light.float-right
                   #{time_ago_with_tooltip(user.created_at)}
       .col-md-4
         .info-well
@@ -185,5 +185,5 @@
               %p
                 = link_to [:admin, group], class: 'str-truncated-60' do
                   = group.full_name
-                %span.light.pull-right
+                %span.light.float-right
                   #{time_ago_with_tooltip(group.created_at)}

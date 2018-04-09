@@ -5,7 +5,7 @@
       %span.term.str-truncated= issue.title
     - if issue.closed?
       %span.label.label-danger.prepend-left-5 Closed
-    .pull-right ##{issue.iid}
+    .float-right ##{issue.iid}
   - if issue.description.present?
     .description.term
       = search_md_sanitize(issue, :description)

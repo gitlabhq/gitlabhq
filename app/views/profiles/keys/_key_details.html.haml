@@ -23,5 +23,5 @@
     %pre.well-pre
       = @key.key
   .col-md-12
-    .pull-right
+    .float-right
       = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"

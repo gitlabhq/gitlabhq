@@ -2,6 +2,6 @@
   .label-row
     = render_colored_label(label, tooltip: false)
     = markdown_field(label, :description)
-    .pull-right
+    .float-right
       = link_to 'Edit', edit_admin_label_path(label), class: 'btn btn-sm'
       = link_to 'Delete', admin_label_path(label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Delete this label? Are you sure?"}

@@ -64,14 +64,14 @@
       </i>
     </button>
     <button
-      class="btn btn-secondary pull-right"
+      class="btn btn-secondary float-right"
       type="button"
       @click="closeForm">
       Cancel
     </button>
     <button
       v-if="shouldShowDeleteButton"
-      class="btn btn-danger pull-right append-right-default"
+      class="btn btn-danger float-right append-right-default"
       :class="{ disabled: deleteLoading }"
       type="button"
       :disabled="deleteLoading"

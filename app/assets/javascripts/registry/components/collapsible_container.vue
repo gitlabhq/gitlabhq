@@ -89,7 +89,7 @@
         css-class="btn-secondary btn-transparent btn-clipboard"
       />
 
-      <div class="controls hidden-xs pull-right">
+      <div class="controls hidden-xs float-right">
         <button
           v-if="repo.canDelete"
           type="button"

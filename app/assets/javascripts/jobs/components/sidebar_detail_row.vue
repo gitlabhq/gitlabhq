@@ -39,7 +39,7 @@
 
     <span
       v-if="hasHelpURL"
-      class="help-button pull-right"
+      class="help-button float-right"
     >
       <a
         :href="helpUrl"

@@ -4,6 +4,6 @@
       Request details
   .col-lg-9
 
-    = link_to 'Resend Request', retry_project_hook_hook_log_path(@project, @hook, @hook_log), class: "btn btn-secondary pull-right prepend-left-10"
+    = link_to 'Resend Request', retry_project_hook_hook_log_path(@project, @hook, @hook_log), class: "btn btn-secondary float-right prepend-left-10"
 
     = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

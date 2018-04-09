@@ -97,7 +97,7 @@ export default {
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
-        class="pull-right lock-edit"
+        class="float-right lock-edit"
         type="button"
         @click.prevent="toggleForm"
       >

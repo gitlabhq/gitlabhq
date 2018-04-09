@@ -45,7 +45,7 @@
           = search_field_tag :search, params[:search], class: 'form-control', placeholder: 'Runner description or token', spellcheck: false
         = submit_tag 'Search', class: 'btn'
 
-    .pull-right.light
+    .float-right.light
       Runners with last contact more than a minute ago: #{@active_runners_cnt}
 
   %br

@@ -116,7 +116,7 @@
         v-if="isLoading"
         :inline="true"
       />
-      <div class="pull-right">
+      <div class="float-right">
         <button
           v-if="editable && !editing"
           type="button"

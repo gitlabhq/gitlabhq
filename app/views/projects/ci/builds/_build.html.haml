@@ -93,7 +93,7 @@
       #{job.coverage}%
 
   %td
-    .pull-right
+    .float-right
       - if can?(current_user, :read_build, job) && job.artifacts?
         = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
           = sprite_icon('download')

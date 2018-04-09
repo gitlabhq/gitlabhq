@@ -46,9 +46,9 @@
   .form-actions
     - if @page && @page.persisted?
       = f.submit _("Save changes"), class: 'btn-save btn'
-      .pull-right
+      .float-right
         = link_to _("Cancel"), project_wiki_path(@project, @page), class: 'btn btn-cancel btn-grouped'
     - else
       = f.submit s_("Wiki|Create page"), class: 'btn-create btn'
-      .pull-right
+      .float-right
         = link_to _("Cancel"), project_wiki_path(@project, :home), class: 'btn btn-cancel'

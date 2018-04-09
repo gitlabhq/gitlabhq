@@ -33,5 +33,5 @@
         = link_to project_path(snippet.project) do
           = snippet.project.full_name
 
-    .pull-right.snippet-updated-at
+    .float-right.snippet-updated-at
       %span updated #{time_ago_with_tooltip(snippet.updated_at, placement: 'bottom')}

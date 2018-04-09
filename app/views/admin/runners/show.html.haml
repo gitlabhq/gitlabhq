@@ -1,7 +1,7 @@
 = content_for :title do
   %h3.project-title
     Runner ##{@runner.id}
-    .pull-right
+    .float-right
       - if @runner.shared?
         %span.runner-state.runner-state-shared
           Shared
@@ -45,7 +45,7 @@
                 %strong
                   = project.full_name
               %td
-                .pull-right
+                .float-right
                   = link_to 'Disable', [:admin, project.namespace.becomes(Namespace), project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
 
     %table.table.unassigned-projects
@@ -67,7 +67,7 @@
           %td
             = project.full_name
           %td
-            .pull-right
+            .float-right
               = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
                 = f.hidden_field :runner_id, value: @runner.id
                 = f.submit 'Enable', class: 'btn btn-xs'

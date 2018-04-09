@@ -27,5 +27,5 @@
         = link_to "New issue", new_project_issue_path(@project, issue: build_failed_issue_options), class: 'btn btn-new btn-inverted'
       - if can?(current_user, :update_build, @build) && @build.retryable?
         = link_to "Retry job", retry_project_job_path(@project, @build), class: 'btn btn-inverted-secondary', method: :post
-    %button.btn.btn-secondary.pull-right.visible-xs-block.visible-sm-block.build-gutter-toggle.js-sidebar-build-toggle{ role: "button", type: "button" }
+    %button.btn.btn-secondary.float-right.visible-xs-block.visible-sm-block.build-gutter-toggle.js-sidebar-build-toggle{ role: "button", type: "button" }
       = icon('angle-double-left')

@@ -4,7 +4,7 @@
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar.milestone-sidebar
     .block.milestone-progress.issuable-sidebar-header
-      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+      %a.gutter-toggle.float-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
         = sidebar_gutter_toggle_icon
 
       .sidebar-collapsed-icon
@@ -21,7 +21,7 @@
       .title
         Start date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
       .value
         %span.value-content
           - if milestone.start_date
@@ -51,7 +51,7 @@
       .title.hide-collapsed
         Due date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
       .value.hide-collapsed
         %span.value-content
           - if milestone.due_date
@@ -73,7 +73,7 @@
           Issues
           %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).count
           - if project && can?(current_user, :create_issue, project)
-            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
+            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "float-right", title: "New Issue" do
               New issue
         .value.hide-collapsed.bold
           %span.milestone-stat

@@ -50,5 +50,5 @@
 
           = render 'shared/issuable_meta_data', issuable: issue
 
-        .pull-right.issuable-updated-at.hidden-xs
+        .float-right.issuable-updated-at.hidden-xs
           %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}

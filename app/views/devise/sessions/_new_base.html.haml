@@ -10,7 +10,7 @@
       %label{ for: "user_remember_me" }
         = f.check_box :remember_me, class: 'remember-me-checkbox'
         %span Remember me
-      .pull-right.forgot-password
+      .float-right.forgot-password
         = link_to "Forgot your password?", new_password_path(:user)
   .submit-container.move-submit-down
     = f.submit "Sign in", class: "btn btn-save"

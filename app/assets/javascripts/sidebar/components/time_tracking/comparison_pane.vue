@@ -79,7 +79,7 @@ export default {
             {{ timeSpentHumanReadable }}
           </span>
         </div>
-        <div class="compare-display estimated pull-right">
+        <div class="compare-display estimated float-right">
           <span class="compare-label">
             {{ s__('TimeTrackingEstimated|Est') }}
           </span>

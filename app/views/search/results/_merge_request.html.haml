@@ -6,7 +6,7 @@
       %span.label.label-primary.prepend-left-5 Merged
     - elsif merge_request.closed?
       %span.label.label-danger.prepend-left-5 Closed
-    .pull-right= merge_request.to_reference
+    .float-right= merge_request.to_reference
   - if merge_request.description.present?
     .description.term
       = search_md_sanitize(merge_request, :description)

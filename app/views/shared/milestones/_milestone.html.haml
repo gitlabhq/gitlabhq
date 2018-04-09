@@ -11,7 +11,7 @@
         %span - Project Milestone
 
     .col-sm-6
-      .pull-right.light #{milestone.percent_complete(current_user)}% complete
+      .float-right.light #{milestone.percent_complete(current_user)}% complete
   .row
     .col-sm-6
       = link_to pluralize(milestone.total_issues_count(current_user), 'Issue'), issues_path

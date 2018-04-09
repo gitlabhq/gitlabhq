@@ -3,7 +3,7 @@
 - todo_content = is_collapsed ? icon('plus-square') : _('Add todo')
 
 %button.issuable-todo-btn.js-issuable-todo{ type: 'button',
-  class: (is_collapsed ? 'btn-blank sidebar-collapsed-icon dont-change-state has-tooltip' : 'btn btn-secondary issuable-header-btn pull-right'),
+  class: (is_collapsed ? 'btn-blank sidebar-collapsed-icon dont-change-state has-tooltip' : 'btn btn-secondary issuable-header-btn float-right'),
   title: (todo.nil? ? _('Add todo') : _('Mark done')),
   'aria-label' => (todo.nil? ? _('Add todo') : _('Mark done')),
   data: issuable_todo_button_data(issuable, todo, is_collapsed) }

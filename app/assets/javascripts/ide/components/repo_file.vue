@@ -97,7 +97,7 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right">
+        <span class="float-right">
           <mr-file-icon
             v-if="file.mrChange"
           />
@@ -111,7 +111,7 @@ export default {
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
-          class="pull-right prepend-left-8"
+          class="float-right prepend-left-8"
         />
       </div>
     </div>

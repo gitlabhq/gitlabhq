@@ -4,7 +4,7 @@
 %h3.page-title
   Group: #{@group.full_name}
 
-  = link_to admin_group_edit_path(@group), class: "btn pull-right" do
+  = link_to admin_group_edit_path(@group), class: "btn float-right" do
     %i.fa.fa-pencil-square-o
     Edit
 %hr
@@ -71,7 +71,7 @@
               = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
               %span.badge.badge-pill
                 = storage_counter(project.statistics.storage_size)
-            %span.pull-right.light
+            %span.float-right.light
               %span.monospace= project.full_path + '.git'
       .panel-footer
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
@@ -89,7 +89,7 @@
                 = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
                 %span.badge.badge-pill
                   = storage_counter(project.statistics.storage_size)
-              %span.pull-right.light
+              %span.float-right.light
                 %span.monospace= project.full_path + '.git'
 
   .col-md-6
@@ -116,7 +116,7 @@
         %strong= @group.name
         group members
         %span.badge.badge-pill= @group.members.size
-        .pull-right
+        .float-right
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
       %ul.well-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }

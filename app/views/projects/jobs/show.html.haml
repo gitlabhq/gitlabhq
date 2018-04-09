@@ -64,7 +64,7 @@
             of log -
             %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
 
-          .controllers.pull-right
+          .controllers.float-right
             - if @build.has_trace?
               = link_to raw_project_job_path(@project, @build),
                       title: 'Show complete raw',

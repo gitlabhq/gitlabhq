@@ -116,7 +116,7 @@ export default {
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
       <div
-        class="help-button pull-right"
+        class="help-button float-right"
         v-if="!showHelpState"
         @click="toggleHelpState(true)"
       >
@@ -127,7 +127,7 @@ export default {
         </i>
       </div>
       <div
-        class="close-help-button pull-right"
+        class="close-help-button float-right"
         v-if="showHelpState"
         @click="toggleHelpState(false)"
       >

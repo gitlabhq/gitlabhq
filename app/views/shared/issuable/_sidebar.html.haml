@@ -7,7 +7,7 @@
       - if current_user
         %span.issuable-header-text.hide-collapsed.float-left
           = _('Todo')
-      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+      %a.gutter-toggle.float-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
         = sidebar_gutter_toggle_icon
       - if current_user
         = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
@@ -31,7 +31,7 @@
           = _('Milestone')
           = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
-            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.hide-collapsed
           - if issuable.milestone
             = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: 1 }
@@ -58,7 +58,7 @@
             = _('Due date')
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
           .value.hide-collapsed
             %span.value-content
               - if issuable.due_date
@@ -95,7 +95,7 @@
             = _('Labels')
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
           .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|

@@ -11,7 +11,7 @@
           %strong= link_to group.name, admin_group_path(group)
           &ndash; access to
           #{pluralize(group.projects.count, 'project')}
-          .pull-right
+          .float-right
             %span.light.vertical-align-middle= group_member.human_access
             - unless group_member.owner?
               = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from group' do
@@ -37,7 +37,7 @@
                 = project.full_name
 
             - if member
-              .pull-right
+              .float-right
                 - if member.owner?
                   %span.light Owner
                 - else
