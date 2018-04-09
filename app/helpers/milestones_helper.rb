@@ -74,7 +74,7 @@ module MilestonesHelper
 
   def milestone_progress_bar(milestone)
     options = {
-      class: 'progress-bar progress-bar-success',
+      class: 'progress-bar bg-success',
       style: "width: #{milestone.percent_complete(current_user)}%;"
     }
 
