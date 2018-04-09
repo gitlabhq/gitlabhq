@@ -162,7 +162,7 @@
         .panel-heading
           %strong= @group.name
           group members
-          %span.badge= @group_members.size
+          %span.badge.badge-pill= @group_members.size
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-xs' do
               = icon('pencil-square-o', text: 'Manage access')
@@ -177,7 +177,7 @@
       .panel-heading
         %strong= @project.name
         project members
-        %span.badge= @project.users.size
+        %span.badge.badge-pill= @project.users.size
         .pull-right
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
       %ul.well-list.project_members.content-list.members-list

@@ -8,12 +8,12 @@
   %li
     %a{ href: "#tab-queries", data: { toggle: "tab" } }
       = t('sherlock.queries')
-      %span.badge
+      %span.badge.badge-pill
         #{@transaction.queries.length}
   %li
     %a{ href: "#tab-file-samples", data: { toggle: "tab" } }
       = t('sherlock.file_samples')
-      %span.badge
+      %span.badge.badge-pill
         #{@transaction.file_samples.length}
 
 .row-content-block

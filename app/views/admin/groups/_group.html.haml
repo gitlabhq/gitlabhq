@@ -5,7 +5,7 @@
     = link_to 'Edit', admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to 'Delete', [:admin, group], data: { confirm: "Are you sure you want to remove #{group.name}?" }, method: :delete, class: 'btn btn-remove'
   .stats
-    %span.badge
+    %span.badge.badge-pill
       = storage_counter(group.storage_size)
 
     %span

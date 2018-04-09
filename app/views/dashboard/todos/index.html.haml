@@ -9,13 +9,13 @@
         = link_to todos_filter_path(state: 'pending') do
           %span
             Todos
-          %span.badge
+          %span.badge.badge-pill
             = number_with_delimiter(todos_pending_count)
       %li.todos-done{ class: active_when(params[:state] == 'done') }>
         = link_to todos_filter_path(state: 'done') do
           %span
             Done
-          %span.badge
+          %span.badge.badge-pill
             = number_with_delimiter(todos_done_count)
 
     .nav-controls

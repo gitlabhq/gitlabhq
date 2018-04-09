@@ -11,7 +11,7 @@
       .panel-heading
         %h3.panel-title
           = s_('PrometheusService|Common metrics')
-          %span.badge.js-monitored-count 0
+          %span.badge.badge-pill.js-monitored-count 0
       .panel-body
         .loading-metrics.js-loading-metrics
           %p.prepend-top-10.prepend-left-10
@@ -27,7 +27,7 @@
         %h3.panel-title
           = icon('caret-right lg fw', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
           = s_('PrometheusService|Missing environment variable')
-          %span.badge.js-env-var-count 0
+          %span.badge.badge-pill.js-env-var-count 0
       .panel-body.hidden
         .flash-container
           .flash-notice

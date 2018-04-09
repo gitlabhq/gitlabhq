@@ -11,7 +11,7 @@
     - if discussion.try(:on_image?) && show_toggle
       %button.diff-notes-collapse.js-diff-notes-toggle{ type: 'button' }
         = sprite_icon('collapse', css_class: 'collapse-icon')
-      %button.btn-transparent.badge.js-diff-notes-toggle{ type: 'button' }
+      %button.btn-transparent.badge.badge-pill.js-diff-notes-toggle{ type: 'button' }
         = badge_counter
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter, show_image_comment_badge: show_image_comment_badge }
 

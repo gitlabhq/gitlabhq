@@ -62,14 +62,14 @@
       .panel-heading
         %h3.panel-title
           Projects
-          %span.badge
+          %span.badge.badge-pill
             #{@group.projects.count}
       %ul.well-list
         - @projects.each do |project|
           %li
             %strong
               = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
-              %span.badge
+              %span.badge.badge-pill
                 = storage_counter(project.statistics.storage_size)
             %span.pull-right.light
               %span.monospace= project.full_path + '.git'
@@ -80,14 +80,14 @@
       .panel.panel-default
         .panel-heading
           Projects shared with #{@group.name}
-          %span.badge
+          %span.badge.badge-pill
             #{@group.shared_projects.count}
         %ul.well-list
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li
               %strong
                 = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
-                %span.badge
+                %span.badge.badge-pill
                   = storage_counter(project.statistics.storage_size)
               %span.pull-right.light
                 %span.monospace= project.full_path + '.git'
@@ -115,7 +115,7 @@
       .panel-heading
         %strong= @group.name
         group members
-        %span.badge= @group.members.size
+        %span.badge.badge-pill= @group.members.size
         .pull-right
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
       %ul.well-list.group-users-list.content-list.members-list

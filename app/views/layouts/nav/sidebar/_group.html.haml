@@ -43,14 +43,14 @@
               = sprite_icon('issues')
             %span.nav-item-name
               Issues
-            %span.badge.count= number_with_delimiter(issues_count)
+            %span.badge.badge-pill.count= number_with_delimiter(issues_count)
 
           %ul.sidebar-sub-level-items
             = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index'], html_options: { class: "fly-out-top-item" } ) do
               = link_to issues_group_path(@group) do
                 %strong.fly-out-top-item-name
                   #{ _('Issues') }
-                %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
+                %span.badge.badge-pill.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
 
             %li.divider.fly-out-top-item
             = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
@@ -83,13 +83,13 @@
               = sprite_icon('git-merge')
             %span.nav-item-name
               Merge Requests
-            %span.badge.count= number_with_delimiter(merge_requests_count)
+            %span.badge.badge-pill.count= number_with_delimiter(merge_requests_count)
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(path: 'groups#merge_requests', html_options: { class: "fly-out-top-item" } ) do
               = link_to merge_requests_group_path(@group) do
                 %strong.fly-out-top-item-name
                   #{ _('Merge Requests') }
-                %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
+                %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
 
       - if group_sidebar_link?(:group_members)
         = nav_link(path: 'group_members#index') do

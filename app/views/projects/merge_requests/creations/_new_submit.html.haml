@@ -28,16 +28,16 @@
       %li.commits-tab.active
         = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
           Commits
-          %span.badge= @commits.size
+          %span.badge.badge-pill= @commits.size
       - if @pipelines.any?
         %li.builds-tab
           = link_to url_for(params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
             Pipelines
-            %span.badge= @pipelines.size
+            %span.badge.badge-pill= @pipelines.size
       %li.diffs-tab
         = link_to url_for(params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
           Changes
-          %span.badge= @merge_request.diff_size
+          %span.badge.badge-pill= @merge_request.diff_size
 
     .tab-content
       #commits.commits.tab-pane.active

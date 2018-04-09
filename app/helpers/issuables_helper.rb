@@ -168,7 +168,7 @@ module IssuablesHelper
     count = issuables_count_for_state(issuable_type, state)
 
     html = content_tag(:span, state_title)
-    html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+    html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
 
     html.html_safe
   end

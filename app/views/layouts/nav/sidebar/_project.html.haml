@@ -88,7 +88,7 @@
             %span.nav-item-name
               Issues
             - if @project.issues_enabled?
-              %span.badge.count.issue_counter
+              %span.badge.badge-pill.count.issue_counter
                 = number_with_delimiter(@project.open_issues_count)
 
           %ul.sidebar-sub-level-items
@@ -97,7 +97,7 @@
                 %strong.fly-out-top-item-name
                   #{ _('Issues') }
                 - if @project.issues_enabled?
-                  %span.badge.count.issue_counter.fly-out-badge
+                  %span.badge.badge-pill.count.issue_counter.fly-out-badge
                     = number_with_delimiter(@project.open_issues_count)
             %li.divider.fly-out-top-item
             = nav_link(controller: :issues, action: :index) do
@@ -140,14 +140,14 @@
               = sprite_icon('git-merge')
             %span.nav-item-name
               Merge Requests
-            %span.badge.count.merge_counter.js-merge-counter
+            %span.badge.badge-pill.count.merge_counter.js-merge-counter
               = number_with_delimiter(@project.open_merge_requests_count)
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(controller: :merge_requests, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_merge_requests_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Merge Requests') }
-                %span.badge.count.merge_counter.js-merge-counter.fly-out-badge
+                %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge
                   = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines

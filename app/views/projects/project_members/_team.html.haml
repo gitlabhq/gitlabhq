@@ -6,7 +6,7 @@
     %span.flex-project-title
       Members of
       %strong= project.name
-    %span.badge= members.total_count
+    %span.badge.badge-pill= members.total_count
     = form_tag project_project_members_path(project), method: :get, class: 'form-inline member-search-form flex-project-members-form'  do
       .form-group
         = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }

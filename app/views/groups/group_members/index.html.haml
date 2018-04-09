@@ -26,7 +26,7 @@
     .panel-heading
       Members with access to
       %strong= @group.name
-      %span.badge= @members.total_count
+      %span.badge.badge-pill= @members.total_count
     %ul.content-list.members-list
       = render partial: 'shared/members/member', collection: @members, as: :member
     = paginate @members, theme: 'gitlab'

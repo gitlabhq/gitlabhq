@@ -2,23 +2,23 @@
   %li{ class: active_when(scope.nil?) }>
     = link_to build_path_proc.call(nil) do
       All
-      %span.badge.js-totalbuilds-count
+      %span.badge.badge-pill.js-totalbuilds-count
         = limited_counter_with_delimiter(all_builds)
 
   %li{ class: active_when(scope == 'pending') }>
     = link_to build_path_proc.call('pending') do
       Pending
-      %span.badge
+      %span.badge.badge-pill
         = limited_counter_with_delimiter(all_builds.pending)
 
   %li{ class: active_when(scope == 'running') }>
     = link_to build_path_proc.call('running') do
       Running
-      %span.badge
+      %span.badge.badge-pill
         = limited_counter_with_delimiter(all_builds.running)
 
   %li{ class: active_when(scope == 'finished') }>
     = link_to build_path_proc.call('finished') do
       Finished
-      %span.badge
+      %span.badge.badge-pill
         = limited_counter_with_delimiter(all_builds.finished)

@@ -2,6 +2,6 @@
   .panel-heading
     Groups with access to
     %strong= @project.name
-    %span.badge= group_links.size
+    %span.badge.badge-pill= group_links.size
   %ul.content-list
     = render partial: 'shared/members/group', collection: group_links, as: :group_link

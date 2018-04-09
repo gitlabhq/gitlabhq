@@ -71,7 +71,7 @@
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues
-          %span.badge= milestone.issues_visible_to_user(current_user).count
+          %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).count
           - if project && can?(current_user, :create_issue, project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
@@ -99,7 +99,7 @@
         %span= milestone.merge_requests.count
       .title.hide-collapsed
         Merge requests
-        %span.badge= milestone.merge_requests.count
+        %span.badge.badge-pill= milestone.merge_requests.count
       .value.hide-collapsed.bold
         - if !project || can?(current_user, :read_merge_request, project)
           %span.milestone-stat

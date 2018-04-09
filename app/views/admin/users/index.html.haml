@@ -42,31 +42,31 @@
         = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
           = link_to admin_users_path do
             Active
-            %small.badge= number_with_delimiter(User.active.count)
+            %small.badge.badge-pill= number_with_delimiter(User.active.count)
         = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
           = link_to admin_users_path(filter: "admins") do
             Admins
-            %small.badge= number_with_delimiter(User.admins.count)
+            %small.badge.badge-pill= number_with_delimiter(User.admins.count)
         = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_enabled')} filter-two-factor-enabled" }) do
           = link_to admin_users_path(filter: 'two_factor_enabled') do
             2FA Enabled
-            %small.badge= number_with_delimiter(User.with_two_factor.count)
+            %small.badge.badge-pill= number_with_delimiter(User.with_two_factor.count)
         = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_disabled')} filter-two-factor-disabled" }) do
           = link_to admin_users_path(filter: 'two_factor_disabled') do
             2FA Disabled
-            %small.badge= number_with_delimiter(User.without_two_factor.count)
+            %small.badge.badge-pill= number_with_delimiter(User.without_two_factor.count)
         = nav_link(html_options: { class: active_when(params[:filter] == 'external') }) do
           = link_to admin_users_path(filter: 'external') do
             External
-            %small.badge= number_with_delimiter(User.external.count)
+            %small.badge.badge-pill= number_with_delimiter(User.external.count)
         = nav_link(html_options: { class: active_when(params[:filter] == 'blocked') }) do
           = link_to admin_users_path(filter: "blocked") do
             Blocked
-            %small.badge= number_with_delimiter(User.blocked.count)
+            %small.badge.badge-pill= number_with_delimiter(User.blocked.count)
         = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
           = link_to admin_users_path(filter: "wop") do
             Without projects
-            %small.badge= number_with_delimiter(User.without_projects.count)
+            %small.badge.badge-pill= number_with_delimiter(User.without_projects.count)
 
   %ul.flex-list.content-list
     - if @users.empty?

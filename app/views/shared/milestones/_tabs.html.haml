@@ -8,24 +8,24 @@
       %li.active
         = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
           Issues
-          %span.badge= milestone.issues_visible_to_user(current_user).size
+          %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).size
       %li
         = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
           Merge Requests
-          %span.badge= milestone.merge_requests.size
+          %span.badge.badge-pill= milestone.merge_requests.size
     - else
       %li.active
         = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
           Merge Requests
-          %span.badge= milestone.merge_requests.size
+          %span.badge.badge-pill= milestone.merge_requests.size
     %li
       = link_to '#tab-participants', 'data-toggle' => 'tab', 'data-endpoint': milestone_participants_tab_path(milestone) do
         Participants
-        %span.badge= milestone.participants.count
+        %span.badge.badge-pill= milestone.participants.count
     %li
       = link_to '#tab-labels', 'data-toggle' => 'tab', 'data-endpoint': milestone_labels_tab_path(milestone) do
         Labels
-        %span.badge= milestone.labels.count
+        %span.badge.badge-pill= milestone.labels.count
 
 - issues = milestone.sorted_issues(current_user)
 - show_project_name = local_assigns.fetch(:show_project_name, false)

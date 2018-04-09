@@ -12,7 +12,7 @@
               = s_('AdminProjects|Delete')
 
           .stats
-            %span.badge
+            %span.badge.badge-pill
               = storage_counter(project.statistics.storage_size)
             - if project.archived
               %span.label.label-warning archived

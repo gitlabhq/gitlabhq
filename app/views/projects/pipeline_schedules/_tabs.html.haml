@@ -2,17 +2,17 @@
   %li{ class: active_when(scope.nil?) }>
     = link_to schedule_path_proc.call(nil) do
       = s_("PipelineSchedules|All")
-      %span.badge.js-totalbuilds-count
+      %span.badge.badge-pill.js-totalbuilds-count
         = number_with_delimiter(all_schedules.count(:id))
 
   %li{ class: active_when(scope == 'active') }>
     = link_to schedule_path_proc.call('active') do
       = s_("PipelineSchedules|Active")
-      %span.badge
+      %span.badge.badge-pill
         = number_with_delimiter(all_schedules.active.count(:id))
 
   %li{ class: active_when(scope == 'inactive') }>
     = link_to schedule_path_proc.call('inactive') do
       = s_("PipelineSchedules|Inactive")
-      %span.badge
+      %span.badge.badge-pill
         = number_with_delimiter(all_schedules.inactive.count(:id))
