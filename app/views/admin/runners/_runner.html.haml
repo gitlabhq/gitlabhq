@@ -36,14 +36,14 @@
       Never
   %td.admin-runner-btn-group-cell
     .pull-right.btn-group
-      = link_to admin_runner_path(runner), class: 'btn btn-sm btn-default has-tooltip', title: 'Edit', ref: 'tooltip', aria: { label: 'Edit' }, data: { placement: 'top', container: 'body'} do
+      = link_to admin_runner_path(runner), class: 'btn btn-sm btn-secondary has-tooltip', title: 'Edit', ref: 'tooltip', aria: { label: 'Edit' }, data: { placement: 'top', container: 'body'} do
         = icon('pencil')
       &nbsp;
       - if runner.active?
-        = link_to [:pause, :admin, runner], method: :get, class: 'btn btn-sm btn-default has-tooltip', title: 'Pause', ref: 'tooltip', aria: { label: 'Pause' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
+        = link_to [:pause, :admin, runner], method: :get, class: 'btn btn-sm btn-secondary has-tooltip', title: 'Pause', ref: 'tooltip', aria: { label: 'Pause' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
           = icon('pause')
       - else
-        = link_to [:resume, :admin, runner], method: :get, class: 'btn btn-default btn-sm has-tooltip', title: 'Resume', ref: 'tooltip', aria: { label: 'Resume' }, data: { placement: 'top', container: 'body'} do
+        = link_to [:resume, :admin, runner], method: :get, class: 'btn btn-secondary btn-sm has-tooltip', title: 'Resume', ref: 'tooltip', aria: { label: 'Resume' }, data: { placement: 'top', container: 'body'} do
           = icon('play')
       = link_to [:admin, runner], method: :delete, class: 'btn btn-danger btn-sm has-tooltip', title: 'Remove', ref: 'tooltip', aria: { label: 'Remove' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
         = icon('remove')

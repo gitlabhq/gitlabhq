@@ -52,14 +52,14 @@
       v-if="resetCachePath"
       @click="onClickResetCache"
       :loading="isResetCacheButtonLoading"
-      class="btn btn-default js-clear-cache"
+      class="btn btn-secondary js-clear-cache"
       :label="s__('Pipelines|Clear Runner Caches')"
     />
 
     <a
       v-if="ciLintPath"
       :href="ciLintPath"
-      class="btn btn-default js-ci-lint"
+      class="btn btn-secondary js-ci-lint"
     >
       {{ s__('Pipelines|CI Lint') }}
     </a>

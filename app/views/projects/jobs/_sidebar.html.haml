@@ -29,14 +29,14 @@
           - if @build.artifacts?
             .btn-group.btn-group-justified{ role: :group }
               - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
-                = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
+                = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-secondary', method: :post do
                   Keep
 
-              = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
+              = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-secondary' do
                 Download
 
               - if @build.browsable_artifacts?
-                = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
+                = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-secondary' do
                   Browse
 
       - if @build.trigger_request

@@ -42,12 +42,12 @@
 
   .controls.hidden-xs<
     - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
-      = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
+      = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-secondary' do
         = _('Merge request')
 
     - if branch.name != @repository.root_ref
       = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name),
-        class: "btn btn-default #{'prepend-left-10' unless merge_project}",
+        class: "btn btn-secondary #{'prepend-left-10' unless merge_project}",
         method: :post,
         title: s_('Branches|Compare') do
         = s_('Branches|Compare')

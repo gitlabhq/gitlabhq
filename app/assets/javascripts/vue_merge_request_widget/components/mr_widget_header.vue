@@ -71,7 +71,7 @@ export default {
         <clipboard-button
           :text="branchNameClipboardData"
           :title="__('Copy branch name to clipboard')"
-          css-class="btn-default btn-transparent btn-clipboard"
+          css-class="btn-secondary btn-transparent btn-clipboard"
         />
 
         {{ s__("mrWidget|into") }}
@@ -103,7 +103,7 @@ export default {
       <a
         v-if="!mr.sourceBranchRemoved"
         :href="webIdePath"
-        class="btn btn-sm btn-default inline js-web-ide"
+        class="btn btn-sm btn-secondary inline js-web-ide"
       >
         {{ s__("mrWidget|Web IDE") }}
       </a>
@@ -111,7 +111,7 @@ export default {
         data-target="#modal_merge_info"
         data-toggle="modal"
         :disabled="mr.sourceBranchRemoved"
-        class="btn btn-sm btn-default inline js-check-out-branch"
+        class="btn btn-sm btn-secondary inline js-check-out-branch"
         type="button"
       >
         {{ s__("mrWidget|Check out branch") }}

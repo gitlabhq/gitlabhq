@@ -56,7 +56,7 @@
     >
       <button
         type="button"
-        class="btn btn-sm btn-default dropdown-toggle add-to-tree"
+        class="btn btn-sm btn-secondary dropdown-toggle add-to-tree"
         aria-label="Create new file or directory"
         @click.stop="openDropdown()"
       >

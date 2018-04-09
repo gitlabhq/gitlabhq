@@ -25,7 +25,7 @@ export default {
       <a
         v-if="mr.createIssueToResolveDiscussionsPath"
         :href="mr.createIssueToResolveDiscussionsPath"
-        class="btn btn-default btn-xs js-create-issue">
+        class="btn btn-secondary btn-xs js-create-issue">
         Create an issue to resolve them later
       </a>
     </div>

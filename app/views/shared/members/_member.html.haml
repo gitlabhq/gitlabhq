@@ -53,7 +53,7 @@
         - if member.can_resend_invite?
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
-                    class: 'btn btn-default prepend-left-10 hidden-xs',
+                    class: 'btn btn-secondary prepend-left-10 hidden-xs',
                     title: 'Resend invite'
 
         - if user != current_user && member.can_update?

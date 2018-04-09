@@ -24,7 +24,7 @@
   >
     <button
       v-tooltip
-      class="dropdown-toggle btn btn-default build-artifacts js-pipeline-dropdown-download"
+      class="dropdown-toggle btn btn-secondary build-artifacts js-pipeline-dropdown-download"
       title="Artifacts"
       data-placement="top"
       data-toggle="dropdown"

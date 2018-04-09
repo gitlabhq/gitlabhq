@@ -83,7 +83,7 @@ export default {
         </button>
         <button
           type="button"
-          class="btn btn-default pull-right js-cancel-label-btn"
+          class="btn btn-secondary pull-right js-cancel-label-btn"
         >
           {{ __('Cancel') }}
         </button>

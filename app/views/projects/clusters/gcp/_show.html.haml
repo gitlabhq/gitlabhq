@@ -4,7 +4,7 @@
   .input-group
     %input.form-control.cluster-name.js-select-on-focus{ value: @cluster.name, readonly: true }
     %span.input-group-btn
-      = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy Kubernetes cluster name'), class: 'btn-default')
+      = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy Kubernetes cluster name'), class: 'btn-secondary')
 
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
@@ -15,7 +15,7 @@
       .input-group
         = platform_kubernetes_field.text_field :api_url, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|API URL'), readonly: true
         %span.input-group-btn
-          = clipboard_button(text: @cluster.platform_kubernetes.api_url, title: s_('ClusterIntegration|Copy API URL'), class: 'btn-default')
+          = clipboard_button(text: @cluster.platform_kubernetes.api_url, title: s_('ClusterIntegration|Copy API URL'), class: 'btn-secondary')
 
     .form-group
       = platform_kubernetes_field.label :ca_cert, s_('ClusterIntegration|CA Certificate')
@@ -29,9 +29,9 @@
       .input-group
         = platform_kubernetes_field.text_field :token, class: 'form-control js-cluster-token js-select-on-focus', type: 'password', placeholder: s_('ClusterIntegration|Token'), readonly: true
         %span.input-group-btn
-          %button.btn.btn-default.js-show-cluster-token{ type: 'button' }
+          %button.btn.btn-secondary.js-show-cluster-token{ type: 'button' }
             = s_('ClusterIntegration|Show')
-          = clipboard_button(text: @cluster.platform_kubernetes.token, title: s_('ClusterIntegration|Copy Token'), class: 'btn-default')
+          = clipboard_button(text: @cluster.platform_kubernetes.token, title: s_('ClusterIntegration|Copy Token'), class: 'btn-secondary')
 
     .form-group
       = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')

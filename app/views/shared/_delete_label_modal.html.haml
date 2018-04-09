@@ -11,7 +11,7 @@
           %span will be permanently deleted from #{label.is_a?(ProjectLabel)? label.project.name : label.group.name}. This cannot be undone.
 
       .modal-footer
-        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-secondary' } Cancel
 
         = link_to 'Delete label',
           destroy_label_path(label),

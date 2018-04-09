@@ -27,7 +27,7 @@
           %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
           - if can?(current_user, :admin_list, current_board_parent)
-            %button.issue-count-badge-add-button.btn.btn-sm.btn-default.has-tooltip.js-no-trigger-collapse{ type: "button",
+            %button.issue-count-badge-add-button.btn.btn-sm.btn-secondary.has-tooltip.js-no-trigger-collapse{ type: "button",
               "@click" => "showNewIssueForm",
               "v-if" => 'list.type !== "closed"',
               "aria-label" => "New issue",

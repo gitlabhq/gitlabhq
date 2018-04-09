@@ -57,7 +57,7 @@
     <button
       v-tooltip
       type="button"
-      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container"
+      class="dropdown btn btn-secondary dropdown-new js-dropdown-play-icon-container"
       data-container="body"
       data-toggle="dropdown"
       :title="title"

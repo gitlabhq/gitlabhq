@@ -9,7 +9,7 @@
   = render "shared/label_row", label: label
 
   .visible-xs.visible-sm-inline-block.dropdown
-    %button.btn.btn-default.label-options-toggle{ type: 'button', data: { toggle: "dropdown" } }
+    %button.btn.btn-secondary.label-options-toggle{ type: 'button', data: { toggle: "dropdown" } }
       Options
       = icon('caret-down')
     .dropdown-menu.dropdown-menu-align-right
@@ -71,7 +71,7 @@
     - if current_user
       .label-subscription.inline
         - if can_subscribe_to_label_in_different_levels?(label)
-          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-secondary{ type: 'button', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
             %span Unsubscribe
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
@@ -86,7 +86,7 @@
                 %a.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
                   Group level
         - else
-          %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_path } }
+          %button.js-subscribe-button.label-subscribe-button.btn.btn-secondary{ type: 'button', data: { status: status, url: toggle_subscription_path } }
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 

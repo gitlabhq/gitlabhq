@@ -15,7 +15,7 @@
       .col-sm-6
         .nav-controls
           - if @environment.external_url.present?
-            = link_to @environment.external_url, class: 'btn btn-default', target: '_blank', rel: 'noopener noreferrer nofollow' do
+            = link_to @environment.external_url, class: 'btn btn-secondary', target: '_blank', rel: 'noopener noreferrer nofollow' do
               = icon('external-link')
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
 

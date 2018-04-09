@@ -42,7 +42,7 @@
         @click="refreshWidget"
         :disabled="isRefreshing"
         type="button"
-        class="btn btn-xs btn-default"
+        class="btn btn-xs btn-secondary"
       >
         <loading-icon
           v-if="isRefreshing"

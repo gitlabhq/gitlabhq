@@ -104,7 +104,7 @@
         %p
           Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.
         = link_to 'Run housekeeping', housekeeping_project_path(@project),
-            method: :post, class: "btn btn-default"
+            method: :post, class: "btn btn-secondary"
       - if can? current_user, :archive_project, @project
         .sub-section
           %h4.warning-title

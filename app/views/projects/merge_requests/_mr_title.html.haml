@@ -16,12 +16,12 @@
         .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
       = issuable_meta(@merge_request, @project, "Merge request")
 
-    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+    %a.btn.btn-secondary.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = icon('angle-double-left')
 
   .detail-page-header-actions.js-issuable-actions
     .clearfix.issue-btn-group.dropdown
-      %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
+      %button.btn.btn-secondary.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
         Options
         = icon('caret-down')
       .dropdown-menu.dropdown-menu-align-right.hidden-lg

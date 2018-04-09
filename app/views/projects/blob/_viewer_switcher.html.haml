@@ -4,9 +4,9 @@
 
   .btn-group.js-blob-viewer-switcher{ role: "group" }
     - simple_label = "Display #{simple_viewer.switcher_title}"
-    %button.btn.btn-default.btn-sm.js-blob-viewer-switch-btn.has-tooltip{ 'aria-label' => simple_label, title: simple_label, data: { viewer: 'simple', container: 'body' } }>
+    %button.btn.btn-secondary.btn-sm.js-blob-viewer-switch-btn.has-tooltip{ 'aria-label' => simple_label, title: simple_label, data: { viewer: 'simple', container: 'body' } }>
       = icon(simple_viewer.switcher_icon)
 
     - rich_label = "Display #{rich_viewer.switcher_title}"
-    %button.btn.btn-default.btn-sm.js-blob-viewer-switch-btn.has-tooltip{ 'aria-label' => rich_label, title: rich_label, data: { viewer: 'rich', container: 'body' } }>
+    %button.btn.btn-secondary.btn-sm.js-blob-viewer-switch-btn.has-tooltip{ 'aria-label' => rich_label, title: rich_label, data: { viewer: 'rich', container: 'body' } }>
       = icon(rich_viewer.switcher_icon)

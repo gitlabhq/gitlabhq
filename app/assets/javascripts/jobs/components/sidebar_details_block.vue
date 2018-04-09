@@ -173,7 +173,7 @@
           class="btn-group prepend-top-5"
           role="group">
           <a
-            class="js-cancel-job btn btn-sm btn-default"
+            class="js-cancel-job btn btn-sm btn-secondary"
             :href="job.cancel_path"
             data-method="post"
             rel="nofollow"

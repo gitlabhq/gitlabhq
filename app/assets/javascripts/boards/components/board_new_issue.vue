@@ -130,7 +130,7 @@ export default {
             Submit issue
           </button>
           <button
-            class="btn btn-default pull-right"
+            class="btn btn-secondary pull-right"
             type="button"
             @click="cancel"
           >

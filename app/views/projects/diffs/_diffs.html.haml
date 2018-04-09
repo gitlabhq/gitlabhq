@@ -8,7 +8,7 @@
   .files-changed-inner
     .inline-parallel-buttons.hidden-xs.hidden-sm
       - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
-        = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-default'
+        = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-secondary'
       - if show_whitespace_toggle
         - if current_controller?(:commit)
           = commit_diff_whitespace_link(diffs.project, @commit, class: 'hidden-xs')

@@ -18,7 +18,7 @@
     = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn'
     - unless user == current_user
       .dropdown.inline
-        %a.dropdown-new.btn.btn-default#project-settings-button{ href: '#', data: { toggle: 'dropdown' } }
+        %a.dropdown-new.btn.btn-secondary#project-settings-button{ href: '#', data: { toggle: 'dropdown' } }
           = icon('cog')
           = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right

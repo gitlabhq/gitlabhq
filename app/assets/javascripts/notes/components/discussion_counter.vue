@@ -99,7 +99,7 @@ export default {
           v-tooltip
           title="Resolve all discussions in new issue"
           data-container="body"
-          class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
+          class="new-issue-for-discussion btn btn-secondary discussion-create-issue-btn">
           <span v-html="mrIssueSvg"></span>
         </a>
       </div>
@@ -112,7 +112,7 @@ export default {
           v-tooltip
           title="Jump to first unresolved discussion"
           data-container="body"
-          class="btn btn-default discussion-next-btn">
+          class="btn btn-secondary discussion-next-btn">
           <span v-html="nextDiscussionSvg"></span>
         </button>
       </div>

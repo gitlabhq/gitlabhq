@@ -45,7 +45,7 @@
     <button
       v-tooltip
       type="button"
-      class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
+      class="dropdown-new btn btn-secondary js-pipeline-dropdown-manual-actions"
       title="Manual job"
       data-toggle="dropdown"
       data-placement="top"

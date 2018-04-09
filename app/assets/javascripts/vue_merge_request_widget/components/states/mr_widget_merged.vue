@@ -137,7 +137,7 @@
         <a
           v-if="mr.canCherryPickInCurrentMR"
           v-tooltip
-          class="btn btn-default btn-xs"
+          class="btn btn-secondary btn-xs"
           href="#modal-cherry-pick-commit"
           data-toggle="modal"
           data-container="body"
@@ -148,7 +148,7 @@
         <a
           v-else-if="mr.cherryPickInForkPath"
           v-tooltip
-          class="btn btn-default btn-xs"
+          class="btn btn-secondary btn-xs"
           data-method="post"
           :href="mr.cherryPickInForkPath"
           :title="cherryPickTitle"
@@ -175,7 +175,7 @@
             @click="removeSourceBranch"
             :disabled="isMakingRequest"
             type="button"
-            class="btn btn-xs btn-default js-remove-branch-button"
+            class="btn btn-xs btn-secondary js-remove-branch-button"
           >
             {{ s__("mrWidget|Remove Source Branch") }}
           </button>

@@ -303,7 +303,7 @@
         <async-button-component
           v-if="pipeline.flags.retryable"
           :endpoint="pipeline.retry_path"
-          css-class="js-pipelines-retry-button btn-default btn-retry"
+          css-class="js-pipelines-retry-button btn-secondary btn-retry"
           title="Retry"
           icon="repeat"
           :pipeline-id="pipeline.id"

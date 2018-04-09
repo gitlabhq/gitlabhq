@@ -38,7 +38,7 @@ export default {
   <div class="sidebar-item-warning-message-actions">
     <button
       type="button"
-      class="btn btn-default append-right-10"
+      class="btn btn-secondary append-right-10"
       @click="closeForm"
     >
       {{ __('Cancel') }}

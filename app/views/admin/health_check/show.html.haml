@@ -11,7 +11,7 @@
     %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
     .prepend-top-10
       = button_to _("Reset health check access token"), reset_health_check_token_admin_application_settings_path,
-        method: :put, class: 'btn btn-default',
+        method: :put, class: 'btn btn-secondary',
         data: { confirm: _('Are you sure you want to reset the health check token?') }
   %p.light
     #{ _('Health information can be retrieved from the following endpoints. More information is available') }

@@ -18,7 +18,7 @@
       btnCssClass: {
         type: String,
         required: false,
-        default: 'btn-default',
+        default: 'btn-secondary',
       },
     },
     data() {

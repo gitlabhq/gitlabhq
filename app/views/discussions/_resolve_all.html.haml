@@ -3,6 +3,6 @@
     ":can-resolve" => discussion.can_resolve?(current_user),
     "inline-template" => true }
   .btn-group{ role: "group", "v-if" => "showButton" }
-    %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading", "v-cloak" => "true" }
+    %button.btn.btn-secondary{ type: "button", "@click" => "resolve", ":disabled" => "loading", "v-cloak" => "true" }
       = icon("spinner spin", "v-show" => "loading")
       {{ buttonText }}

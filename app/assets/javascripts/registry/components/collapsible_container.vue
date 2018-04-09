@@ -86,7 +86,7 @@
         v-if="repo.location"
         :text="clipboardText"
         :title="repo.location"
-        css-class="btn-default btn-transparent btn-clipboard"
+        css-class="btn-secondary btn-transparent btn-clipboard"
       />
 
       <div class="controls hidden-xs pull-right">

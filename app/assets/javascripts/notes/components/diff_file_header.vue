@@ -35,7 +35,7 @@ export default {
         <clipboard-button
           title="Copy file path to clipboard"
           :text="diffFile.submoduleLink"
-          css-class="btn-default btn-transparent btn-clipboard"
+          css-class="btn-secondary btn-transparent btn-clipboard"
         />
       </span>
     </div>
@@ -80,7 +80,7 @@ export default {
       <clipboard-button
         title="Copy file path to clipboard"
         :text="diffFile.filePath"
-        css-class="btn-default btn-transparent btn-clipboard"
+        css-class="btn-secondary btn-transparent btn-clipboard"
       />
 
       <small

@@ -2,7 +2,7 @@
 - if current_user
   %jump-to-discussion{ "inline-template" => true, ":discussion-id" => "'#{discussion.try(:id)}'" }
     .btn-group{ role: "group", "v-show" => "!allResolved", "v-if" => "showButton" }
-      %button.btn.btn-default.discussion-next-btn.has-tooltip{ "@click" => "jumpToNextUnresolvedDiscussion",
+      %button.btn.btn-secondary.discussion-next-btn.has-tooltip{ "@click" => "jumpToNextUnresolvedDiscussion",
         ":title" => "buttonText",
         ":aria-label" => "buttonText",
         data: { container: "body" } }

@@ -33,10 +33,10 @@
     - take_ownership_confirmation = "By taking ownership you will bind this trigger to your user account. With this the trigger will have access to all your projects as if it was you. Are you sure?"
     - revoke_trigger_confirmation = "By revoking a trigger you will break any processes making use of it. Are you sure?"
     - if trigger.owner != current_user && can?(current_user, :manage_trigger, trigger)
-      = link_to 'Take ownership', take_ownership_project_trigger_path(@project, trigger), data: { confirm: take_ownership_confirmation }, method: :post, class: "btn btn-default btn-sm btn-trigger-take-ownership"
+      = link_to 'Take ownership', take_ownership_project_trigger_path(@project, trigger), data: { confirm: take_ownership_confirmation }, method: :post, class: "btn btn-secondary btn-sm btn-trigger-take-ownership"
     - if can?(current_user, :admin_trigger, trigger)
-      = link_to edit_project_trigger_path(@project, trigger), method: :get, title: "Edit", class: "btn btn-default btn-sm" do
+      = link_to edit_project_trigger_path(@project, trigger), method: :get, title: "Edit", class: "btn btn-secondary btn-sm" do
         %i.fa.fa-pencil
     - if can?(current_user, :manage_trigger, trigger)
-      = link_to project_trigger_path(@project, trigger), data: { confirm: revoke_trigger_confirmation }, method: :delete, title: "Revoke", class: "btn btn-default btn-warning btn-sm btn-trigger-revoke" do
+      = link_to project_trigger_path(@project, trigger), data: { confirm: revoke_trigger_confirmation }, method: :delete, title: "Revoke", class: "btn btn-secondary btn-warning btn-sm btn-trigger-revoke" do
         %i.fa.fa-trash

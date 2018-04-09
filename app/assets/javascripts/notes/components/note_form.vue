@@ -191,7 +191,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
         <button
           v-if="note.resolvable"
           @click.prevent="handleUpdate(true)"
-          class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
+          class="btn btn-nr btn-secondary append-right-10 js-comment-resolve-button"
         >
           {{ resolveButtonTitle }}
         </button>

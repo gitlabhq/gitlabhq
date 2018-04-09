@@ -127,7 +127,7 @@ export default {
           <button
             v-if="!discardDraftButtonDisabled"
             type="button"
-            class="btn btn-default btn-sm pull-right"
+            class="btn btn-secondary btn-sm pull-right"
             @click="discardDraft"
           >
             {{ __('Discard draft') }}

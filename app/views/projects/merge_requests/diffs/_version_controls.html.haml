@@ -3,7 +3,7 @@
     .mr-version-menus-container.content-block
       Changes between
       %span.dropdown.inline.mr-version-dropdown
-        %a.dropdown-toggle.btn.btn-default{ data: {toggle: :dropdown} }
+        %a.dropdown-toggle.btn.btn-secondary{ data: {toggle: :dropdown} }
           %span
             - if @merge_request_diff.latest?
               latest version
@@ -36,7 +36,7 @@
       - if @merge_request_diff.base_commit_sha
         and
         %span.dropdown.inline.mr-version-compare-dropdown
-          %a.btn.btn-default.dropdown-toggle{ data: {toggle: :dropdown} }
+          %a.btn.btn-secondary.dropdown-toggle{ data: {toggle: :dropdown} }
             - if @start_version
               version #{version_index(@start_version)}
             - else

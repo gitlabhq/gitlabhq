@@ -1,5 +1,5 @@
 - if current_user
-  %button.btn.btn-default.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(@project, :json) } }
+  %button.btn.btn-secondary.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(@project, :json) } }
     - if current_user.starred?(@project)
       = sprite_icon('star')
       %span.starred= _('Unstar')
