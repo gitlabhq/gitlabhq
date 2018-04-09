@@ -14,7 +14,7 @@ function formatText(text) {
 
 const REALTIME_REQUEST_STACK = [issueShowData.initialRequest, issueShowData.secondRequest];
 
-describe('Issuable output', () => {
+fdescribe('Issuable output', () => {
   let mock;
   let realtimeRequestCount = 0;
   let vm;
@@ -266,11 +266,11 @@ describe('Issuable output', () => {
         );
       });
 
-      it('closes form on error', done => {
+      it('does not close form on error', done => {
         vm.updateIssuable();
 
         setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+          expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
           expect(window.Flash).toHaveBeenCalledWith('Error updating issue');
 
           done();
@@ -284,7 +284,6 @@ describe('Issuable output', () => {
           vm.updateIssuable();
 
           setTimeout(() => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
             expect(window.Flash).toHaveBeenCalledWith('Error updating merge request');
 
             done();
@@ -341,8 +340,9 @@ describe('Issuable output', () => {
   it('opens recaptcha modal if update rejected as spam', done => {
     function mockScriptSrc() {
       const recaptchaChild = vm.$children.find(
+        // eslint-disable-next-line no-underscore-dangle
         child => child.$options._componentTag === 'recaptcha-modal',
-      ); // eslint-disable-line no-underscore-dangle
+      );
 
       recaptchaChild.scriptSrc = '//scriptsrc';
     }

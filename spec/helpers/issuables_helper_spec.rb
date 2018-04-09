@@ -187,6 +187,7 @@ describe IssuablesHelper do
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
+        initialLockVersion: nil,
         initialTaskStatus: '0 of 0 tasks completed'
       }
       expect(helper.issuable_initial_data(issue)).to eq(expected_data)
