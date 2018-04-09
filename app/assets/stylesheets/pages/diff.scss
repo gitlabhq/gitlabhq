@@ -80,13 +80,13 @@
 
       &.left-side-selected {
         td.line_content.parallel.right-side {
-          @include user-select(none);
+          user-select: none;
         }
       }
 
       &.right-side-selected {
         td.line_content.parallel.left-side {
-          @include user-select(none);
+          user-select: none;
         }
       }
     }
@@ -103,7 +103,7 @@
 
     .old_line,
     .new_line {
-      @include user-select(none);
+      user-select: none;
       margin: 0;
       border: 0;
       padding: 0 5px;

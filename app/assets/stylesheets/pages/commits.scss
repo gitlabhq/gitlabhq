@@ -317,7 +317,7 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $gray-darkest);
+    @include status-color($gray-dark, color("gray"), $gray-darkest);
     border-color: $gray-darkest;
   }
 }

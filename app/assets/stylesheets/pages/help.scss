@@ -29,7 +29,7 @@
 
   .key {
     @extend .badge.badge-pill;
-    @extend .badge.badge-pill-inverse;
+    background-color: $label-inverse-bg;
     font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
     padding: 3px 5px;
   }

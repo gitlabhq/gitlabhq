@@ -419,7 +419,7 @@ table.u2f-registrations {
     }
 
     &.unverified {
-      @include status-color($gray-dark, $gray, $common-gray-dark);
+      @include status-color($gray-dark, color("gray"), $common-gray-dark);
     }
   }
 }
