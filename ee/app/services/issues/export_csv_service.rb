@@ -43,6 +43,7 @@ module Issues
        'Updated At (UTC)' => -> (issue) { issue.updated_at&.to_s(:csv) },
        'Closed At (UTC)' => -> (issue) { issue.closed_at&.to_s(:csv) },
        'Milestone' => -> (issue) { issue.milestone&.title },
+       'Weight' => -> (issue) { issue.weight },
        'Labels' => -> (issue) { @labels[issue.id].sort.join(',').presence },
        'Time Estimate' => ->(issue) { issue.time_estimate.to_s(:csv) },
        'Time Spent' => -> (issue) { issue.timelogs.map(&:time_spent).inject(0, :+)}
