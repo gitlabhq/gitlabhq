@@ -42,6 +42,7 @@ describe Issues::ExportCsvService do
                     updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
                     closed_at: DateTime.new(2017, 6, 5, 4, 3, 2),
                     weight: 4,
+                    discussion_locked: true,
                     labels: [feature_label, idea_label],
                     time_estimate: 72000)
       issue.timelogs.create(time_spent: 360, user: user)
@@ -117,6 +118,10 @@ describe Issues::ExportCsvService do
     specify 'closed_at' do
       expect(csv[0]['Closed At (UTC)']).to eq '2017-06-05 04:03:02'
       expect(csv[1]['Closed At (UTC)']).to eq nil
+    end
+
+    specify 'discussion_locked' do
+      expect(csv[0]['Locked']).to eq 'Yes'
     end
 
     specify 'weight' do
