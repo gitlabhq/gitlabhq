@@ -478,9 +478,7 @@ describe MergeRequestPresenter do
         allow(resource.project).to receive(:ci_config_path).and_return(nil)
       end
 
-      it 'returns false' do
-        is_expected.to eq false
-      end
+      it { is_expected.to eq false }
     end
 
     context 'when project has custom_ci_path configured' do
@@ -494,9 +492,7 @@ describe MergeRequestPresenter do
           allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(true)
         end
 
-        it 'returns true' do
-          is_expected.to eq true
-        end
+        it { is_expected.to eq true }
       end
 
       context 'when merge request does not have file at custom_ci_path' do
@@ -505,9 +501,7 @@ describe MergeRequestPresenter do
           allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(false)
         end
 
-        it 'returns false' do
-          is_expected.to eq false
-        end
+        it { is_expected.to eq false }
       end
     end
   end
