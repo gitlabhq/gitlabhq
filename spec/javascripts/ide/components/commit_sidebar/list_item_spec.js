@@ -73,7 +73,7 @@ describe('Multi-file editor commit sidebar list item', () => {
       it('returns addition when not a tempFile', () => {
         f.tempFile = true;
 
-        expect(vm.iconName).toBe('file-addition');
+        expect(vm.iconName).toBe('file-additions');
       });
     });
 
