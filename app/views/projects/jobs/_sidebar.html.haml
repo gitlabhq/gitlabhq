@@ -5,7 +5,7 @@
         %strong.inline.prepend-top-8
           = @build.name
         - if can?(current_user, :update_build, @build) && @build.retryable?
-          = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button float-right btn btn-inverted-secondary btn-retry visible-md-block visible-lg-block', method: :post
+          = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button float-right btn btn-inverted-secondary btn-retry d-block d-lg-none visible-lg-block', method: :post
         %a.gutter-toggle.float-right.d-block.d-sm-none.d-md-none.js-sidebar-build-toggle{ href: "#", 'aria-label': 'Toggle Sidebar', role: 'button' }
           = icon('angle-double-right')
 
