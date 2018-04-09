@@ -97,7 +97,7 @@ export default {
           <td class="notes_content">
             <div class="content">
               <diff-discussions
-                :notes="discussionsByLineCode[line.lineCode]"
+                :notes="discussionsByLineCode[line.lineCode] || []"
               />
               <diff-line-note-form
                 v-if="diffLineCommentForms[line.lineCode]"
