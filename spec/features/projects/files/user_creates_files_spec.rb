@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User creates files' do
+describe 'Projects > Files > User creates files' do
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -57,6 +57,31 @@ describe 'User creates files' do
         find('.add-to-tree').click
         click_link('New file')
         expect(page).to have_selector('.file-editor')
+      end
+
+      def submit_new_file(options)
+        file_name = find('#file_name')
+        file_name.set options[:file_name] || 'README.md'
+
+        file_content = find('#file-content', visible: false)
+        file_content.set options[:file_content] || 'Some content'
+
+        click_button 'Commit changes'
+      end
+
+      it 'allows Chinese characters in file name' do
+        submit_new_file(file_name: '测试.md')
+        expect(page).to have_content 'The file has been successfully created.'
+      end
+
+      it 'allows Chinese characters in directory name' do
+        submit_new_file(file_name: '中文/测试.md')
+        expect(page).to have_content 'The file has been successfully created'
+      end
+
+      it 'does not allow directory traversal in file name' do
+        submit_new_file(file_name: '../README.md')
+        expect(page).to have_content 'Path cannot include directory traversal'
       end
 
       it 'creates and commit a new file', :js do

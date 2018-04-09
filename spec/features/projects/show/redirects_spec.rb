@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project redirects' do
+describe 'Projects > Show > Redirects' do
   let(:user) { create :user }
   let(:public_project) { create :project, :public }
   let(:private_project) { create :project, :private }

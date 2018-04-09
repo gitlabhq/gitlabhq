@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Download buttons in project main page' do
+feature 'Projects > Show > Download buttons' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }
