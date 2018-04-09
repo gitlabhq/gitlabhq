@@ -27,7 +27,7 @@
               %span= time_ago_in_words @build.artifacts_expire_at
 
           - if @build.artifacts?
-            .btn-group.btn-group-justified{ role: :group }
+            .btn-group.btn-group.d-flex{ role: :group }
               - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
                 = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-secondary', method: :post do
                   Keep
@@ -51,7 +51,7 @@
 
           - if @build.trigger_variables.any?
             %p
-              %button.btn.group.btn-group-justified.js-reveal-variables Reveal Variables
+              %button.btn.group.btn-group.d-flex.js-reveal-variables Reveal Variables
 
             %dl.js-build-variables.trigger-build-variables.hide
               - @build.trigger_variables.each do |trigger_variable|

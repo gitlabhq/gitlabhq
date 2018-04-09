@@ -22,7 +22,7 @@
       - if discussion.potentially_resolvable?
         - line_type = local_assigns.fetch(:line_type, nil)
 
-        .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
+        .btn-group.d-flex.discussion-with-resolve-btn{ role: "group" }
           .btn-group{ role: "group" }
             = link_to_reply_discussion(discussion, line_type)
 
