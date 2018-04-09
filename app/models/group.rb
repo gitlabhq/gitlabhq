@@ -15,9 +15,9 @@ class Group < Namespace
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
-  has_many :users, through: :group_members
+  has_many :users, -> { auto_include(false) }, through: :group_members
   has_many :owners,
-    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
+    -> { where(members: { access_level: Gitlab::Access::OWNER }).auto_include(false) },
     through: :group_members,
     source: :user
 
@@ -26,7 +26,7 @@ class Group < Namespace
 
   has_many :milestones
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :shared_projects, -> { auto_include(false) }, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
