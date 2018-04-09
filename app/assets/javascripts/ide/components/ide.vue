@@ -80,12 +80,12 @@ export default {
           class="ide-empty-state"
         >
           <div class="row js-empty-state">
-            <div class="col-xs-12">
+            <div class="col-12">
               <div class="svg-content svg-250">
                 <img :src="emptyStateSvgPath" />
               </div>
             </div>
-            <div class="col-xs-12">
+            <div class="col-12">
               <div class="text-content text-center">
                 <h4>
                   Welcome to the GitLab IDE

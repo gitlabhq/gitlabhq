@@ -139,12 +139,12 @@ export default {
       v-else-if="!rightPanelCollapsed"
       class="row js-empty-state"
     >
-      <div class="col-xs-10 col-xs-offset-1">
+      <div class="col-10 col-offset-1">
         <div class="svg-content svg-80">
           <img :src="statusSvg" />
         </div>
       </div>
-      <div class="col-xs-10 col-xs-offset-1">
+      <div class="col-10 col-offset-1">
         <div
           class="text-content text-center"
           v-if="!lastCommitMsg"
