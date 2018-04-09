@@ -37,7 +37,10 @@ import tooltip from '~/vue_shared/directives/tooltip'; // eslint-disable-line im
 export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
+<<<<<<< HEAD
   const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
+=======
+>>>>>>> upstream/master
 
   window.gl = window.gl || {};
 
