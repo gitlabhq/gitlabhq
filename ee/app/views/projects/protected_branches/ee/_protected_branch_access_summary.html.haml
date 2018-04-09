@@ -1,5 +1,7 @@
-%td
-  = render partial: 'projects/settings/ee/access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.merge_access_levels, level_frequencies: access_level_frequencies(protected_branch.merge_access_levels), input_basic_name: 'merge_access_levels', toggle_class: 'js-allowed-to-merge' }
+- can_unprotect = can?(current_user, :update_protected_branch, protected_branch)
 
 %td
-  = render partial: 'projects/settings/ee/access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.push_access_levels, level_frequencies: access_level_frequencies(protected_branch.push_access_levels), input_basic_name: 'push_access_levels', toggle_class: 'js-allowed-to-push' }
+  = render partial: 'projects/settings/ee/access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.merge_access_levels, level_frequencies: access_level_frequencies(protected_branch.merge_access_levels), input_basic_name: 'merge_access_levels', toggle_class: "js-allowed-to-merge", disabled: !can_unprotect }
+
+%td
+  = render partial: 'projects/settings/ee/access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.push_access_levels, level_frequencies: access_level_frequencies(protected_branch.push_access_levels), input_basic_name: 'push_access_levels', toggle_class: "js-allowed-to-push", disabled: !can_unprotect }

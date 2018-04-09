@@ -166,4 +166,43 @@ shared_examples "protected branches > access control > EE" do
       expect(access_levels.map(&:access_level)).to include(0)
     end
   end
+
+  describe 'protected branch restrictions' do
+    let!(:protected_branch) { create(:protected_branch, project: project) }
+
+    before do
+      stub_licensed_features(unprotection_restrictions: true)
+    end
+
+    it 'unprotect/delete can be performed by a master' do
+      visit project_protected_branches_path(project)
+
+      expect do
+        accept_alert { click_on 'Unprotect' }
+      end.to change(ProtectedBranch, :count).to(0)
+    end
+
+    context 'with unprotect access levels' do
+      before do
+        protected_branch.unprotect_access_levels.create!(access_level: Gitlab::Access::NO_ACCESS)
+      end
+
+      it 'can prevent unprotect/delete' do
+        visit project_protected_branches_path(project)
+
+        expect(page).to have_link('Unprotect')
+        expect(find_link('Unprotect')[:disabled]).to eq 'true'
+      end
+
+      it 'can prevent update' do
+        visit project_protected_branches_path(project)
+
+        %w(push merge).each do |operation|
+          within ".js-protected-branch-edit-form .#{operation}_access_levels-container" do
+            expect(page).to have_css('button[disabled]')
+          end
+        end
+      end
+    end
+  end
 end
