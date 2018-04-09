@@ -18,8 +18,8 @@
     - if current_user
       %li.breadcrumb-item
         %a.btn.add-to-tree{ addtotree_toggle_attributes }
-          = sprite_icon('plus', size: 16, css_class: 'pull-left')
-          = sprite_icon('arrow-down', size: 16, css_class: 'pull-left')
+          = sprite_icon('plus', size: 16, css_class: 'float-left')
+          = sprite_icon('arrow-down', size: 16, css_class: 'float-left')
         - if on_top_of_branch?
           .add-to-tree-dropdown
             %ul.dropdown-menu

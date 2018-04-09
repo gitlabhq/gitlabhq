@@ -122,7 +122,7 @@ export default {
         />
         <div class="clearfix prepend-top-10">
           <button
-            class="btn btn-success pull-left"
+            class="btn btn-success float-left"
             type="submit"
             :disabled="disabled"
             ref="submit-button"

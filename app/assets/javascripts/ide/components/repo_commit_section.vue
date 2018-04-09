@@ -120,7 +120,7 @@ export default {
           <loading-button
             :loading="submitCommitLoading"
             :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm pull-left"
+            container-class="btn btn-success btn-sm float-left"
             :label="__('Commit')"
             @click="commitChanges"
           />

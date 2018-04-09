@@ -6,7 +6,7 @@
 - toggle_class = "#{button_responsive_class} btn btn-nr dropdown-toggle js-issuable-close-toggle"
 - button_method = issuable_close_reopen_button_method(issuable)
 
-.pull-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
+.float-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
   = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable),
             method: button_method, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}"
 

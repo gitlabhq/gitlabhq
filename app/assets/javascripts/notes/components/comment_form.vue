@@ -373,7 +373,7 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
               </markdown-field>
               <div class="note-form-actions">
                 <div
-                  class="pull-left btn-group
+                  class="float-left btn-group
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click.prevent="handleSave()"

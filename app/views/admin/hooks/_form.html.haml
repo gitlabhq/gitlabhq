@@ -17,28 +17,28 @@
         or adding ssh key. But you can also enable extra triggers like Push events.
 
     .prepend-top-default
-      = form.check_box :repository_update_events, class: 'pull-left'
+      = form.check_box :repository_update_events, class: 'float-left'
       .prepend-left-20
         = form.label :repository_update_events, class: 'list-label' do
           %strong Repository update events
         %p.light
           This URL will be triggered when repository is updated
     %li
-      = form.check_box :push_events, class: 'pull-left'
+      = form.check_box :push_events, class: 'float-left'
       .prepend-left-20
         = form.label :push_events, class: 'list-label' do
           %strong Push events
         %p.light
           This URL will be triggered for each branch updated to the repository
     %li
-      = form.check_box :tag_push_events, class: 'pull-left'
+      = form.check_box :tag_push_events, class: 'float-left'
       .prepend-left-20
         = form.label :tag_push_events, class: 'list-label' do
           %strong Tag push events
         %p.light
           This URL will be triggered when a new tag is pushed to the repository
     %li
-      = form.check_box :merge_requests_events, class: 'pull-left'
+      = form.check_box :merge_requests_events, class: 'float-left'
       .prepend-left-20
         = form.label :merge_requests_events, class: 'list-label' do
           %strong Merge request events

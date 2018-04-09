@@ -99,7 +99,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <slot name="header">
-              <h4 class="modal-title pull-left">
+              <h4 class="modal-title float-left">
                 {{ title }}
               </h4>
               <button

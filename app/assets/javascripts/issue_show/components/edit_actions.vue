@@ -51,7 +51,7 @@
 <template>
   <div class="prepend-top-default append-bottom-default clearfix">
     <button
-      class="btn btn-save pull-left"
+      class="btn btn-save float-left"
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       type="submit"
       :disabled="formState.updateLoading || !isSubmitEnabled"

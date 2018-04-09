@@ -42,7 +42,7 @@ export default {
         target="_blank">
         <icon
           name="download"
-          css-classes="pull-left append-right-8"
+          css-classes="float-left append-right-8"
           :size="16"
         />
         {{ __('Download') }}

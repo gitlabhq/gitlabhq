@@ -27,7 +27,7 @@
           \- Runner will not receive any new jobs
 
   .bs-callout.clearfix
-    .pull-left
+    .float-left
       %p
         You can reset runners registration token by pressing a button below.
       .prepend-top-10
@@ -39,7 +39,7 @@
            locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
   .append-bottom-20.clearfix
-    .pull-left
+    .float-left
       = form_tag admin_runners_path, id: 'runners-search', class: 'form-inline', method: :get do
         .form-group
           = search_field_tag :search, params[:search], class: 'form-control', placeholder: 'Runner description or token', spellcheck: false

@@ -45,7 +45,7 @@
 
 <template>
   <div>
-    <div class="pull-left append-right-10 hidden-xs">
+    <div class="float-left append-right-10 hidden-xs">
       <i
         aria-hidden="true"
         class="fa fa-key key-icon"

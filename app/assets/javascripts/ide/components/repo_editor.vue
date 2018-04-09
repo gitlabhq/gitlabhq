@@ -173,7 +173,7 @@ export default {
   >
     <div class="ide-mode-tabs clearfix">
       <ul
-        class="nav-links pull-left"
+        class="nav-links float-left"
         v-if="!shouldHideEditor">
         <li :class="editTabCSS">
           <a

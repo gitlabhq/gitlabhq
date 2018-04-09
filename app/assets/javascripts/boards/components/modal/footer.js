@@ -58,7 +58,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
   template: `
     <footer
       class="form-actions add-issues-footer">
-      <div class="pull-left">
+      <div class="float-left">
         <button
           class="btn btn-success"
           type="button"

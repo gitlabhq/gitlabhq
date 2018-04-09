@@ -4,7 +4,7 @@
   .issuable-sidebar.hidden
     = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: "bulk-update"  do
       .block.issuable-sidebar-header
-        .filter-item.inline.update-issues-btn.pull-left
+        .filter-item.inline.update-issues-btn.float-left
           = button_tag "Update all", class: "btn update-selected-issues btn-info", disabled: true
         = button_tag "Cancel", class: "btn btn-secondary js-bulk-update-menu-hide pull-right"
       .block

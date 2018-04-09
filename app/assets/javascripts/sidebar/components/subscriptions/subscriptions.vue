@@ -71,7 +71,7 @@
         />
       </span>
     </div>
-    <span class="issuable-header-text hide-collapsed pull-left">
+    <span class="issuable-header-text hide-collapsed float-left">
       {{ __('Notifications') }}
     </span>
     <toggle-button

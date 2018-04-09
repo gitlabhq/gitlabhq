@@ -5,7 +5,7 @@
 %div{ class: container_class }
   %h3.page-title= page_title
   .bs-callout.clearfix
-    .pull-left
+    .float-left
       %p
     #{ s_('HealthCheck|Access token is') }
     %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token

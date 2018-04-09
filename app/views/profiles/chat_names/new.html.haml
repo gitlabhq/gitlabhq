@@ -9,7 +9,7 @@
   .actions
     = form_tag profile_chat_names_path, method: :post do
       = hidden_field_tag :token, @chat_name_token.token
-      = submit_tag "Authorize", class: "btn btn-success wide pull-left"
+      = submit_tag "Authorize", class: "btn btn-success wide float-left"
     = form_tag deny_profile_chat_names_path, method: :delete do
       = hidden_field_tag :token, @chat_name_token.token
       = submit_tag "Deny", class: "btn btn-danger prepend-left-10"

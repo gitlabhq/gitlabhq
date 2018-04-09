@@ -20,7 +20,7 @@
       .col-sm-10
         - @service.configurable_events.each do |event|
           %div
-            = form.check_box service_event_field_name(event), class: 'pull-left'
+            = form.check_box service_event_field_name(event), class: 'float-left'
             .prepend-left-20
               = form.label service_event_field_name(event), class: 'list-label' do
                 %strong
