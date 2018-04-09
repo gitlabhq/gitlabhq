@@ -1049,7 +1049,8 @@ module Gitlab
       end
 
       def license_short_name
-        gitaly_migrate(:license_short_name) do |is_enabled|
+        gitaly_migrate(:license_short_name,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.license_short_name
           else
