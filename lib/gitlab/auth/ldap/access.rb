@@ -52,6 +52,8 @@ module Gitlab
             block_user(user, 'does not exist anymore')
             false
           end
+        rescue LDAPConnectionError
+          false
         end
 
         def adapter

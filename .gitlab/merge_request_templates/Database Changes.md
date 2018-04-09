@@ -33,13 +33,16 @@ When removing columns, tables, indexes or other structures:
 
 ## General Checklist
 
-- [ ] [Changelog entry](https://docs.gitlab.com/ce/development/changelog.html) added, if necessary
-- [ ] [Documentation created/updated](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/doc_styleguide.md)
+- [ ] [Changelog entry](https://docs.gitlab.com/ee/development/changelog.html) added, if necessary
+- [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/doc_styleguide.html)
 - [ ] API support added
 - [ ] Tests added for this feature/bug
 - Review
   - [ ] Has been reviewed by Backend
   - [ ] Has been reviewed by Database
-- [ ] Conform by the [merge request performance guides](http://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
-- [ ] Conform by the [style guides](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#style-guides)
+- [ ] Conform by the [merge request performance guides](https://docs.gitlab.com/ee/development/merge_request_performance_guidelines.html)
+- [ ] Conform by the [style guides](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/CONTRIBUTING.md#style-guides)
 - [ ] [Squashed related commits together](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
+- [ ] Internationalization required/considered
+- [ ] If paid feature, have we considered GitLab.com plan and how it works for groups and is there a design for promoting it to users who aren't on the correct plan
+- [ ] End-to-end tests pass (`package-qa` manual pipeline job)

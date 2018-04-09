@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def execute
-        if import_file && check_version! && [repo_restorer, wiki_restorer, project_tree, avatar_restorer, uploads_restorer].all?(&:restore)
+        if import_file && check_version! && restorers.all?(&:restore)
           project_tree.restored_project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))
@@ -23,6 +23,11 @@ module Gitlab
       end
 
       private
+
+      def restorers
+        [repo_restorer, wiki_restorer, project_tree, avatar_restorer,
+         uploads_restorer, lfs_restorer]
+      end
 
       def import_file
         Gitlab::ImportExport::FileImporter.import(archive_file: @archive_file,
@@ -58,6 +63,10 @@ module Gitlab
 
       def uploads_restorer
         Gitlab::ImportExport::UploadsRestorer.new(project: project_tree.restored_project, shared: @shared)
+      end
+
+      def lfs_restorer
+        Gitlab::ImportExport::LfsRestorer.new(project: project_tree.restored_project, shared: @shared)
       end
 
       def path_with_namespace

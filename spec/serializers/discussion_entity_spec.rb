@@ -6,7 +6,7 @@ describe DiscussionEntity do
   let(:user) { create(:user) }
   let(:note) { create(:discussion_note_on_merge_request) }
   let(:discussion) { note.discussion }
-  let(:request) { double('request') }
+  let(:request) { double('request', note_entity: ProjectNoteEntity) }
   let(:controller) { double('controller') }
   let(:entity) { described_class.new(discussion, request: request, context: controller) }
 

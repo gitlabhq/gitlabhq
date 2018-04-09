@@ -10,6 +10,7 @@ class DiffFileEntity < Grape::Entity
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file|
+    # This is causing a N+1 query
     submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first
   end
 
@@ -87,36 +88,9 @@ class DiffFileEntity < Grape::Entity
 
   # Used for inline diffs
   expose :highlighted_diff_lines, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
-    lines = diff_file.highlighted_diff_lines
-
-    add_bottom_match_line(lines, diff_file)
-
-    lines
+    diff_file.diff_lines_for_serializer
   end
 
   # Used for parallel diffs
   expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? }
-
-  private
-
-  # This adds the bottom line to the array which contains
-  # the data to load more context lines.
-  def add_bottom_match_line(lines, diff_file)
-    return if lines.empty?
-
-    last_line = lines.last
-
-    return unless last_line.new_pos < total_lines(diff_file.blob)
-
-    match_line = Gitlab::Diff::Line.new("" ,'match', nil, last_line.old_pos, last_line.new_pos)
-    lines.push(match_line)
-  end
-
-  def total_lines(blob)
-    @total_lines ||= begin
-      line_count = blob.lines.size
-      line_count -= 1 if line_count > 0 && blob.lines.last.blank?
-      line_count
-    end
-  end
 end

@@ -1,0 +1,19 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :authorized_keys_enabled do
+            = f.check_box :authorized_keys_enabled
+            Write to "authorized_keys" file
+          .help-block
+            By default, we write to the "authorized_keys" file to support Git
+            over SSH without additional configuration. GitLab can be optimized
+            to authenticate SSH keys via the database file. Only uncheck this
+            if you have configured your OpenSSH server to use the
+            AuthorizedKeysCommand. Click on the help icon for more details.
+            = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
+
+  = f.submit 'Save changes', class: "btn btn-success"

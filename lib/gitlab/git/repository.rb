@@ -96,7 +96,7 @@ module Gitlab
 
         storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
-          storage_path,
+          storage,
           relative_path,
           global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
           logger: Rails.logger
@@ -885,7 +885,8 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        gitaly_migrate(:delete_refs) do |is_enabled|
+        gitaly_migrate(:delete_refs,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_delete_refs(*ref_names)
           else

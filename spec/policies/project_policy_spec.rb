@@ -11,10 +11,10 @@ describe ProjectPolicy do
 
   let(:base_guest_permissions) do
     %i[
-      read_project read_board read_list read_wiki read_issue read_label
-      read_milestone read_project_snippet read_project_member
-      read_note create_project create_issue create_note
-      upload_file
+      read_project read_board read_list read_wiki read_issue
+      read_project_for_iids read_issue_iid read_merge_request_iid read_label
+      read_milestone read_project_snippet read_project_member read_note
+      create_project create_issue create_note upload_file
     ]
   end
 
@@ -120,7 +120,7 @@ describe ProjectPolicy do
         project.issues_enabled = false
         project.save!
 
-        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
       end
     end
 
@@ -131,7 +131,7 @@ describe ProjectPolicy do
         project.issues_enabled = false
         project.save!
 
-        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
       end
     end
   end

@@ -83,11 +83,11 @@ export default {
       class="js-file-title file-title"
     />
     <diff-content
-      v-if="isExpanded"
+      v-show="isExpanded"
       :diff-file="file"
     />
     <div
-      v-else
+      v-show="!isExpanded"
       class="nothing-here-block diff-collapsed"
     >
       This diff is collapsed.
