@@ -108,6 +108,9 @@ class ProjectWiki
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
     return false
+  rescue Gitlab::Git::Wiki::OperationError => e
+    @error_message = "Error performing the operation: #{e.message}"
+    return false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
@@ -116,6 +119,9 @@ class ProjectWiki
     wiki.update_page(page.path, title || page.name, format.to_sym, content, commit)
 
     update_project_activity
+  rescue Gitlab::Git::Wiki::OperationError => e
+    @error_message = "Error performing the operation: #{e.message}"
+    return false
   end
 
   def delete_page(page, message = nil)
@@ -124,6 +130,9 @@ class ProjectWiki
     wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
 
     update_project_activity
+  rescue Gitlab::Git::Wiki::OperationError => e
+    @error_message = "Error performing the operation: #{e.message}"
+    return false
   end
 
   def page_formatted_data(page)
@@ -179,7 +188,11 @@ class ProjectWiki
   def commit_details(action, message = nil, title = nil)
     commit_message = message || default_message(action, title)
 
-    Gitlab::Git::Wiki::CommitDetails.new(@user.id, @user.username, @user.name, @user.email, commit_message)
+    Gitlab::Git::Wiki::CommitDetails.new(@user.id,
+                                         @user.username,
+                                         @user.name,
+                                         @user.email,
+                                         commit_message)
   end
 
   def default_message(action, title)
