@@ -2,7 +2,7 @@ module Gitlab
   class Favicon
     class << self
       def main
-        return custom_favicon_url(appearance_favicon.favicon_main.url) if appearance_favicon.exists?
+        return appearance_favicon.favicon_main.url if appearance_favicon.exists?
         return ActionController::Base.helpers.image_path('favicon-yellow.png') if Gitlab::Utils.to_boolean(ENV['CANARY'])
         return ActionController::Base.helpers.image_path('favicon-blue.png') if Rails.env.development?
 
@@ -34,13 +34,6 @@ module Gitlab
 
       def appearance_favicon
         appearance.favicon
-      end
-
-      # Without the '?' at the end of the favicon url the custom favicon (i.e.
-      # the favicons that are served through `UploadController`) are not shown
-      # in the browser.
-      def custom_favicon_url(url)
-        "#{url}?"
       end
     end
   end
