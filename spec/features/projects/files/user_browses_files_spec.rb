@@ -10,10 +10,9 @@ describe 'Projects > Files > User browses files' do
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
   let(:tree_path_ref_6d39438) { project_tree_path(project, '6d39438') }
   let(:tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
-  let(:user) { project.creator }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in(user)
   end
 

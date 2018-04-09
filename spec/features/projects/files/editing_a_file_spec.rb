@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Projects > Files > User wants to edit a file' do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { project.owner }
   let(:commit_params) do
     {
       start_branch: project.default_branch,
@@ -16,7 +16,6 @@ describe 'Projects > Files > User wants to edit a file' do
   end
 
   before do
-    project.add_master(user)
     sign_in user
     visit project_edit_blob_path(project,
                                            File.join(project.default_branch, '.gitignore'))

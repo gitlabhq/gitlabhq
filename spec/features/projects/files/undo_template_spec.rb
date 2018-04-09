@@ -2,10 +2,9 @@ require 'spec_helper'
 
 describe 'Projects > Files > Template Undo Button', :js do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in user
   end
 
