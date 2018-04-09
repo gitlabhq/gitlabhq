@@ -145,6 +145,33 @@ describe Gitlab::GitAccess do
             expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
+
+        context 'when actor is DeployToken' do
+          let(:actor) { create(:deploy_token, projects: [project]) }
+
+          context 'when DeployToken is active and belongs to project' do
+            it 'allows pull access' do
+              expect { pull_access_check }.not_to raise_error
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            end
+          end
+
+          context 'when DeployToken does not belong to project' do
+            let(:another_project) { create(:project) }
+            let(:actor) { create(:deploy_token, projects: [another_project]) }
+
+            it 'blocks pull access' do
+              expect { pull_access_check }.to raise_not_found
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_not_found
+            end
+          end
+        end
       end
 
       context 'when actor is nil' do
@@ -567,6 +594,41 @@ describe Gitlab::GitAccess do
         context 'when project is authorized' do
           before do
             key.projects << project
+          end
+
+          it { expect { pull_access_check }.not_to raise_error }
+        end
+
+        context 'when unauthorized' do
+          context 'from public project' do
+            let(:project) { create(:project, :public, :repository) }
+
+            it { expect { pull_access_check }.not_to raise_error }
+          end
+
+          context 'from internal project' do
+            let(:project) { create(:project, :internal, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+
+          context 'from private project' do
+            let(:project) { create(:project, :private, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+        end
+      end
+    end
+
+    describe 'deploy token permissions' do
+      let(:deploy_token) { create(:deploy_token) }
+      let(:actor) { deploy_token }
+
+      context 'pull code' do
+        context 'when project is authorized' do
+          before do
+            deploy_token.projects << project
           end
 
           it { expect { pull_access_check }.not_to raise_error }

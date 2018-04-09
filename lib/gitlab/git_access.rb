@@ -208,6 +208,7 @@ module Gitlab
 
     def check_download_access!
       passed = deploy_key? ||
+        deploy_token? ||
         user_can_download_code? ||
         build_can_download_code? ||
         guest_can_download_code?
@@ -274,6 +275,14 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
+    def deploy_token
+      actor if deploy_token?
+    end
+
+    def deploy_token?
+      actor.is_a?(DeployToken)
+    end
+
     def ci?
       actor == :ci
     end
@@ -281,6 +290,8 @@ module Gitlab
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
+      elsif deploy_token?
+        deploy_token.has_access_to?(project)
       elsif user
         user.can?(:read_project, project)
       elsif ci?
