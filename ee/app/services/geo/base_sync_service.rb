@@ -59,7 +59,22 @@ module Geo
 
       if redownload
         log_info("Redownloading #{type}")
-        fetch_geo_mirror(build_temporary_repository)
+        temp_repo = build_temporary_repository
+
+        if Feature.enabled?(:geo_redownload_with_snapshot)
+          begin
+            fetch_snapshot(temp_repo)
+          rescue => err
+            log_error('Snapshot attempt failed', err)
+          end
+        end
+
+        # A git fetch should be attempted, regardless of whether a snapshot was
+        # performed. A git fetch *may* succeed where a snapshot has failed. If
+        # the snapshot succeeded, it may not be in a consistent state - the git
+        # git fetch may repair it.
+        fetch_geo_mirror(temp_repo)
+
         set_temp_repository_as_main
       else
         ensure_repository
@@ -97,6 +112,13 @@ module Geo
       repository.with_config(header) do
         repository.fetch_as_mirror(url, remote_name: GEO_REMOTE_NAME, forced: true)
       end
+    end
+
+    def fetch_snapshot(repository)
+      repository.create_from_snapshot(
+        ::Gitlab::Geo.primary_node.snapshot_url(repository),
+        ::Gitlab::Geo::RepoSyncRequest.new.authorization
+      )
     end
 
     def registry
