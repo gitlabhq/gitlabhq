@@ -467,42 +467,4 @@ describe MergeRequestPresenter do
       end
     end
   end
-
-  describe '#has_new_custom_ci_config_yaml' do
-    subject do
-      described_class.new(resource, current_user: user).has_new_custom_ci_config_yaml?
-    end
-
-    context 'when project does not have custom_ci_path configured' do
-      before do
-        allow(resource.project).to receive(:ci_config_path).and_return(nil)
-      end
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when project has custom_ci_path configured' do
-      before do
-        allow(resource.project).to receive(:ci_config_path).and_return('filepath')
-      end
-
-      context 'when merge request has file at custom_ci_path' do
-        before do
-          allow(resource).to receive(:merge_request_diff).and_call_original
-          allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(true)
-        end
-
-        it { is_expected.to eq true }
-      end
-
-      context 'when merge request does not have file at custom_ci_path' do
-        before do
-          allow(resource).to receive(:merge_request_diff).and_call_original
-          allow(resource).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(false)
-        end
-
-        it { is_expected.to eq false }
-      end
-    end
-  end
 end

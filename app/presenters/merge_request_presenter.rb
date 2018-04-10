@@ -167,15 +167,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       .can_push_to_branch?(source_branch)
   end
 
-  def has_new_custom_ci_config_yaml?
-    custom_ci_path = merge_request.project.ci_config_path
-    if custom_ci_path
-      merge_request.merge_request_diff.merge_request_diff_files.where(new_path: custom_ci_path, new_file: true).any?
-    else
-      false
-    end
-  end
-
   private
 
   def cached_can_be_reverted?
