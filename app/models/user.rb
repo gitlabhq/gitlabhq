@@ -1015,7 +1015,7 @@ class User < ActiveRecord::Base
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject
-        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+        .where(project: authorized_projects(Gitlab::Access::MASTER))
         .select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
@@ -1224,15 +1224,6 @@ class User < ActiveRecord::Base
         .where("projects.namespace_id <> ?", namespace.id)
         .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
     ], remove_duplicates: false)
-  end
-
-  def ci_projects_union
-    scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
-    groups = groups_projects.where(members: scope)
-    other  = projects.where(members: scope)
-
-    Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
-                            other.select(:id)])
   end
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
