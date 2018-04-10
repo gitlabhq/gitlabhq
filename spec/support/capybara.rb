@@ -82,18 +82,35 @@ RSpec.configure do |config|
     end
 
 
+    puts Gitlab::Utils.to_boolean(ENV['GITLAB_SELENIUM_SERVER'])
+    puts "====================================================="
+
     if Gitlab::Utils.to_boolean(ENV['GITLAB_SELENIUM_SERVER'])
       test_path = self.inspect.to_s.sub("(", "").sub(")>", "").split("\"")
+      puts test_path
+      puts "Hello World"
 
-      uri =  URI::join("#{ENV['SELENIUM_REMOTE_URL']}", "session/#{session.driver.browser.capabilities['webdriver.remote.sessionid']}/gitlab-meta")
+      uri =  URI::join("#{ENV['SELENIUM_REMOTE_URL']}/", "session/#{session.driver.browser.capabilities['webdriver.remote.sessionid']}/gitlab-meta")
       req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
       req.body = {
         description: test_path[1],
         location: test_path[2],
       }.to_json
+
+      puts uri;
+      puts "====================================================="
    
       res = Net::HTTP.start(uri.hostname, uri.port) do |http|
         http.request(req)
+      end
+
+      case res
+        when Net::HTTPSuccess, Net::HTTPRedirection
+          puts res.inspect
+          puts " Net::HTTPSuccess, Net::HTTPRedirection ====================================================="
+        else
+          puts res.inspect
+          puts " else ====================================================="
       end
     end
   end
