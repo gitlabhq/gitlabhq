@@ -56,6 +56,13 @@ constraints(GroupUrlConstrainer.new) do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
       end
     end
+
+    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      member do
+        post :resume
+        post :pause
+      end
+    end
   end
 
   scope(path: '*id',

@@ -1,0 +1,51 @@
+- page_title "#{@runner.description} ##{@runner.id}", "Runners"
+
+%h3.page-title
+  Runner ##{@runner.id}
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th Property Name
+        %th Value
+    %tr
+      %td Active
+      %td= @runner.active? ? 'Yes' : 'No'
+    %tr
+      %td Protected
+      %td= @runner.ref_protected? ? 'Yes' : 'No'
+    %tr
+      %td Can run untagged jobs
+      %td= @runner.run_untagged? ? 'Yes' : 'No'
+    %tr
+      %td Tags
+      %td
+        - @runner.tag_list.sort.each do |tag|
+          %span.label.label-primary
+            = tag
+    %tr
+      %td Name
+      %td= @runner.name
+    %tr
+      %td Version
+      %td= @runner.version
+    %tr
+      %td Revision
+      %td= @runner.revision
+    %tr
+      %td Platform
+      %td= @runner.platform
+    %tr
+      %td Architecture
+      %td= @runner.architecture
+    %tr
+      %td Description
+      %td= @runner.description
+    %tr
+      %td Last contact
+      %td
+        - if @runner.contacted_at
+          #{time_ago_in_words(@runner.contacted_at)} ago
+        - else
+          Never

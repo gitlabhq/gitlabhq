@@ -2,9 +2,18 @@
   %h4
     = runner_status_icon(runner)
 
-  %span.commit-sha
-    = runner.short_sha
+    = link_to runner.short_sha, group_runner_path(@group, runner), class: 'commit-sha'
 
+    %small.edit-runner
+      = link_to edit_group_runner_path(@group, runner) do
+        %i.fa.fa-edit.btn
+
+    .pull-right
+      - if runner.active?
+        = link_to 'Pause', pause_group_runner_path(@group, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: "Are you sure?" }
+      - else
+        = link_to 'Resume', resume_group_runner_path(@group, runner), method: :post, class: 'btn btn-success btn-sm'
+      = link_to 'Remove Runner', group_runner_path(@group, runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
   .pull-right
     %small.light
       \##{runner.id}

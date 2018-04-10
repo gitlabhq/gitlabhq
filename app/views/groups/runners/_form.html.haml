@@ -1,0 +1,38 @@
+= form_for runner, url: runner_form_url, html: { class: 'form-horizontal' } do |f|
+  = form_errors(runner)
+  .form-group
+    = label :active, "Active", class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :active
+        %span.light Paused Runners don't accept new jobs
+  .form-group
+    = label :protected, "Protected", class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :access_level, {}, 'ref_protected', 'not_protected'
+        %span.light This runner will only run on pipelines triggered on protected branches
+  .form-group
+    = label :run_untagged, 'Run untagged jobs', class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :run_untagged
+        %span.light Indicates whether this runner can pick jobs without tags
+  .form-group
+    = label_tag :token, class: 'control-label' do
+      Token
+    .col-sm-10
+      = f.text_field :token, class: 'form-control', readonly: true
+  .form-group
+    = label_tag :description, class: 'control-label' do
+      Description
+    .col-sm-10
+      = f.text_field :description, class: 'form-control'
+  .form-group
+    = label_tag :tag_list, class: 'control-label' do
+      Tags
+    .col-sm-10
+      = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
+      .help-block You can setup jobs to only use Runners with specific tags. Separate tags with commas.
+  .form-actions
+    = f.submit 'Save changes', class: 'btn btn-save'
