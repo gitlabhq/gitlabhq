@@ -95,7 +95,7 @@ describe('RepoEditor', () => {
       vm.file.content = 'testing 123';
       vm.$store.state.viewer = 'diff';
 
-      mock.onPost('/namespace/project/preview_markdown').reply(200, {
+      mock.onPost(/(.*)\/preview_markdown/).reply(200, {
         body: '<p>testing 123</p>',
       });
 
