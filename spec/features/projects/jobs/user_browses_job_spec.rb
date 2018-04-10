@@ -1,16 +1,15 @@
 require 'spec_helper'
 
 describe 'User browses a job', :js do
-  let!(:build) { create(:ci_build, :running, :coverage, pipeline: pipeline) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:user) { create(:user) }
+  let(:user_access_level) { :developer }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
     project.add_master(user)
     project.enable_ci
-    build.success
-    build.trace.set('job trace')
 
     sign_in(user)
 
@@ -21,7 +20,9 @@ describe 'User browses a job', :js do
     expect(page).to have_content("Job ##{build.id}")
     expect(page).to have_css('#build-trace')
 
-    accept_confirm { click_link('Erase') }
+    # scroll to the top of the page first
+    execute_script "window.scrollTo(0,0)"
+    accept_confirm { find('.js-erase-link').click }
 
     expect(page).to have_no_css('.artifacts')
     expect(build).not_to have_trace
@@ -36,7 +37,7 @@ describe 'User browses a job', :js do
   end
 
   context 'with a failed job' do
-    let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason' do
       within('.builds-container') do
@@ -47,7 +48,7 @@ describe 'User browses a job', :js do
   end
 
   context 'when a failed job has been retried' do
-    let!(:build) { create(:ci_build, :failed, :retried, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason and retried label' do
       within('.builds-container') do

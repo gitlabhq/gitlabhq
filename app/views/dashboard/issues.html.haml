@@ -1,15 +1,19 @@
 - @hide_top_links = true
-- page_title "Issues"
-- header_title  "Issues", issues_dashboard_path(assignee_id: current_user.id)
+- page_title _("Issues")
+- @breadcrumb_link = issues_dashboard_path(assignee_id: current_user.id)
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{current_user.name} issues")
 
 .top-area
-  = render 'shared/issuable/nav', type: :issues
+  = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
   .nav-controls
     = link_to params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: 'Subscribe' do
       = icon('rss')
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
 
 = render 'shared/issuable/filter', type: :issues
-= render 'shared/issues'
+
+- if current_user && @no_filters_set
+  = render 'shared/dashboard/no_filter_selected'
+- else
+  = render 'shared/issues'

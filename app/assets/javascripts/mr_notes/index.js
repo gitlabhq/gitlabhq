@@ -22,10 +22,13 @@ export default function initMrNotes() {
     },
     store,
     data() {
-      const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
+      const notesDataset = document.getElementById('js-vue-mr-discussions')
+        .dataset;
+      const noteableData = JSON.parse(notesDataset.noteableData);
+      noteableData.noteableType = notesDataset.noteableType;
 
       return {
-        noteableData: JSON.parse(notesDataset.noteableData),
+        noteableData,
         currentUserData: JSON.parse(notesDataset.currentUserData),
         notesData: JSON.parse(notesDataset.notesData),
       };

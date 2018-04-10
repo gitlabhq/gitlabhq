@@ -354,7 +354,7 @@ deploy:
       - $STAGING
 ```
 
-Learn more about variables expressions on a separate page.
+Learn more about variables expressions on [a separate page][variables-expressions].
 
 ## `tags`
 
@@ -1574,3 +1574,4 @@ CI with various languages.
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
+[variables-expressions]: ../variables/README.md#variables-expressions

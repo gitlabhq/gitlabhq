@@ -79,6 +79,7 @@
               - if has_vue_discussions_cookie?
                 #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
                   noteable_data: serialize_issuable(@merge_request),
+                  noteable_type: 'merge_request',
                   current_user_data: UserSerializer.new.represent(current_user).to_json} }
               - else
                 = render "projects/merge_requests/discussion"

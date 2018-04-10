@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-feature 'Template type dropdown selector', :js do
+describe 'Projects > Files > Template type dropdown selector', :js do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in user
   end
 
@@ -14,16 +13,16 @@ feature 'Template type dropdown selector', :js do
       create_and_edit_file('.random-file.js')
     end
 
-    scenario 'not displayed' do
+    it 'not displayed' do
       check_type_selector_display(false)
     end
 
-    scenario 'selects every template type correctly' do
+    it 'selects every template type correctly' do
       fill_in 'file_path', with: '.gitignore'
       try_selecting_all_types
     end
 
-    scenario 'updates toggle value when input matches' do
+    it 'updates toggle value when input matches' do
       fill_in 'file_path', with: '.gitignore'
       check_type_selector_toggle_text('.gitignore')
     end
@@ -34,15 +33,15 @@ feature 'Template type dropdown selector', :js do
       visit project_edit_blob_path(project, File.join(project.default_branch, 'LICENSE'))
     end
 
-    scenario 'displayed' do
+    it 'displayed' do
       check_type_selector_display(true)
     end
 
-    scenario 'is displayed when input matches' do
+    it 'is displayed when input matches' do
       check_type_selector_display(true)
     end
 
-    scenario 'selects every template type correctly' do
+    it 'selects every template type correctly' do
       try_selecting_all_types
     end
 
@@ -51,7 +50,7 @@ feature 'Template type dropdown selector', :js do
         click_link 'Preview changes'
       end
 
-      scenario 'type selector is hidden and shown correctly' do
+      it 'type selector is hidden and shown correctly' do
         check_type_selector_display(false)
         click_link 'Write'
         check_type_selector_display(true)
@@ -64,15 +63,15 @@ feature 'Template type dropdown selector', :js do
       visit project_new_blob_path(project, 'master', file_name: '.gitignore')
     end
 
-    scenario 'is displayed' do
+    it 'is displayed' do
       check_type_selector_display(true)
     end
 
-    scenario 'toggle is set to the correct value' do
+    it 'toggle is set to the correct value' do
       check_type_selector_toggle_text('.gitignore')
     end
 
-    scenario 'selects every template type correctly' do
+    it 'selects every template type correctly' do
       try_selecting_all_types
     end
   end
@@ -82,15 +81,15 @@ feature 'Template type dropdown selector', :js do
       visit project_new_blob_path(project, project.default_branch)
     end
 
-    scenario 'type selector is shown' do
+    it 'type selector is shown' do
       check_type_selector_display(true)
     end
 
-    scenario 'toggle is set to the proper value' do
+    it 'toggle is set to the proper value' do
       check_type_selector_toggle_text('Choose type')
     end
 
-    scenario 'selects every template type correctly' do
+    it 'selects every template type correctly' do
       try_selecting_all_types
     end
   end

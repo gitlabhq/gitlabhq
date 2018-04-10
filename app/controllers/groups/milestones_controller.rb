@@ -12,7 +12,7 @@ class Groups::MilestonesController < Groups::ApplicationController
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do
-        render json: milestones.map { |m| m.for_display.slice(:title, :name) }
+        render json: milestones.map { |m| m.for_display.slice(:id, :title, :name) }
       end
     end
   end
