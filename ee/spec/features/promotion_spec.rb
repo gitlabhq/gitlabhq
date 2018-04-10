@@ -39,7 +39,7 @@ describe 'Promotions', :js do
       it 'should have the start trial button' do
         sign_in(admin)
         visit edit_project_path(project)
-        expect(find('#promote_service_desk')).to have_content 'Start GitLab Enterprise Edition trial'
+        expect(find('#promote_service_desk')).to have_content 'Start GitLab Ultimate trial'
       end
     end
   end
