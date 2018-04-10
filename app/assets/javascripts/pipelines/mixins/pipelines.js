@@ -65,13 +65,13 @@ export default {
     updateTable() {
       // Cancel ongoing request
       if (this.isMakingRequest) {
-
+        this.service.cancelationSource.cancel();
       }
 
       // Stop polling
       this.poll.stop();
       // make new request
-      this.fetchPipelines();
+      this.getPipelines();
       // restart polling
       this.poll.restart();
     },
@@ -79,10 +79,13 @@ export default {
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
-        this.service.getPipelines(this.requestData)
-          .then(response => this.successCallback(response))
-          .catch(() => this.errorCallback());
+        this.getPipelines();
       }
+    },
+    getPipelines() {
+      this.service.getPipelines(this.requestData)
+        .then(response => this.successCallback(response))
+        .catch(() => this.errorCallback());
     },
     setCommonData(pipelines) {
       this.store.storePipelines(pipelines);
