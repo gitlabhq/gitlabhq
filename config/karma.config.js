@@ -21,7 +21,7 @@ var testFiles = process.argv.slice(ignoreUpTo).filter(arg => {
 
 webpackConfig.plugins.push(
   new webpack.DefinePlugin({
-    TEST_FILES: JSON.stringify(testFiles),
+    'process.env.TEST_FILES': JSON.stringify(testFiles) ,
   })
 );
 
