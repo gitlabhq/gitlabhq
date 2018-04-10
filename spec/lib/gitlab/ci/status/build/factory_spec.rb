@@ -75,7 +75,9 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Retryable, Gitlab::Ci::Status::Build::Failed]
+          .to eq [Gitlab::Ci::Status::Build::Empty,
+                  Gitlab::Ci::Status::Build::Retryable,
+                  Gitlab::Ci::Status::Build::Failed]
       end
 
       it 'fabricates a failed build status' do
@@ -94,7 +96,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     context 'when build is allowed to fail' do
-      let(:build) { create(:ci_build, :failed, :allowed_to_fail) }
+      let(:build) { create(:ci_build, :failed, :allowed_to_fail, :trace_artifact) }
 
       it 'matches correct core status' do
         expect(factory.core_status).to be_a Gitlab::Ci::Status::Failed
@@ -160,7 +162,8 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Build::Cancelable]
+        .to eq [Gitlab::Ci::Status::Build::Empty,
+                Gitlab::Ci::Status::Build::Cancelable]
     end
 
     it 'fabricates a canceable build status' do

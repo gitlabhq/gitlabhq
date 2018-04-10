@@ -9,7 +9,8 @@ module Gitlab
               Status::Build::Canceled,
               Status::Build::Created,
               Status::Build::Pending,
-              Status::Build::Skipped],
+              Status::Build::Skipped,
+              Status::Build::Empty],
              [Status::Build::Cancelable,
               Status::Build::Retryable],
              [Status::Build::Failed],
@@ -17,8 +18,7 @@ module Gitlab
               Status::Build::Play,
               Status::Build::Stop],
              [Status::Build::Action],
-             [Status::Build::Retried],
-             [Status::Build::Empty]]
+             [Status::Build::Retried]]
           end
 
           def self.common_helpers
