@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.16-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.7-golang-1.9-git-2.17-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -6,7 +6,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-2.3.6-with-yarn"
+  key: "ruby-2.3.7-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -692,7 +692,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.3.6-with-yarn-and-rubocop"
+    key: "ruby-2.3.7-with-yarn-and-rubocop"
     paths:
       - vendor/ruby
       - .yarn-cache/

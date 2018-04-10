@@ -1,4 +1,5 @@
 <script>
+<<<<<<< HEAD
   /* eslint-disable vue/require-default-prop */
   import PipelineStage from '~/pipelines/components/stage.vue';
   import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -12,23 +13,32 @@
       CiIcon,
       Icon,
       LinkedPipelinesMiniList,
+=======
+/* eslint-disable vue/require-default-prop */
+import PipelineStage from '~/pipelines/components/stage.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+
+export default {
+  name: 'MRWidgetPipeline',
+  components: {
+    PipelineStage,
+    CiIcon,
+    Icon,
+  },
+  props: {
+    pipeline: {
+      type: Object,
+      required: true,
+>>>>>>> upstream/master
     },
-    props: {
-      pipeline: {
-        type: Object,
-        required: true,
-      },
-      // This prop needs to be camelCase, html attributes are case insensive
-      // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
-      hasCi: {
-        type: Boolean,
-        required: false,
-      },
-      ciStatus: {
-        type: String,
-        required: false,
-      },
+    // This prop needs to be camelCase, html attributes are case insensive
+    // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
+    hasCi: {
+      type: Boolean,
+      required: false,
     },
+<<<<<<< HEAD
     computed: {
       hasPipeline() {
         return this.pipeline && Object.keys(this.pipeline).length > 0;
@@ -62,8 +72,35 @@
         const response = this.pipeline.triggered_by;
         return response ? [response] : [];
       },
+=======
+    ciStatus: {
+      type: String,
+      required: false,
+>>>>>>> upstream/master
     },
-  };
+  },
+  computed: {
+    hasPipeline() {
+      return this.pipeline && Object.keys(this.pipeline).length > 0;
+    },
+    hasCIError() {
+      return this.hasCi && !this.ciStatus;
+    },
+    status() {
+      return this.pipeline.details && this.pipeline.details.status
+        ? this.pipeline.details.status
+        : {};
+    },
+    hasStages() {
+      return (
+        this.pipeline.details && this.pipeline.details.stages && this.pipeline.details.stages.length
+      );
+    },
+    hasCommitInfo() {
+      return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
+    },
+  },
+};
 </script>
 <template>
   <div
@@ -100,6 +137,16 @@
 
           <template v-if="hasCommitInfo">
             for
+<<<<<<< HEAD
+=======
+
+            <a
+              :href="pipeline.commit.commit_path"
+              class="commit-sha js-commit-link"
+            >
+            {{ pipeline.commit.short_id }}</a>.
+          </template>
+>>>>>>> upstream/master
 
             <a
               :href="pipeline.commit.commit_path"
