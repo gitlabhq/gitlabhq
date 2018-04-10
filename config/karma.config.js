@@ -12,8 +12,6 @@ if (webpackConfig.plugins) {
       plugin instanceof webpack.DefinePlugin
     );
   });
-} else {
-  webpackConfig.plugins = [];
 }
 
 var ignoreUpTo = process.argv.indexOf('config/karma.config.js') + 1;
