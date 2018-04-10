@@ -4,7 +4,6 @@ describe MergeRequestWidgetEntity do
   let(:project)  { create :project, :repository }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
-  let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -194,7 +193,6 @@ describe MergeRequestWidgetEntity do
     let(:project) { create(:project, :repository) }
     let(:fork_project) { create(:project, :repository, forked_from_project: project) }
     let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
-    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: merge_request.source_branch, sha: merge_request.source_branch_sha, head_pipeline_of: merge_request) }
 
     it 'returns a blank rebase_path' do
       allow(merge_request).to receive(:should_be_rebased?).and_return(true)
