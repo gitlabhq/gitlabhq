@@ -5,7 +5,6 @@ import { mouseenter, debouncedMouseleave, togglePopover } from './shared/popover
 
 export default class Milestone {
   constructor() {
-    Milestone.initDeprecationMessage();
     this.bindTabsSwitching();
 
     // Load merge request tab if it is active
