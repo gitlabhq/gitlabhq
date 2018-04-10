@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 

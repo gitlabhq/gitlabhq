@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User broweses commits' do
+describe 'User browses commits' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -29,6 +29,19 @@ describe 'User broweses commits' do
       visit(project_commit_path(project, RepoHelpers.sample_commit.parent_id))
 
       check_author_link(RepoHelpers.sample_commit.author_email, user)
+    end
+  end
+
+  context 'when the blob does not exist' do
+    let(:commit) { create(:commit, project: project) }
+
+    it 'shows a blank label' do
+      allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(nil)
+      allow_any_instance_of(Gitlab::Diff::File).to receive(:raw_binary?).and_return(true)
+
+      visit(project_commit_path(project, commit))
+
+      expect(find('.diff-file-changes', visible: false)).to have_content('No file name available')
     end
   end
 end

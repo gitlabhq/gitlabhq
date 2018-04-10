@@ -53,7 +53,7 @@ module Gitlab
         end
 
         def pretext
-          "Issue *#{@resource.to_reference}* from #{project.name_with_namespace}"
+          "Issue *#{@resource.to_reference}* from #{project.full_name}"
         end
       end
     end

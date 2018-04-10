@@ -9,9 +9,9 @@ describe Notes::UpdateService do
   let(:note) { create(:note, project: project, noteable: issue, author: user, note: "Old note #{user2.to_reference}") }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe '#execute' do

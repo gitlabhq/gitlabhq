@@ -12,6 +12,8 @@ require 'spec_helper'
 
 describe API::Wikis do
   let(:user) { create(:user) }
+  let(:group) { create(:group).tap { |g| g.add_owner(user) } }
+  let(:project_wiki) { create(:project_wiki, project: project, user: user) }
   let(:payload) { { content: 'content', format: 'rdoc', title: 'title' } }
   let(:expected_keys_with_content) { %w(content format slug title) }
   let(:expected_keys_without_content) { %w(format slug title) }
@@ -19,8 +21,8 @@ describe API::Wikis do
   shared_examples_for 'returns list of wiki pages' do
     context 'when wiki has pages' do
       let!(:pages) do
-        [create(:wiki_page, wiki: project.wiki, attrs: { title: 'page1', content: 'content of page1' }),
-         create(:wiki_page, wiki: project.wiki, attrs: { title: 'page2', content: 'content of page2' })]
+        [create(:wiki_page, wiki: project_wiki, attrs: { title: 'page1', content: 'content of page1' }),
+         create(:wiki_page, wiki: project_wiki, attrs: { title: 'page2', content: 'content of page2' })]
       end
 
       it 'returns the list of wiki pages without content' do
@@ -445,7 +447,7 @@ describe API::Wikis do
   end
 
   describe 'PUT /projects/:id/wikis/:slug' do
-    let(:page) { create(:wiki_page, wiki: project.wiki) }
+    let(:page) { create(:wiki_page, wiki: project_wiki) }
     let(:payload) { { title: 'new title', content: 'new content' } }
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
@@ -568,10 +570,20 @@ describe API::Wikis do
         end
       end
     end
+
+    context 'when wiki belongs to a group project' do
+      let(:project) { create(:project, namespace: group) }
+
+      before do
+        put(api(url, user), payload)
+      end
+
+      include_examples 'updates wiki page'
+    end
   end
 
   describe 'DELETE /projects/:id/wikis/:slug' do
-    let(:page) { create(:wiki_page, wiki: project.wiki) }
+    let(:page) { create(:wiki_page, wiki: project_wiki) }
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
@@ -674,6 +686,16 @@ describe API::Wikis do
           include_examples '404 Wiki Page Not Found'
         end
       end
+    end
+
+    context 'when wiki belongs to a group project' do
+      let(:project) { create(:project, namespace: group) }
+
+      before do
+        delete(api(url, user))
+      end
+
+      include_examples '204 No Content'
     end
   end
 end

@@ -168,6 +168,20 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
 
+## Transfer groups to another group
+
+From 10.5 there are two different ways to transfer a group:
+
+- Either by transferring a group into another group (making it a subgroup of that group).
+- Or by converting a subgroup into a root group (a group with no parent).
+
+Please make sure to understand that:
+
+- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths)
+- You can only transfer the group to a group you manage.
+- You will need to update your local repositories to point to the new location.
+- If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+
 ## Group settings
 
 Once you have created a group, you can manage its settings by navigating to
@@ -231,20 +245,22 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock (EES/EEP)
+#### Member Lock
 
-Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
-with **Member Lock** it is possible to lock membership in project to the
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+
+With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
-Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock-ees-eep).
+Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
 
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter](https://about.gitlab.com/products/).)
+and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Starter](https://about.gitlab.com/products/).)
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
-for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee]).
+for the group (GitLab admins only, available in [GitLab Starter][ee]).
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group

@@ -1,5 +1,7 @@
 # Services API
 
+>**Note:** This API requires an access token with Master or Owner permissions
+
 ## Asana
 
 Asana - Teamwork without email
@@ -16,8 +18,10 @@ PUT /projects/:id/services/asana
 
 Parameters:
 
-- `api_key` (**required**) - User API token. User must have access to task, all comments will be attributed to this user.
-- `restrict_to_branch` (optional) - Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `api_key` | string | true | User API token. User must have access to task, all comments will be attributed to this user. |
+| `restrict_to_branch` | string | false | Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches. |
 
 ### Delete Asana service
 
@@ -49,8 +53,10 @@ PUT /projects/:id/services/assembla
 
 Parameters:
 
-- `token` (**required**)
-- `subdomain` (optional)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | The authentication token
+| `subdomain` | string | false | The subdomain setting |
 
 ### Delete Assembla service
 
@@ -84,10 +90,12 @@ PUT /projects/:id/services/bamboo
 
 Parameters:
 
-- `bamboo_url` (**required**) - Bamboo root URL like https://bamboo.example.com
-- `build_key` (**required**) - Bamboo build plan key like KEY
-- `username` (**required**) - A user with API access, if applicable
-- `password` (**required**)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `bamboo_url` | string | true | Bamboo root URL like https://bamboo.example.com |
+| `build_key` | string | true | Bamboo build plan key like KEY |
+| `username` | string | true | A user with API access, if applicable |
+| `password` | string | true | Password of the user |
 
 ### Delete Atlassian Bamboo CI service
 
@@ -105,6 +113,44 @@ Get Atlassian Bamboo CI service settings for a project.
 GET /projects/:id/services/bamboo
 ```
 
+## Bugzilla
+
+Bugzilla Issue Tracker
+
+### Create/Edit Buildkite service
+
+Set Bugzilla service for a project.
+
+```
+PUT /projects/:id/services/bugzilla
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `new_issue_url` | string | true |  New Issue url |
+| `issues_url` | string | true | Issue url |
+| `project_url` | string | true | Project url |
+| `description` | string | false | Description |
+| `title` | string | false | Title |
+
+### Delete Bugzilla Service
+
+Delete Bugzilla service for a project.
+
+```
+DELETE /projects/:id/services/bugzilla
+```
+
+### Get Bugzilla Service Settings
+
+Get Bugzilla service settings for a project.
+
+```
+GET /projects/:id/services/bugzilla
+```
+
 ## Buildkite
 
 Continuous integration and deployments
@@ -119,9 +165,11 @@ PUT /projects/:id/services/buildkite
 
 Parameters:
 
-- `token` (**required**) - Buildkite project GitLab token
-- `project_url` (**required**) - https://buildkite.com/example/project
-- `enable_ssl_verification` (optional) - Enable SSL verification
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | Buildkite project GitLab token |
+| `project_url` | string | true | https://buildkite.com/example/project |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification |
 
 ### Delete Buildkite service
 
@@ -153,9 +201,11 @@ PUT /projects/:id/services/campfire
 
 Parameters:
 
-- `token` (**required**)
-- `subdomain` (optional)
-- `room` (optional)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | Campfire token |
+| `subdomain` | string | false | Campfire subdomain |
+| `room`  | string | false | Campfire room |
 
 ### Delete Campfire service
 
@@ -187,11 +237,13 @@ PUT /projects/:id/services/custom-issue-tracker
 
 Parameters:
 
-- `new_issue_url` (**required**) - New Issue url
-- `issues_url` (**required**) - Issue url
-- `project_url` (**required**) - Project url
-- `description` (optional) - Custom issue tracker
-- `title` (optional) - Custom Issue Tracker
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `new_issue_url` | string | true |  New Issue url
+| `issues_url` | string | true | Issue url
+| `project_url` | string | true | Project url
+| `description` | string | false | Description
+| `title` | string | false | Title
 
 ### Delete Custom Issue Tracker service
 
@@ -223,9 +275,11 @@ PUT /projects/:id/services/drone-ci
 
 Parameters:
 
-- `token` (**required**) - Drone CI project specific token
-- `drone_url` (**required**) - http://drone.example.com
-- `enable_ssl_verification` (optional) - Enable SSL verification
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | Drone CI project specific token |
+| `drone_url` | string | true | http://drone.example.com |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification |
 
 ### Delete Drone CI service
 
@@ -257,9 +311,11 @@ PUT /projects/:id/services/emails-on-push
 
 Parameters:
 
-- `recipients` (**required**) - Emails separated by whitespace
-- `disable_diffs` (optional) - Disable code diffs
-- `send_from_committer_email` (optional) - Send from committer
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `recipients` | string | true | Emails separated by whitespace |
+| `disable_diffs` | boolean | false | Disable code diffs |
+| `send_from_committer_email` | boolean | false | Send from committer |
 
 ### Delete Emails on push service
 
@@ -291,7 +347,9 @@ PUT /projects/:id/services/external-wiki
 
 Parameters:
 
-- `external_wiki_url` (**required**) - The URL of the external Wiki
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `external_wiki_url` | string | true | The URL of the external Wiki |
 
 ### Delete External Wiki service
 
@@ -323,7 +381,9 @@ PUT /projects/:id/services/flowdock
 
 Parameters:
 
-- `token` (**required**) - Flowdock Git source token
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | Flowdock Git source token |
 
 ### Delete Flowdock service
 
@@ -355,8 +415,10 @@ PUT /projects/:id/services/gemnasium
 
 Parameters:
 
-- `api_key` (**required**) - Your personal API KEY on gemnasium.com
-- `token` (**required**) - The project's slug on gemnasium.com
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `api_key` | string | true | Your personal API KEY on gemnasium.com |
+| `token`  | string | true | The project's slug on gemnasium.com |
 
 ### Delete Gemnasium service
 
@@ -388,12 +450,14 @@ PUT /projects/:id/services/hipchat
 
 Parameters:
 
-- `token` (**required**) - Room token
-- `color` (optional)
-- `notify` (optional)
-- `room` (optional) - Room name or ID
-- `api_version` (optional) - Leave blank for default (v2)
-- `server` (optional) - Leave blank for default. https://hipchat.example.com
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | Room token |
+| `color` | string | false | The room color |
+| `notify` | boolean | false | Enable notifications |
+| `room` | string | false |Room name or ID |
+| `api_version` | string | false | Leave blank for default (v2) |
+| `server` | string | false | Leave blank for default. https://hipchat.example.com |
 
 ### Delete HipChat service
 
@@ -427,11 +491,13 @@ PUT /projects/:id/services/irker
 
 Parameters:
 
-- `recipients` (**required**) - Recipients/channels separated by whitespaces
-- `default_irc_uri` (optional) - irc://irc.network.net:6697/
-- `server_port` (optional) - 6659
-- `server_host` (optional) - localhost
-- `colorize_messages` (optional)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `recipients` | string | true | Recipients/channels separated by whitespaces |
+| `default_irc_uri` | string | false | irc://irc.network.net:6697/ |
+| `server_host` | string | false | localhost |
+| `server_port` | integer | false | 6659 |
+| `colorize_messages` | boolean | false | Colorize messages |
 
 ### Delete Irker (IRC gateway) service
 
@@ -474,7 +540,9 @@ Set JIRA service for a project.
 PUT /projects/:id/services/jira
 ```
 
-| Attribute | Type | Required | Description |
+Parameters:
+
+| Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project, e.g., `https://jira.example.com`. |
 | `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
@@ -493,6 +561,9 @@ DELETE /projects/:id/services/jira
 ## Kubernetes
 
 Kubernetes / Openshift integration
+
+CAUTION: **Warning:**
+Kubernetes service integration has been deprecated in GitLab 10.3. API service endpoints will continue to work as long as the Kubernetes service is active, however if the service is inactive API endpoints will automatically return a `400 Bad Request`. Read [GitLab 10.3 release post](https://about.gitlab.com/2017/12/22/gitlab-10-3-released/#kubernetes-integration-service) for more information.
 
 ### Create/Edit Kubernetes service
 
@@ -548,6 +619,7 @@ Example response:
   "active": true,
   "push_events": true,
   "issues_events": true,
+  "confidential_issues_events": true,
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
@@ -569,7 +641,7 @@ PUT /projects/:id/services/slack-slash-commands
 
 Parameters:
 
-| Attribute | Type | Required | Description |
+| Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Slack token |
 
@@ -604,7 +676,7 @@ PUT /projects/:id/services/mattermost-slash-commands
 
 Parameters:
 
-| Attribute | Type | Required | Description |
+| Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Mattermost token |
 | `username` | string | no | The username to use to post the message |
@@ -665,7 +737,7 @@ PUT /projects/:id/services/pipelines-email
 
 Parameters:
 
-| Attribute | Type | Required | Description |
+| Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
@@ -701,8 +773,10 @@ PUT /projects/:id/services/pivotaltracker
 
 Parameters:
 
-- `token` (**required**)
-- `restrict_to_branch` (optional) - Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | The PivotalTracker token |
+| `restrict_to_branch` | boolean | false | Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches. |
 
 ### Delete PivotalTracker service
 
@@ -720,6 +794,40 @@ Get PivotalTracker service settings for a project.
 GET /projects/:id/services/pivotaltracker
 ```
 
+## Prometheus
+
+Prometheus is a powerful time-series monitoring service.
+
+### Create/Edit Prometheus service
+
+Set Prometheus service for a project.
+
+```
+PUT /projects/:id/services/prometheus
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `api_url` | string | true | Prometheus API Base URL, like http://prometheus.example.com/ |
+
+### Delete Prometheus service
+
+Delete Prometheus service for a project.
+
+```
+DELETE /projects/:id/services/prometheus
+```
+
+### Get Prometheus service settings
+
+Get Prometheus service settings for a project.
+
+```
+GET /projects/:id/services/prometheus
+```
+
 ## Pushover
 
 Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop.
@@ -734,11 +842,13 @@ PUT /projects/:id/services/pushover
 
 Parameters:
 
-- `api_key` (**required**) - Your application key
-- `user_key` (**required**) - Your user key
-- `priority` (**required**)
-- `device` (optional) - Leave blank for all active devices
-- `sound` (optional)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `api_key` | string | true | Your application key |
+| `user_key` | string | true | Your user key |
+| `priority` | string | true | The priority |
+| `device` | string | false | Leave blank for all active devices |
+| `sound` | string | false | The sound of the notification |
 
 ### Delete Pushover service
 
@@ -770,10 +880,12 @@ PUT /projects/:id/services/redmine
 
 Parameters:
 
-- `new_issue_url` (**required**) - New Issue url
-- `project_url` (**required**) - Project url
-- `issues_url` (**required**) - Issue url
-- `description` (optional) - Redmine issue tracker
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `new_issue_url` | string | true | New Issue url |
+| `project_url` | string | true | Project url |
+| `issues_url` | string | true | Issue url |
+| `description` | string | false | Description |
 
 ### Delete Redmine service
 
@@ -803,11 +915,33 @@ Set Slack service for a project.
 PUT /projects/:id/services/slack
 ```
 
+>**Note:** Specific event parameters (e.g. `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
+
 Parameters:
 
-- `webhook` (**required**) - https://hooks.slack.com/services/...
-- `username` (optional) - username
-- `channel` (optional) - #channel
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | https://hooks.slack.com/services/... |
+| `username` | string | false | username |
+| `channel` | string | false | Default channel to use if others are not configured |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `push_channel` | string | false | The name of the channel to receive push events notifications |
+| `issue_channel` | string | false | The name of the channel to receive issues events notifications |
+| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
+| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications |
+| `note_channel` | string | false | The name of the channel to receive note events notifications |
+| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
+| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
+| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 
 ### Delete Slack service
 
@@ -825,6 +959,40 @@ Get Slack service settings for a project.
 GET /projects/:id/services/slack
 ```
 
+## Microsoft Teams
+
+Group Chat Software
+
+### Create/Edit Microsoft Teams service
+
+Set Microsoft Teams service for a project.
+
+```
+PUT /projects/:id/services/microsoft_teams
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/... |
+
+### Delete Microsoft Teams service
+
+Delete Microsoft Teams service for a project.
+
+```
+DELETE /projects/:id/services/microsoft_teams
+```
+
+### Get Microsoft Teams service settings
+
+Get Microsoft Teams service settings for a project.
+
+```
+GET /projects/:id/services/microsoft_teams
+```
+
 ## Mattermost notifications
 
 Receive event notifications in Mattermost
@@ -837,11 +1005,33 @@ Set Mattermost service for a project.
 PUT /projects/:id/services/mattermost
 ```
 
+>**Note:** Specific event parameters (e.g. `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
+
 Parameters:
 
-- `webhook` (**required**) - https://mattermost.example/hooks/1298aff...
-- `username` (optional) - username
-- `channel` (optional) - #channel
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Mattermost webhook. e.g. http://mattermost_host/hooks/... |
+| `username` | string | false | username |
+| `channel` | string | false | Default channel to use if others are not configured |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `push_channel` | string | false | The name of the channel to receive push events notifications |
+| `issue_channel` | string | false | The name of the channel to receive issues events notifications |
+| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
+| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications |
+| `note_channel` | string | false | The name of the channel to receive note events notifications |
+| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
+| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
+| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 
 ### Delete Mattermost notifications service
 
@@ -875,10 +1065,12 @@ PUT /projects/:id/services/teamcity
 
 Parameters:
 
-- `teamcity_url` (**required**) - TeamCity root URL like https://teamcity.example.com
-- `build_type` (**required**) - Build configuration ID
-- `username` (**required**) - A user with permissions to trigger a manual build
-- `password` (**required**)
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `teamcity_url` | string | true | TeamCity root URL like https://teamcity.example.com |
+| `build_type` | string | true | Build configuration ID |
+| `username` | string | true | A user with permissions to trigger a manual build |
+| `password` | string | true | The password of the user |
 
 ### Delete JetBrains TeamCity CI service
 
@@ -916,7 +1108,9 @@ PUT /projects/:id/services/mock-ci
 
 Parameters:
 
-- `mock_service_url` (**required**) - http://localhost:4004
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `mock_service_url` | string | true | http://localhost:4004 |
 
 ### Delete MockCI service
 
@@ -933,3 +1127,5 @@ Get MockCI service settings for a project.
 ```
 GET /projects/:id/services/mock-ci
 ```
+
+[11435]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11435

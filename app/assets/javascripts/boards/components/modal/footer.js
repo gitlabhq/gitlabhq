@@ -1,14 +1,13 @@
-/* eslint-disable no-new */
-
 import Vue from 'vue';
 import Flash from '../../../flash';
+import { __ } from '../../../locale';
 import './lists_dropdown';
 import { pluralize } from '../../../lib/utils/text_utility';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
+import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalFooter = Vue.extend({
-  mixins: [gl.issueBoards.ModalMixins],
+  mixins: [modalMixin],
   data() {
     return {
       modal: ModalStore.store,
@@ -36,7 +35,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
       gl.boardService.bulkUpdate(issueIds, {
         add_label_ids: [list.label.id],
       }).catch(() => {
-        new Flash('Failed to update issues, please try again.', 'alert');
+        Flash(__('Failed to update issues, please try again.'));
 
         selectedIssues.forEach((issue) => {
           list.removeIssue(issue);

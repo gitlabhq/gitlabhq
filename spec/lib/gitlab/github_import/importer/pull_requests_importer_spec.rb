@@ -244,7 +244,7 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
 
     it 'returns true when a commit exists' do
       expect(project.repository)
-        .to receive(:lookup)
+        .to receive(:commit)
         .with('123')
         .and_return(double(:commit))
 
@@ -253,9 +253,9 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
 
     it 'returns false when a commit does not exist' do
       expect(project.repository)
-        .to receive(:lookup)
+        .to receive(:commit)
         .with('123')
-        .and_raise(Rugged::OdbError)
+        .and_return(nil)
 
       expect(importer.commit_exists?('123')).to eq(false)
     end

@@ -21,10 +21,11 @@ module API
         get ":id/members" do
           source = find_source(source_type, params[:id])
 
-          users = source.users
-          users = users.merge(User.search(params[:query])) if params[:query]
+          members = source.members.where.not(user_id: nil).includes(:user)
+          members = members.joins(:user).merge(User.search(params[:query])) if params[:query].present?
+          members = paginate(members)
 
-          present paginate(users), with: Entities::Member, source: source
+          present members, with: Entities::Member
         end
 
         desc 'Gets a member of a group or project.' do
@@ -39,7 +40,7 @@ module API
           members = source.members
           member = members.find_by!(user_id: params[:user_id])
 
-          present member.user, with: Entities::Member, member: member
+          present member, with: Entities::Member
         end
 
         desc 'Adds a member to a group or project.' do
@@ -59,8 +60,10 @@ module API
 
           member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
-          if member.persisted? && member.valid?
-            present member.user, with: Entities::Member, member: member
+          if !member
+            not_allowed! # This currently can only be reached in EE
+          elsif member.persisted? && member.valid?
+            present member, with: Entities::Member
           else
             render_validation_error!(member)
           end
@@ -78,12 +81,16 @@ module API
           source = find_source(source_type, params.delete(:id))
           authorize_admin_source!(source_type, source)
 
-          member = source.members.find_by!(user_id: params.delete(:user_id))
+          member = source.members.find_by!(user_id: params[:user_id])
+          updated_member =
+            ::Members::UpdateService
+              .new(current_user, declared_params(include_missing: false))
+              .execute(member)
 
-          if member.update_attributes(declared_params(include_missing: false))
-            present member.user, with: Entities::Member, member: member
+          if updated_member.valid?
+            present updated_member, with: Entities::Member
           else
-            render_validation_error!(member)
+            render_validation_error!(updated_member)
           end
         end
 
@@ -96,7 +103,7 @@ module API
           member = source.members.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(source, current_user, declared_params).execute
+            ::Members::DestroyService.new(current_user).execute(member)
           end
         end
       end

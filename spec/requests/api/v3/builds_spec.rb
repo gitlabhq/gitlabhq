@@ -4,19 +4,23 @@ describe API::V3::Builds do
   set(:user) { create(:user) }
   let(:api_user) { user }
   set(:project) { create(:project, :repository, creator: user, public_builds: false) }
-  set(:developer) { create(:project_member, :developer, user: user, project: project) }
-  set(:reporter) { create(:project_member, :reporter, project: project) }
-  set(:guest) { create(:project_member, :guest, project: project) }
-  set(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
+  let!(:developer) { create(:project_member, :developer, user: user, project: project) }
+  let(:reporter) { create(:project_member, :reporter, project: project) }
+  let(:guest) { create(:project_member, :guest, project: project) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 
-    before do
+    before do |example|
+      build
+
       create(:ci_build, :skipped, pipeline: pipeline)
 
-      get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
+      unless example.metadata[:skip_before_request]
+        get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
+      end
     end
 
     context 'authorized user' do
@@ -38,6 +42,23 @@ describe API::V3::Builds do
         expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
         expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
         expect(json_build['pipeline']['status']).to eq build.pipeline.status
+      end
+
+      it 'avoids N+1 queries', :skip_before_request do
+        first_build = create(:ci_build, :artifacts, pipeline: pipeline)
+        first_build.runner = create(:ci_runner)
+        first_build.user = create(:user)
+        first_build.save
+
+        control_count = ActiveRecord::QueryRecorder.new { go }.count
+
+        second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+        second_build = create(:ci_build, :artifacts, pipeline: second_pipeline)
+        second_build.runner = create(:ci_runner)
+        second_build.user = create(:user)
+        second_build.save
+
+        expect { go }.not_to exceed_query_limit(control_count)
       end
 
       context 'filter project with one scope element' do
@@ -84,9 +105,17 @@ describe API::V3::Builds do
         expect(response).to have_gitlab_http_status(401)
       end
     end
+
+    def go
+      get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
+    before do
+      build
+    end
+
     context 'when commit does not exist in repository' do
       before do
         get v3_api("/projects/#{project.id}/repository/commits/1a271fd1/builds", api_user)
@@ -187,22 +216,36 @@ describe API::V3::Builds do
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
     before do
+      stub_artifacts_object_storage
       get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
     end
 
     context 'job with artifacts' do
-      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+      context 'when artifacts are stored locally' do
+        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-      context 'authorized user' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+        context 'authorized user' do
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+          end
+
+          it 'returns specific job artifacts' do
+            expect(response).to have_http_status(200)
+            expect(response.headers).to include(download_headers)
+            expect(response.body).to match_file(build.artifacts_file.file.file)
+          end
         end
+      end
 
-        it 'returns specific job artifacts' do
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.headers).to include(download_headers)
-          expect(response.body).to match_file(build.artifacts_file.file.file)
+      context 'when artifacts are stored remotely' do
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
+
+        it 'returns location redirect' do
+          get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -225,6 +268,7 @@ describe API::V3::Builds do
     let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
+      stub_artifacts_object_storage
       build.success
     end
 
@@ -280,14 +324,31 @@ describe API::V3::Builds do
 
     context 'find proper job' do
       shared_examples 'a valid file' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' =>
-              "attachment; filename=#{build.artifacts_file.filename}" }
+        context 'when artifacts are stored locally' do
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' =>
+                "attachment; filename=#{build.artifacts_file.filename}" }
+          end
+
+          it { expect(response).to have_http_status(200) }
+          it { expect(response.headers).to include(download_headers) }
         end
 
-        it { expect(response).to have_gitlab_http_status(200) }
-        it { expect(response.headers).to include(download_headers) }
+        context 'when artifacts are stored remotely' do
+          let(:build) { create(:ci_build, pipeline: pipeline) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
+
+          before do
+            build.reload
+
+            get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+          end
+
+          it 'returns location redirect' do
+            expect(response).to have_http_status(302)
+          end
+        end
       end
 
       context 'with regular branch' do
@@ -319,7 +380,7 @@ describe API::V3::Builds do
   end
 
   describe 'GET /projects/:id/builds/:build_id/trace' do
-    let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+    let(:build) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
     before do
       get v3_api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
@@ -414,7 +475,7 @@ describe API::V3::Builds do
     end
 
     context 'job is erasable' do
-      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response.status).to eq 201
@@ -430,7 +491,7 @@ describe API::V3::Builds do
     end
 
     context 'job is not erasable' do
-      let(:build) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
         expect(response.status).to eq 403
@@ -445,7 +506,7 @@ describe API::V3::Builds do
 
     context 'artifacts did not expire' do
       let(:build) do
-        create(:ci_build, :trace, :artifacts, :success,
+        create(:ci_build, :trace_artifact, :artifacts, :success,
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 

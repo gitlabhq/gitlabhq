@@ -13,6 +13,10 @@ module QA
           @description = 'My awesome project'
         end
 
+        product :name do
+          Page::Project::Show.act { project_name }
+        end
+
         def fabricate!
           group.visit!
 

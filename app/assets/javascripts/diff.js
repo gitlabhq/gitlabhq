@@ -1,3 +1,7 @@
+import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 import { getLocationHash } from './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
@@ -65,11 +69,13 @@ export default class Diff {
     }
 
     const file = $target.parents('.diff-file');
-    const link = file.data('blob-diff-path');
+    const link = file.data('blobDiffPath');
     const view = file.data('view');
 
     const params = { since, to, bottom, offset, unfold, view };
-    $.get(link, params, response => $target.parent().replaceWith(response));
+    axios.get(link, { params })
+    .then(({ data }) => $target.parent().replaceWith(data))
+    .catch(() => flash(__('An error occurred while loading diff')));
   }
 
   openAnchoredDiff(cb) {
@@ -116,7 +122,7 @@ export default class Diff {
   }
   // eslint-disable-next-line class-methods-use-this
   diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('view-type');
+    return $('.inline-parallel-buttons a.active').data('viewType');
   }
   // eslint-disable-next-line class-methods-use-this
   lineNumbers(line) {

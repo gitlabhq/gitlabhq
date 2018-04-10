@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this, no-new */
-/* global MilestoneSelect */
 
+import $ from 'jquery';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import './milestone_select';
+import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';
 import subscriptionSelect from './subscription_select';
 import LabelsSelect from './labels_select';

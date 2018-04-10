@@ -4,7 +4,7 @@ RSpec.configure do |config|
   end
 
   config.before(:all, :broken_storage) do
-    FileUtils.rm_rf Gitlab.config.repositories.storages.broken['path']
+    FileUtils.rm_rf Gitlab.config.repositories.storages.broken.legacy_disk_path
   end
 
   config.before(:each, :broken_storage) do
@@ -15,9 +15,7 @@ RSpec.configure do |config|
     # Track the maximum number of failures
     first_failure = Time.parse("2017-11-14 17:52:30")
     last_failure = Time.parse("2017-11-14 18:54:37")
-    failure_count = Gitlab::CurrentSettings
-                      .current_application_settings
-                      .circuitbreaker_failure_count_threshold + 1
+    failure_count = Gitlab::CurrentSettings.circuitbreaker_failure_count_threshold + 1
     cache_key = "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}broken:#{Gitlab::Environment.hostname}"
 
     Gitlab::Git::Storage.redis.with do |redis|

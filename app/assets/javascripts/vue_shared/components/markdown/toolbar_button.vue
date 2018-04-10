@@ -3,6 +3,12 @@
   import icon from '../icon.vue';
 
   export default {
+    components: {
+      icon,
+    },
+    directives: {
+      tooltip,
+    },
     props: {
       buttonTitle: {
         type: String,
@@ -27,12 +33,6 @@
         default: false,
       },
     },
-    components: {
-      icon,
-    },
-    directives: {
-      tooltip,
-    },
   };
 </script>
 
@@ -47,9 +47,10 @@
     :data-md-block="tagBlock"
     :data-md-prepend="prepend"
     :title="buttonTitle"
-    :aria-label="buttonTitle">
+    :aria-label="buttonTitle"
+  >
     <icon
-      :name="icon">
-    </icon>
+      :name="icon"
+    />
   </button>
 </template>

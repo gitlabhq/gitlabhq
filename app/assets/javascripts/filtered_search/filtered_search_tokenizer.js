@@ -1,6 +1,6 @@
 import './filtered_search_token_keys';
 
-class FilteredSearchTokenizer {
+export default class FilteredSearchTokenizer {
   static processTokens(input, allowedKeys) {
     // Regex extracts `(token):(symbol)(value)`
     // Values that start with a double quote must end in a double quote (same for single)
@@ -50,6 +50,3 @@ class FilteredSearchTokenizer {
     };
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchTokenizer = FilteredSearchTokenizer;

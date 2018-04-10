@@ -1,11 +1,15 @@
 import Vue from 'vue';
-import Flash from '../flash';
-import PipelinesMediator from './pipeline_details_mediatior';
+import Flash from '~/flash';
+import Translate from '~/vue_shared/translate';
+import { __ } from '~/locale';
+import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 
-document.addEventListener('DOMContentLoaded', () => {
+Vue.use(Translate);
+
+export default () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
@@ -15,19 +19,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-pipeline-graph-vue',
+    components: {
+      pipelineGraph,
+    },
     data() {
       return {
         mediator,
+        actionDisabled: null,
       };
     },
-    components: {
-      pipelineGraph,
+    created() {
+      eventHub.$on('graphAction', this.postAction);
+    },
+    beforeDestroy() {
+      eventHub.$off('graphAction', this.postAction);
+    },
+    methods: {
+      postAction(action) {
+        this.actionDisabled = action;
+
+        this.mediator.service.postAction(action)
+          .then(() => {
+            this.mediator.refreshPipeline();
+            this.actionDisabled = null;
+          })
+          .catch(() => {
+            this.actionDisabled = null;
+            Flash(__('An error occurred while making the request.'));
+          });
+      },
     },
     render(createElement) {
       return createElement('pipeline-graph', {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
+          actionDisabled: this.actionDisabled,
         },
       });
     },
@@ -36,13 +63,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-pipeline-header-vue',
+    components: {
+      pipelineHeader,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      pipelineHeader,
     },
     created() {
       eventHub.$on('headerPostAction', this.postAction);
@@ -54,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       postAction(action) {
         this.mediator.service.postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
-          .catch(() => new Flash('An error occurred while making the request.'));
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
@@ -66,4 +93,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};

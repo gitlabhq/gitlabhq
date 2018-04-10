@@ -3,6 +3,9 @@
   import markdownField from '../../../vue_shared/components/markdown/field.vue';
 
   export default {
+    components: {
+      markdownField,
+    },
     mixins: [updateMixin],
     props: {
       formState: {
@@ -27,9 +30,6 @@
         required: false,
         default: true,
       },
-    },
-    components: {
-      markdownField,
     },
     mounted() {
       this.$refs.textarea.focus();

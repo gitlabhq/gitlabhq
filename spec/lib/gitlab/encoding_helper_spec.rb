@@ -24,6 +24,11 @@ describe Gitlab::EncodingHelper do
         'removes invalid bytes from ASCII-8bit encoded multibyte string. This can occur when a git diff match line truncates in the middle of a multibyte character. This occurs after the second word in this example. The test string is as short as we can get while still triggering the error condition when not looking at `detect[:confidence]`.',
         "mu ns\xC3\n Lorem ipsum dolor sit amet, consectetur adipisicing ut\xC3\xA0y\xC3\xB9abcd\xC3\xB9efg kia elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non p\n {: .normal_pn}\n \n-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in\n# *Lorem ipsum\xC3\xB9l\xC3\xB9l\xC3\xA0 dolor\xC3\xB9k\xC3\xB9 sit\xC3\xA8b\xC3\xA8 N\xC3\xA8 amet b\xC3\xA0d\xC3\xAC*\n+# *consectetur\xC3\xB9l\xC3\xB9l\xC3\xA0 adipisicing\xC3\xB9k\xC3\xB9 elit\xC3\xA8b\xC3\xA8 N\xC3\xA8 sed do\xC3\xA0d\xC3\xAC*{: .italic .smcaps}\n \n \xEF\x9B\xA1 eiusmod tempor incididunt, ut\xC3\xAAn\xC3\xB9 labore et dolore. Tw\xC4\x83nj\xC3\xAC magna aliqua. Ut enim ad minim veniam\n {: .normal}\n@@ -9,5 +9,5 @@ quis nostrud\xC3\xAAt\xC3\xB9 exercitiation ullamco laboris m\xC3\xB9s\xC3\xB9k\xC3\xB9abc\xC3\xB9 nisi ".force_encoding('ASCII-8BIT'),
         "mu ns\n Lorem ipsum dolor sit amet, consectetur adipisicing ut\xC3\xA0y\xC3\xB9abcd\xC3\xB9efg kia elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non p\n {: .normal_pn}\n \n-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in\n# *Lorem ipsum\xC3\xB9l\xC3\xB9l\xC3\xA0 dolor\xC3\xB9k\xC3\xB9 sit\xC3\xA8b\xC3\xA8 N\xC3\xA8 amet b\xC3\xA0d\xC3\xAC*\n+# *consectetur\xC3\xB9l\xC3\xB9l\xC3\xA0 adipisicing\xC3\xB9k\xC3\xB9 elit\xC3\xA8b\xC3\xA8 N\xC3\xA8 sed do\xC3\xA0d\xC3\xAC*{: .italic .smcaps}\n \n \xEF\x9B\xA1 eiusmod tempor incididunt, ut\xC3\xAAn\xC3\xB9 labore et dolore. Tw\xC4\x83nj\xC3\xAC magna aliqua. Ut enim ad minim veniam\n {: .normal}\n@@ -9,5 +9,5 @@ quis nostrud\xC3\xAAt\xC3\xB9 exercitiation ullamco laboris m\xC3\xB9s\xC3\xB9k\xC3\xB9abc\xC3\xB9 nisi "
+      ],
+      [
+        'string with detected encoding that is not supported in Ruby',
+        "\xFFe,i\xFF,\xB8oi,'\xB8,\xFF,-",
+        "--broken encoding: IBM420_ltr"
       ]
     ].each do |description, test_string, xpect|
       it description do
@@ -120,6 +125,24 @@ describe Gitlab::EncodingHelper do
     it 'returns empty string on conversion errors' do
       expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
     end
+
+    context 'with strings that can be forcefully encoded into utf8' do
+      let(:test_string) do
+        "refs/heads/FixSymbolsTitleDropdown".encode("ASCII-8BIT")
+      end
+      let(:expected_string) do
+        "refs/heads/FixSymbolsTitleDropdown".encode("UTF-8")
+      end
+
+      subject { ext_class.encode_utf8(test_string) }
+
+      it "doesn't use CharlockHolmes if the encoding can be forced into utf_8" do
+        expect(CharlockHolmes::EncodingDetector).not_to receive(:detect)
+
+        expect(subject).to eq(expected_string)
+        expect(subject.encoding.name).to eq('UTF-8')
+      end
+    end
   end
 
   describe '#clean' do
@@ -138,10 +161,29 @@ describe Gitlab::EncodingHelper do
         'removes invalid bytes from ASCII-8bit encoded multibyte string.',
         "Lorem ipsum\xC3\n dolor sit amet, xy\xC3\xA0y\xC3\xB9abcd\xC3\xB9efg".force_encoding('ASCII-8BIT'),
         "Lorem ipsum\n dolor sit amet, xyàyùabcdùefg"
+      ],
+      [
+        'handles UTF-16BE encoded strings',
+        "\xFE\xFF\x00\x41".force_encoding('ASCII-8BIT'), # An "A" prepended with UTF-16 BOM
+        "\xEF\xBB\xBFA" # An "A" prepended with UTF-8 BOM
       ]
     ].each do |description, test_string, xpect|
       it description do
         expect(ext_class.encode!(test_string)).to eq(xpect)
+      end
+    end
+  end
+
+  describe 'encode_binary' do
+    [
+      [nil, ""],
+      ["", ""],
+      ["  ", "  "],
+      %w(a1 a1),
+      ["编码", "\xE7\xBC\x96\xE7\xA0\x81".b]
+    ].each do |input, result|
+      it "encodes #{input.inspect} to #{result.inspect}" do
+        expect(ext_class.encode_binary(input)).to eq(result)
       end
     end
   end

@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeSaver do
   describe 'saves the project tree into a json object' do
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+    let(:shared) { project.import_export_shared }
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
     let!(:project) { setup_project }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
       allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
@@ -29,8 +29,17 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         project_json(project_tree_saver.full_path)
       end
 
+      context 'with description override' do
+        let(:params) { { description: 'Foo Bar' } }
+        let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
+
+        it 'overrides the project description' do
+          expect(saved_project_json).to include({ 'description' => params[:description] })
+        end
+      end
+
       it 'saves the correct json' do
-        expect(saved_project_json).to include({ "visibility_level" => 20 })
+        expect(saved_project_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
       end
 
       it 'has milestones' do
@@ -109,12 +118,20 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['merge_requests'].first['notes'].first['author']).not_to be_empty
       end
 
+      it 'has pipeline stages' do
+        expect(saved_project_json.dig('pipelines', 0, 'stages')).not_to be_empty
+      end
+
       it 'has pipeline statuses' do
-        expect(saved_project_json['pipelines'].first['statuses']).not_to be_empty
+        expect(saved_project_json.dig('pipelines', 0, 'stages', 0, 'statuses')).not_to be_empty
       end
 
       it 'has pipeline builds' do
-        expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build' }).to eq(1)
+        builds_count = saved_project_json
+          .dig('pipelines', 0, 'stages', 0, 'statuses')
+          .count { |hash| hash['type'] == 'Ci::Build' }
+
+        expect(builds_count).to eq(1)
       end
 
       it 'has no when YML attributes but only the DB column' do
@@ -156,6 +173,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['services'].first['type']).to eq('CustomIssueTrackerService')
       end
 
+      it 'saves the properties for a service' do
+        expect(saved_project_json['services'].first['properties']).to eq('one' => 'value')
+      end
+
       it 'has project feature' do
         project_feature = saved_project_json['project_feature']
         expect(project_feature).not_to be_empty
@@ -166,6 +187,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has custom attributes' do
         expect(saved_project_json['custom_attributes'].count).to eq(2)
+      end
+
+      it 'has badges' do
+        expect(saved_project_json['project_badges'].count).to eq(2)
       end
 
       it 'does not complain about non UTF-8 characters in MR diff files' do
@@ -220,10 +245,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
       end
 
       context 'project attributes' do
-        it 'contains the html description' do
-          expect(saved_project_json).to include("description_html" => 'description')
-        end
-
         it 'does not contain the runners token' do
           expect(saved_project_json).not_to include("runners_token" => 'token')
         end
@@ -243,12 +264,12 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      :issues_disabled,
                      :wiki_enabled,
                      :builds_private,
+                     description: 'description',
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
                      group: group
                     )
-    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)
@@ -271,10 +292,13 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
            commit_id: ci_build.pipeline.sha)
 
     create(:event, :created, target: milestone, project: project, author: user)
-    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
+    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker', properties: { one: 'value' })
 
     create(:project_custom_attribute, project: project)
     create(:project_custom_attribute, project: project)
+
+    create(:project_badge, project: project)
+    create(:project_badge, project: project)
 
     project
   end

@@ -1,8 +1,9 @@
+import $ from 'jquery';
 import _ from 'underscore';
 
 import '~/smart_interval';
 
-import timeTracker from './time_tracker';
+import IssuableTimeTracker from './time_tracker.vue';
 
 import Store from '../../stores/sidebar_store';
 import Mediator from '../../sidebar_mediator';
@@ -16,7 +17,7 @@ export default {
     };
   },
   components: {
-    'issuable-time-tracker': timeTracker,
+    IssuableTimeTracker,
   },
   methods: {
     listenForQuickActions() {

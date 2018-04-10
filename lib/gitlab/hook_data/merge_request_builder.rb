@@ -5,7 +5,6 @@ module Gitlab
         assignee_id
         author_id
         created_at
-        deleted_at
         description
         head_pipeline_id
         id

@@ -6,13 +6,16 @@ module Clusters
 
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
-      Applications::Ingress.application_name => Applications::Ingress
+      Applications::Ingress.application_name => Applications::Ingress,
+      Applications::Prometheus.application_name => Applications::Prometheus,
+      Applications::Runner.application_name => Applications::Runner
     }.freeze
+    DEFAULT_ENVIRONMENT = '*'.freeze
 
     belongs_to :user
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
-    has_many :projects, through: :cluster_projects, class_name: '::Project'
+    has_many :projects, -> { auto_include(false) }, through: :cluster_projects, class_name: '::Project'
 
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
@@ -21,6 +24,8 @@ module Clusters
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
+    has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
+    has_one :application_runner, class_name: 'Clusters::Applications::Runner'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -46,6 +51,11 @@ module Clusters
 
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
+    scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
+    scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
+    scope :gcp_installed, -> { gcp_provided.includes(:provider_gcp).where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }) }
+
+    scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
     def status_name
       if provider
@@ -62,7 +72,9 @@ module Clusters
     def applications
       [
         application_helm || build_application_helm,
-        application_ingress || build_application_ingress
+        application_ingress || build_application_ingress,
+        application_prometheus || build_application_prometheus,
+        application_runner || build_application_runner
       ]
     end
 

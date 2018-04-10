@@ -1,5 +1,0 @@
----
-title: Do not generate NPM links for private NPM modules in blob view
-merge_request: 16002
-author: Mario de la Ossa
-type: added

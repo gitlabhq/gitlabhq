@@ -102,15 +102,15 @@ in your SAML IdP:
     installation to generate the correct value).
 
 1.  Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
-    `name_identifier_format` to match your IdP. Check
+    `name_identifier_format` to match your IdP. If a fingerprint is used it must
+    be a SHA1 fingerprint; check
     [the omniauth-saml documentation](https://github.com/omniauth/omniauth-saml)
-    for details on these options.
+    for more details on these options.
 
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
-1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
-    installed GitLab via Omnibus or from source respectively.
+1.  For the changes to take effect, you must [reconfigure][] GitLab if you installed via Omnibus or [restart GitLab][] if you installed from source.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
     in `issuer`.
@@ -312,6 +312,7 @@ need to be validated using a fingerprint, a certificate or a validator.
 
 For this you need take the following into account:
 
+- If a fingerprint is used, it must be the SHA1 fingerprint
 - If no certificate is provided in the settings, a fingerprint or fingerprint
   validator needs to be provided and the response from the server must contain
   a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)

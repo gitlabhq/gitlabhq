@@ -9,11 +9,21 @@ require 'fileutils'
 # called 'bundle install' using a different Gemfile, as happens with
 # gitlab-ce and gitaly.
 
-dir = 'tmp/tests/gitaly'
+tmp_tests_gitaly_dir = File.expand_path('../tmp/tests/gitaly', __dir__)
 
-abort 'gitaly build failed' unless system('make', chdir: dir)
+# Use the top-level bundle vendor folder so that we don't reinstall gems twice
+bundle_vendor_path = File.expand_path('../vendor', __dir__)
+
+env = {
+  # This ensure the `clean` config set in `scripts/prepare_build.sh` isn't taken into account
+  'BUNDLE_IGNORE_CONFIG' => 'true',
+  'BUNDLE_GEMFILE' => File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile'),
+  'BUNDLE_FLAGS' => "--jobs=4 --path=#{bundle_vendor_path} --retry=3"
+}
+
+abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
 
 # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
 # Without this a gitaly executable created in the setup-test-env job
 # will look stale compared to GITALY_SERVER_VERSION.
-FileUtils.touch(File.join(dir, 'gitaly'), mtime: Time.now + (1 << 24))
+FileUtils.touch(File.join(tmp_tests_gitaly_dir, 'gitaly'), mtime: Time.now + (1 << 24))

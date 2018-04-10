@@ -266,7 +266,7 @@ describe CreateDeploymentService do
 
     context "while updating the 'first_deployed_to_production_at' time" do
       before do
-        merge_request.mark_as_merged
+        merge_request.metrics.update!(merged_at: Time.now)
       end
 
       context "for merge requests merged before the current deploy" do

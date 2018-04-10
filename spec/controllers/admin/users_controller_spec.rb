@@ -13,7 +13,7 @@ describe Admin::UsersController do
     let!(:issue) { create(:issue, author: user) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'deletes user and ghosts their contributions' do

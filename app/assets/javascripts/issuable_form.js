@@ -1,11 +1,13 @@
 /* eslint-disable func-names, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
 
+import $ from 'jquery';
 import Pikaday from 'pikaday';
 import Autosave from './autosave';
 import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
+import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 
 export default class IssuableForm {
@@ -45,6 +47,12 @@ export default class IssuableForm {
         onSelect: dateText => $issuableDueDate.val(calendar.toString(dateText)),
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
+    }
+
+    this.$targetBranchSelect = $('.js-target-branch-select', this.form);
+
+    if (this.$targetBranchSelect.length) {
+      this.initTargetBranchDropdown();
     }
   }
 
@@ -103,5 +111,38 @@ export default class IssuableForm {
 
   addWip() {
     this.titleField.val(`WIP: ${(this.titleField.val())}`);
+  }
+
+  initTargetBranchDropdown() {
+    this.$targetBranchSelect.select2({
+      ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
+      ajax: {
+        url: this.$targetBranchSelect.data('endpoint'),
+        dataType: 'JSON',
+        quietMillis: 250,
+        data(search) {
+          return {
+            search,
+          };
+        },
+        results(data) {
+          return {
+            // `data` keys are translated so we can't just access them with a string based key
+            results: data[Object.keys(data)[0]].map(name => ({
+              id: name,
+              text: name,
+            })),
+          };
+        },
+      },
+      initSelection(el, callback) {
+        const val = el.val();
+
+        callback({
+          id: val,
+          text: val,
+        });
+      },
+    });
   }
 }

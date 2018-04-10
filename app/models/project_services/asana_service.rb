@@ -68,7 +68,7 @@ http://app.asana.com/-/account_api'
     end
 
     user = data[:user_name]
-    project_name = project.name_with_namespace
+    project_name = project.full_name
 
     data[:commits].each do |commit|
       push_msg = "#{user} pushed to branch #{branch} of #{project_name} ( #{commit[:url]} ):"
@@ -84,7 +84,7 @@ http://app.asana.com/-/account_api'
     # - fix/ed/es/ing
     # - close/s/d
     # - closing
-    issue_finder = /(fix\w*|clos[ei]\w*+)?\W*(?:https:\/\/app\.asana\.com\/\d+\/\d+\/(\d+)|#(\d+))/i
+    issue_finder = %r{(fix\w*|clos[ei]\w*+)?\W*(?:https://app\.asana\.com/\d+/\d+/(\d+)|#(\d+))}i
 
     message.scan(issue_finder).each do |tuple|
       # tuple will be

@@ -9,12 +9,14 @@ module PreferencesHelper
 
   # Maps `dashboard` values to more user-friendly option text
   DASHBOARD_CHOICES = {
-    projects: 'Your Projects (default)',
-    stars:    'Starred Projects',
-    project_activity: "Your Projects' Activity",
-    starred_project_activity: "Starred Projects' Activity",
-    groups: "Your Groups",
-    todos: "Your Todos"
+    projects: _("Your Projects (default)"),
+    stars:    _("Starred Projects"),
+    project_activity: _("Your Projects' Activity"),
+    starred_project_activity: _("Starred Projects' Activity"),
+    groups: _("Your Groups"),
+    todos: _("Your Todos"),
+    issues: _("Assigned Issues"),
+    merge_requests: _("Assigned Merge Requests")
   }.with_indifferent_access.freeze
 
   # Returns an Array usable by a select field for more user-friendly option text
@@ -47,31 +49,5 @@ module PreferencesHelper
 
   def user_color_scheme
     Gitlab::ColorSchemes.for_user(current_user).css_class
-  end
-
-  def default_project_view
-    return anonymous_project_view unless current_user
-
-    user_view = current_user.project_view
-
-    if can?(current_user, :download_code, @project)
-      user_view
-    elsif user_view == "activity"
-      "activity"
-    elsif can?(current_user, :read_wiki, @project)
-      "wiki"
-    elsif @project.feature_available?(:issues, current_user)
-      "projects/issues/issues"
-    else
-      "customize_workflow"
-    end
-  end
-
-  def anonymous_project_view
-    if !@project.empty_repo? && can?(current_user, :download_code, @project)
-      'files'
-    else
-      'activity'
-    end
   end
 end

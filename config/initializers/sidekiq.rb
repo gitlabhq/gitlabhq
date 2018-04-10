@@ -5,14 +5,21 @@ queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 # Default is to retry 25 times with exponential backoff. That's too much.
 Sidekiq.default_worker_options = { retry: 3 }
 
+enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
+
 Sidekiq.configure_server do |config|
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
-    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
+    chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
+    chain.add Gitlab::SidekiqMiddleware::Shutdown
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqStatus::ServerMiddleware
+  end
+
+  if enable_json_logs
+    Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
+    config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
   end
 
   config.client_middleware do |chain|

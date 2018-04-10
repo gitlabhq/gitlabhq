@@ -260,7 +260,7 @@
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 260px;
+  max-height: $dropdown-max-height;
   max-width: 280px;
   overflow: auto;
 

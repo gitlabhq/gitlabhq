@@ -7,6 +7,9 @@ export default () => {
 
   return new Vue({
     el,
+    components: {
+      pdfLab,
+    },
     data() {
       return {
         error: false,
@@ -14,9 +17,6 @@ export default () => {
         loading: true,
         pdf: el.dataset.endpoint,
       };
-    },
-    components: {
-      pdfLab,
     },
     methods: {
       onLoad() {

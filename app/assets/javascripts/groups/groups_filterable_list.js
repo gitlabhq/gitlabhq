@@ -1,6 +1,7 @@
+import $ from 'jquery';
 import FilterableList from '~/filterable_list';
 import eventHub from './event_hub';
-import { getParameterByName } from '../lib/utils/common_utils';
+import { normalizeHeaders, getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
   constructor({ form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField }) {
@@ -94,23 +95,14 @@ export default class GroupFilterableList extends FilterableList {
     this.form.querySelector(`[name="${this.filterInputField}"]`).value = '';
   }
 
-  onFilterSuccess(data, xhr, queryData) {
+  onFilterSuccess(res, queryData) {
     const currentPath = this.getPagePath(queryData);
-
-    const paginationData = {
-      'X-Per-Page': xhr.getResponseHeader('X-Per-Page'),
-      'X-Page': xhr.getResponseHeader('X-Page'),
-      'X-Total': xhr.getResponseHeader('X-Total'),
-      'X-Total-Pages': xhr.getResponseHeader('X-Total-Pages'),
-      'X-Next-Page': xhr.getResponseHeader('X-Next-Page'),
-      'X-Prev-Page': xhr.getResponseHeader('X-Prev-Page'),
-    };
 
     window.history.replaceState({
       page: currentPath,
     }, document.title, currentPath);
 
-    eventHub.$emit('updateGroups', data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
-    eventHub.$emit('updatePagination', paginationData);
+    eventHub.$emit('updateGroups', res.data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
+    eventHub.$emit('updatePagination', normalizeHeaders(res.headers));
   }
 }

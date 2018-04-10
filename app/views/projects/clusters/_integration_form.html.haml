@@ -1,0 +1,38 @@
+= form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
+  = form_errors(@cluster)
+  .form-group.append-bottom-20
+    %h5= s_('ClusterIntegration|Integration status')
+    %p
+      - if @cluster.enabled?
+        - if can?(current_user, :update_cluster, @cluster)
+          = s_('ClusterIntegration|Kubernetes cluster integration is enabled for this project. Disabling this integration will not affect your Kubernetes cluster, it will only temporarily turn off GitLab\'s connection to it.')
+        - else
+          = s_('ClusterIntegration|Kubernetes cluster integration is enabled for this project.')
+      - else
+        = s_('ClusterIntegration|Kubernetes cluster integration is disabled for this project.')
+    %label.append-bottom-10.js-cluster-enable-toggle-area
+      %button{ type: 'button',
+        class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if @cluster.enabled?} #{'is-disabled' unless can?(current_user, :update_cluster, @cluster)}",
+        "aria-label": s_("ClusterIntegration|Toggle Kubernetes cluster"),
+        disabled: !can?(current_user, :update_cluster, @cluster) }
+        = field.hidden_field :enabled, { class: 'js-project-feature-toggle-input'}
+        %span.toggle-icon
+          = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
+          = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
+
+  .form-group
+    %h5= s_('ClusterIntegration|Security')
+    %p
+      = s_("ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application.")
+      = link_to s_("ClusterIntegration|Learn more about security configuration"),  help_page_path('user/project/clusters/index.md', anchor: 'security-implications')
+
+  .form-group
+    %h5= s_('ClusterIntegration|Environment scope')
+    %p
+      = s_("ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster.")
+      = link_to s_("ClusterIntegration|Learn more about environments"), help_page_path('ci/environments')
+    = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
+
+  - if can?(current_user, :update_cluster, @cluster)
+    .form-group
+      = field.submit _('Save changes'), class: 'btn btn-success'

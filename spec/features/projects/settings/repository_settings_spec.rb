@@ -6,7 +6,7 @@ feature 'Repository settings' do
   let(:role) { :developer }
 
   background do
-    project.team << [user, role]
+    project.add_role(user, role)
     sign_in(user)
   end
 
@@ -43,7 +43,7 @@ feature 'Repository settings' do
 
         fill_in 'deploy_key_title', with: 'new_deploy_key'
         fill_in 'deploy_key_key', with: new_ssh_key
-        check 'deploy_key_can_push'
+        check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
         click_button 'Add key'
 
         expect(page).to have_content('new_deploy_key')
@@ -57,7 +57,7 @@ feature 'Repository settings' do
         find('li', text: private_deploy_key.title).click_link('Edit')
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
-        check 'deploy_key_can_push'
+        check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
         click_button 'Save changes'
 
         expect(page).to have_content('updated_deploy_key')
@@ -66,7 +66,7 @@ feature 'Repository settings' do
 
       scenario 'edit a deploy key from projects user has access to' do
         project2 = create(:project_empty_repo)
-        project2.team << [user, role]
+        project2.add_role(user, role)
         project2.deploy_keys << private_deploy_key
 
         visit project_settings_repository_path(project)
@@ -74,11 +74,9 @@ feature 'Repository settings' do
         find('li', text: private_deploy_key.title).click_link('Edit')
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
-        check 'deploy_key_can_push'
         click_button 'Save changes'
 
         expect(page).to have_content('updated_deploy_key')
-        expect(page).to have_content('Write access allowed')
       end
 
       scenario 'remove an existing deploy key' do
@@ -88,6 +86,33 @@ feature 'Repository settings' do
         accept_confirm { find('li', text: private_deploy_key.title).click_button('Remove') }
 
         expect(page).not_to have_content(private_deploy_key.title)
+      end
+    end
+
+    context 'Deploy tokens' do
+      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      before do
+        stub_container_registry_config(enabled: true)
+        visit project_settings_repository_path(project)
+      end
+
+      scenario 'view deploy tokens' do
+        within('.deploy-tokens') do
+          expect(page).to have_content(deploy_token.name)
+          expect(page).to have_content('read_repository')
+          expect(page).to have_content('read_registry')
+        end
+      end
+
+      scenario 'add a new deploy token' do
+        fill_in 'deploy_token_name', with: 'new_deploy_key'
+        fill_in 'deploy_token_expires_at', with: (Date.today + 1.month).to_s
+        check 'deploy_token_read_repository'
+        check 'deploy_token_read_registry'
+        click_button 'Create deploy token'
+
+        expect(page).to have_content('Your new project deploy token has been created')
       end
     end
   end

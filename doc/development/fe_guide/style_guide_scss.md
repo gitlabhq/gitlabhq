@@ -7,6 +7,8 @@ easy to maintain, and performant for the end-user.
 
 ### Naming
 
+Filenames should use `snake_case`.
+
 CSS classes should use the `lowercase-hyphenated` format rather than
 `snake_case` or `camelCase`.
 
@@ -216,7 +218,7 @@ If you want a line or set of lines to be ignored by the linter, you can use
 ```scss
 // This lint rule is disabled because the class name comes from a gem.
 // scss-lint:disable SelectorFormat
-.ui_charcoal {
+.ui_indigo {
   background-color: #333;
 }
 // scss-lint:enable SelectorFormat

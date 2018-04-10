@@ -4,6 +4,7 @@ describe Banzai::Filter::AutolinkFilter do
   include FilterSpecHelper
 
   let(:link) { 'http://about.gitlab.com/' }
+  let(:quotes) { ['"', "'"] }
 
   it 'does nothing when :autolink is false' do
     exp = act = link
@@ -15,17 +16,7 @@ describe Banzai::Filter::AutolinkFilter do
     expect(filter(act).to_html).to eq exp
   end
 
-  context 'when the input contains no links' do
-    it 'does not parse_html back the rinku returned value' do
-      act = HTML::Pipeline.parse('<p>This text contains no links to autolink</p>')
-
-      expect_any_instance_of(described_class).not_to receive(:parse_html)
-
-      filter(act).to_html
-    end
-  end
-
-  context 'Rinku schemes' do
+  context 'Various schemes' do
     it 'autolinks http' do
       doc = filter("See #{link}")
       expect(doc.at_css('a').text).to eq link
@@ -56,32 +47,26 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.at_css('a')['href']).to eq link
     end
 
+    it 'autolinks multiple URLs' do
+      link1 = 'http://localhost:3000/'
+      link2 = 'http://google.com/'
+
+      doc = filter("See #{link1} and #{link2}")
+
+      found_links = doc.css('a')
+
+      expect(found_links.size).to eq(2)
+      expect(found_links[0].text).to eq(link1)
+      expect(found_links[0]['href']).to eq(link1)
+      expect(found_links[1].text).to eq(link2)
+      expect(found_links[1]['href']).to eq(link2)
+    end
+
     it 'accepts link_attr options' do
       doc = filter("See #{link}", link_attr: { class: 'custom' })
 
       expect(doc.at_css('a')['class']).to eq 'custom'
     end
-
-    described_class::IGNORE_PARENTS.each do |elem|
-      it "ignores valid links contained inside '#{elem}' element" do
-        exp = act = "<#{elem}>See #{link}</#{elem}>"
-        expect(filter(act).to_html).to eq exp
-      end
-    end
-
-    context 'when the input contains link' do
-      it 'does parse_html back the rinku returned value' do
-        act = HTML::Pipeline.parse("<p>See #{link}</p>")
-
-        expect_any_instance_of(described_class).to receive(:parse_html).at_least(:once).and_call_original
-
-        filter(act).to_html
-      end
-    end
-  end
-
-  context 'other schemes' do
-    let(:link) { 'foo://bar.baz/' }
 
     it 'autolinks smb' do
       link = 'smb:///Volumes/shared/foo.pdf'
@@ -89,6 +74,21 @@ describe Banzai::Filter::AutolinkFilter do
 
       expect(doc.at_css('a').text).to eq link
       expect(doc.at_css('a')['href']).to eq link
+    end
+
+    it 'autolinks multiple occurences of smb' do
+      link1 = 'smb:///Volumes/shared/foo.pdf'
+      link2 = 'smb:///Volumes/shared/bar.pdf'
+
+      doc = filter("See #{link1} and #{link2}")
+
+      found_links = doc.css('a')
+
+      expect(found_links.size).to eq(2)
+      expect(found_links[0].text).to eq(link1)
+      expect(found_links[0]['href']).to eq(link1)
+      expect(found_links[1].text).to eq(link2)
+      expect(found_links[1]['href']).to eq(link2)
     end
 
     it 'autolinks irc' do
@@ -122,14 +122,58 @@ describe Banzai::Filter::AutolinkFilter do
     end
 
     it 'does not include trailing punctuation' do
-      doc = filter("See #{link}.")
-      expect(doc.at_css('a').text).to eq link
+      ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
+        doc = filter("See #{link}#{trailing_punctuation}")
+        expect(doc.at_css('a').text).to eq link
+      end
+    end
 
-      doc = filter("See #{link}, ok?")
-      expect(doc.at_css('a').text).to eq link
+    it 'includes trailing punctuation when part of a balanced pair' do
+      described_class::PUNCTUATION_PAIRS.each do |close, open|
+        next if open.in?(quotes)
 
-      doc = filter("See #{link}...")
-      expect(doc.at_css('a').text).to eq link
+        balanced_link = "#{link}#{open}abc#{close}"
+        balanced_actual = filter("See #{balanced_link}...")
+        unbalanced_link = "#{link}#{close}"
+        unbalanced_actual = filter("See #{unbalanced_link}...")
+
+        expect(balanced_actual.at_css('a').text).to eq(balanced_link)
+        expect(unescape(balanced_actual.to_html)).to eq(Rinku.auto_link("See #{balanced_link}..."))
+        expect(unbalanced_actual.at_css('a').text).to eq(link)
+        expect(unescape(unbalanced_actual.to_html)).to eq(Rinku.auto_link("See #{unbalanced_link}..."))
+      end
+    end
+
+    it 'removes trailing quotes' do
+      quotes.each do |quote|
+        balanced_link = "#{link}#{quote}abc#{quote}"
+        balanced_actual = filter("See #{balanced_link}...")
+        unbalanced_link = "#{link}#{quote}"
+        unbalanced_actual = filter("See #{unbalanced_link}...")
+
+        expect(balanced_actual.at_css('a').text).to eq(balanced_link[0...-1])
+        expect(unescape(balanced_actual.to_html)).to eq(Rinku.auto_link("See #{balanced_link}..."))
+        expect(unbalanced_actual.at_css('a').text).to eq(link)
+        expect(unescape(unbalanced_actual.to_html)).to eq(Rinku.auto_link("See #{unbalanced_link}..."))
+      end
+    end
+
+    it 'removes one closing punctuation mark when the punctuation in the link is unbalanced' do
+      complicated_link = "(#{link}(a'b[c'd]))'"
+      expected_complicated_link = %Q{(<a href="#{link}(a'b[c'd]))">#{link}(a'b[c'd]))</a>'}
+      actual = unescape(filter(complicated_link).to_html)
+
+      expect(actual).to eq(Rinku.auto_link(complicated_link))
+      expect(actual).to eq(expected_complicated_link)
+    end
+
+    it 'does not double-encode HTML entities' do
+      encoded_link = "#{link}?foo=bar&amp;baz=quux"
+      expected_encoded_link = %Q{<a href="#{encoded_link}">#{encoded_link}</a>}
+      actual = unescape(filter(encoded_link).to_html)
+
+      expect(actual).to eq(Rinku.auto_link(encoded_link))
+      expect(actual).to eq(expected_encoded_link)
     end
 
     it 'does not include trailing HTML entities' do
@@ -150,5 +194,30 @@ describe Banzai::Filter::AutolinkFilter do
         expect(filter(act).to_html).to eq exp
       end
     end
+  end
+
+  context 'when the link is inside a tag' do
+    %w[http rdar].each do |protocol|
+      it "renders text after the link correctly for #{protocol}" do
+        doc = filter(ERB::Util.html_escape_once("<#{protocol}://link><another>"))
+
+        expect(doc.children.last.text).to include('<another>')
+      end
+    end
+  end
+
+  # Rinku does not escape these characters in HTML attributes, but content_tag
+  # does. We don't care about that difference for these specs, though.
+  def unescape(html)
+    %w([ ] { }).each do |cgi_escape|
+      html.sub!(CGI.escape(cgi_escape), cgi_escape)
+    end
+
+    quotes.each do |html_escape|
+      html.sub!(CGI.escape_html(html_escape), html_escape)
+      html.sub!(CGI.escape(html_escape), CGI.escape_html(html_escape))
+    end
+
+    html
   end
 end

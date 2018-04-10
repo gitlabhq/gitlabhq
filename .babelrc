@@ -1,19 +1,20 @@
 {
-  "presets": [
-    ["latest", { "es2015": { "modules": false } }],
-    "stage-2"
-  ],
+  "presets": [["latest", { "es2015": { "modules": false } }], "stage-2"],
   "env": {
     "coverage": {
       "plugins": [
-        ["istanbul", {
-          "exclude": [
-            "spec/javascripts/**/*"
-          ]
-        }],
-        ["transform-define", {
-          "process.env.BABEL_ENV": "coverage"
-        }]
+        [
+          "istanbul",
+          {
+            "exclude": ["spec/javascripts/**/*", "app/assets/javascripts/locale/**/app.js"]
+          }
+        ],
+        [
+          "transform-define",
+          {
+            "process.env.BABEL_ENV": "coverage"
+          }
+        ]
       ]
     }
   }

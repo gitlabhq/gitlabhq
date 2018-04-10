@@ -27,6 +27,7 @@ comments: false
 
 ## Backend guides
 
+- [GitLab utilities](utilities.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
@@ -74,6 +75,7 @@ comments: false
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
+- [Query Count Limits](query_count_limits.md)
 
 ## Testing guides
 

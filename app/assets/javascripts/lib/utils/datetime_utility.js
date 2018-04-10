@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import timeago from 'timeago.js';
 import dateFormat from 'vendor/date.format';
 import { pluralize } from './text_utility';
@@ -8,6 +9,20 @@ import {
 
 window.timeago = timeago;
 window.dateFormat = dateFormat;
+
+/**
+ * Returns i18n month names array.
+ * If `abbreviated` is provided, returns abbreviated
+ * name.
+ *
+ * @param {Boolean} abbreviated
+ */
+const getMonthNames = (abbreviated) => {
+  if (abbreviated) {
+    return [s__('Jan'), s__('Feb'), s__('Mar'), s__('Apr'), s__('May'), s__('Jun'), s__('Jul'), s__('Aug'), s__('Sep'), s__('Oct'), s__('Nov'), s__('Dec')];
+  }
+  return [s__('January'), s__('February'), s__('March'), s__('April'), s__('May'), s__('June'), s__('July'), s__('August'), s__('September'), s__('October'), s__('November'), s__('December')];
+};
 
 /**
  * Given a date object returns the day of the week in English
@@ -143,7 +158,6 @@ export const getDayDifference = (a, b) => {
  * @param  {Number} seconds
  * @return {String}
  */
-// eslint-disable-next-line import/prefer-default-export
 export function timeIntervalInWords(intervalInSeconds) {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
@@ -158,7 +172,7 @@ export function timeIntervalInWords(intervalInSeconds) {
   return text;
 }
 
-export function dateInWords(date, abbreviated = false) {
+export function dateInWords(date, abbreviated = false, hideYear = false) {
   if (!date) return date;
 
   const month = date.getMonth();
@@ -169,8 +183,114 @@ export function dateInWords(date, abbreviated = false) {
 
   const monthName = abbreviated ? monthNamesAbbr[month] : monthNames[month];
 
+  if (hideYear) {
+    return `${monthName} ${date.getDate()}`;
+  }
+
   return `${monthName} ${date.getDate()}, ${year}`;
 }
+
+/**
+ * Returns month name based on provided date.
+ *
+ * @param {Date} date
+ * @param {Boolean} abbreviated
+ */
+export const monthInWords = (date, abbreviated = false) => {
+  if (!date) {
+    return '';
+  }
+
+  return getMonthNames(abbreviated)[date.getMonth()];
+};
+
+/**
+ * Returns number of days in a month for provided date.
+ * courtesy: https://stacko(verflow.com/a/1185804/414749
+ *
+ * @param {Date} date
+ */
+export const totalDaysInMonth = (date) => {
+  if (!date) {
+    return 0;
+  }
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+};
+
+/**
+ * Returns list of Dates referring to Sundays of the month
+ * based on provided date
+ *
+ * @param {Date} date
+ */
+export const getSundays = (date) => {
+  if (!date) {
+    return [];
+  }
+
+  const daysToSunday = ['Saturday', 'Friday', 'Thursday', 'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const sundays = [];
+  const dateOfMonth = new Date(year, month, 1);
+
+  while (dateOfMonth.getMonth() === month) {
+    const dayName = getDayName(dateOfMonth);
+    if (dayName === 'Sunday') {
+      sundays.push(new Date(dateOfMonth.getTime()));
+    }
+
+    const daysUntilNextSunday = daysToSunday.indexOf(dayName) + 1;
+    dateOfMonth.setDate(dateOfMonth.getDate() + daysUntilNextSunday);
+  }
+
+  return sundays;
+};
+
+/**
+ * Returns list of Dates representing a timeframe of Months from month of provided date (inclusive)
+ * up to provided length
+ *
+ * For eg;
+ *    If current month is January 2018 and `length` provided is `6`
+ *    Then this method will return list of Date objects as follows;
+ *
+ *    [ October 2017, November 2017, December 2017, January 2018, February 2018, March 2018 ]
+ *
+ *    If current month is March 2018 and `length` provided is `3`
+ *    Then this method will return list of Date objects as follows;
+ *
+ *    [ February 2018, March 2018, April 2018 ]
+ *
+ * @param {Number} length
+ * @param {Date} date
+ */
+export const getTimeframeWindow = (length, date) => {
+  if (!length) {
+    return [];
+  }
+
+  const currentDate = date instanceof Date ? date : new Date();
+  const currentMonthIndex = Math.floor(length / 2);
+  const timeframe = [];
+
+  // Move date object backward to the first month of timeframe
+  currentDate.setDate(1);
+  currentDate.setMonth(currentDate.getMonth() - currentMonthIndex);
+
+  // Iterate and update date for the size of length
+  // and push date reference to timeframe list
+  for (let i = 0; i < length; i += 1) {
+    timeframe.push(new Date(currentDate.getTime()));
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+  // Change date of last timeframe item to last date of the month
+  timeframe[length - 1].setDate(totalDaysInMonth(timeframe[length - 1]));
+
+  return timeframe;
+};
 
 window.gl = window.gl || {};
 window.gl.utils = {

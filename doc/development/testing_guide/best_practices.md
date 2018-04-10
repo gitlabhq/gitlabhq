@@ -26,7 +26,6 @@ Here are some things to keep in mind regarding test performance:
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
 - Use `context` to test branching logic.
-- Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](../gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
@@ -88,6 +87,8 @@ Back to the example!
 Finished in 34.51 seconds (files took 0.76702 seconds to load)
 1 example, 0 failures
 ```
+
+Note: `live_debug` only works on javascript enabled specs.
 
 ### `let` variables
 

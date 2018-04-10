@@ -22,16 +22,14 @@ module Mattermost
   # going.
   class Session
     include Doorkeeper::Helpers::Controller
-    include HTTParty
 
     LEASE_TIMEOUT = 60
 
-    base_uri Settings.mattermost.host
-
-    attr_accessor :current_resource_owner, :token
+    attr_accessor :current_resource_owner, :token, :base_uri
 
     def initialize(current_user)
       @current_resource_owner = current_user
+      @base_uri = Settings.mattermost.host
     end
 
     def with_session
@@ -73,17 +71,31 @@ module Mattermost
 
     def get(path, options = {})
       handle_exceptions do
-        self.class.get(path, options.merge(headers: @headers))
+        Gitlab::HTTP.get(path, build_options(options))
       end
     end
 
     def post(path, options = {})
       handle_exceptions do
-        self.class.post(path, options.merge(headers: @headers))
+        Gitlab::HTTP.post(path, build_options(options))
+      end
+    end
+
+    def delete(path, options = {})
+      handle_exceptions do
+        Gitlab::HTTP.delete(path, build_options(options))
       end
     end
 
     private
+
+    def build_options(options)
+      options.tap do |hash|
+        hash[:headers] = @headers
+        hash[:allow_local_requests] = true
+        hash[:base_uri] = base_uri if base_uri.presence
+      end
+    end
 
     def create
       raise Mattermost::NoSessionError unless oauth_uri
@@ -159,14 +171,14 @@ module Mattermost
 
     def handle_exceptions
       yield
-    rescue HTTParty::Error => e
+    rescue Gitlab::HTTP::Error => e
       raise Mattermost::ConnectionError.new(e.message)
     rescue Errno::ECONNREFUSED => e
       raise Mattermost::ConnectionError.new(e.message)
     end
 
     def parse_cookie(response)
-      cookie_hash = CookieHash.new
+      cookie_hash = Gitlab::HTTP::CookieHash.new
       response.get_fields('Set-Cookie').each { |c| cookie_hash.add_cookies(c) }
       cookie_hash
     end

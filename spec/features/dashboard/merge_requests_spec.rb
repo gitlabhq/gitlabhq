@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 feature 'Dashboard Merge Requests' do
+  include Spec::Support::Helpers::Features::SortingHelpers
   include FilterItemSelectHelper
-  include SortingHelper
   include ProjectForksHelper
 
   let(:current_user) { create :user }
@@ -28,8 +28,8 @@ feature 'Dashboard Merge Requests' do
       find('.new-project-item-select-button').click
 
       page.within('.select2-results') do
-        expect(page).to have_content(project.name_with_namespace)
-        expect(page).not_to have_content(project_with_disabled_merge_requests.name_with_namespace)
+        expect(page).to have_content(project.full_name)
+        expect(page).not_to have_content(project_with_disabled_merge_requests.full_name)
       end
     end
   end
@@ -44,36 +44,38 @@ feature 'Dashboard Merge Requests' do
 
   context 'merge requests exist' do
     let!(:assigned_merge_request) do
-      create(:merge_request, assignee: current_user, target_project: project, source_project: project)
+      create(:merge_request,
+        assignee: current_user,
+        source_project: project,
+        author: create(:user))
     end
 
     let!(:assigned_merge_request_from_fork) do
       create(:merge_request,
               source_branch: 'markdown', assignee: current_user,
-              target_project: public_project, source_project: forked_project
-            )
+              target_project: public_project, source_project: forked_project,
+              author: create(:user))
     end
 
     let!(:authored_merge_request) do
       create(:merge_request,
-              source_branch: 'markdown', author: current_user,
-              target_project: project, source_project: project
-            )
+              source_branch: 'markdown',
+              source_project: project,
+              author: current_user)
     end
 
     let!(:authored_merge_request_from_fork) do
       create(:merge_request,
               source_branch: 'feature_conflict',
               author: current_user,
-              target_project: public_project, source_project: forked_project
-            )
+              target_project: public_project, source_project: forked_project)
     end
 
     let!(:other_merge_request) do
       create(:merge_request,
               source_branch: 'fix',
-              target_project: project, source_project: project
-            )
+              source_project: project,
+              author: create(:user))
     end
 
     before do
@@ -101,19 +103,15 @@ feature 'Dashboard Merge Requests' do
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows all merge requests', :js do
+    it 'shows error message without filter', :js do
       filter_item_select('Any Assignee', '.js-assignee-search')
       filter_item_select('Any Author', '.js-author-search')
 
-      expect(page).to have_content(authored_merge_request.title)
-      expect(page).to have_content(authored_merge_request_from_fork.title)
-      expect(page).to have_content(assigned_merge_request.title)
-      expect(page).to have_content(assigned_merge_request_from_fork.title)
-      expect(page).to have_content(other_merge_request.title)
+      expect(page).to have_content('Please select at least one filter to see results')
     end
 
     it 'shows sorted merge requests' do
-      sorting_by('Created date')
+      sort_by('Created date')
 
       visit merge_requests_dashboard_path(assignee_id: current_user.id)
 
@@ -121,7 +119,7 @@ feature 'Dashboard Merge Requests' do
     end
 
     it 'keeps sorting merge requests after visiting Projects MR page' do
-      sorting_by('Created date')
+      sort_by('Created date')
 
       visit project_merge_requests_path(project)
 

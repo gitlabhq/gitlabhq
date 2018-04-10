@@ -8,6 +8,7 @@ describe TreeHelper do
   describe '.render_tree' do
     before do
       @id = sha
+      @path = ""
       @project = project
       @lfs_blob_ids = []
     end
@@ -60,6 +61,24 @@ describe TreeHelper do
           expect(subject).to match('path/correct')
         end
       end
+    end
+
+    context 'when the root path contains a plus character' do
+      let(:root_path) { 'gtk/C++' }
+      let(:tree_item) { double(flat_path: 'gtk/C++/glade') }
+
+      it 'returns the flattened path' do
+        expect(subject).to eq('glade')
+      end
+    end
+  end
+
+  describe '#commit_in_single_accessible_branch' do
+    it 'escapes HTML from the branch name' do
+      helper.instance_variable_set(:@branch_name, "<script>alert('escape me!');</script>")
+      escaped_branch_name = '&lt;script&gt;alert(&#39;escape me!&#39;);&lt;/script&gt;'
+
+      expect(helper.commit_in_single_accessible_branch).to include(escaped_branch_name)
     end
   end
 end

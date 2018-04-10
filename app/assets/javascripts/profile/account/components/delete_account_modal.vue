@@ -1,9 +1,12 @@
 <script>
-  import modal from '../../../vue_shared/components/modal.vue';
-  import { __, s__, sprintf } from '../../../locale';
-  import csrf from '../../../lib/utils/csrf';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
+  import { __, s__, sprintf } from '~/locale';
+  import csrf from '~/lib/utils/csrf';
 
   export default {
+    components: {
+      DeprecatedModal,
+    },
     props: {
       actionUrl: {
         type: String,
@@ -22,11 +25,7 @@
       return {
         enteredPassword: '',
         enteredUsername: '',
-        isOpen: false,
       };
-    },
-    components: {
-      modal,
     },
     computed: {
       csrfToken() {
@@ -69,78 +68,68 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 
         return this.enteredUsername === this.username;
       },
-      onSubmit(status) {
-        if (status) {
-          if (!this.canSubmit()) {
-            return;
-          }
-
-          this.$refs.form.submit();
-        }
-
-        this.toggleOpen(false);
-      },
-      toggleOpen(isOpen) {
-        this.isOpen = isOpen;
+      onSubmit() {
+        this.$refs.form.submit();
       },
     },
   };
 </script>
 
 <template>
-  <div>
-    <modal
-      v-if="isOpen"
-      :title="s__('Profiles|Delete your account?')"
-      :text="text"
-      :kind="`danger ${!canSubmit() && 'disabled'}`"
-      :primary-button-label="s__('Profiles|Delete account')"
-      @toggle="toggleOpen"
-      @submit="onSubmit">
+  <deprecated-modal
+    id="delete-account-modal"
+    :title="s__('Profiles|Delete your account?')"
+    :text="text"
+    kind="danger"
+    :primary-button-label="s__('Profiles|Delete account')"
+    @submit="onSubmit"
+    :submit-disabled="!canSubmit()">
 
-      <template slot="body" slot-scope="props">
-        <p v-html="props.text"></p>
+    <template
+      slot="body"
+      slot-scope="props">
+      <p v-html="props.text"></p>
 
-        <form
-          ref="form"
-          :action="actionUrl"
-          method="post">
+      <form
+        ref="form"
+        :action="actionUrl"
+        method="post">
 
-          <input
-            type="hidden"
-            name="_method"
-            value="delete" />
-          <input
-            type="hidden"
-            name="authenticity_token"
-            :value="csrfToken" />
+        <input
+          type="hidden"
+          name="_method"
+          value="delete"
+        />
+        <input
+          type="hidden"
+          name="authenticity_token"
+          :value="csrfToken"
+        />
 
-          <p id="input-label" v-html="inputLabel"></p>
+        <p
+          id="input-label"
+          v-html="inputLabel"
+        >
+        </p>
 
-          <input
-            v-if="confirmWithPassword"
-            name="password"
-            class="form-control"
-            type="password"
-            v-model="enteredPassword"
-            aria-labelledby="input-label" />
-          <input
-            v-else
-            name="username"
-            class="form-control"
-            type="text"
-            v-model="enteredUsername"
-            aria-labelledby="input-label" />
-        </form>
-      </template>
+        <input
+          v-if="confirmWithPassword"
+          name="password"
+          class="form-control"
+          type="password"
+          v-model="enteredPassword"
+          aria-labelledby="input-label"
+        />
+        <input
+          v-else
+          name="username"
+          class="form-control"
+          type="text"
+          v-model="enteredUsername"
+          aria-labelledby="input-label"
+        />
+      </form>
+    </template>
 
-    </modal>
-
-    <button
-      type="button"
-      class="btn btn-danger"
-      @click="toggleOpen(true)">
-      {{ s__('Profiles|Delete account') }}
-    </button>
-  </div>
+  </deprecated-modal>
 </template>

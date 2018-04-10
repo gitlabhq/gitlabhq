@@ -24,8 +24,8 @@ module WorkhorseHelper
   end
 
   # Archive a Git repository and send it through Workhorse
-  def send_git_archive(repository, ref:, format:)
-    headers.store(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+  def send_git_archive(repository, **kwargs)
+    headers.store(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     head :ok
   end
 

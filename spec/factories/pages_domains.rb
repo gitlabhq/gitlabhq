@@ -1,9 +1,10 @@
 FactoryBot.define do
   factory :pages_domain, class: 'PagesDomain' do
-    domain 'my.domain.com'
+    sequence(:domain) { |n| "my#{n}.domain.com" }
+    verified_at { Time.now }
+    enabled_until { 1.week.from_now }
 
-    trait :with_certificate do
-      certificate '-----BEGIN CERTIFICATE-----
+    certificate '-----BEGIN CERTIFICATE-----
 MIICGzCCAYSgAwIBAgIBATANBgkqhkiG9w0BAQUFADAbMRkwFwYDVQQDExB0ZXN0
 LWNlcnRpZmljYXRlMB4XDTE2MDIxMjE0MzIwMFoXDTIwMDQxMjE0MzIwMFowGzEZ
 MBcGA1UEAxMQdGVzdC1jZXJ0aWZpY2F0ZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAw
@@ -17,10 +18,8 @@ joZp2JHYvNlTPkRJ/J4TcXxBTJmArcQgTIuNoBtC+0A/SwdK4MfTCUY4vNWNdese
 5A4K65Nb7Oh1AdQieTBHNXXCdyFsva9/ScfQGEl7p55a52jOPs0StPd7g64uvjlg
 YHi2yesCrOvVXt+lgPTd
 -----END CERTIFICATE-----'
-    end
 
-    trait :with_key do
-      key '-----BEGIN PRIVATE KEY-----
+    key '-----BEGIN PRIVATE KEY-----
 MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKS+CfS9GcRSdYSN
 SzyH5QJQBr5umRL6E+KilOV39iYFO/9oHjUdapTRWkrwnNPCp7qaeck4Jr8iv14t
 PVNDfNr76eGb6/3YknOAP0QOjLWunoC8kjU+N/JHU52NrUeX3qEy8EKV9LeCDJcB
@@ -36,6 +35,30 @@ EPjGlXIT+aW2XiPmK3ZlCDcWIenE+lmtbOpI159Wpk8BGXs/s/xBAkEAlAY3ymgx
 63BDJEwvOb2IaP8lDDxNsXx9XJNVvQbv5n15vNsLHbjslHfAhAbxnLQ1fLhUPqSi
 nNp/xedE1YxutQ==
 -----END PRIVATE KEY-----'
+
+    trait :disabled do
+      verified_at nil
+      enabled_until nil
+    end
+
+    trait :unverified do
+      verified_at nil
+    end
+
+    trait :reverify do
+      enabled_until { 1.hour.from_now }
+    end
+
+    trait :expired do
+      enabled_until { 1.hour.ago }
+    end
+
+    trait :without_certificate do
+      certificate nil
+    end
+
+    trait :without_key do
+      key nil
     end
 
     trait :with_missing_chain do

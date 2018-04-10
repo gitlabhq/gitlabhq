@@ -1,29 +1,33 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
 
+import $ from 'jquery';
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+
 export default function initCompareAutocomplete() {
   $('.js-compare-dropdown').each(function() {
     var $dropdown, selected;
     $dropdown = $(this);
     selected = $dropdown.data('selected');
     const $dropdownContainer = $dropdown.closest('.dropdown');
-    const $fieldInput = $(`input[name="${$dropdown.data('field-name')}"]`, $dropdownContainer);
+    const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
     $dropdown.glDropdown({
       data: function(term, callback) {
-        return $.ajax({
-          url: $dropdown.data('refs-url'),
-          data: {
+        axios.get($dropdown.data('refsUrl'), {
+          params: {
             ref: $dropdown.data('ref'),
             search: term,
-          }
-        }).done(function(refs) {
-          return callback(refs);
-        });
+          },
+        }).then(({ data }) => {
+          callback(data);
+        }).catch(() => flash(__('Error fetching refs')));
       },
       selectable: true,
       filterable: true,
       filterRemote: true,
-      fieldName: $dropdown.data('field-name'),
+      fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
       renderRow: function(ref) {
         var link;

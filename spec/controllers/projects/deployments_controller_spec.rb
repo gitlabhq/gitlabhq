@@ -8,7 +8,7 @@ describe Projects::DeploymentsController do
   let(:environment) { create(:environment, name: 'production', project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
@@ -129,10 +129,10 @@ describe Projects::DeploymentsController do
     end
 
     context 'when metrics are enabled' do
-      let(:prometheus_service) { double('prometheus_service') }
+      let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
       before do
-        allow(deployment.project).to receive(:prometheus_service).and_return(prometheus_service)
+        allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
       end
 
       context 'when environment has no metrics' do

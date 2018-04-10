@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+require 'digest'
+require 'fileutils'
+
+harness_path = File.expand_path('../.git/security_harness', __dir__)
+hook_path    = File.expand_path("../.git/hooks/pre-push", __dir__)
+
+if File.exist?(hook_path)
+  # Deal with a pre-existing hook
+  source_sum = Digest::SHA256.hexdigest(DATA.read)
+  dest_sum   = Digest::SHA256.file(hook_path).hexdigest
+
+  if source_sum != dest_sum
+    puts "#{hook_path} exists and is different from our hook!"
+    puts "Remove it and re-run this script to continue."
+
+    exit 1
+  end
+else
+  File.open(hook_path, 'w') do |file|
+    IO.copy_stream(DATA, file)
+  end
+
+  File.chmod(0755, hook_path)
+end
+
+# Toggle the harness on or off
+if File.exist?(harness_path)
+  FileUtils.rm(harness_path)
+
+  puts "Security harness removed -- you can now push to all remotes."
+else
+  FileUtils.touch(harness_path)
+
+  puts "Security harness installed -- you will only be able to push to dev.gitlab.org!"
+end
+
+__END__
+#!/bin/sh
+
+set -e
+
+url="$2"
+harness=`dirname "$0"`/../security_harness
+
+if [ -e "$harness" ]
+then
+  if [[ "$url" != *"dev.gitlab.org"* ]]
+  then
+    echo "Pushing to remotes other than dev.gitlab.org has been disabled!"
+    echo "Run scripts/security-harness to disable this check."
+    echo
+
+    exit 1
+  fi
+fi

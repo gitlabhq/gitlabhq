@@ -89,6 +89,7 @@ module SnippetsHelper
         snippet_chunk = [lined_content[line_number]]
         snippet_start_line = line_number
       end
+
       last_line = line_number
     end
     # Add final chunk to chunk array

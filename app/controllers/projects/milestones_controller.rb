@@ -14,7 +14,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def index
     @sort = params[:sort] || 'due_date_asc'
-    @milestones = milestones.sort(@sort)
+    @milestones = milestones.sort_by_attribute(@sort)
 
     respond_to do |format|
       format.html do
@@ -42,6 +42,10 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def show
     @project_namespace = @project.namespace.becomes(Namespace)
+
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
@@ -71,8 +75,16 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
-    flash[:notice] = "Milestone has been promoted to group milestone."
-    redirect_to group_milestone_path(project.group, promoted_milestone.iid)
+
+    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\">group milestone</a>.".html_safe
+    respond_to do |format|
+      format.html do
+        redirect_to project_milestones_path(project)
+      end
+      format.json do
+        render json: { url: project_milestones_path(project) }
+      end
+    end
   rescue Milestones::PromoteService::PromoteMilestoneError => error
     redirect_to milestone, alert: error.message
   end
@@ -83,7 +95,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_milestones_path, status: 302 }
+      format.html { redirect_to namespace_project_milestones_path, status: 303 }
       format.js { head :ok }
     end
   end
@@ -92,12 +104,6 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def milestones
     @milestones ||= begin
-      if @project.group && can?(current_user, :read_group, @project.group)
-        group = @project.group
-      end
-
-      search_params = params.merge(project_ids: @project.id, group_ids: group&.id)
-
       MilestonesFinder.new(search_params).execute
     end
   end
@@ -112,5 +118,13 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def milestone_params
     params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
+  end
+
+  def search_params
+    if @project.group && can?(current_user, :read_group, @project.group)
+      group = @project.group
+    end
+
+    params.permit(:state).merge(project_ids: @project.id, group_ids: group&.id)
   end
 end

@@ -1,27 +1,27 @@
 <script>
-/**
- * Renders the Monitoring (Metrics) link in environments table.
- */
-import tooltip from '../../vue_shared/directives/tooltip';
+  /**
+  * Renders the Monitoring (Metrics) link in environments table.
+  */
+  import tooltip from '../../vue_shared/directives/tooltip';
 
-export default {
-  props: {
-    monitoringUrl: {
-      type: String,
-      required: true,
+  export default {
+    directives: {
+      tooltip,
     },
-  },
 
-  directives: {
-    tooltip,
-  },
-
-  computed: {
-    title() {
-      return 'Monitoring';
+    props: {
+      monitoringUrl: {
+        type: String,
+        required: true,
+      },
     },
-  },
-};
+
+    computed: {
+      title() {
+        return 'Monitoring';
+      },
+    },
+  };
 </script>
 <template>
   <a
@@ -31,10 +31,12 @@ export default {
     rel="noopener noreferrer nofollow"
     :href="monitoringUrl"
     :title="title"
-    :aria-label="title">
+    :aria-label="title"
+  >
     <i
       class="fa fa-area-chart"
       aria-hidden="true"
-      />
+    >
+    </i>
   </a>
 </template>

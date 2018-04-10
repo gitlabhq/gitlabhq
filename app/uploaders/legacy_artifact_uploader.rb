@@ -1,33 +1,20 @@
 class LegacyArtifactUploader < GitlabUploader
-  storage :file
+  extend Workhorse::UploadPath
+  include ObjectStorage::Concern
 
-  def self.local_store_path
-    Gitlab.config.artifacts.path
-  end
+  ObjectNotReadyError = Class.new(StandardError)
 
-  def self.artifacts_upload_path
-    File.join(self.local_store_path, 'tmp/uploads/')
-  end
+  storage_options Gitlab.config.artifacts
 
   def store_dir
-    default_local_path
-  end
-
-  def cache_dir
-    File.join(self.class.local_store_path, 'tmp/cache')
-  end
-
-  def work_dir
-    File.join(self.class.local_store_path, 'tmp/work')
+    dynamic_segment
   end
 
   private
 
-  def default_local_path
-    File.join(self.class.local_store_path, default_path)
-  end
+  def dynamic_segment
+    raise ObjectNotReadyError, 'Build is not ready' unless model.id
 
-  def default_path
     File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
   end
 end

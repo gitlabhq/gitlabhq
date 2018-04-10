@@ -2,14 +2,12 @@
 require 'spec_helper'
 
 describe API::Projects do
-  include Gitlab::CurrentSettings
-
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
+  let(:project2) { create(:project, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -148,6 +146,19 @@ describe API::Projects do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
+      end
+
+      context 'and with_issues_enabled=true' do
+        it 'only returns projects with issues enabled' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get api('/projects?with_issues_enabled=true', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
       end
 
       it "does not include statistics by default" do
@@ -304,7 +315,7 @@ describe API::Projects do
 
       context 'and with all query parameters' do
         let!(:project5) { create(:project, :public, path: 'gitlab5', namespace: create(:namespace)) }
-        let!(:project6) { create(:project, :public, path: 'project6', namespace: user.namespace) }
+        let!(:project6) { create(:project, :public, namespace: user.namespace) }
         let!(:project7) { create(:project, :public, path: 'gitlab7', namespace: user.namespace) }
         let!(:project8) { create(:project, path: 'gitlab8', namespace: user.namespace) }
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
@@ -351,6 +362,19 @@ describe API::Projects do
         let(:filter) { {} }
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
+      end
+
+      context 'and with_issues_enabled=true' do
+        it 'does not return private issue projects' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+
+          get api('/projects?with_issues_enabled=true', user2)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
       end
     end
 
@@ -428,7 +452,8 @@ describe API::Projects do
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
-        ci_config_path: 'a/custom/path'
+        ci_config_path: 'a/custom/path',
+        merge_method: 'ff'
       })
 
       post api('/projects', user), project
@@ -436,7 +461,7 @@ describe API::Projects do
       expect(response).to have_gitlab_http_status(201)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -545,6 +570,22 @@ describe API::Projects do
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
 
+    it 'sets the merge method of a project to rebase merge' do
+      project = attributes_for(:project, merge_method: 'rebase_merge')
+
+      post api('/projects', user), project
+
+      expect(json_response['merge_method']).to eq('rebase_merge')
+    end
+
+    it 'rejects invalid values for merge_method' do
+      project = attributes_for(:project, merge_method: 'totally_not_valid_method')
+
+      post api('/projects', user), project
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it 'ignores import_url when it is nil' do
       project = attributes_for(:project, import_url: nil)
 
@@ -598,12 +639,8 @@ describe API::Projects do
   end
 
   describe 'POST /projects/user/:id' do
-    before do
-      expect(project).to be_persisted
-    end
-
     it 'creates new project without path but with name and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
+      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
       project = Project.last
@@ -642,8 +679,9 @@ describe API::Projects do
       post api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_gitlab_http_status(201)
+
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker path].include?(k)
+        next if %i[has_external_issue_tracker path storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -802,6 +840,7 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response['merge_method']).to eq(project.merge_method.to_s)
       end
 
       it 'returns a project by path name' do
@@ -908,7 +947,7 @@ describe API::Projects do
       describe 'permissions' do
         context 'all projects' do
           before do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'contains permission information' do
@@ -923,7 +962,7 @@ describe API::Projects do
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.team << [user, :master]
+            project.add_master(user)
             get api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
@@ -1453,6 +1492,26 @@ describe API::Projects do
           expect(json_response[k.to_s]).to eq(v)
         end
       end
+
+      it 'updates merge_method' do
+        project_param = { merge_method: 'ff' }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'rejects to update merge_method when merge_method is invalid' do
+        project_param = { merge_method: 'invalid' }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
 
     context 'when authenticated as project master' do
@@ -1470,6 +1529,7 @@ describe API::Projects do
                           wiki_enabled: true,
                           snippets_enabled: true,
                           merge_requests_enabled: true,
+                          merge_method: 'ff',
                           description: 'new description' }
 
         put api("/projects/#{project3.id}", user4), project_param
@@ -1539,7 +1599,7 @@ describe API::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1575,7 +1635,7 @@ describe API::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1650,7 +1710,7 @@ describe API::Projects do
 
       it 'does not remove a project if not an owner' do
         user3 = create(:user)
-        project.team << [user3, :developer]
+        project.add_developer(user3)
         delete api("/projects/#{project.id}", user3)
         expect(response).to have_gitlab_http_status(403)
       end
@@ -1693,6 +1753,12 @@ describe API::Projects do
     let(:group) { create(:group) }
     let(:group2) do
       group = create(:group, name: 'group2_name')
+      group.add_owner(user2)
+      group
+    end
+
+    let(:group3) do
+      group = create(:group, name: 'group3_name', parent: group2)
       group.add_owner(user2)
       group
     end
@@ -1790,6 +1856,15 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group2.name)
+      end
+
+      it 'forks to owned subgroup' do
+        full_path = "#{group2.path}/#{group3.path}"
+        post api("/projects/#{project.id}/fork", user2), namespace: full_path
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group3.name)
+        expect(json_response['namespace']['full_path']).to eq(full_path)
       end
 
       it 'fails to fork to not owned group' do

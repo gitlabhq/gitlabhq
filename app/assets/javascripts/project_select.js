@@ -1,17 +1,19 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+
+import $ from 'jquery';
 import Api from './api';
 import ProjectSelectComboButton from './project_select_combo_button';
 
 export default function projectSelect() {
   $('.ajax-project-select').each(function(i, select) {
     var placeholder;
-    const simpleFilter = $(select).data('simple-filter') || false;
-    this.groupId = $(select).data('group-id');
-    this.includeGroups = $(select).data('include-groups');
-    this.allProjects = $(select).data('all-projects') || false;
-    this.orderBy = $(select).data('order-by') || 'id';
-    this.withIssuesEnabled = $(select).data('with-issues-enabled');
-    this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
+    const simpleFilter = $(select).data('simpleFilter') || false;
+    this.groupId = $(select).data('groupId');
+    this.includeGroups = $(select).data('includeGroups');
+    this.allProjects = $(select).data('allProjects') || false;
+    this.orderBy = $(select).data('orderBy') || 'id';
+    this.withIssuesEnabled = $(select).data('withIssuesEnabled');
+    this.withMergeRequestsEnabled = $(select).data('withMergeRequestsEnabled');
 
     placeholder = "Search for project";
     if (this.includeGroups) {

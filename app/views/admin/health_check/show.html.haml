@@ -8,7 +8,7 @@
     .pull-left
       %p
     #{ s_('HealthCheck|Access token is') }
-    %code#health-check-token= current_application_settings.health_check_access_token
+    %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
     .prepend-top-10
       = button_to _("Reset health check access token"), reset_health_check_token_admin_application_settings_path,
         method: :put, class: 'btn btn-default',
@@ -18,11 +18,11 @@
     = link_to s_('More information is available|here'), help_page_path('user/admin_area/monitoring/health_check')
     %ul
       %li
-        %code= readiness_url(token: current_application_settings.health_check_access_token)
+        %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
       %li
-        %code= liveness_url(token: current_application_settings.health_check_access_token)
+        %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
       %li
-        %code= metrics_url(token: current_application_settings.health_check_access_token)
+        %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
 
   %hr
   .panel.panel-default

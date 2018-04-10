@@ -9,11 +9,11 @@ should be deployed, upgraded, and configured.
 
 ## Chart Overview
 
-* **[GitLab-Omnibus](gitlab_omnibus.md)**: The best way to run GitLab on Kubernetes today, suited for small to medium deployments. The chart is in beta and will be deprecated by the [cloud native GitLab chart](#cloud-native-gitlab-chart).
-* **[Cloud Native GitLab Chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation GitLab chart, currently in development. Will support large deployments with horizontal scaling of individual GitLab components.
+* **[GitLab-Omnibus](gitlab_omnibus.md)**: The best way to run GitLab on Kubernetes today, suited for small deployments. The chart is in beta and will be deprecated by the [cloud native GitLab chart](#cloud-native-gitlab-chart).
+* **[Cloud Native GitLab Chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation GitLab chart, currently in alpha. Will support large deployments with horizontal scaling of individual GitLab components.
 * Other Charts
   * [GitLab Runner Chart](gitlab_runner_chart.md): For deploying just the GitLab Runner.
-  * [Advanced GitLab Installation](gitlab_chart.md): Deprecated, being replaced by the [cloud native GitLab chart](#cloud-native-gitlab-chart). Provides additional deployment options, but provides less functionality out-of-the-box. 
+  * [Advanced GitLab Installation](gitlab_chart.md): Deprecated, being replaced by the [cloud native GitLab chart](#cloud-native-gitlab-chart). Provides additional deployment options, but provides less functionality out-of-the-box.
   * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab chart.
 
 ## GitLab-Omnibus Chart (Recommended)
@@ -35,9 +35,9 @@ By offering individual containers and charts, we will be able to provide a numbe
 * Potential for rolling updates and canaries within a service,
 * and plenty more.
 
-This is a large project and will be worked on over the span of multiple releases. For the most up-to-date status and release information, please see our [tracking issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420). We are planning to launch this chart in beta by the end of 2017.
+Presently this chart is available in alpha for testing, and not recommended for production use. 
 
-Learn more about the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
+Learn more about the [cloud native GitLab chart here ](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) and [here [Video]](https://youtu.be/Z6jWR8Z8dv8).
 
 ## Other Charts
 

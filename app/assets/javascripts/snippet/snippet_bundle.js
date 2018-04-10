@@ -1,12 +1,11 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, max-len */
 /* global ace */
 
-(function() {
-  $(function() {
-    var editor = ace.edit("editor");
+import $ from 'jquery';
 
-    $(".snippet-form-holder form").on('submit', function() {
-      $(".snippet-file-content").val(editor.getValue());
-    });
+export default () => {
+  const editor = ace.edit('editor');
+
+  $('.snippet-form-holder form').on('submit', () => {
+    $('.snippet-file-content').val(editor.getValue());
   });
-}).call(window);
+};

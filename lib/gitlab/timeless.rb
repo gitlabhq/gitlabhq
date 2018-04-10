@@ -9,6 +9,7 @@ module Gitlab
       else
         block.call
       end
+
     ensure
       model.record_timestamps = original_record_timestamps
     end

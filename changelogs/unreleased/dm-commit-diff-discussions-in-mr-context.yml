@@ -1,5 +1,0 @@
----
-title: Make diff notes created on a commit in a merge request to persist a rebase.
-merge_request: 12148
-author:
-type: added

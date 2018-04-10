@@ -1,8 +1,8 @@
 /* eslint-disable no-new */
 import SketchLoader from './sketch';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.getElementById('js-sketch-viewer');
 
   new SketchLoader(el);
-});
+};

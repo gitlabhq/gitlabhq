@@ -64,7 +64,7 @@ module Banzai
           finder_params[:group_ids] = [project.group.id]
         end
 
-        MilestonesFinder.new(finder_params).execute.find_by(params)
+        MilestonesFinder.new(finder_params).find_by(params)
       end
 
       def url_for_object(milestone, project)
@@ -84,7 +84,7 @@ module Banzai
         end
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         nil
       end
     end

@@ -10,7 +10,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   step 'I own project "Delta"' do
     @project = ::Project.find_by(name: "Delta")
     @project ||= create(:project, :repository, name: "Delta", namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step 'I should see files from repository in markdown' do
@@ -193,7 +193,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'The link with text "/ID" should have url "tree/markdownID"' do
-    find('a', text: /^\/#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+    find('a', text: %r{^/#id$})['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
   end
 
   step 'The link with text "README.mdID" '\
@@ -203,7 +203,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'The link with text "d/README.mdID" should have '\
        'url "blob/markdown/d/README.mdID"' do
-    find('a', text: /^d\/README.md#id$/)['href'] == current_host + project_blob_path(@project, "d/markdown/README.md") + '#id'
+    find('a', text: %r{^d/README.md#id$})['href'] == current_host + project_blob_path(@project, "d/markdown/README.md") + '#id'
   end
 
   step 'The link with text "ID" should have url "blob/markdown/README.mdID"' do
@@ -212,7 +212,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'The link with text "/ID" should have url "blob/markdown/README.mdID"' do
-    find('a', text: /^\/#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+    find('a', text: %r{^/#id$})['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
   end
 
   # Wiki

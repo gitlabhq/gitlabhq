@@ -28,19 +28,25 @@ exactly which repositories are causing the trouble.
 
 ### Check all GitLab repositories
 
+>**Note:**
+>
+>  - `gitlab:repo:check` has been deprecated in favor of `gitlab:git:fsck`
+>  - [Deprecated][ce-15931] in GitLab 10.4.
+>  - `gitlab:repo:check` will be removed in the future. [Removal issue][ce-41699]
+
 This task loops through all repositories on the GitLab server and runs the
 3 integrity checks described previously.
 
 **Omnibus Installation**
 
 ```
-sudo gitlab-rake gitlab:repo:check
+sudo gitlab-rake gitlab:git:fsck
 ```
 
 **Source Installation**
 
 ```bash
-sudo -u git -H bundle exec rake gitlab:repo:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
 
 ### Check repositories for a specific user
@@ -70,9 +76,56 @@ Example output:
 
 ![gitlab:user:check_repos output](../img/raketasks/check_repos_output.png)
 
+## Uploaded Files Integrity
+
+Various types of file can be uploaded to a GitLab installation by users.
+Checksums are generated and stored in the database upon upload, and integrity
+checks using those checksums can be run. These checks also detect missing files.
+
+Currently, integrity checks are supported for the following types of file:
+
+* CI artifacts (Available from version 10.7.0)
+* LFS objects (Available from version 10.6.0)
+* User uploads (Available from version 10.6.0)
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake gitlab:artifacts:check
+sudo gitlab-rake gitlab:lfs:check
+sudo gitlab-rake gitlab:uploads:check
+```
+
+**Source Installation**
+
+```bash
+sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
+```
+
+These tasks also accept some environment variables which you can use to override
+certain values:
+
+Variable  | Type    | Description
+--------- | ------- | -----------
+`BATCH`   | integer | Specifies the size of the batch. Defaults to 200.
+`ID_FROM` | integer | Specifies the ID to start from, inclusive of the value.
+`ID_TO`   | integer | Specifies the ID value to end at, inclusive of the value.
+`VERBOSE` | boolean | Causes failures to be listed individually, rather than being summarized.
+
+```bash
+sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250
+sudo gitlab-rake gitlab:lfs:check BATCH=100 ID_FROM=50 ID_TO=250
+sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
+```
+
 ## LDAP Check
 
 The LDAP check Rake task will test the bind_dn and password credentials
 (if configured) and will list a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
+
+[ce-15931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15931
+[ce-41699]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41699

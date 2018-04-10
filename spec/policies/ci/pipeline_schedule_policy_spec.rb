@@ -88,5 +88,19 @@ describe Ci::PipelineSchedulePolicy, :models do
         expect(policy).to be_allowed :admin_pipeline_schedule
       end
     end
+
+    describe 'rules for non-owner of schedule' do
+      let(:owner) { create(:user) }
+
+      before do
+        project.add_master(owner)
+        project.add_master(user)
+        pipeline_schedule.update(owner: owner)
+      end
+
+      it 'includes abilities to take ownership' do
+        expect(policy).to be_allowed :take_ownership_pipeline_schedule
+      end
+    end
   end
 end

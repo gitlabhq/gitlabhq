@@ -1,5 +1,5 @@
 class PasswordsController < Devise::PasswordsController
-  include Gitlab::CurrentSettings
+  skip_before_action :require_no_authentication, only: [:edit, :update]
 
   before_action :resource_from_email, only: [:create]
   before_action :check_password_authentication_available, only: [:create]
@@ -44,7 +44,7 @@ class PasswordsController < Devise::PasswordsController
     if resource
       return if resource.allow_password_authentication?
     else
-      return if current_application_settings.password_authentication_enabled?
+      return if Gitlab::CurrentSettings.password_authentication_enabled?
     end
 
     redirect_to after_sending_reset_password_instructions_path_for(resource_name),

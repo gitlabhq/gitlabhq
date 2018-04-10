@@ -1,0 +1,5 @@
+---
+title: Add support for pipeline variables expressions in only/except
+merge_request: 17316
+author:
+type: added

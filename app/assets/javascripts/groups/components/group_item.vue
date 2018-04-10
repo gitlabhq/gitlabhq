@@ -75,9 +75,10 @@ export default {
     :id="groupDomId"
     :class="rowClass"
     class="group-row"
-    >
+  >
     <div
-      class="group-row-contents">
+      class="group-row-contents"
+      :class="{ 'project-row-contents': !isGroup }">
       <item-actions
         v-if="isGroup"
         :group="group"
@@ -87,7 +88,8 @@ export default {
         :item="group"
       />
       <div
-        class="folder-toggle-wrap">
+        class="folder-toggle-wrap"
+      >
         <item-caret
           :is-group-open="group.isOpen"
         />
@@ -97,7 +99,7 @@ export default {
         />
       </div>
       <div
-        class="avatar-container s40 hidden-xs"
+        class="avatar-container prepend-top-8 prepend-left-5 s24 hidden-xs"
         :class="{ 'content-loading': group.isChildrenLoading }"
       >
         <a
@@ -106,24 +108,26 @@ export default {
         >
           <img
             v-if="hasAvatar"
-            class="avatar s40"
+            class="avatar s24"
             :src="group.avatarUrl"
           />
           <identicon
             v-else
-            :entity-id=group.id
+            size-class="s24"
+            :entity-id="group.id"
             :entity-name="group.name"
           />
         </a>
       </div>
       <div
-        class="title namespace-title">
+        class="title namespace-title"
+      >
         <a
           v-tooltip
           :href="group.relativePath"
           :title="group.fullName"
           class="no-expand"
-          data-placement="top"
+          data-placement="bottom"
         >{{
           // ending bracket must be by closing tag to prevent
           // link hover text-decoration from over-extending
@@ -133,13 +137,14 @@ export default {
           v-if="group.permission"
           class="user-access-role"
         >
-          {{group.permission}}
+          {{ group.permission }}
         </span>
       </div>
       <div
         v-if="group.description"
         class="description">
-        {{group.description}}
+        <span v-html="group.description">
+        </span>
       </div>
     </div>
     <group-folder

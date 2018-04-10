@@ -22,6 +22,7 @@
 >    in the import side is required to map the users, based on email or username.
 >    Otherwise, a supplementary comment is left to mention the original author and
 >    the MRs, notes or issues will be owned by the importer.
+>  - Control project Import/Export with the [API](../../../api/project_import_export.md).
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
@@ -30,7 +31,8 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version   | Import/Export version |
 | ---------------- | --------------------- |
-| 10.3 to current  | 0.2.1                 |
+| 10.4 to current  | 0.2.2                 |
+| 10.3             | 0.2.1                 |
 | 10.0             | 0.2.0                 |
 | 9.4.0            | 0.1.8                 |
 | 9.2.0            | 0.1.7                 |
@@ -55,11 +57,11 @@ The following items will be exported:
 - Project configuration including web hooks and services
 - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
   and other project entities
+- LFS objects
 
 The following items will NOT be exported:
 
 - Build traces and artifacts
-- LFS objects
 - Container registry images
 - CI variables
 - Any encrypted tokens

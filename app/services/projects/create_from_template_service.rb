@@ -5,11 +5,15 @@ module Projects
     end
 
     def execute
-      params[:file] = Gitlab::ProjectTemplate.find(params[:template_name]).file
+      template_name = params.delete(:template_name)
+      file = Gitlab::ProjectTemplate.find(template_name).file
 
-      GitlabProjectsImportService.new(@current_user, @params).execute
+      params[:file] = file
+
+      GitlabProjectsImportService.new(current_user, params).execute
+
     ensure
-      params[:file]&.close
+      file&.close
     end
   end
 end

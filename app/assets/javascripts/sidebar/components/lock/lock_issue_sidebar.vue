@@ -1,10 +1,17 @@
 <script>
-/* global Flash */
+import Flash from '~/flash';
 import editForm from './edit_form.vue';
 import issuableMixin from '../../../vue_shared/mixins/issuable';
 import Icon from '../../../vue_shared/components/icon.vue';
+import eventHub from '../../event_hub';
 
 export default {
+  components: {
+    editForm,
+    Icon,
+  },
+  mixins: [issuableMixin],
+
   props: {
     isLocked: {
       required: true,
@@ -20,18 +27,13 @@ export default {
       required: true,
       type: Object,
       validator(mediatorObject) {
-        return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
+        return (
+          mediatorObject.service &&
+          mediatorObject.service.update &&
+          mediatorObject.store
+        );
       },
     },
-  },
-
-  mixins: [
-    issuableMixin,
-  ],
-
-  components: {
-    editForm,
-    Icon,
   },
 
   computed: {
@@ -44,17 +46,35 @@ export default {
     },
   },
 
+  created() {
+    eventHub.$on('closeLockForm', this.toggleForm);
+  },
+
+  beforeDestroy() {
+    eventHub.$off('closeLockForm', this.toggleForm);
+  },
+
   methods: {
     toggleForm() {
-      this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+      this.mediator.store.isLockDialogOpen = !this.mediator.store
+        .isLockDialogOpen;
     },
 
     updateLockedAttribute(locked) {
-      this.mediator.service.update(this.issuableType, {
-        discussion_locked: locked,
-      })
-      .then(() => location.reload())
-      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
+      this.mediator.service
+        .update(this.issuableType, {
+          discussion_locked: locked,
+        })
+        .then(() => location.reload())
+        .catch(() =>
+          Flash(
+            this.__(
+              `Something went wrong trying to change the locked state of this ${
+                this.issuableDisplayName
+              }`,
+            ),
+          ),
+        );
     },
   },
 };
@@ -62,20 +82,22 @@ export default {
 
 <template>
   <div class="block issuable-sidebar-item lock">
-    <div class="sidebar-collapsed-icon">
+    <div
+      class="sidebar-collapsed-icon"
+      @click="toggleForm"
+    >
       <icon
         :name="lockIcon"
-        :size="16"
         aria-hidden="true"
-        class="sidebar-item-icon is-active">
-      </icon>
+        class="sidebar-item-icon is-active"
+      />
     </div>
 
     <div class="title hide-collapsed">
-      Lock {{ issuableDisplayName }}
+      {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
-        class="pull-right lock-edit btn btn-blank"
+        class="pull-right lock-edit"
         type="button"
         @click.prevent="toggleForm"
       >
@@ -86,7 +108,6 @@ export default {
     <div class="value sidebar-item-value hide-collapsed">
       <edit-form
         v-if="isLockDialogOpen"
-        :toggle-form="toggleForm"
         :is-locked="isLocked"
         :update-locked-attribute="updateLockedAttribute"
         :issuable-type="issuableType"
@@ -100,8 +121,8 @@ export default {
           name="lock"
           :size="16"
           aria-hidden="true"
-          class="sidebar-item-icon inline is-active">
-        </icon>
+          class="sidebar-item-icon inline is-active"
+        />
         {{ __('Locked') }}
       </div>
 
@@ -113,8 +134,8 @@ export default {
           name="lock-open"
           :size="16"
           aria-hidden="true"
-          class="sidebar-item-icon inline">
-        </icon>
+          class="sidebar-item-icon inline"
+        />
         {{ __('Unlocked') }}
       </div>
     </div>

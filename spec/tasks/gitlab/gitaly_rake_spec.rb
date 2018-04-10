@@ -76,7 +76,11 @@ describe 'gitlab:gitaly namespace rake task' do
         end
 
         context 'when Rails.env is test' do
-          let(:command) { %w[make BUNDLE_FLAGS=--no-deployment] }
+          let(:command) do
+            %W[make
+               BUNDLE_FLAGS=--no-deployment
+               BUNDLE_PATH=#{Bundler.bundle_path}]
+          end
 
           before do
             allow(Rails.env).to receive(:test?).and_return(true)
@@ -95,14 +99,14 @@ describe 'gitlab:gitaly namespace rake task' do
   describe 'storage_config' do
     it 'prints storage configuration in a TOML format' do
       config = {
-        'default' => {
+        'default' => Gitlab::GitalyClient::StorageSettings.new(
           'path' => '/path/to/default',
           'gitaly_address' => 'unix:/path/to/my.socket'
-        },
-        'nfs_01' => {
+        ),
+        'nfs_01' => Gitlab::GitalyClient::StorageSettings.new(
           'path' => '/path/to/nfs_01',
           'gitaly_address' => 'unix:/path/to/my.socket'
-        }
+        )
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
       allow(Rails.env).to receive(:test?).and_return(false)
@@ -128,9 +132,9 @@ describe 'gitlab:gitaly namespace rake task' do
       expect { run_rake_task('gitlab:gitaly:storage_config')}
         .to output(expected_output).to_stdout
 
-      parsed_output = TOML.parse(expected_output)
+      parsed_output = TomlRB.parse(expected_output)
       config.each do |name, params|
-        expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params['path'] })
+        expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params.legacy_disk_path })
       end
     end
   end

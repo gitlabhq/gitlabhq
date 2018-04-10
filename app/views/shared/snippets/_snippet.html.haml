@@ -1,7 +1,7 @@
 - link_project = local_assigns.fetch(:link_project, false)
 
 %li.snippet-row
-  = image_tag avatar_icon(snippet.author_email), class: "avatar s40 hidden-xs", alt: ''
+  = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 hidden-xs", alt: ''
 
   .title
     = link_to reliable_snippet_path(snippet) do
@@ -31,7 +31,7 @@
       %span.hidden-xs
         in
         = link_to project_path(snippet.project) do
-          = snippet.project.name_with_namespace
+          = snippet.project.full_name
 
     .pull-right.snippet-updated-at
       %span updated #{time_ago_with_tooltip(snippet.updated_at, placement: 'bottom')}

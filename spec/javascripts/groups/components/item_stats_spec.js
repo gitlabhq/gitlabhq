@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
 import itemStatsComponent from '~/groups/components/item_stats.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import {
   mockParentGroupItem,
   ITEM_TYPE,
@@ -8,8 +9,6 @@ import {
   GROUP_VISIBILITY_TYPE,
   PROJECT_VISIBILITY_TYPE,
 } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (item = mockParentGroupItem) => {
   const Component = Vue.extend(itemStatsComponent);
@@ -26,7 +25,6 @@ describe('ItemStatsComponent', () => {
         Object.keys(VISIBILITY_TYPE_ICON).forEach((visibility) => {
           const item = Object.assign({}, mockParentGroupItem, { visibility });
           const vm = createComponent(item);
-          vm.$mount();
           expect(vm.visibilityIcon).toBe(VISIBILITY_TYPE_ICON[visibility]);
           vm.$destroy();
         });
@@ -41,7 +39,6 @@ describe('ItemStatsComponent', () => {
             type: ITEM_TYPE.GROUP,
           });
           const vm = createComponent(item);
-          vm.$mount();
           expect(vm.visibilityTooltip).toBe(GROUP_VISIBILITY_TYPE[visibility]);
           vm.$destroy();
         });
@@ -54,7 +51,6 @@ describe('ItemStatsComponent', () => {
             type: ITEM_TYPE.PROJECT,
           });
           const vm = createComponent(item);
-          vm.$mount();
           expect(vm.visibilityTooltip).toBe(PROJECT_VISIBILITY_TYPE[visibility]);
           vm.$destroy();
         });
@@ -68,13 +64,11 @@ describe('ItemStatsComponent', () => {
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.PROJECT });
         vm = createComponent(item);
-        vm.$mount();
         expect(vm.isProject).toBeTruthy();
         vm.$destroy();
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
         vm = createComponent(item);
-        vm.$mount();
         expect(vm.isProject).toBeFalsy();
         vm.$destroy();
       });
@@ -87,13 +81,11 @@ describe('ItemStatsComponent', () => {
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
         vm = createComponent(item);
-        vm.$mount();
         expect(vm.isGroup).toBeTruthy();
         vm.$destroy();
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.PROJECT });
         vm = createComponent(item);
-        vm.$mount();
         expect(vm.isGroup).toBeFalsy();
         vm.$destroy();
       });
@@ -101,57 +93,37 @@ describe('ItemStatsComponent', () => {
   });
 
   describe('template', () => {
-    it('should render component template correctly', () => {
+    it('renders component container element correctly', () => {
       const vm = createComponent();
-      vm.$mount();
+
+      expect(vm.$el.classList.contains('stats')).toBeTruthy();
+
+      vm.$destroy();
+    });
+
+    it('renders item visibility icon and tooltip correctly', () => {
+      const vm = createComponent();
 
       const visibilityIconEl = vm.$el.querySelector('.item-visibility');
-      expect(vm.$el.classList.contains('.stats')).toBeDefined();
-      expect(visibilityIconEl).toBeDefined();
+      expect(visibilityIconEl).not.toBe(null);
       expect(visibilityIconEl.dataset.originalTitle).toBe(vm.visibilityTooltip);
-      expect(visibilityIconEl.querySelector('i.fa')).toBeDefined();
+      expect(visibilityIconEl.querySelectorAll('svg').length > 0).toBeTruthy();
 
       vm.$destroy();
     });
 
-    it('should render stat icons if `item.type` is Group', () => {
-      const item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
-      const vm = createComponent(item);
-      vm.$mount();
-
-      const subgroupIconEl = vm.$el.querySelector('span.number-subgroups');
-      expect(subgroupIconEl).toBeDefined();
-      expect(subgroupIconEl.dataset.originalTitle).toBe('Subgroups');
-      expect(subgroupIconEl.querySelector('i.fa.fa-folder')).toBeDefined();
-      expect(subgroupIconEl.innerText.trim()).toBe(`${vm.item.subgroupCount}`);
-
-      const projectsIconEl = vm.$el.querySelector('span.number-projects');
-      expect(projectsIconEl).toBeDefined();
-      expect(projectsIconEl.dataset.originalTitle).toBe('Projects');
-      expect(projectsIconEl.querySelector('i.fa.fa-bookmark')).toBeDefined();
-      expect(projectsIconEl.innerText.trim()).toBe(`${vm.item.projectCount}`);
-
-      const membersIconEl = vm.$el.querySelector('span.number-users');
-      expect(membersIconEl).toBeDefined();
-      expect(membersIconEl.dataset.originalTitle).toBe('Members');
-      expect(membersIconEl.querySelector('i.fa.fa-users')).toBeDefined();
-      expect(membersIconEl.innerText.trim()).toBe(`${vm.item.memberCount}`);
-
-      vm.$destroy();
-    });
-
-    it('should render stat icons if `item.type` is Project', () => {
+    it('renders start count and last updated information for project item correctly', () => {
       const item = Object.assign({}, mockParentGroupItem, {
         type: ITEM_TYPE.PROJECT,
         starCount: 4,
       });
       const vm = createComponent(item);
-      vm.$mount();
 
       const projectStarIconEl = vm.$el.querySelector('.project-stars');
-      expect(projectStarIconEl).toBeDefined();
-      expect(projectStarIconEl.querySelector('i.fa.fa-star')).toBeDefined();
-      expect(projectStarIconEl.innerText.trim()).toBe(`${vm.item.starCount}`);
+      expect(projectStarIconEl).not.toBe(null);
+      expect(projectStarIconEl.querySelectorAll('svg').length > 0).toBeTruthy();
+      expect(projectStarIconEl.querySelectorAll('.stat-value').length > 0).toBeTruthy();
+      expect(vm.$el.querySelectorAll('.last-updated').length > 0).toBeTruthy();
 
       vm.$destroy();
     });

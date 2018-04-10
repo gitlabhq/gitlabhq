@@ -45,11 +45,11 @@ module Milestoneish
   end
 
   def sorted_issues(user)
-    issues_visible_to_user(user).preload_associations.sort('label_priority')
+    issues_visible_to_user(user).preload_associations.sort_by_attribute('label_priority')
   end
 
   def sorted_merge_requests
-    merge_requests.sort('label_priority')
+    merge_requests.sort_by_attribute('label_priority')
   end
 
   def upcoming?
@@ -92,6 +92,14 @@ module Milestoneish
 
   def human_total_issue_time_spent
     Gitlab::TimeTrackingFormatter.output(total_issue_time_spent)
+  end
+
+  def total_issue_time_estimate
+    @total_issue_time_estimate ||= issues.sum(:time_estimate)
+  end
+
+  def human_total_issue_time_estimate
+    Gitlab::TimeTrackingFormatter.output(total_issue_time_estimate)
   end
 
   private

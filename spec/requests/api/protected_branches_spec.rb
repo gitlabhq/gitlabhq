@@ -80,6 +80,12 @@ describe API::ProtectedBranches do
 
         it_behaves_like 'protected branch'
       end
+
+      context 'when protected branch contains a period' do
+        let(:protected_name) { 'my.feature' }
+
+        it_behaves_like 'protected branch'
+      end
     end
 
     context 'when authenticated as a guest' do
@@ -187,6 +193,19 @@ describe API::ProtectedBranches do
           expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
         end
       end
+
+      context 'when a policy restricts rule deletion' do
+        before do
+          policy = instance_double(ProtectedBranchPolicy, can?: false)
+          expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
+        end
+
+        it "prevents deletion of the protected branch rule" do
+          post post_endpoint, name: branch_name
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+      end
     end
 
     context 'when authenticated as a guest' do
@@ -203,18 +222,20 @@ describe API::ProtectedBranches do
   end
 
   describe "DELETE /projects/:id/protected_branches/unprotect/:branch" do
+    let(:delete_endpoint) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }
+
     before do
       project.add_master(user)
     end
 
     it "unprotects a single branch" do
-      delete api("/projects/#{project.id}/protected_branches/#{branch_name}", user)
+      delete delete_endpoint
 
       expect(response).to have_gitlab_http_status(204)
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }
+      let(:request) { delete_endpoint }
     end
 
     it "returns 404 if branch does not exist" do
@@ -223,11 +244,24 @@ describe API::ProtectedBranches do
       expect(response).to have_gitlab_http_status(404)
     end
 
+    context 'when a policy restricts rule deletion' do
+      before do
+        policy = instance_double(ProtectedBranchPolicy, can?: false)
+        expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
+      end
+
+      it "prevents deletion of the protected branch rule" do
+        delete delete_endpoint
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
     context 'when branch has a wildcard in its name' do
       let(:protected_name) { 'feature*' }
 
       it "unprotects a wildcard branch" do
-        delete api("/projects/#{project.id}/protected_branches/#{branch_name}", user)
+        delete delete_endpoint
 
         expect(response).to have_gitlab_http_status(204)
       end

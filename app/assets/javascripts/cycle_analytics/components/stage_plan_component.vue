@@ -5,14 +5,20 @@
   import totalTime from './total_time_component.vue';
 
   export default {
-    props: {
-      items: Array,
-      stage: Object,
-    },
     components: {
       userAvatarImage,
       totalTime,
       limitWarning,
+    },
+    props: {
+      items: {
+        type: Array,
+        default: () => [],
+      },
+      stage: {
+        type: Object,
+        default: () => ({}),
+      },
     },
     computed: {
       iconCommit() {
@@ -31,10 +37,11 @@
       <li
         v-for="(commit, i) in items"
         :key="i"
-        class="stage-event-item">
+        class="stage-event-item"
+      >
         <div class="item-details item-conmmit-component">
           <!-- FIXME: Pass an alt attribute here for accessibility -->
-          <user-avatar-image :img-src="commit.author.avatarUrl"/>
+          <user-avatar-image :img-src="commit.author.avatarUrl" />
           <h5 class="item-title commit-title">
             <a :href="commit.commitUrl">
               {{ commit.title }}
@@ -42,10 +49,20 @@
           </h5>
           <span>
             {{ s__('FirstPushedBy|First') }}
-            <span class="commit-icon" v-html="iconCommit"></span>
-            <a :href="commit.commitUrl" class="commit-hash-link commit-sha">{{ commit.shortSha }}</a>
+            <span
+              class="commit-icon"
+              v-html="iconCommit"
+            >
+            </span>
+            <a
+              :href="commit.commitUrl"
+              class="commit-hash-link commit-sha"
+            >{{ commit.shortSha }}</a>
             {{ s__('FirstPushedBy|pushed by') }}
-            <a :href="commit.author.webUrl" class="commit-author-link">
+            <a
+              :href="commit.author.webUrl"
+              class="commit-author-link"
+            >
               {{ commit.author.name }}
             </a>
           </span>

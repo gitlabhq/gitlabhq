@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import stage from '~/pipelines/components/stage.vue';
 

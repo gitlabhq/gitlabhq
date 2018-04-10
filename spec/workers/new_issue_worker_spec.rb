@@ -44,8 +44,9 @@ describe NewIssueWorker do
         expect { worker.perform(issue.id, user.id) }.to change { Event.count }.from(0).to(1)
       end
 
-      it 'creates a notification for the assignee' do
-        expect(Notify).to receive(:new_issue_email).with(mentioned.id, issue.id).and_return(double(deliver_later: true))
+      it 'creates a notification for the mentioned user' do
+        expect(Notify).to receive(:new_issue_email).with(mentioned.id, issue.id, NotificationReason::MENTIONED)
+                            .and_return(double(deliver_later: true))
 
         worker.perform(issue.id, user.id)
       end

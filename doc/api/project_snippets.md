@@ -131,12 +131,13 @@ Available only for admins.
 GET /projects/:id/snippets/:snippet_id/user_agent_detail
 ```
 
-| Attribute   | Type    | Required | Description                          |
-|-------------|---------|----------|--------------------------------------|
-| `id`        | Integer | yes      | The ID of a snippet                  |
+| Attribute     | Type    | Required | Description                          |
+|---------------|---------|----------|--------------------------------------|
+| `id`          | Integer | yes      | The ID of a project                  |
+| `snippet_id`  | Integer | yes      | The ID of a snippet                  |
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/snippets/1/user_agent_detail
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
 ```
 
 Example response:

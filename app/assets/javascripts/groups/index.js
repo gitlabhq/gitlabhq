@@ -10,7 +10,7 @@ import groupItemComponent from './components/group_item.vue';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const el = document.getElementById('js-groups-tree');
 
   // Don't do anything if element doesn't exist (No groups)
@@ -71,4 +71,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};

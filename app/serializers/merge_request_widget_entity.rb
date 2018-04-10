@@ -11,22 +11,36 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :source_project_id
   expose :target_branch
   expose :target_project_id
+  expose :allow_maintainer_to_push
 
   expose :should_be_rebased?, as: :should_be_rebased
   expose :ff_only_enabled do |merge_request|
     merge_request.project.merge_requests_ff_only_enabled
   end
 
-  # Events
-  expose :merge_event, using: EventEntity
-  expose :closed_event, using: EventEntity
+  expose :metrics do |merge_request|
+    metrics = build_metrics(merge_request)
+
+    MergeRequestMetricsEntity.new(metrics).as_json
+  end
+
+  expose :rebase_commit_sha
+  expose :rebase_in_progress?, as: :rebase_in_progress
+
+  expose :can_push_to_source_branch do |merge_request|
+    presenter(merge_request).can_push_to_source_branch?
+  end
+
+  expose :rebase_path do |merge_request|
+    presenter(merge_request).rebase_path
+  end
 
   # User entities
   expose :merge_user, using: UserEntity
 
   # Diff sha's
   expose :diff_head_sha do |merge_request|
-    merge_request.diff_head_sha if merge_request.diff_head_commit
+    merge_request.diff_head_sha.presence
   end
 
   expose :merge_commit_message
@@ -36,7 +50,18 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_ongoing?, as: :merge_ongoing
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
-  expose :mergeable_discussions_state?, as: :mergeable_discussions_state
+
+  expose :mergeable_discussions_state?, as: :mergeable_discussions_state do |merge_request|
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
   expose :branch_missing?, as: :branch_missing
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
@@ -92,6 +117,14 @@ class MergeRequestWidgetEntity < IssuableEntity
     expose :can_cherry_pick_on_current_merge_request do |merge_request|
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
+
+    expose :can_create_note do |issue|
+      can?(request.current_user, :create_note, issue.project)
+    end
+
+    expose :can_update do |issue|
+      can?(request.current_user, :update_issue, issue)
+    end
   end
 
   # Paths
@@ -105,8 +138,8 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
 
   expose :new_blob_path do |merge_request|
-    if can?(current_user, :push_code, merge_request.project)
-      project_new_blob_path(merge_request.project, merge_request.source_branch)
+    if presenter(merge_request).can_push_to_source_branch?
+      project_new_blob_path(merge_request.source_project, merge_request.source_branch)
     end
   end
 
@@ -166,6 +199,10 @@ class MergeRequestWidgetEntity < IssuableEntity
     end
   end
 
+  expose :create_note_path do |merge_request|
+    project_notes_path(merge_request.project, target_type: 'merge_request', target_id: merge_request.id)
+  end
+
   expose :commit_change_content_path do |merge_request|
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
@@ -177,5 +214,28 @@ class MergeRequestWidgetEntity < IssuableEntity
   def presenter(merge_request)
     @presenters ||= {}
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+  end
+
+  # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,
+  # we can remove this method and just serialize MergeRequest#metrics
+  # instead. See https://gitlab.com/gitlab-org/gitlab-ce/issues/41587
+  def build_metrics(merge_request)
+    # There's no need to query and serialize metrics data for merge requests that are not
+    # merged or closed.
+    return unless merge_request.merged? || merge_request.closed?
+    return merge_request.metrics if merge_request.merged? && merge_request.metrics&.merged_by_id
+    return merge_request.metrics if merge_request.closed? && merge_request.metrics&.latest_closed_by_id
+
+    build_metrics_from_events(merge_request)
+  end
+
+  def build_metrics_from_events(merge_request)
+    closed_event = merge_request.closed_event
+    merge_event = merge_request.merge_event
+
+    MergeRequest::Metrics.new(latest_closed_at: closed_event&.updated_at,
+                              latest_closed_by: closed_event&.author,
+                              merged_at: merge_event&.updated_at,
+                              merged_by: merge_event&.author)
   end
 end

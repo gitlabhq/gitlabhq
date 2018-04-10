@@ -2,19 +2,21 @@ require 'uri'
 
 module Banzai
   module Filter
-    # HTML filter that "fixes" relative links to files in a repository.
+    # HTML filter that "fixes" relative links to uploads or files in a repository.
     #
     # Context options:
     #   :commit
+    #   :group
     #   :project
     #   :project_wiki
     #   :ref
     #   :requested_path
     class RelativeLinkFilter < HTML::Pipeline::Filter
-      def call
-        return doc unless linkable_files?
+      include Gitlab::Utils::StrongMemoize
 
+      def call
         @uri_types = {}
+        clear_memoization(:linkable_files)
 
         doc.search('a:not(.gfm)').each do |el|
           process_link_attr el.attribute('href')
@@ -31,18 +33,47 @@ module Banzai
       protected
 
       def linkable_files?
-        context[:project_wiki].nil? && repository.try(:exists?) && !repository.empty?
+        strong_memoize(:linkable_files) do
+          context[:project_wiki].nil? && repository.try(:exists?) && !repository.empty?
+        end
       end
 
       def process_link_attr(html_attr)
         return if html_attr.blank?
         return if html_attr.value.start_with?('//')
 
+        if html_attr.value.start_with?('/uploads/')
+          process_link_to_upload_attr(html_attr)
+        elsif linkable_files?
+          process_link_to_repository_attr(html_attr)
+        end
+      end
+
+      def process_link_to_upload_attr(html_attr)
+        path_parts = [Addressable::URI.unescape(html_attr.value)]
+
+        if group
+          path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
+        elsif project
+          path_parts.unshift(relative_url_root, project.full_path)
+        end
+
+        path = Addressable::URI.escape(File.join(*path_parts))
+
+        html_attr.value =
+          if context[:only_path]
+            path
+          else
+            Addressable::URI.join(Gitlab.config.gitlab.base_url, path).to_s
+          end
+      end
+
+      def process_link_to_repository_attr(html_attr)
         uri = URI(html_attr.value)
         if uri.relative? && uri.path.present?
           html_attr.value = rebuild_relative_uri(uri).to_s
         end
-      rescue URI::Error
+      rescue URI::Error, Addressable::URI::InvalidURIError
         # noop
       end
 
@@ -51,9 +82,9 @@ module Banzai
 
         uri.path = [
           relative_url_root,
-          context[:project].full_path,
+          project.full_path,
           uri_type(file_path),
-          Addressable::URI.escape(ref),
+          Addressable::URI.escape(ref).gsub('#', '%23'),
           Addressable::URI.escape(file_path)
         ].compact.join('/').squeeze('/').chomp('/')
 
@@ -123,11 +154,19 @@ module Banzai
       end
 
       def ref
-        context[:ref] || context[:project].default_branch
+        context[:ref] || project.default_branch
+      end
+
+      def group
+        context[:group]
+      end
+
+      def project
+        context[:project]
       end
 
       def repository
-        @repository ||= context[:project].try(:repository)
+        @repository ||= project&.repository
       end
     end
   end

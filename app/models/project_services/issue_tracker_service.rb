@@ -10,9 +10,9 @@ class IssueTrackerService < Service
   # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
   def self.reference_pattern(only_long: false)
     if only_long
-      %r{(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)}
+      /(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)/
     else
-      %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+      /(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)/
     end
   end
 
@@ -77,13 +77,13 @@ class IssueTrackerService < Service
     result = false
 
     begin
-      response = HTTParty.head(self.project_url, verify: true)
+      response = Gitlab::HTTP.head(self.project_url, verify: true)
 
       if response
         message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
         result = true
       end
-    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
+    rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
     Rails.logger.info(message)

@@ -5,7 +5,7 @@ describe Projects::BoardsController do
   let(:user)    { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -47,6 +47,16 @@ describe Projects::BoardsController do
         allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
         allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
       end
+
+      it 'returns a not found 404 response' do
+        list_boards
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'issues are disabled' do
+      let(:project) { create(:project, :issues_disabled) }
 
       it 'returns a not found 404 response' do
         list_boards

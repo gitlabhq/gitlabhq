@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :cluster_applications_helm, class: Clusters::Applications::Helm do
+  factory :clusters_applications_helm, class: Clusters::Applications::Helm do
     cluster factory: %i(cluster provided_by_gcp)
 
     trait :not_installable do
@@ -31,5 +31,9 @@ FactoryBot.define do
       installing
       updated_at ClusterWaitForAppInstallationWorker::TIMEOUT.ago
     end
+
+    factory :clusters_applications_ingress, class: Clusters::Applications::Ingress
+    factory :clusters_applications_prometheus, class: Clusters::Applications::Prometheus
+    factory :clusters_applications_runner, class: Clusters::Applications::Runner
   end
 end

@@ -4,6 +4,13 @@
   import popover from '../../vue_shared/directives/popover';
 
   export default {
+    components: {
+      userAvatarLink,
+    },
+    directives: {
+      tooltip,
+      popover,
+    },
     props: {
       pipeline: {
         type: Object,
@@ -14,13 +21,6 @@
         required: true,
       },
     },
-    components: {
-      userAvatarLink,
-    },
-    directives: {
-      tooltip,
-      popover,
-    },
     computed: {
       user() {
         return this.pipeline.user;
@@ -30,8 +30,16 @@
           html: true,
           trigger: 'focus',
           placement: 'top',
-          title: '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>',
-          content: `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`,
+          title: `<div class="autodevops-title">
+            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+          </div>`,
+          content: `<a
+            class="autodevops-link"
+            href="${this.autoDevopsHelpPath}"
+            target="_blank"
+            rel="noopener noreferrer nofollow">
+            Learn more about Auto DevOps
+          </a>`,
         };
       },
     },
@@ -42,7 +50,7 @@
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
-      <span class="pipeline-id">#{{pipeline.id}}</span>
+      <span class="pipeline-id">#{{ pipeline.id }}</span>
     </a>
     <span>by</span>
     <user-avatar-link

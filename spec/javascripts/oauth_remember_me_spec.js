@@ -1,4 +1,5 @@
-import OAuthRememberMe from '~/oauth_remember_me';
+import $ from 'jquery';
+import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
   preloadFixtures('static/oauth_remember_me.html.raw');

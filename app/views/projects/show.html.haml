@@ -1,76 +1,23 @@
 - @no_container = true
-- breadcrumb_title "Details"
+- breadcrumb_title _("Details")
 - @content_class = "limit-container-width" unless fluid_layout
+- show_auto_devops_callout = show_auto_devops_callout?(@project)
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-= render "projects/last_push"
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
+  = render "projects/last_push"
+
 = render "home_panel"
 
 - if can?(current_user, :download_code, @project)
   %nav.project-stats{ class: container_class }
-    %ul.nav
-      %li
-        = link_to project_tree_path(@project) do
-          #{_('Files')} (#{storage_counter(@project.statistics.total_repository_size)})
-      %li
-        = link_to project_commits_path(@project, current_ref) do
-          #{n_('Commit', 'Commits', @project.statistics.commit_count)} (#{number_with_delimiter(@project.statistics.commit_count)})
-      %li
-        = link_to project_branches_path(@project) do
-          #{n_('Branch', 'Branches', @repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
-      %li
-        = link_to project_tags_path(@project) do
-          #{n_('Tag', 'Tags', @repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
+    = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+    = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
-      - if @repository.readme
-        %li
-          = link_to _('Readme'),
-            default_project_view != 'readme' ? readme_path(@project) : '#readme'
-
-      - if @repository.changelog
-        %li
-          = link_to _('Changelog'), changelog_path(@project)
-
-      - if @repository.license_blob
-        %li
-          = link_to license_short_name(@project), license_path(@project)
-
-      - if @repository.contribution_guide
-        %li
-          = link_to _('Contribution guide'), contribution_guide_path(@project)
-
-      - if @repository.gitlab_ci_yml
-        %li
-          = link_to _('CI configuration'), ci_configuration_path(@project)
-
-      - if current_user && can_push_branch?(@project, @project.default_branch)
-        - unless @repository.changelog
-          %li.missing
-            = link_to add_special_file_path(@project, file_name: 'CHANGELOG') do
-              #{ _('Add Changelog') }
-        - unless @repository.license_blob
-          %li.missing
-            = link_to add_special_file_path(@project, file_name: 'LICENSE') do
-              #{ _('Add License') }
-        - unless @repository.contribution_guide
-          %li.missing
-            = link_to add_special_file_path(@project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide') do
-              #{ _('Add Contribution guide') }
-        - unless @repository.gitlab_ci_yml
-          %li.missing
-            = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
-              #{ _('Set up CI') }
-        - if koding_enabled? && @repository.koding_yml.blank?
-          %li.missing
-            = link_to  _('Set up Koding'), add_koding_stack_path(@project)
-        - if @repository.gitlab_ci_yml.blank? && @project.deployment_platform.present?
-          %li.missing
-            = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml', commit_message: 'Set up auto deploy', branch_name: 'auto-deploy', context: 'autodeploy') do
-              #{ _('Set up auto deploy') }
 
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   - if @project.archived?
@@ -79,7 +26,7 @@
         = icon("exclamation-triangle fw")
         #{ _('Archived project! Repository is read-only') }
 
-  - view_path = default_project_view
+  - view_path = @project.default_view
 
   - if show_auto_devops_callout?(@project)
     = render 'shared/auto_devops_callout'

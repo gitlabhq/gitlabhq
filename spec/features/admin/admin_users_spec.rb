@@ -26,8 +26,8 @@ describe "Admin::Users" do
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
       expect(page).to have_link('Block', href: block_admin_user_path(user))
-      expect(page).to have_link('Remove user', href: admin_user_path(user))
-      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
+      expect(page).to have_button('Delete user')
+      expect(page).to have_button('Delete user and contributions')
     end
 
     describe 'Two-factor Authentication filters' do
@@ -122,8 +122,8 @@ describe "Admin::Users" do
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
       expect(page).to have_link('Block user', href: block_admin_user_path(user))
-      expect(page).to have_link('Remove user', href: admin_user_path(user))
-      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
+      expect(page).to have_button('Delete user')
+      expect(page).to have_button('Delete user and contributions')
     end
 
     describe 'Impersonation' do
@@ -382,7 +382,7 @@ describe "Admin::Users" do
 
   describe 'update user identities' do
     before do
-      allow(Gitlab::OAuth::Provider).to receive(:providers).and_return([:twitter, :twitter_updated])
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:providers).and_return([:twitter, :twitter_updated])
     end
 
     it 'modifies twitter identity' do

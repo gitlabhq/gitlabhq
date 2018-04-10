@@ -1,18 +1,21 @@
 {
   "env": {
-    "jquery": true,
     "browser": true,
     "es6": true
   },
-  "extends": "airbnb-base",
+  "extends": [
+    "airbnb-base",
+    "plugin:vue/recommended"
+  ],
   "globals": {
     "__webpack_public_path__": true,
-    "_": false,
     "gl": false,
     "gon": false,
     "localStorage": false
   },
-  "parser": "babel-eslint",
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
   "plugins": [
     "filenames",
     "import",
@@ -20,7 +23,7 @@
     "promise"
   ],
   "settings": {
-    "html/html-extensions": [".html", ".html.raw", ".vue"],
+    "html/html-extensions": [".html", ".html.raw"],
     "import/resolver": {
       "webpack": {
         "config": "./config/webpack.config.js"
@@ -32,6 +35,22 @@
     "import/no-commonjs": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
     "promise/catch-or-return": "error",
-    "no-underscore-dangle": ["error", { "allow": ["__"]}]
+    "no-underscore-dangle": ["error", { "allow": ["__", "_links"] }],
+    "no-mixed-operators": 0,
+    "space-before-function-paren": 0,
+    "curly": 0,
+    "arrow-parens": 0,
+    "vue/html-self-closing": [
+      "error",
+      {
+        "html": {
+          "void": "always",
+          "normal": "never",
+          "component": "always"
+        },
+        "svg": "always",
+        "math": "always"
+      }
+    ]
   }
 }

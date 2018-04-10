@@ -18,8 +18,8 @@ class Label < ActiveRecord::Base
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
   has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
-  has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
+  has_many :issues, -> { auto_include(false) }, through: :label_links, source: :target, source_type: 'Issue'
+  has_many :merge_requests, -> { auto_include(false) }, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   before_validation :strip_whitespace_from_title_and_color
 
@@ -35,6 +35,7 @@ class Label < ActiveRecord::Base
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
+  scope :on_group_boards, ->(group_id) { with_lists_and_board.where(boards: { group_id: group_id }) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
 
   def self.prioritized(project)
@@ -132,6 +133,7 @@ class Label < ActiveRecord::Base
                else
                  priorities.find_by(project: project)
                end
+
     priority.try(:priority)
   end
 

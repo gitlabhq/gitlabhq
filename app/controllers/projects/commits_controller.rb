@@ -4,6 +4,7 @@ class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
 
+  before_action :whitelist_query_limiting
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
@@ -58,5 +59,9 @@ class Projects::CommitsController < Projects::ApplicationController
 
     @commits = @commits.with_pipeline_status
     @commits = prepare_commits_for_rendering(@commits)
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42330')
   end
 end

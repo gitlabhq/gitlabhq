@@ -13,7 +13,6 @@
     "updated_by_id": { "type": ["string", "null"] },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "deleted_at": { "type": ["string", "null"] },
     "time_estimate": { "type": "integer" },
     "total_time_spent": { "type": "integer" },
     "human_time_estimate": { "type": ["integer", "null"] },
@@ -31,8 +30,13 @@
     "source_project_id": { "type": "integer" },
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
-    "merge_event": { "type": ["object", "null"] },
-    "closed_event": { "type": ["object", "null"] },
+    "allow_maintainer_to_push": { "type": "boolean"},
+    "metrics": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "merge_request_metrics.json" }
+      ]
+    },
     "author": { "type": ["object", "null"] },
     "merge_user": { "type": ["object", "null"] },
     "diff_head_sha": { "type": ["string", "null"] },
@@ -72,7 +76,9 @@
       "properties": {
         "can_remove_source_branch": { "type": "boolean" },
         "can_revert_on_current_merge_request": { "type": ["boolean", "null"] },
-        "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] }
+        "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] },
+        "can_create_note": { "type": "boolean" },
+        "can_update": { "type": "boolean" }
       },
       "additionalProperties": false
     },
@@ -99,7 +105,12 @@
     "remove_source_branch": { "type": ["boolean", "null"] },
     "merge_ongoing": { "type": "boolean" },
     "ff_only_enabled": { "type": ["boolean", false] },
-    "should_be_rebased": { "type": "boolean" }
+    "should_be_rebased": { "type": "boolean" },
+    "create_note_path": { "type": ["string", "null"] },
+    "rebase_commit_sha": { "type": ["string", "null"] },
+    "rebase_in_progress": { "type": "boolean" },
+    "can_push_to_source_branch": { "type": "boolean" },
+    "rebase_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

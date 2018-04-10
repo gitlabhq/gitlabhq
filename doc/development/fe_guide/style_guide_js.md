@@ -101,16 +101,16 @@ followed by any global declarations, then a blank newline prior to any imports o
     ```
 
     Import statements are following usual naming guidelines, for example object literals use camel case:
-    
+
     ```javascript
       // some_object file
       export default {
         key: 'value',
       };
-      
+
       // bad
       import ObjectLiteral from 'some_object';
-      
+
       // good
       import objectLiteral from 'some_object';
     ```
@@ -207,10 +207,39 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
     var c = pureFunction(values.foo);
   ```
 
-1. Avoid constructors with side-effects
+1. Avoid constructors with side-effects.
+Although we aim for code without side-effects we need some side-effects for our code to run.
+
+If the class won't do anything if we only instantiate it, it's ok to add side effects into the constructor (_Note:_ The following is just an example. If the only purpose of the class is to add an event listener and handle the callback a function will be more suitable.)
+
+```javascript
+// Bad
+export class Foo {
+  constructor() {
+    this.init();
+  }
+  init() {
+    document.addEventListener('click', this.handleCallback)
+  },
+  handleCallback() {
+
+  }
+}
+
+// Good
+export class Foo {
+  constructor() {
+    document.addEventListener()
+  }
+  handleCallback() {
+  }
+}
+```
+
+On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized oustside of the constructor.
 
 1. Prefer `.map`, `.reduce` or `.filter` over `.forEach`
-A forEach will cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
+A forEach will most likely cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
 `.reduce` or `.filter`
   ```javascript
     const users = [ { name: 'Foo' }, { name: 'Bar' } ];
@@ -255,6 +284,10 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 ### Vue.js
 
+#### `eslint-vue-plugin`
+We default to [eslint-vue-plugin][eslint-plugin-vue], with the `plugin:vue/recommended`.
+Please check this [rules][eslint-plugin-vue-rules] for more documentation.
+
 #### Basic Rules
 1. The service has it's own file
 1. The store has it's own file
@@ -298,20 +331,20 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 #### Naming
 1. **Extensions**: Use `.vue` extension for Vue components.
-1. **Reference Naming**: Use camelCase for their instances:
+1. **Reference Naming**: Use PascalCase for their instances:
   ```javascript
     // bad
-    import CardBoard from 'cardBoard'
+    import cardBoard from 'cardBoard.vue'
 
     components: {
-      CardBoard:
+      cardBoard,
     };
 
     // good
-    import cardBoard from 'cardBoard'
+    import CardBoard from 'cardBoard.vue'
 
     components: {
-      cardBoard:
+      CardBoard,
     };
   ```
 
@@ -360,6 +393,10 @@ A forEach will cause side effects, it will be mutating the array being iterated.
           <component
             bar="bar"
             />
+
+        // bad
+         <component
+            bar="bar" />
       ```
 
 #### Quotes
@@ -509,26 +546,59 @@ On those a default key should not be provided.
     ```
 
 1. Properties in a Vue Component:
-  1. `name`
-  1. `props`
-  1. `mixins`
-  1. `directives`
-  1. `data`
-  1. `components`
-  1. `computedProps`
-  1. `methods`
-  1. `beforeCreate`
-  1. `created`
-  1. `beforeMount`
-  1. `mounted`
-  1. `beforeUpdate`
-  1. `updated`
-  1. `activated`
-  1. `deactivated`
-  1. `beforeDestroy`
-  1. `destroyed`
+  Check [order of properties in components rule][vue-order].
+
+#### `:key`
+When using `v-for` you need to provide a *unique* `:key` attribute for each item.
+
+1. If the elements of the array being iterated have an unique `id` it is advised to use it:
+    ```html
+      <div
+        v-for="item in items"
+        :key="item.id"
+      >
+        <!-- content -->
+      </div>
+    ```
+
+1. When the elements being iterated don't have a unique id, you can use the array index as the `:key` attribute
+    ```html
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+      >
+        <!-- content -->
+      </div>
+    ```
 
 
+1. When using `v-for` with `template` and there is more than one child element, the `:key` values must be unique. It's advised to use `kebab-case` namespaces.
+    ```html
+      <template v-for="(item, index) in items">
+        <span :key="`span-${index}`"></span>
+        <button :key="`button-${index}`"></button>
+      </template>
+    ```
+
+1. When dealing with nested `v-for` use the same guidelines as above.
+      ```html
+        <div
+          v-for="item in items"
+          :key="item.id"
+        >
+          <span
+            v-for="element in array"
+            :key="element.id"
+          >
+            <!-- content -->
+          </span>
+        </div>
+      ```
+
+
+Useful links:
+1. [`key`](https://vuejs.org/v2/guide/list.html#key)
+1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential )
 #### Vue and Bootstrap
 
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
@@ -582,3 +652,6 @@ The goal of this accord is to make sure we are all on the same page.
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
 [eslint-this]: http://eslint.org/docs/rules/class-methods-use-this
 [eslint-new]: http://eslint.org/docs/rules/no-new
+[eslint-plugin-vue]: https://github.com/vuejs/eslint-plugin-vue
+[eslint-plugin-vue-rules]: https://github.com/vuejs/eslint-plugin-vue#bulb-rules
+[vue-order]: https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/order-in-components.md

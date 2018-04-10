@@ -1,26 +1,27 @@
 /* global List */
 /* global ListAssignee */
 /* global ListLabel */
-/* global listObj */
-/* global boardsMockInterceptor */
 /* global BoardService */
-/* global mockBoardService */
 
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import '~/boards/models/assignee';
 
 import eventHub from '~/boards/eventhub';
+import '~/vue_shared/models/label';
 import '~/boards/models/list';
-import '~/boards/models/label';
 import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';
-import './mock_data';
+import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('Board card', () => {
   let vm;
+  let mock;
 
   beforeEach((done) => {
-    Vue.http.interceptors.push(boardsMockInterceptor);
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
 
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
@@ -54,7 +55,7 @@ describe('Board card', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+    mock.restore();
   });
 
   it('returns false when detailIssue is empty', () => {

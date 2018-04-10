@@ -24,7 +24,7 @@ describe MergeRequests::CreateFromIssueService do
     end
 
     it 'delegates issue search to IssuesFinder' do
-      expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
+      expect_any_instance_of(IssuesFinder).to receive(:find_by).once.and_call_original
 
       described_class.new(project, user, issue_iid: -1).execute
     end
@@ -111,6 +111,25 @@ describe MergeRequests::CreateFromIssueService do
       result = service.execute
 
       expect(result[:merge_request].assignee).to eq(user)
+    end
+
+    context 'when ref branch is set' do
+      subject { described_class.new(project, user, issue_iid: issue.iid, ref: 'feature').execute }
+
+      it 'sets the merge request source branch to the new issue branch' do
+        expect(subject[:merge_request].source_branch).to eq(issue.to_branch_name)
+      end
+
+      it 'sets the merge request target branch to the ref branch' do
+        expect(subject[:merge_request].target_branch).to eq('feature')
+      end
+
+      context 'when ref branch does not exist' do
+        it 'does not create a merge request' do
+          expect { described_class.new(project, user, issue_iid: issue.iid, ref: 'nobr').execute }
+            .not_to change { project.merge_requests.count }
+        end
+      end
     end
   end
 end

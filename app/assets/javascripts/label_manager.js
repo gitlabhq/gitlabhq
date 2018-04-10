@@ -1,7 +1,10 @@
 /* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, max-len */
-/* global Sortable */
 
-import Flash from './flash';
+import $ from 'jquery';
+import Sortable from 'vendor/Sortable';
+
+import flash from './flash';
+import axios from './lib/utils/axios_utils';
 
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
@@ -50,11 +53,12 @@ export default class LabelManager {
     if (persistState == null) {
       persistState = true;
     }
-    let xhr;
     const _this = this;
     const url = $label.find('.js-toggle-priority').data('url');
     let $target = this.prioritizedLabels;
     let $from = this.otherLabels;
+    const rollbackLabelPosition = this.rollbackLabelPosition.bind(this, $label, action);
+
     if (action === 'remove') {
       $target = this.otherLabels;
       $from = this.prioritizedLabels;
@@ -71,40 +75,34 @@ export default class LabelManager {
       return;
     }
     if (action === 'remove') {
-      xhr = $.ajax({
-        url,
-        type: 'DELETE'
-      });
+      axios.delete(url)
+        .catch(rollbackLabelPosition);
+
       // Restore empty message
       if (!$from.find('li').length) {
         $from.find('.empty-message').removeClass('hidden');
       }
     } else {
-      xhr = this.savePrioritySort($label, action);
+      this.savePrioritySort($label, action)
+        .catch(rollbackLabelPosition);
     }
-    return xhr.fail(this.rollbackLabelPosition.bind(this, $label, action));
   }
 
   onPrioritySortUpdate() {
-    const xhr = this.savePrioritySort();
-    return xhr.fail(function() {
-      return new Flash(this.errorMessage, 'alert');
-    });
+    this.savePrioritySort()
+      .catch(() => flash(this.errorMessage));
   }
 
   savePrioritySort() {
-    return $.post({
-      url: this.prioritizedLabels.data('url'),
-      data: {
-        label_ids: this.getSortedLabelsIds()
-      }
+    return axios.post(this.prioritizedLabels.data('url'), {
+      label_ids: this.getSortedLabelsIds(),
     });
   }
 
   rollbackLabelPosition($label, originalAction) {
     const action = originalAction === 'remove' ? 'add' : 'remove';
     this.toggleLabelPriority($label, action, false);
-    return new Flash(this.errorMessage, 'alert');
+    flash(this.errorMessage);
   }
 
   getSortedLabelsIds() {

@@ -21,7 +21,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user does not have enough rights' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'returns 404' do
@@ -37,7 +37,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user has enough rights' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'adds user to members' do
@@ -106,7 +106,7 @@ describe Projects::ProjectMembersController do
     context 'when member is found' do
       context 'when user does not have enough rights' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'returns 404' do
@@ -121,7 +121,7 @@ describe Projects::ProjectMembersController do
 
       context 'when user has enough rights' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it '[HTML] removes user from members' do
@@ -164,7 +164,7 @@ describe Projects::ProjectMembersController do
     context 'when member is found' do
       context 'and is not an owner' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'removes user from members' do
@@ -181,7 +181,7 @@ describe Projects::ProjectMembersController do
         let(:project) { create(:project, namespace: user.namespace) }
 
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'cannot remove himself from the project' do
@@ -248,7 +248,7 @@ describe Projects::ProjectMembersController do
     context 'when member is found' do
       context 'when user does not have enough rights' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'returns 404' do
@@ -263,7 +263,7 @@ describe Projects::ProjectMembersController do
 
       context 'when user has enough rights' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'adds user to members' do
@@ -285,8 +285,8 @@ describe Projects::ProjectMembersController do
     let(:member) { create(:user) }
 
     before do
-      project.team << [user, :master]
-      another_project.team << [member, :guest]
+      project.add_master(user)
+      another_project.add_guest(member)
       sign_in(user)
     end
 
@@ -300,7 +300,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user can access source project members' do
       before do
-        another_project.team << [user, :guest]
+        another_project.add_guest(user)
       end
 
       include_context 'import applied'
@@ -332,7 +332,7 @@ describe Projects::ProjectMembersController do
 
     context 'when creating owner' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
       end
 
@@ -348,7 +348,7 @@ describe Projects::ProjectMembersController do
 
     context 'when create master' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
       end
 

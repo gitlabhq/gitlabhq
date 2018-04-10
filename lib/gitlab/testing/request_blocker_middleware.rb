@@ -37,12 +37,14 @@ module Gitlab
 
       def call(env)
         increment_active_requests
+
         if block_requests?
           block_request(env)
         else
           sleep 0.2 if slow_requests?
           @app.call(env)
         end
+
       ensure
         decrement_active_requests
       end

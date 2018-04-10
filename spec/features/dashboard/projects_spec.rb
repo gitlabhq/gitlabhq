@@ -6,7 +6,7 @@ feature 'Dashboard Projects' do
   let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
   end
 
@@ -36,6 +36,14 @@ feature 'Dashboard Projects' do
       visit dashboard_projects_path
 
       expect(page).to have_xpath("//time[@datetime='#{project.last_repository_updated_at.getutc.iso8601}']")
+    end
+
+    it 'shows the last_activity_at attribute as the update date' do
+      project.update_attributes!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+
+      visit dashboard_projects_path
+
+      expect(page).to have_xpath("//time[@datetime='#{project.last_activity_at.getutc.iso8601}']")
     end
   end
 

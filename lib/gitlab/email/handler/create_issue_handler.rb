@@ -14,7 +14,7 @@ module Gitlab
         end
 
         def can_handle?
-          !incoming_email_token.nil?
+          !incoming_email_token.nil? && !incoming_email_token.include?("+") && !mail_key.include?(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX)
         end
 
         def execute

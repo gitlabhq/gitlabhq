@@ -1,4 +1,5 @@
-- page_title milestone.title, "Milestones"
+- page_title @milestone.title
+- @breadcrumb_link = dashboard_milestone_path(milestone.safe_title, title: milestone.title)
 
 - group = local_assigns[:group]
 
@@ -17,7 +18,7 @@
     Milestone #{milestone.title}
   - if milestone.due_date || milestone.start_date
     %span.creator
-      &middot;
+      &nbsp;&middot;
       = milestone_date_range(milestone)
   - if group
     .pull-right
@@ -56,7 +57,7 @@
       - milestone.milestones.each do |ms|
         %tr
           %td
-            - project_name = group ? ms.project.name : ms.project.name_with_namespace
+            - project_name = group ? ms.project.name : ms.project.full_name
             = link_to project_name, project_milestone_path(ms.project, ms)
           %td
             = ms.issues_visible_to_user(current_user).opened.count

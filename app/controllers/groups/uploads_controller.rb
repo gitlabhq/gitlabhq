@@ -7,29 +7,23 @@ class Groups::UploadsController < Groups::ApplicationController
 
   private
 
-  def show_model
-    strong_memoize(:show_model) do
-      group_id = params[:group_id]
-
-      Group.find_by_full_path(group_id)
-    end
-  end
-
-  def authorize_upload_file!
-    render_404 unless can?(current_user, :upload_file, group)
-  end
-
-  def uploader
-    strong_memoize(:uploader) do
-      file_uploader = uploader_class.new(show_model, params[:secret])
-      file_uploader.retrieve_from_store!(params[:filename])
-      file_uploader
-    end
+  def upload_model_class
+    Group
   end
 
   def uploader_class
     NamespaceFileUploader
   end
 
-  alias_method :model, :group
+  def find_model
+    return @group if @group
+
+    group_id = params[:group_id]
+
+    Group.find_by_full_path(group_id)
+  end
+
+  def authorize_upload_file!
+    render_404 unless can?(current_user, :upload_file, group)
+  end
 end

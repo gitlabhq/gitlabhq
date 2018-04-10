@@ -28,12 +28,18 @@ class GroupPolicy < BasePolicy
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
-  rule { public_group }      .enable :read_group
+  rule { public_group }.policy do
+    enable :read_group
+    enable :read_list
+    enable :read_label
+  end
+
   rule { logged_in_viewable }.enable :read_group
 
   rule { guest }.policy do
     enable :read_group
     enable :upload_file
+    enable :read_label
   end
 
   rule { admin }             .enable :read_group
@@ -42,7 +48,12 @@ class GroupPolicy < BasePolicy
   rule { has_access }.enable :read_namespace
 
   rule { developer }.enable :admin_milestones
-  rule { reporter }.enable :admin_label
+
+  rule { reporter }.policy do
+    enable :admin_label
+    enable :admin_list
+    enable :admin_issue
+  end
 
   rule { master }.policy do
     enable :create_projects

@@ -14,8 +14,8 @@ AssetSync.configure do |config|
   config.fog_directory = ENV['FOG_DIRECTORY'] if ENV.has_key?('FOG_DIRECTORY')
   config.fog_region = ENV['FOG_REGION'] if ENV.has_key?('FOG_REGION')
 
-  config.aws_access_key_id = ENV['AWS_ACCESS_KEY_ID'] if ENV.has_key?('AWS_ACCESS_KEY_ID')
-  config.aws_secret_access_key = ENV['AWS_SECRET_ACCESS_KEY'] if ENV.has_key?('AWS_SECRET_ACCESS_KEY')
+  config.aws_access_key_id = ENV['ASSETS_AWS_ACCESS_KEY_ID'] if ENV.has_key?('ASSETS_AWS_ACCESS_KEY_ID')
+  config.aws_secret_access_key = ENV['ASSETS_AWS_SECRET_ACCESS_KEY'] if ENV.has_key?('ASSETS_AWS_SECRET_ACCESS_KEY')
   config.aws_reduced_redundancy = ENV['AWS_REDUCED_REDUNDANCY'] == true  if ENV.has_key?('AWS_REDUCED_REDUNDANCY')
 
   config.rackspace_username = ENV['RACKSPACE_USERNAME'] if ENV.has_key?('RACKSPACE_USERNAME')

@@ -9,7 +9,7 @@ describe API::V3::AwardEmoji do
   let!(:downvote)      { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
   set(:note)           { create(:note, project: project, noteable: issue) }
 
-  before { project.team << [user, :master] }
+  before { project.add_master(user) }
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji" do
     context 'on an issue' do

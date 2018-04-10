@@ -18,12 +18,15 @@ Feature: Project Issues Milestones
     Given I click link "New Milestone"
     And I submit new milestone "v2.3"
     Then I should see milestone "v2.3"
-    Given I click link to remove milestone
+    Given I click button to remove milestone
+    And I confirm in modal
     When I visit project "Shop" activity page
     Then I should see deleted milestone activity
 
+  @javascript
   Scenario: I delete new milestone
-    Given I click link to remove milestone
+    Given I click button to remove milestone
+    And I confirm in modal
     And I should see no milestones
 
   @javascript
@@ -36,4 +39,5 @@ Feature: Project Issues Milestones
 
   Scenario: Headers inside the description should have ids generated for them.
     Given I click link "v2.2"
+    # PLEASE USE the `have_header_with_correct_id_and_link(level, text, id, parent)` matcher on migrating this spec to rspec.
     Then Header "Description header" should have correct id and link

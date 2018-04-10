@@ -14,6 +14,8 @@ module API
           success ::API::Entities::Branch
         end
         get ":id/repository/branches" do
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42276')
+
           repository = user_project.repository
           branches = repository.branches.sort_by(&:name)
           merged_branch_names = repository.merged_branch_names(branches.map(&:name))

@@ -1,5 +1,6 @@
 /* eslint no-param-reassign: "off" */
 
+import $ from 'jquery';
 import GfmAutoComplete from '~/gfm_auto_complete';
 
 import 'vendor/jquery.caret';
@@ -80,12 +81,20 @@ describe('GfmAutoComplete', function () {
     });
 
     it('should quote if value contains any non-alphanumeric characters', () => {
-      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label-20"');
+      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label\\-20"');
       expect(beforeInsert(atwhoInstance, '~label 20')).toBe('~"label 20"');
     });
 
     it('should quote integer labels', () => {
       expect(beforeInsert(atwhoInstance, '~1234')).toBe('~"1234"');
+    });
+
+    it('should escape Markdown emphasis characters, except in the first character', () => {
+      expect(beforeInsert(atwhoInstance, '@_group')).toEqual('@\\_group');
+      expect(beforeInsert(atwhoInstance, '~_bug')).toEqual('~\\_bug');
+      expect(beforeInsert(atwhoInstance, '~a `bug`')).toEqual('~"a \\`bug\\`"');
+      expect(beforeInsert(atwhoInstance, '~a ~bug')).toEqual('~"a \\~bug"');
+      expect(beforeInsert(atwhoInstance, '~a **bug')).toEqual('~"a \\*\\*bug"');
     });
   });
 
@@ -130,11 +139,20 @@ describe('GfmAutoComplete', function () {
     });
 
     describe('should not match special sequences', () => {
-      const ShouldNotBeFollowedBy = flags.concat(['\x00', '\x10', '\x3f', '\n', ' ']);
+      const shouldNotBeFollowedBy = flags.concat(['\x00', '\x10', '\x3f', '\n', ' ']);
+      const shouldNotBePrependedBy = ['`'];
 
       flagsUseDefaultMatcher.forEach((atSign) => {
-        ShouldNotBeFollowedBy.forEach((followedSymbol) => {
+        shouldNotBeFollowedBy.forEach((followedSymbol) => {
           const seq = atSign + followedSymbol;
+
+          it(`should not match "${seq}"`, () => {
+            expect(defaultMatcher(atwhoInstance, atSign, seq)).toBe(null);
+          });
+        });
+
+        shouldNotBePrependedBy.forEach((prependedSymbol) => {
+          const seq = prependedSymbol + atSign;
 
           it(`should not match "${seq}"`, () => {
             expect(defaultMatcher(atwhoInstance, atSign, seq)).toBe(null);

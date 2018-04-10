@@ -1,5 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-else-return, max-len */
 
+import $ from 'jquery';
+
 // LineHighlighter
 //
 // Handles single- and multi-line selection and highlight for blob views.
@@ -83,7 +85,7 @@ LineHighlighter.prototype.clickHandler = function(event) {
   var current, lineNumber, range;
   event.preventDefault();
   this.clearHighlight();
-  lineNumber = $(event.target).closest('a').data('line-number');
+  lineNumber = $(event.target).closest('a').data('lineNumber');
   current = this.hashToRange(this._hash);
   if (!(current[0] && event.shiftKey)) {
     // If there's no current selection, or there is but Shift wasn't held,

@@ -1,14 +1,14 @@
 %h4.prepend-top-20
-  = s_('ClusterIntegration|Enter the details for your cluster')
+  = s_('ClusterIntegration|Enter the details for your Kubernetes cluster')
 %p
   = s_('ClusterIntegration|Please make sure that your Google account meets the following requirements:')
 %ul
   %li
-    - link_to_kubernetes_engine = link_to(s_('ClusterIntegration|access to Google Kubernetes Engine'), 'https://console.cloud.google.com', target: '_blank', rel: 'noopener noreferrer')
+    - link_to_kubernetes_engine = link_to(s_('ClusterIntegration|access to Google Kubernetes Engine'), 'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
     = s_('ClusterIntegration|Your account must have %{link_to_kubernetes_engine}').html_safe % { link_to_kubernetes_engine: link_to_kubernetes_engine }
     %li
-      - link_to_requirements = link_to(s_('ClusterIntegration|meets the requirements'), 'https://cloud.google.com/kubernetes-engine/docs/quickstart', target: '_blank', rel: 'noopener noreferrer')
-      = s_('ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters').html_safe % { link_to_requirements: link_to_requirements }
+      - link_to_requirements = link_to(s_('ClusterIntegration|meets the requirements'), 'https://cloud.google.com/kubernetes-engine/docs/quickstart?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
+      = s_('ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters').html_safe % { link_to_requirements: link_to_requirements }
     %li
-      - link_to_container_project = link_to(s_('ClusterIntegration|Google Kubernetes Engine project'), target: '_blank', rel: 'noopener noreferrer')
-      = s_('ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below').html_safe % { link_to_container_project: link_to_container_project }
+      - link_to_container_project = link_to(s_('ClusterIntegration|Google Kubernetes Engine project'), 'https://console.cloud.google.com/home/dashboard?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
+      = s_('ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below').html_safe % { link_to_container_project: link_to_container_project }

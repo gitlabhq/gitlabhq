@@ -6,7 +6,7 @@ FactoryBot.define do
   factory :note do
     project
     note { generate(:title) }
-    author
+    author { project&.creator || create(:user) }
     on_issue
 
     factory :note_on_commit,             traits: [:on_commit]
@@ -15,6 +15,8 @@ FactoryBot.define do
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :system_note,                traits: [:system]
+
+    factory :discussion_note, class: DiscussionNote
 
     factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: DiscussionNote do
       association :project, :repository
@@ -30,6 +32,8 @@ FactoryBot.define do
     factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote
 
     factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: DiscussionNote
+
+    factory :discussion_note_on_snippet, traits: [:on_snippet], class: DiscussionNote
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
 
@@ -96,6 +100,10 @@ FactoryBot.define do
       noteable { create(:issue, project: project) }
     end
 
+    trait :on_snippet do
+      noteable { create(:snippet, project: project) }
+    end
+
     trait :on_merge_request do
       noteable { create(:merge_request, source_project: project) }
     end
@@ -122,11 +130,11 @@ FactoryBot.define do
     end
 
     trait :with_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png") }
+      attachment { fixture_file_upload(Rails.root.join( "spec/fixtures/dk.png"), "image/png") }
     end
 
     trait :with_svg_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/unsanitized.svg", "image/svg+xml") }
+      attachment { fixture_file_upload(Rails.root.join("spec/fixtures/unsanitized.svg"), "image/svg+xml") }
     end
 
     transient do

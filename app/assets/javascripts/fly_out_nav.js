@@ -118,14 +118,14 @@ export const showSubLevelItems = (el) => {
   moveSubItemsToPosition(el, subItems);
 };
 
-export const mouseEnterTopItems = (el) => {
+export const mouseEnterTopItems = (el, timeout = getHideSubItemsInterval()) => {
   clearTimeout(timeoutId);
 
   timeoutId = setTimeout(() => {
     if (currentOpenMenu) hideMenu(currentOpenMenu);
 
     showSubLevelItems(el);
-  }, getHideSubItemsInterval());
+  }, timeout);
 };
 
 export const mouseLeaveTopItem = (el) => {

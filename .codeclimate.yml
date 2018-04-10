@@ -1,7 +1,5 @@
 ---
 engines:
-  brakeman:
-    enabled: true
   bundler-audit:
     enabled: true
   duplication:
@@ -12,10 +10,6 @@ engines:
       - javascript
     exclude_paths:
       - "lib/api/v3/*"
-  eslint:
-    enabled: true
-  rubocop:
-    enabled: true
 ratings:
   paths:
   - Gemfile.lock
@@ -45,3 +39,4 @@ exclude_paths:
 - log/
 - backups/
 - coverage-javascript/
+- plugins/

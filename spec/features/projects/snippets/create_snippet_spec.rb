@@ -16,7 +16,7 @@ feature 'Create Snippet', :js do
 
   context 'when a user is authenticated' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
 
       visit project_snippets_path(project)

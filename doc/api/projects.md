@@ -16,6 +16,21 @@ Values for the project visibility level are:
 * `public`:
   The project can be cloned without any authentication.
 
+## Project merge method
+
+There are currently three options for `merge_method` to choose from:
+
+* `merge`:
+  A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
+
+* `rebase_merge`:
+  A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
+  This way you could make sure that if this merge request would build, after merging to target branch it would also build.
+
+* `ff`:
+  No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+
+
 ## List all projects
 
 Get a list of all visible projects across GitLab for the authenticated user.
@@ -37,6 +52,7 @@ GET /projects
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -93,6 +109,7 @@ GET /projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -172,6 +189,7 @@ GET /projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -220,6 +238,7 @@ GET /users/:user_id/projects
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -276,6 +295,7 @@ GET /users/:user_id/projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -355,6 +375,7 @@ GET /users/:user_id/projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -388,6 +409,7 @@ GET /projects/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```json
 {
@@ -464,6 +486,7 @@ GET /projects/:id
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -547,6 +570,7 @@ POST /projects
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
+| `merge_method` | string | no | Set the merge method used |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -583,6 +607,7 @@ POST /projects/user/:user_id
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
+| `merge_method` | string | no | Set the merge method used |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -618,6 +643,7 @@ PUT /projects/:id
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
+| `merge_method` | string | no | Set the merge method used |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -664,6 +690,7 @@ GET /projects/:id/forks
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -720,6 +747,7 @@ Example responses:
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -797,6 +825,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -873,6 +902,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -967,6 +997,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -982,7 +1013,7 @@ Example response:
 ## Unarchive a project
 
 Unarchives the project if the user is either admin or the project owner of this project. This action is
-idempotent, thus unarchiving an non-archived project will not change the project.
+idempotent, thus unarchiving a non-archived project will not change the project.
 
 ```
 POST /projects/:id/unarchive
@@ -1061,6 +1092,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1190,6 +1222,7 @@ GET /projects/:id/hooks/:hook_id
   "project_id": 3,
   "push_events": true,
   "issues_events": true,
+  "confidential_issues_events": true,
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
@@ -1215,12 +1248,13 @@ POST /projects/:id/hooks
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
 | `issues_events` | boolean | no | Trigger hook on issues events |
+| `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
-| `wiki_events` | boolean | no | Trigger hook on wiki events |
+| `wiki_page_events` | boolean | no | Trigger hook on wiki events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 | `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -1239,6 +1273,7 @@ PUT /projects/:id/hooks/:hook_id
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
 | `issues_events` | boolean | no | Trigger hook on issues events |
+| `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
@@ -1326,6 +1361,18 @@ POST /projects/:id/housekeeping
 
 Read more in the [Branches](branches.md) documentation.
 
+## Project Import/Export
+
+Read more in the [Project import/export](project_import_export.md) documentation.
+
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
+
+## Project badges
+
+Read more in the [Project Badges](project_badges.md) documentation.
+
+## Issue and merge request description templates
+
+The non-default [issue and merge request description templates](../user/project/description_templates.md) are managed inside the project's repository. So you can manage them via the API through the [Repositories API](repositories.md) and the [Repository Files API](repository_files.md).

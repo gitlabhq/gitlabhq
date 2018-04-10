@@ -27,6 +27,8 @@ project_tree:
   - :releases
   - project_members:
     - :user
+  - lfs_file_locks:
+    - :user
   - merge_requests:
     - notes:
       - :author
@@ -49,8 +51,8 @@ project_tree:
       - :author
       - events:
         - :push_event_payload
-    - :stages
-    - :statuses
+    - stages:
+      - :statuses
   - :auto_devops
   - :triggers
   - :pipeline_schedules
@@ -63,6 +65,7 @@ project_tree:
     - :create_access_levels
   - :project_feature
   - :custom_attributes
+  - :project_badges
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -102,6 +105,7 @@ excluded_attributes:
     - :last_repository_updated_at
     - :last_repository_check_at
     - :storage_version
+    - :description_html
   snippets:
     - :expired_at
   merge_request_diff:
@@ -121,8 +125,12 @@ excluded_attributes:
     - :trace
     - :token
     - :when
+    - :artifacts_file
+    - :artifacts_metadata
   push_event_payload:
     - :event_id
+  project_badges:
+    - :group_id
 
 methods:
   labels:
@@ -139,9 +147,9 @@ methods:
     - :diff_head_sha
     - :source_branch_sha
     - :target_branch_sha
-  project:
-    - :description_html
   events:
     - :action
   push_event_payload:
     - :action
+  project_badges:
+    - :type

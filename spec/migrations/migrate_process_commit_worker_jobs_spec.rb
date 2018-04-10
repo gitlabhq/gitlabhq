@@ -4,8 +4,8 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_worker_jobs.rb')
 
 describe MigrateProcessCommitWorkerJobs do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:project) { create(:project, :legacy_storage, :repository) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
   let(:commit) { project.commit.raw.rugged_commit }
 
   describe 'Project' do

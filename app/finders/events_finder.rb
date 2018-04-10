@@ -1,5 +1,9 @@
 class EventsFinder
+  prepend FinderMethods
+  prepend FinderWithCrossProjectAccess
   attr_reader :source, :params, :current_user
+
+  requires_cross_project_access unless: -> { source.is_a?(Project) }
 
   # Used to filter Events
   #

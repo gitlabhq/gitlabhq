@@ -143,7 +143,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I create bare repo' do
-    click_link 'Create empty bare repository'
+    click_link 'Create empty repository'
   end
 
   step 'I should see command line instructions' do

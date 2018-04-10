@@ -684,4 +684,62 @@ describe Projects::MergeRequestsController do
                             format: :json
     end
   end
+
+  describe 'POST #rebase' do
+    let(:viewer)        { user }
+
+    def post_rebase
+      post :rebase, namespace_id: project.namespace, project_id: project, id: merge_request
+    end
+
+    def expect_rebase_worker_for(user)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id)
+    end
+
+    context 'successfully' do
+      it 'enqeues a RebaseWorker' do
+        expect_rebase_worker_for(viewer)
+
+        post_rebase
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'with a forked project' do
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+      let(:fork_owner) { fork_project.owner }
+
+      before do
+        merge_request.update!(source_project: fork_project)
+        fork_project.add_reporter(user)
+      end
+
+      context 'user cannot push to source branch' do
+        it 'returns 404' do
+          expect_rebase_worker_for(viewer).never
+
+          post_rebase
+
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'user can push to source branch' do
+        before do
+          project.add_reporter(fork_owner)
+
+          sign_in(fork_owner)
+        end
+
+        it 'returns 200' do
+          expect_rebase_worker_for(fork_owner)
+
+          post_rebase
+
+          expect(response.status).to eq(200)
+        end
+      end
+    end
+  end
 end

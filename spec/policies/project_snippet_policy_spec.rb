@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
 describe ProjectSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
@@ -87,7 +88,7 @@ describe ProjectSnippetPolicy do
       subject { abilities(external_user, :internal) }
 
       before do
-        project.team << [external_user, :developer]
+        project.add_developer(external_user)
       end
 
       it do
@@ -131,7 +132,7 @@ describe ProjectSnippetPolicy do
       subject { abilities(regular_user, :private) }
 
       before do
-        project.team << [regular_user, :developer]
+        project.add_developer(regular_user)
       end
 
       it do
@@ -144,7 +145,7 @@ describe ProjectSnippetPolicy do
       subject { abilities(external_user, :private) }
 
       before do
-        project.team << [external_user, :developer]
+        project.add_developer(external_user)
       end
 
       it do

@@ -48,12 +48,24 @@ class Event < ActiveRecord::Base
 
   belongs_to :author, class_name: "User"
   belongs_to :project
-  belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+
+  belongs_to :target, -> {
+    # If the association for "target" defines an "author" association we want to
+    # eager-load this so Banzai & friends don't end up performing N+1 queries to
+    # get the authors of notes, issues, etc. (likewise for "noteable").
+    incs = %i(author noteable).select do |a|
+      reflections['events'].active_record.reflect_on_association(a)
+    end
+
+    incs.reduce(self) { |obj, a| obj.includes(a) }
+  }, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+
   has_one :push_event_payload
 
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push?
+  after_create :track_user_interacted_projects
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -72,7 +84,7 @@ class Event < ActiveRecord::Base
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
     includes(:author, :project, project: :namespace)
-      .preload(:push_event_payload, target: :author)
+      .preload(:target, :push_event_payload)
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
@@ -84,10 +96,6 @@ class Event < ActiveRecord::Base
   validates :author_id, presence: true
 
   self.inheritance_column = 'action'
-
-  # "data" will be removed in 10.0 but it may be possible that JOINs happen that
-  # include this column, hence we're ignoring it as well.
-  ignore_column :data
 
   class << self
     def model_name
@@ -151,7 +159,7 @@ class Event < ActiveRecord::Base
 
   def project_name
     if project
-      project.name_with_namespace
+      project.full_name
     else
       "(deleted project)"
     end
@@ -381,5 +389,12 @@ class Event < ActiveRecord::Base
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
       .update_all(last_repository_updated_at: created_at)
+  end
+
+  def track_user_interacted_projects
+    # Note the call to .available? is due to earlier migrations
+    # that would otherwise conflict with the call to .track
+    # (because the table does not exist yet).
+    UserInteractedProject.track(self) if UserInteractedProject.available?
   end
 end

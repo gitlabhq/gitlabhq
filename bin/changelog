@@ -214,9 +214,10 @@ class ChangelogEntry
   end
 
   def unreleased_path
-    File.join('changelogs', 'unreleased').tap do |path|
-      path << '-ee' if ee?
-    end
+    path = File.join('changelogs', 'unreleased')
+    path = File.join('ee', path) if ee?
+
+    path
   end
 
   def ee?

@@ -82,20 +82,26 @@ module Gitlab
       end
 
       def call_update_hook(gl_id, gl_username, oldrev, newrev, ref)
-        Dir.chdir(repo_path) do
-          env = {
-            'GL_ID' => gl_id,
-            'GL_USERNAME' => gl_username
-          }
-          stdout, stderr, status = Open3.capture3(env, path, ref, oldrev, newrev)
-          [status.success?, (stderr.presence || stdout).gsub(/\R/, "<br>").html_safe]
-        end
+        env = {
+          'GL_ID' => gl_id,
+          'GL_USERNAME' => gl_username,
+          'PWD' => repo_path
+        }
+
+        options = {
+          chdir: repo_path
+        }
+
+        args = [ref, oldrev, newrev]
+
+        stdout, stderr, status = Open3.capture3(env, path, *args, options)
+        [status.success?, Gitlab::Utils.nlbr(stderr.presence || stdout)]
       end
 
       def retrieve_error_message(stderr, stdout)
         err_message = stderr.read
         err_message = err_message.blank? ? stdout.read : err_message
-        err_message.gsub(/\R/, "<br>").html_safe
+        Gitlab::Utils.nlbr(err_message)
       end
     end
   end

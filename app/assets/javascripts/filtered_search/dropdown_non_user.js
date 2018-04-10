@@ -1,9 +1,10 @@
 import Flash from '../flash';
 import Ajax from '../droplab/plugins/ajax';
 import Filter from '../droplab/plugins/filter';
-import './filtered_search_dropdown';
+import FilteredSearchDropdown from './filtered_search_dropdown';
+import DropdownUtils from './dropdown_utils';
 
-class DropdownNonUser extends gl.FilteredSearchDropdown {
+export default class DropdownNonUser extends FilteredSearchDropdown {
   constructor(options = {}) {
     const { input, endpoint, symbol, preprocessing } = options;
     super(options);
@@ -21,7 +22,7 @@ class DropdownNonUser extends gl.FilteredSearchDropdown {
         },
       },
       Filter: {
-        filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
+        filterFunction: DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
         template: 'title',
       },
     };
@@ -30,7 +31,7 @@ class DropdownNonUser extends gl.FilteredSearchDropdown {
   itemClicked(e) {
     super.itemClicked(e, (selected) => {
       const title = selected.querySelector('.js-data-value').innerText.trim();
-      return `${this.symbol}${gl.DropdownUtils.getEscapedText(title)}`;
+      return `${this.symbol}${DropdownUtils.getEscapedText(title)}`;
     });
   }
 
@@ -45,6 +46,3 @@ class DropdownNonUser extends gl.FilteredSearchDropdown {
       .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
   }
 }
-
-window.gl = window.gl || {};
-gl.DropdownNonUser = DropdownNonUser;

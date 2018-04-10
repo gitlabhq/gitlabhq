@@ -9,7 +9,7 @@ export default {
   template: `
     <div class="time-tracking-estimate-only-pane">
       <span class="bold">
-        Estimated:
+        {{ s__('TimeTracking|Estimated:') }}
       </span>
       {{ timeEstimateHumanReadable }}
     </div>

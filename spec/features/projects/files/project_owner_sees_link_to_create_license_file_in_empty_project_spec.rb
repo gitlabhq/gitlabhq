@@ -11,7 +11,7 @@ feature 'project owner sees a link to create a license file in empty project', :
 
   scenario 'project master creates a license file from a template' do
     visit project_path(project)
-    click_on 'LICENSE'
+    click_on 'Add License'
     expect(page).to have_content('New file')
 
     expect(current_path).to eq(

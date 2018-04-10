@@ -1,0 +1,11 @@
+- add_to_breadcrumbs "Pages", project_pages_path(@project)
+- breadcrumb_title @domain.domain
+- page_title @domain.domain
+%h3.page-title
+  = @domain.domain
+%hr.clearfix
+%div
+  = form_for [@project.namespace.becomes(Namespace), @project, @domain], html: { class: 'form-horizontal fieldset-form' } do |f|
+    = render 'form', { f: f }
+    .form-actions
+      = f.submit 'Save Changes', class: "btn btn-save"

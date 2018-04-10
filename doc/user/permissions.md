@@ -25,7 +25,8 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
+| Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
+| Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
@@ -117,14 +118,16 @@ and drag issues around. Read though the
 [documentation on Issue Boards permissions](project/issue_board.md#permissions)
 to learn more.
 
-### File Locking permissions (EEP)
+### File Locking permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
 Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
 
 File Locking is available in
-[GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/) only.
+[GitLab Premium](https://about.gitlab.com/products/) only.
 
 ### Confidential Issues permissions
 
@@ -200,7 +203,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
-| Erase job artifacts and trace         |                 | ✓ [^7]      | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^5]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -223,13 +226,13 @@ users:
 | Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^5]      | ✓ [^5]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
+| Clone source and LFS from internal projects |                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
 | Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^5]      | ✓ [^5]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
+| Pull container images from internal projects|                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
 
@@ -251,20 +254,23 @@ for details about the pipelines security model.
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/index.html#updating-user-permissions-new-feature) to learn more.
 
-## Auditor users permissions (EEP)
+## Auditor users permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
 with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
 
-Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
+Auditor users are available in [GitLab Premium](https://about.gitlab.com/products/)
 only.
 
-[^1]: On public and internal projects,  all users are able to perform this action.
+[^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
 [^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
-[^5]: Only if user is not external one.
-[^6]: Only if user is a member of the project.
-[^7]: Only if the build was triggered by the user
+[^5]: Only if the job was triggered by the user
+[^6]: Only if user is not external one
+[^7]: Only if user is a member of the project
+
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md

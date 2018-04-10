@@ -28,13 +28,14 @@ With GitLab merge requests, you can:
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 - [Create new merge requests by email](#create-new-merge-requests-by-email)
+- Allow maintainers of the target project to push directly to the fork by [allowing edits from maintainers](maintainer_access.md)
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Enterprise Edition Premium)
-- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Enterprise Edition Starter)
-- [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
-- Analise the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Enterprise Edition Starter)
+- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Premium)
+- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Starter)
+- [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
 
 ## Use cases
 
@@ -42,10 +43,10 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Enterprise Edition Starter)
+1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
 1. You build and test your changes with GitLab CI/CD
 1. You request the approval from your manager
-1. Your manager pushes a commit with his final review, [approves the merge request](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Enterprise Edition Starter)
+1. Your manager pushes a commit with his final review, [approves the merge request](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
 
@@ -55,8 +56,8 @@ B. Consider you're a web developer writing a webpage for your company's:
 1. You gather feedback from your reviewers
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
-1. You request the [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your manager (available in GitLab Enterprise Edition Starter)
-1. Once approved, your merge request is [squashed and merged](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/) (Squash and Merge is available in GitLab Enterprise Edition Starter)
+1. You request the [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your manager (available in GitLab Starter)
+1. Once approved, your merge request is [squashed and merged](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/) (Squash and Merge is available in GitLab Starter)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
 ## Merge requests per project
@@ -70,11 +71,27 @@ and you can use the tabs available to quickly filter by open and closed. You can
 
 ## Merge requests per group
 
-View all the merge requests in a group (that is, all the merge requests across all projects in that
-group) by navigating to **Group > Merge Requests**. This view also has the open, merged, and closed
-merge request tabs, from which you can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group).
+View merge requests in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Merge Requests** to view these merge requests. This view also has the open and closed merge requests tabs.
+
+You can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group) from here.
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
+
+## Removing the source branch
+
+When creating a merge request, select the "Remove source branch when merge
+request accepted" option and the source branch will be removed when the merge
+request is merged.
+
+This option is also visible in an existing merge request next to the merge
+request button and can be selected/deselected before merging. It's only visible
+to users with [Master permissions](../../permissions.md) in the source project.
+
+If the user viewing the merge request does not have the correct permissions to
+remove the source branch and the source branch is set for removal, the merge
+request widget will show the "Removes source branch" text.
+
+![Remove source branch status](img/remove_source_branch_status.png)
 
 ## Authorization for merge requests
 
@@ -134,6 +151,10 @@ those conflicts in the GitLab UI.
 
 ## Create new merge requests by email
 
+*This feature needs [incoming email](../../../administration/incoming_email.md)
+to be configured by a GitLab administrator to be available for CE/EE users, and
+it's available on GitLab.com.*
+
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
 a **Email a new merge request to this project** button.  The subject will be
@@ -145,6 +166,19 @@ this feature. If it's not enabled to your instance, you may ask your GitLab
 administrator to do so.
 
 ![Create new merge requests by email](img/create_from_email.png)
+
+## Find the merge request that introduced a change
+
+> **Note**: this feature was [implemented in GitLab 10.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383).
+
+When viewing the commit details page, GitLab will link to the merge request (or
+merge requests, if it's in more than one) containing that commit.
+
+This only applies to commits that are in the most recent version of a merge
+request - if a commit was in a merge request, then rebased out of that merge
+request, they will not be linked.
+
+[Read more about merge request versions](versions.md)
 
 ## Revert changes
 
@@ -160,7 +194,7 @@ of merge request diff is created. When you visit a merge request that contains
 more than one pushes, you can select and compare the versions of those merge
 request diffs.
 
-[Read more about the merge requests versions.](versions.md)
+[Read more about merge request versions](versions.md)
 
 ## Work In Progress merge requests
 
@@ -287,4 +321,4 @@ git checkout origin/merge-requests/1
 ```
 
 [protected branches]: ../protected_branches.md
-[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
+[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"

@@ -1,9 +1,5 @@
 - @no_container = true
 - page_title _('Contributors')
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_d3')
-  = webpack_bundle_tag('graphs')
-  = webpack_bundle_tag('graphs_show')
 
 .js-graphs-show{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }
   .sub-header-block

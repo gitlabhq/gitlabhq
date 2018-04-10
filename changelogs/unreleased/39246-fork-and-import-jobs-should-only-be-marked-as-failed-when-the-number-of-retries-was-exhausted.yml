@@ -1,5 +1,0 @@
----
-title: Only mark import and fork jobs as failed once all Sidekiq retries get exhausted
-merge_request: 15844
-author:
-type: changed

@@ -1,13 +1,13 @@
 - page_title "GPG Keys"
-= render 'profiles/head'
+- @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
       GPG keys allow you to verify signed commits.
-  .col-lg-9
+  .col-lg-8
     %h5.prepend-top-0
       Add a GPG key
     %p.profile-settings-content

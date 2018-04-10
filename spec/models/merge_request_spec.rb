@@ -17,16 +17,11 @@ describe MergeRequest do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
+    it { is_expected.to include_module(NonatomicInternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
-  end
-
-  describe "act_as_paranoid" do
-    it { is_expected.to have_db_column(:deleted_at) }
-    it { is_expected.to have_db_index(:deleted_at) }
   end
 
   describe 'validation' do
@@ -65,12 +60,64 @@ describe MergeRequest do
     end
   end
 
+  describe 'callbacks' do
+    describe '#ensure_merge_request_metrics' do
+      it 'creates metrics after saving' do
+        merge_request = create(:merge_request)
+
+        expect(merge_request.metrics).to be_persisted
+        expect(MergeRequest::Metrics.count).to eq(1)
+      end
+
+      it 'does not duplicate metrics for a merge request' do
+        merge_request = create(:merge_request)
+
+        merge_request.mark_as_merged!
+
+        expect(MergeRequest::Metrics.count).to eq(1)
+      end
+    end
+  end
+
   describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
     it { is_expected.to respond_to(:merge_when_pipeline_succeeds) }
+  end
+
+  describe '.by_commit_sha' do
+    subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
+
+    let!(:merge_request) { create(:merge_request, :with_diffs) }
+
+    context 'with sha contained in latest merge request diff' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      it 'returns merge requests' do
+        expect(by_commit_sha).to eq([merge_request])
+      end
+    end
+
+    context 'with sha contained not in latest merge request diff' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      it 'returns empty requests' do
+        latest_merge_request_diff = merge_request.merge_request_diffs.create
+        latest_merge_request_diff.merge_request_diff_commits.where(sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0').delete_all
+
+        expect(by_commit_sha).to be_empty
+      end
+    end
+
+    context 'with sha not contained in' do
+      let(:sha) { 'b83d6e3' }
+
+      it 'returns empty result' do
+        expect(by_commit_sha).to be_empty
+      end
+    end
   end
 
   describe '.in_projects' do
@@ -195,7 +242,7 @@ describe MergeRequest do
 
   describe '#cache_merge_request_closes_issues!' do
     before do
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       subject.target_branch = subject.project.default_branch
     end
 
@@ -481,7 +528,7 @@ describe MergeRequest do
     let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
@@ -509,7 +556,7 @@ describe MergeRequest do
     let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
 
     it 'detects issues mentioned in description but not closed' do
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
       allow(subject).to receive(:commits).and_return([commit])
@@ -521,7 +568,7 @@ describe MergeRequest do
 
     context 'when the project has an external issue tracker' do
       before do
-        subject.project.team << [subject.author, :developer]
+        subject.project.add_developer(subject.author)
         commit = double(:commit, safe_message: 'Fixes TEST-3')
 
         create(:jira_service, project: subject.project)
@@ -660,7 +707,7 @@ describe MergeRequest do
     it 'includes its closed issues in the body' do
       issue = create(:issue, project: subject.project)
 
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       subject.description = "This issue Closes #{issue.to_reference}"
 
       allow(subject.project).to receive(:default_branch)
@@ -1016,6 +1063,103 @@ describe MergeRequest do
     end
   end
 
+  describe '#can_be_reverted?' do
+    context 'when there is no merge_commit for the MR' do
+      before do
+        subject.metrics.update!(merged_at: Time.now.utc)
+      end
+
+      it 'returns false' do
+        expect(subject.can_be_reverted?(nil)).to be_falsey
+      end
+    end
+
+    context 'when the MR has been merged' do
+      before do
+        MergeRequests::MergeService
+          .new(subject.target_project, subject.author)
+          .execute(subject)
+      end
+
+      context 'when there is no revert commit' do
+        it 'returns true' do
+          expect(subject.can_be_reverted?(nil)).to be_truthy
+        end
+      end
+
+      context 'when there is no merged_at for the MR' do
+        before do
+          subject.metrics.update!(merged_at: nil)
+        end
+
+        it 'returns true' do
+          expect(subject.can_be_reverted?(nil)).to be_truthy
+        end
+      end
+
+      context 'when there is a revert commit' do
+        let(:current_user) { subject.author }
+        let(:branch) { subject.target_branch }
+        let(:project) { subject.target_project }
+
+        let(:revert_commit_id) do
+          params = {
+            commit: subject.merge_commit,
+            branch_name: branch,
+            start_branch: branch
+          }
+
+          Commits::RevertService.new(project, current_user, params).execute[:result]
+        end
+
+        before do
+          project.add_master(current_user)
+
+          ProcessCommitWorker.new.perform(project.id,
+                                          current_user.id,
+                                          project.commit(revert_commit_id).to_hash,
+                                          project.default_branch == branch)
+        end
+
+        context 'when the revert commit is mentioned in a note after the MR was merged' do
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when there is no merged_at for the MR' do
+          before do
+            subject.metrics.update!(merged_at: nil)
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when the revert commit is mentioned in a note just before the MR was merged' do
+          before do
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 30.seconds)
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when the revert commit is mentioned in a note long before the MR was merged' do
+          before do
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 2.minutes)
+          end
+
+          it 'returns true' do
+            expect(subject.can_be_reverted?(current_user)).to be_truthy
+          end
+        end
+      end
+    end
+  end
+
   describe '#participants' do
     let(:project) { create(:project, :public) }
 
@@ -1194,6 +1338,10 @@ describe MergeRequest do
 
         it 'returns false' do
           expect(subject.mergeable_state?).to be_falsey
+        end
+
+        it 'returns true when skipping discussions check' do
+          expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
         end
       end
     end
@@ -1395,8 +1543,8 @@ describe MergeRequest do
       expect { subject.reload_diff }.to change { subject.merge_request_diffs.count }.by(1)
     end
 
-    it "executs diff cache service" do
-      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+    it "executes diff cache service" do
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject, an_instance_of(MergeRequestDiff))
 
       subject.reload_diff
     end
@@ -1688,7 +1836,7 @@ describe MergeRequest do
     let(:mr_sha)        { merge_request.diff_head_sha }
 
     before do
-      project.team << [developer, :developer]
+      project.add_developer(developer)
     end
 
     context 'when autocomplete_precheck is set to true' do
@@ -1813,6 +1961,17 @@ describe MergeRequest do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
       end
     end
+
+    it 'runs a single query on the initial call, and none afterwards' do
+      expect { subject.merge_request_diff_for(merge_request_diff1.diff_refs) }
+        .not_to exceed_query_limit(1)
+
+      expect { subject.merge_request_diff_for(merge_request_diff2.diff_refs) }
+        .not_to exceed_query_limit(0)
+
+      expect { subject.merge_request_diff_for(merge_request_diff3.head_commit_sha) }
+        .not_to exceed_query_limit(0)
+    end
   end
 
   describe '#version_params_for' do
@@ -1882,6 +2041,136 @@ describe MergeRequest do
         expect(subject.head_pipeline).to eq(pipeline)
         expect(subject.merge_jid).to be_nil
       end
+    end
+  end
+
+  describe '#should_be_rebased?' do
+    let(:project) { create(:project, :repository) }
+
+    it 'returns false for the same source and target branches' do
+      merge_request = create(:merge_request, source_project: project, target_project: project)
+
+      expect(merge_request.should_be_rebased?).to be_falsey
+    end
+  end
+
+  describe '#rebase_in_progress?' do
+    shared_examples 'checking whether a rebase is in progress' do
+      let(:repo_path) { subject.source_project.repository.path }
+      let(:rebase_path) { File.join(repo_path, "gitlab-worktree", "rebase-#{subject.id}") }
+
+      before do
+        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{rebase_path} master))
+      end
+
+      it 'returns true when there is a current rebase directory' do
+        expect(subject.rebase_in_progress?).to be_truthy
+      end
+
+      it 'returns false when there is no rebase directory' do
+        FileUtils.rm_rf(rebase_path)
+
+        expect(subject.rebase_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the rebase directory has expired' do
+        time = 20.minutes.ago.to_time
+        File.utime(time, time, rebase_path)
+
+        expect(subject.rebase_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the source project has been removed' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.rebase_in_progress?).to be_falsey
+      end
+    end
+
+    context 'when Gitaly rebase_in_progress is enabled' do
+      it_behaves_like 'checking whether a rebase is in progress'
+    end
+
+    context 'when Gitaly rebase_in_progress is enabled', :disable_gitaly do
+      it_behaves_like 'checking whether a rebase is in progress'
+    end
+  end
+
+  describe '#allow_maintainer_to_push' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'fixes', allow_maintainer_to_push: true)
+    end
+
+    it 'is false when pushing by a maintainer is not possible' do
+      expect(merge_request).to receive(:maintainer_push_possible?) { false }
+
+      expect(merge_request.allow_maintainer_to_push).to be_falsy
+    end
+
+    it 'is true when pushing by a maintainer is possible' do
+      expect(merge_request).to receive(:maintainer_push_possible?) { true }
+
+      expect(merge_request.allow_maintainer_to_push).to be_truthy
+    end
+  end
+
+  describe '#maintainer_push_possible?' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'fixes')
+    end
+
+    before do
+      allow(ProtectedBranch).to receive(:protected?) { false }
+    end
+
+    it 'does not allow maintainer to push if the source project is the same as the target' do
+      merge_request.target_project = merge_request.source_project = create(:project, :public)
+
+      expect(merge_request.maintainer_push_possible?).to be_falsy
+    end
+
+    it 'allows maintainer to push when both source and target are public' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+
+      expect(merge_request.maintainer_push_possible?).to be_truthy
+    end
+
+    it 'is not available for protected branches' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+
+      expect(ProtectedBranch).to receive(:protected?)
+                                   .with(merge_request.source_project, 'fixes')
+                                   .and_return(true)
+
+      expect(merge_request.maintainer_push_possible?).to be_falsy
+    end
+  end
+
+  describe '#can_allow_maintainer_to_push?' do
+    let(:target_project) { create(:project, :public) }
+    let(:source_project) { fork_project(target_project) }
+    let(:merge_request) do
+      create(:merge_request,
+             source_project: source_project,
+             source_branch: 'fixes',
+             target_project: target_project)
+    end
+    let(:user) { create(:user) }
+
+    before do
+      allow(merge_request).to receive(:maintainer_push_possible?) { true }
+    end
+
+    it 'is false if the user does not have push access to the source project' do
+      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_falsy
+    end
+
+    it 'is true when the user has push access to the source project' do
+      source_project.add_developer(user)
+
+      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_truthy
     end
   end
 end

@@ -20,7 +20,7 @@ describe Projects::TodosController do
       context 'when authorized' do
         before do
           sign_in(user)
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'creates todo for issue' do
@@ -36,7 +36,7 @@ describe Projects::TodosController do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['count']).to eq 1
-          expect(json_response['delete_path']).to match(/\/dashboard\/todos\/\d{1}/)
+          expect(json_response['delete_path']).to match(%r{/dashboard/todos/\d{1}})
         end
       end
 
@@ -88,7 +88,7 @@ describe Projects::TodosController do
       context 'when authorized' do
         before do
           sign_in(user)
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'creates todo for merge request' do
@@ -104,7 +104,7 @@ describe Projects::TodosController do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['count']).to eq 1
-          expect(json_response['delete_path']).to match(/\/dashboard\/todos\/\d{1}/)
+          expect(json_response['delete_path']).to match(%r{/dashboard/todos/\d{1}})
         end
       end
 

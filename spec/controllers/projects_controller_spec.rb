@@ -102,7 +102,7 @@ describe ProjectsController do
         render_views
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
         end
 
@@ -288,62 +288,82 @@ describe ProjectsController do
     render_views
 
     let(:admin) { create(:admin) }
-    let(:project) { create(:project, :repository) }
 
     before do
       sign_in(admin)
     end
 
-    context 'when only renaming a project path' do
-      it "sets the repository to the right path after a rename" do
-        expect { update_project path: 'renamed_path' }
-          .to change { project.reload.path }
+    shared_examples_for 'updating a project' do
+      context 'when only renaming a project path' do
+        it "sets the repository to the right path after a rename" do
+          original_repository_path = project.repository.path
 
-        expect(project.path).to include 'renamed_path'
-        expect(assigns(:repository).path).to include project.path
+          expect { update_project path: 'renamed_path' }
+            .to change { project.reload.path }
+          expect(project.path).to include 'renamed_path'
+
+          if project.hashed_storage?(:repository)
+            expect(assigns(:repository).path).to eq(original_repository_path)
+          else
+            expect(assigns(:repository).path).to include(project.path)
+          end
+
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
+
+      context 'when project has container repositories with tags' do
+        before do
+          stub_container_registry_config(enabled: true)
+          stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+          create(:container_repository, project: project, name: :image)
+        end
+
+        it 'does not allow to rename the project' do
+          expect { update_project path: 'renamed_path' }
+            .not_to change { project.reload.path }
+
+          expect(controller).to set_flash[:alert].to(/container registry tags/)
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      it 'updates Fast Forward Merge attributes' do
+        controller.instance_variable_set(:@project, project)
+
+        params = {
+          merge_method: :ff
+        }
+
+        put :update,
+            namespace_id: project.namespace,
+            id: project.id,
+            project: params
+
         expect(response).to have_gitlab_http_status(302)
+        params.each do |param, value|
+          expect(project.public_send(param)).to eq(value)
+        end
+      end
+
+      def update_project(**parameters)
+        put :update,
+            namespace_id: project.namespace.path,
+            id: project.path,
+            project: parameters
       end
     end
 
-    context 'when project has container repositories with tags' do
-      before do
-        stub_container_registry_config(enabled: true)
-        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
-        create(:container_repository, project: project, name: :image)
-      end
+    context 'hashed storage' do
+      let(:project) { create(:project, :repository) }
 
-      it 'does not allow to rename the project' do
-        expect { update_project path: 'renamed_path' }
-          .not_to change { project.reload.path }
-
-        expect(controller).to set_flash[:alert].to(/container registry tags/)
-        expect(response).to have_gitlab_http_status(200)
-      end
+      it_behaves_like 'updating a project'
     end
 
-    it 'updates Fast Forward Merge attributes' do
-      controller.instance_variable_set(:@project, project)
+    context 'legacy storage' do
+      let(:project) { create(:project, :repository, :legacy_storage) }
 
-      params = {
-        merge_method: :ff
-      }
-
-      put :update,
-          namespace_id: project.namespace,
-          id: project.id,
-          project: params
-
-      expect(response).to have_gitlab_http_status(302)
-      params.each do |param, value|
-        expect(project.public_send(param)).to eq(value)
-      end
-    end
-
-    def update_project(**parameters)
-      put :update,
-          namespace_id: project.namespace.path,
-          id: project.path,
-          project: parameters
+      it_behaves_like 'updating a project'
     end
   end
 
@@ -437,7 +457,7 @@ describe ProjectsController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -465,7 +485,7 @@ describe ProjectsController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 

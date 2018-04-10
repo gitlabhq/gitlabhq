@@ -10,7 +10,7 @@ describe 'Issue Boards add issue modal filtering', :js do
   let!(:issue1) { create(:issue, project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
@@ -76,7 +76,7 @@ describe 'Issue Boards add issue modal filtering', :js do
     let!(:issue) { create(:issue, project: project, author: user2) }
 
     before do
-      project.team << [user2, :developer]
+      project.add_developer(user2)
 
       visit_board
     end
@@ -99,7 +99,7 @@ describe 'Issue Boards add issue modal filtering', :js do
     let!(:issue) { create(:issue, project: project, assignees: [user2]) }
 
     before do
-      project.team << [user2, :developer]
+      project.add_developer(user2)
 
       visit_board
     end

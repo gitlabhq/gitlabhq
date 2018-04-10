@@ -3,7 +3,6 @@
   transition: padding $sidebar-transition-duration;
 
   .container-fluid {
-    background: $white-light;
     padding: 0 $gl-padding;
 
     &.container-blank {
@@ -89,7 +88,6 @@
 
 .right-sidebar {
   border-left: 1px solid $border-color;
-  height: calc(100% - #{$header-height});
 }
 
 .with-performance-bar .right-sidebar.affix {
@@ -153,3 +151,4 @@
 .sidebar-collapsed-icon .sidebar-collapsed-value {
   font-size: 12px;
 }
+

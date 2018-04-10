@@ -7,8 +7,7 @@ import './header';
 import './list';
 import './footer';
 import './empty_state';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.IssuesModal = Vue.extend({
   props: {
@@ -89,7 +88,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
         page: this.page,
         per: this.perPage,
       }))
-      .then(resp => resp.json())
+      .then(res => res.data)
       .then((data) => {
         if (clearIssues) {
           this.issues = [];

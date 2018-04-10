@@ -58,6 +58,7 @@ describe('Clusters Store', () => {
 
       expect(store.state).toEqual({
         helpPath: null,
+        ingressHelpPath: null,
         status: mockResponseData.status,
         statusReason: mockResponseData.status_reason,
         applications: {
@@ -74,11 +75,19 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[1].status_reason,
             requestStatus: null,
             requestReason: null,
+            externalIp: null,
           },
           runner: {
             title: 'GitLab Runner',
             status: mockResponseData.applications[2].status,
             statusReason: mockResponseData.applications[2].status_reason,
+            requestStatus: null,
+            requestReason: null,
+          },
+          prometheus: {
+            title: 'Prometheus',
+            status: mockResponseData.applications[3].status,
+            statusReason: mockResponseData.applications[3].status_reason,
             requestStatus: null,
             requestReason: null,
           },

@@ -76,7 +76,7 @@ describe Gitlab::QuickActions::Dsl do
 
       expect(dynamic_description_def.name).to eq(:dynamic_description)
       expect(dynamic_description_def.aliases).to eq([])
-      expect(dynamic_description_def.to_h(noteable: 'issue')[:description]).to eq('A dynamic description for ISSUE')
+      expect(dynamic_description_def.to_h(OpenStruct.new(noteable: 'issue'))[:description]).to eq('A dynamic description for ISSUE')
       expect(dynamic_description_def.explanation).to eq('')
       expect(dynamic_description_def.params).to eq(['The first argument', 'The second argument'])
       expect(dynamic_description_def.condition_block).to be_nil

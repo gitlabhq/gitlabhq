@@ -6,11 +6,11 @@ describe ::Gitlab::RepoPath do
 
     context 'a repository storage path' do
       it 'parses a full repository path' do
-        expect(described_class.parse(project.repository.path)).to eq([project, false, nil])
+        expect(described_class.parse(project.repository.full_path)).to eq([project, false, nil])
       end
 
       it 'parses a full wiki path' do
-        expect(described_class.parse(project.wiki.repository.path)).to eq([project, true, nil])
+        expect(described_class.parse(project.wiki.repository.full_path)).to eq([project, true, nil])
       end
     end
 
@@ -48,8 +48,8 @@ describe ::Gitlab::RepoPath do
   describe '.strip_storage_path' do
     before do
       allow(Gitlab.config.repositories).to receive(:storages).and_return({
-        'storage1' => { 'path' => '/foo' },
-        'storage2' => { 'path' => '/bar' }
+        'storage1' => Gitlab::GitalyClient::StorageSettings.new('path' => '/foo'),
+        'storage2' => Gitlab::GitalyClient::StorageSettings.new('path' => '/bar')
       })
     end
 

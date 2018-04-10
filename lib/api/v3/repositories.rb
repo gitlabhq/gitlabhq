@@ -14,6 +14,7 @@ module API
             if errors[:project_access].any?
               error!(errors[:project_access], 422)
             end
+
             not_found!
           end
         end
@@ -74,7 +75,7 @@ module API
         end
         get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
           begin
-            send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
+            send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
           rescue
             not_found!('File')
           end

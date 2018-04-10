@@ -5,6 +5,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
   rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
+  rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -55,8 +56,15 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render plain: exception.message, status: :not_found
   end
 
+  def render_422(exception)
+    render plain: exception.message, status: :unprocessable_entity
+  end
+
   def access
-    @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities, redirected_path: redirected_path)
+    @access ||= access_klass.new(access_actor, project,
+      'http', authentication_abilities: authentication_abilities,
+              namespace_path: params[:namespace_id], project_path: project_path,
+              redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 
   def access_actor
@@ -68,10 +76,15 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     # Use the magic string '_any' to indicate we do not know what the
     # changes are. This is also what gitlab-shell does.
     access.check(git_command, '_any')
+    @project ||= access.project
   end
 
   def access_klass
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+  end
+
+  def project_path
+    @project_path ||= params[:project_id].sub(/\.git$/, '')
   end
 
   def log_user_activity

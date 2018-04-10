@@ -44,9 +44,9 @@ describe ScheduleMergeRequestLatestMergeRequestDiffIdMigrations, :migration, :si
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, merge_request_1.id, merge_request_1.id)
-        expect(described_class::MIGRATION).to be_scheduled_migration(10.minutes, merge_request_2.id, merge_request_2.id)
-        expect(described_class::MIGRATION).to be_scheduled_migration(15.minutes, merge_request_4.id, merge_request_4.id)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, merge_request_1.id, merge_request_1.id)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, merge_request_2.id, merge_request_2.id)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(15.minutes, merge_request_4.id, merge_request_4.id)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end

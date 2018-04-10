@@ -1,4 +1,7 @@
-import { bytesToKiB } from '~/lib/utils/number_utils';
+import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import '~/lib/utils/datetime_utility';
 import Job from '~/job';
@@ -6,11 +9,32 @@ import '~/breakpoints';
 
 describe('Job', () => {
   const JOB_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;
+  let mock;
+  let response;
+  let job;
+
+  function waitForPromise() {
+    return new Promise(resolve => requestAnimationFrame(resolve));
+  }
 
   preloadFixtures('builds/build-with-artifacts.html.raw');
 
   beforeEach(() => {
     loadFixtures('builds/build-with-artifacts.html.raw');
+
+    spyOn(urlUtils, 'visitUrl');
+
+    response = {};
+
+    mock = new MockAdapter(axios);
+
+    mock.onGet(new RegExp(`${JOB_URL}/trace.json?(.*)`)).reply(() => [200, response]);
+  });
+
+  afterEach(() => {
+    mock.restore();
+
+    clearTimeout(job.timeout);
   });
 
   describe('class constructor', () => {
@@ -23,15 +47,19 @@ describe('Job', () => {
     });
 
     describe('setup', () => {
-      beforeEach(function () {
-        this.job = new Job();
+      beforeEach(function (done) {
+        job = new Job();
+
+        waitForPromise()
+          .then(done)
+          .catch(done.fail);
       });
 
       it('copies build options', function () {
-        expect(this.job.pagePath).toBe(JOB_URL);
-        expect(this.job.buildStatus).toBe('success');
-        expect(this.job.buildStage).toBe('test');
-        expect(this.job.state).toBe('');
+        expect(job.pagePath).toBe(JOB_URL);
+        expect(job.buildStatus).toBe('success');
+        expect(job.buildStage).toBe('test');
+        expect(job.state).toBe('');
       });
 
       it('only shows the jobs matching the current stage', () => {
@@ -52,180 +80,166 @@ describe('Job', () => {
         expect($('.build-job[data-stage="test"]').is(':visible')).toBe(false);
         expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
       });
-
-      it('displays the remove date correctly', () => {
-        const removeDateElement = document.querySelector('.js-artifacts-remove');
-        expect(removeDateElement.innerText.trim()).toBe('1 year remaining');
-      });
     });
 
     describe('running build', () => {
-      it('updates the build trace on an interval', function () {
-        const deferred1 = $.Deferred();
-        const deferred2 = $.Deferred();
-        const deferred3 = $.Deferred();
-        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
-        spyOn(urlUtils, 'visitUrl');
-
-        deferred1.resolve({
+      it('updates the build trace on an interval', function (done) {
+        response = {
           html: '<span>Update<span>',
           status: 'running',
           state: 'newstate',
           append: true,
           complete: false,
-        });
+        };
 
-        deferred2.resolve();
+        job = new Job();
 
-        deferred3.resolve({
-          html: '<span>More</span>',
-          status: 'running',
-          state: 'finalstate',
-          append: true,
-          complete: true,
-        });
+        waitForPromise()
+          .then(() => {
+            expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
+            expect(job.state).toBe('newstate');
 
-        this.job = new Job();
-
-        expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
-        expect(this.job.state).toBe('newstate');
-
-        jasmine.clock().tick(4001);
-
-        expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
-        expect(this.job.state).toBe('finalstate');
+            response = {
+              html: '<span>More</span>',
+              status: 'running',
+              state: 'finalstate',
+              append: true,
+              complete: true,
+            };
+          })
+          .then(() => jasmine.clock().tick(4001))
+          .then(waitForPromise)
+          .then(() => {
+            expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
+            expect(job.state).toBe('finalstate');
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('replaces the entire build trace', () => {
-        const deferred1 = $.Deferred();
-        const deferred2 = $.Deferred();
-        const deferred3 = $.Deferred();
-
-        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
-
-        spyOn(urlUtils, 'visitUrl');
-
-        deferred1.resolve({
+      it('replaces the entire build trace', (done) => {
+        response = {
           html: '<span>Update<span>',
           status: 'running',
           append: false,
           complete: false,
-        });
+        };
 
-        deferred2.resolve();
+        job = new Job();
 
-        deferred3.resolve({
-          html: '<span>Different</span>',
-          status: 'running',
-          append: false,
-        });
+        waitForPromise()
+          .then(() => {
+            expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
 
-        this.job = new Job();
-
-        expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
-
-        jasmine.clock().tick(4001);
-
-        expect($('#build-trace .js-build-output').text()).not.toMatch(/Update/);
-        expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
+            response = {
+              html: '<span>Different</span>',
+              status: 'running',
+              append: false,
+            };
+          })
+          .then(() => jasmine.clock().tick(4001))
+          .then(waitForPromise)
+          .then(() => {
+            expect($('#build-trace .js-build-output').text()).not.toMatch(/Update/);
+            expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('truncated information', () => {
       describe('when size is less than total', () => {
-        it('shows information about truncated log', () => {
-          spyOn(urlUtils, 'visitUrl');
-          const deferred = $.Deferred();
-          spyOn($, 'ajax').and.returnValue(deferred.promise());
-
-          deferred.resolve({
+        it('shows information about truncated log', (done) => {
+          response = {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
             size: 50,
             total: 100,
-          });
+          };
 
-          this.job = new Job();
+          job = new Job();
 
-          expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
+          waitForPromise()
+            .then(() => {
+              expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
+            })
+            .then(done)
+            .catch(done.fail);
         });
 
-        it('shows the size in KiB', () => {
+        it('shows the size in KiB', (done) => {
           const size = 50;
-          spyOn(urlUtils, 'visitUrl');
-          const deferred = $.Deferred();
 
-          spyOn($, 'ajax').and.returnValue(deferred.promise());
-          deferred.resolve({
+          response = {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
             size,
             total: 100,
-          });
+          };
 
-          this.job = new Job();
+          job = new Job();
 
-          expect(
-            document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(size)}`);
+          waitForPromise()
+            .then(() => {
+              expect(
+                document.querySelector('.js-truncated-info-size').textContent.trim(),
+              ).toEqual(`${numberToHumanSize(size)}`);
+            })
+            .then(done)
+            .catch(done.fail);
         });
 
-        it('shows incremented size', () => {
-          const deferred1 = $.Deferred();
-          const deferred2 = $.Deferred();
-          const deferred3 = $.Deferred();
-
-          spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
-
-          spyOn(urlUtils, 'visitUrl');
-
-          deferred1.resolve({
+        it('shows incremented size', (done) => {
+          response = {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
             size: 50,
             total: 100,
-          });
+            complete: false,
+          };
 
-          deferred2.resolve();
+          job = new Job();
 
-          this.job = new Job();
+          waitForPromise()
+            .then(() => {
+              expect(
+                document.querySelector('.js-truncated-info-size').textContent.trim(),
+              ).toEqual(`${numberToHumanSize(50)}`);
 
-          expect(
-            document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(50)}`);
-
-          jasmine.clock().tick(4001);
-
-          deferred3.resolve({
-            html: '<span>Update</span>',
-            status: 'success',
-            append: true,
-            size: 10,
-            total: 100,
-          });
-
-          expect(
-            document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(60)}`);
+              response = {
+                html: '<span>Update</span>',
+                status: 'success',
+                append: true,
+                size: 10,
+                total: 100,
+                complete: true,
+              };
+            })
+            .then(() => jasmine.clock().tick(4001))
+            .then(waitForPromise)
+            .then(() => {
+              expect(
+                document.querySelector('.js-truncated-info-size').textContent.trim(),
+              ).toEqual(`${numberToHumanSize(60)}`);
+            })
+            .then(done)
+            .catch(done.fail);
         });
 
         it('renders the raw link', () => {
-          const deferred = $.Deferred();
-          spyOn(urlUtils, 'visitUrl');
-
-          spyOn($, 'ajax').and.returnValue(deferred.promise());
-          deferred.resolve({
+          response = {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
             size: 50,
             total: 100,
-          });
+          };
 
-          this.job = new Job();
+          job = new Job();
 
           expect(
             document.querySelector('.js-raw-link').textContent.trim(),
@@ -234,50 +248,50 @@ describe('Job', () => {
       });
 
       describe('when size is equal than total', () => {
-        it('does not show the trunctated information', () => {
-          const deferred = $.Deferred();
-          spyOn(urlUtils, 'visitUrl');
-
-          spyOn($, 'ajax').and.returnValue(deferred.promise());
-          deferred.resolve({
+        it('does not show the trunctated information', (done) => {
+          response = {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
             size: 100,
             total: 100,
-          });
+          };
 
-          this.job = new Job();
+          job = new Job();
 
-          expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
+          waitForPromise()
+            .then(() => {
+              expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
+            })
+            .then(done)
+            .catch(done.fail);
         });
       });
     });
 
     describe('output trace', () => {
-      beforeEach(() => {
-        const deferred = $.Deferred();
-        spyOn(urlUtils, 'visitUrl');
-
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
-        deferred.resolve({
+      beforeEach((done) => {
+        response = {
           html: '<span>Update</span>',
           status: 'success',
           append: false,
           size: 50,
           total: 100,
-        });
+        };
 
-        this.job = new Job();
+        job = new Job();
+
+        waitForPromise()
+          .then(done)
+          .catch(done.fail);
       });
 
       it('should render trace controls', () => {
         const controllers = document.querySelector('.controllers');
 
-        expect(controllers.querySelector('.js-raw-link-controller')).toBeDefined();
-        expect(controllers.querySelector('.js-erase-link')).toBeDefined();
-        expect(controllers.querySelector('.js-scroll-up')).toBeDefined();
-        expect(controllers.querySelector('.js-scroll-down')).toBeDefined();
+        expect(controllers.querySelector('.js-raw-link-controller')).not.toBeNull();
+        expect(controllers.querySelector('.js-scroll-up')).not.toBeNull();
+        expect(controllers.querySelector('.js-scroll-down')).not.toBeNull();
       });
 
       it('should render received output', () => {
@@ -290,13 +304,13 @@ describe('Job', () => {
 
   describe('getBuildTrace', () => {
     it('should request build trace with state parameter', (done) => {
-      spyOn(jQuery, 'ajax').and.callThrough();
+      spyOn(axios, 'get').and.callThrough();
       // eslint-disable-next-line no-new
-      new Job();
+      job = new Job();
 
       setTimeout(() => {
-        expect(jQuery.ajax).toHaveBeenCalledWith(
-          { url: `${JOB_URL}/trace.json`, data: { state: '' } },
+        expect(axios.get).toHaveBeenCalledWith(
+          `${JOB_URL}/trace.json`, { params: { state: '' } },
         );
         done();
       }, 0);

@@ -7,7 +7,7 @@ describe 'cycle analytics events' do
 
   describe 'GET /:namespace/:project/cycle_analytics/events/issues' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       3.times do |count|
         Timecop.freeze(Time.now + count.days) do
@@ -15,7 +15,7 @@ describe 'cycle analytics events' do
         end
       end
 
-      deploy_master
+      deploy_master(user, project)
 
       login_as(user)
     end
@@ -23,7 +23,7 @@ describe 'cycle analytics events' do
     it 'lists the issue events' do
       get project_cycle_analytics_issue_path(project, format: :json)
 
-      first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
+      first_issue_iid = project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
@@ -32,7 +32,7 @@ describe 'cycle analytics events' do
     it 'lists the plan events' do
       get project_cycle_analytics_plan_path(project, format: :json)
 
-      first_mr_short_sha = project.merge_requests.sort(:created_asc).first.commits.first.short_id
+      first_mr_short_sha = project.merge_requests.sort_by_attribute(:created_asc).first.commits.first.short_id
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['short_sha']).to eq(first_mr_short_sha)
@@ -43,7 +43,7 @@ describe 'cycle analytics events' do
 
       expect(json_response['events']).not_to be_empty
 
-      first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
+      first_mr_iid = project.merge_requests.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
@@ -58,7 +58,7 @@ describe 'cycle analytics events' do
     it 'lists the review events' do
       get project_cycle_analytics_review_path(project, format: :json)
 
-      first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
+      first_mr_iid = project.merge_requests.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
@@ -74,7 +74,7 @@ describe 'cycle analytics events' do
     it 'lists the production events' do
       get project_cycle_analytics_production_path(project, format: :json)
 
-      first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
+      first_issue_iid = project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
@@ -119,7 +119,7 @@ describe 'cycle analytics events' do
   def create_cycle
     milestone = create(:milestone, project: project)
     issue.update(milestone: milestone)
-    mr = create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}")
+    mr = create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}")
 
     pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr)
     pipeline.run
@@ -127,7 +127,7 @@ describe 'cycle analytics events' do
     create(:ci_build, pipeline: pipeline, status: :success, author: user)
     create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
-    merge_merge_requests_closing_issue(issue)
+    merge_merge_requests_closing_issue(user, project, issue)
 
     ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end

@@ -4,10 +4,7 @@ function addMousetrapClick(el, key) {
   el.addEventListener('click', () => Mousetrap.trigger(key));
 }
 
-function domContentLoaded() {
+export default () => {
   addMousetrapClick(document.querySelector('.js-trigger-shortcut'), '?');
   addMousetrapClick(document.querySelector('.js-trigger-search-bar'), 's');
-}
-
-document.addEventListener('DOMContentLoaded', domContentLoaded);
-
+};

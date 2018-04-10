@@ -17,7 +17,7 @@ describe 'User deletes files' do
 
   context 'when an user has write access' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       visit(project_tree_path_root_ref)
     end
 
@@ -37,7 +37,7 @@ describe 'User deletes files' do
 
   context 'when an user does not have write access' do
     before do
-      project2.team << [user, :reporter]
+      project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
     end
 

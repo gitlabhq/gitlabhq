@@ -2,12 +2,7 @@
 
 ![GCP landing page](img/gcp_landing.png)
 
-The fastest way to get started on [Google Cloud Platform (GCP)][gcp] is through
-the [Google Cloud Launcher][launcher] program.
-
-GitLab's official Google Launcher apps:
-1. [GitLab Community Edition](https://console.cloud.google.com/launcher/details/gitlab-public/gitlab-community-edition?project=gitlab-public)
-2. [GitLab Enterprise Edition](https://console.cloud.google.com/launcher/details/gitlab-public/gitlab-enterprise-edition?project=gitlab-public)
+Gettung started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
 
 ## Prerequisites
 
@@ -17,83 +12,51 @@ There are only two prerequisites in order to install GitLab on GCP:
 1. You need to sign up for the GCP program. If this is your first time, Google
    gives you [$300 credit for free][freetrial] to consume over a 60-day period.
 
-Once you have performed those two steps, you can visit the
-[GCP launcher console][console] which has a list of all the things you can
-deploy on GCP.
+Once you have performed those two steps, you can [create a VM](#creating-the-vm).
 
-![GCP launcher console](img/gcp_launcher_console_home_page.png)
-
-The next step is to find and install GitLab.
-
-## Configuring and deploying the VM
+## Creating the VM
 
 To deploy GitLab on GCP you need to follow five simple steps:
 
-1. Go to https://cloud.google.com/launcher and login with your Google credentials
-1. Search for GitLab from GitLab Inc. (not the same as Bitnami) and click on
-   the tile.
+1. Go to https://console.cloud.google.com/compute/instances and login with your Google credentials.
 
-    ![Search for GitLab](img/gcp_search_for_gitlab.png)
+1. Click on **Create**
 
-1. In the next page, you can see an overview of the GitLab VM as well as some
-   estimated costs. Click the **Launch on Compute Engine** button to choose the
-   hardware and network settings.
+    ![Search for GitLab](img/launch_vm.png)
 
-    ![Launch on Compute Engine](img/gcp_gitlab_overview.png)
+1.  On the next page, you can select the type of VM as well as the
+   estimated costs. Provide the name of the instance, desired datacenter, and machine type. Note that GitLab recommends at least 2 vCPU's and 4GB of RAM. 
 
-1. In the settings page you can choose things like the datacenter where your GitLab
-   server will be hosted, the number of CPUs and amount of RAM, the disk size
-   and type, etc. Read GitLab's [requirements documentation][req] for more
-   details on what to choose depending on your needs.
+    ![Launch on Compute Engine](img/vm_details.png)
 
-    ![Deploy settings](img/new_gitlab_deployment_settings.png)
+1. Click **Change** under Boot disk to select the size, type, and desired operating system. GitLab supports a [variety of linux operating systems][req], including Ubuntu and Debian. Click **Select** when finished.
 
-1. As a last step, hit **Deploy** when ready. The process will finish in a few
-   seconds.
+    ![Deploy in progress](img/boot_disk.png)
 
-    ![Deploy in progress](img/gcp_gitlab_being_deployed.png)
+1. As a last step allow HTTP and HTTPS traffic, then click **Create**. The process will finish in a few seconds.
 
+## Installing GitLab
 
-## Visiting GitLab for the first time
+After a few seconds, the instance will be created and available to log in. The next step is to install GitLab onto the instance.
 
-After a few seconds, GitLab will be successfully deployed and you should be
-able to see the IP address that Google assigned to the VM, as well as the
-credentials to the GitLab admin account.
+![Deploy settings](img/vm_created.png)
 
-![Deploy settings](img/gitlab_deployed_page.png)
+1. Make a note of the IP address of the instance, as you will need that in a later step.
+1. Click on the SSH button to connect to the instance.
+1. A new window will appear, with you logged into the instance.
 
-1. Click on the IP under **Site address** to visit GitLab.
-1. Accept the self-signed certificate that Google automatically deployed in
-   order to securely reach GitLab's login page.
-1. Use the username and password that are present in the Google console page
-   to login into GitLab and click **Sign in**.
+    ![GitLab first sign in](img/ssh_terminal.png)
 
-      ![GitLab first sign in](img/gitlab_first_sign_in.png)
+1. Next, follow the instructions for installing GitLab for the operating system you choose, at https://about.gitlab.com/installation/. You can use the IP address from the step above, as the hostname.
 
-Congratulations! GitLab is now installed and you can access it via your browser,
-but we're not done yet. There are some steps you need to take in order to have
-a fully functional GitLab installation.
+1. Congratulations! GitLab is now installed and you can access it via your browser. To finish installation, open the URL in your browser and provide the initial administrator password. The username for this account is `root`.
+
+    ![GitLab first sign in](img/first_signin.png)
 
 ## Next steps
 
 These are the most important next steps to take after you installed GitLab for
 the first time.
-
-### Changing the admin password and email
-
-Google assigned a random password for the GitLab admin account and you should
-change it ASAP:
-
-1. Visit the GitLab admin page through the link in the Google console under
-   **Admin URL**.
-1. Find the Administrator user under the **Users** page and hit **Edit**.
-1. Change the email address to a real one and enter a new password.
-
-    ![Change GitLab admin password](img/change_admin_passwd_email.png)
-
-1. Hit **Save changes** for the changes to take effect.
-1. After changing the password, you will be signed out from GitLab. Use the
-   new credentials to login again.
 
 ### Assigning a static IP
 
@@ -112,7 +75,7 @@ here's how you configure GitLab to be aware of the change:
 1. SSH into the VM. You can easily use the **SSH** button in the Google console
    and a new window will pop up.
 
-    ![SSH button](img/ssh_via_button.png)
+    ![SSH button](img/vm_created.png)
 
      In the future you might want to set up [connecting with an SSH key][ssh]
      instead.
@@ -161,7 +124,6 @@ Kerberos, etc. Here are some documents you might be interested in reading:
 - [GitLab Pages configuration](https://docs.gitlab.com/ce/administration/pages/index.html)
 - [GitLab Container Registry configuration](https://docs.gitlab.com/ce/administration/container_registry.html)
 
-[console]: https://console.cloud.google.com/launcher "GCP launcher console"
 [freetrial]: https://console.cloud.google.com/freetrial "GCP free trial"
 [ip]: https://cloud.google.com/compute/docs/configure-instance-ip-addresses#promote_ephemeral_ip "Configuring an Instance's IP Addresses"
 [gcp]: https://cloud.google.com/ "Google Cloud Platform"

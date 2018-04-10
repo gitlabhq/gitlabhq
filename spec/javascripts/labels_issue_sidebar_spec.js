@@ -1,4 +1,8 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import IssuableContext from '~/issuable_context';
 import LabelsSelect from '~/labels_select';
 
@@ -10,33 +14,42 @@ import '~/users_select';
 
 (() => {
   let saveLabelCount = 0;
+  let mock;
+
   describe('Issue dropdown sidebar', () => {
     preloadFixtures('static/issue_sidebar_label.html.raw');
 
     beforeEach(() => {
       loadFixtures('static/issue_sidebar_label.html.raw');
+
+      mock = new MockAdapter(axios);
+
       new IssuableContext('{"id":1,"name":"Administrator","username":"root"}');
       new LabelsSelect();
 
-      spyOn(jQuery, 'ajax').and.callFake((req) => {
-        const d = $.Deferred();
-        let LABELS_DATA = [];
+      mock.onGet('/root/test/labels.json').reply(() => {
+        const labels = Array(10).fill().map((_, i) => ({
+          id: i,
+          title: `test ${i}`,
+          color: '#5CB85C',
+        }));
 
-        if (req.url === '/root/test/labels.json') {
-          for (let i = 0; i < 10; i += 1) {
-            LABELS_DATA.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
-          }
-        } else if (req.url === '/root/test/issues/2.json') {
-          const tmp = [];
-          for (let i = 0; i < saveLabelCount; i += 1) {
-            tmp.push({ id: i, title: `test ${i}`, color: '#5CB85C' });
-          }
-          LABELS_DATA = { labels: tmp };
-        }
-
-        d.resolve(LABELS_DATA);
-        return d.promise();
+        return [200, labels];
       });
+
+      mock.onPut('/root/test/issues/2.json').reply(() => {
+        const labels = Array(saveLabelCount).fill().map((_, i) => ({
+          id: i,
+          title: `test ${i}`,
+          color: '#5CB85C',
+        }));
+
+        return [200, { labels }];
+      });
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('changes collapsed tooltip when changing labels when less than 5', (done) => {

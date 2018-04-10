@@ -1,0 +1,5 @@
+---
+title: Fixed gitlab:uploads:migrate task ignoring some uploads.
+merge_request: 18082
+author:
+type: fixed

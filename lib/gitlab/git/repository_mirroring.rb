@@ -43,7 +43,7 @@ module Gitlab
         branches = []
 
         rugged.references.each("refs/remotes/#{remote_name}/*").map do |ref|
-          name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
+          name = ref.name.sub(%r{\Arefs/remotes/#{remote_name}/}, '')
 
           begin
             target_commit = Gitlab::Git::Commit.find(self, ref.target)

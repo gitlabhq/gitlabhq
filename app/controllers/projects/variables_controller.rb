@@ -1,60 +1,41 @@
 class Projects::VariablesController < Projects::ApplicationController
-  before_action :variable, only: [:show, :update, :destroy]
   before_action :authorize_admin_build!
 
-  layout 'project_settings'
-
-  def index
-    redirect_to project_settings_ci_cd_path(@project)
-  end
-
   def show
+    respond_to do |format|
+      format.json do
+        render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+      end
+    end
   end
 
   def update
-    if variable.update(variable_params)
-      redirect_to project_variables_path(project),
-                  notice: 'Variable was successfully updated.'
+    if @project.update(variables_params)
+      respond_to do |format|
+        format.json { return render_variables }
+      end
     else
-      render "show"
-    end
-  end
-
-  def create
-    @variable = project.variables.create(variable_params)
-      .present(current_user: current_user)
-
-    if @variable.persisted?
-      redirect_to project_settings_ci_cd_path(project),
-                  notice: 'Variable was successfully created.'
-    else
-      render "show"
-    end
-  end
-
-  def destroy
-    if variable.destroy
-      redirect_to project_settings_ci_cd_path(project),
-                  status: 302,
-                  notice: 'Variable was successfully removed.'
-    else
-      redirect_to project_settings_ci_cd_path(project),
-                  status: 302,
-                  notice: 'Failed to remove the variable.'
+      respond_to do |format|
+        format.json { render_error }
+      end
     end
   end
 
   private
 
-  def variable_params
-    params.require(:variable).permit(*variable_params_attributes)
+  def render_variables
+    render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+  end
+
+  def render_error
+    render status: :bad_request, json: @project.errors.full_messages
+  end
+
+  def variables_params
+    params.permit(variables_attributes: [*variable_params_attributes])
   end
 
   def variable_params_attributes
-    %i[id key value protected _destroy]
-  end
-
-  def variable
-    @variable ||= project.variables.find(params[:id]).present(current_user: current_user)
+    %i[id key secret_value protected _destroy]
   end
 end

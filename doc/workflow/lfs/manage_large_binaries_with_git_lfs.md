@@ -4,6 +4,11 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
+![Git LFS tracking status](img/lfs-icon.png)
+
+An LFS icon is shown on files tracked by Git LFS to denote if a file is stored
+as a blob or as an LFS pointer.
+
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
@@ -29,7 +34,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
   credentials store is recommended
 * Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
   to add the URL to Git config manually (see [troubleshooting](#troubleshooting))
-  
+
 >**Note**: With 8.12 GitLab added LFS support to SSH. The Git LFS communication
  still goes over HTTP, but now the SSH client passes the correct credentials
  to the Git LFS client, so no action is required by the user.
@@ -76,6 +81,74 @@ that are on the remote repository, eg. from branch `master`:
 
 ```bash
 git lfs fetch master
+```
+
+## File Locking
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35856) in GitLab 10.5.
+
+The first thing to do before using File Locking is to tell Git LFS which
+kind of files are lockable. The following command will store PNG files
+in LFS and flag them as lockable:
+
+```bash
+git lfs track "*.png" --lockable
+```
+
+After executing the above command a file named `.gitattributes` will be
+created or updated with the following content:
+
+```bash
+*.png filter=lfs diff=lfs merge=lfs -text lockable
+```
+
+You can also register a file type as lockable without using LFS
+(In order to be able to lock/unlock a file you need a remote server that implements the  LFS File Locking API),
+in order to do that you can edit the `.gitattributes` file manually:
+
+```bash
+*.pdf lockable
+```
+
+After a file type has been registered as lockable, Git LFS will make
+them readonly on the file system automatically. This means you will
+need to lock the file before editing it.
+
+### Managing Locked Files
+
+Once you're ready to edit your file you need to lock it first:
+
+```bash
+git lfs lock images/banner.png
+Locked images/banner.png
+```
+
+This will register the file as locked in your name on the server:
+
+```bash
+git lfs locks
+images/banner.png  joe   ID:123
+```
+
+Once you have pushed your changes, you can unlock the file so others can
+also edit it:
+
+```bash
+git lfs unlock images/banner.png
+```
+
+You can also unlock by id:
+
+```bash
+git lfs unlock --id=123
+```
+
+If for some reason you need to unlock a file that was not locked by you,
+you can use the `--force` flag as long as you have a `master` access on
+the project:
+
+```bash
+git lfs unlock --id=123 --force
 ```
 
 ## Troubleshooting
@@ -170,4 +243,4 @@ GitLab checks files to detect LFS pointers on push. If LFS pointers are detected
 
 Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
 
-If you are storing LFS files outside of GitLab you can disable LFS on the project by settting `lfs_enabled: false` with the [projets api](../../api/projects.md#edit-project).
+If you are storing LFS files outside of GitLab you can disable LFS on the project by settting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).

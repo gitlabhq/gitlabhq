@@ -3,23 +3,24 @@
 - page_title "CI / CD"
 
 - expanded = Rails.env.test?
+- general_expanded = @project.errors.empty? ? expanded : true
 
-%section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
   .settings-header
     %h4
       General pipelines settings
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       Update your CI/CD configuration, like job timeout or Auto DevOps.
   .settings-content
-    = render 'projects/pipelines_settings/show'
+    = render 'form'
 
 %section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Runners settings
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       Register and see your runners for this project.
@@ -29,20 +30,20 @@
 %section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Secret variables
-      = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'secret-variables'), target: '_blank'
-    %button.btn.js-settings-toggle
+      = _('Secret variables')
+      = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'secret-variables'), target: '_blank', rel: 'noopener noreferrer'
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
-    %p
+    %p.append-bottom-0
       = render "ci/variables/content"
   .settings-content
-    = render 'ci/variables/index'
+    = render 'ci/variables/index', save_endpoint: project_variables_path(@project)
 
 %section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Pipeline triggers
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will

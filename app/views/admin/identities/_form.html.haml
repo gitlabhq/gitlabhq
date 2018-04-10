@@ -4,7 +4,7 @@
   .form-group
     = f.label :provider, class: 'control-label'
     .col-sm-10
-      - values = Gitlab::OAuth::Provider.providers.map { |name| ["#{Gitlab::OAuth::Provider.label_for(name)} (#{name})", name] }
+      - values = Gitlab::Auth::OAuth::Provider.providers.map { |name| ["#{Gitlab::Auth::OAuth::Provider.label_for(name)} (#{name})", name] }
       = f.select :provider, values, { allow_blank: false }, class: 'form-control'
   .form-group
     = f.label :extern_uid, "Identifier", class: 'control-label'

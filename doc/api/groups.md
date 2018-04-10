@@ -15,6 +15,7 @@ Parameters:
 | `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned` | boolean | no | Limit to groups owned by the current user |
 
 ```
@@ -98,6 +99,7 @@ Parameters:
 | `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned` | boolean | no | Limit to groups owned by the current user |
 
 ```
@@ -145,6 +147,7 @@ Parameters:
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `starred` | boolean | no | Limit by projects starred by the current user |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:
 
@@ -204,6 +207,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
@@ -521,3 +525,7 @@ And to switch pages add:
 ```
 
 [ce-15142]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15142
+
+## Group badges
+
+Read more in the [Group Badges](group_badges.md) documentation.

@@ -13,7 +13,7 @@ feature 'issue move to another project' do
 
   context 'user does not have permission to move issue' do
     background do
-      old_project.team << [user, :guest]
+      old_project.add_guest(user)
 
       visit issue_path(issue)
     end
@@ -31,8 +31,8 @@ feature 'issue move to another project' do
     let(:cross_reference) { old_project.to_reference(new_project) }
 
     background do
-      old_project.team << [user, :reporter]
-      new_project.team << [user, :reporter]
+      old_project.add_reporter(user)
+      new_project.add_reporter(user)
 
       visit issue_path(issue)
     end
@@ -50,7 +50,7 @@ feature 'issue move to another project' do
     end
 
     scenario 'searching project dropdown', :js do
-      new_project_search.team << [user, :reporter]
+      new_project_search.add_reporter(user)
 
       find('.js-move-issue').click
       wait_for_requests
@@ -66,14 +66,14 @@ feature 'issue move to another project' do
     context 'user does not have permission to move the issue to a project', :js do
       let!(:private_project) { create(:project, :private) }
       let(:another_project) { create(:project) }
-      background { another_project.team << [user, :guest] }
+      background { another_project.add_guest(user) }
 
       scenario 'browsing projects in projects select' do
         find('.js-move-issue').click
         wait_for_requests
 
         page.within '.js-sidebar-move-issue-block' do
-          expect(page).to have_content new_project.name_with_namespace
+          expect(page).to have_content new_project.full_name
         end
       end
     end

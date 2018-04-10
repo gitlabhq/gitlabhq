@@ -1,5 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, object-shorthand, consistent-return, no-unused-vars, comma-dangle, vars-on-top, prefer-template, max-len */
+
+import $ from 'jquery';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import axios from './lib/utils/axios_utils';
 
 export default class Compare {
   constructor(opts) {
@@ -12,7 +15,7 @@ export default class Compare {
         $dropdown = $(dropdown);
         return $dropdown.glDropdown({
           selectable: true,
-          fieldName: $dropdown.data('field-name'),
+          fieldName: $dropdown.data('fieldName'),
           filterable: true,
           id: function(obj, $el) {
             return $el.data('id');
@@ -41,17 +44,14 @@ export default class Compare {
   }
 
   getTargetProject() {
-    return $.ajax({
-      url: this.opts.targetProjectUrl,
-      data: {
-        target_project_id: $("input[name='merge_request[target_project_id]']").val()
+    $('.mr_target_commit').empty();
+
+    return axios.get(this.opts.targetProjectUrl, {
+      params: {
+        target_project_id: $("input[name='merge_request[target_project_id]']").val(),
       },
-      beforeSend: function() {
-        return $('.mr_target_commit').empty();
-      },
-      success: function(html) {
-        return $('.js-target-branch-dropdown .dropdown-content').html(html);
-      }
+    }).then(({ data }) => {
+      $('.js-target-branch-dropdown .dropdown-content').html(data);
     });
   }
 
@@ -68,22 +68,19 @@ export default class Compare {
     });
   }
 
-  static sendAjax(url, loading, target, data) {
-    var $target;
-    $target = $(target);
-    return $.ajax({
-      url: url,
-      data: data,
-      beforeSend: function() {
-        loading.show();
-        return $target.empty();
-      },
-      success: function(html) {
-        loading.hide();
-        $target.html(html);
-        var className = '.' + $target[0].className.replace(' ', '.');
-        localTimeAgo($('.js-timeago', className));
-      }
+  static sendAjax(url, loading, target, params) {
+    const $target = $(target);
+
+    loading.show();
+    $target.empty();
+
+    return axios.get(url, {
+      params,
+    }).then(({ data }) => {
+      loading.hide();
+      $target.html(data);
+      const className = '.' + $target[0].className.replace(' ', '.');
+      localTimeAgo($('.js-timeago', className));
     });
   }
 }

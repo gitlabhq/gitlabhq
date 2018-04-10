@@ -1,5 +1,9 @@
 /* global ace */
 
+import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
+import createFlash from '~/flash';
+import { __ } from '~/locale';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 
 export default class EditBlob {
@@ -56,12 +60,14 @@ export default class EditBlob {
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();
-      return $.post(currentLink.data('preview-url'), {
+      axios.post(currentLink.data('previewUrl'), {
         content: this.editor.getValue(),
-      }, (response) => {
-        currentPane.empty().append(response);
-        return currentPane.renderGFM();
-      });
+      })
+      .then(({ data }) => {
+        currentPane.empty().append(data);
+        currentPane.renderGFM();
+      })
+      .catch(() => createFlash(__('An error occurred previewing the blob')));
     }
 
     this.$toggleButton.show();

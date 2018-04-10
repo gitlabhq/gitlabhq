@@ -26,8 +26,8 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
     before do
       allow_any_instance_of(Project).to receive(:commit).and_return(commit)
 
-      allow(Rugged::Commit).to receive(:extract_signature)
-        .with(Rugged::Repository, commit_sha)
+      allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+        .with(Gitlab::Git::Repository, commit_sha)
         .and_return(signature)
     end
 

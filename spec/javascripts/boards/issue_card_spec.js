@@ -1,17 +1,16 @@
 /* global ListAssignee */
 /* global ListLabel */
-/* global listObj */
 /* global ListIssue */
 
 import Vue from 'vue';
 
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/stores/boards_store';
 import '~/boards/components/issue_card_inner';
-import './mock_data';
+import { listObj } from './mock_data';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({
@@ -42,10 +41,15 @@ describe('Issue card component', () => {
       confidential: false,
       labels: [list.label],
       assignees: [],
+      reference_path: '#1',
+      real_path: '/test/1',
     });
 
     component = new Vue({
       el: document.querySelector('.test-container'),
+      components: {
+        'issue-card': gl.issueBoards.IssueCardInner,
+      },
       data() {
         return {
           list,
@@ -53,9 +57,6 @@ describe('Issue card component', () => {
           issueLinkBase: '/test',
           rootPath: '/',
         };
-      },
-      components: {
-        'issue-card': gl.issueBoards.IssueCardInner,
       },
       template: `
         <issue-card

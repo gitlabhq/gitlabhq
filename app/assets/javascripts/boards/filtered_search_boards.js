@@ -1,9 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import FilteredSearchContainer from '../filtered_search/container';
+import FilteredSearchManager from '../filtered_search/filtered_search_manager';
 
-export default class FilteredSearchBoards extends gl.FilteredSearchManager {
+export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
-    super('boards');
+    super({
+      page: 'boards',
+      isGroupDecendent: true,
+      stateFiltersSelector: '.issues-state-filters',
+    });
 
     this.store = store;
     this.updateUrl = updateUrl;

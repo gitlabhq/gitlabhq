@@ -2,15 +2,18 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
+    include RedisCacheable
+    include ChronicDurationAttribute
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
+    UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :projects, through: :runner_projects
+    has_many :projects, -> { auto_include(false) }, through: :runner_projects
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -46,6 +49,14 @@ module Ci
       not_protected: 0,
       ref_protected: 1
     }
+
+    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
+
+    chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
+
+    validates :maximum_timeout, allow_nil: true,
+                                numericality: { greater_than_or_equal_to: 600,
+                                                message: 'needs to be at least 10 minutes' }
 
     # Searches for runners matching the given query.
     #
@@ -128,11 +139,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_RUNNER_ID', value: id.to_s, public: true },
-        { key: 'CI_RUNNER_DESCRIPTION', value: description, public: true },
-        { key: 'CI_RUNNER_TAGS', value: tag_list.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_RUNNER_ID', value: id.to_s)
+        .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
+        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_s)
     end
 
     def tick_runner_queue
@@ -152,6 +162,18 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
+    def update_cached_info(values)
+      values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
+      values[:contacted_at] = Time.now
+
+      cache_attributes(values)
+
+      if persist_cached_data?
+        self.assign_attributes(values)
+        self.save if self.changed?
+      end
+    end
+
     private
 
     def cleanup_runner_queue
@@ -162,6 +184,17 @@ module Ci
 
     def runner_queue_key
       "runner:build_queue:#{self.token}"
+    end
+
+    def persist_cached_data?
+      # Use a random threshold to prevent beating DB updates.
+      # It generates a distribution between [40m, 80m].
+
+      contacted_at_max_age = UPDATE_DB_RUNNER_INFO_EVERY + Random.rand(UPDATE_DB_RUNNER_INFO_EVERY)
+
+      real_contacted_at = read_attribute(:contacted_at)
+      real_contacted_at.nil? ||
+        (Time.now - real_contacted_at) >= contacted_at_max_age
     end
 
     def tag_constraints

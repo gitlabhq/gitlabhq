@@ -173,11 +173,7 @@
 }
 
 .discussion-form {
-  background-color: $white-light;
-}
-
-.discussion-form-container {
-  padding: $gl-padding-top $gl-padding $gl-padding;
+  padding-top: $gl-padding-top;
 }
 
 .discussion-notes .disabled-comment {
@@ -237,12 +233,7 @@
 .discussion-body,
 .diff-file {
   .discussion-reply-holder {
-    background-color: $white-light;
-    padding: 10px 16px;
-
-    &.is-replying {
-      padding-bottom: $gl-padding;
-    }
+    padding-top: $gl-padding;
   }
 }
 
@@ -391,10 +382,16 @@
   .dropdown-toggle {
     float: right;
 
-    .toggle-icon {
+    i {
       color: $white-light;
       padding-right: 2px;
       margin-top: 2px;
+    }
+
+    &[disabled] {
+      i {
+        color: $gl-text-color-disabled;
+      }
     }
   }
 
@@ -403,7 +400,6 @@
     bottom: 100%;
     width: 298px;
   }
-
 
   @media (max-width: $screen-xs-max) {
     display: flex;

@@ -1,93 +1,79 @@
 import Vue from 'vue';
 import navControlsComp from '~/pipelines/components/nav_controls.vue';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Pipelines Nav Controls', () => {
   let NavControlsComponent;
+  let component;
 
   beforeEach(() => {
     NavControlsComponent = Vue.extend(navControlsComp);
   });
 
+  afterEach(() => {
+    component.$destroy();
+  });
+
   it('should render link to create a new pipeline', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCiEnabled: true,
-      helpPagePath: 'foo',
       ciLintPath: 'foo',
-      canCreatePipeline: true,
+      resetCachePath: 'foo',
     };
 
-    const component = new NavControlsComponent({
-      propsData: mockData,
-    }).$mount();
+    component = mountComponent(NavControlsComponent, mockData);
 
-    expect(component.$el.querySelector('.btn-create').textContent).toContain('Run Pipeline');
-    expect(component.$el.querySelector('.btn-create').getAttribute('href')).toEqual(mockData.newPipelinePath);
+    expect(component.$el.querySelector('.js-run-pipeline').textContent).toContain('Run Pipeline');
+    expect(component.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(mockData.newPipelinePath);
   });
 
-  it('should not render link to create pipeline if no permission is provided', () => {
+  it('should not render link to create pipeline if no path is provided', () => {
     const mockData = {
-      newPipelinePath: 'foo',
-      hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
-      canCreatePipeline: false,
+      resetCachePath: 'foo',
     };
 
-    const component = new NavControlsComponent({
-      propsData: mockData,
-    }).$mount();
+    component = mountComponent(NavControlsComponent, mockData);
 
-    expect(component.$el.querySelector('.btn-create')).toEqual(null);
+    expect(component.$el.querySelector('.js-run-pipeline')).toEqual(null);
   });
 
   it('should render link for CI lint', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
-      canCreatePipeline: true,
+      resetCachePath: 'foo',
     };
 
-    const component = new NavControlsComponent({
-      propsData: mockData,
-    }).$mount();
+    component = mountComponent(NavControlsComponent, mockData);
 
-    expect(component.$el.querySelector('.btn-default').textContent).toContain('CI Lint');
-    expect(component.$el.querySelector('.btn-default').getAttribute('href')).toEqual(mockData.ciLintPath);
+    expect(component.$el.querySelector('.js-ci-lint').textContent.trim()).toContain('CI Lint');
+    expect(component.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(mockData.ciLintPath);
   });
 
-  it('should render link to help page when CI is not enabled', () => {
-    const mockData = {
-      newPipelinePath: 'foo',
-      hasCiEnabled: false,
-      helpPagePath: 'foo',
-      ciLintPath: 'foo',
-      canCreatePipeline: true,
-    };
+  describe('Reset Runners Cache', () => {
+    beforeEach(() => {
+      const mockData = {
+        newPipelinePath: 'foo',
+        ciLintPath: 'foo',
+        resetCachePath: 'foo',
+      };
 
-    const component = new NavControlsComponent({
-      propsData: mockData,
-    }).$mount();
+      component = mountComponent(NavControlsComponent, mockData);
+    });
 
-    expect(component.$el.querySelector('.btn-info').textContent).toContain('Get started with Pipelines');
-    expect(component.$el.querySelector('.btn-info').getAttribute('href')).toEqual(mockData.helpPagePath);
-  });
+    it('should render button for resetting runner caches', () => {
+      expect(component.$el.querySelector('.js-clear-cache').textContent.trim()).toContain('Clear Runner Caches');
+    });
 
-  it('should not render link to help page when CI is enabled', () => {
-    const mockData = {
-      newPipelinePath: 'foo',
-      hasCiEnabled: true,
-      helpPagePath: 'foo',
-      ciLintPath: 'foo',
-      canCreatePipeline: true,
-    };
+    it('should emit postAction event when reset runner cache button is clicked', () => {
+      spyOn(component, '$emit');
 
-    const component = new NavControlsComponent({
-      propsData: mockData,
-    }).$mount();
+      component.$el.querySelector('.js-clear-cache').click();
 
-    expect(component.$el.querySelector('.btn-info')).toEqual(null);
+      expect(component.$emit).toHaveBeenCalledWith('resetRunnersCache', 'foo');
+    });
   });
 });

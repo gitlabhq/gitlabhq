@@ -107,7 +107,6 @@
   }
 }
 
-
 .commits-compare-switch {
   float: left;
   margin-right: 9px;
@@ -179,7 +178,7 @@
 .commit-detail {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   flex-grow: 1;
 
   .merge-request-branches & {
@@ -194,36 +193,69 @@
 
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    font-size: 0;
-  }
-
-  .ci-status-link {
-    display: inline-block;
-    position: relative;
-    top: 1px;
-  }
-
-  .btn-clipboard,
-  .btn-transparent {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .btn {
-    &:not(:first-child) {
-      margin-left: $gl-padding;
+    .fa-spinner {
+      font-size: 12px;
     }
   }
 
-  .commit-sha {
-    font-size: 14px;
-    font-weight: $gl-font-weight-bold;
+  .ci-status-link {
+    display: inline-flex;
+  }
+
+  > .ci-status-link,
+  > .btn,
+  > .commit-sha-group {
+    margin-left: $gl-padding-8;
+  }
+}
+
+.commit-sha-group {
+  display: inline-flex;
+
+  .label,
+  .btn {
+    padding: $gl-vert-padding $gl-btn-padding;
+    border: 1px $border-color solid;
+    font-size: $gl-font-size;
+    line-height: $line-height-base;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .label-monospace {
+    @extend .monospace;
+    user-select: text;
+    color: $gl-text-color;
+    background-color: $gray-light;
+  }
+
+  .btn svg {
+    top: auto;
+    fill: $gl-text-color-secondary;
+  }
+
+  .fa-clipboard {
+    color: $gl-text-color-secondary;
+  }
+
+  :first-child {
+    border-bottom-left-radius: $border-radius-default;
+    border-top-left-radius: $border-radius-default;
+  }
+
+  :not(:first-child) {
+    border-left: 0;
+  }
+
+  :last-child {
+    border-bottom-right-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
   }
 }
 
 .commit,
 .generic_commit_status {
-
   a,
   button {
     color: $gl-text-color;
@@ -296,10 +328,8 @@
   }
 }
 
-
 .gpg-status-box {
   padding: 2px 10px;
-  margin-right: $gl-padding;
 
   &:empty {
     display: none;
@@ -310,8 +340,8 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $common-gray-dark);
-    border-color: $common-gray-light;
+    @include status-color($gray-dark, $gray, $gray-darkest);
+    border-color: $gray-darkest;
   }
 }
 
@@ -335,8 +365,8 @@
 
   &.invalid {
     svg {
-      border: 1px solid $common-gray-light;
-      fill: $common-gray-light;
+      border: 1px solid $gray-darkest;
+      fill: $gray-darkest;
     }
   }
 

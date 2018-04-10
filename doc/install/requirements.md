@@ -7,6 +7,7 @@
 - Ubuntu
 - Debian
 - CentOS
+- openSUSE
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
@@ -121,7 +122,7 @@ Existing users using GitLab with MySQL/MariaDB are advised to
 
 ### PostgreSQL Requirements
 
-As of GitLab 10.0, PostgreSQL 9.6 or newer (but less than 10) is required, and earlier versions are
+As of GitLab 10.0, PostgreSQL 9.6 or newer is required, and earlier versions are
 not supported. We highly recommend users to use PostgreSQL 9.6 as this
 is the PostgreSQL version used for development and testing.
 
@@ -135,6 +136,14 @@ CREATE EXTENSION pg_trgm;
 
 On some systems you may need to install an additional package (e.g.
 `postgresql-contrib`) for this extension to become available.
+
+#### Additional requirements for GitLab Geo
+
+If you are using [GitLab Geo](https://docs.gitlab.com/ee/development/geo.html), the [tracking database](https://docs.gitlab.com/ee/development/geo.html#geo-tracking-database) also requires the `postgres_fdw` extension.
+
+```
+CREATE EXTENSION postgres_fdw;
+```
 
 ## Unicorn Workers
 
@@ -191,3 +200,6 @@ use the CI features.
 We support the current and the previous major release of Firefox, Chrome/Chromium, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
+
+Note: We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
+in the future because we have features such as Issue Boards which require JavaScript extensively.

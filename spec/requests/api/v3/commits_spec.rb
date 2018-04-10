@@ -9,11 +9,11 @@ describe API::V3::Commits do
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
   let!(:another_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'another comment on a commit') }
 
-  before { project.team << [user, :reporter] }
+  before { project.add_reporter(user) }
 
   describe "List repository commits" do
     context "authorized user" do
-      before { project.team << [user2, :reporter] }
+      before { project.add_reporter(user2) }
 
       it "returns project commits" do
         commit = project.repository.commit
@@ -36,7 +36,7 @@ describe API::V3::Commits do
 
     context "since optional parameter" do
       it "returns project commits since provided parameter" do
-        commits = project.repository.commits("master")
+        commits = project.repository.commits("master", limit: 2)
         since = commits.second.created_at
 
         get v3_api("/projects/#{project.id}/repository/commits?since=#{since.utc.iso8601}", user)
@@ -49,12 +49,12 @@ describe API::V3::Commits do
 
     context "until optional parameter" do
       it "returns project commits until provided parameter" do
-        commits = project.repository.commits("master")
+        commits = project.repository.commits("master", limit: 20)
         before = commits.second.created_at
 
         get v3_api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-        if commits.size >= 20
+        if commits.size == 20
           expect(json_response.size).to eq(20)
         else
           expect(json_response.size).to eq(commits.size - 1)
@@ -403,6 +403,33 @@ describe API::V3::Commits do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq("created")
       end
+
+      context 'when stat param' do
+        let(:project_id) { project.id }
+        let(:commit_id) { project.repository.commit.id }
+        let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}" }
+
+        it 'is not present return stats by default' do
+          get v3_api(route, user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'stats'
+        end
+
+        it "is false it does not include stats" do
+          get v3_api(route, user), stats: false
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).not_to include 'stats'
+        end
+
+        it "is true it includes stats" do
+          get v3_api(route, user), stats: true
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'stats'
+        end
+      end
     end
 
     context "unauthorized user" do
@@ -415,7 +442,7 @@ describe API::V3::Commits do
 
   describe "Get the diff of a commit" do
     context "authorized user" do
-      before { project.team << [user2, :reporter] }
+      before { project.add_reporter(user2) }
 
       it "returns the diff of the selected commit" do
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
@@ -487,7 +514,7 @@ describe API::V3::Commits do
       end
 
       it 'returns 400 if you are not allowed to push to the target branch' do
-        project.team << [user2, :developer]
+        project.add_developer(user2)
         protected_branch = create(:protected_branch, project: project, name: 'feature')
 
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name

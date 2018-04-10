@@ -4,9 +4,6 @@ module IssuesAction
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues
-    @finder_type = IssuesFinder
-    @label = finder.labels.first
-
     @issues = issuables_collection
               .non_archived
               .page(params[:page])
@@ -19,4 +16,11 @@ module IssuesAction
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  private
+
+  def finder_type
+    (super if defined?(super)) ||
+      (IssuesFinder if action_name == 'issues')
+  end
 end

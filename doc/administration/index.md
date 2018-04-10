@@ -1,8 +1,18 @@
 # Administrator documentation
 
 Learn how to administer your GitLab instance (Community Edition and
-[Enterprise Editions](https://about.gitlab.com/gitlab-ee/)).
+Enterprise Edition).
 Regular users don't have access to GitLab administration tools and settings.
+
+GitLab has two product distributions: the open source
+[GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
+and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
+available through [different subscriptions](https://about.gitlab.com/products/).
+
+You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
+but the features you'll have access to depend on the subscription you choose
+(Core, Starter, Premium, or Ultimate). GitLab Community Edition installations
+only have access to Core features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
@@ -29,6 +39,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
+- [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 
 #### Customizing GitLab's appearance
 
@@ -69,10 +80,17 @@ created in snippets, wikis, and repos.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-- [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
-  - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
+- [Incoming email](incoming_email.md): Configure incoming emails to allow
+  users to [reply by email], create [issues by email] and
+  [merge requests by email], and to enable [Service Desk].
+  - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
+  basic Postfix mail server with IMAP authentication on Ubuntu for incoming
+  emails.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
+
+[reply by email]: reply_by_email.md
+[issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
+[merge requests by email]: ../user/project/merge_requests/index.md#create-new-merge-requests-by-email
 
 ## Project settings
 
@@ -93,6 +111,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD admin settings](../user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration time.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
+- [Job traces](job_traces.md): Information about the job traces (logs).
 - [Artifacts size and expiration](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size): Define maximum artifacts limits and expiration date.
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for Shared Runners.

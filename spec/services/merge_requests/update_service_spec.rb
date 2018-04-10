@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::UpdateService, :mailer do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -12,13 +14,14 @@ describe MergeRequests::UpdateService, :mailer do
     create(:merge_request, :simple, title: 'Old title',
                                     description: "FYI #{user2.to_reference}",
                                     assignee_id: user3.id,
-                                    source_project: project)
+                                    source_project: project,
+                                    author: create(:user))
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -356,8 +359,8 @@ describe MergeRequests::UpdateService, :mailer do
       let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
       before do
-        project.team << [non_subscriber, :developer]
-        project.team << [subscriber, :developer]
+        project.add_developer(non_subscriber)
+        project.add_developer(subscriber)
       end
 
       it 'sends notifications for subscribers of newly added labels' do
@@ -536,6 +539,41 @@ describe MergeRequests::UpdateService, :mailer do
     include_examples 'issuable update service' do
       let(:open_issuable) { merge_request }
       let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
+    end
+
+    context 'setting `allow_maintainer_to_push`' do
+      let(:target_project) { create(:project, :public) }
+      let(:source_project) { fork_project(target_project) }
+      let(:user) { create(:user) }
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: source_project,
+               source_branch: 'fixes',
+               target_project: target_project)
+      end
+
+      before do
+        allow(ProtectedBranch).to receive(:protected?).with(source_project, 'fixes') { false }
+      end
+
+      it 'does not allow a maintainer of the target project to set `allow_maintainer_to_push`' do
+        target_project.add_developer(user)
+
+        update_merge_request(allow_maintainer_to_push: true, title: 'Updated title')
+
+        expect(merge_request.title).to eq('Updated title')
+        expect(merge_request.allow_maintainer_to_push).to be_falsy
+      end
+
+      it 'is allowed by a user that can push to the source and can update the merge request' do
+        merge_request.update!(assignee: user)
+        source_project.add_developer(user)
+
+        update_merge_request(allow_maintainer_to_push: true, title: 'Updated title')
+
+        expect(merge_request.title).to eq('Updated title')
+        expect(merge_request.allow_maintainer_to_push).to be_truthy
+      end
     end
   end
 end

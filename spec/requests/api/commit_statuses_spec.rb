@@ -142,6 +142,7 @@ describe API::CommitStatuses do
               expect(json_response['ref']).not_to be_empty
               expect(json_response['target_url']).to be_nil
               expect(json_response['description']).to be_nil
+
               if status == 'failed'
                 expect(CommitStatus.find(json_response['id'])).to be_api_failure
               end

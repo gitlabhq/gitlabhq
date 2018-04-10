@@ -1,5 +1,7 @@
-/* eslint-disable func-names, no-new, space-before-function-paren, one-var,
-   promise/catch-or-return */
+/* eslint-disable func-names, no-new, space-before-function-paren, one-var, promise/catch-or-return, max-len */
+
+import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
 import CreateLabelDropdown from '../../create_label';
 
@@ -24,13 +26,13 @@ $(document).off('created.label').on('created.label', (e, label) => {
 gl.issueBoards.newListDropdownInit = () => {
   $('.js-new-board-list').each(function () {
     const $this = $(this);
-    new CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('namespace-path'), $this.data('project-path'));
+    new CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('namespacePath'), $this.data('projectPath'));
 
     $this.glDropdown({
       data(term, callback) {
-        $.get($this.attr('data-list-labels-path'))
-          .then((resp) => {
-            callback(resp);
+        axios.get($this.attr('data-list-labels-path'))
+          .then(({ data }) => {
+            callback(data);
           });
       },
       renderRow (label) {

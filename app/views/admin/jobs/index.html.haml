@@ -7,9 +7,13 @@
     - build_path_proc = ->(scope) { admin_jobs_path(scope: scope) }
     = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
-    .nav-controls
-      - if @all_builds.running_or_pending.any?
-        = link_to 'Cancel all', cancel_all_admin_jobs_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+    - if @all_builds.running_or_pending.any?
+      #stop-jobs-modal
+      .nav-controls
+        %button#stop-jobs-button.btn.btn-danger{ data: { toggle: 'modal',
+          target: '#stop-jobs-modal',
+          url: cancel_all_admin_jobs_path } }
+          = s_('AdminArea|Stop all jobs')
 
   .row-content-block.second-block
     #{(@scope || 'all').capitalize} jobs

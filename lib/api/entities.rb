@@ -22,6 +22,7 @@ module API
       end
 
       expose :avatar_path, if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :web_url do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
@@ -65,13 +66,13 @@ module API
     end
 
     class Hook < Grape::Entity
-      expose :id, :url, :created_at, :push_events, :tag_push_events, :repository_update_events
+      expose :id, :url, :created_at, :push_events, :tag_push_events, :merge_requests_events, :repository_update_events
       expose :enable_ssl_verification
     end
 
     class ProjectHook < Hook
-      expose :project_id, :issues_events, :merge_requests_events
-      expose :note_events, :pipeline_events, :wiki_page_events
+      expose :project_id, :issues_events, :confidential_issues_events
+      expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
 
@@ -88,6 +89,28 @@ module API
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
       expose :created_at
+    end
+
+    class ProjectExportStatus < ProjectIdentity
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :export_status
+      expose :_links, if: lambda { |project, _options| project.export_status == :finished } do
+        expose :api_url do |project|
+          expose_url(api_v4_projects_export_download_path(id: project.id))
+        end
+
+        expose :web_url do |project|
+          Gitlab::Routing.url_helpers.download_export_project_url(project)
+        end
+      end
+    end
+
+    class ProjectImportStatus < ProjectIdentity
+      expose :import_status
+
+      # TODO: Use `expose_nil` once we upgrade the grape-entity gem
+      expose :import_error, if: lambda { |status, _ops| status.import_error }
     end
 
     class BasicProjectDetails < ProjectIdentity
@@ -108,6 +131,8 @@ module API
       end
       expose :star_count, :forks_count
       expose :last_activity_at
+
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
@@ -181,6 +206,7 @@ module API
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :printing_merge_request_link_enabled
+      expose :merge_method
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
@@ -205,22 +231,15 @@ module API
       expose :build_artifacts_size, as: :job_artifacts_size
     end
 
-    class Member < UserBasic
-      expose :access_level do |user, options|
-        member = options[:member] || options[:source].members.find_by(user_id: user.id)
-        member.access_level
-      end
-      expose :expires_at do |user, options|
-        member = options[:member] || options[:source].members.find_by(user_id: user.id)
-        member.expires_at
-      end
+    class Member < Grape::Entity
+      expose :user, merge: true, using: UserBasic
+      expose :access_level
+      expose :expires_at
     end
 
-    class AccessRequester < UserBasic
-      expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:source].requesters.find_by(user_id: user.id)
-        access_requester.requested_at
-      end
+    class AccessRequester < Grape::Entity
+      expose :user, merge: true, using: UserBasic
+      expose :requested_at
     end
 
     class Group < Grape::Entity
@@ -236,6 +255,8 @@ module API
       if ::Group.supports_nested_groups?
         expose :parent_id
       end
+
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
@@ -278,9 +299,14 @@ module API
     end
 
     class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats
+      expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
+      expose :project_id
+    end
+
+    class BasicRef < Grape::Entity
+      expose :type, :name
     end
 
     class Branch < Grape::Entity
@@ -321,24 +347,20 @@ module API
       end
     end
 
-    class ProjectSnippet < Grape::Entity
+    class Snippet < Grape::Entity
       expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
-
-      expose :web_url do |snippet, options|
+      expose :project_id
+      expose :web_url do |snippet|
         Gitlab::UrlBuilder.build(snippet)
       end
     end
 
-    class PersonalSnippet < Grape::Entity
-      expose :id, :title, :file_name, :description
-      expose :author, using: Entities::UserBasic
-      expose :updated_at, :created_at
+    class ProjectSnippet < Snippet
+    end
 
-      expose :web_url do |snippet|
-        Gitlab::UrlBuilder.build(snippet)
-      end
+    class PersonalSnippet < Snippet
       expose :raw_url do |snippet|
         Gitlab::UrlBuilder.build(snippet) + "/raw"
       end
@@ -384,6 +406,7 @@ module API
 
     class IssueBasic < ProjectEntity
       expose :closed_at
+      expose :closed_by, using: Entities::UserBasic
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
@@ -475,6 +498,10 @@ module API
       expose :id
     end
 
+    class PipelineBasic < Grape::Entity
+      expose :id, :sha, :ref, :status
+    end
+
     class MergeRequestSimple < ProjectEntity
       expose :title
       expose :web_url do |merge_request, options|
@@ -507,13 +534,22 @@ module API
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_pipeline_succeeds
-      expose :merge_status
+
+      # Ideally we should deprecate `MergeRequest#merge_status` exposure and
+      # use `MergeRequest#mergeable?` instead (boolean).
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/42344 for more
+      # information.
+      expose :merge_status do |merge_request|
+        merge_request.check_if_can_be_merged
+        merge_request.merge_status
+      end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
@@ -531,6 +567,42 @@ module API
 
       expose :changes_count do |merge_request, _options|
         merge_request.merge_request_diff.real_size
+      end
+
+      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.merged_by
+      end
+
+      expose :merged_at do |merge_request, _options|
+        merge_request.metrics&.merged_at
+      end
+
+      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.latest_closed_by
+      end
+
+      expose :closed_at do |merge_request, _options|
+        merge_request.metrics&.latest_closed_at
+      end
+
+      expose :latest_build_started_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.latest_build_started_at
+      end
+
+      expose :latest_build_finished_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.latest_build_finished_at
+      end
+
+      expose :first_deployed_to_production_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.first_deployed_to_production_at
+      end
+
+      expose :pipeline, using: Entities::PipelineBasic, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.pipeline
+      end
+
+      def build_available?(options)
+        options[:project]&.feature_available?(:builds, options[:current_user])
       end
     end
 
@@ -554,11 +626,16 @@ module API
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at, :can_push
+      expose :id, :title, :key, :created_at
     end
 
     class SSHKeyWithUser < SSHKey
       expose :user, using: Entities::UserPublic
+    end
+
+    class DeployKeysProject < Grape::Entity
+      expose :deploy_key, merge: true, using: Entities::SSHKey
+      expose :can_push
     end
 
     class GPGKey < Grape::Entity
@@ -570,6 +647,7 @@ module API
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
 
       expose :id
+      expose :type
       expose :note, as: :body
       expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
@@ -579,6 +657,12 @@ module API
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
+    end
+
+    class Discussion < Grape::Entity
+      expose :id
+      expose :individual_note?, as: :individual_note
+      expose :notes, using: Entities::Note
     end
 
     class AwardEmoji < Grape::Entity
@@ -708,15 +792,13 @@ module API
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events
-      expose :tag_push_events, :note_events, :pipeline_events
+      expose :push_events, :issues_events, :confidential_issues_events
+      expose :merge_requests_events, :tag_push_events, :note_events
+      expose :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields
-          .select { |field| options[:include_passwords] || field[:type] != 'password' }
-          .map { |field| field[:name] }
-        service.properties.slice(*field_names)
+        service.properties.slice(*service.api_field_names)
       end
     end
 
@@ -790,6 +872,8 @@ module API
 
     class Board < Grape::Entity
       expose :id
+      expose :project, using: Entities::BasicProjectDetails
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
@@ -844,7 +928,7 @@ module API
     end
 
     class Tag < Grape::Entity
-      expose :name, :message
+      expose :name, :message, :target
 
       expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
@@ -861,12 +945,15 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
+      expose :status
     end
 
     class RunnerDetails < Runner
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :maximum_timeout
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
@@ -886,10 +973,6 @@ module API
 
     class JobArtifactFile < Grape::Entity
       expose :filename, :size
-    end
-
-    class PipelineBasic < Grape::Entity
-      expose :id, :sha, :ref, :status
     end
 
     class JobBasic < Grape::Entity
@@ -913,7 +996,7 @@ module API
     class Trigger < Grape::Entity
       expose :id
       expose :token, :description
-      expose :created_at, :updated_at, :deleted_at, :last_used
+      expose :created_at, :updated_at, :last_used
       expose :owner, using: Entities::UserBasic
     end
 
@@ -1039,7 +1122,7 @@ module API
       end
 
       class RunnerInfo < Grape::Entity
-        expose :timeout
+        expose :metadata_timeout, as: :timeout
       end
 
       class Step < Grape::Entity
@@ -1132,6 +1215,11 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
+      expose :verified?, as: :verified
+      expose :verification_code, as: :verification_code
+      expose :enabled_until
+
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },
@@ -1143,10 +1231,52 @@ module API
     class PagesDomain < Grape::Entity
       expose :domain
       expose :url
+      expose :verified?, as: :verified
+      expose :verification_code, as: :verification_code
+      expose :enabled_until
+
       expose :certificate,
         if: ->(pages_domain, _) { pages_domain.certificate? },
         using: PagesDomainCertificate do |pages_domain|
         pages_domain
+      end
+    end
+
+    class Application < Grape::Entity
+      expose :uid, as: :application_id
+      expose :redirect_uri, as: :callback_url
+    end
+
+    # Use with care, this exposes the secret
+    class ApplicationWithSecret < Application
+      expose :secret
+    end
+
+    class Blob < Grape::Entity
+      expose :basename
+      expose :data
+      expose :filename
+      expose :id
+      expose :ref
+      expose :startline
+      expose :project_id
+    end
+
+    class BasicBadgeDetails < Grape::Entity
+      expose :link_url
+      expose :image_url
+      expose :rendered_link_url do |badge, options|
+        badge.rendered_link_url(options.fetch(:project, nil))
+      end
+      expose :rendered_image_url do |badge, options|
+        badge.rendered_image_url(options.fetch(:project, nil))
+      end
+    end
+
+    class Badge < BasicBadgeDetails
+      expose :id
+      expose :kind do |badge|
+        badge.type == 'ProjectBadge' ? 'project' : 'group'
       end
     end
   end

@@ -1,10 +1,8 @@
-require 'constraints/group_url_constrainer'
-
 resources :groups, only: [:index, :new, :create] do
   post :preview_markdown
 end
 
-constraints(GroupUrlConstrainer.new) do
+constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(path: 'groups/*id',
         controller: :groups,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
@@ -14,6 +12,7 @@ constraints(GroupUrlConstrainer.new) do
       get :merge_requests, as: :merge_requests_group
       get :projects, as: :projects_group
       get :activity, as: :activity_group
+      put :transfer, as: :transfer_group
     end
 
     get '/', action: :show, as: :group_canonical
@@ -25,9 +24,10 @@ constraints(GroupUrlConstrainer.new) do
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
     namespace :settings do
       resource :ci_cd, only: [:show], controller: 'ci_cd'
+      resources :badges, only: [:index]
     end
 
-    resources :variables, only: [:index, :show, :update, :create, :destroy]
+    resource :variables, only: [:show, :update]
 
     resources :children, only: [:index]
 
@@ -35,7 +35,7 @@ constraints(GroupUrlConstrainer.new) do
       post :toggle_subscription, on: :member
     end
 
-    resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
+    resources :milestones, constraints: { id: %r{[^/]+} }, only: [:index, :show, :edit, :update, :new, :create] do
       member do
         get :merge_requests
         get :participants
@@ -52,9 +52,12 @@ constraints(GroupUrlConstrainer.new) do
 
     resources :uploads, only: [:create] do
       collection do
-        get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+        get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
       end
     end
+
+    # On CE only index and show actions are needed
+    resources :boards, only: [:index, :show]
   end
 
   scope(path: '*id',

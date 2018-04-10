@@ -16,7 +16,7 @@ module Gitlab
       when 'snippet_blobs'
         snippet_blobs.page(page).per(per_page)
       else
-        super
+        super(scope, nil, false)
       end
     end
 

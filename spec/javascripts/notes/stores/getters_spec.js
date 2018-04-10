@@ -55,4 +55,10 @@ describe('Getters Notes Store', () => {
       expect(getters.getCurrentUserLastNote(state)).toEqual(individualNote.notes[0]);
     });
   });
+
+  describe('openState', () => {
+    it('should return the issue state', () => {
+      expect(getters.openState(state)).toEqual(noteableDataMock.state);
+    });
+  });
 });

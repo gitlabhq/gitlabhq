@@ -1,9 +1,15 @@
 <script>
+  import { mapActions } from 'vuex';
+  import icon from '~/vue_shared/components/icon.vue';
   import newModal from './modal.vue';
   import upload from './upload.vue';
-  import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      icon,
+      newModal,
+      upload,
+    },
     props: {
       branch: {
         type: String,
@@ -13,42 +19,46 @@
         type: String,
         required: true,
       },
-      parent: {
-        type: Object,
-        default: null,
-      },
-    },
-    components: {
-      icon,
-      newModal,
-      upload,
     },
     data() {
       return {
         openModal: false,
         modalType: '',
+        dropdownOpen: false,
       };
     },
     methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
       createNewItem(type) {
         this.modalType = type;
-        this.toggleModalOpen();
+        this.openModal = true;
+        this.dropdownOpen = false;
       },
-      toggleModalOpen() {
-        this.openModal = !this.openModal;
+      hideModal() {
+        this.openModal = false;
+      },
+      openDropdown() {
+        this.dropdownOpen = !this.dropdownOpen;
       },
     },
   };
 </script>
 
 <template>
-  <div class="repo-new-btn pull-right">
-    <div class="dropdown">
+  <div class="ide-new-btn">
+    <div
+      class="dropdown"
+      :class="{
+        open: dropdownOpen,
+      }"
+    >
       <button
         type="button"
         class="btn btn-sm btn-default dropdown-toggle add-to-tree"
-        data-toggle="dropdown"
         aria-label="Create new file or directory"
+        @click.stop="openDropdown()"
       >
         <icon
           name="plus"
@@ -66,7 +76,7 @@
           <a
             href="#"
             role="button"
-            @click.prevent="createNewItem('blob')"
+            @click.stop.prevent="createNewItem('blob')"
           >
             {{ __('New file') }}
           </a>
@@ -75,14 +85,14 @@
           <upload
             :branch-id="branch"
             :path="path"
-            :parent="parent"
+            @create="createTempEntry"
           />
         </li>
         <li>
           <a
             href="#"
             role="button"
-            @click.prevent="createNewItem('tree')"
+            @click.stop.prevent="createNewItem('tree')"
           >
             {{ __('New directory') }}
           </a>
@@ -94,8 +104,8 @@
       :type="modalType"
       :branch-id="branch"
       :path="path"
-      :parent="parent"
-      @toggle="toggleModalOpen"
+      @hide="hideModal"
+      @create="createTempEntry"
     />
   </div>
 </template>

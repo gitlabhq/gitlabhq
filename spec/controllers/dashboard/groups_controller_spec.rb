@@ -20,4 +20,24 @@ describe Dashboard::GroupsController do
 
     expect(assigns(:groups)).to contain_exactly(member_of_group)
   end
+
+  context 'when rendering an expanded hierarchy with public groups you are not a member of', :nested_groups do
+    let!(:top_level_result) { create(:group, name: 'chef-top') }
+    let!(:top_level_a) { create(:group, name: 'top-a') }
+    let!(:sub_level_result_a) { create(:group, name: 'chef-sub-a', parent: top_level_a) }
+    let!(:other_group) { create(:group, name: 'other') }
+
+    before do
+      top_level_result.add_master(user)
+      top_level_a.add_master(user)
+    end
+
+    it 'renders only groups the user is a member of when searching hierarchy correctly' do
+      get :index, filter: 'chef', format: :json
+
+      expect(response).to have_gitlab_http_status(200)
+      all_groups = [top_level_result, top_level_a, sub_level_result_a]
+      expect(assigns(:groups)).to contain_exactly(*all_groups)
+    end
+  end
 end

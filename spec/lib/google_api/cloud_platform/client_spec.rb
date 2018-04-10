@@ -50,6 +50,30 @@ describe GoogleApi::CloudPlatform::Client do
     end
   end
 
+  describe '#projects_list' do
+    subject { client.projects_list }
+    let(:projects) { double }
+
+    before do
+      allow_any_instance_of(Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService)
+        .to receive(:fetch_all).and_return(projects)
+    end
+
+    it { is_expected.to eq(projects) }
+  end
+
+  describe '#projects_get_billing_info' do
+    subject { client.projects_get_billing_info('project') }
+    let(:billing_info) { double }
+
+    before do
+      allow_any_instance_of(Google::Apis::CloudbillingV1::CloudbillingService)
+        .to receive(:get_project_billing_info).and_return(billing_info)
+    end
+
+    it { is_expected.to eq(billing_info) }
+  end
+
   describe '#projects_zones_clusters_get' do
     subject { client.projects_zones_clusters_get(spy, spy, spy) }
     let(:gke_cluster) { double }
@@ -91,6 +115,9 @@ describe GoogleApi::CloudPlatform::Client do
               "initial_node_count": cluster_size,
               "node_config": {
                 "machine_type": machine_type
+              },
+              "legacy_abac": {
+                "enabled": true
               }
             }
           } )

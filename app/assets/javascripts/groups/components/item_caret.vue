@@ -1,5 +1,10 @@
 <script>
+import icon from '~/vue_shared/components/icon.vue';
+
 export default {
+  components: {
+    icon,
+  },
   props: {
     isGroupOpen: {
       type: Boolean,
@@ -9,7 +14,7 @@ export default {
   },
   computed: {
     iconClass() {
-      return this.isGroupOpen ? 'fa-caret-down' : 'fa-caret-right';
+      return this.isGroupOpen ? 'angle-down' : 'angle-right';
     },
   },
 };
@@ -17,9 +22,9 @@ export default {
 
 <template>
   <span class="folder-caret">
-    <i
-      :class="iconClass"
-      class="fa"
-      aria-hidden="true"/>
+    <icon
+      :size="12"
+      :name="iconClass"
+    />
   </span>
 </template>

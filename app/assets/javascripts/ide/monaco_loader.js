@@ -6,6 +6,11 @@ monacoContext.require.config({
   },
 });
 
+// ignore CDN config and use local assets path for service worker which cannot be cross-domain
+const relativeRootPath = (gon && gon.relative_url_root) || '';
+const monacoPath = `${relativeRootPath}/assets/webpack/monaco-editor/vs`;
+window.MonacoEnvironment = { getWorkerUrl: () => `${monacoPath}/base/worker/workerMain.js` };
+
 // eslint-disable-next-line no-underscore-dangle
 window.__monaco_context__ = monacoContext;
 export default monacoContext.require;

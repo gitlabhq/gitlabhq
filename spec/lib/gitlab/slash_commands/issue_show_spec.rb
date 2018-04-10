@@ -5,14 +5,15 @@ describe Gitlab::SlashCommands::IssueShow do
     let(:issue) { create(:issue, project: project) }
     let(:project) { create(:project) }
     let(:user) { issue.author }
+    let(:chat_name) { double(:chat_name, user: user) }
     let(:regex_match) { described_class.match("issue show #{issue.iid}") }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     subject do
-      described_class.new(project, user).execute(regex_match)
+      described_class.new(project, chat_name).execute(regex_match)
     end
 
     context 'the issue exists' do

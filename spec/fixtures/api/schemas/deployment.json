@@ -1,0 +1,45 @@
+{
+    "additionalProperties": false,
+    "properties": {
+        "created_at": {
+            "type": "string"
+        },
+        "id": {
+            "type": "integer"
+        },
+        "iid": {
+            "type": "integer"
+        },
+        "last?": {
+            "type": "boolean"
+        },
+        "ref": {
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        },
+        "sha": {
+            "type": "string"
+        },
+        "tag": {
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "sha",
+        "created_at",
+        "iid",
+        "tag",
+        "last?",
+        "ref",
+        "id"
+    ],
+    "type": "object"
+}

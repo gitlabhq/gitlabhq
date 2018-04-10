@@ -25,6 +25,24 @@ feature 'Project' do
     end
   end
 
+  describe 'shows tip about push to create git command' do
+    let(:user)    { create(:user) }
+
+    before do
+      sign_in user
+      visit new_project_path
+    end
+
+    it 'shows the command in a popover', :js do
+      page.within '.profile-settings-sidebar' do
+        click_link 'Show command'
+      end
+
+      expect(page).to have_css('.popover .push-to-create-popover #push_to_create_tip')
+      expect(page).to have_content 'Private projects can be created in your personal namespace with:'
+    end
+  end
+
   describe 'description' do
     let(:project) { create(:project, :repository) }
     let(:path)    { project_path(project) }
@@ -128,18 +146,18 @@ feature 'Project' do
   end
 
   describe 'removal', :js do
-    let(:user)    { create(:user, username: 'test', name: 'test') }
-    let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, namespace: user.namespace) }
 
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
       visit edit_project_path(project)
     end
 
     it 'removes a project' do
-      expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
-      expect(page).to have_content "Project 'test / project1' is in the process of being deleted."
+      expect { remove_with_confirm('Remove project', project.path) }.to change { Project.count }.by(-1)
+      expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty
@@ -151,7 +169,7 @@ feature 'Project' do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit project_path(project)
     end
@@ -180,7 +198,7 @@ feature 'Project' do
     let(:project) { create(:project, :repository) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit project_path(project)
     end

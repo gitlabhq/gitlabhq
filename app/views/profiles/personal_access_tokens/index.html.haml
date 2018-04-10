@@ -2,8 +2,6 @@
 - page_title "Personal Access Tokens"
 - @content_class = "limit-container-width" unless fluid_layout
 
-= render 'profiles/head'
-
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
@@ -20,8 +18,10 @@
         %h5.prepend-top-0
           Your New Personal Access Token
         .form-group
-          = text_field_tag 'created-personal-access-token', @new_personal_access_token, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-personal-access-token-help-block"
-          = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left")
+          .input-group
+            = text_field_tag 'created-personal-access-token', @new_personal_access_token, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-personal-access-token-help-block"
+            %span.input-group-btn
+              = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left", class: "btn-default btn-clipboard")
           %span#created-personal-access-token-help-block.help-block.text-danger Make sure you save it - you won't be able to access it again.
 
       %hr

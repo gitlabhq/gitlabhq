@@ -1,6 +1,0 @@
----
-title: Fix pipeline status transition for single manual job. This would also fix pipeline
-  duration becuse it is depending on status transition
-merge_request: 15251
-author:
-type: fixed

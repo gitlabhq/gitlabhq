@@ -22,8 +22,7 @@ module SystemNoteService
     commits_text = "#{total_count} commit".pluralize(total_count)
 
     body = "added #{commits_text}\n\n"
-    body << existing_commit_summary(noteable, existing_commits, oldrev)
-    body << new_commit_summary(new_commits).join("\n")
+    body << commits_list(noteable, new_commits, existing_commits, oldrev)
     body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
@@ -68,21 +67,14 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_issue_assignees(issue, project, author, old_assignees)
-    body =
-      if issue.assignees.any? && old_assignees.any?
-        unassigned_users = old_assignees - issue.assignees
-        added_users = issue.assignees.to_a - old_assignees
+    unassigned_users = old_assignees - issue.assignees
+    added_users = issue.assignees.to_a - old_assignees
 
-        text_parts = []
-        text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-        text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+    text_parts = []
+    text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
+    text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
 
-        text_parts.join(' and ')
-      elsif old_assignees.any?
-        "removed assignee"
-      elsif issue.assignees.any?
-        "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
-      end
+    body = text_parts.join(' and ')
 
     create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
   end
@@ -437,7 +429,7 @@ module SystemNoteService
   def cross_reference(noteable, mentioner, author)
     return if cross_reference_disallowed?(noteable, mentioner)
 
-    gfm_reference = mentioner.gfm_reference(noteable.project)
+    gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
     body = cross_reference_note_content(gfm_reference)
 
     if noteable.is_a?(ExternalIssue)
@@ -488,7 +480,7 @@ module SystemNoteService
   # Returns an Array of Strings
   def new_commit_summary(new_commits)
     new_commits.collect do |commit|
-      "* #{commit.short_id} - #{escape_html(commit.title)}"
+      content_tag('li', "#{commit.short_id} - #{commit.title}")
     end
   end
 
@@ -590,7 +582,7 @@ module SystemNoteService
       text = "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
       notes.where('(note LIKE ? OR note LIKE ?)', text, text.capitalize)
     else
-      gfm_reference = mentioner.gfm_reference(noteable.project)
+      gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
       text = cross_reference_note_content(gfm_reference)
       notes.where(note: [text, text.capitalize])
     end
@@ -609,6 +601,16 @@ module SystemNoteService
 
   def cross_reference_note_content(gfm_reference)
     "#{cross_reference_note_prefix}#{gfm_reference}"
+  end
+
+  # Builds a list of existing and new commits according to existing_commits and
+  # new_commits methods.
+  # Returns a String wrapped in `ul` and `li` tags.
+  def commits_list(noteable, new_commits, existing_commits, oldrev)
+    existing_commit_summary = existing_commit_summary(noteable, existing_commits, oldrev)
+    new_commit_summary = new_commit_summary(new_commits).join
+
+    content_tag('ul', "#{existing_commit_summary}#{new_commit_summary}".html_safe)
   end
 
   # Build a single line summarizing existing commits being added in a merge
@@ -647,11 +649,8 @@ module SystemNoteService
     branch = noteable.target_branch
     branch = "#{noteable.target_project_namespace}:#{branch}" if noteable.for_fork?
 
-    "* #{commit_ids} - #{commits_text} from branch `#{branch}`\n"
-  end
-
-  def escape_html(text)
-    Rack::Utils.escape_html(text)
+    branch_name = content_tag('code', branch)
+    content_tag('li', "#{commit_ids} - #{commits_text} from branch #{branch_name}".html_safe)
   end
 
   def url_helpers
@@ -667,5 +666,9 @@ module SystemNoteService
       diff_id: diff_id,
       start_sha: oldrev
     )
+  end
+
+  def content_tag(*args)
+    ActionController::Base.helpers.content_tag(*args)
   end
 end

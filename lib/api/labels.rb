@@ -15,7 +15,7 @@ module API
         use :pagination
       end
       get ':id/labels' do
-        present paginate(available_labels), with: Entities::Label, current_user: current_user, project: user_project
+        present paginate(available_labels_for(user_project)), with: Entities::Label, current_user: current_user, project: user_project
       end
 
       desc 'Create a new label' do
@@ -30,7 +30,7 @@ module API
       post ':id/labels' do
         authorize! :admin_label, user_project
 
-        label = available_labels.find_by(title: params[:name])
+        label = available_labels_for(user_project).find_by(title: params[:name])
         conflict!('Label already exists') if label
 
         priority = params.delete(:priority)

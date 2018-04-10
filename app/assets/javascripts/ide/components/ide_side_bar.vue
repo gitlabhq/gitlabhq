@@ -1,62 +1,51 @@
 <script>
-import { mapState, mapActions } from 'vuex';
-import projectTree from './ide_project_tree.vue';
-import icon from '../../vue_shared/components/icon.vue';
+  import { mapState, mapGetters } from 'vuex';
+  import icon from '~/vue_shared/components/icon.vue';
+  import panelResizer from '~/vue_shared/components/panel_resizer.vue';
+  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+  import projectTree from './ide_project_tree.vue';
+  import ResizablePanel from './resizable_panel.vue';
 
-export default {
-  components: {
-    projectTree,
-    icon,
-  },
-  computed: {
-    ...mapState([
-      'projects',
-      'leftPanelCollapsed',
-    ]),
-    currentIcon() {
-      return this.leftPanelCollapsed ? 'angle-double-right' : 'angle-double-left';
+  export default {
+    components: {
+      projectTree,
+      icon,
+      panelResizer,
+      skeletonLoadingContainer,
+      ResizablePanel,
     },
-  },
-  methods: {
-    ...mapActions([
-      'setPanelCollapsedStatus',
-    ]),
-    toggleCollapsed() {
-      this.setPanelCollapsedStatus({
-        side: 'left',
-        collapsed: !this.leftPanelCollapsed,
-      });
+    computed: {
+      ...mapState([
+        'loading',
+      ]),
+      ...mapGetters([
+        'projectsWithTrees',
+      ]),
     },
-  },
-};
+  };
 </script>
 
 <template>
-  <div
-      class="multi-file-commit-panel"
-      :class="{
-        'is-collapsed': leftPanelCollapsed,
-      }"
-    >
+  <resizable-panel
+    :collapsible="false"
+    :initial-width="290"
+    side="left"
+  >
     <div class="multi-file-commit-panel-inner">
+      <template v-if="loading">
+        <div
+          class="multi-file-loading-container"
+          v-for="n in 3"
+          :key="n"
+        >
+          <skeleton-loading-container />
+        </div>
+      </template>
       <project-tree
-        v-for="(project, index) in projects"
+        v-for="project in projectsWithTrees"
         :key="project.id"
-        :project="project"/>
-    </div>
-    <button
-      type="button"
-      class="btn btn-transparent left-collapse-btn"
-      @click="toggleCollapsed"
-    >
-      <icon
-        :name="currentIcon"
-        :size="18"
+        :project="project"
       />
-      <span
-        v-if="!leftPanelCollapsed"
-        class="collapse-text"
-      >Collapse sidebar</span>
-    </button>
-  </div>
+    </div>
+  </resizable-panel>
 </template>

@@ -135,10 +135,36 @@ describe DiffHelper do
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">'def'</span>})
+      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">&#39;def&#39;</span>})
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">"def"</span>})
+      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">&quot;def&quot;</span>})
       expect(marked_new_line).to be_html_safe
+    end
+
+    context 'when given HTML' do
+      it 'sanitizes it' do
+        old_line = %{test.txt}
+        new_line = %{<img src=x onerror=alert(document.domain)>}
+
+        marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
+
+        expect(marked_old_line).to eq(%q{<span class="idiff left right deletion">test.txt</span>})
+        expect(marked_old_line).to be_html_safe
+        expect(marked_new_line).to eq(%q{<span class="idiff left right addition">&lt;img src=x onerror=alert(document.domain)&gt;</span>})
+        expect(marked_new_line).to be_html_safe
+      end
+
+      it 'sanitizes the entire line, not just the changes' do
+        old_line = %{<img src=x onerror=alert(document.domain)>}
+        new_line = %{<img src=y onerror=alert(document.domain)>}
+
+        marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
+
+        expect(marked_old_line).to eq(%q{&lt;img src=<span class="idiff left right deletion">x</span> onerror=alert(document.domain)&gt;})
+        expect(marked_old_line).to be_html_safe
+        expect(marked_new_line).to eq(%q{&lt;img src=<span class="idiff left right addition">y</span> onerror=alert(document.domain)&gt;})
+        expect(marked_new_line).to be_html_safe
+      end
     end
   end
 
@@ -264,6 +290,16 @@ describe DiffHelper do
       it 'includes a "view the blob" link' do
         expect(helper.diff_render_error_options(viewer)).to include(/view the blob/)
       end
+    end
+  end
+
+  context '#diff_file_path_text' do
+    it 'returns full path by default' do
+      expect(diff_file_path_text(diff_file)).to eq(diff_file.new_path)
+    end
+
+    it 'returns truncated path' do
+      expect(diff_file_path_text(diff_file, max: 10)).to eq("...open.rb")
     end
   end
 end

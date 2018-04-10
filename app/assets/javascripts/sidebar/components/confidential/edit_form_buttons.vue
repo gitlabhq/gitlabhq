@@ -1,13 +1,12 @@
 <script>
+import $ from 'jquery';
+import eventHub from '../../event_hub';
+
 export default {
   props: {
     isConfidential: {
       required: true,
       type: Boolean,
-    },
-    toggleForm: {
-      required: true,
-      type: Function,
     },
     updateConfidentialAttribute: {
       required: true,
@@ -22,6 +21,16 @@ export default {
       return !this.isConfidential;
     },
   },
+  methods: {
+    closeForm() {
+      eventHub.$emit('closeConfidentialityForm');
+      $(this.$el).trigger('hidden.gl.dropdown');
+    },
+    submitForm() {
+      this.closeForm();
+      this.updateConfidentialAttribute(this.updateConfidentialBool);
+    },
+  },
 };
 </script>
 
@@ -30,14 +39,14 @@ export default {
     <button
       type="button"
       class="btn btn-default append-right-10"
-      @click="toggleForm"
+      @click="closeForm"
     >
-      Cancel
+      {{ __('Cancel') }}
     </button>
     <button
       type="button"
       class="btn btn-close"
-      @click.prevent="updateConfidentialAttribute(updateConfidentialBool)"
+      @click.prevent="submitForm"
     >
       {{ toggleButtonText }}
     </button>

@@ -4,7 +4,7 @@ require 'carrierwave/storage/fog'
 describe GitlabUploader do
   let(:uploader_class) { Class.new(described_class) }
 
-  subject { uploader_class.new }
+  subject { uploader_class.new(double) }
 
   describe '#file_storage?' do
     context 'when file storage is used' do
@@ -27,7 +27,7 @@ describe GitlabUploader do
   describe '#file_cache_storage?' do
     context 'when file storage is used' do
       before do
-        uploader_class.cache_storage(:file)
+        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::File }
       end
 
       it { is_expected.to be_file_cache_storage }
@@ -35,7 +35,7 @@ describe GitlabUploader do
 
     context 'when is remote storage' do
       before do
-        uploader_class.cache_storage(:fog)
+        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::Fog }
       end
 
       it { is_expected.not_to be_file_cache_storage }

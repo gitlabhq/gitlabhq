@@ -135,6 +135,17 @@
   padding-top: 0;
 }
 
+.integration-settings-form {
+  .well {
+    padding: $gl-padding / 2;
+    box-shadow: none;
+  }
+
+  .svg-container {
+    max-width: 150px;
+  }
+}
+
 .token-token-container {
   #impersonation-token-token {
     width: 80%;
@@ -194,7 +205,8 @@
     }
 
     .badge {
-      font-size: inherit;
+      font-size: 12px;
+      line-height: 12px;
     }
 
     .panel-heading .badge-count {
@@ -266,5 +278,29 @@
 .doorkeeper-app-form {
   .scope-description {
     margin: 0 0 5px 17px;
+  }
+}
+
+.deprecated-service {
+  cursor: default;
+}
+
+.personal-access-tokens-never-expires-label {
+  color: $note-disabled-comment-color;
+}
+
+.created-deploy-token-container {
+  .deploy-token-field {
+    width: 90%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    margin-left: 5px;
+  }
+
+  .deploy-token-help-block {
+    display: block;
+    margin-bottom: 0;
   }
 }

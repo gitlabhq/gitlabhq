@@ -4,7 +4,7 @@ describe Projects::TransferService do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
 
   context 'namespace -> namespace' do
     before do
@@ -37,6 +37,12 @@ describe Projects::TransferService do
       transfer_project(project, user, group)
     end
 
+    it 'invalidates the user\'s personal_project_count cache' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      transfer_project(project, user, group)
+    end
+
     it 'executes system hooks' do
       transfer_project(project, user, group) do |service|
         expect(service).to receive(:execute_system_hooks)
@@ -53,6 +59,12 @@ describe Projects::TransferService do
       expect(project.repository.full_path).not_to eq(old_full_path)
       expect(project.disk_path).not_to eq(old_path)
       expect(project.disk_path).to start_with(group.path)
+    end
+
+    it 'updates project full path in .git/config' do
+      transfer_project(project, user, group)
+
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
     end
   end
 
@@ -84,6 +96,12 @@ describe Projects::TransferService do
 
       expect(Dir.exist?(original_path)).to be_truthy
       expect(original_path).to eq current_path
+    end
+
+    it 'rolls back project full path in .git/config' do
+      attempt_project_transfer
+
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
     it "doesn't send move notifications" do
@@ -134,11 +152,12 @@ describe Projects::TransferService do
 
   context 'namespace which contains orphan repository with same projects path name' do
     let(:repository_storage) { 'default' }
-    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
     before do
       group.add_owner(user)
-      unless gitlab_shell.add_repository(repository_storage, "#{group.full_path}/#{project.path}")
+
+      unless gitlab_shell.create_repository(repository_storage, "#{group.full_path}/#{project.path}")
         raise 'failed to add repository'
       end
 
@@ -201,7 +220,7 @@ describe Projects::TransferService do
   end
 
   context 'when hashed storage in use' do
-    let(:hashed_project) { create(:project, :repository, :hashed, namespace: user.namespace) }
+    let(:hashed_project) { create(:project, :repository, namespace: user.namespace) }
 
     before do
       group.add_owner(user)

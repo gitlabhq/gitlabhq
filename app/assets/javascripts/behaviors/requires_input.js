@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import '../commons/bootstrap';
 
@@ -40,7 +41,7 @@ $.fn.requiresInput = function requiresInput() {
 // based on the option selected
 function hideOrShowHelpBlock(form) {
   const selected = $('.js-select-namespace option:selected');
-  if (selected.length && selected.data('options-parent') === 'groups') {
+  if (selected.length && selected.data('optionsParent') === 'groups') {
     form.find('.help-block').hide();
   } else if (selected.length) {
     form.find('.help-block').show();

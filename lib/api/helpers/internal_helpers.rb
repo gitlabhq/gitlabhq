@@ -1,11 +1,6 @@
 module API
   module Helpers
     module InternalHelpers
-      SSH_GITALY_FEATURES = {
-        'git-receive-pack' => [:ssh_receive_pack, Gitlab::GitalyClient::MigrationStatus::OPT_IN],
-        'git-upload-pack' => [:ssh_upload_pack, Gitlab::GitalyClient::MigrationStatus::OPT_OUT]
-      }.freeze
-
       attr_reader :redirected_path
 
       def wiki?
@@ -34,18 +29,6 @@ module API
         {}
       end
 
-      def fix_git_env_repository_paths(env, repository_path)
-        if obj_dir_relative = env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence
-          env['GIT_OBJECT_DIRECTORY'] = File.join(repository_path, obj_dir_relative)
-        end
-
-        if alt_obj_dirs_relative = env['GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE'].presence
-          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = alt_obj_dirs_relative.map { |dir| File.join(repository_path, dir) }
-        end
-
-        env
-      end
-
       def log_user_activity(actor)
         commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
 
@@ -65,7 +48,19 @@ module API
         false
       end
 
+      def project_path
+        project&.path || project_path_match[:project_path]
+      end
+
+      def namespace_path
+        project&.namespace&.full_path || project_path_match[:namespace_path]
+      end
+
       private
+
+      def project_path_match
+        @project_path_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex) || {}
+      end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
@@ -102,8 +97,7 @@ module API
 
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
-        feature, status = SSH_GITALY_FEATURES[action]
-        return unless feature && Gitlab::GitalyClient.feature_enabled?(feature, status: status)
+        return unless %w[git-receive-pack git-upload-pack git-upload-archive].include?(action)
 
         {
           repository: repository.gitaly_repository,

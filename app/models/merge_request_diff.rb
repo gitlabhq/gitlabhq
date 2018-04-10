@@ -28,6 +28,9 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   scope :viewable, -> { without_state(:empty) }
+  scope :by_commit_sha, ->(sha) do
+    joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
+  end
 
   scope :recent, -> { order(id: :desc).limit(100) }
 
@@ -49,6 +52,7 @@ class MergeRequestDiff < ActiveRecord::Base
     ensure_commit_shas
     save_commits
     save_diffs
+    save
     keep_around_commits
   end
 
@@ -56,7 +60,6 @@ class MergeRequestDiff < ActiveRecord::Base
     self.start_commit_sha ||= merge_request.target_branch_sha
     self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
-    save
   end
 
   # Override head_commit_sha to keep compatibility with merge request diff
@@ -195,7 +198,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits_count
-    merge_request_diff_commits.size
+    super || merge_request_diff_commits.size
   end
 
   private
@@ -264,13 +267,16 @@ class MergeRequestDiff < ActiveRecord::Base
       new_attributes[:state] = :overflow if diff_collection.overflow?
     end
 
-    update(new_attributes)
+    assign_attributes(new_attributes)
   end
 
   def save_commits
     MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
 
-    merge_request_diff_commits.reload
+    # merge_request_diff_commits.reload is preferred way to reload associated
+    # objects but it returns cached result for some reason in this case
+    commits = merge_request_diff_commits(true)
+    self.commits_count = commits.size
   end
 
   def repository
@@ -284,7 +290,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def keep_around_commits
-    [repository, merge_request.source_project.repository].each do |repo|
+    [repository, merge_request.source_project.repository].uniq.each do |repo|
       repo.keep_around(start_commit_sha)
       repo.keep_around(head_commit_sha)
       repo.keep_around(base_commit_sha)

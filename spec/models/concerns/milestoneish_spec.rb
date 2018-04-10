@@ -24,8 +24,8 @@ describe Milestone, 'Milestoneish' do
   let(:label_3) { create(:label, title: 'label_3', project: project) }
 
   before do
-    project.team << [member, :developer]
-    project.team << [guest, :guest]
+    project.add_developer(member)
+    project.add_guest(guest)
   end
 
   describe '#sorted_issues' do

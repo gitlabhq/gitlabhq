@@ -1,4 +1,11 @@
 - breadcrumb_title "CI / CD Settings"
 - page_title "CI / CD"
 
-= render 'ci/variables/index'
+%h4
+  = _('Secret variables')
+  = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'secret-variables'), target: '_blank', rel: 'noopener noreferrer'
+
+%p
+  = render "ci/variables/content"
+
+= render 'ci/variables/index', save_endpoint: group_variables_path

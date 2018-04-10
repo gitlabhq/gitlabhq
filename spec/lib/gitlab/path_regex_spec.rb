@@ -121,7 +121,7 @@ describe Gitlab::PathRegex do
   STARTING_WITH_NAMESPACE = %r{^/\*namespace_id/:(project_)?id}
   NON_PARAM_PARTS = %r{[^:*][a-z\-_/]*}
   ANY_OTHER_PATH_PART = %r{[a-z\-_/:]*}
-  WILDCARD_SEGMENT = %r{\*}
+  WILDCARD_SEGMENT = /\*/
   let(:namespaced_wildcard_routes) do
     routes_without_format.select do |p|
       p =~ %r{#{STARTING_WITH_NAMESPACE}/#{NON_PARAM_PARTS}/#{ANY_OTHER_PATH_PART}#{WILDCARD_SEGMENT}}
@@ -194,8 +194,8 @@ describe Gitlab::PathRegex do
     end
   end
 
-  describe '.root_namespace_path_regex' do
-    subject { described_class.root_namespace_path_regex }
+  describe '.root_namespace_route_regex' do
+    subject { %r{\A#{described_class.root_namespace_route_regex}/\z} }
 
     it 'rejects top level routes' do
       expect(subject).not_to match('admin/')
@@ -318,8 +318,8 @@ describe Gitlab::PathRegex do
     end
   end
 
-  describe '.project_path_regex' do
-    subject { described_class.project_path_regex }
+  describe '.project_route_regex' do
+    subject { %r{\A#{described_class.project_route_regex}/\z} }
 
     it 'accepts top level routes' do
       expect(subject).to match('admin/')

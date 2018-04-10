@@ -1,5 +1,0 @@
----
-title: Reset todo counters when the target is deleted
-merge_request: 15807
-author:
-type: fixed

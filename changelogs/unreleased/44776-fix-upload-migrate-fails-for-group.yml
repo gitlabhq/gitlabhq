@@ -1,0 +1,5 @@
+---
+title: Fixed gitlab:uploads:migrate task failing for Groups' avatar.
+merge_request: 18088
+author:
+type: fixed

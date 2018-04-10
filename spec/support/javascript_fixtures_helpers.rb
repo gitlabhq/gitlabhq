@@ -1,6 +1,5 @@
 require 'action_dispatch/testing/test_request'
 require 'fileutils'
-require 'gitlab/popen'
 
 module JavaScriptFixturesHelpers
   include Gitlab::Popen

@@ -14,12 +14,18 @@ module Gitlab
         request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
 
-        response.flat_map do |message|
-          message.branches.map do |branch|
-            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
-            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
-          end
-        end
+        consume_find_all_branches_response(response)
+      end
+
+      def merged_branches(branch_names = [])
+        request = Gitaly::FindAllBranchesRequest.new(
+          repository: @gitaly_repo,
+          merged_only: true,
+          merged_branches: branch_names.map { |s| encode_binary(s) }
+        )
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+
+        consume_find_all_branches_response(response)
       end
 
       def default_branch_name
@@ -62,7 +68,7 @@ module Gitlab
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request)
-        consume_branches_response(response)
+        consume_find_local_branches_response(response)
       end
 
       def tags
@@ -72,7 +78,7 @@ module Gitlab
       end
 
       def ref_exists?(ref_name)
-        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: GitalyClient.encode(ref_name))
+        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: encode_binary(ref_name))
         response = GitalyClient.call(@storage, :ref_service, :ref_exists, request)
         response.value
       rescue GRPC::InvalidArgument => e
@@ -82,7 +88,7 @@ module Gitlab
       def find_branch(branch_name)
         request = Gitaly::FindBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(branch_name)
+          name: encode_binary(branch_name)
         )
 
         response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request)
@@ -96,8 +102,8 @@ module Gitlab
       def create_branch(ref, start_point)
         request = Gitaly::CreateBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(ref),
-          start_point: GitalyClient.encode(start_point)
+          name: encode_binary(ref),
+          start_point: encode_binary(start_point)
         )
 
         response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request)
@@ -121,19 +127,48 @@ module Gitlab
       def delete_branch(branch_name)
         request = Gitaly::DeleteBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(branch_name)
+          name: encode_binary(branch_name)
         )
 
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
-      def delete_refs(except_with_prefixes:)
+      def delete_refs(refs: [], except_with_prefixes: [])
         request = Gitaly::DeleteRefsRequest.new(
           repository: @gitaly_repo,
-          except_with_prefix: except_with_prefixes
+          refs: refs.map { |r| encode_binary(r) },
+          except_with_prefix: except_with_prefixes.map { |r| encode_binary(r) }
         )
 
-        GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+
+        raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
+      end
+
+      # Limit: 0 implies no limit, thus all tag names will be returned
+      def tag_names_contains_sha(sha, limit: 0)
+        request = Gitaly::ListTagNamesContainingCommitRequest.new(
+          repository: @gitaly_repo,
+          commit_id: sha,
+          limit: limit
+        )
+
+        stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request)
+
+        consume_ref_contains_sha_response(stream, :tag_names)
+      end
+
+      # Limit: 0 implies no limit, thus all tag names will be returned
+      def branch_names_contains_sha(sha, limit: 0)
+        request = Gitaly::ListBranchNamesContainingCommitRequest.new(
+          repository: @gitaly_repo,
+          commit_id: sha,
+          limit: limit
+        )
+
+        stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request)
+
+        consume_ref_contains_sha_response(stream, :branch_names)
       end
 
       private
@@ -151,7 +186,7 @@ module Gitlab
         enum_value
       end
 
-      def consume_branches_response(response)
+      def consume_find_local_branches_response(response)
         response.flat_map do |message|
           message.branches.map do |gitaly_branch|
             Gitlab::Git::Branch.new(
@@ -160,6 +195,15 @@ module Gitlab
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
             )
+          end
+        end
+      end
+
+      def consume_find_all_branches_response(response)
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
+            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
           end
         end
       end
@@ -195,6 +239,13 @@ module Gitlab
         }
 
         Gitlab::Git::Commit.decorate(@repository, hash)
+      end
+
+      def consume_ref_contains_sha_response(stream, collection_name)
+        stream.each_with_object([]) do |response, array|
+          encoded_names = response.send(collection_name).map { |b| Gitlab::Git.ref_name(b) } # rubocop:disable GitlabSecurity/PublicSend
+          array.concat(encoded_names)
+        end
       end
 
       def invalid_ref!(message)

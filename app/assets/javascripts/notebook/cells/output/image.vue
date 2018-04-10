@@ -1,27 +1,26 @@
 <script>
-import Prompt from '../prompt.vue';
+  import Prompt from '../prompt.vue';
 
-export default {
-  props: {
-    outputType: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      prompt: Prompt,
     },
-    rawCode: {
-      type: String,
-      required: true,
+    props: {
+      outputType: {
+        type: String,
+        required: true,
+      },
+      rawCode: {
+        type: String,
+        required: true,
+      },
     },
-  },
-  components: {
-    prompt: Prompt,
-  },
-};
+  };
 </script>
 
 <template>
   <div class="output">
     <prompt />
-    <img
-      :src="'data:' + outputType + ';base64,' + rawCode" />
+    <img :src="'data:' + outputType + ';base64,' + rawCode" />
   </div>
 </template>

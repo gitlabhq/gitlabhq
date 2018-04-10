@@ -7,18 +7,11 @@ module Emails
       helper_method :member_source, :member
     end
 
-    def member_access_requested_email(member_source_type, member_id)
+    def member_access_requested_email(member_source_type, member_id, recipient_notification_email)
       @member_source_type = member_source_type
       @member_id = member_id
 
-      admins = member_source.members.owners_and_masters.pluck(:notification_email)
-      # A project in a group can have no explicit owners/masters, in that case
-      # we fallbacks to the group's owners/masters.
-      if admins.empty? && member_source.respond_to?(:group) && member_source.group
-        admins = member_source.group.members.owners_and_masters.pluck(:notification_email)
-      end
-
-      mail(to: admins,
+      mail(to: recipient_notification_email,
            subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))
     end
 

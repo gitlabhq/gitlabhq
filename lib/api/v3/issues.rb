@@ -134,6 +134,8 @@ module API
           use :issue_params
         end
         post ':id/issues' do
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42131')
+
           # Setting created_at time only allowed for admins and project owners
           unless current_user.admin? || user_project.owner == current_user
             params.delete(:created_at)
@@ -169,6 +171,8 @@ module API
                           :labels, :created_at, :due_date, :confidential, :state_event
         end
         put ':id/issues/:issue_id' do
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42132')
+
           issue = user_project.issues.find(params.delete(:issue_id))
           authorize! :update_issue, issue
 
@@ -201,6 +205,8 @@ module API
           requires :to_project_id, type: Integer, desc: 'The ID of the new project'
         end
         post ':id/issues/:issue_id/move' do
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42133')
+
           issue = user_project.issues.find_by(id: params[:issue_id])
           not_found!('Issue') unless issue
 

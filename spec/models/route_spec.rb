@@ -19,6 +19,13 @@ describe Route do
   end
 
   describe 'callbacks' do
+    context 'before validation' do
+      it 'calls #delete_conflicting_orphaned_routes' do
+        expect(route).to receive(:delete_conflicting_orphaned_routes)
+        route.valid?
+      end
+    end
+
     context 'after update' do
       it 'calls #create_redirect_for_old_path' do
         expect(route).to receive(:create_redirect_for_old_path)
@@ -144,43 +151,31 @@ describe Route do
     end
 
     context 'when the source is a Project' do
-      it 'creates a temporal RedirectRoute' do
+      it 'creates a RedirectRoute' do
         project = create(:project)
         route = project.route
         redirect_route = route.create_redirect('foo')
-        expect(redirect_route.permanent?).to be_falsy
+        expect(redirect_route).not_to be_nil
       end
     end
 
     context 'when the source is not a project' do
-      it 'creates a permanent RedirectRoute' do
-        redirect_route = route.create_redirect('foo', permanent: true)
-        expect(redirect_route.permanent?).to be_truthy
+      it 'creates a RedirectRoute' do
+        redirect_route = route.create_redirect('foo')
+        expect(redirect_route).not_to be_nil
       end
     end
   end
 
   describe '#delete_conflicting_redirects' do
-    context 'with permanent redirect' do
-      it 'does not delete the redirect' do
-        route.create_redirect("#{route.path}/foo", permanent: true)
+    let(:route) { create(:project).route }
 
-        expect do
-          route.delete_conflicting_redirects
-        end.not_to change { RedirectRoute.count }
-      end
-    end
+    it 'deletes the redirect' do
+      route.create_redirect("#{route.path}/foo")
 
-    context 'with temporal redirect' do
-      let(:route) { create(:project).route }
-
-      it 'deletes the redirect' do
-        route.create_redirect("#{route.path}/foo")
-
-        expect do
-          route.delete_conflicting_redirects
-        end.to change { RedirectRoute.count }.by(-1)
-      end
+      expect do
+        route.delete_conflicting_redirects
+      end.to change { RedirectRoute.count }.by(-1)
     end
 
     context 'when a redirect route with the same path exists' do
@@ -222,31 +217,18 @@ describe Route do
   end
 
   describe '#conflicting_redirects' do
+    let(:route) { create(:project).route }
+
     it 'returns an ActiveRecord::Relation' do
       expect(route.conflicting_redirects).to be_an(ActiveRecord::Relation)
     end
 
-    context 'with permanent redirects' do
-      it 'does not return anything' do
-        route.create_redirect("#{route.path}/foo", permanent: true)
-        route.create_redirect("#{route.path}/foo/bar", permanent: true)
-        route.create_redirect("#{route.path}/baz/quz", permanent: true)
+    it 'returns the redirect routes' do
+      redirect1 = route.create_redirect("#{route.path}/foo")
+      redirect2 = route.create_redirect("#{route.path}/foo/bar")
+      redirect3 = route.create_redirect("#{route.path}/baz/quz")
 
-        expect(route.conflicting_redirects).to be_empty
-      end
-    end
-
-    context 'with temporal redirects' do
-      let(:route) { create(:project).route }
-
-      it 'returns the redirect routes' do
-        route = create(:project).route
-        redirect1 = route.create_redirect("#{route.path}/foo")
-        redirect2 = route.create_redirect("#{route.path}/foo/bar")
-        redirect3 = route.create_redirect("#{route.path}/baz/quz")
-
-        expect(route.conflicting_redirects).to match_array([redirect1, redirect2, redirect3])
-      end
+      expect(route.conflicting_redirects).to match_array([redirect1, redirect2, redirect3])
     end
 
     context 'when a redirect route with the same path exists' do
@@ -281,40 +263,56 @@ describe Route do
     end
   end
 
-  describe "#conflicting_redirect_exists?" do
-    context 'when a conflicting redirect exists' do
-      let(:group1) { create(:group, path: 'foo') }
-      let(:group2) { create(:group, path: 'baz') }
+  describe '#delete_conflicting_orphaned_routes' do
+    context 'when there is a conflicting route' do
+      let!(:conflicting_group) { create(:group, path: 'foo') }
 
-      it 'should not be saved' do
-        group1.path = 'bar'
-        group1.save
-
-        group2.path = 'foo'
-
-        expect(group2.save).to be_falsy
+      before do
+        route.path = conflicting_group.route.path
       end
 
-      it 'should return an error on path' do
-        group1.path = 'bar'
-        group1.save
+      context 'when the route is orphaned' do
+        let!(:offending_route) { conflicting_group.route }
 
-        group2.path = 'foo'
-        group2.valid?
-        expect(group2.errors["route.path"].first).to eq('foo has been taken before. Please use another one')
+        before do
+          Group.delete(conflicting_group) # Orphan the route
+        end
+
+        it 'deletes the orphaned route' do
+          expect do
+            route.valid?
+          end.to change { described_class.count }.from(2).to(1)
+        end
+
+        it 'passes validation, as usual' do
+          expect(route.valid?).to be_truthy
+        end
+      end
+
+      context 'when the route is not orphaned' do
+        it 'does not delete the conflicting route' do
+          expect do
+            route.valid?
+          end.not_to change { described_class.count }
+        end
+
+        it 'fails validation, as usual' do
+          expect(route.valid?).to be_falsey
+        end
       end
     end
 
-    context 'when a conflicting redirect does not exist' do
-      let(:project1) { create(:project, path: 'foo') }
-      let(:project2) { create(:project, path: 'baz') }
+    context 'when there are no conflicting routes' do
+      it 'does not delete any routes' do
+        route
 
-      it 'should be saved' do
-        project1.path = 'bar'
-        project1.save
+        expect do
+          route.valid?
+        end.not_to change { described_class.count }
+      end
 
-        project2.path = 'foo'
-        expect(project2.save).to be_truthy
+      it 'passes validation, as usual' do
+        expect(route.valid?).to be_truthy
       end
     end
   end

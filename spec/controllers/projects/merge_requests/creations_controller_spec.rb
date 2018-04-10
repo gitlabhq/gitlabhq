@@ -4,27 +4,42 @@ describe Projects::MergeRequests::CreationsController do
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:fork_project) { create(:forked_project_with_submodules) }
+  let(:get_diff_params) do
+    {
+      namespace_id: fork_project.namespace.to_param,
+      project_id: fork_project,
+      merge_request: {
+        source_branch: 'remove-submodule',
+        target_branch: 'master'
+      }
+    }
+  end
 
   before do
-    fork_project.team << [user, :master]
-
+    fork_project.add_master(user)
+    Projects::ForkService.new(project, user).execute(fork_project)
     sign_in(user)
   end
 
   describe 'GET new' do
     context 'merge request that removes a submodule' do
-      render_views
-
       it 'renders new merge request widget template' do
-        get :new,
-            namespace_id: fork_project.namespace.to_param,
-            project_id: fork_project,
-            merge_request: {
-              source_branch: 'remove-submodule',
-              target_branch: 'master'
-            }
+        get :new, get_diff_params
 
         expect(response).to be_success
+      end
+    end
+  end
+
+  describe 'GET diffs' do
+    context 'when merge request cannot be created' do
+      it 'does not assign diffs var' do
+        allow_any_instance_of(MergeRequest).to receive(:can_be_created).and_return(false)
+
+        get :diffs, get_diff_params.merge(format: 'json')
+
+        expect(response).to be_success
+        expect(assigns[:diffs]).to be_nil
       end
     end
   end
@@ -37,14 +52,7 @@ describe Projects::MergeRequests::CreationsController do
     end
 
     it 'renders JSON including serialized pipelines' do
-      get :pipelines,
-          namespace_id: fork_project.namespace.to_param,
-          project_id: fork_project,
-          merge_request: {
-            source_branch: 'remove-submodule',
-            target_branch: 'master'
-          },
-          format: :json
+      get :pipelines, get_diff_params.merge(format: 'json')
 
       expect(response).to be_ok
       expect(json_response).to have_key 'pipelines'
@@ -86,7 +94,7 @@ describe Projects::MergeRequests::CreationsController do
       let(:other_project) { create(:project, :repository) }
 
       before do
-        other_project.team << [user, :master]
+        other_project.add_master(user)
       end
 
       context 'when the path exists in the diff' do
@@ -115,6 +123,68 @@ describe Projects::MergeRequests::CreationsController do
           expect(response).to have_gitlab_http_status(404)
         end
       end
+    end
+  end
+
+  describe 'GET #branch_to' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+    end
+
+    it 'fetches the commit if a user has access' do
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
+
+      get :branch_to,
+          namespace_id: fork_project.namespace,
+          project_id: fork_project,
+          target_project_id: project.id,
+          ref: 'master'
+
+      expect(assigns(:commit)).not_to be_nil
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'does not load the commit when the user cannot read the project' do
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
+
+      get :branch_to,
+          namespace_id: fork_project.namespace,
+          project_id: fork_project,
+          target_project_id: project.id,
+          ref: 'master'
+
+      expect(assigns(:commit)).to be_nil
+      expect(response).to have_gitlab_http_status(200)
+    end
+  end
+
+  describe 'GET #update_branches' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+    end
+
+    it 'lists the branches of another fork if the user has access' do
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
+
+      get :update_branches,
+          namespace_id: fork_project.namespace,
+          project_id: fork_project,
+          target_project_id: project.id
+
+      expect(assigns(:target_branches)).not_to be_empty
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'does not list branches when the user cannot read the project' do
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
+
+      get :update_branches,
+          namespace_id: fork_project.namespace,
+          project_id: fork_project,
+          target_project_id: project.id
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(assigns(:target_branches)).to eq([])
     end
   end
 end

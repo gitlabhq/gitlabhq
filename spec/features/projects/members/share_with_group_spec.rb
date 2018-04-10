@@ -122,7 +122,7 @@ feature 'Project > Members > Share with Group', :js do
       select2 group.id, from: '#link_group_id'
 
       fill_in 'expires_at_groups', with: (Time.now + 4.5.days).strftime('%Y-%m-%d')
-      page.find('body').click
+      click_on 'share-with-group-tab'
       find('.btn-create').click
     end
 
@@ -149,6 +149,11 @@ feature 'Project > Members > Share with Group', :js do
         create(:group).add_owner(master)
 
         visit project_settings_members_path(project)
+
+        click_link 'Share with group'
+
+        find('.ajax-groups-select.select2-container')
+
         execute_script 'GROUP_SELECT_PER_PAGE = 1;'
         open_select2 '#link_group_id'
       end

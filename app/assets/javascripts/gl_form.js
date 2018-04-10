@@ -1,8 +1,8 @@
-/* global autosize */
-
+import $ from 'jquery';
+import autosize from 'autosize';
 import GfmAutoComplete from './gfm_auto_complete';
 import dropzoneInput from './dropzone_input';
-import textUtils from './lib/utils/text_markdown';
+import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
 
 export default class GLForm {
   constructor(form, enableGFM = false) {
@@ -13,7 +13,7 @@ export default class GLForm {
     this.destroy();
     // Setup the form
     this.setupForm();
-    this.form.data('gl-form', this);
+    this.form.data('glForm', this);
   }
 
   destroy() {
@@ -22,7 +22,7 @@ export default class GLForm {
     if (this.autoComplete) {
       this.autoComplete.destroy();
     }
-    this.form.data('gl-form', null);
+    this.form.data('glForm', null);
   }
 
   setupForm() {
@@ -47,7 +47,7 @@ export default class GLForm {
     }
     // form and textarea event listeners
     this.addEventListeners();
-    textUtils.init(this.form);
+    addMarkdownListeners(this.form);
     // hide discard button
     this.form.find('.js-note-discard').hide();
     this.form.show();
@@ -86,7 +86,7 @@ export default class GLForm {
   clearEventListeners() {
     this.textarea.off('focus');
     this.textarea.off('blur');
-    textUtils.removeListeners(this.form);
+    removeMarkdownListeners(this.form);
   }
 
   addEventListeners() {

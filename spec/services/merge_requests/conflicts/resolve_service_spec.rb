@@ -111,15 +111,6 @@ describe MergeRequests::Conflicts::ResolveService do
           described_class.new(merge_request_from_fork).execute(user, params)
         end
 
-        it 'gets conflicts from the source project' do
-          # REFACTOR NOTE: We used to test that `project.repository.rugged` wasn't
-          # used in this case, but since the refactor, for simplification,
-          # we always use that repository for read only operations.
-          expect(forked_project.repository.rugged).to receive(:merge_commits).and_call_original
-
-          subject
-        end
-
         it 'creates a commit with the message' do
           subject
 
@@ -131,6 +122,17 @@ describe MergeRequests::Conflicts::ResolveService do
 
           expect(merge_request_from_fork.source_branch_head.parents.map(&:id))
             .to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813', target_head])
+        end
+
+        context 'when gitaly is disabled', :skip_gitaly_mock do
+          it 'gets conflicts from the source project' do
+            # REFACTOR NOTE: We used to test that `project.repository.rugged` wasn't
+            # used in this case, but since the refactor, for simplification,
+            # we always use that repository for read only operations.
+            expect(forked_project.repository.rugged).to receive(:merge_commits).and_call_original
+
+            subject
+          end
         end
       end
     end

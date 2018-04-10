@@ -1,6 +1,0 @@
----
-title: Provide additional cookies to JIRA service requests to allow Oracle WebGates
-  Basic Auth
-merge_request:
-author: Stanislaw Wozniak
-type: changed

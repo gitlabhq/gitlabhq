@@ -51,9 +51,10 @@ class IssuableBaseService < BaseService
     return unless milestone_id
 
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
+    group_ids = project.group&.self_and_ancestors&.pluck(:id)
 
     milestone =
-      Milestone.for_projects_and_groups([project.id], [project.group&.id]).find_by_id(milestone_id)
+      Milestone.for_projects_and_groups([project.id], group_ids).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
@@ -77,8 +78,12 @@ class IssuableBaseService < BaseService
     return unless labels
 
     params[:label_ids] = labels.split(",").map do |label_name|
-      service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
-      label   = service.execute
+      label = Labels::FindOrCreateService.new(
+        current_user,
+        parent,
+        title: label_name.strip,
+        available_labels: available_labels
+      ).execute
 
       label.try(:id)
     end.compact
@@ -102,7 +107,11 @@ class IssuableBaseService < BaseService
   end
 
   def available_labels
-    LabelsFinder.new(current_user, project_id: @project.id).execute
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: true).execute
+  end
+
+  def handle_quick_actions_on_create(issuable)
+    merge_quick_actions_into_params!(issuable)
   end
 
   def merge_quick_actions_into_params!(issuable)
@@ -127,7 +136,7 @@ class IssuableBaseService < BaseService
   end
 
   def create(issuable)
-    merge_quick_actions_into_params!(issuable)
+    handle_quick_actions_on_create(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
@@ -247,7 +256,7 @@ class IssuableBaseService < BaseService
     when 'add'
       todo_service.mark_todo(issuable, current_user)
     when 'done'
-      todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
+      todo = TodosFinder.new(current_user).find_by(target: issuable)
       todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
@@ -302,5 +311,9 @@ class IssuableBaseService < BaseService
 
   def update_project_counter_caches?(issuable)
     issuable.state_changed?
+  end
+
+  def parent
+    project
   end
 end

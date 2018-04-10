@@ -1,17 +1,29 @@
+- verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
+
 - if can?(current_user, :update_pages, @project) && @domains.any?
   .panel.panel-default
     .panel-heading
       Domains (#{@domains.count})
-    %ul.well-list
+    %ul.well-list.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
       - @domains.each do |domain|
-        %li
-          .pull-right
+        %li.pages-domain-list-item.unstyled
+          - if verification_enabled
+            - tooltip, status = domain.unverified? ? [_('Unverified'), 'failed'] : [_('Verified'), 'success']
+            .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
+              = sprite_icon("status_#{status}", size: 16 )
+          .domain-name
+            = link_to domain.url do
+              = domain.url
+              = icon('external-link')
+            - if domain.subject
+              %p
+                %span.label.label-gray Certificate: #{domain.subject}
+                - if domain.expired?
+                  %span.label.label-danger Expired
+          %div
             = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
             = link_to 'Remove', project_pages_domain_path(@project, domain), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
-          .clearfix
-            %span= link_to domain.domain, domain.url
-          %p
-            - if domain.subject
-              %span.label.label-gray Certificate: #{domain.subject}
-            - if domain.expired?
-              %span.label.label-danger Expired
+        - if verification_enabled && domain.unverified?
+          %li.warning-row
+            #{domain.domain} is not verified. To learn how to verify ownership, visit your
+            #{link_to 'domain details', project_pages_domain_path(@project, domain)}.

@@ -45,7 +45,7 @@ describe Ci::TriggerPolicy do
 
       context 'when user is master of the project' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it_behaves_like 'allows to admin and manage trigger'
@@ -53,7 +53,7 @@ describe Ci::TriggerPolicy do
 
       context 'when user is developer of the project' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it_behaves_like 'disallows to admin and manage trigger'
@@ -69,7 +69,7 @@ describe Ci::TriggerPolicy do
 
       context 'when user is master of the project' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it_behaves_like 'allows to admin and manage trigger'
@@ -81,7 +81,7 @@ describe Ci::TriggerPolicy do
 
       context 'when user is master of the project' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it_behaves_like 'allows to manage trigger'
@@ -89,7 +89,7 @@ describe Ci::TriggerPolicy do
 
       context 'when user is developer of the project' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it_behaves_like 'disallows to admin and manage trigger'

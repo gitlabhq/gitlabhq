@@ -1,6 +1,6 @@
 <script>
   import { mapState } from 'vuex';
-  import icon from '../../../vue_shared/components/icon.vue';
+  import icon from '~/vue_shared/components/icon.vue';
   import listItem from './list_item.vue';
   import listCollapsed from './list_collapsed.vue';
 
@@ -26,18 +26,24 @@
         'currentBranchId',
         'rightPanelCollapsed',
       ]),
+      isCommitInfoShown() {
+        return this.rightPanelCollapsed || this.fileList.length;
+      },
     },
     methods: {
       toggleCollapsed() {
         this.$emit('toggleCollapsed');
       },
     },
-
   };
 </script>
 
 <template>
-  <div class="multi-file-commit-list">
+  <div
+    :class="{
+      'multi-file-commit-list': isCommitInfoShown
+    }"
+  >
     <list-collapsed
       v-if="rightPanelCollapsed"
     />
@@ -55,12 +61,6 @@
           />
         </li>
       </ul>
-      <div
-        v-else
-        class="help-block prepend-top-0"
-      >
-        No changes
-      </div>
     </template>
   </div>
 </template>

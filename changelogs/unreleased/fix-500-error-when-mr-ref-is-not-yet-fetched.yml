@@ -1,0 +1,6 @@
+---
+title: Fix 500 error when a merge request from a fork has conflicts and has not yet
+  been updated
+merge_request:
+author:
+type: fixed

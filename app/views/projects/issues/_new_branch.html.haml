@@ -15,36 +15,39 @@
         %span.text
           Checking branch availability…
     .btn-group.available.hide
-      %button.btn.js-create-merge-request.btn-default{ type: 'button', data: { action: data_action } }
+      %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
         = value
 
-      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-default.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' } } }
+      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' } } }
         = icon('caret-down')
 
-      %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
-        - if can_create_merge_request
-          %li.create-item.droplab-item-selected.droplab-item-ignore-hiding{ role: 'button', data: { value: 'create-mr', text: 'Create merge request' } }
-            .menu-item.droplab-item-ignore-hiding
-              .icon-container.droplab-item-ignore-hiding= icon('check')
-              .description.droplab-item-ignore-hiding Create merge request and branch
+      .droplab-dropdown
+        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
+          - if can_create_merge_request
+            %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: _('Create merge request') } }
+              .menu-item
+                = icon('check', class: 'icon')
+                = _('Create merge request and branch')
 
-        %li.create-item.droplab-item-ignore-hiding{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: {  value: 'create-branch', text: 'Create branch' } }
-          .menu-item.droplab-item-ignore-hiding
-            .icon-container.droplab-item-ignore-hiding= icon('check')
-            .description.droplab-item-ignore-hiding Create branch
-        %li.divider
+          %li{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: {  value: 'create-branch', text: _('Create branch') } }
+            .menu-item
+              = icon('check', class: 'icon')
+              = _('Create branch')
+          %li.divider.droplab-item-ignore
 
-        %li.droplab-item-ignore
-          Branch name
-          %input.js-branch-name.form-control.droplab-item-ignore{ type: 'text', placeholder: "#{@issue.to_branch_name}", value: "#{@issue.to_branch_name}" }
-          %span.js-branch-message.branch-message.droplab-item-ignore
+          %li.droplab-item-ignore.prepend-left-8.append-right-8.prepend-top-16
+            .form-group
+              %label{ for: 'new-branch-name' }
+                = _('Branch name')
+              %input#new-branch-name.js-branch-name.form-control{ type: 'text', placeholder: "#{@issue.to_branch_name}", value: "#{@issue.to_branch_name}" }
+              %span.js-branch-message.help-block
 
-        %li.droplab-item-ignore
-          Source (branch or tag)
-          %input.js-ref.ref.form-control.droplab-item-ignore{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
-          %span.js-ref-message.ref-message.droplab-item-ignore
+            .form-group
+              %label{ for: 'source-name' }
+                = _('Source (branch or tag)')
+              %input#source-name.js-ref.ref.form-control{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
+              %span.js-ref-message.help-block
 
-        %li.droplab-item-ignore
-          %button.btn.btn-success.js-create-target.droplab-item-ignore{ type: 'button', data: { action: 'create-mr' } }
-            Create merge request
-
+            .form-group
+              %button.btn.btn-success.js-create-target{ type: 'button', data: { action: 'create-mr' } }
+                = _('Create merge request')

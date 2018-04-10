@@ -38,6 +38,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
+        builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
         present paginate(builds), with: Entities::Job
       end
 
@@ -71,7 +72,7 @@ module API
         present build, with: Entities::Job
       end
 
-      # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
+      # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
       desc 'Get a trace of a specific job of a project'

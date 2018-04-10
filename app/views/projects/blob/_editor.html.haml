@@ -3,7 +3,7 @@
 .file-holder-bottom-radius.file-holder.file.append-bottom-default
   .js-file-title.file-title.clearfix{ data: { current_action: action } }
     .editor-ref
-      = icon('code-fork')
+      = sprite_icon('fork', size: 12)
       = ref
     %span.editor-file-name
       - if current_action?(:edit) || current_action?(:update)

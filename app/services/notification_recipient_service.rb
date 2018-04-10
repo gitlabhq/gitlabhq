@@ -11,11 +11,11 @@ module NotificationRecipientService
   end
 
   def self.build_recipients(*a)
-    Builder::Default.new(*a).recipient_users
+    Builder::Default.new(*a).notification_recipients
   end
 
   def self.build_new_note_recipients(*a)
-    Builder::NewNote.new(*a).recipient_users
+    Builder::NewNote.new(*a).notification_recipients
   end
 
   module Builder
@@ -49,25 +49,23 @@ module NotificationRecipientService
         @recipients ||= []
       end
 
-      def <<(pair)
-        users, type = pair
-
+      def add_recipients(users, type, reason)
         if users.is_a?(ActiveRecord::Relation)
           users = users.includes(:notification_settings)
         end
 
-        users = Array(users)
-        users.compact!
-        recipients.concat(users.map { |u| make_recipient(u, type) })
+        users = Array(users).compact
+        recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
 
       def user_scope
         User.includes(:notification_settings)
       end
 
-      def make_recipient(user, type)
+      def make_recipient(user, type, reason)
         NotificationRecipient.new(
           user, type,
+          reason: reason,
           project: project,
           custom_action: custom_action,
           target: target,
@@ -75,14 +73,13 @@ module NotificationRecipientService
         )
       end
 
-      def recipient_users
-        @recipient_users ||=
+      def notification_recipients
+        @notification_recipients ||=
           begin
             build!
             filter!
-            users = recipients.map(&:user)
-            users.uniq!
-            users.freeze
+            recipients = self.recipients.sort_by { |r| NotificationReason.priority(r.reason) }.uniq(&:user)
+            recipients.freeze
           end
       end
 
@@ -95,13 +92,13 @@ module NotificationRecipientService
       def add_participants(user)
         return unless target.respond_to?(:participants)
 
-        self << [target.participants(user), :participating]
+        add_recipients(target.participants(user), :participating, nil)
       end
 
       def add_mentions(user, target:)
         return unless target.respond_to?(:mentioned_users)
 
-        self << [target.mentioned_users(user), :mention]
+        add_recipients(target.mentioned_users(user), :mention, NotificationReason::MENTIONED)
       end
 
       # Get project/group users with CUSTOM notification level
@@ -119,11 +116,11 @@ module NotificationRecipientService
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
         user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
 
-        self << [user_scope.where(id: user_ids), :watch]
+        add_recipients(user_scope.where(id: user_ids), :watch, nil)
       end
 
       def add_project_watchers
-        self << [project_watchers, :watch]
+        add_recipients(project_watchers, :watch, nil)
       end
 
       # Get project users with WATCH notification level
@@ -144,7 +141,7 @@ module NotificationRecipientService
       def add_subscribed_users
         return unless target.respond_to? :subscribers
 
-        self << [target.subscribers(project), :subscription]
+        add_recipients(target.subscribers(project), :subscription, nil)
       end
 
       def user_ids_notifiable_on(resource, notification_level = nil)
@@ -195,7 +192,7 @@ module NotificationRecipientService
         return unless target.respond_to? :labels
 
         (labels || target.labels).each do |label|
-          self << [label.subscribers(project), :subscription]
+          add_recipients(label.subscribers(project), :subscription, nil)
         end
       end
     end
@@ -222,12 +219,12 @@ module NotificationRecipientService
         # Re-assign is considered as a mention of the new assignee
         case custom_action
         when :reassign_merge_request
-          self << [previous_assignee, :mention]
-          self << [target.assignee, :mention]
+          add_recipients(previous_assignee, :mention, nil)
+          add_recipients(target.assignee, :mention, NotificationReason::ASSIGNED)
         when :reassign_issue
           previous_assignees = Array(previous_assignee)
-          self << [previous_assignees, :mention]
-          self << [target.assignees, :mention]
+          add_recipients(previous_assignees, :mention, nil)
+          add_recipients(target.assignees, :mention, NotificationReason::ASSIGNED)
         end
 
         add_subscribed_users
@@ -237,6 +234,12 @@ module NotificationRecipientService
           # type ensures that users with the mention notification level will
           # receive them, too.
           add_mentions(current_user, target: target)
+
+          # Add the assigned users, if any
+          assignees = custom_action == :new_issue ? target.assignees : target.assignee
+          # We use the `:participating` notification level in order to match existing legacy behavior as captured
+          # in existing specs (notification_service_spec.rb ~ line 507)
+          add_recipients(assignees, :participating, NotificationReason::ASSIGNED) if assignees
 
           add_labels_subscribers
         end
@@ -276,7 +279,7 @@ module NotificationRecipientService
         add_participants(note.author)
         add_mentions(note.author, target: note)
 
-        unless note.for_personal_snippet?
+        if note.for_project_noteable?
           # Merge project watchers
           add_project_watchers
 

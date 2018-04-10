@@ -2,7 +2,7 @@ class EmailsOnPushService < Service
   boolean_accessor :send_from_committer_email
   boolean_accessor :disable_diffs
   prop_accessor :recipients
-  validates :recipients, presence: true, if: :activated?
+  validates :recipients, presence: true, if: :valid_recipients?
 
   def title
     'Emails on push'

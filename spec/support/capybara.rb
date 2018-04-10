@@ -33,6 +33,9 @@ Capybara.register_driver :chrome do |app|
     options.add_argument("disable-gpu")
   end
 
+  # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
+  options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
+
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
@@ -75,8 +78,10 @@ RSpec.configure do |config|
   end
 
   config.after(:example, :js) do |example|
-    # prevent localstorage from introducing side effects based on test order
-    execute_script("localStorage.clear();")
+    # prevent localStorage from introducing side effects based on test order
+    unless ['', 'about:blank', 'data:,'].include? Capybara.current_session.driver.browser.current_url
+      execute_script("localStorage.clear();")
+    end
 
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
     # but `block_and_wait_for_requests_complete` is called before it so by

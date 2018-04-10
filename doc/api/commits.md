@@ -14,6 +14,9 @@ GET /projects/:id/repository/commits
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 | `since` | string | no | Only commits after or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `until` | string | no | Only commits before or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
+| `path` | string | no | The file path |
+| `all` | boolean | no | Retrieve every commit from the repository |
+
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
@@ -159,6 +162,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
+| `stats` | boolean | no | Include commit stats. Default is true |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
@@ -195,6 +199,41 @@ Example response:
   },
   "status": "running"
 }
+```
+
+## Get references a commit is pushed to
+
+> [Introduced][ce-15026] in GitLab 10.6
+
+Get all references (from branches or tags) a commit is pushed to.
+The pagination parameters `page` and `per_page` can be used to restrict the list of references.
+
+```
+GET /projects/:id/repository/commits/:sha/refs
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha` | string | yes | The commit hash  |
+| `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
+```
+
+Example response:
+
+```json
+[
+  {"type": "branch", "name": "'test'"},
+  {"type": "branch", "name": "add-balsamiq-file"},
+  {"type": "branch", "name": "wip"},
+  {"type": "tag", "name": "v1.1.0"}
+ ]
+
 ```
 
 ## Cherry pick a commit
@@ -373,9 +412,10 @@ Example response:
 
 Since GitLab 8.1, this is the new commit status API.
 
-### Get the status of a commit
+### List the statuses of a commit
 
-Get the statuses of a commit in a project.
+List the statuses of a commit in a project.
+The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
 ```
 GET /projects/:id/repository/commits/:sha/statuses
@@ -497,5 +537,77 @@ Example response:
 }
 ```
 
+## List Merge Requests associated with a commit
+
+> [Introduced][ce-18004] in GitLab 10.7.
+
+Get a list of Merge Requests related to the specified commit.
+
+```
+GET /projects/:id/repository/commits/:sha/merge_requests
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha`     | string  | yes   | The commit SHA
+
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
+```
+
+Example response:
+
+```json
+[
+   {
+      "id":45,
+      "iid":1,
+      "project_id":35,
+      "title":"Add new file",
+      "description":"",
+      "state":"opened",
+      "created_at":"2018-03-26T17:26:30.916Z",
+      "updated_at":"2018-03-26T17:26:30.916Z",
+      "target_branch":"master",
+      "source_branch":"test-branch",
+      "upvotes":0,
+      "downvotes":0,
+      "author" : {
+        "web_url" : "https://gitlab.example.com/thedude",
+        "name" : "Jeff Lebowski",
+        "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
+        "username" : "thedude",
+        "state" : "active",
+        "id" : 28
+      },
+      "assignee":null,
+      "source_project_id":35,
+      "target_project_id":35,
+      "labels":[ ],
+      "work_in_progress":false,
+      "milestone":null,
+      "merge_when_pipeline_succeeds":false,
+      "merge_status":"can_be_merged",
+      "sha":"af5b13261899fb2c0db30abdd0af8b07cb44fdc5",
+      "merge_commit_sha":null,
+      "user_notes_count":0,
+      "discussion_locked":null,
+      "should_remove_source_branch":null,
+      "force_remove_source_branch":false,
+      "web_url":"http://https://gitlab.example.com/root/test-project/merge_requests/1",
+      "time_stats":{
+         "time_estimate":0,
+         "total_time_spent":0,
+         "human_time_estimate":null,
+         "human_total_time_spent":null
+      }
+   }
+]
+```
+
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"
 [ce-8047]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8047
+[ce-15026]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15026
+[ce-18004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18004

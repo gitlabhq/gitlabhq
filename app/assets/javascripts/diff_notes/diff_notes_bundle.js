@@ -1,6 +1,7 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
 /* global ResolveCount */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import './models/discussion';
 import './models/note';
@@ -14,8 +15,9 @@ import './components/resolve_count';
 import './components/resolve_discussion_btn';
 import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
+import { hasVueMRDiscussionsCookie } from '../lib/utils/common_utils';
 
-$(() => {
+export default () => {
   const projectPathHolder = document.querySelector('.merge-request') || document.querySelector('.commit-box');
   const projectPath = projectPathHolder.dataset.projectPath;
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn, new-issue-for-discussion-btn';
@@ -67,12 +69,14 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
-    el: '#resolve-count-app',
-    components: {
-      'resolve-count': ResolveCount
-    }
-  });
+  if (!hasVueMRDiscussionsCookie()) {
+    new Vue({
+      el: '#resolve-count-app',
+      components: {
+        'resolve-count': ResolveCount
+      },
+    });
+  }
 
   $(window).trigger('resize.nav');
-});
+};

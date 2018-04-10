@@ -1,0 +1,42 @@
+# This is a simple gitlab continuous integration template (compatible with the shared runner provided on gitlab.com)
+# using the official mono docker image to build a visual studio project.
+#
+# MyProject.sln
+#   MyProject\
+#     MyProject\
+#        MyProject.csproj (console application)
+#     MyProject.Test\
+#        MyProject.Test.csproj (test library using nuget packages "NUnit" and "NUnit.ConsoleRunner")
+#
+# Please find the full example project here:
+# https://gitlab.com/tobiaskoch/gitlab-ci-example-mono
+
+# see https://hub.docker.com/_/mono/
+image: mono:latest
+
+stages:
+  - test
+  - deploy
+
+before_script:
+  - nuget restore -NonInteractive
+
+release:
+  stage: deploy
+  only:
+    - master
+  artifacts:
+    paths:
+      - build/release/MyProject.exe
+  script:
+    # The output path is relative to the position of the csproj-file
+    - msbuild /p:Configuration="Release" /p:Platform="Any CPU"
+      /p:OutputPath="./../../build/release/" "MyProject.sln"
+    
+debug:
+  stage: test
+  script:
+    # The output path is relative to the position of the csproj-file
+    - msbuild /p:Configuration="Debug" /p:Platform="Any CPU"
+      /p:OutputPath="./../../build/debug/" "MyProject.sln"
+    - mono packages/NUnit.ConsoleRunner.3.6.0/tools/nunit3-console.exe build/debug/MyProject.Test.dll

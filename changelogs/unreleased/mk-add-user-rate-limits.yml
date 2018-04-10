@@ -1,6 +1,0 @@
----
-title: Add anonymous rate limit per IP, and authenticated (web or API) rate limits
-  per user
-merge_request: 14708
-author:
-type: added

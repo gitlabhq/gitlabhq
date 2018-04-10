@@ -1,15 +1,16 @@
 - resource_name = spammable.class.model_name.singular
 - humanized_resource_name = spammable.class.model_name.human.downcase
 - script = local_assigns.fetch(:script, true)
+- method = params[:action] == 'create' ? :post : :put
 - has_submit = local_assigns.fetch(:has_submit, true)
 
-= form_for resource_name, method: :post, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
+= form_for resource_name, method: method, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
   .recaptcha
     - params[resource_name].each do |field, value|
       = hidden_field(resource_name, field, value: value)
     = hidden_field_tag(:spam_log_id, spammable.spam_log.id)
     = hidden_field_tag(:recaptcha_verification, true)
-    = recaptcha_tags script: script, callback: 'recaptchaDialogCallback'
+    = recaptcha_tags script: script, callback: 'recaptchaDialogCallback' unless Rails.env.test?
 
     -# Yields a block with given extra params.
     = yield

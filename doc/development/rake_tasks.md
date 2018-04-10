@@ -8,7 +8,7 @@ Note that if your db user does not have advanced privileges you must create the 
 bundle exec rake setup
 ```
 
-The `setup` task is a alias for `gitlab:setup`.
+The `setup` task is an alias for `gitlab:setup`.
 This tasks calls `db:reset` to create the database, calls `add_limits_mysql` that adds limits to the database schema in case of a MySQL database and finally it calls `db:seed_fu` to seed the database.
 Note: `db:setup` calls `db:seed` but this does nothing.
 
@@ -100,6 +100,12 @@ variable to `1`:
 
 ```
 export ENABLE_SPRING=1
+```
+
+Alternatively you can use the following on each spec run,
+
+```
+bundle exec spring rspec some_spec.rb
 ```
 
 ## Compile Frontend Assets

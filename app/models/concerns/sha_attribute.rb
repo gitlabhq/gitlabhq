@@ -3,6 +3,7 @@ module ShaAttribute
 
   module ClassMethods
     def sha_attribute(name)
+      return if ENV['STATIC_VERIFICATION']
       return unless table_exists?
 
       column = columns.find { |c| c.name == name.to_s }

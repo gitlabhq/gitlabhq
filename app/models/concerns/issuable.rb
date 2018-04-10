@@ -19,6 +19,7 @@ module Issuable
   include AfterCommitQueue
   include Sortable
   include CreatedAtFilterable
+  include UpdatedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -47,7 +48,7 @@ module Issuable
     end
 
     has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :labels, through: :label_links
+    has_many :labels, -> { auto_include(false) }, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics
@@ -96,7 +97,7 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :record_metrics, unless: :imported?
+    after_save :ensure_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -136,7 +137,7 @@ module Issuable
       fuzzy_search(query, [:title, :description])
     end
 
-    def sort(method, excluded_labels: [])
+    def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s
         when 'downvotes_desc'     then order_downvotes_desc
@@ -221,6 +222,10 @@ module Issuable
 
     def to_ability_name
       model_name.singular
+    end
+
+    def parent_class
+      ::Project
     end
   end
 
@@ -314,6 +319,7 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
+
     if includes.any?
       notes.includes(includes)
     else
@@ -335,16 +341,15 @@ module Issuable
     false
   end
 
-  def record_metrics
-    metrics = self.metrics || create_metrics
-    metrics.record!
-  end
-
   ##
   # Override in issuable specialization
   #
   def first_contribution?
     false
+  end
+
+  def ensure_metrics
+    self.metrics || create_metrics
   end
 
   ##

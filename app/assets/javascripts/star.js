@@ -1,17 +1,21 @@
+import $ from 'jquery';
 import Flash from './flash';
 import { __, s__ } from './locale';
 import { spriteIcon } from './lib/utils/common_utils';
+import axios from './lib/utils/axios_utils';
 
 export default class Star {
   constructor() {
-    $('.project-home-panel .toggle-star')
-      .on('ajax:success', function handleSuccess(e, data) {
-        const $this = $(this);
-        const $starSpan = $this.find('span');
-        const $startIcon = $this.find('svg');
+    $('.project-home-panel .toggle-star').on('click', function toggleStarClickCallback() {
+      const $this = $(this);
+      const $starSpan = $this.find('span');
+      const $startIcon = $this.find('svg');
 
-        function toggleStar(isStarred) {
+      axios.post($this.data('endpoint'))
+        .then(({ data }) => {
+          const isStarred = $starSpan.hasClass('starred');
           $this.parent().find('.star-count').text(data.star_count);
+
           if (isStarred) {
             $starSpan.removeClass('starred').text(s__('StarProject|Star'));
             $startIcon.remove();
@@ -21,12 +25,8 @@ export default class Star {
             $startIcon.remove();
             $this.prepend(spriteIcon('star'));
           }
-        }
-
-        toggleStar($starSpan.hasClass('starred'));
-      })
-      .on('ajax:error', () => {
-        Flash('Star toggle failed. Try again later.', 'alert');
-      });
+        })
+        .catch(() => Flash('Star toggle failed. Try again later.'));
+    });
   }
 }

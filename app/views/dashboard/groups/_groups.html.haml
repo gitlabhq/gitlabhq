@@ -1,2 +1,4 @@
 .js-groups-list-holder
   #js-groups-tree{ data: { hide_projects: 'true', endpoint: dashboard_groups_path(format: :json), path: dashboard_groups_path, form_sel: 'form#group-filter-form', filter_sel: '.js-groups-list-filter', holder_sel: '.js-groups-list-holder', dropdown_sel: '.js-group-filter-dropdown-wrap' } }
+    .loading-container.text-center
+      = icon('spinner spin 2x', class: 'loading-animation prepend-top-20')

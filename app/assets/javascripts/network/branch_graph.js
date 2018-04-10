@@ -1,5 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
 
+import $ from 'jquery';
+import { __ } from '../locale';
+import axios from '../lib/utils/axios_utils';
+import flash from '../flash';
 import Raphael from './raphael';
 
 export default (function() {
@@ -26,16 +30,13 @@ export default (function() {
   }
 
   BranchGraph.prototype.load = function() {
-    return $.ajax({
-      url: this.options.url,
-      method: "get",
-      dataType: "json",
-      success: $.proxy(function(data) {
+    axios.get(this.options.url)
+      .then(({ data }) => {
         $(".loading", this.element).hide();
         this.prepareData(data.days, data.commits);
-        return this.buildGraph();
-      }, this)
-    });
+        this.buildGraph();
+      })
+      .catch(() => __('Error fetching network graph.'));
   };
 
   BranchGraph.prototype.prepareData = function(days, commits) {

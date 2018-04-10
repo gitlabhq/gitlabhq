@@ -105,4 +105,68 @@ describe('dateInWords', () => {
   it('should return abbreviated month name', () => {
     expect(datetimeUtility.dateInWords(date, true)).toEqual('Jul 1, 2016');
   });
+
+  it('should return date in words without year', () => {
+    expect(datetimeUtility.dateInWords(date, true, true)).toEqual('Jul 1');
+  });
+});
+
+describe('monthInWords', () => {
+  const date = new Date('2017-01-20');
+
+  it('returns month name from provided date', () => {
+    expect(datetimeUtility.monthInWords(date)).toBe('January');
+  });
+
+  it('returns abbreviated month name from provided date', () => {
+    expect(datetimeUtility.monthInWords(date, true)).toBe('Jan');
+  });
+});
+
+describe('totalDaysInMonth', () => {
+  it('returns number of days in a month for given date', () => {
+    // 1st Feb, 2016 (leap year)
+    expect(datetimeUtility.totalDaysInMonth(new Date(2016, 1, 1))).toBe(29);
+
+    // 1st Feb, 2017
+    expect(datetimeUtility.totalDaysInMonth(new Date(2017, 1, 1))).toBe(28);
+
+    // 1st Jan, 2017
+    expect(datetimeUtility.totalDaysInMonth(new Date(2017, 0, 1))).toBe(31);
+  });
+});
+
+describe('getSundays', () => {
+  it('returns array of dates representing all Sundays of the month', () => {
+    // December, 2017 (it has 5 Sundays)
+    const dateOfSundays = [3, 10, 17, 24, 31];
+    const sundays = datetimeUtility.getSundays(new Date(2017, 11, 1));
+
+    expect(sundays.length).toBe(5);
+    sundays.forEach((sunday, index) => {
+      expect(sunday.getDate()).toBe(dateOfSundays[index]);
+    });
+  });
+});
+
+describe('getTimeframeWindow', () => {
+  it('returns array of dates representing a timeframe based on provided length and date', () => {
+    const date = new Date(2018, 0, 1);
+    const mockTimeframe = [
+      new Date(2017, 9, 1),
+      new Date(2017, 10, 1),
+      new Date(2017, 11, 1),
+      new Date(2018, 0, 1),
+      new Date(2018, 1, 1),
+      new Date(2018, 2, 31),
+    ];
+    const timeframe = datetimeUtility.getTimeframeWindow(6, date);
+
+    expect(timeframe.length).toBe(6);
+    timeframe.forEach((timeframeItem, index) => {
+      expect(timeframeItem.getFullYear() === mockTimeframe[index].getFullYear()).toBeTruthy();
+      expect(timeframeItem.getMonth() === mockTimeframe[index].getMonth()).toBeTruthy();
+      expect(timeframeItem.getDate() === mockTimeframe[index].getDate()).toBeTruthy();
+    });
+  });
 });

@@ -1,7 +1,7 @@
 /* eslint-disable quotes, jasmine/no-suite-dupes, vars-on-top, no-var */
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { timeParse } from 'd3-time-format';
-import { ContributorsGraph, ContributorsMasterGraph } from '~/graphs/stat_graph_contributors_graph';
+import { ContributorsGraph, ContributorsMasterGraph } from '~/pages/projects/graphs/show/stat_graph_contributors_graph';
 
 const d3 = { scaleLinear, scaleTime, timeParse };
 

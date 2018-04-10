@@ -15,8 +15,6 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :rugged_commit
-
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -233,12 +231,70 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+          repo.gitaly_migrate(:list_commits_by_oid,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               repo.gitaly_commit_client.list_commits_by_oid(oids)
             else
               oids.map { |oid| find(repo, oid) }.compact
             end
+          end
+        end
+
+        def extract_signature(repository, commit_id)
+          repository.gitaly_migrate(:extract_commit_signature) do |is_enabled|
+            if is_enabled
+              repository.gitaly_commit_client.extract_signature(commit_id)
+            else
+              rugged_extract_signature(repository, commit_id)
+            end
+          end
+        end
+
+        def extract_signature_lazily(repository, commit_id)
+          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
+            items_by_repo = items.group_by { |i| i[:repository] }
+
+            items_by_repo.each do |repo, items|
+              commit_ids = items.map { |i| i[:commit_id] }
+
+              signatures = batch_signature_extraction(repository, commit_ids)
+
+              signatures.each do |commit_sha, signature_data|
+                loader.call({ repository: repository, commit_id: commit_sha }, signature_data)
+              end
+            end
+          end
+        end
+
+        def batch_signature_extraction(repository, commit_ids)
+          repository.gitaly_migrate(:extract_commit_signature_in_batch) do |is_enabled|
+            if is_enabled
+              gitaly_batch_signature_extraction(repository, commit_ids)
+            else
+              rugged_batch_signature_extraction(repository, commit_ids)
+            end
+          end
+        end
+
+        def gitaly_batch_signature_extraction(repository, commit_ids)
+          repository.gitaly_commit_client.get_commit_signatures(commit_ids)
+        end
+
+        def rugged_batch_signature_extraction(repository, commit_ids)
+          commit_ids.each_with_object({}) do |commit_id, signatures|
+            signature_data = rugged_extract_signature(repository, commit_id)
+            next unless signature_data
+
+            signatures[commit_id] = signature_data
+          end
+        end
+
+        def rugged_extract_signature(repository, commit_id)
+          begin
+            Rugged::Commit.extract_signature(repository.rugged, commit_id)
+          rescue Rugged::OdbError
+            nil
           end
         end
       end
@@ -292,7 +348,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        Gitlab::GitalyClient.migrate(:commit_patch) do |is_enabled|
+        Gitlab::GitalyClient.migrate(:commit_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             @repository.gitaly_commit_client.patch(id)
           else
@@ -386,15 +442,6 @@ module Gitlab
         end
       end
 
-      # Get a collection of Rugged::Reference objects for this commit.
-      #
-      # Ex.
-      #   commit.ref(repo)
-      #
-      def refs(repo)
-        repo.refs_hash[id]
-      end
-
       # Get ref names collection
       #
       # Ex.
@@ -402,7 +449,7 @@ module Gitlab
       #
       def ref_names(repo)
         refs(repo).map do |ref|
-          ref.name.sub(%r{^refs/(heads|remotes|tags)/}, "")
+          ref.sub(%r{^refs/(heads|remotes|tags)/}, "")
         end
       end
 
@@ -436,6 +483,16 @@ module Gitlab
 
       def merge_commit?
         parent_ids.size > 1
+      end
+
+      def tree_entry(path)
+        @repository.gitaly_migrate(:commit_tree_entry) do |is_migrated|
+          if is_migrated
+            gitaly_tree_entry(path)
+          else
+            rugged_tree_entry(path)
+          end
+        end
       end
 
       def to_gitaly_commit
@@ -491,11 +548,33 @@ module Gitlab
         @committed_date = Time.at(commit.committer.date.seconds).utc
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
-        @parent_ids = commit.parent_ids
+        @parent_ids = Array(commit.parent_ids)
       end
 
       def serialize_keys
         SERIALIZE_KEYS
+      end
+
+      def gitaly_tree_entry(path)
+        # We're only interested in metadata, so limit actual data to 1 byte
+        # since Gitaly doesn't support "send no data" option.
+        entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
+        return unless entry
+
+        # To be compatible with the rugged format
+        entry = entry.to_h
+        entry.delete(:data)
+        entry[:name] = File.basename(path)
+        entry[:type] = entry[:type].downcase
+
+        entry
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
+      rescue Rugged::TreeError
+        nil
       end
 
       def gitaly_commit_author_from_rugged(author_or_committer)
@@ -504,6 +583,15 @@ module Gitlab
           email: author_or_committer[:email].b,
           date: Google::Protobuf::Timestamp.new(seconds: author_or_committer[:time].to_i)
         )
+      end
+
+      # Get a collection of Gitlab::Git::Ref objects for this commit.
+      #
+      # Ex.
+      #   commit.ref(repo)
+      #
+      def refs(repo)
+        repo.refs_hash[id]
       end
     end
   end

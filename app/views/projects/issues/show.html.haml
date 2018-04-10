@@ -5,10 +5,6 @@
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'notes'
-
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 
@@ -59,7 +55,8 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue)
+    -# haml-lint:disable InlineJavaScript
+    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue).to_json
     #js-issuable-app
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
@@ -77,7 +74,7 @@
 
   .content-block.emoji-block
     .row
-      .col-sm-8.js-issue-note-awards
+      .col-sm-8.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .col-sm-4.new-branch-col
         = render 'new_branch' unless @issue.confidential?
@@ -86,6 +83,3 @@
     = render 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable: @issue
-
-= page_specific_javascript_bundle_tag('common_vue')
-= page_specific_javascript_bundle_tag('issue_show')

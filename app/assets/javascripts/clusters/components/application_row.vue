@@ -1,108 +1,118 @@
 <script>
-import { s__, sprintf } from '../../locale';
-import eventHub from '../event_hub';
-import loadingButton from '../../vue_shared/components/loading_button.vue';
-import {
-  APPLICATION_NOT_INSTALLABLE,
-  APPLICATION_SCHEDULED,
-  APPLICATION_INSTALLABLE,
-  APPLICATION_INSTALLING,
-  APPLICATION_INSTALLED,
-  APPLICATION_ERROR,
-  REQUEST_LOADING,
-  REQUEST_SUCCESS,
-  REQUEST_FAILURE,
-} from '../constants';
+  /* eslint-disable vue/require-default-prop */
+  import { s__, sprintf } from '../../locale';
+  import eventHub from '../event_hub';
+  import loadingButton from '../../vue_shared/components/loading_button.vue';
+  import {
+    APPLICATION_NOT_INSTALLABLE,
+    APPLICATION_SCHEDULED,
+    APPLICATION_INSTALLABLE,
+    APPLICATION_INSTALLING,
+    APPLICATION_INSTALLED,
+    APPLICATION_ERROR,
+    REQUEST_LOADING,
+    REQUEST_SUCCESS,
+    REQUEST_FAILURE,
+  } from '../constants';
 
-export default {
-  props: {
-    id: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      loadingButton,
     },
-    title: {
-      type: String,
-      required: true,
+    props: {
+      id: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
+      titleLink: {
+        type: String,
+        required: false,
+      },
+      manageLink: {
+        type: String,
+        required: false,
+      },
+      status: {
+        type: String,
+        required: false,
+      },
+      statusReason: {
+        type: String,
+        required: false,
+      },
+      requestStatus: {
+        type: String,
+        required: false,
+      },
+      requestReason: {
+        type: String,
+        required: false,
+      },
     },
-    titleLink: {
-      type: String,
-      required: false,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      required: false,
-    },
-    statusReason: {
-      type: String,
-      required: false,
-    },
-    requestStatus: {
-      type: String,
-      required: false,
-    },
-    requestReason: {
-      type: String,
-      required: false,
-    },
-  },
-  components: {
-    loadingButton,
-  },
-  computed: {
-    rowJsClass() {
-      return `js-cluster-application-row-${this.id}`;
-    },
-    installButtonLoading() {
-      return !this.status ||
-        this.status === APPLICATION_SCHEDULED ||
-        this.status === APPLICATION_INSTALLING ||
-        this.requestStatus === REQUEST_LOADING;
-    },
-    installButtonDisabled() {
-      // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
-      // we already made a request to install and are just waiting for the real-time
-      // to sync up.
-      return (this.status !== APPLICATION_INSTALLABLE && this.status !== APPLICATION_ERROR) ||
-        this.requestStatus === REQUEST_LOADING ||
-        this.requestStatus === REQUEST_SUCCESS;
-    },
-    installButtonLabel() {
-      let label;
-      if (
-        this.status === APPLICATION_NOT_INSTALLABLE ||
-        this.status === APPLICATION_INSTALLABLE ||
-        this.status === APPLICATION_ERROR
-      ) {
-        label = s__('ClusterIntegration|Install');
-      } else if (this.status === APPLICATION_SCHEDULED || this.status === APPLICATION_INSTALLING) {
-        label = s__('ClusterIntegration|Installing');
-      } else if (this.status === APPLICATION_INSTALLED) {
-        label = s__('ClusterIntegration|Installed');
-      }
+    computed: {
+      rowJsClass() {
+        return `js-cluster-application-row-${this.id}`;
+      },
+      installButtonLoading() {
+        return !this.status ||
+          this.status === APPLICATION_SCHEDULED ||
+          this.status === APPLICATION_INSTALLING ||
+          this.requestStatus === REQUEST_LOADING;
+      },
+      installButtonDisabled() {
+        // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
+        // we already made a request to install and are just waiting for the real-time
+        // to sync up.
+        return (this.status !== APPLICATION_INSTALLABLE
+          && this.status !== APPLICATION_ERROR) ||
+          this.requestStatus === REQUEST_LOADING ||
+          this.requestStatus === REQUEST_SUCCESS;
+      },
+      installButtonLabel() {
+        let label;
+        if (
+          this.status === APPLICATION_NOT_INSTALLABLE ||
+          this.status === APPLICATION_INSTALLABLE ||
+          this.status === APPLICATION_ERROR
+        ) {
+          label = s__('ClusterIntegration|Install');
+        } else if (this.status === APPLICATION_SCHEDULED ||
+          this.status === APPLICATION_INSTALLING) {
+          label = s__('ClusterIntegration|Installing');
+        } else if (this.status === APPLICATION_INSTALLED) {
+          label = s__('ClusterIntegration|Installed');
+        }
 
-      return label;
+        return label;
+      },
+      showManageButton() {
+        return this.manageLink && this.status === APPLICATION_INSTALLED;
+      },
+      manageButtonLabel() {
+        return s__('ClusterIntegration|Manage');
+      },
+      hasError() {
+        return this.status === APPLICATION_ERROR ||
+        this.requestStatus === REQUEST_FAILURE;
+      },
+      generalErrorDescription() {
+        return sprintf(
+          s__('ClusterIntegration|Something went wrong while installing %{title}'), {
+            title: this.title,
+          },
+        );
+      },
     },
-    hasError() {
-      return this.status === APPLICATION_ERROR || this.requestStatus === REQUEST_FAILURE;
+    methods: {
+      installClicked() {
+        eventHub.$emit('installApplication', this.id);
+      },
     },
-    generalErrorDescription() {
-      return sprintf(
-        s__('ClusterIntegration|Something went wrong while installing %{title}'), {
-          title: this.title,
-        },
-      );
-    },
-  },
-  methods: {
-    installClicked() {
-      eventHub.$emit('installApplication', this.id);
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -134,12 +144,24 @@ export default {
         class="table-section section-wrap"
         role="gridcell"
       >
-        <div v-html="description"></div>
+        <slot name="description"></slot>
       </div>
       <div
-        class="table-section table-button-footer section-15 section-align-top"
+        class="table-section table-button-footer section-align-top"
+        :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
         role="gridcell"
       >
+        <div
+          v-if="showManageButton"
+          class="btn-group table-action-buttons"
+        >
+          <a
+            class="btn"
+            :href="manageLink"
+          >
+            {{ manageButtonLabel }}
+          </a>
+        </div>
         <div class="btn-group table-action-buttons">
           <loading-button
             class="js-cluster-application-install-button"

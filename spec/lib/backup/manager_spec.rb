@@ -194,6 +194,12 @@ describe Backup::Manager do
         )
       end
 
+      it 'prints the list of available backups' do
+        expect { subject.unpack }.to raise_error SystemExit
+        expect(progress).to have_received(:puts)
+          .with(a_string_matching('1451606400_2016_01_01_1.2.3\n 1451520000_2015_12_31'))
+      end
+
       it 'fails the operation and prints an error' do
         expect { subject.unpack }.to raise_error SystemExit
         expect(progress).to have_received(:puts)
@@ -270,6 +276,10 @@ describe Backup::Manager do
       Fog.mock!
       connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
       connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+    end
+
+    after do
+      Fog.unmock!
     end
 
     context 'target path' do

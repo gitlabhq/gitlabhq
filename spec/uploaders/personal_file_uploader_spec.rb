@@ -1,25 +1,39 @@
 require 'spec_helper'
 
+IDENTIFIER = %r{\h+/\S+}
+
 describe PersonalFileUploader do
-  let(:uploader) { described_class.new(build_stubbed(:project)) }
-  let(:snippet) { create(:personal_snippet) }
+  let(:model) { create(:personal_snippet) }
+  let(:uploader) { described_class.new(model) }
+  let(:upload) { create(:upload, :personal_snippet_upload) }
 
-  describe '.absolute_path' do
-    it 'returns the correct absolute path by building it dynamically' do
-      upload = double(model: snippet, path: 'secret/foo.jpg')
+  subject { uploader }
 
-      dynamic_segment = "personal_snippet/#{snippet.id}"
+  it_behaves_like 'builds correct paths',
+                  store_dir: %r[uploads/-/system/personal_snippet/\d+],
+                  upload_path: IDENTIFIER,
+                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/#{IDENTIFIER}]
 
-      expect(described_class.absolute_path(upload)).to end_with("/-/system/#{dynamic_segment}/secret/foo.jpg")
+  context "object_store is REMOTE" do
+    before do
+      stub_uploads_object_storage
     end
+
+    include_context 'with storage', described_class::Store::REMOTE
+
+    it_behaves_like 'builds correct paths',
+                    store_dir: %r[\d+/\h+],
+                    upload_path: IDENTIFIER
   end
 
   describe '#to_h' do
-    it 'returns the hass' do
-      uploader = described_class.new(snippet, 'secret')
+    before do
+      subject.instance_variable_set(:@secret, 'secret')
+    end
 
+    it 'is correct' do
       allow(uploader).to receive(:file).and_return(double(extension: 'txt', filename: 'file_name'))
-      expected_url = "/uploads/-/system/personal_snippet/#{snippet.id}/secret/file_name"
+      expected_url = "/uploads/-/system/personal_snippet/#{model.id}/secret/file_name"
 
       expect(uploader.to_h).to eq(
         alt: 'file_name',
@@ -27,5 +41,15 @@ describe PersonalFileUploader do
         markdown: "[file_name](#{expected_url})"
       )
     end
+  end
+
+  describe "#migrate!" do
+    before do
+      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/doc_sample.txt')))
+      stub_uploads_object_storage
+    end
+
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
 end

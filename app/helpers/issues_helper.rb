@@ -47,32 +47,11 @@ module IssuesHelper
     end
   end
 
-  def milestone_options(object)
-    milestones = object.project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
-    milestones.unshift(object.milestone) if object.milestone.present? && object.milestone.closed?
-    milestones.unshift(Milestone::None)
-
-    options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
-  end
-
-  def project_options(issuable, current_user, ability: :read_project)
-    projects = current_user.authorized_projects.order_id_desc
-    projects = projects.select do |project|
-      current_user.can?(ability, project)
-    end
-
-    no_project = OpenStruct.new(id: 0, name_with_namespace: 'No project')
-    projects.unshift(no_project)
-    projects.delete(issuable.project)
-
-    options_from_collection_for_select(projects, :id, :name_with_namespace)
-  end
-
   def status_box_class(item)
     if item.try(:expired?)
       'status-box-expired'
     elsif item.try(:merged?)
-      'status-box-merged'
+      'status-box-mr-merged'
     elsif item.closed?
       'status-box-mr-closed'
     elsif item.try(:upcoming?)

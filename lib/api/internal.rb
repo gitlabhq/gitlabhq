@@ -13,7 +13,7 @@ module API
       #   key_id - ssh key id for Git over SSH
       #   user_id - user id for Git over HTTP
       #   protocol - Git access protocol being used, e.g. HTTP or SSH
-      #   project - project path with namespace
+      #   project - project full_path (not path on disk)
       #   action - git action (git-upload-pack or git-receive-pack)
       #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
       post "/allowed" do
@@ -21,8 +21,7 @@ module API
 
         # Stores some Git-specific env thread-safely
         env = parse_env
-        env = fix_git_env_repository_paths(env, repository_path) if project
-        Gitlab::Git::Env.set(env)
+        Gitlab::Git::HookEnv.set(gl_repository, env) if project
 
         actor =
           if params[:key_id]
@@ -42,11 +41,14 @@ module API
           end
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
-        access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
+        access_checker = access_checker_klass.new(actor, project,
+          protocol, authentication_abilities: ssh_authentication_abilities,
+                    namespace_path: namespace_path, project_path: project_path,
+                    redirected_path: redirected_path)
 
         begin
           access_checker.check(params[:action], params[:changes])
+          @project ||= access_checker.project
         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
           return { status: false, message: e.message }
         end
@@ -82,6 +84,18 @@ module API
       end
 
       #
+      # Get a ssh key using the fingerprint
+      #
+      get "/authorized_keys" do
+        fingerprint = params.fetch(:fingerprint) do
+          Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
+        end
+        key = Key.find_by(fingerprint: fingerprint)
+        not_found!("Key") if key.nil?
+        present key, with: Entities::SSHKey
+      end
+
+      #
       # Discover user by ssh key or user id
       #
       get "/discover" do
@@ -91,6 +105,7 @@ module API
         elsif params[:user_id]
           user = User.find_by(id: params[:user_id])
         end
+
         present user, with: Entities::UserSafe
       end
 
@@ -190,9 +205,15 @@ module API
 
         project = Gitlab::GlRepository.parse(params[:gl_repository]).first
         user = identify(params[:identifier])
-        redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
-        if redirect_message
-          output[:redirected_message] = redirect_message
+
+        # A user is not guaranteed to be returned; an orphaned write deploy
+        # key could be used
+        if user
+          redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
+          project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
+
+          output[:redirected_message] = redirect_message if redirect_message
+          output[:project_created_message] = project_created_message if project_created_message
         end
 
         output

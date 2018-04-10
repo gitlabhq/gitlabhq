@@ -431,4 +431,41 @@ describe Gitlab::Diff::File do
       end
     end
   end
+
+  context 'when neither blob exists' do
+    let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::BLANK_SHA, head_sha: Gitlab::Git::BLANK_SHA) }
+    let(:diff_file) { described_class.new(diff, diff_refs: blank_diff_refs, repository: project.repository) }
+
+    describe '#blob' do
+      it 'returns a concrete nil so it can be used in boolean expressions' do
+        actual = diff_file.blob && true
+
+        expect(actual).to be_nil
+      end
+    end
+
+    describe '#binary?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_binary
+      end
+    end
+
+    describe '#size' do
+      it 'returns zero' do
+        expect(diff_file.size).to be_zero
+      end
+    end
+
+    describe '#different_type?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_different_type
+      end
+    end
+
+    describe '#content_changed?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_content_changed
+      end
+    end
+  end
 end

@@ -1,25 +1,26 @@
 - pipeline = local_assigns.fetch(:pipeline) { project.latest_successful_pipeline_for(ref) }
 
 - if !project.empty_repo? && can?(current_user, :download_code, project)
+  - archive_prefix = "#{project.path}-#{ref.tr('/', '-')}"
   .project-action-button.dropdown.inline>
     %button.btn.has-tooltip{ title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download') }
-      = icon('download')
+      = sprite_icon('download')
       = icon("caret-down")
       %span.sr-only=  _('Select Archive Format')
     %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
       %li.dropdown-header
         #{ _('Source code') }
       %li
-        = link_to archive_project_repository_path(project, ref: ref, format: 'zip'), rel: 'nofollow', download: '' do
+        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '' do
           %span=  _('Download zip')
       %li
-        = link_to archive_project_repository_path(project, ref: ref, format: 'tar.gz'), rel: 'nofollow', download: '' do
+        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.gz'), rel: 'nofollow', download: '' do
           %span= _('Download tar.gz')
       %li
-        = link_to archive_project_repository_path(project, ref: ref, format: 'tar.bz2'), rel: 'nofollow', download: '' do
+        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.bz2'), rel: 'nofollow', download: '' do
           %span= _('Download tar.bz2')
       %li
-        = link_to archive_project_repository_path(project, ref: ref, format: 'tar'), rel: 'nofollow', download: '' do
+        = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar'), rel: 'nofollow', download: '' do
           %span= _('Download tar')
 
       - if pipeline && pipeline.latest_builds_with_artifacts.any?

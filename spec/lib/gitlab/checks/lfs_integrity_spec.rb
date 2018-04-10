@@ -2,23 +2,25 @@ require 'spec_helper'
 
 describe Gitlab::Checks::LfsIntegrity do
   include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
-  let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+  let(:repository) { project.repository }
+  let(:newrev) do
+    operations = BareRepoOperations.new(repository.path)
+
+    # Create a commit not pointed at by any ref to emulate being in the
+    # pre-receive hook so that `--not --all` returns some objects
+    operations.commit_tree('8856a329dd38ca86dfb9ce5aa58a16d88cc119bd', "New LFS objects")
+  end
 
   subject { described_class.new(project, newrev) }
 
   describe '#objects_missing?' do
-    let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
-
-    before do
-      allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects) do |&lazy_block|
-        lazy_block.call([blob_object.id])
-      end
-    end
+    let(:blob_object) { repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
     context 'with LFS not enabled' do
       it 'skips integrity check' do
-        expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
+        expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
 
         subject.objects_missing?
       end
@@ -33,7 +35,7 @@ describe Gitlab::Checks::LfsIntegrity do
         let(:newrev) { nil }
 
         it 'skips integrity check' do
-          expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
+          expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
 
           expect(subject.objects_missing?).to be_falsey
         end

@@ -1,5 +1,7 @@
 module Sidekiq
   module Worker
+    EnqueueFromTransactionError = Class.new(StandardError)
+
     mattr_accessor :skip_transaction_check
     self.skip_transaction_check = false
 
@@ -12,17 +14,30 @@ module Sidekiq
     end
 
     module ClassMethods
-      module NoSchedulingFromTransactions
+      module NoEnqueueingFromTransactions
         %i(perform_async perform_at perform_in).each do |name|
           define_method(name) do |*args|
             if !Sidekiq::Worker.skip_transaction_check && AfterCommitQueue.inside_transaction?
-              raise <<-MSG.strip_heredoc
+              begin
+                raise Sidekiq::Worker::EnqueueFromTransactionError, <<~MSG
                 `#{self}.#{name}` cannot be called inside a transaction as this can lead to
                 race conditions when the worker runs before the transaction is committed and
                 tries to access a model that has not been saved yet.
 
                 Use an `after_commit` hook, or include `AfterCommitQueue` and use a `run_after_commit` block instead.
-              MSG
+                MSG
+              rescue Sidekiq::Worker::EnqueueFromTransactionError => e
+                if Rails.env.production?
+                  Rails.logger.error(e.message)
+
+                  if Gitlab::Sentry.enabled?
+                    Gitlab::Sentry.context
+                    Raven.capture_exception(e)
+                  end
+                else
+                  raise
+                end
+              end
             end
 
             super(*args)
@@ -30,7 +45,7 @@ module Sidekiq
         end
       end
 
-      prepend NoSchedulingFromTransactions
+      prepend NoEnqueueingFromTransactions
     end
   end
 end

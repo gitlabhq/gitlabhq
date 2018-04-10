@@ -48,7 +48,7 @@ module Gitlab
           },
           'images' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<img src=\"https://localhost.com/image.png\" alt=\"Alt text\">"
+            output: "<div>\n<p><span><img src=\"https://localhost.com/image.png\" alt='Alt text\" onerror=\"alert(7)'></span></p>\n</div>"
           },
           'pre' => {
             input: '```mypre"><script>alert(3)</script>',
@@ -93,6 +93,14 @@ module Gitlab
 
           expect(render(input, context)).to include('<pre data-math-style="display" class="code math js-render-math"><code>eta_x gamma</code></pre>')
           expect(render(input, context)).to include('<p><code data-math-style="inline" class="code math js-render-math">2+2</code> is 4</p>')
+        end
+      end
+
+      context 'outfilesuffix' do
+        it 'defaults to adoc' do
+          output = render("Inter-document reference <<README.adoc#>>", context)
+
+          expect(output).to include("a href=\"README.adoc\"")
         end
       end
     end

@@ -70,5 +70,38 @@ describe Identity do
         end
       end
     end
+
+    context 'after_destroy' do
+      let!(:user) { create(:user) }
+      let(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', user: user) }
+      let(:ldap_user_synced_attributes) { { provider: 'ldapmain', name_synced: true, email_synced: true } }
+      let(:other_provider_user_synced_attributes) { { provider: 'other', name_synced: true, email_synced: true } }
+
+      describe 'if user synced attributes metadada provider' do
+        context 'matches the identity provider ' do
+          it 'removes the user synced attributes' do
+            user.create_user_synced_attributes_metadata(ldap_user_synced_attributes)
+
+            expect(user.user_synced_attributes_metadata.provider).to eq 'ldapmain'
+
+            ldap_identity.destroy
+
+            expect(user.reload.user_synced_attributes_metadata).to be_nil
+          end
+        end
+
+        context 'does not matche the identity provider' do
+          it 'does not remove the user synced attributes' do
+            user.create_user_synced_attributes_metadata(other_provider_user_synced_attributes)
+
+            expect(user.user_synced_attributes_metadata.provider).to eq 'other'
+
+            ldap_identity.destroy
+
+            expect(user.reload.user_synced_attributes_metadata.provider).to eq 'other'
+          end
+        end
+      end
+    end
   end
 end

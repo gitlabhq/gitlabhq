@@ -11,7 +11,7 @@ module QA
         end
 
         def fabricate!
-          Page::Main::Menu.act { go_to_groups }
+          Page::Menu::Main.act { go_to_groups }
 
           Page::Dashboard::Groups.perform do |page|
             if page.has_group?(@name)

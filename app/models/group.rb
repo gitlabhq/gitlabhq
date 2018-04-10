@@ -12,9 +12,9 @@ class Group < Namespace
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
-  has_many :users, through: :group_members
+  has_many :users, -> { auto_include(false) }, through: :group_members
   has_many :owners,
-    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
+    -> { where(members: { access_level: Gitlab::Access::OWNER }).auto_include(false) },
     through: :group_members,
     source: :user
 
@@ -23,23 +23,25 @@ class Group < Namespace
 
   has_many :milestones
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :shared_projects, -> { auto_include(false) }, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :boards
+  has_many :badges, class_name: 'GroupBadge'
+
+  accepts_nested_attributes_for :variables, allow_destroy: true
+
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
-
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+  validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
-
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -51,7 +53,7 @@ class Group < Namespace
       Gitlab::Database.postgresql?
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
@@ -114,12 +116,6 @@ class Group < Namespace
     visibility_level_allowed_by_parent?(level) &&
       visibility_level_allowed_by_projects?(level) &&
       visibility_level_allowed_by_sub_groups?(level)
-  end
-
-  def avatar_url(**args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args)
   end
 
   def lfs_enabled?
@@ -193,12 +189,6 @@ class Group < Namespace
     owners.include?(user) && owners.size == 1
   end
 
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
-    end
-  end
-
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 
@@ -234,13 +224,13 @@ class Group < Namespace
       end
 
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: source_ids)
   end
 
   def members_with_descendants
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
@@ -284,12 +274,6 @@ class Group < Namespace
     list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
-  def full_path_was
-    return path_was unless has_parent?
-
-    "#{parent.full_path}/#{path_was}"
-  end
-
   def group_member(user)
     if group_members.loaded?
       group_members.find { |gm| gm.user_id == user.id }
@@ -300,6 +284,10 @@ class Group < Namespace
 
   def hashed_storage?(_feature)
     false
+  end
+
+  def refresh_project_authorizations
+    refresh_members_authorized_projects(blocking: false)
   end
 
   private

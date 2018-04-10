@@ -25,11 +25,11 @@ for each GitLab application server in your environment.
    options. Here is an example snippet to add to `/etc/fstab`:
 
     ```
-    10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
-    10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
-    10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
+    10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+    10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+    10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+    10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+    10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
     ```
 
 1. Create the shared directories. These may be different depending on your NFS

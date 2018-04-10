@@ -207,7 +207,7 @@ module API
       end
 
       class Trigger < Grape::Entity
-        expose :token, :created_at, :updated_at, :deleted_at, :last_used
+        expose :token, :created_at, :updated_at, :last_used
         expose :owner, using: ::API::Entities::UserBasic
       end
 
@@ -252,21 +252,20 @@ module API
 
       class ProjectService < Grape::Entity
         expose :id, :title, :created_at, :updated_at, :active
-        expose :push_events, :issues_events, :merge_requests_events
-        expose :tag_push_events, :note_events, :pipeline_events
+        expose :push_events, :issues_events, :confidential_issues_events
+        expose :merge_requests_events, :tag_push_events, :note_events
+        expose :pipeline_events
         expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
-          field_names = service.fields
-            .select { |field| options[:include_passwords] || field[:type] != 'password' }
-            .map { |field| field[:name] }
-          service.properties.slice(*field_names)
+          service.properties.slice(*service.api_field_names)
         end
       end
 
       class ProjectHook < ::API::Entities::Hook
-        expose :project_id, :issues_events, :merge_requests_events
-        expose :note_events, :pipeline_events, :wiki_page_events
+        expose :project_id, :issues_events, :confidential_issues_events
+        expose :merge_requests_events, :note_events, :pipeline_events
+        expose :wiki_page_events
         expose :job_events, as: :build_events
       end
 

@@ -1,7 +1,7 @@
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
-  include InternalId
+  include AtomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -12,7 +12,7 @@ class Issue < ActiveRecord::Base
   include ThrottledTouch
   include IgnorableColumn
 
-  ignore_column :assignee_id, :branch_name
+  ignore_column :assignee_id, :branch_name, :deleted_at
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -23,6 +23,9 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+  belongs_to :closed_by, class_name: 'User'
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -31,9 +34,11 @@ class Issue < ActiveRecord::Base
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
-  has_many :assignees, class_name: "User", through: :issue_assignees
+  has_many :assignees, -> { auto_include(false) }, class_name: "User", through: :issue_assignees
 
   validates :project, presence: true
+
+  alias_attribute :parent_ids, :project_id
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
@@ -74,9 +79,16 @@ class Issue < ActiveRecord::Base
     before_transition any => :closed do |issue|
       issue.closed_at = Time.zone.now
     end
+
+    before_transition closed: :opened do |issue|
+      issue.closed_at = nil
+      issue.closed_by = nil
+    end
   end
 
-  acts_as_paranoid
+  class << self
+    alias_method :in_parents, :in_projects
+  end
 
   def self.reference_prefix
     '#'
@@ -104,7 +116,7 @@ class Issue < ActiveRecord::Base
     'project_id'
   end
 
-  def self.sort(method, excluded_labels: [])
+  def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'due_date'      then order_due_date_asc
     when 'due_date_asc'  then order_due_date_asc
@@ -155,7 +167,18 @@ class Issue < ActiveRecord::Base
       object.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.sort_by(&:iid)
+    merge_requests = ext.merge_requests.sort_by(&:iid)
+
+    cross_project_filter = -> (merge_requests) do
+      merge_requests.select { |mr| mr.target_project == project }
+    end
+
+    Ability.merge_requests_readable_by_user(
+      merge_requests, current_user,
+      filters: {
+        read_cross_project: cross_project_filter
+      }
+    )
   end
 
   # All branches containing the current issue's ID, except for
@@ -249,11 +272,17 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      if options.key?(:sidebar_endpoints) && project
+      if options.key?(:issue_endpoints) && project
         url_helper = Gitlab::Routing.url_helpers
 
-        json.merge!(issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
-                    toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self))
+        issue_reference = options[:include_full_project_path] ? to_reference(full: true) : to_reference
+
+        json.merge!(
+          reference_path: issue_reference,
+          real_path: url_helper.project_issue_path(project, self),
+          issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
+          toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self)
+        )
       end
 
       if options.key?(:labels)
@@ -275,6 +304,11 @@ class Issue < ActiveRecord::Base
   end
 
   private
+
+  def ensure_metrics
+    super
+    metrics.record!
+  end
 
   # Returns `true` if the given User can read the current Issue.
   #

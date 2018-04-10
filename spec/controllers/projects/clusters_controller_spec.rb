@@ -18,7 +18,7 @@ describe Projects::ClustersController do
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
+        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
         it 'lists available clusters' do
           go
 
@@ -32,7 +32,7 @@ describe Projects::ClustersController do
 
           before do
             allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, projects: [project])
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, projects: [project])
             get :index, namespace_id: project.namespace, project_id: project, page: last_page
           end
 
@@ -90,6 +90,12 @@ describe Projects::ClustersController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
+      end
+
+      it 'invokes schedule_status_update on each application' do
+        expect_any_instance_of(Clusters::Applications::Ingress).to receive(:schedule_status_update)
+
+        go
       end
     end
 
@@ -177,7 +183,7 @@ describe Projects::ClustersController do
 
           cluster.reload
           expect(response).to redirect_to(project_cluster_path(project, cluster))
-          expect(flash[:notice]).to eq('Cluster was successfully updated.')
+          expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
           expect(cluster.enabled).to be_falsey
         end
 
@@ -276,7 +282,7 @@ describe Projects::ClustersController do
 
             cluster.reload
             expect(response).to redirect_to(project_cluster_path(project, cluster))
-            expect(flash[:notice]).to eq('Cluster was successfully updated.')
+            expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
             expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
@@ -336,7 +342,7 @@ describe Projects::ClustersController do
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
-            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+            expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
           end
         end
 
@@ -349,7 +355,7 @@ describe Projects::ClustersController do
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
-            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+            expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
           end
         end
       end
@@ -364,7 +370,7 @@ describe Projects::ClustersController do
             .and change { Clusters::Providers::Gcp.count }.by(0)
 
           expect(response).to redirect_to(project_clusters_path(project))
-          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+          expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
         end
       end
     end

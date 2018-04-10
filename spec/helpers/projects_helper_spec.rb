@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectsHelper do
+  include ProjectForksHelper
+
   describe "#project_status_css_class" do
     it "returns appropriate class" do
       expect(project_status_css_class("started")).to eq("active")
@@ -10,9 +12,9 @@ describe ProjectsHelper do
   end
 
   describe "can_change_visibility_level?" do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project) }
     let(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
-    let(:fork_project) { Projects::ForkService.new(project, user).execute }
+    let(:forked_project) { fork_project(project, user) }
 
     it "returns false if there are no appropriate permissions" do
       allow(helper).to receive(:can?) { false }
@@ -26,21 +28,29 @@ describe ProjectsHelper do
       expect(helper.can_change_visibility_level?(project, user)).to be_truthy
     end
 
+    it 'allows visibility level to be changed if the project is forked' do
+      allow(helper).to receive(:can?).with(user, :change_visibility_level, project) { true }
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      fork_project(project)
+
+      expect(helper.can_change_visibility_level?(project, user)).to be_truthy
+    end
+
     context "forks" do
       it "returns false if there are permissions and origin project is PRIVATE" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::PRIVATE
+        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
-        expect(helper.can_change_visibility_level?(fork_project, user)).to be_falsey
+        expect(helper.can_change_visibility_level?(forked_project, user)).to be_falsey
       end
 
       it "returns true if there are permissions and origin project is INTERNAL" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::INTERNAL
+        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
-        expect(helper.can_change_visibility_level?(fork_project, user)).to be_truthy
+        expect(helper.can_change_visibility_level?(forked_project, user)).to be_truthy
       end
     end
   end
@@ -65,6 +75,12 @@ describe ProjectsHelper do
 
   describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
+    end
 
     it "includes the route" do
       expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
@@ -94,6 +110,10 @@ describe ProjectsHelper do
 
     it "includes a version" do
       expect(helper.project_list_cache_key(project).last).to start_with('v')
+    end
+
+    it 'includes wether or not the user can read cross project' do
+      expect(helper.project_list_cache_key(project)).to include('cross-project:true')
     end
 
     it "includes the pipeline status when there is a status" do
@@ -205,7 +225,7 @@ describe ProjectsHelper do
     let(:expected) { double }
 
     before do
-      expect(helper).to receive(:avatar_icon).with(user, 16).and_return(expected)
+      expect(helper).to receive(:avatar_icon_for_user).with(user, 16).and_return(expected)
     end
 
     it 'returns image tag for member avatar' do
@@ -250,32 +270,6 @@ describe ProjectsHelper do
         allow(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
-      end
-    end
-  end
-
-  describe '#license_short_name' do
-    let(:project) { create(:project) }
-
-    context 'when project.repository has a license_key' do
-      it 'returns the nickname of the license if present' do
-        allow(project.repository).to receive(:license_key).and_return('agpl-3.0')
-
-        expect(helper.license_short_name(project)).to eq('GNU AGPLv3')
-      end
-
-      it 'returns the name of the license if nickname is not present' do
-        allow(project.repository).to receive(:license_key).and_return('mit')
-
-        expect(helper.license_short_name(project)).to eq('MIT License')
-      end
-    end
-
-    context 'when project.repository has no license_key but a license_blob' do
-      it 'returns LICENSE' do
-        allow(project.repository).to receive(:license_key).and_return(nil)
-
-        expect(helper.license_short_name(project)).to eq('LICENSE')
       end
     end
   end
@@ -449,6 +443,22 @@ describe ProjectsHelper do
 
     it 'returns false when there are no projects and there is no name' do
       expect(helper.show_projects?(Project.none, {})).to eq(false)
+    end
+  end
+
+  describe('#push_to_create_project_command') do
+    let(:user) { create(:user, username: 'john') }
+
+    it 'returns the command to push to create project over HTTP' do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'http' }
+
+      expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream http://test.host/john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
+    end
+
+    it 'returns the command to push to create project over SSH' do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'ssh' }
+
+      expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream git@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
     end
   end
 

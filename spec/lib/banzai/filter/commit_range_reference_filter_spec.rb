@@ -53,7 +53,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter do
       doc = reference_filter("See (#{reference}.)")
 
       exp = Regexp.escape(range.reference_link_text)
-      expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{exp}</a>\.\)})
     end
 
     it 'ignores invalid commit IDs' do
@@ -222,7 +222,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter do
       doc = reference_filter("Fixed (#{reference}.)")
 
       exp = Regexp.escape(range.reference_link_text(project))
-      expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{exp}</a>\.\)})
     end
 
     it 'ignores invalid commit IDs on the referenced project' do

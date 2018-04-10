@@ -7,8 +7,8 @@ describe Boards::ListsController do
   let(:guest)   { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_guest(guest)
   end
 
   describe 'GET index' do

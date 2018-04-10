@@ -9,11 +9,11 @@ class MonitoringService < Service
     %w()
   end
 
-  def environment_metrics(environment)
+  def can_query?
     raise NotImplementedError
   end
 
-  def deployment_metrics(deployment)
+  def query(_, *_)
     raise NotImplementedError
   end
 end

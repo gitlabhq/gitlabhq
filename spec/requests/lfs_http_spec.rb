@@ -63,7 +63,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS disabled globally' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
       end
 
@@ -106,7 +106,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS enabled globally' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         enable_lfs
       end
 
@@ -191,10 +191,12 @@ describe 'Git LFS API and storage' do
   describe 'when fetching lfs object' do
     let(:project) { create(:project) }
     let(:update_permissions) { }
+    let(:before_get) { }
 
     before do
       enable_lfs
       update_permissions
+      before_get
       get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
     end
 
@@ -234,11 +236,43 @@ describe 'Git LFS API and storage' do
 
           context 'and does have project access' do
             let(:update_permissions) do
-              project.team << [user, :master]
+              project.add_master(user)
               project.lfs_objects << lfs_object
             end
 
             it_behaves_like 'responds with a file'
+
+            context 'when LFS uses object storage' do
+              context 'when proxy download is enabled' do
+                let(:before_get) do
+                  stub_lfs_object_storage(proxy_download: true)
+                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+                end
+
+                it 'responds with redirect' do
+                  expect(response).to have_gitlab_http_status(200)
+                end
+
+                it 'responds with the workhorse send-url' do
+                  expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+                end
+              end
+
+              context 'when proxy download is disabled' do
+                let(:before_get) do
+                  stub_lfs_object_storage(proxy_download: false)
+                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+                end
+
+                it 'responds with redirect' do
+                  expect(response).to have_gitlab_http_status(302)
+                end
+
+                it 'responds with the file location' do
+                  expect(response.location).to include(lfs_object.reload.file.path)
+                end
+              end
+            end
           end
         end
 
@@ -259,7 +293,7 @@ describe 'Git LFS API and storage' do
 
           context 'when user allowed' do
             let(:update_permissions) do
-              project.team << [user, :master]
+              project.add_master(user)
               project.lfs_objects << lfs_object
             end
 
@@ -295,7 +329,7 @@ describe 'Git LFS API and storage' do
               let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
               let(:update_permissions) do
-                project.team << [user, :reporter]
+                project.add_reporter(user)
                 project.lfs_objects << lfs_object
               end
 
@@ -517,7 +551,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         let(:update_user_permissions) do
-          project.team << [user, role]
+          project.add_role(user, role)
         end
 
         it_behaves_like 'an authorized requests' do
@@ -553,7 +587,7 @@ describe 'Git LFS API and storage' do
             let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
             let(:update_user_permissions) do
-              project.team << [user, :reporter]
+              project.add_reporter(user)
             end
 
             it_behaves_like 'an authorized requests'
@@ -673,7 +707,7 @@ describe 'Git LFS API and storage' do
           let(:authorization) { authorize_user }
 
           let(:update_user_permissions) do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'when pushing an lfs object that already exists' do
@@ -781,11 +815,11 @@ describe 'Git LFS API and storage' do
         end
 
         context 'when deploy key has project push access' do
-          let(:key) { create(:deploy_key, can_push: true) }
+          let(:key) { create(:deploy_key) }
           let(:authorization) { authorize_deploy_key }
 
           let(:update_user_permissions) do
-            project.deploy_keys << key
+            project.deploy_keys_projects.create(deploy_key: key, can_push: true)
           end
 
           it_behaves_like 'pushes new LFS objects'
@@ -795,7 +829,7 @@ describe 'Git LFS API and storage' do
       context 'when user is not authenticated' do
         context 'when user has push access' do
           let(:update_user_permissions) do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'responds with status 401' do
@@ -840,7 +874,7 @@ describe 'Git LFS API and storage' do
 
     before do
       allow(Gitlab::Database).to receive(:read_only?) { true }
-      project.team << [user, :master]
+      project.add_master(user)
       enable_lfs
     end
 
@@ -935,7 +969,7 @@ describe 'Git LFS API and storage' do
 
         describe 'when user has push access to the project' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'and the request bypassed workhorse' do
@@ -945,22 +979,61 @@ describe 'Git LFS API and storage' do
           end
 
           context 'and request is sent by gitlab-workhorse to authorize the request' do
-            before do
-              put_authorize
+            shared_examples 'a valid response' do
+              before do
+                put_authorize
+              end
+
+              it 'responds with status 200' do
+                expect(response).to have_gitlab_http_status(200)
+              end
+
+              it 'uses the gitlab-workhorse content type' do
+                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+              end
             end
 
-            it 'responds with status 200' do
-              expect(response).to have_gitlab_http_status(200)
+            shared_examples 'a local file' do
+              it_behaves_like 'a valid response' do
+                it 'responds with status 200, location of lfs store and object details' do
+                  expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
+                  expect(json_response['RemoteObject']).to be_nil
+                  expect(json_response['LfsOid']).to eq(sample_oid)
+                  expect(json_response['LfsSize']).to eq(sample_size)
+                end
+              end
             end
 
-            it 'uses the gitlab-workhorse content type' do
-              expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            context 'when using local storage' do
+              it_behaves_like 'a local file'
             end
 
-            it 'responds with status 200, location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
-              expect(json_response['LfsOid']).to eq(sample_oid)
-              expect(json_response['LfsSize']).to eq(sample_size)
+            context 'when using remote storage' do
+              context 'when direct upload is enabled' do
+                before do
+                  stub_lfs_object_storage(enabled: true, direct_upload: true)
+                end
+
+                it_behaves_like 'a valid response' do
+                  it 'responds with status 200, location of lfs remote store and object details' do
+                    expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
+                    expect(json_response['RemoteObject']).to have_key('ID')
+                    expect(json_response['RemoteObject']).to have_key('GetURL')
+                    expect(json_response['RemoteObject']).to have_key('StoreURL')
+                    expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                    expect(json_response['LfsOid']).to eq(sample_oid)
+                    expect(json_response['LfsSize']).to eq(sample_size)
+                  end
+                end
+              end
+
+              context 'when direct upload is disabled' do
+                before do
+                  stub_lfs_object_storage(enabled: true, direct_upload: false)
+                end
+
+                it_behaves_like 'a local file'
+              end
             end
           end
 
@@ -978,14 +1051,98 @@ describe 'Git LFS API and storage' do
             end
           end
 
-          context 'invalid tempfiles' do
-            it 'rejects slashes in the tempfile name (path traversal' do
-              put_finalize('foo/bar')
-              expect(response).to have_gitlab_http_status(403)
+          context 'and workhorse requests upload finalize for a new lfs object' do
+            before do
+              lfs_object.destroy
             end
 
-            it 'rejects tempfile names that do not start with the oid' do
-              put_finalize("foo#{sample_oid}")
+            context 'with object storage disabled' do
+              it "doesn't attempt to migrate file to object storage" do
+                expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
+
+                put_finalize(with_tempfile: true)
+              end
+            end
+
+            context 'with object storage enabled' do
+              context 'and direct upload enabled' do
+                let!(:fog_connection) do
+                  stub_lfs_object_storage(direct_upload: true)
+                end
+
+                ['123123', '../../123123'].each do |remote_id|
+                  context "with invalid remote_id: #{remote_id}" do
+                    subject do
+                      put_finalize(with_tempfile: true, args: {
+                        'file.remote_id' => remote_id
+                      })
+                    end
+
+                    it 'responds with status 403' do
+                      subject
+
+                      expect(response).to have_gitlab_http_status(403)
+                    end
+                  end
+                end
+
+                context 'with valid remote_id' do
+                  before do
+                    fog_connection.directories.get('lfs-objects').files.create(
+                      key: 'tmp/upload/12312300',
+                      body: 'content'
+                    )
+                  end
+
+                  subject do
+                    put_finalize(with_tempfile: true, args: {
+                      'file.remote_id' => '12312300',
+                      'file.name' => 'name'
+                    })
+                  end
+
+                  it 'responds with status 200' do
+                    subject
+
+                    expect(response).to have_gitlab_http_status(200)
+                  end
+
+                  it 'schedules migration of file to object storage' do
+                    subject
+
+                    expect(LfsObject.last.projects).to include(project)
+                  end
+
+                  it 'have valid file' do
+                    subject
+
+                    expect(LfsObject.last.file_store).to eq(ObjectStorage::Store::REMOTE)
+                    expect(LfsObject.last.file).to be_exists
+                  end
+                end
+              end
+
+              context 'and background upload enabled' do
+                before do
+                  stub_lfs_object_storage(background_upload: true)
+                end
+
+                it 'schedules migration of file to object storage' do
+                  expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
+
+                  put_finalize(with_tempfile: true)
+                end
+              end
+            end
+          end
+
+          context 'invalid tempfiles' do
+            before do
+              lfs_object.destroy
+            end
+
+            it 'rejects slashes in the tempfile name (path traversal)' do
+              put_finalize('../bar', with_tempfile: true)
               expect(response).to have_gitlab_http_status(403)
             end
           end
@@ -993,7 +1150,7 @@ describe 'Git LFS API and storage' do
 
         describe 'and user does not have push access' do
           before do
-            project.team << [user, :reporter]
+            project.add_reporter(user)
           end
 
           it_behaves_like 'forbidden'
@@ -1010,7 +1167,7 @@ describe 'Git LFS API and storage' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
             before do
-              project.team << [user, :developer]
+              project.add_developer(user)
               put_authorize
             end
 
@@ -1062,7 +1219,7 @@ describe 'Git LFS API and storage' do
 
         describe 'when user has push access to the project' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'and request is sent by gitlab-workhorse to authorize the request' do
@@ -1075,7 +1232,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'with location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end
@@ -1149,7 +1306,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         before do
-          second_project.team << [user, :master]
+          second_project.add_master(user)
           upstream_project.lfs_objects << lfs_object
         end
 
@@ -1177,9 +1334,25 @@ describe 'Git LFS API and storage' do
       put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, authorize_headers
     end
 
-    def put_finalize(lfs_tmp = lfs_tmp_file)
-      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", nil,
-          headers.merge('X-Gitlab-Lfs-Tmp' => lfs_tmp).compact
+    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, args: {})
+      upload_path = LfsObjectUploader.workhorse_local_upload_path
+      file_path = upload_path + '/' + lfs_tmp if lfs_tmp
+
+      if with_tempfile
+        FileUtils.mkdir_p(upload_path)
+        FileUtils.touch(file_path)
+      end
+
+      extra_args = {
+        'file.path' => file_path,
+        'file.name' => File.basename(file_path)
+      }
+
+      put_finalize_with_args(args.merge(extra_args).compact)
+    end
+
+    def put_finalize_with_args(args)
+      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", args, headers
     end
 
     def lfs_tmp_file
@@ -1208,7 +1381,7 @@ describe 'Git LFS API and storage' do
   end
 
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/vnd.git-lfs+json'))
+    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def json_response

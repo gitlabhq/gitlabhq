@@ -30,6 +30,7 @@ describe SystemHooksService do
         :old_path_with_namespace
       )
     end
+
     it do
       project.old_path_with_namespace = 'transfered_from_path'
       expect(event_data(project, :transfer)).to include(
@@ -45,18 +46,21 @@ describe SystemHooksService do
         :owner_name, :owner_email
       )
     end
+
     it do
       expect(event_data(group, :destroy)).to include(
         :event_name, :name, :created_at, :updated_at, :path, :group_id,
         :owner_name, :owner_email
       )
     end
+
     it do
       expect(event_data(group_member, :create)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path,
         :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
     end
+
     it do
       expect(event_data(group_member, :destroy)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path,
@@ -68,6 +72,14 @@ describe SystemHooksService do
       data = event_data(project, :create)
 
       expect(data[:project_visibility]).to eq('private')
+    end
+
+    it 'handles nil datetime columns' do
+      user.update_attributes(created_at: nil, updated_at: nil)
+      data = event_data(user, :destroy)
+
+      expect(data[:created_at]).to be(nil)
+      expect(data[:updated_at]).to be(nil)
     end
 
     context 'group_rename' do
@@ -105,12 +117,25 @@ describe SystemHooksService do
         expect(data[:old_username]).to eq(user.username_was)
       end
     end
+
+    context 'user_failed_login' do
+      it 'contains state of user' do
+        user.ldap_block!
+
+        data = event_data(user, :failed_login)
+
+        expect(data).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :state)
+        expect(data[:username]).to eq(user.username)
+        expect(data[:state]).to eq('ldap_blocked')
+      end
+    end
   end
 
   context 'event names' do
     it { expect(event_name(user, :create)).to eq "user_create" }
     it { expect(event_name(user, :destroy)).to eq "user_destroy" }
     it { expect(event_name(user, :rename)).to eq 'user_rename' }
+    it { expect(event_name(user, :failed_login)).to eq 'user_failed_login' }
     it { expect(event_name(project, :create)).to eq "project_create" }
     it { expect(event_name(project, :destroy)).to eq "project_destroy" }
     it { expect(event_name(project, :rename)).to eq "project_rename" }

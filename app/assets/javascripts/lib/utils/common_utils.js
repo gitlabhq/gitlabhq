@@ -1,4 +1,8 @@
+import $ from 'jquery';
+import Cookies from 'js-cookie';
+import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
+import { convertToCamelCase } from './text_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -20,23 +24,24 @@ export const getGroupSlug = () => {
   return null;
 };
 
-export const isInIssuePage = () => {
-  const page = getPagePath(1);
-  const action = getPagePath(2);
+export const checkPageAndAction = (page, action) => {
+  const pagePath = getPagePath(1);
+  const actionPath = getPagePath(2);
 
-  return page === 'issues' && action === 'show';
+  return pagePath === page && actionPath === action;
 };
 
-export const ajaxGet = url => $.ajax({
-  type: 'GET',
-  url,
-  dataType: 'script',
-});
+export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInEpicPage = () => checkPageAndAction('epics', 'show');
+export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
+export const hasVueMRDiscussionsCookie = () => Cookies.get('vue_mr_discussions');
 
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
+export const ajaxGet = url => axios.get(url, {
+  params: { format: 'js' },
+  responseType: 'text',
+}).then(({ data }) => {
+  $.globalEval(data);
 });
 
 export const rstrip = (val) => {
@@ -136,7 +141,11 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
-export const scrollToElement = ($el) => {
+export const scrollToElement = (element) => {
+  let $el = element;
+  if (!(element instanceof $)) {
+    $el = $(element);
+  }
   const top = $el.offset().top;
   const mrTabsHeight = $('.merge-request-tabs').height() || 0;
   const headerHeight = $('.navbar-gitlab').height() || 0;
@@ -232,7 +241,7 @@ export const nodeMatchesSelector = (node, selector) => {
 export const normalizeHeaders = (headers) => {
   const upperCaseHeaders = {};
 
-  Object.keys(headers).forEach((e) => {
+  Object.keys(headers || {}).forEach((e) => {
     upperCaseHeaders[e.toUpperCase()] = headers[e];
   });
 
@@ -293,6 +302,14 @@ export const parseQueryStringIntoObject = (query = '') => {
       return acc;
     }, {});
 };
+
+/**
+ * Converts object with key-value pairs
+ * into query-param string
+ *
+ * @param {Object} params
+ */
+export const objectToQueryString = (params = {}) => Object.keys(params).map(param => `${param}=${params[param]}`).join('&');
 
 export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
 
@@ -382,22 +399,16 @@ export const resetFavicon = () => {
   }
 };
 
-export const setCiStatusFavicon = (pageUrl) => {
-  $.ajax({
-    url: pageUrl,
-    dataType: 'json',
-    success: (data) => {
+export const setCiStatusFavicon = pageUrl =>
+  axios.get(pageUrl)
+    .then(({ data }) => {
       if (data && data.favicon) {
         setFavicon(data.favicon);
       } else {
         resetFavicon();
       }
-    },
-    error: () => {
-      resetFavicon();
-    },
-  });
-};
+    })
+    .catch(resetFavicon);
 
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
@@ -405,7 +416,37 @@ export const spriteIcon = (icon, className = '') => {
   return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
 };
 
+/**
+ * This method takes in object with snake_case property names
+ * and returns new object with camelCase property names
+ *
+ * Reasoning for this method is to ensure consistent property
+ * naming conventions across JS code.
+ */
+export const convertObjectPropsToCamelCase = (obj = {}) => {
+  if (obj === null) {
+    return {};
+  }
+
+  return Object.keys(obj).reduce((acc, prop) => {
+    const result = acc;
+
+    result[convertToCamelCase(prop)] = obj[prop];
+    return acc;
+  }, {});
+};
+
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
+
+export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
+  // Click a .js-select-on-focus field, select the contents
+  // Prevent a mouseup event from deselecting the input
+  $(selector).on('focusin', function selectOnFocusCallback() {
+    $(this).select().one('mouseup', (e) => {
+      e.preventDefault();
+    });
+  });
+};
 
 window.gl = window.gl || {};
 window.gl.utils = {
@@ -417,7 +458,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,

@@ -1,27 +1,26 @@
 /* eslint-disable comma-dangle */
-/* global boardsMockInterceptor */
 /* global BoardService */
-/* global mockBoardService */
 /* global List */
 /* global ListIssue */
-/* global listObj */
-/* global listObjDuplicate */
 
-import Vue from 'vue';
-
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import _ from 'underscore';
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('List model', () => {
   let list;
+  let mock;
 
   beforeEach(() => {
-    Vue.http.interceptors.push(boardsMockInterceptor);
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
     gl.boardService = mockBoardService({
       bulkUpdatePath: '/test/issue-boards/board/1/lists',
     });
@@ -31,7 +30,7 @@ describe('List model', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+    mock.restore();
   });
 
   it('gets issues when created', (done) => {
@@ -158,10 +157,8 @@ describe('List model', () => {
   describe('newIssue', () => {
     beforeEach(() => {
       spyOn(gl.boardService, 'newIssue').and.returnValue(Promise.resolve({
-        json() {
-          return {
-            id: 42,
-          };
+        data: {
+          id: 42,
         },
       }));
     });

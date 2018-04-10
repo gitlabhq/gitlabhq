@@ -3,6 +3,7 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
   include PreviewMarkdown
 
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
@@ -40,11 +41,11 @@ class ProjectsController < Projects::ApplicationController
       cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
 
       redirect_to(
-        project_path(@project),
+        project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
-      render 'new'
+      render 'new', locals: { active_tab: active_new_project_tab }
     end
   end
 
@@ -102,7 +103,7 @@ class ProjectsController < Projects::ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to project_import_path(@project)
+      redirect_to project_import_path(@project, custom_import_params)
       return
     end
 
@@ -113,6 +114,8 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
+        @project = @project.present(current_user: current_user)
+
         render_landing_page
       end
 
@@ -127,7 +130,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.name_with_namespace }
+    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
     redirect_to dashboard_projects_path, status: 302
   rescue Projects::DestroyService::DestroyError => ex
@@ -203,6 +206,7 @@ class ProjectsController < Projects::ApplicationController
     else
       flash[:alert] = _("Project export could not be deleted.")
     end
+
     redirect_to(edit_project_path(@project))
   end
 
@@ -277,7 +281,6 @@ class ProjectsController < Projects::ApplicationController
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
-        @finder_type = IssuesFinder
         @issues = issuables_collection.page(params[:page])
         @collection_type = 'Issue'
         @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
@@ -285,6 +288,10 @@ class ProjectsController < Projects::ApplicationController
 
       render :show
     end
+  end
+
+  def finder_type
+    IssuesFinder
   end
 
   def determine_layout
@@ -317,7 +324,7 @@ class ProjectsController < Projects::ApplicationController
       :avatar,
       :build_allow_git_fetch,
       :build_coverage_regex,
-      :build_timeout_in_minutes,
+      :build_timeout_human_readable,
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :default_branch,
@@ -352,8 +359,16 @@ class ProjectsController < Projects::ApplicationController
     ]
   end
 
+  def custom_import_params
+    {}
+  end
+
+  def active_new_project_tab
+    project_params[:import_url].present? ? 'import' : 'blank'
+  end
+
   def repo_exists?
-    project.repository_exists? && !project.empty_repo? && project.repo
+    project.repository_exists? && !project.empty_repo?
 
   rescue Gitlab::Git::Repository::NoRepository
     project.repository.expire_exists_cache
@@ -393,7 +408,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_export_enabled
-    render_404 unless current_application_settings.project_export_enabled?
+    render_404 unless Gitlab::CurrentSettings.project_export_enabled?
   end
 
   def redirect_git_extension
@@ -402,6 +417,10 @@ class ProjectsController < Projects::ApplicationController
     # to
     #   localhost/group/project
     #
-    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
+    redirect_to request.original_url.sub(%r{\.git/?\Z}, '') if params[:format] == 'git'
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
   end
 end

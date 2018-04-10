@@ -7,7 +7,7 @@ feature 'Milestone' do
 
   before do
     create(:group_member, group: group, user: user)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -66,15 +66,16 @@ feature 'Milestone' do
     end
   end
 
-  feature 'Open a milestone' do
+  feature 'Open a milestone', :js do
     scenario 'shows total issue time spent correctly when no time has been logged' do
       milestone = create(:milestone, project: project, title: 8.7)
 
       visit project_milestone_path(project, milestone)
 
-      page.within('.block.time_spent') do
-        expect(page).to have_content 'No time spent'
-        expect(page).to have_content 'None'
+      wait_for_requests
+
+      page.within('.time-tracking-no-tracking-pane') do
+        expect(page).to have_content 'No estimate or time spent'
       end
     end
 
@@ -89,9 +90,22 @@ feature 'Milestone' do
 
       visit project_milestone_path(project, milestone)
 
-      page.within('.block.time_spent') do
-        expect(page).to have_content '3h'
+      wait_for_requests
+
+      page.within('.time-tracking-spend-only-pane') do
+        expect(page).to have_content 'Spent: 3h'
       end
+    end
+  end
+
+  feature 'Deleting a milestone' do
+    scenario "The delete milestone button does not show for unauthorized users" do
+      create(:milestone, project: project, title: 8.7)
+      sign_out(user)
+
+      visit group_milestones_path(group)
+
+      expect(page).to have_selector('.js-delete-milestone-button', count: 0)
     end
   end
 end

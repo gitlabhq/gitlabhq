@@ -14,6 +14,8 @@ module Gitlab
     #       puts label.name
     #     end
     class Client
+      include ::Gitlab::Utils::StrongMemoize
+
       attr_reader :octokit
 
       # A single page of data and the corresponding page number.
@@ -173,7 +175,9 @@ module Gitlab
       end
 
       def rate_limiting_enabled?
-        @rate_limiting_enabled ||= api_endpoint.include?('.github.com')
+        strong_memoize(:rate_limiting_enabled) do
+          api_endpoint.include?('.github.com')
+        end
       end
 
       def api_endpoint
@@ -193,10 +197,7 @@ module Gitlab
       end
 
       def github_omniauth_provider
-        @github_omniauth_provider ||=
-          Gitlab.config.omniauth.providers
-                .find { |provider| provider.name == 'github' }
-                .to_h
+        @github_omniauth_provider ||= Gitlab::Auth::OAuth::Provider.config_for('github').to_h
       end
 
       def rate_limit_counter

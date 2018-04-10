@@ -27,7 +27,7 @@
             - milestone.milestones.each do |milestone|
               = link_to milestone_path(milestone) do
                 %span.label.label-gray
-                  = dashboard ? milestone.project.name_with_namespace : milestone.project.name
+                  = dashboard ? milestone.project.full_name : milestone.project.name
       - if @group
         .col-sm-6.milestone-actions
           - if can?(current_user, :admin_milestones, @group)
@@ -51,11 +51,26 @@
           \
 
           - if @project.group
-            = link_to promote_project_milestone_path(milestone.project, milestone), title: "Promote to Group Milestone", class: 'btn btn-xs btn-grouped', data: { confirm: "Promoting this milestone will make it available for all projects inside the group. Existing project milestones with the same name will be merged. Are you sure?", toggle: "tooltip" }, method: :post do
-              Promote
+            %button.js-promote-project-milestone-button.btn.btn-xs.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
+              disabled: true,
+              type: 'button',
+              data: { url: promote_project_milestone_path(milestone.project, milestone),
+                      milestone_title: milestone.title,
+                      group_name: @project.group.name,
+                      target: '#promote-milestone-modal',
+                      container: 'body',
+                      toggle: 'modal' } }
+              = _('Promote')
 
           = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-xs btn-close btn-grouped"
 
-          = link_to project_milestone_path(milestone.project, milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-xs btn-remove btn-grouped" do
-            Delete
-
+          %button.js-delete-milestone-button.btn.btn-xs.btn-grouped.btn-danger{ data: { toggle: 'modal',
+            target: '#delete-milestone-modal',
+            milestone_id: milestone.id,
+            milestone_title: markdown_field(milestone, :title),
+            milestone_url: project_milestone_path(milestone.project, milestone),
+            milestone_issue_count: milestone.issues.count,
+            milestone_merge_request_count: milestone.merge_requests.count },
+            disabled: true }
+            = _('Delete')
+            = icon('spin spinner', class: 'js-loading-icon hidden' )

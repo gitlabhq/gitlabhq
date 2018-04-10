@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
 
-import 'vendor/jquery.waitforimages';
+import $ from 'jquery';
+import { __ } from '~/locale';
 import TaskList from './task_list';
 import MergeRequestTabs from './merge_request_tabs';
 import IssuablesHelper from './helpers/issuables_helper';
@@ -110,22 +111,22 @@ MergeRequest.prototype.initCommitMessageListeners = function() {
   });
 };
 
-MergeRequest.prototype.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
+MergeRequest.setStatusBoxToMerged = function() {
   $('.detail-page-header .status-box')
-    .removeClass(classToRemove)
-    .addClass(classToAdd)
+    .removeClass('status-box-open')
+    .addClass('status-box-mr-merged')
     .find('span')
-    .text(newStatusText);
+    .text(__('Merged'));
 };
 
-MergeRequest.prototype.decreaseCounter = function(by = 1) {
-  const $el = $('.nav-links .js-merge-counter');
+MergeRequest.decreaseCounter = function(by = 1) {
+  const $el = $('.js-merge-counter');
   const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
 
   $el.text(addDelimiter(count));
 };
 
-MergeRequest.prototype.hideCloseButton = function() {
+MergeRequest.hideCloseButton = function() {
   const el = document.querySelector('.merge-request .js-issuable-actions');
   const closeDropdownItem = el.querySelector('li.close-item');
   if (closeDropdownItem) {

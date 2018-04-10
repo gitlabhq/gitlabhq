@@ -3,6 +3,29 @@ require 'spec_helper'
 describe JiraService do
   include Gitlab::Routing
 
+  describe '#options' do
+    let(:service) do
+      described_class.new(
+        project: build_stubbed(:project),
+        active: true,
+        username: 'username',
+        password: 'test',
+        jira_issue_transition_id: 24,
+        url: 'http://jira.test.com/path/'
+      )
+    end
+
+    it 'sets the URL properly' do
+      # jira-ruby gem parses the URI and handles trailing slashes
+      # fine: https://github.com/sumoheavy/jira-ruby/blob/v1.4.1/lib/jira/http_client.rb#L59
+      expect(service.options[:site]).to eq('http://jira.test.com/')
+    end
+
+    it 'leaves out trailing slashes in context' do
+      expect(service.options[:context_path]).to eq('/path')
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -143,7 +166,6 @@ describe JiraService do
 
       # Creates comment
       expect(WebMock).to have_requested(:post, @comment_url)
-
       # Creates Remote Link in JIRA issue fields
       expect(WebMock).to have_requested(:post, @remote_link_url).with(
         body: hash_including(
@@ -151,7 +173,7 @@ describe JiraService do
           object: {
             url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
-            icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+            icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
             status: { resolved: true }
           }
         )
@@ -182,7 +204,7 @@ describe JiraService do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{custom_base_url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
+        body: %r{#{custom_base_url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}}
       ).once
     end
 
@@ -197,7 +219,7 @@ describe JiraService do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{Gitlab.config.gitlab.url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
+        body: %r{#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}}
       ).once
     end
 

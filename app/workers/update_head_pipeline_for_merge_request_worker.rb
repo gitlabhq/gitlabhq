@@ -2,6 +2,8 @@ class UpdateHeadPipelineForMergeRequestWorker
   include ApplicationWorker
   include PipelineQueue
 
+  queue_namespace :pipeline_processing
+
   def perform(merge_request_id)
     merge_request = MergeRequest.find(merge_request_id)
     pipeline = Ci::Pipeline.where(project: merge_request.source_project, ref: merge_request.source_branch).last

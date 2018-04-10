@@ -54,9 +54,9 @@ module EmailsHelper
   end
 
   def header_logo
-    if brand_item && brand_item.header_logo?
+    if current_appearance&.header_logo?
       image_tag(
-        brand_item.header_logo,
+        current_appearance.header_logo,
         style: 'height: 50px'
       )
     else
@@ -79,5 +79,21 @@ module EmailsHelper
       'margin:0',
       'text-align:center'
     ].join(';')
+  end
+
+  # "You are receiving this email because #{reason}"
+  def notification_reason_text(reason)
+    string = case reason
+             when NotificationReason::OWN_ACTIVITY
+               'of your activity'
+             when NotificationReason::ASSIGNED
+               'you have been assigned an item'
+             when NotificationReason::MENTIONED
+               'you have been mentioned'
+             else
+               'of your account'
+             end
+
+    "#{string} on #{Gitlab.config.gitlab.host}"
   end
 end

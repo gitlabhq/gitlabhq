@@ -3,23 +3,20 @@ class WebHookService
     attr_reader :body, :headers, :code
 
     def initialize
-      @headers = HTTParty::Response::Headers.new({})
+      @headers = Gitlab::HTTP::Response::Headers.new({})
       @body = ''
       @code = 'internal error'
     end
   end
 
-  include HTTParty
-
-  # HTTParty timeout
-  default_timeout Gitlab.config.gitlab.webhook_timeout
-
-  attr_accessor :hook, :data, :hook_name
+  attr_accessor :hook, :data, :hook_name, :request_options
 
   def initialize(hook, data, hook_name)
     @hook = hook
     @data = data
     @hook_name = hook_name.to_s
+    @request_options = { timeout: Gitlab.config.gitlab.webhook_timeout }
+    @request_options.merge!(allow_local_requests: true) if @hook.is_a?(SystemHook)
   end
 
   def execute
@@ -73,11 +70,12 @@ class WebHookService
   end
 
   def make_request(url, basic_auth = false)
-    self.class.post(url,
+    Gitlab::HTTP.post(url,
       body: data.to_json,
       headers: build_headers(hook_name),
       verify: hook.enable_ssl_verification,
-      basic_auth: basic_auth)
+      basic_auth: basic_auth,
+      **request_options)
   end
 
   def make_request_with_auth
@@ -113,7 +111,7 @@ class WebHookService
         'Content-Type' => 'application/json',
         'X-Gitlab-Event' => hook_name.singularize.titleize
       }.tap do |hash|
-        hash['X-Gitlab-Token'] = hook.token if hook.token.present?
+        hash['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
       end
     end
   end

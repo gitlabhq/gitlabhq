@@ -63,13 +63,29 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'avatar_icon' do
+  describe 'avatar_icon_for' do
+    let!(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
+    let(:email) { 'foo@example.com' }
+    let!(:another_user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: email) }
+
+    it 'prefers the user to retrieve the avatar_url' do
+      expect(helper.avatar_icon_for(user, email).to_s)
+        .to eq(user.avatar.url)
+    end
+
+    it 'falls back to email lookup if no user given' do
+      expect(helper.avatar_icon_for(nil, email).to_s)
+        .to eq(another_user.avatar.url)
+    end
+  end
+
+  describe 'avatar_icon_for_email' do
     let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
     context 'using an email' do
       context 'when there is a matching user' do
         it 'returns a relative URL for the avatar' do
-          expect(helper.avatar_icon(user.email).to_s)
+          expect(helper.avatar_icon_for_email(user.email).to_s)
             .to eq(user.avatar.url)
         end
       end
@@ -78,15 +94,35 @@ describe ApplicationHelper do
         it 'calls gravatar_icon' do
           expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
 
-          helper.avatar_icon('foo@example.com', 20, 2)
+          helper.avatar_icon_for_email('foo@example.com', 20, 2)
+        end
+      end
+
+      context 'without an email passed' do
+        it 'calls gravatar_icon' do
+          expect(helper).to receive(:gravatar_icon).with(nil, 20, 2)
+
+          helper.avatar_icon_for_email(nil, 20, 2)
         end
       end
     end
+  end
 
-    describe 'using a user' do
+  describe 'avatar_icon_for_user' do
+    let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
+
+    context 'with a user object passed' do
       it 'returns a relative URL for the avatar' do
-        expect(helper.avatar_icon(user).to_s)
+        expect(helper.avatar_icon_for_user(user).to_s)
           .to eq(user.avatar.url)
+      end
+    end
+
+    context 'without a user object passed' do
+      it 'calls gravatar_icon' do
+        expect(helper).to receive(:gravatar_icon).with(nil, 20, 2)
+
+        helper.avatar_icon_for_user(nil, 20, 2)
       end
     end
   end
@@ -100,7 +136,7 @@ describe ApplicationHelper do
       end
 
       it 'returns a generic avatar' do
-        expect(helper.gravatar_icon(user_email)).to match('no_avatar.png')
+        expect(helper.gravatar_icon(user_email)).to match_asset_path('no_avatar.png')
       end
     end
 
@@ -110,14 +146,14 @@ describe ApplicationHelper do
       end
 
       it 'returns a generic avatar when email is blank' do
-        expect(helper.gravatar_icon('')).to match('no_avatar.png')
+        expect(helper.gravatar_icon('')).to match_asset_path('no_avatar.png')
       end
 
       it 'returns a valid Gravatar URL' do
         stub_config_setting(https: false)
 
         expect(helper.gravatar_icon(user_email))
-          .to match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+          .to match('https://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
       end
 
       it 'uses HTTPs when configured' do

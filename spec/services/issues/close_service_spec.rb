@@ -4,14 +4,14 @@ describe Issues::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:issue) { create(:issue, assignees: [user2]) }
+  let(:issue) { create(:issue, assignees: [user2], author: create(:user)) }
   let(:project) { issue.project }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
@@ -65,6 +65,10 @@ describe Issues::CloseService do
       it 'closes the issue' do
         expect(issue).to be_valid
         expect(issue).to be_closed
+      end
+
+      it 'records closed user' do
+        expect(issue.closed_by_id).to be(user.id)
       end
 
       it 'sends email to user2 about assign of new issue' do

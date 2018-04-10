@@ -35,6 +35,81 @@ describe MergeRequestWidgetEntity do
     end
   end
 
+  describe 'metrics' do
+    context 'when metrics record exists with merged data' do
+      before do
+        resource.mark_as_merged!
+        resource.metrics.update!(merged_by: user)
+      end
+
+      it 'matches merge request metrics schema' do
+        expect(subject[:metrics].with_indifferent_access)
+          .to match_schema('entities/merge_request_metrics')
+      end
+
+      it 'returns values from metrics record' do
+        expect(subject.dig(:metrics, :merged_by, :id))
+          .to eq(resource.metrics.merged_by_id)
+      end
+    end
+
+    context 'when metrics record exists with closed data' do
+      before do
+        resource.close!
+        resource.metrics.update!(latest_closed_by: user)
+      end
+
+      it 'matches merge request metrics schema' do
+        expect(subject[:metrics].with_indifferent_access)
+          .to match_schema('entities/merge_request_metrics')
+      end
+
+      it 'returns values from metrics record' do
+        expect(subject.dig(:metrics, :closed_by, :id))
+          .to eq(resource.metrics.latest_closed_by_id)
+      end
+    end
+
+    context 'when metrics does not exists' do
+      before do
+        resource.mark_as_merged!
+        resource.metrics.destroy!
+        resource.reload
+      end
+
+      context 'when events exists' do
+        let!(:closed_event) { create(:event, :closed, project: project, target: resource) }
+        let!(:merge_event) { create(:event, :merged, project: project, target: resource) }
+
+        it 'matches merge request metrics schema' do
+          expect(subject[:metrics].with_indifferent_access)
+            .to match_schema('entities/merge_request_metrics')
+        end
+
+        it 'returns values from events record' do
+          expect(subject.dig(:metrics, :merged_by, :id))
+            .to eq(merge_event.author_id)
+
+          expect(subject.dig(:metrics, :closed_by, :id))
+            .to eq(closed_event.author_id)
+
+          expect(subject.dig(:metrics, :merged_at).to_s)
+            .to eq(merge_event.updated_at.to_s)
+
+          expect(subject.dig(:metrics, :closed_at).to_s)
+            .to eq(closed_event.updated_at.to_s)
+        end
+      end
+
+      context 'when events does not exists' do
+        it 'matches merge request metrics schema' do
+          expect(subject[:metrics].with_indifferent_access)
+            .to match_schema('entities/merge_request_metrics')
+        end
+      end
+    end
+  end
+
   it 'has email_patches_path' do
     expect(subject[:email_patches_path])
       .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}.patch")
@@ -72,9 +147,9 @@ describe MergeRequestWidgetEntity do
       allow(resource).to receive(:diff_head_sha) { 'sha' }
     end
 
-    context 'when no diff head commit' do
+    context 'when diff head commit is empty' do
       it 'returns nil' do
-        allow(resource).to receive(:diff_head_commit) { nil }
+        allow(resource).to receive(:diff_head_sha) { '' }
 
         expect(subject[:diff_head_sha]).to be_nil
       end
@@ -82,8 +157,6 @@ describe MergeRequestWidgetEntity do
 
     context 'when diff head commit present' do
       it 'returns diff head commit short id' do
-        allow(resource).to receive(:diff_head_commit) { double }
-
         expect(subject[:diff_head_sha]).to eq('sha')
       end
     end
@@ -113,6 +186,22 @@ describe MergeRequestWidgetEntity do
 
         expect(subject[:diverged_commits_count]).to be_zero
       end
+    end
+  end
+
+  describe 'when source project is deleted' do
+    let(:project) { create(:project, :repository) }
+    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
+
+    it 'returns a blank rebase_path' do
+      allow(merge_request).to receive(:should_be_rebased?).and_return(true)
+      fork_project.destroy
+      merge_request.reload
+
+      entity = described_class.new(merge_request, request: request).as_json
+
+      expect(entity[:rebase_path]).to be_nil
     end
   end
 end

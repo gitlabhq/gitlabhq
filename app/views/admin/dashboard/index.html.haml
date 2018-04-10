@@ -4,6 +4,34 @@
 %div{ class: container_class }
   .admin-dashboard.prepend-top-default
     .row
+      .col-sm-4
+        .info-well.dark-well
+          .well-segment.well-centered
+            = link_to admin_projects_path do
+              %h3.text-center
+                Projects:
+                = number_with_delimiter(Project.cached_count)
+            %hr
+            = link_to('New project', new_project_path, class: "btn btn-new")
+      .col-sm-4
+        .info-well.dark-well
+          .well-segment.well-centered
+            = link_to admin_users_path do
+              %h3.text-center
+                Users:
+                = number_with_delimiter(User.count)
+            %hr
+            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
+      .col-sm-4
+        .info-well.dark-well
+          .well-segment.well-centered
+            = link_to admin_groups_path do
+              %h3.text-center
+                Groups:
+                = number_with_delimiter(Group.count)
+            %hr
+            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
+    .row
       .col-md-4
         .info-well
           .well-segment.admin-well.admin-well-statistics
@@ -91,7 +119,7 @@
           .well-segment.admin-well
             %h4
               Components
-              - if current_application_settings.version_check_enabled
+              - if Gitlab::CurrentSettings.version_check_enabled
                 .pull-right
                   = version_status_badge
             %p
@@ -110,19 +138,11 @@
               GitLab API
               %span.pull-right
                 = API::API::version
-            %p
-              Gitaly
-              %span.pull-right
-                = Gitlab::GitalyClient.expected_server_version
             - if Gitlab.config.pages.enabled
               %p
                 GitLab Pages
                 %span.pull-right
                   = Gitlab::Pages::VERSION
-            %p
-              Git
-              %span.pull-right
-                = Gitlab::Git.version
             %p
               Ruby
               %span.pull-right
@@ -135,34 +155,8 @@
               = Gitlab::Database.adapter_name
               %span.pull-right
                 = Gitlab::Database.version
-    .row
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_projects_path do
-              %h3.text-center
-                Projects:
-                = number_with_delimiter(Project.cached_count)
-            %hr
-            = link_to('New project', new_project_path, class: "btn btn-new")
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_users_path do
-              %h3.text-center
-                Users:
-                = number_with_delimiter(User.count)
-            %hr
-            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_groups_path do
-              %h3.text-center
-                Groups:
-                = number_with_delimiter(Group.count)
-            %hr
-            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
+            %p
+              = link_to "Gitaly Servers", admin_gitaly_servers_path
     .row
       .col-md-4
         .info-well
@@ -170,7 +164,7 @@
             %h4 Latest projects
             - @projects.each do |project|
               %p
-                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
+                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
                 %span.light.pull-right
                   #{time_ago_with_tooltip(project.created_at)}
       .col-md-4

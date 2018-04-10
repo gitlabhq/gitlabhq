@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 let instanceCount = 0;
 
 class AutoWidthDropdownSelect {
@@ -11,6 +13,14 @@ class AutoWidthDropdownSelect {
     const dropdownClass = this.dropdownClass;
     this.$selectElement.select2({
       dropdownCssClass: dropdownClass,
+      ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
+    });
+
+    return this;
+  }
+
+  static selectOptions(dropdownClass) {
+    return {
       dropdownCss() {
         let resultantWidth = 'auto';
         const $dropdown = $(`.${dropdownClass}`);
@@ -29,9 +39,7 @@ class AutoWidthDropdownSelect {
           maxWidth: offsetParentWidth,
         };
       },
-    });
-
-    return this;
+    };
   }
 }
 

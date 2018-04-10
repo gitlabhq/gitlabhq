@@ -6,7 +6,6 @@ class IssueEntity < IssuableEntity
   expose :updated_by_id
   expose :created_at
   expose :updated_at
-  expose :deleted_at
   expose :milestone, using: API::Entities::Milestone
   expose :labels, using: LabelEntity
   expose :lock_version

@@ -72,6 +72,28 @@ describe Gitlab::Diff::Highlight do
         expect(subject[5].text).to eq(code)
         expect(subject[5].text).to be_html_safe
       end
+
+      context 'when the inline diff marker has an invalid range' do
+        before do
+          allow_any_instance_of(Gitlab::Diff::InlineDiffMarker).to receive(:mark).and_raise(RangeError)
+        end
+
+        it 'keeps the original rich line' do
+          code = %q{+      raise RuntimeError, "System commands must be given as an array of strings"}
+
+          expect(subject[5].text).to eq(code)
+          expect(subject[5].text).not_to be_html_safe
+        end
+
+        it 'reports to Sentry if configured' do
+          allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
+
+          expect(Gitlab::Sentry).to receive(:context)
+          expect(Raven).to receive(:capture_exception)
+
+          subject
+        end
+      end
     end
   end
 end

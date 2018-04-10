@@ -20,7 +20,7 @@ describe Gitlab::Metrics do
 
     context 'prometheus metrics enabled in config' do
       before do
-        allow(described_class).to receive(:current_application_settings).and_return(prometheus_metrics_enabled: true)
+        allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(true)
       end
 
       context 'when metrics folder is present' do

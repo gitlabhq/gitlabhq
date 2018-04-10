@@ -99,7 +99,7 @@ module IssuablesHelper
     project = Project.find_by(id: project_id)
 
     if project
-      project.name_with_namespace
+      project.full_name
     else
       default_label
     end
@@ -159,16 +159,18 @@ module IssuablesHelper
     label_names.join(', ')
   end
 
-  def issuables_state_counter_text(issuable_type, state)
+  def issuables_state_counter_text(issuable_type, state, display_count)
     titles = {
       opened: "Open"
     }
 
     state_title = titles[state] || state.to_s.humanize
-    count = issuables_count_for_state(issuable_type, state)
-
     html = content_tag(:span, state_title)
-    html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+
+    if display_count
+      count = issuables_count_for_state(issuable_type, state)
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+    end
 
     html.html_safe
   end
@@ -191,22 +193,8 @@ module IssuablesHelper
     end
   end
 
-  def issuable_filter_params
-    [
-      :search,
-      :author_id,
-      :assignee_id,
-      :milestone_title,
-      :label_name
-    ]
-  end
-
   def issuable_reference(issuable)
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
-  end
-
-  def issuable_filter_present?
-    issuable_filter_params.any? { |k| params.key?(k) }
   end
 
   def issuable_initial_data(issuable)
@@ -234,14 +222,14 @@ module IssuablesHelper
 
     data.merge!(updated_at_by(issuable))
 
-    data.to_json
+    data
   end
 
   def updated_at_by(issuable)
     return {} unless issuable.edited?
 
     {
-      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedAt: issuable.last_edited_at.to_time.iso8601,
       updatedBy: {
         name: issuable.last_edited_by.name,
         path: user_path(issuable.last_edited_by)
@@ -302,6 +290,12 @@ module IssuablesHelper
 
   def issuable_display_type(issuable)
     issuable.model_name.human.downcase
+  end
+
+  def selected_labels
+    Array(params[:label_name]).map do |label_name|
+      Label.new(title: label_name)
+    end
   end
 
   private
@@ -370,5 +364,12 @@ module IssuablesHelper
 
   def parent
     @project || @group
+  end
+
+  def issuable_milestone_tooltip_title(issuable)
+    if issuable.milestone
+      milestone_tooltip = milestone_tooltip_title(issuable.milestone)
+      _('Milestone') + (milestone_tooltip ? ': ' + milestone_tooltip : '')
+    end
   end
 end

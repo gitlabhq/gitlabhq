@@ -6,6 +6,14 @@
   }
 }
 
+.wiki-form {
+  .edit-wiki-page-slug-tip {
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 5px;
+  }
+}
+
 .title .edit-wiki-header {
   width: 780px;
   margin-left: auto;
@@ -170,6 +178,11 @@ ul.wiki-pages-list.content-list {
       padding: 5px 0;
     }
   }
+}
+
+.wiki-holder {
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .wiki {

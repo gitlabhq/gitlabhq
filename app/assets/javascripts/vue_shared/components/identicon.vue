@@ -46,6 +46,6 @@ export default {
     class="avatar identicon"
     :class="sizeClass"
     :style="identiconStyles">
-    {{identiconTitle}}
+    {{ identiconTitle }}
   </div>
 </template>

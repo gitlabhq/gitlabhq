@@ -1,5 +1,5 @@
 namespace :admin do
-  resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
+  resources :users, constraints: { id: %r{[a-zA-Z./0-9_\-]+} } do
     resources :keys, only: [:show, :destroy]
     resources :identities, except: [:show]
     resources :impersonation_tokens, only: [:index, :create] do
@@ -24,6 +24,8 @@ namespace :admin do
   resource :impersonation, only: :destroy
 
   resources :abuse_reports, only: [:index, :destroy]
+  resources :gitaly_servers, only: [:index]
+
   resources :spam_logs, only: [:index, :destroy] do
     member do
       post :mark_as_ham

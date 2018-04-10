@@ -15,14 +15,44 @@ feature 'Group show page' do
     end
 
     it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+
+    context 'when group does not exist' do
+      let(:path) { group_path('not-exist') }
+
+      it { expect(status_code).to eq(404) }
+    end
   end
 
   context 'when signed out' do
-    before do
-      visit path
+    describe 'RSS' do
+      before do
+        visit path
+      end
+
+      it_behaves_like "an autodiscoverable RSS feed without an RSS token"
     end
 
-    it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+    context 'when group has a public project', :js do
+      let!(:project) { create(:project, :public, namespace: group) }
+
+      it 'renders public project' do
+        visit path
+
+        expect(page).to have_link group.name
+        expect(page).to have_link project.name
+      end
+    end
+
+    context 'when group has a private project', :js do
+      let!(:project) { create(:project, :private, namespace: group) }
+
+      it 'does not render private project' do
+        visit path
+
+        expect(page).to have_link group.name
+        expect(page).not_to have_link project.name
+      end
+    end
   end
 
   context 'subgroup support' do
@@ -53,6 +83,22 @@ feature 'Group show page' do
       it 'allows creating subgroups' do
         expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
       end
+    end
+  end
+
+  context 'group has a project with emoji in description', :js do
+    let(:user) { create(:user) }
+    let!(:project) { create(:project, description: ':smile:', namespace: group) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+      visit path
+    end
+
+    it 'shows the project info' do
+      expect(page).to have_content(project.title)
+      expect(page).to have_selector('gl-emoji[data-name="smile"]')
     end
   end
 end

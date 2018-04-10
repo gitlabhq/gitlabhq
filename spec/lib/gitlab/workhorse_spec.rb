@@ -16,7 +16,7 @@ describe Gitlab::Workhorse do
     let(:ref) { 'master' }
     let(:format) { 'zip' }
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
-    let(:base_params) { repository.archive_metadata(ref, storage_path, format) }
+    let(:base_params) { repository.archive_metadata(ref, storage_path, format, append_sha: nil) }
     let(:gitaly_params) do
       base_params.merge(
         'GitalyServer' => {
@@ -26,9 +26,14 @@ describe Gitlab::Workhorse do
         'GitalyRepository' => repository.gitaly_repository.to_h.deep_stringify_keys
       )
     end
+    let(:cache_disabled) { false }
 
     subject do
-      described_class.send_git_archive(repository, ref: ref, format: format)
+      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil)
+    end
+
+    before do
+      allow(described_class).to receive(:git_archive_cache_disabled?).and_return(cache_disabled)
     end
 
     context 'when Gitaly workhorse_archive feature is enabled' do
@@ -39,9 +44,18 @@ describe Gitlab::Workhorse do
         expect(command).to eq('git-archive')
         expect(params).to include(gitaly_params)
       end
+
+      context 'when archive caching is disabled' do
+        let(:cache_disabled) { true }
+
+        it 'tells workhorse not to use the cache' do
+          _, _, params = decode_workhorse_header(subject)
+          expect(params).to include({ 'DisableCache' => true })
+        end
+      end
     end
 
-    context 'when Gitaly workhorse_archive feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_archive feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -86,7 +100,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_send_git_patch feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_send_git_patch feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -159,7 +173,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_send_git_diff feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_send_git_diff feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -261,7 +275,7 @@ describe Gitlab::Workhorse do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
-    let(:repo_path) { repository.path_to_repo }
+    let(:repo_path) { 'ignored but not allowed to be empty in gitlab-workhorse' }
     let(:action) { 'info_refs' }
     let(:params) do
       {
@@ -310,7 +324,7 @@ describe Gitlab::Workhorse do
       it 'includes a Repository param' do
         repo_param = {
           storage_name: 'default',
-          relative_path: project.full_path + '.git',
+          relative_path: project.disk_path + '.git',
           gl_repository: "project-#{project.id}"
         }
 
@@ -441,7 +455,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_raw_show feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_raw_show feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -449,6 +463,23 @@ describe Gitlab::Workhorse do
         expect(command).to eq('git-blob')
         expect(params).to eq('RepoPath' => repository.path_to_repo, 'BlobId' => blob.id)
       end
+    end
+  end
+
+  describe '.send_url' do
+    let(:url) { 'http://example.com' }
+
+    subject { described_class.send_url(url) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("send-url")
+      expect(params).to eq({
+        'URL' => url,
+        'AllowRedirects' => false
+      }.deep_stringify_keys)
     end
   end
 end

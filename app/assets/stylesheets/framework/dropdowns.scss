@@ -28,7 +28,9 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;
-    min-height: 40px;
+    min-height: $dropdown-min-height;
+    max-height: $dropdown-max-height;
+    overflow-y: auto;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -60,11 +62,6 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
-
-  &[disabled] {
-    opacity: .65;
-    cursor: not-allowed;
-  }
 
   &.no-outline {
     outline: 0;
@@ -275,7 +272,7 @@
 
   .divider {
     height: 1px;
-    margin: 6px 0;
+    margin: #{$grid-size / 2} 0;
     padding: 0;
     background-color: $dropdown-divider-color;
 
@@ -504,10 +501,8 @@
           -moz-osx-font-smoothing: grayscale;
         }
 
-        &.dropdown-menu-user-link {
-          &::before {
-            top: 50%;
-          }
+        &.dropdown-menu-user-link::before {
+          top: 50%;
         }
       }
 
@@ -627,7 +622,7 @@
 }
 
 .dropdown-content {
-  max-height: $dropdown-max-height;
+  max-height: 252px;
   overflow-y: auto;
 }
 
@@ -664,6 +659,16 @@
   }
 }
 
+.dropdown-create-new-item-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
 .dropdown-loading {
   position: absolute;
   top: 0;
@@ -693,6 +698,31 @@
   height: 15px;
   border-radius: $border-radius-base;
 }
+
+.git-revision-dropdown {
+  .dropdown-content {
+    max-height: 215px;
+  }
+}
+
+.sidebar-move-issue-dropdown {
+  .dropdown-content {
+    max-height: 160px;
+  }
+}
+
+.dropdown-menu-author {
+  .dropdown-content {
+    max-height: 215px;
+  }
+}
+
+.dropdown-menu-labels {
+  .dropdown-content {
+    max-height: 128px;
+  }
+}
+
 
 .dropdown-menu-due-date {
   .dropdown-content {
@@ -727,10 +757,6 @@
   &.is-default {
     color: $gl-text-color-secondary;
   }
-}
-
-.droplab-item-ignore {
-  pointer-events: none;
 }
 
 .pika-single.animate-picker.is-bound,

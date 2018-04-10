@@ -110,7 +110,7 @@ module SearchHelper
         category: "Projects",
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
-        label: "#{search_result_sanitize(p.name_with_namespace)}",
+        label: "#{search_result_sanitize(p.full_name)}",
         url: project_path(p)
       }
     end
@@ -169,5 +169,9 @@ module SearchHelper
 
     # Truncato's filtered_tags and filtered_attributes are not quite the same
     sanitize(html, tags: %w(a p ol ul li pre code))
+  end
+
+  def limited_count(count, limit = 1000)
+    count > limit ? "#{limit}+" : count
   end
 end

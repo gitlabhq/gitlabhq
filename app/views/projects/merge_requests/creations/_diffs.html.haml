@@ -1,1 +1,5 @@
-= render "projects/diffs/diffs", diffs: @diffs, environment: @environment, show_whitespace_toggle: false
+- if @merge_request.can_be_created
+  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, show_whitespace_toggle: false
+- else
+  .nothing-here-block
+    This merge request cannot be created.

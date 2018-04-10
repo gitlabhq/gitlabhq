@@ -1,118 +1,116 @@
 require 'spec_helper'
 
 describe FileUploader do
-  let(:uploader) { described_class.new(build_stubbed(:project)) }
+  let(:group) { create(:group, name: 'awesome') }
+  let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
+  let(:uploader) { described_class.new(project) }
+  let(:upload)  { double(model: project, path: 'secret/foo.jpg') }
+
+  subject { uploader }
+
+  shared_examples 'builds correct legacy storage paths' do
+    include_examples 'builds correct paths',
+                     store_dir: %r{awesome/project/\h+},
+                     upload_path: %r{\h+/<filename>},
+                     absolute_path: %r{#{described_class.root}/awesome/project/secret/foo.jpg}
+  end
 
   context 'legacy storage' do
-    let(:project) { build_stubbed(:project) }
+    it_behaves_like 'builds correct legacy storage paths'
 
-    describe '.absolute_path' do
-      it 'returns the correct absolute path by building it dynamically' do
-        upload = double(model: project, path: 'secret/foo.jpg')
+    context 'uses hashed storage' do
+      context 'when rolled out attachments' do
+        let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
 
-        dynamic_segment = project.full_path
-
-        expect(described_class.absolute_path(upload))
-          .to end_with("#{dynamic_segment}/secret/foo.jpg")
+        include_examples 'builds correct paths',
+                         store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+                         upload_path: %r{\h+/<filename>}
       end
-    end
 
-    describe "#store_dir" do
-      it "stores in the namespace path" do
-        uploader = described_class.new(project)
+      context 'when only repositories are rolled out' do
+        let(:project) { build_stubbed(:project, namespace: group, name: 'project', storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
 
-        expect(uploader.store_dir).to include(project.full_path)
-        expect(uploader.store_dir).not_to include("system")
+        it_behaves_like 'builds correct legacy storage paths'
       end
     end
   end
 
-  context 'hashed storage' do
-    context 'when rolled out attachments' do
-      let(:project) { build_stubbed(:project, :hashed) }
-
-      describe '.absolute_path' do
-        it 'returns the correct absolute path by building it dynamically' do
-          upload = double(model: project, path: 'secret/foo.jpg')
-
-          dynamic_segment = project.disk_path
-
-          expect(described_class.absolute_path(upload))
-            .to end_with("#{dynamic_segment}/secret/foo.jpg")
-        end
-      end
-
-      describe "#store_dir" do
-        it "stores in the namespace path" do
-          uploader = described_class.new(project)
-
-          expect(uploader.store_dir).to include(project.disk_path)
-          expect(uploader.store_dir).not_to include("system")
-        end
-      end
+  context 'object store is remote' do
+    before do
+      stub_uploads_object_storage
     end
 
-    context 'when only repositories are rolled out' do
-      let(:project) { build_stubbed(:project, storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
+    include_context 'with storage', described_class::Store::REMOTE
 
-      describe '.absolute_path' do
-        it 'returns the correct absolute path by building it dynamically' do
-          upload = double(model: project, path: 'secret/foo.jpg')
-
-          dynamic_segment = project.full_path
-
-          expect(described_class.absolute_path(upload))
-            .to end_with("#{dynamic_segment}/secret/foo.jpg")
-        end
-      end
-
-      describe "#store_dir" do
-        it "stores in the namespace path" do
-          uploader = described_class.new(project)
-
-          expect(uploader.store_dir).to include(project.full_path)
-          expect(uploader.store_dir).not_to include("system")
-        end
-      end
-    end
+    # always use hashed storage path for remote uploads
+    it_behaves_like 'builds correct paths',
+                     store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+                     upload_path: %r{@hashed/\h{2}/\h{2}/\h+/\h+/<filename>}
   end
 
   describe 'initialize' do
-    it 'generates a secret if none is provided' do
-      expect(SecureRandom).to receive(:hex).and_return('secret')
-
-      uploader = described_class.new(double)
-
-      expect(uploader.secret).to eq 'secret'
-    end
+    let(:uploader) { described_class.new(double, secret: 'secret') }
 
     it 'accepts a secret parameter' do
-      expect(SecureRandom).not_to receive(:hex)
-
-      uploader = described_class.new(double, 'secret')
-
-      expect(uploader.secret).to eq 'secret'
+      expect(described_class).not_to receive(:generate_secret)
+      expect(uploader.secret).to eq('secret')
     end
   end
 
-  describe '#move_to_cache' do
-    it 'is true' do
-      expect(uploader.move_to_cache).to eq(true)
+  describe 'callbacks' do
+    describe '#prune_store_dir after :remove' do
+      before do
+        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
+      end
+
+      def store_dir
+        File.expand_path(uploader.store_dir, uploader.root)
+      end
+
+      it 'is called' do
+        expect(uploader).to receive(:prune_store_dir).once
+
+        uploader.remove!
+      end
+
+      it 'prune the store directory' do
+        expect { uploader.remove! }
+          .to change { File.exist?(store_dir) }.from(true).to(false)
+      end
     end
   end
 
-  describe '#move_to_store' do
-    it 'is true' do
-      expect(uploader.move_to_store).to eq(true)
+  describe '#secret' do
+    it 'generates a secret if none is provided' do
+      expect(described_class).to receive(:generate_secret).and_return('secret')
+      expect(uploader.secret).to eq('secret')
     end
   end
 
-  describe '#relative_path' do
-    it 'removes the leading dynamic path segment' do
-      fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
-      uploader.store!(fixture_file_upload(fixture))
+  describe "#migrate!" do
+    before do
+      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
+      stub_uploads_object_storage
+    end
 
-      expect(uploader.relative_path).to match(/\A\h{32}\/rails_sample.jpg\z/)
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
+  end
+
+  describe '#upload=' do
+    let(:secret) { SecureRandom.hex }
+    let(:upload) { create(:upload, :issuable_upload, secret: secret, filename: 'file.txt') }
+
+    it 'handles nil' do
+      expect(uploader).not_to receive(:apply_context!)
+
+      uploader.upload = nil
+    end
+
+    it 'extract the uploader context from it' do
+      expect(uploader).to receive(:apply_context!).with(a_hash_including(secret: secret, identifier: 'file.txt'))
+
+      uploader.upload = upload
     end
   end
 end

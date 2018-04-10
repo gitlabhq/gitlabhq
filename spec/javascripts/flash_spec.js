@@ -183,11 +183,15 @@ describe('Flash', () => {
       });
 
       it('adds flash element into container', () => {
-        flash('test');
+        flash('test', 'alert', document, null, false, true);
 
         expect(
           document.querySelector('.flash-alert'),
         ).not.toBeNull();
+
+        expect(
+          document.body.className,
+        ).toContain('flash-shown');
       });
 
       it('adds flash into specified parent', () => {
@@ -220,13 +224,17 @@ describe('Flash', () => {
       });
 
       it('removes element after clicking', () => {
-        flash('test', 'alert', document, null, false);
+        flash('test', 'alert', document, null, false, true);
 
         document.querySelector('.flash-alert').click();
 
         expect(
           document.querySelector('.flash-alert'),
         ).toBeNull();
+
+        expect(
+          document.body.className,
+        ).not.toContain('flash-shown');
       });
 
       describe('with actionConfig', () => {

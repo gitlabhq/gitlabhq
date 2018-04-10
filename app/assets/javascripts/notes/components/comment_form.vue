@@ -1,241 +1,315 @@
 <script>
-  import { mapActions, mapGetters } from 'vuex';
-  import _ from 'underscore';
-  import Autosize from 'autosize';
-  import Flash from '../../flash';
-  import Autosave from '../../autosave';
-  import TaskList from '../../task_list';
-  import * as constants from '../constants';
-  import eventHub from '../event_hub';
-  import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
-  import noteSignedOutWidget from './note_signed_out_widget.vue';
-  import discussionLockedWidget from './discussion_locked_widget.vue';
-  import markdownField from '../../vue_shared/components/markdown/field.vue';
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import issuableStateMixin from '../mixins/issuable_state';
+import $ from 'jquery';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import _ from 'underscore';
+import Autosize from 'autosize';
+import { __, sprintf } from '~/locale';
+import Flash from '../../flash';
+import Autosave from '../../autosave';
+import TaskList from '../../task_list';
+import {
+  capitalizeFirstCharacter,
+  convertToCamelCase,
+} from '../../lib/utils/text_utility';
+import * as constants from '../constants';
+import eventHub from '../event_hub';
+import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
+import markdownField from '../../vue_shared/components/markdown/field.vue';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import loadingButton from '../../vue_shared/components/loading_button.vue';
+import noteSignedOutWidget from './note_signed_out_widget.vue';
+import discussionLockedWidget from './discussion_locked_widget.vue';
+import issuableStateMixin from '../mixins/issuable_state';
 
-  export default {
-    name: 'commentForm',
-    data() {
+export default {
+  name: 'CommentForm',
+  components: {
+    issueWarning,
+    noteSignedOutWidget,
+    discussionLockedWidget,
+    markdownField,
+    userAvatarLink,
+    loadingButton,
+  },
+  mixins: [issuableStateMixin],
+  props: {
+    noteableType: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      note: '',
+      noteType: constants.COMMENT,
+      isSubmitting: false,
+      isSubmitButtonDisabled: true,
+    };
+  },
+  computed: {
+    ...mapGetters([
+      'getCurrentUserLastNote',
+      'getUserData',
+      'getNoteableData',
+      'getNotesData',
+      'openState',
+    ]),
+    ...mapState(['isToggleStateButtonLoading']),
+    noteableDisplayName() {
+      return this.noteableType.replace(/_/g, ' ');
+    },
+    isLoggedIn() {
+      return this.getUserData.id;
+    },
+    commentButtonTitle() {
+      return this.noteType === constants.COMMENT
+        ? 'Comment'
+        : 'Start discussion';
+    },
+    isOpen() {
+      return (
+        this.openState === constants.OPENED ||
+        this.openState === constants.REOPENED
+      );
+    },
+    canCreateNote() {
+      return this.getNoteableData.current_user.can_create_note;
+    },
+    issueActionButtonTitle() {
+      const openOrClose = this.isOpen ? 'close' : 'reopen';
+
+      if (this.note.length) {
+        return sprintf(__('%{actionText} & %{openOrClose} %{noteable}'), {
+          actionText: this.commentButtonTitle,
+          openOrClose,
+          noteable: this.noteableDisplayName,
+        });
+      }
+
+      return sprintf(__('%{openOrClose} %{noteable}'), {
+        openOrClose: capitalizeFirstCharacter(openOrClose),
+        noteable: this.noteableDisplayName,
+      });
+    },
+    actionButtonClassNames() {
       return {
-        note: '',
-        noteType: constants.COMMENT,
-        // Can't use mapGetters,
-        // this needs to be in the data object because it belongs to the state
-        issueState: this.$store.getters.getNoteableData.state,
-        isSubmitting: false,
-        isSubmitButtonDisabled: true,
+        'btn-reopen': !this.isOpen,
+        'btn-close': this.isOpen,
+        'js-note-target-close': this.isOpen,
+        'js-note-target-reopen': !this.isOpen,
       };
     },
-    components: {
-      issueWarning,
-      noteSignedOutWidget,
-      discussionLockedWidget,
-      markdownField,
-      userAvatarLink,
+    supportQuickActions() {
+      // Disable quick actions support for Epics
+      return this.noteableType !== constants.EPIC_NOTEABLE_TYPE;
     },
-    watch: {
-      note(newNote) {
-        this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
-      },
-      isSubmitting(newValue) {
-        this.setIsSubmitButtonDisabled(this.note, newValue);
-      },
+    markdownDocsPath() {
+      return this.getNotesData.markdownDocsPath;
     },
-    computed: {
-      ...mapGetters([
-        'getCurrentUserLastNote',
-        'getUserData',
-        'getNoteableData',
-        'getNotesData',
-      ]),
-      isLoggedIn() {
-        return this.getUserData.id;
-      },
-      commentButtonTitle() {
-        return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
-      },
-      isIssueOpen() {
-        return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
-      },
-      canCreateNote() {
-        return this.getNoteableData.current_user.can_create_note;
-      },
-      issueActionButtonTitle() {
-        if (this.note.length) {
-          const actionText = this.isIssueOpen ? 'close' : 'reopen';
+    quickActionsDocsPath() {
+      return this.getNotesData.quickActionsDocsPath;
+    },
+    markdownPreviewPath() {
+      return this.getNoteableData.preview_note_path;
+    },
+    author() {
+      return this.getUserData;
+    },
+    canUpdateIssue() {
+      return this.getNoteableData.current_user.can_update;
+    },
+    endpoint() {
+      return this.getNoteableData.create_note_path;
+    },
+  },
+  watch: {
+    note(newNote) {
+      this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
+    },
+    isSubmitting(newValue) {
+      this.setIsSubmitButtonDisabled(this.note, newValue);
+    },
+  },
+  mounted() {
+    // jQuery is needed here because it is a custom event being dispatched with jQuery.
+    $(document).on('issuable:change', (e, isClosed) => {
+      this.toggleIssueLocalState(
+        isClosed ? constants.CLOSED : constants.REOPENED,
+      );
+    });
 
-          return this.noteType === constants.COMMENT ? `Comment & ${actionText} issue` : `Start discussion & ${actionText} issue`;
-        }
-
-        return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
-      },
-      actionButtonClassNames() {
-        return {
-          'btn-reopen': !this.isIssueOpen,
-          'btn-close': this.isIssueOpen,
-          'js-note-target-close': this.isIssueOpen,
-          'js-note-target-reopen': !this.isIssueOpen,
-        };
-      },
-      markdownDocsPath() {
-        return this.getNotesData.markdownDocsPath;
-      },
-      quickActionsDocsPath() {
-        return this.getNotesData.quickActionsDocsPath;
-      },
-      markdownPreviewPath() {
-        return this.getNoteableData.preview_note_path;
-      },
-      author() {
-        return this.getUserData;
-      },
-      canUpdateIssue() {
-        return this.getNoteableData.current_user.can_update;
-      },
-      endpoint() {
-        return this.getNoteableData.create_note_path;
-      },
+    this.initAutoSave();
+    this.initTaskList();
+  },
+  methods: {
+    ...mapActions([
+      'saveNote',
+      'stopPolling',
+      'restartPolling',
+      'removePlaceholderNotes',
+      'closeIssue',
+      'reopenIssue',
+      'toggleIssueLocalState',
+      'toggleStateButtonLoading',
+    ]),
+    setIsSubmitButtonDisabled(note, isSubmitting) {
+      if (!_.isEmpty(note) && !isSubmitting) {
+        this.isSubmitButtonDisabled = false;
+      } else {
+        this.isSubmitButtonDisabled = true;
+      }
     },
-    methods: {
-      ...mapActions([
-        'saveNote',
-        'stopPolling',
-        'restartPolling',
-        'removePlaceholderNotes',
-      ]),
-      setIsSubmitButtonDisabled(note, isSubmitting) {
-        if (!_.isEmpty(note) && !isSubmitting) {
-          this.isSubmitButtonDisabled = false;
-        } else {
-          this.isSubmitButtonDisabled = true;
-        }
-      },
-      handleSave(withIssueAction) {
-        if (this.note.length) {
-          const noteData = {
-            endpoint: this.endpoint,
-            flashContainer: this.$el,
-            data: {
-              note: {
-                noteable_type: constants.NOTEABLE_TYPE,
-                noteable_id: this.getNoteableData.id,
-                note: this.note,
-              },
+    handleSave(withIssueAction) {
+      this.isSubmitting = true;
+
+      if (this.note.length) {
+        const noteData = {
+          endpoint: this.endpoint,
+          flashContainer: this.$el,
+          data: {
+            note: {
+              noteable_type: this.noteableType,
+              noteable_id: this.getNoteableData.id,
+              note: this.note,
             },
-          };
+          },
+        };
 
-          if (this.noteType === constants.DISCUSSION) {
-            noteData.data.note.type = constants.DISCUSSION_NOTE;
-          }
-          this.isSubmitting = true;
-          this.note = ''; // Empty textarea while being requested. Repopulate in catch
-          this.resizeTextarea();
-          this.stopPolling();
+        if (this.noteType === constants.DISCUSSION) {
+          noteData.data.note.type = constants.DISCUSSION_NOTE;
+        }
 
-          this.saveNote(noteData)
-            .then((res) => {
-              this.isSubmitting = false;
-              this.restartPolling();
+        this.note = ''; // Empty textarea while being requested. Repopulate in catch
+        this.resizeTextarea();
+        this.stopPolling();
 
-              if (res.errors) {
-                if (res.errors.commands_only) {
-                  this.discard();
-                } else {
-                  Flash(
-                    'Something went wrong while adding your comment. Please try again.',
-                    'alert',
-                    this.$refs.commentForm,
-                  );
-                }
-              } else {
+        this.saveNote(noteData)
+          .then(res => {
+            this.enableButton();
+            this.restartPolling();
+
+            if (res.errors) {
+              if (res.errors.commands_only) {
                 this.discard();
+              } else {
+                Flash(
+                  'Something went wrong while adding your comment. Please try again.',
+                  'alert',
+                  this.$refs.commentForm,
+                );
               }
+            } else {
+              this.discard();
+            }
 
-              if (withIssueAction) {
-                this.toggleIssueState();
-              }
-            })
-            .catch(() => {
-              this.isSubmitting = false;
-              this.discard(false);
-              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
-              Flash(msg, 'alert', this.$el);
-              this.note = noteData.data.note.note; // Restore textarea content.
-              this.removePlaceholderNotes();
-            });
-        } else {
-          this.toggleIssueState();
-        }
-      },
-      toggleIssueState() {
-        this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
-
-        // This is out of scope for the Notes Vue component.
-        // It was the shortest path to update the issue state and relevant places.
-        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
-        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
-      },
-      discard(shouldClear = true) {
-        // `blur` is needed to clear slash commands autocomplete cache if event fired.
-        // `focus` is needed to remain cursor in the textarea.
-        this.$refs.textarea.blur();
-        this.$refs.textarea.focus();
-
-        if (shouldClear) {
-          this.note = '';
-          this.resizeTextarea();
-          this.$refs.markdownField.previewMarkdown = false;
-        }
-
-        // reset autostave
-        this.autosave.reset();
-      },
-      setNoteType(type) {
-        this.noteType = type;
-      },
-      editCurrentUserLastNote() {
-        if (this.note === '') {
-          const lastNote = this.getCurrentUserLastNote;
-
-          if (lastNote) {
-            eventHub.$emit('enterEditMode', {
-              noteId: lastNote.id,
-            });
-          }
-        }
-      },
-      initAutoSave() {
-        if (this.isLoggedIn) {
-          this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getNoteableData.id], 'issue');
-        }
-      },
-      initTaskList() {
-        return new TaskList({
-          dataType: 'note',
-          fieldName: 'note',
-          selector: '.notes',
-        });
-      },
-      resizeTextarea() {
-        this.$nextTick(() => {
-          Autosize.update(this.$refs.textarea);
-        });
-      },
+            if (withIssueAction) {
+              this.toggleIssueState();
+            }
+          })
+          .catch(() => {
+            this.enableButton();
+            this.discard(false);
+            const msg = `Your comment could not be submitted!
+Please check your network connection and try again.`;
+            Flash(msg, 'alert', this.$el);
+            this.note = noteData.data.note.note; // Restore textarea content.
+            this.removePlaceholderNotes();
+          });
+      } else {
+        this.toggleIssueState();
+      }
     },
-    mixins: [
-      issuableStateMixin,
-    ],
-    mounted() {
-      // jQuery is needed here because it is a custom event being dispatched with jQuery.
-      $(document).on('issuable:change', (e, isClosed) => {
-        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+    enableButton() {
+      this.isSubmitting = false;
+    },
+    toggleIssueState() {
+      if (this.isOpen) {
+        this.closeIssue()
+          .then(() => this.enableButton())
+          .catch(() => {
+            this.enableButton();
+            this.toggleStateButtonLoading(false);
+            Flash(
+              sprintf(
+                __(
+                  'Something went wrong while closing the %{issuable}. Please try again later',
+                ),
+                { issuable: this.noteableDisplayName },
+              ),
+            );
+          });
+      } else {
+        this.reopenIssue()
+          .then(() => this.enableButton())
+          .catch(() => {
+            this.enableButton();
+            this.toggleStateButtonLoading(false);
+            Flash(
+              sprintf(
+                __(
+                  'Something went wrong while reopening the %{issuable}. Please try again later',
+                ),
+                { issuable: this.noteableDisplayName },
+              ),
+            );
+          });
+      }
+    },
+    discard(shouldClear = true) {
+      // `blur` is needed to clear slash commands autocomplete cache if event fired.
+      // `focus` is needed to remain cursor in the textarea.
+      this.$refs.textarea.blur();
+      this.$refs.textarea.focus();
+
+      if (shouldClear) {
+        this.note = '';
+        this.resizeTextarea();
+        this.$refs.markdownField.previewMarkdown = false;
+      }
+
+      this.autosave.reset();
+    },
+    setNoteType(type) {
+      this.noteType = type;
+    },
+    editCurrentUserLastNote() {
+      if (this.note === '') {
+        const lastNote = this.getCurrentUserLastNote;
+
+        if (lastNote) {
+          eventHub.$emit('enterEditMode', {
+            noteId: lastNote.id,
+          });
+        }
+      }
+    },
+    initAutoSave() {
+      if (this.isLoggedIn) {
+        const noteableType = capitalizeFirstCharacter(
+          convertToCamelCase(this.noteableType),
+        );
+
+        this.autosave = new Autosave($(this.$refs.textarea), [
+          'Note',
+          noteableType,
+          this.getNoteableData.id,
+        ]);
+      }
+    },
+    initTaskList() {
+      return new TaskList({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '.notes',
       });
-
-      this.initAutoSave();
-      this.initTaskList();
     },
-  };
+    resizeTextarea() {
+      this.$nextTick(() => {
+        Autosize.update(this.$refs.textarea);
+      });
+    },
+  },
+};
 </script>
 
 <template>
@@ -258,12 +332,12 @@
               :img-src="author.avatar_url"
               :img-alt="author.name"
               :img-size="40"
-              />
+            />
           </div>
           <div class="timeline-content timeline-content-form">
             <form
               ref="commentForm"
-              class="new-note js-quick-submit common-note-form gfm-form js-main-target-form"
+              class="new-note common-note-form gfm-form js-main-target-form"
             >
 
               <div class="error-alert"></div>
@@ -283,8 +357,9 @@
                 <textarea
                   id="note-body"
                   name="note[note]"
-                  class="note-textarea js-vue-comment-form js-gfm-input js-autosize markdown-area js-vue-textarea"
-                  data-supports-quick-actions="true"
+                  class="note-textarea js-vue-comment-form
+js-gfm-input js-autosize markdown-area js-vue-textarea"
+                  :data-supports-quick-actions="supportQuickActions"
                   aria-label="Description"
                   v-model="note"
                   ref="textarea"
@@ -292,17 +367,20 @@
                   :disabled="isSubmitting"
                   placeholder="Write a comment or drag your files here..."
                   @keydown.up="editCurrentUserLastNote()"
-                  @keydown.meta.enter="handleSave()">
+                  @keydown.meta.enter="handleSave()"
+                  @keydown.ctrl.enter="handleSave()">
                 </textarea>
               </markdown-field>
               <div class="note-form-actions">
-                <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
+                <div
+                  class="pull-left btn-group
+append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="submit">
-                    {{commentButtonTitle}}
+                    {{ __(commentButtonTitle) }}
                   </button>
                   <button
                     :disabled="isSubmitButtonDisabled"
@@ -330,7 +408,7 @@
                         <div class="description">
                           <strong>Comment</strong>
                           <p>
-                            Add a general comment to this issue.
+                            Add a general comment to this {{ noteableDisplayName }}.
                           </p>
                         </div>
                       </button>
@@ -344,7 +422,7 @@
                         <i
                           aria-hidden="true"
                           class="fa fa-check icon">
-                          </i>
+                        </i>
                         <div class="description">
                           <strong>Start discussion</strong>
                           <p>
@@ -355,15 +433,19 @@
                     </li>
                   </ul>
                 </div>
-                <button
-                  type="button"
-                  @click="handleSave(true)"
+
+                <loading-button
                   v-if="canUpdateIssue"
-                  :class="actionButtonClassNames"
-                  :disabled="isSubmitting"
-                  class="btn btn-comment btn-comment-and-close js-action-button">
-                  {{issueActionButtonTitle}}
-                </button>
+                  :loading="isToggleStateButtonLoading"
+                  @click="handleSave(true)"
+                  :container-class="[
+                    actionButtonClassNames,
+                    'btn btn-comment btn-comment-and-close js-action-button'
+                  ]"
+                  :disabled="isToggleStateButtonLoading || isSubmitting"
+                  :label="issueActionButtonTitle"
+                />
+
                 <button
                   type="button"
                   v-if="note.length"

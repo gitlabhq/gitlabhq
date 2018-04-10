@@ -1,8 +1,6 @@
 module Gitlab
   module LegacyGithubImport
     class ProjectCreator
-      include Gitlab::CurrentSettings
-
       attr_reader :repo, :name, :namespace, :current_user, :session_data, :type
 
       def initialize(repo, name, namespace, current_user, session_data, type: 'github')
@@ -14,9 +12,8 @@ module Gitlab
         @type = type
       end
 
-      def execute
-        ::Projects::CreateService.new(
-          current_user,
+      def execute(extra_attrs = {})
+        attrs = {
           name: name,
           path: name,
           description: repo.description,
@@ -26,7 +23,9 @@ module Gitlab
           import_source: repo.full_name,
           import_url: import_url,
           skip_wiki: skip_wiki
-        ).execute
+        }.merge!(extra_attrs)
+
+        ::Projects::CreateService.new(current_user, attrs).execute
       end
 
       private
@@ -36,7 +35,7 @@ module Gitlab
       end
 
       def visibility_level
-        repo.private ? Gitlab::VisibilityLevel::PRIVATE : current_application_settings.default_project_visibility
+        repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.default_project_visibility
       end
 
       #

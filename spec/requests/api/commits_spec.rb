@@ -62,7 +62,7 @@ describe API::Commits do
 
       context "since optional parameter" do
         it "returns project commits since provided parameter" do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 2)
           after = commits.second.created_at
 
           get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
@@ -73,7 +73,7 @@ describe API::Commits do
         end
 
         it 'include correct pagination headers' do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 2)
           after = commits.second.created_at
           commit_count = project.repository.count_commits(ref: 'master', after: after).to_s
 
@@ -87,12 +87,12 @@ describe API::Commits do
 
       context "until optional parameter" do
         it "returns project commits until provided parameter" do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 20)
           before = commits.second.created_at
 
           get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-          if commits.size >= 20
+          if commits.size == 20
             expect(json_response.size).to eq(20)
           else
             expect(json_response.size).to eq(commits.size - 1)
@@ -103,7 +103,7 @@ describe API::Commits do
         end
 
         it 'include correct pagination headers' do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 2)
           before = commits.second.created_at
           commit_count = project.repository.count_commits(ref: 'master', before: before).to_s
 
@@ -149,6 +149,18 @@ describe API::Commits do
         end
       end
 
+      context 'all optional parameter' do
+        it 'returns all project commits' do
+          commit_count = project.repository.count_commits(all: true)
+
+          get api("/projects/#{project_id}/repository/commits?all=true", user)
+
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count.to_s)
+          expect(response.headers['X-Page']).to eql('1')
+        end
+      end
+
       context 'with pagination params' do
         let(:page) { 1 }
         let(:per_page) { 5 }
@@ -181,7 +193,7 @@ describe API::Commits do
           let(:page) { 3 }
 
           it 'returns the third 5 commits' do
-            commit = project.repository.commits('HEAD', offset: (page - 1) * per_page).first
+            commit = project.repository.commits('HEAD', limit: per_page, offset: (page - 1) * per_page).first
 
             expect(json_response.size).to eq(per_page)
             expect(json_response.first['id']).to eq(commit.id)
@@ -465,6 +477,72 @@ describe API::Commits do
     end
   end
 
+  describe 'GET /projects/:id/repository/commits/:sha/refs' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:tag) { project.repository.find_tag('v1.1.0') }
+    let(:commit_id) { tag.dereferenced_target.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/refs" }
+
+    context 'when ref does not exist' do
+      let(:commit_id) { 'unknown' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Commit Not Found' }
+      end
+    end
+
+    context 'when repository is disabled' do
+      include_context 'disabled repository'
+
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, current_user) }
+      end
+    end
+
+    context 'for a valid commit' do
+      it 'returns all refs with no scope' do
+        get api(route, current_user), per_page: 100
+
+        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
+        refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
+      end
+
+      it 'returns all refs' do
+        get api(route, current_user), type: 'all', per_page: 100
+
+        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
+        refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
+      end
+
+      it 'returns the branch refs' do
+        get api(route, current_user), type: 'branch', per_page: 100
+
+        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
+      end
+
+      it 'returns the tag refs' do
+        get api(route, current_user), type: 'tag', per_page: 100
+
+        refs = project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]}
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/repository/commits/:sha' do
     let(:commit) { project.repository.commit }
     let(:commit_id) { commit.id }
@@ -509,6 +587,31 @@ describe API::Commits do
         it_behaves_like '403 response' do
           let(:request) { get api(route, current_user) }
         end
+      end
+    end
+
+    context 'when stat param' do
+      let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}" }
+
+      it 'is not present return stats by default' do
+        get api(route, user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to include 'stats'
+      end
+
+      it "is false it does not include stats" do
+        get api(route, user), stats: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).not_to include 'stats'
+      end
+
+      it "is true it includes stats" do
+        get api(route, user), stats: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to include 'stats'
       end
     end
 
@@ -607,6 +710,7 @@ describe API::Commits do
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.size).to be >= 1
         expect(json_response.first.keys).to include 'diff'
       end
@@ -1035,6 +1139,35 @@ describe API::Commits do
           it_behaves_like 'ref new comment'
         end
       end
+    end
+  end
+
+  describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
+    let!(:project) { create(:project, :repository, :private) }
+    let!(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let(:commit) { merged_mr.merge_request_diff.commits.last }
+
+    it 'returns the correct merge request' do
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response.length).to eq(1)
+      expect(json_response[0]['id']).to eq(merged_mr.id)
+    end
+
+    it 'returns 403 for an unauthorized user' do
+      project.add_guest(user)
+
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'responds 404 when the commit does not exist' do
+      get api("/projects/#{project.id}/repository/commits/a7d26f00c35b/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 end

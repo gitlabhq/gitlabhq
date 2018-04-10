@@ -12,7 +12,7 @@
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
       = f.submit 'Save changes', class: 'btn btn-create'
-      = render 'shared/web_hooks/test_button', triggers: ProjectHook::TRIGGERS, hook: @hook
+      = render 'shared/web_hooks/test_button', triggers: ProjectHook.triggers, hook: @hook
       = link_to 'Remove', project_hook_path(@project, @hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
 
 %hr

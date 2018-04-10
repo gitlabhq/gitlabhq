@@ -14,7 +14,7 @@ module Gitlab
         repos_to_import.each do |repo_path|
           bare_repo = Gitlab::BareRepositoryImport::Repository.new(import_path, repo_path)
 
-          if bare_repo.hashed? || bare_repo.wiki?
+          unless bare_repo.processable?
             log " * Skipping repo #{bare_repo.repo_path}".color(:yellow)
 
             next
@@ -55,11 +55,15 @@ module Gitlab
                                               name: project_name,
                                               path: project_name,
                                               skip_disk_validation: true,
-                                              import_type: 'gitlab_project',
+                                              skip_wiki: bare_repo.wiki_exists?,
+                                              import_type: 'bare_repository',
                                               namespace_id: group&.id).execute
 
         if project.persisted? && mv_repo(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
+
+          project.write_repository_config
+          Gitlab::Git::Repository.create_hooks(project.repository.path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
 
           ProjectCacheWorker.perform_async(project.id)
         else

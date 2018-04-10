@@ -1,10 +1,12 @@
 module Gitlab
   module Prometheus
     module AdditionalMetricsParser
+      CONFIG_ROOT = 'config/prometheus'.freeze
+      MUTEX = Mutex.new
       extend self
 
-      def load_groups_from_yaml
-        additional_metrics_raw.map(&method(:group_from_entry))
+      def load_groups_from_yaml(file_name = 'additional_metrics.yml')
+        yaml_metrics_raw(file_name).map(&method(:group_from_entry))
       end
 
       private
@@ -22,13 +24,20 @@ module Gitlab
         MetricGroup.new(entry).tap(&method(:validate!))
       end
 
-      def additional_metrics_raw
-        load_yaml_file&.map(&:deep_symbolize_keys).freeze
+      def yaml_metrics_raw(file_name)
+        load_yaml_file(file_name)&.map(&:deep_symbolize_keys).freeze
       end
 
-      def load_yaml_file
-        @loaded_yaml_file ||= YAML.load_file(Rails.root.join('config/prometheus/additional_metrics.yml'))
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      def load_yaml_file(file_name)
+        return YAML.load_file(Rails.root.join(CONFIG_ROOT, file_name)) if Rails.env.development?
+
+        MUTEX.synchronize do
+          @loaded_yaml_cache ||= {}
+          @loaded_yaml_cache[file_name] ||= YAML.load_file(Rails.root.join(CONFIG_ROOT, file_name))
+        end
       end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 
 import Translate from '../vue_shared/translate';
@@ -19,11 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  $(navEl).on('show.bs.dropdown', (e) => {
-    const dropdownEl = $(e.currentTarget).find('.projects-dropdown-menu');
-    dropdownEl.one('transitionend', () => {
-      eventHub.$emit('dropdownOpen');
-    });
+  $(navEl).on('shown.bs.dropdown', () => {
+    eventHub.$emit('dropdownOpen');
   });
 
   // eslint-disable-next-line no-new

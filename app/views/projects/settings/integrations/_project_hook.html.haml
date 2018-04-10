@@ -3,14 +3,14 @@
     .col-md-8.col-lg-7
       %strong.light-header= hook.url
       %div
-        - ProjectHook::TRIGGERS.each_value do |event|
+        - ProjectHook.triggers.each_value do |event|
           - if hook.public_send(event)
             %span.label.label-gray.deploy-project-label= event.to_s.titleize
     .col-md-4.col-lg-5.text-right-lg.prepend-top-5
       %span.append-right-10.inline
         SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
       = link_to 'Edit', edit_project_hook_path(@project, hook), class: 'btn btn-sm'
-      = render 'shared/web_hooks/test_button', triggers: ProjectHook::TRIGGERS, hook: hook, button_class: 'btn-sm'
+      = render 'shared/web_hooks/test_button', triggers: ProjectHook.triggers, hook: hook, button_class: 'btn-sm'
       = link_to project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-transparent' do
         %span.sr-only Remove
         = icon('trash')

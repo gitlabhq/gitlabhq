@@ -40,22 +40,22 @@ describe IssuablesHelper do
       end
 
       it 'returns "Open" when state is :opened' do
-        expect(helper.issuables_state_counter_text(:issues, :opened))
+        expect(helper.issuables_state_counter_text(:issues, :opened, true))
           .to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
       it 'returns "Closed" when state is :closed' do
-        expect(helper.issuables_state_counter_text(:issues, :closed))
+        expect(helper.issuables_state_counter_text(:issues, :closed, true))
           .to eq('<span>Closed</span> <span class="badge">42</span>')
       end
 
       it 'returns "Merged" when state is :merged' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :merged))
+        expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
           .to eq('<span>Merged</span> <span class="badge">42</span>')
       end
 
       it 'returns "All" when state is :all' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :all))
+        expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
           .to eq('<span>All</span> <span class="badge">42</span>')
       end
     end
@@ -101,34 +101,13 @@ describe IssuablesHelper do
     end
   end
 
-  describe '#issuable_filter_present?' do
-    it 'returns true when any key is present' do
-      allow(helper).to receive(:params).and_return(
-        ActionController::Parameters.new(milestone_title: 'Velit consectetur asperiores natus delectus.',
-                                         project_id: 'gitlabhq',
-                                         scope: 'all')
-      )
-
-      expect(helper.issuable_filter_present?).to be_truthy
-    end
-
-    it 'returns false when no key is present' do
-      allow(helper).to receive(:params).and_return(
-        ActionController::Parameters.new(project_id: 'gitlabhq',
-                                         scope: 'all')
-      )
-
-      expect(helper.issuable_filter_present?).to be_falsey
-    end
-  end
-
   describe '#updated_at_by' do
     let(:user) { create(:user) }
     let(:unedited_issuable) { create(:issue) }
-    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
+    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago) }
     let(:edited_updated_at_by) do
       {
-        updatedAt: edited_issuable.updated_at.to_time.iso8601,
+        updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
         updatedBy: {
           name: user.name,
           path: user_path(user)
@@ -142,7 +121,7 @@ describe IssuablesHelper do
     context 'when updated by a deleted user' do
       let(:edited_updated_at_by) do
         {
-          updatedAt: edited_issuable.updated_at.to_time.iso8601,
+          updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
           updatedBy: {
             name: User.ghost.name,
             path: user_path(User.ghost)
@@ -173,23 +152,52 @@ describe IssuablesHelper do
       @project = issue.project
 
       expected_data = {
-        'endpoint' => "/#{@project.full_path}/issues/#{issue.iid}",
-        'updateEndpoint' => "/#{@project.full_path}/issues/#{issue.iid}.json",
-        'canUpdate' => true,
-        'canDestroy' => true,
-        'issuableRef' => "##{issue.iid}",
-        'markdownPreviewPath' => "/#{@project.full_path}/preview_markdown",
-        'markdownDocsPath' => '/help/user/markdown',
-        'issuableTemplates' => [],
-        'projectPath' => @project.path,
-        'projectNamespace' => @project.namespace.path,
-        'initialTitleHtml' => issue.title,
-        'initialTitleText' => issue.title,
-        'initialDescriptionHtml' => '<p dir="auto">issue text</p>',
-        'initialDescriptionText' => 'issue text',
-        'initialTaskStatus' => '0 of 0 tasks completed'
+        endpoint: "/#{@project.full_path}/issues/#{issue.iid}",
+        updateEndpoint: "/#{@project.full_path}/issues/#{issue.iid}.json",
+        canUpdate: true,
+        canDestroy: true,
+        issuableRef: "##{issue.iid}",
+        markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
+        markdownDocsPath: '/help/user/markdown',
+        issuableTemplates: [],
+        projectPath: @project.path,
+        projectNamespace: @project.namespace.path,
+        initialTitleHtml: issue.title,
+        initialTitleText: issue.title,
+        initialDescriptionHtml: '<p dir="auto">issue text</p>',
+        initialDescriptionText: 'issue text',
+        initialTaskStatus: '0 of 0 tasks completed'
       }
-      expect(JSON.parse(helper.issuable_initial_data(issue))).to eq(expected_data)
+      expect(helper.issuable_initial_data(issue)).to eq(expected_data)
+    end
+  end
+
+  describe '#selected_labels' do
+    context 'if label_name param is a string' do
+      it 'returns a new label with title' do
+        allow(helper).to receive(:params)
+          .and_return(ActionController::Parameters.new(label_name: 'test label'))
+
+        labels = helper.selected_labels
+
+        expect(labels).to be_an(Array)
+        expect(labels.size).to eq(1)
+        expect(labels.first.title).to eq('test label')
+      end
+    end
+
+    context 'if label_name param is an array' do
+      it 'returns a new label with title for each element' do
+        allow(helper).to receive(:params)
+          .and_return(ActionController::Parameters.new(label_name: ['test label 1', 'test label 2']))
+
+        labels = helper.selected_labels
+
+        expect(labels).to be_an(Array)
+        expect(labels.size).to eq(2)
+        expect(labels.first.title).to eq('test label 1')
+        expect(labels.second.title).to eq('test label 2')
+      end
     end
   end
 end

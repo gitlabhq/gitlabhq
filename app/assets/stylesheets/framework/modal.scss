@@ -1,5 +1,20 @@
 .modal-header {
+  background-color: $modal-body-bg;
   padding: #{3 * $grid-size} #{2 * $grid-size};
+
+  .page-title,
+  .modal-title {
+    .modal-title-with-label span {
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+    .color-label {
+      font-size: $gl-font-size;
+      padding: $gl-vert-padding $label-padding-modal;
+      vertical-align: middle;
+    }
+  }
 
   .page-title {
     margin-top: 0;
@@ -8,8 +23,11 @@
 
 .modal-body {
   background-color: $modal-body-bg;
+  line-height: $line-height-base;
+  min-height: $modal-body-height;
   position: relative;
   padding: #{3 * $grid-size} #{2 * $grid-size};
+  text-align: left;
 
   .form-actions {
     margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
@@ -17,6 +35,30 @@
 
   .text-danger {
     font-weight: $gl-font-weight-bold;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+
+  .btn + .btn {
+    margin-left: $grid-size;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column;
+
+    .btn + .btn {
+      margin-left: 0;
+      margin-top: $grid-size;
+    }
+  }
+
+  @media (min-width: $screen-sm-min) {
+    .btn:first-of-type {
+      margin-left: auto;
+    }
   }
 }
 
@@ -29,12 +71,6 @@ body.modal-open {
 
   .modal-content {
     box-shadow: none;
-  }
-}
-
-@media (min-width: $screen-md-min) {
-  .modal-dialog {
-    width: 860px;
   }
 }
 

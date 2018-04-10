@@ -17,7 +17,7 @@ describe Dashboard::MilestonesController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   it_behaves_like 'milestone tabs'

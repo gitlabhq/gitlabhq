@@ -7,7 +7,7 @@ describe API::V3::Deployments do
   let!(:deployment) { create(:deployment) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   shared_examples 'a paginated resources' do

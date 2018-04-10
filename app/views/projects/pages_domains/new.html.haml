@@ -1,6 +1,12 @@
+- add_to_breadcrumbs "Pages", project_pages_path(@project)
 - page_title 'New Pages Domain'
-%h3.page_title
+%h3.page-title
   New Pages Domain
 %hr.clearfix
 %div
-  = render 'form'
+  = form_for [@project.namespace.becomes(Namespace), @project, @domain], html: { class: 'form-horizontal fieldset-form' } do |f|
+    = render 'form', { f: f }
+    .form-actions
+      = f.submit 'Create New Domain', class: "btn btn-save"
+      .pull-right
+        = link_to _('Cancel'), project_pages_path(@project), class: 'btn btn-cancel'

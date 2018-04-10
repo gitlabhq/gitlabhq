@@ -41,7 +41,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
 
   def existing_oids
     @existing_oids ||= begin
-      storage_project.lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
+      project.all_lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
     end
   end
 
@@ -98,7 +98,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         json: {
           message: lfs_read_only_message
         },
-        content_type: 'application/vnd.git-lfs+json',
+        content_type: LfsRequest::CONTENT_TYPE,
         status: 403
       )
     end

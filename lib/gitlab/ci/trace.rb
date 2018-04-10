@@ -1,6 +1,8 @@
 module Gitlab
   module Ci
     class Trace
+      ArchiveError = Class.new(StandardError)
+
       attr_reader :job
 
       delegate :old_trace, to: :job
@@ -52,12 +54,14 @@ module Gitlab
       end
 
       def exist?
-        current_path.present? || old_trace.present?
+        trace_artifact&.exists? || current_path.present? || old_trace.present?
       end
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
+          if trace_artifact
+            trace_artifact.open
+          elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
             StringIO.new(old_trace)
@@ -82,6 +86,8 @@ module Gitlab
       end
 
       def erase!
+        trace_artifact&.destroy
+
         paths.each do |trace_path|
           FileUtils.rm(trace_path, force: true)
         end
@@ -89,7 +95,52 @@ module Gitlab
         job.erase_old_trace!
       end
 
+      def archive!
+        raise ArchiveError, 'Already archived' if trace_artifact
+        raise ArchiveError, 'Job is not finished yet' unless job.complete?
+
+        if current_path
+          File.open(current_path) do |stream|
+            archive_stream!(stream)
+            FileUtils.rm(current_path)
+          end
+        elsif old_trace
+          StringIO.new(old_trace, 'rb').tap do |stream|
+            archive_stream!(stream)
+            job.erase_old_trace!
+          end
+        end
+      end
+
       private
+
+      def archive_stream!(stream)
+        clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
+          create_job_trace!(job, clone_path)
+        end
+      end
+
+      def clone_file!(src_stream, temp_dir)
+        FileUtils.mkdir_p(temp_dir)
+        Dir.mktmpdir('tmp-trace', temp_dir) do |dir_path|
+          temp_path = File.join(dir_path, "job.log")
+          FileUtils.touch(temp_path)
+          size = IO.copy_stream(src_stream, temp_path)
+          raise ArchiveError, 'Failed to copy stream' unless size == src_stream.size
+
+          yield(temp_path)
+        end
+      end
+
+      def create_job_trace!(job, path)
+        File.open(path) do |stream|
+          job.create_job_artifacts_trace!(
+            project: job.project,
+            file_type: :trace,
+            file: stream,
+            file_sha256: Digest::SHA256.file(path).hexdigest)
+        end
+      end
 
       def ensure_path
         return current_path if current_path
@@ -136,6 +187,10 @@ module Gitlab
           job.project.ci_id.to_s,
           "#{job.id}.log"
         ) if job.project&.ci_id
+      end
+
+      def trace_artifact
+        job.job_artifacts_trace
       end
     end
   end

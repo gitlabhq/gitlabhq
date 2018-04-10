@@ -17,7 +17,7 @@ describe Gitlab::Gfm::UploadsRewriter do
     end
 
     let(:text) do
-      "Text and #{image_uploader.to_markdown} and #{zip_uploader.to_markdown}"
+      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}"
     end
 
     describe '#rewrite' do
@@ -39,8 +39,8 @@ describe Gitlab::Gfm::UploadsRewriter do
       it 'copies files' do
         expect(new_files).to all(exist)
         expect(old_paths).not_to match_array new_paths
-        expect(old_paths).to all(include(old_project.full_path))
-        expect(new_paths).to all(include(new_project.full_path))
+        expect(old_paths).to all(include(old_project.disk_path))
+        expect(new_paths).to all(include(new_project.disk_path))
       end
 
       it 'does not remove old files' do

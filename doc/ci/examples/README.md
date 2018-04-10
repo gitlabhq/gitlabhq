@@ -2,80 +2,83 @@
 comments: false
 ---
 
-# GitLab CI Examples
+# GitLab CI/CD Examples
 
-A collection of `.gitlab-ci.yml` files is maintained at the [GitLab CI Yml project][gitlab-ci-templates].
-If your favorite programming language or framework are missing we would love your help by sending a merge request
-with a `.gitlab-ci.yml`.
+A collection of `.gitlab-ci.yml` template files is maintained at the [GitLab CI/CD YAML project][gitlab-ci-templates]. When you create a new file via the UI,
+GitLab will give you the option to choose one of the templates existent on this project.
+If your favorite programming language or framework are missing we would love your
+help by sending a merge request with a new `.gitlab-ci.yml` to this project.
 
-Apart from those, here is an collection of tutorials and guides on setting up your CI pipeline:
+There's also a collection of repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork an adjust them to your own needs.
 
 ## Languages, frameworks, OSs
 
-### PHP
+- **PHP**:
+  - [Testing a PHP application](php.md)
+  - [Run PHP Composer & NPM scripts then deploy them to a staging server](deployment/composer-npm-deploy.md)
+  - [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md)
+- **Ruby**: [Test and deploy a Ruby application to Heroku](test-and-deploy-ruby-application-to-heroku.md)
+- **Python**: [Test and deploy a Python application to Heroku](test-and-deploy-python-application-to-heroku.md)
+- **Java**: [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
+- **Scala**: [Test a Scala application](test-scala-application.md)
+- **Clojure**: [Test a Clojure application](test-clojure-application.md)
+- **Elixir**:
+  - [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md)
+  - [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/)
+- **iOS and macOS**:
+  - [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
+  - [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/)
+- **Android**: [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
+- **Debian**: [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
+- **Maven**: [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md)
 
-- [Testing a PHP application](php.md)
-- [Run PHP Composer & NPM scripts then deploy them to a staging server](deployment/composer-npm-deploy.md)
+### Game development
 
-### Ruby
+- [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md)
 
-- [Test and deploy a Ruby application to Heroku](test-and-deploy-ruby-application-to-heroku.md)
-
-### Python
-
-- [Test and deploy a Python application to Heroku](test-and-deploy-python-application-to-heroku.md)
-
-### Java
-
-- [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
-
-### Scala
-
-- [Test a Scala application](test-scala-application.md)
-
-### Clojure
-
-- [Test a Clojure application](test-clojure-application.md)
-
-### Elixir
-
-- [Test a Phoenix application](test-phoenix-application.md)
-- [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/)
-
-### iOS
-
-- [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
-
-### Android
-
-- [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
-
-### Code quality analysis
-
-- [Analyze code quality with the Code Climate CLI](code_climate.md)
-
-### Other
+### Miscellaneous
 
 - [Using `dpl` as deployment tool](deployment/README.md)
-- [Repositories with examples for various languages](https://gitlab.com/groups/gitlab-examples)
-- [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-- [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
-- [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md)
+- [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
+
+## Code quality analysis
+
+[Analyze code quality with the Code Climate CLI](code_climate.md).
+
+## Static Application Security Testing (SAST)
+
+**(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
+
+## Dependency Scanning
+
+**(Ultimate)** [Scan your dependencies for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html)
+
+## Container Scanning
+
+[Scan your Docker images for vulnerabilities](container_scanning.md)
+
+## Dynamic Application Security Testing (DAST)
+
+Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md).
+
+## Browser Performance Testing with Sitespeed.io
+
+Analyze your [browser performance with Sitespeed.io](browser_performance.md).
+
+## GitLab CI/CD for Review Apps
+
+- [Example project](https://gitlab.com/gitlab-examples/review-apps-nginx/) that shows how to use GitLab CI/CD for [Review Apps](../review_apps/index.html).
+- [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/)
 
 ## GitLab CI/CD for GitLab Pages
 
-- [Example projects](https://gitlab.com/pages)
-- [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](../../user/project/pages/getting_started_part_four.md)
-- [SSGs Part 3: Build any SSG site with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/):
-examples for Ruby-, NodeJS-, Python-, and GoLang-based SSGs
-- [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-- [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
-
 See the documentation on [GitLab Pages](../../user/project/pages/index.md) for a complete overview.
 
-## More
+## Contributing
 
-Contributions are very much welcomed! You can help your favorite programming
-language and GitLab by sending a merge request with a guide for that language.
+Contributions are very welcome! You can help your favorite programming
+language users and GitLab by sending a merge request with a guide for that language.
+You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community-writers/)
+to get paid for writing complete articles for GitLab.
 
 [gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml

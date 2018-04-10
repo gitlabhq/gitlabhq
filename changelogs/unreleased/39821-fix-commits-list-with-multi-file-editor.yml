@@ -1,5 +1,0 @@
----
-title: Fix commits page throwing 500 when the multi-file editor was enabled
-merge_request: 15502
-author:
-type: fixed

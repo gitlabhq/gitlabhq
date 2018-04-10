@@ -1,4 +1,4 @@
-- return unless current_application_settings.project_export_enabled?
+- return unless Gitlab::CurrentSettings.project_export_enabled?
 
 - project = local_assigns.fetch(:project)
 - expanded = Rails.env.test?
@@ -7,7 +7,7 @@
   .settings-header
     %h4
       Export project
-    %button.btn.js-settings-toggle
+    %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.
@@ -21,16 +21,16 @@
           %li Project uploads
           %li Project configuration including web hooks and services
           %li Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities
+          %li LFS objects
         %p
           The following items will NOT be exported:
         %ul
           %li Job traces and artifacts
-          %li LFS objects
           %li Container registry images
           %li CI variables
           %li Any encrypted tokens
     %p
-      Once the exported file is ready, you will receive a notification email with a download link.
+      Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.
     - if project.export_project_path
       = link_to 'Download export',  download_export_project_path(project),
               rel: 'nofollow', download: '', method: :get, class: "btn btn-default"

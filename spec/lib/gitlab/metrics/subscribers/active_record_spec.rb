@@ -25,7 +25,7 @@ describe Gitlab::Metrics::Subscribers::ActiveRecord do
         expect(subscriber).to receive(:current_transaction)
                                 .at_least(:once)
                                 .and_return(transaction)
-        expect(subscriber.send(:metric_sql_duration_seconds)).to receive(:observe).with({}, 0.002)
+        expect(described_class.send(:gitlab_sql_duration_seconds)).to receive(:observe).with({}, 0.002)
         subscriber.sql(event)
       end
 

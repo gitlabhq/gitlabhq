@@ -1,0 +1,54 @@
+.stacked-progress-bar {
+  display: flex;
+  height: 16px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: $theme-gray-100;
+
+  .status-unavailable,
+  .status-green,
+  .status-neutral,
+  .status-red, {
+    height: 100%;
+    min-width: 30px;
+    padding: 0 5px;
+    font-size: $tooltip-font-size;
+    font-weight: normal;
+    color: $white-light;
+    line-height: 16px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .status-unavailable {
+    padding: 0 10px;
+    color: $theme-gray-700;
+  }
+
+  .status-green {
+    background-color: $green-500;
+
+    &:hover {
+      background-color: $green-600;
+    }
+  }
+
+  .status-neutral {
+    background-color: $theme-gray-200;
+    color: $gl-gray-dark;
+
+    &:hover {
+      background-color: $theme-gray-300;
+    }
+  }
+
+  .status-red {
+    background-color: $red-500;
+
+    &:hover {
+      background-color: $red-600;
+    }
+  }
+}

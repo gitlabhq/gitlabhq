@@ -13,7 +13,7 @@ override certain values.
 
 Variable | Type | Description
 -------- | ---- | -----------
-`GITLAB_CDN_HOST`                          | string  | Sets the hostname for a CDN to serve static assets (e.g. `mycdnsubdomain.fictional-cdn.com`)
+`GITLAB_CDN_HOST`                          | string  | Sets the base URL for a CDN to serve static assets (e.g. `//mycdnsubdomain.fictional-cdn.com`)
 `GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation
 `GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`)
 `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging` or `test`

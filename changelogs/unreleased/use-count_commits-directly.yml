@@ -1,5 +1,0 @@
----
-title: Improve the performance for counting commits
-merge_request: 15628
-author:
-type: performance

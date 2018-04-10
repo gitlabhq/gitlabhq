@@ -1,66 +1,41 @@
 <script>
-import { mapState } from 'vuex';
-import RepoPreviousDirectory from './repo_prev_directory.vue';
+import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import RepoFile from './repo_file.vue';
-import RepoLoadingFile from './repo_loading_file.vue';
-import { treeList } from '../stores/utils';
 
 export default {
   components: {
-    'repo-previous-directory': RepoPreviousDirectory,
-    'repo-file': RepoFile,
-    'repo-loading-file': RepoLoadingFile,
+    RepoFile,
+    SkeletonLoadingContainer,
   },
   props: {
-    treeId: {
-      type: String,
+    tree: {
+      type: Object,
       required: true,
-    },
-  },
-  computed: {
-    ...mapState([
-      'loading',
-      'isRoot',
-    ]),
-    ...mapState({
-      projectName(state) {
-        return state.project.name;
-      },
-    }),
-    fetchedList() {
-      return treeList(this.$store.state, this.treeId);
-    },
-    hasPreviousDirectory() {
-      return !this.isRoot && this.fetchedList.length;
-    },
-    showLoading() {
-      return this.loading;
     },
   },
 };
 </script>
 
 <template>
-<div>
-  <div class="ide-file-list">
-    <table class="table">
-      <tbody
-        v-if="treeId">
-        <repo-previous-directory
-          v-if="hasPreviousDirectory"
-        />
-        <repo-loading-file
-          v-if="showLoading"
-          v-for="n in 5"
-          :key="n"
-        />
-        <repo-file
-          v-for="file in fetchedList"
-          :key="file.key"
-          :file="file"
-        />
-      </tbody>
-    </table>
+  <div
+    class="ide-file-list"
+  >
+    <template v-if="tree.loading">
+      <div
+        class="multi-file-loading-container"
+        v-for="n in 3"
+        :key="n"
+      >
+        <skeleton-loading-container />
+      </div>
+    </template>
+    <template v-else>
+      <repo-file
+        v-for="file in tree.tree"
+        :key="file.key"
+        :file="file"
+        :level="0"
+      />
+    </template>
   </div>
-</div>
 </template>

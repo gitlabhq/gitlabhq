@@ -1,8 +1,12 @@
 <script>
-import jobComponent from './job_component.vue';
-import dropdownJobComponent from './dropdown_job_component.vue';
+import JobComponent from './job_component.vue';
+import DropdownJobComponent from './dropdown_job_component.vue';
 
 export default {
+  components: {
+    JobComponent,
+    DropdownJobComponent,
+  },
   props: {
     title: {
       type: String,
@@ -25,11 +29,11 @@ export default {
       required: false,
       default: '',
     },
-  },
-
-  components: {
-    jobComponent,
-    dropdownJobComponent,
+    actionDisabled: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
 
   methods: {
@@ -52,7 +56,7 @@ export default {
     class="stage-column"
     :class="stageConnectorClass">
     <div class="stage-name">
-      {{title}}
+      {{ title }}
     </div>
     <div class="builds-container">
       <ul>
@@ -61,7 +65,8 @@ export default {
           :key="job.id"
           class="build"
           :class="buildConnnectorClass(index)"
-          :id="jobId(job)">
+          :id="jobId(job)"
+        >
 
           <div class="curve"></div>
 
@@ -69,12 +74,13 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
-            />
+            :action-disabled="actionDisabled"
+          />
 
           <dropdown-job-component
             v-if="job.size > 1"
             :job="job"
-            />
+          />
 
         </li>
       </ul>

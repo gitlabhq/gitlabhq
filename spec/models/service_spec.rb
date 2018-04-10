@@ -10,6 +10,22 @@ describe Service do
     it { is_expected.to validate_presence_of(:type) }
   end
 
+  describe 'Scopes' do
+    describe '.confidential_note_hooks' do
+      it 'includes services where confidential_note_events is true' do
+        create(:service, active: true, confidential_note_events: true)
+
+        expect(described_class.confidential_note_hooks.count).to eq 1
+      end
+
+      it 'excludes services where confidential_note_events is false' do
+        create(:service, active: true, confidential_note_events: false)
+
+        expect(described_class.confidential_note_hooks.count).to eq 0
+      end
+    end
+  end
+
   describe "Test Button" do
     describe '#can_test?' do
       let(:service) { create(:service, project: project) }
@@ -58,6 +74,21 @@ describe Service do
   end
 
   describe "Template" do
+    describe '.build_from_template' do
+      context 'when template is invalid' do
+        it 'sets service template to inactive when template is invalid' do
+          project = create(:project)
+          template = JiraService.new(template: true, active: true)
+          template.save(validate: false)
+
+          service = described_class.build_from_template(project.id, template)
+
+          expect(service).to be_valid
+          expect(service.active).to be false
+        end
+      end
+    end
+
     describe "for pushover service" do
       let!(:service_template) do
         PushoverService.create(
@@ -252,6 +283,66 @@ describe Service do
           service.update_attributes(active: false)
         end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
       end
+    end
+  end
+
+  describe "#deprecated?" do
+    let(:project) { create(:project, :repository) }
+
+    it 'should return false by default' do
+      service = create(:service, project: project)
+      expect(service.deprecated?).to be_falsy
+    end
+  end
+
+  describe "#deprecation_message" do
+    let(:project) { create(:project, :repository) }
+
+    it 'should be empty by default' do
+      service = create(:service, project: project)
+      expect(service.deprecation_message).to be_nil
+    end
+  end
+
+  describe '.find_by_template' do
+    let!(:kubernetes_service) { create(:kubernetes_service, template: true) }
+
+    it 'returns service template' do
+      expect(KubernetesService.find_by_template).to eq(kubernetes_service)
+    end
+  end
+
+  describe '#api_field_names' do
+    let(:fake_service) do
+      Class.new(Service) do
+        def fields
+          [
+            { name: 'token' },
+            { name: 'api_token' },
+            { name: 'key' },
+            { name: 'api_key' },
+            { name: 'password' },
+            { name: 'password_field' },
+            { name: 'safe_field' }
+          ]
+        end
+      end
+    end
+
+    let(:service) do
+      fake_service.new(properties: [
+        { token: 'token-value' },
+        { api_token: 'api_token-value' },
+        { key: 'key-value' },
+        { api_key: 'api_key-value' },
+        { password: 'password-value' },
+        { password_field: 'password_field-value' },
+        { safe_field: 'safe_field-value' }
+      ])
+    end
+
+    it 'filters out sensitive fields' do
+      expect(service.api_field_names).to eq(['safe_field'])
     end
   end
 end

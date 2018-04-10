@@ -34,7 +34,7 @@ module ApplicationHelper
 
   def project_icon(project_id, options = {})
     project =
-      if project_id.is_a?(Project)
+      if project_id.respond_to?(:avatar_url)
         project_id
       else
         Project.find_by_full_path(project_id)
@@ -68,18 +68,32 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_or_email = nil, size = nil, scale = 2, only_path: true)
-    user =
-      if user_or_email.is_a?(User)
-        user_or_email
-      else
-        User.find_by_any_email(user_or_email.try(:downcase))
-      end
+  # Takes both user and email and returns the avatar_icon by
+  # user (preferred) or email.
+  def avatar_icon_for(user = nil, email = nil, size = nil, scale = 2, only_path: true)
+    if user
+      avatar_icon_for_user(user, size, scale, only_path: only_path)
+    elsif email
+      avatar_icon_for_email(email, size, scale, only_path: only_path)
+    else
+      default_avatar
+    end
+  end
 
+  def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
+    user = User.find_by_any_email(email.try(:downcase))
+    if user
+      avatar_icon_for_user(user, size, scale, only_path: only_path)
+    else
+      gravatar_icon(email, size, scale)
+    end
+  end
+
+  def avatar_icon_for_user(user = nil, size = nil, scale = 2, only_path: true)
     if user
       user.avatar_url(size: size, only_path: only_path) || default_avatar
     else
-      gravatar_icon(user_or_email, size, scale)
+      gravatar_icon(nil, size, scale)
     end
   end
 
@@ -89,7 +103,7 @@ module ApplicationHelper
   end
 
   def default_avatar
-    'no_avatar.png'
+    asset_path('no_avatar.png')
   end
 
   def last_commit(project)
@@ -214,9 +228,7 @@ module ApplicationHelper
       scope: params[:scope],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
-      assignee_username: params[:assignee_username],
       author_id: params[:author_id],
-      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name]
     }
@@ -271,6 +283,10 @@ module ApplicationHelper
     class_names
   end
 
+  # EE feature: System header and footer, unavailable in CE
+  def system_message_class
+  end
+
   # Returns active css class when condition returns true
   # otherwise returns nil.
   #
@@ -286,7 +302,7 @@ module ApplicationHelper
 
   def linkedin_url(user)
     name = user.linkedin
-    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+    if name =~ %r{\Ahttps?://(www\.)?linkedin\.com/in/}
       name
     else
       "https://www.linkedin.com/in/#{name}"
@@ -295,10 +311,10 @@ module ApplicationHelper
 
   def twitter_url(user)
     name = user.twitter
-    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+    if name =~ %r{\Ahttps?://(www\.)?twitter\.com/}
       name
     else
-      "https://www.twitter.com/#{name}"
+      "https://twitter.com/#{name}"
     end
   end
 
@@ -306,11 +322,14 @@ module ApplicationHelper
     cookies["sidebar_collapsed"] == "true"
   end
 
-  def show_new_ide?
-    cookies["new_repo"] == "true" && body_data_page != 'projects:show'
-  end
-
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
+
+  # Overridden in EE
+  def read_only_message
+    return unless Gitlab::Database.read_only?
+
+    _('You are on a read-only GitLab instance.')
   end
 end

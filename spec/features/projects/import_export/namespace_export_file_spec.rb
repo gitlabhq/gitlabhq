@@ -1,44 +1,37 @@
 require 'spec_helper'
 
-feature 'Import/Export - Namespace export file cleanup', :js do
-  let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
-  let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
+describe 'Import/Export - Namespace export file cleanup', :js do
+  let(:export_path) { Dir.mktmpdir('namespace_export_file_spec') }
 
-  let(:project) { create(:project) }
-
-  background do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+  before do
+    allow(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
   end
 
   after do
     FileUtils.rm_rf(export_path, secure: true)
   end
 
-  context 'admin user' do
+  shared_examples_for 'handling project exports on namespace change' do
+    let!(:old_export_path) { project.export_path }
+
     before do
       sign_in(create(:admin))
+
+      setup_export_project
     end
 
     context 'moving the namespace' do
-      scenario 'removes the export file' do
-        setup_export_project
-
-        old_export_path = project.export_path.dup
-
+      it 'removes the export file' do
         expect(File).to exist(old_export_path)
 
-        project.namespace.update(path: 'new_path')
+        project.namespace.update!(path: build(:namespace).path)
 
         expect(File).not_to exist(old_export_path)
       end
     end
 
     context 'deleting the namespace' do
-      scenario 'removes the export file' do
-        setup_export_project
-
-        old_export_path = project.export_path.dup
-
+      it 'removes the export file' do
         expect(File).to exist(old_export_path)
 
         project.namespace.destroy
@@ -46,17 +39,29 @@ feature 'Import/Export - Namespace export file cleanup', :js do
         expect(File).not_to exist(old_export_path)
       end
     end
+  end
 
-    def setup_export_project
-      visit edit_project_path(project)
+  describe 'legacy storage' do
+    let(:project) { create(:project, :legacy_storage) }
 
-      expect(page).to have_content('Export project')
+    it_behaves_like 'handling project exports on namespace change'
+  end
 
-      find(:link, 'Export project').send_keys(:return)
+  describe 'hashed storage' do
+    let(:project) { create(:project) }
 
-      visit edit_project_path(project)
+    it_behaves_like 'handling project exports on namespace change'
+  end
 
-      expect(page).to have_content('Download export')
-    end
+  def setup_export_project
+    visit edit_project_path(project)
+
+    expect(page).to have_content('Export project')
+
+    find(:link, 'Export project').send_keys(:return)
+
+    visit edit_project_path(project)
+
+    expect(page).to have_content('Download export')
   end
 end

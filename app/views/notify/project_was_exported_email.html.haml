@@ -3,6 +3,6 @@
 %p
   The project export can be downloaded from:
   = link_to download_export_project_url(@project), rel: 'nofollow', download: '' do
-    = @project.name_with_namespace + " export"
+    = @project.full_name + " export"
 %p
   The download link will expire in 24 hours.

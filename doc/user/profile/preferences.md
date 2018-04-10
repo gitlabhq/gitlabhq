@@ -41,7 +41,7 @@ select few, the amount of activity on the default Dashboard page can be
 overwhelming. Changing this setting allows you to redefine what your default
 dashboard will be.
 
-You have 6 options here that you can use for your default dashboard view:
+You have 8 options here that you can use for your default dashboard view:
 
 - Your projects (default)
 - Starred projects
@@ -49,6 +49,8 @@ You have 6 options here that you can use for your default dashboard view:
 - Starred projects' activity
 - Your groups
 - Your [Todos]
+- Assigned Issues
+- Assigned Merge Requests
 
 ### Project home page content
 

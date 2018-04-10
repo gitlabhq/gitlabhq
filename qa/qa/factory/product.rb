@@ -5,8 +5,9 @@ module QA
     class Product
       include Capybara::DSL
 
-      def initialize(factory)
-        @factory = factory
+      Attribute = Struct.new(:name, :block)
+
+      def initialize
         @location = current_url
       end
 
@@ -15,11 +16,14 @@ module QA
       end
 
       def self.populate!(factory)
-        raise ArgumentError unless block_given?
-
-        yield factory
-
-        new(factory)
+        new.tap do |product|
+          factory.class.attributes.each_value do |attribute|
+            product.instance_exec(factory, attribute.block) do |factory, block|
+              value = block.call(factory)
+              product.define_singleton_method(attribute.name) { value }
+            end
+          end
+        end
       end
     end
   end

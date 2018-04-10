@@ -142,12 +142,12 @@ describe API::GroupVariables do
       end
 
       it 'updates variable data' do
-        initial_variable = group.variables.first
+        initial_variable = group.variables.reload.first
         value_before = initial_variable.value
 
         put api("/groups/#{group.id}/variables/#{variable.key}", user), value: 'VALUE_1_UP', protected: true
 
-        updated_variable = group.variables.first
+        updated_variable = group.variables.reload.first
 
         expect(response).to have_gitlab_http_status(200)
         expect(value_before).to eq(variable.value)

@@ -5,7 +5,7 @@ feature 'Global search' do
   let(:project) { create(:project, namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -22,7 +22,7 @@ feature 'Global search' do
       click_button "Go"
 
       select_filter("Issues")
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
+      expect(page).to have_selector('.gl-pagination .next')
     end
   end
 end

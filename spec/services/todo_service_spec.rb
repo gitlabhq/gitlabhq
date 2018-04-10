@@ -17,11 +17,11 @@ describe TodoService do
   let(:service) { described_class.new }
 
   before do
-    project.team << [guest, :guest]
-    project.team << [author, :developer]
-    project.team << [member, :developer]
-    project.team << [john_doe, :developer]
-    project.team << [skipped, :developer]
+    project.add_guest(guest)
+    project.add_developer(author)
+    project.add_developer(member)
+    project.add_developer(john_doe)
+    project.add_developer(skipped)
   end
 
   describe 'Issues' do
@@ -943,7 +943,8 @@ describe TodoService do
 
       described_class.new.mark_todos_as_done_by_ids(todo, john_doe)
 
-      expect_any_instance_of(TodosFinder).not_to receive(:execute)
+      # Make sure no TodosFinder is inialized to perform counting
+      expect(TodosFinder).not_to receive(:new)
 
       expect(john_doe.todos_done_count).to eq(1)
       expect(john_doe.todos_pending_count).to eq(1)

@@ -6,7 +6,7 @@ feature 'project owner creates a license file', :js do
   background do
     project.repository.delete_file(project_master, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
-    project.team << [project_master, :master]
+    project.add_master(project_master)
     sign_in(project_master)
     visit project_path(project)
   end

@@ -3,7 +3,7 @@ import JobMediator from './job_details_mediator';
 import jobHeader from './components/header.vue';
 import detailsBlock from './components/sidebar_details_block.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const dataset = document.getElementById('js-job-details-vue').dataset;
   const mediator = new JobMediator({ endpoint: dataset.endpoint });
 
@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-build-header-vue',
+    components: {
+      jobHeader,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      jobHeader,
     },
     mounted() {
       this.mediator.initBuildClass();
@@ -38,21 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-details-block-vue',
+    components: {
+      detailsBlock,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      detailsBlock,
     },
     render(createElement) {
       return createElement('details-block', {
         props: {
           isLoading: this.mediator.state.isLoading,
           job: this.mediator.store.state.job,
+          runnerHelpUrl: dataset.runnerHelpUrl,
         },
       });
     },
   });
-});
+};

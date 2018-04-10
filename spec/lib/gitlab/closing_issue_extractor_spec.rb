@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ClosingIssueExtractor do
   let(:project) { create(:project) }
   let(:project2) { create(:project) }
-  let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
+  let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }
   let(:issue) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
@@ -13,8 +13,9 @@ describe Gitlab::ClosingIssueExtractor do
   subject { described_class.new(project, project.creator) }
 
   before do
-    project.team  << [project.creator, :developer]
-    project2.team << [project.creator, :master]
+    project.add_developer(project.creator)
+    project.add_developer(project2.creator)
+    project2.add_master(project.creator)
   end
 
   describe "#closed_by_message" do
@@ -297,7 +298,7 @@ describe Gitlab::ClosingIssueExtractor do
       context 'with an external issue tracker reference' do
         it 'extracts the referenced issue' do
           jira_project = create(:jira_project, name: 'JIRA_EXT1')
-          jira_project.team << [jira_project.creator, :master]
+          jira_project.add_master(jira_project.creator)
           jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
           closing_issue_extractor = described_class.new(jira_project, jira_project.creator)
           message = "Resolve #{jira_issue.to_reference}"
@@ -359,6 +360,20 @@ describe Gitlab::ClosingIssueExtractor do
 
       it 'fetches comma-separated issues numbers in single line message' do
         message = "Closes #{reference}, #{reference2} and #{reference3}"
+
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
+      end
+
+      it 'allows oxford commas (comma before and) when referencing multiple issues' do
+        message = "Closes #{reference}, #{reference2}, and #{reference3}"
+
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
+      end
+
+      it 'allows spaces before commas when referencing multiple issues' do
+        message = "Closes #{reference} , #{reference2} , and #{reference3}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue, other_issue, third_issue])

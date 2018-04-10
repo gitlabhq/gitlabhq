@@ -122,12 +122,12 @@ describe API::Variables do
   describe 'PUT /projects/:id/variables/:key' do
     context 'authorized user with proper permissions' do
       it 'updates variable data' do
-        initial_variable = project.variables.first
+        initial_variable = project.variables.reload.first
         value_before = initial_variable.value
 
         put api("/projects/#{project.id}/variables/#{variable.key}", user), value: 'VALUE_1_UP', protected: true
 
-        updated_variable = project.variables.first
+        updated_variable = project.variables.reload.first
 
         expect(response).to have_gitlab_http_status(200)
         expect(value_before).to eq(variable.value)

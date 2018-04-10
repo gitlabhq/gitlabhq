@@ -1,13 +1,6 @@
 require 'spec_helper'
 
 describe Key, :mailer do
-  include Gitlab::CurrentSettings
-
-  describe 'modules' do
-    subject { described_class }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
@@ -19,6 +12,9 @@ describe Key, :mailer do
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_length_of(:key).is_at_most(5000) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_2048)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_4096)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_5120)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_8192)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:dsa_key_2048)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ecdsa_key_256)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ed25519_key_256)[:key]).for(:key) }
@@ -79,15 +75,34 @@ describe Key, :mailer do
       expect(build(:key)).to be_valid
     end
 
-    it 'accepts a key with newline charecters after stripping them' do
-      key = build(:key)
-      key.key = key.key.insert(100, "\n")
-      key.key = key.key.insert(40, "\r\n")
-      expect(key).to be_valid
-    end
-
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
+    end
+
+    where(:factory, :chars, :expected_sections) do
+      [
+        [:key,                 ["\n", "\r\n"], 3],
+        [:key,                 [' ', ' '],     3],
+        [:key_without_comment, [' ', ' '],     2]
+      ]
+    end
+
+    with_them do
+      let!(:key) { create(factory) }
+      let!(:original_fingerprint) { key.fingerprint }
+
+      it 'accepts a key with blank space characters after stripping them' do
+        modified_key = key.key.insert(100, chars.first).insert(40, chars.last)
+        _, content = modified_key.split
+
+        key.update!(key: modified_key)
+
+        expect(key).to be_valid
+        expect(key.key.split.size).to eq(expected_sections)
+
+        expect(content).not_to match(/\s/)
+        expect(original_fingerprint).to eq(key.fingerprint)
+      end
     end
   end
 

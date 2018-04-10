@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import _ from 'underscore';
 import Vue from 'vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
@@ -77,7 +79,7 @@ describe('SidebarMoveIssue', () => {
       this.sidebarMoveIssue.onConfirmClicked();
 
       expect(this.mediator.moveIssue).toHaveBeenCalled();
-      expect(this.$confirmButton.attr('disabled')).toBe('disabled');
+      expect(this.$confirmButton.prop('disabled')).toBeTruthy();
       expect(this.$confirmButton.hasClass('is-loading')).toBe(true);
     });
 
@@ -92,7 +94,7 @@ describe('SidebarMoveIssue', () => {
       // Wait for the move issue request to fail
       setTimeout(() => {
         expect(window.Flash).toHaveBeenCalled();
-        expect(this.$confirmButton.attr('disabled')).toBe(undefined);
+        expect(this.$confirmButton.prop('disabled')).toBeFalsy();
         expect(this.$confirmButton.hasClass('is-loading')).toBe(false);
         done();
       });
@@ -119,7 +121,7 @@ describe('SidebarMoveIssue', () => {
       this.$content.find('.js-move-issue-dropdown-item').eq(0).trigger('click');
 
       expect(this.mediator.setMoveToProjectId).toHaveBeenCalledWith(0);
-      expect(this.$confirmButton.attr('disabled')).toBe('disabled');
+      expect(this.$confirmButton.prop('disabled')).toBeTruthy();
       done();
     }, 0);
   });

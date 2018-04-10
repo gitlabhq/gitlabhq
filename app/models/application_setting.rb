@@ -117,6 +117,11 @@ class ApplicationSetting < ActiveRecord::Base
   validates :repository_storages, presence: true
   validate :check_repository_storages
 
+  validates :auto_devops_domain,
+            allow_blank: true,
+            hostname: { allow_numeric_hostname: true, require_valid_tld: true },
+            if: :auto_devops_enabled?
+
   validates :enabled_git_access_protocol,
             inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
 
@@ -261,6 +266,7 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -324,7 +330,8 @@ class ApplicationSetting < ActiveRecord::Base
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55
+      gitaly_timeout_default: 55,
+      allow_local_requests_from_hooks_and_services: false
     }
   end
 
@@ -341,15 +348,15 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def home_page_url_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :home_page_url)
   end
 
   def help_page_support_url_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :help_page_support_url)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
   end
 
   def sidekiq_throttling_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :sidekiq_throttling_enabled)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def domain_whitelist_raw
@@ -417,6 +424,7 @@ class ApplicationSetting < ActiveRecord::Base
         super(group_full_path)
         Gitlab::PerformanceBar.expire_allowed_user_ids_cache
       end
+
       return
     end
 

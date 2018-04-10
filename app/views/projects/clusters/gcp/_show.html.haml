@@ -1,17 +1,13 @@
 .form-group
   %label.append-bottom-10{ for: 'cluster-name' }
-    = s_('ClusterIntegration|Cluster name')
+    = s_('ClusterIntegration|Kubernetes cluster name')
   .input-group
     %input.form-control.cluster-name.js-select-on-focus{ value: @cluster.name, readonly: true }
     %span.input-group-btn
-      = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy cluster name'), class: 'btn-default')
+      = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy Kubernetes cluster name'), class: 'btn-default')
 
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
-
-  .form-group
-    = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
-    = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
 
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group

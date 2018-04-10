@@ -5,6 +5,7 @@ module API
 
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
+    API_USER_ENV = 'gitlab.api.user'.freeze
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -25,6 +26,7 @@ module API
       check_unmodified_since!(last_updated)
 
       status 204
+
       if block_given?
         yield resource
       else
@@ -48,9 +50,15 @@ module API
 
       validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
 
+      save_current_user_in_env(@current_user) if @current_user
+
       @current_user
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+    def save_current_user_in_env(user)
+      env[API_USER_ENV] = { user_id: user.id, username: user.username }
+    end
 
     def sudo?
       initial_current_user != current_user
@@ -69,13 +77,21 @@ module API
     end
 
     def wiki_page
-      page = user_project.wiki.find_page(params[:slug])
+      page = ProjectWiki.new(user_project, current_user).find_page(params[:slug])
 
       page || not_found!('Wiki Page')
     end
 
-    def available_labels
-      @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
+    def available_labels_for(label_parent)
+      search_params = { include_ancestor_groups: true }
+
+      if label_parent.is_a?(Project)
+        search_params[:project_id] = label_parent.id
+      else
+        search_params.merge!(group_id: label_parent.id, only_group_labels: true)
+      end
+
+      LabelsFinder.new(current_user, search_params).execute
     end
 
     def find_user(id)
@@ -141,7 +157,9 @@ module API
     end
 
     def find_project_label(id)
-      label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
+      labels = available_labels_for(user_project)
+      label = labels.find_by_id(id) || labels.find_by_title(id)
+
       label || not_found!('Label')
     end
 
@@ -155,7 +173,7 @@ module API
 
     def find_project_snippet(id)
       finder_params = { project: user_project }
-      SnippetsFinder.new(current_user, finder_params).execute.find(id)
+      SnippetsFinder.new(current_user, finder_params).find(id)
     end
 
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
@@ -371,29 +389,7 @@ module API
 
     # file helpers
 
-    def uploaded_file(field, uploads_path)
-      if params[field]
-        bad_request!("#{field} is not a file") unless params[field][:filename]
-        return params[field]
-      end
-
-      return nil unless params["#{field}.path"] && params["#{field}.name"]
-
-      # sanitize file paths
-      # this requires all paths to exist
-      required_attributes! %W(#{field}.path)
-      uploads_path = File.realpath(uploads_path)
-      file_path = File.realpath(params["#{field}.path"])
-      bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
-
-      UploadedFile.new(
-        file_path,
-        params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream'
-      )
-    end
-
-    def present_file!(path, filename, content_type = 'application/octet-stream')
+    def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
       header['Content-Disposition'] = "attachment; filename=#{filename}"
       header['Content-Transfer-Encoding'] = 'binary'
@@ -409,13 +405,17 @@ module API
       end
     end
 
-    def present_artifacts!(artifacts_file)
-      return not_found! unless artifacts_file.exists?
+    def present_carrierwave_file!(file, supports_direct_download: true)
+      return not_found! unless file.exists?
 
-      if artifacts_file.file_storage?
-        present_file!(artifacts_file.path, artifacts_file.filename)
+      if file.file_storage?
+        present_disk_file!(file.path, file.filename)
+      elsif supports_direct_download && file.class.direct_download_enabled?
+        redirect(file.url)
       else
-        redirect_to(artifacts_file.url)
+        header(*Gitlab::Workhorse.send_url(file.url))
+        status :ok
+        body
       end
     end
 
@@ -468,8 +468,8 @@ module API
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
-    def send_git_archive(repository, ref:, format:)
-      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    def send_git_archive(repository, **kwargs)
+      header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
     def send_artifacts_entry(build, entry)

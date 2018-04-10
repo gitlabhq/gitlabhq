@@ -3,10 +3,10 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170803090603_calculate_conv_dev_index_percentages.rb')
 
-describe CalculateConvDevIndexPercentages, truncate: true do
+describe CalculateConvDevIndexPercentages, :delete do
   let(:migration) { described_class.new }
   let!(:conv_dev_index) do
-    create(:conversational_development_index_metric,
+    create(:conversational_development_index_metric, # rubocop:disable RSpec/FactoriesInMigrationSpecs
       leader_notes: 0,
       instance_milestones: 0,
       percentage_issues: 0,

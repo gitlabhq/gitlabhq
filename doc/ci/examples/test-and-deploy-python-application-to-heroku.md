@@ -42,7 +42,7 @@ production:
 This project has three jobs:
 1. `test` - used to test Django application,
 2. `staging` - used to automatically deploy staging environment every push to `master` branch
-3. `production` - used to automatically deploy production environmnet for every created tag
+3. `production` - used to automatically deploy production environment for every created tag
 
 ## Store API keys
 

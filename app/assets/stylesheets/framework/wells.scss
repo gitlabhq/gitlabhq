@@ -16,6 +16,10 @@
       .commit-sha,
       .commit-info {
         margin-left: 4px;
+
+        .fork-svg {
+          margin-right: 4px;
+        }
       }
 
       .ref-name {
@@ -79,7 +83,7 @@
     }
 
     .limit-icon {
-      margin: 0 8px;
+      margin: 0 4px;
     }
 
     .limit-message {

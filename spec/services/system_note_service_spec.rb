@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe SystemNoteService do
   include Gitlab::Routing
+  include RepoHelpers
 
   set(:group)    { create(:group) }
   set(:project)  { create(:project, :repository, group: group) }
@@ -53,10 +54,11 @@ describe SystemNoteService do
           expect(note_lines[0]).to eq "added #{new_commits.size} commits"
         end
 
-        it 'adds a message line for each commit' do
-          new_commits.each_with_index do |commit, i|
-            # Skip the header
-            expect(HTMLEntities.new.decode(note_lines[i + 1])).to eq "* #{commit.short_id} - #{commit.title}"
+        it 'adds a message for each commit' do
+          decoded_note_content = HTMLEntities.new.decode(subject.note)
+
+          new_commits.each do |commit|
+            expect(decoded_note_content).to include("<li>#{commit.short_id} - #{commit.title}</li>")
           end
         end
       end
@@ -68,7 +70,7 @@ describe SystemNoteService do
           let(:old_commits) { [noteable.commits.last] }
 
           it 'includes the existing commit' do
-            expect(summary_line).to eq "* #{old_commits.first.short_id} - 1 commit from branch `feature`"
+            expect(summary_line).to start_with("<ul><li>#{old_commits.first.short_id} - 1 commit from branch <code>feature</code>")
           end
         end
 
@@ -78,22 +80,16 @@ describe SystemNoteService do
           context 'with oldrev' do
             let(:oldrev) { noteable.commits[2].id }
 
-            it 'includes a commit range' do
-              expect(summary_line).to start_with "* #{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id}"
-            end
-
-            it 'includes a commit count' do
-              expect(summary_line).to end_with " - 26 commits from branch `feature`"
+            it 'includes a commit range and count' do
+              expect(summary_line)
+                .to start_with("<ul><li>#{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id} - 26 commits from branch <code>feature</code>")
             end
           end
 
           context 'without oldrev' do
-            it 'includes a commit range' do
-              expect(summary_line).to start_with "* #{old_commits[0].short_id}..#{old_commits[-1].short_id}"
-            end
-
-            it 'includes a commit count' do
-              expect(summary_line).to end_with " - 26 commits from branch `feature`"
+            it 'includes a commit range and count' do
+              expect(summary_line)
+                .to start_with("<ul><li>#{old_commits[0].short_id}..#{old_commits[-1].short_id} - 26 commits from branch <code>feature</code>")
             end
           end
 
@@ -103,7 +99,7 @@ describe SystemNoteService do
             end
 
             it 'includes the project namespace' do
-              expect(summary_line).to end_with "`#{noteable.target_project_namespace}:feature`"
+              expect(summary_line).to include("<code>#{noteable.target_project_namespace}:feature</code>")
             end
           end
         end
@@ -157,7 +153,7 @@ describe SystemNoteService do
     end
 
     it 'builds a correct phrase when assignee removed' do
-      expect(build_note([assignee1], [])).to eq 'removed assignee'
+      expect(build_note([assignee1], [])).to eq "unassigned @#{assignee1.username}"
     end
 
     it 'builds a correct phrase when assignees changed' do
@@ -307,7 +303,7 @@ describe SystemNoteService do
     end
 
     it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to match(/enabled an automatic merge when the pipeline for (\w+\/\w+@)?\h{40} succeeds/)
+      expect(subject.note).to match(%r{enabled an automatic merge when the pipeline for (\w+/\w+@)?\h{40} succeeds})
     end
   end
 
@@ -692,9 +688,9 @@ describe SystemNoteService do
   describe '.new_commit_summary' do
     it 'escapes HTML titles' do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
-      escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
+      escaped = '&lt;pre&gt;This is a test&lt;/pre&gt;'
 
-      expect(described_class.new_commit_summary([commit])).to all(match(%r[- #{escaped}]))
+      expect(described_class.new_commit_summary([commit])).to all(match(/- #{escaped}/))
     end
   end
 
@@ -726,6 +722,7 @@ describe SystemNoteService do
               else
                 "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
               end
+
         link = double(object: { 'url' => url })
         links << link
         expect(link).to receive(:save!)
@@ -746,7 +743,7 @@ describe SystemNoteService do
           expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
-        it "blocks cross reference when #{type.underscore}_events is true" do
+        it "creates cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
           expect(cross_reference(type)).to eq(success_message)
@@ -792,7 +789,7 @@ describe SystemNoteService do
               object: {
                 url: project_commit_url(project, commit),
                 title: "GitLab: Mentioned on commit - #{commit.title}",
-                icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
                 status: { resolved: false }
               }
             )
@@ -818,7 +815,7 @@ describe SystemNoteService do
               object: {
                 url: project_issue_url(project, issue),
                 title: "GitLab: Mentioned on issue - #{issue.title}",
-                icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
                 status: { resolved: false }
               }
             )
@@ -844,7 +841,7 @@ describe SystemNoteService do
               object: {
                 url: project_snippet_url(project, snippet),
                 title: "GitLab: Mentioned on snippet - #{snippet.title}",
-                icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
+                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
                 status: { resolved: false }
               }
             )
@@ -1070,17 +1067,32 @@ describe SystemNoteService do
       let(:action)            { 'outdated' }
     end
 
-    it 'creates a new note in the discussion' do
-      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
-      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    context 'when the change_position is valid for the discussion' do
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'links to the diff in the system note' do
+        expect(subject.note).to include('version 1')
+
+        diff_id = merge_request.merge_request_diff.id
+        line_code = change_position.line_code(project.repository)
+        expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+      end
     end
 
-    it 'links to the diff in the system note' do
-      expect(subject.note).to include('version 1')
+    context 'when the change_position is invalid for the discussion' do
+      let(:change_position) { project.commit(sample_commit.id) }
 
-      diff_id = merge_request.merge_request_diff.id
-      line_code = change_position.line_code(project.repository)
-      expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'does not create a link' do
+        expect(subject.note).to eq('changed this line in version 1 of the diff')
+      end
     end
   end
 

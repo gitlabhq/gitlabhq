@@ -1,4 +1,3 @@
-require 'rubocop-rspec'
 require_relative '../../spec_helpers'
 
 module RuboCop
@@ -17,7 +16,7 @@ module RuboCop
       #   before do
       #     stub_env('FOO', 'bar')
       #   end
-      class EnvAssignment < Cop
+      class EnvAssignment < RuboCop::Cop::Cop
         include SpecHelpers
 
         MESSAGE = "Don't assign to ENV, use `stub_env` instead.".freeze
@@ -32,7 +31,7 @@ module RuboCop
           return unless in_spec?(node)
           return unless env_assignment?(node)
 
-          add_offense(node, :expression, MESSAGE)
+          add_offense(node, location: :expression, message: MESSAGE)
         end
 
         def autocorrect(node)

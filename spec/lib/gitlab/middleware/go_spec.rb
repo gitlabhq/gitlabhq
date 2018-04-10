@@ -3,19 +3,30 @@ require 'spec_helper'
 describe Gitlab::Middleware::Go do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
+  let(:env) do
+    {
+      'rack.input' => '',
+      'REQUEST_METHOD' => 'GET'
+    }
+  end
 
   describe '#call' do
     describe 'when go-get=0' do
+      before do
+        env['QUERY_STRING'] = 'go-get=0'
+      end
+
       it 'skips go-import generation' do
-        env = { 'rack.input' => '',
-                'QUERY_STRING' => 'go-get=0' }
         expect(app).to receive(:call).with(env).and_return('no-go')
         middleware.call(env)
       end
     end
 
     describe 'when go-get=1' do
-      let(:current_user) { nil }
+      before do
+        env['QUERY_STRING'] = 'go-get=1'
+        env['PATH_INFO'] = "/#{path}"
+      end
 
       shared_examples 'go-get=1' do |enabled_protocol:|
         context 'with simple 2-segment project path' do
@@ -54,21 +65,75 @@ describe Gitlab::Middleware::Go do
                 project.update_attribute(:visibility_level, Project::PRIVATE)
               end
 
-              context 'with access to the project' do
+              shared_examples 'unauthorized' do
+                it 'returns the 2-segment group path' do
+                  expect_response_with_path(go, enabled_protocol, group.full_path)
+                end
+              end
+
+              context 'when not authenticated' do
+                it_behaves_like 'unauthorized'
+              end
+
+              context 'when authenticated' do
                 let(:current_user) { project.creator }
 
                 before do
                   project.team.add_master(current_user)
                 end
 
-                it 'returns the full project path' do
-                  expect_response_with_path(go, enabled_protocol, project.full_path)
-                end
-              end
+                shared_examples 'authenticated' do
+                  context 'with access to the project' do
+                    it 'returns the full project path' do
+                      expect_response_with_path(go, enabled_protocol, project.full_path)
+                    end
+                  end
 
-              context 'without access to the project' do
-                it 'returns the 2-segment group path' do
-                  expect_response_with_path(go, enabled_protocol, group.full_path)
+                  context 'without access to the project' do
+                    before do
+                      project.team.find_member(current_user).destroy
+                    end
+
+                    it_behaves_like 'unauthorized'
+                  end
+                end
+
+                context 'using warden' do
+                  before do
+                    env['warden'] = double(authenticate: current_user)
+                  end
+
+                  context 'when active' do
+                    it_behaves_like 'authenticated'
+                  end
+
+                  context 'when blocked' do
+                    before do
+                      current_user.block!
+                    end
+
+                    it_behaves_like 'unauthorized'
+                  end
+                end
+
+                context 'using a personal access token' do
+                  let(:personal_access_token) { create(:personal_access_token, user: current_user) }
+
+                  before do
+                    env['HTTP_PRIVATE_TOKEN'] = personal_access_token.token
+                  end
+
+                  context 'with api scope' do
+                    it_behaves_like 'authenticated'
+                  end
+
+                  context 'with read_user scope' do
+                    before do
+                      personal_access_token.update_attribute(:scopes, [:read_user])
+                    end
+
+                    it_behaves_like 'unauthorized'
+                  end
                 end
               end
             end
@@ -138,12 +203,6 @@ describe Gitlab::Middleware::Go do
     end
 
     def go
-      env = {
-        'rack.input' => '',
-        'QUERY_STRING' => 'go-get=1',
-        'PATH_INFO' => "/#{path}",
-        'warden' => double(authenticate: current_user)
-      }
       middleware.call(env)
     end
 

@@ -120,6 +120,10 @@ describe Gitlab::Ci::Ansi2html do
     expect(convert_html("\e[48;5;240mHello")).to eq('<span class="xterm-bg-240">Hello</span>')
   end
 
+  it "can print 256 xterm fg bold colors" do
+    expect(convert_html("\e[38;5;16;1mHello")).to eq('<span class="xterm-fg-16 term-bold">Hello</span>')
+  end
+
   it "can print 256 xterm bg colors on normal magenta foreground" do
     expect(convert_html("\e[48;5;16;35mHello")).to eq('<span class="term-fg-magenta xterm-bg-16">Hello</span>')
   end
@@ -213,11 +217,58 @@ describe Gitlab::Ci::Ansi2html do
       "#{section_end[0...-5]}</div>"
     end
 
-    it "prints light red" do
-      text = "#{section_start}\e[91mHello\e[0m\n#{section_end}"
-      html = %{#{section_start_html}<span class="term-fg-l-red">Hello</span><br>#{section_end_html}}
+    shared_examples 'forbidden char in section_name' do
+      it 'ignores sections' do
+        text = "#{section_start}Some text#{section_end}"
+        html = text.gsub("\033[0K", '').gsub('<', '&lt;')
 
-      expect(convert_html(text)).to eq(html)
+        expect(convert_html(text)).to eq(html)
+      end
+    end
+
+    shared_examples 'a legit section' do
+      let(:text) { "#{section_start}Some text#{section_end}" }
+
+      it 'prints light red' do
+        text = "#{section_start}\e[91mHello\e[0m\n#{section_end}"
+        html = %{#{section_start_html}<span class="term-fg-l-red">Hello</span><br>#{section_end_html}}
+
+        expect(convert_html(text)).to eq(html)
+      end
+
+      it 'begins with a section_start html marker' do
+        expect(convert_html(text)).to start_with(section_start_html)
+      end
+
+      it 'ends with a section_end html marker' do
+        expect(convert_html(text)).to end_with(section_end_html)
+      end
+    end
+
+    it_behaves_like 'a legit section'
+
+    context 'section name includes $' do
+      let(:section_name) { 'my_$ection'}
+
+      it_behaves_like 'forbidden char in section_name'
+    end
+
+    context 'section name includes <' do
+      let(:section_name) { '<a_tag>'}
+
+      it_behaves_like 'forbidden char in section_name'
+    end
+
+    context 'section name contains .-_' do
+      let(:section_name) { 'a.Legit-SeCtIoN_namE' }
+
+      it_behaves_like 'a legit section'
+    end
+
+    it 'do not allow XSS injections' do
+      text = "#{section_start}section_end:1:2<script>alert('XSS Hack!');</script>#{section_end}"
+
+      expect(convert_html(text)).not_to include('<script>')
     end
   end
 

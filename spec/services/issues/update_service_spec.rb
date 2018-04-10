@@ -13,13 +13,14 @@ describe Issues::UpdateService, :mailer do
     create(:issue, title: 'Old title',
                    description: "for #{user2.to_reference}",
                    assignee_ids: [user3.id],
-                   project: project)
+                   project: project,
+                   author: create(:user))
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -96,10 +97,43 @@ describe Issues::UpdateService, :mailer do
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
 
+      context 'when moving issue between issues from different projects', :nested_groups do
+        let(:group) { create(:group) }
+        let(:subgroup) { create(:group, parent: group) }
+
+        let(:project_1) { create(:project, namespace: group) }
+        let(:project_2) { create(:project, namespace: group) }
+        let(:project_3) { create(:project, namespace: subgroup) }
+
+        let(:issue_1) { create(:issue, project: project_1) }
+        let(:issue_2) { create(:issue, project: project_2) }
+        let(:issue_3) { create(:issue, project: project_3) }
+
+        before do
+          group.add_developer(user)
+        end
+
+        it 'sorts issues as specified by parameters' do
+          # Moving all issues to end here like the last example won't work since
+          # all projects only have the same issue count
+          # so their relative_position will be the same.
+          issue_1.move_to_end
+          issue_2.move_after(issue_1)
+          issue_3.move_after(issue_2)
+          [issue_1, issue_2, issue_3].map(&:save)
+
+          opts[:move_between_ids] = [issue_1.id, issue_2.id]
+          opts[:board_group_id] = group.id
+
+          described_class.new(issue_3.project, user, opts).execute(issue_3)
+          expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
+        end
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
@@ -318,7 +352,7 @@ describe Issues::UpdateService, :mailer do
       let!(:subscriber) do
         create(:user).tap do |u|
           label.toggle_subscription(u, project)
-          project.team << [u, :developer]
+          project.add_developer(u)
         end
       end
 
@@ -556,7 +590,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
         end
 
         it 'calls the move service with the proper issue and project' do

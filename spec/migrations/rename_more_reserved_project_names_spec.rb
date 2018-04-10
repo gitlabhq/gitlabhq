@@ -5,10 +5,10 @@ require Rails.root.join('db', 'post_migrate', '20170313133418_rename_more_reserv
 
 # This migration uses multiple threads, and thus different transactions. This
 # means data created in this spec may not be visible to some threads. To work
-# around this we use the TRUNCATE cleaning strategy.
-describe RenameMoreReservedProjectNames, truncate: true do
+# around this we use the DELETE cleaning strategy.
+describe RenameMoreReservedProjectNames, :delete do
   let(:migration) { described_class.new }
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   before do
     project.path = 'artifacts'

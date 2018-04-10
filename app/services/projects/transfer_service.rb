@@ -24,6 +24,8 @@ module Projects
 
       transfer(project)
 
+      current_user.invalidate_personal_projects_count
+
       true
     rescue Projects::TransferService::TransferError => ex
       project.reload
@@ -75,6 +77,8 @@ module Projects
         project.old_path_with_namespace = @old_path
         project.expires_full_path_cache
 
+        write_repository_config(@new_path)
+
         execute_system_hooks
       end
     rescue Exception # rubocop:disable Lint/RescueException
@@ -98,6 +102,10 @@ module Projects
       project.save!
     end
 
+    def write_repository_config(full_path)
+      project.write_repository_config(gl_full_path: full_path)
+    end
+
     def refresh_permissions
       # This ensures we only schedule 1 job for every user that has access to
       # the namespaces.
@@ -110,6 +118,7 @@ module Projects
     def rollback_side_effects
       rollback_folder_move
       update_namespace_and_visibility(@old_namespace)
+      write_repository_config(@old_path)
     end
 
     def rollback_folder_move

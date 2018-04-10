@@ -176,6 +176,11 @@
     &.btn-remove {
       @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
     }
+
+    &.btn-primary,
+    &.btn-info {
+      @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
+    }
   }
 
   &.btn-gray {
@@ -218,14 +223,6 @@
 
   &.btn-grouped {
     @include btn-with-margin;
-  }
-
-  &.disabled {
-    pointer-events: auto !important;
-  }
-
-  &[disabled] {
-    pointer-events: none !important;
   }
 
   .fa-caret-down,
@@ -447,6 +444,44 @@
   }
 }
 
+.btn-missing {
+  color: $notes-light-color;
+  border: 1px dashed $border-gray-normal-dashed;
+  border-radius: $border-radius-default;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $notes-light-color;
+    background-color: $white-normal;
+  }
+}
+
 .btn-svg svg {
   @include btn-svg;
+}
+
+// All disabled buttons, regardless of color, type, etc
+%disabled {
+  background-color: $gray-light !important;
+  border-color: $theme-gray-200 !important;
+  color: $gl-text-color-disabled !important;
+  opacity: 1 !important;
+  cursor: default !important;
+
+  i {
+    color: $gl-text-color-disabled !important;
+  }
+}
+
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn,
+.dropdown-toggle[disabled],
+[disabled].dropdown-menu-toggle {
+  @extend %disabled;
+
+  &:hover {
+    @extend %disabled;
+  }
 }

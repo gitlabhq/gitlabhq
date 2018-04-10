@@ -11,7 +11,7 @@ module Banzai
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 
       def call
-        search_text_nodes(doc).each do |node|
+        doc.search(".//text()").each do |node|
           content = node.to_html
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
 
@@ -54,9 +54,9 @@ module Banzai
       # Build a regexp that matches all valid :emoji: names.
       def self.emoji_pattern
         @emoji_pattern ||=
-          /(?<=[^[:alnum:]:]|\n|^)
+          %r{(?<=[^[:alnum:]:]|\n|^)
           :(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):
-          (?=[^[:alnum:]:]|$)/x
+          (?=[^[:alnum:]:]|$)}x
       end
 
       # Build a regexp that matches all valid unicode emojis names.

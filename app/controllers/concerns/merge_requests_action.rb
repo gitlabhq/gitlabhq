@@ -4,9 +4,6 @@ module MergeRequestsAction
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def merge_requests
-    @finder_type = MergeRequestsFinder
-    @label = finder.labels.first
-
     @merge_requests = issuables_collection.page(params[:page])
 
     @issuable_meta_data = issuable_meta_data(@merge_requests, collection_type)
@@ -14,6 +11,11 @@ module MergeRequestsAction
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
+
+  def finder_type
+    (super if defined?(super)) ||
+      (MergeRequestsFinder if action_name == 'merge_requests')
+  end
 
   def filter_params
     super.merge(non_archived: true)

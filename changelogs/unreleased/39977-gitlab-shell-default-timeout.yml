@@ -1,5 +1,0 @@
----
-title: Set the default gitlab-shell timeout to 3 hours
-merge_request: 15292
-author:
-type: fixed

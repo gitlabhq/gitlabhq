@@ -11,8 +11,8 @@ module Groups
     def execute
       return nil unless group_path
 
-      if group = Group.find_by_full_path(group_path)
-        return group
+      if namespace = namespace_or_group(group_path)
+        return namespace
       end
 
       if group_path.include?('/') && !Group.supports_nested_groups?
@@ -40,10 +40,14 @@ module Groups
         )
         new_params[:visibility_level] ||= Gitlab::CurrentSettings.current_application_settings.default_group_visibility
 
-        last_group = Group.find_by_full_path(partial_path) || Groups::CreateService.new(current_user, new_params).execute
+        last_group = namespace_or_group(partial_path) || Groups::CreateService.new(current_user, new_params).execute
       end
 
       last_group
+    end
+
+    def namespace_or_group(group_path)
+      Namespace.find_by_full_path(group_path)
     end
   end
 end

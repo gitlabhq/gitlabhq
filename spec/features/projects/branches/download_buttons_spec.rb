@@ -23,13 +23,13 @@ feature 'Download buttons in branches page' do
 
   background do
     sign_in(user)
-    project.team << [user, role]
+    project.add_role(user, role)
   end
 
   describe 'when checking branches' do
     context 'with artifacts' do
       before do
-        visit project_branches_path(project, search: 'binary-encoding')
+        visit project_branches_filtered_path(project, state: 'all', search: 'binary-encoding')
       end
 
       scenario 'shows download artifacts button' do

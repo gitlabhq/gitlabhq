@@ -10,6 +10,7 @@ module Gitlab
       DEFAULT_MODE = 0o100644
 
       ACTIONS = %w(create create_dir update move delete).freeze
+      ACTION_OPTIONS = %i(file_path previous_path content encoding).freeze
 
       attr_reader :repository, :raw_index
 
@@ -19,6 +20,11 @@ module Gitlab
       end
 
       delegate :read_tree, :get, to: :raw_index
+
+      def apply(action, options)
+        validate_action!(action)
+        public_send(action, options.slice(*ACTION_OPTIONS)) # rubocop:disable GitlabSecurity/PublicSend
+      end
 
       def write_tree
         raw_index.write_tree(repository.rugged)
@@ -139,6 +145,12 @@ module Gitlab
         raw_index.add(path: options[:file_path], oid: oid, mode: mode || DEFAULT_MODE)
       rescue Rugged::IndexError => e
         raise IndexError, e.message
+      end
+
+      def validate_action!(action)
+        unless ACTIONS.include?(action.to_s)
+          raise ArgumentError, "Unknown action '#{action}'"
+        end
       end
     end
   end

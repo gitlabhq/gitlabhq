@@ -247,10 +247,19 @@ declaring their names dynamically in `.gitlab-ci.yml`. Dynamic environments is
 the basis of [Review apps](review_apps/index.md).
 
 >**Note:**
-The `name` and `url` parameters can use any of the defined CI variables,
+The `name` and `url` parameters can use most of the defined CI variables,
 including predefined, secure variables and `.gitlab-ci.yml`
-[`variables`](yaml/README.md#variables).
-You however cannot use variables defined under `script` or on the Runner's side.
+[`variables`](yaml/README.md#variables). You however cannot use variables
+defined under `script` or on the Runner's side. There are other variables that
+are unsupported in environment name context:
+- `CI_JOB_ID`
+- `CI_JOB_TOKEN`
+- `CI_BUILD_ID`
+- `CI_BUILD_TOKEN`
+- `CI_REGISTRY_USER`
+- `CI_REGISTRY_PASSWORD`
+- `CI_REPOSITORY_URL`
+- `CI_ENVIRONMENT_URL`
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in
@@ -455,7 +464,7 @@ Mappings are defined as entries in the root YAML array, and are identified by a 
       - Literal periods (`.`) should be escaped as `\.`.
 - `public`
     - a string, starting and ending with `'`.
-      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurence, starting with `\1`.
+      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurrence, starting with `\1`.
 
 The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups if appropriate.
 

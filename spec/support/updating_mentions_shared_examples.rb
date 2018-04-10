@@ -3,7 +3,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
   let(:service_class) { service_class }
 
   before do
-    project.team << [mentioned_user, :developer]
+    project.add_developer(mentioned_user)
   end
 
   def update_mentionable(opts)

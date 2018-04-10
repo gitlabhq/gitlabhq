@@ -2,6 +2,8 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
+  include Importable
+
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
@@ -12,6 +14,7 @@ class Service < ActiveRecord::Base
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
+  default_value_for :confidential_note_events, true
   default_value_for :job_events, true
   default_value_for :pipeline_events, true
   default_value_for :wiki_page_events, true
@@ -40,10 +43,12 @@ class Service < ActiveRecord::Base
   scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
+  scope :confidential_note_hooks, -> { where(confidential_note_events: true, active: true) }
   scope :job_hooks, -> { where(job_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
+  scope :deployment, -> { where(category: 'deployment') }
 
   default_value_for :category, 'common'
 
@@ -117,8 +122,24 @@ class Service < ActiveRecord::Base
     nil
   end
 
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key)/ }
+  end
+
   def global_fields
     fields
+  end
+
+  def configurable_events
+    events = self.class.supported_events
+
+    # No need to disable individual triggers when there is only one
+    if events.count == 1
+      []
+    else
+      events
+    end
   end
 
   def supported_events
@@ -143,19 +164,16 @@ class Service < ActiveRecord::Base
     true
   end
 
-  # reason why service cannot be tested
-  def disabled_title
-    "Please setup a project repository."
-  end
-
   # Provide convenient accessor methods
   # for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.prop_accessor(*args)
     args.each do |arg|
       class_eval %{
-        def #{arg}
-          properties['#{arg}']
+        unless method_defined?(arg)
+          def #{arg}
+            properties['#{arg}']
+          end
         end
 
         def #{arg}=(value)
@@ -188,7 +206,11 @@ class Service < ActiveRecord::Base
     args.each do |arg|
       class_eval %{
         def #{arg}?
-          ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+          if Gitlab.rails5?
+            !ActiveModel::Type::Boolean::FALSE_VALUES.include?(#{arg})
+          else
+            ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+          end
         end
       }
     end
@@ -249,6 +271,7 @@ class Service < ActiveRecord::Base
       teamcity
       microsoft_teams
     ]
+
     if Rails.env.development?
       service_names += %w[mock_ci mock_deployment mock_monitoring]
     end
@@ -258,9 +281,22 @@ class Service < ActiveRecord::Base
 
   def self.build_from_template(project_id, template)
     service = template.dup
+    service.active = false unless service.valid?
     service.template = false
     service.project_id = project_id
     service
+  end
+
+  def deprecated?
+    false
+  end
+
+  def deprecation_message
+    nil
+  end
+
+  def self.find_by_template
+    find_by(template: true)
   end
 
   private
@@ -275,5 +311,32 @@ class Service < ActiveRecord::Base
     if project && !project.destroyed?
       project.cache_has_external_wiki
     end
+  end
+
+  def self.event_description(event)
+    case event
+    when "push", "push_events"
+      "Event will be triggered by a push to the repository"
+    when "tag_push", "tag_push_events"
+      "Event will be triggered when a new tag is pushed to the repository"
+    when "note", "note_events"
+      "Event will be triggered when someone adds a comment"
+    when "issue", "issue_events"
+      "Event will be triggered when an issue is created/updated/closed"
+    when "confidential_issue", "confidential_issue_events"
+      "Event will be triggered when a confidential issue is created/updated/closed"
+    when "merge_request", "merge_request_events"
+      "Event will be triggered when a merge request is created/updated/merged"
+    when "pipeline", "pipeline_events"
+      "Event will be triggered when a pipeline status changes"
+    when "wiki_page", "wiki_page_events"
+      "Event will be triggered when a wiki page is created/updated"
+    when "commit", "commit_events"
+      "Event will be triggered when a commit is created/updated"
+    end
+  end
+
+  def valid_recipients?
+    activated? && !importing?
   end
 end

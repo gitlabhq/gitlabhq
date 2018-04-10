@@ -20,11 +20,6 @@
         default: '',
       },
     },
-    methods: {
-      cellType(type) {
-        return `${type}-cell`;
-      },
-    },
     computed: {
       cells() {
         if (this.notebook.worksheets) {
@@ -43,6 +38,11 @@
       },
       hasNotebook() {
         return Object.keys(this.notebook).length;
+      },
+    },
+    methods: {
+      cellType(type) {
+        return `${type}-cell`;
       },
     },
   };

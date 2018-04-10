@@ -3,36 +3,12 @@ require_dependency 'declarative_policy'
 module API
   class Projects < Grape::API
     include PaginationParams
+    include Helpers::CustomAttributes
+    include Helpers::ProjectsHelpers
 
     before { authenticate_non_get! }
 
     helpers do
-      params :optional_params_ce do
-        optional :description, type: String, desc: 'The description of the project'
-        optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
-        optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
-        optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
-        optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'
-        optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
-        optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
-        optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
-        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
-        optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
-        optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
-        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
-        optional :public_builds, type: Boolean, desc: 'Perform public builds'
-        optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
-        optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
-        optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
-        optional :avatar, type: File, desc: 'Avatar image for project'
-        optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
-      end
-
-      params :optional_params do
-        use :optional_params_ce
-      end
-
       params :statistics_params do
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
@@ -76,10 +52,11 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_statistics if params[:statistics]
-        projects = projects.with_issues_enabled if params[:with_issues_enabled]
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
         projects = paginate(projects)
+        projects, options = with_custom_attributes(projects, options)
 
         if current_user
           project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
@@ -107,6 +84,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":user_id/projects" do
         user = find_user(params[:user_id])
@@ -127,6 +105,7 @@ module API
       params do
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get do
         present_projects load_projects
@@ -139,7 +118,7 @@ module API
         optional :name, type: String, desc: 'The name of the project'
         optional :path, type: String, desc: 'The path of the repository'
         at_least_one_of :name, :path
-        use :optional_params
+        use :optional_project_params
         use :create_params
       end
       post do
@@ -154,6 +133,7 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
           render_validation_error!(project)
         end
       end
@@ -166,7 +146,7 @@ module API
         requires :user_id, type: Integer, desc: 'The ID of a user'
         optional :path, type: String, desc: 'The path of the repository'
         optional :default_branch, type: String, desc: 'The default branch of the project'
-        use :optional_params
+        use :optional_project_params
         use :create_params
       end
       post "user/:user_id" do
@@ -195,11 +175,19 @@ module API
       end
       params do
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":id" do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present user_project, with: entity, current_user: current_user,
-                              user_can_admin_project: can?(current_user, :admin_project, user_project), statistics: params[:statistics]
+        options = {
+          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+          current_user: current_user,
+          user_can_admin_project: can?(current_user, :admin_project, user_project),
+          statistics: params[:statistics]
+        }
+
+        project, options = with_custom_attributes(user_project, options)
+
+        present project, options
       end
 
       desc 'Fork new project for the current user or provided namespace.' do
@@ -209,15 +197,13 @@ module API
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
       end
       post ':id/fork' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
+
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
 
         if namespace_id.present?
-          fork_params[:namespace] = if namespace_id =~ /^\d+$/
-                                      Namespace.find_by(id: namespace_id)
-                                    else
-                                      Namespace.find_by_path_or_name(namespace_id)
-                                    end
+          fork_params[:namespace] = find_namespace(namespace_id)
 
           unless fork_params[:namespace] && can?(current_user, :create_projects, fork_params[:namespace])
             not_found!('Target Namespace')
@@ -239,6 +225,7 @@ module API
       end
       params do
         use :collection_params
+        use :with_custom_attributes
       end
       get ':id/forks' do
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
@@ -255,12 +242,14 @@ module API
           [
             :jobs_enabled,
             :resolve_outdated_diff_discussions,
+            :ci_config_path,
             :container_registry_enabled,
             :default_branch,
             :description,
             :issues_enabled,
             :lfs_enabled,
             :merge_requests_enabled,
+            :merge_method,
             :name,
             :only_allow_merge_if_all_discussions_are_resolved,
             :only_allow_merge_if_pipeline_succeeds,
@@ -278,7 +267,7 @@ module API
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
 
-        use :optional_params
+        use :optional_project_params
         at_least_one_of(*at_least_one_of_ce)
       end
       put ':id' do

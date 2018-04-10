@@ -61,6 +61,27 @@ class ProjectPolicy < BasePolicy
   desc "Project has request access enabled"
   condition(:request_access_enabled, scope: :subject) { project.request_access_enabled }
 
+  desc "Has merge requests allowing pushes to user"
+  condition(:has_merge_requests_allowing_pushes, scope: :subject) do
+    project.merge_requests_allowing_push_to_user(user).any?
+  end
+
+  # We aren't checking `:read_issue` or `:read_merge_request` in this case
+  # because it could be possible for a user to see an issuable-iid
+  # (`:read_issue_iid` or `:read_merge_request_iid`) but then wouldn't be
+  # allowed to read the actual issue after a more expensive `:read_issue`
+  # check. These checks are intended to be used alongside
+  # `:read_project_for_iids`.
+  #
+  # `:read_issue` & `:read_issue_iid` could diverge in gitlab-ee.
+  condition(:issues_visible_to_user, score: 4) do
+    @subject.feature_available?(:issues, @user)
+  end
+
+  condition(:merge_requests_visible_to_user, score: 4) do
+    @subject.feature_available?(:merge_requests, @user)
+  end
+
   features = %w[
     merge_requests
     issues
@@ -76,12 +97,17 @@ class ProjectPolicy < BasePolicy
     condition(:"#{f}_disabled", score: 32) { !feature_available?(f.to_sym) }
   end
 
+  # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
+  # not.
+  rule { guest | admin }.enable :read_project_for_iids
+
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
   rule { master }.enable :master_access
+  rule { owner | admin }.enable :owner_access
 
-  rule { owner | admin }.policy do
+  rule { can?(:owner_access) }.policy do
     enable :guest_access
     enable :reporter_access
     enable :developer_access
@@ -96,11 +122,6 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
-  end
-
-  rule { owner | reporter }.policy do
-    enable :build_download_code
-    enable :build_read_container_image
   end
 
   rule { can?(:guest_access) }.policy do
@@ -119,8 +140,12 @@ class ProjectPolicy < BasePolicy
     enable :create_note
     enable :upload_file
     enable :read_cycle_analytics
-    enable :read_project_snippet
   end
+
+  # These abilities are not allowed to admins that are not members of the project,
+  # that's why they are defined separately.
+  rule { guest & can?(:download_code) }.enable :build_download_code
+  rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
   rule { can?(:reporter_access) }.policy do
     enable :download_code
@@ -141,12 +166,20 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
   end
 
+  # We define `:public_user_access` separately because there are cases in gitlab-ee
+  # where we enable or prevent it based on other coditions.
   rule { (~anonymous & public_project) | internal_access }.policy do
     enable :public_user_access
+    enable :read_project_for_iids
   end
 
   rule { can?(:public_user_access) }.policy do
+    enable :public_access
     enable :guest_access
+
+    enable :fork_project
+    enable :build_download_code
+    enable :build_read_container_image
     enable :request_access
   end
 
@@ -197,14 +230,6 @@ class ProjectPolicy < BasePolicy
     enable :create_cluster
   end
 
-  rule { can?(:public_user_access) }.policy do
-    enable :public_access
-
-    enable :fork_project
-    enable :build_download_code
-    enable :build_read_container_image
-  end
-
   rule { archived }.policy do
     prevent :create_merge_request
     prevent :push_code
@@ -241,7 +266,6 @@ class ProjectPolicy < BasePolicy
 
   rule { repository_disabled }.policy do
     prevent :push_code
-    prevent :push_code_to_protected_branches
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status
@@ -252,7 +276,11 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { anonymous & ~public_project }.prevent_all
-  rule { public_project }.enable(:public_access)
+
+  rule { public_project }.policy do
+    enable :public_access
+    enable :read_project_for_iids
+  end
 
   rule { can?(:public_access) }.policy do
     enable :read_project
@@ -292,6 +320,23 @@ class ProjectPolicy < BasePolicy
     prevent :admin_issue
     prevent :read_issue
   end
+
+  # These rules are included to allow maintainers of projects to push to certain
+  # to run pipelines for the branches they have access to.
+  rule { can?(:public_access) & has_merge_requests_allowing_pushes }.policy do
+    enable :create_build
+    enable :update_build
+    enable :create_pipeline
+    enable :update_pipeline
+  end
+
+  rule do
+    (can?(:read_project_for_iids) & issues_visible_to_user) | can?(:read_issue)
+  end.enable :read_issue_iid
+
+  rule do
+    (can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
+  end.enable :read_merge_request_iid
 
   private
 

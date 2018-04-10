@@ -22,6 +22,9 @@ import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
+  directives: {
+    tooltip,
+  },
   props: {
     lazy: {
       type: Boolean,
@@ -59,9 +62,6 @@ export default {
       default: 'top',
     },
   },
-  directives: {
-    tooltip,
-  },
   computed: {
     // API response sends null when gravatar is disabled and
     // we provide an empty string when we use it inside user avatar link.
@@ -87,7 +87,7 @@ export default {
     v-tooltip
     class="avatar"
     :class="{
-      lazy,
+      lazy: lazy,
       [avatarSizeClass]: true,
       [cssClasses]: true
     }"

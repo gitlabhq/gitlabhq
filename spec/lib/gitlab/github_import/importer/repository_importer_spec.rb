@@ -9,9 +9,10 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       :project,
       import_url: 'foo.git',
       import_source: 'foo/bar',
-      repository_storage_path: 'foo',
+      repository_storage: 'foo',
       disk_path: 'foo',
-      repository: repository
+      repository: repository,
+      create_wiki: true
     )
   end
 
@@ -37,8 +38,12 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(project)
         .to receive(:wiki_repository_exists?)
         .and_return(false)
+      expect(Gitlab::GitalyClient::RemoteService)
+        .to receive(:exists?)
+        .with("foo.wiki.git")
+        .and_return(true)
 
-      expect(importer.import_wiki?).to eq(true)
+      expect(importer.import_wiki?).to be(true)
     end
 
     it 'returns false if the GitHub wiki is disabled' do
@@ -192,7 +197,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(importer.import_wiki_repository).to eq(true)
     end
 
-    it 'marks the import as failed if an error was raised' do
+    it 'marks the import as failed and creates an empty repo if an error was raised' do
       expect(importer.gitlab_shell)
         .to receive(:import_repository)
         .and_raise(Gitlab::Shell::Error)
@@ -200,6 +205,9 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(importer)
         .to receive(:fail_import)
         .and_return(false)
+
+      expect(project)
+        .to receive(:create_wiki)
 
       expect(importer.import_wiki_repository).to eq(false)
     end

@@ -1,21 +1,30 @@
 <script>
+  import $ from 'jquery';
   import tooltip from '../../directives/tooltip';
   import toolbarButton from './toolbar_button.vue';
   import icon from '../icon.vue';
 
   export default {
-    props: {
-      previewMarkdown: {
-        type: Boolean,
-        required: true,
-      },
-    },
     directives: {
       tooltip,
     },
     components: {
       toolbarButton,
       icon,
+    },
+    props: {
+      previewMarkdown: {
+        type: Boolean,
+        required: true,
+      },
+    },
+    mounted() {
+      $(document).on('markdown-preview:show.vue', this.previewMarkdownTab);
+      $(document).on('markdown-preview:hide.vue', this.writeMarkdownTab);
+    },
+    beforeDestroy() {
+      $(document).off('markdown-preview:show.vue', this.previewMarkdownTab);
+      $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
     methods: {
       isMarkdownForm(form) {
@@ -36,14 +45,6 @@
         this.$emit('write-markdown');
       },
     },
-    mounted() {
-      $(document).on('markdown-preview:show.vue', this.previewMarkdownTab);
-      $(document).on('markdown-preview:hide.vue', this.writeMarkdownTab);
-    },
-    beforeDestroy() {
-      $(document).off('markdown-preview:show.vue', this.previewMarkdownTab);
-      $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
-    },
   };
 </script>
 
@@ -52,62 +53,74 @@
     <ul class="nav-links clearfix">
       <li
         class="md-header-tab"
-        :class="{ active: !previewMarkdown }">
+        :class="{ active: !previewMarkdown }"
+      >
         <a
           class="js-write-link"
           href="#md-write-holder"
           tabindex="-1"
-          @click.prevent="writeMarkdownTab($event)">
+          @click.prevent="writeMarkdownTab($event)"
+        >
           Write
         </a>
       </li>
       <li
         class="md-header-tab"
-        :class="{ active: previewMarkdown }">
+        :class="{ active: previewMarkdown }"
+      >
         <a
           class="js-preview-link"
           href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="previewMarkdownTab($event)">
+          @click.prevent="previewMarkdownTab($event)"
+        >
           Preview
         </a>
       </li>
       <li
         class="md-header-toolbar"
-        :class="{ active: !previewMarkdown }">
+        :class="{ active: !previewMarkdown }"
+      >
         <toolbar-button
           tag="**"
           button-title="Add bold text"
-          icon="bold" />
+          icon="bold"
+        />
         <toolbar-button
           tag="*"
           button-title="Add italic text"
-          icon="italic" />
+          icon="italic"
+        />
         <toolbar-button
           tag="> "
           :prepend="true"
           button-title="Insert a quote"
-          icon="quote" />
+          icon="quote"
+        />
         <toolbar-button
           tag="`"
           tag-block="```"
           button-title="Insert code"
-          icon="code" />
+          icon="code"
+        />
         <toolbar-button
           tag="* "
           :prepend="true"
           button-title="Add a bullet list"
-          icon="list-bulleted" />
+          icon="list-bulleted"
+        />
         <toolbar-button
           tag="1. "
           :prepend="true"
           button-title="Add a numbered list"
-          icon="list-numbered" />
+          icon="list-numbered"
+        />
         <toolbar-button
           tag="* [ ] "
           :prepend="true"
           button-title="Add a task list"
-          icon="task-done" />
+          icon="task-done"
+        />
         <button
           v-tooltip
           aria-label="Go full screen"
@@ -115,10 +128,11 @@
           data-container="body"
           tabindex="-1"
           title="Go full screen"
-          type="button">
+          type="button"
+        >
           <icon
-            name="screen-full">
-          </icon>
+            name="screen-full"
+          />
         </button>
       </li>
     </ul>

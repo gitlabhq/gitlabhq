@@ -9,7 +9,8 @@ module MergeRequests
       Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
-      close_merge_requests
+      close_upon_missing_source_branch_ref
+      post_merge_manually_merged
       reload_merge_requests
       reset_merge_when_pipeline_succeeds
       mark_pending_todos_done
@@ -20,7 +21,7 @@ module MergeRequests
         comment_mr_branch_presence_changed
       end
 
-      comment_mr_with_commits
+      notify_about_push
       mark_mr_as_wip_from_commits
       execute_mr_web_hooks
 
@@ -29,11 +30,22 @@ module MergeRequests
 
     private
 
+    def close_upon_missing_source_branch_ref
+      # MergeRequest#reload_diff ignores not opened MRs. This means it won't
+      # create an `empty` diff for `closed` MRs without a source branch, keeping
+      # the latest diff state as the last _valid_ one.
+      merge_requests_for_source_branch.reject(&:source_branch_exists?).each do |mr|
+        MergeRequests::CloseService
+          .new(mr.target_project, @current_user)
+          .execute(mr)
+      end
+    end
+
     # Collect open merge requests that target same branch we push into
     # and close if push to master include last commit from merge request
     # We need this to close(as merged) merge requests that were merged into
     # target branch manually
-    def close_merge_requests
+    def post_merge_manually_merged
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.preload(:latest_merge_request_diff).opened.where(target_branch: @branch_name).to_a
       merge_requests = merge_requests.select(&:diff_head_commit)
@@ -78,6 +90,10 @@ module MergeRequests
         merge_request.mark_as_unchecked
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
+
+      # Upcoming method calls need the refreshed version of
+      # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
+      merge_requests_for_source_branch(reload: true)
     end
 
     def reset_merge_when_pipeline_succeeds
@@ -125,8 +141,8 @@ module MergeRequests
       end
     end
 
-    # Add comment about pushing new commits to merge requests
-    def comment_mr_with_commits
+    # Add comment about pushing new commits to merge requests and send nofitication emails
+    def notify_about_push
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
@@ -139,6 +155,8 @@ module MergeRequests
         SystemNoteService.add_commits(merge_request, merge_request.project,
                                       @current_user, new_commits,
                                       existing_commits, @oldrev)
+
+        notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
       end
     end
 
@@ -183,7 +201,8 @@ module MergeRequests
       merge_requests.uniq.select(&:source_project)
     end
 
-    def merge_requests_for_source_branch
+    def merge_requests_for_source_branch(reload: false)
+      @source_merge_requests = nil if reload
       @source_merge_requests ||= merge_requests_for(@branch_name)
     end
 

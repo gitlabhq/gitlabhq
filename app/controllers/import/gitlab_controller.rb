@@ -24,15 +24,19 @@ class Import::GitlabController < Import::BaseController
   end
 
   def create
-    @repo_id = params[:repo_id].to_i
-    repo = client.project(@repo_id)
-    @project_name = repo['name']
-    @target_namespace = find_or_create_namespace(repo['namespace']['path'], client.user['username'])
+    repo = client.project(params[:repo_id].to_i)
+    target_namespace = find_or_create_namespace(repo['namespace']['path'], client.user['username'])
 
-    if current_user.can?(:create_projects, @target_namespace)
-      @project = Gitlab::GitlabImport::ProjectCreator.new(repo, @target_namespace, current_user, access_params).execute
+    if current_user.can?(:create_projects, target_namespace)
+      project = Gitlab::GitlabImport::ProjectCreator.new(repo, target_namespace, current_user, access_params).execute
+
+      if project.persisted?
+        render json: ProjectSerializer.new.represent(project)
+      else
+        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render 'unauthorized'
+      render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
   end
 

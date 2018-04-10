@@ -103,6 +103,6 @@ class EventCreateService
       author_id: current_user.id
     )
 
-    Event.create(attributes)
+    Event.create!(attributes)
   end
 end

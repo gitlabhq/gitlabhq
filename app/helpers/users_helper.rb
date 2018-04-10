@@ -14,4 +14,18 @@ module UsersHelper
       content_tag(:strong) { user.unconfirmed_email } + h('.') +
       content_tag(:p) { confirmation_link }
   end
+
+  def profile_tabs
+    @profile_tabs ||= get_profile_tabs
+  end
+
+  def profile_tab?(tab)
+    profile_tabs.include?(tab)
+  end
+
+  private
+
+  def get_profile_tabs
+    [:activity, :groups, :contributed, :projects, :snippets]
+  end
 end

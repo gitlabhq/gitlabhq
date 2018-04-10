@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import banner from '~/cycle_analytics/components/banner.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Cycle analytics banner', () => {
   let vm;
@@ -20,8 +20,9 @@ describe('Cycle analytics banner', () => {
     expect(
       vm.$el.querySelector('h4').textContent.trim(),
     ).toEqual('Introducing Cycle Analytics');
+
     expect(
-      vm.$el.querySelector('p').textContent.trim(),
+      vm.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
     ).toContain('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.');
     expect(
       vm.$el.querySelector('a').textContent.trim(),

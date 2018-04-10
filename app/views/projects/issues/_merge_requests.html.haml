@@ -18,7 +18,7 @@
           - unless @issue.project.id == merge_request.target_project.id
             in
             - project = merge_request.target_project
-            = link_to project.name_with_namespace, project_path(project)
+            = link_to project.full_name, project_path(project)
 
         - if merge_request.merged?
           %span.merge-request-status.prepend-left-10.merged

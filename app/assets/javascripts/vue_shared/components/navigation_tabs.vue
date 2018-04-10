@@ -1,4 +1,6 @@
 <script>
+  import $ from 'jquery';
+
   /**
    * Given an array of tabs, renders non linked bootstrap tabs.
    * When a tab is clicked it will trigger an event and provide the clicked scope.
@@ -45,31 +47,30 @@
         this.$emit('onChangeTab', tab.scope);
       },
     },
-};
+  };
 </script>
 <template>
-  <ul class="nav-links scrolling-tabs">
+  <ul class="nav-links scrolling-tabs separator">
     <li
       v-for="(tab, i) in tabs"
       :key="i"
       :class="{
         active: tab.isActive,
       }"
-      >
+    >
       <a
         role="button"
         @click="onTabClick(tab)"
         :class="`js-${scope}-tab-${tab.scope}`"
-        >
+      >
         {{ tab.name }}
 
         <span
           v-if="shouldRenderBadge(tab.count)"
           class="badge"
-          >
-          {{tab.count}}
+        >
+          {{ tab.count }}
         </span>
-
       </a>
     </li>
   </ul>

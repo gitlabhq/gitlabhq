@@ -5,7 +5,7 @@ feature 'User visits the notifications tab', :js do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit(profile_notifications_path)
   end
@@ -16,6 +16,6 @@ feature 'User visits the notifications tab', :js do
     first('#notifications-button').click
     click_link('On mention')
 
-    expect(page).to have_content('On mention')
+    expect(page).to have_selector('#notifications-button', text: 'On mention')
   end
 end

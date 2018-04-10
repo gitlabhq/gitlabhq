@@ -165,7 +165,7 @@ describe 'gitlab:app namespace rake task' do
         expect(tar_contents).to match('pages.tar.gz')
         expect(tar_contents).to match('lfs.tar.gz')
         expect(tar_contents).to match('registry.tar.gz')
-        expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
+        expect(tar_contents).not_to match(%r{^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)/$})
       end
 
       it 'deletes temp directories' do
@@ -195,12 +195,21 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
-      let(:gitaly_address) { Gitlab.config.repositories.storages.default.gitaly_address }
+      let(:storage_default) do
+        Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/default_storage'))
+      end
+      let(:test_second_storage) do
+        Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/custom_storage'))
+      end
       let(:storages) do
         {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
-          'test_second_storage' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
+          'default' => storage_default,
+          'test_second_storage' => test_second_storage
         }
+      end
+
+      before(:all) do
+        @default_storage_hash = Gitlab.config.repositories.storages.default.to_h
       end
 
       before do

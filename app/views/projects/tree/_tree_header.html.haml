@@ -24,6 +24,8 @@
           .add-to-tree-dropdown
             %ul.dropdown-menu
               - if can_edit_tree?
+                %li.dropdown-header
+                  #{ _('This directory') }
                 %li
                   = link_to project_new_blob_path(@project, @id) do
                     #{ _('New file') }
@@ -60,6 +62,8 @@
                     #{ _('New directory') }
 
               %li.divider
+              %li.dropdown-header
+                #{ _('This repository') }
               %li
                 = link_to new_project_branch_path(@project) do
                   #{ _('New branch') }
@@ -68,13 +72,12 @@
                   #{ _('New tag') }
 
 .tree-controls
-  - if show_new_ide?
-    = succeed " " do
-      = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-        = ide_edit_text
-
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
+
+  = succeed " " do
+    = link_to ide_edit_path(@project, @id, ""), class: 'btn btn-default' do
+      = _('Web IDE')
 
   = render 'projects/buttons/download', project: @project, ref: @ref

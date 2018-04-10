@@ -1,6 +1,6 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
-  include Gitlab::CurrentSettings
   include Gitlab::GonHelper
+  include Gitlab::Allowable
   include PageLayoutHelper
   include OauthApplications
 
@@ -8,6 +8,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   before_action :authenticate_user!
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit]
+
+  helper_method :can?
 
   layout 'profile'
 
@@ -31,7 +33,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   private
 
   def verify_user_oauth_applications_enabled
-    return if current_application_settings.user_oauth_applications?
+    return if Gitlab::CurrentSettings.user_oauth_applications?
 
     redirect_to profile_path
   end

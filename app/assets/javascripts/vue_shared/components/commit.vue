@@ -2,13 +2,21 @@
   import commitIconSvg from 'icons/_icon_commit.svg';
   import userAvatarLink from './user_avatar/user_avatar_link.vue';
   import tooltip from '../directives/tooltip';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
+    directives: {
+      tooltip,
+    },
+    components: {
+      userAvatarLink,
+      icon,
+    },
     props: {
       /**
        * Indicates the existance of a tag.
        * Used to render the correct icon, if true will render `fa-tag` icon,
-       * if false will render `fa-code-fork` icon.
+       * if false will render a svg sprite fork icon
        */
       tag: {
         type: Boolean,
@@ -102,12 +110,6 @@
           this.author.username ? `${this.author.username}'s avatar` : null;
       },
     },
-    directives: {
-      tooltip,
-    },
-    components: {
-      userAvatarLink,
-    },
     created() {
       this.commitIconSvg = commitIconSvg;
     },
@@ -116,44 +118,47 @@
 <template>
   <div class="branch-commit">
     <template v-if="hasCommitRef && showBranch">
-      <div
-        class="icon-container hidden-xs">
+      <div class="icon-container">
         <i
           v-if="tag"
           class="fa fa-tag"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </i>
-        <i
+        <icon
           v-if="!tag"
-          class="fa fa-code-fork"
-          aria-hidden="true">
-        </i>
+          name="fork"
+        />
       </div>
 
       <a
-        class="ref-name hidden-xs"
+        class="ref-name"
         :href="commitRef.ref_url"
         v-tooltip
         data-container="body"
-        :title="commitRef.name">
-        {{commitRef.name}}
+        :title="commitRef.name"
+      >
+        {{ commitRef.name }}
       </a>
     </template>
     <div
       v-html="commitIconSvg"
-      class="commit-icon js-commit-icon">
+      class="commit-icon js-commit-icon"
+    >
     </div>
 
     <a
       class="commit-sha"
-      :href="commitUrl">
-      {{shortSha}}
+      :href="commitUrl"
+    >
+      {{ shortSha }}
     </a>
 
     <div class="commit-title flex-truncate-parent">
       <span
         v-if="title"
-        class="flex-truncate-child">
+        class="flex-truncate-child"
+      >
         <user-avatar-link
           v-if="hasAuthor"
           class="avatar-image-container"
@@ -164,8 +169,9 @@
         />
         <a
           class="commit-row-message"
-          :href="commitUrl">
-          {{title}}
+          :href="commitUrl"
+        >
+          {{ title }}
         </a>
       </span>
       <span v-else>

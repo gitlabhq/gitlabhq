@@ -12,11 +12,12 @@ RSpec.shared_examples 'additional metrics query' do
 
   let(:client) { double('prometheus_client') }
   let(:query_result) { described_class.new(client).query(*query_params) }
-  let(:environment) { create(:environment, slug: 'environment-slug') }
+  let(:project) { create(:project) }
+  let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
 
   before do
     allow(client).to receive(:label_values).and_return(metric_names)
-    allow(metric_group_class).to receive(:all).and_return([simple_metric_group(metrics: [simple_metric])])
+    allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group(metrics: [simple_metric])])
   end
 
   context 'metrics query context' do
@@ -24,13 +25,14 @@ RSpec.shared_examples 'additional metrics query' do
 
     shared_examples 'query context containing environment slug and filter' do
       it 'contains ci_environment_slug' do
-        expect(subject).to receive(:query_metrics).with(hash_including(ci_environment_slug: environment.slug))
+        expect(subject).to receive(:query_metrics).with(project, hash_including(ci_environment_slug: environment.slug))
 
         subject.query(*query_params)
       end
 
       it 'contains environment filter' do
         expect(subject).to receive(:query_metrics).with(
+          project,
           hash_including(
             environment_filter: "container_name!=\"POD\",environment=\"#{environment.slug}\""
           )
@@ -48,7 +50,7 @@ RSpec.shared_examples 'additional metrics query' do
         it_behaves_like 'query context containing environment slug and filter'
 
         it 'query context contains kube_namespace' do
-          expect(subject).to receive(:query_metrics).with(hash_including(kube_namespace: kube_namespace))
+          expect(subject).to receive(:query_metrics).with(project, hash_including(kube_namespace: kube_namespace))
 
           subject.query(*query_params)
         end
@@ -72,7 +74,7 @@ RSpec.shared_examples 'additional metrics query' do
       it_behaves_like 'query context containing environment slug and filter'
 
       it 'query context contains empty kube_namespace' do
-        expect(subject).to receive(:query_metrics).with(hash_including(kube_namespace: ''))
+        expect(subject).to receive(:query_metrics).with(project, hash_including(kube_namespace: ''))
 
         subject.query(*query_params)
       end
@@ -81,7 +83,7 @@ RSpec.shared_examples 'additional metrics query' do
 
   context 'with one group where two metrics is found' do
     before do
-      allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+      allow(metric_group_class).to receive(:common_metrics).and_return([simple_metric_group])
     end
 
     context 'some queries return results' do
@@ -117,7 +119,7 @@ RSpec.shared_examples 'additional metrics query' do
     let(:metrics) { [simple_metric(queries: [simple_query])] }
 
     before do
-      allow(metric_group_class).to receive(:all).and_return(
+      allow(metric_group_class).to receive(:common_metrics).and_return(
         [
           simple_metric_group(name: 'group_a', metrics: [simple_metric(queries: [simple_query])]),
           simple_metric_group(name: 'group_b', metrics: [simple_metric(title: 'title_b', queries: [simple_query('b')])])

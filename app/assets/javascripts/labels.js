@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class Labels {
   constructor() {
     this.setSuggestedColor = this.setSuggestedColor.bind(this);

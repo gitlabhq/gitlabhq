@@ -3,7 +3,6 @@
 - page_title "Edit", @blob.path, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_bundle_tag('blob')
 
 %div{ class: container_class }
   - if @conflict

@@ -32,6 +32,8 @@ module API
         optional :search, type: String, desc: 'Search issues for text present in the title or description'
         optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
+        optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
+        optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
@@ -95,7 +97,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = paginate(find_issues(group_id: group.id))
+        issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
 
         options = {
           with: Entities::IssueBasic,
@@ -161,6 +163,8 @@ module API
         use :issue_params
       end
       post ':id/issues' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42320')
+
         authorize! :create_issue, user_project
 
         # Setting created_at time only allowed for admins and project owners
@@ -175,6 +179,7 @@ module API
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,
                                             issue_params.merge(request: request, api: true)).execute
+
         if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
@@ -200,6 +205,8 @@ module API
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
       put ':id/issues/:issue_iid' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42322')
+
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
@@ -233,6 +240,8 @@ module API
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
       end
       post ':id/issues/:issue_iid/move' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42323')
+
         issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
 
@@ -275,6 +284,19 @@ module API
         merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+      end
+
+      desc 'List participants for an issue'  do
+        success Entities::UserBasic
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ':id/issues/:issue_iid/participants' do
+        issue = find_project_issue(params[:issue_iid])
+        participants = ::Kaminari.paginate_array(issue.participants)
+
+        present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
       end
 
       desc 'Get the user agent details for an issue' do

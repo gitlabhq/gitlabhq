@@ -1,10 +1,11 @@
+import $ from 'jquery';
 import ContextualSidebar from './contextual_sidebar';
 import initFlyOutNav from './fly_out_nav';
 
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
     const $this = $(this);
-    $this.siblings('.fade-right').toggleClass('scrolling', $this.width() < $this.prop('scrollWidth'));
+    $this.siblings('.fade-right').toggleClass('scrolling', Math.round($this.width()) < $this.prop('scrollWidth'));
   });
 }
 

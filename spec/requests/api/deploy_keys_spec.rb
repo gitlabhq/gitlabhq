@@ -91,6 +91,10 @@ describe API::DeployKeys do
       expect do
         post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
       end.to change { project.deploy_keys.count }.by(1)
+
+      new_key = project.deploy_keys.last
+      expect(new_key.key).to eq(key_attrs[:key])
+      expect(new_key.user).to eq(admin)
     end
 
     it 'returns an existing ssh key when attempting to add a duplicate' do
@@ -110,7 +114,7 @@ describe API::DeployKeys do
     end
 
     it 'accepts can_push parameter' do
-      key_attrs = attributes_for :write_access_key
+      key_attrs = attributes_for(:another_key).merge(can_push: true)
 
       post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
 
@@ -153,16 +157,6 @@ describe API::DeployKeys do
 
     it 'updates a private ssh key with correct attributes' do
       project_private_deploy_key
-
-      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: 'new title', can_push: true }
-
-      expect(json_response['id']).to eq(private_deploy_key.id)
-      expect(json_response['title']).to eq('new title')
-      expect(json_response['can_push']).to eq(true)
-    end
-
-    it 'updates a private ssh key from projects user has access with correct attributes' do
-      create(:deploy_keys_project, project: project2, deploy_key: private_deploy_key)
 
       put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: 'new title', can_push: true }
 

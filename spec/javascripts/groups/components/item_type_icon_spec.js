@@ -1,9 +1,8 @@
 import Vue from 'vue';
 
 import itemTypeIconComponent from '~/groups/components/item_type_icon.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { ITEM_TYPE } from '../mock_data';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (itemType = ITEM_TYPE.GROUP, isGroupOpen = false) => {
   const Component = Vue.extend(itemTypeIconComponent);
@@ -28,12 +27,12 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.GROUP, true);
       vm.$mount();
-      expect(vm.$el.querySelector('i.fa.fa-folder-open')).toBeDefined();
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder-open');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
       vm.$mount();
-      expect(vm.$el.querySelector('i.fa.fa-folder')).toBeDefined();
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder');
       vm.$destroy();
     });
 
@@ -42,12 +41,12 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.PROJECT);
       vm.$mount();
-      expect(vm.$el.querySelectorAll('i.fa.fa-bookmark').length).toBe(1);
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('bookmark');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
       vm.$mount();
-      expect(vm.$el.querySelectorAll('i.fa.fa-bookmark').length).toBe(0);
+      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).not.toContain('bookmark');
       vm.$destroy();
     });
   });

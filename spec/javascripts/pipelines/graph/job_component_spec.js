@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import jobComponent from '~/pipelines/components/graph/job_component.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job component', () => {
   let JobComponent;
@@ -13,6 +13,7 @@ describe('pipeline graph job component', () => {
       icon: 'icon_status_success',
       text: 'passed',
       label: 'passed',
+      tooltip: 'passed',
       group: 'success',
       details_path: '/root/ci-mock/builds/4256',
       has_details: true,
@@ -61,14 +62,14 @@ describe('pipeline graph job component', () => {
     it('it should render status and name', () => {
       component = mountComponent(JobComponent, {
         job: {
-          id: 4256,
+          id: 4257,
           name: 'test',
           status: {
             icon: 'icon_status_success',
             text: 'passed',
             label: 'passed',
             group: 'success',
-            details_path: '/root/ci-mock/builds/4256',
+            details_path: '/root/ci-mock/builds/4257',
             has_details: false,
           },
         },
@@ -118,7 +119,7 @@ describe('pipeline graph job component', () => {
     it('should not render status label when it is not provided', () => {
       component = mountComponent(JobComponent, {
         job: {
-          id: 4256,
+          id: 4258,
           name: 'test',
           status: {
             icon: 'icon_status_success',
@@ -132,11 +133,12 @@ describe('pipeline graph job component', () => {
     it('should not render status label when it is  provided', () => {
       component = mountComponent(JobComponent, {
         job: {
-          id: 4256,
+          id: 4259,
           name: 'test',
           status: {
             icon: 'icon_status_success',
             label: 'success',
+            tooltip: 'success',
           },
         },
       });

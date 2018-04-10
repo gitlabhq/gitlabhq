@@ -1,6 +1,7 @@
 class Admin::ServicesController < Admin::ApplicationController
   include ServiceParams
 
+  before_action :whitelist_query_limiting, only: [:index]
   before_action :service, only: [:edit, :update]
 
   def index
@@ -36,5 +37,9 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def service
     @service ||= Service.where(id: params[:id], template: true).first
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42430')
   end
 end

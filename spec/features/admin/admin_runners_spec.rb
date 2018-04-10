@@ -19,7 +19,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts' do
-        expect(page).to have_text "How to setup"
+        expect(page).to have_text "Setup a shared Runner manually"
         expect(page).to have_text "Runners with last contact more than a minute ago: 1"
       end
 
@@ -54,7 +54,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "How to setup"
+        expect(page).to have_text "Setup a shared Runner manually"
         expect(page).to have_text "Runners with last contact more than a minute ago: 0"
         expect(page).to have_text 'No runners found'
       end
@@ -76,8 +76,8 @@ describe "Admin Runners" do
 
     describe 'projects' do
       it 'contains project names' do
-        expect(page).to have_content(@project1.name_with_namespace)
-        expect(page).to have_content(@project2.name_with_namespace)
+        expect(page).to have_content(@project1.full_name)
+        expect(page).to have_content(@project2.full_name)
       end
     end
 
@@ -89,8 +89,8 @@ describe "Admin Runners" do
       end
 
       it 'contains name of correct project' do
-        expect(page).to have_content(@project1.name_with_namespace)
-        expect(page).not_to have_content(@project2.name_with_namespace)
+        expect(page).to have_content(@project1.full_name)
+        expect(page).not_to have_content(@project2.full_name)
       end
     end
 
@@ -156,7 +156,7 @@ describe "Admin Runners" do
   end
 
   describe 'runners registration token' do
-    let!(:token) { current_application_settings.runners_registration_token }
+    let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
 
     before do
       visit admin_runners_path

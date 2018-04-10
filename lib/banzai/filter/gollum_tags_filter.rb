@@ -51,13 +51,13 @@ module Banzai
       # See https://github.com/gollum/gollum/wiki
       #
       # Rubular: http://rubular.com/r/7dQnE5CUCH
-      TAGS_PATTERN = %r{\[\[(.+?)\]\]}.freeze
+      TAGS_PATTERN = /\[\[(.+?)\]\]/.freeze
 
       # Pattern to match allowed image extensions
-      ALLOWED_IMAGE_EXTENSIONS = %r{.+(jpg|png|gif|svg|bmp)\z}i.freeze
+      ALLOWED_IMAGE_EXTENSIONS = /.+(jpg|png|gif|svg|bmp)\z/i.freeze
 
       def call
-        search_text_nodes(doc).each do |node|
+        doc.search(".//text()").each do |node|
           # A Gollum ToC tag is `[[_TOC_]]`, but due to MarkdownFilter running
           # before this one, it will be converted into `[[<em>TOC</em>]]`, so it
           # needs special-case handling

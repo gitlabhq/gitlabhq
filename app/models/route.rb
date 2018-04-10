@@ -1,4 +1,6 @@
 class Route < ActiveRecord::Base
+  include CaseSensitivity
+
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :source, presence: true
@@ -8,8 +10,7 @@ class Route < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validate :ensure_permanent_paths
-
+  before_validation :delete_conflicting_orphaned_routes
   after_create :delete_conflicting_redirects
   after_update :delete_conflicting_redirects, if: :path_changed?
   after_update :create_redirect_for_old_path
@@ -42,7 +43,7 @@ class Route < ActiveRecord::Base
         # We are not calling route.delete_conflicting_redirects here, in hopes
         # of avoiding deadlocks. The parent (self, in this method) already
         # called it, which deletes conflicts for all descendants.
-        route.create_redirect(old_path, permanent: permanent_redirect?) if attributes[:path]
+        route.create_redirect(old_path) if attributes[:path]
       end
     end
   end
@@ -52,30 +53,25 @@ class Route < ActiveRecord::Base
   end
 
   def conflicting_redirects
-    RedirectRoute.temporary.matching_path_and_descendants(path)
+    RedirectRoute.matching_path_and_descendants(path)
   end
 
-  def create_redirect(path, permanent: false)
-    RedirectRoute.create(source: source, path: path, permanent: permanent)
+  def create_redirect(path)
+    RedirectRoute.create(source: source, path: path)
   end
 
   private
 
   def create_redirect_for_old_path
-    create_redirect(path_was, permanent: permanent_redirect?) if path_changed?
+    create_redirect(path_was) if path_changed?
   end
 
-  def permanent_redirect?
-    source_type != "Project"
-  end
+  def delete_conflicting_orphaned_routes
+    conflicting = self.class.iwhere(path: path)
+    conflicting_orphaned_routes = conflicting.select do |route|
+      route.source.nil?
+    end
 
-  def ensure_permanent_paths
-    return if path.nil?
-
-    errors.add(:path, "#{path} has been taken before. Please use another one") if conflicting_redirect_exists?
-  end
-
-  def conflicting_redirect_exists?
-    RedirectRoute.permanent.matching_path_and_descendants(path).exists?
+    conflicting_orphaned_routes.each(&:destroy)
   end
 end

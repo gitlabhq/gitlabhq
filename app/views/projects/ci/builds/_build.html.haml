@@ -22,7 +22,7 @@
     - if ref
       - if job.ref
         .icon-container
-          = job.tag? ? icon('tag') : icon('code-fork')
+          = job.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else
         .light none
@@ -63,7 +63,7 @@
   - if admin
     %td
       - if job.project
-        = link_to job.project.name_with_namespace, admin_project_path(job.project)
+        = link_to job.project.full_name, admin_project_path(job.project)
     %td
       - if job.try(:runner)
         = runner_link(job.runner)
@@ -96,7 +96,7 @@
     .pull-right
       - if can?(current_user, :read_build, job) && job.artifacts?
         = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
-          = icon('download')
+          = sprite_icon('download')
       - if can?(current_user, :update_build, job)
         - if job.active?
           = link_to cancel_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do

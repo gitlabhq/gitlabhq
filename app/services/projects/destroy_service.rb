@@ -34,6 +34,8 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was removed")
 
+      current_user.invalidate_personal_projects_count
+
       true
     rescue => error
       attempt_rollback(project, error.message)
@@ -42,6 +44,20 @@ module Projects
       # Project.transaction can raise Exception
       attempt_rollback(project, error.message)
       raise
+    end
+
+    def attempt_repositories_rollback
+      return unless @project
+
+      flush_caches(@project)
+
+      unless mv_repository(removal_path(repo_path), repo_path)
+        raise_error('Failed to restore project repository. Please contact the administrator.')
+      end
+
+      unless mv_repository(removal_path(wiki_path), wiki_path)
+        raise_error('Failed to restore wiki repository. Please contact the administrator.')
+      end
     end
 
     private
@@ -68,12 +84,9 @@ module Projects
       # Skip repository removal. We use this flag when remove user or group
       return true if params[:skip_repo] == true
 
-      # There is a possibility project does not have repository or wiki
-      return true unless gitlab_shell.exists?(project.repository_storage_path, path + '.git')
-
       new_path = removal_path(path)
 
-      if gitlab_shell.mv_repository(project.repository_storage_path, path, new_path)
+      if mv_repository(path, new_path)
         log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
 
         project.run_after_commit do
@@ -85,10 +98,21 @@ module Projects
       end
     end
 
+    def mv_repository(from_path, to_path)
+      # There is a possibility project does not have repository or wiki
+      return true unless gitlab_shell.exists?(project.repository_storage_path, from_path + '.git')
+
+      gitlab_shell.mv_repository(project.repository_storage_path, from_path, to_path)
+    end
+
     def attempt_rollback(project, message)
       return unless project
 
-      project.update_attributes(delete_error: message, pending_delete: false)
+      # It's possible that the project was destroyed, but some after_commit
+      # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
+      # which cannot be altered.
+      project.update_attributes(delete_error: message, pending_delete: false) unless project.destroyed?
+
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end
 

@@ -4,8 +4,24 @@ require Rails.root.join('db', 'post_migrate', '20171013104327_migrate_gcp_cluste
 describe MigrateGcpClustersToNewClustersArchitectures, :migration do
   let(:projects) { table(:projects) }
   let(:project) { projects.create }
-  let(:user) { create(:user) }
-  let(:service) { create(:kubernetes_service, project_id: project.id) }
+  let(:users) { table(:users) }
+  let(:user) { users.create! }
+  let(:service) { GcpMigrationSpec::KubernetesService.create!(project_id: project.id) }
+
+  module GcpMigrationSpec
+    class KubernetesService < ActiveRecord::Base
+      self.table_name = 'services'
+
+      serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
+
+      default_value_for :active, true
+      default_value_for :type, 'KubernetesService'
+      default_value_for :properties, {
+        api_url: 'https://kubernetes.example.com',
+        token: 'a' * 40
+      }
+    end
+  end
 
   context 'when cluster is being created' do
     let(:project_id) { project.id }
@@ -33,7 +49,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     let(:encrypted_gcp_token) { "'encrypted_gcp_token'" }
     let(:encrypted_gcp_token_iv) { "'encrypted_gcp_token_iv'" }
 
-    let(:cluster) { Clusters::Cluster.last }
+    let(:cluster) { described_class::Cluster.last }
     let(:cluster_id) { cluster.id }
 
     before do
@@ -46,12 +62,12 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     it 'correctly migrate to new clusters architectures' do
       migrate!
 
-      expect(Clusters::Cluster.count).to eq(1)
-      expect(Clusters::Project.count).to eq(1)
-      expect(Clusters::Providers::Gcp.count).to eq(1)
-      expect(Clusters::Platforms::Kubernetes.count).to eq(1)
+      expect(described_class::Cluster.count).to eq(1)
+      expect(described_class::ClustersProject.count).to eq(1)
+      expect(described_class::ProvidersGcp.count).to eq(1)
+      expect(described_class::PlatformsKubernetes.count).to eq(1)
 
-      expect(cluster.user).to eq(user)
+      expect(cluster.user_id).to eq(user.id)
       expect(cluster.enabled).to be_truthy
       expect(cluster.name).to eq(gcp_cluster_name.delete!("'"))
       expect(cluster.provider_type).to eq('gcp')
@@ -59,7 +75,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
 
       expect(cluster.project_ids).to include(project.id)
 
-      expect(cluster.provider_gcp.cluster).to eq(cluster)
+      expect(cluster.provider_gcp.cluster_id).to eq(cluster.id)
       expect(cluster.provider_gcp.status).to eq(status)
       expect(cluster.provider_gcp.status_reason).to eq(tr(status_reason))
       expect(cluster.provider_gcp.gcp_project_id).to eq(tr(gcp_project_id))
@@ -71,7 +87,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.provider_gcp.encrypted_access_token).to eq(tr(encrypted_gcp_token))
       expect(cluster.provider_gcp.encrypted_access_token_iv).to eq(tr(encrypted_gcp_token_iv))
 
-      expect(cluster.platform_kubernetes.cluster).to eq(cluster)
+      expect(cluster.platform_kubernetes.cluster_id).to eq(cluster.id)
       expect(cluster.platform_kubernetes.api_url).to be_nil
       expect(cluster.platform_kubernetes.ca_cert).to be_nil
       expect(cluster.platform_kubernetes.namespace).to eq(tr(project_namespace))
@@ -109,7 +125,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     let(:encrypted_gcp_token) { "'encrypted_gcp_token'" }
     let(:encrypted_gcp_token_iv) { "'encrypted_gcp_token_iv'" }
 
-    let(:cluster) { Clusters::Cluster.last }
+    let(:cluster) { described_class::Cluster.last }
     let(:cluster_id) { cluster.id }
 
     before do
@@ -122,12 +138,12 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     it 'correctly migrate to new clusters architectures' do
       migrate!
 
-      expect(Clusters::Cluster.count).to eq(1)
-      expect(Clusters::Project.count).to eq(1)
-      expect(Clusters::Providers::Gcp.count).to eq(1)
-      expect(Clusters::Platforms::Kubernetes.count).to eq(1)
+      expect(described_class::Cluster.count).to eq(1)
+      expect(described_class::ClustersProject.count).to eq(1)
+      expect(described_class::ProvidersGcp.count).to eq(1)
+      expect(described_class::PlatformsKubernetes.count).to eq(1)
 
-      expect(cluster.user).to eq(user)
+      expect(cluster.user_id).to eq(user.id)
       expect(cluster.enabled).to be_truthy
       expect(cluster.name).to eq(tr(gcp_cluster_name))
       expect(cluster.provider_type).to eq('gcp')
@@ -135,7 +151,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
 
       expect(cluster.project_ids).to include(project.id)
 
-      expect(cluster.provider_gcp.cluster).to eq(cluster)
+      expect(cluster.provider_gcp.cluster_id).to eq(cluster.id)
       expect(cluster.provider_gcp.status).to eq(status)
       expect(cluster.provider_gcp.status_reason).to eq(tr(status_reason))
       expect(cluster.provider_gcp.gcp_project_id).to eq(tr(gcp_project_id))
@@ -147,7 +163,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.provider_gcp.encrypted_access_token).to eq(tr(encrypted_gcp_token))
       expect(cluster.provider_gcp.encrypted_access_token_iv).to eq(tr(encrypted_gcp_token_iv))
 
-      expect(cluster.platform_kubernetes.cluster).to eq(cluster)
+      expect(cluster.platform_kubernetes.cluster_id).to eq(cluster.id)
       expect(cluster.platform_kubernetes.api_url).to eq('https://' + tr(endpoint))
       expect(cluster.platform_kubernetes.ca_cert).to eq(tr(ca_cert))
       expect(cluster.platform_kubernetes.namespace).to eq(tr(project_namespace))

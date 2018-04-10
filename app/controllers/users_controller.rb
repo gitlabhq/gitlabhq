@@ -1,6 +1,15 @@
 class UsersController < ApplicationController
   include RoutableActions
   include RendersMemberAccess
+  include ControllerWithCrossProjectAccessCheck
+
+  requires_cross_project_access show: false,
+                                groups: false,
+                                projects: false,
+                                contributed: false,
+                                snippets: true,
+                                calendar: false,
+                                calendar_activities: true
 
   skip_before_action :authenticate_user!
   before_action :user, except: [:exists]
@@ -103,12 +112,7 @@ class UsersController < ApplicationController
   end
 
   def load_events
-    # Get user activity feed for projects common for both users
-    @events = user.recent_events
-      .merge(projects_for_current_user)
-      .references(:project)
-      .with_associations
-      .limit_recent(20, params[:offset])
+    @events = UserRecentEventsFinder.new(current_user, user, params).execute
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
@@ -139,10 +143,6 @@ class UsersController < ApplicationController
       author: user,
       scope: params[:scope]
     ).execute.page(params[:page])
-  end
-
-  def projects_for_current_user
-    ProjectsFinder.new(current_user: current_user).execute
   end
 
   def build_canonical_path(user)

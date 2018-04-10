@@ -8,7 +8,7 @@ describe Note do
     it { is_expected.to belong_to(:noteable).touch(false) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:todos) }
   end
 
   describe 'modules' do
@@ -17,8 +17,6 @@ describe Note do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Mentionable) }
     it { is_expected.to include_module(Awardable) }
-
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
   end
 
   describe 'validation' do
@@ -193,9 +191,24 @@ describe Note do
     end
   end
 
+  describe "confidential?" do
+    it "delegates to noteable" do
+      issue_note = build(:note, :on_issue)
+      confidential_note = build(:note, noteable: create(:issue, confidential: true))
+
+      expect(issue_note.confidential?).to be_falsy
+      expect(confidential_note.confidential?).to be_truthy
+    end
+
+    it "is falsey when noteable can't be confidential" do
+      commit_note = build(:note_on_commit)
+      expect(commit_note.confidential?).to be_falsy
+    end
+  end
+
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_master(private_user) } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
     let(:ext_proj)  { create(:project, :public) }

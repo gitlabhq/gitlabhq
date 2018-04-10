@@ -7,28 +7,36 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
-  def index
-    @sort = params[:sort].presence || sort_value_recently_updated
-    @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
+  # Support legacy URLs
+  before_action :redirect_for_legacy_index_sort_or_search, only: [:index]
 
+  def index
     respond_to do |format|
       format.html do
+        @sort = params[:sort].presence || sort_value_recently_updated
+        @mode = params[:state].presence || 'overview'
+        @overview_max_branches = 5
+
+        # Fetch branches for the specified mode
+        fetch_branches_by_mode
+
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
-        @merged_branch_names =
-          repository.merged_branch_names(@branches.map(&:name))
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37429
+        @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
+
+        # n+1: https://gitlab.com/gitlab-org/gitaly/issues/992
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           @max_commits = @branches.reduce(0) do |memo, branch|
             diverging_commit_counts = repository.diverging_commit_counts(branch)
             [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
           end
-
-          render
         end
+
+        render
       end
       format.json do
-        render json: @branches.map(&:name)
+        branches = BranchesFinder.new(@repository, params).execute
+        branches = Kaminari.paginate_array(branches).page(params[:page])
+        render json: branches.map(&:name)
       end
     end
   end
@@ -46,14 +54,16 @@ class Projects::BranchesController < Projects::ApplicationController
     result = CreateBranchService.new(project, current_user)
         .execute(branch_name, ref)
 
-    if params[:issue_iid]
+    success = (result[:status] == :success)
+
+    if params[:issue_iid] && success
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
       SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 
     respond_to do |format|
       format.html do
-        if result[:status] == :success
+        if success
           if redirect_to_autodeploy
             redirect_to url_to_autodeploy_setup(project, branch_name),
               notice: view_context.autodeploy_flash_notice(branch_name)
@@ -67,7 +77,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
 
       format.json do
-        if result[:status] == :success
+        if success
           render json: { name: branch_name, url: project_tree_url(@project, branch_name) }
         else
           render json: result[:messsage], status: :unprocessable_entity
@@ -120,5 +130,28 @@ class Projects::BranchesController < Projects::ApplicationController
       target_branch: branch_name,
       context: 'autodeploy'
     )
+  end
+
+  def redirect_for_legacy_index_sort_or_search
+    # Normalize a legacy URL with redirect
+    if request.format != :json && !params[:state].presence && [:sort, :search, :page].any? { |key| params[key].presence }
+      redirect_to project_branches_filtered_path(@project, state: 'all'), notice: 'Update your bookmarked URLs as filtered/sorted branches URL has been changed.'
+    end
+  end
+
+  def fetch_branches_by_mode
+    if @mode == 'overview'
+      # overview mode
+      @active_branches, @stale_branches = BranchesFinder.new(@repository, sort: sort_value_recently_updated).execute.partition(&:active?)
+      # Here we get one more branch to indicate if there are more data we're not showing
+      @active_branches = @active_branches.first(@overview_max_branches + 1)
+      @stale_branches = @stale_branches.first(@overview_max_branches + 1)
+      @branches = @active_branches + @stale_branches
+    else
+      # active/stale/all view mode
+      @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
+      @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
+      @branches = Kaminari.paginate_array(@branches).page(params[:page])
+    end
   end
 end

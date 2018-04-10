@@ -23,7 +23,7 @@ module QA
 
           arguments.parse!(argv)
 
-          self.perform(**Runtime::Scenario.attributes)
+          self.perform(Runtime::Scenario.attributes, *arguments.default_argv)
         end
 
         private

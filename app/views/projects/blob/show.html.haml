@@ -3,12 +3,9 @@
 
 - page_title @blob.path, @ref
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'blob'
-
-= render 'projects/last_push'
-
 %div{ class: container_class }
+  = render 'projects/last_push'
+
   #tree-holder.tree-holder
     = render 'blob', blob: @blob
 

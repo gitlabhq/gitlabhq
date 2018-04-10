@@ -7,7 +7,7 @@
     = snippet.title
     by
     = link_to user_snippets_path(snippet.author) do
-      = image_tag avatar_icon(snippet.author), class: "avatar avatar-inline s16", alt: ''
+      = image_tag avatar_icon_for_user(snippet.author), class: "avatar avatar-inline s16", alt: ''
       = snippet.author_name
     %span.light= time_ago_with_tooltip(snippet.created_at)
   %h4.snippet-title

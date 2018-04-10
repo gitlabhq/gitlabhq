@@ -1,7 +1,10 @@
 /* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 
@@ -212,25 +215,17 @@ GitLabDropdownRemote = (function() {
   };
 
   GitLabDropdownRemote.prototype.fetchData = function() {
-    return $.ajax({
-      url: this.dataEndpoint,
-      dataType: this.options.dataType,
-      beforeSend: (function(_this) {
-        return function() {
-          if (_this.options.beforeSend) {
-            return _this.options.beforeSend();
-          }
-        };
-      })(this),
-      success: (function(_this) {
-        return function(data) {
-          if (_this.options.success) {
-            return _this.options.success(data);
-          }
-        };
-      })(this)
-    });
-  // Fetch the data through ajax if the data is a string
+    if (this.options.beforeSend) {
+      this.options.beforeSend();
+    }
+
+    // Fetch the data through ajax if the data is a string
+    return axios.get(this.dataEndpoint)
+      .then(({ data }) => {
+        if (this.options.success) {
+          return this.options.success(data);
+        }
+      });
   };
 
   return GitLabDropdownRemote;
@@ -492,7 +487,7 @@ GitLabDropdown = (function() {
       $target = $(e.target);
       if ($target && !$target.hasClass('dropdown-menu-close') &&
                      !$target.hasClass('dropdown-menu-close-icon') &&
-                     !$target.data('is-link')) {
+                     !$target.data('isLink')) {
         e.stopPropagation();
         return false;
       } else {
@@ -583,7 +578,7 @@ GitLabDropdown = (function() {
       for (var i = 0; i < html.length; i += 1) {
         var el = html[i];
 
-        if (el instanceof jQuery) {
+        if (el instanceof $) {
           el = el.get(0);
         }
 
@@ -614,7 +609,20 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.renderItem = function(data, group, index) {
-    var field, fieldName, html, selected, text, url, value;
+    var field, fieldName, html, selected, text, url, value, rowHidden;
+
+    if (!this.options.renderRow) {
+      value = this.options.id ? this.options.id(data) : data.id;
+
+      if (value) {
+        value = value.toString().replace(/'/g, '\\\'');
+      }
+    }
+
+    // Hide element
+    if (this.options.hideRow && this.options.hideRow(value)) {
+      rowHidden = true;
+    }
     if (group == null) {
       group = false;
     }
@@ -623,6 +631,7 @@ GitLabDropdown = (function() {
       index = false;
     }
     html = document.createElement('li');
+
     if (data === 'divider' || data === 'separator') {
       html.className = data;
       return html;
@@ -638,11 +647,9 @@ GitLabDropdown = (function() {
       html = this.options.renderRow.call(this.options, data, this);
     } else {
       if (!selected) {
-        value = this.options.id ? this.options.id(data) : data.id;
         fieldName = this.options.fieldName;
 
         if (value) {
-          value = value.toString().replace(/'/g, '\\\'');
           field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
           if (field.length) {
             selected = true;
@@ -746,7 +753,7 @@ GitLabDropdown = (function() {
     }
 
     if (this.options.isSelectable && !this.options.isSelectable(selectedObject, el)) {
-      return;
+      return [selectedObject];
     }
 
     if (el.hasClass(ACTIVE_CLASS) && value !== 0) {

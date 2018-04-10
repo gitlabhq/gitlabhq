@@ -9,7 +9,19 @@ created in snippets, wikis, and repos.
 ## PlantUML Server
 
 Before you can enable PlantUML in GitLab; you need to set up your own PlantUML
-server that will generate the diagrams. Installing and configuring your
+server that will generate the diagrams.
+
+### Docker
+
+With Docker, you can just run a container like this:
+
+`docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat`
+
+The **PlantUML URL** will be the hostname of the server running the container.
+
+### Debian/Ubuntu
+
+Installing and configuring your
 own PlantUML server is easy in Debian/Ubuntu distributions using Tomcat.
 
 First you need to create a `plantuml.war` file from the source code:
@@ -58,30 +70,32 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 - **Markdown**
 
-      ```plantuml
-      Bob -> Alice : hello
-      Alice -> Bob : Go Away
-      ```
+    <pre>
+    ```plantuml
+    Bob -> Alice : hello
+    Alice -> Bob : Go Away
+    ```
+    </pre>
 
 - **AsciiDoc**
 
-    ```
+    <pre>
     [plantuml, format="png", id="myDiagram", width="200px"]
     --
     Bob->Alice : hello
     Alice -> Bob : Go Away
     --
-    ```
+    </pre>
 
 - **reStructuredText**
 
-    ```
+    <pre>
     .. plantuml::
        :caption: Caption with **bold** and *italic*
 
        Bob -> Alice: hello
        Alice -> Bob: Go Away
-    ```
+    </pre>
 
     You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.python.org/pypi/sphinxcontrib-plantuml), but please note that we currently only support the `caption` option.
 

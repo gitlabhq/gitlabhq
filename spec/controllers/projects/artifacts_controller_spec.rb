@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ArtifactsController do
-  set(:user) { create(:user) }
+  let(:user) { project.owner }
   set(:project) { create(:project, :repository, :public) }
 
   let(:pipeline) do
@@ -15,14 +15,12 @@ describe Projects::ArtifactsController do
   let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
   before do
-    project.add_developer(user)
-
     sign_in(user)
   end
 
   describe 'GET download' do
     it 'sends the artifacts file' do
-      expect(controller).to receive(:send_file).with(job.artifacts_file.path, disposition: 'attachment').and_call_original
+      expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(disposition: 'attachment')).and_call_original
 
       get :download, namespace_id: project.namespace, project_id: project, job_id: job
     end
@@ -113,20 +111,56 @@ describe Projects::ArtifactsController do
   end
 
   describe 'GET raw' do
+    subject { get(:raw, namespace_id: project.namespace, project_id: project, job_id: job, path: path) }
+
     context 'when the file exists' do
-      it 'serves the file using workhorse' do
-        get :raw, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
+      let(:path) { 'ci_artifacts.txt' }
 
-        send_data = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]
+      shared_examples 'a valid file' do
+        it 'serves the file using workhorse' do
+          subject
 
-        expect(send_data).to start_with('artifacts-entry:')
+          expect(response).to have_gitlab_http_status(200)
+          expect(send_data).to start_with('artifacts-entry:')
 
-        base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
-        params = JSON.parse(Base64.urlsafe_decode64(base64_params))
+          expect(params.keys).to eq(%w(Archive Entry))
+          expect(params['Archive']).to start_with(archive_path)
+          # On object storage, the URL can end with a query string
+          expect(params['Archive']).to match(/build_artifacts.zip(\?[^?]+)?$/)
+          expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
+        end
 
-        expect(params.keys).to eq(%w(Archive Entry))
-        expect(params['Archive']).to end_with('build_artifacts.zip')
-        expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
+        def send_data
+          response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]
+        end
+
+        def params
+          @params ||= begin
+            base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
+            JSON.parse(Base64.urlsafe_decode64(base64_params))
+          end
+        end
+      end
+
+      context 'when using local file storage' do
+        it_behaves_like 'a valid file' do
+          let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+          let(:store) { ObjectStorage::Store::LOCAL }
+          let(:archive_path) { JobArtifactUploader.root }
+        end
+      end
+
+      context 'when using remote file storage' do
+        before do
+          stub_artifacts_object_storage
+        end
+
+        it_behaves_like 'a valid file' do
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+          let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+          let(:store) { ObjectStorage::Store::REMOTE }
+          let(:archive_path) { 'https://' }
+        end
       end
     end
   end

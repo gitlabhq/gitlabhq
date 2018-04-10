@@ -15,7 +15,7 @@ describe PersonalProjectsFinder do
   end
 
   before do
-    private_project.team << [current_user, Gitlab::Access::DEVELOPER]
+    private_project.add_developer(current_user)
   end
 
   describe 'without a current user' do

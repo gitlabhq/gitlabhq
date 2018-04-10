@@ -1,6 +1,31 @@
 module Avatarable
   extend ActiveSupport::Concern
 
+  included do
+    prepend ShadowMethods
+    include ObjectStorage::BackgroundMove
+
+    validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
+    validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+    mount_uploader :avatar, AvatarUploader
+  end
+
+  module ShadowMethods
+    def avatar_url(**args)
+      # We use avatar_path instead of overriding avatar_url because of carrierwave.
+      # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+
+      avatar_path(only_path: args.fetch(:only_path, true)) || super
+    end
+  end
+
+  def avatar_type
+    unless self.avatar.image?
+      errors.add :avatar, "file format is not supported. Please try one of the following supported formats: #{AvatarUploader::IMAGE_EXT.join(', ')}"
+    end
+  end
+
   def avatar_path(only_path: true)
     return unless self[:avatar].present?
 

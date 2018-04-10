@@ -11,8 +11,6 @@ class Snippet < ActiveRecord::Base
   include Editable
   include Gitlab::SQL::Pattern
 
-  extend Gitlab::CurrentSettings
-
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
   cache_markdown_field :content
@@ -28,7 +26,7 @@ class Snippet < ActiveRecord::Base
     default_content_html_invalidator || file_name_changed?
   end
 
-  default_value_for(:visibility_level) { current_application_settings.default_snippet_visibility }
+  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_snippet_visibility }
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
@@ -74,6 +72,27 @@ class Snippet < ActiveRecord::Base
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
+  end
+
+  # Returns a collection of snippets that are either public or visible to the
+  # logged in user.
+  #
+  # This method does not verify the user actually has the access to the project
+  # the snippet is in, so it should be only used on a relation that's already scoped
+  # for project access
+  def self.public_or_visible_to_user(user = nil)
+    if user
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = snippets.project_id')
+
+      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+
+      where('EXISTS (?) OR snippets.visibility_level IN (?) or snippets.author_id = (?)', authorized, levels, user.id)
+    else
+      public_to_user
+    end
   end
 
   def to_reference(from = nil, full: false)
@@ -148,6 +167,10 @@ class Snippet < ActiveRecord::Base
     # Returns an ActiveRecord::Relation.
     def search_code(query)
       fuzzy_search(query, [:content])
+    end
+
+    def parent_class
+      ::Project
     end
   end
 end

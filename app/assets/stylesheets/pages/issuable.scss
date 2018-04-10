@@ -102,12 +102,12 @@
 
 .issuable-show-labels {
   a {
-    margin-right: 5px;
     margin-bottom: 5px;
+    margin-right: 5px;
     display: inline-block;
 
     .color-label {
-      padding: 6px 10px;
+      padding: 4px $grid-size;
       border-radius: $label-border-radius;
     }
 
@@ -117,6 +117,12 @@
   }
 
   &.has-labels {
+    // this font size is a fix to
+    // prevent unintended spacing between labels
+    // which shows up when rendering markup has white-space
+    // characters present.
+    // see: https://css-tricks.com/fighting-the-space-between-inline-block-elements/#article-header-id-3
+    font-size: 0;
     margin-bottom: -5px;
   }
 }
@@ -131,12 +137,22 @@
   z-index: 200;
   overflow: hidden;
 
-  a:not(.btn-retry),
-  .btn-link {
+  a:not(.btn) {
     color: inherit;
+
+    &:hover {
+      color: $gl-link-hover-color;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
+
+    }
+
   }
 
   .btn-link {
+    color: inherit;
     outline: none;
   }
 
@@ -160,10 +176,6 @@
 
     &:last-child {
       border: 0;
-    }
-
-    span {
-      display: inline-block;
     }
 
     .select2-container span {
@@ -201,11 +213,18 @@
       margin-left: 0;
     }
 
+    a.edit-link:not([href]):hover {
+      color: rgba($avatar-border, .2);
+    }
+
+    .lock-edit, // uses same style, different js behaviour
     .edit-link {
+      @extend .btn-blank;
       color: $gl-text-color;
 
-      &:not([href]):hover {
-        color: rgba($avatar-border, .2);
+      &:hover {
+        text-decoration: underline;
+        color: $gl-link-hover-color;
       }
     }
   }
@@ -303,7 +322,6 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
-      padding-left: 0;
       text-align: center;
     }
 
@@ -478,16 +496,6 @@
     }
   }
 
-  a:not(.btn-retry) {
-    &:hover {
-      color: $md-link-color;
-
-      .avatar {
-        border-color: rgba($avatar-border, .2);
-      }
-    }
-  }
-
   .dropdown-menu-toggle {
     width: 100%;
     padding-top: 6px;
@@ -495,15 +503,25 @@
 
   .dropdown-menu {
     width: 100%;
+
+    /*
+     * Overwrite hover style for dropdown items, so that they are not blue
+     * This should be removed during dev of https://gitlab.com/gitlab-org/gitlab-ce/issues/44040
+     */
+    li a {
+      &:hover,
+      &:active,
+      &:focus,
+      &.is-focused {
+        @include dropdown-item-hover;
+      }
+    }
+
   }
 }
 
 .with-performance-bar .right-sidebar {
   top: $header-height + $performance-bar-height;
-
-  .issuable-sidebar {
-    height: calc(100% - #{$performance-bar-height});
-  }
 }
 
 .sidebar-move-issue-confirmation-button {

@@ -1,9 +1,8 @@
-import Autosize from 'autosize';
+import $ from 'jquery';
+import autosize from 'autosize';
 import GLForm from '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
-
-window.autosize = Autosize;
 
 describe('GLForm', () => {
   describe('when instantiated', function () {
@@ -13,14 +12,12 @@ describe('GLForm', () => {
       spyOn($.prototype, 'off').and.returnValue(this.textarea);
       spyOn($.prototype, 'on').and.returnValue(this.textarea);
       spyOn($.prototype, 'css');
-      spyOn(window, 'autosize');
 
-      this.glForm = new GLForm(this.form);
+      this.glForm = new GLForm(this.form, false);
       setTimeout(() => {
         $.prototype.off.calls.reset();
         $.prototype.on.calls.reset();
         $.prototype.css.calls.reset();
-        window.autosize.calls.reset();
         done();
       });
     });
@@ -41,10 +38,6 @@ describe('GLForm', () => {
       it('should register a mouseup event handler on the textarea', () => {
         expect($.prototype.off).toHaveBeenCalledWith('mouseup.autosize');
         expect($.prototype.on).toHaveBeenCalledWith('mouseup.autosize', jasmine.any(Function));
-      });
-
-      it('should autosize the textarea', () => {
-        expect(window.autosize).toHaveBeenCalledWith(jasmine.any(Object));
       });
 
       it('should set the resize css property to vertical', () => {
@@ -74,7 +67,7 @@ describe('GLForm', () => {
           spyOn($.prototype, 'data');
           spyOn($.prototype, 'outerHeight').and.returnValue(200);
           spyOn(window, 'outerHeight').and.returnValue(400);
-          spyOn(window.autosize, 'destroy');
+          spyOn(autosize, 'destroy');
 
           this.glForm.destroyAutosize();
         });
@@ -88,7 +81,7 @@ describe('GLForm', () => {
         });
 
         it('should call autosize destroy', () => {
-          expect(window.autosize.destroy).toHaveBeenCalledWith(this.textarea);
+          expect(autosize.destroy).toHaveBeenCalledWith(this.textarea);
         });
 
         it('should set the data-height attribute', () => {
@@ -107,9 +100,9 @@ describe('GLForm', () => {
       it('should return undefined if the data-height equals the outerHeight', () => {
         spyOn($.prototype, 'outerHeight').and.returnValue(200);
         spyOn($.prototype, 'data').and.returnValue(200);
-        spyOn(window.autosize, 'destroy');
+        spyOn(autosize, 'destroy');
         expect(this.glForm.destroyAutosize()).toBeUndefined();
-        expect(window.autosize.destroy).not.toHaveBeenCalled();
+        expect(autosize.destroy).not.toHaveBeenCalled();
       });
     });
   });

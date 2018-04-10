@@ -13,6 +13,6 @@
 
         #{time_ago_with_tooltip(event.created_at)}
 
-      .pull-right
-        = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm" do
+      .flex-right
+        = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm qa-create-merge-request" do
           #{ _('Create merge request') }

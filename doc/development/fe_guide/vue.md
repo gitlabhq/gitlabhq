@@ -53,13 +53,13 @@ you can find a clear separation of concerns:
 ```
 new_feature
 ├── components
-│   └── component.js.es6
+│   └── component.vue
 │   └── ...
-├── store
-│  └── new_feature_store.js.es6
-├── service
-│  └── new_feature_service.js.es6
-├── new_feature_bundle.js.es6
+├── stores
+│  └── new_feature_store.js
+├── services
+│  └── new_feature_service.js
+├── new_feature_bundle.js
 ```
 _For consistency purposes, we recommend you to follow the same structure._
 
@@ -456,7 +456,7 @@ describe('Todos App', () => {
 });
 ```
 #### `mountComponent` helper
-There is an helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
+There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
 
 ```javascript
 import Vue from 'vue';
@@ -507,13 +507,15 @@ This is the entry point for our store. You can use the following as a guide:
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as actions from './actions';
-import * as mutations from './mutations';
+import * as getters from './getters';
+import mutations from './mutations';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   actions,
   getters,
+  mutations,
   state: {
     users: [],
   },
@@ -525,7 +527,7 @@ _Note:_ If the state of the application is too complex, an individual file for t
 An action commits a mutatation. In this file, we will write the actions that will call the respective mutation:
 
 ```javascript
-  import * as types from './mutation-types'
+  import * as types from './mutation_types';
 
   export const addUser = ({ commit }, user) => {
     commit(types.ADD_USER, user);
@@ -575,7 +577,8 @@ import { mapGetters } from 'vuex';
 The only way to actually change state in a Vuex store is by committing a mutation.
 
 ```javascript
-  import * as types from './mutation-types'
+  import * as types from './mutation_types';
+
   export default {
     [types.ADD_USER](state, user) {
       state.users.push(user);
@@ -684,4 +687,3 @@ describe('component', () => {
 [vuex-testing]: https://vuex.vuejs.org/en/testing.html
 [axios]: https://github.com/axios/axios
 [axios-interceptors]: https://github.com/axios/axios#interceptors
-

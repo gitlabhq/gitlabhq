@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateRepositoryService do
   let(:gitlab_shell) { Gitlab::Shell.new }
-  let(:project) { create(:project, :empty_repo, :wiki_repo) }
+  let(:project) { create(:project, :legacy_storage, :repository, :wiki_repo) }
   let(:service) { described_class.new(project) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
@@ -32,6 +32,12 @@ describe Projects::HashedStorage::MigrateRepositoryService do
         expect_move_repository("#{project.disk_path}.wiki", "#{hashed_storage.disk_path}.wiki")
 
         service.execute
+      end
+
+      it 'writes project full path to .git/config' do
+        service.execute
+
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
       end
     end
 

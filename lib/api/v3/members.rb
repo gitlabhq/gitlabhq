@@ -22,10 +22,11 @@ module API
           get ":id/members" do
             source = find_source(source_type, params[:id])
 
-            users = source.users
-            users = users.merge(User.search(params[:query])) if params[:query]
+            members = source.members.where.not(user_id: nil).includes(:user)
+            members = members.joins(:user).merge(User.search(params[:query])) if params[:query].present?
+            members = paginate(members)
 
-            present paginate(users), with: ::API::Entities::Member, source: source
+            present members, with: ::API::Entities::Member
           end
 
           desc 'Gets a member of a group or project.' do
@@ -40,7 +41,7 @@ module API
             members = source.members
             member = members.find_by!(user_id: params[:user_id])
 
-            present member.user, with: ::API::Entities::Member, member: member
+            present member, with: ::API::Entities::Member
           end
 
           desc 'Adds a member to a group or project.' do
@@ -67,8 +68,9 @@ module API
             unless member
               member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
             end
+
             if member.persisted? && member.valid?
-              present member.user, with: ::API::Entities::Member, member: member
+              present member, with: ::API::Entities::Member
             else
               # This is to ensure back-compatibility but 400 behavior should be used
               # for all validation errors in 9.0!
@@ -92,7 +94,7 @@ module API
             member = source.members.find_by!(user_id: params.delete(:user_id))
 
             if member.update_attributes(declared_params(include_missing: false))
-              present member.user, with: ::API::Entities::Member, member: member
+              present member, with: ::API::Entities::Member
             else
               # This is to ensure back-compatibility but 400 behavior should be used
               # for all validation errors in 9.0!
@@ -122,9 +124,9 @@ module API
               status(200  )
               { message: "Access revoked", id: params[:user_id].to_i }
             else
-              ::Members::DestroyService.new(source, current_user, declared_params).execute
+              ::Members::DestroyService.new(current_user).execute(member)
 
-              present member.user, with: ::API::Entities::Member, member: member
+              present member, with: ::API::Entities::Member
             end
           end
         end

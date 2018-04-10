@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Clusters::Applications::CheckInstallationProgressService do
   RESCHEDULE_PHASES = Gitlab::Kubernetes::Pod::PHASES - [Gitlab::Kubernetes::Pod::SUCCEEDED, Gitlab::Kubernetes::Pod::FAILED].freeze
 
-  let(:application) { create(:cluster_applications_helm, :installing) }
+  let(:application) { create(:clusters_applications_helm, :installing) }
   let(:service) { described_class.new(application) }
   let(:phase) { Gitlab::Kubernetes::Pod::UNKNOWN }
   let(:errors) { nil }
@@ -33,7 +33,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
       end
 
       context 'when timeouted' do
-        let(:application) { create(:cluster_applications_helm, :timeouted) }
+        let(:application) { create(:clusters_applications_helm, :timeouted) }
 
         it_behaves_like 'a terminated installation'
 

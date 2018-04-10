@@ -1,5 +1,3 @@
-- builds = @build.pipeline.builds.to_a
-
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
@@ -24,7 +22,7 @@
           - elsif @build.has_expiring_artifacts?
             %p.build-detail-row
               The artifacts will be removed in
-              %span.js-artifacts-remove= @build.artifacts_expire_at
+              %span= time_ago_in_words @build.artifacts_expire_at
 
           - if @build.artifacts?
             .btn-group.btn-group-justified{ role: :group }
@@ -35,7 +33,7 @@
               = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
                 Download
 
-              - if @build.artifacts_metadata?
+              - if @build.browsable_artifacts?
                 = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
                   Browse
 
@@ -91,7 +89,8 @@
       - HasStatus::ORDERED_STATUSES.each do |build_status|
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
-            = link_to project_job_path(@project, build) do
+            - tooltip = build.tooltip_message
+            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: true, title: tooltip, container: 'body' }) do
               = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)
@@ -101,5 +100,4 @@
                 - else
                   = build.id
               - if build.retried?
-                %span.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
-                  = sprite_icon('retry', size:16, css_class: 'icon-retry')
+                = sprite_icon('retry', size:16, css_class: 'icon-retry')

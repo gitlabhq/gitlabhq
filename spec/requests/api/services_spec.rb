@@ -53,6 +53,10 @@ describe API::Services do
     describe "DELETE /projects/:id/services/#{service.dasherize}" do
       include_context service
 
+      before do
+        initialize_service(service)
+      end
+
       it "deletes #{service}" do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
@@ -67,9 +71,7 @@ describe API::Services do
 
       # inject some properties into the service
       before do
-        service_object = project.find_or_initialize_service(service)
-        service_object.properties = service_attrs
-        service_object.save
+        initialize_service(service)
       end
 
       it 'returns authentication error when unauthenticated' do
@@ -81,18 +83,18 @@ describe API::Services do
         get api("/projects/#{project.id}/services/#{dashed_service}", admin)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list.map)
+        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
       it "returns properties of service #{service} other than passwords when authenticated as project owner" do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list_without_passwords)
+        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
       it "returns error when authenticated but not a project owner" do
-        project.team << [user2, :developer]
+        project.add_developer(user2)
         get api("/projects/#{project.id}/services/#{dashed_service}", user2)
 
         expect(response).to have_gitlab_http_status(403)

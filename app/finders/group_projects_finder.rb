@@ -34,6 +34,7 @@ class GroupProjectsFinder < ProjectsFinder
                else
                  collection_without_user
                end
+
     union(projects)
   end
 
@@ -86,8 +87,17 @@ class GroupProjectsFinder < ProjectsFinder
     options.fetch(:only_shared, false)
   end
 
+  # subgroups are supported only for owned projects not for shared
+  def include_subgroups?
+    options.fetch(:include_subgroups, false)
+  end
+
   def owned_projects
-    group.projects
+    if include_subgroups?
+      Project.where(namespace_id: group.self_and_descendants.select(:id))
+    else
+      group.projects
+    end
   end
 
   def shared_projects

@@ -5,7 +5,7 @@ var ROOT_PATH = path.resolve(__dirname, '..');
 
 // remove problematic plugins
 if (webpackConfig.plugins) {
-  webpackConfig.plugins = webpackConfig.plugins.filter(function (plugin) {
+  webpackConfig.plugins = webpackConfig.plugins.filter(function(plugin) {
     return !(
       plugin instanceof webpack.optimize.CommonsChunkPlugin ||
       plugin instanceof webpack.optimize.ModuleConcatenationPlugin ||
@@ -26,6 +26,8 @@ webpackConfig.devtool = 'cheap-inline-source-map';
 
 // Karma configuration
 module.exports = function(config) {
+  process.env.TZ = 'Etc/UTC';
+
   var progressReporter = process.env.CI ? 'mocha' : 'progress';
 
   var karmaConfig = {
@@ -40,12 +42,12 @@ module.exports = function(config) {
           // escalated kernel privileges (e.g. docker run --cap-add=CAP_SYS_ADMIN)
           '--no-sandbox',
         ],
-      }
+      },
     },
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
-      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
+      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw|.png)', included: false },
     ],
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
@@ -61,7 +63,7 @@ module.exports = function(config) {
       reports: ['html', 'text-summary'],
       dir: 'coverage-javascript/',
       subdir: '.',
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
     };
     karmaConfig.browserNoActivityTimeout = 60000; // 60 seconds
   }

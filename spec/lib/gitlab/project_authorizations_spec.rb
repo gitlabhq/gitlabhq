@@ -15,7 +15,7 @@ describe Gitlab::ProjectAuthorizations do
   end
 
   before do
-    other_project.team << [user, :reporter]
+    other_project.add_reporter(user)
     group.add_developer(user)
   end
 

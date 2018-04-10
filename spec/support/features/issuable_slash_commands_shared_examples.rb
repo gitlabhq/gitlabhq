@@ -2,7 +2,7 @@
 # It takes a `issuable_type`, and expect an `issuable`.
 
 shared_examples 'issuable record that supports quick actions in its description and notes' do |issuable_type|
-  include QuickActionsHelpers
+  include Spec::Support::Helpers::Features::NotesHelpers
 
   let(:master) { create(:user) }
   let(:project) do
@@ -19,7 +19,7 @@ shared_examples 'issuable record that supports quick actions in its description 
   let(:new_url_opts) { {} }
 
   before do
-    project.team << [master, :master]
+    project.add_master(master)
 
     gitlab_sign_in(master)
   end
@@ -61,7 +61,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     context 'with a note containing commands' do
       it 'creates a note without the commands and interpret the commands accordingly' do
         assignee = create(:user, username: 'bob')
-        write_note("Awesome!\n\n/assign @bob\n\n/label ~bug\n\n/milestone %\"ASAP\"")
+        add_note("Awesome!\n\n/assign @bob\n\n/label ~bug\n\n/milestone %\"ASAP\"")
 
         expect(page).to have_content 'Awesome!'
         expect(page).not_to have_content '/assign @bob'
@@ -82,7 +82,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     context 'with a note containing only commands' do
       it 'does not create a note but interpret the commands accordingly' do
         assignee = create(:user, username: 'bob')
-        write_note("/assign @bob\n\n/label ~bug\n\n/milestone %\"ASAP\"")
+        add_note("/assign @bob\n\n/label ~bug\n\n/milestone %\"ASAP\"")
 
         expect(page).not_to have_content '/assign @bob'
         expect(page).not_to have_content '/label ~bug'
@@ -105,7 +105,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user can close #{issuable_type}" do
         it "closes the #{issuable_type}" do
-          write_note("/close")
+          add_note("/close")
 
           expect(page).not_to have_content '/close'
           expect(page).to have_content 'Commands applied'
@@ -125,9 +125,8 @@ shared_examples 'issuable record that supports quick actions in its description 
         end
 
         it "does not close the #{issuable_type}" do
-          write_note("/close")
+          add_note("/close")
 
-          expect(page).to have_content '/close'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_open
@@ -143,7 +142,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user can reopen #{issuable_type}" do
         it "reopens the #{issuable_type}" do
-          write_note("/reopen")
+          add_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
           expect(page).to have_content 'Commands applied'
@@ -163,9 +162,8 @@ shared_examples 'issuable record that supports quick actions in its description 
         end
 
         it "does not reopen the #{issuable_type}" do
-          write_note("/reopen")
+          add_note("/reopen")
 
-          expect(page).to have_content '/reopen'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_closed
@@ -176,7 +174,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     context "with a note changing the #{issuable_type}'s title" do
       context "when current user can change title of #{issuable_type}" do
         it "reopens the #{issuable_type}" do
-          write_note("/title Awesome new title")
+          add_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
           expect(page).to have_content 'Commands applied'
@@ -195,10 +193,9 @@ shared_examples 'issuable record that supports quick actions in its description 
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
-        it "does not reopen the #{issuable_type}" do
-          write_note("/title Awesome new title")
+        it "does not change the #{issuable_type} title" do
+          add_note("/title Awesome new title")
 
-          expect(page).to have_content '/title'
           expect(page).not_to have_content 'Commands applied'
 
           expect(issuable.reload.title).not_to eq 'Awesome new title'
@@ -208,7 +205,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
     context "with a note marking the #{issuable_type} as todo" do
       it "creates a new todo for the #{issuable_type}" do
-        write_note("/todo")
+        add_note("/todo")
 
         expect(page).not_to have_content '/todo'
         expect(page).to have_content 'Commands applied'
@@ -239,7 +236,7 @@ shared_examples 'issuable record that supports quick actions in its description 
         expect(todo.author).to eq master
         expect(todo.user).to eq master
 
-        write_note("/done")
+        add_note("/done")
 
         expect(page).not_to have_content '/done'
         expect(page).to have_content 'Commands applied'
@@ -252,7 +249,7 @@ shared_examples 'issuable record that supports quick actions in its description 
       it "creates a new todo for the #{issuable_type}" do
         expect(issuable.subscribed?(master, project)).to be_falsy
 
-        write_note("/subscribe")
+        add_note("/subscribe")
 
         expect(page).not_to have_content '/subscribe'
         expect(page).to have_content 'Commands applied'
@@ -269,7 +266,7 @@ shared_examples 'issuable record that supports quick actions in its description 
       it "creates a new todo for the #{issuable_type}" do
         expect(issuable.subscribed?(master, project)).to be_truthy
 
-        write_note("/unsubscribe")
+        add_note("/unsubscribe")
 
         expect(page).not_to have_content '/unsubscribe'
         expect(page).to have_content 'Commands applied'
@@ -280,7 +277,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
     context "with a note assigning the #{issuable_type} to the current user" do
       it "assigns the #{issuable_type} to the current user" do
-        write_note("/assign me")
+        add_note("/assign me")
 
         expect(page).not_to have_content '/assign me'
         expect(page).to have_content 'Commands applied'

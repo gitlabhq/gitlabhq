@@ -81,8 +81,10 @@ FactoryBot.define do
       archived true
     end
 
-    trait :hashed do
-      storage_version Project::LATEST_STORAGE_VERSION
+    storage_version Project::LATEST_STORAGE_VERSION
+
+    trait :legacy_storage do
+      storage_version nil
     end
 
     trait :access_requestable do
@@ -90,7 +92,13 @@ FactoryBot.define do
     end
 
     trait :with_avatar do
-      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+      avatar { fixture_file_upload('spec/fixtures/dk.png') }
+    end
+
+    trait :with_export do
+      after(:create) do |project, evaluator|
+        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      end
     end
 
     trait :broken_storage do
@@ -243,7 +251,8 @@ FactoryBot.define do
       project.create_prometheus_service(
         active: true,
         properties: {
-          api_url: 'https://prometheus.example.com'
+          api_url: 'https://prometheus.example.com/',
+          manual_configuration: true
         }
       )
     end

@@ -39,7 +39,7 @@ describe 'User manages project members' do
       click_link('Import')
     end
 
-    select(project2.name_with_namespace, from: 'source_project_id')
+    select(project2.full_name, from: 'source_project_id')
     click_button('Import')
 
     project_member = project.project_members.find_by(user_id: user_mike.id)

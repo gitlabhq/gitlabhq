@@ -112,6 +112,7 @@ module Gitlab
           [bug['sCategory'], bug['sPriority']].each do |label|
             unless label.blank?
               labels << label
+
               unless @known_labels.include?(label)
                 create_label(label)
                 @known_labels << label
@@ -265,6 +266,7 @@ module Gitlab
         if content.blank?
           content = '*(No description has been entered for this issue)*'
         end
+
         body << content
 
         body.join("\n\n")
@@ -278,6 +280,7 @@ module Gitlab
         if content.blank?
           content = "*(No comment has been entered for this change)*"
         end
+
         body << content
 
         if updates.any?

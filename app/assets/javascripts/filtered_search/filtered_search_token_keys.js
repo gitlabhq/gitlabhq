@@ -71,7 +71,7 @@ const conditions = [{
   value: 'none',
 }];
 
-class FilteredSearchTokenKeys {
+export default class FilteredSearchTokenKeys {
   static get() {
     return tokenKeys;
   }
@@ -121,6 +121,3 @@ class FilteredSearchTokenKeys {
       .find(condition => condition.tokenKey === key && condition.value === value) || null;
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchTokenKeys = FilteredSearchTokenKeys;

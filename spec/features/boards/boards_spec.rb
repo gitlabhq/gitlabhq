@@ -11,8 +11,8 @@ describe 'Issue Boards', :js do
   let!(:user2)  { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
 
     set_cookie('sidebar_collapsed', 'true')
 
@@ -69,6 +69,7 @@ describe 'Issue Boards', :js do
     let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
     let!(:closed)       { create(:label, project: project, name: 'Closed') }
     let!(:accepting)  { create(:label, project: project, name: 'Accepting Merge Requests') }
+    let!(:a_plus) { create(:label, project: project, name: 'A+') }
 
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: board, label: development, position: 1) }
@@ -83,6 +84,7 @@ describe 'Issue Boards', :js do
     let!(:issue7) { create(:labeled_issue, project: project, title: 'ggg', description: '777', labels: [development], relative_position: 2) }
     let!(:issue8) { create(:closed_issue, project: project, title: 'hhh', description: '888') }
     let!(:issue9) { create(:labeled_issue, project: project, title: 'iii', description: '999', labels: [planning, testing, bug, accepting], relative_position: 1) }
+    let!(:issue10) { create(:labeled_issue, project: project, title: 'issue +', description: 'A+ great issue', labels: [a_plus]) }
 
     before do
       visit project_board_path(project, board)
@@ -341,7 +343,7 @@ describe 'Issue Boards', :js do
 
           wait_for_requests
 
-          click_link 'Create new label'
+          click_link 'Create project label'
 
           fill_in('new_label_name', with: 'Testing New Label')
 
@@ -398,6 +400,15 @@ describe 'Issue Boards', :js do
         wait_for_requests
         wait_for_board_cards(2, 1)
         wait_for_empty_boards((3..4))
+      end
+
+      it 'filters by label with encoded character' do
+        set_filter("label", a_plus.title)
+        click_filter_link(a_plus.title)
+        submit_filter
+
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..4))
       end
 
       it 'filters by label with space after reload' do
@@ -551,7 +562,7 @@ describe 'Issue Boards', :js do
     let(:user_guest) { create(:user) }
 
     before do
-      project.team << [user_guest, :guest]
+      project.add_guest(user_guest)
       sign_out(:user)
       sign_in(user_guest)
       visit project_board_path(project, board)

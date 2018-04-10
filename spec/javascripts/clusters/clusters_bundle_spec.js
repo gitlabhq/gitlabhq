@@ -7,7 +7,7 @@ import {
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
 } from '~/clusters/constants';
-import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
+import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('Clusters', () => {
   let cluster;
@@ -23,16 +23,24 @@ describe('Clusters', () => {
   });
 
   describe('toggle', () => {
-    it('should update the button and the input field on click', () => {
-      cluster.toggleButton.click();
+    it('should update the button and the input field on click', (done) => {
+      const toggleButton = document.querySelector('.js-cluster-enable-toggle-area .js-project-feature-toggle');
+      const toggleInput = document.querySelector('.js-cluster-enable-toggle-area .js-project-feature-toggle-input');
 
-      expect(
-        cluster.toggleButton.classList,
-      ).not.toContain('is-checked');
+      toggleButton.click();
 
-      expect(
-        cluster.toggleInput.getAttribute('value'),
-      ).toEqual('false');
+      getSetTimeoutPromise()
+        .then(() => {
+          expect(
+            toggleButton.classList,
+          ).not.toContain('is-checked');
+
+          expect(
+            toggleInput.getAttribute('value'),
+          ).toEqual('false');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -63,7 +71,8 @@ describe('Clusters', () => {
         helm: { status: APPLICATION_INSTALLABLE, title: 'Helm Tiller' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeNull();
+      const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+      expect(flashMessage).toBeNull();
     });
 
     it('shows an alert when something gets newly installed', () => {
@@ -75,8 +84,9 @@ describe('Clusters', () => {
         helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller was successfully installed on your cluster');
+      const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+      expect(flashMessage).not.toBeNull();
+      expect(flashMessage.textContent.trim()).toEqual('Helm Tiller was successfully installed on your Kubernetes cluster');
     });
 
     it('shows an alert when multiple things gets newly installed', () => {
@@ -90,8 +100,9 @@ describe('Clusters', () => {
         ingress: { status: APPLICATION_INSTALLED, title: 'Ingress' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your cluster');
+      const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+      expect(flashMessage).not.toBeNull();
+      expect(flashMessage.textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your Kubernetes cluster');
     });
   });
 

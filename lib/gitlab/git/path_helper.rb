@@ -6,7 +6,7 @@ module Gitlab
       class << self
         def normalize_path(filename)
           # Strip all leading slashes so that //foo -> foo
-          filename[/^\/*/] = ''
+          filename[%r{^/*}] = ''
 
           # Expand relative paths (e.g. foo/../bar)
           filename = Pathname.new(filename)

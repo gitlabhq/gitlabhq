@@ -1,9 +1,9 @@
 module ProjectImportOptions
   extend ActiveSupport::Concern
 
-  included do
-    IMPORT_RETRY_COUNT = 5
+  IMPORT_RETRY_COUNT = 5
 
+  included do
     sidekiq_options retry: IMPORT_RETRY_COUNT, status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 
     # We only want to mark the project as failed once we exhausted all retries

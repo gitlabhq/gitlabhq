@@ -17,6 +17,10 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'merge request is mergeable' do
+    expect(page).to have_button 'Merge'
+  end
+
   step 'I should see ff-only merge button' do
     expect(page).to have_content "Fast-forward merge without a merge commit"
     expect(page).to have_button 'Merge'
@@ -45,6 +49,10 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
     project.save!
   end
 
+  step 'I should see rebase button' do
+    expect(page).to have_button "Rebase"
+  end
+
   step 'merge request "Bug NS-05" is rebased' do
     merge_request.source_branch = 'flatten-dir'
     merge_request.target_branch = 'improve/awesome'
@@ -57,6 +65,20 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
     merge_request.target_branch = 'improve/awesome'
     merge_request.reload_diff
     merge_request.save!
+  end
+
+  step 'rebase before merge enabled' do
+    project = merge_request.target_project
+    project.merge_requests_rebase_enabled = true
+    project.save!
+  end
+
+  step 'I press rebase button' do
+    click_button "Rebase"
+  end
+
+  step "I should see rebase in progress message" do
+    expect(page).to have_content("Rebase in progress")
   end
 
   def merge_request

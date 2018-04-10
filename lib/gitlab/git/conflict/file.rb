@@ -2,15 +2,19 @@ module Gitlab
   module Git
     module Conflict
       class File
-        attr_reader :content, :their_path, :our_path, :our_mode, :repository, :commit_oid
+        UnsupportedEncoding = Class.new(StandardError)
 
-        def initialize(repository, commit_oid, conflict, content)
+        attr_reader :their_path, :our_path, :our_mode, :repository, :commit_oid
+
+        attr_accessor :raw_content
+
+        def initialize(repository, commit_oid, conflict, raw_content)
           @repository = repository
           @commit_oid = commit_oid
           @their_path = conflict[:theirs][:path]
           @our_path = conflict[:ours][:path]
           @our_mode = conflict[:ours][:mode]
-          @content = content
+          @raw_content = raw_content
         end
 
         def lines
@@ -25,6 +29,14 @@ module Gitlab
             @type = 'text-editor'
             @lines = nil
           end
+        end
+
+        def content
+          @content ||= @raw_content.dup.force_encoding('UTF-8')
+
+          raise UnsupportedEncoding unless @content.valid_encoding?
+
+          @content
         end
 
         def type

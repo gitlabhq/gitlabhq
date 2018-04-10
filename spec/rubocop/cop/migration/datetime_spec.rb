@@ -67,7 +67,7 @@ describe RuboCop::Cop::Migration::Datetime do
     end
 
     it 'registers an offense when the ":datetime" data type is used' do
-      inspect_source(cop, migration_with_datetime)
+      inspect_source(migration_with_datetime)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Migration::Datetime do
     end
 
     it 'registers an offense when the ":timestamp" data type is used' do
-      inspect_source(cop, migration_with_timestamp)
+      inspect_source(migration_with_timestamp)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -87,7 +87,7 @@ describe RuboCop::Cop::Migration::Datetime do
     end
 
     it 'does not register an offense when the ":datetime" data type is not used' do
-      inspect_source(cop, migration_without_datetime)
+      inspect_source(migration_without_datetime)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(0)
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Migration::Datetime do
     end
 
     it 'does not register an offense when the ":datetime_with_timezone" data type is used' do
-      inspect_source(cop, migration_with_datetime_with_timezone)
+      inspect_source(migration_with_datetime_with_timezone)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(0)
@@ -105,10 +105,10 @@ describe RuboCop::Cop::Migration::Datetime do
 
   context 'outside of migration' do
     it 'registers no offense' do
-      inspect_source(cop, migration_with_datetime)
-      inspect_source(cop, migration_with_timestamp)
-      inspect_source(cop, migration_without_datetime)
-      inspect_source(cop, migration_with_datetime_with_timezone)
+      inspect_source(migration_with_datetime)
+      inspect_source(migration_with_timestamp)
+      inspect_source(migration_without_datetime)
+      inspect_source(migration_with_datetime_with_timezone)
 
       expect(cop.offenses.size).to eq(0)
     end

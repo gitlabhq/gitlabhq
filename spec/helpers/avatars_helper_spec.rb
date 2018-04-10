@@ -29,7 +29,7 @@ describe AvatarsHelper do
       is_expected.to eq tag(
         :img,
         alt: "#{user.name}'s avatar",
-        src: avatar_icon(user, 16),
+        src: avatar_icon_for_user(user, 16),
         data: { container: 'body' },
         class: 'avatar s16 has-tooltip',
         title: user.name
@@ -43,7 +43,7 @@ describe AvatarsHelper do
         is_expected.to eq tag(
           :img,
           alt: "#{user.name}'s avatar",
-          src: avatar_icon(user, 16),
+          src: avatar_icon_for_user(user, 16),
           data: { container: 'body' },
           class: "avatar s16 #{options[:css_class]} has-tooltip",
           title: user.name
@@ -58,7 +58,7 @@ describe AvatarsHelper do
         is_expected.to eq tag(
           :img,
           alt: "#{user.name}'s avatar",
-          src: avatar_icon(user, options[:size]),
+          src: avatar_icon_for_user(user, options[:size]),
           data: { container: 'body' },
           class: "avatar s#{options[:size]} has-tooltip",
           title: user.name
@@ -89,7 +89,7 @@ describe AvatarsHelper do
           :img,
           alt: "#{user.name}'s avatar",
           src: LazyImageTagHelper.placeholder_image,
-          data: { container: 'body', src: avatar_icon(user, 16) },
+          data: { container: 'body', src: avatar_icon_for_user(user, 16) },
           class: "avatar s16 has-tooltip lazy",
           title: user.name
         )
@@ -104,7 +104,7 @@ describe AvatarsHelper do
           is_expected.to eq tag(
             :img,
             alt: "#{user.name}'s avatar",
-            src: avatar_icon(user, 16),
+            src: avatar_icon_for_user(user, 16),
             data: { container: 'body' },
             class: "avatar s16 has-tooltip",
             title: user.name
@@ -119,7 +119,7 @@ describe AvatarsHelper do
           is_expected.to eq tag(
             :img,
             alt: "#{user.name}'s avatar",
-            src: avatar_icon(user, 16),
+            src: avatar_icon_for_user(user, 16),
             class: "avatar s16",
             title: user.name
           )
@@ -137,7 +137,7 @@ describe AvatarsHelper do
           is_expected.to eq tag(
             :img,
             alt: "#{user.name}'s avatar",
-            src: avatar_icon(user, 16),
+            src: avatar_icon_for_user(user, 16),
             data: { container: 'body' },
             class: "avatar s16 has-tooltip",
             title: user.name
@@ -149,7 +149,7 @@ describe AvatarsHelper do
         is_expected.to eq tag(
           :img,
           alt: "#{options[:user_name]}'s avatar",
-          src: avatar_icon(options[:user_email], 16),
+          src: avatar_icon_for_email(options[:user_email], 16),
           data: { container: 'body' },
           class: "avatar s16 has-tooltip",
           title: options[:user_name]
