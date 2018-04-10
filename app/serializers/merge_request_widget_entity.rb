@@ -209,8 +209,9 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   # Custom CI path
   #
-  expose :has_new_gitlab_ci_yaml do |merge_request|
-    merge_request.merge_request_diff.merge_request_diff_files.where(new_path: '.gitlab-ci.yml', new_file: true).any?
+  expose :has_new_ci_config do |merge_request|
+    ci_config = merge_request.head_pipeline.ci_yaml_file_path
+    merge_request.merge_request_diff.merge_request_diff_files.where(new_path: ci_config, new_file: true).any?
   end
 
   expose :project_ci_config_path do |merge_request|
