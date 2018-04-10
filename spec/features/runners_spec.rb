@@ -182,7 +182,7 @@ feature 'Runners' do
     end
   end
 
-  context 'group runners' do
+  context 'group runners in project settings' do
     background do
       project.add_master(user)
     end
@@ -200,10 +200,10 @@ feature 'Runners' do
         scenario 'group runners are not available' do
           visit project_runners_path(project)
 
-          expect(page).to have_content 'This group does not provide any group Runners yet.'
+          expect(page).to have_content 'This group does not provide any group Runners yet'
 
-          expect(page).to have_content 'Setup a group Runner manually'
-          expect(page).not_to have_content 'Ask your group master to setup a group Runner.'
+          expect(page).to have_content 'Group masters can register group runners in the Group CI/CD settings'
+          expect(page).not_to have_content 'Ask your group master to setup a group Runner'
         end
       end
     end
@@ -228,7 +228,7 @@ feature 'Runners' do
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
-          expect(page).not_to have_content 'Setup a group Runner manually'
+          expect(page).not_to have_content 'Group masters can register group runners in the Group CI/CD settings'
           expect(page).to have_content 'Ask your group master to setup a group Runner.'
         end
       end
@@ -257,6 +257,100 @@ feature 'Runners' do
 
           expect(page).to have_content 'Disable group Runners'
           expect(project.reload.group_runners_enabled).to be true
+        end
+      end
+    end
+  end
+
+  context 'group runners in group settings' do
+    given(:group) { create :group }
+    background do
+      group.add_master(user)
+    end
+
+    context 'group with no runners' do
+      scenario 'there are no runners displayed' do
+        visit group_settings_ci_cd_path(group)
+
+        expect(page).to have_content 'This group does not provide any group Runners yet'
+      end
+    end
+
+    context 'group with a runner' do
+      let!(:runner) { create :ci_runner, groups: [group], description: 'group-runner' }
+
+      scenario 'the runner is visible' do
+        visit group_settings_ci_cd_path(group)
+
+        expect(page).not_to have_content 'This group does not provide any group Runners yet'
+        expect(page).to have_content 'Available group Runners : 1'
+        expect(page).to have_content 'group-runner'
+      end
+
+      scenario 'user can pause and resume the group runner' do
+        visit group_settings_ci_cd_path(group)
+
+        expect(page).to have_content('Pause')
+        expect(page).not_to have_content('Resume')
+
+        click_on 'Pause'
+
+        expect(page).not_to have_content('Pause')
+        expect(page).to have_content('Resume')
+
+        click_on 'Resume'
+
+        expect(page).to have_content('Pause')
+        expect(page).not_to have_content('Resume')
+      end
+
+      scenario 'user can view runner details' do
+        visit group_settings_ci_cd_path(group)
+
+        expect(page).to have_content(runner.display_name)
+
+        click_on runner.short_sha
+
+        expect(page).to have_content(runner.platform)
+      end
+
+      scenario 'user can remove a group runner' do
+        visit group_settings_ci_cd_path(group)
+
+        click_on 'Remove Runner'
+
+        expect(page).not_to have_content(runner.display_name)
+      end
+
+      scenario 'user edits the runner to be protected' do
+        visit group_settings_ci_cd_path(group)
+
+        first('.edit-runner > a').click
+
+        expect(page.find_field('runner[access_level]')).not_to be_checked
+
+        check 'runner_access_level'
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Protected Yes'
+      end
+
+      context 'when a runner has a tag' do
+        background do
+          runner.update(tag_list: ['tag'])
+        end
+
+        scenario 'user edits runner not to run untagged jobs' do
+          visit group_settings_ci_cd_path(group)
+
+          first('.edit-runner > a').click
+
+          expect(page.find_field('runner[run_untagged]')).to be_checked
+
+          uncheck 'runner_run_untagged'
+          click_button 'Save changes'
+
+          expect(page).to have_content 'Can run untagged jobs No'
         end
       end
     end

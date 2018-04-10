@@ -1,0 +1,6 @@
+- page_title "Edit", "#{@runner.description} ##{@runner.id}", "Runners"
+
+%h4 Runner ##{@runner.id}
+
+%hr
+  = render 'form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)
