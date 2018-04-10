@@ -5,7 +5,7 @@
 = render 'dashboard/snippets_head'
 = render partial: 'snippets/snippets_scope_menu', locals: { include_private: true }
 
-.visible-xs
+.d-block.d-sm-none
   &nbsp;
   = link_to new_snippet_path, class: "btn btn-new btn-block", title: "New snippet" do
     New snippet

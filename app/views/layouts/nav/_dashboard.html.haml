@@ -13,17 +13,17 @@
         Groups
 
   - if dashboard_nav_link?(:activity)
-    = nav_link(path: 'dashboard#activity', html_options: { class: "visible-lg" }) do
+    = nav_link(path: 'dashboard#activity', html_options: { class: "d-none d-lg-block d-xl-block" }) do
       = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
         Activity
 
   - if dashboard_nav_link?(:milestones)
-    = nav_link(controller: 'dashboard/milestones', html_options: { class: "visible-lg" }) do
+    = nav_link(controller: 'dashboard/milestones', html_options: { class: "d-none d-lg-block d-xl-block" }) do
       = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
         Milestones
 
   - if dashboard_nav_link?(:snippets)
-    = nav_link(controller: 'dashboard/snippets', html_options: { class: "visible-lg" }) do
+    = nav_link(controller: 'dashboard/snippets', html_options: { class: "d-none d-lg-block d-xl-block" }) do
       = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
         Snippets
 
@@ -35,7 +35,7 @@
       .dropdown-menu
         %ul
           - if dashboard_nav_link?(:groups)
-            = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "visible-xs" }) do
+            = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "d-block d-sm-none" }) do
               = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
                 Groups
 
