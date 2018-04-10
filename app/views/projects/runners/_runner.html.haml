@@ -3,7 +3,7 @@
     = runner_status_icon(runner)
 
     - if @project_runners.include?(runner)
-      = link_to runner.short_sha, runner_path(runner), class: 'commit-sha'
+      = link_to runner.short_sha, project_runner_path(@project, runner), class: 'commit-sha'
 
       - if runner.locked?
         = icon('lock', class: 'has-tooltip', title: 'Locked to current projects')
@@ -22,7 +22,7 @@
         - else
           = link_to 'Resume', resume_project_runner_path(@project, runner), method: :post, class: 'btn btn-success btn-sm'
         - if runner.belongs_to_one_project?
-          = link_to 'Remove Runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to 'Remove Runner', project_runner_path(@project, runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
           = link_to 'Disable for this project', project_runner_project_path(@project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
