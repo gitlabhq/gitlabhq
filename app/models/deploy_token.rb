@@ -34,7 +34,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def has_access_to?(requested_project)
-    project == requested_project
+    active? && project == requested_project
   end
 
   # This is temporal. Currently we limit DeployToken
