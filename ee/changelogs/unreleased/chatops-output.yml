@@ -1,0 +1,5 @@
+---
+title: Don't send schedule confirmations for chat jobs
+merge_request:
+author:
+type: changed

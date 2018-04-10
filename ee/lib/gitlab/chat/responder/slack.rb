@@ -47,9 +47,10 @@ module Gitlab
 
         # Returns the output to send back after a command has been scheduled.
         def scheduled_output
-          {
-            text: message_text("<#{build_url}|The command has been scheduled!>")
-          }
+          # We return an empty message so that Slack still shows the input
+          # command, without polluting the channel with standard "The job has
+          # been scheduled" (or similar) responses.
+          { text: '' }
         end
 
         private
