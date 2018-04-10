@@ -12,7 +12,7 @@
             Your trial license was issued!
           %p.confirmation-desc.lead
             Your trial license was issued and activated. Install it
-            to enjoy GitLab Enterprise Edition Premium for 30 days.
+            to enjoy GitLab Ultimate for 30 days.
           = form_for License.new, url: admin_license_path, html: { multipart: true, class: 'form-horizontal fieldset-form' } do |f|
             = f.hidden_field :data, value: license_key
             %a#hide-license.hide-license{ href: '#hide-license' }
