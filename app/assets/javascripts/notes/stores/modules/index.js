@@ -16,7 +16,9 @@ export default {
       markdownDocsPath: '',
     },
     userData: {},
-    noteableData: {},
+    noteableData: {
+      current_user: {},
+    },
   },
   actions,
   getters,
