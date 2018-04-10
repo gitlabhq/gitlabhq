@@ -128,6 +128,17 @@ module IssuesHelper
     link_to link_text, path
   end
 
+  def show_new_issue_link?(project)
+    return false unless project
+    return false if project.archived?
+
+    # We want to show the link to users that are not signed in, that way they
+    # get directed to the sign-in/sign-up flow and afterwards to the new issue page.
+    return true unless current_user
+
+    can?(current_user, :create_issue, project)
+  end
+
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
   module_function :url_for_internal_issue

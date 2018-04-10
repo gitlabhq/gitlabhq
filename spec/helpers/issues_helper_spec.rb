@@ -163,4 +163,26 @@ describe IssuesHelper do
       end
     end
   end
+
+  describe '#show_new_issue_link?' do
+    before do
+      allow(helper).to receive(:current_user)
+    end
+
+    it 'is false when no project there is no project' do
+      expect(helper.show_new_issue_link?(nil)).to be_falsey
+    end
+
+    it 'is true when there is a project and no logged in user' do
+      expect(helper.show_new_issue_link?(build(:project))).to be_truthy
+    end
+
+    it 'is true when the current user does not have access to the project' do
+      project = build(:project)
+      allow(helper).to receive(:current_user).and_return(project.owner)
+
+      expect(helper).to receive(:can?).with(project.owner, :create_issue, project).and_return(true)
+      expect(helper.show_new_issue_link?(project)).to be_truthy
+    end
+  end
 end

@@ -1,4 +1,4 @@
-- can_create_issue = show_new_issue_link?
+- can_create_issue = show_new_issue_link?(@project)
 - can_create_project_snippet = can?(current_user, :create_project_snippet, @project)
 - can_push_code = can?(current_user, :push_code, @project)
 - create_mr_from_new_fork = can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)

@@ -10,7 +10,7 @@
 
 - if @can_bulk_update
   = button_tag "Edit issues", class: "btn btn-default append-right-10 js-bulk-update-toggle"
-- if !current_user || can?(current_user, :create_issue, @project)
+- if show_new_issue_link?(@project)
   = link_to "New issue", new_project_issue_path(@project,
                                                 issue: { assignee_id: finder.assignee.try(:id),
                                                          milestone_id: finder.milestones.first.try(:id) }),
