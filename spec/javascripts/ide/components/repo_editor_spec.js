@@ -1,9 +1,12 @@
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import monacoLoader from '~/ide/monaco_loader';
 import Editor from '~/ide/lib/editor';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {
@@ -79,14 +82,28 @@ describe('RepoEditor', () => {
   });
 
   describe('when file is markdown and viewer mode is review', () => {
+    let mock;
+
     beforeEach(done => {
+      mock = new MockAdapter(axios);
+
+      vm.file.projectId = 'namespace/project';
       vm.file.previewMode = {
         id: 'markdown',
         previewTitle: 'Preview Markdown',
       };
+      vm.file.content = 'testing 123';
       vm.$store.state.viewer = 'diff';
 
+      mock.onPost('/namespace/project/preview_markdown').reply(200, {
+        body: '<p>testing 123</p>',
+      });
+
       vm.$nextTick(done);
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('renders an Edit and a Preview Tab', done => {
@@ -98,6 +115,26 @@ describe('RepoEditor', () => {
 
         done();
       });
+    });
+
+    it('renders markdown for tempFile', done => {
+      vm.file.tempFile = true;
+      vm.file.path = `${vm.file.path}.md`;
+      vm.$store.state.entries[vm.file.path] = vm.file;
+
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelectorAll('.ide-mode-tabs .nav-links a')[1].click();
+        })
+        .then(setTimeoutPromise)
+        .then(() => {
+          expect(vm.$el.querySelector('.preview-container').innerHTML).toContain(
+            '<p>testing 123</p>',
+          );
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
