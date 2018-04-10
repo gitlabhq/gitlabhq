@@ -7,12 +7,12 @@
       = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus')
 
   .col-lg-9
-    .panel.panel-default.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/metrics') } }
-      .panel-heading
-        %h3.panel-title
+    .card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/metrics') } }
+      .card-header
+        %h3.card-title
           = s_('PrometheusService|Common metrics')
           %span.badge.badge-pill.js-monitored-count 0
-      .panel-body
+      .card-body
         .loading-metrics.js-loading-metrics
           %p.prepend-top-10.prepend-left-10
             = icon('spinner spin', class: 'metrics-load-spinner')
@@ -22,13 +22,13 @@
             = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
         %ul.list-unstyled.metrics-list.hidden.js-metrics-list
 
-    .panel.panel-default.hidden.js-panel-missing-env-vars
-      .panel-heading
-        %h3.panel-title
+    .card.hidden.js-panel-missing-env-vars
+      .card-header
+        %h3.card-title
           = icon('caret-right lg fw', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
           = s_('PrometheusService|Missing environment variable')
           %span.badge.badge-pill.js-env-var-count 0
-      .panel-body.hidden
+      .card-body.hidden
         .flash-container
           .flash-notice
             .flash-text

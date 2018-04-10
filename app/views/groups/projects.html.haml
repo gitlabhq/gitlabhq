@@ -1,7 +1,7 @@
 - breadcrumb_title "Projects"
 
-.panel.panel-default.prepend-top-default
-  .panel-heading
+.card.prepend-top-default
+  .card-header
     %strong= @group.name
     projects:
     - if can? current_user, :admin_group, @group

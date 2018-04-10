@@ -100,7 +100,7 @@ export default {
         : 'div';
     },
     wrapperClass() {
-      return this.isDiffDiscussion ? '' : 'panel panel-default';
+      return this.isDiffDiscussion ? '' : 'card';
     },
   },
   mounted() {

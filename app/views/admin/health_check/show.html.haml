@@ -25,8 +25,8 @@
         %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
 
   %hr
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       Current Status:
       - if no_errors
         = icon('circle', class: 'cgreen')
@@ -34,7 +34,7 @@
       - else
         = icon('warning', class: 'cred')
         #{ s_('HealthCheck|Unhealthy') }
-    .panel-body
+    .card-body
       - if no_errors
         #{ s_('HealthCheck|No Health Problems Detected') }
       - else

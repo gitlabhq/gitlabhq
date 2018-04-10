@@ -2,9 +2,9 @@ import sqljs from 'sql.js';
 import { template as _template } from 'underscore';
 
 const PREVIEW_TEMPLATE = _template(`
-  <div class="panel panel-default">
-    <div class="panel-heading"><%- name %></div>
-    <div class="panel-body">
+  <div class="card">
+    <div class="card-header"><%- name %></div>
+    <div class="card-body">
       <img class="img-thumbnail" src="data:image/png;base64,<%- image %>"/>
     </div>
   </div>

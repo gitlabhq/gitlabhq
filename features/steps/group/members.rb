@@ -63,6 +63,6 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   end
 
   def group_members_list
-    find(".panel .content-list")
+    find(".card .content-list")
   end
 end

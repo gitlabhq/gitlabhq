@@ -1,9 +1,9 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
-  .panel.panel-default
-    .panel-heading
-      %h3.panel-title
+  .card
+    .card-header
+      %h3.card-title
         Protect a tag
-    .panel-body
+    .card-body
       .form-horizontal
         = form_errors(@protected_tag)
         .form-group
@@ -25,5 +25,5 @@
             .create_access_levels-container
               = yield :create_access_levels
 
-    .panel-footer
+    .card-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

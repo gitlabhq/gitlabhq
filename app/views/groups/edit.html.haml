@@ -1,8 +1,8 @@
 - breadcrumb_title "General Settings"
-.panel.panel-default.prepend-top-default
-  .panel-heading
+.card.prepend-top-default
+  .card-header
     Group settings
-  .panel-body
+  .card-body
     = form_for @group, html: { multipart: true, class: "form-horizontal gl-show-field-errors" }, authenticity_token: true do |f|
       = form_errors(@group)
       = render 'shared/group_form', f: f
@@ -45,9 +45,9 @@
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"
 
-.panel.panel-danger
-  .panel-heading Remove group
-  .panel-body
+.card.bg-danger
+  .card-header Remove group
+  .card-body
     = form_tag(@group, method: :delete) do
       %p
         Removing group will cause all child projects and resources to be removed.
@@ -58,9 +58,9 @@
         = button_to 'Remove group', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_group_message(@group) }
 
 - if supports_nested_groups?
-  .panel.panel-warning
-    .panel-heading Transfer group
-    .panel-body
+  .card.bg-warning
+    .card-header Transfer group
+    .card-body
       = form_for @group, url: transfer_group_path(@group), method: :put do |f|
         .form-group
           = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: "Search groups", data: { data: parent_group_options(@group) } })

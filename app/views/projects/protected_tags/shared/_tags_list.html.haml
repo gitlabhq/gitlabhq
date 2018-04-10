@@ -1,7 +1,7 @@
-.panel.panel-default.protected-tags-list.js-protected-tags-list
+.card.protected-tags-list.js-protected-tags-list
   - if @protected_tags.empty?
-    .panel-heading
-      %h3.panel-title
+    .card-header
+      %h3.card-title
         Protected tag (#{@protected_tags_count})
     %p.settings-message.text-center
       There are currently no protected tags, protect a tag with the form above.

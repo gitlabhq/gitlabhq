@@ -15,8 +15,8 @@
     %hr
 
     - if @hooks.any?
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           System hooks (#{@hooks.count})
         %ul.content-list
           - @hooks.each do |hook|

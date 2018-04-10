@@ -10,8 +10,8 @@
 - if @project.last_repository_check_failed?
   .row
     .col-md-12
-      .panel
-        .panel-heading.alert.alert-danger
+      .card
+        .card-header.alert.alert-danger
           Last repository check
           = "(#{time_ago_in_words(@project.last_repository_check_at)} ago)"
           failed. See
@@ -19,8 +19,8 @@
           for error messages.
 .row
   .col-md-6
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Project info:
       %ul.well-list
         %li
@@ -110,10 +110,10 @@
               = visibility_level_icon(@project.visibility_level)
               = visibility_level_label(@project.visibility_level)
 
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Transfer project
-      .panel-body
+      .card-body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
             = f.label :new_namespace_id, "Namespace", class: 'control-label'
@@ -130,10 +130,10 @@
             .col-sm-offset-2.col-sm-10
               = f.submit 'Transfer', class: 'btn btn-primary'
 
-    .panel.panel-default.repository-check
-      .panel-heading
+    .card.repository-check
+      .card-header
         Repository check
-      .panel-body
+      .card-body
         = form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
           .form-group
             - if @project.last_repository_check_at.nil?
@@ -158,8 +158,8 @@
 
   .col-md-6
     - if @group
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           %strong= @group.name
           group members
           %span.badge.badge-pill= @group_members.size
@@ -168,13 +168,13 @@
               = icon('pencil-square-o', text: 'Manage access')
         %ul.well-list.content-list.members-list
           = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
-        .panel-footer
+        .card-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
     = render 'shared/members/requests', membership_source: @project, requesters: @requesters, force_mobile_view: true
 
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         %strong= @project.name
         project members
         %span.badge.badge-pill= @project.users.size
@@ -182,5 +182,5 @@
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
       %ul.well-list.project_members.content-list.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
-      .panel-footer
+      .card-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

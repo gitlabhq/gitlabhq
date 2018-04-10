@@ -7,9 +7,9 @@
 
   %hr
 
-  .panel.panel-default
-    .panel-heading Sidekiq running processes
-    .panel-body
+  .card
+    .card-header Sidekiq running processes
+    .card-body
       - if @sidekiq_processes.empty?
         %h4.cred
           %i.fa.fa-exclamation-triangle
@@ -41,5 +41,5 @@
 
 
 
-  .panel.panel-default
+  .card
     %iframe{ src: sidekiq_path, width: '100%', height: 970, style: "border: 0" }

@@ -60,7 +60,7 @@ describe('BadgeSettings component', () => {
   });
 
   it('displays badge list', () => {
-    const badgeListElement = vm.$el.querySelector('.panel');
+    const badgeListElement = vm.$el.querySelector('.card');
     expect(badgeListElement).not.toBe(null);
     expect(badgeListElement).toBeVisible();
     expect(badgeListElement).toContainText('Your badges');
@@ -87,7 +87,7 @@ describe('BadgeSettings component', () => {
     });
 
     it('displays no badge list', () => {
-      const badgeListElement = vm.$el.querySelector('.panel');
+      const badgeListElement = vm.$el.querySelector('.card');
       expect(badgeListElement).toBeHidden();
     });
   });

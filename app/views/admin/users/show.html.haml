@@ -5,8 +5,8 @@
 
 .row
   .col-md-6
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         = @user.name
       %ul.well-list
         %li
@@ -18,8 +18,8 @@
               = @user.username
     = render 'admin/users/profile', user: @user
 
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Account:
       %ul.well-list
         %li
@@ -128,20 +128,20 @@
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?
-        .panel.panel-info
-          .panel-heading
+        .card.bg-info
+          .card-header
             Confirm user
-          .panel-body
+          .card-body
             - if @user.unconfirmed_email.present?
               - email = " (#{@user.unconfirmed_email})"
             %p This user has an unconfirmed email address#{email}. You may force a confirmation.
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - if @user.blocked?
-        .panel.panel-info
-          .panel-heading
+        .card.bg-info
+          .card-header
             This user is blocked
-          .panel-body
+          .card-body
             %p A blocked user cannot:
             %ul
               %li Log in
@@ -149,10 +149,10 @@
             %br
             = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - else
-        .panel.panel-warning
-          .panel-heading
+        .card.bg-warning
+          .card-header
             Block this user
-          .panel-body
+          .card-body
             %p Blocking user has the following effects:
             %ul
               %li User will not be able to login
@@ -162,18 +162,18 @@
             %br
             = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-warning"
       - if @user.access_locked?
-        .panel.panel-info
-          .panel-heading
+        .card.bg-info
+          .card-header
             This account has been locked
-          .panel-body
+          .card-body
             %p This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.
             %br
             = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
 
-      .panel.panel-danger
-        .panel-heading
+      .card.bg-danger
+        .card-header
           = s_('AdminUsers|Delete user')
-        .panel-body
+        .card-body
           - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
             %p Deleting a user has the following effects:
             = render 'users/deletion_guidance', user: @user
@@ -196,10 +196,10 @@
               %p
                 You don't have access to delete this user.
 
-      .panel.panel-danger
-        .panel-heading
+      .card.bg-danger
+        .card-header
           = s_('AdminUsers|Delete user and contributions')
-        .panel-body
+        .card-body
           - if can?(current_user, :destroy_user, @user)
             %p
               This option deletes the user and any contributions that

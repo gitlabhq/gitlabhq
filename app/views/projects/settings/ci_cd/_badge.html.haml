@@ -2,15 +2,15 @@
   .col-lg-12
     %h4
       = badge.title.capitalize
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         %b
           = badge.title.capitalize
           &middot;
         = badge.to_html
         .float-right
           = render 'shared/ref_switcher', destination: 'badges', align_right: true
-      .panel-body
+      .card-body
         .row
           .col-md-2.text-center
             Markdown

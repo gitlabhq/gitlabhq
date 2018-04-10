@@ -33,12 +33,12 @@ describe 'Admin::RequestsProfilesController' do
 
       visit admin_requests_profiles_path
 
-      within('.panel', text: '/gitlab-org/gitlab-ce') do
+      within('.card', text: '/gitlab-org/gitlab-ce') do
         expect(page).to have_selector("a[href='#{admin_requests_profile_path(profile1)}']", text: time1.to_s(:long))
         expect(page).to have_selector("a[href='#{admin_requests_profile_path(profile2)}']", text: time2.to_s(:long))
       end
 
-      within('.panel', text: '/gitlab-com/infrastructure') do
+      within('.card', text: '/gitlab-com/infrastructure') do
         expect(page).to have_selector("a[href='#{admin_requests_profile_path(profile3)}']", text: time3.to_s(:long))
       end
     end

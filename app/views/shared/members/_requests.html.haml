@@ -4,8 +4,8 @@
 
 - return if requesters.empty?
 
-.panel.panel-default.prepend-top-default{ class: ('panel-mobile' if force_mobile_view ) }
-  .panel-heading
+.card.prepend-top-default{ class: ('card-mobile' if force_mobile_view ) }
+  .card-header
     Users requesting access to
     %strong= membership_source.name
     %span.badge.badge-pill= requesters.size

@@ -5,9 +5,9 @@
 %hr
 
 - if @project.import_failed?
-  .panel.panel-danger
-    .panel-heading The repository could not be imported.
-    .panel-body
+  .card.bg-danger
+    .card-header The repository could not be imported.
+    .card-body
       %pre
         :preserve
           #{h(sanitize_repo_path(@project, @project.import_error))}

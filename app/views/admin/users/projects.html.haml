@@ -2,8 +2,8 @@
 = render 'admin/users/head'
 
 - if @user.groups.any?
-  .panel.panel-default
-    .panel-heading Group projects
+  .card
+    .card-header Group projects
     %ul.well-list
       - @user.group_members.includes(:source).each do |group_member|
         - group = group_member.group
@@ -26,8 +26,8 @@
 
 
   .col-md-6
-    .panel.panel-default
-      .panel-heading Joined projects (#{@joined_projects.count})
+    .card
+      .card-header Joined projects (#{@joined_projects.count})
       %ul.well-list
         - @joined_projects.sort_by(&:full_name).each do |project|
           - member = project.team.find_member(@user.id)

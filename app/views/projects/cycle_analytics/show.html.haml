@@ -8,8 +8,8 @@
       "v-on:dismiss-overview-dialog" => "dismissOverviewDialog()" }
   = icon("spinner spin", "v-show" => "isLoading")
   .wrapper{ "v-show" => "!isLoading && !hasError" }
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         {{ __('Pipeline Health') }}
       .content-block
         .container-fluid
@@ -33,8 +33,8 @@
                     %a{ "href" => "#", "data-value" => "90" }
                       {{ n__('Last %d day', 'Last %d days', 90) }}
     .stage-panel-container
-      .panel.panel-default.stage-panel
-        .panel-heading
+      .card.stage-panel
+        .card-header
           %nav.col-headers
             %ul
               %li.stage-header

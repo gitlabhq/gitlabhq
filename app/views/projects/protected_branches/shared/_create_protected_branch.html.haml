@@ -1,9 +1,9 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
-  .panel.panel-default
-    .panel-heading
-      %h3.panel-title
+  .card
+    .card-header
+      %h3.card-title
         Protect a branch
-    .panel-body
+    .card-body
       .form-horizontal
         = form_errors(@protected_branch)
         .form-group
@@ -29,5 +29,5 @@
           .col-md-10
             = yield :push_access_levels
 
-    .panel-footer
+    .card-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

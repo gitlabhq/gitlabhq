@@ -1,8 +1,8 @@
 - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
 
 - if can?(current_user, :update_pages, @project) && @domains.any?
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       Domains (#{@domains.count})
     %ul.well-list.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
       - @domains.each do |domain|

@@ -1,6 +1,6 @@
 .prepend-top-default
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.application_backtrace')
     %ul.well-list
@@ -15,8 +15,8 @@
             = t('sherlock.line')
             = location.line
 
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.full_backtrace')
     %ul.well-list

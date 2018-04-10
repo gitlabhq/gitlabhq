@@ -31,7 +31,7 @@ export default class PrometheusMetrics {
   /* eslint-disable class-methods-use-this */
   handlePanelToggle(e) {
     const $toggleBtn = $(e.currentTarget);
-    const $currentPanelBody = $toggleBtn.closest('.panel').find('.panel-body');
+    const $currentPanelBody = $toggleBtn.closest('.card').find('.card-body');
     $currentPanelBody.toggleClass('hidden');
     if ($toggleBtn.hasClass('fa-caret-down')) {
       $toggleBtn.removeClass('fa-caret-down').addClass('fa-caret-right');

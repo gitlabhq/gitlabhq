@@ -22,8 +22,8 @@
         %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
           = icon("search")
         = render 'shared/members/sort_dropdown'
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       Members with access to
       %strong= @group.name
       %span.badge.badge-pill= @members.total_count
