@@ -215,6 +215,10 @@ module Banzai
           extras << "comment #{$1}"
         end
 
+        extension = matches[:extension] if matches.names.include?("extension")
+
+        extras << extension if extension
+
         extras
       end
 

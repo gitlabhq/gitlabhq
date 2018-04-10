@@ -7,8 +7,7 @@ import './header';
 import './list';
 import './footer';
 import './empty_state';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.IssuesModal = Vue.extend({
   props: {

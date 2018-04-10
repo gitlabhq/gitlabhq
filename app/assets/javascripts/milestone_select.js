@@ -6,6 +6,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
+import ModalStore from './boards/stores/modal_store';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {
@@ -164,7 +165,7 @@ export default class MilestoneSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsStore = gl.issueBoards.ModalStore.store.filter;
+            boardsStore = ModalStore.store.filter;
           }
 
           if (boardsStore) {

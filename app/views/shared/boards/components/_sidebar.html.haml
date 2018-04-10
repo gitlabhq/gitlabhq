@@ -22,6 +22,6 @@
           = render "shared/boards/components/sidebar/labels"
           = render "shared/boards/components/sidebar/notifications"
           %remove-btn{ ":issue" => "issue",
-            ":issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'",
+            ":issue-update" => "issue.sidebarInfoEndpoint",
             ":list" => "list",
             "v-if" => "canRemove" }
