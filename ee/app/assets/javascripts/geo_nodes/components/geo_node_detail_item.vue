@@ -1,5 +1,7 @@
 <script>
   import { s__ } from '~/locale';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import Icon from '~/vue_shared/components/icon.vue';
   import stackedProgressBar from '~/vue_shared/components/stacked_progress_bar.vue';
 
   import { VALUE_TYPE, CUSTOM_TYPE } from '../constants';
@@ -9,9 +11,13 @@
 
   export default {
     components: {
+      Icon,
       stackedProgressBar,
       geoNodeSyncSettings,
       geoNodeEventStatus,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       itemTitle: {
@@ -56,8 +62,16 @@
         required: false,
         default: false,
       },
+      helpText: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
+      hasHelpText() {
+        return this.helpText !== '';
+      },
       isValueTypePlain() {
         return this.itemValueType === VALUE_TYPE.PLAIN;
       },
@@ -77,7 +91,17 @@
 <template>
   <div class="node-detail-item prepend-top-15 prepend-left-10">
     <div class="node-detail-title">
-      {{ itemTitle }}
+      <span>
+        {{ itemTitle }}
+      </span>
+      <icon
+        v-tooltip
+        v-if="hasHelpText"
+        css-classes="node-detail-help-text prepend-left-5"
+        name="question"
+        :size="12"
+        :title="helpText"
+      />
     </div>
     <div
       v-if="isValueTypePlain"
