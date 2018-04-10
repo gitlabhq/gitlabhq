@@ -1,4 +1,4 @@
-- if cookies[:hide_project_limit_message].blank? && !current_user.d-none_project_limit && !current_user.can_create_project? && current_user.projects_limit > 0
+- if cookies[:hide_project_limit_message].blank? && !current_user.hide_project_limit && !current_user.can_create_project? && current_user.projects_limit > 0
   .project-limit-message.alert.alert-warning.d-none.d-sm-block
     You won't be able to create new projects because you have reached your project limit.
 
