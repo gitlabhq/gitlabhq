@@ -1,5 +1,0 @@
----
-title: Partition job_queue_duration_seconds with jobs_running_for_project
-merge_request: 17730
-author:
-type: changed
