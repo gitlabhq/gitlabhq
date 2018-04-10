@@ -22,7 +22,7 @@ export const getReversePosition = linePosition => {
   return LINE_POSITION_RIGHT;
 };
 
-export const getNoteFormData = params => {
+export function getNoteFormData(params) {
   const {
     note,
     noteableType,
@@ -67,7 +67,7 @@ export const getNoteFormData = params => {
     endpoint: noteableData.create_note_path,
     data: postData,
   };
-};
+}
 
 export const findIndexInInlineLines = (lines, lineNumbers) => {
   const { oldLineNumber, newLineNumber } = lineNumbers;
