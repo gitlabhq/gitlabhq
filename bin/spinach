@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
+
+# Remove this block when removing rails5? code.
+gemfile = %w[1 true].include?(ENV["RAILS5"]) ? "Gemfile.rails5" : "Gemfile"
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../#{gemfile}", __dir__)
+
 begin
   load File.expand_path('../spring', __FILE__)
 rescue LoadError => e
