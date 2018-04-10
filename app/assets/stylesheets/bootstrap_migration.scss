@@ -30,3 +30,8 @@ html {
   @extend .d-none;
   @extend .invisible;
 }
+
+.dropdown-toggle::after {
+  // Remove bootstrap's dropdown caret
+  display: none;
+}
