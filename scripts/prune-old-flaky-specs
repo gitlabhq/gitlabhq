@@ -1,11 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'json'
-require 'time'
-
-def days_from_now(days)
-  Time.now - (3600 * 24 * days)
-end
+require_relative '../lib/rspec_flaky/report'
 
 report_file = ARGV.shift
 unless report_file
@@ -14,16 +9,11 @@ unless report_file
 end
 
 new_report_file = ARGV.shift || report_file
-
+report = RspecFlaky::Report.load(report_file)
 puts "Loading #{report_file}..."
-report = JSON.parse(File.read(report_file))
-old_report_size = report.size
-
 puts "Current report has #{report.size} entries."
 
-report.delete_if { |uid, hash| Time.parse(hash['last_flaky_at']).to_i < days_from_now(90).to_i }
+new_report = report.prune_outdated
 
-puts "New report has #{report.size} entries: #{old_report_size - report.size} entries older than 90 days were removed."
-
-File.write(new_report_file, JSON.pretty_generate(report))
-puts "Saved #{new_report_file}."
+puts "New report has #{new_report.size} entries: #{report.size - new_report.size} entries older than 90 days were removed."
+puts "Saved #{new_report_file}." if new_report.write(new_report_file)
