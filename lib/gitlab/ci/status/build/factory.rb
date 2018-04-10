@@ -17,7 +17,8 @@ module Gitlab
               Status::Build::Play,
               Status::Build::Stop],
              [Status::Build::Action],
-             [Status::Build::Retried]]
+             [Status::Build::Retried],
+             [Status::Build::Empty]]
           end
 
           def self.common_helpers
