@@ -21,7 +21,7 @@
     }
 
     .container-fluid {
-      .navbar-toggle {
+      .navbar-toggler {
         border-left: 1px solid lighten($color-700, 10%);
       }
     }
@@ -289,8 +289,8 @@ body {
       }
 
       .container-fluid {
-        .navbar-toggle,
-        .navbar-toggle:hover {
+        .navbar-toggler,
+        .navbar-toggler:hover {
           color: $theme-gray-700;
           border-left: 1px solid $theme-gray-200;
         }

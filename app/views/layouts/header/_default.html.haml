@@ -78,7 +78,7 @@
               %div
                 = link_to "Sign in / Register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
 
-      %button.navbar-toggle.d-block.d-sm-none{ type: 'button' }
+      %button.navbar-toggler.d-block.d-sm-none{ type: 'button' }
         %span.sr-only Toggle navigation
         = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')

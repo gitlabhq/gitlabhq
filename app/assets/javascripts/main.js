@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $container.remove();
   });
 
-  $('.navbar-toggle').on('click', () => {
+  $('.navbar-toggler').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
     gl.lazyLoader.loadCheck();
   });
