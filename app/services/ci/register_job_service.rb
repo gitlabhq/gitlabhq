@@ -110,7 +110,7 @@ module Ci
       labels = { shared_runner: runner.shared?,
                  jobs_running_for_project: jobs_running_for_project(job) }
 
-      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at)
+      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
     end
 

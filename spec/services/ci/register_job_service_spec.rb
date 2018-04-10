@@ -400,14 +400,16 @@ module Ci
         pending_job.update(created_at: current_time - 3600, queued_at: current_time - 1800)
       end
 
-      shared_examples 'metrics collector' do
+      shared_examples 'attempt counter collector' do
         it 'increments attempt counter' do
           allow(job_queue_duration_seconds).to receive(:observe)
           expect(attempt_counter).to receive(:increment)
 
           execute(runner)
         end
+      end
 
+      shared_examples 'jobs queueing time histogram collector' do
         it 'counts job queuing time histogram with expected labels' do
           allow(attempt_counter).to receive(:increment)
           expect(job_queue_duration_seconds).to receive(:observe)
@@ -432,6 +434,11 @@ module Ci
         end
       end
 
+      shared_examples 'metrics collector' do
+        it_behaves_like 'attempt counter collector'
+        it_behaves_like 'jobs queueing time histogram collector'
+      end
+
       context 'when shared runner is used' do
         let(:runner) { shared_runner }
         let(:expected_shared_runner) { true }
@@ -439,6 +446,21 @@ module Ci
         let(:expected_jobs_running_for_project_third_job) { 2 }
 
         it_behaves_like 'metrics collector'
+
+        context 'when pending job with queued_at=nil is used' do
+          before do
+            pending_job.update(queued_at: nil)
+          end
+
+          it_behaves_like 'attempt counter collector'
+
+          it "doesn't count job queuing time histogram" do
+            allow(attempt_counter).to receive(:increment)
+            expect(job_queue_duration_seconds).not_to receive(:observe)
+
+            execute(runner)
+          end
+        end
       end
 
       context 'when specific runner is used' do
