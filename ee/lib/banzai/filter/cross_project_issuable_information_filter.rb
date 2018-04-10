@@ -9,7 +9,8 @@ module Banzai
       def call
         return doc if can_read_cross_project?
 
-        extractor = Banzai::IssuableExtractor.new(project, current_user)
+        context = Banzai::RenderContext.new(project, current_user)
+        extractor = Banzai::IssuableExtractor.new(context)
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
