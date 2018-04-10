@@ -6,7 +6,8 @@ module Gitlab
           def illustration
             {
               image: 'illustrations/skipped-job_empty.svg',
-              size: 'svg-430'
+              size: 'svg-430',
+              title: _('This job does not have a trace.'),
             }
           end
 
