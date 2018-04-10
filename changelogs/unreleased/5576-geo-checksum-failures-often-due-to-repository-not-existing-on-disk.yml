@@ -1,0 +1,5 @@
+---
+title: Returns a dummy checksum when there is no repository on disk
+merge_request: 18293
+author:
+type: fixed
