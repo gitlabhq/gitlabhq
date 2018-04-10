@@ -4,14 +4,12 @@
   GitLab Group Runners can execute code for all the projects in this group.
   They can be managed using the #{link_to 'Runners API', help_page_path('api/runners.md')}.
 
-- if @group.runners.empty?
-  This group does not provide any group Runners yet.
+- if can?(current_user, :admin_pipeline, @group)
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: @group.runners_token, type: 'group' }
 
-  - if can?(current_user, :admin_pipeline, @group)
-    = render partial: 'ci/runner/how_to_setup_runner',
-             locals: { registration_token: @group.runners_token, type: 'group' }
-  - else
-    Ask your group master to setup a group Runner.
+- if @group.runners.empty?
+  %h4.underlined-title This group does not provide any group Runners yet.
 
 - else
   %h4.underlined-title Available group Runners : #{@group.runners.count}
