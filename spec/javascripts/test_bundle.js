@@ -23,7 +23,7 @@ Vue.config.warnHandler = (msg, vm, trace) => {
 };
 
 let hasVueErrors = false;
-Vue.config.errorHandler = function (err) {
+Vue.config.errorHandler = function(err) {
   hasVueErrors = true;
   fail(err);
 };
@@ -48,7 +48,7 @@ window.gon.test_env = true;
 
 let hasUnhandledPromiseRejections = false;
 
-window.addEventListener('unhandledrejection', (event) => {
+window.addEventListener('unhandledrejection', event => {
   hasUnhandledPromiseRejections = true;
   console.error('Unhandled promise rejection:');
   console.error(event.reason.stack || event.reason);
@@ -69,6 +69,8 @@ beforeEach(() => {
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
 });
 
+const axiosDefaultAdapter = getDefaultAdapter();
+
 // eslint-disable-next-line no-undef
 let testFile = TEST_FILES;
 if (testFile instanceof Array && testFile.length > 0) {
@@ -79,8 +81,6 @@ if (testFile instanceof Array && testFile.length > 0) {
   testFile = [];
 }
 
-const axiosDefaultAdapter = getDefaultAdapter();
-
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function(path) {
@@ -90,8 +90,8 @@ testsContext.keys().forEach(function(path) {
     }
   } catch (err) {
     console.error('[ERROR] Unable to load spec: ', path);
-    describe('Test bundle', function () {
-      it(`includes '${path}'`, function () {
+    describe('Test bundle', function() {
+      it(`includes '${path}'`, function() {
         expect(err).toBeNull();
       });
     });
@@ -99,7 +99,7 @@ testsContext.keys().forEach(function(path) {
 });
 
 describe('test errors', () => {
-  beforeAll((done) => {
+  beforeAll(done => {
     if (hasUnhandledPromiseRejections || hasVueWarnings || hasVueErrors) {
       setTimeout(done, 1000);
     } else {
@@ -163,18 +163,18 @@ if (process.env.BABEL_ENV === 'coverage') {
     './issue_show/index.js',
   ];
 
-  describe('Uncovered files', function () {
+  describe('Uncovered files', function() {
     const sourceFiles = require.context('~', true, /\.js$/);
 
     $.holdReady(true);
 
-    sourceFiles.keys().forEach(function (path) {
+    sourceFiles.keys().forEach(function(path) {
       // ignore if there is a matching spec file
       if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
         return;
       }
 
-      it(`includes '${path}'`, function () {
+      it(`includes '${path}'`, function() {
         try {
           sourceFiles(path);
         } catch (err) {
