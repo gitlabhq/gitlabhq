@@ -14,7 +14,7 @@ export default {
     LinkedPipelinesMiniList,
   },
   props: {
-      pipeline: {
+    pipeline: {
       type: Object,
       required: true,
     },
