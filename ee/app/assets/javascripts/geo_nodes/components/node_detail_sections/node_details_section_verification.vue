@@ -49,27 +49,29 @@
         if (this.nodeDetails.repositoryVerificationEnabled) {
           primaryNodeDetailItems.push(
             {
-              itemTitle: s__('GeoNodes|Repository verification progress:'),
+              itemTitle: s__('GeoNodes|Repository checksum progress'),
               itemValue: this.nodeDetails.verifiedRepositories,
               itemValueType: VALUE_TYPE.GRAPH,
               successLabel: s__('GeoNodes|Checksummed'),
               neutraLabel: s__('GeoNodes|Not checksummed'),
               failureLabel: s__('GeoNodes|Failed'),
+              helpText: s__('GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes'),
             },
             {
-              itemTitle: s__('GeoNodes|Wikis checksums calculated verifies:'),
+              itemTitle: s__('GeoNodes|Wiki checksum progress'),
               itemValue: this.nodeDetails.verifiedWikis,
               itemValueType: VALUE_TYPE.GRAPH,
               successLabel: s__('GeoNodes|Checksummed'),
               neutraLabel: s__('GeoNodes|Not checksummed'),
               failureLabel: s__('GeoNodes|Failed'),
+              helpText: s__('GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes'),
             },
           );
         }
 
         primaryNodeDetailItems.push(
           {
-            itemTitle: s__('GeoNodes|Replication slots:'),
+            itemTitle: s__('GeoNodes|Replication slots'),
             itemValue: this.nodeDetails.replicationSlots,
             itemValueType: VALUE_TYPE.GRAPH,
             successLabel: s__('GeoNodes|Used slots'),
@@ -80,7 +82,7 @@
         if (this.nodeDetails.replicationSlots.totalCount) {
           primaryNodeDetailItems.push(
             {
-              itemTitle: s__('GeoNodes|Replication slot WAL:'),
+              itemTitle: s__('GeoNodes|Replication slot WAL'),
               itemValue: numberToHumanSize(this.nodeDetails.replicationSlotWAL),
               itemValueType: VALUE_TYPE.PLAIN,
               cssClass: 'node-detail-value-bold',
@@ -93,20 +95,22 @@
       getSecondaryNodeDetailItems() {
         const secondaryNodeDetailItems = [
           {
-            itemTitle: s__('GeoNodes|Repository checksums verified:'),
+            itemTitle: s__('GeoNodes|Repository verification progress'),
             itemValue: this.nodeDetails.verifiedRepositories,
             itemValueType: VALUE_TYPE.GRAPH,
             successLabel: s__('GeoNodes|Verified'),
             neutraLabel: s__('GeoNodes|Unverified'),
             failureLabel: s__('GeoNodes|Failed'),
+            helpText: s__('GeoNodes|Repositories verified with their counterparts on the Primary node'),
           },
           {
-            itemTitle: s__('GeoNodes|Wiki checksums verified:'),
+            itemTitle: s__('GeoNodes|Wiki verification progress'),
             itemValue: this.nodeDetails.verifiedWikis,
             itemValueType: VALUE_TYPE.GRAPH,
             successLabel: s__('GeoNodes|Verified'),
             neutraLabel: s__('GeoNodes|Unverified'),
             failureLabel: s__('GeoNodes|Failed'),
+            helpText: s__('GeoNodes|Wikis verified with their counterparts on the Primary node'),
           },
         ];
 
@@ -145,6 +149,7 @@
           :neutral-label="nodeDetailItem.neutraLabel"
           :failure-label="nodeDetailItem.failureLabel"
           :custom-type="nodeDetailItem.customType"
+          :help-text="nodeDetailItem.helpText"
         />
       </div>
     </template>
