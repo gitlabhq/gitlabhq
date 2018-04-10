@@ -38,7 +38,7 @@ describe('RepoEditor', () => {
 
     resetStore(vm.$store);
 
-    Editor.editorInstance.modelManager.dispose();
+    Editor.editorInstance.dispose();
   });
 
   it('renders an ide container', done => {
