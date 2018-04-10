@@ -32,6 +32,7 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
+  parentPath: '',
   renderError: false,
   base64: false,
   editorRow: 1,
@@ -63,6 +64,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath = '',
   } = entity;
 
   return {
@@ -79,6 +81,7 @@ export const decorateData = entity => {
     opened,
     active,
     parentTreeUrl,
+    parentPath,
     changed,
     renderError,
     content,
@@ -119,8 +122,8 @@ const sortTreesByTypeAndName = (a, b) => {
   } else if (a.type === 'blob' && b.type === 'tree') {
     return 1;
   }
-  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+  if (a.name < b.name) return -1;
+  if (a.name > b.name) return 1;
   return 0;
 };
 

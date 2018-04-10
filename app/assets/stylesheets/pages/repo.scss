@@ -85,10 +85,8 @@
       }
     }
 
-    &.folder {
-      svg {
-        fill: $gl-text-color-secondary;
-      }
+    .folder-icon {
+      fill: $gl-text-color-secondary;
     }
   }
 
@@ -429,7 +427,7 @@
   .projects-sidebar {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
 
     .context-header {
       width: auto;

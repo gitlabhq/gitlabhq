@@ -29,6 +29,7 @@ self.addEventListener('message', e => {
             tempFile,
             changed: tempFile,
             opened: tempFile,
+            parentPath: parentFolder ? parentFolder.path : null,
           });
 
           Object.assign(acc, {
@@ -66,6 +67,7 @@ self.addEventListener('message', e => {
         content,
         base64,
         previewMode: viewerInformationForPath(blobName),
+        parentPath: fileFolder ? fileFolder.path : null,
       });
 
       Object.assign(acc, {

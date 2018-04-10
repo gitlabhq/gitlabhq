@@ -1,7 +1,9 @@
 import * as urlUtils from '~/lib/utils/url_utility';
+import * as actions from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
+import testAction from '../../helpers/vuex_action_helper';
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -191,9 +193,7 @@ describe('Multi-file store actions', () => {
           })
           .then(f => {
             expect(f.tempFile).toBeTruthy();
-            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(
-              1,
-            );
+            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
             done();
           })
@@ -301,6 +301,49 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateTempFlagForEntry', () => {
+    it('commits UPDATE_TEMP_FLAG', done => {
+      const f = {
+        ...file(),
+        path: 'test',
+        tempFile: true,
+      };
+      store.state.entries[f.path] = f;
+
+      testAction(
+        actions.updateTempFlagForEntry,
+        { entry: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [],
+        done,
+      );
+    });
+
+    it('commits UPDATE_TEMP_FLAG and dispatches for parent', done => {
+      const parent = {
+        ...file(),
+        path: 'testing',
+      };
+      const f = {
+        ...file(),
+        path: 'test',
+        parentPath: 'testing',
+      };
+      store.state.entries[parent.path] = parent;
+      store.state.entries[f.path] = f;
+
+      testAction(
+        actions.updateTempFlagForEntry,
+        { entry: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [{ type: 'updateTempFlagForEntry', payload: { entry: parent, tempFile: false } }],
+        done,
+      );
     });
   });
 });

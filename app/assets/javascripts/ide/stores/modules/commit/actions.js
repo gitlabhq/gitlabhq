@@ -127,6 +127,8 @@ export const updateFilesAfterCommit = (
       },
       { root: true },
     );
+
+    dispatch('updateTempFlagForEntry', { entry, tempFile: false }, { root: true });
   });
 
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });

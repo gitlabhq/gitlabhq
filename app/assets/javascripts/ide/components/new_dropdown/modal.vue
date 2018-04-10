@@ -40,13 +40,6 @@ export default {
 
       return __('Create file');
     },
-    formLabelName() {
-      if (this.type === 'tree') {
-        return __('Directory name');
-      }
-
-      return __('File name');
-    },
   },
   mounted() {
     this.$refs.fieldName.focus();
@@ -83,7 +76,7 @@ export default {
     >
       <fieldset class="form-group append-bottom-0">
         <label class="label-light col-sm-3">
-          {{ formLabelName }}
+          {{ __('Name') }}
         </label>
         <div class="col-sm-9">
           <input

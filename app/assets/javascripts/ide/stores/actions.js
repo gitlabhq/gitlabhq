@@ -112,6 +112,14 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
+export const updateTempFlagForEntry = ({ commit, dispatch, state }, { entry, tempFile }) => {
+  commit(types.UPDATE_TEMP_FLAG, { path: entry.path, tempFile });
+
+  if (entry.parentPath) {
+    dispatch('updateTempFlagForEntry', { entry: state.entries[entry.parentPath], tempFile });
+  }
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

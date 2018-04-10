@@ -4,6 +4,7 @@ import mergeRequestMutation from './mutations/merge_request';
 import fileMutations from './mutations/file';
 import treeMutations from './mutations/tree';
 import branchMutations from './mutations/branch';
+import { sortTree } from './utils';
 
 export default {
   [types.SET_INITIAL_DATA](state, data) {
@@ -68,7 +69,7 @@ export default {
           f => foundEntry.tree.find(e => e.path === f.path) === undefined,
         );
         Object.assign(foundEntry, {
-          tree: foundEntry.tree.concat(tree),
+          tree: sortTree(foundEntry.tree.concat(tree)),
         });
       }
 
@@ -81,9 +82,15 @@ export default {
 
     if (!foundEntry) {
       Object.assign(state.trees[`${projectId}/${branchId}`], {
-        tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
+        tree: sortTree(state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList)),
       });
     }
+  },
+  [types.UPDATE_TEMP_FLAG](state, { path, tempFile }) {
+    Object.assign(state.entries[path], {
+      tempFile,
+      changed: tempFile,
+    });
   },
   [types.UPDATE_VIEWER](state, viewer) {
     Object.assign(state, {
