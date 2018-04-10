@@ -39,12 +39,9 @@ class Issue < ActiveRecord::Base
 
   has_many :issue_assignees
   has_many :assignees, -> { auto_include(false) }, class_name: "User", through: :issue_assignees
-<<<<<<< HEAD
 
   has_one :epic_issue
   has_one :epic, through: :epic_issue
-=======
->>>>>>> upstream/master
 
   validates :project, presence: true
 
