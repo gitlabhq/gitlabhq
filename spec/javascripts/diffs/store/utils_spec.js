@@ -52,20 +52,21 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('removeMatchLine', () => {
-    it('should remove match line properly by regarding bottom parameter', () => {
+    it('should remove match line properly by regarding the bottom parameter', () => {
       const diffFile = getDiffFileMock();
       const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
       const inlineIndex = utils.findIndexInInlineLines(diffFile.highlightedDiffLines, lineNumbers);
       const parallelIndex = utils.findIndexInParallelLines(diffFile.parallelDiffLines, lineNumbers);
-      const spy = spyOn(Array.prototype, 'splice');
+      const atInlineIndex = diffFile.highlightedDiffLines[inlineIndex];
+      const atParallelIndex = diffFile.parallelDiffLines[parallelIndex];
 
       utils.removeMatchLine(diffFile, lineNumbers, false);
-      expect(spy.calls.argsFor(0)).toEqual([inlineIndex - 1, 1]);
-      expect(spy.calls.argsFor(1)).toEqual([parallelIndex - 1, 1]);
+      expect(diffFile.highlightedDiffLines[inlineIndex]).not.toEqual(atInlineIndex);
+      expect(diffFile.parallelDiffLines[parallelIndex]).not.toEqual(atParallelIndex);
 
       utils.removeMatchLine(diffFile, lineNumbers, true);
-      expect(spy.calls.argsFor(2)).toEqual([inlineIndex + 1, 1]);
-      expect(spy.calls.argsFor(3)).toEqual([parallelIndex + 1, 1]);
+      expect(diffFile.highlightedDiffLines[inlineIndex + 1]).not.toEqual(atInlineIndex);
+      expect(diffFile.parallelDiffLines[parallelIndex + 1]).not.toEqual(atParallelIndex);
     });
   });
 
@@ -76,23 +77,22 @@ describe('DiffsStoreUtils', () => {
       const parallelLines = diffFile.parallelDiffLines;
       const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
       const contextLines = [{ lineNumber: 42 }];
+      const options = { inlineLines, parallelLines, contextLines, lineNumbers, bottom: true };
       const inlineIndex = utils.findIndexInInlineLines(diffFile.highlightedDiffLines, lineNumbers);
       const parallelIndex = utils.findIndexInParallelLines(diffFile.parallelDiffLines, lineNumbers);
-      const spy = spyOn(Array.prototype, 'splice');
-      const options = { inlineLines, parallelLines, contextLines, lineNumbers, bottom: true };
       const normalizedParallelLine = {
         left: options.contextLines[0],
         right: options.contextLines[0],
       };
 
       utils.addContextLines(options);
-      expect(inlineLines[inlineLines.length - 1]).toEqual(options.contextLines[0]);
+      expect(inlineLines[inlineLines.length - 1]).toEqual(contextLines[0]);
       expect(parallelLines[parallelLines.length - 1]).toEqual(normalizedParallelLine);
 
       delete options.bottom;
       utils.addContextLines(options);
-      expect(spy.calls.argsFor(0)).toEqual([inlineIndex, 0, contextLines[0]]);
-      expect(spy.calls.argsFor(1)).toEqual([parallelIndex, 0, normalizedParallelLine]);
+      expect(inlineLines[inlineIndex]).toEqual(contextLines[0]);
+      expect(parallelLines[parallelIndex]).toEqual(normalizedParallelLine);
     });
   });
 

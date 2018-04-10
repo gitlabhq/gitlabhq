@@ -6,11 +6,13 @@ import diffFileMockData from '../mock_data/diff_file';
 
 fdescribe('DiffLineNoteForm', () => {
   let component;
+  let diffFile;
+  let diffLines;
   const getDiffFileMock = () => Object.assign({}, diffFileMockData);
 
   beforeEach(() => {
-    const diffFile = getDiffFileMock();
-    const diffLines = diffFile.highlightedDiffLines;
+    diffFile = getDiffFileMock();
+    diffLines = diffFile.highlightedDiffLines;
 
     component = createComponentWithStore(Vue.extend(DiffLineNoteForm), store, {
       diffFile,
@@ -23,9 +25,12 @@ fdescribe('DiffLineNoteForm', () => {
   describe('methods', () => {
     describe('handleCancelCommentForm', () => {
       it('should call cancelCommentForm with lineCode', () => {
-        // spyOn(component.cancelCommentForm);
-        // component.handleCancelCommentForm();
-        // expect(component.cancelCommentForm).toHaveBeenCalled();
+        spyOn(component, 'cancelCommentForm');
+        component.handleCancelCommentForm();
+
+        expect(component.cancelCommentForm).toHaveBeenCalledWith({
+          lineCode: diffLines[0].lineCode,
+        });
       });
     });
   });

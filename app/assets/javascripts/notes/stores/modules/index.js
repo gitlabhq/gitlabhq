@@ -12,7 +12,9 @@ export default {
     isToggleStateButtonLoading: false,
 
     // holds endpoints and permissions provided through haml
-    notesData: {},
+    notesData: {
+      markdownDocsPath: '',
+    },
     userData: {},
     noteableData: {},
   },
