@@ -50,9 +50,9 @@ stages:
 
 build:
   stage: build
-  image: docker:git
+  image: docker:stable-git
   services:
-  - docker:dind
+  - docker:stable-dind
   variables:
     DOCKER_DRIVER: overlay2
   script:
@@ -76,12 +76,12 @@ test:
     - branches
 
 codequality:
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
     - codeclimate
@@ -90,12 +90,12 @@ codequality:
 
 performance:
   stage: performance
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
     - performance
@@ -109,25 +109,37 @@ performance:
     kubernetes: active
 
 sast:
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
     - sast
   artifacts:
     paths: [gl-sast-report.json]
 
-sast:container:
-  image: docker:latest
+dependency_scanning:
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
+  script:
+    - setup_docker
+    - dependency_scanning
+  artifacts:
+    paths: [gl-dependency-scanning-report.json]
+sast:container:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
   script:
     - setup_docker
     - sast_container
@@ -324,10 +336,23 @@ production:
         fi
 
         docker run --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}" \
-                   --env SAST_DISABLE_REMOTE_CHECKS="${SAST_DISABLE_REMOTE_CHECKS:-false}" \
                    --volume "$PWD:/code" \
                    --volume /var/run/docker.sock:/var/run/docker.sock \
                    "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
+        ;;
+      *)
+        echo "GitLab EE is required"
+        ;;
+    esac
+  }
+
+  function dependency_scanning() {
+    case "$CI_SERVER_VERSION" in
+      *-ee)
+        docker run --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}" \
+                   --volume "$PWD:/code" \
+                   --volume /var/run/docker.sock:/var/run/docker.sock \
+                   "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
         ;;
       *)
         echo "GitLab EE is required"
@@ -355,10 +380,16 @@ production:
     if [[ "$track" == "stable" ]]; then
       # for stable track get number of replicas from `PRODUCTION_REPLICAS`
       eval new_replicas=\$${env_slug}_REPLICAS
+      if [[ -z "$new_replicas" ]]; then
+        new_replicas=$REPLICAS
+      fi
       service_enabled="true"
     else
       # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
       eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
+      if [[ -z "$new_replicas" ]]; then
+        eval new_replicas=\${env_track}_REPLICAS
+      fi
     fi
     if [[ -n "$new_replicas" ]]; then
       replicas="$new_replicas"
