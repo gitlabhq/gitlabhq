@@ -7,6 +7,10 @@ module Gitlab
   SUBSCRIPTIONS_URL = 'https://customers.gitlab.com'.freeze
   SUBSCRIPTIONS_PLANS_URL = "#{SUBSCRIPTIONS_URL}/plans".freeze
 
+  def self.root
+    Pathname.new(File.expand_path('..', __dir__))
+  end
+
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
     Gitlab.config.gitlab.url == COM_URL || gl_subdomain?
