@@ -1,13 +1,9 @@
-require 'json'
+require 'active_support/hash_with_indifferent_access'
 
 require_relative 'flaky_example'
 
 module RspecFlaky
   class FlakyExamplesCollection < SimpleDelegator
-    def self.from_json(json)
-      new(JSON.parse(json))
-    end
-
     def initialize(collection = {})
       unless collection.is_a?(Hash)
         raise ArgumentError, "`collection` must be a Hash, #{collection.class} given!"
@@ -24,7 +20,7 @@ module RspecFlaky
       super(Hash[collection_of_flaky_examples])
     end
 
-    def to_report
+    def to_h
       Hash[map { |uid, example| [uid, example.to_h] }].deep_symbolize_keys
     end
 
