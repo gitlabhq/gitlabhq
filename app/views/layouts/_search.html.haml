@@ -7,7 +7,7 @@
 - if @project && @project.persisted?
   - project_data_attrs = { project_path: j(@project.path), name: j(@project.name), issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project), issues_disabled: !@project.issues_enabled? }
 .search.search-form{ class: "#{'has-location-badge' if label.present?}" }
-  = form_tag search_path, method: :get, class: 'navbar-form' do |f|
+  = form_tag search_path, method: :get, class: 'form-inline' do |f|
     .search-input-container
       - if label.present?
         .location-badge= label
