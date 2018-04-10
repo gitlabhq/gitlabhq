@@ -29,9 +29,9 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type
 
-    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil)
+    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
       @project  = project
       @protocol = protocol
@@ -39,6 +39,7 @@ module Gitlab
       @namespace_path = namespace_path
       @project_path = project_path
       @redirected_path = redirected_path
+      @auth_result_type = auth_result_type
     end
 
     def check(cmd, changes)
@@ -78,6 +79,12 @@ module Gitlab
       authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
     end
 
+    def request_from_ci_build?
+      return false unless protocol == 'http'
+
+      auth_result_type == :build || auth_result_type == :ci
+    end
+
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
     end
@@ -93,6 +100,8 @@ module Gitlab
     end
 
     def check_protocol!
+      return if request_from_ci_build?
+
       unless protocol_allowed?
         raise UnauthorizedError, "Git access over #{protocol.upcase} is not allowed"
       end
@@ -199,6 +208,7 @@ module Gitlab
 
     def check_download_access!
       passed = deploy_key? ||
+        deploy_token? ||
         user_can_download_code? ||
         build_can_download_code? ||
         guest_can_download_code?
@@ -229,6 +239,11 @@ module Gitlab
     end
 
     def check_change_access!(changes)
+      # If there are worktrees with a HEAD pointing to a non-existent object,
+      # calls to `git rev-list --all` will fail in git 2.15+. This should also
+      # clear stale lock files.
+      project.repository.clean_stale_repository_files
+
       changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
@@ -260,6 +275,14 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
+    def deploy_token
+      actor if deploy_token?
+    end
+
+    def deploy_token?
+      actor.is_a?(DeployToken)
+    end
+
     def ci?
       actor == :ci
     end
@@ -267,6 +290,8 @@ module Gitlab
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
+      elsif deploy_token?
+        deploy_token.has_access_to?(project)
       elsif user
         user.can?(:read_project, project)
       elsif ci?

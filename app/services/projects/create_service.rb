@@ -96,6 +96,8 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       setup_authorizations
+
+      current_user.invalidate_personal_projects_count
     end
 
     # Refresh the current user's authorizations inline (so they can access the

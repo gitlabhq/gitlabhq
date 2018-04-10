@@ -17,10 +17,6 @@ module Gitlab
             end
           end
 
-          def user=(current_user)
-            @builds.each { |seed| seed.user = current_user }
-          end
-
           def attributes
             { name: @attributes.fetch(:name),
               pipeline: @pipeline,

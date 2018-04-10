@@ -131,7 +131,7 @@ describe('Multi-file editor library dirty diff controller', () => {
     it('adds decorations into decorations controller', () => {
       spyOn(controller.decorationsController, 'addDecorations');
 
-      controller.decorate({ data: { changes: [], path: 'path' } });
+      controller.decorate({ data: { changes: [], path: model.path } });
 
       expect(
         controller.decorationsController.addDecorations,
@@ -145,7 +145,7 @@ describe('Multi-file editor library dirty diff controller', () => {
       );
 
       controller.decorate({
-        data: { changes: computeDiff('123', '1234'), path: 'path' },
+        data: { changes: computeDiff('123', '1234'), path: model.path },
       });
 
       expect(spy).toHaveBeenCalledWith(

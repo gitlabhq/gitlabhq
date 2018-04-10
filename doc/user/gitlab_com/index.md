@@ -51,7 +51,7 @@ Below are the settings for [GitLab Pages].
 | TLS certificates support| yes               | no            |
 
 The maximum size of your Pages site is regulated by the artifacts maximum size
-which is part of [GitLab CI](#gitlab-ci).
+which is part of [GitLab CI/CD](#gitlab-ci-cd).
 
 ## GitLab CI/CD
 
@@ -61,18 +61,34 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size  | 1G                | 100M          |
 
+## Repository size limit
+
+The maximum size your Git repository is allowed to be including LFS.
+
+| Setting                 | GitLab.com        | Default       |
+| -----------             | ----------------- | ------------- |
+| Repository size including LFS | 10G         | Unlimited     |
+
 ## Shared Runners
 
 Shared Runners on GitLab.com run in [autoscale mode] and powered by
-DigitalOcean. Autoscaling means reduced waiting times to spin up builds,
-and isolated VMs for each project, thus maximizing security.
+Google Cloud Platform and DigitalOcean. Autoscaling means reduced
+waiting times to spin up CI/CD jobs, and isolated VMs for each project,
+thus maximizing security.
 
 They're free to use for public open source projects and limited to 2000 CI
 minutes per month per group for private projects. Read about all
 [GitLab.com plans](https://about.gitlab.com/pricing/).
 
-All your builds run on 2GB (RAM) ephemeral instances, with CoreOS and the latest
-Docker Engine installed. The default region of the VMs is NYC.
+In case of DigitalOcean based Runners, all your CI/CD jobs run on ephemeral
+instances with 2GB of RAM, CoreOS and the latest Docker Engine installed.
+Instances provide 2 vCPUs and 60GB of SSD disk space. The default region of the
+VMs is NYC1.
+
+In case of Google Cloud Platform based Runners, all your CI/CD jobs run on
+ephemeral instances with 3.75GB of RAM, CoreOS and the latest Docker Engine
+installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
+region of the VMs is US East1.
 
 Below are the shared Runners settings.
 
@@ -80,52 +96,116 @@ Below are the shared Runners settings.
 | -----------                           | -----------------                                 | ---------- |
 | [GitLab Runner]                       | [Runner versions dashboard][ci_version_dashboard] | -          |
 | Executor                              | `docker+machine`                                  | -          |
-| Default Docker image                  | `ruby:2.1`                                        | -          |
+| Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker]) | `true`                                            | `false`    |
 
-[ci_version_dashboard]: https://monitor.gitlab.net/dashboard/db/ci?refresh=5m&orgId=1&panelId=12&fullscreen&from=now-1h&to=now&var-runner_type=All&var-cache_server=All&var-gl_monitor_fqdn=postgres-01.db.prd.gitlab.com&var-has_minutes=yes&var-hanging_droplets_cleaner=All&var-droplet_zero_machines_cleaner=All&var-runner_job_failure_reason=All&theme=light
+[ci_version_dashboard]: https://monitor.gitlab.net/dashboard/db/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light
 
 ### `config.toml`
 
 The full contents of our `config.toml` are:
 
+**DigitalOcean**
+
 ```toml
+concurrent = X
+check_interval = 1
+metrics_server = "X"
+sentry_dsn = "X"
+
 [[runners]]
   name = "docker-auto-scale"
-  limit = X
   request_concurrency = X
-  url = "https://gitlab.com/ci"
+  url = "https://gitlab.com/"
   token = "SHARED_RUNNER_TOKEN"
   executor = "docker+machine"
   environment = [
     "DOCKER_DRIVER=overlay2"
   ]
+  limit = X
   [runners.docker]
-    image = "ruby:2.1"
+    image = "ruby:2.5"
     privileged = true
   [runners.machine]
-    IdleCount = 40
+    IdleCount = 20
     IdleTime = 1800
+    OffPeakPeriods = ["* * * * * sat,sun *"]
+    OffPeakTimezone = "UTC"
+    OffPeakIdleCount = 5
+    OffPeakIdleTime = 1800
     MaxBuilds = 1
+    MachineName = "srm-%s"
     MachineDriver = "digitalocean"
-    MachineName = "machine-%s-digital-ocean-2gb"
     MachineOptions = [
-      "digitalocean-image=coreos-stable",
+      "digitalocean-image=X",
       "digitalocean-ssh-user=core",
-      "digitalocean-access-token=DIGITAL_OCEAN_ACCESS_TOKEN",
       "digitalocean-region=nyc1",
-      "digitalocean-size=2gb",
+      "digitalocean-size=s-2vcpu-2gb",
       "digitalocean-private-networking",
-      "digitalocean-userdata=/etc/gitlab-runner/cloudinit.sh",
-      "engine-registry-mirror=http://IP_TO_OUR_REGISTRY_MIRROR"
+      "digitalocean-tags=shared_runners,gitlab_com",
+      "engine-registry-mirror=http://INTERNAL_IP_OF_OUR_REGISTRY_MIRROR",
+      "digitalocean-access-token=DIGITAL_OCEAN_ACCESS_TOKEN",
     ]
   [runners.cache]
     Type = "s3"
-    ServerAddress = "IP_TO_OUR_CACHE_SERVER"
+    BucketName = "runner"
+    Insecure = true
+    Shared = true
+    ServerAddress = "INTERNAL_IP_OF_OUR_CACHE_SERVER"
     AccessKey = "ACCESS_KEY"
     SecretKey = "ACCESS_SECRET_KEY"
+```
+
+**Google Cloud Platform**
+
+```toml
+concurrent = X
+check_interval = 1
+metrics_server = "X"
+sentry_dsn = "X"
+
+[[runners]]
+  name = "docker-auto-scale"
+  request_concurrency = X
+  url = "https://gitlab.com/"
+  token = "SHARED_RUNNER_TOKEN"
+  executor = "docker+machine"
+  environment = [
+    "DOCKER_DRIVER=overlay2"
+  ]
+  limit = X
+  [runners.docker]
+    image = "ruby:2.5"
+    privileged = true
+  [runners.machine]
+    IdleCount = 20
+    IdleTime = 1800
+    OffPeakPeriods = ["* * * * * sat,sun *"]
+    OffPeakTimezone = "UTC"
+    OffPeakIdleCount = 5
+    OffPeakIdleTime = 1800
+    MaxBuilds = 1
+    MachineName = "srm-%s"
+    MachineDriver = "google"
+    MachineOptions = [
+      "google-project=PROJECT",
+      "google-disk-size=25",
+      "google-machine-type=n1-standard-1",
+      "google-username=core",
+      "google-tags=gitlab-com,srm",
+      "google-use-internal-ip",
+      "google-zone=us-east1-d",
+      "google-machine-image=PROJECT/global/images/IMAGE",
+      "engine-registry-mirror=http://INTERNAL_IP_OF_OUR_REGISTRY_MIRROR"
+    ]
+  [runners.cache]
+    Type = "s3"
     BucketName = "runner"
+    Insecure = true
     Shared = true
+    ServerAddress = "INTERNAL_IP_OF_OUR_CACHE_SERVER"
+    AccessKey = "ACCESS_KEY"
+    SecretKey = "ACCESS_SECRET_KEY"
 ```
 
 ## Sidekiq

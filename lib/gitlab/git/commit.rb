@@ -231,7 +231,8 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+          repo.gitaly_migrate(:list_commits_by_oid,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               repo.gitaly_commit_client.list_commits_by_oid(oids)
             else

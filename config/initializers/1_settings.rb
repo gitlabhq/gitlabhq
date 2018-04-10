@@ -308,6 +308,7 @@ Settings.artifacts['max_size'] ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
+Settings.artifacts['object_store']['direct_upload'] = false if Settings.artifacts['object_store']['direct_upload'].nil?
 Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
 Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifacts['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
@@ -365,6 +366,7 @@ Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system
 Settings.uploads['object_store'] ||= Settingslogic.new({})
 Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
+Settings.uploads['object_store']['direct_upload'] = false if Settings.uploads['object_store']['direct_upload'].nil?
 Settings.uploads['object_store']['background_upload'] = true if Settings.uploads['object_store']['background_upload'].nil?
 Settings.uploads['object_store']['proxy_download'] = false if Settings.uploads['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy
@@ -456,6 +458,12 @@ Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'Page
 Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
 Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
+
+#
+# Sidekiq
+#
+Settings['sidekiq'] ||= Settingslogic.new({})
+Settings['sidekiq']['log_format'] ||= 'default'
 
 #
 # GitLab Shell

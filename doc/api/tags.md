@@ -42,6 +42,7 @@ Parameters:
       "description": "Amazing release. Wow"
     },
     "name": "v1.0.0",
+    "target": "2695effb5807a22ff3d138d593fd856244e155e7",
     "message": null
   }
 ]
@@ -73,6 +74,7 @@ Example Response:
 {
   "name": "v5.0.0",
   "message": null,
+  "target": "60a8ff033665e1207714d6670fcd7b65304ec02f",
   "commit": {
     "id": "60a8ff033665e1207714d6670fcd7b65304ec02f",
     "short_id": "60a8ff03",
@@ -132,11 +134,15 @@ Parameters:
     "description": "Amazing release. Wow"
   },
   "name": "v1.0.0",
+  "target: "2695effb5807a22ff3d138d593fd856244e155e7",
   "message": null
 }
 ```
 The message will be `null` when creating a lightweight tag otherwise
 it will contain the annotation.
+
+The target will contain the tag objects ID when creating annotated tags,
+otherwise it will contain the commit ID when creating lightweight tags.
 
 In case of an error,
 status code `405` with an explaining error message is returned.

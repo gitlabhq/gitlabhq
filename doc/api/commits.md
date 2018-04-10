@@ -412,9 +412,10 @@ Example response:
 
 Since GitLab 8.1, this is the new commit status API.
 
-### Get the status of a commit
+### List the statuses of a commit
 
-Get the statuses of a commit in a project.
+List the statuses of a commit in a project.
+The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
 ```
 GET /projects/:id/repository/commits/:sha/statuses
@@ -538,6 +539,8 @@ Example response:
 
 ## List Merge Requests associated with a commit
 
+> [Introduced][ce-18004] in GitLab 10.7.
+
 Get a list of Merge Requests related to the specified commit.
 
 ```
@@ -607,3 +610,4 @@ Example response:
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"
 [ce-8047]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8047
 [ce-15026]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15026
+[ce-18004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18004

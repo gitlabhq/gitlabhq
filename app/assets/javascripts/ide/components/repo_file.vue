@@ -6,6 +6,7 @@ import router from '../ide_router';
 import newDropdown from './new_dropdown/index.vue';
 import fileStatusIcon from './repo_file_status_icon.vue';
 import changedFileIcon from './changed_file_icon.vue';
+import mrFileIcon from './mr_file_icon.vue';
 
 export default {
   name: 'RepoFile',
@@ -15,6 +16,7 @@ export default {
     fileStatusIcon,
     fileIcon,
     changedFileIcon,
+    mrFileIcon,
   },
   props: {
     file: {
@@ -56,18 +58,11 @@ export default {
     ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
     clickFile() {
       // Manual Action if a tree is selected/opened
-      if (
-        this.isTree &&
-        this.$router.currentRoute.path === `/project${this.file.url}`
-      ) {
+      if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
         this.toggleTreeOpen(this.file.path);
       }
 
-      const delayPromise = this.file.changed
-        ? Promise.resolve()
-        : this.updateDelayViewerUpdated(true);
-
-      return delayPromise.then(() => {
+      return this.updateDelayViewerUpdated(true).then(() => {
         router.push(`/project${this.file.url}`);
       });
     },
@@ -102,11 +97,15 @@ export default {
             :file="file"
           />
         </span>
-        <changed-file-icon
-          :file="file"
-          v-if="file.changed || file.tempFile"
-          class="prepend-top-5 pull-right"
-        />
+        <span class="pull-right">
+          <mr-file-icon
+            v-if="file.mrChange"
+          />
+          <changed-file-icon
+            :file="file"
+            v-if="file.changed || file.tempFile"
+          />
+        </span>
         <new-dropdown
           v-if="isTree"
           :project-id="file.projectId"

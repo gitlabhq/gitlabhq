@@ -19,7 +19,7 @@
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
-  margin-top: 40px;
+  margin-top: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -53,6 +53,7 @@
       flex: 1;
       white-space: nowrap;
       text-overflow: ellipsis;
+      max-width: inherit;
 
       svg {
         vertical-align: middle;
@@ -307,14 +308,73 @@
   height: 100%;
 }
 
-.multi-file-editor-btn-group {
-  padding: $gl-bar-padding $gl-padding;
-  border-top: 1px solid $white-dark;
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .file-container {
+    background-color: $gray-darker;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    .file-content {
+      padding: $gl-padding;
+      max-width: 100%;
+      max-height: 100%;
+
+      img {
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .isZoomable {
+        cursor: pointer;
+        cursor: zoom-in;
+
+        &.isZoomed {
+          cursor: pointer;
+          cursor: zoom-out;
+          max-width: none;
+          max-height: none;
+          margin-right: $gl-padding;
+        }
+      }
+    }
+
+    .file-info {
+      font-size: $label-font-size;
+      color: $diff-image-info-color;
+    }
+  }
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
+}
+
+.ide-mode-tabs {
   border-bottom: 1px solid $white-dark;
-  background: $white-light;
+
+  .nav-links {
+    border-bottom: 0;
+
+    li a {
+      padding: $gl-padding-8 $gl-padding;
+      line-height: $gl-btn-line-height;
+    }
+  }
+}
+
+.ide-btn-group {
+  padding: $gl-padding-4 $gl-vert-padding;
 }
 
 .ide-status-bar {
+  border-top: 1px solid $white-dark;
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
@@ -456,6 +516,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .multi-file-commit-empty-state-container {
@@ -466,7 +528,7 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
 
@@ -673,8 +735,14 @@
   overflow: hidden;
 
   &.nav-only {
+    padding-top: $header-height;
+
+    .with-performance-bar & {
+      padding-top: $header-height + $performance-bar-height;
+    }
+
     .flash-container {
-      margin-top: $header-height;
+      margin-top: 0;
       margin-bottom: 0;
     }
 
@@ -684,7 +752,7 @@
     }
 
     .content-wrapper {
-      margin-top: $header-height;
+      margin-top: 0;
       padding-bottom: 0;
     }
 
@@ -708,11 +776,11 @@
 
 .with-performance-bar .ide.nav-only {
   .flash-container {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
   }
 
   .content-wrapper {
-    margin-top: #{$header-height + $performance-bar-height};
+    margin-top: 0;
     padding-bottom: 0;
   }
 
@@ -721,10 +789,6 @@
   }
 
   &.flash-shown {
-    .content-wrapper {
-      margin-top: 0;
-    }
-
     .ide-view {
       height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
     }

@@ -13,7 +13,7 @@ module Ci
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :projects, through: :runner_projects
+    has_many :projects, -> { auto_include(false) }, through: :runner_projects
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 

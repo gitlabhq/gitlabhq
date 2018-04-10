@@ -25,13 +25,36 @@ export default () => {
     data() {
       return {
         mediator,
+        actionDisabled: null,
       };
+    },
+    created() {
+      eventHub.$on('graphAction', this.postAction);
+    },
+    beforeDestroy() {
+      eventHub.$off('graphAction', this.postAction);
+    },
+    methods: {
+      postAction(action) {
+        this.actionDisabled = action;
+
+        this.mediator.service.postAction(action)
+          .then(() => {
+            this.mediator.refreshPipeline();
+            this.actionDisabled = null;
+          })
+          .catch(() => {
+            this.actionDisabled = null;
+            Flash(__('An error occurred while making the request.'));
+          });
+      },
     },
     render(createElement) {
       return createElement('pipeline-graph', {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
+          actionDisabled: this.actionDisabled,
         },
       });
     },

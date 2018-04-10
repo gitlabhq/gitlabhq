@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180330121048) do
+ActiveRecord::Schema.define(version: 20180405142733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -683,6 +683,19 @@ ActiveRecord::Schema.define(version: 20180330121048) do
 
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
+  create_table "deploy_tokens", force: :cascade do |t|
+    t.boolean "revoked", default: false
+    t.boolean "read_repository", default: false, null: false
+    t.boolean "read_registry", default: false, null: false
+    t.datetime_with_timezone "expires_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.string "name", null: false
+    t.string "token", null: false
+  end
+
+  add_index "deploy_tokens", ["token", "expires_at", "id"], name: "index_deploy_tokens_on_token_and_expires_at_and_id", where: "(revoked IS FALSE)", using: :btree
+  add_index "deploy_tokens", ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
+
   create_table "deployments", force: :cascade do |t|
     t.integer "iid", null: false
     t.integer "project_id", null: false
@@ -932,6 +945,7 @@ ActiveRecord::Schema.define(version: 20180330121048) do
     t.integer "last_edited_by_id"
     t.boolean "discussion_locked"
     t.datetime_with_timezone "closed_at"
+    t.integer "closed_by_id"
   end
 
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
@@ -1430,6 +1444,14 @@ ActiveRecord::Schema.define(version: 20180330121048) do
   add_index "project_custom_attributes", ["key", "value"], name: "index_project_custom_attributes_on_key_and_value", using: :btree
   add_index "project_custom_attributes", ["project_id", "key"], name: "index_project_custom_attributes_on_project_id_and_key", unique: true, using: :btree
 
+  create_table "project_deploy_tokens", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "deploy_token_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+  end
+
+  add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
+
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"
     t.integer "merge_requests_access_level"
@@ -1684,6 +1706,7 @@ ActiveRecord::Schema.define(version: 20180330121048) do
     t.boolean "confidential_issues_events", default: true, null: false
     t.boolean "commit_events", default: true, null: false
     t.boolean "job_events", default: false, null: false
+    t.boolean "confidential_note_events", default: true
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -2022,6 +2045,7 @@ ActiveRecord::Schema.define(version: 20180330121048) do
     t.boolean "confidential_issues_events", default: false, null: false
     t.boolean "repository_update_events", default: false, null: false
     t.boolean "job_events", default: false, null: false
+    t.boolean "confidential_note_events"
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
@@ -2096,6 +2120,7 @@ ActiveRecord::Schema.define(version: 20180330121048) do
   add_foreign_key "issues", "milestones", name: "fk_96b1dd429c", on_delete: :nullify
   add_foreign_key "issues", "projects", name: "fk_899c8f3231", on_delete: :cascade
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
+  add_foreign_key "issues", "users", column: "closed_by_id", name: "fk_c63cbf6c25", on_delete: :nullify
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
@@ -2134,6 +2159,8 @@ ActiveRecord::Schema.define(version: 20180330121048) do
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
+  add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
+  add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
