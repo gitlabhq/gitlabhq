@@ -4,11 +4,7 @@ entry.
 
 ## 10.6.4 (2018-04-09)
 
-<<<<<<< HEAD
 ### Fixed (9 changes, 1 of them is from the community)
-=======
-### Fixed (8 changes, 1 of them is from the community)
->>>>>>> upstream/master
 
 - Correct copy text for the promote milestone and label modals. !17726
 - Avoid validation errors when running the Pages domain verification service. !17992
@@ -16,10 +12,7 @@ entry.
 - Fix exceptions raised when migrating pipeline stages in the background. !18076
 - Work around Prometheus Helm chart name changes to fix integration. !18206 (joshlambert)
 - Don't show Jump to Discussion button on Issues.
-<<<<<<< HEAD
 - Fix data race between ObjectStorage background_upload and Pages publishing.
-=======
->>>>>>> upstream/master
 - Fix listing commit branch/tags that contain special characters.
 - Fix 404 in group boards when moving issue between lists.
 
