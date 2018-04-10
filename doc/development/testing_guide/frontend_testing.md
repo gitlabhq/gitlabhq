@@ -165,18 +165,18 @@ excluded tests (with `fdescribe` or `xdescribe`) to get karma to run only the
 tests you want while you're working on a specific feature, but make sure to
 remove these directives when you commit your code.
 
-It is also possible to only run karma on specific folders or files by simply
-appending the file name to the karma command:
+It is also possible to only run karma on specific folders or files by filtering
+the run tests via the argument `--filter-spec` or short `-f`:
 
 ```bash
 # Run all files
 yarn karma-start
 # Run specific spec files
-yarn karma-start profile/account/components/update_username_spec.js
+yarn karma-start --filter-spec profile/account/components/update_username_spec.js
 # Run specific spec folder
-yarn karma-start profile/account/components/
-# Run all specs in vue_shared and vue_mr_widget
-yarn karma-start /vue_shared/ /vue_mr_widget/
+yarn karma-start --filter-spec profile/account/components/
+# Run all specs which path contain vue_shared or vie
+yarn karma-start -f vue_shared -f vue_mr_widget
 ```
 
 ## RSpec feature integration tests

@@ -98,6 +98,7 @@
     "axios-mock-adapter": "^1.10.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.5",
+    "commander": "^2.15.1",
     "eslint": "^3.18.0",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-import-resolver-webpack": "^0.8.3",

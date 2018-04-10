@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var argumentsParser = require('commander');
 var webpackConfig = require('./webpack.config.js');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
@@ -14,14 +15,21 @@ if (webpackConfig.plugins) {
   });
 }
 
-var ignoreUpTo = process.argv.indexOf('config/karma.config.js') + 1;
-var testFiles = process.argv.slice(ignoreUpTo).filter(arg => {
-  return !arg.startsWith('--');
-});
+var testFiles = argumentsParser
+  .option(
+    '-f, --filter-spec [filter]',
+    'Filter run spec files by path. Multiple filters are like a logical OR.',
+    (val, memo) => {
+      memo.push(val);
+      return memo;
+    },
+    []
+  )
+  .parse(process.argv).filterSpec;
 
 webpackConfig.plugins.push(
   new webpack.DefinePlugin({
-    'process.env.TEST_FILES': JSON.stringify(testFiles) ,
+    'process.env.TEST_FILES': JSON.stringify(testFiles),
   })
 );
 
