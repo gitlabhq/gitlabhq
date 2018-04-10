@@ -2203,10 +2203,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
       end
 
-      it 'raises a no repository exception when there is no repo' do
+      it 'returns 0000000000000000000000000000000000000000 when there is no repo' do
         broken_repo = described_class.new('default', 'a/path.git', '')
 
-        expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
+        expect(broken_repo.checksum).to eq '0000000000000000000000000000000000000000'
       end
     end
 

@@ -1513,6 +1513,8 @@ module Gitlab
             calculate_checksum_by_shelling_out
           end
         end
+      rescue NoRepository
+        EMPTY_REPOSITORY_CHECKSUM
       end
 
       private
