@@ -33,7 +33,7 @@
           .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
-          %button.text-expander.d-none.d-sm-block.js-toggle-button{ type: "button" } ...
+          %button.text-expander.d-none.d-sm-inline-block.js-toggle-button{ type: "button" } ...
 
         - if commit.description?
           %pre.commit-row-description.js-toggle-content

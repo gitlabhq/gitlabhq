@@ -12,25 +12,25 @@
                 = confidential_icon(issue)
             = link_to issue.title, issue_path(issue)
           - if issue.tasks?
-            %span.task-status.d-none.d-sm-block
+            %span.task-status.d-none.d-sm-inline-block
               &nbsp;
               = issue.task_status
 
         .issuable-info
           %span.issuable-reference
             #{issuable_reference(issue)}
-          %span.issuable-authored.d-none.d-sm-block
+          %span.issuable-authored.d-none.d-sm-inline-block
             &middot;
             opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
             by #{link_to_member(@project, issue.author, avatar: false)}
           - if issue.milestone
-            %span.issuable-milestone.d-none.d-sm-block
+            %span.issuable-milestone.d-none.d-sm-inline-block
               &nbsp;
               = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 1, toggle: 'tooltip', title: issuable_milestone_tooltip_title(issue) } do
                 = icon('clock-o')
                 = issue.milestone.title
           - if issue.due_date
-            %span.issuable-due-date.d-none.d-sm-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
+            %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
               &nbsp;
               = icon('calendar')
               = issue.due_date.to_s(:medium)
@@ -50,5 +50,5 @@
 
           = render 'shared/issuable_meta_data', issuable: issue
 
-        .float-right.issuable-updated-at.d-none.d-sm-block
+        .float-right.issuable-updated-at.d-none.d-sm-inline-block
           %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
