@@ -45,7 +45,7 @@ describe Gitlab::HookData::IssueBuilder do
       let(:issue_with_description) { create(:issue, description: 'test![Issue_Image](/uploads/abc/Issue_Image.png)') }
       let(:builder) { described_class.new(issue_with_description) }
 
-      it 'adds absolute urls for images in the description' do
+      it 'sets the image to use an absolute URL' do
         expect(data[:description]).to eq("test![Issue_Image](#{Settings.gitlab.url}/uploads/abc/Issue_Image.png)")
       end
     end

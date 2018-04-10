@@ -557,8 +557,8 @@ describe WikiPage do
   describe '#hook_attrs' do
     before do
       create_page("test page", "test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)")
-      @page = wiki.wiki.paged("test page")
-      @wiki_page = WikiPage.new(wiki, @page, true)
+      @page = wiki.wiki.page(title: "test page")
+      @wiki_page = described_class.new(wiki, @page, true)
     end
 
     it 'adds absolute urls for images in the content' do

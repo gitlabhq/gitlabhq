@@ -2357,12 +2357,4 @@ describe MergeRequest do
       end
     end
   end
-
-  describe '#hook_attrs' do
-    let(:mr_with_description) { create(:merge_request, description: 'test![Mr_Image](/uploads/abc/Mr_Image.png)') }
-
-    it 'adds absolute urls for images in the description' do
-      expect(mr_with_description.hook_attrs['description']).to eq("test![Mr_Image](#{Settings.gitlab.url}/uploads/abc/Mr_Image.png)")
-    end
-  end
 end
