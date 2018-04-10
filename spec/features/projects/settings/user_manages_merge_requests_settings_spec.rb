@@ -1,21 +1,35 @@
 require 'spec_helper'
 
-feature 'Project settings > Merge Requests', :js do
-  let(:project) { create(:project, :public) }
+describe 'Projects > Settings > User manages merge request settings' do
   let(:user) { create(:user) }
+  let(:project) { create(:project, :public, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
-  background do
-    project.add_master(user)
+  before do
     sign_in(user)
+    visit edit_project_path(project)
   end
 
-  context 'when Merge Request and Pipelines are initially enabled' do
-    context 'when Pipelines are initially enabled' do
-      before do
-        visit edit_project_path(project)
-      end
+  it 'shows "Merge commit" strategy' do
+    page.within '.merge-requests-feature' do
+      expect(page).to have_content 'Merge commit'
+    end
+  end
 
-      scenario 'shows the Merge Requests settings' do
+  it 'shows "Merge commit with semi-linear history " strategy' do
+    page.within '.merge-requests-feature' do
+      expect(page).to have_content 'Merge commit with semi-linear history'
+    end
+  end
+
+  it 'shows "Fast-forward merge" strategy' do
+    page.within '.merge-requests-feature' do
+      expect(page).to have_content 'Fast-forward merge'
+    end
+  end
+
+  context 'when Merge Request and Pipelines are initially enabled', :js do
+    context 'when Pipelines are initially enabled' do
+      it 'shows the Merge Requests settings' do
         expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
@@ -29,13 +43,13 @@ feature 'Project settings > Merge Requests', :js do
       end
     end
 
-    context 'when Pipelines are initially disabled' do
+    context 'when Pipelines are initially disabled', :js do
       before do
         project.project_feature.update_attribute('builds_access_level', ProjectFeature::DISABLED)
         visit edit_project_path(project)
       end
 
-      scenario 'shows the Merge Requests settings that do not depend on Builds feature' do
+      it 'shows the Merge Requests settings that do not depend on Builds feature' do
         expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
@@ -50,13 +64,13 @@ feature 'Project settings > Merge Requests', :js do
     end
   end
 
-  context 'when Merge Request are initially disabled' do
+  context 'when Merge Request are initially disabled', :js do
     before do
       project.project_feature.update_attribute('merge_requests_access_level', ProjectFeature::DISABLED)
       visit edit_project_path(project)
     end
 
-    scenario 'does not show the Merge Requests settings' do
+    it 'does not show the Merge Requests settings' do
       expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
       expect(page).not_to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
@@ -70,17 +84,13 @@ feature 'Project settings > Merge Requests', :js do
     end
   end
 
-  describe 'Checkbox to enable merge request link' do
-    before do
-      visit edit_project_path(project)
-    end
-
-    scenario 'is initially checked' do
+  describe 'Checkbox to enable merge request link', :js do
+    it 'is initially checked' do
       checkbox = find_field('project_printing_merge_request_link_enabled')
       expect(checkbox).to be_checked
     end
 
-    scenario 'when unchecked sets :printing_merge_request_link_enabled to false' do
+    it 'when unchecked sets :printing_merge_request_link_enabled to false' do
       uncheck('project_printing_merge_request_link_enabled')
       within('.merge-request-settings-form') do
         click_on('Save changes')

@@ -1,11 +1,21 @@
 require 'spec_helper'
 
-describe 'User views details' do
+describe 'Projects > Show > User sees Git instructions' do
   set(:user) { create(:user) }
 
   shared_examples_for 'redirects to the sign in page' do
     it 'redirects to the sign in page' do
       expect(current_path).to eq(new_user_session_path)
+    end
+  end
+
+  shared_examples_for 'shows details of empty project with no repo' do
+    it 'shows Git command line instructions' do
+      click_link 'Create empty repository'
+
+      page.within '.empty_wrapper' do
+        expect(page).to have_content('Command line instructions')
+      end
     end
   end
 
@@ -36,6 +46,17 @@ describe 'User views details' do
   end
 
   context 'when project is public' do
+    context 'when project has no repo' do
+      set(:project) { create(:project, :public) }
+
+      before do
+        sign_in(project.owner)
+        visit project_path(project)
+      end
+
+      include_examples 'shows details of empty project with no repo'
+    end
+
     context 'when project is empty' do
       set(:project) { create(:project_empty_repo, :public) }
 
