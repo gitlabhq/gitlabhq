@@ -27,8 +27,8 @@ html {
 // Polyfill deprecated selectors
 
 .hidden {
-  @extend .d-none;
-  @extend .invisible;
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .dropdown-toggle::after {
