@@ -70,20 +70,22 @@ beforeEach(() => {
 });
 
 // eslint-disable-next-line no-undef
-let testFile = TEST_FILE;
-if (testFile) {
-  console.log(`Running only ${testFile}`);
-  testFile = testFile.replace(/^spec\/javascripts\//, '');
-  testFile = testFile.replace(/\.js$/, '');
+let testFile = TEST_FILES;
+if (testFile instanceof Array && testFile.length > 0) {
+  console.log(`Running only tests: ${testFile}`);
+  testFile = testFile.map(path => path.replace(/^spec\/javascripts\//, '').replace(/\.js$/, ''));
+} else {
+  console.log('Running all tests');
+  testFile = [];
 }
 
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
-testsContext.keys().forEach(function (path) {
+testsContext.keys().forEach(function(path) {
   try {
-    if (!testFile || path.indexOf(testFile) > -1) {
+    if (testFile.length === 0 || testFile.some(p => path.includes(p))) {
       testsContext(path);
     }
   } catch (err) {

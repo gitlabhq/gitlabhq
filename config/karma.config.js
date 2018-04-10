@@ -16,9 +16,14 @@ if (webpackConfig.plugins) {
   webpackConfig.plugins = [];
 }
 
+var ignoreUpTo = process.argv.indexOf('config/karma.config.js') + 1;
+var testFiles = process.argv.slice(ignoreUpTo).filter(arg => {
+  return !arg.startsWith('--');
+});
+
 webpackConfig.plugins.push(
   new webpack.DefinePlugin({
-    TEST_FILE: JSON.stringify(process.env.TEST_FILE),
+    TEST_FILES: JSON.stringify(testFiles),
   })
 );
 
