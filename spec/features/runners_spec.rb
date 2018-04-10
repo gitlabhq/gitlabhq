@@ -15,7 +15,7 @@ feature 'Runners' do
     end
 
     scenario 'user can see a button to install runners on kubernetes clusters' do
-      visit runners_path(project)
+      visit project_runners_path(project)
 
       expect(page).to have_link('Install Runner on Kubernetes', href: project_clusters_path(project))
     end
@@ -36,7 +36,7 @@ feature 'Runners' do
       end
 
       scenario 'user sees the specific runner' do
-        visit runners_path(project)
+        visit project_runners_path(project)
 
         within '.activated-specific-runners' do
           expect(page).to have_content(specific_runner.display_name)
@@ -48,7 +48,7 @@ feature 'Runners' do
       end
 
       scenario 'user can pause and resume the specific runner' do
-        visit runners_path(project)
+        visit project_runners_path(project)
 
         within '.activated-specific-runners' do
           expect(page).to have_content('Pause')
@@ -68,7 +68,7 @@ feature 'Runners' do
       end
 
       scenario 'user removes an activated specific runner if this is last project for that runners' do
-        visit runners_path(project)
+        visit project_runners_path(project)
 
         within '.activated-specific-runners' do
           click_on 'Remove Runner'
@@ -78,7 +78,7 @@ feature 'Runners' do
       end
 
       scenario 'user edits the runner to be protected' do
-        visit runners_path(project)
+        visit project_runners_path(project)
 
         within '.activated-specific-runners' do
           first('.edit-runner > a').click
@@ -98,7 +98,7 @@ feature 'Runners' do
         end
 
         scenario 'user edits runner not to run untagged jobs' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           within '.activated-specific-runners' do
             first('.edit-runner > a').click
@@ -117,7 +117,7 @@ feature 'Runners' do
         given!(:shared_runner) { create(:ci_runner, :shared) }
 
         scenario 'user sees CI/CD setting page' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           expect(page.find('.available-shared-runners')).to have_content(shared_runner.display_name)
         end
@@ -134,7 +134,7 @@ feature 'Runners' do
       end
 
       scenario 'user enables and disables a specific runner' do
-        visit runners_path(project)
+        visit project_runners_path(project)
 
         within '.available-specific-runners' do
           click_on 'Enable for this project'
@@ -159,7 +159,7 @@ feature 'Runners' do
       end
 
       scenario 'user sees shared runners description' do
-        visit runners_path(project)
+        visit project_runners_path(project)
 
         expect(page.find('.shared-runners-description')).to have_content(shared_runners_html)
       end
@@ -174,7 +174,7 @@ feature 'Runners' do
     end
 
     scenario 'user enables shared runners' do
-      visit runners_path(project)
+      visit project_runners_path(project)
 
       click_on 'Enable shared Runners'
 
@@ -198,7 +198,7 @@ feature 'Runners' do
         given(:project) { create :project, group: group }
 
         scenario 'group runners are not available' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
@@ -213,7 +213,7 @@ feature 'Runners' do
         given(:project) { create :project }
 
         scenario 'group runners are not available' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           expect(page).to have_content 'This project does not belong to a group and can therefore not make use of group Runners.'
         end
@@ -224,7 +224,7 @@ feature 'Runners' do
         given(:project) { create :project, group: group }
 
         scenario 'group runners are not available' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
@@ -239,14 +239,14 @@ feature 'Runners' do
         given!(:ci_runner) { create :ci_runner, groups: [group], description: 'group-runner' }
 
         scenario 'group runners are available' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           expect(page).to have_content 'Available group Runners : 1'
           expect(page).to have_content 'group-runner'
         end
 
         scenario 'group runners may be disabled for a project' do
-          visit runners_path(project)
+          visit project_runners_path(project)
 
           click_on 'Disable group Runners'
 
