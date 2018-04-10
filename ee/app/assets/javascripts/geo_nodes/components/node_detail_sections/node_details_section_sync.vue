@@ -23,28 +23,28 @@
         showSectionItems: false,
         nodeDetailItems: [
           {
-            itemTitle: s__('GeoNodes|Sync settings:'),
+            itemTitle: s__('GeoNodes|Sync settings'),
             itemValue: this.syncSettings(),
             itemValueType: VALUE_TYPE.CUSTOM,
             customType: CUSTOM_TYPE.SYNC,
           },
           {
-            itemTitle: s__('GeoNodes|Repositories:'),
+            itemTitle: s__('GeoNodes|Repositories'),
             itemValue: this.nodeDetails.repositories,
             itemValueType: VALUE_TYPE.GRAPH,
           },
           {
-            itemTitle: s__('GeoNodes|Wikis:'),
+            itemTitle: s__('GeoNodes|Wikis'),
             itemValue: this.nodeDetails.wikis,
             itemValueType: VALUE_TYPE.GRAPH,
           },
           {
-            itemTitle: s__('GeoNodes|Local LFS objects:'),
+            itemTitle: s__('GeoNodes|Local LFS objects'),
             itemValue: this.nodeDetails.lfs,
             itemValueType: VALUE_TYPE.GRAPH,
           },
           {
-            itemTitle: s__('GeoNodes|Local attachments:'),
+            itemTitle: s__('GeoNodes|Local attachments'),
             itemValue: this.nodeDetails.attachments,
             itemValueType: VALUE_TYPE.GRAPH,
           },
@@ -59,13 +59,13 @@
             itemValueType: VALUE_TYPE.PLAIN,
           },
           {
-            itemTitle: s__('GeoNodes|Last event ID seen from primary:'),
+            itemTitle: s__('GeoNodes|Last event ID seen from primary'),
             itemValue: this.lastEventStatus(),
             itemValueType: VALUE_TYPE.CUSTOM,
             customType: CUSTOM_TYPE.EVENT,
           },
           {
-            itemTitle: s__('GeoNodes|Latest event log status:'),
+            itemTitle: s__('GeoNodes|Latest event log status'),
             itemValue: this.cursorLastEventStatus(),
             itemValueType: VALUE_TYPE.CUSTOM,
             customType: CUSTOM_TYPE.EVENT,

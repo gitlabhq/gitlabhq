@@ -51,7 +51,7 @@ describe('GeoNodeHealthStatusComponent', () => {
     it('renders container elements correctly', () => {
       const vm = createComponent('Healthy');
       expect(vm.$el.classList.contains('detail-section-item')).toBe(true);
-      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('Health status:');
+      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('Health status');
 
       const iconContainerEl = vm.$el.querySelector('.node-detail-value.node-health-status');
       expect(iconContainerEl).not.toBeNull();

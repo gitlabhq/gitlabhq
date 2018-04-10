@@ -51,7 +51,7 @@
     <div class="col-md-8">
       <div class="detail-section-item node-version">
         <div class="node-detail-title">
-          {{ s__('GeoNodes|GitLab version:') }}
+          {{ s__('GeoNodes|GitLab version') }}
         </div>
         <div
           class="node-detail-value node-detail-value-bold"
