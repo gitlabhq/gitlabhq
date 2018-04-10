@@ -10,9 +10,7 @@
         .content
           = render "layouts/flash"
           .row
-            .col-sm-5.float-right.new-session-forms-container
-              = yield
-            .col-sm-7.brand-holder.float-left
+            .col-sm-7.brand-holder
               %h1
                 = brand_title
               = brand_image
@@ -28,6 +26,8 @@
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
+            .col-sm-5.new-session-forms-container
+              = yield
 
       %hr.footer-fixed
       .container.footer-container
