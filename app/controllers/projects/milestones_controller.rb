@@ -14,7 +14,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def index
     @sort = params[:sort] || 'due_date_asc'
-    @milestones = milestones.sort(@sort)
+    @milestones = milestones.sort_by_attribute(@sort)
 
     respond_to do |format|
       format.html do

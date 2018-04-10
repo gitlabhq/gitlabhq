@@ -25,8 +25,7 @@ class JwtController < ApplicationController
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
-      if @authentication_result.failed? ||
-          (@authentication_result.actor.present? && !@authentication_result.actor.is_a?(User))
+      if @authentication_result.failed?
         render_unauthorized
       end
     end

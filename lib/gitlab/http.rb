@@ -4,6 +4,8 @@
 # calling internal IP or services.
 module Gitlab
   class HTTP
+    BlockedUrlError = Class.new(StandardError)
+
     include HTTParty # rubocop:disable Gitlab/HTTParty
 
     connection_adapter ProxyHTTPConnectionAdapter

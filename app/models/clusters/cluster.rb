@@ -15,7 +15,7 @@ module Clusters
     belongs_to :user
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
-    has_many :projects, through: :cluster_projects, class_name: '::Project'
+    has_many :projects, -> { auto_include(false) }, through: :cluster_projects, class_name: '::Project'
 
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
@@ -51,6 +51,10 @@ module Clusters
 
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
+    scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
+    scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
+    scope :gcp_installed, -> { gcp_provided.includes(:provider_gcp).where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }) }
+
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
     def status_name

@@ -1,5 +1,6 @@
-import _ from 'underscore';
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import pipelinesComp from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
@@ -12,6 +13,8 @@ describe('Pipelines', () => {
   let PipelinesComponent;
   let pipelines;
   let vm;
+  let mock;
+
   const paths = {
     endpoint: 'twitter/flight/pipelines.json',
     autoDevopsPath: '/help/topics/autodevops/index.md',
@@ -34,6 +37,8 @@ describe('Pipelines', () => {
   };
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+
     pipelines = getJSONFixture(jsonFixtureName);
 
     PipelinesComponent = Vue.extend(pipelinesComp);
@@ -41,38 +46,14 @@ describe('Pipelines', () => {
 
   afterEach(() => {
     vm.$destroy();
+    mock.restore();
   });
-
-  const pipelinesInterceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify(pipelines), {
-      status: 200,
-    }));
-  };
-
-  const emptyStateInterceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify({
-      pipelines: [],
-      count: {
-        all: 0,
-        pending: 0,
-        running: 0,
-        finished: 0,
-      },
-    }), {
-      status: 200,
-    }));
-  };
-
-  const errorInterceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify({}), {
-      status: 500,
-    }));
-  };
 
   describe('With permission', () => {
     describe('With pipelines in main tab', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(pipelinesInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
+
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: true,
@@ -83,12 +64,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, pipelinesInterceptor,
-        );
       });
 
       it('renders tabs', () => {
@@ -116,7 +91,15 @@ describe('Pipelines', () => {
 
     describe('Without pipelines on main tab with CI', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(emptyStateInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, {
+          pipelines: [],
+          count: {
+            all: 0,
+            pending: 0,
+            running: 0,
+            finished: 0,
+          },
+        });
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: true,
@@ -127,12 +110,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, emptyStateInterceptor,
-        );
       });
 
       it('renders tabs', () => {
@@ -158,7 +135,15 @@ describe('Pipelines', () => {
 
     describe('Without pipelines nor CI', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(emptyStateInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, {
+          pipelines: [],
+          count: {
+            all: 0,
+            pending: 0,
+            running: 0,
+            finished: 0,
+          },
+        });
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: false,
@@ -169,12 +154,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, emptyStateInterceptor,
-        );
       });
 
       it('renders empty state', () => {
@@ -192,7 +171,7 @@ describe('Pipelines', () => {
 
     describe('When API returns error', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(errorInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(500, {});
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: false,
@@ -203,12 +182,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, errorInterceptor,
-        );
       });
 
       it('renders tabs', () => {
@@ -230,7 +203,8 @@ describe('Pipelines', () => {
   describe('Without permission', () => {
     describe('With pipelines in main tab', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(pipelinesInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
+
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: false,
@@ -241,12 +215,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, pipelinesInterceptor,
-        );
       });
 
       it('renders tabs', () => {
@@ -268,7 +236,16 @@ describe('Pipelines', () => {
 
     describe('Without pipelines on main tab with CI', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(emptyStateInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, {
+          pipelines: [],
+          count: {
+            all: 0,
+            pending: 0,
+            running: 0,
+            finished: 0,
+          },
+        });
+
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: true,
@@ -281,11 +258,6 @@ describe('Pipelines', () => {
         });
       });
 
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, emptyStateInterceptor,
-        );
-      });
       it('renders tabs', () => {
         expect(vm.$el.querySelector('.js-pipelines-tab-all').textContent.trim()).toContain('All');
       });
@@ -303,7 +275,16 @@ describe('Pipelines', () => {
 
     describe('Without pipelines nor CI', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(emptyStateInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, {
+          pipelines: [],
+          count: {
+            all: 0,
+            pending: 0,
+            running: 0,
+            finished: 0,
+          },
+        });
+
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: false,
@@ -314,12 +295,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, emptyStateInterceptor,
-        );
       });
 
       it('renders empty state without button to set CI', () => {
@@ -337,7 +312,8 @@ describe('Pipelines', () => {
 
     describe('When API returns error', () => {
       beforeEach((done) => {
-        Vue.http.interceptors.push(errorInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(500, {});
+
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: false,
@@ -348,12 +324,6 @@ describe('Pipelines', () => {
         setTimeout(() => {
           done();
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, errorInterceptor,
-        );
       });
 
       it('renders tabs', () => {
@@ -375,19 +345,14 @@ describe('Pipelines', () => {
   describe('successfull request', () => {
     describe('with pipelines', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(pipelinesInterceptor);
+        mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
+
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
           hasGitlabCi: true,
           canCreatePipeline: true,
           ...paths,
         });
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, pipelinesInterceptor,
-        );
       });
 
       it('should render table', (done) => {

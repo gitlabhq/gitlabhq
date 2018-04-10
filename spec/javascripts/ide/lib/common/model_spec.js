@@ -11,7 +11,10 @@ describe('Multi-file editor library model', () => {
     spyOn(eventHub, '$on').and.callThrough();
 
     monacoLoader(['vs/editor/editor.main'], () => {
-      model = new Model(monaco, file('path'));
+      const f = file('path');
+      f.mrChange = { diff: 'ABC' };
+      f.baseRaw = 'test';
+      model = new Model(monaco, f);
 
       done();
     });
@@ -21,21 +24,22 @@ describe('Multi-file editor library model', () => {
     model.dispose();
   });
 
-  it('creates original model & new model', () => {
+  it('creates original model & base model & new model', () => {
     expect(model.originalModel).not.toBeNull();
     expect(model.model).not.toBeNull();
+    expect(model.baseModel).not.toBeNull();
   });
 
   it('adds eventHub listener', () => {
     expect(eventHub.$on).toHaveBeenCalledWith(
-      `editor.update.model.dispose.${model.file.path}`,
+      `editor.update.model.dispose.${model.file.key}`,
       jasmine.anything(),
     );
   });
 
   describe('path', () => {
     it('returns file path', () => {
-      expect(model.path).toBe('path');
+      expect(model.path).toBe(model.file.key);
     });
   });
 
@@ -48,6 +52,12 @@ describe('Multi-file editor library model', () => {
   describe('getOriginalModel', () => {
     it('returns original model', () => {
       expect(model.getOriginalModel()).toBe(model.originalModel);
+    });
+  });
+
+  describe('getBaseModel', () => {
+    it('returns base model', () => {
+      expect(model.getBaseModel()).toBe(model.baseModel);
     });
   });
 
@@ -64,7 +74,7 @@ describe('Multi-file editor library model', () => {
       model.onChange(() => {});
 
       expect(model.events.size).toBe(1);
-      expect(model.events.keys().next().value).toBe('path');
+      expect(model.events.keys().next().value).toBe(model.file.key);
     });
 
     it('calls callback on change', done => {
@@ -105,7 +115,7 @@ describe('Multi-file editor library model', () => {
       model.dispose();
 
       expect(eventHub.$off).toHaveBeenCalledWith(
-        `editor.update.model.dispose.${model.file.path}`,
+        `editor.update.model.dispose.${model.file.key}`,
         jasmine.anything(),
       );
     });

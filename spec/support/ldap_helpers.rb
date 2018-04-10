@@ -41,4 +41,9 @@ module LdapHelpers
 
     entry
   end
+
+  def raise_ldap_connection_error
+    allow_any_instance_of(Gitlab::Auth::LDAP::Adapter)
+      .to receive(:ldap_search).and_raise(Gitlab::Auth::LDAP::LDAPConnectionError)
+  end
 end

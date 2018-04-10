@@ -5,8 +5,8 @@ module Projects
   class GitlabProjectsImportService
     attr_reader :current_user, :params
 
-    def initialize(user, params)
-      @current_user, @params = user, params.dup
+    def initialize(user, import_params, override_params = nil)
+      @current_user, @params, @override_params = user, import_params.dup, override_params
     end
 
     def execute
@@ -15,8 +15,18 @@ module Projects
       file = params.delete(:file)
       FileUtils.copy_entry(file.path, import_upload_path)
 
+      @overwrite = params.delete(:overwrite)
+      data = {}
+      data[:override_params] = @override_params if @override_params
+
+      if overwrite_project?
+        data[:original_path] = params[:path]
+        params[:path] += "-#{tmp_filename}"
+      end
+
       params[:import_type] = 'gitlab_project'
       params[:import_source] = import_upload_path
+      params[:import_data] = { data: data } if data.present?
 
       ::Projects::CreateService.new(current_user, params).execute
     end
@@ -29,6 +39,18 @@ module Projects
 
     def tmp_filename
       SecureRandom.hex
+    end
+
+    def overwrite_project?
+      @overwrite && project_with_same_full_path?
+    end
+
+    def project_with_same_full_path?
+      Project.find_by_full_path("#{current_namespace.full_path}/#{params[:path]}").present?
+    end
+
+    def current_namespace
+      @current_namespace ||= Namespace.find_by(id: params[:namespace_id])
     end
   end
 end

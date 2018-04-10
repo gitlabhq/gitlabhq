@@ -1,25 +1,25 @@
 <script>
-  import icon from '~/vue_shared/components/icon.vue';
+import icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    icon,
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true,
     },
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    changedIcon() {
+      return this.file.tempFile ? 'file-addition' : 'file-modified';
     },
-    computed: {
-      changedIcon() {
-        return this.file.tempFile ? 'file-addition' : 'file-modified';
-      },
-      changedIconClass() {
-        return `multi-${this.changedIcon}`;
-      },
+    changedIconClass() {
+      return `multi-${this.changedIcon}`;
     },
-  };
+  },
+};
 </script>
 
 <template>

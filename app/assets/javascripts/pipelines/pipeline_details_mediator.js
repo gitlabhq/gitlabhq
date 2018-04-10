@@ -52,8 +52,11 @@ export default class pipelinesMediator {
   }
 
   refreshPipeline() {
-    this.service.getPipeline()
+    this.poll.stop();
+
+    return this.service.getPipeline()
       .then(response => this.successCallback(response))
-      .catch(() => this.errorCallback());
+      .catch(() => this.errorCallback())
+      .finally(() => this.poll.restart());
   }
 }

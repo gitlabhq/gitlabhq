@@ -13,6 +13,7 @@ namespace :gitlab do
 
     def enqueue_batch(batch, index)
       job = ObjectStorage::MigrateUploadsWorker.enqueue!(batch,
+                                                         @model_class,
                                                          @mounted_as,
                                                          @to_store)
       puts "Enqueued job ##{index}: #{job}"

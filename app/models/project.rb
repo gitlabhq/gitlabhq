@@ -21,6 +21,7 @@ class Project < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
+  include ChronicDurationAttribute
 
   extend Gitlab::ConfigHelper
 
@@ -137,11 +138,11 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
 
   # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project,  through:   :forked_project_link
+  has_one  :forked_project_link, foreign_key: "forked_to_project_id"
+  has_one  :forked_from_project, -> { auto_include(false) }, through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
+  has_many :forks, -> { auto_include(false) }, through: :forked_project_links, source: :forked_to_project
   # TODO: replace these relations with the fork network versions
 
   has_one :root_of_fork_network,
@@ -149,7 +150,7 @@ class Project < ActiveRecord::Base
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
-  has_one :fork_network, through: :fork_network_member
+  has_one :fork_network, -> { auto_include(false) }, through: :fork_network_member
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -166,27 +167,27 @@ class Project < ActiveRecord::Base
   has_many :protected_tags
 
   has_many :project_authorizations
-  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
+  has_many :authorized_users, -> { auto_include(false) }, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   alias_method :members, :project_members
-  has_many :users, through: :project_members
+  has_many :users, -> { auto_include(false) }, through: :project_members
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
-  has_many :deploy_keys, through: :deploy_keys_projects
+  has_many :deploy_keys, -> { auto_include(false) }, through: :deploy_keys_projects
   has_many :users_star_projects
-  has_many :starrers, through: :users_star_projects, source: :user
+  has_many :starrers, -> { auto_include(false) }, through: :users_star_projects, source: :user
   has_many :releases
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :lfs_objects, -> { auto_include(false) }, through: :lfs_objects_projects
   has_many :lfs_file_locks
   has_many :project_group_links
-  has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :invited_groups, -> { auto_include(false) }, through: :project_group_links, source: :group
   has_many :pages_domains
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
@@ -198,7 +199,7 @@ class Project < ActiveRecord::Base
   has_one :statistics, class_name: 'ProjectStatistics'
 
   has_one :cluster_project, class_name: 'Clusters::Project'
-  has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
+  has_many :clusters, -> { auto_include(false) }, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -215,14 +216,16 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
-  has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :runners, -> { auto_include(false) }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
+  has_many :project_deploy_tokens
+  has_many :deploy_tokens, -> { auto_include(false) }, through: :project_deploy_tokens
 
-  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :active_runners, -> { active.auto_include(false) }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
@@ -324,6 +327,12 @@ class Project < ActiveRecord::Base
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+
+  chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
+
+  validates :build_timeout, allow_nil: true,
+                            numericality: { greater_than_or_equal_to: 600,
+                                            message: 'needs to be at least 10 minutes' }
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -436,7 +445,7 @@ class Project < ActiveRecord::Base
       Gitlab::VisibilityLevel.options
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       case method.to_s
       when 'storage_size_desc'
         # storage_size is a joined column so we need to
@@ -566,9 +575,7 @@ class Project < ActiveRecord::Base
   def add_import_job
     job_id =
       if forked?
-        RepositoryForkWorker.perform_async(id,
-                                           forked_from_project.repository_storage_path,
-                                           forked_from_project.disk_path)
+        RepositoryForkWorker.perform_async(id)
       elsif gitlab_project_import?
         # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
         RepositoryImportWorker.set(retry: false).perform_async(self.id)
@@ -632,7 +639,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless import_url.present? && valid_import_url?
+    return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
     if data
@@ -1068,6 +1075,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # This will return all `lfs_objects` that are accessible to the project.
+  # So this might be `self.lfs_objects` if the project is not part of a fork
+  # network, or it is the base of the fork network.
+  #
+  # TODO: refactor this to get the correct lfs objects when implementing
+  #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+  def all_lfs_objects
+    lfs_storage_project.lfs_objects
+  end
+
   def personal?
     !group
   end
@@ -1301,14 +1318,6 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def build_timeout_in_minutes
-    build_timeout / 60
-  end
-
-  def build_timeout_in_minutes=(value)
-    self.build_timeout = value.to_i * 60
-  end
-
   def open_issues_count
     Projects::OpenIssuesCountService.new(self).count
   end
@@ -1465,7 +1474,9 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo_notify!
-    send_move_instructions(full_path_was)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_was) unless started?
     expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was
@@ -1480,6 +1491,7 @@ class Project < ActiveRecord::Base
     remove_import_jid
     update_project_counter_caches
     after_create_default_branch
+    refresh_markdown_cache!
   end
 
   def update_project_counter_caches
@@ -1544,8 +1556,8 @@ class Project < ActiveRecord::Base
     @errors = original_errors
   end
 
-  def add_export_job(current_user:, params: {})
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, params)
+  def add_export_job(current_user:, after_export_strategy: nil, params: {})
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
     if job_id
       Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -1571,6 +1583,8 @@ class Project < ActiveRecord::Base
   def export_status
     if export_in_progress?
       :started
+    elsif after_export_in_progress?
+      :after_export_action
     elsif export_project_path
       :finished
     else
@@ -1582,10 +1596,20 @@ class Project < ActiveRecord::Base
     import_export_shared.active_export_count > 0
   end
 
+  def after_export_in_progress?
+    import_export_shared.after_export_in_progress?
+  end
+
   def remove_exports
     return nil unless export_path.present?
 
     FileUtils.rm_rf(export_path)
+  end
+
+  def remove_exported_project_file
+    return unless export_project_path.present?
+
+    FileUtils.rm_f(export_project_path)
   end
 
   def full_path_slug

@@ -95,16 +95,6 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     end
   end
 
-  describe '#user=' do
-    let(:user) { build(:user) }
-
-    it 'assignes relevant pipeline attributes' do
-      subject.user = user
-
-      expect(subject.seeds.map(&:attributes)).to all(include(user: user))
-    end
-  end
-
   describe '#to_resource' do
     it 'builds a valid stage object with all builds' do
       subject.to_resource.save!

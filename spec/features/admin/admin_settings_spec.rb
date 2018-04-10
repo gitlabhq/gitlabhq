@@ -120,6 +120,73 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  scenario 'Change Performance bar settings' do
+    group = create(:group)
+
+    page.within('.as-performance-bar') do
+      check 'Enable the Performance Bar'
+      fill_in 'Allowed group', with: group.path
+      click_on 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(find_field('Enable the Performance Bar')).to be_checked
+    expect(find_field('Allowed group').value).to eq group.path
+
+    page.within('.as-performance-bar') do
+      uncheck 'Enable the Performance Bar'
+      click_on 'Save changes'
+    end
+
+    expect(page).to have_content 'Application settings saved successfully'
+    expect(find_field('Enable the Performance Bar')).not_to be_checked
+    expect(find_field('Allowed group').value).to be_nil
+  end
+
+  scenario 'Change Background jobs settings' do
+    page.within('.as-background') do
+      fill_in 'Throttling Factor', with: 1
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.sidekiq_throttling_factor).to eq(1)
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Change Spam settings' do
+    page.within('.as-spam') do
+      check 'Enable reCAPTCHA'
+      fill_in 'reCAPTCHA Site Key', with: 'key'
+      fill_in 'reCAPTCHA Private Key', with: 'key'
+      fill_in 'IPs per user', with: 15
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.recaptcha_enabled).to be true
+    expect(Gitlab::CurrentSettings.unique_ips_limit_per_user).to eq(15)
+  end
+
+  scenario 'Configure web terminal' do
+    page.within('.as-terminal') do
+      fill_in 'Max session time', with: 15
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.terminal_max_session_time).to eq(15)
+  end
+
+  scenario 'Enable outbound requests' do
+    page.within('.as-outbound') do
+      check 'Allow requests to the local network from hooks and services'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
+  end
+
   scenario 'Change Slack Notifications Service template settings' do
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'
@@ -170,29 +237,6 @@ feature 'Admin updates settings' do
     expect(find_field('DSA SSH keys').value).to eq('0')
     expect(find_field('ECDSA SSH keys').value).to eq('384')
     expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
-  end
-
-  scenario 'Change Performance Bar settings' do
-    group = create(:group)
-
-    check 'Enable the Performance Bar'
-    fill_in 'Allowed group', with: group.path
-
-    click_on 'Save'
-
-    expect(page).to have_content 'Application settings saved successfully'
-
-    expect(find_field('Enable the Performance Bar')).to be_checked
-    expect(find_field('Allowed group').value).to eq group.path
-
-    uncheck 'Enable the Performance Bar'
-
-    click_on 'Save'
-
-    expect(page).to have_content 'Application settings saved successfully'
-
-    expect(find_field('Enable the Performance Bar')).not_to be_checked
-    expect(find_field('Allowed group').value).to be_nil
   end
 
   def check_all_events

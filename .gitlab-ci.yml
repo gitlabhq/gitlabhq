@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.16-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.7-golang-1.9-git-2.17-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -6,7 +6,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-2.3.6-with-yarn"
+  key: "ruby-2.3.7-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -78,6 +78,19 @@ stages:
     - mysql:latest
     - redis:alpine
 
+.rails5-variables: &rails5-variables
+  script:
+    - export RAILS5=${RAILS5}
+    - export BUNDLE_GEMFILE=${BUNDLE_GEMFILE}
+
+.rails5: &rails5
+  allow_failure: true
+  only:
+    - /rails5/
+  variables:
+    BUNDLE_GEMFILE: "Gemfile.rails5"
+    RAILS5: "true"
+
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
 # https://docs.gitlab.com/ce/development/writing_documentation.html#testing
@@ -118,6 +131,7 @@ stages:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -148,14 +162,23 @@ stages:
   <<: *rspec-metadata
   <<: *use-pg
 
+.rspec-metadata-pg-rails5: &rspec-metadata-pg-rails5
+  <<: *rspec-metadata-pg
+  <<: *rails5
+
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
+
+.rspec-metadata-mysql-rails5: &rspec-metadata-mysql-rails5
+  <<: *rspec-metadata-mysql
+  <<: *rails5
 
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -179,9 +202,17 @@ stages:
   <<: *spinach-metadata
   <<: *use-pg
 
+.spinach-metadata-pg-rails5: &spinach-metadata-pg-rails5
+  <<: *spinach-metadata-pg
+  <<: *rails5
+
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
+
+.spinach-metadata-mysql-rails5: &spinach-metadata-mysql-rails5
+  <<: *spinach-metadata-mysql
+  <<: *rails5
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -266,12 +297,13 @@ package-and-qa:
   when: manual
   variables:
     GIT_STRATEGY: none
+  retry: 0
   before_script:
     # We need to download the script rather than clone the repo since the
     # package-and-qa job will not be able to run when the branch gets
     # deleted (when merging the MR).
     - apk add --update openssl
-    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
+    - wget https://gitlab.com/$CI_PROJECT_PATH/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
     - chmod 755 trigger-build-omnibus
   script:
     - ./trigger-build-omnibus
@@ -467,6 +499,70 @@ spinach-pg 1 2: *spinach-metadata-pg
 spinach-mysql 0 2: *spinach-metadata-mysql
 spinach-mysql 1 2: *spinach-metadata-mysql
 
+rspec-pg-rails5 0 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 1 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 2 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 3 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 4 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 5 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 6 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 7 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 8 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 9 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 10 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 11 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 12 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 13 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 14 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 15 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 16 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 17 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 18 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 19 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 20 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 21 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 22 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 23 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 24 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 25 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 26 28: *rspec-metadata-pg-rails5
+rspec-pg-rails5 27 28: *rspec-metadata-pg-rails5
+
+rspec-mysql-rails5 0 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 1 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 2 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 3 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 4 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 5 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 6 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 7 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 8 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 9 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 10 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 11 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 12 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 13 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 14 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 15 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 16 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 17 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 18 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 19 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 20 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 21 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 22 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 23 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 24 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 25 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 26 28: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 27 28: *rspec-metadata-mysql-rails5
+
+spinach-pg-rails5 0 2: *spinach-metadata-pg-rails5
+spinach-pg-rails5 1 2: *spinach-metadata-pg-rails5
+
+spinach-mysql-rails5 0 2: *spinach-metadata-mysql-rails5
+spinach-mysql-rails5 1 2: *spinach-metadata-mysql-rails5
+
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies:
@@ -475,7 +571,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.3.6-with-yarn-and-rubocop"
+    key: "ruby-2.3.7-with-yarn-and-rubocop"
     paths:
       - vendor/ruby
       - .yarn-cache/
@@ -617,35 +713,71 @@ karma:
 
 codequality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: docker:latest
+  image: docker:stable
+  allow_failure: true
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
   before_script: []
   services:
     - docker:dind
   variables:
     SETUP_DB: "false"
     DOCKER_DRIVER: overlay2
-    CODECLIMATE_FORMAT: json
   cache: {}
   dependencies: []
   script:
-    - apk update && apk add jq
-    - ./scripts/codequality analyze -f json > raw_codeclimate.json || true
-    # The following line keeps only the fields used in the MR widget, reducing the JSON artifact size
-    - jq -c 'map({check_name,description,fingerprint,location})' raw_codeclimate.json > codeclimate.json
+    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
     paths: [codeclimate.json]
     expire_in: 1 week
 
 sast:
-  <<: *except-docs
-  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: docker:stable
   variables:
-    CONFIDENCE_LEVEL: 2
+    SAST_CONFIDENCE_LEVEL: 2
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  tags: []
   before_script: []
+  cache: {}
+  dependencies: []
+  services:
+    - docker:stable-dind
   script:
-    - /app/bin/run .
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
   artifacts:
     paths: [gl-sast-report.json]
+
+dependency_scanning:
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  tags: []
+  before_script: []
+  cache: {}
+  dependencies: []
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
+  artifacts:
+    paths: [gl-dependency-scanning-report.json]
 
 qa:internal:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -664,7 +796,13 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 coverage:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
+  # download artifacts from all the rspec jobs instead of from setup-test-env only
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
+  <<: *pull-cache
+  variables:
+    SETUP_DB: "false"
   stage: post-test
   script:
     - bundle exec scripts/merge-simplecov

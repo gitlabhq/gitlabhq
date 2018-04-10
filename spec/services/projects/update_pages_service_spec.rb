@@ -21,75 +21,72 @@ describe Projects::UpdatePagesService do
   end
 
   context 'legacy artifacts' do
-    %w(tar.gz zip).each do |format|
-      let(:extension) { format }
+    let(:extension) { 'zip' }
 
-      context "for valid #{format}" do
+    before do
+      build.update_attributes(legacy_artifacts_file: file)
+      build.update_attributes(legacy_artifacts_metadata: metadata)
+    end
+
+    describe 'pages artifacts' do
+      context 'with expiry date' do
         before do
-          build.update_attributes(legacy_artifacts_file: file)
-          build.update_attributes(legacy_artifacts_metadata: metadata)
+          build.artifacts_expire_in = "2 days"
+          build.save!
         end
 
-        describe 'pages artifacts' do
-          context 'with expiry date' do
-            before do
-              build.artifacts_expire_in = "2 days"
-              build.save!
-            end
-
-            it "doesn't delete artifacts" do
-              expect(execute).to eq(:success)
-
-              expect(build.reload.artifacts?).to eq(true)
-            end
-          end
-
-          context 'without expiry date' do
-            it "does delete artifacts" do
-              expect(execute).to eq(:success)
-
-              expect(build.reload.artifacts?).to eq(false)
-            end
-          end
-        end
-
-        it 'succeeds' do
-          expect(project.pages_deployed?).to be_falsey
+        it "doesn't delete artifacts" do
           expect(execute).to eq(:success)
-          expect(project.pages_deployed?).to be_truthy
 
-          # Check that all expected files are extracted
-          %w[index.html zero .hidden/file].each do |filename|
-            expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
-          end
-        end
-
-        it 'limits pages size' do
-          stub_application_setting(max_pages_size: 1)
-          expect(execute).not_to eq(:success)
-        end
-
-        it 'removes pages after destroy' do
-          expect(PagesWorker).to receive(:perform_in)
-          expect(project.pages_deployed?).to be_falsey
-          expect(execute).to eq(:success)
-          expect(project.pages_deployed?).to be_truthy
-          project.destroy
-          expect(project.pages_deployed?).to be_falsey
-        end
-
-        it 'fails if sha on branch is not latest' do
-          build.update_attributes(ref: 'feature')
-
-          expect(execute).not_to eq(:success)
-        end
-
-        it 'fails for empty file fails' do
-          build.update_attributes(legacy_artifacts_file: empty_file)
-
-          expect(execute).not_to eq(:success)
+          expect(build.reload.artifacts?).to eq(true)
         end
       end
+
+      context 'without expiry date' do
+        it "does delete artifacts" do
+          expect(execute).to eq(:success)
+
+          expect(build.reload.artifacts?).to eq(false)
+        end
+      end
+    end
+
+    it 'succeeds' do
+      expect(project.pages_deployed?).to be_falsey
+      expect(execute).to eq(:success)
+      expect(project.pages_deployed?).to be_truthy
+
+      # Check that all expected files are extracted
+      %w[index.html zero .hidden/file].each do |filename|
+        expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
+      end
+    end
+
+    it 'limits pages size' do
+      stub_application_setting(max_pages_size: 1)
+      expect(execute).not_to eq(:success)
+    end
+
+    it 'removes pages after destroy' do
+      expect(PagesWorker).to receive(:perform_in)
+      expect(project.pages_deployed?).to be_falsey
+      expect(execute).to eq(:success)
+      expect(project.pages_deployed?).to be_truthy
+      project.destroy
+      expect(project.pages_deployed?).to be_falsey
+    end
+
+    it 'fails if sha on branch is not latest' do
+      build.update_attributes(ref: 'feature')
+
+      expect(execute).not_to eq(:success)
+    end
+
+    it 'fails for empty file fails' do
+      build.update_attributes(legacy_artifacts_file: empty_file)
+
+      expect { execute }
+        .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
     end
   end
 
@@ -159,7 +156,8 @@ describe Projects::UpdatePagesService do
       it 'fails for empty file fails' do
         build.job_artifacts_archive.update_attributes(file: empty_file)
 
-        expect(execute).not_to eq(:success)
+        expect { execute }
+          .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
       end
 
       context 'when timeout happens by DNS error' do
@@ -172,7 +170,39 @@ describe Projects::UpdatePagesService do
           expect { execute }.to raise_error(SocketError)
 
           build.reload
-          expect(build.artifacts?).to eq(true)
+          expect(deploy_status).to be_failed
+          expect(build.artifacts?).to be_truthy
+        end
+      end
+
+      context 'when failed to extract zip artifacts' do
+        before do
+          allow_any_instance_of(described_class)
+            .to receive(:extract_zip_archive!)
+            .and_raise(Projects::UpdatePagesService::FailedToExtractError)
+        end
+
+        it 'raises an error' do
+          expect { execute }
+            .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
+
+          build.reload
+          expect(deploy_status).to be_failed
+          expect(build.artifacts?).to be_truthy
+        end
+      end
+
+      context 'when missing artifacts metadata' do
+        before do
+          allow(build).to receive(:artifacts_metadata?).and_return(false)
+        end
+
+        it 'does not raise an error and remove artifacts as failed job' do
+          execute
+
+          build.reload
+          expect(deploy_status).to be_failed
+          expect(build.artifacts?).to be_falsey
         end
       end
     end

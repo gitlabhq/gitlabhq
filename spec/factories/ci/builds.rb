@@ -237,5 +237,10 @@ FactoryBot.define do
     trait :protected do
       protected true
     end
+
+    trait :script_failure do
+      failed
+      failure_reason 1
+    end
   end
 end

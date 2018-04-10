@@ -171,7 +171,7 @@ module Banzai
           end
 
           if object
-            title = object_link_title(object)
+            title = object_link_title(object, matches)
             klass = reference_class(object_sym)
 
             data = data_attributes_for(link_content || match, parent, object,
@@ -196,13 +196,15 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object, link_content: false, link_reference: false)
+      def data_attributes_for(text, parent, object, link_content: false, link_reference: false)
+        object_parent_type = parent.is_a?(Group) ? :group : :project
+
         data_attribute(
-          original:       text,
-          link:           link_content,
-          link_reference: link_reference,
-          project:        project.id,
-          object_sym =>   object.id
+          original:             text,
+          link:                 link_content,
+          link_reference:       link_reference,
+          object_parent_type => parent.id,
+          object_sym =>         object.id
         )
       end
 
@@ -213,10 +215,14 @@ module Banzai
           extras << "comment #{$1}"
         end
 
+        extension = matches[:extension] if matches.names.include?("extension")
+
+        extras << extension if extension
+
         extras
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         object.title
       end
 
@@ -336,6 +342,12 @@ module Banzai
 
       def parent
         parent_type == :project ? project : group
+      end
+
+      def full_group_path(group_ref)
+        return current_parent_path unless group_ref
+
+        group_ref
       end
     end
   end
