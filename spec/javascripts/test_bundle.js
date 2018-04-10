@@ -71,13 +71,12 @@ beforeEach(() => {
 
 const axiosDefaultAdapter = getDefaultAdapter();
 
-let testFiles = process.env.TEST_FILES;
-if (testFiles instanceof Array && testFiles.length > 0) {
-  console.log(`Running only tests: ${testFiles}`);
+let testFiles = process.env.TEST_FILES || [];
+if (testFiles.length > 0) {
   testFiles = testFiles.map(path => path.replace(/^spec\/javascripts\//, '').replace(/\.js$/, ''));
+  console.log(`Running only tests matching: ${testFiles}`);
 } else {
   console.log('Running all tests');
-  testFiles = [];
 }
 
 // render all of our tests
