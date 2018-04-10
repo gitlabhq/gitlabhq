@@ -1,69 +1,69 @@
 <script>
-  /* eslint-disable vue/require-default-prop */
-  import PipelineStage from '~/pipelines/components/stage.vue';
-  import CiIcon from '~/vue_shared/components/ci_icon.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import LinkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
+/* eslint-disable vue/require-default-prop */
+import PipelineStage from '~/pipelines/components/stage.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import LinkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
 
-  export default {
-    name: 'MRWidgetPipeline',
-    components: {
-      PipelineStage,
-      CiIcon,
-      Icon,
-      LinkedPipelinesMiniList,
+export default {
+  name: 'MRWidgetPipeline',
+  components: {
+    PipelineStage,
+    CiIcon,
+    Icon,
+    LinkedPipelinesMiniList,
+  },
+  props: {
+    pipeline: {
+      type: Object,
+      required: true,
     },
-    props: {
-      pipeline: {
-        type: Object,
-        required: true,
-      },
-      // This prop needs to be camelCase, html attributes are case insensive
-      // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
-      hasCi: {
-        type: Boolean,
-        required: false,
-      },
-      ciStatus: {
-        type: String,
-        required: false,
-      },
+    // This prop needs to be camelCase, html attributes are case insensive
+    // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
+    hasCi: {
+      type: Boolean,
+      required: false,
     },
-    computed: {
-      hasPipeline() {
-        return this.pipeline && Object.keys(this.pipeline).length > 0;
-      },
-      hasCIError() {
-        return this.hasCi && !this.ciStatus;
-      },
-      status() {
-        return this.pipeline.details && this.pipeline.details.status
-          ? this.pipeline.details.status
-          : {};
-      },
-      hasStages() {
-        return (
-          this.pipeline.details &&
-          this.pipeline.details.stages &&
-          this.pipeline.details.stages.length
-        );
-      },
-      hasCommitInfo() {
-        return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
-      },
-      /* We typically set defaults ([]) in the store or prop declarations, but because triggered
-      * and triggeredBy are appended to `pipeline`, we can't set defaults in the store, and we
-      * need to check their length here to prevent initializing linked-pipeline-mini-lists
-      * unneccessarily. */
-      triggered() {
-        return this.pipeline.triggered || [];
-      },
-      triggeredBy() {
-        const response = this.pipeline.triggered_by;
-        return response ? [response] : [];
-      },
+    ciStatus: {
+      type: String,
+      required: false,
     },
-  };
+  },
+  computed: {
+    hasPipeline() {
+      return this.pipeline && Object.keys(this.pipeline).length > 0;
+    },
+    hasCIError() {
+      return this.hasCi && !this.ciStatus;
+    },
+    status() {
+      return this.pipeline.details && this.pipeline.details.status
+        ? this.pipeline.details.status
+        : {};
+    },
+    hasStages() {
+      return (
+        this.pipeline.details &&
+        this.pipeline.details.stages &&
+        this.pipeline.details.stages.length
+      );
+    },
+    hasCommitInfo() {
+      return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
+    },
+    /* We typically set defaults ([]) in the store or prop declarations, but because triggered
+    * and triggeredBy are appended to `pipeline`, we can't set defaults in the store, and we
+    * need to check their length here to prevent initializing linked-pipeline-mini-lists
+    * unneccessarily. */
+    triggered() {
+      return this.pipeline.triggered || [];
+    },
+    triggeredBy() {
+      const response = this.pipeline.triggered_by;
+      return response ? [response] : [];
+    },
+  },
+};
 </script>
 <template>
   <div
