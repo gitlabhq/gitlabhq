@@ -18,7 +18,7 @@ module LicenseHelper
     return unless (is_admin && current_license.notify_admins?) || current_license.notify_users?
 
     is_trial = current_license.trial?
-    message = ["Your Enterprise Edition #{'trial ' if is_trial}license"]
+    message = ["Your #{'trial ' if is_trial}license"]
 
     message << expiration_message
 
