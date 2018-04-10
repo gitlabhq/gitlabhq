@@ -1,3 +1,7 @@
+/*
+ *  Scss to help with bootstrap 3 to 4 migration
+ */
+
 $text-color: $gl-text-color;
 
 $brand-primary: $gl-primary;
@@ -14,3 +18,15 @@ $input-border-focus: $focus-border-color;
 
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
+
+html {
+  // Override default font size used in bs4
+  font-size: 14px;
+}
+
+// Polyfill deprecated selectors
+
+.hidden {
+  @extend .d-none;
+  @extend .invisible;
+}

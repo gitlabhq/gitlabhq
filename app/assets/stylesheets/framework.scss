@@ -1,8 +1,7 @@
 @import "framework/variables";
 @import "framework/mixins";
-@import "framework.bs4";
 @import "../../../node_modules/bootstrap/scss/bootstrap";
-@import "framework.bs3";
+@import "bootstrap_migration";
 @import "framework/layout";
 
 @import "framework/animations";
