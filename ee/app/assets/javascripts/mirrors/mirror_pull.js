@@ -73,7 +73,7 @@ export default class MirrorPull {
 
     // Disable button while we make request
     this.$btnDetectHostKeys.disable();
-    $btnLoadSpinner.collapse('show');
+    $btnLoadSpinner.removeClass('hidden');
 
     // Make backOff polling to get data
     backOff((next, stop) => {
@@ -93,7 +93,8 @@ export default class MirrorPull {
       .catch(stop);
     })
     .then((res) => {
-      $btnLoadSpinner.collapse('hide');
+      debugger;
+      $btnLoadSpinner.addClass('hidden');
       // Once data is received, we show verification info along with Host keys and fingerprints
       this.$hostKeysInformation.find('.js-fingerprint-verification').collapse(res.changes_project_import_data ? 'hide' : 'show');
       if (res.known_hosts && res.fingerprints) {
@@ -105,7 +106,7 @@ export default class MirrorPull {
       const failureMessage = response.data ? response.data.message : __('An error occurred while detecting host keys');
       Flash(failureMessage); // eslint-disable-line
 
-      $btnLoadSpinner.collapse('hide');
+      $btnLoadSpinner.addClass('hidden');
       this.$btnDetectHostKeys.enable();
     });
   }

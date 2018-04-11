@@ -6,7 +6,7 @@
   %button.btn.btn-inverted.btn-success.inline.js-detect-host-keys{ type: 'button' }
     = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
     Detect host keys
-  .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('hidden' unless import_data.ssh_import?) }
+  .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('collapse' unless import_data.ssh_import?) }
     %label.label-light-but-actually-light-i-promise
       Fingerprints
     .fingerprints-list.js-fingerprints-list
@@ -28,6 +28,6 @@
         Input host keys manually
       %span.label-hide
         Hide host keys manual input
-  .js-ssh-known-hosts.hidden.prepend-top-default
+  .js-ssh-known-hosts.collapse.prepend-top-default
     = f.label :ssh_known_hosts, 'SSH host keys', class: 'label-light-but-actually-light-i-promise'
     = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'

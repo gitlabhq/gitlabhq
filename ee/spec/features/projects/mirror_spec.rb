@@ -79,10 +79,10 @@ feature 'Project mirror', :js do
         visit project_settings_repository_path(project)
 
         page.within('.project-mirror-settings') do
-          check 'Mirror repository'
           fill_in 'Git repository URL', with: 'http://user@example.com'
+          select('Pull', :from => 'Mirror direction')
           fill_in 'Password', with: 'foo'
-          click_without_sidekiq 'Save changes'
+          click_without_sidekiq 'Mirror repository'
         end
 
         expect(page).to have_content('Mirroring settings were successfully updated')
@@ -100,8 +100,9 @@ feature 'Project mirror', :js do
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'http://2.example.com'
+          select('Pull', :from => 'Mirror direction')
           fill_in 'Password', with: ''
-          click_without_sidekiq 'Save changes'
+          click_without_sidekiq 'Mirror repository'
         end
 
         expect(page).to have_content('Mirroring settings were successfully updated')
@@ -117,9 +118,9 @@ feature 'Project mirror', :js do
         visit project_settings_repository_path(project)
 
         page.within('.project-mirror-settings') do
-          check 'Mirror repository'
           fill_in 'Git repository URL', with: 'ssh://user@example.com'
-          select 'SSH public key authentication', from: 'Authentication method'
+          select('Pull', :from => 'Mirror direction')
+          select 'SSH public key', from: 'Authentication method'
 
           # Generates an SSH public key with an asynchronous PUT and displays it
           wait_for_requests
@@ -127,7 +128,10 @@ feature 'Project mirror', :js do
           expect(import_data.ssh_public_key).not_to be_nil
           expect(page).to have_content(import_data.ssh_public_key)
 
-          click_without_sidekiq 'Save changes'
+          click_without_sidekiq 'Mirror repository'
+
+          fill_in 'Git repository URL', with: 'ssh://user@example.com'
+          select('Pull', :from => 'Mirror direction')
         end
 
         # We didn't set any host keys
@@ -148,6 +152,11 @@ feature 'Project mirror', :js do
         accept_confirm { click_without_sidekiq 'Regenerate key' }
         wait_for_requests
 
+        page.within('.project-mirror-settings') do
+          fill_in 'Git repository URL', with: 'ssh://user@example.com'
+          select('Pull', :from => 'Mirror direction')
+        end
+
         expect(page).not_to have_content(first_key)
         expect(page).to have_content(import_data.reload.ssh_public_key)
       end
@@ -164,12 +173,13 @@ feature 'Project mirror', :js do
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
+          select('Pull', :from => 'Mirror direction')
           click_on 'Detect host keys'
           wait_for_requests
 
           expect(page).to have_content(key.fingerprint)
 
-          click_on 'Show advanced'
+          click_on 'Input host keys manually'
 
           expect(page).to have_field('SSH host keys', with: key.key_text)
         end
@@ -182,6 +192,7 @@ feature 'Project mirror', :js do
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
+          select('Pull', :from => 'Mirror direction')
           click_on 'Detect host keys'
           wait_for_requests
         end
@@ -195,9 +206,13 @@ feature 'Project mirror', :js do
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
-          click_on 'Show advanced'
+          select('Pull', :from => 'Mirror direction')
+          click_on 'Input host keys manually'
           fill_in 'SSH host keys', with: "example.com #{key.key_text}"
-          click_without_sidekiq 'Save changes'
+          click_without_sidekiq 'Mirror repository'
+
+          fill_in 'Git repository URL', with: 'ssh://example.com'
+          select('Pull', :from => 'Mirror direction')
 
           expect(page).to have_content(key.fingerprint)
           expect(page).to have_content("Verified by #{h(user.name)} less than a minute ago")
@@ -211,20 +226,21 @@ feature 'Project mirror', :js do
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
+          select('Pull', :from => 'Mirror direction')
 
           expect(page).to have_select('Authentication method')
 
           # SSH can use password authentication but needs host keys
-          select 'Password authentication', from: 'Authentication method'
           expect(page).to have_field('Password')
+          select 'Password', from: 'Authentication method'
           expect(page).to have_button('Detect host keys')
-          expect(page).to have_button('Show advanced')
+          expect(page).to have_button('Input host keys manually')
 
           # SSH public key authentication also needs host keys but no password
-          select 'SSH public key authentication', from: 'Authentication method'
+          select 'SSH public key', from: 'Authentication method'
           expect(page).not_to have_field('Password')
           expect(page).to have_button('Detect host keys')
-          expect(page).to have_button('Show advanced')
+          expect(page).to have_button('Input host keys manually')
         end
       end
 
@@ -233,12 +249,13 @@ feature 'Project mirror', :js do
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'https://example.com'
+          select('Pull', :from => 'Mirror direction')
 
           # HTTPS can't use public key authentication and doesn't need host keys
           expect(page).to have_field('Password')
           expect(page).not_to have_select('Authentication method')
           expect(page).not_to have_button('Detect host keys')
-          expect(page).not_to have_button('Show advanced')
+          expect(page).not_to have_button('Input host keys manually')
         end
       end
     end

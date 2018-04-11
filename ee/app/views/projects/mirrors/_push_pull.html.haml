@@ -20,6 +20,9 @@
         .panel-body
           %div= form_errors(@project)
 
+          = render 'shared/mirror_update_button'
+          = render 'projects/mirrors/pull/mirror_update_fail'
+
           .form-group.has-feedback
             = label_tag :url, 'Git repository URL', class: 'label-light-but-actually-light-i-promise'
             = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: 'Input your repository URL', required: 'required', pattern: "(#{protocols}):\/\/.+"
