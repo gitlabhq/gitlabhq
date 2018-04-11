@@ -364,11 +364,11 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types
+    - retry gem install fog-aws mime-types activesupport
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
-    - scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
+    - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json

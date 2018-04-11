@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+# lib/rspec_flaky/flaky_examples_collection.rb is requiring
+# `active_support/hash_with_indifferent_access`, and we install the `activesupport`
+# gem manually on the CI
+require 'rubygems'
+
 require_relative '../lib/rspec_flaky/report'
 
 report_file = ARGV.shift
