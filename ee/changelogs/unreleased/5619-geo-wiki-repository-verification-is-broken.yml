@@ -1,0 +1,5 @@
+---
+title: Geo - Fix wiki repository verification on a secondary node
+merge_request: 5315
+author:
+type: fixed
