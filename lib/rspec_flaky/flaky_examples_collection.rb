@@ -1,5 +1,7 @@
 require 'active_support/hash_with_indifferent_access'
 
+require_relative 'flaky_example'
+
 module RspecFlaky
   class FlakyExamplesCollection < SimpleDelegator
     def initialize(collection = {})
