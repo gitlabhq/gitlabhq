@@ -40,10 +40,8 @@ export default class pipelinesMediator {
   }
 
   successCallback(response) {
-    return response.json().then((data) => {
-      this.state.isLoading = false;
-      this.store.storePipeline(data);
-    });
+    this.state.isLoading = false;
+    this.store.storePipeline(response.data);
   }
 
   errorCallback() {
