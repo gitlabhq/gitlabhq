@@ -1,9 +1,10 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import Flash from '~/flash';
+import createFlash from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';
+import { s__ } from '~/locale';
+import AccessDropdown from 'ee/projects/settings/access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
-import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagCreate {
   constructor() {
@@ -24,7 +25,7 @@ export default class ProtectedTagCreate {
     this.onSelectCallback = this.onSelect.bind(this);
 
     // Allowed to Create dropdown
-    this[`${ACCESS_LEVELS.CREATE}_dropdown`] = new ProtectedTagAccessDropdown({
+    this[`${ACCESS_LEVELS.CREATE}_dropdown`] = new AccessDropdown({
       $dropdown: $allowedToCreateDropdown,
       accessLevelsData: gon.create_access_levels,
       onSelect: this.onSelectCallback,
@@ -44,7 +45,9 @@ export default class ProtectedTagCreate {
   // Enable submit button after selecting an option
   onSelect() {
     const $allowedToCreate = this[`${ACCESS_LEVELS.CREATE}_dropdown`].getSelectedItems();
-    const toggle = !(this.$form.find('input[name="protected_tag[name]"]').val() && $allowedToCreate.length);
+    const toggle = !(
+      this.$form.find('input[name="protected_tag[name]"]').val() && $allowedToCreate.length
+    );
 
     this.$form.find('input[type="submit"]').attr('disabled', toggle);
   }
@@ -61,12 +64,12 @@ export default class ProtectedTagCreate {
       },
     };
 
-    Object.keys(ACCESS_LEVELS).forEach((level) => {
+    Object.keys(ACCESS_LEVELS).forEach(level => {
       const accessLevel = ACCESS_LEVELS[level];
       const selectedItems = this[`${ACCESS_LEVELS.CREATE}_dropdown`].getSelectedItems();
       const levelAttributes = [];
 
-      selectedItems.forEach((item) => {
+      selectedItems.forEach(item => {
         if (item.type === LEVEL_TYPES.USER) {
           levelAttributes.push({
             user_id: item.user_id,
@@ -94,6 +97,7 @@ export default class ProtectedTagCreate {
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
         location.reload();
-      }).catch(() => Flash('Failed to protect the tag'));
+      })
+      .catch(() => createFlash(s__('ProjectSettings|Failed to protect the tag')));
   }
 }
