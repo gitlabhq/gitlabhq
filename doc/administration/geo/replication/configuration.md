@@ -105,9 +105,22 @@ keys must be manually replicated to the secondary node.
 
 1. Copy OpenSSH host keys from **primary**:
 
+    If you can access your primary node using the **root** user:
+
     ```bash
     # Run this from the secondary node, change `primary-node-fqdn` for the IP or FQDN of the server
-    scp root@primary-node-fqdn:/etc/ssh/ssh_host_*_key* /etc/ssh    
+    scp root@primary-node-fqdn:/etc/ssh/ssh_host_*_key* /etc/ssh
+    ```
+
+    If you only have access through a user with **sudo** privileges:
+    
+    ```bash
+    # Run this from your primary node:
+    sudo tar --transform 's/.*\///g' -zcvf ~/geo-host-key.tar.gz /etc/ssh/ssh_host_*_key*
+
+    # Run this from your secondary node:
+    scp user-with-sudo@primary-node-fqdn:geo-host-key.tar.gz .
+    tar zxvf ~/geo-host-key.tar.gz -C /etc/ssh
     ```
 
 1. On your **secondary** node, ensure the file permissions are correct:
