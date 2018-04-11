@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import DiffGutterAvatarsComponent from '~/diffs/components/diff_gutter_avatars.vue';
 import { COUNT_OF_AVATARS_IN_GUTTER } from '~/diffs/constants';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import store from '~/mr_notes/stores';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import discussionsMockData from '../mock_data/diff_discussions';
 
 describe('DiffGutterAvatars', () => {
@@ -9,9 +10,9 @@ describe('DiffGutterAvatars', () => {
   const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
 
   beforeEach(() => {
-    component = mountComponent(Vue.extend(DiffGutterAvatarsComponent), {
+    component = createComponentWithStore(Vue.extend(DiffGutterAvatarsComponent), store, {
       discussions: getDiscussionsMockData(),
-    });
+    }).$mount(document.createElement('div'));
   });
 
   describe('computed', () => {
@@ -72,6 +73,18 @@ describe('DiffGutterAvatars', () => {
         const note = component.discussions[0].notes[1];
 
         expect(component.getTooltipText(note)).toEqual('Fatih Acet: comment 2 is r...');
+      });
+    });
+
+    describe('toggleDiscussions', () => {
+      it('should toggle all discussions', () => {
+        expect(component.discussions[0].expanded).toEqual(true);
+
+        component.$store.dispatch('setInitialNotes', getDiscussionsMockData());
+        component.toggleDiscussions();
+
+        expect(component.discussions[0].expanded).toEqual(false);
+        component.$store.dispatch('setInitialNotes', []);
       });
     });
   });

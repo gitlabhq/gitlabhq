@@ -84,6 +84,7 @@ describe('InlineDiffView', () => {
         expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
         expect(el.querySelectorAll('.notes_holder .note.note-discussion li').length).toEqual(5);
         expect(el.innerText.indexOf('comment 5') > -1).toEqual(true);
+        component.$store.dispatch('setInitialNotes', []);
 
         done();
       });

@@ -49,7 +49,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion']),
     getTooltipText(noteData) {
       let note = noteData.note;
 
@@ -61,9 +60,7 @@ export default {
     },
     toggleDiscussions() {
       this.discussions.forEach(discussion => {
-        this.toggleDiscussion({
-          discussionId: discussion.id,
-        });
+        discussion.expanded = !discussion.expanded;
       });
     },
   },
