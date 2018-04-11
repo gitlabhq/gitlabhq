@@ -69,7 +69,7 @@ describe Gitlab::Chat::Responder::Slack do
     it 'returns the output for a scheduled build' do
       output = responder.scheduled_output
 
-      expect(output[:text]).to match(/<@U123>:.+The command has been scheduled!/)
+      expect(output).to eq({ text: '' })
     end
   end
 end
