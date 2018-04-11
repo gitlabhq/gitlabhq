@@ -4,6 +4,6 @@
     - path = flatten_tree(@path, tree_item)
     = link_to project_tree_path(@project, tree_join(@id || @commit.id, path)), class: 'str-truncated', title: path do
       %span= path
-  %td.d-none.d-sm-block.tree-commit
+  %td.d-none.d-sm-table-cell.tree-commit
   %td.tree-time-ago.text-right
     = render 'projects/tree/spinner'
