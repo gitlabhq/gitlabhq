@@ -20,15 +20,11 @@ describe 'Projects > Files > User edits files' do
       click_link('.gitignore')
 
       aggregate_failures 'available edit buttons' do
-        # We're showing a link, if the user can edit directly, this is becomes a
-        # button when the user can fork the project.
-        expect(page).not_to have_link('Edit')
-        expect(page).not_to have_button('Edit')
-        expect(page).not_to have_link('Web IDE')
-        expect(page).not_to have_button('Web IDE')
+        expect(page).not_to have_text('Edit')
+        expect(page).not_to have_text('Web IDE')
 
-        expect(page).not_to have_button('Replace')
-        expect(page).not_to have_button('Delete')
+        expect(page).not_to have_text('Replace')
+        expect(page).not_to have_text('Delete')
       end
     end
   end

@@ -103,7 +103,7 @@ describe 'User interacts with awards in an issue', :js do
   end
 
   context 'when a project is archived' do
-    let(:project) { create(:project, archived: true) }
+    let(:project) { create(:project, :archived) }
 
     it 'hides the add award button' do
       page.within('.awards') do
@@ -147,7 +147,7 @@ describe 'User interacts with awards in an issue', :js do
     end
 
     context 'when the project is archived' do
-      let(:project) { create(:project, archived: true) }
+      let(:project) { create(:project, :archived) }
 
       it 'hides the buttons for adding new emoji' do
         page.within('.note-awards') do

@@ -100,7 +100,7 @@ describe 'User views open merge requests' do
       end
 
       context 'when the project is archived' do
-        let(:project) { create(:project, :public, :repository, archived: true) }
+        let(:project) { create(:project, :public, :repository, :archived) }
 
         it 'hides the new merge request button' do
           expect(page).not_to have_link('New merge request')

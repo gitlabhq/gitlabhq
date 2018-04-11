@@ -956,7 +956,7 @@ describe Projects::IssuesController do
     end
 
     it 'is not available when the project is archived' do
-      project.update(archived: true)
+      project.update!(archived: true)
 
       create_merge_request
 
