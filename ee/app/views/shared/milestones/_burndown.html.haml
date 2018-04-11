@@ -1,11 +1,11 @@
 - milestone = local_assigns[:milestone]
 - project = local_assigns[:project]
-- burndown = local_assigns[:burndown]
+- burndown = burndown_chart(milestone)
 - warning = data_warning_for(burndown)
 
 = warning
 
-- if can_generate_chart?(burndown)
+- if can_generate_chart?(milestone, burndown)
   .burndown-header
     %h3
       Burndown chart
@@ -16,7 +16,7 @@
           Issue weight
   .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), due_date: burndown.due_date.strftime("%Y-%m-%d"), chart_data: burndown.to_json } }
 
-- elsif show_burndown_placeholder?(warning)
+- elsif show_burndown_placeholder?(milestone, warning)
   .burndown-hint.content-block.container-fluid
     = icon("times", class: "dismiss-icon")
     .row
@@ -29,5 +29,5 @@
           View your milestone's progress as a burndown chart.  Add both a start and a due date to
           this milestone and the chart will appear here, always up-to-date.
 
-        = link_to "Add start and due date", edit_project_milestone_path(project, milestone), class: 'btn'
-= render 'shared/promotions/promote_burndown_charts'
+        = link_to "Add start and due date", edit_milestone_path(milestone), class: 'btn'
+= render 'shared/promotions/promote_burndown_charts', milestone: milestone
