@@ -27,10 +27,14 @@ describe "Projects > Settings > Pipelines settings" do
       visit project_settings_ci_cd_path(project)
 
       fill_in('Test coverage parsing', with: 'coverage_regex')
-      click_on 'Save changes'
+      page.within '.general-ci-settings' do
+        click_on 'Save changes'
+      end
 
       expect(page.status_code).to eq(200)
-      expect(page).to have_button('Save changes', disabled: false)
+      page.within '.general-ci-settings' do
+        expect(page).to have_button('Save changes', disabled: false)
+      end
       expect(page).to have_field('Test coverage parsing', with: 'coverage_regex')
     end
 
@@ -38,10 +42,14 @@ describe "Projects > Settings > Pipelines settings" do
       visit project_settings_ci_cd_path(project)
 
       page.check('Auto-cancel redundant, pending pipelines')
-      click_on 'Save changes'
+      page.within '.general-ci-settings' do
+        click_on 'Save changes'
+      end
 
       expect(page.status_code).to eq(200)
-      expect(page).to have_button('Save changes', disabled: false)
+      page.within '.general-ci-settings' do
+        expect(page).to have_button('Save changes', disabled: false)
+      end
 
       checkbox = find_field('project_auto_cancel_pending_pipelines')
       expect(checkbox).to be_checked
@@ -51,9 +59,11 @@ describe "Projects > Settings > Pipelines settings" do
       it 'update auto devops settings' do
         visit project_settings_ci_cd_path(project)
 
-        fill_in('project_auto_devops_attributes_domain', with: 'test.com')
-        page.choose('project_auto_devops_attributes_enabled_false')
-        click_on 'Save changes'
+        page.within '.autodevops-settings' do
+          fill_in('project_auto_devops_attributes_domain', with: 'test.com')
+          page.choose('project_auto_devops_attributes_enabled_false')
+          click_on 'Save changes'
+        end
 
         expect(page.status_code).to eq(200)
         expect(project.auto_devops).to be_present

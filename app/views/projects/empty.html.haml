@@ -22,7 +22,7 @@
 
       %hr
       %p
-        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
+        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-autodevops-settings'))
         - link_to_add_kubernetes_cluster = link_to(s_('AutoDevOps|add a Kubernetes cluster'), new_project_cluster_path(@project))
         = s_('AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}.').html_safe % { link_to_auto_devops_settings: link_to_auto_devops_settings, link_to_add_kubernetes_cluster: link_to_add_kubernetes_cluster }
 

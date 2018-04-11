@@ -260,7 +260,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
       OpenStruct.new(enabled: auto_devops_enabled?,
                      label: auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
-                     link: project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings'))
+                     link: project_settings_ci_cd_path(project, anchor: 'js-autodevops-settings'))
     elsif auto_devops_enabled?
       OpenStruct.new(enabled: true,
                      label: _('Auto DevOps enabled'),
