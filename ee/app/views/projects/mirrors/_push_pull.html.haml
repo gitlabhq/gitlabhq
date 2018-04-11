@@ -52,8 +52,8 @@
 
             .form-group
               = f.label :mirror_user_id, 'Mirror user', class: 'label-light-but-actually-light-i-promise'
-              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg', required: true )
-              .help-block
+              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg', required: true, disabled: (default_mirror_users.count == 1).to_s )
+              .help-block.prepend-top-default
                 This user will be the author of all events in the activity feed that are the result of an update,
                 like new branches being created or new commits being pushed to existing branches.
                 You can only assign yourself to be the mirror user.
@@ -80,7 +80,7 @@
           = f.submit 'Mirror repository', class: 'btn btn-create', name: :update_remote_mirror
 
     .panel.panel-default
-      %table.table.table-bordered
+      %table.table
         %thead
           %tr
             %th= "Mirrored repositories (#{mirror_repositories_count})"
