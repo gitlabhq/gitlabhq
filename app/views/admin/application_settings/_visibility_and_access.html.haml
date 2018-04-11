@@ -3,23 +3,23 @@
 
   %fieldset
     .form-group
-      = f.label :default_branch_protection, class: 'control-label col-sm-2'
+      = f.label :default_branch_protection, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
     .form-group.visibility-level-setting
-      = f.label :default_project_visibility, class: 'control-label col-sm-2'
+      = f.label :default_project_visibility, class: 'col-form-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
     .form-group.visibility-level-setting
-      = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
+      = f.label :default_snippet_visibility, class: 'col-form-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
     .form-group.visibility-level-setting
-      = f.label :default_group_visibility, class: 'control-label col-sm-2'
+      = f.label :default_group_visibility, class: 'col-form-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
-      = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
+      = f.label :restricted_visibility_levels, class: 'col-form-label col-sm-2'
       .col-sm-10
         - checkbox_name = 'application_setting[restricted_visibility_levels][]'
         = hidden_field_tag(checkbox_name)
@@ -30,7 +30,7 @@
           Selected levels cannot be used by non-admin users for projects or snippets.
           If the public level is restricted, user profiles are only visible to logged in users.
     .form-group
-      = f.label :import_sources, class: 'control-label col-sm-2'
+      = f.label :import_sources, class: 'col-form-label col-sm-2'
       .col-sm-10
         - import_sources_checkboxes('import-sources-help').each do |source|
           .form-check= source
@@ -50,7 +50,7 @@
             Project export enabled
 
     .form-group
-      %label.control-label.col-sm-2 Enabled Git access protocols
+      %label.col-form-label.col-sm-2 Enabled Git access protocols
       .col-sm-10
         = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
         %span.form-text.text-muted#clone-protocol-help
@@ -59,7 +59,7 @@
     - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
       - field_name = :"#{type}_key_restriction"
       .form-group
-        = f.label field_name, "#{type.upcase} SSH keys", class: 'control-label col-sm-2'
+        = f.label field_name, "#{type.upcase} SSH keys", class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 

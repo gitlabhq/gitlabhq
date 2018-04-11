@@ -11,9 +11,9 @@
 
 .form-group
   - if type == "password" && value.present?
-    = form.label name, "Enter new #{title.downcase}", class: "control-label"
+    = form.label name, "Enter new #{title.downcase}", class: "col-form-label"
   - else
-    = form.label name, title, class: "control-label"
+    = form.label name, title, class: "col-form-label"
   .col-sm-10
     - if type == 'text'
       = form.text_field name, class: "form-control", placeholder: placeholder, required: required, disabled: disabled

@@ -3,14 +3,14 @@
 
   %fieldset
     .form-group
-      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'control-label col-sm-2'
+      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :gitaly_timeout_default, class: 'form-control'
         .form-text.text-muted
           Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
           for git fetch/push operations or Sidekiq jobs.
     .form-group
-      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'control-label col-sm-2'
+      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :gitaly_timeout_fast, class: 'form-control'
         .form-text.text-muted
@@ -18,7 +18,7 @@
           If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
           can help maintain the stability of the GitLab instance.
     .form-group
-      = f.label :gitaly_timeout_medium, 'Medium Timeout Period', class: 'control-label col-sm-2'
+      = f.label :gitaly_timeout_medium, 'Medium Timeout Period', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :gitaly_timeout_medium, class: 'form-control'
         .form-text.text-muted

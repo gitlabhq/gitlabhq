@@ -41,19 +41,19 @@
               Creating pack file bitmaps makes housekeeping take a little longer but
               bitmaps should accelerate 'git clone' performance.
       .form-group
-        = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'control-label col-sm-2'
+        = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :housekeeping_incremental_repack_period, class: 'form-control'
           .form-text.text-muted
             Number of Git pushes after which an incremental 'git repack' is run.
       .form-group
-        = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'control-label col-sm-2'
+        = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :housekeeping_full_repack_period, class: 'form-control'
           .form-text.text-muted
             Number of Git pushes after which a full 'git repack' is run.
       .form-group
-        = f.label :housekeeping_gc_period, 'Git GC period', class: 'control-label col-sm-2'
+        = f.label :housekeeping_gc_period, 'Git GC period', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :housekeeping_gc_period, class: 'form-control'
           .form-text.text-muted

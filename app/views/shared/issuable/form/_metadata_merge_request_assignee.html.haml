@@ -1,4 +1,4 @@
-= form.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
+= form.label :assignee_id, "Assignee", class: "col-form-label #{"col-lg-4" if has_due_date}"
 .col-sm-10{ class: ("col-lg-8" if has_due_date) }
   .issuable-form-select-holder
     = form.hidden_field :assignee_id

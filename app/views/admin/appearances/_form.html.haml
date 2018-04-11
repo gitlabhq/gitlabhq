@@ -5,7 +5,7 @@
     %legend
       Navigation bar:
   .form-group
-    = f.label :header_logo, 'Header logo', class: 'control-label'
+    = f.label :header_logo, 'Header logo', class: 'col-form-label'
     .col-sm-10
       - if @appearance.header_logo?
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
@@ -22,17 +22,17 @@
     %legend
       Sign in/Sign up pages:
   .form-group
-    = f.label :title, class: 'control-label'
+    = f.label :title, class: 'col-form-label'
     .col-sm-10
       = f.text_field :title, class: "form-control"
   .form-group
-    = f.label :description, class: 'control-label'
+    = f.label :description, class: 'col-form-label'
     .col-sm-10
       = f.text_area :description, class: "form-control", rows: 10
       .hint
         Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
   .form-group
-    = f.label :logo, class: 'control-label'
+    = f.label :logo, class: 'col-form-label'
     .col-sm-10
       - if @appearance.logo?
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
@@ -49,7 +49,7 @@
     %legend
       New project pages:
   .form-group
-    = f.label :new_project_guidelines, class: 'control-label'
+    = f.label :new_project_guidelines, class: 'col-form-label'
     .col-sm-10
       = f.text_area :new_project_guidelines, class: "form-control", rows: 10
       .hint

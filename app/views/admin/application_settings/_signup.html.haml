@@ -15,12 +15,12 @@
             = f.check_box :send_user_confirmation_email
             Send confirmation email on sign-up
     .form-group
-      = f.label :domain_whitelist, 'Whitelisted domains for sign-ups', class: 'control-label col-sm-2'
+      = f.label :domain_whitelist, 'Whitelisted domains for sign-ups', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_area :domain_whitelist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
         .form-text.text-muted ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
-      = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'control-label col-sm-2'
+      = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
           = f.label :domain_blacklist_enabled do
@@ -39,18 +39,18 @@
             .option-title
               Enter blacklist manually
     .form-group.blacklist-file
-      = f.label :domain_blacklist_file, 'Blacklist file', class: 'control-label col-sm-2'
+      = f.label :domain_blacklist_file, 'Blacklist file', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.file_field :domain_blacklist_file, class: 'form-control', accept: '.txt,.conf'
         .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
     .form-group.blacklist-raw
-      = f.label :domain_blacklist, 'Blacklisted domains for sign-ups', class: 'control-label col-sm-2'
+      = f.label :domain_blacklist, 'Blacklisted domains for sign-ups', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_area :domain_blacklist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
         .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
 
     .form-group
-      = f.label :after_sign_up_text, class: 'control-label col-sm-2'
+      = f.label :after_sign_up_text, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
         .form-text.text-muted Markdown enabled

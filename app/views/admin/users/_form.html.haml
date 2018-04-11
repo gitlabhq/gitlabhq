@@ -5,17 +5,17 @@
     %fieldset
       %legend Account
       .form-group
-        = f.label :name, class: 'control-label'
+        = f.label :name, class: 'col-form-label'
         .col-sm-10
           = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
       .form-group
-        = f.label :username, class: 'control-label'
+        = f.label :username, class: 'col-form-label'
         .col-sm-10
           = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control'
           %span.help-inline * required
       .form-group
-        = f.label :email, class: 'control-label'
+        = f.label :email, class: 'col-form-label'
         .col-sm-10
           = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
@@ -24,7 +24,7 @@
       %fieldset
         %legend Password
         .form-group
-          = f.label :password, class: 'control-label'
+          = f.label :password, class: 'col-form-label'
           .col-sm-10
             %strong
               Reset link will be generated and sent to the user.
@@ -34,10 +34,10 @@
       %fieldset
         %legend Password
         .form-group
-          = f.label :password, class: 'control-label'
+          = f.label :password, class: 'col-form-label'
           .col-sm-10= f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
         .form-group
-          = f.label :password_confirmation, class: 'control-label'
+          = f.label :password_confirmation, class: 'col-form-label'
           .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
     = render partial: 'access_levels', locals: { f: f }
@@ -45,21 +45,21 @@
     %fieldset
       %legend Profile
       .form-group
-        = f.label :avatar, class: 'control-label'
+        = f.label :avatar, class: 'col-form-label'
         .col-sm-10
           = f.file_field :avatar
 
       .form-group
-        = f.label :skype, class: 'control-label'
+        = f.label :skype, class: 'col-form-label'
         .col-sm-10= f.text_field :skype, class: 'form-control'
       .form-group
-        = f.label :linkedin, class: 'control-label'
+        = f.label :linkedin, class: 'col-form-label'
         .col-sm-10= f.text_field :linkedin, class: 'form-control'
       .form-group
-        = f.label :twitter, class: 'control-label'
+        = f.label :twitter, class: 'col-form-label'
         .col-sm-10= f.text_field :twitter, class: 'form-control'
       .form-group
-        = f.label :website_url, 'Website', class: 'control-label'
+        = f.label :website_url, 'Website', class: 'col-form-label'
         .col-sm-10= f.text_field :website_url, class: 'form-control'
 
     .form-actions

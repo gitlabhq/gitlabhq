@@ -12,7 +12,7 @@
     and make sure your changes will not unintentionally remove theirs
 
 .form-group
-  = form.label :title, class: 'control-label'
+  = form.label :title, class: 'col-form-label'
 
   = render 'shared/issuable/form/template_selector', issuable: issuable
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:work_in_progress?)

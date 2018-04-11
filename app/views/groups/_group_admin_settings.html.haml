@@ -1,6 +1,6 @@
 - if current_user.admin?
   .form-group
-    = f.label :lfs_enabled, 'Large File Storage', class: 'control-label'
+    = f.label :lfs_enabled, 'Large File Storage', class: 'col-form-label'
     .col-sm-10
       .form-check
         = f.label :lfs_enabled do
@@ -13,7 +13,7 @@
 
 - if can? current_user, :admin_group, @group
   .form-group
-    = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
+    = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'col-form-label col-sm-2'
     .col-sm-10
       .form-check
         = f.label :require_two_factor_authentication do

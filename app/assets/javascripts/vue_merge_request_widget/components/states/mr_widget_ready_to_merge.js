@@ -323,7 +323,7 @@ export default {
           class="prepend-top-default commit-message-editor">
           <div class="form-group clearfix">
             <label
-              class="control-label"
+              class="col-form-label"
               for="commit-message">
               Commit message
             </label>

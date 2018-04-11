@@ -7,12 +7,12 @@
 %hr
 - if issuable.new_record?
   .form-group
-    = form.label :source_branch, class: 'control-label'
+    = form.label :source_branch, class: 'col-form-label'
     .col-sm-10
       .issuable-form-select-holder
         = form.select(:source_branch, [issuable.source_branch], {}, { class: 'source_branch select2 ref-name', disabled: true })
 .form-group
-  = form.label :target_branch, class: 'control-label'
+  = form.label :target_branch, class: 'col-form-label'
   .col-sm-10.target-branch-select-dropdown-container
     .issuable-form-select-holder
       = form.hidden_field(:target_branch,

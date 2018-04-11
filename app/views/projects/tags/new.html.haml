@@ -12,11 +12,11 @@
 
 = form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "form-horizontal common-note-form tag-form js-quick-submit js-requires-input" do
   .form-group
-    = label_tag :tag_name, nil, class: 'control-label'
+    = label_tag :tag_name, nil, class: 'col-form-label'
     .col-sm-10
       = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control'
   .form-group
-    = label_tag :ref, 'Create from', class: 'control-label'
+    = label_tag :ref, 'Create from', class: 'col-form-label'
     .col-sm-10.create-from
       .dropdown
         = hidden_field_tag :ref, default_ref
@@ -26,14 +26,14 @@
       .form-text.text-muted
         = s_('TagsPage|Existing branch name, tag, or commit SHA')
   .form-group
-    = label_tag :message, nil, class: 'control-label'
+    = label_tag :message, nil, class: 'col-form-label'
     .col-sm-10
       = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5
       .form-text.text-muted
         = s_('TagsPage|Optionally, add a message to the tag.')
   %hr
   .form-group
-    = label_tag :release_description, s_('TagsPage|Release notes'), class: 'control-label'
+    = label_tag :release_description, s_('TagsPage|Release notes'), class: 'col-form-label'
     .col-sm-10
       = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
         = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here...'), current_text: @release_description

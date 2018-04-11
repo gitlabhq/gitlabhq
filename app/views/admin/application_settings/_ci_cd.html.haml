@@ -12,7 +12,7 @@
           It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
           = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
     .form-group
-      = f.label :auto_devops_domain, class: 'control-label col-sm-2'
+      = f.label :auto_devops_domain, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
         .form-text.text-muted
@@ -24,19 +24,19 @@
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
     .form-group
-      = f.label :shared_runners_text, class: 'control-label col-sm-2'
+      = f.label :shared_runners_text, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_area :shared_runners_text, class: 'form-control', rows: 4
         .form-text.text-muted Markdown enabled
     .form-group
-      = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
+      = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .form-text.text-muted
           Set the maximum file size for each job's artifacts
           = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
     .form-group
-      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'control-label col-sm-2'
+      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :default_artifacts_expire_in, class: 'form-control'
         .form-text.text-muted

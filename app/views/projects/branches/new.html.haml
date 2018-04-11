@@ -11,12 +11,12 @@
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-create-branch-form js-requires-input" do
   .form-group
-    = label_tag :branch_name, nil, class: 'control-label'
+    = label_tag :branch_name, nil, class: 'col-form-label'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name'
       .form-text.text-muted.text-danger.js-branch-name-error
   .form-group
-    = label_tag :ref, 'Create from', class: 'control-label'
+    = label_tag :ref, 'Create from', class: 'col-form-label'
     .col-sm-10.create-from
       .dropdown
         = hidden_field_tag :ref, default_ref

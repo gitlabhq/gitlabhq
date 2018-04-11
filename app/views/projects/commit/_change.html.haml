@@ -22,7 +22,7 @@
           %p.append-bottom-20= description
         = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
-            = label_tag 'start_branch', branch_label, class: 'control-label'
+            = label_tag 'start_branch', branch_label, class: 'col-form-label'
             .col-sm-10
               = hidden_field_tag :start_branch, @project.default_branch, id: 'start_branch'
               = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: project_branches_path(@project), submit_form_on_click: false } })

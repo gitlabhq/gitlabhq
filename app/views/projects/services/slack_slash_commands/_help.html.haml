@@ -26,7 +26,7 @@
 
     .help-form
       .form-group
-        = label_tag nil, 'Command', class: 'col-sm-2 col-12 control-label'
+        = label_tag nil, 'Command', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.text-block
           %p Fill in the word that works best for your team.
           %p
@@ -36,49 +36,49 @@
             %code= @project.full_path
 
       .form-group
-        = label_tag :url, 'URL', class: 'col-sm-2 col-12 control-label'
+        = label_tag :url, 'URL', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-btn
             = clipboard_button(target: '#url')
 
       .form-group
-        = label_tag nil, 'Method', class: 'col-sm-2 col-12 control-label'
+        = label_tag nil, 'Method', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.text-block POST
 
       .form-group
-        = label_tag :customize_name, 'Customize name', class: 'col-sm-2 col-12 control-label'
+        = label_tag :customize_name, 'Customize name', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-btn
             = clipboard_button(target: '#customize_name')
 
       .form-group
-        = label_tag nil, 'Customize icon', class: 'col-sm-2 col-12 control-label'
+        = label_tag nil, 'Customize icon', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.text-block
           = image_tag(asset_url('slash-command-logo.png'), width: 36, height: 36)
           = link_to('Download image', asset_url('gitlab_logo.png'), class: 'btn btn-sm', target: '_blank', rel: 'noopener noreferrer')
 
       .form-group
-        = label_tag nil, 'Autocomplete', class: 'col-sm-2 col-12 control-label'
+        = label_tag nil, 'Autocomplete', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.text-block Show this command in the autocomplete list
 
       .form-group
-        = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-12 control-label'
+        = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-btn
             = clipboard_button(target: '#autocomplete_description')
 
       .form-group
-        = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-12 control-label'
+        = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-btn
             = clipboard_button(target: '#autocomplete_usage_hint')
 
       .form-group
-        = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-12 control-label'
+        = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :descriptive_label, 'Perform common operations on GitLab project', class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-btn

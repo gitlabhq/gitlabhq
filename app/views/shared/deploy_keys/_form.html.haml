@@ -5,26 +5,26 @@
 = form_errors(deploy_key)
 
 .form-group
-  = form.label :title, class: 'control-label'
+  = form.label :title, class: 'col-form-label'
   .col-sm-10= form.text_field :title, class: 'form-control'
 
 .form-group
   - if deploy_key.new_record?
-    = form.label :key, class: 'control-label'
+    = form.label :key, class: 'col-form-label'
     .col-sm-10
       %p.light
         Paste a machine public key here. Read more about how to generate it
         = link_to 'here', help_page_path('ssh/README')
       = form.text_area :key, class: 'form-control thin_area', rows: 5
   - else
-    = form.label :fingerprint, class: 'control-label'
+    = form.label :fingerprint, class: 'col-form-label'
     .col-sm-10
       = form.text_field :fingerprint, class: 'form-control', readonly: 'readonly'
 
 - if deploy_keys_project.present?
   = form.fields_for :deploy_keys_projects, deploy_keys_project do |deploy_keys_project_form|
     .form-group
-      .control-label
+      .col-form-label
       .col-sm-10
         = deploy_keys_project_form.label :can_push do
           = deploy_keys_project_form.check_box :can_push

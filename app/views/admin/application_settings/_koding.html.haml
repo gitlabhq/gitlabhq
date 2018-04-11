@@ -11,7 +11,7 @@
         .form-text.text-muted
           Koding integration has been deprecated since GitLab 10.0. If you disable your Koding integration, you will not be able to enable it again.
     .form-group
-      = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
+      = f.label :koding_url, 'Koding URL', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
         .form-text.text-muted

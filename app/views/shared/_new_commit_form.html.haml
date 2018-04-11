@@ -8,7 +8,7 @@
 - else
   - if can?(current_user, :push_code, @project)
     .form-group.branch
-      = label_tag 'branch_name', _('Target Branch'), class: 'control-label'
+      = label_tag 'branch_name', _('Target Branch'), class: 'col-form-label'
       .col-sm-10
         = text_field_tag 'branch_name', branch_name, required: true, class: "form-control js-branch-name ref-name"
 

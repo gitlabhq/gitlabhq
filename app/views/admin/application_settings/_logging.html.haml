@@ -14,7 +14,7 @@
             %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
 
     .form-group
-      = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
+      = f.label :sentry_dsn, 'Sentry DSN', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :sentry_dsn, class: 'form-control'
 
@@ -29,7 +29,7 @@
             %a{ href: 'https://sentry.io/for/javascript/', target: '_blank', rel: 'noopener noreferrer' } https://sentry.io/for/javascript/
 
     .form-group
-      = f.label :clientside_sentry_dsn, 'Clientside Sentry DSN', class: 'control-label col-sm-2'
+      = f.label :clientside_sentry_dsn, 'Clientside Sentry DSN', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :clientside_sentry_dsn, class: 'form-control'
 
