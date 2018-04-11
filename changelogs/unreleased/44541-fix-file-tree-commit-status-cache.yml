@@ -1,0 +1,5 @@
+---
+title: Fix pipeline status in branch/tag tree page
+merge_request: 17995
+author:
+type: fixed
