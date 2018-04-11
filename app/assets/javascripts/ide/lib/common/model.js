@@ -31,7 +31,7 @@ export default class Model {
       );
     }
 
-    this.events = new Map();
+    this.events = new Set();
 
     this.updateContent = this.updateContent.bind(this);
     this.dispose = this.dispose.bind(this);
@@ -73,10 +73,11 @@ export default class Model {
   }
 
   onChange(cb) {
-    this.events.set(
-      this.path,
-      this.disposable.add(this.model.onDidChangeContent(e => cb(this, e))),
-    );
+    this.events.add(this.disposable.add(this.model.onDidChangeContent(e => cb(this, e))));
+  }
+
+  onDispose(cb) {
+    this.events.add(cb);
   }
 
   updateContent(content) {
@@ -86,6 +87,11 @@ export default class Model {
 
   dispose() {
     this.disposable.dispose();
+
+    this.events.forEach(cb => {
+      if (typeof cb === 'function') cb();
+    });
+
     this.events.clear();
 
     eventHub.$off(`editor.update.model.dispose.${this.file.key}`, this.dispose);

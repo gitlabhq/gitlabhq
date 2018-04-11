@@ -70,13 +70,6 @@ describe('Multi-file editor library model', () => {
   });
 
   describe('onChange', () => {
-    it('caches event by path', () => {
-      model.onChange(() => {});
-
-      expect(model.events.size).toBe(1);
-      expect(model.events.keys().next().value).toBe(model.file.key);
-    });
-
     it('calls callback on change', done => {
       const spy = jasmine.createSpy();
       model.onChange(spy);
@@ -118,6 +111,16 @@ describe('Multi-file editor library model', () => {
         `editor.update.model.dispose.${model.file.key}`,
         jasmine.anything(),
       );
+    });
+
+    it('calls onDispose callback', () => {
+      const disposeSpy = jasmine.createSpy();
+
+      model.onDispose(disposeSpy);
+
+      model.dispose();
+
+      expect(disposeSpy).toHaveBeenCalled();
     });
   });
 });
