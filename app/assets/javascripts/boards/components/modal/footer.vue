@@ -1,4 +1,4 @@
-import Vue from 'vue';
+<script>
 import Flash from '../../../flash';
 import { __ } from '../../../locale';
 import './lists_dropdown';
@@ -6,7 +6,10 @@ import { pluralize } from '../../../lib/utils/text_utility';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
-gl.issueBoards.ModalFooter = Vue.extend({
+export default {
+  components: {
+    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
+  },
   mixins: [modalMixin],
   data() {
     return {
@@ -32,19 +35,21 @@ gl.issueBoards.ModalFooter = Vue.extend({
       const issueIds = selectedIssues.map(issue => issue.id);
 
       // Post the data to the backend
-      gl.boardService.bulkUpdate(issueIds, {
-        add_label_ids: [list.label.id],
-      }).catch(() => {
-        Flash(__('Failed to update issues, please try again.'));
+      gl.boardService
+        .bulkUpdate(issueIds, {
+          add_label_ids: [list.label.id],
+        })
+        .catch(() => {
+          Flash(__('Failed to update issues, please try again.'));
 
-        selectedIssues.forEach((issue) => {
-          list.removeIssue(issue);
-          list.issuesSize -= 1;
+          selectedIssues.forEach(issue => {
+            list.removeIssue(issue);
+            list.issuesSize -= 1;
+          });
         });
-      });
 
       // Add the issues on the frontend
-      selectedIssues.forEach((issue) => {
+      selectedIssues.forEach(issue => {
         list.addIssue(issue);
         list.issuesSize += 1;
       });
@@ -52,31 +57,31 @@ gl.issueBoards.ModalFooter = Vue.extend({
       this.toggleModal(false);
     },
   },
-  components: {
-    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
-  },
-  template: `
-    <footer
-      class="form-actions add-issues-footer">
-      <div class="pull-left">
-        <button
-          class="btn btn-success"
-          type="button"
-          :disabled="submitDisabled"
-          @click="addIssues">
-          {{ submitText }}
-        </button>
-        <span class="inline add-issues-footer-to-list">
-          to list
-        </span>
-        <lists-dropdown></lists-dropdown>
-      </div>
+
+};
+</script>
+<template>
+  <footer class="form-actions add-issues-footer">
+    <div class="pull-left">
       <button
-        class="btn btn-default pull-right"
+        class="btn btn-success"
         type="button"
-        @click="toggleModal(false)">
-        Cancel
+        :disabled="submitDisabled"
+        @click="addIssues"
+      >
+        {{ submitText }}
       </button>
-    </footer>
-  `,
-});
+      <span class="inline add-issues-footer-to-list">
+        to list
+      </span>
+      <lists-dropdown/>
+    </div>
+    <button
+      class="btn btn-default pull-right"
+      type="button"
+      @click="toggleModal(false)"
+    >
+      Cancel
+    </button>
+  </footer>
+</template>

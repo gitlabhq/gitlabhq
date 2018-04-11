@@ -3,10 +3,10 @@
 import Vue from 'vue';
 import queryData from '~/boards/utils/query_data';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import './header';
+import ModalHeader from './header.vue';
 import './list';
-import './footer';
-import './empty_state';
+import ModalFooter from './footer.vue';
+import ModalEmptyState from './empty_state.vue';
 import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.IssuesModal = Vue.extend({
@@ -132,10 +132,10 @@ gl.issueBoards.IssuesModal = Vue.extend({
     this.page = 1;
   },
   components: {
-    'modal-header': gl.issueBoards.ModalHeader,
+    ModalHeader,
     'modal-list': gl.issueBoards.ModalList,
-    'modal-footer': gl.issueBoards.ModalFooter,
-    'empty-state': gl.issueBoards.ModalEmptyState,
+    ModalFooter,
+    ModalEmptyState,
     loadingIcon,
   },
   template: `
@@ -153,7 +153,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
           :root-path="rootPath"
           :empty-state-svg="emptyStateSvg"
           v-if="!loading && showList && !filterLoading"></modal-list>
-        <empty-state
+        <modal-empty-state
           v-if="showEmptyState"
           :new-issue-path="newIssuePath"
           :empty-state-svg="emptyStateSvg"></empty-state>
