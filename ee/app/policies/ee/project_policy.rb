@@ -58,7 +58,8 @@ module EE
 
       rule { license_block }.policy do
         prevent :create_issue
-        prevent :create_merge_request
+        prevent :create_merge_request_in
+        prevent :create_merge_request_from
         prevent :push_code
       end
 

@@ -401,6 +401,7 @@ describe ProjectPolicy do
         read_project_snippet read_project_member read_note read_cycle_analytics
         read_pipeline read_build read_commit_status read_container_image
         read_environment read_deployment read_merge_request read_pages
+        create_merge_request_in award_emoji
       ]
     end
 
