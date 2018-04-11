@@ -27,13 +27,13 @@ module Gitlab
       end
 
       def write_page(name, format, content, commit_details)
-        # @repository.gitaly_migrate(:wiki_write_page) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_write_page(name, format, content, commit_details)
-        #   else
+        @repository.gitaly_migrate(:wiki_write_page) do |is_enabled|
+          if is_enabled
+            gitaly_write_page(name, format, content, commit_details)
+          else
             gollum_write_page(name, format, content, commit_details)
-        #   end
-        # end
+          end
+        end
       end
 
       def delete_page(page_path, commit_details)

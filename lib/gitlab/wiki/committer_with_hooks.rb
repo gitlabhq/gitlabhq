@@ -8,28 +8,21 @@ module Gitlab
         super(gl_wiki.gollum_wiki, options)
       end
 
-      def commit
-        with_hooks do
-          super
-        end
-      end
-
-      private
-
-      def with_hooks(&block)
-        Gitlab::Git::HooksService.new.execute(
-          git_user,
-          gl_repository,
-          old_rev,
-          Gitlab::Git::BLANK_SHA,
-          Gitlab::Git::BRANCH_REF_PREFIX + @wiki.ref) do |service|
-          yield(service)
+      def commit(update_ref = true)
+        Gitlab::Git::OperationService.new(git_user, gl_wiki.repository).with_branch(
+          @wiki.ref,
+          start_branch_name: @wiki.ref,
+          start_repository: gl_wiki.repository
+        ) do |start_commit|
+          super(false)
         end
       rescue Gitlab::Git::HooksService::PreReceiveError
         msg = 'Failed to commit because of Pre-Received Hook'
         Rails.logger.error(msg)
         raise Gitlab::Git::Wiki::OperationError, msg
       end
+
+      private
 
       def git_user
         @git_user ||= Gitlab::Git::User.new(@options[:username],
@@ -44,10 +37,6 @@ module Gitlab
 
       def gl_repository
         gl_wiki.repository
-      end
-
-      def old_rev
-        wiki.repo.commits.first&.id || Gitlab::Git::BLANK_SHA
       end
     end
   end
