@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/rspec_flaky/report'
+
+report_file = ARGV.shift
+unless report_file
+  puts 'usage: prune-old-flaky-specs <report-file> <new-report-file>'
+  exit 1
+end
+
+new_report_file = ARGV.shift || report_file
+report = RspecFlaky::Report.load(report_file)
+puts "Loading #{report_file}..."
+puts "Current report has #{report.size} entries."
+
+new_report = report.prune_outdated
+
+puts "New report has #{new_report.size} entries: #{report.size - new_report.size} entries older than 90 days were removed."
+puts "Saved #{new_report_file}." if new_report.write(new_report_file)
