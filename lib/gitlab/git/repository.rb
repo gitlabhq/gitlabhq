@@ -1389,7 +1389,8 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
+        gitaly_migrate(:branch_names_contains_sha,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.branch_names_contains_sha(sha)
           else
@@ -1399,7 +1400,8 @@ module Gitlab
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
+        gitaly_migrate(:tag_names_contains_sha,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.tag_names_contains_sha(sha)
           else

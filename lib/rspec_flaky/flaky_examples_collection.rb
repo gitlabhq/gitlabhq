@@ -1,4 +1,9 @@
 require 'active_support/hash_with_indifferent_access'
+<<<<<<< HEAD
+=======
+
+require_relative 'flaky_example'
+>>>>>>> upstream/master
 
 module RspecFlaky
   class FlakyExamplesCollection < SimpleDelegator
