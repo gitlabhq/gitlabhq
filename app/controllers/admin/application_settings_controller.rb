@@ -58,7 +58,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
+    params[:application_setting] ||= {}
     import_sources = params[:application_setting][:import_sources]
+
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
     else
