@@ -6,7 +6,7 @@
       = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :polling_interval_multiplier, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           Change this value to influence how frequently the GitLab UI polls for updates.
           If you set the value to 2 all polling intervals are multiplied
           by 2, which means that polling happens half as frequently.

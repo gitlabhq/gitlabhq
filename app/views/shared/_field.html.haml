@@ -26,4 +26,4 @@
     - elsif type == 'password'
       = form.password_field name, autocomplete: "new-password", class: "form-control", required: value.blank? && required, disabled: disabled
     - if help
-      %span.help-block= help
+      %span.form-text.text-muted= help

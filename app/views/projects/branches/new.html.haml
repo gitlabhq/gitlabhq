@@ -14,7 +14,7 @@
     = label_tag :branch_name, nil, class: 'control-label'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name'
-      .help-block.text-danger.js-branch-name-error
+      .form-text.text-muted.text-danger.js-branch-name-error
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10.create-from
@@ -24,7 +24,7 @@
           .text-left.dropdown-toggle-text= default_ref
           = icon('chevron-down')
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
-      .help-block Existing branch name, tag, or commit SHA
+      .form-text.text-muted Existing branch name, tag, or commit SHA
   .form-actions
     = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'

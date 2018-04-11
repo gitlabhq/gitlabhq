@@ -11,7 +11,7 @@
   - options = options_for_select(mattermost_teams_options(@teams), selected_id)
   = f.select(:team_id, options, { include_blank: 'Select team...'}, { class: 'form-control', disabled: @teams.one?, selected: selected_id, required: true })
   = f.hidden_field(:team_id, value: selected_id, required: true) if @teams.one?
-  .help-block
+  .form-text.text-muted
     - if @teams.one?
       This is the only available team.
     - else
@@ -25,7 +25,7 @@
   %h4 Command trigger word
   %p Choose the word that will trigger commands
   = f.text_field(:trigger, value: @project.path, class: 'form-control', required: true)
-  .help-block
+  .form-text.text-muted
     %p
       Trigger word must be unique, and can't begin with a slash or contain any spaces.
       Use the word that works best for your team.

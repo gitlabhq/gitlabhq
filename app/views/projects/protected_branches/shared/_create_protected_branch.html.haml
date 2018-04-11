@@ -11,7 +11,7 @@
             Branch:
           .col-md-10
             = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
-            .help-block
+            .form-text.text-muted
               = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
               such as
               %code *-stable

@@ -23,13 +23,13 @@
         = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide js-branch-select', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
           .text-left.dropdown-toggle-text= default_ref
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
-      .help-block
+      .form-text.text-muted
         = s_('TagsPage|Existing branch name, tag, or commit SHA')
   .form-group
     = label_tag :message, nil, class: 'control-label'
     .col-sm-10
       = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5
-      .help-block
+      .form-text.text-muted
         = s_('TagsPage|Optionally, add a message to the tag.')
   %hr
   .form-group
@@ -38,7 +38,7 @@
       = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
         = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here...'), current_text: @release_description
         = render 'shared/notes/hints'
-      .help-block
+      .form-text.text-muted
         = s_('TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.')
   .form-actions
     = button_tag s_('TagsPage|Create tag'), class: 'btn btn-create'

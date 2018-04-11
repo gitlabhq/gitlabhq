@@ -47,7 +47,7 @@ describe('Multi-file editor commit sidebar list', () => {
 
     it('hides list', () => {
       expect(vm.$el.querySelector('.list-unstyled')).toBeNull();
-      expect(vm.$el.querySelector('.help-block')).toBeNull();
+      expect(vm.$el.querySelector('.form-text.text-muted')).toBeNull();
     });
   });
 });

@@ -15,7 +15,7 @@
                      options: { toggle_class: 'js-branch-select wide git-revision-dropdown-toggle',
                                 filter: true, dropdown_class: "dropdown-menu-selectable git-revision-dropdown", placeholder: "Search branches",
                                 data: { selected: params[:ref] || @project.default_branch, field_name: 'pipeline[ref]' } })
-      .help-block Existing branch name, tag
+      .form-text.text-muted Existing branch name, tag
   .form-actions
     = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_pipelines_path(@project), class: 'btn btn-cancel'

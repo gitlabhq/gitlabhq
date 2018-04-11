@@ -9,7 +9,7 @@
         .select-wrapper
           = select_tag :access_level, options_for_select(ProjectMember.access_level_roles, @project_member.access_level), class: "form-control project-access-select select-control"
           = icon('chevron-down')
-        .help-block.append-bottom-10
+        .form-text.text-muted.append-bottom-10
           = link_to "Read more", help_page_path("user/permissions"), class: "vlink"
           about role permissions
       .form-group

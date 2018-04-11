@@ -73,7 +73,7 @@ describe('IDE commit sidebar radio group', () => {
     vm.helpText = 'help text';
 
     Vue.nextTick(() => {
-      const help = vm.$el.querySelector('.help-block');
+      const help = vm.$el.querySelector('.form-text.text-muted');
 
       expect(help).not.toBeNull();
       expect(help.getAttribute('data-original-title')).toBe('help text');

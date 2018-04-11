@@ -8,7 +8,7 @@
           = f.label :throttle_unauthenticated_enabled do
             = f.check_box :throttle_unauthenticated_enabled
             Enable unauthenticated request rate limit
-          %span.help-block
+          %span.form-text.text-muted
             Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
       = f.label :throttle_unauthenticated_requests_per_period, 'Max requests per period per IP', class: 'control-label col-sm-2'
@@ -24,7 +24,7 @@
           = f.label :throttle_authenticated_api_enabled do
             = f.check_box :throttle_authenticated_api_enabled
             Enable authenticated API request rate limit
-          %span.help-block
+          %span.form-text.text-muted
             Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
       = f.label :throttle_authenticated_api_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
@@ -40,7 +40,7 @@
           = f.label :throttle_authenticated_web_enabled do
             = f.check_box :throttle_authenticated_web_enabled
             Enable authenticated web request rate limit
-          %span.help-block
+          %span.form-text.text-muted
             Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
       = f.label :throttle_authenticated_web_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'

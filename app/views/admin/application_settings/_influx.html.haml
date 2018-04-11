@@ -22,7 +22,7 @@
       = f.label :metrics_port, 'InfluxDB port', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
-        .help-block
+        .form-text.text-muted
           The UDP port to use for connecting to InfluxDB. InfluxDB requires that
           your server configuration specifies a database to store data in when
           sending messages to this port, without it metrics data will not be
@@ -31,7 +31,7 @@
       = f.label :metrics_pool_size, 'Connection pool size', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_pool_size, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           The amount of InfluxDB connections to open. Connections are opened
           lazily. Users using multi-threaded application servers should ensure
           enough connections are available (at minimum the amount of application
@@ -40,28 +40,28 @@
       = f.label :metrics_timeout, 'Connection timeout', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_timeout, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           The amount of seconds after which an InfluxDB connection will time
           out.
     .form-group
       = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_method_call_threshold, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           A method call is only tracked when it takes longer to complete than
           the given amount of milliseconds.
     .form-group
       = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_sample_interval, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           The sampling interval in seconds. Sampled data includes memory usage,
           retained Ruby objects, file descriptors and so on.
     .form-group
       = f.label :metrics_packet_size, 'Metrics per packet', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_packet_size, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           The amount of points to store in a single UDP packet. More points
           results in fewer but larger UDP packets being sent.
 

@@ -8,13 +8,13 @@
           = f.label :recaptcha_enabled do
             = f.check_box :recaptcha_enabled
             Enable reCAPTCHA
-          %span.help-block#recaptcha_help_block Helps prevent bots from creating accounts
+          %span.form-text.text-muted#recaptcha_help_block Helps prevent bots from creating accounts
 
     .form-group
       = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :recaptcha_site_key, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           Generate site and private keys at
           %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
@@ -29,13 +29,13 @@
           = f.label :akismet_enabled do
             = f.check_box :akismet_enabled
             Enable Akismet
-          %span.help-block#akismet_help_block Helps prevent bots from creating issues
+          %span.form-text.text-muted#akismet_help_block Helps prevent bots from creating issues
 
     .form-group
       = f.label :akismet_api_key, 'Akismet API Key', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :akismet_api_key, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           Generate API key at
           %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
@@ -45,21 +45,21 @@
           = f.label :unique_ips_limit_enabled do
             = f.check_box :unique_ips_limit_enabled
             Limit sign in from multiple ips
-          %span.help-block#unique_ip_help_block
+          %span.form-text.text-muted#unique_ip_help_block
             Helps prevent malicious users hide their activity
 
     .form-group
       = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :unique_ips_limit_per_user, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           Maximum number of unique IPs per user
 
     .form-group
       = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :unique_ips_limit_time_window, class: 'form-control'
-        .help-block
+        .form-text.text-muted
           How many seconds an IP will be counted towards the limit
 
   = f.submit 'Save changes', class: "btn btn-success"

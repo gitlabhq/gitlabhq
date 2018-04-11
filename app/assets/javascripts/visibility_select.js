@@ -2,7 +2,7 @@ export default class VisibilitySelect {
   constructor(container) {
     if (!container) throw new Error('VisibilitySelect requires a container element as argument 1');
     this.container = container;
-    this.helpBlock = this.container.querySelector('.help-block');
+    this.helpBlock = this.container.querySelector('.form-text.text-muted');
     this.select = this.container.querySelector('select');
   }
 

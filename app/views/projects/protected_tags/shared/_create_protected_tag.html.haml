@@ -11,7 +11,7 @@
             Tag:
           .col-md-10.protected-tags-dropdown
             = render partial: "projects/protected_tags/shared/dropdown", locals: { f: f }
-            .help-block
+            .form-text.text-muted
               = link_to 'Wildcards', help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
               such as
               %code v*

@@ -6,14 +6,14 @@
       = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
-        .help-block 0 for unlimited
+        .form-text.text-muted 0 for unlimited
     .form-group
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :pages_domain_verification_enabled do
             = f.check_box :pages_domain_verification_enabled
             Require users to prove ownership of custom domains
-        .help-block
+        .form-text.text-muted
           Domain verification is an essential security measure for public GitLab
           sites. Users are required to demonstrate they control a domain before
           it is enabled

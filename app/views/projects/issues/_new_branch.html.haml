@@ -40,13 +40,13 @@
               %label{ for: 'new-branch-name' }
                 = _('Branch name')
               %input#new-branch-name.js-branch-name.form-control{ type: 'text', placeholder: "#{@issue.to_branch_name}", value: "#{@issue.to_branch_name}" }
-              %span.js-branch-message.help-block
+              %span.js-branch-message.form-text.text-muted
 
             .form-group
               %label{ for: 'source-name' }
                 = _('Source (branch or tag)')
               %input#source-name.js-ref.ref.form-control{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
-              %span.js-ref-message.help-block
+              %span.js-ref-message.form-text.text-muted
 
             .form-group
               %button.btn.btn-success.js-create-target{ type: 'button', data: { action: 'create-mr' } }

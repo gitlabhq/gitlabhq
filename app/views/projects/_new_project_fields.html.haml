@@ -23,7 +23,7 @@
         Project name
     = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
 - if current_user.can_create_group?
-  .help-block
+  .form-text.text-muted
     Want to house several dependent projects under the same namespace?
     = link_to "Create a group", new_group_path
 

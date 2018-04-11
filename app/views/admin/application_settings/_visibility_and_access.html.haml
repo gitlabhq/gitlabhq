@@ -26,7 +26,7 @@
         - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
           .form-check
             = level
-        %span.help-block#restricted-visibility-help
+        %span.form-text.text-muted#restricted-visibility-help
           Selected levels cannot be used by non-admin users for projects or snippets.
           If the public level is restricted, user profiles are only visible to logged in users.
     .form-group
@@ -34,7 +34,7 @@
       .col-sm-10
         - import_sources_checkboxes('import-sources-help').each do |source|
           .form-check= source
-        %span.help-block#import-sources-help
+        %span.form-text.text-muted#import-sources-help
           Enabled sources for code import during project creation. OmniAuth must be configured for GitHub
           = link_to "(?)", help_page_path("integration/github")
           , Bitbucket
@@ -53,7 +53,7 @@
       %label.control-label.col-sm-2 Enabled Git access protocols
       .col-sm-10
         = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
-        %span.help-block#clone-protocol-help
+        %span.form-text.text-muted#clone-protocol-help
           Allow only the selected protocols to be used for Git access.
 
     - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|

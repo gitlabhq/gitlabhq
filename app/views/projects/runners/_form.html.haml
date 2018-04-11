@@ -44,12 +44,12 @@
       Maximum job timeout
     .col-sm-10
       = f.text_field :maximum_timeout_human_readable, class: 'form-control'
-      .help-block This timeout will take precedence when lower than Project-defined timeout
+      .form-text.text-muted This timeout will take precedence when lower than Project-defined timeout
   .form-group
     = label_tag :tag_list, class: 'control-label' do
       Tags
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
-      .help-block You can setup jobs to only use Runners with specific tags. Separate tags with commas.
+      .form-text.text-muted You can setup jobs to only use Runners with specific tags. Separate tags with commas.
   .form-actions
     = f.submit 'Save changes', class: 'btn btn-save'

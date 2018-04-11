@@ -6,13 +6,13 @@
 .form-group
   = form.label :token, 'Secret Token', class: 'label-light'
   = form.text_field :token, class: 'form-control'
-  %p.help-block
+  %p.form-text.text-muted
     Use this token to validate received payloads
 .form-group
   = form.label :url, 'Trigger', class: 'label-light'
   %ul.list-unstyled
     %li
-      .help-block
+      .form-text.text-muted
         System hook will be triggered on set of events like creating project
         or adding ssh key. But you can also enable extra triggers like Push events.
 

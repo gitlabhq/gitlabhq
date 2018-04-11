@@ -11,7 +11,7 @@ import VisibilitySelect from '~/visibility_select';
     const mockElements = {
       container: document.createElement('div'),
       select: document.createElement('div'),
-      '.help-block': document.createElement('div'),
+      '.form-text.text-muted': document.createElement('div'),
       '.js-locked': lockedElement,
       'option:checked': checkedElement,
     };
@@ -30,8 +30,8 @@ import VisibilitySelect from '~/visibility_select';
       });
 
       it('queries and sets the helpBlock member', function () {
-        expect(Element.prototype.querySelector).toHaveBeenCalledWith('.help-block');
-        expect(this.visibilitySelect.helpBlock).toEqual(mockElements['.help-block']);
+        expect(Element.prototype.querySelector).toHaveBeenCalledWith('.form-text.text-muted');
+        expect(this.visibilitySelect.helpBlock).toEqual(mockElements['.form-text.text-muted']);
       });
 
       it('queries and sets the select member', function () {

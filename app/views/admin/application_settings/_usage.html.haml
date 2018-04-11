@@ -8,7 +8,7 @@
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
             Enable version check
-          .help-block
+          .form-text.text-muted
             GitLab will inform you if a new version is available.
             = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
             about what information is shared with GitLab Inc.
@@ -19,7 +19,7 @@
           = f.label :usage_ping_enabled do
             = f.check_box :usage_ping_enabled, disabled: !can_be_configured
             Enable usage ping
-          .help-block
+          .form-text.text-muted
             - if can_be_configured
               To help improve GitLab and its user experience, GitLab will
               periodically collect usage information.

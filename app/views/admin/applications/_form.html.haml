@@ -12,10 +12,10 @@
     .col-sm-10
       = f.text_area :redirect_uri, class: 'form-control'
       = doorkeeper_errors_for application, :redirect_uri
-      %span.help-block
+      %span.form-text.text-muted
         Use one line per URI
       - if Doorkeeper.configuration.native_redirect_uri
-        %span.help-block
+        %span.form-text.text-muted
           Use
           %code= Doorkeeper.configuration.native_redirect_uri
           for local tests
@@ -24,7 +24,7 @@
     = f.label :trusted, class: 'col-sm-2 control-label'
     .col-sm-10
       = f.check_box :trusted
-      %span.help-block
+      %span.form-text.text-muted
         Trusted applications are automatically authorized on GitLab OAuth flow.
 
   .form-group

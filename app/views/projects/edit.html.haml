@@ -40,7 +40,7 @@
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
           = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
-          %p.help-block Separate tags with commas.
+          %p.form-text.text-muted Separate tags with commas.
         %fieldset.features
           %h5.prepend-top-0= _("Project avatar")
           .form-group
@@ -54,7 +54,7 @@
               %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
               %span.file_name.prepend-left-default.js-avatar-filename= _("No file chosen")
               = f.file_field :avatar, class: "js-project-avatar-input hidden"
-            .help-block= _("The maximum file size allowed is 200KB.")
+            .form-text.text-muted= _("The maximum file size allowed is 200KB.")
             - if @project.avatar?
               %hr
               = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"

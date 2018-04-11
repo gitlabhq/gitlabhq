@@ -8,7 +8,7 @@
           = f.label :authorized_keys_enabled do
             = f.check_box :authorized_keys_enabled
             Write to "authorized_keys" file
-          .help-block
+          .form-text.text-muted
             By default, we write to the "authorized_keys" file to support Git
             over SSH without additional configuration. GitLab can be optimized
             to authenticate SSH keys via the database file. Only uncheck this

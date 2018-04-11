@@ -22,7 +22,7 @@
             = text_field_tag 'created-personal-access-token', @new_personal_access_token, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-personal-access-token-help-block"
             %span.input-group-btn
               = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left", class: "btn-default btn-clipboard")
-          %span#created-personal-access-token-help-block.help-block.text-danger Make sure you save it - you won't be able to access it again.
+          %span#created-personal-access-token-help-block.form-text.text-muted.text-danger Make sure you save it - you won't be able to access it again.
 
       %hr
 
@@ -42,7 +42,7 @@
   .col-lg-8.rss-token-reset
     = label_tag :rss_token, 'RSS token', class: "label-light"
     = text_field_tag :rss_token, current_user.rss_token, class: 'form-control', readonly: true, onclick: 'this.select()'
-    %p.help-block
+    %p.form-text.text-muted
       Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds as if they were you.
       You should
       = link_to 'reset it', [:reset, :rss_token, :profile], method: :put, data: { confirm: 'Are you sure? Any RSS URLs currently in use will stop working.' }
@@ -61,7 +61,7 @@
     .col-lg-8.incoming-email-token-reset
       = label_tag :incoming_email_token, 'Incoming email token', class: "label-light"
       = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control', readonly: true, onclick: 'this.select()'
-      %p.help-block
+      %p.form-text.text-muted
         Keep this token secret. Anyone who gets ahold of it can create issues as if they were you.
         You should
         = link_to 'reset it', [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: 'Are you sure? Any issue email addresses currently in use will stop working.' }

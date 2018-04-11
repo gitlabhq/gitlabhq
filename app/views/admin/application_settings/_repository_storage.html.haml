@@ -9,7 +9,7 @@
             = f.label :hashed_storage_enabled do
               = f.check_box :hashed_storage_enabled
               Create new projects using hashed storage paths
-            .help-block
+            .form-text.text-muted
               Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
               repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
               %em (EXPERIMENTAL)
@@ -18,7 +18,7 @@
         .col-sm-10
           = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
             {include_hidden: false}, multiple: true, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             Manage repository storage paths. Learn more in the
             = succeed "." do
               = link_to "repository storages documentation", help_page_path("administration/repository_storages")
@@ -28,31 +28,31 @@
         = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'control-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_check_interval, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             = circuitbreaker_check_interval_help_text
       .form-group
         = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'control-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_access_retries, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             = circuitbreaker_access_retries_help_text
       .form-group
         = f.label :circuitbreaker_storage_timeout, _('Seconds to wait for a storage access attempt'), class: 'control-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             = circuitbreaker_storage_timeout_help_text
       .form-group
         = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'control-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_failure_count_threshold, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             = circuitbreaker_failure_count_help_text
       .form-group
         = f.label :circuitbreaker_failure_reset_time, _('Seconds before reseting failure information'), class: 'control-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_failure_reset_time, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             = circuitbreaker_failure_reset_time_help_text
 
   = f.submit 'Save changes', class: "btn btn-success"

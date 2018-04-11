@@ -18,7 +18,7 @@
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
           - unless Gitlab::Metrics.metrics_folder_present?
-            .help-block
+            .form-text.text-muted
               %strong.cred WARNING:
               Environment variable
               %code prometheus_multiproc_dir

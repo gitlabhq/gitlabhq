@@ -8,7 +8,7 @@
           = f.label :sentry_enabled do
             = f.check_box :sentry_enabled
             Enable Sentry
-          .help-block
+          .form-text.text-muted
             %p This setting requires a restart to take effect.
             Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
             %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
@@ -24,7 +24,7 @@
           = f.label :clientside_sentry_enabled do
             = f.check_box :clientside_sentry_enabled
             Enable Clientside Sentry
-          .help-block
+          .form-text.text-muted
             Sentry can also be used for reporting and logging clientside exceptions.
             %a{ href: 'https://sentry.io/for/javascript/', target: '_blank', rel: 'noopener noreferrer' } https://sentry.io/for/javascript/
 

@@ -6,7 +6,7 @@
       = f.label :help_page_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
-        .help-block Markdown enabled
+        .form-text.text-muted Markdown enabled
     .form-group
       .col-sm-offset-2.col-sm-10
         .form-check
@@ -17,6 +17,6 @@
       = f.label :help_page_support_url, 'Support page URL', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :help_page_support_url, class: 'form-control', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
-        %span.help-block#support_help_block Alternate support URL for help page
+        %span.form-text.text-muted#support_help_block Alternate support URL for help page
 
   = f.submit 'Save changes', class: "btn btn-success"

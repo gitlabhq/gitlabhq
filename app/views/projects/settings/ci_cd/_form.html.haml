@@ -46,7 +46,7 @@
           .form-control.js-secret-value-placeholder
             = '*' * 20
           = f.text_field :runners_token, class: "form-control hide js-secret-value", placeholder: 'xEeFCaDAB89'
-          %p.help-block The secure token used by the Runner to checkout the project
+          %p.form-text.text-muted The secure token used by the Runner to checkout the project
           %button.btn.btn-info.prepend-top-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: 'false' } }
             = _('Reveal value')
 
@@ -76,7 +76,7 @@
         .form-group
           = f.label :build_timeout_human_readable, 'Timeout', class: 'label-light'
           = f.text_field :build_timeout_human_readable, class: 'form-control'
-          %p.help-block
+          %p.form-text.text-muted
             Per job. If a job passes this threshold, it will be marked as failed
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout'), target: '_blank'
 
@@ -84,7 +84,7 @@
         .form-group
           = f.label :ci_config_path, 'Custom CI config path', class: 'label-light'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
-          %p.help-block
+          %p.form-text.text-muted
             The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
@@ -94,7 +94,7 @@
             = f.label :public_builds do
               = f.check_box :public_builds
               %strong Public pipelines
-            .help-block
+            .form-text.text-muted
               Allow public access to pipelines and job details, including output logs and artifacts
               = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
             .bs-callout.bs-callout-info
@@ -116,7 +116,7 @@
             = f.label :auto_cancel_pending_pipelines do
               = f.check_box :auto_cancel_pending_pipelines, {}, 'enabled', 'disabled'
               %strong Auto-cancel redundant, pending pipelines
-            .help-block
+            .form-text.text-muted
               New pipelines will cancel older, pending pipelines on the same branch
               = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'auto-cancel-pending-pipelines'), target: '_blank'
 
@@ -127,7 +127,7 @@
             %span.input-group-addon /
             = f.text_field :build_coverage_regex, class: 'form-control', placeholder: 'Regular expression'
             %span.input-group-addon /
-          %p.help-block
+          %p.form-text.text-muted
             A regular expression that will be used to find the test coverage
             output in the job trace. Leave blank to disable
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'

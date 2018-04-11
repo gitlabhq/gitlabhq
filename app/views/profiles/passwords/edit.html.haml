@@ -20,7 +20,7 @@
         .form-group
           = f.label :current_password, class: 'label-light'
           = f.password_field :current_password, required: true, class: 'form-control'
-          %p.help-block
+          %p.form-text.text-muted
             You must provide your current password in order to change it.
       .form-group
         = f.label :password, 'New password', class: 'label-light'
