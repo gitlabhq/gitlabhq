@@ -1,6 +1,6 @@
 - form = local_assigns.fetch(:form)
 
-.radio
+.form-check
   = label_tag :project_merge_method_rebase_merge do
     = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
     %strong Merge commit with semi-linear history

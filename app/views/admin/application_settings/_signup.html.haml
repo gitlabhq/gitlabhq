@@ -28,12 +28,12 @@
             Enable domain blacklist for sign ups
     .form-group
       .col-sm-offset-2.col-sm-10
-        .radio
+        .form-check
           = label_tag :blacklist_type_file do
             = radio_button_tag :blacklist_type, :file
             .option-title
               Upload blacklist file
-        .radio
+        .form-check
           = label_tag :blacklist_type_raw do
             = radio_button_tag :blacklist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?
             .option-title

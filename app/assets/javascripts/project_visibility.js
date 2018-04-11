@@ -7,7 +7,7 @@ function setVisibilityOptions(namespaceSelector) {
   const selectedNamespace = namespaceSelector.options[namespaceSelector.selectedIndex];
   const { name, visibility, visibilityLevel, showPath, editPath } = selectedNamespace.dataset;
 
-  document.querySelectorAll('.visibility-level-setting .radio').forEach((option) => {
+  document.querySelectorAll('.visibility-level-setting .form-check').forEach((option) => {
     const optionInput = option.querySelector('input[type=radio]');
     const optionValue = optionInput ? optionInput.value : 0;
     const optionTitle = option.querySelector('.option-title');
