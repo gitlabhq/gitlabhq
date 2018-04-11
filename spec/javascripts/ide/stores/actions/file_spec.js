@@ -405,6 +405,7 @@ describe('IDE store file actions', () => {
 
     beforeEach(() => {
       spyOn(eventHub, '$on');
+      spyOn(eventHub, '$emit');
 
       tmpFile = file();
       tmpFile.content = 'testing';
@@ -458,6 +459,31 @@ describe('IDE store file actions', () => {
         .dispatch('discardFileChanges', tmpFile.path)
         .then(() => {
           expect(tmpFile.opened).toBeFalsy();
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('pushes route for active file', done => {
+      tmpFile.active = true;
+      store.state.openFiles.push(tmpFile);
+
+      store
+        .dispatch('discardFileChanges', tmpFile.path)
+        .then(() => {
+          expect(router.push).toHaveBeenCalledWith(`/project${tmpFile.url}`);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('emits eventHub event to dispose cached model', done => {
+      store
+        .dispatch('discardFileChanges', tmpFile.path)
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalled();
 
           done();
         })

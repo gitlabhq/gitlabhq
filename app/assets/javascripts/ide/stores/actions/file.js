@@ -156,7 +156,7 @@ export const setFileViewMode = ({ state, commit }, { file, viewMode }) => {
   commit(types.SET_FILE_VIEWMODE, { file, viewMode });
 };
 
-export const discardFileChanges = ({ state, commit }, path) => {
+export const discardFileChanges = ({ dispatch, state, commit, getters }, path) => {
   const file = state.entries[path];
 
   commit(types.DISCARD_FILE_CHANGES, path);
@@ -164,9 +164,18 @@ export const discardFileChanges = ({ state, commit }, path) => {
 
   if (file.tempFile && file.opened) {
     commit(types.TOGGLE_FILE_OPEN, path);
+  } else if (getters.activeFile && file.path === getters.activeFile.path) {
+    dispatch('updateDelayViewerUpdated', true)
+      .then(() => {
+        router.push(`/project${file.url}`);
+      })
+      .catch(e => {
+        throw e;
+      });
   }
 
   eventHub.$emit(`editor.update.model.new.content.${file.key}`, file.content);
+  eventHub.$emit(`editor.update.model.dispose.unstaged-${file.key}`, file.content);
 };
 
 export const stageChange = ({ commit, state }, path) => {
