@@ -99,7 +99,7 @@ describe 'User interacts with awards in an issue', :js do
       click_button('Comment')
     end
 
-    expect(page).to have_selector('gl-emoji[data-name="smile"]')
+    expect(page).to have_emoji('smile')
   end
 
   context 'when a project is archived' do
@@ -118,7 +118,7 @@ describe 'User interacts with awards in an issue', :js do
 
     it 'shows the award on the note' do
       page.within('.note-awards') do
-        expect(page).to have_selector('gl-emoji[data-name="100"]')
+        expect(page).to have_emoji('100')
       end
     end
 
@@ -141,7 +141,7 @@ describe 'User interacts with awards in an issue', :js do
       wait_for_requests
 
       page.within('.note-awards') do
-        expect(page).to have_selector('gl-emoji[data-name="8ball"]')
+        expect(page).to have_emoji('8ball')
       end
       expect(note.reload.award_emoji.size).to eq(2)
     end
