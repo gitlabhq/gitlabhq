@@ -62,7 +62,7 @@ describe 'User reverts a commit', :js do
   end
 
   context 'when the project is archived' do
-    let(:project) { create(:project, :repository, namespace: user.namespace, archived: true) }
+    let(:project) { create(:project, :repository, :archived, namespace: user.namespace) }
 
     it 'does not show the revert link' do
       find('.header-action-buttons .dropdown').click

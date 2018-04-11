@@ -7,7 +7,6 @@ describe 'projects/commit/_commit_box.html.haml' do
   before do
     assign(:project, project)
     assign(:commit, project.commit)
-    assign(:current_user, user)
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:can_collaborate_with_project?).and_return(false)
   end

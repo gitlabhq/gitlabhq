@@ -14,19 +14,19 @@ describe "User views issue" do
 
   it { expect(page).to have_header_with_correct_id_and_link(1, "Description header", "description-header") }
 
-  it { expect(page).to have_link('New issue') }
-
-  it { expect(page).to have_button('Create merge request') }
-
-  it { expect(page).to have_link('Close issue') }
+  it 'shows the merge request and issue actions', :aggregate_failures do
+    expect(page).to have_link('New issue')
+    expect(page).to have_button('Create merge request')
+    expect(page).to have_link('Close issue')
+  end
 
   context 'when the project is archived' do
-    let(:project) { create(:project, :public, archived: true) }
+    let(:project) { create(:project, :public, :archived) }
 
-    it { expect(page).not_to have_link('New issue') }
-
-    it { expect(page).not_to have_button('Create merge request') }
-
-    it { expect(page).not_to have_link('Close issue') }
+    it 'hides the merge request and issue actions', :aggregate_failures do
+      expect(page).not_to have_link('New issue')
+      expect(page).not_to have_button('Create merge request')
+      expect(page).not_to have_link('Close issue')
+    end
   end
 end

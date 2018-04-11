@@ -205,7 +205,7 @@ describe 'Branches' do
     end
 
     context 'when the project is archived' do
-      let(:project) { create(:project, :public, :repository, archived: true) }
+      let(:project) { create(:project, :public, :repository, :archived) }
 
       it 'does not show the merge request button when the project is archived' do
         visit project_branches_path(project)
