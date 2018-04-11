@@ -50,6 +50,15 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
 
+      def info_attributes
+        request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request)
+        response.each_with_object("") do |message, attributes|
+          attributes << message.attributes
+        end
+      end
+
       def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
         request = Gitaly::FetchRemoteRequest.new(
           repository: @gitaly_repo, remote: remote, force: forced,
