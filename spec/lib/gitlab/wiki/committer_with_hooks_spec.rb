@@ -143,9 +143,9 @@ describe Gitlab::Wiki::CommitterWithHooks, seed_helper: true do
     end
   end
 
-  context 'when Gitaly is enabled' do
-    it_behaves_like 'calling wiki hooks'
-  end
+  # context 'when Gitaly is enabled' do
+  #   it_behaves_like 'calling wiki hooks'
+  # end
 
   context 'when Gitaly is disabled', :skip_gitaly_mock do
     it_behaves_like 'calling wiki hooks'
