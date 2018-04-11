@@ -465,8 +465,8 @@ feature 'Jobs' do
       end
     end
 
-    context 'when job is running but has no trace yet' do
-      let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+    context 'when job is failed but has no trace' do
+      let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
       it 'renders empty state' do
         visit project_job_path(project, job)
