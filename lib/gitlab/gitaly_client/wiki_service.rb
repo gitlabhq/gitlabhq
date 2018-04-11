@@ -136,7 +136,7 @@ module Gitlab
         wiki_file = nil
 
         response.each do |message|
-          next unless message.name.present?
+          next unless message.name.present? || wiki_file
 
           if wiki_file
             wiki_file.raw_data << message.raw_data
