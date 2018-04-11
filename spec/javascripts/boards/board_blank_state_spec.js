@@ -1,7 +1,7 @@
 /* global BoardService */
 import Vue from 'vue';
 import '~/boards/stores/boards_store';
-import boardBlankState from '~/boards/components/board_blank_state';
+import BoardBlankState from '~/boards/components/board_blank_state.vue';
 import { mockBoardService } from './mock_data';
 
 describe('Boards blank state', () => {
@@ -9,7 +9,7 @@ describe('Boards blank state', () => {
   let fail = false;
 
   beforeEach((done) => {
-    const Comp = Vue.extend(boardBlankState);
+    const Comp = Vue.extend(BoardBlankState);
 
     gl.issueBoards.BoardsStore.create();
     gl.boardService = mockBoardService();

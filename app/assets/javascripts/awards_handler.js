@@ -4,12 +4,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import { __ } from './locale';
-import {
-  isInIssuePage,
-  isInMRPage,
-  isInEpicPage,
-  updateTooltipTitle,
-} from './lib/utils/common_utils';
+import { updateTooltipTitle } from './lib/utils/common_utils';
+import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
 
@@ -271,7 +267,7 @@ class AwardsHandler {
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
-    if (this.isInVueNoteablePage() && !isMainAwardsBlock) {
+    if (isInVueNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       this.hideMenuElement($('.emoji-menu'));
@@ -323,12 +319,8 @@ class AwardsHandler {
     }
   }
 
-  isInVueNoteablePage() {
-    return isInIssuePage() || isInMRPage() || isInEpicPage();
-  }
-
   getVotesBlock() {
-    if (this.isInVueNoteablePage()) {
+    if (isInVueNoteablePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {

@@ -17,14 +17,10 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       type: Object,
       required: true,
     },
-    issueUpdate: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
     updateUrl() {
-      return this.issueUpdate.replace(':project_path', this.issue.project.path);
+      return this.issue.path;
     },
   },
   methods: {

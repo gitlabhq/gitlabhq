@@ -1,0 +1,5 @@
+---
+title: Verify that deploy token has valid access when pulling container registry image
+merge_request: 18260
+author:
+type: fixed

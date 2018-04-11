@@ -145,6 +145,33 @@ describe Gitlab::GitAccess do
             expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
+
+        context 'when actor is DeployToken' do
+          let(:actor) { create(:deploy_token, projects: [project]) }
+
+          context 'when DeployToken is active and belongs to project' do
+            it 'allows pull access' do
+              expect { pull_access_check }.not_to raise_error
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            end
+          end
+
+          context 'when DeployToken does not belong to project' do
+            let(:another_project) { create(:project) }
+            let(:actor) { create(:deploy_token, projects: [another_project]) }
+
+            it 'blocks pull access' do
+              expect { pull_access_check }.to raise_not_found
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_not_found
+            end
+          end
+        end
       end
 
       context 'when actor is nil' do
@@ -594,6 +621,41 @@ describe Gitlab::GitAccess do
       end
     end
 
+    describe 'deploy token permissions' do
+      let(:deploy_token) { create(:deploy_token) }
+      let(:actor) { deploy_token }
+
+      context 'pull code' do
+        context 'when project is authorized' do
+          before do
+            deploy_token.projects << project
+          end
+
+          it { expect { pull_access_check }.not_to raise_error }
+        end
+
+        context 'when unauthorized' do
+          context 'from public project' do
+            let(:project) { create(:project, :public, :repository) }
+
+            it { expect { pull_access_check }.not_to raise_error }
+          end
+
+          context 'from internal project' do
+            let(:project) { create(:project, :internal, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+
+          context 'from private project' do
+            let(:project) { create(:project, :private, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+        end
+      end
+    end
+
     describe 'build authentication_abilities permissions' do
       let(:authentication_abilities) { build_authentication_abilities }
 
@@ -853,6 +915,20 @@ describe Gitlab::GitAccess do
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+      end
+    end
+
+    context 'when pushing to a project' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'cleans up the files' do
+        expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
+        expect { push_access_check }.not_to raise_error
       end
     end
   end
