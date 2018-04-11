@@ -5,6 +5,7 @@ import ideContextbar from './ide_context_bar.vue';
 import repoTabs from './repo_tabs.vue';
 import ideStatusBar from './ide_status_bar.vue';
 import repoEditor from './repo_editor.vue';
+import FindFile from './file_finder/index.vue';
 
 export default {
   components: {
@@ -13,6 +14,7 @@ export default {
     repoTabs,
     ideStatusBar,
     repoEditor,
+    FindFile,
   },
   props: {
     emptyStateSvgPath: {
@@ -29,7 +31,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(['changedFiles', 'openFiles', 'viewer', 'currentMergeRequestId']),
+    ...mapState([
+      'changedFiles',
+      'openFiles',
+      'viewer',
+      'currentMergeRequestId',
+      'fileFindVisible',
+    ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
   mounted() {
@@ -50,6 +58,9 @@ export default {
   <div
     class="ide-view"
   >
+    <find-file
+      v-if="fileFindVisible"
+    />
     <ide-sidebar />
     <div
       class="multi-file-edit-pane"
