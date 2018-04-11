@@ -13,7 +13,7 @@
 
   = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
     .form-group
-      .checkbox
+      .form-check
         = deploy_keys_project_form.label :can_push do
           = deploy_keys_project_form.check_box :can_push
           %strong Write access allowed

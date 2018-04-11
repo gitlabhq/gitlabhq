@@ -10,7 +10,7 @@
 .form-group
   .col-sm-10.col-sm-offset-2
     - if issuable.can_remove_source_branch?(current_user)
-      .checkbox
+      .form-check
         = label_tag 'merge_request[force_remove_source_branch]' do
           = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
           = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?

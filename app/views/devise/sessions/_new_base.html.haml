@@ -6,7 +6,7 @@
     = f.label :password
     = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required."
   - if devise_mapping.rememberable?
-    .remember-me.checkbox
+    .remember-me.form-check
       %label{ for: "user_remember_me" }
         = f.check_box :remember_me, class: 'remember-me-checkbox'
         %span Remember me

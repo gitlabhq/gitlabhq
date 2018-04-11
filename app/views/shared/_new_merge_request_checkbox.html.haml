@@ -1,4 +1,4 @@
-.checkbox
+.form-check
   - nonce = SecureRandom.hex
   = label_tag "create_merge_request-#{nonce}" do
     = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"

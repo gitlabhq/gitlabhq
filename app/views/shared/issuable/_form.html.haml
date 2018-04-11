@@ -22,7 +22,7 @@
 - if issuable.respond_to?(:confidential)
   .form-group
     .col-sm-offset-2.col-sm-10
-      .checkbox
+      .form-check
         = form.label :confidential do
           = form.check_box :confidential
           This issue is confidential and should only be visible to team members with at least Reporter access.

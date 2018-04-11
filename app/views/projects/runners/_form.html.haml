@@ -3,25 +3,25 @@
   .form-group
     = label :active, "Active", class: 'control-label'
     .col-sm-10
-      .checkbox
+      .form-check
         = f.check_box :active
         %span.light Paused Runners don't accept new jobs
   .form-group
     = label :protected, "Protected", class: 'control-label'
     .col-sm-10
-      .checkbox
+      .form-check
         = f.check_box :access_level, {}, 'ref_protected', 'not_protected'
         %span.light This runner will only run on pipelines triggered on protected branches
   .form-group
     = label :run_untagged, 'Run untagged jobs', class: 'control-label'
     .col-sm-10
-      .checkbox
+      .form-check
         = f.check_box :run_untagged
         %span.light Indicates whether this runner can pick jobs without tags
   .form-group
     = label :locked, 'Lock to current projects', class: 'control-label'
     .col-sm-10
-      .checkbox
+      .form-check
         = f.check_box :locked
         %span.light When a runner is locked, it cannot be assigned to other projects
   .form-group

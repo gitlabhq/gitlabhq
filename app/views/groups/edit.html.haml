@@ -31,7 +31,7 @@
         %label.control-label
           = s_("GroupSettings|Share with group lock")
         .col-sm-10
-          .checkbox
+          .form-check
             = f.label :share_with_group_lock do
               = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group)
               %strong

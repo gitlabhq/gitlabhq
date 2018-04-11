@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
             Enable version check
@@ -15,7 +15,7 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
-        .checkbox
+        .form-check
           = f.label :usage_ping_enabled do
             = f.check_box :usage_ping_enabled, disabled: !can_be_configured
             Enable usage ping

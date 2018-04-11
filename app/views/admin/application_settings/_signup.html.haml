@@ -4,13 +4,13 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :signup_enabled do
             = f.check_box :signup_enabled
             Sign-up enabled
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :send_user_confirmation_email do
             = f.check_box :send_user_confirmation_email
             Send confirmation email on sign-up
@@ -22,7 +22,7 @@
     .form-group
       = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'control-label col-sm-2'
       .col-sm-10
-        .checkbox
+        .form-check
           = f.label :domain_blacklist_enabled do
             = f.check_box :domain_blacklist_enabled
             Enable domain blacklist for sign ups

@@ -6,7 +6,7 @@
       %h4 Repository checks
       .form-group
         .col-sm-offset-2.col-sm-10
-          .checkbox
+          .form-check
             = f.label :repository_checks_enabled do
               = f.check_box :repository_checks_enabled
               Enable Repository Checks
@@ -24,7 +24,7 @@
       %h4 Housekeeping
       .form-group
         .col-sm-offset-2.col-sm-10
-          .checkbox
+          .form-check
             = f.label :housekeeping_enabled do
               = f.check_box :housekeeping_enabled
               Enable automatic repository housekeeping (git repack, git gc)
@@ -33,7 +33,7 @@
               repository access on your GitLab server will become slower and your
               repositories will use more disk space. We recommend to always leave
               this enabled.
-          .checkbox
+          .form-check
             = f.label :housekeeping_bitmaps_enabled do
               = f.check_box :housekeeping_bitmaps_enabled
               Enable Git pack file bitmap creation

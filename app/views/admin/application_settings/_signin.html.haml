@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :password_authentication_enabled_for_web do
             = f.check_box :password_authentication_enabled_for_web
             Password authentication enabled for web interface
@@ -12,7 +12,7 @@
               When disabled, an external authentication provider must be used.
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :password_authentication_enabled_for_git do
             = f.check_box :password_authentication_enabled_for_git
             Password authentication enabled for Git over HTTP(S)
@@ -31,7 +31,7 @@
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
-        .checkbox
+        .form-check
           = f.label :require_two_factor_authentication do
             = f.check_box :require_two_factor_authentication
             Require all users to setup Two-factor authentication

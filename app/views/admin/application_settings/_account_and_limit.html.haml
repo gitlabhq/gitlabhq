@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :gravatar_enabled do
             = f.check_box :gravatar_enabled
             Gravatar enabled
@@ -24,14 +24,14 @@
     .form-group
       = f.label :user_oauth_applications, 'User OAuth applications', class: 'control-label col-sm-2'
       .col-sm-10
-        .checkbox
+        .form-check
           = f.label :user_oauth_applications do
             = f.check_box :user_oauth_applications
             Allow users to register any application to use GitLab as an OAuth provider
     .form-group
       = f.label :user_default_external, 'New users set to external', class: 'control-label col-sm-2'
       .col-sm-10
-        .checkbox
+        .form-check
           = f.label :user_default_external do
             = f.check_box :user_default_external
             Newly registered users will by default be external

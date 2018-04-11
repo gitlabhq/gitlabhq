@@ -10,7 +10,7 @@
       = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :metrics_enabled do
             = f.check_box :metrics_enabled
             Enable InfluxDB Metrics

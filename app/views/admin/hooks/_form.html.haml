@@ -46,7 +46,7 @@
           This URL will be triggered when a merge request is created/updated/merged
 .form-group
   = form.label :enable_ssl_verification, 'SSL verification', class: 'label-light checkbox'
-  .checkbox
+  .form-check
     = form.label :enable_ssl_verification do
       = form.check_box :enable_ssl_verification
       %strong Enable SSL verification

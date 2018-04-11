@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :sentry_enabled do
             = f.check_box :sentry_enabled
             Enable Sentry
@@ -20,7 +20,7 @@
 
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :clientside_sentry_enabled do
             = f.check_box :clientside_sentry_enabled
             Enable Clientside Sentry

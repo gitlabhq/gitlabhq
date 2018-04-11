@@ -24,7 +24,7 @@
         - checkbox_name = 'application_setting[restricted_visibility_levels][]'
         = hidden_field_tag(checkbox_name)
         - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
-          .checkbox
+          .form-check
             = level
         %span.help-block#restricted-visibility-help
           Selected levels cannot be used by non-admin users for projects or snippets.
@@ -33,7 +33,7 @@
       = f.label :import_sources, class: 'control-label col-sm-2'
       .col-sm-10
         - import_sources_checkboxes('import-sources-help').each do |source|
-          .checkbox= source
+          .form-check= source
         %span.help-block#import-sources-help
           Enabled sources for code import during project creation. OmniAuth must be configured for GitHub
           = link_to "(?)", help_page_path("integration/github")
@@ -44,7 +44,7 @@
 
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :project_export_enabled do
             = f.check_box :project_export_enabled
             Project export enabled

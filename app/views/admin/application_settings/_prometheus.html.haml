@@ -13,7 +13,7 @@
       = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/index')
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics

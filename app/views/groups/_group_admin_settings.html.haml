@@ -2,7 +2,7 @@
   .form-group
     = f.label :lfs_enabled, 'Large File Storage', class: 'control-label'
     .col-sm-10
-      .checkbox
+      .form-check
         = f.label :lfs_enabled do
           = f.check_box :lfs_enabled, checked: @group.lfs_enabled?
           %strong
@@ -15,7 +15,7 @@
   .form-group
     = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
     .col-sm-10
-      .checkbox
+      .form-check
         = f.label :require_two_factor_authentication do
           = f.check_box :require_two_factor_authentication
           %strong
@@ -23,6 +23,6 @@
             = link_to icon('question-circle'), help_page_path('security/two_factor_authentication', anchor: 'enforcing-2fa-for-all-users-in-a-group')
   .form-group
     .col-sm-offset-2.col-sm-10
-      .checkbox
+      .form-check
         = f.text_field :two_factor_grace_period, class: 'form-control'
         .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication

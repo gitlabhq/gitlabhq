@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :email_author_in_body do
             = f.check_box :email_author_in_body
             Include author name in notification email body
@@ -14,7 +14,7 @@
             merge request or comment in the email body instead.
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :html_emails_enabled do
             = f.check_box :html_emails_enabled
             Enable HTML emails

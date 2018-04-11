@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :throttle_unauthenticated_enabled do
             = f.check_box :throttle_unauthenticated_enabled
             Enable unauthenticated request rate limit
@@ -20,7 +20,7 @@
         = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :throttle_authenticated_api_enabled do
             = f.check_box :throttle_authenticated_api_enabled
             Enable authenticated API request rate limit
@@ -36,7 +36,7 @@
         = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :throttle_authenticated_web_enabled do
             = f.check_box :throttle_authenticated_web_enabled
             Enable authenticated web request rate limit

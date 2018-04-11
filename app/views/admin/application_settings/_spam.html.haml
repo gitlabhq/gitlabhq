@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :recaptcha_enabled do
             = f.check_box :recaptcha_enabled
             Enable reCAPTCHA
@@ -25,7 +25,7 @@
 
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :akismet_enabled do
             = f.check_box :akismet_enabled
             Enable Akismet
@@ -41,7 +41,7 @@
 
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :unique_ips_limit_enabled do
             = f.check_box :unique_ips_limit_enabled
             Limit sign in from multiple ips

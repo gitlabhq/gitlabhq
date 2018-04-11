@@ -90,7 +90,7 @@
 
         %hr
         .form-group
-          .checkbox
+          .form-check
             = f.label :public_builds do
               = f.check_box :public_builds
               %strong Public pipelines
@@ -112,7 +112,7 @@
 
         %hr
         .form-group
-          .checkbox
+          .form-check
             = f.label :auto_cancel_pending_pipelines do
               = f.check_box :auto_cancel_pending_pipelines, {}, 'enabled', 'disabled'
               %strong Auto-cancel redundant, pending pipelines

@@ -11,7 +11,7 @@
   .control-label
     = _('Contribution')
   .col-sm-10
-    .checkbox
+    .form-check
       = form.label :allow_maintainer_to_push do
         = form.check_box :allow_maintainer_to_push, disabled: !issuable.can_allow_maintainer_to_push?(current_user)
         = _('Allow edits from maintainers.')

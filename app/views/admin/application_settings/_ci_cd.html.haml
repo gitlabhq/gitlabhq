@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :auto_devops_enabled do
             = f.check_box :auto_devops_enabled
             Enabled Auto DevOps (Beta) for projects by default
@@ -19,7 +19,7 @@
           = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
     .form-group
       .col-sm-offset-2.col-sm-10
-        .checkbox
+        .form-check
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
