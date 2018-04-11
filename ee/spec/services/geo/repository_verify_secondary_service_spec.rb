@@ -10,12 +10,14 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
   end
 
   shared_examples 'verify checksums for repositories/wikis' do |type|
+    let(:repository) { find_repository(type) }
+
     subject(:service)  { described_class.new(registry, type) }
 
     it 'does not calculate the checksum when not running on a secondary' do
       allow(Gitlab::Geo).to receive(:secondary?) { false }
 
-      expect(registry.project.repository).not_to receive(:checksum)
+      expect(repository).not_to receive(:checksum)
 
       service.execute
     end
@@ -23,7 +25,7 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
     it 'does not verify the checksum if resync is needed' do
       registry.assign_attributes("resync_#{type}" => true)
 
-      expect(registry.project.repository).not_to receive(:checksum)
+      expect(repository).not_to receive(:checksum)
 
       service.execute
     end
@@ -31,7 +33,7 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
     it 'does not verify the checksum if primary was never verified' do
       repository_state.assign_attributes("#{type}_verification_checksum" => nil)
 
-      expect(registry.project.repository).not_to receive(:checksum)
+      expect(repository).not_to receive(:checksum)
 
       service.execute
     end
@@ -40,23 +42,30 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
       repository_state.assign_attributes("#{type}_verification_checksum" => 'my_checksum')
       registry.assign_attributes("#{type}_verification_checksum_sha" => 'my_checksum')
 
-      expect(registry.project.repository).not_to receive(:checksum)
+      expect(repository).not_to receive(:checksum)
 
       service.execute
     end
 
     it 'sets checksum when the checksum matches' do
-      expect(registry.project.repository).to receive(:checksum).and_return('my_checksum')
+      expect(repository).to receive(:checksum).and_return('my_checksum')
 
       expect { service.execute }.to change(registry, "#{type}_verification_checksum_sha")
         .from(nil).to('my_checksum')
     end
 
     it 'keeps track of failure when the checksum mismatch' do
-      expect(registry.project.repository).to receive(:checksum).and_return('other_checksum')
+      expect(repository).to receive(:checksum).and_return('other_checksum')
 
       expect { service.execute }.to change(registry, "last_#{type}_verification_failure")
         .from(nil).to(/#{Regexp.quote(type.to_s.capitalize)} checksum mismatch/)
+    end
+
+    def find_repository(type)
+      case type
+      when :repository then project.repository
+      when :wiki then project.wiki.repository
+      end
     end
   end
 
