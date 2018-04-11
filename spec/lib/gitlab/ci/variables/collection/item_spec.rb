@@ -5,6 +5,18 @@ describe Gitlab::Ci::Variables::Collection::Item do
     { key: 'VAR', value: 'something', public: true }
   end
 
+  describe '.new' do
+    it 'raises error if unknown key i specified' do
+      expect { described_class.new(key: 'VAR', value: 'abc', files: true) }
+        .to raise_error ArgumentError, 'unknown keyword: files'
+    end
+
+    it 'raises error when required keywords are not specified' do
+      expect { described_class.new(key: 'VAR') }
+        .to raise_error ArgumentError, 'missing keyword: value'
+    end
+  end
+
   describe '.fabricate' do
     it 'supports using a hash' do
       resource = described_class.fabricate(variable)
@@ -47,12 +59,25 @@ describe Gitlab::Ci::Variables::Collection::Item do
   end
 
   describe '#to_runner_variable' do
-    it 'returns a runner-compatible hash representation' do
-      runner_variable = described_class
-        .new(**variable)
-        .to_runner_variable
+    context 'when variable is not a file-related' do
+      it 'returns a runner-compatible hash representation' do
+        runner_variable = described_class
+          .new(**variable)
+          .to_runner_variable
 
-      expect(runner_variable).to eq variable
+        expect(runner_variable).to eq variable
+      end
+    end
+
+    context 'when variable is file-related' do
+      it 'appends file description component' do
+        runner_variable = described_class
+          .new(key: 'VAR', value: 'value', file: true)
+          .to_runner_variable
+
+        expect(runner_variable)
+          .to eq(key: 'VAR', value: 'value', public: true, file: true)
+      end
     end
   end
 end
