@@ -3585,4 +3585,44 @@ describe Project do
       it { is_expected.not_to be_valid }
     end
   end
+
+  describe '#auto_devops_conflicts_ci_config_path?' do
+    let(:project) { create(:project) }
+
+    subject { project.auto_devops_conflicts_ci_config_path? }
+
+    before do
+      project.create_auto_devops!(enabled: nil)
+    end
+
+    context 'when auto_devops was enabled' do
+      before do
+        allow(project.auto_devops).to receive(:previous_changes).and_return('enabled' => true)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto_devops is not enabled' do
+      before do
+        allow(project.auto_devops).to receive(:enabled?).and_return(false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto_devops is enabled' do
+      before do
+        allow(project.auto_devops).to receive(:enabled?).and_return(true)
+      end
+
+      context 'when custom CI path is set' do
+        before do
+          allow(project).to receive_message_chain(:ci_config_path, :present?).and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
 end
