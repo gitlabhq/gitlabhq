@@ -105,7 +105,7 @@ Visit the **Admin Area ➔ Geo nodes** dashboard on the **secondary** node to
 review status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in grey), consider giving the node more
-time to complete 
+time to complete
 
 ![Replication status](img/replication-status.png)
 
@@ -187,38 +187,45 @@ Until a [read-only mode][ce-19739] is implemented, updates must be prevented
 from happening manually. Note that your **secondary** still needs read-only
 access to the primary for the duration of the maintenance window.
 
-At the scheduled time, using your cloud provider or your node's firewall, block
-all HTTP, HTTPS and SSH traffic to/from the primary, **except** for your IP and
-the secondary's IP.
+1. At the scheduled time, using your cloud provider or your node's firewall, block
+   all HTTP, HTTPS and SSH traffic to/from the primary, **except** for your IP and
+   the secondary's IP.
+        
+     For instance, if your secondary originates all its traffic from `5.6.7.8` and
+     your IP is `100.0.0.1`, you might run the following commands on the server(s)
+     making up your primary node:
 
-For instance, if your secondary originates all its traffic from `5.6.7.8` and
-your IP is `100.0.0.1`, you might run the following commands on the server(s)
-making up your primary node:
+     ```
+     sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 22 -j ACCEPT
+     sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 22 -j ACCEPT
+     sudo iptables -A INPUT --destination-port 22 -j REJECT
 
-```
-sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 22 -j ACCEPT
-sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 22 -j ACCEPT
-sudo iptables -A INPUT --destination-port 22 -j REJECT
+     sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 80 -j ACCEPT
+     sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 80 -j ACCEPT
+     sudo iptables -A INPUT --tcp-dport 80 -j REJECT
 
-sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 80 -j ACCEPT
-sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 80 -j ACCEPT
-sudo iptables -A INPUT --tcp-dport 80 -j REJECT
+     sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 443 -j ACCEPT
+     sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 443 -j ACCEPT
+     sudo iptables -A INPUT --tcp-dport 443 -j REJECT
+     ```
 
-sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 443 -j ACCEPT
-sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 443 -j ACCEPT
-sudo iptables -A INPUT --tcp-dport 443 -j REJECT
-```
+     From this point, users will be unable to view their data or make changes on the
+     **primary** node. They will also be unable to log in to the **secondary** node,
+     but existing sessions will work for the remainder of the maintenance period, and
+     public data will be accessible throughout.
 
-From this point, users will be unable to view their data or make changes on the
-**primary** node. They will also be unable to log in to the **secondary** node,
-but existing sessions will work for the remainder of the maintenance period, and
-public data will be accessible throughout.
+1. Verify the primary is blocked to HTTP traffic by visiting it in browser via
+   another IP. The server should refuse connection.
 
-Next, disable non-Geo periodic background jobs on the primary node by navigating
-to **Admin Area ➔ Monitoring ➔ Background Jobs ➔ Cron** , pressing `Disable All`,
-and then pressing `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
-This job will re-enable several other cron jobs that are essential for planned
-failover to complete successfully.
+1. Verify the primary is blocked to Git over SSH traffic by attempting to pull an
+   existing Git repository with an SSH remote URL. The server should refuse
+   connection.
+
+1. Disable non-Geo periodic background jobs on the primary node by navigating
+   to **Admin Area ➔ Monitoring ➔ Background Jobs ➔ Cron** , pressing `Disable All`,
+   and then pressing `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
+   This job will re-enable several other cron jobs that are essential for planned
+   failover to complete successfully.
 
 ## Finish replicating and verifying all data
 
@@ -230,7 +237,6 @@ failover to complete successfully.
    before it is completed will cause the work to be lost!
 1. On the **primary**, navigate to **Admin Area ➔ Geo Nodes** and wait for the
    following conditions to be true of the **secondary** you are failing over to:
-
     * All replication meters to each 100% replicated, 0% failures
     * All verification meters reach 100% verified, 0% failures
     * Database replication lag is 0ms
@@ -255,6 +261,8 @@ Once it is completed, the maintenance window is over! Your new primary will now
 begin to diverge from the old one. If problems do arise at this point, failing
 back to the old primary [is possible][bring-primary-back], but likely to result
 in the loss of any data uploaded to the new primary in the meantime.
+
+Don't forget to remove the broadcast message after failover is complete.
 
 [bring-primary-back]: bring_primary_back.md
 [ce-19739]: https://gitlab.com/gitlab-org/gitlab-ce/issues/19739
