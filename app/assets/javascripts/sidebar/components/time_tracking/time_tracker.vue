@@ -1,5 +1,5 @@
 <script>
-import timeTrackingHelpState from './help_state';
+import TimeTrackingHelpState from './help_state.vue';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import timeTrackingSpentOnlyPane from './spent_only_pane';
 import timeTrackingNoTrackingPane from './no_tracking_pane';
@@ -16,7 +16,7 @@ export default {
     'time-tracking-spent-only-pane': timeTrackingSpentOnlyPane,
     'time-tracking-no-tracking-pane': timeTrackingNoTrackingPane,
     TimeTrackingComparisonPane,
-    'time-tracking-help-state': timeTrackingHelpState,
+    TimeTrackingHelpState,
   },
   props: {
     time_estimate: {
