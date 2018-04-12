@@ -383,12 +383,12 @@ into your project to enable staging and canary deployments, and more.
 ### Custom buildpacks
 
 If the automatic buildpack detection fails for your project, or if you want to
-use a custom buildpack, you can override the buildpack using a project variable
-or a `.buildpack` file in your project:
+use a custom buildpack, you can override the buildpack(s) using a project variable
+or a `.buildpacks` file in your project:
 
 - **Project variable** - Create a project variable `BUILDPACK_URL` with the URL
   of the buildpack to use.
-- **`.buildpack` file** - Add a file in your project's repo called  `.buildpack`
+- **`.buildpacks` file** - Add a file in your project's repo called  `.buildpacks`
   and add the URL of the buildpack to use on a line in the file. If you want to
   use multiple buildpacks, you can enter them in, one on each line.
 
