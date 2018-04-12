@@ -15,6 +15,17 @@ GitLab [administrators](../README.md#administrator-documentation) receive all pe
 To add or import a user, you can follow the
 [project members documentation](../user/project/members/index.md).
 
+## Principles
+
+Use this section as guidance for using existing and developing new features.
+
+1. All admin-only features should be within admin area. Outside of the admin area an admin should behave as regular user with highest access role. 
+2. Guest role for private projects should be equal to no role for public or internal project.  
+2. Reporter role is created to give user a maximum access to a project or group but without ability to modify source code or any other business critical resources.
+3. Developer role should receive as much permissions as possible except those that are either destructive (ex. remove project) or restricted on purpose by higher role. 
+4. Master or owner roles should not be necessary for a daily workflow. The purpose of those roles is to do initial setup and maintainance. 
+
+
 ## Project members permissions
 
 The following table depicts the various user permission levels in a project.
