@@ -37,14 +37,12 @@ export const hasChanges = state => !!state.changedFiles.length;
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
 export const allBlobs = state =>
-  Object.keys(state.entries)
-    .reduce((acc, key) => {
-      const entry = state.entries[key];
+  Object.keys(state.entries).reduce((acc, key) => {
+    const entry = state.entries[key];
 
-      if (entry.type === 'blob') {
-        acc.push(entry);
-      }
+    if (entry.type === 'blob') {
+      acc.push(entry);
+    }
 
-      return acc;
-    }, [])
-    .sort((a, b) => b.lastOpenedAt > a.lastOpenedAt);
+    return acc;
+  }, []);

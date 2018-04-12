@@ -24,7 +24,8 @@ export default {
     filteredBlobs() {
       const searchText = this.searchText.trim();
 
-      if (searchText === '') return this.allBlobs.slice(0, MAX_RESULTS);
+      if (searchText === '')
+        return this.allBlobs.sort((a, b) => b.lastOpenedAt - a.lastOpenedAt).slice(0, MAX_RESULTS);
 
       return fuzzaldrinPlus.filter(this.allBlobs, searchText, {
         key: 'path',
