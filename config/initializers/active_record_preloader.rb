@@ -14,7 +14,7 @@ module ActiveRecord
   end
 end
 
-
+# rubocop:disable all
 class ActiveRecord::Associations::Preloader::Association
   def build_scope
     scope = klass.unscoped
@@ -55,3 +55,4 @@ class ActiveRecord::Associations::Preloader::Association
     klass.default_scoped.merge(scope)
   end
 end
+# rubocop:enable all
