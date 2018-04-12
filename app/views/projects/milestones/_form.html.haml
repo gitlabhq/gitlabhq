@@ -3,11 +3,11 @@
   .row
     .col-md-6
       .form-group.row
-        = f.label :title, "Title", class: "col-form-label"
+        = f.label :title, "Title", class: "col-form-label col-sm-2"
         .col-sm-10
           = f.text_field :title, maxlength: 255, class: "form-control", required: true, autofocus: true
       .form-group.row.milestone-description
-        = f.label :description, "Description", class: "col-form-label"
+        = f.label :description, "Description", class: "col-form-label col-sm-2"
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project) } do
             = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...'

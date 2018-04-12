@@ -6,7 +6,7 @@
     = form_errors(@snippet)
 
     .form-group.row
-      = f.label :title, class: 'col-form-label'
+      = f.label :title, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :title, class: 'form-control', required: true, autofocus: true
 
@@ -16,7 +16,7 @@
 
     .file-editor
       .form-group.row
-        = f.label :file_name, "File", class: 'col-form-label'
+        = f.label :file_name, "File", class: 'col-form-label col-sm-2'
         .col-sm-10
           .file-holder.snippet
             .js-file-title.file-title

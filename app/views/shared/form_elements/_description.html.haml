@@ -10,7 +10,7 @@
   - preview_url = preview_markdown_path(project)
 
 .form-group.row.detail-page-description
-  = form.label :description, 'Description', class: 'col-form-label'
+  = form.label :description, 'Description', class: 'col-form-label col-sm-2'
   .col-sm-10
 
     = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do

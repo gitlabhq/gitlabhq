@@ -7,7 +7,7 @@
 %hr
 = form_tag apply_import_project_project_members_path(@project), method: 'post' do
   .form-group.row
-    = label_tag :source_project_id, "Project", class: 'col-form-label'
+    = label_tag :source_project_id, "Project", class: 'col-form-label col-sm-2'
     .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(@projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
 
   .form-actions

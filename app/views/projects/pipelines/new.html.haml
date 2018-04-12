@@ -8,7 +8,7 @@
 = form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "js-new-pipeline-form js-requires-input" } do |f|
   = form_errors(@pipeline)
   .form-group.row
-    = f.label :ref, 'Create for', class: 'col-form-label'
+    = f.label :ref, 'Create for', class: 'col-form-label col-sm-2'
     .col-sm-10
       = hidden_field_tag 'pipeline[ref]', params[:ref] || @project.default_branch
       = dropdown_tag(params[:ref] || @project.default_branch,
