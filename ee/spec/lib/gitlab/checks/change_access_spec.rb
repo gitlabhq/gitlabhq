@@ -250,7 +250,7 @@ describe Gitlab::Checks::ChangeAccess do
         let(:push_rule) { create(:push_rule, max_file_size: 1) }
 
         before do
-          allow_any_instance_of(Blob).to receive(:size).and_return(2.megabytes)
+          allow_any_instance_of(::Gitlab::Git::RawDiffChange).to receive(:blob_size).and_return(2.megabytes)
         end
 
         it_behaves_like 'check ignored when push rule unlicensed'
