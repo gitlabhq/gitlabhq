@@ -53,11 +53,11 @@ shared_examples 'sync retries use the snapshot RPC' do
 
   context 'snapshot synchronization method' do
     before do
-      allow(subject).to receive(:build_temporary_repository) { repository }
+      allow(subject).to receive(:temp_repo) { repository }
     end
 
     def receive_create_from_snapshot
-      receive(:create_from_snapshot).with(primary.snapshot_url(repository), match(/^GL-Geo/))
+      receive(:create_from_snapshot).with(primary.snapshot_url(repository), match(/^GL-Geo/)) { Gitaly::CreateRepositoryFromSnapshotResponse.new }
     end
 
     it 'does not attempt to snapshot for initial sync' do
@@ -79,9 +79,9 @@ shared_examples 'sync retries use the snapshot RPC' do
     context 'registry is ready to be snapshotted' do
       let!(:registry) { create(:geo_project_registry, project: project, repository_retry_count: retry_count + 1, wiki_retry_count: retry_count + 1) }
 
-      it 'attempts to snapshot + fetch' do
+      it 'attempts to snapshot' do
         expect(repository).to receive_create_from_snapshot
-        expect(subject).to receive(:fetch_geo_mirror).with(repository)
+        expect(subject).not_to receive(:fetch_geo_mirror).with(repository)
 
         subject.execute
       end
