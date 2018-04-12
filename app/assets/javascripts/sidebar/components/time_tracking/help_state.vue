@@ -1,7 +1,8 @@
+<script>
 import { sprintf, s__ } from '../../../locale';
 
 export default {
-  name: 'time-tracking-help-state',
+  name: 'TimeTrackingHelpState',
   props: {
     rootPath: {
       type: String,
@@ -27,26 +28,28 @@ export default {
       );
     },
   },
-  template: `
-    <div class="time-tracking-help-state">
-      <div class="time-tracking-info">
-        <h4>
-          {{ __('Track time with quick actions') }}
-        </h4>
-        <p>
-          {{ __('Quick actions can be used in the issues description and comment boxes.') }}
-        </p>
-        <p v-html="estimateText">
-        </p>
-        <p v-html="spendText">
-        </p>
-        <a
-          class="btn btn-default learn-more-button"
-          :href="href"
-        >
-          {{ __('Learn more') }}
-        </a>
-      </div>
-    </div>
-  `,
 };
+</script>
+
+<template>
+  <div class="time-tracking-help-state">
+    <div class="time-tracking-info">
+      <h4>
+        {{ __('Track time with quick actions') }}
+      </h4>
+      <p>
+        {{ __('Quick actions can be used in the issues description and comment boxes.') }}
+      </p>
+      <p v-html="estimateText">
+      </p>
+      <p v-html="spendText">
+      </p>
+      <a
+        class="btn btn-default learn-more-button"
+        :href="href"
+      >
+        {{ __('Learn more') }}
+      </a>
+    </div>
+  </div>
+</template>
