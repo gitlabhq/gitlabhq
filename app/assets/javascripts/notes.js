@@ -19,7 +19,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
 import syntaxHighlight from '~/syntax_highlight';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
@@ -1434,10 +1434,11 @@ export default class Notes {
   static renderDiffError($container) {
     $container.find('.line_content').html(
       $(`
-        <div class="nothing-here-block">
-          ${__(
-            'Unable to load the diff.',
-          )} <a class="js-toggle-lazy-diff" href="javascript:void(0)">Try again</a>?
+        <div class="js-error-load-lazy-diff nothing-here-block">
+          ${sprintf(__('Unable to load the diff.%{buttonStartTag}Try again%{buttonEndTag}?'), {
+            buttonStartTag: '<button type="button" class="btn-link btn-no-padding js-toggle-lazy-diff">',
+            buttonEndTag: '</button>'
+          }, false)}
         </div>
       `),
     );
@@ -1455,7 +1456,12 @@ export default class Notes {
     const fileHolder = $container.find('.file-holder');
     const url = fileHolder.data('linesPath');
 
-    axios
+    /**
+     * We only fetch resolved discussions.
+     * Unresolved discussions don't have an endpoint being provided.
+     */
+    if (url) {
+      axios
       .get(url)
       .then(({ data }) => {
         Notes.renderDiffContent($container, data);
@@ -1463,6 +1469,7 @@ export default class Notes {
       .catch(() => {
         Notes.renderDiffError($container);
       });
+    }
   }
 
   toggleCommitList(e) {

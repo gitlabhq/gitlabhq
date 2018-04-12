@@ -485,3 +485,7 @@ fieldset[disabled] .btn,
     @extend %disabled;
   }
 }
+
+.btn-no-padding {
+  padding: 0;
+}

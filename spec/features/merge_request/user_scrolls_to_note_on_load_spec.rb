@@ -27,6 +27,24 @@ describe 'Merge request > User scrolls to note on load', :js do
     expect(fragment_position_top).to be < (page_scroll_y + page_height)
   end
 
+  it 'renders un-collapsed notes with diff' do
+    page.current_window.resize_to(1000, 1000)
+
+    visit "#{project_merge_request_path(project, merge_request)}#{fragment_id}"
+
+    page.execute_script "window.scrollTo(0,0)"
+
+    note_element = find(fragment_id)
+    note_container = note_element.ancestor('.js-toggle-container')
+
+    expect(note_element.visible?).to eq true
+
+    page.within note_container do
+      expect(page).not_to have_selector('.js-error-load-lazy-diff')
+    end
+
+  end
+
   it 'expands collapsed notes' do
     visit "#{project_merge_request_path(project, merge_request)}#{collapsed_fragment_id}"
     note_element = find(collapsed_fragment_id)

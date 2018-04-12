@@ -7,7 +7,7 @@
 - unless expanded
   - diff_data = { lines_path: project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion) }
 
-.diff-file.file-holder{ class: diff_file_class, data: diff_data }
+.diff-file.file-holder.js-lazy-load-discussion{ class: diff_file_class, data: diff_data }
   .js-file-title.file-title.file-title-flex-parent
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: discussion_path(discussion), show_toggle: false
