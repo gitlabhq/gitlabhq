@@ -57,7 +57,7 @@
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
 
-    - if @build.has_trace?
+    - if @build.running? || @build.has_trace?
       .build-trace-container.prepend-top-default
         .top-bar.js-top-bar
           .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
