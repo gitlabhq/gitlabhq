@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405074130) do
+ActiveRecord::Schema.define(version: 20180412213305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20180405074130) do
     t.boolean "missing_on_primary", default: false, null: false
   end
 
+  add_index "job_artifact_registry", ["artifact_id"], name: "index_job_artifact_registry_on_artifact_id", using: :btree
   add_index "job_artifact_registry", ["retry_at"], name: "index_job_artifact_registry_on_retry_at", using: :btree
   add_index "job_artifact_registry", ["success"], name: "index_job_artifact_registry_on_success", using: :btree
 
