@@ -1,9 +1,6 @@
 class ProjectPolicy < BasePolicy
   extend ClassMethods
-<<<<<<< HEAD
   prepend EE::ProjectPolicy
-=======
->>>>>>> upstream/master
 
   READONLY_FEATURES_WHEN_ARCHIVED = %i[
     issue
