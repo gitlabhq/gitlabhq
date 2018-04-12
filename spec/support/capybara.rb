@@ -7,6 +7,16 @@ require 'selenium-webdriver'
 # Give CI some extra time
 timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
+# Define an error class for JS console messages
+JSConsoleError = Class.new(StandardError)
+
+# Filter out innocuous JS console messages
+JS_CONSOLE_FILTER = Regexp.union([
+  '"[HMR] Waiting for update signal from WDS..."',
+  '"[WDS] Hot Module Replacement enabled."',
+  "Download the Vue Devtools extension"
+])
+
 Capybara.register_driver :chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     # This enables access to logs with `page.driver.manage.get_log(:browser)`
@@ -78,6 +88,15 @@ RSpec.configure do |config|
   end
 
   config.after(:example, :js) do |example|
+    # when a test fails, display any messages in the browser's console
+    if example.exception
+      console = page.driver.browser.manage.logs.get(:browser).try(:reject) { |log| log.message =~ JS_CONSOLE_FILTER }
+      if console.present?
+        message = "Unexpected browser console output:\n" + console.map(&:message).join("\n")
+        raise JSConsoleError, message
+      end
+    end
+
     # prevent localStorage from introducing side effects based on test order
     unless ['', 'about:blank', 'data:,'].include? Capybara.current_session.driver.browser.current_url
       execute_script("localStorage.clear();")
