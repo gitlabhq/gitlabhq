@@ -129,8 +129,8 @@ You may see a temporary error message `SchedulerPredicates failed due to Persist
 Add the GitLab Helm repository and initialize Helm:
 
 ```bash
-helm repo add gitlab https://charts.gitlab.io
 helm init
+helm repo add gitlab https://charts.gitlab.io
 ```
 
 Once you have reviewed the [configuration settings](#configuring-and-installing-gitlab) you can install the chart. We recommending saving your configuration options in a `values.yaml` file for easier upgrades in the future.
