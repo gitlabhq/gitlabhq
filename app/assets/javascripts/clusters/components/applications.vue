@@ -182,11 +182,11 @@
                     :value="ingressExternalIp"
                     readonly
                   />
-                  <span class="input-group-btn">
+                  <span class="input-group-append">
                     <clipboard-button
                       :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      class="js-clipboard-btn"
+                      class="input-group-text js-clipboard-btn"
                     />
                   </span>
                 </div>

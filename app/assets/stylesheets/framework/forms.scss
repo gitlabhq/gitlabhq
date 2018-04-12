@@ -83,7 +83,8 @@ label {
     font-family: $monospace_font;
   }
 
-  .input-group-btn .btn {
+  .input-group-prepend .btn,
+  .input-group-append .btn {
     padding: 3px $gl-btn-padding;
     background-color: $gray-light;
     border: 1px solid $border-color;

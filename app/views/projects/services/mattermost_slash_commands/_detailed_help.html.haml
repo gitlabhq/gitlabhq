@@ -21,15 +21,17 @@
     = label_tag :display_name, 'Display name', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :display_name, "GitLab / #{@project.full_name}", class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#display_name')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#display_name')
 
   .form-group
     = label_tag :description, 'Description', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#description')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#description')
 
   .form-group
     = label_tag nil, 'Command trigger word', class: 'col-sm-2 col-12 col-form-label'
@@ -45,8 +47,9 @@
     = label_tag :request_url, 'Request URL', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :request_url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#request_url')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#request_url')
 
   .form-group
     = label_tag nil, 'Request method', class: 'col-sm-2 col-12 col-form-label'
@@ -56,15 +59,17 @@
     = label_tag :response_username, 'Response username', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :response_username, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#response_username')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#response_username')
 
   .form-group
     = label_tag :response_icon, 'Response icon', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#response_icon')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#response_icon')
 
   .form-group
     = label_tag nil, 'Autocomplete', class: 'col-sm-2 col-12 col-form-label'
@@ -74,15 +79,17 @@
     = label_tag :autocomplete_hint, 'Autocomplete hint', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :autocomplete_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#autocomplete_hint')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#autocomplete_hint')
 
   .form-group
     = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-12 col-form-label'
     .col-sm-10.col-12.input-group
       = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
-      .input-group-btn
-        = clipboard_button(target: '#autocomplete_description')
+      .input-group-append
+        .input-group-text
+          = clipboard_button(target: '#autocomplete_description')
 
 %hr
 

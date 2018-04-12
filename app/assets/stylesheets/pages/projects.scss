@@ -912,7 +912,8 @@ pre.light-well {
 }
 
 .project-tip-command {
-  > .input-group-btn:first-child {
+  > .input-group-prepend:first-child,
+  > .input-group-append:first-child {
     width: auto;
   }
 }

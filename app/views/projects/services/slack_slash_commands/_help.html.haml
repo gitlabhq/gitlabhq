@@ -39,8 +39,9 @@
         = label_tag :url, 'URL', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-btn
-            = clipboard_button(target: '#url')
+          .input-group-append
+            .input-group-text
+              = clipboard_button(target: '#url')
 
       .form-group
         = label_tag nil, 'Method', class: 'col-sm-2 col-12 col-form-label'
@@ -50,8 +51,9 @@
         = label_tag :customize_name, 'Customize name', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-btn
-            = clipboard_button(target: '#customize_name')
+          .input-group-append
+            .input-group-text
+              = clipboard_button(target: '#customize_name')
 
       .form-group
         = label_tag nil, 'Customize icon', class: 'col-sm-2 col-12 col-form-label'
@@ -67,22 +69,25 @@
         = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-btn
-            = clipboard_button(target: '#autocomplete_description')
+          .input-group-append
+            .input-group-text
+              = clipboard_button(target: '#autocomplete_description')
 
       .form-group
         = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-btn
-            = clipboard_button(target: '#autocomplete_usage_hint')
+          .input-group-append
+            .input-group-text
+              = clipboard_button(target: '#autocomplete_usage_hint')
 
       .form-group
         = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :descriptive_label, 'Perform common operations on GitLab project', class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-btn
-            = clipboard_button(target: '#descriptive_label')
+          .input-group-append
+            .input-group-text
+              = clipboard_button(target: '#descriptive_label')
 
     %hr
 

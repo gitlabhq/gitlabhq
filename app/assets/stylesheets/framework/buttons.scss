@@ -312,7 +312,8 @@
   padding: 0 5px;
 }
 
-.input-group-btn {
+.input-group-prepend,
+.input-group-append {
   .btn {
     @include btn-middle;
 

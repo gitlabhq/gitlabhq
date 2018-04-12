@@ -17,14 +17,15 @@
           You can create a new #{name} inside this project by sending an email to the following email address:
         .email-modal-input-group.input-group
           = text_field_tag :issuable_email, email, class: "monospace js-select-on-focus form-control", readonly: true
-          .input-group-btn
-            = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard btn-transparent d-none d-sm-block')
-            = mail_to email, class: 'btn btn-clipboard btn-transparent',
-              subject: _("Enter the #{name} title"),
-              body: _("Enter the #{name} description"),
-              title: _('Send email'),
-              data: { toggle: 'tooltip', placement: 'bottom' } do
-              = sprite_icon('mail')
+          .input-group-append
+            .input-group-text
+              = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard btn-transparent d-none d-sm-block')
+              = mail_to email, class: 'btn btn-clipboard btn-transparent',
+                subject: _("Enter the #{name} title"),
+                body: _("Enter the #{name} description"),
+                title: _('Send email'),
+                data: { toggle: 'tooltip', placement: 'bottom' } do
+                = sprite_icon('mail')
 
         %p
           = render 'by_email_description'
