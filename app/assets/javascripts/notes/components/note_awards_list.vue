@@ -28,6 +28,10 @@ export default {
       type: Number,
       required: true,
     },
+    canAwardEmoji: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     ...mapGetters(['getUserData']),
@@ -66,9 +70,6 @@ export default {
     },
     isAuthoredByMe() {
       return this.noteAuthorId === this.getUserData.id;
-    },
-    isLoggedIn() {
-      return this.getUserData.id;
     },
   },
   created() {
@@ -156,7 +157,7 @@ export default {
       return title;
     },
     handleAward(awardName) {
-      if (!this.isLoggedIn) {
+      if (!this.canAwardEmoji) {
         return;
       }
 
@@ -208,7 +209,7 @@ export default {
         </span>
       </button>
       <div
-        v-if="isLoggedIn"
+        v-if="canAwardEmoji"
         class="award-menu-holder">
         <button
           v-tooltip
