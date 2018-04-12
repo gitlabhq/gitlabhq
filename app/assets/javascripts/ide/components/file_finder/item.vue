@@ -1,11 +1,13 @@
 <script>
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import FileIcon from '../../../vue_shared/components/file_icon.vue';
+import ChangedFileIcon from '../changed_file_icon.vue';
 
 const MAX_PATH_LENGTH = 60;
 
 export default {
   components: {
+    ChangedFileIcon,
     FileIcon,
   },
   props: {
@@ -70,6 +72,14 @@ export default {
         v-html="highlightText(file.path, true)"
       >
       </span>
+    </span>
+    <span
+      v-if="file.changed || file.tempFile"
+      class="diff-changed-stats"
+    >
+      <changed-file-icon
+        :file="file"
+      />
     </span>
   </a>
 </template>
