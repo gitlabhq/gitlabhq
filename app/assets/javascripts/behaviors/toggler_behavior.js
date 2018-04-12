@@ -20,7 +20,7 @@ $(() => {
 
     $container
       .find('.js-toggle-content')
-      .toggle(toggleState);
+      .toggleClass('hidden', toggleState);
   }
 
   $('body').on('click', '.js-toggle-button', function toggleButton(e) {

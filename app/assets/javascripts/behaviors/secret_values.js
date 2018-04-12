@@ -33,12 +33,12 @@ export default class SecretValues {
   updateDom(isRevealed) {
     const values = this.container.querySelectorAll(this.valueSelector);
     values.forEach((value) => {
-      value.classList.toggle('hide', !isRevealed);
+      value.classList.toggle('hidden', !isRevealed);
     });
 
     const placeholders = this.container.querySelectorAll(this.placeholderSelector);
     placeholders.forEach((placeholder) => {
-      placeholder.classList.toggle('hide', isRevealed);
+      placeholder.classList.toggle('hidden', isRevealed);
     });
 
     this.revealButton.textContent = isRevealed ? n__('Hide value', 'Hide values', values.length) : n__('Reveal value', 'Reveal values', values.length);

@@ -12,5 +12,5 @@ document.addEventListener('DOMContentLoaded', () => {
     landingElement.querySelector('.dismiss-button'),
     'explore_groups_landing_dismissed',
   );
-  exploreGroupsLanding.toggle();
+  exploreGroupsLanding.toggleClass('hidden');
 });

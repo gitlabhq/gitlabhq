@@ -25,7 +25,7 @@ export default function adminInit() {
 
   $('body').on('click', '.js-toggle-colors-link', (e) => {
     e.preventDefault();
-    $('.js-toggle-colors-container').toggle();
+    $('.js-toggle-colors-container').toggleClass('hidden');
   });
 
   $('.log-tabs a').on('click', function logTabsClick(e) {

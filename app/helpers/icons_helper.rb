@@ -56,7 +56,7 @@ module IconsHelper
 
   def spinner(text = nil, visible = false)
     css_class = 'loading'
-    css_class << ' hide' unless visible
+    css_class << ' hidden' unless visible
 
     content_tag :div, class: css_class do
       icon('spinner spin') + text

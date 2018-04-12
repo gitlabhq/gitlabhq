@@ -1229,8 +1229,8 @@ export default class Notes {
       const isForced = forceShow === true || forceShow === false;
       const showNow = forceShow === true || (!isCurrentlyShown && !isForced);
 
-      targetRow.toggle(showNow);
-      notesContent.toggle(showNow);
+      targetRow.toggleClass('hidden', showNow);
+      notesContent.toggleClass('hidden', showNow);
     }
 
     if (addForm) {
