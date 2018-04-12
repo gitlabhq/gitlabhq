@@ -1,0 +1,5 @@
+---
+title: Geo - Returns a dummy checksum when there is no repository on disk
+merge_request:
+author:
+type: fixed
