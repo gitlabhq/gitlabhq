@@ -35,6 +35,8 @@ module Geo
 
         def calculate_checksum(type, repository)
           update_repository_state!(type, checksum: repository.checksum)
+        rescue Gitlab::Git::Repository::NoRepository
+          update_repository_state!(type, checksum: Gitlab::Git::Repository::EMPTY_REPOSITORY_CHECKSUM)
         rescue => e
           log_error('Error calculating the repository checksum', e, type: type)
           update_repository_state!(type, failure: e.message)

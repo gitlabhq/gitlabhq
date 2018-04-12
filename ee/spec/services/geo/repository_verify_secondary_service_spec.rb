@@ -54,6 +54,19 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
         .from(nil).to('my_checksum')
     end
 
+    it 'does not mark the verification as failed when there is no repo' do
+      allow(repository).to receive(:checksum).and_raise(Gitlab::Git::Repository::NoRepository)
+
+      repository_state.assign_attributes("#{type}_verification_checksum" => '0000000000000000000000000000000000000000')
+
+      service.execute
+
+      expect(registry.reload).to have_attributes(
+        "#{type}_verification_checksum_sha" => '0000000000000000000000000000000000000000',
+        "last_#{type}_verification_failure" => nil
+      )
+    end
+
     it 'keeps track of failure when the checksum mismatch' do
       expect(repository).to receive(:checksum).and_return('other_checksum')
 
