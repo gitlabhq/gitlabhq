@@ -80,6 +80,10 @@ module Gitlab
       size
     end
 
+    def bytes_to_megabytes(bytes)
+      bytes.to_f / Numeric::MEGABYTE
+    end
+
     # Accepts either an Array or a String and returns an array
     def ensure_array_from_string(string_or_array)
       return string_or_array if string_or_array.is_a?(Array)

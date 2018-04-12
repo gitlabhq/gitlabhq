@@ -1146,11 +1146,7 @@ describe Gitlab::GitAccess do
 
       describe "max file size check" do
         let(:start_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-        let(:end_sha)   { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
-
-        before do
-          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
-        end
+        let(:end_sha)   { 'c84ff944ff4529a70788a5e9003c2b7feae29047' }
 
         it "returns false when size is too large" do
           project.create_push_rule(max_file_size: 1)
