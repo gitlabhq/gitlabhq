@@ -164,7 +164,7 @@
           group members
           %span.badge.badge-pill= @group_members.size
           .float-right
-            = link_to admin_group_path(@group), class: 'btn btn-xs' do
+            = link_to admin_group_path(@group), class: 'btn btn-sm' do
               = icon('pencil-square-o', text: 'Manage access')
         %ul.well-list.content-list.members-list
           = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
@@ -179,7 +179,7 @@
         project members
         %span.badge.badge-pill= @project.users.size
         .float-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-sm"
       %ul.well-list.project_members.content-list.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .card-footer

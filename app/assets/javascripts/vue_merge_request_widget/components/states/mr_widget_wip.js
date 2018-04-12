@@ -54,7 +54,7 @@ export default {
           @click="removeWIP"
           :disabled="isMakingRequest"
           type="button"
-          class="btn btn-default btn-xs js-remove-wip">
+          class="btn btn-default btn-sm js-remove-wip">
           <i
             v-if="isMakingRequest"
             class="fa fa-spinner fa-spin"

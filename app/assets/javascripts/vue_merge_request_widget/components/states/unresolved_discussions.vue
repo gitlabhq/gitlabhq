@@ -28,7 +28,7 @@ export default {
       <a
         v-if="mr.createIssueToResolveDiscussionsPath"
         :href="mr.createIssueToResolveDiscussionsPath"
-        class="btn btn-secondary btn-xs js-create-issue"
+        class="btn btn-secondary btn-sm js-create-issue"
       >
         {{ s__("mrWidget|Create an issue to resolve them later") }}
       </a>

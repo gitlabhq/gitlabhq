@@ -14,7 +14,7 @@
           .float-right
             %span.light.vertical-align-middle= group_member.human_access
             - unless group_member.owner?
-              = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from group' do
+              = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member) }, method: :delete, remote: true, class: "btn-sm btn btn-remove prepend-left-10", title: 'Remove user from group' do
                 %i.fa.fa-times.fa-inverse
 
 .row
@@ -44,5 +44,5 @@
                   %span.light.vertical-align-middle= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from project' do
+                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-sm btn btn-remove prepend-left-10", title: 'Remove user from project' do
                       %i.fa.fa-times

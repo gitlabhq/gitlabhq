@@ -111,7 +111,7 @@
         Attach a file
       </button>
       <button
-        class="btn btn-secondary btn-xs d-none button-cancel-uploading-files"
+        class="btn btn-secondary btn-sm d-none button-cancel-uploading-files"
         type="button"
       >
         Cancel

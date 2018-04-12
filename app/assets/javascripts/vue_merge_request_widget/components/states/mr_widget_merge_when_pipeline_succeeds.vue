@@ -94,7 +94,7 @@
           :disabled="isCancellingAutoMerge"
           role="button"
           href="#"
-          class="btn btn-xs btn-secondary js-cancel-auto-merge">
+          class="btn btn-sm btn-secondary js-cancel-auto-merge">
           <i
             v-if="isCancellingAutoMerge"
             class="fa fa-spinner fa-spin"
@@ -129,7 +129,7 @@
             :disabled="isRemovingSourceBranch"
             @click.prevent="removeSourceBranch"
             role="button"
-            class="btn btn-xs btn-secondary js-remove-source-branch"
+            class="btn btn-sm btn-secondary js-remove-source-branch"
             href="#"
           >
             <i

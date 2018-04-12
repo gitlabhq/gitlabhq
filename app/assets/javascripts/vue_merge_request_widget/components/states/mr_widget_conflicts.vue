@@ -43,13 +43,13 @@ To merge this request, first rebase locally.`) }}
         <a
           v-if="mr.canMerge && mr.conflictResolutionPath"
           :href="mr.conflictResolutionPath"
-          class="js-resolve-conflicts-button btn btn-secondary btn-xs"
+          class="js-resolve-conflicts-button btn btn-secondary btn-sm"
         >
           {{ s__("mrWidget|Resolve conflicts") }}
         </a>
         <button
           v-if="mr.canMerge"
-          class="js-merge-locally-button btn btn-secondary btn-xs"
+          class="js-merge-locally-button btn btn-secondary btn-sm"
           data-toggle="modal"
           data-target="#modal_merge_info"
         >

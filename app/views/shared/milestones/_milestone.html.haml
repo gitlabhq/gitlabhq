@@ -32,13 +32,13 @@
         .col-sm-6.milestone-actions
           - if can?(current_user, :admin_milestones, @group)
             - if milestone.group_milestone?
-              = link_to edit_group_milestone_path(@group, milestone), class: "btn btn-xs btn-grouped" do
+              = link_to edit_group_milestone_path(@group, milestone), class: "btn btn-sm btn-grouped" do
                 Edit
               \
             - if milestone.closed?
-              = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-xs btn-grouped btn-reopen"
+              = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
             - else
-              = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-xs btn-grouped btn-close"
+              = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
 
   - if @project
     .row
@@ -46,12 +46,12 @@
         = render('shared/milestone_expired', milestone: milestone)
       .col-sm-6.milestone-actions
         - if can?(current_user, :admin_milestone, milestone.project) and milestone.active?
-          = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn btn-xs btn-grouped" do
+          = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn btn-sm btn-grouped" do
             Edit
           \
 
           - if @project.group
-            %button.js-promote-project-milestone-button.btn.btn-xs.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
+            %button.js-promote-project-milestone-button.btn.btn-sm.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
               disabled: true,
               type: 'button',
               data: { url: promote_project_milestone_path(milestone.project, milestone),
@@ -62,9 +62,9 @@
                       toggle: 'modal' } }
               = _('Promote')
 
-          = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-xs btn-close btn-grouped"
+          = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-sm btn-close btn-grouped"
 
-          %button.js-delete-milestone-button.btn.btn-xs.btn-grouped.btn-danger{ data: { toggle: 'modal',
+          %button.js-delete-milestone-button.btn.btn-sm.btn-grouped.btn-danger{ data: { toggle: 'modal',
             target: '#delete-milestone-modal',
             milestone_id: milestone.id,
             milestone_title: markdown_field(milestone, :title),

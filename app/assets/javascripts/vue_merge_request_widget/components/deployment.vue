@@ -127,7 +127,7 @@ export default {
           </span>
           <loading-button
             v-if="deployment.stop_url"
-            container-class="btn btn-secondary btn-xs prepend-left-default"
+            container-class="btn btn-secondary btn-sm prepend-left-default"
             label="Stop environment"
             :loading="isStopping"
             @click="stopEnvironment"

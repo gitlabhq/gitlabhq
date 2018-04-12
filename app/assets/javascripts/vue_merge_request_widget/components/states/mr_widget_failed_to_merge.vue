@@ -94,7 +94,7 @@
         </span>
         <button
           @click="refresh"
-          class="btn btn-secondary btn-xs js-refresh-button"
+          class="btn btn-secondary btn-sm js-refresh-button"
           type="button"
         >
           {{ s__("mrWidget|Refresh now") }}

@@ -46,7 +46,7 @@
                   = project.full_name
               %td
                 .float-right
-                  = link_to 'Disable', [:admin, project.namespace.becomes(Namespace), project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
+                  = link_to 'Disable', [:admin, project.namespace.becomes(Namespace), project, runner_project], method: :delete, class: 'btn btn-danger btn-sm'
 
     %table.table.unassigned-projects
       %thead
@@ -70,7 +70,7 @@
             .float-right
               = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
                 = f.hidden_field :runner_id, value: @runner.id
-                = f.submit 'Enable', class: 'btn btn-xs'
+                = f.submit 'Enable', class: 'btn btn-sm'
     = paginate @projects, theme: "gitlab"
 
   .col-md-6

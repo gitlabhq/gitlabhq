@@ -306,7 +306,7 @@ export default {
                 v-else
                 @click="toggleCommitMessageEditor"
                 :disabled="isMergeButtonDisabled"
-                class="js-modify-commit-message-button btn btn-default btn-xs"
+                class="js-modify-commit-message-button btn btn-default btn-sm"
                 type="button">
                 Modify commit message
               </button>

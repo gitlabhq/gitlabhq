@@ -39,7 +39,7 @@ export default {
       v-if="!file.binary"
       :href="file.blamePath"
       :title="__('Blame')"
-      class="btn btn-xs btn-transparent blame"
+      class="btn btn-sm btn-transparent blame"
     >
       <icon
         name="blame"
@@ -50,7 +50,7 @@ export default {
       v-tooltip
       :href="file.commitsPath"
       :title="__('History')"
-      class="btn btn-xs btn-transparent history"
+      class="btn btn-sm btn-transparent history"
     >
       <icon
         name="history"
@@ -61,7 +61,7 @@ export default {
       v-tooltip
       :href="file.permalink"
       :title="__('Permalink')"
-      class="btn btn-xs btn-transparent permalink"
+      class="btn btn-sm btn-transparent permalink"
     >
       <icon
         name="link"
@@ -72,7 +72,7 @@ export default {
       v-tooltip
       :href="file.rawPath"
       target="_blank"
-      class="btn btn-xs btn-transparent prepend-left-10 raw"
+      class="btn btn-sm btn-transparent prepend-left-10 raw"
       rel="noopener noreferrer"
       :title="rawDownloadButtonLabel">
       <icon

@@ -37,7 +37,7 @@
           %li
             %span.light Secondary email:
             %strong= email.email
-            = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-xs btn btn-remove float-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
+            = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-sm btn btn-remove float-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
               %i.fa.fa-times
 
         %li.two-factor-status
@@ -45,7 +45,7 @@
           %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
             - if @user.two_factor_enabled?
               Enabled
-              = link_to 'Disable', disable_two_factor_admin_user_path(@user), data: {confirm: 'Are you sure?'}, method: :patch, class: 'btn btn-xs btn-remove float-right', title: 'Disable Two-factor Authentication'
+              = link_to 'Disable', disable_two_factor_admin_user_path(@user), data: {confirm: 'Are you sure?'}, method: :patch, class: 'btn btn-sm btn-remove float-right', title: 'Disable Two-factor Authentication'
             - else
               Disabled
 
