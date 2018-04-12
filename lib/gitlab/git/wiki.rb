@@ -6,7 +6,7 @@ module Gitlab
 
       CommitDetails = Struct.new(:user_id, :username, :name, :email, :message) do
         def to_h
-          { user_id: id, username: username, name: name, email: email, message: message }
+          { user_id: user_id, username: username, name: name, email: email, message: message }
         end
       end
       PageBlob = Struct.new(:name)

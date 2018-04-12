@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def gitlab_id
-        Gitlab::GlId.gl_id_from_id_value(@options[:id])
+        Gitlab::GlId.gl_id_from_id_value(@options[:user_id])
       end
 
       def gl_repository
