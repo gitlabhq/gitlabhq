@@ -40,8 +40,7 @@
         .col-sm-10.col-12.input-group
           = text_field_tag :url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-append
-            .input-group-text
-              = clipboard_button(target: '#url')
+            = clipboard_button(target: '#url', class: 'input-group-text')
 
       .form-group
         = label_tag nil, 'Method', class: 'col-sm-2 col-12 col-form-label'
@@ -52,8 +51,7 @@
         .col-sm-10.col-12.input-group
           = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-append
-            .input-group-text
-              = clipboard_button(target: '#customize_name')
+            = clipboard_button(target: '#customize_name', class: 'input-group-text')
 
       .form-group
         = label_tag nil, 'Customize icon', class: 'col-sm-2 col-12 col-form-label'
@@ -70,24 +68,21 @@
         .col-sm-10.col-12.input-group
           = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-append
-            .input-group-text
-              = clipboard_button(target: '#autocomplete_description')
+            = clipboard_button(target: '#autocomplete_description', class: 'input-group-text')
 
       .form-group
         = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-append
-            .input-group-text
-              = clipboard_button(target: '#autocomplete_usage_hint')
+            = clipboard_button(target: '#autocomplete_usage_hint', class: 'input-group-text')
 
       .form-group
         = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-12 col-form-label'
         .col-sm-10.col-12.input-group
           = text_field_tag :descriptive_label, 'Perform common operations on GitLab project', class: 'form-control form-control-sm', readonly: 'readonly'
           .input-group-append
-            .input-group-text
-              = clipboard_button(target: '#descriptive_label')
+            = clipboard_button(target: '#descriptive_label', class: 'input-group-text')
 
     %hr
 

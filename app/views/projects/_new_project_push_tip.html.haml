@@ -6,7 +6,6 @@
     %span
       = text_field_tag :push_to_create_tip, push_to_create_project_command, class: "js-select-on-focus form-control monospace", readonly: true, aria: { label: _("Push project from command line") }
     %span.input-group-append
-      .input-group-text
-        = clipboard_button(text: push_to_create_project_command, title: _("Copy command to clipboard"), placement: "right")
+      = clipboard_button(text: push_to_create_project_command, title: _("Copy command to clipboard"), class: 'input-group-text', placement: "right")
   %p
     = link_to("What does this command do?", help_page_path("gitlab-basics/create-project", anchor: "push-to-create-a-new-project"), target: "_blank")

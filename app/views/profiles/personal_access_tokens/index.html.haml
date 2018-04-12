@@ -21,8 +21,7 @@
           .input-group
             = text_field_tag 'created-personal-access-token', @new_personal_access_token, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-personal-access-token-help-block"
             %span.input-group-append
-              .input-group-text
-                = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left", class: "btn-default btn-clipboard")
+              = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left", class: "input-group-text btn-default btn-clipboard")
           %span#created-personal-access-token-help-block.form-text.text-muted.text-danger Make sure you save it - you won't be able to access it again.
 
       %hr

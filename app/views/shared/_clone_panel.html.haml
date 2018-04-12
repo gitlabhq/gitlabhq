@@ -2,23 +2,21 @@
 
 .git-clone-holder.input-group
   .input-group-prepend
-    .input-group-text
-      - if allowed_protocols_present?
-        .clone-dropdown-btn.btn
-          %span
-            = enabled_project_button(project, enabled_protocol)
-      - else
-        %a#clone-dropdown.btn.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
-          %span
-            = default_clone_protocol.upcase
-          = icon('caret-down')
-        %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown
-          %li
-            = ssh_clone_button(project)
-          %li
-            = http_clone_button(project)
+    - if allowed_protocols_present?
+      .input-group-text.clone-dropdown-btn.btn
+        %span
+          = enabled_project_button(project, enabled_protocol)
+    - else
+      %a#clone-dropdown.input-group-text.btn.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
+        %span
+          = default_clone_protocol.upcase
+        = icon('caret-down')
+      %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown
+        %li
+          = ssh_clone_button(project)
+        %li
+          = http_clone_button(project)
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
   .input-group-append
-    .input-group-text
-      = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "btn-secondary btn-clipboard")
+    = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-secondary btn-clipboard")

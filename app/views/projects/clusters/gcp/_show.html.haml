@@ -4,8 +4,7 @@
   .input-group
     %input.form-control.cluster-name.js-select-on-focus{ value: @cluster.name, readonly: true }
     %span.input-group-append
-      .input-group-text
-        = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy Kubernetes cluster name'), class: 'btn-secondary')
+      = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy Kubernetes cluster name'), class: 'input-group-text btn-secondary')
 
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
@@ -16,16 +15,14 @@
       .input-group
         = platform_kubernetes_field.text_field :api_url, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|API URL'), readonly: true
         %span.input-group-append
-          .input-group-text
-            = clipboard_button(text: @cluster.platform_kubernetes.api_url, title: s_('ClusterIntegration|Copy API URL'), class: 'btn-secondary')
+          = clipboard_button(text: @cluster.platform_kubernetes.api_url, title: s_('ClusterIntegration|Copy API URL'), class: 'input-group-text btn-secondary')
 
     .form-group
       = platform_kubernetes_field.label :ca_cert, s_('ClusterIntegration|CA Certificate')
       .input-group
         = platform_kubernetes_field.text_area :ca_cert, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'), readonly: true
         %span.input-group-append.clipboard-addon
-          .input-group-text
-            = clipboard_button(text: @cluster.platform_kubernetes.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'), class: 'btn-blank')
+          = clipboard_button(text: @cluster.platform_kubernetes.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'), class: 'input-group-text btn-blank')
 
     .form-group
       = platform_kubernetes_field.label :token, s_('ClusterIntegration|Token')
