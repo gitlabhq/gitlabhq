@@ -464,6 +464,17 @@ feature 'Jobs' do
         expect(page).to have_content('This job has been skipped')
       end
     end
+
+    context 'when job is failed but has no trace' do
+      let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+
+      it 'renders empty state' do
+        visit project_job_path(project, job)
+
+        expect(job).not_to have_trace
+        expect(page).to have_content('This job does not have a trace.')
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do
