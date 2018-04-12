@@ -45,7 +45,7 @@ feature 'Admin Broadcast Messages' do
 
     page.within('.broadcast-message-preview') do
       expect(page).to have_selector('strong', text: 'Markdown')
-      expect(page).to have_selector('gl-emoji[data-name="tada"]')
+      expect(page).to have_emoji('tada')
     end
   end
 end
