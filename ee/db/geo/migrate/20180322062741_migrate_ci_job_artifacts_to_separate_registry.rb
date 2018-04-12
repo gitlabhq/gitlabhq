@@ -25,7 +25,10 @@ class MigrateCiJobArtifactsToSeparateRegistry < ActiveRecord::Migration
           $BODY$
           BEGIN
               IF (TG_OP = 'UPDATE') THEN
-                  UPDATE job_artifact_registry SET (retry_at, bytes, retry_count, success, sha256) = (NEW.retry_at, NEW.bytes, NEW.retry_count, NEW.success, NEW.sha256);
+                  UPDATE job_artifact_registry
+                  SET (retry_at, bytes, retry_count, success, sha256) =
+                      (NEW.retry_at, NEW.bytes, NEW.retry_count, NEW.success, NEW.sha256)
+                  WHERE artifact_id = NEW.file_id;
               ELSEIF (TG_OP = 'INSERT') THEN
                   INSERT INTO job_artifact_registry (created_at, retry_at, artifact_id, bytes, retry_count, success, sha256)
                   VALUES (NEW.created_at, NEW.retry_at, NEW.file_id, NEW.bytes, NEW.retry_count, NEW.success, NEW.sha256);

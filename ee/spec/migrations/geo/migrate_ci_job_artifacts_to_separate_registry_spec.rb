@@ -47,6 +47,8 @@ describe MigrateCiJobArtifactsToSeparateRegistry, :geo, :migration do
       entry.update_attributes(success: false, bytes: 10240, sha256: '10' * 64)
 
       expect(job_artifact_registry.where(artifact_id: 1, success: false, bytes: 10240, sha256: '10' * 64).count).to eq(1)
+      # Ensure that *only* the correct job artifact is updated
+      expect(job_artifact_registry.find_by(artifact_id: 2).bytes).to eq(2048)
     end
 
     it 'creates a new artifact using the next ID' do
