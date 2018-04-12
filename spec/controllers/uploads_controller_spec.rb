@@ -560,5 +560,27 @@ describe UploadsController do
         end
       end
     end
+
+    context 'the version filename must match' do
+      let!(:appearance) { create :appearance, favicon: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+
+      context 'has a valid filename on the version file' do
+        it 'successfully returns the file' do
+          get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'favicon_main_dk.png'
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.header['Content-Disposition']).to eq 'inline; filename="favicon_main_dk.png"'
+        end
+      end
+
+      context 'has an invalid filename on the version file' do
+        it 'returns the original file' do
+          get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'favicon_bogusversion_dk.png'
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.header['Content-Disposition']).to eq 'inline; filename="dk.png"'
+        end
+      end
+    end
   end
 end

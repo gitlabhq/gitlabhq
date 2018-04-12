@@ -31,7 +31,13 @@ module UploadsActions
 
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
 
-    send_upload(uploader, attachment: uploader.filename, disposition: disposition)
+    uploader_version = uploader.versions.values.find { |version| version.filename == params[:filename] }
+
+    if uploader_version
+      return send_upload(uploader_version, attachment: uploader_version.filename, disposition: disposition)
+    end
+
+    return send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end
 
   private
