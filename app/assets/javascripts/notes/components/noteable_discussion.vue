@@ -258,7 +258,9 @@ Please check your network connection and try again.`;
                     :key="note.id"
                   />
                 </ul>
-                <div class="discussion-reply-holder">
+                <div
+                  :class="{ 'is-replying': isReplying }"
+                  class="discussion-reply-holder">
                   <template v-if="!isReplying && canReply">
                     <div
                       class="btn-group-justified discussion-with-resolve-btn"
