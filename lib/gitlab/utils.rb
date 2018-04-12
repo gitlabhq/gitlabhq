@@ -84,6 +84,7 @@ module Gitlab
       bytes.to_f / Numeric::MEGABYTE
     end
 
+    # Used in EE
     # Accepts either an Array or a String and returns an array
     def ensure_array_from_string(string_or_array)
       return string_or_array if string_or_array.is_a?(Array)

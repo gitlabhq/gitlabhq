@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Utils do
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, :ensure_array_from_string, :bytes_to_megabytes, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, :ensure_array_from_string,
+   :bytes_to_megabytes, to: :described_class
 
   describe '.slugify' do
     {
