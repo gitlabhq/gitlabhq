@@ -102,6 +102,8 @@ describe('InlineDiffView', () => {
         expect(el.querySelectorAll('tr')[1].classList.contains('notes_holder')).toEqual(true);
         expect(el.querySelectorAll('tr')[3].classList.contains('notes_holder')).toEqual(true);
 
+        store.state.diffs.diffLineCommentForms = {};
+
         done();
       });
     });
