@@ -23,11 +23,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
-<<<<<<< HEAD
 
   prepend ::EE::Projects::IssuesController
-=======
->>>>>>> upstream/master
 
   respond_to :html
 
