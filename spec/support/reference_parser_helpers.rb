@@ -5,9 +5,11 @@ module ReferenceParserHelpers
 
   shared_examples 'no N+1 queries' do
     it 'avoids N+1 queries in #nodes_visible_to_user', :request_store do
+      context = Banzai::RenderContext.new(project, user)
+
       record_queries = lambda do |links|
         ActiveRecord::QueryRecorder.new do
-          described_class.new(project, user).nodes_visible_to_user(user, links)
+          described_class.new(context).nodes_visible_to_user(user, links)
         end
       end
 
@@ -19,9 +21,11 @@ module ReferenceParserHelpers
     end
 
     it 'avoids N+1 queries in #records_for_nodes', :request_store do
+      context = Banzai::RenderContext.new(project, user)
+
       record_queries = lambda do |links|
         ActiveRecord::QueryRecorder.new do
-          described_class.new(project, user).records_for_nodes(links)
+          described_class.new(context).records_for_nodes(links)
         end
       end
 
