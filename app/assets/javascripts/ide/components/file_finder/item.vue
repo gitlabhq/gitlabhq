@@ -56,12 +56,12 @@ export default {
     <span class="diff-changed-file-content append-right-8">
       <strong
         class="diff-changed-file-name"
-        v-html="highlightText(this.file.name)"
+        v-html="highlightText(file.name)"
       >
       </strong>
       <span
         class="diff-changed-file-path prepend-top-5"
-        v-html="highlightText(this.file.path)"
+        v-html="highlightText(file.path)"
       >
       </span>
     </span>

@@ -31,13 +31,16 @@ export default {
         maxResults: MAX_RESULTS,
       });
     },
+    filteredBlobsLength() {
+      return this.filteredBlobs.length;
+    },
     listShowCount() {
-      if (!this.filteredBlobs.length) return 1;
+      if (!this.filteredBlobsLength) return 1;
 
-      return this.filteredBlobs.length > 5 ? 5 : this.filteredBlobs.length;
+      return this.filteredBlobsLength > 5 ? 5 : this.filteredBlobsLength;
     },
     listHeight() {
-      return this.filteredBlobs.length ? 55 : 33;
+      return this.filteredBlobsLength ? 55 : 33;
     },
   },
   watch: {
@@ -62,7 +65,7 @@ export default {
         case 40:
           // DOWN
           e.preventDefault();
-          if (this.focusedIndex < this.filteredBlobs.length - 1) this.focusedIndex += 1;
+          if (this.focusedIndex < this.filteredBlobsLength - 1) this.focusedIndex += 1;
           break;
         default:
           break;
@@ -117,7 +120,7 @@ export default {
           :start="focusedIndex"
           wtag="ul"
         >
-          <template v-if="filteredBlobs.length">
+          <template v-if="filteredBlobsLength">
             <li
               v-for="(file, index) in filteredBlobs"
               :key="file.key"
