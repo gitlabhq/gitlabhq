@@ -177,6 +177,7 @@ export default {
             :note-id="note.id"
             :access-level="note.human_access"
             :can-edit="note.current_user.can_edit"
+            :can-award-emoji="note.current_user.can_award_emoji"
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :report-abuse-path="note.report_abuse_path"

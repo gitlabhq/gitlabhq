@@ -7,6 +7,7 @@
 
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
+- can_create_issue = show_new_issue_link?(@project)
 
 .detail-page-header
   .detail-page-header-body
@@ -42,16 +43,18 @@
             %li= link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen js-btn-issue-action #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
           - if can_report_spam
             %li= link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
-          - if can_update_issue || can_report_spam
-            %li.divider
-          %li= link_to 'New issue', new_project_issue_path(@project), title: 'New issue', id: 'new_issue_link'
+          - if can_create_issue
+            - if can_update_issue || can_report_spam
+              %li.divider
+            %li= link_to 'New issue', new_project_issue_path(@project), title: 'New issue', id: 'new_issue_link'
 
     = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue
 
     - if can_report_spam
       = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-sm-none d-md-block btn btn-grouped btn-spam', title: 'Submit as spam'
-    = link_to new_project_issue_path(@project), class: 'd-none d-sm-none d-md-block btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
-      New issue
+    - if can_create_issue
+      = link_to new_project_issue_path(@project), class: 'd-none d-sm-none d-md-block btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
+        New issue
 
 .issue-details.issuable-details
   .detail-page-description.content-block

@@ -15,7 +15,11 @@ class NoteEntity < API::Entities::Note
 
   expose :current_user do
     expose :can_edit do |note|
-      Ability.can_edit_note?(request.current_user, note)
+      Ability.allowed?(request.current_user, :admin_note, note)
+    end
+
+    expose :can_award_emoji do |note|
+      Ability.allowed?(request.current_user, :award_emoji, note)
     end
   end
 

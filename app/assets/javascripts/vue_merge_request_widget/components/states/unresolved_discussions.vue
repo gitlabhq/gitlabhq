@@ -7,7 +7,10 @@ export default {
     statusIcon,
   },
   props: {
-    mr: { type: Object, required: true },
+    mr: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
@@ -20,13 +23,14 @@ export default {
     />
     <div class="media-body space-children">
       <span class="bold">
-        There are unresolved discussions. Please resolve these discussions
+        {{ s__("mrWidget|There are unresolved discussions. Please resolve these discussions") }}
       </span>
       <a
         v-if="mr.createIssueToResolveDiscussionsPath"
         :href="mr.createIssueToResolveDiscussionsPath"
-        class="btn btn-secondary btn-xs js-create-issue">
-        Create an issue to resolve them later
+        class="btn btn-secondary btn-xs js-create-issue"
+      >
+        {{ s__("mrWidget|Create an issue to resolve them later") }}
       </a>
     </div>
   </div>
