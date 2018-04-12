@@ -22,7 +22,7 @@ export default {
     ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
     ...mapGetters(['currentMergeRequest']),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.raw;
+      return this.file && this.file.binary && !this.file.content;
     },
     editTabCSS() {
       return {
@@ -171,10 +171,10 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div
-      class="ide-mode-tabs clearfix"
-      v-if="!shouldHideEditor">
-      <ul class="nav-links pull-left">
+    <div class="ide-mode-tabs clearfix">
+      <ul
+        class="nav-links pull-left"
+        v-if="!shouldHideEditor">
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
@@ -210,9 +210,10 @@ export default {
     >
     </div>
     <content-viewer
-      v-if="!shouldHideEditor && file.viewMode === 'preview'"
+      v-if="shouldHideEditor || file.viewMode === 'preview'"
       :content="file.content || file.raw"
-      :path="file.path"
+      :path="file.rawPath || file.path"
+      :file-size="file.size"
       :project-path="file.projectId"/>
   </div>
 </template>

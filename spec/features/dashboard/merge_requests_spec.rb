@@ -103,15 +103,11 @@ feature 'Dashboard Merge Requests' do
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows all merge requests', :js do
+    it 'shows error message without filter', :js do
       filter_item_select('Any Assignee', '.js-assignee-search')
       filter_item_select('Any Author', '.js-author-search')
 
-      expect(page).to have_content(authored_merge_request.title)
-      expect(page).to have_content(authored_merge_request_from_fork.title)
-      expect(page).to have_content(assigned_merge_request.title)
-      expect(page).to have_content(assigned_merge_request_from_fork.title)
-      expect(page).to have_content(other_merge_request.title)
+      expect(page).to have_content('Please select at least one filter to see results')
     end
 
     it 'shows sorted merge requests' do

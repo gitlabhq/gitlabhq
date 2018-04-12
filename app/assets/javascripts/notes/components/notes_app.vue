@@ -49,16 +49,7 @@ export default {
   computed: {
     ...mapGetters(['notes', 'getNotesDataByProp', 'discussionCount']),
     noteableType() {
-      // FIXME -- @fatihacet Get this from JSON data.
-      const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;
-
-      if (this.noteableData.noteableType === EPIC_NOTEABLE_TYPE) {
-        return EPIC_NOTEABLE_TYPE;
-      }
-
-      return this.noteableData.merge_params
-        ? MERGE_REQUEST_NOTEABLE_TYPE
-        : ISSUE_NOTEABLE_TYPE;
+      return this.noteableData.noteableType;
     },
     allNotes() {
       if (this.isLoading) {

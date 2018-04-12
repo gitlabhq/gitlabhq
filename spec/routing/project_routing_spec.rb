@@ -164,20 +164,36 @@ describe 'project routing' do
   #  archive_project_repository GET    /:project_id/repository/archive(.:format)  projects/repositories#archive
   #     edit_project_repository GET    /:project_id/repository/edit(.:format)     projects/repositories#edit
   describe Projects::RepositoriesController, 'routing' do
-    it 'to #archive' do
-      expect(get('/gitlab/gitlabhq/repository/master/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', ref: 'master')
-    end
-
     it 'to #archive format:zip' do
-      expect(get('/gitlab/gitlabhq/repository/master/archive.zip')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'zip', ref: 'master')
+      expect(get('/gitlab/gitlabhq/-/archive/master/archive.zip')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'zip', id: 'master/archive')
     end
 
     it 'to #archive format:tar.bz2' do
-      expect(get('/gitlab/gitlabhq/repository/master/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2', ref: 'master')
+      expect(get('/gitlab/gitlabhq/-/archive/master/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2', id: 'master/archive')
     end
 
     it 'to #archive with "/" in route' do
-      expect(get('/gitlab/gitlabhq/repository/improve/awesome/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', ref: 'improve/awesome')
+      expect(get('/gitlab/gitlabhq/-/archive/improve/awesome/gitlabhq-improve-awesome.tar.gz')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.gz', id: 'improve/awesome/gitlabhq-improve-awesome')
+    end
+
+    it 'to #archive_alternative' do
+      expect(get('/gitlab/gitlabhq/repository/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', append_sha: true)
+    end
+
+    it 'to #archive_deprecated' do
+      expect(get('/gitlab/gitlabhq/repository/master/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', append_sha: true)
+    end
+
+    it 'to #archive_deprecated format:zip' do
+      expect(get('/gitlab/gitlabhq/repository/master/archive.zip')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'zip', id: 'master', append_sha: true)
+    end
+
+    it 'to #archive_deprecated format:tar.bz2' do
+      expect(get('/gitlab/gitlabhq/repository/master/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2', id: 'master', append_sha: true)
+    end
+
+    it 'to #archive_deprecated with "/" in route' do
+      expect(get('/gitlab/gitlabhq/repository/improve/awesome/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'improve/awesome', append_sha: true)
     end
   end
 

@@ -19,6 +19,11 @@ module Gitlab
         response.exists
       end
 
+      def cleanup
+        request = Gitaly::CleanupRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :cleanup, request)
+      end
+
       def garbage_collect(create_bitmap)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
         GitalyClient.call(@storage, :repository_service, :garbage_collect, request)
@@ -256,6 +261,12 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
 
         response.license_short_name.presence
+      end
+
+      def calculate_checksum
+        request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
+        response.checksum.presence
       end
     end
   end
