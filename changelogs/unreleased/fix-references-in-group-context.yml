@@ -1,0 +1,5 @@
+---
+title: Ignore project internal references in group context
+merge_request:
+author:
+type: fixed
