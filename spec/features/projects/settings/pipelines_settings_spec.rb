@@ -8,6 +8,7 @@ describe "Projects > Settings > Pipelines settings" do
   before do
     sign_in(user)
     project.add_role(user, role)
+    create(:project_auto_devops, project: project)
   end
 
   context 'for developer' do
@@ -27,14 +28,17 @@ describe "Projects > Settings > Pipelines settings" do
       visit project_settings_ci_cd_path(project)
 
       fill_in('Test coverage parsing', with: 'coverage_regex')
+
       page.within '.general-ci-settings' do
         click_on 'Save changes'
       end
 
       expect(page.status_code).to eq(200)
+
       page.within '.general-ci-settings' do
         expect(page).to have_button('Save changes', disabled: false)
       end
+
       expect(page).to have_field('Test coverage parsing', with: 'coverage_regex')
     end
 
@@ -47,6 +51,7 @@ describe "Projects > Settings > Pipelines settings" do
       end
 
       expect(page.status_code).to eq(200)
+
       page.within '.general-ci-settings' do
         expect(page).to have_button('Save changes', disabled: false)
       end
@@ -68,6 +73,7 @@ describe "Projects > Settings > Pipelines settings" do
         expect(page.status_code).to eq(200)
         expect(project.auto_devops).to be_present
         expect(project.auto_devops).not_to be_enabled
+        expect(project.auto_devops.domain).to eq('test.com')
       end
     end
   end
