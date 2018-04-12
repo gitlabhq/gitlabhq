@@ -558,6 +558,24 @@ module Gitlab
         count_commits(from: from, to: to, **options)
       end
 
+      # old_rev and new_rev are commit ID's
+      # the result of this method is an array of Gitlab::Git::RawDiffChange
+      def raw_changes_between(old_rev, new_rev)
+        result = []
+
+        circuit_breaker.perform do
+          Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+            last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+            if wait_threads.any? { |waiter| !waiter.value&.success? }
+              raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+            end
+          end
+        end
+
+        result
+      end
+
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base(from, to)
         gitaly_migrate(:merge_base) do |is_enabled|
@@ -2482,6 +2500,35 @@ module Gitlab
         end
 
         result.to_s(16)
+      end
+
+      def build_git_cmd(*args)
+        object_directories = alternate_object_directories.join(File::PATH_SEPARATOR)
+
+        env = { 'PWD' => self.path }
+        env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories if object_directories.present?
+
+        [
+          env,
+          ::Gitlab.config.git.bin_path,
+          *args,
+          { chdir: self.path }
+        ]
+      end
+
+      def git_diff_cmd(old_rev, new_rev)
+        old_rev = old_rev == ::Gitlab::Git::BLANK_SHA ? ::Gitlab::Git::EMPTY_TREE_ID : old_rev
+
+        build_git_cmd('diff', old_rev, new_rev, '--raw')
+      end
+
+      def git_cat_file_cmd
+        format = '%(objectname) %(objectsize) %(rest)'
+        build_git_cmd('cat-file', "--batch-check=#{format}")
+      end
+
+      def format_git_cat_file_script
+        File.expand_path('../support/format-git-cat-file-input', __FILE__)
       end
     end
   end
