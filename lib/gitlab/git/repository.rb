@@ -297,7 +297,8 @@ module Gitlab
       #
       # Ref names must start with `refs/`.
       def ref_exists?(ref_name)
-        gitaly_migrate(:ref_exists) do |is_enabled|
+        gitaly_migrate(:ref_exists,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?(ref_name)
           else
