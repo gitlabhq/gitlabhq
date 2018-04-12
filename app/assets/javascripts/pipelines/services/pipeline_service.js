@@ -15,6 +15,6 @@ export default class PipelineService {
   }
 
   static getSecurityReport(endpoint) {
-    return Vue.http.get(endpoint);
+    return axios.get(endpoint);
   }
 }
