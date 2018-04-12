@@ -50,6 +50,7 @@ export default {
           this.searchText = '';
         } else {
           this.focusedIndex = 0;
+
           this.$refs.searchInput.focus();
         }
       });
@@ -65,12 +66,20 @@ export default {
         case 38:
           // UP
           e.preventDefault();
-          if (this.focusedIndex > 0) this.focusedIndex -= 1;
+          if (this.focusedIndex > 0) {
+            this.focusedIndex -= 1;
+          } else {
+            this.focusedIndex = this.filteredBlobsLength - 1;
+          }
           break;
         case 40:
           // DOWN
           e.preventDefault();
-          if (this.focusedIndex < this.filteredBlobsLength - 1) this.focusedIndex += 1;
+          if (this.focusedIndex < this.filteredBlobsLength - 1) {
+            this.focusedIndex += 1;
+          } else {
+            this.focusedIndex = 0;
+          }
           break;
         default:
           break;
@@ -146,7 +155,7 @@ export default {
             v-else
             class="dropdown-menu-empty-itemhidden"
           >
-            <a href="">
+            <a href="#">
               <template v-if="loading">
                 {{ __('Loading...') }}
               </template>
