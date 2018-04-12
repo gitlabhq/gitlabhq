@@ -170,11 +170,13 @@ label {
     max-width: 180px;
   }
 
-  .input-group-addon {
+  .input-group-prepend,
+  .input-group-append {
     background-color: $input-group-addon-bg;
   }
 
-  .input-group-addon:not(:first-child):not(:last-child) {
+  .input-group-prepend:not(:first-child):not(:last-child),
+  .input-group-append:not(:first-child):not(:last-child) {
     border-left: 0;
     border-right: 0;
   }

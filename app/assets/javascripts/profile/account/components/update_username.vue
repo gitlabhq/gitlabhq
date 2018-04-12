@@ -86,7 +86,11 @@ Please update your Git repository remotes as soon as possible.`),
     <div class="form-group">
       <label :for="$options.inputId">{{ s__('Profiles|Path') }}</label>
       <div class="input-group">
-        <div class="input-group-addon">{{ rootUrl }}</div>
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            {{ rootUrl }}
+          </div>
+        </div>
         <input
           :id="$options.inputId"
           class="form-control"

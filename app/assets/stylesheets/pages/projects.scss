@@ -46,7 +46,8 @@
     }
   }
 
-  .input-group-addon {
+  .input-group-prepend,
+  .input-group-append {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: unset;
@@ -524,7 +525,8 @@ a.deploy-project-label {
       display: flex;
     }
 
-    .input-group-addon {
+    .input-group-prepend,
+    .input-group-append {
       flex: 1;
       text-align: left;
       padding-left: ($gl-padding * 3);

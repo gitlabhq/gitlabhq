@@ -124,9 +124,11 @@
         .form-group
           = f.label :build_coverage_regex, "Test coverage parsing", class: 'label-light'
           .input-group
-            %span.input-group-addon /
+            %span.input-group-prepend
+              .input-group-text /
             = f.text_field :build_coverage_regex, class: 'form-control', placeholder: 'Regular expression'
-            %span.input-group-addon /
+            %span.input-group-append
+              .input-group-text /
           %p.form-text.text-muted
             A regular expression that will be used to find the test coverage
             output in the job trace. Leave blank to disable

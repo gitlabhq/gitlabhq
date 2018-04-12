@@ -142,8 +142,9 @@
               %span Path
             .form-group
               .input-group
-                .input-group-addon
-                  #{URI.join(root_url, @project.namespace.full_path)}/
+                .input-group-prepend
+                  .input-group-text
+                    #{URI.join(root_url, @project.namespace.full_path)}/
                 = f.text_field :path, class: 'form-control'
             %ul
               %li Be careful. Renaming a project's repository can have unintended side effects.

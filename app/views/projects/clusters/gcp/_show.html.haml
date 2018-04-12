@@ -21,8 +21,9 @@
       = platform_kubernetes_field.label :ca_cert, s_('ClusterIntegration|CA Certificate')
       .input-group
         = platform_kubernetes_field.text_area :ca_cert, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'), readonly: true
-        %span.input-group-addon.clipboard-addon
-          = clipboard_button(text: @cluster.platform_kubernetes.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'), class: 'btn-blank')
+        %span.input-group-append.clipboard-addon
+          .input-group-text
+            = clipboard_button(text: @cluster.platform_kubernetes.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'), class: 'btn-blank')
 
     .form-group
       = platform_kubernetes_field.label :token, s_('ClusterIntegration|Token')

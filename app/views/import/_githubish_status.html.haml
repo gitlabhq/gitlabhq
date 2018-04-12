@@ -53,7 +53,8 @@
                   = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'select2 js-select-namespace', tabindex: 1 }
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "input-large form-control", tabindex: 1, disabled: true
-              %span.input-group-addon /
+              %span.input-group-prepend
+                .input-group-text /
               = text_field_tag :path, repo.name, class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do

@@ -7,10 +7,11 @@
     Group path
   .col-sm-10
     .input-group.gl-field-error-anchor
-      .group-root-path.input-group-addon.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
-        %span>= root_url
-        - if parent
-          %strong= parent.full_path + '/'
+      .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
+        .input-group-text
+          %span>= root_url
+          - if parent
+            %strong= parent.full_path + '/'
       = f.hidden_field :parent_id
       = f.text_field :path, placeholder: 'open-source', class: 'form-control',
         autofocus: local_assigns[:autofocus] || false, required: true,

@@ -14,11 +14,12 @@
       %label.label-light
         Template
       .input-group.template-input-group
-        .input-group-addon
-          .selected-icon
-            - Gitlab::ProjectTemplate.all.each do |template|
-              = custom_icon(template.logo)
-          .selected-template
+        .input-group-prepend
+          .input-group-text
+            .selected-icon
+              - Gitlab::ProjectTemplate.all.each do |template|
+                = custom_icon(template.logo)
+            .selected-template
         %button.btn.btn-secondary.change-template{ type: "button" } Change template
 
     = render 'new_project_fields', f: f, project_name_id: "template-project-name"
