@@ -17,5 +17,5 @@ export default () => ({
   entries: {},
   viewer: 'editor',
   delayViewerUpdated: false,
-  fileFindVisible: true,
+  fileFindVisible: false,
 });

@@ -95,6 +95,11 @@ export default {
       delayViewerUpdated,
     });
   },
+  [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {
+    Object.assign(state, {
+      fileFindVisible,
+    });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

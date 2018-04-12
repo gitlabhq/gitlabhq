@@ -1,5 +1,6 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import Mousetrap from 'mousetrap';
 import ideSidebar from './ide_side_bar.vue';
 import ideContextbar from './ide_context_bar.vue';
 import repoTabs from './repo_tabs.vue';
@@ -50,6 +51,14 @@ export default {
       });
       return returnValue;
     };
+
+    Mousetrap.bind('t', e => {
+      e.preventDefault();
+      this.toggleFileFinder(true);
+    });
+  },
+  methods: {
+    ...mapActions(['toggleFileFinder']),
   },
 };
 </script>
@@ -59,7 +68,7 @@ export default {
     class="ide-view"
   >
     <find-file
-      v-if="fileFindVisible"
+      v-show="fileFindVisible"
     />
     <ide-sidebar />
     <div

@@ -17,6 +17,7 @@
 }
 
 .ide-view {
+  position: relative;
   display: flex;
   height: calc(100vh - #{$header-height});
   margin-top: 0;
