@@ -93,7 +93,6 @@ export default {
             :size="16"
           />
           {{ file.name }}
-          {{ file.lastOpenedAt }}
           <file-status-icon
             :file="file"
           />
