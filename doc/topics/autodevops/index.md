@@ -495,7 +495,9 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | ------------ | --------------- |
 | `AUTO_DEVOPS_DOMAIN`        | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops). |
 | `AUTO_DEVOPS_CHART`         | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app). |
+| `REPLICAS`                   | The number of replicas to deploy; defaults to 1. For GitLab Premium/Ultimate, you can define the same secret variable name under [multiple environments]](../../ci/variables/README.md#limiting-environment-scopes-of-secret-variables).                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`       | The number of replicas to deploy in the production environment; defaults to 1. |
+| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1. For GitLab Premium/Ultimate, you can define the same secret variable name under [multiple environments]](../../ci/variables/README.md#limiting-environment-scopes-of-secret-variables)                                                                             |
 | `CANARY_PRODUCTION_REPLICAS`| The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. |
 | `POSTGRES_ENABLED`  | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`     | The PostgreSQL user; defaults to `user`. Set it to use a custom username. |
@@ -534,8 +536,9 @@ The general rule is: `TRACK_ENV_REPLICAS`. Where:
 That way, you can define your own `TRACK_ENV_REPLICAS` variables with which
 you will be able to scale the pod's replicas easily.
 
-In the example below, the environment's name is `qa` which would result in
-looking for the `QA_REPLICAS` environment variable:
+In the example below, the environment's name is `qa` and it deploys the track
+`foo` which would result in looking for the `FOO_QA_REPLICAS` environment
+variable:
 
 ```yaml
 QA testing:
@@ -543,11 +546,11 @@ QA testing:
   environment:
     name: qa
   script:
-  - deploy qa
+  - deploy foo
 ```
 
-If, in addition, there was also a `track: foo` defined in the application's Helm
-chart, like:
+The track `foo` being referenced would also need to be defined in the
+application's Helm chart, like:
 
 ```yaml
 replicaCount: 1
@@ -568,8 +571,6 @@ service:
   externalPort: 5000
   internalPort: 5000
 ```
-
-then the environment variable would be `FOO_QA_REPLICAS`.
 
 ## Currently supported languages
 
