@@ -1,15 +1,15 @@
 module Gitlab
   module GlId
     def self.gl_id(user)
-      gl_id_from_id_value(user&.id)
+      if user.present?
+        gl_id_from_id_value(user.id)
+      else
+        ''
+      end
     end
 
     def self.gl_id_from_id_value(id)
-      if id.present?
-        "user-#{id}"
-      else
-        ""
-      end
+      "user-#{id}"
     end
   end
 end
