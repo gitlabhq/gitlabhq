@@ -200,13 +200,14 @@ export default class Editor {
     const getKeyCode = key => {
       const monacoKeyMod = key.indexOf('KEY_') === 0;
 
-      return monacoKeyMod ? monaco.KeyCode[key] : monaco.KeyMod[key];
+      return monacoKeyMod ? this.monaco.KeyCode[key] : this.monaco.KeyMod[key];
     };
 
     keymap.forEach(command => {
       const keybindings = command.bindings.map(binding => {
         const keys = binding.split('+');
 
+        // eslint-disable-next-line no-bitwise
         return keys.length > 1 ? getKeyCode(keys[0]) | getKeyCode(keys[1]) : getKeyCode(keys[0]);
       });
 

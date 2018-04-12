@@ -2,6 +2,8 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import FileIcon from '../../../vue_shared/components/file_icon.vue';
 
+const MAX_PATH_LENGTH = 60;
+
 export default {
   components: {
     FileIcon,
@@ -24,10 +26,14 @@ export default {
     clickRow() {
       this.$emit('click', this.file);
     },
-    highlightText(text) {
-      const occurrences = fuzzaldrinPlus.match(text, this.searchText);
+    highlightText(text, addEllipsis) {
+      const maxText =
+        text.length < MAX_PATH_LENGTH || !addEllipsis
+          ? text
+          : `...${text.substr(text.length - MAX_PATH_LENGTH)}`;
+      const occurrences = fuzzaldrinPlus.match(maxText, this.searchText);
 
-      return text
+      return maxText
         .split('')
         .map(
           (char, i) =>
@@ -56,21 +62,14 @@ export default {
     <span class="diff-changed-file-content append-right-8">
       <strong
         class="diff-changed-file-name"
-        v-html="highlightText(file.name)"
+        v-html="highlightText(file.name, false)"
       >
       </strong>
       <span
         class="diff-changed-file-path prepend-top-5"
-        v-html="highlightText(file.path)"
+        v-html="highlightText(file.path, true)"
       >
       </span>
     </span>
   </a>
 </template>
-
-<style>
-.highlighted {
-  color: #1b69b6;
-  font-weight: 600;
-}
-</style>

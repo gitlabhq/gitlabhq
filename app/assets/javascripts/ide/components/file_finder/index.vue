@@ -5,7 +5,7 @@ import VirtualList from 'vue-virtual-scroll-list';
 import Item from './item.vue';
 import router from '../../ide_router';
 
-const MAX_RESULTS = 20;
+const MAX_RESULTS = 40;
 
 export default {
   components: {
@@ -48,16 +48,14 @@ export default {
       this.$nextTick(() => {
         if (!this.fileFindVisible) {
           this.searchText = '';
-          this.focusedIndex = 0;
         } else {
+          this.focusedIndex = 0;
           this.$refs.searchInput.focus();
         }
       });
     },
     searchText() {
-      if (this.searchText.trim() !== '') {
-        this.focusedIndex = 0;
-      }
+      this.focusedIndex = 0;
     },
   },
   methods: {
@@ -103,7 +101,7 @@ export default {
 <template>
   <div
     class="ide-file-finder-overlay"
-    @click.self="toggleFileFinder(false)"
+    @mousedown.self="toggleFileFinder(false)"
   >
     <div
       class="dropdown-menu diff-file-changes ide-file-finder show"
@@ -112,7 +110,7 @@ export default {
         <input
           type="search"
           class="dropdown-input-field"
-          placeholder="Search files"
+          :placeholder="__('Search files')"
           autocomplete="off"
           v-model="searchText"
           ref="searchInput"
@@ -150,10 +148,10 @@ export default {
           >
             <a href="">
               <template v-if="loading">
-                Loading...
+                {{ __('Loading...') }}
               </template>
               <template v-else>
-                No files found.
+                {{ __('No files found.') }}
               </template>
             </a>
           </li>
@@ -162,20 +160,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style>
-.ide-file-finder-overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-}
-
-.ide-file-finder {
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-</style>
