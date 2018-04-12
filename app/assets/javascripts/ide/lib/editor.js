@@ -1,10 +1,12 @@
 import _ from 'underscore';
+import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
 import gitlabTheme from './themes/gl_theme';
+import keymap from './keymap.json';
 
 export const clearDomElement = el => {
   if (!el || !el.firstChild) return;
@@ -53,6 +55,8 @@ export default class Editor {
         )),
       );
 
+      this.addCommands();
+
       window.addEventListener('resize', this.debouncedUpdate, false);
     }
   }
@@ -72,6 +76,8 @@ export default class Editor {
           renderSideBySide: Editor.renderSideBySide(domElement),
         })),
       );
+
+      this.addCommands();
 
       window.addEventListener('resize', this.debouncedUpdate, false);
     }
@@ -188,5 +194,31 @@ export default class Editor {
 
   static renderSideBySide(domElement) {
     return domElement.offsetWidth >= 700;
+  }
+
+  addCommands() {
+    const getKeyCode = key => {
+      const monacoKeyMod = key.indexOf('KEY_') === 0;
+
+      return monacoKeyMod ? monaco.KeyCode[key] : monaco.KeyMod[key];
+    };
+
+    keymap.forEach(command => {
+      const keybindings = command.bindings.map(binding => {
+        const keys = binding.split('+');
+
+        return keys.length > 1 ? getKeyCode(keys[0]) | getKeyCode(keys[1]) : getKeyCode(keys[0]);
+      });
+
+      this.instance.addAction({
+        id: command.id,
+        label: command.label,
+        keybindings,
+        run() {
+          store.dispatch(command.action.name, command.action.params);
+          return null;
+        },
+      });
+    });
   }
 }

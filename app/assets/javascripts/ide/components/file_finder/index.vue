@@ -45,7 +45,14 @@ export default {
   },
   watch: {
     fileFindVisible() {
-      this.$nextTick(() => this.$refs.searchInput.focus());
+      this.$nextTick(() => {
+        if (!this.fileFindVisible) {
+          this.searchText = '';
+          this.focusedIndex = 0;
+        } else {
+          this.$refs.searchInput.focus();
+        }
+      });
     },
     searchText() {
       if (this.searchText.trim() !== '') {
@@ -76,6 +83,10 @@ export default {
         case 13:
           // ENTER
           this.openFile(this.filteredBlobs[this.focusedIndex]);
+          break;
+        case 27:
+          // ESC
+          this.toggleFileFinder(false);
           break;
         default:
           break;

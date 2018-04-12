@@ -52,7 +52,7 @@ export default {
       return returnValue;
     };
 
-    Mousetrap.bind('t', e => {
+    Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
       e.preventDefault();
       this.toggleFileFinder(true);
     });
