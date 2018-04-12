@@ -4,9 +4,9 @@ module Gitlab
       DuplicatePageError = Class.new(StandardError)
       OperationError = Class.new(StandardError)
 
-      CommitDetails = Struct.new(:id, :username, :name, :email, :message) do
+      CommitDetails = Struct.new(:user_id, :username, :name, :email, :message) do
         def to_h
-          { id: id, username: username, name: name, email: email, message: message }
+          { user_id: id, username: username, name: name, email: email, message: message }
         end
       end
       PageBlob = Struct.new(:name)
