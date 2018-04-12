@@ -196,7 +196,7 @@ export default {
         :service="service"
       />
       <report-section
-        class="js-codequality-widget"
+        class="js-codequality-widget mr-widget-border-top"
         v-if="shouldRenderCodeQuality"
         type="codequality"
         :status="codequalityStatus"
@@ -208,7 +208,7 @@ export default {
         :has-issues="hasCodequalityIssues"
       />
       <report-section
-        class="js-performance-widget"
+        class="js-performance-widget mr-widget-border-top"
         v-if="shouldRenderPerformance"
         type="performance"
         :status="performanceStatus"
