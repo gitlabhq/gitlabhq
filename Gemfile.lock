@@ -1,17 +1,3 @@
-GIT
-  remote: https://gitlab.com/gitlab-org/gollum-lib.git
-  revision: 45f3a985735c369aaba64173d62d1d3311433f3f
-  branch: master
-  specs:
-    gitlab-gollum-lib (4.2.7)
-      gemojione (~> 3.2)
-      github-markup (~> 1.6)
-      gollum-grit_adapter (~> 1.0)
-      nokogiri (>= 1.6.1, < 2.0)
-      rouge (~> 2.1)
-      sanitize (~> 2.1)
-      stringex (~> 2.6)
-
 GEM
   remote: https://rubygems.org/
   specs:

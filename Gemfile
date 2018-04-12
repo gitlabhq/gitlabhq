@@ -84,6 +84,7 @@ gem 'net-ldap'
 # Required manually in config/initializers/gollum.rb to control load order
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 gem 'gitlab-gollum-lib', '~> 4.2'
 
 =======
@@ -100,6 +101,9 @@ gem 'gollum-lib', '~> 4.2', require: false
 >>>>>>> Change gollum-rugged_adapter to gitlab-gollum-rugged_adapter with the monkey patches
 =======
 gem 'gitlab-gollum-lib', git: 'https://gitlab.com/gitlab-org/gollum-lib.git', branch: 'master', require: false
+=======
+gem 'gitlab-gollum-lib', '~> 4.2'
+>>>>>>> Removing some gollum stuff
 
 >>>>>>> Updated gollum gems to use the custom ones
 gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
