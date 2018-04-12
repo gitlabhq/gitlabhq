@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import ProjectNew from '~/pages/projects/shared/project_new';
+import initApproversCheckbox from 'ee/approvers_checkbox';
 
 describe('ApproversSelect', function () {
   const projectSettingsTemplate = 'projects/edit.html.raw';
@@ -8,7 +8,7 @@ describe('ApproversSelect', function () {
   beforeEach(() => {
     loadFixtures(projectSettingsTemplate);
     this.$requireApprovalsToggle = $('.js-require-approvals-toggle');
-    this.project = new ProjectNew();
+    initApproversCheckbox();
   });
 
   it('shows approver settings if enabled', () => {
