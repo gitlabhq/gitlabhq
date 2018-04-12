@@ -73,7 +73,6 @@ module Gitlab
       nil
     end
 
-<<<<<<< HEAD
     # EE below
     def try_megabytes_to_bytes(size)
       Integer(size).megabytes
@@ -81,16 +80,11 @@ module Gitlab
       size
     end
 
-=======
->>>>>>> upstream/master
     def bytes_to_megabytes(bytes)
       bytes.to_f / Numeric::MEGABYTE
     end
 
-<<<<<<< HEAD
-=======
     # Used in EE
->>>>>>> upstream/master
     # Accepts either an Array or a String and returns an array
     def ensure_array_from_string(string_or_array)
       return string_or_array if string_or_array.is_a?(Array)
