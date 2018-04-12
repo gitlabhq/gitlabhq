@@ -2,6 +2,12 @@ module EE
   module ProjectPolicy
     extend ActiveSupport::Concern
 
+    READONLY_FEATURES_WHEN_ARCHIVED = %i[
+      board
+      issue_link
+      approvers
+    ].freeze
+
     prepended do
       with_scope :subject
       condition(:service_desk_enabled) { @subject.service_desk_enabled? }
@@ -52,7 +58,8 @@ module EE
 
       rule { license_block }.policy do
         prevent :create_issue
-        prevent :create_merge_request
+        prevent :create_merge_request_in
+        prevent :create_merge_request_from
         prevent :push_code
       end
 
@@ -124,6 +131,12 @@ module EE
         prevent :developer_access
         prevent :master_access
         prevent :owner_access
+      end
+
+      rule { archived }.policy do
+        READONLY_FEATURES_WHEN_ARCHIVED.each do |feature|
+          prevent(*::ProjectPolicy.create_update_admin_destroy(feature))
+        end
       end
     end
   end

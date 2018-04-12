@@ -31,6 +31,6 @@
       = link_to edit_project_tag_release_path(@project, tag.name), class: 'btn has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
         = icon("pencil")
 
-    - if can?(current_user, :admin_project, @project)
-      = link_to project_tag_path(@project, tag.name), class: "btn btn-remove remove-row has-tooltip prepend-left-10 #{protected_tag?(@project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: tag.name }, container: 'body' }, remote: true do
-        = icon("trash-o")
+      - if can?(current_user, :admin_project, @project)
+        = link_to project_tag_path(@project, tag.name), class: "btn btn-remove remove-row has-tooltip prepend-left-10 #{protected_tag?(@project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: tag.name }, container: 'body' }, remote: true do
+          = icon("trash-o")
