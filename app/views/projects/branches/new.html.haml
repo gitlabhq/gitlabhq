@@ -9,13 +9,13 @@
   New Branch
 %hr
 
-= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-create-branch-form js-requires-input" do
-  .form-group
+= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form js-requires-input" do
+  .form-group.row
     = label_tag :branch_name, nil, class: 'col-form-label'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name'
       .form-text.text-muted.text-danger.js-branch-name-error
-  .form-group
+  .form-group.row
     = label_tag :ref, 'Create from', class: 'col-form-label'
     .col-sm-10.create-from
       .dropdown

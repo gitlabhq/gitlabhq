@@ -1,8 +1,8 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :password_authentication_enabled_for_web do
@@ -10,7 +10,7 @@
             Password authentication enabled for web interface
             .form-text.text-muted
               When disabled, an external authentication provider must be used.
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :password_authentication_enabled_for_git do
@@ -22,35 +22,35 @@
                 or LDAP password
               must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
-      .form-group
+      .form-group.row
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'col-form-label col-sm-2'
         .col-sm-10
           .btn-group{ data: { toggle: 'buttons' } }
             - oauth_providers_checkboxes.each do |source|
               = source
-    .form-group
+    .form-group.row
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
           = f.label :require_two_factor_authentication do
             = f.check_box :require_two_factor_authentication
             Require all users to setup Two-factor authentication
-    .form-group
+    .form-group.row
       = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
         .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
-    .form-group
+    .form-group.row
       = f.label :home_page_url, 'Home page URL', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
         %span.form-text.text-muted#home_help_block We will redirect non-logged in users to this page
-    .form-group
+    .form-group.row
       = f.label :after_sign_out_path, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :after_sign_out_path, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
         %span.form-text.text-muted#after_sign_out_path_help_block We will redirect users to this page after they sign out
-    .form-group
+    .form-group.row
       = f.label :sign_in_text, class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_area :sign_in_text, class: 'form-control', rows: 4

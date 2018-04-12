@@ -4,7 +4,7 @@
   New Pages Domain
 %hr.clearfix
 %div
-  = form_for [@project.namespace.becomes(Namespace), @project, @domain], html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @domain], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
     .form-actions
       = f.submit 'Create New Domain', class: "btn btn-save"

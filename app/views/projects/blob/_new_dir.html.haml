@@ -5,8 +5,8 @@
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= _('Create New Directory')
       .modal-body
-        = form_tag project_create_dir_path(@project, @id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-quick-submit js-requires-input' do
-          .form-group
+        = form_tag project_create_dir_path(@project, @id), method: :post, remote: false, class: 'js-create-dir-form js-quick-submit js-requires-input' do
+          .form-group.row
             = label_tag :dir_name, _('Directory name'), class: 'col-form-label'
             .col-sm-10
               = text_field_tag :dir_name, params[:dir_name], required: true, class: 'form-control'

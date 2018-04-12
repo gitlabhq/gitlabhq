@@ -101,7 +101,7 @@ export default {
       v-if="changedFiles.length"
     >
       <form
-        class="form-horizontal multi-file-commit-form"
+        class="multi-file-commit-form"
         @submit.prevent.stop="commitChanges"
         v-if="!rightPanelCollapsed"
       >

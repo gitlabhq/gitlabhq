@@ -461,22 +461,22 @@
     %code form.horizontal-form
 
   .example
-    %form.form-horizontal
-      .form-group
+    %form
+      .form-group.row
         %label.col-sm-2.col-form-label{ :for => "inputEmail3" } Email
         .col-sm-10
           %input#inputEmail3.form-control{ :placeholder => "Email", :type => "email" }/
-      .form-group
+      .form-group.row
         %label.col-sm-2.col-form-label{ :for => "inputPassword3" } Password
         .col-sm-10
           %input#inputPassword3.form-control{ :placeholder => "Password", :type => "password" }/
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           .form-check
             %label
               %input{ :type => "checkbox" }/
               Remember me
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           %button.btn.btn-secondary{ :type => "submit" } Sign in
 

@@ -11,7 +11,7 @@
     = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank", rel: 'noopener noreferrer'
     and make sure your changes will not unintentionally remove theirs
 
-.form-group
+.form-group.row
   = form.label :title, class: 'col-form-label'
 
   = render 'shared/issuable/form/template_selector', issuable: issuable
@@ -20,7 +20,7 @@
 = render 'shared/form_elements/description', model: issuable, form: form, project: project
 
 - if issuable.respond_to?(:confidential)
-  .form-group
+  .form-group.row
     .col-sm-offset-2.col-sm-10
       .form-check
         = form.label :confidential do
@@ -36,7 +36,7 @@
 = render 'shared/issuable/form/contribution', issuable: issuable, form: form
 
 - if @merge_request_to_resolve_discussions_of
-  .form-group
+  .form-group.row
     .col-sm-10.col-sm-offset-2
       = icon('info-circle')
       - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)

@@ -114,8 +114,8 @@
       .card-header
         Transfer project
       .card-body
-        = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
-          .form-group
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
+          .form-group.row
             = f.label :new_namespace_id, "Namespace", class: 'col-form-label'
             .col-sm-10
               .dropdown
@@ -126,7 +126,7 @@
                   = dropdown_content
                   = dropdown_loading
 
-          .form-group
+          .form-group.row
             .col-sm-offset-2.col-sm-10
               = f.submit 'Transfer', class: 'btn btn-primary'
 

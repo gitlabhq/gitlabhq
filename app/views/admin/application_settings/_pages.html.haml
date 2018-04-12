@@ -1,13 +1,13 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :max_pages_size, class: 'form-control'
         .form-text.text-muted 0 for unlimited
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :pages_domain_verification_enabled do

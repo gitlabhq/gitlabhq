@@ -4,26 +4,25 @@
       %h3.card-title
         Protect a tag
     .card-body
-      .form-horizontal
-        = form_errors(@protected_tag)
-        .form-group
-          = f.label :name, class: 'col-md-2 text-right' do
-            Tag:
-          .col-md-10.protected-tags-dropdown
-            = render partial: "projects/protected_tags/shared/dropdown", locals: { f: f }
-            .form-text.text-muted
-              = link_to 'Wildcards', help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
-              such as
-              %code v*
-              or
-              %code *-release
-              are supported
-        .form-group
-          %label.col-md-2.text-right{ for: 'create_access_levels_attributes' }
-            Allowed to create:
-          .col-md-10
-            .create_access_levels-container
-              = yield :create_access_levels
+      = form_errors(@protected_tag)
+      .form-group.row
+        = f.label :name, class: 'col-md-2 text-right' do
+          Tag:
+        .col-md-10.protected-tags-dropdown
+          = render partial: "projects/protected_tags/shared/dropdown", locals: { f: f }
+          .form-text.text-muted
+            = link_to 'Wildcards', help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
+            such as
+            %code v*
+            or
+            %code *-release
+            are supported
+      .form-group.row
+        %label.col-md-2.text-right{ for: 'create_access_levels_attributes' }
+          Allowed to create:
+        .col-md-10
+          .create_access_levels-container
+            = yield :create_access_levels
 
     .card-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

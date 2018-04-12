@@ -1,4 +1,4 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -8,17 +8,17 @@
       = link_to 'restart', help_page_path('administration/restart_gitlab')
       to take effect.
       = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :metrics_enabled do
             = f.check_box :metrics_enabled
             Enable InfluxDB Metrics
-    .form-group
+    .form-group.row
       = f.label :metrics_host, 'InfluxDB host', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :metrics_host, class: 'form-control', placeholder: 'influxdb.example.com'
-    .form-group
+    .form-group.row
       = f.label :metrics_port, 'InfluxDB port', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
@@ -27,7 +27,7 @@
           your server configuration specifies a database to store data in when
           sending messages to this port, without it metrics data will not be
           saved.
-    .form-group
+    .form-group.row
       = f.label :metrics_pool_size, 'Connection pool size', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_pool_size, class: 'form-control'
@@ -36,28 +36,28 @@
           lazily. Users using multi-threaded application servers should ensure
           enough connections are available (at minimum the amount of application
           server threads).
-    .form-group
+    .form-group.row
       = f.label :metrics_timeout, 'Connection timeout', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_timeout, class: 'form-control'
         .form-text.text-muted
           The amount of seconds after which an InfluxDB connection will time
           out.
-    .form-group
+    .form-group.row
       = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_method_call_threshold, class: 'form-control'
         .form-text.text-muted
           A method call is only tracked when it takes longer to complete than
           the given amount of milliseconds.
-    .form-group
+    .form-group.row
       = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_sample_interval, class: 'form-control'
         .form-text.text-muted
           The sampling interval in seconds. Sampled data includes memory usage,
           retained Ruby objects, file descriptors and so on.
-    .form-group
+    .form-group.row
       = f.label :metrics_packet_size, 'Metrics per packet', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_packet_size, class: 'form-control'

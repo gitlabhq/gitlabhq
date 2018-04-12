@@ -1,22 +1,22 @@
-= form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
+= form_for [:admin, @group] do |f|
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
-  .form-group.group-description-holder
+  .form-group.row.group-description-holder
     = f.label :avatar, "Group avatar", class: 'col-form-label'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
   = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
-  .form-group
+  .form-group.row
     .col-sm-offset-2.col-sm-10
       = render 'shared/allow_request_access', form: f
 
   = render 'groups/group_admin_settings', f: f
 
   - if @group.new_record?
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .alert.alert-info
           = render 'shared/group_tips'

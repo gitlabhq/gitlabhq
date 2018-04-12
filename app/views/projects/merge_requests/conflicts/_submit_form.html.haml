@@ -1,12 +1,12 @@
-.form-horizontal.resolve-conflicts-form
-  .form-group
+.resolve-conflicts-form
+  .form-group.row
     %label.col-sm-2.col-form-label{ "for" => "commit-message" }
       #{ _('Commit message') }
     .col-sm-10
       .commit-message-container
         .max-width-marker
         %textarea.form-control.js-commit-message#commit-message{ "v-model" => "conflictsData.commitMessage", "rows" => "5" }
-  .form-group
+  .form-group.row
     .col-sm-offset-2.col-sm-10
       .row
         .col-6

@@ -1,8 +1,8 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       = f.label :terminal_max_session_time, 'Max session time', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :terminal_max_session_time, class: 'form-control'

@@ -3,11 +3,11 @@
   .card-header
     Group settings
   .card-body
-    = form_for @group, html: { multipart: true, class: "form-horizontal gl-show-field-errors" }, authenticity_token: true do |f|
+    = form_for @group, html: { multipart: true, class: "gl-show-field-errors" }, authenticity_token: true do |f|
       = form_errors(@group)
       = render 'shared/group_form', f: f
 
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           .avatar-container.s160
             = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
@@ -23,11 +23,11 @@
 
       = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           = render 'shared/allow_request_access', form: f
 
-      .form-group
+      .form-group.row
         %label.col-form-label
           = s_("GroupSettings|Share with group lock")
         .col-sm-10
@@ -62,7 +62,7 @@
     .card-header Transfer group
     .card-body
       = form_for @group, url: transfer_group_path(@group), method: :put do |f|
-        .form-group
+        .form-group.row
           = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: "Search groups", data: { data: parent_group_options(@group) } })
           = hidden_field_tag 'new_parent_group_id'
 

@@ -1,13 +1,13 @@
 - commit_message = @page.persisted? ? s_("WikiPageEdit|Update %{page_title}") : s_("WikiPageCreate|Create %{page_title}")
 - commit_message = commit_message % { page_title: @page.title }
 
-= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
   = form_errors(@page)
 
   - if @page.persisted?
     = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
 
-  .form-group
+  .form-group.row
     .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
       = f.text_field :title, class: 'form-control', value: @page.title
@@ -16,12 +16,12 @@
           = icon('lightbulb-o')
           = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")
           = link_to icon('question-circle'), help_page_path('user/project/wiki/index', anchor: 'moving-a-wiki-page'), target: '_blank'
-  .form-group
+  .form-group.row
     .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12
       = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control'
 
-  .form-group
+  .form-group.row
     .col-sm-12= f.label :content, class: 'control-label-full-width'
     .col-sm-12
       = render layout: 'projects/md_preview', locals: { url: project_wiki_preview_markdown_path(@project, @page.slug) } do
@@ -39,7 +39,7 @@
           - markdown_link = link_to s_("WikiMarkdownDocs|documentation"), help_page_path('user/markdown', anchor: 'wiki-specific-markdown')
           = (s_("WikiMarkdownDocs|More examples are in the %{docs_link}") % { docs_link: markdown_link }).html_safe
 
-  .form-group
+  .form-group.row
     .col-sm-12= f.label :commit_message, class: 'control-label-full-width'
     .col-sm-12= f.text_field :message, class: 'form-control', rows: 18, value: commit_message
 

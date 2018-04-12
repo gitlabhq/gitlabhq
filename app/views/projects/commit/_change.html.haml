@@ -20,8 +20,8 @@
       .modal-body
         - if description
           %p.append-bottom-20= description
-        = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
-          .form-group.branch
+        = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "js-#{type}-form js-requires-input" do
+          .form-group.row.branch
             = label_tag 'start_branch', branch_label, class: 'col-form-label'
             .col-sm-10
               = hidden_field_tag :start_branch, @project.default_branch, id: 'start_branch'

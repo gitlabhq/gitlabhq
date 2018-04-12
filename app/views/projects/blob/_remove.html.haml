@@ -6,10 +6,10 @@
         %h3.page-title Delete #{@blob.name}
 
       .modal-body
-        = form_tag project_blob_path(@project, @id), method: :delete, class: 'form-horizontal js-delete-blob-form js-quick-submit js-requires-input' do
+        = form_tag project_blob_path(@project, @id), method: :delete, class: 'js-delete-blob-form js-quick-submit js-requires-input' do
           = render 'shared/new_commit_form', placeholder: "Delete #{@blob.name}"
 
-          .form-group
+          .form-group.row
             .col-sm-offset-2.col-sm-10
               = button_tag 'Delete file', class: 'btn btn-remove btn-remove-file'
               = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"

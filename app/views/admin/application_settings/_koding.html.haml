@@ -1,8 +1,8 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :koding_enabled do
@@ -10,7 +10,7 @@
             Enable Koding
         .form-text.text-muted
           Koding integration has been deprecated since GitLab 10.0. If you disable your Koding integration, you will not be able to enable it again.
-    .form-group
+    .form-group.row
       = f.label :koding_url, 'Koding URL', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'

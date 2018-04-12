@@ -2,16 +2,16 @@
 %h3.page-title Report abuse
 %p Please use this form to report users who create spam issues, comments or behave inappropriately.
 %hr
-= form_for @abuse_report, html: { class: 'form-horizontal js-quick-submit js-requires-input'} do |f|
+= form_for @abuse_report, html: { class: 'js-quick-submit js-requires-input'} do |f|
   = form_errors(@abuse_report)
 
   = f.hidden_field :user_id
-  .form-group
+  .form-group.row
     = f.label :user_id, class: 'col-form-label'
     .col-sm-10
       - name = "#{@abuse_report.user.name} (@#{@abuse_report.user.username})"
       = text_field_tag :user_name, name, class: "form-control", readonly: true
-  .form-group
+  .form-group.row
     = f.label :message, class: 'col-form-label'
     .col-sm-10
       = f.text_area :message, class: "form-control", rows: 2, required: true, value: sanitize(@ref_url)

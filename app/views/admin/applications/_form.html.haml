@@ -1,4 +1,4 @@
-= form_for [:admin, @application], url: @url, html: {class: 'form-horizontal', role: 'form'} do |f|
+= form_for [:admin, @application], url: @url, html: {role: 'form'} do |f|
   = form_errors(application)
 
   = content_tag :div, class: 'form-group' do
@@ -27,7 +27,7 @@
       %span.form-text.text-muted
         Trusted applications are automatically authorized on GitLab OAuth flow.
 
-  .form-group
+  .form-group.row
     = f.label :scopes, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes

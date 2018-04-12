@@ -1,10 +1,10 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .sub-section
       %h4 Repository checks
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           .form-check
             = f.label :repository_checks_enabled do
@@ -14,7 +14,7 @@
               GitLab will periodically run
               %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
               in all project and wiki repositories to look for silent disk corruption issues.
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
           .form-text.text-muted
@@ -22,7 +22,7 @@
 
     .sub-section
       %h4 Housekeeping
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           .form-check
             = f.label :housekeeping_enabled do
@@ -40,19 +40,19 @@
             .form-text.text-muted
               Creating pack file bitmaps makes housekeeping take a little longer but
               bitmaps should accelerate 'git clone' performance.
-      .form-group
+      .form-group.row
         = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :housekeeping_incremental_repack_period, class: 'form-control'
           .form-text.text-muted
             Number of Git pushes after which an incremental 'git repack' is run.
-      .form-group
+      .form-group.row
         = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :housekeeping_full_repack_period, class: 'form-control'
           .form-text.text-muted
             Number of Git pushes after which a full 'git repack' is run.
-      .form-group
+      .form-group.row
         = f.label :housekeeping_gc_period, 'Git GC period', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :housekeeping_gc_period, class: 'form-control'

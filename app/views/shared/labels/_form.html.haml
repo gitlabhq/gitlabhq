@@ -1,15 +1,15 @@
-= form_for @label, as: :label, url: url, html: { class: 'form-horizontal label-form js-quick-submit js-requires-input' } do |f|
+= form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@label)
 
-  .form-group
+  .form-group.row
     = f.label :title, class: 'col-form-label'
     .col-sm-10
       = f.text_field :title, class: "form-control", required: true, autofocus: true
-  .form-group
+  .form-group.row
     = f.label :description, class: 'col-form-label'
     .col-sm-10
       = f.text_field :description, class: "form-control js-quick-submit"
-  .form-group
+  .form-group.row
     = f.label :color, "Background color", class: 'col-form-label'
     .col-sm-10
       .input-group

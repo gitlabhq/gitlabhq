@@ -1,12 +1,12 @@
-= form_for [:admin, @user, @identity], html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for [:admin, @user, @identity], html: { class: 'fieldset-form' } do |f|
   = form_errors(@identity)
 
-  .form-group
+  .form-group.row
     = f.label :provider, class: 'col-form-label'
     .col-sm-10
       - values = Gitlab::Auth::OAuth::Provider.providers.map { |name| ["#{Gitlab::Auth::OAuth::Provider.label_for(name)} (#{name})", name] }
       = f.select :provider, values, { allow_blank: false }, class: 'form-control'
-  .form-group
+  .form-group.row
     = f.label :extern_uid, "Identifier", class: 'col-form-label'
     .col-sm-10
       = f.text_field :extern_uid, class: 'form-control', required: true

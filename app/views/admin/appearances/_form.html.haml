@@ -1,10 +1,10 @@
-= form_for @appearance, url: admin_appearances_path, html: { class: 'form-horizontal'} do |f|
+= form_for @appearance, url: admin_appearances_path, do |f|
   = form_errors(@appearance)
 
   %fieldset.app_logo
     %legend
       Navigation bar:
-  .form-group
+  .form-group.row
     = f.label :header_logo, 'Header logo', class: 'col-form-label'
     .col-sm-10
       - if @appearance.header_logo?
@@ -21,17 +21,17 @@
   %fieldset.sign-in
     %legend
       Sign in/Sign up pages:
-  .form-group
+  .form-group.row
     = f.label :title, class: 'col-form-label'
     .col-sm-10
       = f.text_field :title, class: "form-control"
-  .form-group
+  .form-group.row
     = f.label :description, class: 'col-form-label'
     .col-sm-10
       = f.text_area :description, class: "form-control", rows: 10
       .hint
         Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
-  .form-group
+  .form-group.row
     = f.label :logo, class: 'col-form-label'
     .col-sm-10
       - if @appearance.logo?
@@ -48,7 +48,7 @@
   %fieldset
     %legend
       New project pages:
-  .form-group
+  .form-group.row
     = f.label :new_project_guidelines, class: 'col-form-label'
     .col-sm-10
       = f.text_area :new_project_guidelines, class: "form-control", rows: 10

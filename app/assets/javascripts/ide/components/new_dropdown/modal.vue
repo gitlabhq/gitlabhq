@@ -77,11 +77,10 @@ export default {
     @submit="createEntryInStore"
   >
     <form
-      class="form-horizontal"
       slot="body"
       @submit.prevent="createEntryInStore"
     >
-      <fieldset class="form-group append-bottom-0">
+      <fieldset class="form-group row append-bottom-0">
         <label class="label-light col-sm-3">
           {{ formLabelName }}
         </label>

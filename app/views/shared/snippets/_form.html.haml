@@ -2,10 +2,10 @@
   = page_specific_javascript_tag('lib/ace.js')
 
 .snippet-form-holder
-  = form_for @snippet, url: url, html: { class: "form-horizontal snippet-form js-requires-input js-quick-submit common-note-form" } do |f|
+  = form_for @snippet, url: url, html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" } do |f|
     = form_errors(@snippet)
 
-    .form-group
+    .form-group.row
       = f.label :title, class: 'col-form-label'
       .col-sm-10
         = f.text_field :title, class: 'form-control', required: true, autofocus: true
@@ -15,7 +15,7 @@
     = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet
 
     .file-editor
-      .form-group
+      .form-group.row
         = f.label :file_name, "File", class: 'col-form-label'
         .col-sm-10
           .file-holder.snippet

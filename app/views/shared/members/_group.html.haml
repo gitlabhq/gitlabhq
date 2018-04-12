@@ -14,7 +14,7 @@
         %span{ class: ('text-warning' if group_link.expires_soon?) }
           Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
   .controls.member-controls
-    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'form-horizontal js-edit-member-form' do
+    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'js-edit-member-form' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access
       .member-form-control.dropdown.append-right-5
         %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",

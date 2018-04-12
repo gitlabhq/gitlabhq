@@ -8,13 +8,13 @@
 
 .service-settings
   - if @service.show_active_box?
-    .form-group
+    .form-group.row
       = form.label :active, "Active", class: "col-form-label"
       .col-sm-10
         = form.check_box :active, disabled: disable_fields_service?(@service)
 
   - if @service.configurable_events.present?
-    .form-group
+    .form-group.row
       = form.label :url, "Trigger", class: 'col-form-label'
 
       .col-sm-10

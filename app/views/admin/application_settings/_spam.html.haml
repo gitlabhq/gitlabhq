@@ -1,8 +1,8 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :recaptcha_enabled do
@@ -10,7 +10,7 @@
             Enable reCAPTCHA
           %span.form-text.text-muted#recaptcha_help_block Helps prevent bots from creating accounts
 
-    .form-group
+    .form-group.row
       = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :recaptcha_site_key, class: 'form-control'
@@ -18,12 +18,12 @@
           Generate site and private keys at
           %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
-    .form-group
+    .form-group.row
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :recaptcha_private_key, class: 'form-control'
 
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :akismet_enabled do
@@ -31,7 +31,7 @@
             Enable Akismet
           %span.form-text.text-muted#akismet_help_block Helps prevent bots from creating issues
 
-    .form-group
+    .form-group.row
       = f.label :akismet_api_key, 'Akismet API Key', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.text_field :akismet_api_key, class: 'form-control'
@@ -39,7 +39,7 @@
           Generate API key at
           %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :unique_ips_limit_enabled do
@@ -48,14 +48,14 @@
           %span.form-text.text-muted#unique_ip_help_block
             Helps prevent malicious users hide their activity
 
-    .form-group
+    .form-group.row
       = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :unique_ips_limit_per_user, class: 'form-control'
         .form-text.text-muted
           Maximum number of unique IPs per user
 
-    .form-group
+    .form-group.row
       = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'col-form-label col-sm-2'
       .col-sm-10
         = f.number_field :unique_ips_limit_time_window, class: 'form-control'

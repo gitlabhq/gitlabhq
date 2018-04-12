@@ -4,30 +4,29 @@
       %h3.card-title
         Protect a branch
     .card-body
-      .form-horizontal
-        = form_errors(@protected_branch)
-        .form-group
-          = f.label :name, class: 'col-md-2 text-right' do
-            Branch:
-          .col-md-10
-            = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
-            .form-text.text-muted
-              = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
-              such as
-              %code *-stable
-              or
-              %code production/*
-              are supported
-        .form-group
-          %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
-            Allowed to merge:
-          .col-md-10
-            = yield :merge_access_levels
-        .form-group
-          %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
-            Allowed to push:
-          .col-md-10
-            = yield :push_access_levels
+      = form_errors(@protected_branch)
+      .form-group.row
+        = f.label :name, class: 'col-md-2 text-right' do
+          Branch:
+        .col-md-10
+          = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
+          .form-text.text-muted
+            = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
+            such as
+            %code *-stable
+            or
+            %code production/*
+            are supported
+      .form-group.row
+        %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
+          Allowed to merge:
+        .col-md-10
+          = yield :merge_access_levels
+      .form-group.row
+        %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
+          Allowed to push:
+        .col-md-10
+          = yield :push_access_levels
 
     .card-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

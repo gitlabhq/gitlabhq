@@ -1,20 +1,20 @@
 .user_new
-  = form_for [:admin, @user], html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
     = form_errors(@user)
 
     %fieldset
       %legend Account
-      .form-group
+      .form-group.row
         = f.label :name, class: 'col-form-label'
         .col-sm-10
           = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control'
           %span.help-inline * required
-      .form-group
+      .form-group.row
         = f.label :username, class: 'col-form-label'
         .col-sm-10
           = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control'
           %span.help-inline * required
-      .form-group
+      .form-group.row
         = f.label :email, class: 'col-form-label'
         .col-sm-10
           = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control'
@@ -23,7 +23,7 @@
     - if @user.new_record?
       %fieldset
         %legend Password
-        .form-group
+        .form-group.row
           = f.label :password, class: 'col-form-label'
           .col-sm-10
             %strong
@@ -33,10 +33,10 @@
     - else
       %fieldset
         %legend Password
-        .form-group
+        .form-group.row
           = f.label :password, class: 'col-form-label'
           .col-sm-10= f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
-        .form-group
+        .form-group.row
           = f.label :password_confirmation, class: 'col-form-label'
           .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
@@ -44,21 +44,21 @@
 
     %fieldset
       %legend Profile
-      .form-group
+      .form-group.row
         = f.label :avatar, class: 'col-form-label'
         .col-sm-10
           = f.file_field :avatar
 
-      .form-group
+      .form-group.row
         = f.label :skype, class: 'col-form-label'
         .col-sm-10= f.text_field :skype, class: 'form-control'
-      .form-group
+      .form-group.row
         = f.label :linkedin, class: 'col-form-label'
         .col-sm-10= f.text_field :linkedin, class: 'form-control'
-      .form-group
+      .form-group.row
         = f.label :twitter, class: 'col-form-label'
         .col-sm-10= f.text_field :twitter, class: 'form-control'
-      .form-group
+      .form-group.row
         = f.label :website_url, 'Website', class: 'col-form-label'
         .col-sm-10= f.text_field :website_url, class: 'form-control'
 

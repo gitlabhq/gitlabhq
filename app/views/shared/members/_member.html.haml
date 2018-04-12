@@ -57,7 +57,7 @@
                     title: 'Resend invite'
 
         - if user != current_user && member.can_update?
-          = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
+          = form_for member, remote: true, html: { class: 'js-edit-member-form' } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",

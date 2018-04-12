@@ -3,7 +3,7 @@
 %hr
 
 %div
-  = form_for [:admin, @deploy_key], html: { class: 'deploy-key-form form-horizontal' } do |f|
+  = form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
       = f.submit 'Create', class: 'btn-create btn'

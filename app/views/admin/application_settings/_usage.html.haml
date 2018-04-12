@@ -1,8 +1,8 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         .form-check
           = f.label :version_check_enabled do
@@ -12,7 +12,7 @@
             GitLab will inform you if a new version is available.
             = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
             about what information is shared with GitLab Inc.
-    .form-group
+    .form-group.row
       .col-sm-offset-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
         .form-check

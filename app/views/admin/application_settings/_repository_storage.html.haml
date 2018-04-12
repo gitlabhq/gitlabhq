@@ -1,9 +1,9 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .sub-section
-      .form-group
+      .form-group.row
         .col-sm-offset-2.col-sm-10
           .form-check
             = f.label :hashed_storage_enabled do
@@ -13,7 +13,7 @@
               Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
               repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
               %em (EXPERIMENTAL)
-      .form-group
+      .form-group.row
         = f.label :repository_storages, 'Storage paths for new projects', class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
@@ -24,31 +24,31 @@
               = link_to "repository storages documentation", help_page_path("administration/repository_storages")
     .sub-section
       %h4 Circuit breaker
-      .form-group
+      .form-group.row
         = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_check_interval, class: 'form-control'
           .form-text.text-muted
             = circuitbreaker_check_interval_help_text
-      .form-group
+      .form-group.row
         = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_access_retries, class: 'form-control'
           .form-text.text-muted
             = circuitbreaker_access_retries_help_text
-      .form-group
+      .form-group.row
         = f.label :circuitbreaker_storage_timeout, _('Seconds to wait for a storage access attempt'), class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
           .form-text.text-muted
             = circuitbreaker_storage_timeout_help_text
-      .form-group
+      .form-group.row
         = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_failure_count_threshold, class: 'form-control'
           .form-text.text-muted
             = circuitbreaker_failure_count_help_text
-      .form-group
+      .form-group.row
         = f.label :circuitbreaker_failure_reset_time, _('Seconds before reseting failure information'), class: 'col-form-label col-sm-2'
         .col-sm-10
           = f.number_field :circuitbreaker_failure_reset_time, class: 'form-control'

@@ -2,7 +2,7 @@
 - header_title  "New Password"
 %h3.page-title Setup new password
 %hr
-= form_for @user, url: profile_password_path, method: :post, html: { class: 'form-horizontal '} do |f|
+= form_for @user, url: profile_password_path, method: :post do |f|
   %p.slead
     Please set a new password before proceeding.
     %br
@@ -11,13 +11,13 @@
   = form_errors(@user)
 
   - unless @user.password_automatically_set?
-    .form-group
+    .form-group.row
       = f.label :current_password, class: 'col-form-label'
       .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
-  .form-group
+  .form-group.row
     = f.label :password, class: 'col-form-label'
     .col-sm-10= f.password_field :password, required: true, class: 'form-control'
-  .form-group
+  .form-group.row
     = f.label :password_confirmation, class: 'col-form-label'
     .col-sm-10
       = f.password_field :password_confirmation, required: true, class: 'form-control'
