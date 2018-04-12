@@ -1,0 +1,5 @@
+---
+title: 'Introduce simpler env vars for auto devops REPLICAS and CANARY_REPLICAS #41436'
+merge_request: 18036
+author:
+type: added
