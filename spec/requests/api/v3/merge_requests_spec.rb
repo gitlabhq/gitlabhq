@@ -340,7 +340,7 @@ describe API::MergeRequests do
         expect(json_response['title']).to eq('Test merge_request')
       end
 
-      it "returns 422 when target project has disabled merge requests" do
+      it "returns 403 when target project has disabled merge requests" do
         project.project_feature.update(merge_requests_access_level: 0)
 
         post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
@@ -350,7 +350,7 @@ describe API::MergeRequests do
              author: user2,
              target_project_id: project.id
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns 400 when source_branch is missing" do

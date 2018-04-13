@@ -5,6 +5,7 @@
 
 - link = commit_path(project, commit, merge_request: merge_request)
 - cache_key = [project.full_path,
+               ref,
                commit.id,
                Gitlab::CurrentSettings.current_application_settings,
                @path.presence,
@@ -54,7 +55,7 @@
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
 
-        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id) } }
+        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 
         .commit-sha-group
           .label.label-monospace

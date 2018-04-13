@@ -3,7 +3,7 @@ import store from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
 import { userDataMock } from '../mock_data';
 
-describe('issse_note_actions component', () => {
+describe('issue_note_actions component', () => {
   let vm;
   let Component;
 
@@ -24,6 +24,7 @@ describe('issse_note_actions component', () => {
         authorId: 26,
         canDelete: true,
         canEdit: true,
+        canAwardEmoji: true,
         canReportAsAbuse: true,
         noteId: 539,
         reportAbusePath: '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
@@ -70,6 +71,7 @@ describe('issse_note_actions component', () => {
         authorId: 26,
         canDelete: false,
         canEdit: false,
+        canAwardEmoji: false,
         canReportAsAbuse: false,
         noteId: 539,
         reportAbusePath: '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',

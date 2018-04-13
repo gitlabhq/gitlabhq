@@ -44,6 +44,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canAwardEmoji: {
+      type: Boolean,
+      required: true,
+    },
     canDelete: {
       type: Boolean,
       required: true,
@@ -77,9 +81,6 @@ export default {
     ...mapGetters(['getUserDataByProp']),
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
-    },
-    canAddAwardEmoji() {
-      return this.currentUserId;
     },
     isAuthoredByCurrentUser() {
       return this.authorId === this.currentUserId;
@@ -153,7 +154,7 @@ export default {
       </button>
     </div>
     <div
-      v-if="canAddAwardEmoji"
+      v-if="canAwardEmoji"
       class="note-actions-item">
       <a
         v-tooltip

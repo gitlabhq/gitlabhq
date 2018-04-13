@@ -10,10 +10,6 @@ module SharedMarkdown
     expect(find(:xpath, "#{node.path}/..").text).to eq text
   end
 
-  step 'Header "Description header" should have correct id and link' do
-    header_should_have_correct_id_and_link(1, 'Description header', 'description-header')
-  end
-
   step 'I should not see the Markdown preview' do
     expect(find('.gfm-form .js-md-preview')).not_to be_visible
   end

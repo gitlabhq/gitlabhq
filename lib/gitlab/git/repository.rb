@@ -75,9 +75,6 @@ module Gitlab
         end
       end
 
-      # Full path to repo
-      attr_reader :path
-
       # Directory name of repo
       attr_reader :name
 
@@ -96,20 +93,24 @@ module Gitlab
         @relative_path = relative_path
         @gl_repository = gl_repository
 
-        storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
           storage,
           relative_path,
           global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
           logger: Rails.logger
         )
-        @path = File.join(storage_path, @relative_path)
+
         @name = @relative_path.split("/").last
-        @attributes = Gitlab::Git::InfoAttributes.new(path)
       end
 
       def ==(other)
         path == other.path
+      end
+
+      def path
+        @path ||= File.join(
+          Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
+        )
       end
 
       # Default branch in the repository
@@ -140,12 +141,12 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status:  Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
             circuit_breaker.perform do
-              File.exist?(File.join(@path, 'refs'))
+              File.exist?(File.join(path, 'refs'))
             end
           end
         end
@@ -557,6 +558,24 @@ module Gitlab
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to, options = {})
         count_commits(from: from, to: to, **options)
+      end
+
+      # old_rev and new_rev are commit ID's
+      # the result of this method is an array of Gitlab::Git::RawDiffChange
+      def raw_changes_between(old_rev, new_rev)
+        result = []
+
+        circuit_breaker.perform do
+          Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+            last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+            if wait_threads.any? { |waiter| !waiter.value&.success? }
+              raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+            end
+          end
+        end
+
+        result
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -993,11 +1012,32 @@ module Gitlab
         raise InvalidRef
       end
 
+      def info_attributes
+        return @info_attributes if @info_attributes
+
+        content =
+          gitaly_migrate(:get_info_attributes) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.info_attributes
+            else
+              attributes_path = File.join(File.expand_path(path), 'info', 'attributes')
+
+              if File.exist?(attributes_path)
+                File.read(attributes_path)
+              else
+                ""
+              end
+            end
+          end
+
+        @info_attributes = AttributesParser.new(content)
+      end
+
       # Returns the Git attributes for the given file path.
       #
       # See `Gitlab::Git::Attributes` for more information.
       def attributes(path)
-        @attributes.attributes(path)
+        info_attributes.attributes(path)
       end
 
       def gitattribute(path, name)
@@ -1385,7 +1425,8 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
+        gitaly_migrate(:branch_names_contains_sha,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.branch_names_contains_sha(sha)
           else
@@ -1395,7 +1436,8 @@ module Gitlab
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
+        gitaly_migrate(:tag_names_contains_sha,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.tag_names_contains_sha(sha)
           else
@@ -2460,6 +2502,35 @@ module Gitlab
         end
 
         result.to_s(16)
+      end
+
+      def build_git_cmd(*args)
+        object_directories = alternate_object_directories.join(File::PATH_SEPARATOR)
+
+        env = { 'PWD' => self.path }
+        env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories if object_directories.present?
+
+        [
+          env,
+          ::Gitlab.config.git.bin_path,
+          *args,
+          { chdir: self.path }
+        ]
+      end
+
+      def git_diff_cmd(old_rev, new_rev)
+        old_rev = old_rev == ::Gitlab::Git::BLANK_SHA ? ::Gitlab::Git::EMPTY_TREE_ID : old_rev
+
+        build_git_cmd('diff', old_rev, new_rev, '--raw')
+      end
+
+      def git_cat_file_cmd
+        format = '%(objectname) %(objectsize) %(rest)'
+        build_git_cmd('cat-file', "--batch-check=#{format}")
+      end
+
+      def format_git_cat_file_script
+        File.expand_path('../support/format-git-cat-file-input', __FILE__)
       end
     end
   end
