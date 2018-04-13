@@ -68,3 +68,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
     background-color: $label-inverse-bg;
   }
 }
+
+.divider {
+  @extend .dropdown-divider;
+}
