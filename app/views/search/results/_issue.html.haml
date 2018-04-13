@@ -4,7 +4,7 @@
     = link_to [issue.project.namespace.becomes(Namespace), issue.project, issue] do
       %span.term.str-truncated= issue.title
     - if issue.closed?
-      %span.badge.label-danger.prepend-left-5 Closed
+      %span.badge.badge-danger.prepend-left-5 Closed
     .float-right ##{issue.iid}
   - if issue.description.present?
     .description.term

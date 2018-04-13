@@ -46,7 +46,7 @@
       - if job.try(:trigger_request)
         %span.badge.label-info triggered
       - if job.try(:allow_failure)
-        %span.badge.label-danger allowed to fail
+        %span.badge.badge-danger allowed to fail
       - if job.action?
         %span.badge.label-info manual
 

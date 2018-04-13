@@ -7,7 +7,7 @@
     - if runner.locked?
       %span.badge.badge-warning locked
     - unless runner.active?
-      %span.badge.label-danger paused
+      %span.badge.badge-danger paused
 
   %td
     = link_to admin_runner_path(runner) do

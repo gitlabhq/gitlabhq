@@ -5,7 +5,7 @@
     - if merge_request.merged?
       %span.badge.badge-primary.prepend-left-5 Merged
     - elsif merge_request.closed?
-      %span.badge.label-danger.prepend-left-5 Closed
+      %span.badge.badge-danger.prepend-left-5 Closed
     .float-right= merge_request.to_reference
   - if merge_request.description.present?
     .description.term

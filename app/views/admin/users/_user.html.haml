@@ -5,7 +5,7 @@
     .user-name.row-title.str-truncated-100
       = link_to user.name, [:admin, user]
     - if user.blocked?
-      %span.badge.label-danger blocked
+      %span.badge.badge-danger blocked
     - if user.admin?
       %span.badge.badge-success Admin
     - if user.external?

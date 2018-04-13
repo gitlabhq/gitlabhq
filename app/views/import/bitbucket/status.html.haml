@@ -74,7 +74,7 @@
             = link_to repo.full_name, "https://bitbucket.org/#{repo.full_name}", target: '_blank', rel: 'noopener noreferrer'
           %td.import-target
           %td.import-actions-job-status
-            = label_tag 'Incompatible Project', nil, class: 'label label-danger'
+            = label_tag 'Incompatible Project', nil, class: 'label badge-danger'
 
 - if @incompatible_repos.any?
   %p

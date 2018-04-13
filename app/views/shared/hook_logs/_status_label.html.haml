@@ -1,3 +1,3 @@
-- label_status = hook_log.success? ? 'badge-success' : 'label-danger'
+- label_status = hook_log.success? ? 'badge-success' : 'badge-danger'
 %span{ class: "label #{label_status}" }
   = hook_log.response_status

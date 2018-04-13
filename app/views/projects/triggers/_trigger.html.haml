@@ -10,7 +10,7 @@
       - if trigger.legacy?
         %span.badge.badge-primary.has-tooltip{ title: "Trigger makes use of deprecated functionality" } legacy
       - if !trigger.can_access_project?
-        %span.badge.label-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
+        %span.badge.badge-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
 
   %td
     - if trigger.description? && trigger.description.length > 15
