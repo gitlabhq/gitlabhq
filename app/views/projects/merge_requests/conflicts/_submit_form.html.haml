@@ -7,7 +7,7 @@
         .max-width-marker
         %textarea.form-control.js-commit-message#commit-message{ "v-model" => "conflictsData.commitMessage", "rows" => "5" }
   .form-group.row
-    .col-sm-offset-2.col-sm-10
+    .offset-sm-2.col-sm-10
       .row
         .col-6
           %button.btn.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }

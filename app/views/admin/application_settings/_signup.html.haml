@@ -3,13 +3,13 @@
 
   %fieldset
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :signup_enabled do
             = f.check_box :signup_enabled
             Sign-up enabled
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :send_user_confirmation_email do
             = f.check_box :send_user_confirmation_email
@@ -27,7 +27,7 @@
             = f.check_box :domain_blacklist_enabled
             Enable domain blacklist for sign ups
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = label_tag :blacklist_type_file do
             = radio_button_tag :blacklist_type, :file

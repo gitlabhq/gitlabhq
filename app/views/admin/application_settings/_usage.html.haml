@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
@@ -13,7 +13,7 @@
             = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
             about what information is shared with GitLab Inc.
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
         .form-check
           = f.label :usage_ping_enabled do

@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :throttle_unauthenticated_enabled do
             = f.check_box :throttle_unauthenticated_enabled
@@ -19,7 +19,7 @@
       .col-sm-10
         = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :throttle_authenticated_api_enabled do
             = f.check_box :throttle_authenticated_api_enabled
@@ -35,7 +35,7 @@
       .col-sm-10
         = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :throttle_authenticated_web_enabled do
             = f.check_box :throttle_authenticated_web_enabled

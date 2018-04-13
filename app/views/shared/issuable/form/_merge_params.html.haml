@@ -8,7 +8,7 @@
 - return unless issuable.can_remove_source_branch?(current_user)
 
 .form-group
-  .col-sm-10.col-sm-offset-2
+  .col-sm-10.offset-sm-2
     - if issuable.can_remove_source_branch?(current_user)
       .form-check
         = label_tag 'merge_request[force_remove_source_branch]' do

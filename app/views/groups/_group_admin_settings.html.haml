@@ -22,7 +22,7 @@
             Require all users in this group to setup Two-factor authentication
             = link_to icon('question-circle'), help_page_path('security/two_factor_authentication', anchor: 'enforcing-2fa-for-all-users-in-a-group')
   .form-group
-    .col-sm-offset-2.col-sm-10
+    .offset-sm-2.col-sm-10
       .form-check
         = f.text_field :two_factor_grace_period, class: 'form-control'
         .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication

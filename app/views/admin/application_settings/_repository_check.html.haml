@@ -5,7 +5,7 @@
     .sub-section
       %h4 Repository checks
       .form-group.row
-        .col-sm-offset-2.col-sm-10
+        .offset-sm-2.col-sm-10
           .form-check
             = f.label :repository_checks_enabled do
               = f.check_box :repository_checks_enabled
@@ -15,7 +15,7 @@
               %a{ href: 'https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html', target: 'blank' } 'git fsck'
               in all project and wiki repositories to look for silent disk corruption issues.
       .form-group.row
-        .col-sm-offset-2.col-sm-10
+        .offset-sm-2.col-sm-10
           = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
           .form-text.text-muted
             If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
@@ -23,7 +23,7 @@
     .sub-section
       %h4 Housekeeping
       .form-group.row
-        .col-sm-offset-2.col-sm-10
+        .offset-sm-2.col-sm-10
           .form-check
             = f.label :housekeeping_enabled do
               = f.check_box :housekeeping_enabled

@@ -8,7 +8,7 @@
       = render 'shared/group_form', f: f
 
       .form-group.row
-        .col-sm-offset-2.col-sm-10
+        .offset-sm-2.col-sm-10
           .avatar-container.s160
             = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
           %p.light
@@ -24,7 +24,7 @@
       = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
       .form-group.row
-        .col-sm-offset-2.col-sm-10
+        .offset-sm-2.col-sm-10
           = render 'shared/allow_request_access', form: f
 
       .form-group.row

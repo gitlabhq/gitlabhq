@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :sentry_enabled do
             = f.check_box :sentry_enabled
@@ -19,7 +19,7 @@
         = f.text_field :sentry_dsn, class: 'form-control'
 
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :clientside_sentry_enabled do
             = f.check_box :clientside_sentry_enabled

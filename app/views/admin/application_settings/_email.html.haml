@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :email_author_in_body do
             = f.check_box :email_author_in_body
@@ -13,7 +13,7 @@
             Enable this option to include the name of the author of the issue,
             merge request or comment in the email body instead.
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :html_emails_enabled do
             = f.check_box :html_emails_enabled

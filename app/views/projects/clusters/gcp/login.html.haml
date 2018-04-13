@@ -8,7 +8,7 @@
     = render 'projects/clusters/dropdown', dropdown_text: s_('ClusterIntegration|Create Kubernetes cluster on Google Kubernetes Engine')
     = render 'header'
 .row
-  .col-sm-8.col-sm-offset-4.signin-with-google
+  .col-sm-8.offset-sm-4.signin-with-google
     - if @authorize_url
       = link_to @authorize_url do
         = image_tag('auth_buttons/signin_with_google.png', width: '191px')

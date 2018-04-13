@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :recaptcha_enabled do
             = f.check_box :recaptcha_enabled
@@ -24,7 +24,7 @@
         = f.text_field :recaptcha_private_key, class: 'form-control'
 
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :akismet_enabled do
             = f.check_box :akismet_enabled
@@ -40,7 +40,7 @@
           %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
     .form-group.row
-      .col-sm-offset-2.col-sm-10
+      .offset-sm-2.col-sm-10
         .form-check
           = f.label :unique_ips_limit_enabled do
             = f.check_box :unique_ips_limit_enabled
