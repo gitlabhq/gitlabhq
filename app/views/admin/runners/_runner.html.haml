@@ -27,7 +27,7 @@
     #{runner.builds.count(:all)}
   %td
     - runner.tag_list.sort.each do |tag|
-      %span.badge.label-primary
+      %span.badge.badge-primary
         = tag
   %td
     - if runner.contacted_at

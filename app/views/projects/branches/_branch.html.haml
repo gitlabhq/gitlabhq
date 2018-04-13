@@ -13,7 +13,7 @@
         = branch.name
       &nbsp;
       - if branch.name == @repository.root_ref
-        %span.badge.label-primary default
+        %span.badge.badge-primary default
       - elsif merged
         %span.badge.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
           = s_('Branches|merged')

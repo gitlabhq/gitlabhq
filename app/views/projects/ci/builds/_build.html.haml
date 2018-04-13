@@ -41,7 +41,7 @@
     .label-container
       - if job.tags.any?
         - job.tags.each do |tag|
-          %span.badge.label-primary
+          %span.badge.badge-primary
             = tag
       - if job.try(:trigger_request)
         %span.badge.label-info triggered

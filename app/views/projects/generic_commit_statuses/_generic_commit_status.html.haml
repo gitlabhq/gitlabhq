@@ -35,7 +35,7 @@
     .label-container
       - if generic_commit_status.tags.any?
         - generic_commit_status.tags.each do |tag|
-          %span.badge.label-primary
+          %span.badge.badge-primary
             = tag
       - if retried
         %span.badge.badge-warning retried
