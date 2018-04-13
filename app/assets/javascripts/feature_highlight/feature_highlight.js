@@ -31,11 +31,8 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
     .on('mouseenter', mouseenter)
     .on('mouseleave', debouncedMouseleave(debounceTimeout))
     .on('inserted.bs.popover', inserted)
-    .on('show.bs.popover', () => {
+    .one('show.bs.popover', () => {
       window.addEventListener('scroll', hideOnScroll);
-    })
-    .on('hide.bs.popover', () => {
-      window.removeEventListener('scroll', hideOnScroll);
     })
     // Display feature highlight
     .removeAttr('disabled');
