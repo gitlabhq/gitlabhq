@@ -32,6 +32,29 @@ feature 'Admin updates settings' do
     expect(find('#application_setting_visibility_level_20')).not_to be_checked
   end
 
+  scenario 'Modify import sources' do
+    expect(Gitlab::CurrentSettings.import_sources).not_to be_empty
+
+    page.within('.as-visibility-access') do
+      Gitlab::ImportSources.options.map do |name, _|
+        uncheck name
+      end
+
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.import_sources).to be_empty
+
+    page.within('.as-visibility-access') do
+      check "Repo by URL"
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.import_sources).to eq(['git'])
+  end
+
   scenario 'Change Visibility and Access Controls' do
     page.within('.as-visibility-access') do
       uncheck 'Project export enabled'
