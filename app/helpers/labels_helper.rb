@@ -81,7 +81,7 @@ module LabelsHelper
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
-    span = %(<span class="label color-label #{"has-tooltip" if tooltip}" ) +
+    span = %(<span class="badge color-label #{"has-tooltip" if tooltip}" ) +
       %(style="background-color: #{label.color}; color: #{text_color}" ) +
       %(title="#{escape_once(label.description)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
