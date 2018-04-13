@@ -174,7 +174,7 @@
     text-transform: capitalize;
   }
 
-  .badge.badge-pill-branch {
+  .label-branch {
     @extend .ref-name;
 
     color: $gl-text-color;
@@ -182,7 +182,7 @@
     overflow: hidden;
     word-break: break-all;
 
-    &.badge.badge-pill-truncated {
+    &.label-truncated {
       position: relative;
       display: inline-block;
       width: 250px;

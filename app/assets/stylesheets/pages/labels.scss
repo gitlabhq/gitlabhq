@@ -57,8 +57,8 @@
   border-bottom-left-radius: $border-radius-base;
 }
 
-.badge.badge-pill-row {
-  .badge.badge-pill-name {
+.label-row {
+  .label-name {
     display: inline-block;
     margin-bottom: 10px;
 
@@ -68,14 +68,14 @@
       margin-bottom: 0;
     }
 
-    .badge.badge-pill {
+    .badge {
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
     }
   }
 
-  .badge.badge-pill-type {
+  .label-type {
     display: block;
     margin-bottom: 10px;
     margin-left: 50px;
@@ -89,7 +89,7 @@
     }
   }
 
-  .badge.badge-pill-description {
+  .label-description {
     display: block;
     margin-bottom: 10px;
 
@@ -110,7 +110,7 @@
     }
   }
 
-  .badge.badge-pill {
+  .badge {
     padding: 4px $grid-size;
     font-size: $label-font-size;
     position: relative;
@@ -234,7 +234,7 @@
   font-size: 0;
   padding: 12px 16px;
 
-  .badge.badge-pill-row {
+  .label-row {
     margin-top: 4px;
     margin-bottom: 4px;
 
@@ -243,7 +243,7 @@
     }
   }
 
-  .badge.badge-pill-remove {
+  .label-remove {
     border-left: 1px solid $label-remove-border;
     z-index: 3;
     border-radius: $label-border-radius;
@@ -270,11 +270,11 @@
   }
 }
 
-.badge.badge-pill-options-toggle {
+.label-options-toggle {
   width: 100%;
 }
 
-.badge.badge-pill-subscription {
+.label-subscription {
   vertical-align: middle;
 
   .dropdown-group-label a {
@@ -282,39 +282,39 @@
   }
 }
 
-.badge.badge-pill-subscribe-button {
+.label-subscribe-button {
   @media(min-width: map-get($grid-breakpoints, md)) {
     min-width: 105px;
     margin-left: $gl-padding;
   }
 
-  .badge.badge-pill-subscribe-button-icon {
+  .label-subscribe-button-icon {
     &[disabled] {
       opacity: 0.5;
       pointer-events: none;
     }
   }
 
-  .badge.badge-pill-subscribe-button-loading {
+  .label-subscribe-button-loading {
     display: none;
   }
 
   &.disabled {
-    .badge.badge-pill-subscribe-button-icon {
+    .label-subscribe-button-icon {
       display: none;
     }
 
-    .badge.badge-pill-subscribe-button-loading {
+    .label-subscribe-button-loading {
       display: block;
     }
   }
 }
 
-.badge.badge-pill-link {
+.label-link {
   display: inline-flex;
   vertical-align: top;
 
-  .badge.badge-pill {
+  .label {
     vertical-align: inherit;
     font-size: $label-font-size;
   }

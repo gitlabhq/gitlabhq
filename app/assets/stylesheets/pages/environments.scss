@@ -145,8 +145,8 @@
 
 .x-axis path,
 .y-axis path,
-.badge.badge-pill-x-axis-line,
-.badge.badge-pill-y-axis-line {
+.label-x-axis-line,
+.label-y-axis-line {
   fill: none;
   stroke-width: 1;
   shape-rendering: crispEdges;
@@ -157,8 +157,8 @@
   stroke: $stat-graph-axis-fill;
 }
 
-.badge.badge-pill-x-axis-line,
-.badge.badge-pill-y-axis-line {
+.label-x-axis-line,
+.label-y-axis-line {
   stroke: $border-color;
 }
 
@@ -357,7 +357,7 @@
       font-weight: $gl-font-weight-bold;
     }
 
-    .badge.badge-pill-axis-text {
+    .label-axis-text {
       fill: $black;
       font-weight: $gl-font-weight-normal;
       font-size: 10px;
@@ -402,7 +402,7 @@
     }
 
     @include media-breakpoint-down(sm) {
-      .badge.badge-pill-axis-text,
+      .label-axis-text,
       .text-metric-usage,
       .legend-axis-text {
         font-size: 8px;

@@ -18,7 +18,7 @@
 
   .ci-table {
 
-    .badge.badge-pill {
+    .badge {
       margin-bottom: 3px;
     }
 
@@ -151,14 +151,14 @@
       color: $gl-link-color;
     }
 
-    .badge.badge-pill {
+    .badge {
       margin-right: 4px;
     }
 
-    .badge.badge-pill-container {
+    .label-container {
       font-size: 0;
 
-      .badge.badge-pill {
+      .badge {
         margin-top: 5px;
       }
     }
@@ -220,7 +220,7 @@
     box-shadow: none;
   }
 
-  .pipeline-tags .badge.badge-pill-container {
+  .pipeline-tags .label-container {
     white-space: normal;
   }
 }

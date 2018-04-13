@@ -244,7 +244,7 @@
     margin-bottom: 8px;
   }
 
-  .badge.badge-pill-color {
+  .label-color {
     position: relative;
     top: 2px;
     display: inline-block;
@@ -297,7 +297,7 @@
     }
   }
 
-  .badge.badge-pill {
+  .badge {
     border: 0;
     outline: 0;
   }
@@ -399,7 +399,7 @@
 .card-footer {
   margin: 0 0 5px;
 
-  .badge.badge-pill {
+  .badge {
     margin-top: 5px;
     margin-right: 6px;
   }

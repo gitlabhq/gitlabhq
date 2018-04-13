@@ -103,7 +103,7 @@
     margin-top: 0;
   }
 
-  .badge.badge-pill-light {
+  .label-light {
     margin-bottom: 0;
   }
 }
@@ -209,7 +209,7 @@
       line-height: 12px;
     }
 
-    .card-heading .badge.badge-pill-count {
+    .card-heading .label-count {
       color: $white-light;
       background: $common-gray-dark;
     }
