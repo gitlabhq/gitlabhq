@@ -771,6 +771,8 @@ describe SystemNoteService do
     end
 
     describe "new reference" do
+      let(:favicon_path) { "http://localhost/assets/#{Rails.application.assets.find_asset('favicon.png').digest_path}" }
+
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
       end
@@ -791,7 +793,7 @@ describe SystemNoteService do
               object: {
                 url: project_commit_url(project, commit),
                 title: "GitLab: Mentioned on commit - #{commit.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.png" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
@@ -817,7 +819,7 @@ describe SystemNoteService do
               object: {
                 url: project_issue_url(project, issue),
                 title: "GitLab: Mentioned on issue - #{issue.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.png" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
@@ -843,7 +845,7 @@ describe SystemNoteService do
               object: {
                 url: project_snippet_url(project, snippet),
                 title: "GitLab: Mentioned on snippet - #{snippet.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.png" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
