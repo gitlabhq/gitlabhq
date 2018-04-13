@@ -3,10 +3,17 @@ module Gitlab
     class << self
       def main
         return appearance_favicon.favicon_main.url if appearance_favicon.exists?
-        return ActionController::Base.helpers.image_path('favicon-yellow.png') if Gitlab::Utils.to_boolean(ENV['CANARY'])
-        return ActionController::Base.helpers.image_path('favicon-green.png') if Rails.env.development?
 
-        ActionController::Base.helpers.image_path('favicon.png')
+        image_name =
+          if Gitlab::Utils.to_boolean(ENV['CANARY'])
+            'favicon-yellow.png'
+          elsif Rails.env.development?
+            'favicon-green.png'
+          else
+            'favicon.png'
+          end
+
+        ActionController::Base.helpers.image_path(image_name)
       end
 
       def status_overlay(status_name)
