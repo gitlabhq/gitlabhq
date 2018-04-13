@@ -72,3 +72,19 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 .divider {
   @extend .dropdown-divider;
 }
+
+.info-well {
+  background: $theme-gray-50;
+  color: $gl-text-color;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  .well-segment {
+    padding: 16px;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $well-inner-border;
+    }
+  }
+}

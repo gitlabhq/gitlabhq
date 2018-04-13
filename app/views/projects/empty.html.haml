@@ -44,14 +44,14 @@
       .git-empty
         %fieldset
           %h5 Git global setup
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               git config --global user.name "#{h git_user_name}"
               git config --global user.email "#{h git_user_email}"
 
         %fieldset
           %h5 Create a new repository
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               cd #{h @project.path}
@@ -62,7 +62,7 @@
 
         %fieldset
           %h5 Existing folder
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               cd existing_folder
               git init
@@ -73,7 +73,7 @@
 
         %fieldset
           %h5 Existing Git repository
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               cd existing_repo
               git remote rename origin old-origin

@@ -5,7 +5,7 @@
   .prepend-top-default
   .row
     .col-sm-4
-      .light-well
+      .card.bg-light
         %h4 CPU
         .data
           - if @cpus
@@ -14,7 +14,7 @@
             = icon('warning', class: 'text-warning')
             Unable to collect CPU info
     .col-sm-4
-      .light-well
+      .card.bg-light
         %h4 Memory Usage
         .data
           - if @memory
@@ -23,7 +23,7 @@
             = icon('warning', class: 'text-warning')
             Unable to collect memory info
     .col-sm-4
-      .light-well
+      .card.bg-light
         %h4 Disk Usage
         .data
           - @disks.each do |disk|
@@ -31,7 +31,7 @@
             %p= disk[:disk_name]
             %p= disk[:mount_path]
     .col-sm-4
-      .light-well
+      .card.bg-light
         %h4 Uptime
         .data
           %h1= distance_of_time_in_words_to_now(Rails.application.config.booted_at)
