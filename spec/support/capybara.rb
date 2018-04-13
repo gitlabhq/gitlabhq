@@ -35,13 +35,7 @@ Capybara.register_driver :chrome do |app|
   options.add_argument("no-sandbox")
 
   # Run headless by default unless CHROME_HEADLESS specified
-  unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
-    options.add_argument("headless")
-
-    # Chrome documentation says this flag is needed for now
-    # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
-    options.add_argument("disable-gpu")
-  end
+  options.add_argument("headless") unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
 
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
