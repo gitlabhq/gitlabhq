@@ -13,10 +13,12 @@ class LfsObject < ActiveRecord::Base
 
   mount_uploader :file, LfsObjectUploader
 
-  before_save :update_file_store
+  after_save :update_file_store
 
   def update_file_store
-    self.file_store = file.object_store
+    # The file.object_store is set during `uploader.store!`
+    # which happens after object is inserted/updated
+    self.update_column(:file_store, file.object_store)
   end
 
   def project_allowed_access?(project)
