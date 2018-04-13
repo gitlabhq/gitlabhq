@@ -52,8 +52,8 @@
 
             .form-group
               = f.label :mirror_user_id, 'Mirror user', class: 'label-light-but-actually-light-i-promise'
-              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg', required: true, disabled: (default_mirror_users.count == 1).to_s )
-              .help-block.prepend-top-default
+              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: (default_mirror_users.count == 1).to_s )
+              .help-block
                 This user will be the author of all events in the activity feed that are the result of an update,
                 like new branches being created or new commits being pushed to existing branches.
                 You can only assign yourself to be the mirror user.
@@ -86,15 +86,20 @@
             %th= "Mirrored repositories (#{mirror_repositories_count})"
             %th Direction
             %th Last update
+            %th
         %tbody
           - if @project.username_only_import_url.present?
             %tr
               %td= @project.username_only_import_url
               %td Pull
-              %td= @project.mirror_last_update_at || 'Never'
+              %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
+              %td
+                %button.js-delete-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
           - @project.remote_mirrors.each do |mirror|
             - if mirror.safe_url.present?
               %tr
                 %td= mirror.safe_url
                 %td Push
-                %td= mirror.last_update_at || 'Never'
+                %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                %td
+                  %button.js-delete-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
