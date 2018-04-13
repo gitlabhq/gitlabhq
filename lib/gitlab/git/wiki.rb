@@ -204,8 +204,8 @@ module Gitlab
 
         filename = File.basename(name)
         dir = (tmp_dir = File.dirname(name)) == '.' ? '' : tmp_dir
-
         committer = committer_with_hooks(commit_details)
+
         gollum_wiki.write_page(filename, format, content, { committer: committer }, dir)
 
         committer.commit
@@ -219,6 +219,7 @@ module Gitlab
         assert_type!(commit_details, CommitDetails)
 
         committer = committer_with_hooks(commit_details)
+
         gollum_wiki.delete_page(gollum_page_by_path(page_path), committer: committer)
 
         committer.commit
