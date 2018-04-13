@@ -721,7 +721,7 @@ codequality:
   tags: []
   before_script: []
   services:
-    - docker:dind
+    - docker:stable-dind
   variables:
     SETUP_DB: "false"
     DOCKER_DRIVER: overlay2
