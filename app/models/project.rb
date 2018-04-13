@@ -523,10 +523,6 @@ class Project < ActiveRecord::Base
     repository.empty?
   end
 
-  def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]&.legacy_disk_path
-  end
-
   def team
     @team ||= ProjectTeam.new(self)
   end
@@ -1120,7 +1116,7 @@ class Project < ActiveRecord::Base
   # Check if repository already exists on disk
   def check_repository_path_availability
     return true if skip_disk_validation
-    return false unless repository_storage_path
+    return false unless repository_storage
 
     expires_full_path_cache # we need to clear cache to validate renames correctly
 
@@ -1921,14 +1917,14 @@ class Project < ActiveRecord::Base
   def check_repository_absence!
     return if skip_disk_validation
 
-    if repository_storage_path.blank? || repository_with_same_path_already_exists?
+    if repository_storage.blank? || repository_with_same_path_already_exists?
       errors.add(:base, 'There is already a repository with that name on disk')
       throw :abort
     end
   end
 
   def repository_with_same_path_already_exists?
-    gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+    gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
   # set last_activity_at to the same as created_at

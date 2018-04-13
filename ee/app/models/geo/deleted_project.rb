@@ -18,10 +18,6 @@ class Geo::DeletedProject
     @repository_storage ||= Gitlab::CurrentSettings.pick_repository_storage
   end
 
-  def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]&.legacy_disk_path
-  end
-
   def wiki
     @wiki ||= ProjectWiki.new(self, nil)
   end

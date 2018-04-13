@@ -41,7 +41,6 @@ FactoryBot.define do
     project
 
     repository_storage_name { project.repository_storage }
-    repository_storage_path { project.repository_storage_path }
     add_attribute(:repo_path) { project.disk_path }
     project_name { project.name }
     wiki_path { project.wiki.disk_path }
@@ -59,7 +58,6 @@ FactoryBot.define do
     project
 
     repository_storage_name { project.repository_storage }
-    repository_storage_path { project.repository_storage_path }
     deleted_path { project.full_path }
     deleted_project_name { project.name }
   end
@@ -72,7 +70,6 @@ FactoryBot.define do
     project { create(:project, :repository) }
 
     repository_storage_name { project.repository_storage }
-    repository_storage_path { project.repository_storage_path }
     old_path_with_namespace { project.path_with_namespace }
     new_path_with_namespace { project.path_with_namespace + '_new' }
     old_wiki_path_with_namespace { project.wiki.path_with_namespace }
@@ -85,7 +82,6 @@ FactoryBot.define do
     project { create(:project, :repository) }
 
     repository_storage_name { project.repository_storage }
-    repository_storage_path { project.repository_storage_path }
     old_disk_path { project.path_with_namespace }
     new_disk_path { project.path_with_namespace + '_new' }
     old_wiki_disk_path { project.wiki.path_with_namespace }

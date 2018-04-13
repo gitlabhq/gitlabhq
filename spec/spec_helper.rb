@@ -132,10 +132,10 @@ RSpec.configure do |config|
       m.call(*args)
 
       shard_name, repository_relative_path = args
-      shard_path = Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
       # We can't leave the hooks in place after a fork, as those would fail in tests
       # The "internal" API is not available
-      FileUtils.rm_rf(File.join(shard_path, repository_relative_path, 'hooks'))
+      Gitlab::Shell.new.rm_directory(shard_name,
+                                     File.join(repository_relative_path, 'hooks'))
     end
 
     # Enable all features by default for testing

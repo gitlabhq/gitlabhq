@@ -34,9 +34,7 @@ describe Projects::UpdateRepositoryStorageService do
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_repository_as_mirror)
             .with(project.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
-            .with(:mv_repository,
-              File.absolute_path('tmp/tests/storage_a'),
-              project.disk_path,
+            .with(:mv_repository, 'a', project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           subject.execute('b')
@@ -87,17 +85,13 @@ describe Projects::UpdateRepositoryStorageService do
           expect(repository_double).to receive(:fetch_repository_as_mirror)
             .with(project.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
-            .with(:mv_repository,
-              File.absolute_path('tmp/tests/storage_a'),
-              project.disk_path,
+            .with(:mv_repository, "a", project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           expect(wiki_repository_double).to receive(:fetch_repository_as_mirror)
             .with(project.wiki.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
-            .with(:mv_repository,
-              File.absolute_path('tmp/tests/storage_a'),
-              project.wiki.disk_path,
+            .with(:mv_repository, "a", project.wiki.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}.wiki")
 
           subject.execute('b')

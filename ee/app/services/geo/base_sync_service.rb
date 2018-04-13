@@ -219,9 +219,9 @@ module Geo
     end
 
     def clean_up_temporary_repository
-      exists = gitlab_shell.exists?(project.repository_storage_path, disk_path_temp)
+      exists = gitlab_shell.exists?(project.repository_storage, disk_path_temp)
 
-      if exists && !gitlab_shell.remove_repository(project.repository_storage_path, disk_path_temp)
+      if exists && !gitlab_shell.remove_repository(project.repository_storage, disk_path_temp)
         raise Gitlab::Shell::Error, "Temporary #{type} can not be removed"
       end
     end
@@ -229,14 +229,14 @@ module Geo
     def set_temp_repository_as_main
       log_info(
         "Setting newly downloaded repository as main",
-        storage_path: project.repository_storage_path,
+        storage_shard: project.repository_storage,
         temp_path: disk_path_temp,
         deleted_disk_path_temp: deleted_disk_path_temp,
         disk_path: repository.disk_path
       )
 
       # Remove the deleted path in case it exists, but it may not be there
-      gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
+      gitlab_shell.remove_repository(project.repository_storage, deleted_disk_path_temp)
 
       # Make sure we have the most current state of exists?
       repository.expire_exists_cache
@@ -245,7 +245,7 @@ module Geo
       if repository.exists?
         ensure_repository_namespace(deleted_disk_path_temp)
 
-        unless gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
+        unless gitlab_shell.mv_repository(project.repository_storage, repository.disk_path, deleted_disk_path_temp)
           raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
         end
       end
@@ -254,19 +254,19 @@ module Geo
 
       ensure_repository_namespace(repository.disk_path)
 
-      unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
+      unless gitlab_shell.mv_repository(project.repository_storage, disk_path_temp, repository.disk_path)
         raise Gitlab::Shell::Error, 'Can not move temporary repository to canonical location'
       end
 
       # Purge the original repository
-      unless gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
+      unless gitlab_shell.remove_repository(project.repository_storage, deleted_disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not remove outdated main repository'
       end
     end
 
     def ensure_repository_namespace(disk_path)
       gitlab_shell.add_namespace(
-        project.repository_storage_path,
+        project.repository_storage,
         File.dirname(disk_path)
       )
     end

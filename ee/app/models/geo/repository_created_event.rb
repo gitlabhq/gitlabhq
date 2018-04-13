@@ -4,7 +4,6 @@ module Geo
 
     belongs_to :project
 
-    validates :project, :project_name, :repo_path, :repository_storage_name,
-              :repository_storage_path, presence: true
+    validates :project, :project_name, :repo_path, :repository_storage_name, presence: true
   end
 end

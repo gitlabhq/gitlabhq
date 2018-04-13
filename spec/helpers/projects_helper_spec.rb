@@ -283,16 +283,16 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#sanitized_import_error' do
+  describe '#sanitized_repo_path' do
     let(:project) { create(:project, :repository) }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
 
     before do
-      allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
       allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
     end
 
     it 'removes the repo path' do
-      repo = '/base/repo/path/namespace/test.git'
+      repo = "#{storage_path}/namespace/test.git"
       import_error = "Could not clone #{repo}\n"
 
       expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')

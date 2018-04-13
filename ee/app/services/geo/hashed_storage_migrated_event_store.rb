@@ -10,7 +10,6 @@ module Geo
         old_storage_version: old_storage_version,
         new_storage_version: project.storage_version,
         repository_storage_name: project.repository.storage,
-        repository_storage_path: project.repository_storage_path,
         old_disk_path: old_disk_path,
         new_disk_path: project.disk_path,
         old_wiki_disk_path: old_wiki_disk_path,

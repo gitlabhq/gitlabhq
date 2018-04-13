@@ -201,7 +201,7 @@ describe Projects::UpdateService, '#execute' do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do
@@ -319,22 +319,20 @@ describe Projects::UpdateService, '#execute' do
   describe 'repository_storage' do
     let(:admin_user) { create(:user, admin: true) }
     let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, repository_storage: 'a') }
+    let(:project) { create(:project, :repository) }
     let(:opts) { { repository_storage: 'b' } }
 
     before do
-      FileUtils.mkdir('tmp/tests/storage_a')
       FileUtils.mkdir('tmp/tests/storage_b')
 
       storages = {
-        'a' => { 'path' => 'tmp/tests/storage_a' },
+        'default' => Gitlab.config.repositories.storages.default,
         'b' => { 'path' => 'tmp/tests/storage_b' }
       }
       stub_storage_settings(storages)
     end
 
     after do
-      FileUtils.rm_rf('tmp/tests/storage_a')
       FileUtils.rm_rf('tmp/tests/storage_b')
     end
 
