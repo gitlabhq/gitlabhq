@@ -205,27 +205,27 @@ or ~"Stretch". Any open issue for a previous milestone should be labeled
 
 ### Bug Priority labels (~P1, ~P2, ~P3 & etc.)
 
-Bug Priority labels help us define the time a ~bug fix should be completed.  
+Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be. If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Estimate time to fix                             | Guidance |
-|-------|--------------------------------------------------|----------|
-| ~P1   | Immediate hotfix to production                   | This would normally correspond to a S1 severity below |
-| ~P2   | The current milestone (regular & patch releases) | The issue is (almost) guaranteed to occur in the near future |
-| ~P3   | The next milestone (regular & patch releases)    | The issue is likely to occur in the near future |
-| ~P4   | The next 2 to 4 milestones (regular & patch releases)  | The issue _may_ occur but it's not likely |
-| ~P5   | Anything we know will not be done within the next quarter | The issue is prominent but does not impact user workflow and a workaround if any is well documented  |
+| Label | Meaning         | Estimate time to fix                                                   | Guidance |
+|-------|-----------------|------------------------------------------------------------------------|----------|
+| ~P1   | Immediate       | Immediate hotfix to production                                         | This would normally correspond to a S1 severity below |
+| ~P2   | Urgent Priority | The current release (regular & patch)                                  | The issue is (almost) guaranteed to occur in the near future |
+| ~P3   | High Priority   | The next release (regular & patch)                                     | The issue is likely to occur in the near future |
+| ~P4   | Medium Priority | Within the next 3 major releases (1 quarter duration)                  | The issue _may_ occur but it's not likely |
+| ~P5   | Low Priority    | Anything outside the next 3 major releases (the next quarter duration) | The issue is prominent but does not impact user workflow and a workaround if any is well documented  |
 
 ### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
 
-Severity labels help us clearly communicate the impact of a ~bug on users.
+Severity labels help us clearly communicate the impact of a ~bug on users. 
 
-| Label | Meaning                                               | Example |
-|-------|-------------------------------------------------------|---------|
-| ~S1   | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
-| ~S2   | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
-| ~S3   | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
-| ~S4   | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
+| Label | Meaning           | Impact of the defect                                  | Example |
+|-------|-------------------|-------------------------------------------------------|---------|
+| ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
+| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
+| ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
+| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
