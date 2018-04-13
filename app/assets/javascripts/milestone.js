@@ -61,8 +61,8 @@ export default class Milestone {
     })
     .on('mouseenter', mouseenter)
     .on('mouseleave', debouncedMouseleave())
-    .one('show.bs.popover', () => {
-      window.addEventListener('scroll', hideOnScroll);
+    .on('show.bs.popover', () => {
+      window.addEventListener('scroll', hideOnScroll, { once: true });
     });
   }
 }
