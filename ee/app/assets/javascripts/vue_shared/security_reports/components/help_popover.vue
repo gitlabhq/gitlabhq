@@ -1,13 +1,12 @@
 <script>
 import $ from 'jquery';
-import _ from 'underscore';
 import Icon from '~/vue_shared/components/icon.vue';
+import { inserted } from '~/feature_highlight/feature_highlight_helper';
 import {
-  togglePopover,
-  inserted,
   mouseenter,
-  mouseleave,
-} from '~/feature_highlight/feature_highlight_helper';
+  debouncedMouseleave,
+  togglePopover,
+} from '~/shared/popover';
 
 export default {
   name: 'SecurityReportsHelpPopover',
@@ -32,7 +31,7 @@ export default {
         ...this.options,
       })
       .on('mouseenter', mouseenter)
-      .on('mouseleave', _.debounce(mouseleave, 300))
+      .on('mouseleave', debouncedMouseleave(300))
       .on('inserted.bs.popover', inserted)
       .on('show.bs.popover', () => {
         window.addEventListener('scroll', togglePopover.bind(this.$el, false), { once: true });
