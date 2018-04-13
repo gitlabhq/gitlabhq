@@ -317,21 +317,6 @@ describe('IDE commit module actions', () => {
         .then(done)
         .catch(done.fail);
     });
-
-    it('resets stores commit actions', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(store.state.commit.commitAction).not.toBe(consts.COMMIT_TO_NEW_BRANCH);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
   });
 
   describe('commitChanges', () => {
@@ -443,6 +428,18 @@ describe('IDE commit module actions', () => {
 
             done();
           })
+          .catch(done.fail);
+      });
+
+      it('resets stores commit actions', done => {
+        store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+
+        store
+          .dispatch('commit/commitChanges')
+          .then(() => {
+            expect(store.state.commit.commitAction).not.toBe(consts.COMMIT_TO_NEW_BRANCH);
+          })
+          .then(done)
           .catch(done.fail);
       });
 
