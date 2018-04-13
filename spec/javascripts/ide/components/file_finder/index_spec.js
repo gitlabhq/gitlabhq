@@ -15,6 +15,9 @@ describe('IDE File finder item spec', () => {
     vm = mountComponentWithStore(Component, {
       store,
       el: '#app',
+      props: {
+        index: 0,
+      },
     });
 
     setTimeout(done);
