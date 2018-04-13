@@ -54,8 +54,19 @@ export default {
 
     Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
       e.preventDefault();
-      this.toggleFileFinder(true);
+      this.toggleFileFinder(!this.fileFindVisible);
     });
+
+    const originalStopCallback = Mousetrap.stopCallback;
+    Mousetrap.stopCallback = (e, el, combo) => {
+      if (combo === 't' && el.classList.contains('dropdown-input-field')) {
+        return true;
+      } else if (combo === 'command+p' || combo === 'ctrl+p') {
+        return false;
+      }
+
+      return originalStopCallback(e, el, combo);
+    };
   },
   methods: {
     ...mapActions(['toggleFileFinder']),

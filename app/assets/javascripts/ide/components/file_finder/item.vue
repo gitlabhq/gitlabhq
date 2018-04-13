@@ -24,10 +24,17 @@ export default {
       type: String,
       required: true,
     },
+    index: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
     clickRow() {
       this.$emit('click', this.file);
+    },
+    mouseOverRow() {
+      this.$emit('mouseover', this.index);
     },
     highlightText(text, addEllipsis) {
       const escapedText = escape(text);
@@ -57,6 +64,7 @@ export default {
       'is-focused': focused,
     }"
     @click.prevent="clickRow"
+    @mouseover="mouseOverRow"
   >
     <file-icon
       :file-name="file.name"

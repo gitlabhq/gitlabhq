@@ -16,6 +16,7 @@ export default {
     return {
       focusedIndex: 0,
       searchText: '',
+      mouseOver: false,
     };
   },
   computed: {
@@ -26,10 +27,12 @@ export default {
 
       if (searchText === '') return this.allBlobs.slice(0, MAX_RESULTS);
 
-      return fuzzaldrinPlus.filter(this.allBlobs, searchText, {
-        key: 'path',
-        maxResults: MAX_RESULTS,
-      });
+      return fuzzaldrinPlus
+        .filter(this.allBlobs, searchText, {
+          key: 'path',
+          maxResults: MAX_RESULTS,
+        })
+        .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt);
     },
     filteredBlobsLength() {
       return this.filteredBlobs.length;
@@ -61,6 +64,15 @@ export default {
     searchText() {
       this.focusedIndex = 0;
     },
+    focusedIndex() {
+      if (!this.mouseOver) {
+        this.$nextTick(() => {
+          const el = this.$refs.virtualScrollList.$el;
+
+          el.scrollTop = this.focusedIndex * 55;
+        });
+      }
+    },
   },
   methods: {
     ...mapActions(['toggleFileFinder']),
@@ -76,6 +88,7 @@ export default {
         case 38:
           // UP
           e.preventDefault();
+          this.mouseOver = false;
           if (this.focusedIndex > 0) {
             this.focusedIndex -= 1;
           } else {
@@ -85,6 +98,7 @@ export default {
         case 40:
           // DOWN
           e.preventDefault();
+          this.mouseOver = false;
           if (this.focusedIndex < this.filteredBlobsLength - 1) {
             this.focusedIndex += 1;
           } else {
@@ -112,6 +126,10 @@ export default {
     openFile(file) {
       this.toggleFileFinder(false);
       router.push(`/project${file.url}`);
+    },
+    onMouseOver(index) {
+      this.mouseOver = true;
+      this.focusedIndex = index;
     },
   },
 };
@@ -157,8 +175,8 @@ export default {
         <virtual-list
           :size="listHeight"
           :remain="listShowCount"
-          :start="focusedIndex"
           wtag="ul"
+          ref="virtualScrollList"
         >
           <template v-if="filteredBlobsLength">
             <li
@@ -169,7 +187,9 @@ export default {
                 :file="file"
                 :search-text="searchText"
                 :focused="index === focusedIndex"
+                :index="index"
                 @click="openFile"
+                @mouseover="onMouseOver"
               />
             </li>
           </template>
