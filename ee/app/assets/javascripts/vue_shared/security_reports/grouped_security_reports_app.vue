@@ -89,6 +89,12 @@
     sast: SAST,
     dast: DAST,
     sastContainer: SAST_CONTAINER,
+    data() {
+      return {
+        isSastFullReportVisible: false,
+        isDependencyScanningFullReportVisible: false,
+      };
+    },
     computed: {
       ...mapState(['sast', 'sastContainer', 'dast', 'dependencyScanning', 'summaryCounts']),
       ...mapGetters([
@@ -163,6 +169,12 @@
         'fetchDastReports',
         'fetchDependencyScanningReports',
       ]),
+      openSASTFullReport() {
+        this.isSastFullReportVisible = true;
+      },
+      openDependencyScanningFullReport() {
+        this.isDependencyScanningFullReportVisible = true;
+      },
     },
   };
 </script>
@@ -189,13 +201,23 @@
         />
 
         <issues-list
-          class="report-block-group-list"
-          v-if="sast.newIssues.length"
+          class="js-sast-issue-list report-block-group-list"
+          v-if="sast.newIssues.length || sast.resolvedIssues.length || sast.allIssues.length"
           :unresolved-issues="sast.newIssues"
           :resolved-issues="sast.resolvedIssues"
           :all-issues="sast.allIssues"
           :type="$options.sast"
+          :is-full-report-visible="isSastFullReportVisible"
         />
+
+        <button
+          v-if="sast.allIssues.length && !isSastFullReportVisible"
+          type="button"
+          class="btn-link btn-blank prepend-left-10 js-expand-full-list-sast break-link"
+          @click="openSASTFullReport"
+        >
+          {{ s__("ciReport|Show complete code vulnerabilities report") }}
+        </button>
       </template>
 
       <template v-if="dependencyScanningHeadPath">
@@ -207,13 +229,24 @@
         />
 
         <issues-list
-          class="report-block-group-list"
-          v-if="dependencyScanning.newIssues.length"
+          class="js-dss-issue-list report-block-group-list"
+          v-if="dependencyScanning.newIssues.length ||
+          dependencyScanning.resolvedIssues.length || dependencyScanning.allIssues.length"
           :unresolved-issues="dependencyScanning.newIssues"
           :resolved-issues="dependencyScanning.resolvedIssues"
           :all-issues="dependencyScanning.allIssues"
           :type="$options.sast"
+          :is-full-report-visible="isDependencyScanningFullReportVisible"
         />
+
+        <button
+          v-if="dependencyScanning.allIssues.length && !isDependencyScanningFullReportVisible"
+          type="button"
+          class="btn-link btn-blank prepend-left-10 js-expand-full-list-dss break-link"
+          @click="openDependencyScanningFullReport"
+        >
+          {{ s__("ciReport|Show complete code vulnerabilities report") }}
+        </button>
       </template>
 
       <template v-if="sastContainerHeadPath">
@@ -226,7 +259,7 @@
 
         <issues-list
           class="report-block-group-list"
-          v-if="sastContainer.newIssues.length"
+          v-if="sastContainer.newIssues.length || sastContainer.resolvedIssues.length"
           :unresolved-issues="sastContainer.newIssues"
           :neutral-issues="sastContainer.resolvedIssues"
           :type="$options.sastContainer"
@@ -243,7 +276,7 @@
 
         <issues-list
           class="report-block-group-list"
-          v-if="dast.newIssues.length"
+          v-if="dast.newIssues.length || dast.resolvedIssues.length"
           :unresolved-issues="dast.newIssues"
           :resolved-issues="dast.resolvedIssues"
           :type="$options.dast"
