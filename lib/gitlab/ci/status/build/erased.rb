@@ -5,7 +5,7 @@ module Gitlab
         class Erased < Status::Extended
           def illustration
             {
-              image: 'illustrations/skipped-job_empty.svg',
+              image: 'illustrations/erased-log_empty.svg',
               size: 'svg-430',
               title: _('Job has been erased')
             }

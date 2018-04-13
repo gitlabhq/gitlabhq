@@ -19,7 +19,7 @@ class BroadcastMessage < ActiveRecord::Base
   after_commit :flush_redis_cache
 
   def self.current
-    messages = Rails.cache.fetch(CACHE_KEY) { current_and_future_messages.to_a }
+    messages = Rails.cache.fetch(CACHE_KEY, expires_in: cache_expires_in) { current_and_future_messages.to_a }
 
     return messages if messages.empty?
 
@@ -34,6 +34,10 @@ class BroadcastMessage < ActiveRecord::Base
 
   def self.current_and_future_messages
     where('ends_at > :now', now: Time.zone.now).order_id_asc
+  end
+
+  def self.cache_expires_in
+    nil
   end
 
   def active?

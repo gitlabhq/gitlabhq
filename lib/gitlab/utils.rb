@@ -73,6 +73,10 @@ module Gitlab
       nil
     end
 
+    def bytes_to_megabytes(bytes)
+      bytes.to_f / Numeric::MEGABYTE
+    end
+
     # Used in EE
     # Accepts either an Array or a String and returns an array
     def ensure_array_from_string(string_or_array)

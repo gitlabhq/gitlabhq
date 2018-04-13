@@ -14,6 +14,10 @@ The comment area supports [Markdown] and [quick actions]. One can edit their
 own comment at any time, and anyone with [Master access level][permissions] or
 higher can also edit a comment made by someone else.
 
+You could also reply to the notification email in order to reply to a comment,
+provided that [Reply by email] is configured by your GitLab admin. This also
+supports [Markdown] and [quick actions] as if replied from the web.
+
 Apart from the standard comments, you also have the option to create a comment
 in the form of a resolvable or threaded discussion.
 
@@ -283,3 +287,4 @@ edit existing comments. Non-team members are restricted from adding or editing c
 [markdown]: ../markdown.md
 [quick actions]: ../project/quick_actions.md
 [permissions]: ../permissions.md
+[Reply by email]: ../../administration/reply_by_email.md
