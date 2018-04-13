@@ -59,15 +59,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     params[:application_setting] ||= {}
-    import_sources = params[:application_setting][:import_sources]
-
-    if import_sources.nil?
-      params[:application_setting][:import_sources] = []
-    else
-      import_sources.map! do |source|
-        source.to_str
-      end
-    end
 
     enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
 
@@ -75,6 +66,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
 
+    params[:application_setting][:import_sources]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
