@@ -3,8 +3,9 @@
  *
  * @param  {String} selector
  */
-export default (selector) => {
-  const link = document.querySelector(selector).getAttribute('href');
+export default selector => {
+  const element = document.querySelector(selector);
+  const link = element && element.getAttribute('href');
 
   if (link) {
     window.location = link;
