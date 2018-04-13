@@ -7,7 +7,7 @@
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id
     = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
-    %span.d-none.d-sm-block authored
+    %span.d-none.d-sm-inline authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span= s_('ByAuthor|by')
     = author_avatar(@commit, size: 24)
@@ -24,7 +24,7 @@
       %span.btn.disabled.btn-grouped.d-none.d-sm-block.append-right-10
         = icon('comment')
         = @notes_count
-    = link_to project_tree_path(@project, @commit), class: "btn btn-secondary append-right-10 d-none d-sm-none d-md-block" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-secondary append-right-10 d-none d-sm-none d-md-inline" do
       #{ _('Browse files') }
     .dropdown.inline
       %a.btn.btn-secondary.dropdown-toggle{ data: { toggle: "dropdown" } }
