@@ -33,7 +33,7 @@
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.float-right
-          %span.badge.label-success Primary email
+          %span.badge.badge-success Primary email
           - if @primary_email === current_user.public_email
             %span.badge.label-info Public email
           - if @primary_email === current_user.notification_email

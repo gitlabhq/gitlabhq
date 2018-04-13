@@ -11,7 +11,7 @@
           = icon('tag')
           = @tag.name
         - if protected_tag?(@project, @tag)
-          %span.badge.label-success
+          %span.badge.badge-success
             = s_('TagsPage|protected')
       - if @commit
         = render 'projects/branches/commit', commit: @commit, project: @project

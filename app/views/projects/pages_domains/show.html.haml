@@ -43,7 +43,7 @@
         %td
           = form_tag verify_project_pages_domain_path(@project, @domain) do
             .status-badge
-              - text, status = @domain.unverified? ? [_('Unverified'), 'label-danger'] : [_('Verified'), 'label-success']
+              - text, status = @domain.unverified? ? [_('Unverified'), 'label-danger'] : [_('Verified'), 'badge-success']
               .label{ class: status }
                 = text
               %button.btn.has-tooltip{ type: "submit", data: { container: 'body' }, title: _("Retry verification") }

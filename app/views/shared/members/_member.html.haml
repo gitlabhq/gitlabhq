@@ -14,7 +14,7 @@
         %span.cgray= user.to_reference
 
         - if user == current_user
-          %span.badge.label-success.prepend-left-5 It's you
+          %span.badge.badge-success.prepend-left-5 It's you
 
         - if user.blocked?
           %label.badge.label-danger
