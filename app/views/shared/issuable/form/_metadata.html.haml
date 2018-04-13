@@ -9,27 +9,27 @@
 %hr
 .row
   %div{ class: (has_due_date ? "col-lg-6" : "col-sm-12") }
-    .form-group.issue-assignee
+    .form-group.row.issue-assignee
       - if issuable.is_a?(Issue)
         = render "shared/issuable/form/metadata_issue_assignee", issuable: issuable, form: form, has_due_date: has_due_date
       - else
         = render "shared/issuable/form/metadata_merge_request_assignee", issuable: issuable, form: form, has_due_date: has_due_date
-    .form-group.issue-milestone
-      = form.label :milestone_id, "Milestone", class: "col-form-label #{"col-lg-4" if has_due_date}"
+    .form-group.row.issue-milestone
+      = form.label :milestone_id, "Milestone", class: "col-form-label #{has_due_date ? "col-lg-4" : "col-sm-2"}"
       .col-sm-10{ class: ("col-lg-8" if has_due_date) }
         .issuable-form-select-holder
           = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, show_started: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input", dropdown_title: "Select milestone"
-    .form-group
+    .form-group.row
       - has_labels = @labels && @labels.any?
-      = form.label :label_ids, "Labels", class: "col-form-label #{"col-lg-4" if has_due_date}"
+      = form.label :label_ids, "Labels", class: "col-form-label #{has_due_date ? "col-lg-4" : "col-sm-2"}"
       = form.hidden_field :label_ids, multiple: true, value: ''
       .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
         .issuable-form-select-holder
           = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false}, dropdown_title: "Select label"
   - if has_due_date
     .col-lg-6
-      .form-group
-        = form.label :due_date, "Due date", class: "col-form-label"
+      .form-group.row
+        = form.label :due_date, "Due date", class: "col-form-label col-sm-2"
         .col-sm-10
           .issuable-form-select-holder
             = form.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: "Select due date"
