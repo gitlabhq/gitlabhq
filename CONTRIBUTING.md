@@ -126,7 +126,7 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
-- Priority: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -185,10 +185,10 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")
 
-Priority labels help us clearly communicate expectations of the work for the
-release. There are two levels of priority labels:
+Milestone labels help us clearly communicate expectations of the work for the
+release. There are three levels of Milestone labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
@@ -203,16 +203,29 @@ Each issue scheduled for the current milestone should be labeled ~Deliverable
 or ~"Stretch". Any open issue for a previous milestone should be labeled 
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Severity labels (~S1, ~S2, etc.)
+### Bug Priority labels (~P1, ~P2, ~P3 & etc.)
+
+Bug Priority labels help us define the time a ~bug fix should be completed.  
+This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
+
+| Label | Estimate time to fix                             | Guidance |
+|-------|--------------------------------------------------|----------|
+| ~P1   | Immediate hotfix to production                   | This would normally correspond to a S1 severity below |
+| ~P2   | The current milestone (regular & patch releases) | The issue is (almost) guaranteed to occur in the near future |
+| ~P3   | The next milestone (regular & patch releases)    | The issue is likely to occur in the near future |
+| ~P4   | The next 2 to 4 milestones (regular & patch releases)  | The issue _may_ occur but it's not likely |
+| ~P5   | Anything we know will not be done within the next quarter | The issue is prominent but does not impact user workflow and a workaround if any is well documented  |
+
+### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning                                  | Example |
-|-------|------------------------------------------|---------|
-| ~S1   | Feature broken, no workaround            | Unable to create an issue |
-| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
-| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
-| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
+| Label | Meaning                                               | Example |
+|-------|-------------------------------------------------------|---------|
+| ~S1   | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
+| ~S2   | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
+| ~S3   | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
+| ~S4   | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
