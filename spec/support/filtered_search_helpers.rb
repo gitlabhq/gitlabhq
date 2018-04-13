@@ -21,6 +21,29 @@ module FilteredSearchHelpers
     end
   end
 
+  # Select a label clicking in the search dropdown instead
+  # of entering label names on the input.
+  def select_label_on_dropdown(label_title)
+    input_filtered_search("label:", submit: false)
+
+    within('#js-dropdown-label') do
+      wait_for_requests
+
+      find('li', text: label_title).click
+    end
+
+    filtered_search.send_keys(:enter)
+  end
+
+  def expect_issues_list_count(open_count, closed_count = 0)
+    all_count = open_count + closed_count
+
+    expect(page).to have_issuable_counts(open: open_count, closed: closed_count, all: all_count)
+    page.within '.issues-list' do
+      expect(page).to have_selector('.issue', count: open_count)
+    end
+  end
+
   # Enables input to be added character by character
   def input_filtered_search_keys(search_term)
     # Add an extra space to engage visual tokens

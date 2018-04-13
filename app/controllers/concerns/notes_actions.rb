@@ -41,7 +41,7 @@ module NotesActions
     @note = Notes::CreateService.new(note_project, current_user, create_params).execute
 
     if @note.is_a?(Note)
-      Notes::RenderService.new(current_user).execute([@note], @project)
+      Notes::RenderService.new(current_user).execute([@note])
     end
 
     respond_to do |format|
@@ -56,7 +56,7 @@ module NotesActions
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
     if @note.is_a?(Note)
-      Notes::RenderService.new(current_user).execute([@note], @project)
+      Notes::RenderService.new(current_user).execute([@note])
     end
 
     respond_to do |format|
@@ -212,7 +212,7 @@ module NotesActions
   end
 
   def note_serializer
-    NoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
+    ProjectNoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
   end
 
   def note_project

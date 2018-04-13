@@ -38,7 +38,7 @@ describe JobEntity do
 
   it 'contains details' do
     expect(subject).to include :status
-    expect(subject[:status]).to include :icon, :favicon, :text, :label
+    expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
   end
 
   context 'when job is retryable' do
@@ -126,7 +126,29 @@ describe JobEntity do
 
     it 'contains details' do
       expect(subject).to include :status
-      expect(subject[:status]).to include :icon, :favicon, :text, :label
+      expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
+    end
+  end
+
+  context 'when job failed' do
+    let(:job) { create(:ci_build, :script_failure) }
+
+    describe 'status' do
+      it 'should contain the failure reason inside label' do
+        expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
+        expect(subject[:status][:label]).to eq('failed')
+        expect(subject[:status][:tooltip]).to eq('failed <br> (script failure)')
+      end
+    end
+  end
+
+  context 'when job passed' do
+    let(:job) { create(:ci_build, :success) }
+
+    describe 'status' do
+      it 'should not contain the failure reason inside label' do
+        expect(subject[:status][:label]).to eq('passed')
+      end
     end
   end
 end

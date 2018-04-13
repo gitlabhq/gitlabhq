@@ -110,7 +110,10 @@ class Event < ActiveRecord::Base
       end
     end
 
+    # Remove this method when removing Gitlab.rails5? code.
     def subclass_from_attributes(attrs)
+      return super if Gitlab.rails5?
+
       # Without this Rails will keep calling this method on the returned class,
       # resulting in an infinite loop.
       return unless self == Event

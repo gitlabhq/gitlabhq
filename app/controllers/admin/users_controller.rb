@@ -4,7 +4,7 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     @users = User.order_name_asc.filter(params[:filter])
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
-    @users = @users.sort(@sort = params[:sort])
+    @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
   end
 

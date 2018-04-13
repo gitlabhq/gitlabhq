@@ -23,7 +23,11 @@ document.addEventListener(
       data() {
         const notesDataset = document.getElementById('js-vue-notes').dataset;
         const parsedUserData = JSON.parse(notesDataset.currentUserData);
+        const noteableData = JSON.parse(notesDataset.noteableData);
         let currentUserData = {};
+
+        noteableData.noteableType = notesDataset.noteableType;
+
         if (parsedUserData) {
           currentUserData = {
             id: parsedUserData.id,
@@ -35,7 +39,7 @@ document.addEventListener(
         }
 
         return {
-          noteableData: JSON.parse(notesDataset.noteableData),
+          noteableData,
           currentUserData,
           notesData: JSON.parse(notesDataset.notesData),
         };

@@ -94,7 +94,7 @@ module CiStatusHelper
 
   def render_project_pipeline_status(pipeline_status, tooltip_placement: 'auto left')
     project = pipeline_status.project
-    path = pipelines_project_commit_path(project, pipeline_status.sha)
+    path = pipelines_project_commit_path(project, pipeline_status.sha, ref: pipeline_status.ref)
 
     render_status_with_link(
       'commit',
@@ -105,7 +105,7 @@ module CiStatusHelper
 
   def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')
     project = commit.project
-    path = pipelines_project_commit_path(project, commit)
+    path = pipelines_project_commit_path(project, commit, ref: ref)
 
     render_status_with_link(
       'commit',

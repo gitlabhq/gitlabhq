@@ -48,7 +48,7 @@ module Issuable
     end
 
     has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :labels, through: :label_links
+    has_many :labels, -> { auto_include(false) }, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics
@@ -137,7 +137,7 @@ module Issuable
       fuzzy_search(query, [:title, :description])
     end
 
-    def sort(method, excluded_labels: [])
+    def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s
         when 'downvotes_desc'     then order_downvotes_desc

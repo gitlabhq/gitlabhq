@@ -114,33 +114,11 @@ module SharedNote
     end
   end
 
-  step 'I should see comment "XML attached"' do
-    page.within(".note") do
-      expect(page).to have_content("XML attached")
-    end
-  end
-
   step 'I should see no notes at all' do
     expect(page).not_to have_css('.note')
   end
 
   # Markdown
-
-  step 'I leave a comment with a header containing "Comment with a header"' do
-    page.within(".js-main-target-form") do
-      fill_in "note[note]", with: "# Comment with a header"
-      click_button "Comment"
-    end
-
-    wait_for_requests
-  end
-
-  step 'The comment with the header should not have an ID' do
-    page.within(".note-body > .note-text") do
-      expect(page).to have_content("Comment with a header")
-      expect(page).not_to have_css("#comment-with-a-header")
-    end
-  end
 
   step 'I edit the last comment with a +1' do
     page.within(".main-notes-list") do

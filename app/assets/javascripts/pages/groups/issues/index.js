@@ -5,6 +5,7 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
+    isGroupDecendent: true,
   });
   projectSelect();
 });
