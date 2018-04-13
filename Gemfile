@@ -82,16 +82,9 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
-# Before updating this gem, check if
-# https://github.com/gollum/gollum-lib/pull/292 has been merged.
-# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
-# in config/initializers/gollum.rb
-gem 'gollum-lib', '~> 4.2', require: false
+gem 'gitlab-gollum-lib', '~> 4.2'
 
-# Before updating this gem, check if
-# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
-# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
-gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
+gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
