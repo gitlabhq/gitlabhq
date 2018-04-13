@@ -75,9 +75,6 @@ module Gitlab
         end
       end
 
-      # Full path to repo
-      attr_reader :path
-
       # Directory name of repo
       attr_reader :name
 
@@ -96,19 +93,24 @@ module Gitlab
         @relative_path = relative_path
         @gl_repository = gl_repository
 
-        storage_path = Gitlab.config.repositories.storages[@storage].legacy_disk_path
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
           storage,
           relative_path,
           global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
           logger: Rails.logger
         )
-        @path = File.join(storage_path, @relative_path)
+
         @name = @relative_path.split("/").last
       end
 
       def ==(other)
         path == other.path
+      end
+
+      def path
+        @path ||= File.join(
+          Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
+        )
       end
 
       # Default branch in the repository
@@ -139,12 +141,12 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status:  Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
             circuit_breaker.perform do
-              File.exist?(File.join(@path, 'refs'))
+              File.exist?(File.join(path, 'refs'))
             end
           end
         end
@@ -1018,7 +1020,7 @@ module Gitlab
             if is_enabled
               gitaly_repository_client.info_attributes
             else
-              attributes_path = File.join(File.expand_path(@path), 'info', 'attributes')
+              attributes_path = File.join(File.expand_path(path), 'info', 'attributes')
 
               if File.exist?(attributes_path)
                 File.read(attributes_path)

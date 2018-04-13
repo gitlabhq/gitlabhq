@@ -12,4 +12,12 @@ module Gitlab
   def self.staging?
     Gitlab.config.gitlab.url == 'https://staging.gitlab.com'
   end
+
+  def self.dev?
+    Gitlab.config.gitlab.url == 'https://dev.gitlab.org'
+  end
+
+  def self.inc_controlled?
+    dev? || staging? || com?
+  end
 end
