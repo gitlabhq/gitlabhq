@@ -338,6 +338,11 @@ module API
         end
       end
 
+      desc 'Get languages in project repository'
+      get ':id/languages' do
+        user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
+      end
+
       desc 'Remove a project'
       delete ":id" do
         authorize! :remove_project, user_project
