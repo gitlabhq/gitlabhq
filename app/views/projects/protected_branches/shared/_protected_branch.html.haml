@@ -5,7 +5,7 @@
     %span.ref-name= protected_branch.name
 
     - if @project.root_ref?(protected_branch.name)
-      %span.badge.label-info.prepend-left-5 default
+      %span.badge.badge-info.prepend-left-5 default
   %td
     - if protected_branch.wildcard?
       - matching_branches = protected_branch.matching(repository.branches)

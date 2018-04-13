@@ -15,7 +15,7 @@
       - if branch.name == @repository.root_ref
         %span.badge.badge-primary default
       - elsif merged
-        %span.badge.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
+        %span.badge.badge-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
           = s_('Branches|merged')
 
       - if protected_branch?(@project, branch)

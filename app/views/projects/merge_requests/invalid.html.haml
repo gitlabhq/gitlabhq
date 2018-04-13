@@ -12,11 +12,11 @@
       - elsif !@merge_request.source_branch_exists?
         %span.badge.label-inverse= @merge_request.source_branch
         does not exist in
-        %span.badge.label-info= @merge_request.source_project_path
+        %span.badge.badge-info= @merge_request.source_project_path
       - elsif !@merge_request.target_branch_exists?
         %span.badge.label-inverse= @merge_request.target_branch
         does not exist in
-        %span.badge.label-info= @merge_request.target_project_path
+        %span.badge.badge-info= @merge_request.target_project_path
       - else
         of internal error
 

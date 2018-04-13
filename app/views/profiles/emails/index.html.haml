@@ -35,17 +35,17 @@
         %span.float-right
           %span.badge.badge-success Primary email
           - if @primary_email === current_user.public_email
-            %span.badge.label-info Public email
+            %span.badge.badge-info Public email
           - if @primary_email === current_user.notification_email
-            %span.badge.label-info Notification email
+            %span.badge.badge-info Notification email
       - @emails.each do |email|
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right
             - if email.email === current_user.public_email
-              %span.badge.label-info Public email
+              %span.badge.badge-info Public email
             - if email.email === current_user.notification_email
-              %span.badge.label-info Notification email
+              %span.badge.badge-info Notification email
             - unless email.confirmed?
               - confirm_title = "#{email.confirmation_sent_at ? 'Resend' : 'Send'} confirmation email"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'btn btn-sm btn-warning prepend-left-10'

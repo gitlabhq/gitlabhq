@@ -44,11 +44,11 @@
           %span.badge.badge-primary
             = tag
       - if job.try(:trigger_request)
-        %span.badge.label-info triggered
+        %span.badge.badge-info triggered
       - if job.try(:allow_failure)
         %span.badge.badge-danger allowed to fail
       - if job.action?
-        %span.badge.label-info manual
+        %span.badge.badge-info manual
 
   - if pipeline_link
     %td

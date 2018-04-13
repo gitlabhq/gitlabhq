@@ -3,7 +3,7 @@
     = link_to matching_branch.name, project_ref_path(@project, matching_branch.name), class: 'ref-name'
 
     - if @project.root_ref?(matching_branch.name)
-      %span.badge.label-info.prepend-left-5 default
+      %span.badge.badge-info.prepend-left-5 default
   %td
     - commit = @project.commit(matching_branch.name)
     = link_to(commit.short_id, project_commit_path(@project, commit.id), class: 'commit-sha')

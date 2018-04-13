@@ -3,7 +3,7 @@
     %span.ref-name= protected_tag.name
 
     - if @project.root_ref?(protected_tag.name)
-      %span.badge.label-info.prepend-left-5 default
+      %span.badge.badge-info.prepend-left-5 default
   %td
     - if protected_tag.wildcard?
       - matching_tags = protected_tag.matching(repository.tags)
