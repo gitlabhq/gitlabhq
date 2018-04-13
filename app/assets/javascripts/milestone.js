@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
+import { mouseenter, debouncedMouseleave, togglePopover } from './shared/popover';
 
 export default class Milestone {
   constructor() {
@@ -42,5 +43,26 @@ export default class Milestone {
         })
         .catch(() => flash('Error loading milestone tab'));
     }
+  }
+
+  static initDeprecationMessage() {
+    const deprecationMesssageContainer = document.querySelector('.js-milestone-deprecation-message');
+
+    if (!deprecationMesssageContainer) return;
+
+    const deprecationMessage = deprecationMesssageContainer.querySelector('.js-milestone-deprecation-message-template').innerHTML;
+    const $popover = $('.js-popover-link', deprecationMesssageContainer);
+    const hideOnScroll = togglePopover.bind($popover, false);
+
+    $popover.popover({
+      content: deprecationMessage,
+      html: true,
+      placement: 'bottom',
+    })
+    .on('mouseenter', mouseenter)
+    .on('mouseleave', debouncedMouseleave())
+    .one('show.bs.popover', () => {
+      window.addEventListener('scroll', hideOnScroll);
+    });
   }
 }
