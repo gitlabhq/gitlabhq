@@ -207,17 +207,7 @@
           :resolved-issues="sast.resolvedIssues"
           :all-issues="sast.allIssues"
           :type="$options.sast"
-          :is-full-report-visible="isSastFullReportVisible"
         />
-
-        <button
-          v-if="sast.allIssues.length && !isSastFullReportVisible"
-          type="button"
-          class="btn-link btn-blank prepend-left-10 js-expand-full-list-sast break-link"
-          @click="openSASTFullReport"
-        >
-          {{ s__("ciReport|Show complete code vulnerabilities report") }}
-        </button>
       </template>
 
       <template v-if="dependencyScanningHeadPath">
@@ -236,17 +226,7 @@
           :resolved-issues="dependencyScanning.resolvedIssues"
           :all-issues="dependencyScanning.allIssues"
           :type="$options.sast"
-          :is-full-report-visible="isDependencyScanningFullReportVisible"
         />
-
-        <button
-          v-if="dependencyScanning.allIssues.length && !isDependencyScanningFullReportVisible"
-          type="button"
-          class="btn-link btn-blank prepend-left-10 js-expand-full-list-dss break-link"
-          @click="openDependencyScanningFullReport"
-        >
-          {{ s__("ciReport|Show complete code vulnerabilities report") }}
-        </button>
       </template>
 
       <template v-if="sastContainerHeadPath">

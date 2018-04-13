@@ -78,7 +78,6 @@ export default {
     return {
       collapseText: __('Expand'),
       isCollapsed: true,
-      isFullReportVisible: false,
     };
   },
 
@@ -124,9 +123,6 @@ export default {
 
       const text = this.isCollapsed ? __('Expand') : __('Collapse');
       this.collapseText = text;
-    },
-    openFullReport() {
-      this.isFullReportVisible = true;
     },
   },
 };
@@ -182,17 +178,7 @@ export default {
           :resolved-issues="resolvedIssues"
           :all-issues="allIssues"
           :type="type"
-          :is-full-report-visible="isFullReportVisible"
         />
-
-        <button
-          v-if="allIssues.length && !isFullReportVisible"
-          type="button"
-          class="btn-link btn-blank prepend-left-10 js-expand-full-list break-link"
-          @click="openFullReport"
-        >
-          {{ s__("ciReport|Show complete code vulnerabilities report") }}
-        </button>
       </slot>
     </div>
   </section>

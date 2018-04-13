@@ -213,8 +213,8 @@ describe('Grouped security reports app', () => {
 
     it('render show all issues button for sast', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.js-expand-full-list-sast')).not.toBeNull();
-        vm.$el.querySelector('.js-expand-full-list-sast').click();
+        expect(vm.$el.querySelector('js-sast-issue-list .js-expand-full-list')).not.toBeNull();
+        vm.$el.querySelector('.js-sast-issue-list .js-expand-full-list').click();
 
         vm
           .$nextTick()
@@ -230,8 +230,8 @@ describe('Grouped security reports app', () => {
 
     it('render show all issues button for dependency scanning', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.js-expand-full-list-dss')).not.toBeNull();
-        vm.$el.querySelector('.js-expand-full-list-dss').click();
+        expect(vm.$el.querySelector('js-dss-issue-list .js-expand-full-list')).not.toBeNull();
+        vm.$el.querySelector('js-dss-issue-list .js-expand-full-list').click();
 
         vm
           .$nextTick()
