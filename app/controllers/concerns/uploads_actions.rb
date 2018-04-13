@@ -31,17 +31,12 @@ module UploadsActions
 
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
 
-    if uploader.filename == params[:filename]
-      return send_upload(uploader, attachment: uploader.filename, disposition: disposition)
-    end
+    uploaders = [uploader, *uploader.versions.values]
+    uploader = uploaders.find { |version| version.filename == params[:filename] }
 
-    uploader_version = uploader.versions.values.find { |version| version.filename == params[:filename] }
+    return render_404 unless uploader
 
-    if uploader_version
-      return send_upload(uploader_version, attachment: uploader_version.filename, disposition: disposition)
-    end
-
-    render_404
+    send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end
 
   private
