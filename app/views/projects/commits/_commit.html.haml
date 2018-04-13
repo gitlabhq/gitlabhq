@@ -46,7 +46,7 @@
           - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
           #{ commit_text.html_safe }
 
-      .commit-actions.flex-row.d-none.d-sm-block
+      .commit-actions.flex-row.d-none.d-sm-flex
         - if request.xhr?
           = render partial: 'projects/commit/signature', object: commit.signature
         - else

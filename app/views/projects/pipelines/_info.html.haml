@@ -27,7 +27,7 @@
       .icon-container.commit-icon
         = custom_icon("icon_commit")
       = link_to @commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha js-details-short"
-      = link_to("#", class: "js-details-expand d-none d-sm-none d-md-block") do
+      = link_to("#", class: "js-details-expand d-none d-sm-none d-md-inline") do
         %span.text-expander
           \...
       %span.js-details-content.d-none
