@@ -67,6 +67,50 @@ describe('IDE File finder item spec', () => {
       });
     });
 
+    it('shows clear button when searchText is not empty', done => {
+      vm.searchText = 'index';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.dropdown-input-clear').classList).toContain('show');
+        expect(vm.$el.querySelector('.dropdown-input-search').classList).toContain('hidden');
+
+        done();
+      });
+    });
+
+    it('clear button resets searchText', done => {
+      vm.searchText = 'index';
+
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelector('.dropdown-input-clear').click();
+        })
+        .then(vm.$nextTick)
+        .then(() => {
+          expect(vm.searchText).toBe('');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('clear button focues search input', done => {
+      spyOn(vm.$refs.searchInput, 'focus');
+      vm.searchText = 'index';
+
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelector('.dropdown-input-clear').click();
+        })
+        .then(vm.$nextTick)
+        .then(() => {
+          expect(vm.$refs.searchInput.focus).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
     describe('listShowCount', () => {
       it('returns 1 when no filtered entries exist', done => {
         vm.searchText = 'testing 123';

@@ -1,4 +1,5 @@
 <script>
+import { escape } from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import FileIcon from '../../../vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '../changed_file_icon.vue';
@@ -29,10 +30,11 @@ export default {
       this.$emit('click', this.file);
     },
     highlightText(text, addEllipsis) {
+      const escapedText = escape(text);
       const maxText =
-        text.length < MAX_PATH_LENGTH || !addEllipsis
-          ? text
-          : `...${text.substr(text.length - MAX_PATH_LENGTH)}`;
+        escapedText.length < MAX_PATH_LENGTH || !addEllipsis
+          ? escapedText
+          : `...${escapedText.substr(escapedText.length - MAX_PATH_LENGTH)}`;
       const occurrences = fuzzaldrinPlus.match(maxText, this.searchText);
 
       return maxText

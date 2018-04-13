@@ -42,6 +42,9 @@ export default {
     listHeight() {
       return this.filteredBlobsLength ? 55 : 33;
     },
+    showClearInputButton() {
+      return this.searchText.trim() !== '';
+    },
   },
   watch: {
     fileFindVisible() {
@@ -61,6 +64,13 @@ export default {
   },
   methods: {
     ...mapActions(['toggleFileFinder']),
+    clearSearchInput() {
+      this.searchText = '';
+
+      this.$nextTick(() => {
+        this.$refs.searchInput.focus();
+      });
+    },
     onKeydown(e) {
       switch (e.keyCode) {
         case 38:
@@ -129,6 +139,18 @@ export default {
         <i
           aria-hidden="true"
           class="fa fa-search dropdown-input-search"
+          :class="{
+            hidden: showClearInputButton
+          }"
+        ></i>
+        <i
+          role="button"
+          aria-hidden="true"
+          class="fa fa-times dropdown-input-clear"
+          :class="{
+            show: showClearInputButton
+          }"
+          @click="clearSearchInput"
         ></i>
       </div>
       <div>
