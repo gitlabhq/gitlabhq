@@ -87,6 +87,14 @@ describe Geo::ProjectRegistryFinder, :geo do
       expect(subject.count_synced_wikis).to eq 1
     end
 
+    it 'counts synced wikis with nil wiki_access_level (which means enabled wiki)' do
+      project_synced.project_feature.update!(wiki_access_level: nil)
+
+      create(:geo_project_registry, :synced, project: project_synced)
+
+      expect(subject.count_synced_wikis).to eq 1
+    end
+
     context 'with selective sync' do
       before do
         secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -483,6 +491,14 @@ describe Geo::ProjectRegistryFinder, :geo do
 
         create(:geo_project_registry, :synced, project: project_synced)
         create(:geo_project_registry, :synced, project: create(:project, :wiki_disabled))
+
+        expect(subject.count_synced_wikis).to eq 1
+      end
+
+      it 'counts synced wikis with nil wiki_access_level (which means enabled wiki)' do
+        project_synced.project_feature.update!(wiki_access_level: nil)
+
+        create(:geo_project_registry, :synced, project: project_synced)
 
         expect(subject.count_synced_wikis).to eq 1
       end
