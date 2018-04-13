@@ -141,7 +141,7 @@ module Geo
       fdw_job_artifacts.joins("LEFT OUTER JOIN job_artifact_registry
                                ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
         .with_files_stored_locally
-        .where(job_artifact_registry: { id: nil })
+        .where(job_artifact_registry: { artifact_id: nil })
         .where.not(id: except_artifact_ids)
     end
 
