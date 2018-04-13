@@ -1431,30 +1431,20 @@ export default class Notes {
     syntaxHighlight(fileHolder);
   }
 
-  static renderDiffError($container) {
-    $container.find('.line_content').html(
-      $(`
-        <div class="js-error-load-lazy-diff nothing-here-block">
-          ${sprintf(__('Unable to load the diff.%{buttonStartTag}Try again%{buttonEndTag}?'), {
-            buttonStartTag: '<button type="button" class="btn-link btn-no-padding js-toggle-lazy-diff">',
-            buttonEndTag: '</button>'
-          }, false)}
-        </div>
-      `),
-    );
-  }
-
   loadLazyDiff(e) {
     const $container = $(e.currentTarget).closest('.js-toggle-container');
     Notes.renderPlaceholderComponent($container);
 
     $container.find('.js-toggle-lazy-diff').removeClass('js-toggle-lazy-diff');
 
-    const tableEl = $container.find('tbody');
-    if (tableEl.length === 0) return;
+    const $tableEl = $container.find('tbody');
+    if ($tableEl.length === 0) return;
 
     const fileHolder = $container.find('.file-holder');
     const url = fileHolder.data('linesPath');
+
+    const $errorContainer = $container.find('.js-error-lazy-load-diff');
+    const $successContainer = $container.find('.js-success-lazy-load');
 
     /**
      * We only fetch resolved discussions.
@@ -1464,10 +1454,15 @@ export default class Notes {
       axios
       .get(url)
       .then(({ data }) => {
+        // Reset state in case last request returned error
+        $successContainer.removeClass('hidden');
+        $errorContainer.addClass('hidden');
+
         Notes.renderDiffContent($container, data);
       })
       .catch(() => {
-        Notes.renderDiffError($container);
+        $successContainer.addClass('hidden');
+        $errorContainer.removeClass('hidden');
       });
     }
   }

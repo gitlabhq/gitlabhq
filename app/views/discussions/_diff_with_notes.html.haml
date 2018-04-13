@@ -28,8 +28,11 @@
           %tr.line_holder.line-holder-placeholder
             %td.old_line.diff-line-num
             %td.new_line.diff-line-num
-            %td.line_content
+            %td.line_content.js-success-lazy-load
               .js-code-placeholder
+            %td.line_content.js-error-lazy-load-diff.hidden
+              - button = button_tag(_("Try again"), class: "btn-link btn-no-padding js-toggle-lazy-diff")
+              = _("Unable to load the diff. %{button_try_again}").html_safe % { button_try_again: button}
           = render "discussions/diff_discussion", discussions: [discussion], expanded: true
   - else
     - partial = (diff_file.new_file? || diff_file.deleted_file?) ? 'single_image_diff' : 'replaced_image_diff'

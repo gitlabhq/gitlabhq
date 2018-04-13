@@ -40,7 +40,7 @@ describe 'Merge request > User scrolls to note on load', :js do
     expect(note_element.visible?).to eq true
 
     page.within note_container do
-      expect(page).not_to have_selector('.js-error-load-lazy-diff')
+      expect(page).not_to have_selector('.js-error-lazy-load-diff')
     end
 
   end
