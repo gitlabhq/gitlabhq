@@ -25,6 +25,6 @@ module Gitlab
   end
 
   def self.inc_controlled?
-    dev? || staging? || com?
+    dev? || com?
   end
 end
