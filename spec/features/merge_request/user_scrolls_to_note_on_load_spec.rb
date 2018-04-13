@@ -42,7 +42,6 @@ describe 'Merge request > User scrolls to note on load', :js do
     page.within note_container do
       expect(page).not_to have_selector('.js-error-lazy-load-diff')
     end
-
   end
 
   it 'expands collapsed notes' do
