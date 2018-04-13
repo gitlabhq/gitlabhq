@@ -46,7 +46,7 @@
     .controls
       .prepend-top-0
         - if project.archived
-          %span.prepend-left-10.badge.label-warning archived
+          %span.prepend-left-10.badge.badge-warning archived
         - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
           %span.prepend-left-10
             = render_project_pipeline_status(project.pipeline_status)

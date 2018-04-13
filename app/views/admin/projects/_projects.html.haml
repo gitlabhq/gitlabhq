@@ -15,7 +15,7 @@
             %span.badge.badge-pill
               = storage_counter(project.statistics.storage_size)
             - if project.archived
-              %span.badge.label-warning archived
+              %span.badge.badge-warning archived
           .title
             = link_to [:admin, project.namespace.becomes(Namespace), project] do
               .dash-project-avatar
