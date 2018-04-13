@@ -30,7 +30,7 @@ describe 'Issue Boards', :js do
 
     it 'has un-ordered issue as last issue' do
       page.within(find('.board:nth-child(2)')) do
-        expect(all('.card').last).to have_content(issue4.title)
+        expect(all('.board-card').last).to have_content(issue4.title)
       end
     end
 
@@ -40,7 +40,7 @@ describe 'Issue Boards', :js do
       wait_for_requests
 
       page.within(find('.board:nth-child(2)')) do
-        expect(first('.card')).to have_content(issue4.title)
+        expect(first('.board-card')).to have_content(issue4.title)
       end
     end
   end
@@ -58,7 +58,7 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(first('.card')).to have_content(issue2.title)
+      expect(first('.board-card')).to have_content(issue2.title)
     end
 
     it 'moves from middle to bottom' do
@@ -66,7 +66,7 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(all('.card').last).to have_content(issue2.title)
+      expect(all('.board-card').last).to have_content(issue2.title)
     end
 
     it 'moves from top to bottom' do
@@ -74,7 +74,7 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(all('.card').last).to have_content(issue3.title)
+      expect(all('.board-card').last).to have_content(issue3.title)
     end
 
     it 'moves from bottom to top' do
@@ -82,7 +82,7 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(first('.card')).to have_content(issue1.title)
+      expect(first('.board-card')).to have_content(issue1.title)
     end
 
     it 'moves from top to middle' do
@@ -90,7 +90,7 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(first('.card')).to have_content(issue2.title)
+      expect(first('.board-card')).to have_content(issue2.title)
     end
 
     it 'moves from bottom to middle' do
@@ -98,7 +98,7 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(all('.card').last).to have_content(issue2.title)
+      expect(all('.board-card').last).to have_content(issue2.title)
     end
   end
 
@@ -121,11 +121,11 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 2)
-      expect(all('.board')[2]).to have_selector('.card', count: 4)
+      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 2)
+      expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
-        expect(first('.card')).to have_content(issue3.title)
+        expect(first('.board-card')).to have_content(issue3.title)
       end
     end
 
@@ -134,11 +134,11 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 2)
-      expect(all('.board')[2]).to have_selector('.card', count: 4)
+      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 2)
+      expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
-        expect(all('.card').last).to have_content(issue3.title)
+        expect(all('.board-card').last).to have_content(issue3.title)
       end
     end
 
@@ -147,11 +147,11 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 2)
-      expect(all('.board')[2]).to have_selector('.card', count: 4)
+      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 2)
+      expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
-        expect(all('.card')[1]).to have_content(issue3.title)
+        expect(all('.board-card')[1]).to have_content(issue3.title)
       end
     end
   end

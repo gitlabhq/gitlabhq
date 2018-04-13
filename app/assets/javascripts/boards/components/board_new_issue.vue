@@ -92,7 +92,7 @@ export default {
 
 <template>
   <div class="board-new-issue-form">
-    <div class="card">
+    <div class="board-card">
       <form @submit="submit($event)">
         <div
           class="flash-container"

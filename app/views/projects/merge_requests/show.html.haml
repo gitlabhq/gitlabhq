@@ -4,7 +4,7 @@
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description @merge_request.description
-- page_card_attributes @merge_request.card_attributes
+- page_card_attributes @merge_request.board-card_attributes
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"

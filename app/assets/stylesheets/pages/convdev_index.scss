@@ -82,7 +82,7 @@ $space-between-cards: 8px;
 .convdev-card-low {
   border-top-color: $color-low-score;
 
-  .card-score-big {
+  .board-card-score-big {
     background-color: $red-50;
   }
 }
@@ -90,7 +90,7 @@ $space-between-cards: 8px;
 .convdev-card-average {
   border-top-color: $color-average-score;
 
-  .card-score-big {
+  .board-card-score-big {
     background-color: $orange-50;
   }
 }
@@ -98,7 +98,7 @@ $space-between-cards: 8px;
 .convdev-card-high {
   border-top-color: $color-high-score;
 
-  .card-score-big {
+  .board-card-score-big {
     background-color: $green-50;
   }
 }
@@ -119,7 +119,7 @@ $space-between-cards: 8px;
   }
 }
 
-.card-scores {
+.board-card-scores {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -127,22 +127,22 @@ $space-between-cards: 8px;
   line-height: 1;
 }
 
-.card-score {
+.board-card-score {
   color: $gl-text-color-secondary;
 
-  .card-score-name {
+  .board-card-score-name {
     font-size: 13px;
     margin-top: 4px;
   }
 }
 
-.card-score-value {
+.board-card-score-value {
   font-size: 16px;
   color: $gl-text-color;
   font-weight: $gl-font-weight-normal;
 }
 
-.card-score-big {
+.board-card-score-big {
   border-top: 2px solid $border-color;
   border-bottom: 1px solid $border-color;
   font-size: 22px;
@@ -150,7 +150,7 @@ $space-between-cards: 8px;
   font-weight: $gl-font-weight-normal;
 }
 
-.card-buttons {
+.board-card-buttons {
   display: flex;
 
   > * {

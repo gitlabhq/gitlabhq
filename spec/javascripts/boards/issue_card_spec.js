@@ -70,19 +70,19 @@ describe('Issue card component', () => {
 
   it('renders issue title', () => {
     expect(
-      component.$el.querySelector('.card-title').textContent,
+      component.$el.querySelector('.board-card-title').textContent,
     ).toContain(issue.title);
   });
 
   it('includes issue base in link', () => {
     expect(
-      component.$el.querySelector('.card-title a').getAttribute('href'),
+      component.$el.querySelector('.board-card-title a').getAttribute('href'),
     ).toContain('/test');
   });
 
   it('includes issue title on link', () => {
     expect(
-      component.$el.querySelector('.card-title a').getAttribute('title'),
+      component.$el.querySelector('.board-card-title a').getAttribute('title'),
     ).toBe(issue.title);
   });
 
@@ -105,14 +105,14 @@ describe('Issue card component', () => {
 
   it('renders issue ID with #', () => {
     expect(
-      component.$el.querySelector('.card-number').textContent,
+      component.$el.querySelector('.board-card-number').textContent,
     ).toContain(`#${issue.id}`);
   });
 
   describe('assignee', () => {
     it('does not render assignee', () => {
       expect(
-        component.$el.querySelector('.card-assignee .avatar'),
+        component.$el.querySelector('.board-card-assignee .avatar'),
       ).toBeNull();
     });
 
@@ -125,25 +125,25 @@ describe('Issue card component', () => {
 
       it('renders assignee', () => {
         expect(
-          component.$el.querySelector('.card-assignee .avatar'),
+          component.$el.querySelector('.board-card-assignee .avatar'),
         ).not.toBeNull();
       });
 
       it('sets title', () => {
         expect(
-          component.$el.querySelector('.card-assignee img').getAttribute('data-original-title'),
+          component.$el.querySelector('.board-card-assignee img').getAttribute('data-original-title'),
         ).toContain(`Assigned to ${user.name}`);
       });
 
       it('sets users path', () => {
         expect(
-          component.$el.querySelector('.card-assignee a').getAttribute('href'),
+          component.$el.querySelector('.board-card-assignee a').getAttribute('href'),
         ).toBe('/test');
       });
 
       it('renders avatar', () => {
         expect(
-          component.$el.querySelector('.card-assignee img'),
+          component.$el.querySelector('.board-card-assignee img'),
         ).not.toBeNull();
       });
     });
@@ -161,10 +161,10 @@ describe('Issue card component', () => {
 
       it('displays defaults avatar if users avatar is null', () => {
         expect(
-          component.$el.querySelector('.card-assignee img'),
+          component.$el.querySelector('.board-card-assignee img'),
         ).not.toBeNull();
         expect(
-          component.$el.querySelector('.card-assignee img').getAttribute('src'),
+          component.$el.querySelector('.board-card-assignee img').getAttribute('src'),
         ).toBe('default_avatar');
       });
     });
@@ -197,7 +197,7 @@ describe('Issue card component', () => {
     });
 
     it('renders all four assignees', () => {
-      expect(component.$el.querySelectorAll('.card-assignee .avatar').length).toEqual(4);
+      expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(4);
     });
 
     describe('more than four assignees', () => {
@@ -213,11 +213,11 @@ describe('Issue card component', () => {
       });
 
       it('renders more avatar counter', () => {
-        expect(component.$el.querySelector('.card-assignee .avatar-counter').innerText).toEqual('+2');
+        expect(component.$el.querySelector('.board-card-assignee .avatar-counter').innerText).toEqual('+2');
       });
 
       it('renders three assignees', () => {
-        expect(component.$el.querySelectorAll('.card-assignee .avatar').length).toEqual(3);
+        expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(3);
       });
 
       it('renders 99+ avatar counter', (done) => {
@@ -232,7 +232,7 @@ describe('Issue card component', () => {
         }
 
         Vue.nextTick(() => {
-          expect(component.$el.querySelector('.card-assignee .avatar-counter').innerText).toEqual('99+');
+          expect(component.$el.querySelector('.board-card-assignee .avatar-counter').innerText).toEqual('99+');
           done();
         });
       });

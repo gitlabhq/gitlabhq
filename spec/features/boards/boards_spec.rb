@@ -92,9 +92,9 @@ describe 'Issue Boards', :js do
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 4)
-      expect(find('.board:nth-child(2)')).to have_selector('.card')
-      expect(find('.board:nth-child(3)')).to have_selector('.card')
-      expect(find('.board:nth-child(4)')).to have_selector('.card')
+      expect(find('.board:nth-child(2)')).to have_selector('.board-card')
+      expect(find('.board:nth-child(3)')).to have_selector('.board-card')
+      expect(find('.board:nth-child(4)')).to have_selector('.board-card')
     end
 
     it 'shows description tooltip on list title' do
@@ -120,9 +120,9 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
-      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
-      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 1)
+      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 0)
+      expect(find('.board:nth-child(3)')).to have_selector('.board-card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 1)
     end
 
     it 'search list' do
@@ -131,9 +131,9 @@ describe 'Issue Boards', :js do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
-      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
-      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 1)
+      expect(find('.board:nth-child(3)')).to have_selector('.board-card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 0)
     end
 
     it 'allows user to delete board' do
@@ -171,21 +171,21 @@ describe 'Issue Boards', :js do
 
       page.within(find('.board:nth-child(2)')) do
         expect(page.find('.board-header')).to have_content('58')
-        expect(page).to have_selector('.card', count: 20)
+        expect(page).to have_selector('.board-card', count: 20)
         expect(page).to have_content('Showing 20 of 58 issues')
 
         find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
-        expect(page).to have_selector('.card', count: 40)
+        expect(page).to have_selector('.board-card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
         find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
-        expect(page).to have_selector('.card', count: 58)
+        expect(page).to have_selector('.board-card', count: 58)
         expect(page).to have_content('Showing all issues')
       end
     end
@@ -204,7 +204,7 @@ describe 'Issue Boards', :js do
         wait_for_board_cards(4, 2)
 
         expect(find('.board:nth-child(2)')).not_to have_content(issue9.title)
-        expect(find('.board:nth-child(4)')).to have_selector('.card', count: 2)
+        expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 2)
         expect(find('.board:nth-child(4)')).to have_content(issue9.title)
         expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
       end
@@ -242,7 +242,7 @@ describe 'Issue Boards', :js do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(3)')).to have_content(issue6.title)
-        expect(find('.board:nth-child(3)').all('.card').last).to have_content(development.title)
+        expect(find('.board:nth-child(3)').all('.board-card').last).to have_content(development.title)
       end
 
       it 'issue moves between lists' do
@@ -253,7 +253,7 @@ describe 'Issue Boards', :js do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(2)')).to have_content(issue7.title)
-        expect(find('.board:nth-child(2)').all('.card').first).to have_content(planning.title)
+        expect(find('.board:nth-child(2)').all('.board-card').first).to have_content(planning.title)
       end
 
       it 'issue moves from closed' do
@@ -425,12 +425,12 @@ describe 'Issue Boards', :js do
 
         page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('1')
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         page.within(find('.board:nth-child(3)')) do
           expect(page.find('.board-header')).to have_content('0')
-          expect(page).to have_selector('.card', count: 0)
+          expect(page).to have_selector('.board-card', count: 0)
         end
       end
 
@@ -460,19 +460,19 @@ describe 'Issue Boards', :js do
 
         page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('51')
-          expect(page).to have_selector('.card', count: 20)
+          expect(page).to have_selector('.board-card', count: 20)
           expect(page).to have_content('Showing 20 of 51 issues')
 
           find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
-          expect(page).to have_selector('.card', count: 40)
+          expect(page).to have_selector('.board-card', count: 40)
           expect(page).to have_content('Showing 40 of 51 issues')
 
           find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
-          expect(page).to have_selector('.card', count: 51)
+          expect(page).to have_selector('.board-card', count: 51)
           expect(page).to have_content('Showing all issues')
         end
       end
@@ -494,8 +494,8 @@ describe 'Issue Boards', :js do
 
       it 'filters by clicking label button on issue' do
         page.within(find('.board:nth-child(2)')) do
-          expect(page).to have_selector('.card', count: 8)
-          expect(find('.card', match: :first)).to have_content(bug.title)
+          expect(page).to have_selector('.board-card', count: 8)
+          expect(find('.board-card', match: :first)).to have_content(bug.title)
           click_button(bug.title)
           wait_for_requests
         end
@@ -512,13 +512,13 @@ describe 'Issue Boards', :js do
 
       it 'removes label filter by clicking label button on issue' do
         page.within(find('.board:nth-child(2)')) do
-          page.within(find('.card', match: :first)) do
+          page.within(find('.board-card', match: :first)) do
             click_button(bug.title)
           end
 
           wait_for_requests
 
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         wait_for_requests
@@ -589,7 +589,7 @@ describe 'Issue Boards', :js do
   def wait_for_board_cards(board_number, expected_cards)
     page.within(find(".board:nth-child(#{board_number})")) do
       expect(page.find('.board-header')).to have_content(expected_cards.to_s)
-      expect(page).to have_selector('.card', count: expected_cards)
+      expect(page).to have_selector('.board-card', count: expected_cards)
     end
   end
 

@@ -21,7 +21,7 @@
           score
           = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/admin_area/monitoring/convdev')
 
-      .convdev-cards.card-container
+      .convdev-cards.board-card-container
         - @metric.cards.each do |card|
           = render 'card', card: card
 

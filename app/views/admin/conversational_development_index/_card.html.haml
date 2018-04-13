@@ -5,18 +5,18 @@
         = card.title
       .text-light
         = card.description
-    .card-scores
-      .card-score
-        .card-score-value
+    .board-card-scores
+      .board-card-score
+        .board-card-score-value
           = format_score(card.instance_score)
-        .card-score-name You
-      .card-score
-        .card-score-value
+        .board-card-score-name You
+      .board-card-score
+        .board-card-score-value
           = format_score(card.leader_score)
-        .card-score-name Lead
-    .card-score-big
+        .board-card-score-name Lead
+    .board-card-score-big
       = number_to_percentage(card.percentage_score, precision: 1)
-    .card-buttons
+    .board-card-buttons
       - if card.blog
         %a{ href: card.blog }
           = icon('info-circle', 'aria-hidden' => 'true')

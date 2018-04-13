@@ -276,7 +276,7 @@
   font-size: (26px / $issue-boards-font-size) * 1em;
 }
 
-.card {
+.board-card {
   position: relative;
   padding: 11px 10px 11px $gl-padding;
   background: $white-light;
@@ -289,7 +289,7 @@
   }
 
   &.is-active,
-  &.is-active .card-assignee:hover a {
+  &.is-active .board-card-assignee:hover a {
     background-color: $row-hover;
 
     &:first-child:not(:only-child) {
@@ -309,7 +309,7 @@
   }
 }
 
-.card-title {
+.board-card-title {
   margin: 0 30px 0 0;
   font-size: 1em;
   line-height: inherit;
@@ -321,11 +321,11 @@
   }
 }
 
-.card-header {
+.board-card-header {
   display: flex;
   min-height: 20px;
 
-  .card-assignee {
+  .board-card-assignee {
     display: flex;
     justify-content: flex-end;
     position: absolute;
@@ -396,7 +396,7 @@
   }
 }
 
-.card-footer {
+.board-card-footer {
   margin: 0 0 5px;
 
   .badge {
@@ -405,7 +405,7 @@
   }
 }
 
-.card-number {
+.board-card-number {
   font-size: 12px;
   color: $gl-text-color-secondary;
 }
@@ -581,11 +581,11 @@
   margin-right: -$gl-vert-padding;
   overflow-y: scroll;
 
-  .card-parent {
+  .board-card-parent {
     padding: 0 5px 5px;
   }
 
-  .card {
+  .board-card {
     border: 1px solid $border-gray-dark;
     box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, 0.3);
     cursor: pointer;

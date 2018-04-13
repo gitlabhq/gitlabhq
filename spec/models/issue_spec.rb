@@ -70,7 +70,7 @@ describe Issue do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignees).and_return([])
 
-      expect(subject.card_attributes)
+      expect(subject.board-card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => '' })
     end
 
@@ -78,7 +78,7 @@ describe Issue do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
 
-      expect(subject.card_attributes)
+      expect(subject.board-card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end

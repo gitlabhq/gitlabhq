@@ -57,7 +57,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
         wait_for_requests
 
         if board
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
         else
@@ -96,11 +96,11 @@ feature 'Labels Hierarchy', :js, :nested_groups do
         wait_for_requests
 
         if board
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
 
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue_2.title)
           end
         else
@@ -118,11 +118,11 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       select_label_on_dropdown(group_label_3.title)
 
       if board
-        expect(page).to have_selector('.card-title') do |card|
+        expect(page).to have_selector('.board-card-title') do |card|
           expect(card).not_to have_selector('a', text: labeled_issue_2.title)
         end
 
-        expect(page).to have_selector('.card-title') do |card|
+        expect(page).to have_selector('.board-card-title') do |card|
           expect(card).to have_selector('a', text: labeled_issue_3.title)
         end
       else
@@ -184,7 +184,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         wait_for_requests
 
-        find('.card').click
+        find('.board-card').click
       end
 
       it_behaves_like 'assigning labels from sidebar'
@@ -198,7 +198,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         wait_for_requests
 
-        find('.card').click
+        find('.board-card').click
       end
 
       it_behaves_like 'assigning labels from sidebar'

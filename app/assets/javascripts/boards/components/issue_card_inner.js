@@ -135,8 +135,8 @@ gl.issueBoards.IssueCardInner = Vue.extend({
   },
   template: `
     <div>
-      <div class="card-header">
-        <h4 class="card-title">
+      <div class="board-card-header">
+        <h4 class="board-card-title">
           <i
             class="fa fa-eye-slash confidential-icon"
             v-if="issue.confidential"
@@ -147,13 +147,13 @@ gl.issueBoards.IssueCardInner = Vue.extend({
             :href="issue.path"
             :title="issue.title">{{ issue.title }}</a>
           <span
-            class="card-number"
+            class="board-card-number"
             v-if="issueId"
           >
             {{ issue.referencePath }}
           </span>
         </h4>
-        <div class="card-assignee">
+        <div class="board-card-assignee">
           <user-avatar-link
             v-for="(assignee, index) in issue.assignees"
             :key="assignee.id"
@@ -175,7 +175,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
         </div>
       </div>
       <div
-        class="card-footer"
+        class="board-card-footer"
         v-if="showLabelFooter"
       >
         <button

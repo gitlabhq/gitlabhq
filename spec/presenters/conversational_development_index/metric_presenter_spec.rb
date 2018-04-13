@@ -6,7 +6,7 @@ describe ConversationalDevelopmentIndex::MetricPresenter do
 
   describe '#cards' do
     it 'includes instance score, leader score and percentage score' do
-      issues_card = subject.cards.first
+      issues_card = subject.board-cards.first
 
       expect(issues_card.instance_score).to eq(1.234)
       expect(issues_card.leader_score).to eq(9.256)
