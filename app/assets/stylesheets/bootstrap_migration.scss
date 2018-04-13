@@ -33,6 +33,12 @@ button, html [type="button"], [type="reset"], [type="submit"] {
   cursor: pointer;
 }
 
+.form-group.row .col-form-label {
+  // Bootstrap 4 aligns labels to the left
+  // for horizontal forms
+  text-align: right;
+}
+
 // Polyfill deprecated selectors
 
 .hidden {
