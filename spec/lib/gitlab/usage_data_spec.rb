@@ -82,6 +82,7 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
+        epics
         geo_nodes
         clusters
         clusters_enabled
