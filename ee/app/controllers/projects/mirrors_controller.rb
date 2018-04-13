@@ -101,6 +101,8 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def mirror_params
+    p params
+
     params.require(:project).permit(mirror_params_attributes)
   end
 

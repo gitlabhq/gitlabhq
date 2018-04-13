@@ -3,6 +3,7 @@ import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import MirrorPull from 'ee/mirrors/mirror_pull';
 import { __ } from '~/locale';
 import Flash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 
 export default {
   init(container) {
@@ -23,6 +24,7 @@ export default {
 
     this.boundUpdateForm();
     this.registerUpdateListeners();
+    $('.js-delete-mirror').on('click', this.deleteMirror.bind(this));
   },
 
   handleUpdate() {
@@ -89,5 +91,20 @@ export default {
     this.mirrorDirectionSelect.addEventListener('change', this.boundUpdateForm);
     this.urlInput.addEventListener('change', this.boundUpdateUrl);
     this.protectedBranchesInput.addEventListener('change', this.boundUpdateProtectedBranches);
+  },
+
+  deleteMirror(event) {
+    const target = event.currentTarget;
+    const payload = { project: {} };
+
+    if (target.classList.contains('js-delete-pull-mirror')) {
+      payload.project.mirror = false;
+    } else {
+      payload.project[`remote_mirrors_attributes[${target.dataset.mirrorIndex}]`] = {
+        enabled: false,
+      };
+    }
+
+    return axios.put('/h5bp/html5-boilerplate/mirror', payload);
   },
 };

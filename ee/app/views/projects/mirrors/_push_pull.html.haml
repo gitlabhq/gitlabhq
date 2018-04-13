@@ -88,18 +88,18 @@
             %th Last update
             %th
         %tbody
-          - if @project.username_only_import_url.present?
+          - if @project.mirror == true
             %tr
               %td= @project.username_only_import_url
               %td Pull
               %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
               %td
-                %button.js-delete-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
-          - @project.remote_mirrors.each do |mirror|
-            - if mirror.safe_url.present?
+                %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
+          - @project.remote_mirrors.each_with_index do |mirror, index|
+            - if mirror.enabled == true
               %tr
                 %td= mirror.safe_url
                 %td Push
                 %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
                 %td
-                  %button.js-delete-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
+                  %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_index: index } }= icon('trash-o')
