@@ -14,10 +14,10 @@
         %span.cgray= user.to_reference
 
         - if user == current_user
-          %span.label.label-success.prepend-left-5 It's you
+          %span.badge.label-success.prepend-left-5 It's you
 
         - if user.blocked?
-          %label.label.label-danger
+          %label.badge.label-danger
             %strong Blocked
 
         - if source.instance_of?(Group) && source != @group

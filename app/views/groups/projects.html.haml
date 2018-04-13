@@ -17,7 +17,7 @@
           %strong= link_to project.full_name, project
         .float-right
           - if project.archived
-            %span.label.label-warning archived
+            %span.badge.label-warning archived
           %span.badge.badge-pill
             = storage_counter(project.statistics.storage_size)
           = link_to 'Members', project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"

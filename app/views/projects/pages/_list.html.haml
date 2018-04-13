@@ -17,9 +17,9 @@
               = icon('external-link')
             - if domain.subject
               %p
-                %span.label.label-gray Certificate: #{domain.subject}
+                %span.badge.label-gray Certificate: #{domain.subject}
                 - if domain.expired?
-                  %span.label.label-danger Expired
+                  %span.badge.label-danger Expired
           %div
             = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
             = link_to 'Remove', project_pages_domain_path(@project, domain), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"

@@ -6,7 +6,7 @@
     = link_to project_blob_path(@project, tree_join(@id || @commit.id, blob_item.name)), class: 'str-truncated', title: file_name do
       %span= file_name
     - if is_lfs_blob
-      %span.label.label-lfs.prepend-left-5 LFS
+      %span.badge.label-lfs.prepend-left-5 LFS
   %td.d-none.d-sm-table-cell.tree-commit
   %td.tree-time-ago.cgray.text-right
     = render 'projects/tree/spinner'

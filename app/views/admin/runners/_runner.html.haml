@@ -1,13 +1,13 @@
 %tr{ id: dom_id(runner) }
   %td
     - if runner.shared?
-      %span.label.label-success shared
+      %span.badge.label-success shared
     - else
-      %span.label.label-info specific
+      %span.badge.label-info specific
     - if runner.locked?
-      %span.label.label-warning locked
+      %span.badge.label-warning locked
     - unless runner.active?
-      %span.label.label-danger paused
+      %span.badge.label-danger paused
 
   %td
     = link_to admin_runner_path(runner) do
@@ -27,7 +27,7 @@
     #{runner.builds.count(:all)}
   %td
     - runner.tag_list.sort.each do |tag|
-      %span.label.label-primary
+      %span.badge.label-primary
         = tag
   %td
     - if runner.contacted_at

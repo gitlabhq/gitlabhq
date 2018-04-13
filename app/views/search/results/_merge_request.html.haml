@@ -3,9 +3,9 @@
     = link_to [merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request] do
       %span.term.str-truncated= merge_request.title
     - if merge_request.merged?
-      %span.label.label-primary.prepend-left-5 Merged
+      %span.badge.label-primary.prepend-left-5 Merged
     - elsif merge_request.closed?
-      %span.label.label-danger.prepend-left-5 Closed
+      %span.badge.label-danger.prepend-left-5 Closed
     .float-right= merge_request.to_reference
   - if merge_request.description.present?
     .description.term

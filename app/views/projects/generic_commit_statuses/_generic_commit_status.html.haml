@@ -35,10 +35,10 @@
     .label-container
       - if generic_commit_status.tags.any?
         - generic_commit_status.tags.each do |tag|
-          %span.label.label-primary
+          %span.badge.label-primary
             = tag
       - if retried
-        %span.label.label-warning retried
+        %span.badge.label-warning retried
 
   - if pipeline_link
     %td

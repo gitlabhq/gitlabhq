@@ -15,7 +15,7 @@
             - elsif @build.tags.any?
               This job is stuck, because you don't have any active runners online with any of these tags assigned to them:
               - @build.tags.each do |tag|
-                %span.label.label-primary
+                %span.badge.label-primary
                   = tag
             - else
               This job is stuck, because you don't have any active runners that can run this job.

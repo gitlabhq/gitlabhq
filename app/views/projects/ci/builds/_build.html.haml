@@ -41,14 +41,14 @@
     .label-container
       - if job.tags.any?
         - job.tags.each do |tag|
-          %span.label.label-primary
+          %span.badge.label-primary
             = tag
       - if job.try(:trigger_request)
-        %span.label.label-info triggered
+        %span.badge.label-info triggered
       - if job.try(:allow_failure)
-        %span.label.label-danger allowed to fail
+        %span.badge.label-danger allowed to fail
       - if job.action?
-        %span.label.label-info manual
+        %span.badge.label-info manual
 
   - if pipeline_link
     %td

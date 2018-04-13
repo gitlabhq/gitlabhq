@@ -6,7 +6,7 @@
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name prepend-left-4'
 
     - if protected_tag?(@project, tag)
-      %span.label.label-success.prepend-left-4
+      %span.badge.label-success.prepend-left-4
         = s_('TagsPage|protected')
 
     - if tag.message.present?

@@ -5,11 +5,11 @@
     .user-name.row-title.str-truncated-100
       = link_to user.name, [:admin, user]
     - if user.blocked?
-      %span.label.label-danger blocked
+      %span.badge.label-danger blocked
     - if user.admin?
-      %span.label.label-success Admin
+      %span.badge.label-success Admin
     - if user.external?
-      %span.label.label-default External
+      %span.badge.label-default External
     - if user == current_user
       %span It's you!
     .row-second-line.str-truncated-100
