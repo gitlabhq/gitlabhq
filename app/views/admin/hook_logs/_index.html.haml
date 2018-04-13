@@ -19,7 +19,7 @@
             %td
               = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
             %td.d-none.d-sm-block
-              %span.badge.label-gray.deploy-project-label
+              %span.badge.badge-gray.deploy-project-label
                 = hook_log.trigger.singularize.titleize
             %td
               = truncate(hook_log.url, length: 50)

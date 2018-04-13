@@ -29,7 +29,7 @@
               %div
                 - SystemHook.triggers.each_value do |event|
                   - if hook.public_send(event)
-                    %span.badge.label-gray= event.to_s.titleize
-                %span.badge.label-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
+                    %span.badge.badge-gray= event.to_s.titleize
+                %span.badge.badge-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
 
 = render 'shared/plugins/index'

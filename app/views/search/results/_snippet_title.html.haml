@@ -3,7 +3,7 @@
     = link_to reliable_snippet_path(snippet_title) do
       = truncate(snippet_title.title, length: 60)
       - if snippet_title.private?
-        %span.badge.label-gray
+        %span.badge.badge-gray
           %i.fa.fa-lock
           private
     %span.cgray.monospace.tiny.float-right.term

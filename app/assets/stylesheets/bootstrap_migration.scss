@@ -50,3 +50,21 @@ button, html [type="button"], [type="reset"], [type="submit"] {
   // Remove bootstrap's dropdown caret
   display: none;
 }
+
+.badge {
+  padding: 4px 5px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: $gl-font-weight-normal;
+  display: inline-block;
+
+  &.badge-gray {
+    background-color: $label-gray-bg;
+    color: $gl-text-color;
+    text-shadow: none;
+  }
+
+  &.badge-inverse {
+    background-color: $label-inverse-bg;
+  }
+}

@@ -26,7 +26,7 @@
           .projects
             - milestone.milestones.each do |milestone|
               = link_to milestone_path(milestone) do
-                %span.badge.label-gray
+                %span.badge.badge-gray
                   = dashboard ? milestone.project.full_name : milestone.project.name
       - if @group
         .col-sm-6.milestone-actions

@@ -5,7 +5,7 @@
       %div
         - ProjectHook.triggers.each_value do |event|
           - if hook.public_send(event)
-            %span.badge.label-gray.deploy-project-label= event.to_s.titleize
+            %span.badge.badge-gray.deploy-project-label= event.to_s.titleize
     .col-md-4.col-lg-5.text-right-lg.prepend-top-5
       %span.append-right-10.inline
         SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}

@@ -10,11 +10,11 @@
       - if @merge_request.for_fork? && !@merge_request.source_project
         fork project was removed
       - elsif !@merge_request.source_branch_exists?
-        %span.badge.label-inverse= @merge_request.source_branch
+        %span.badge.badge-inverse= @merge_request.source_branch
         does not exist in
         %span.badge.badge-info= @merge_request.source_project_path
       - elsif !@merge_request.target_branch_exists?
-        %span.badge.label-inverse= @merge_request.target_branch
+        %span.badge.badge-inverse= @merge_request.target_branch
         does not exist in
         %span.badge.badge-info= @merge_request.target_project_path
       - else

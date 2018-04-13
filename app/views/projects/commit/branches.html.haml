@@ -6,7 +6,7 @@
 
 - if @branches.any? || @tags.any? || @tags_limit_exceeded
   %span
-    = link_to "…", "#", class: "js-details-expand label label-gray"
+    = link_to "…", "#", class: "js-details-expand label badge-gray"
     %span.js-details-content.d-none
       = commit_branches_links(@project, @branches)
       - if @tags_limit_exceeded
