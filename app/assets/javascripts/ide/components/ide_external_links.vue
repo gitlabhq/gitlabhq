@@ -20,24 +20,15 @@ export default {
 </script>
 
 <template>
-  <nav
-    class="ide-external-links"
+  <a
+    :href="goBackUrl"
+    class="ide-sidebar-link"
+    :aria-label="s__('IDE|Go back')"
     v-once
   >
-    <p>
-      <a
-        :href="goBackUrl"
-        class="ide-sidebar-link"
-      >
-        <icon
-          :size="16"
-          class="append-right-8"
-          name="go-back"
-        />
-        <span class="ide-external-links-text">
-          {{ s__('Go back') }}
-        </span>
-      </a>
-    </p>
-  </nav>
+    <icon
+      :size="16"
+      name="go-back"
+    />
+  </a>
 </template>

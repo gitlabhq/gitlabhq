@@ -420,27 +420,27 @@
 .multi-file-commit-panel {
   display: flex;
   position: relative;
-  flex-direction: column;
   width: 340px;
   padding: 0;
   background-color: $gray-light;
   padding-right: 3px;
 
+  .context-header {
+    width: auto;
+    margin-right: 0;
+  }
+
   .projects-sidebar {
     display: flex;
     flex-direction: column;
     height: 100%;
-
-    .context-header {
-      width: auto;
-      margin-right: 0;
-    }
   }
 
   .multi-file-commit-panel-inner {
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
   }
 
   .multi-file-commit-panel-inner-scroll {
@@ -448,29 +448,8 @@
     flex: 1;
     flex-direction: column;
     overflow: auto;
-  }
-
-  &.is-collapsed {
-    width: 60px;
-
-    .multi-file-commit-list {
-      padding-top: $gl-padding;
-      overflow: hidden;
-    }
-
-    .multi-file-context-bar-icon {
-      align-items: center;
-
-      svg {
-        float: none;
-        margin: 0;
-      }
-    }
-  }
-
-  .branch-container {
-    border-left: 4px solid;
-    margin-bottom: $gl-bar-padding;
+    background-color: #fff;
+    border-left: 1px solid #eaeaea;
   }
 
   .branch-header {
@@ -490,17 +469,6 @@
 
   .branch-header-btns {
     padding: $gl-vert-padding $gl-padding;
-  }
-
-  .left-collapse-btn {
-    display: none;
-    background: $gray-light;
-    text-align: left;
-    border-top: 1px solid $white-dark;
-
-    svg {
-      vertical-align: middle;
-    }
   }
 }
 
@@ -820,12 +788,6 @@
 
 .ide-commit-new-branch {
   margin-left: 25px;
-}
-
-.ide-external-links {
-  p {
-    margin: 0;
-  }
 }
 
 .ide-sidebar-link {

@@ -177,25 +177,6 @@
     }
   }
 
-  // Web IDE
-  .ide-sidebar-link {
-    color: $color-200;
-    background-color: $color-700;
-
-    &:hover,
-    &:focus {
-      background-color: $color-500;
-    }
-
-    &:active {
-      background: $color-800;
-    }
-  }
-
-  .branch-container {
-    border-left-color: $color-700;
-  }
-
   .branch-header-title {
     color: $color-700;
   }
@@ -342,10 +323,6 @@ body {
 
     .sidebar-top-level-items > li.active .badge {
       color: $theme-gray-900;
-    }
-
-    .ide-sidebar-link {
-      color: $white-light;
     }
   }
 }

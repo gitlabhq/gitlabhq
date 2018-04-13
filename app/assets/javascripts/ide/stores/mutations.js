@@ -95,6 +95,11 @@ export default {
       delayViewerUpdated,
     });
   },
+  [types.UPDATE_ACTIVITY_BAR_VIEW](state, currentActivityView) {
+    Object.assign(state, {
+      currentActivityView,
+    });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

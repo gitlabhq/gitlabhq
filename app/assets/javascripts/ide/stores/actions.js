@@ -112,6 +112,10 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
+export const updateActivityBarView = ({ commit }, view) => {
+  commit(types.UPDATE_ACTIVITY_BAR_VIEW, view);
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

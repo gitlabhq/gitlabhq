@@ -1,3 +1,8 @@
+export const ActivityBarViews = {
+  edit: 0,
+  commit: 1,
+};
+
 export default () => ({
   currentProjectId: '',
   currentBranchId: '',
@@ -17,4 +22,5 @@ export default () => ({
   entries: {},
   viewer: 'editor',
   delayViewerUpdated: false,
+  currentActivityView: ActivityBarViews.edit,
 });

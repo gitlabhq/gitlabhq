@@ -100,9 +100,9 @@ export default {
         </div>
       </template>
     </div>
-    <ide-contextbar
+    <!-- <ide-contextbar
       :no-changes-state-svg-path="noChangesStateSvgPath"
       :committed-state-svg-path="committedStateSvgPath"
-    />
+    /> -->
   </div>
 </template>
