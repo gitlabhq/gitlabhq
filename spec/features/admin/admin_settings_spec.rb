@@ -85,6 +85,26 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  scenario 'Modify oauth providers' do
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
+
+    page.within('.as-signin') do
+      uncheck 'Google'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+
+    page.within('.as-signin') do
+      check "Google"
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
+  end
+
   scenario 'Change Help page' do
     page.within('.as-help-page') do
       fill_in 'Help page text', with: 'Example text'
@@ -232,16 +252,6 @@ feature 'Admin updates settings' do
     expect(find_field('Webhook').value).to eq 'http://localhost'
     expect(find_field('Username').value).to eq 'test_user'
     expect(find('#service_push_channel').value).to eq '#test_channel'
-  end
-
-  context 'sign-in restrictions', :js do
-    it 'de-activates oauth sign-in source' do
-      page.within('.as-signin') do
-        find('input#application_setting_enabled_oauth_sign_in_sources_[value=gitlab]').send_keys(:return)
-
-        expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
-      end
-    end
   end
 
   scenario 'Change Keys settings' do
