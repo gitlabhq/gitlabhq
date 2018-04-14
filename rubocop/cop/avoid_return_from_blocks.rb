@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Checks for return inside blocks.
-    # Whitelisted methods are ignored: each, each_filename, times, loop, define_method.
+    # For more information see: https://gitlab.com/gitlab-org/gitlab-ce/issues/42889
     #
     # @example
     #   # bad
@@ -22,40 +22,46 @@ module RuboCop
     #
     class AvoidReturnFromBlocks < RuboCop::Cop::Cop
       MSG = 'Do not return from a block, use next or break instead.'
-      WHITELISTED_METHODS = %i[each each_filename times loop define_method lambda].freeze
+      WHITELISTED_METHODS = %i[each each_filename times loop define_method lambda helpers class_methods describe included namespace validations].freeze
 
       def on_block(node)
         block_body = node.body
 
         return unless block_body
-        return if WHITELISTED_METHODS.include?(node.method_name)
+        return unless top_block?(node)
 
         block_body.each_node(:return) do |return_node|
-          next if container_block_for(return_node) != node
-          next if container_block_whitelisted?(return_node)
-          next if return_inside_method_definition?(return_node)
+          next if contained_blocks(node, return_node).all?(&method(:whitelisted?))
 
           add_offense(return_node)
         end
       end
 
-      private
+      def top_block?(node)
+        current_node = node
+        top_block = nil
 
-      def container_block_for(current_node)
-        current_node = current_node.parent until current_node.type == :block
+        while current_node && current_node.type != :def
+          top_block = current_node if current_node.type == :block
+          current_node = current_node.parent
+        end
 
-        current_node
+        top_block == node
       end
 
-      def container_block_whitelisted?(current_node)
-        WHITELISTED_METHODS.include?(container_block_for(current_node).method_name)
+      def contained_blocks(node, current_node)
+        blocks = []
+
+        until node == current_node
+          blocks << current_node if current_node.type == :block
+          current_node = current_node.parent
+        end
+
+        blocks << node
       end
 
-      def return_inside_method_definition?(current_node)
-        current_node = current_node.parent until %i[def block].include?(current_node.type)
-
-        # if we found :def before :block in the nodes hierarchy
-        current_node.type == :def
+      def whitelisted?(block_node)
+        WHITELISTED_METHODS.include?(block_node.method_name)
       end
     end
   end

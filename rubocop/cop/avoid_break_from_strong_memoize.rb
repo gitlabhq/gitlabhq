@@ -3,6 +3,7 @@
 module RuboCop
   module Cop
     # Checks for break inside strong_memoize blocks.
+    # For more information see: https://gitlab.com/gitlab-org/gitlab-ce/issues/42889
     #
     # @example
     #   # bad
@@ -26,11 +27,10 @@ module RuboCop
         block_body = node.body
 
         return unless block_body
+        return unless node.method_name == :strong_memoize
 
         block_body.each_node(:break) do |break_node|
-          container_block = container_block_for(break_node)
-          next if container_block.method_name != :strong_memoize
-          next if container_block != node
+          next if container_block_for(break_node) != node
 
           add_offense(break_node)
         end
@@ -39,7 +39,7 @@ module RuboCop
       private
 
       def container_block_for(current_node)
-        current_node = current_node.parent until current_node.type == :block
+        current_node = current_node.parent until current_node.type == :block && current_node.method_name == :strong_memoize
 
         current_node
       end

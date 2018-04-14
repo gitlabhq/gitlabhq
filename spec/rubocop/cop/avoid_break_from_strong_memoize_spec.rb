@@ -26,6 +26,19 @@ describe RuboCop::Cop::AvoidBreakFromStrongMemoize do
     expect(offense.message).to eq('Do not use break inside strong_memoize, use next instead.')
   end
 
+  it 'flags violation for break inside strong_memoize nested blocks' do
+    source = <<~RUBY
+      strong_memoize do
+        items.each do |item|
+          break item
+        end
+      end
+    RUBY
+
+    inspect_source(source)
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it "doesn't flag violation for next inside strong_memoize" do
     source = <<~RUBY
       strong_memoize(:result) do
