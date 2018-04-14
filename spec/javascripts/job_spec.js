@@ -2,7 +2,6 @@ import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 import '~/lib/utils/datetime_utility';
 import Job from '~/job';
 import '~/breakpoints';
@@ -22,7 +21,7 @@ describe('Job', () => {
   beforeEach(() => {
     loadFixtures('builds/build-with-artifacts.html.raw');
 
-    spyOn(urlUtils, 'visitUrl');
+    spyOnDependency(Job, 'visitUrl');
 
     response = {};
 
