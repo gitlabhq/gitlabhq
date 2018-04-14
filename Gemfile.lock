@@ -1103,7 +1103,10 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-gollum-lib (~> 4.2)
   gitlab-gollum-rugged_adapter (~> 0.4.4)
+<<<<<<< HEAD
   gitlab-license (~> 1.0)
+=======
+>>>>>>> upstream/master
   gitlab-markup (~> 1.6.2)
   gitlab-styles (~> 2.3)
   gitlab_omniauth-ldap (~> 2.0.4)
