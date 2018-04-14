@@ -463,7 +463,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         it 'returns false when there are no branches' do
           # Sanity check
-          expect(repository.has_local_branches?).to eq(true)
+          expect(repository.uncached_has_local_branches?).to eq(true)
 
           FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
           heads_dir = File.join(repository.path, 'refs/heads')
@@ -471,6 +471,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
           FileUtils.mkdir_p(heads_dir)
 
           expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+
+      context 'memoizes the value' do
+        it 'returns true' do
+          expect(repository).to receive(:uncached_has_local_branches?).once.and_call_original
+
+          2.times do
+            expect(repository.has_local_branches?).to eq(true)
+          end
         end
       end
     end

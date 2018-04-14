@@ -9,6 +9,7 @@ module Gitlab
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
       include Gitlab::EncodingHelper
+      include Gitlab::Utils::StrongMemoize
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -232,6 +233,12 @@ module Gitlab
       end
 
       def has_local_branches?
+        strong_memoize(:has_local_branches) do
+          uncached_has_local_branches?
+        end
+      end
+
+      def uncached_has_local_branches?
         gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.has_local_branches?
