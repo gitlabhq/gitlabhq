@@ -242,16 +242,6 @@ module Gitlab
         end
       end
 
-      def uncached_has_local_branches?
-        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.has_local_branches?
-          else
-            has_local_branches_rugged?
-          end
-        end
-      end
-
       # Git repository can contains some hidden refs like:
       #   /refs/notes/*
       #   /refs/git-as-svn/*
@@ -1569,6 +1559,16 @@ module Gitlab
       end
 
       private
+
+      def uncached_has_local_branches?
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.has_local_branches?
+          else
+            has_local_branches_rugged?
+          end
+        end
+      end
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
         if shell
