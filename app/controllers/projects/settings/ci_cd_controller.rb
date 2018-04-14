@@ -15,7 +15,7 @@ module Projects
 
             run_autodevops_pipeline(service)
 
-            if @project.auto_devops_conflicts_ci_config_path?
+            if @project.auto_devops_conflicts_with_ci_config?
               flash[:warning] = _("The project must remove the custom CI config file to use the Auto DevOps pipeline configuration.")
             end
 

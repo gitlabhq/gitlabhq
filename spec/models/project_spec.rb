@@ -3586,10 +3586,10 @@ describe Project do
     end
   end
 
-  describe '#auto_devops_conflicts_ci_config_path?' do
+  describe 'auto_devops_conflicts_with_ci_config?' do
     let(:project) { create(:project) }
 
-    subject { project.auto_devops_conflicts_ci_config_path? }
+    subject { project.auto_devops_conflicts_with_ci_config? }
 
     before do
       project.create_auto_devops!(enabled: nil)
