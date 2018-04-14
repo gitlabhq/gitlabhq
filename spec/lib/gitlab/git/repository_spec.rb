@@ -463,13 +463,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         it 'returns false when there are no branches' do
           # Sanity check
-          expect(repository.uncached_has_local_branches?).to eq(true)
+          expect(repository.has_local_branches?).to eq(true)
 
           FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
           heads_dir = File.join(repository.path, 'refs/heads')
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
+          repository.expire_has_local_branches_cache
           expect(repository.has_local_branches?).to eq(false)
         end
       end

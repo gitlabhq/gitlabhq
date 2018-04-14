@@ -232,6 +232,10 @@ module Gitlab
         end
       end
 
+      def expire_has_local_branches_cache
+        clear_memoization(:has_local_branches)
+      end
+
       def has_local_branches?
         strong_memoize(:has_local_branches) do
           uncached_has_local_branches?
