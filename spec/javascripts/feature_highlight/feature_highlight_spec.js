@@ -29,7 +29,6 @@ describe('feature highlight', () => {
       mock = new MockAdapter(axios);
       mock.onGet('/test').reply(200);
       spyOn(window, 'addEventListener');
-      spyOn(window, 'removeEventListener');
       featureHighlight.setupFeatureHighlightPopover('test', 0);
     });
 
@@ -64,12 +63,7 @@ describe('feature highlight', () => {
 
     it('setup show.bs.popover', () => {
       $(selector).trigger('show.bs.popover');
-      expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function));
-    });
-
-    it('setup hide.bs.popover', () => {
-      $(selector).trigger('hide.bs.popover');
-      expect(window.removeEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function));
+      expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function), { once: true });
     });
 
     it('removes disabled attribute', () => {
