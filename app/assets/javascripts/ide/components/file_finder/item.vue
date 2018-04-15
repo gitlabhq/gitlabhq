@@ -29,28 +29,25 @@ export default {
       required: true,
     },
   },
+  computed: {
+    pathWithEllipsis() {
+      return this.file.path.length < MAX_PATH_LENGTH || !addEllipsis
+        ? this.file.path
+        : `...${this.file.path.substr(this.file.path.length - MAX_PATH_LENGTH)}`;
+    },
+    nameSearchTextOccurences() {
+      return fuzzaldrinPlus.match(this.file.name, this.searchText);
+    },
+    pathSearchTextOccurences() {
+      return fuzzaldrinPlus.match(this.pathWithEllipsis, this.searchText);
+    },
+  },
   methods: {
     clickRow() {
       this.$emit('click', this.file);
     },
     mouseOverRow() {
       this.$emit('mouseover', this.index);
-    },
-    highlightText(text, addEllipsis) {
-      const escapedText = escape(text);
-      const maxText =
-        escapedText.length < MAX_PATH_LENGTH || !addEllipsis
-          ? escapedText
-          : `...${escapedText.substr(escapedText.length - MAX_PATH_LENGTH)}`;
-      const occurrences = fuzzaldrinPlus.match(maxText, this.searchText);
-
-      return maxText
-        .split('')
-        .map(
-          (char, i) =>
-            `<span class="${occurrences.indexOf(i) >= 0 ? 'highlighted' : ''}">${char}</span>`,
-        )
-        .join('');
     },
   },
 };
@@ -74,13 +71,29 @@ export default {
     <span class="diff-changed-file-content append-right-8">
       <strong
         class="diff-changed-file-name"
-        v-html="highlightText(file.name, false)"
       >
+        <span
+          v-for="(char, index) in file.name.split('')"
+          :key="index + char"
+          :class="{
+            highlighted: nameSearchTextOccurences.indexOf(index) >= 0,
+          }"
+          v-text="char"
+        >
+        </span>
       </strong>
       <span
         class="diff-changed-file-path prepend-top-5"
-        v-html="highlightText(file.path, true)"
       >
+        <span
+          v-for="(char, index) in pathWithEllipsis.split('')"
+          :key="index + char"
+          :class="{
+            highlighted: pathSearchTextOccurences.indexOf(index) >= 0,
+          }"
+          v-text="char"
+        >
+        </span>
       </span>
     </span>
     <span
