@@ -2,13 +2,12 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 export function togglePopover(show) {
-  const $popover = $(this);
-  const isAlreadyShown = $popover.hasClass('js-popover-show');
+  const isAlreadyShown = this.hasClass('js-popover-show');
   if ((show && isAlreadyShown) || (!show && !isAlreadyShown)) {
     return false;
   }
-  $popover.popover(show ? 'show' : 'hide');
-  $popover.toggleClass('disable-animation js-popover-show', show);
+  this.popover(show ? 'show' : 'hide');
+  this.toggleClass('disable-animation js-popover-show', show);
 
   return true;
 }
