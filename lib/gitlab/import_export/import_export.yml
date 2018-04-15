@@ -61,6 +61,7 @@ project_tree:
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
+    - :unprotect_access_levels
   - protected_tags:
     - :create_access_levels
   - :project_feature

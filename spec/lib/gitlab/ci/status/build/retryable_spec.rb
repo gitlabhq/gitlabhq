@@ -90,6 +90,10 @@ describe Gitlab::Ci::Status::Build::Retryable do
     describe '#action_title' do
       it { expect(subject.action_title).to eq 'Retry' }
     end
+
+    describe '#action_button_title' do
+      it { expect(subject.action_button_title).to eq 'Retry this job' }
+    end
   end
 
   describe '.matches?' do

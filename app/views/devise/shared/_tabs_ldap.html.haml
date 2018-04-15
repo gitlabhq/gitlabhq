@@ -1,4 +1,4 @@
-%ul.new-session-tabs.nav-links.nav-tabs{ class: ('custom-provider-tabs' if form_based_providers.any?) }
+%ul.nav-links.new-session-tabs{ class: ('custom-provider-tabs' if form_based_providers.any?) }
   - if crowd_enabled?
     %li.active
       = link_to "Crowd", "#crowd", 'data-toggle' => 'tab'

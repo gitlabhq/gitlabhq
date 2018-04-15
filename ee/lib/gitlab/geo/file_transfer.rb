@@ -1,5 +1,9 @@
 module Gitlab
   module Geo
+    # This class is responsible for:
+    #   * Requesting an Upload file from the primary
+    #   * Saving it in the right place on successful download
+    #   * Returning a detailed Result object
     class FileTransfer < Transfer
       def initialize(file_type, upload)
         @file_type = file_type

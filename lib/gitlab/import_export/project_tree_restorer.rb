@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def override_params
-        return {} unless params = @project.import_data&.data&.fetch('override_params')
+        return {} unless params = @project.import_data&.data&.fetch('override_params', nil)
 
         @override_params ||= params.select do |key, _value|
           Project.column_names.include?(key.to_s) &&

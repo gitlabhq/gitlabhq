@@ -53,6 +53,7 @@ class License < ActiveRecord::Base
     object_storage
     group_saml
     service_desk
+    unprotection_restrictions
     variable_environment_scope
     reject_unsigned_commits
     commit_committer_check

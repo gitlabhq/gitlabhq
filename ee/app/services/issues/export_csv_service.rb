@@ -38,11 +38,13 @@ module Issues
        'Assignee' => -> (issue) { issue.assignees.map(&:name).join(', ') },
        'Assignee Username' => -> (issue) { issue.assignees.map(&:username).join(', ') },
        'Confidential' => -> (issue) { issue.confidential? ? 'Yes' : 'No' },
+       'Locked' => -> (issue) { issue.discussion_locked? ? 'Yes' : 'No' },
        'Due Date' => -> (issue) { issue.due_date&.to_s(:csv) },
        'Created At (UTC)' => -> (issue) { issue.created_at&.to_s(:csv) },
        'Updated At (UTC)' => -> (issue) { issue.updated_at&.to_s(:csv) },
        'Closed At (UTC)' => -> (issue) { issue.closed_at&.to_s(:csv) },
        'Milestone' => -> (issue) { issue.milestone&.title },
+       'Weight' => -> (issue) { issue.weight },
        'Labels' => -> (issue) { @labels[issue.id].sort.join(',').presence },
        'Time Estimate' => ->(issue) { issue.time_estimate.to_s(:csv) },
        'Time Spent' => -> (issue) { issue.timelogs.map(&:time_spent).inject(0, :+)}

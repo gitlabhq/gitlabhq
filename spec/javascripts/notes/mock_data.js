@@ -9,6 +9,7 @@ export const notesDataMock = {
   totalNotes: 1,
   closePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=close',
   reopenPath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=reopen',
+  canAwardEmoji: true,
 };
 
 export const userDataMock = {
@@ -30,6 +31,7 @@ export const noteableDataMock = {
   current_user: {
     can_create_note: true,
     can_update: true,
+    can_award_emoji: true,
   },
   description: '',
   due_date: null,
@@ -86,7 +88,10 @@ export const individualNote = {
       human_access: 'Owner',
       note: 'sdfdsaf',
       note_html: "<p dir='auto'>sdfdsaf</p>",
-      current_user: { can_edit: true },
+      current_user: {
+        can_edit: true,
+        can_award_emoji: true,
+      },
       discussion_id: '0fb4e0e3f9276e55ff32eb4195add694aece4edd',
       emoji_awardable: true,
       award_emoji: [
@@ -129,6 +134,7 @@ export const note = {
   note_html: '<p dir="auto">Vel id placeat reprehenderit sit numquam.</p>',
   current_user: {
     can_edit: true,
+    can_award_emoji: true,
   },
   discussion_id: 'd3842a451b7f3d9a5dfce329515127b2d29a4cd0',
   emoji_awardable: true,
@@ -187,6 +193,7 @@ export const discussionMock = {
       note_html: "<p dir='auto'>THIS IS A DICUSSSION!</p>",
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
@@ -231,6 +238,7 @@ export const discussionMock = {
       },
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
@@ -275,6 +283,7 @@ export const discussionMock = {
       },
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
@@ -365,6 +374,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
             note_html: '\u003cp dir="auto"\u003esdfdsaf\u003c/p\u003e',
             current_user: {
               can_edit: true,
+              can_award_emoji: true,
             },
             discussion_id: '0fb4e0e3f9276e55ff32eb4195add694aece4edd',
             emoji_awardable: true,
@@ -425,6 +435,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
             note_html: '\u003cp dir="auto"\u003eNew note!\u003c/p\u003e',
             current_user: {
               can_edit: true,
+              can_award_emoji: true,
             },
             discussion_id: '70d5c92a4039a36c70100c6691c18c27e4b0a790',
             emoji_awardable: true,
@@ -478,6 +489,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
       },
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       discussion_id: 'a3ed36e29b1957efb3b68c53e2d7a2b24b1df052',
       emoji_awardable: true,
@@ -527,6 +539,7 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
             note_html: '\u003cp dir="auto"\u003eAdding a comment\u003c/p\u003e',
             current_user: {
               can_edit: true,
+              can_award_emoji: true,
             },
             discussion_id: 'a3ed36e29b1957efb3b68c53e2d7a2b24b1df052',
             emoji_awardable: true,

@@ -8,12 +8,15 @@ FactoryBot.define do
       attachments_count 329
       attachments_failed_count 13
       attachments_synced_count 141
+      attachments_synced_missing_on_primary_count 89
       lfs_objects_count 256
       lfs_objects_failed_count 12
       lfs_objects_synced_count 123
+      lfs_objects_synced_missing_on_primary_count 90
       job_artifacts_count 580
       job_artifacts_failed_count 3
       job_artifacts_synced_count 577
+      job_artifacts_synced_missing_on_primary_count 91
       repositories_count 10
       repositories_synced_count 5
       repositories_failed_count 0

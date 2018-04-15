@@ -7,10 +7,10 @@ for Vulnerability Static Analysis for containers.
 
 All you need is a GitLab Runner with the Docker executor (the shared Runners on
 GitLab.com will work fine). You can then add a new job to `.gitlab-ci.yml`,
-called `sast:container`:
+called `container_scanning`:
 
 ```yaml
-sast:container:
+container_scanning:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -35,7 +35,7 @@ sast:container:
     paths: [gl-sast-container-report.json]
 ```
 
-The above example will create a `sast:container` job in your CI/CD pipeline, pull
+The above example will create a `container_scanning` job in your CI/CD pipeline, pull
 the image from the [Container Registry](../../user/project/container_registry.md)
 (whose name is defined from the two `CI_APPLICATION_` variables) and scan it
 for possible vulnerabilities. The report will be saved as an artifact that you
@@ -48,7 +48,7 @@ in our case its named `clair-whitelist.yml`.
 TIP: **Tip:**
 Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
-so, the CI/CD job must be named `sast:container` and the artifact path must be
+so, the CI/CD job must be named `container_scanning` and the artifact path must be
 `gl-sast-container-report.json`.
 [Learn more on container scanning results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
 

@@ -47,6 +47,20 @@ module Projects
       raise
     end
 
+    def attempt_repositories_rollback
+      return unless @project
+
+      flush_caches(@project)
+
+      unless rollback_repository(removal_path(repo_path), repo_path)
+        raise_error('Failed to restore project repository. Please contact the administrator.')
+      end
+
+      unless rollback_repository(removal_path(wiki_path), wiki_path)
+        raise_error('Failed to restore wiki repository. Please contact the administrator.')
+      end
+    end
+
     private
 
     def repo_path
@@ -72,11 +86,11 @@ module Projects
       return true if params[:skip_repo] == true
 
       # There is a possibility project does not have repository or wiki
-      return true unless gitlab_shell.exists?(project.repository_storage_path, path + '.git')
+      return true unless repo_exists?(path)
 
       new_path = removal_path(path)
 
-      if gitlab_shell.mv_repository(project.repository_storage_path, path, new_path)
+      if mv_repository(path, new_path)
         log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
 
         project.run_after_commit do
@@ -86,6 +100,21 @@ module Projects
       else
         false
       end
+    end
+
+    def rollback_repository(old_path, new_path)
+      # There is a possibility project does not have repository or wiki
+      return true unless repo_exists?(old_path)
+
+      mv_repository(old_path, new_path)
+    end
+
+    def repo_exists?(path)
+      gitlab_shell.exists?(project.repository_storage_path, path + '.git')
+    end
+
+    def mv_repository(from_path, to_path)
+      gitlab_shell.mv_repository(project.repository_storage_path, from_path, to_path)
     end
 
     def attempt_rollback(project, message)

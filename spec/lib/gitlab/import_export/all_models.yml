@@ -157,6 +157,9 @@ pipeline_schedule:
 - pipelines
 pipeline_schedule_variables:
 - pipeline_schedule
+deploy_tokens:
+- project_deploy_tokens
+- projects
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -171,6 +174,7 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+- unprotect_access_levels
 protected_tags:
 - project
 - create_access_levels
@@ -179,6 +183,10 @@ merge_access_levels:
 - protected_branch
 - group
 push_access_levels:
+- user
+- protected_branch
+- group
+unprotect_access_levels:
 - user
 - protected_branch
 - group
@@ -315,6 +323,8 @@ project:
 - project_badges
 - source_of_merge_requests
 - internal_ids
+- project_deploy_tokens
+- deploy_tokens
 award_emoji:
 - awardable
 - user

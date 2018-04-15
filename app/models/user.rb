@@ -98,23 +98,23 @@ class User < ActiveRecord::Base
   # Groups
   has_many :members
   has_many :group_members, -> { where(requested_at: nil) }, source: 'GroupMember'
-  has_many :groups, through: :group_members
-  has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
-  has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
+  has_many :groups, -> { auto_include(false) }, through: :group_members
+  has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }).auto_include(false) }, through: :group_members, source: :group
+  has_many :masters_groups, -> { where(members: { access_level: Gitlab::Access::MASTER }).auto_include(false) }, through: :group_members, source: :group
 
   # Projects
-  has_many :groups_projects,          through: :groups, source: :projects
-  has_many :personal_projects,        through: :namespace, source: :projects
+  has_many :groups_projects, -> { auto_include(false) }, through: :groups, source: :projects
+  has_many :personal_projects, -> { auto_include(false) }, through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
-  has_many :projects,                 through: :project_members
-  has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :projects, -> { auto_include(false) }, through: :project_members
+  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :starred_projects, through: :users_star_projects, source: :project
+  has_many :starred_projects, -> { auto_include(false) }, through: :users_star_projects, source: :project
   has_many :project_authorizations
-  has_many :authorized_projects, through: :project_authorizations, source: :project
+  has_many :authorized_projects, -> { auto_include(false) }, through: :project_authorizations, source: :project
 
   has_many :user_interacted_projects
-  has_many :project_interactions, through: :user_interacted_projects, source: :project, class_name: 'Project'
+  has_many :project_interactions, -> { auto_include(false) }, through: :user_interacted_projects, source: :project, class_name: 'Project'
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
@@ -134,7 +134,7 @@ class User < ActiveRecord::Base
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
-  has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
+  has_many :assigned_issues, -> { auto_include(false) }, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
@@ -1015,7 +1015,7 @@ class User < ActiveRecord::Base
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject
-        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+        .where(project: authorized_projects(Gitlab::Access::MASTER))
         .select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
@@ -1224,15 +1224,6 @@ class User < ActiveRecord::Base
         .where("projects.namespace_id <> ?", namespace.id)
         .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
     ], remove_duplicates: false)
-  end
-
-  def ci_projects_union
-    scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
-    groups = groups_projects.where(members: scope)
-    other  = projects.where(members: scope)
-
-    Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
-                            other.select(:id)])
   end
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration

@@ -62,7 +62,7 @@ module Geo
     end
 
     def repository_never_verified
-      repository_state_table[:id].eq(nil)
+      repository_state_table[:project_id].eq(nil)
     end
 
     def last_repository_updated_at_asc

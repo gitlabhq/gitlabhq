@@ -27,6 +27,7 @@ integrated platform
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
+  - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - **(Ultimate)** [Web IDE](web_ide/index.md)
 
 **Issues and merge requests:**
@@ -80,6 +81,7 @@ website with GitLab Pages
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
+- [Badges](badges.md): Badges for the project overview
 
 ### Project's integrations
 

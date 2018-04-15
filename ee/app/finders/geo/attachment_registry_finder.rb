@@ -32,6 +32,14 @@ module Geo
       end
     end
 
+    def count_synced_missing_on_primary_attachments
+      if aggregate_pushdown_supported? && !use_legacy_queries?
+        fdw_find_synced_missing_on_primary_attachments.count
+      else
+        legacy_find_synced_missing_on_primary_attachments.count
+      end
+    end
+
     def count_registry_attachments
       Geo::FileRegistry.attachments.count
     end
@@ -82,6 +90,28 @@ module Geo
         end
 
       relation.limit(batch_size)
+    end
+
+    def find_retryable_failed_attachments_registries(batch_size:, except_file_ids: [])
+      find_failed_attachments_registries
+        .retry_due
+        .where.not(file_id: except_file_ids)
+        .limit(batch_size)
+    end
+
+    def find_retryable_synced_missing_on_primary_attachments_registries(batch_size:, except_file_ids: [])
+      find_synced_missing_on_primary_attachments_registries
+        .retry_due
+        .where.not(file_id: except_file_ids)
+        .limit(batch_size)
+    end
+
+    def find_failed_attachments_registries
+      Geo::FileRegistry.attachments.failed
+    end
+
+    def find_synced_missing_on_primary_attachments_registries
+      Geo::FileRegistry.attachments.synced.missing_on_primary
     end
 
     private
@@ -146,6 +176,10 @@ module Geo
         .where.not(id: except_file_ids)
     end
 
+    def fdw_find_synced_missing_on_primary_attachments
+      fdw_find_synced_attachments.merge(Geo::FileRegistry.missing_on_primary)
+    end
+
     def fdw_attachments
       if selective_sync?
         Geo::Fdw::Upload.where(group_uploads.or(project_uploads).or(other_uploads))
@@ -180,7 +214,7 @@ module Geo
     def legacy_find_failed_attachments
       legacy_inner_join_registry_ids(
         local_attachments,
-        Geo::FileRegistry.attachments.failed.pluck(:file_id),
+        find_failed_attachments_registries.pluck(:file_id),
         Upload
       )
     end
@@ -201,6 +235,14 @@ module Geo
       legacy_inner_join_registry_ids(
         attachments.with_files_stored_remotely,
         registry_file_ids,
+        Upload
+      )
+    end
+
+    def legacy_find_synced_missing_on_primary_attachments
+      legacy_inner_join_registry_ids(
+        local_attachments,
+        Geo::FileRegistry.attachments.synced.missing_on_primary.pluck(:file_id),
         Upload
       )
     end

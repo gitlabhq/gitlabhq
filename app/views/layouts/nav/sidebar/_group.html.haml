@@ -120,7 +120,7 @@
             %span.nav-item-name
               Settings
           %ul.sidebar-sub-level-items
-            = nav_link(path: %w[groups#projects groups#edit ci_cd#show], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(path: %w[groups#projects groups#edit badges#index ci_cd#show], html_options: { class: "fly-out-top-item" } ) do
               = link_to edit_group_path(@group) do
                 %strong.fly-out-top-item-name
                   #{ _('Settings') }
@@ -129,6 +129,12 @@
               = link_to edit_group_path(@group), title: 'General' do
                 %span
                   General
+
+            = nav_link(controller: :badges) do
+              = link_to group_settings_badges_path(@group), title: _('Project Badges') do
+                %span
+                  = _('Project Badges')
+
 
             = nav_link(path: 'groups#projects') do
               = link_to projects_group_path(@group), title: 'Projects' do

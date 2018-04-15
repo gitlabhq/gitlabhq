@@ -76,7 +76,7 @@ module Geo
     end
 
     def upload?
-      Geo::FileService::DEFAULT_OBJECT_TYPES.include?(object_type)
+      Geo::FileService::DEFAULT_OBJECT_TYPES.include?(object_type.to_s)
     end
 
     def lease_key

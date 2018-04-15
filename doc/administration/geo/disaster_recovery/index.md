@@ -79,6 +79,10 @@ must disable the primary.
       - Revoke object storage permissions from the primary
       - Physically disconnect a machine
 
+1. If you plan to
+   [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
+   you may wish to lower the TTL now to speed up propagation.
+
 ### Step 3. Promoting a secondary Geo replica
 
 1. SSH in to your **secondary** and login as root:
@@ -145,6 +149,10 @@ secondary domain, like changing Git remotes and API URLs.
     # Change the existing external_url configuration
     external_url 'https://gitlab.example.com'
     ```
+
+    NOTE: **Note**
+    Changing `external_url` won't prevent access via the old secondary URL, as
+    long as the secondary DNS records are still intact.
 
 1. Reconfigure the secondary node for the change to take effect:
 

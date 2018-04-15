@@ -23,7 +23,7 @@ class Spinach::Features::AdminLicense < Spinach::FeatureSteps
   end
 
   step 'I should see a warning telling me the license has expired' do
-    expect(page).to have_content "Your Enterprise Edition license expired"
+    expect(page).to have_content "Your license expired"
   end
 
   step 'the current license blocks changes' do

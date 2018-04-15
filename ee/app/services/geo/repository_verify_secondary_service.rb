@@ -2,8 +2,6 @@ module Geo
   class RepositoryVerifySecondaryService
     include Gitlab::Geo::ProjectLogHelpers
 
-    delegate :project, to: :registry
-
     def initialize(registry, type)
       @registry = registry
       @type     = type.to_sym
@@ -20,6 +18,8 @@ module Geo
     private
 
     attr_reader :registry, :type
+
+    delegate :project, to: :registry
 
     def should_verify_checksum?
       return false if resync?
@@ -40,23 +40,25 @@ module Geo
     end
 
     def verify_checksum
-      checksum = calculate_checksum(project.repository_storage, repository_path)
+      checksum = calculate_checksum
 
       if mismatch?(checksum)
-        update_registry!(failure: "#{type.to_s.capitalize} checksum mismatch: #{repository_path}")
+        update_registry!(failure: "#{type.to_s.capitalize} checksum mismatch: #{repository.disk_path}")
       else
         update_registry!(checksum: checksum)
       end
-    rescue ::Gitlab::Git::Repository::NoRepository, ::Gitlab::Git::Checksum::Failure, Timeout::Error => e
-      update_registry!(failure: "Error verifying #{type.to_s.capitalize} checksum: #{repository_path}", exception: e)
+    rescue ::Gitlab::Git::Repository::ChecksumError, Timeout::Error => e
+      update_registry!(failure: "Error verifying #{type.to_s.capitalize} checksum: #{repository.disk_path}", exception: e)
+    end
+
+    def calculate_checksum
+      repository.checksum
+    rescue Gitlab::Git::Repository::NoRepository
+      Gitlab::Git::Repository::EMPTY_REPOSITORY_CHECKSUM
     end
 
     def mismatch?(checksum)
       primary_checksum != checksum
-    end
-
-    def calculate_checksum(storage, relative_path)
-      Gitlab::Git::Checksum.new(storage, relative_path).calculate
     end
 
     def update_registry!(checksum: nil, failure: nil, exception: nil, details: {})
@@ -66,28 +68,18 @@ module Geo
       }
 
       if failure
-        log_error(failure, exception, type: type, repository_full_path: path_to_repo)
+        log_error(failure, exception, type: type, repository_full_path: repository.path_to_repo)
       end
 
       registry.update!(attrs)
     end
 
-    def repository_path
-      case type
-      when :repository
-        registry.project.disk_path
-      when :wiki
-        registry.project.wiki.disk_path
-      end
-    end
-
-    def path_to_repo
-      case type
-      when :repository
-        project.repository.path_to_repo
-      when :wiki
-        project.wiki.repository.path_to_repo
-      end
+    def repository
+      @repository ||=
+        case type
+        when :repository then project.repository
+        when :wiki then project.wiki.repository
+        end
     end
   end
 end

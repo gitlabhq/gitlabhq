@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User manages group links' do
+describe 'Projects > Settings > User manages group links' do
   include Select2Helper
 
   let(:user) { create(:user) }

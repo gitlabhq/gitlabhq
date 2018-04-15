@@ -3,9 +3,10 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
-import Flash from '~/flash';
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
+import AccessDropdown from 'ee/projects/settings/access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
-import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagEdit {
   constructor(options) {
@@ -13,14 +14,16 @@ export default class ProtectedTagEdit {
     this.$wrap = options.$wrap;
     this.$allowedToCreateDropdownButton = this.$wrap.find('.js-allowed-to-create');
 
-    this.$allowedToCreateDropdownContainer = this.$allowedToCreateDropdownButton.closest('.create_access_levels-container');
+    this.$allowedToCreateDropdownContainer = this.$allowedToCreateDropdownButton.closest(
+      '.create_access_levels-container',
+    );
 
     this.buildDropdowns();
   }
 
   buildDropdowns() {
     // Allowed to create dropdown
-    this[`${ACCESS_LEVELS.CREATE}_dropdown`] = new ProtectedTagAccessDropdown({
+    this[`${ACCESS_LEVELS.CREATE}_dropdown`] = new AccessDropdown({
       accessLevel: ACCESS_LEVELS.CREATE,
       accessLevelsData: gon.create_access_levels,
       $dropdown: this.$allowedToCreateDropdownButton,
@@ -52,30 +55,35 @@ export default class ProtectedTagEdit {
       return acc;
     }, {});
 
-    axios.patch(this.$wrap.data('url'), {
-      protected_tag: formData,
-    }).then(({ data }) => {
-      this.hasChanges = false;
+    axios
+      .patch(this.$wrap.data('url'), {
+        protected_tag: formData,
+      })
+      .then(({ data }) => {
+        this.hasChanges = false;
 
-      Object.keys(ACCESS_LEVELS).forEach((level) => {
-        const accessLevelName = ACCESS_LEVELS[level];
+        Object.keys(ACCESS_LEVELS).forEach(level => {
+          const accessLevelName = ACCESS_LEVELS[level];
 
-        // The data coming from server will be the new persisted *state* for each dropdown
-        this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
+          // The data coming from server will be the new persisted *state* for each dropdown
+          this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
+        });
+      })
+      .catch(() => {
+        $.scrollTo(0);
+        createFlash(s__('ProjectSettings|Failed to update tag!'));
       });
-    }).catch(() => {
-      $.scrollTo(0);
-      Flash('Failed to update tag!');
-    });
   }
 
   setSelectedItemsToDropdown(items = [], dropdownName) {
-    const itemsToAdd = items.map((currentItem) => {
+    const itemsToAdd = items.map(currentItem => {
       if (currentItem.user_id) {
         // Do this only for users for now
         // get the current data for selected items
         const selectedItems = this[dropdownName].getSelectedItems();
-        const currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
+        const currentSelectedItem = _.findWhere(selectedItems, {
+          user_id: currentItem.user_id,
+        });
 
         return {
           id: currentItem.id,

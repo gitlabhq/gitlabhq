@@ -26,14 +26,14 @@ module EE
       end
 
       def groups_accessible?
-        group_ids = @merge_params.group_ids + @push_params.group_ids # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        group_ids = @merge_params.group_ids + @push_params.group_ids + @unprotect_params.group_ids # rubocop:disable Gitlab/ModuleWithInstanceVariables
         allowed_groups = @project.invited_groups.where(id: group_ids) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         group_ids.count == allowed_groups.count
       end
 
       def users_accessible?
-        user_ids = @merge_params.user_ids + @push_params.user_ids # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        user_ids = @merge_params.user_ids + @push_params.user_ids + @unprotect_params.user_ids # rubocop:disable Gitlab/ModuleWithInstanceVariables
         allowed_users = @project.team.users.where(id: user_ids) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         user_ids.count == allowed_users.count

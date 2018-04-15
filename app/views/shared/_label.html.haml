@@ -52,20 +52,20 @@
               class: 'text-danger'
 
   .pull-right.hidden-xs.hidden-sm
-    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
-      %button.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
-        disabled: true,
-        type: 'button',
-        data: { url: promote_project_label_path(label.project, label),
-                label_title: label.title,
-                label_color: label.color,
-                label_text_color: label.text_color,
-                group_name: label.project.group.name,
-                target: '#promote-label-modal',
-                container: 'body',
-                toggle: 'modal' } }
-        = sprite_icon('level-up')
     - if can?(current_user, :admin_label, label)
+      - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
+        %button.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
+          disabled: true,
+          type: 'button',
+          data: { url: promote_project_label_path(label.project, label),
+                  label_title: label.title,
+                  label_color: label.color,
+                  label_text_color: label.text_color,
+                  group_name: label.project.group.name,
+                  target: '#promote-label-modal',
+                  container: 'body',
+                  toggle: 'modal' } }
+          = sprite_icon('level-up')
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = sprite_icon('pencil')

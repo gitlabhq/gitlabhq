@@ -109,10 +109,51 @@ describe Upload do
       expect(upload).to exist
     end
 
-    it 'returns false when the file does not exist' do
-      upload = described_class.new(path: "#{__FILE__}-nope")
+    context 'when the file does not exist' do
+      it 'returns false' do
+        upload = described_class.new(path: "#{__FILE__}-nope")
 
-      expect(upload).not_to exist
+        expect(upload).not_to exist
+      end
+
+      context 'when the record is persisted' do
+        it 'sends a message to Sentry' do
+          upload = create(:upload, :issuable_upload)
+
+          expect(Gitlab::Sentry).to receive(:enabled?).and_return(true)
+          expect(Raven).to receive(:capture_message).with("Upload file does not exist", extra: upload.attributes)
+
+          upload.exist?
+        end
+
+        it 'increments a metric counter to signal a problem' do
+          upload = create(:upload, :issuable_upload)
+
+          counter = double(:counter)
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter).with(:upload_file_does_not_exist_total, 'The number of times an upload record could not find its file').and_return(counter)
+
+          upload.exist?
+        end
+      end
+
+      context 'when the record is not persisted' do
+        it 'does not send a message to Sentry' do
+          upload = described_class.new(path: "#{__FILE__}-nope")
+
+          expect(Raven).not_to receive(:capture_message)
+
+          upload.exist?
+        end
+
+        it 'does not increment a metric counter' do
+          upload = described_class.new(path: "#{__FILE__}-nope")
+
+          expect(Gitlab::Metrics).not_to receive(:counter)
+
+          upload.exist?
+        end
+      end
     end
   end
 

@@ -5,7 +5,9 @@ module EE
         find(".js-allowed-to-#{operation}").click
         wait_for_requests
 
-        Array(option).each { |opt| click_on(opt) }
+        within('.dropdown-content') do
+          Array(option).each { |opt| click_on(opt) }
+        end
 
         find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
       end

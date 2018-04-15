@@ -19,6 +19,11 @@ module Gitlab
         response.exists
       end
 
+      def cleanup
+        request = Gitaly::CleanupRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :cleanup, request)
+      end
+
       def garbage_collect(create_bitmap)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
         GitalyClient.call(@storage, :repository_service, :garbage_collect, request)
@@ -43,6 +48,15 @@ module Gitlab
       def apply_gitattributes(revision)
         request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
+      end
+
+      def info_attributes
+        request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request)
+        response.each_with_object("") do |message, attributes|
+          attributes << message.attributes
+        end
       end
 
       def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
@@ -256,6 +270,12 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
 
         response.license_short_name.presence
+      end
+
+      def calculate_checksum
+        request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
+        response.checksum.presence
       end
     end
   end

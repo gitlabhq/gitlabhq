@@ -145,6 +145,33 @@ describe Gitlab::GitAccess do
             expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
+
+        context 'when actor is DeployToken' do
+          let(:actor) { create(:deploy_token, projects: [project]) }
+
+          context 'when DeployToken is active and belongs to project' do
+            it 'allows pull access' do
+              expect { pull_access_check }.not_to raise_error
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            end
+          end
+
+          context 'when DeployToken does not belong to project' do
+            let(:another_project) { create(:project) }
+            let(:actor) { create(:deploy_token, projects: [another_project]) }
+
+            it 'blocks pull access' do
+              expect { pull_access_check }.to raise_not_found
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_not_found
+            end
+          end
+        end
       end
 
       context 'when actor is nil' do
@@ -567,6 +594,41 @@ describe Gitlab::GitAccess do
         context 'when project is authorized' do
           before do
             key.projects << project
+          end
+
+          it { expect { pull_access_check }.not_to raise_error }
+        end
+
+        context 'when unauthorized' do
+          context 'from public project' do
+            let(:project) { create(:project, :public, :repository) }
+
+            it { expect { pull_access_check }.not_to raise_error }
+          end
+
+          context 'from internal project' do
+            let(:project) { create(:project, :internal, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+
+          context 'from private project' do
+            let(:project) { create(:project, :private, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+        end
+      end
+    end
+
+    describe 'deploy token permissions' do
+      let(:deploy_token) { create(:deploy_token) }
+      let(:actor) { deploy_token }
+
+      context 'pull code' do
+        context 'when project is authorized' do
+          before do
+            deploy_token.projects << project
           end
 
           it { expect { pull_access_check }.not_to raise_error }
@@ -1084,11 +1146,7 @@ describe Gitlab::GitAccess do
 
       describe "max file size check" do
         let(:start_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-        let(:end_sha)   { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
-
-        before do
-          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
-        end
+        let(:end_sha)   { 'c84ff944ff4529a70788a5e9003c2b7feae29047' }
 
         it "returns false when size is too large" do
           project.create_push_rule(max_file_size: 1)
@@ -1126,6 +1184,20 @@ describe Gitlab::GitAccess do
 
           expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
+      end
+    end
+
+    context 'when pushing to a project' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'cleans up the files' do
+        expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
+        expect { push_access_check }.not_to raise_error
       end
     end
   end

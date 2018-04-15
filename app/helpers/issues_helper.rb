@@ -84,8 +84,8 @@ module IssuesHelper
     names.to_sentence
   end
 
-  def award_state_class(awards, current_user)
-    if !current_user
+  def award_state_class(awardable, awards, current_user)
+    if !can?(current_user, :award_emoji, awardable)
       "disabled"
     elsif current_user && awards.find { |a| a.user_id == current_user.id }
       "active"
@@ -126,6 +126,17 @@ module IssuesHelper
            end
 
     link_to link_text, path
+  end
+
+  def show_new_issue_link?(project)
+    return false unless project
+    return false if project.archived?
+
+    # We want to show the link to users that are not signed in, that way they
+    # get directed to the sign-in/sign-up flow and afterwards to the new issue page.
+    return true unless current_user
+
+    can?(current_user, :create_issue, project)
   end
 
   # Required for Banzai::Filter::IssueReferenceFilter

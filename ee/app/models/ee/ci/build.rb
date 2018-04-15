@@ -19,7 +19,7 @@ module EE
         scope :performance, -> { where(name: %w[performance deploy]) }
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }
-        scope :sast_container, -> { where(name: 'sast:container') }
+        scope :sast_container, -> { where(name: %w[container_scanning sast:container]) }
         scope :dast, -> { where(name: 'dast') }
 
         after_save :stick_build_if_status_changed

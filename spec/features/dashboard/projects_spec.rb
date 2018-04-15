@@ -89,7 +89,7 @@ feature 'Dashboard Projects' do
   end
 
   describe 'with a pipeline', :clean_gitlab_redis_shared_state do
-    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created
@@ -102,7 +102,7 @@ feature 'Dashboard Projects' do
       visit dashboard_projects_path
 
       page.within('.controls') do
-        expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit)}']")
+        expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
         expect(page).to have_css('.ci-status-link')
         expect(page).to have_css('.ci-status-icon-success')
         expect(page).to have_link('Commit: passed')

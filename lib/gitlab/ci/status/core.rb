@@ -22,6 +22,10 @@ module Gitlab
           raise NotImplementedError
         end
 
+        def illustration
+          raise NotImplementedError
+        end
+
         def label
           raise NotImplementedError
         end
@@ -55,6 +59,10 @@ module Gitlab
         end
 
         def action_title
+          raise NotImplementedError
+        end
+
+        def action_button_title
           raise NotImplementedError
         end
 

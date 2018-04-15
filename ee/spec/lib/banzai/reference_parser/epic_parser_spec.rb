@@ -20,7 +20,7 @@ describe Banzai::ReferenceParser::EpicParser do
     [link(public_epic.id), link(private_epic1.id), link(private_epic2.id)]
   end
 
-  subject { described_class.new(nil, user) }
+  subject { described_class.new(Banzai::RenderContext.new(nil, user)) }
 
   describe '#nodes_visible_to_user' do
     before do

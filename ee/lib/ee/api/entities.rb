@@ -260,6 +260,7 @@ module EE
         expose :attachments_count
         expose :attachments_synced_count
         expose :attachments_failed_count
+        expose :attachments_synced_missing_on_primary_count
         expose :attachments_synced_in_percentage do |node|
           number_to_percentage(node.attachments_synced_in_percentage, precision: 2)
         end
@@ -269,6 +270,7 @@ module EE
         expose :lfs_objects_count
         expose :lfs_objects_synced_count
         expose :lfs_objects_failed_count
+        expose :lfs_objects_synced_missing_on_primary_count
         expose :lfs_objects_synced_in_percentage do |node|
           number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)
         end
@@ -276,6 +278,7 @@ module EE
         expose :job_artifacts_count
         expose :job_artifacts_synced_count
         expose :job_artifacts_failed_count
+        expose :job_artifacts_synced_missing_on_primary_count
         expose :job_artifacts_synced_in_percentage do |node|
           number_to_percentage(node.job_artifacts_synced_in_percentage, precision: 2)
         end
