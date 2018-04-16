@@ -90,6 +90,8 @@ future GitLab releases.**
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 | **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
 | **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Name of the GitLab Deploy Token. Only present if the Project has a [GitLab Deploy Token][gitlab-deploy-token] related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Token of the Gitlab Deploy Token. Only present if the Project has a [GitLab Deploy Token][gitlab-deploy-token] related.|
 
 ## 9.0 Renaming
 
@@ -604,3 +606,4 @@ my-job:
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
 [trigger-job-token]: ../triggers/README.md#ci-job-token
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md
