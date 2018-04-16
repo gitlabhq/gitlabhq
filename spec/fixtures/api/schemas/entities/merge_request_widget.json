@@ -112,7 +112,7 @@
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
     "has_new_ci_config": { "type": "boolean" },
-    "project_ci_config_path": { "type": ["string", "null"] }
+    "project_custom_ci_config_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

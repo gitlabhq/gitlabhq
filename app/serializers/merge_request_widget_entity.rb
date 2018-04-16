@@ -214,7 +214,7 @@ class MergeRequestWidgetEntity < IssuableEntity
     merge_request.merge_request_diff.merge_request_diff_files.where(new_path: ci_config, new_file: true).any?
   end
 
-  expose :project_ci_config_path do |merge_request|
+  expose :project_custom_ci_config_path do |merge_request|
     merge_request.project.ci_config_path
   end
 
