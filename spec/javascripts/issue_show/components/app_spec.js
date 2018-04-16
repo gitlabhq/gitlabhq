@@ -14,7 +14,7 @@ function formatText(text) {
 
 const REALTIME_REQUEST_STACK = [issueShowData.initialRequest, issueShowData.secondRequest];
 
-fdescribe('Issuable output', () => {
+describe('Issuable output', () => {
   let mock;
   let realtimeRequestCount = 0;
   let vm;
@@ -159,17 +159,22 @@ fdescribe('Issuable output', () => {
     });
 
     it('correctly updates issuable data', done => {
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve();
-          }),
+      spyOn(vm, 'checkForSpam').and.callFake(data => Promise.resolve(data));
+      spyOn(vm.service, 'updateIssuable').and.callFake(() =>
+        Promise.resolve({
+          data: {
+            web_url: location.pathname,
+            confidential: vm.isConfidential,
+          },
+        }),
       );
 
       vm
         .updateIssuable()
         .then(() => {
           expect(vm.service.updateIssuable).toHaveBeenCalledWith(vm.formState);
+        })
+        .then(() => {
           expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
         })
         .then(done)
