@@ -93,7 +93,6 @@ export default class MirrorPull {
       .catch(stop);
     })
     .then((res) => {
-      debugger;
       $btnLoadSpinner.addClass('hidden');
       // Once data is received, we show verification info along with Host keys and fingerprints
       this.$hostKeysInformation.find('.js-fingerprint-verification').collapse(res.changes_project_import_data ? 'hide' : 'show');
