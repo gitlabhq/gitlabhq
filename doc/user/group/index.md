@@ -270,10 +270,7 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+#### Member Lock **[STARTER]**
 
 With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
@@ -300,12 +297,10 @@ request to add new user to project through API will not be possible.
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-and [push rules](../../push_rules/push_rules.md) to your group
-(Push Rules is available in [GitLab Starter][ee].)
-- **Audit Events**: view [Audit Events](../../administration/audit_events.md)
-for the group (GitLab admins only, available in [GitLab Starter][ee])
-- **Pipelines quota**: keep track of the
-[pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group. **[STARTER]**
+- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
+for the group. **[STARTER ONLY]**
+- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
 ## User contribution analysis
 
