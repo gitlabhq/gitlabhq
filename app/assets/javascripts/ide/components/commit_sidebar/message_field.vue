@@ -29,7 +29,9 @@ export default {
   methods: {
     handleScroll() {
       this.$nextTick(() => {
-        this.scrollTop = this.$refs.textarea.scrollTop;
+        if (this.$refs.textarea) {
+          this.scrollTop = this.$refs.textarea.scrollTop;
+        }
       });
     },
     getLineLength(i) {
@@ -37,6 +39,9 @@ export default {
     },
     onInput(e) {
       this.$emit('input', e.target.value);
+    },
+    updateIsFocused(isFocused) {
+      this.isFocused = isFocused;
     },
   },
   popoverOptions: {
@@ -103,12 +108,13 @@ export default {
         </div>
         <textarea
           class="note-textarea ide-commit-message-textarea"
+          name="commit-message"
           :placeholder="__('Write a commit message...')"
           :value="text"
           @scroll="handleScroll"
           @input="onInput"
-          @focus="isFocused = true"
-          @blur="isFocused = false"
+          @focus="updateIsFocused(true)"
+          @blur="updateIsFocused(false)"
           ref="textarea"
         >
         </textarea>
