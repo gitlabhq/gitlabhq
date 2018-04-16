@@ -1,4 +1,4 @@
-%header.navbar.navbar-gitlab.qa-navbar
+%header.navbar.navbar-gitlab.qa-navbar.navbar-expand-sm
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
@@ -24,25 +24,25 @@
             %li.nav-item.d-none.d-sm-none.d-md-block
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item.d-inline-block.d-sm-none.d-md-none
-              = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body', class: 'nav-link'} do
+              = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('search', size: 16)
 
           - if header_link?(:issues)
-            = nav_link(path: 'dashboard#issues', html_options: { class: "nav-link user-counter" }) do
+            = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
               = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('issues', size: 16)
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.badge-pill.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
-            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "nav-link user-counter" }) do
+            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
               = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('git-merge', size: 16)
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
                   = number_with_delimiter(merge_requests_count)
           - if header_link?(:todos)
-            = nav_link(controller: 'dashboard/todos', html_options: { class: "nav-link user-counter" }) do
+            = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
@@ -50,7 +50,7 @@
           - if header_link?(:user_dropdown)
             %li.nav-item.header-user.dropdown
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
-                = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "nav-link header-user-avatar qa-user-avatar"
+                = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
                 = sprite_icon('angle-down', css_class: 'caret-down')
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
