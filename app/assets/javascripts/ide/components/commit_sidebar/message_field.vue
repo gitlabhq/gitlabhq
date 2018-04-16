@@ -1,13 +1,15 @@
 <script>
-import { __ } from '../../../locale';
+import { __, sprintf } from '../../../locale';
+import Icon from '../../../vue_shared/components/icon.vue';
 import popover from '../../../vue_shared/directives/popover';
-
-export const MAX_TITLE_LENGTH = 50;
-export const MAX_BODY_LENGTH = 72;
+import { MAX_TITLE_LENGTH, MAX_BODY_LENGTH } from '../../constants';
 
 export default {
   directives: {
     popover,
+  },
+  components: {
+    Icon,
   },
   props: {
     text: {
@@ -45,13 +47,15 @@ export default {
     },
   },
   popoverOptions: {
-    html: true,
     trigger: 'hover',
     placement: 'top',
-    content: __(`
-      The character highligher helps you keep the subject line to 50 characters
-      and wrap the body at 72 so they are readable in git.
-    `),
+    content: sprintf(
+      __(`
+        The character highligher helps you keep the subject line to %{titleLength} characters
+        and wrap the body at %{bodyLength} so they are readable in git.
+      `),
+      { titleLength: MAX_TITLE_LENGTH, bodyLength: MAX_BODY_LENGTH },
+    ),
   },
 };
 </script>
@@ -75,10 +79,9 @@ export default {
               v-popover="$options.popoverOptions"
               class="help-block prepend-left-10"
             >
-              <i
-                aria-hidden="true"
-                class="fa fa-question-circle"
-              ></i>
+              <icon
+                name="question"
+              />
             </span>
           </li>
         </ul>
@@ -99,7 +102,7 @@ export default {
                 v-text="line.substr(0, getLineLength(index)) || ' '"
               >
               </span><mark
-                v-if="line.length > getLineLength(index)"
+                v-show="line.length > getLineLength(index)"
                 v-text="line.substr(getLineLength(index))"
               >
               </mark>

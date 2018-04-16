@@ -1,52 +1,40 @@
 <script>
-  import { mapActions, mapState, mapGetters } from 'vuex';
-  import tooltip from '~/vue_shared/directives/tooltip';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import tooltip from '~/vue_shared/directives/tooltip';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  props: {
+    value: {
+      type: String,
+      required: true,
     },
-    props: {
-      value: {
-        type: String,
-        required: true,
-      },
-      label: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      checked: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      showInput: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      helpText: {
-        type: String,
-        required: false,
-        default: null,
-      },
+    label: {
+      type: String,
+      required: false,
+      default: null,
     },
-    computed: {
-      ...mapState('commit', [
-        'commitAction',
-      ]),
-      ...mapGetters('commit', [
-        'newBranchName',
-      ]),
+    checked: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    methods: {
-      ...mapActions('commit', [
-        'updateCommitAction',
-        'updateBranchName',
-      ]),
+    showInput: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-  };
+  },
+  computed: {
+    ...mapState('commit', ['commitAction']),
+    ...mapGetters('commit', ['newBranchName']),
+  },
+  methods: {
+    ...mapActions('commit', ['updateCommitAction', 'updateBranchName']),
+  },
+};
 </script>
 
 <template>
@@ -65,18 +53,6 @@
           {{ label }}
         </template>
         <slot v-else></slot>
-        <span
-          v-if="helpText"
-          v-tooltip
-          class="help-block inline"
-          :title="helpText"
-        >
-          <i
-            class="fa fa-question-circle"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
       </span>
     </label>
     <div
