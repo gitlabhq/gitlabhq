@@ -10,8 +10,8 @@ external repository to get the benefits of GitLab CI/CD.
 - [Bitbucket Cloud](bitbucket_integration.md)
 
 Connecting an external repository will set up [repository mirroring][mirroring]
-and create a lightweight project where issues, merge requests, container
-registry, wiki, and snippets disabled. These features
+and create a lightweight project where issues, merge requests, wiki, and
+snippets disabled. These features
 [can be re-enabled later][settings].
 
 1. From your GitLab dashboard click **New project**
