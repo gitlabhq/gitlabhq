@@ -1,4 +1,4 @@
-# Issue Weight
+# Issue Weight **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/76)
 in [GitLab Starter](https://about.gitlab.com/products/) 8.3.

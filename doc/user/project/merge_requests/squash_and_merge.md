@@ -1,4 +1,4 @@
-# Squash and merge
+# Squash and merge **[STARTER]**
 
 > [Introduced][ee-1024] in [GitLab Starter][ee] 8.17.
 

@@ -27,13 +27,13 @@ integrated platform
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
-- **(Ultimate)** [Web IDE](web_ide/index.md)
+- [Web IDE](web_ide/index.md) **[ULTIMATE]**
 
 **Issues and merge requests:**
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards) (**Starter/Premium**): Allow your teams to create their own workflows (Issue Boards) for the same project
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html): Ask for approval before

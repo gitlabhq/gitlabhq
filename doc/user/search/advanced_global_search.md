@@ -1,4 +1,4 @@
-# Advanced Global Search
+# Advanced Global Search **[STARTER]**
 
 >
 - [Introduced][ee-109] in GitLab [Starter][ee] 8.4.

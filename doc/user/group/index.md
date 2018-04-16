@@ -152,7 +152,7 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
-### Default project creation level
+### Default project creation level **[STARTER]**
 
 > [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
 > Brought to [GitLab Starter][ee] in 10.7.
@@ -302,10 +302,7 @@ and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rule
 for the group. **[STARTER ONLY]**
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
-## User contribution analysis
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+## User contribution analysis **[STARTER]**
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md)
 you have an overview of the contributions (pushes, merge requests,

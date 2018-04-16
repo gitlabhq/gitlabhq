@@ -1,8 +1,10 @@
-# Project-level approvals
+# Merge request approvals **[STARTER]**
 
-Configuration for approvals on all Merge Requests in the project. Must be authenticated for all endpoints.
+Configuration for approvals on all Merge Requests (MR) in the project. Must be authenticated for all endpoints.
 
-## Get Configuration
+## Project-level MR approvals
+
+### Get Configuration
 
 >**Note:** This API endpoint is only available on 10.6 Starter and above.
 
@@ -57,7 +59,7 @@ GET /projects/:id/approvals
 }
 ```
 
-## Change configuration
+### Change configuration
 
 >**Note:** This API endpoint is only available on 10.6 Starter and above.
 
@@ -115,7 +117,7 @@ POST /projects/:id/approvals
 }
 ```
 
-## Change allowed approvers
+### Change allowed approvers
 
 >**Note:** This API endpoint is only available on 10.6 Starter and above.
 
@@ -175,10 +177,11 @@ PUT /projects/:id/approvers
 ```
 
 
-# Merge Request-level Approvals
+## Merge Request-level MR approvals
+
 Configuration for approvals on a specific Merge Request. Must be authenticated for all endpoints.
 
-## Get Configuration
+### Get Configuration
 
 >**Note:** This API endpoint is only available on 8.9 Starter and above.
 
@@ -226,7 +229,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 }
 ```
 
-## Change approval configuration
+### Change approval configuration
 
 >**Note:** This API endpoint is only available on 10.6 Starter and above.
 
@@ -265,7 +268,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 }
 ```
 
-## Change allowed approvers for Merge Request
+### Change allowed approvers for Merge Request
 
 >**Note:** This API endpoint is only available on 10.6 Starter and above.
 

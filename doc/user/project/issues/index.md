@@ -139,19 +139,13 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-### Export Issues to CSV
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+### Export Issues to CSV **[STARTER]**
 
 Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
 
 _Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/products/)._
 
-## Related Issues
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+## Related Issues **[STARTER]**
 
 Related Issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups

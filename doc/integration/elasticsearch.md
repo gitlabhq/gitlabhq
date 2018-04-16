@@ -1,4 +1,4 @@
-# Elasticsearch integration
+# Elasticsearch integration **[STARTER ONLY]**
 
 >
 [Introduced][ee-109] in GitLab [Starter][ee] 8.4. Support

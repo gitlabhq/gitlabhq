@@ -1,4 +1,4 @@
-# Burndown Charts
+# Burndown Charts **[STARTER]**
 
 >**Notes:**
 - [Introduced][ee-1540] in [GitLab Starter 9.1][ee-9.1].

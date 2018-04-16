@@ -1176,7 +1176,7 @@ test:
   retry: 2
 ```
 
-## `include`
+## `include` **[STARTER]**
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
 > Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.

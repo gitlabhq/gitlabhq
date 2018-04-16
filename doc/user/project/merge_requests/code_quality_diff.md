@@ -1,4 +1,4 @@
-# Code Quality
+# Code Quality **[STARTER]**
 
 > [Introduced][ee-1984] in [GitLab Starter][ee] 9.3.
 
