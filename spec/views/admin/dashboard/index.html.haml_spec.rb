@@ -18,4 +18,10 @@ describe 'admin/dashboard/index.html.haml' do
     expect(rendered).to have_content 'GitLab Workhorse'
     expect(rendered).to have_content Gitlab::Workhorse.version
   end
+
+  it "includes revision of GitLab" do
+    render
+
+    expect(rendered).to have_content "#{Gitlab::VERSION} (#{Gitlab::REVISION})"
+  end
 end

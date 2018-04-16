@@ -1,5 +1,4 @@
 <script>
-  import $ from 'jquery';
 
   /**
    * Renders each stage of the pipeline mini graph.
@@ -13,8 +12,11 @@
    * 3. Merge request widget
    * 4. Commit widget
    */
-  import axios from '../../lib/utils/axios_utils';
+
+  import $ from 'jquery';
   import Flash from '../../flash';
+  import axios from '../../lib/utils/axios_utils';
+  import eventHub from '../event_hub';
   import Icon from '../../vue_shared/components/icon.vue';
   import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
@@ -82,6 +84,7 @@
     methods: {
       onClickStage() {
         if (!this.isDropdownOpen()) {
+          eventHub.$emit('clickedDropdown');
           this.isLoading = true;
           this.fetchJobs();
         }

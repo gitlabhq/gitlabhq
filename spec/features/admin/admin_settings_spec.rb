@@ -32,6 +32,7 @@ feature 'Admin updates settings' do
     expect(find('#application_setting_visibility_level_20')).not_to be_checked
   end
 
+<<<<<<< HEAD
   describe 'LDAP settings' do
     context 'with LDAP enabled' do
       scenario 'Change allow group owners to manage ldap' do
@@ -57,6 +58,8 @@ feature 'Admin updates settings' do
     end
   end
 
+=======
+>>>>>>> upstream/master
   scenario 'Modify import sources' do
     expect(Gitlab::CurrentSettings.import_sources).not_to be_empty
 
