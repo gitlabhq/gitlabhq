@@ -33,6 +33,10 @@ Follow the steps below to set up a custom hook:
    For an installation from source the path is usually
    `/home/git/gitlab/plugins/`. For Omnibus installs the path is
    usually `/opt/gitlab/embedded/service/gitlab-rails/plugins`.
+
+    For [highly available] configurations, your hook file should exist on each
+    application server.
+
 1. Inside the `plugins` directory, create a file with a name of your choice,
    without spaces or special characters.
 1. Make the hook file executable and make sure it's owned by the git user.
@@ -78,3 +82,4 @@ Validating plugins from /plugins directory
 
 [system hooks]: ../system_hooks/system_hooks.md
 [webhooks]: ../user/project/integrations/webhooks.md
+[highly available]: ./high_availability/README.md

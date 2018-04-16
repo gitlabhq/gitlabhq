@@ -1,0 +1,5 @@
+---
+title: Update faraday_middlewar to 0.12.2
+merge_request: 18397
+author: Takuya Noguchi
+type: security
