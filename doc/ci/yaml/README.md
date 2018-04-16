@@ -309,6 +309,7 @@ except master.
 ## `only` and `except` (complex)
 
 > `refs` and `kubernetes` policies introduced in GitLab 10.0
+
 > `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
