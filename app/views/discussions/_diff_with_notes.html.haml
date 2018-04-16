@@ -30,7 +30,7 @@
             %td.new_line.diff-line-num
             %td.line_content.js-success-lazy-load
               .js-code-placeholder
-            %td.line_content.js-error-lazy-load-diff.hidden
+            %td.js-error-lazy-load-diff.hidden.diff-loading-error-block
               - button = button_tag(_("Try again"), class: "btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button")
               = _("Unable to load the diff. %{button_try_again}").html_safe % { button_try_again: button}
           = render "discussions/diff_discussion", discussions: [discussion], expanded: true

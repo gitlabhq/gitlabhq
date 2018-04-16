@@ -160,6 +160,10 @@
         }
       }
     }
+
+    .diff-loading-error-block {
+      padding: $gl-padding $gl-padding*2;
+    }
   }
 
   .image {

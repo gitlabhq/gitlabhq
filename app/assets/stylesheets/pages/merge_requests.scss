@@ -768,7 +768,6 @@
 // wich causes a blank button when it's disabled and hovering
 // The css in here is the boostrap one
 .btn-link-retry {
-
   &[disabled] {
     cursor: not-allowed;
     filter: alpha(opacity=65);
