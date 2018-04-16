@@ -18,6 +18,34 @@ describe GeoNodeStatus, :geo do
     stub_current_geo_node(secondary)
   end
 
+  describe '#fast_current_node_status' do
+    it 'reads the cache and spawns the worker' do
+      expect(described_class).to receive(:spawn_worker).once
+
+      rails_cache = double
+      expect(rails_cache).to receive(:read).with(described_class.cache_key)
+      expect(Rails).to receive(:cache).and_return(rails_cache)
+
+      described_class.fast_current_node_status
+    end
+
+    it 'returns status for primary with no cache' do
+      stub_current_geo_node(primary)
+
+      expect(described_class.fast_current_node_status).to eq described_class.current_node_status
+    end
+  end
+
+  describe '#update_cache!' do
+    it 'writes a cache' do
+      rails_cache = double
+      expect(rails_cache).to receive(:write).with(described_class.cache_key, kind_of(Hash))
+      expect(Rails).to receive(:cache).and_return(rails_cache)
+
+      described_class.new.update_cache!
+    end
+  end
+
   describe '#healthy?' do
     context 'when health is blank' do
       it 'returns true' do

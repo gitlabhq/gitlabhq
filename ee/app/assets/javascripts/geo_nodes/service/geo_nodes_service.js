@@ -13,11 +13,7 @@ export default class GeoNodesService {
 
   // eslint-disable-next-line class-methods-use-this
   getGeoNodeDetails(node) {
-    return axios.get(node.statusPath, {
-      params: {
-        refresh: true,
-      },
-    });
+    return axios.get(node.statusPath);
   }
 
   // eslint-disable-next-line class-methods-use-this

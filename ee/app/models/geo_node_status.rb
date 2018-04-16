@@ -85,6 +85,24 @@ class GeoNodeStatus < ActiveRecord::Base
     status
   end
 
+  def self.fast_current_node_status
+    # Primary's status is easy to calculate so we can calculate it on the fly
+    return current_node_status if Gitlab::Geo.primary?
+
+    spawn_worker
+
+    attrs = Rails.cache.read(cache_key) || {}
+    new(attrs)
+  end
+
+  def self.spawn_worker
+    ::Geo::MetricsUpdateWorker.perform_async
+  end
+
+  def self.cache_key
+    "geo-node:#{Gitlab::Geo.current_node.id}:status"
+  end
+
   def self.from_json(json_data)
     json_data.slice!(*allowed_params)
 
@@ -107,6 +125,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def initialize_feature_flags
     self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+  end
+
+  def update_cache!
+    Rails.cache.write(self.class.cache_key, attributes)
   end
 
   def load_data_from_current_node

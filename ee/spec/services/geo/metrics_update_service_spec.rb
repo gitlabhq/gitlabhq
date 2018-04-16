@@ -182,6 +182,16 @@ describe Geo::MetricsUpdateService, :geo do
         expect { subject.execute }.to change { metric_value(:geo_status_failed_total) }.by(1)
       end
 
+      it 'updates cache' do
+        status = GeoNodeStatus.new(success: true)
+
+        expect(status).to receive(:update_cache!)
+
+        allow(subject).to receive(:node_status).and_return(status)
+
+        subject.execute
+      end
+
       it 'does not create GeoNodeStatus entries' do
         expect { subject.execute }.to change { GeoNodeStatus.count }.by(0)
       end

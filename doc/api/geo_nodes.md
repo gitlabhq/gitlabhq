@@ -192,10 +192,6 @@ Example response:
 GET /geo_nodes/:id/status
 ```
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `refresh` | boolean | no       | Attempt to fetch the latest status from the Geo node directly, ignoring the cache |
-
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/2/status
 ```
