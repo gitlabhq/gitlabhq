@@ -93,7 +93,7 @@ describe('Issue boards new issue form', () => {
   });
 
   it('clears title after clicking cancel', (done) => {
-    vm.$el.querySelector('.btn-default').click();
+    vm.$el.querySelector('.btn-secondary').click();
 
     Vue.nextTick()
       .then(() => {

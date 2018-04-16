@@ -45,7 +45,7 @@
           = f.label :runners_token, "Runner token", class: 'label-light'
           .form-control.js-secret-value-placeholder
             = '*' * 20
-          = f.text_field :runners_token, class: "form-control hide js-secret-value", placeholder: 'xEeFCaDAB89'
+          = f.text_field :runners_token, class: "form-control hidden js-secret-value", placeholder: 'xEeFCaDAB89'
           %p.form-text.text-muted The secure token used by the Runner to checkout the project
           %button.btn.btn-info.prepend-top-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: 'false' } }
             = _('Reveal value')

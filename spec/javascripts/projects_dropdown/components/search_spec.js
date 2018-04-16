@@ -92,7 +92,6 @@ describe('SearchComponent', () => {
       const inputEl = vm.$el.querySelector('input.form-control');
 
       expect(vm.$el.classList.contains('search-input-container')).toBeTruthy();
-      expect(vm.$el.classList.contains('d-none d-sm-block')).toBeTruthy();
       expect(inputEl).not.toBe(null);
       expect(inputEl.getAttribute('placeholder')).toBe('Search your projects');
       expect(vm.$el.querySelector('.search-icon')).toBeDefined();

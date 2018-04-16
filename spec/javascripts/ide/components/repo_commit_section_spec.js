@@ -128,7 +128,7 @@ describe('RepoCommitSection', () => {
   describe('discard draft button', () => {
     it('hidden when commitMessage is empty', () => {
       expect(
-        vm.$el.querySelector('.multi-file-commit-form .btn-default'),
+        vm.$el.querySelector('.multi-file-commit-form .btn-secondary'),
       ).toBeNull();
     });
 
@@ -137,7 +137,7 @@ describe('RepoCommitSection', () => {
 
       getSetTimeoutPromise()
         .then(() => {
-          vm.$el.querySelector('.multi-file-commit-form .btn-default').click();
+          vm.$el.querySelector('.multi-file-commit-form .btn-secondary').click();
         })
         .then(Vue.nextTick)
         .then(() => {

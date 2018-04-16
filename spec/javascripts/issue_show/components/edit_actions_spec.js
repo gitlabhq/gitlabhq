@@ -106,7 +106,7 @@ describe('Edit Actions components', () => {
 
   describe('closeForm', () => {
     it('emits close.form when clicking cancel', () => {
-      vm.$el.querySelector('.btn-default').click();
+      vm.$el.querySelector('.btn-secondary').click();
 
       expect(
         eventHub.$emit,

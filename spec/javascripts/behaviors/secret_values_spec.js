@@ -9,7 +9,7 @@ function generateValueMarkup(
     <div class="${placeholderClass}">
       ***
     </div>
-    <div class="hide ${valueClass}">
+    <div class="hidden ${valueClass}">
       ${secret}
     </div>
   `;
@@ -77,9 +77,9 @@ describe('setupSecretValues', () => {
       const placeholders = wrapper.querySelectorAll('.js-secret-value-placeholder');
 
       expect(values.length).toEqual(1);
-      expect(values[0].classList.contains('hide')).toEqual(true);
+      expect(values[0].classList.contains('hidden')).toEqual(true);
       expect(placeholders.length).toEqual(1);
-      expect(placeholders[0].classList.contains('hide')).toEqual(false);
+      expect(placeholders[0].classList.contains('hidden')).toEqual(false);
     });
 
     it('should toggle value and placeholder', () => {
@@ -91,16 +91,16 @@ describe('setupSecretValues', () => {
       revealButton.click();
 
       expect(values.length).toEqual(1);
-      expect(values[0].classList.contains('hide')).toEqual(false);
+      expect(values[0].classList.contains('hidden')).toEqual(false);
       expect(placeholders.length).toEqual(1);
-      expect(placeholders[0].classList.contains('hide')).toEqual(true);
+      expect(placeholders[0].classList.contains('hidden')).toEqual(true);
 
       revealButton.click();
 
       expect(values.length).toEqual(1);
-      expect(values[0].classList.contains('hide')).toEqual(true);
+      expect(values[0].classList.contains('hidden')).toEqual(true);
       expect(placeholders.length).toEqual(1);
-      expect(placeholders[0].classList.contains('hide')).toEqual(false);
+      expect(placeholders[0].classList.contains('hidden')).toEqual(false);
     });
   });
 
@@ -128,11 +128,11 @@ describe('setupSecretValues', () => {
 
       expect(values.length).toEqual(3);
       values.forEach((value) => {
-        expect(value.classList.contains('hide')).toEqual(true);
+        expect(value.classList.contains('hidden')).toEqual(true);
       });
       expect(placeholders.length).toEqual(3);
       placeholders.forEach((placeholder) => {
-        expect(placeholder.classList.contains('hide')).toEqual(false);
+        expect(placeholder.classList.contains('hidden')).toEqual(false);
       });
     });
 
@@ -146,22 +146,22 @@ describe('setupSecretValues', () => {
 
       expect(values.length).toEqual(3);
       values.forEach((value) => {
-        expect(value.classList.contains('hide')).toEqual(false);
+        expect(value.classList.contains('hidden')).toEqual(false);
       });
       expect(placeholders.length).toEqual(3);
       placeholders.forEach((placeholder) => {
-        expect(placeholder.classList.contains('hide')).toEqual(true);
+        expect(placeholder.classList.contains('hidden')).toEqual(true);
       });
 
       revealButton.click();
 
       expect(values.length).toEqual(3);
       values.forEach((value) => {
-        expect(value.classList.contains('hide')).toEqual(true);
+        expect(value.classList.contains('hidden')).toEqual(true);
       });
       expect(placeholders.length).toEqual(3);
       placeholders.forEach((placeholder) => {
-        expect(placeholder.classList.contains('hide')).toEqual(false);
+        expect(placeholder.classList.contains('hidden')).toEqual(false);
       });
     });
   });
@@ -182,22 +182,22 @@ describe('setupSecretValues', () => {
 
       expect(values.length).toEqual(4);
       values.forEach((value) => {
-        expect(value.classList.contains('hide')).toEqual(false);
+        expect(value.classList.contains('hidden')).toEqual(false);
       });
       expect(placeholders.length).toEqual(4);
       placeholders.forEach((placeholder) => {
-        expect(placeholder.classList.contains('hide')).toEqual(true);
+        expect(placeholder.classList.contains('hidden')).toEqual(true);
       });
 
       revealButton.click();
 
       expect(values.length).toEqual(4);
       values.forEach((value) => {
-        expect(value.classList.contains('hide')).toEqual(true);
+        expect(value.classList.contains('hidden')).toEqual(true);
       });
       expect(placeholders.length).toEqual(4);
       placeholders.forEach((placeholder) => {
-        expect(placeholder.classList.contains('hide')).toEqual(false);
+        expect(placeholder.classList.contains('hidden')).toEqual(false);
       });
     });
   });
@@ -220,9 +220,9 @@ describe('setupSecretValues', () => {
       revealButton.click();
 
       expect(values.length).toEqual(1);
-      expect(values[0].classList.contains('hide')).toEqual(false);
+      expect(values[0].classList.contains('hidden')).toEqual(false);
       expect(placeholders.length).toEqual(1);
-      expect(placeholders[0].classList.contains('hide')).toEqual(true);
+      expect(placeholders[0].classList.contains('hidden')).toEqual(true);
     });
   });
 });

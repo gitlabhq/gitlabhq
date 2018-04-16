@@ -2,7 +2,7 @@ import $ from 'jquery';
 import VariableList from '~/ci_variable_list/ci_variable_list';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
-const HIDE_CLASS = 'hide';
+const HIDE_CLASS = 'hidden';
 
 describe('VariableList', () => {
   preloadFixtures('pipeline_schedules/edit.html.raw');

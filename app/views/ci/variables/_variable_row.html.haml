@@ -22,9 +22,9 @@
       value: key,
       placeholder: s_('CiVariables|Input variable key') }
     .ci-variable-body-item
-      .form-control.js-secret-value-placeholder{ class: ('hide' unless id) }
+      .form-control.js-secret-value-placeholder{ class: ('hidden' unless id) }
         = '*' * 20
-      %textarea.js-ci-variable-input-value.js-secret-value.form-control{ class: ('hide' if id),
+      %textarea.js-ci-variable-input-value.js-secret-value.form-control{ class: ('hidden' if id),
         rows: 1,
         name: value_input_name,
         placeholder: s_('CiVariables|Input variable value') }
