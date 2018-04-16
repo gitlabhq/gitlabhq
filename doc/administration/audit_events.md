@@ -2,9 +2,7 @@
 last_updated: 2017-12-13
 ---
 
-# Audit Events
-
-> Available in [GitLab Enterprise Editions][ee].
+# Audit Events **[STARTER ONLY]**
 
 GitLab Enterprise Edition offers a way to view the changes made within the
 GitLab server as a help to system administrators.
@@ -37,8 +35,6 @@ There are two kinds of events logged:
 
 ### Group events
 
-> Available in [GitLab Starter][ee].
-
 NOTE: **Note:**
 You need Owner [permissions] to view the group Audit Events page.
 
@@ -58,8 +54,6 @@ From there, you can see the following actions:
 
 ### Project events
 
-> Available in [GitLab Starter][ee].
-
 NOTE: **Note:**
 You need Master [permissions] or higher to view the project Audit Events page.
 
@@ -73,10 +67,9 @@ From there, you can see the following actions:
 - Permission changes of a user assigned to a project
 - User was removed from project
 
-### Instance events
+### Instance events **[PREMIUM ONLY]**
 
 > [Introduced][ee-2336] in [GitLab Premium][ee] 9.3.
-Available only for GitLab administrators.
 
 Server-wide audit logging introduces the ability to observe user actions across
 the entire instance of your GitLab server, making it easy to understand who
