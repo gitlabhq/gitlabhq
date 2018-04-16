@@ -59,19 +59,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     params[:application_setting] ||= {}
-<<<<<<< HEAD
 
     if params[:application_setting].key?(:enabled_oauth_sign_in_sources)
       enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
       enabled_oauth_sign_in_sources&.delete("")
 
-=======
-
-    if params[:application_setting].key?(:enabled_oauth_sign_in_sources)
-      enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
-      enabled_oauth_sign_in_sources&.delete("")
-
->>>>>>> upstream/master
       params[:application_setting][:disabled_oauth_sign_in_sources] =
         AuthHelper.button_based_providers.map(&:to_s) -
         Array(enabled_oauth_sign_in_sources)
