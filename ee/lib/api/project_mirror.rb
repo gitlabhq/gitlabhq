@@ -49,7 +49,7 @@ module API
       post ":id/mirror/pull" do
         authenticate_with_webhook_token!
 
-        return render_api_error!('The project is not mirrored', 400) unless project.mirror?
+        break render_api_error!('The project is not mirrored', 400) unless project.mirror?
 
         project.force_import_job!
 

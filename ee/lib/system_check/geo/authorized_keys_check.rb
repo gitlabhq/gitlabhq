@@ -194,7 +194,7 @@ module SystemCheck
             if (match = line.match(regexp))
               raw_content = match[:content]
               # remove linebreak, and lead and trailing spaces
-              return raw_content.chomp.strip
+              return raw_content.chomp.strip # rubocop:disable Cop/AvoidReturnFromBlocks
             end
           end
         end
