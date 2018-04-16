@@ -191,7 +191,7 @@ describe MergeRequest do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(nil)
 
-      expect(subject.board-card_attributes)
+      expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => nil })
     end
 
@@ -199,7 +199,7 @@ describe MergeRequest do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
 
-      expect(subject.board-card_attributes)
+      expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end

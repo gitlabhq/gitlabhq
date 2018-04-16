@@ -3,7 +3,7 @@
 - breadcrumb_title @issue.to_reference
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
-- page_card_attributes @issue.board-card_attributes
+- page_card_attributes @issue.card_attributes
 
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
