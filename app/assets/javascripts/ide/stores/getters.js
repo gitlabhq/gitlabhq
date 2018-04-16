@@ -56,6 +56,8 @@ export const activityBarComponent = state => {
   switch (state.currentActivityView) {
     case ActivityBarViews.edit:
       return 'project-tree';
+    case ActivityBarViews.commit:
+      return 'commit-section';
     default:
       return null;
   }

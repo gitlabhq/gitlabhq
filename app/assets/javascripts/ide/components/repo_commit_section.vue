@@ -21,16 +21,6 @@ export default {
   directives: {
     tooltip,
   },
-  props: {
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
     ...mapState([
       'currentProjectId',
@@ -38,6 +28,8 @@ export default {
       'rightPanelCollapsed',
       'lastCommitMsg',
       'changedFiles',
+      'noChangesStateSvgPath',
+      'committedStateSvgPath',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),

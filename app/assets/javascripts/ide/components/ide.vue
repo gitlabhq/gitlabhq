@@ -19,14 +19,6 @@ export default {
       type: String,
       required: true,
     },
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
     ...mapState(['changedFiles', 'openFiles', 'viewer', 'currentMergeRequestId']),

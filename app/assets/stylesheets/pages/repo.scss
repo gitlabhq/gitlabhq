@@ -112,14 +112,6 @@
 .multi-file-loading-container {
   margin-top: 10px;
   padding: 10px;
-
-  .animation-container {
-    background: $gray-light;
-
-    div {
-      background: $gray-light;
-    }
-  }
 }
 
 .multi-file-table-col-commit-message {
@@ -423,7 +415,7 @@
   width: 340px;
   padding: 0;
   background-color: $gray-light;
-  padding-right: 3px;
+  padding-right: 1px;
 
   .context-header {
     width: auto;
@@ -438,9 +430,10 @@
 
   .multi-file-commit-panel-inner {
     display: flex;
+    flex: 1;
     flex-direction: column;
     height: 100%;
-    width: 100%;
+    width: 0;
   }
 
   .multi-file-commit-panel-inner-scroll {
@@ -448,8 +441,10 @@
     flex: 1;
     flex-direction: column;
     overflow: auto;
-    background-color: #fff;
-    border-left: 1px solid #eaeaea;
+    background-color: $white-light;
+    border-left: 1px solid $white-dark;
+    border-top: 1px solid $white-dark;
+    border-top-left-radius: $border-radius-small;
   }
 
   .branch-header {
@@ -763,7 +758,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 1px;
   background-color: $white-dark;
 
   &.dragright {
@@ -791,10 +786,49 @@
 }
 
 .ide-sidebar-link {
-  padding: $gl-padding-8 $gl-padding;
   display: flex;
   align-items: center;
-  font-weight: $gl-font-weight-bold;
+  position: relative;
+  height: 55px;
+  width: 100%;
+  margin: 2.5px 0;
+  padding: $gl-padding-8 $gl-padding;
+  color: $gl-text-color-secondary;
+  background-color: transparent;
+  border: 0;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  outline: 0;
+
+  svg {
+    margin: 0 auto;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $white-light;
+  }
+
+  &.active {
+    background-color: $white-light;
+    border-top-color: $white-dark;
+    border-bottom-color: $white-dark;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: $white-light;
+    }
+  }
+}
+
+.ide-activity-bar {
+  position: relative;
+  flex: 0 0 60px;
 }
 
 .ide-commit-message-field {

@@ -100,6 +100,16 @@ export default {
       currentActivityView,
     });
   },
+  [types.SET_EMPTY_STATE_SVGS](
+    state,
+    { emptyStateSvgPath, noChangesStateSvgPath, committedStateSvgPath },
+  ) {
+    Object.assign(state, {
+      emptyStateSvgPath,
+      noChangesStateSvgPath,
+      committedStateSvgPath,
+    });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

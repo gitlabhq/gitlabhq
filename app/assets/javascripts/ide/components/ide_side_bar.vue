@@ -8,6 +8,7 @@ import Identicon from '../../vue_shared/components/identicon.vue';
 import projectTree from './ide_project_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
+import CommitSection from './repo_commit_section.vue';
 
 export default {
   components: {
@@ -19,6 +20,7 @@ export default {
     ActivityBar,
     ProjectAvatarImage,
     Identicon,
+    CommitSection,
   },
   computed: {
     ...mapState(['loading']),
@@ -75,10 +77,11 @@ export default {
             </div>
           </a>
         </div>
-        <component
-          :is="activityBarComponent"
-          :project="currentProjectWithTree"
-        />
+        <div class="multi-file-commit-panel-inner-scroll">
+          <component
+            :is="activityBarComponent"
+          />
+        </div>
       </template>
     </div>
   </resizable-panel>

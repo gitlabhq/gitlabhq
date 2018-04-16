@@ -14,12 +14,17 @@ function initIde(el) {
     components: {
       ide,
     },
+    created() {
+      this.$store.dispatch('setEmptyStateSvgs', {
+        emptyStateSvgPath: el.dataset.emptyStateSvgPath,
+        noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
+        committedStateSvgPath: el.dataset.committedStateSvgPath,
+      });
+    },
     render(createElement) {
       return createElement('ide', {
         props: {
           emptyStateSvgPath: el.dataset.emptyStateSvgPath,
-          noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
-          committedStateSvgPath: el.dataset.committedStateSvgPath,
         },
       });
     },

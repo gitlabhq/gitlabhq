@@ -30,80 +30,33 @@ export default {
         />
       </li>
       <li>
-        <a
-          href="#"
-          class="ide-sidebar-link ide-activity-bar-link"
+        <button
+          type="button"
+          class="ide-sidebar-link js-ide-edit-mode"
           :class="{
             active: currentActivityView === $options.ActivityBarViews.edit
           }"
           @click.prevent="updateActivityBarView($options.ActivityBarViews.edit)"
         >
           <icon
-            :size="16"
             name="code"
           />
-        </a>
+        </button>
       </li>
       <li>
-        <a
-          href="#"
-          class="ide-sidebar-link ide-activity-bar-link"
+        <button
+          type="button"
+          class="ide-sidebar-link js-ide-commit-mode"
           :class="{
             active: currentActivityView === $options.ActivityBarViews.commit
           }"
           @click.prevent="updateActivityBarView($options.ActivityBarViews.commit)"
         >
           <icon
-            :size="16"
             name="commit"
           />
-        </a>
+        </button>
       </li>
     </ul>
   </nav>
 </template>
-
-<style>
-.ide-activity-bar {
-  position: relative;
-  flex: 0 0 60px;
-  z-index: 2;
-}
-
-.ide-activity-bar-link {
-  position: relative;
-  height: 55px;
-  margin: 2.5px 0;
-  color: #707070;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-}
-
-.ide-activity-bar-link svg {
-  margin: 0 auto;
-  fill: currentColor;
-}
-
-.ide-activity-bar-link.active {
-  color: #4b4ba3;
-  background-color: #fff;
-  border-top: 1px solid #eaeaea;
-  border-bottom: 1px solid #eaeaea;
-  box-shadow: inset 3px 0 #4b4ba3;
-}
-
-a.ide-sidebar-link.ide-activity-bar-link.active::after {
-  content: '';
-  position: absolute;
-  right: -1px;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: #fff;
-}
-
-.ide-activity-bar-link:hover {
-  color: #4b4ba3;
-  background-color: #fff;
-}
-</style>
