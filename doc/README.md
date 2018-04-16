@@ -183,7 +183,7 @@ instant how code changes impact your production environment.
 ### Git and GitLab
 
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
-- [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
+- [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
 
 ## Administrator documentation
