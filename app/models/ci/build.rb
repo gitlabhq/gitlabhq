@@ -628,6 +628,7 @@ module Ci
         variables.append(key: "CI_PIPELINE_TRIGGERED", value: 'true') if trigger_request
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
         variables.concat(legacy_variables)
+        variables.concat(deploy_token_variables) if project.gitlab_deploy_token
       end
     end
 
@@ -655,6 +656,13 @@ module Ci
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
         variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url) if environment_url
+      end
+    end
+
+    def deploy_token_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI_DEPLOY_USER', value: DeployToken::GITLAB_DEPLOY_TOKEN)
+        variables.append(key: 'CI_DEPLOY_PASSWORD', value: project.gitlab_deploy_token.token)
       end
     end
 

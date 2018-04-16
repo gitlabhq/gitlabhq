@@ -10,5 +10,13 @@ FactoryBot.define do
     trait :revoked do
       revoked true
     end
+
+    trait :gitlab_deploy_token do
+      name DeployToken::GITLAB_DEPLOY_TOKEN
+    end
+
+    trait :expired do
+      expires_at { Date.today - 1.month }
+    end
   end
 end

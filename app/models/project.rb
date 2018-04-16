@@ -1889,6 +1889,11 @@ class Project < ActiveRecord::Base
     []
   end
 
+  def gitlab_deploy_token
+    @gitlab_deploy_token ||=
+      deploy_tokens.active.find_by(name: DeployToken::GITLAB_DEPLOY_TOKEN)
+  end
+
   private
 
   def storage
