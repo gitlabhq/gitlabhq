@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import * as simplePoll from '~/lib/utils/simple_poll';
 
 const commitMessage = 'This is the commit message';
 const commitMessageWithDescription = 'This is the commit message description';
@@ -355,9 +354,9 @@ describe('ReadyToMerge', () => {
 
     describe('initiateMergePolling', () => {
       it('should call simplePoll', () => {
-        spyOn(simplePoll, 'default');
+        const simplePoll = spyOnDependency(ReadyToMerge, 'simplePoll');
         vm.initiateMergePolling();
-        expect(simplePoll.default).toHaveBeenCalled();
+        expect(simplePoll).toHaveBeenCalled();
       });
     });
 
@@ -457,11 +456,11 @@ describe('ReadyToMerge', () => {
     describe('initiateRemoveSourceBranchPolling', () => {
       it('should emit event and call simplePoll', () => {
         spyOn(eventHub, '$emit');
-        spyOn(simplePoll, 'default');
+        const simplePoll = spyOnDependency(ReadyToMerge, 'simplePoll');
 
         vm.initiateRemoveSourceBranchPolling();
         expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [true]);
-        expect(simplePoll.default).toHaveBeenCalled();
+        expect(simplePoll).toHaveBeenCalled();
       });
     });
 
