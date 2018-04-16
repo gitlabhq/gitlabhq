@@ -24,7 +24,10 @@ html {
   font-size: 14px;
 }
 
-button, html [type="button"], [type="reset"], [type="submit"] {
+button,
+html [type="button"],
+[type="reset"],
+[type="submit"] {
   // Override bootstrap reboot
   -webkit-appearance: inherit;
 }

@@ -111,7 +111,7 @@
 }
 
 
-@include media-breakpoint-down(xs){
+@include media-breakpoint-down(xs) {
   .file-editor {
     .file-title {
       .float-right {

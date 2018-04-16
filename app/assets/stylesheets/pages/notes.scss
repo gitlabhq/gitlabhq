@@ -408,7 +408,7 @@ ul.notes {
   display: flex;
   justify-content: space-between;
 
-  @include notes-media('max', map-get($grid-breakpoints, sm)-1) {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     flex-flow: row wrap;
   }
 }
@@ -427,7 +427,7 @@ ul.notes {
 }
 
 .note-header-author-name {
-  @include notes-media('max', map-get($grid-breakpoints, sm)-1) {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     display: none;
   }
 }
@@ -473,7 +473,7 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', map-get($grid-breakpoints, lg)-1) {
+  @include notes-media('max', map-get($grid-breakpoints, lg) - 1) {
     float: none;
     margin-left: 0;
   }
@@ -491,7 +491,7 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', map-get($grid-breakpoints, sm)-1) {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
     margin-left: 0;
   }
