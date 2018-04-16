@@ -180,10 +180,6 @@
   justify-content: space-between;
   align-items: center;
   flex-grow: 1;
-
-  .merge-request-branches & {
-    flex-direction: column;
-  }
 }
 
 .commit-content {
