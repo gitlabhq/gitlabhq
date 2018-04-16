@@ -1,77 +1,82 @@
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
-import Mousetrap from 'mousetrap';
-import ideSidebar from './ide_side_bar.vue';
-import ideContextbar from './ide_context_bar.vue';
-import repoTabs from './repo_tabs.vue';
-import ideStatusBar from './ide_status_bar.vue';
-import repoEditor from './repo_editor.vue';
-import FindFile from './file_finder/index.vue';
+  import { mapActions, mapState, mapGetters } from 'vuex';
+  import Mousetrap from 'mousetrap';
+  import ideSidebar from './ide_side_bar.vue';
+  import ideContextbar from './ide_context_bar.vue';
+  import repoTabs from './repo_tabs.vue';
+  import ideStatusBar from './ide_status_bar.vue';
+  import repoEditor from './repo_editor.vue';
+  import FindFile from './file_finder/index.vue';
 
-export default {
-  components: {
-    ideSidebar,
-    ideContextbar,
-    repoTabs,
-    ideStatusBar,
-    repoEditor,
-    FindFile,
-  },
-  props: {
-    emptyStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
-  computed: {
-    ...mapState([
-      'changedFiles',
-      'openFiles',
-      'viewer',
-      'currentMergeRequestId',
-      'fileFindVisible',
-    ]),
-    ...mapGetters(['activeFile', 'hasChanges']),
-  },
-  mounted() {
-    const returnValue = 'Are you sure you want to lose unsaved changes?';
-    window.onbeforeunload = e => {
-      if (!this.changedFiles.length) return undefined;
+  const originalStopCallback = Mousetrap.stopCallback;
 
-      Object.assign(e, {
-        returnValue,
+  export default {
+    components: {
+      ideSidebar,
+      ideContextbar,
+      repoTabs,
+      ideStatusBar,
+      repoEditor,
+      FindFile,
+    },
+    props: {
+      emptyStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      noChangesStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      committedStateSvgPath: {
+        type: String,
+        required: true,
+      },
+    },
+    computed: {
+      ...mapState([
+        'changedFiles',
+        'openFiles',
+        'viewer',
+        'currentMergeRequestId',
+        'fileFindVisible',
+      ]),
+      ...mapGetters(['activeFile', 'hasChanges']),
+    },
+    mounted() {
+      const returnValue = 'Are you sure you want to lose unsaved changes?';
+      window.onbeforeunload = e => {
+        if (!this.changedFiles.length) return undefined;
+
+        Object.assign(e, {
+          returnValue,
+        });
+        return returnValue;
+      };
+
+      Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
+        if (e.preventDefault) {
+          e.preventDefault();
+        }
+
+        this.toggleFileFinder(!this.fileFindVisible);
       });
-      return returnValue;
-    };
 
-    Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
-      e.preventDefault();
-      this.toggleFileFinder(!this.fileFindVisible);
-    });
+      Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
+    },
+    methods: {
+      ...mapActions(['toggleFileFinder']),
+      mousetrapStopCallback(e, el, combo) {
+        if (combo === 't' && el.classList.contains('dropdown-input-field')) {
+          return true;
+        } else if (combo === 'command+p' || combo === 'ctrl+p') {
+          return false;
+        }
 
-    const originalStopCallback = Mousetrap.stopCallback;
-    Mousetrap.stopCallback = (e, el, combo) => {
-      if (combo === 't' && el.classList.contains('dropdown-input-field')) {
-        return true;
-      } else if (combo === 'command+p' || combo === 'ctrl+p') {
-        return false;
-      }
-
-      return originalStopCallback(e, el, combo);
-    };
-  },
-  methods: {
-    ...mapActions(['toggleFileFinder']),
-  },
-};
+        return originalStopCallback(e, el, combo);
+      },
+    },
+  };
 </script>
 
 <template>

@@ -4,8 +4,15 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import VirtualList from 'vue-virtual-scroll-list';
 import Item from './item.vue';
 import router from '../../ide_router';
-
-const MAX_RESULTS = 40;
+import {
+  MAX_FILE_FINDER_RESULTS,
+  FILE_FINDER_ROW_HEIGHT,
+  FILE_FINDER_EMPTY_ROW_HEIGHT,
+  UP_KEY_CODE,
+  DOWN_KEY_CODE,
+  ENTER_KEY_CODE,
+  ESC_KEY_CODE,
+} from '../../constants';
 
 export default {
   components: {
@@ -25,12 +32,14 @@ export default {
     filteredBlobs() {
       const searchText = this.searchText.trim();
 
-      if (searchText === '') return this.allBlobs.slice(0, MAX_RESULTS);
+      if (searchText === '') {
+        return this.allBlobs.slice(0, MAX_FILE_FINDER_RESULTS);
+      }
 
       return fuzzaldrinPlus
         .filter(this.allBlobs, searchText, {
           key: 'path',
-          maxResults: MAX_RESULTS,
+          maxResults: MAX_FILE_FINDER_RESULTS,
         })
         .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt);
     },
@@ -38,12 +47,10 @@ export default {
       return this.filteredBlobs.length;
     },
     listShowCount() {
-      if (!this.filteredBlobsLength) return 1;
-
-      return this.filteredBlobsLength > 5 ? 5 : this.filteredBlobsLength;
+      return this.filteredBlobsLength ? Math.min(this.filteredBlobsLength, 5) : 1;
     },
     listHeight() {
-      return this.filteredBlobsLength ? 55 : 33;
+      return this.filteredBlobsLength ? FILE_FINDER_ROW_HEIGHT : FILE_FINDER_EMPTY_ROW_HEIGHT;
     },
     showClearInputButton() {
       return this.searchText.trim() !== '';
@@ -57,7 +64,9 @@ export default {
         } else {
           this.focusedIndex = 0;
 
-          this.$refs.searchInput.focus();
+          if (this.$refs.searchInput) {
+            this.$refs.searchInput.focus();
+          }
         }
       });
     },
@@ -85,8 +94,7 @@ export default {
     },
     onKeydown(e) {
       switch (e.keyCode) {
-        case 38:
-          // UP
+        case UP_KEY_CODE:
           e.preventDefault();
           this.mouseOver = false;
           if (this.focusedIndex > 0) {
@@ -95,8 +103,7 @@ export default {
             this.focusedIndex = this.filteredBlobsLength - 1;
           }
           break;
-        case 40:
-          // DOWN
+        case DOWN_KEY_CODE:
           e.preventDefault();
           this.mouseOver = false;
           if (this.focusedIndex < this.filteredBlobsLength - 1) {
@@ -111,12 +118,10 @@ export default {
     },
     onKeyup(e) {
       switch (e.keyCode) {
-        case 13:
-          // ENTER
+        case ENTER_KEY_CODE:
           this.openFile(this.filteredBlobs[this.focusedIndex]);
           break;
-        case 27:
-          // ESC
+        case ESC_KEY_CODE:
           this.toggleFileFinder(false);
           break;
         default:

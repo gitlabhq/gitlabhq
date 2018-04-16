@@ -30,9 +30,11 @@ export default {
   },
   computed: {
     pathWithEllipsis() {
-      return this.file.path.length < MAX_PATH_LENGTH
-        ? this.file.path
-        : `...${this.file.path.substr(this.file.path.length - MAX_PATH_LENGTH)}`;
+      const path = this.file.path;
+
+      return path.length < MAX_PATH_LENGTH
+        ? path
+        : `...${path.substr(path.length - MAX_PATH_LENGTH)}`;
     },
     nameSearchTextOccurences() {
       return fuzzaldrinPlus.match(this.file.name, this.searchText);

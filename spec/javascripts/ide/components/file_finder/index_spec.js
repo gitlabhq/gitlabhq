@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import FindFileComponent from '~/ide/components/file_finder/index.vue';
+import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/ide/constants';
 import router from '~/ide/ide_router';
 import { file, resetStore } from '../../helpers';
 import { mountComponentWithStore } from '../../../helpers/vue_mount_component_helper';
@@ -214,7 +215,7 @@ describe('IDE File finder item spec', () => {
     describe('onKeyup', () => {
       it('opens file on enter key', done => {
         const event = new CustomEvent('keyup');
-        event.keyCode = 13;
+        event.keyCode = ENTER_KEY_CODE;
 
         spyOn(vm, 'openFile');
 
@@ -229,7 +230,7 @@ describe('IDE File finder item spec', () => {
 
       it('closes file finder on esc key', done => {
         const event = new CustomEvent('keyup');
-        event.keyCode = 27;
+        event.keyCode = ESC_KEY_CODE;
 
         spyOn(vm, 'toggleFileFinder');
 
@@ -252,7 +253,7 @@ describe('IDE File finder item spec', () => {
 
       describe('up key', () => {
         const event = new CustomEvent('keydown');
-        event.keyCode = 38;
+        event.keyCode = UP_KEY_CODE;
 
         it('resets to last index when at top', () => {
           el.dispatchEvent(event);
@@ -271,7 +272,7 @@ describe('IDE File finder item spec', () => {
 
       describe('down key', () => {
         const event = new CustomEvent('keydown');
-        event.keyCode = 40;
+        event.keyCode = DOWN_KEY_CODE;
 
         it('resets to first index when at bottom', () => {
           vm.focusedIndex = 1;
