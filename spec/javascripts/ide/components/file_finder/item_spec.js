@@ -19,6 +19,7 @@ describe('IDE File finder item spec', () => {
       file: localFile,
       focused: true,
       searchText: '',
+      index: 0,
     });
   });
 

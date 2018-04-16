@@ -1,5 +1,4 @@
 <script>
-import { escape } from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import FileIcon from '../../../vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '../changed_file_icon.vue';
@@ -31,7 +30,7 @@ export default {
   },
   computed: {
     pathWithEllipsis() {
-      return this.file.path.length < MAX_PATH_LENGTH || !addEllipsis
+      return this.file.path.length < MAX_PATH_LENGTH
         ? this.file.path
         : `...${this.file.path.substr(this.file.path.length - MAX_PATH_LENGTH)}`;
     },
