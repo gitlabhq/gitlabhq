@@ -67,6 +67,8 @@ module Projects
                                                    forked_from_project: @project)
       end
 
+      # Needed to force Rails to reload the has_one fork_network association
+      fork_to_project.reload
       refresh_forks_count
     end
 
