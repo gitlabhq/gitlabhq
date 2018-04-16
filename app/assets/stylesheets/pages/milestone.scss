@@ -223,7 +223,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .milestone-banner-text,
   .milestone-banner-link {
     display: inline;
