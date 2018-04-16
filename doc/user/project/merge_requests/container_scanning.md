@@ -1,4 +1,4 @@
-# Container Scanning
+# Container Scanning **[ULTIMATE]**
 
 > [Introduced][ee-3672] in [GitLab Ultimate][ee] 10.4.
 

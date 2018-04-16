@@ -1,4 +1,4 @@
-# Web IDE
+# Web IDE **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.4.
 

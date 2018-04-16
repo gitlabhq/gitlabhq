@@ -1,8 +1,4 @@
-# Dependency Scanning with GitLab CI/CD
-
-NOTE: **Note:**
-In order to use this tool, a [GitLab Ultimate][ee] license
-is needed.
+# Dependency Scanning with GitLab CI/CD **[ULTIMATE]**
 
 This example shows how to run Dependency Scanning on your
 project's dependencies by using GitLab CI/CD.

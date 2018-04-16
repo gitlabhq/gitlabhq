@@ -36,10 +36,10 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers **[STARTER]**
 - [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
-- Analyze your source code for vulnerabilities with [Static Application Security Testing](#static-application-security-testing) (available in GitLab Ultimate)
-- Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) (available in GitLab Ultimate)
-- Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) (available in GitLab Ultimate)
-- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) (available in GitLab Ultimate)
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](#static-application-security-testing) **[ULTIMATE]**
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) **[ULTIMATE]**
+- Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) **[ULTIMATE]**
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) **[ULTIMATE]**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) **[PREMIUM]**
 
 ## Use cases
@@ -237,7 +237,7 @@ can show the Code Climate report right in the merge request widget area.
 
 [Read more about Code Quality reports.](code_quality_diff.md)
 
-## Static Application Security Testing
+## Static Application Security Testing **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][products] 10.3.
 
@@ -248,7 +248,7 @@ merge request widget area.
 
 [Read more about Static Application Security Testing reports.](sast.md)
 
-## Dependency Scanning
+## Dependency Scanning **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][products] 10.7.
 
@@ -259,7 +259,7 @@ merge request widget area.
 
 [Read more about Dependency Scanning reports.](dependency_scanning.md)
 
-## Container Scanning
+## Container Scanning **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][products] 10.4.
 
@@ -270,7 +270,7 @@ merge request widget area.
 
 [Read more about Container Scanning reports.](container_scanning.md)
 
-## Dynamic Application Security Testing
+## Dynamic Application Security Testing **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][products] 10.4.
 
