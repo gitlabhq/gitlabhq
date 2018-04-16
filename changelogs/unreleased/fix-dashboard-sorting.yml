@@ -1,0 +1,5 @@
+---
+title: Prioritize weight over title when sorting charts
+merge_request: 18233
+author:
+type: fixed

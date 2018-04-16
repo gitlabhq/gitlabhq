@@ -252,6 +252,10 @@ class Namespace < ActiveRecord::Base
     []
   end
 
+  def refresh_project_authorizations
+    owner.refresh_authorized_projects
+  end
+
   private
 
   def path_or_parent_changed?

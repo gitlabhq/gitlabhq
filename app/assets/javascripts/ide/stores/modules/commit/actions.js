@@ -37,9 +37,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commitId: `<a href="${currentProject.web_url}/commit/${
+      commitId: `<a href="${currentProject.web_url}/commit/${data.short_id}" class="commit-sha">${
         data.short_id
-      }" class="commit-sha">${data.short_id}</a>`,
+      }</a>`,
       commitStats,
     },
     false,
@@ -54,9 +54,7 @@ export const checkCommitStatus = ({ rootState }) =>
     .then(({ data }) => {
       const { id } = data.commit;
       const selectedBranch =
-        rootState.projects[rootState.currentProjectId].branches[
-          rootState.currentBranchId
-        ];
+        rootState.projects[rootState.currentProjectId].branches[rootState.currentBranchId];
 
       if (selectedBranch.workingReference !== id) {
         return true;
@@ -135,32 +133,15 @@ export const updateFilesAfterCommit = (
 
   if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
     router.push(
-      `/project/${rootState.currentProjectId}/blob/${branch}/${
-        rootGetters.activeFile.path
-      }`,
+      `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
     );
   }
-
-  dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
 };
 
-export const commitChanges = ({
-  commit,
-  state,
-  getters,
-  dispatch,
-  rootState,
-}) => {
+export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload(
-    getters.branchName,
-    newBranch,
-    state,
-    rootState,
-  );
-  const getCommitStatus = newBranch
-    ? Promise.resolve(false)
-    : dispatch('checkCommitStatus');
+  const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
+  const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
 
   commit(types.UPDATE_LOADING, true);
 
@@ -182,28 +163,29 @@ export const commitChanges = ({
 
       if (!data.short_id) {
         flash(data.message, 'alert', document, null, false, true);
-        return;
+        return null;
       }
 
       dispatch('setLastCommitMessage', data);
       dispatch('updateCommitMessage', '');
-
-      if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
-        dispatch(
-          'redirectToUrl',
-          createNewMergeRequestUrl(
-            rootState.projects[rootState.currentProjectId].web_url,
-            getters.branchName,
-            rootState.currentBranchId,
-          ),
-          { root: true },
-        );
-      } else {
-        dispatch('updateFilesAfterCommit', {
-          data,
-          branch: getters.branchName,
-        });
-      }
+      return dispatch('updateFilesAfterCommit', {
+        data,
+        branch: getters.branchName,
+      })
+        .then(() => {
+          if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
+            dispatch(
+              'redirectToUrl',
+              createNewMergeRequestUrl(
+                rootState.projects[rootState.currentProjectId].web_url,
+                getters.branchName,
+                rootState.currentBranchId,
+              ),
+              { root: true },
+            );
+          }
+        })
+        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');

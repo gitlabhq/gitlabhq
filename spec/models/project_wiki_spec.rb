@@ -172,11 +172,12 @@ describe ProjectWiki do
 
   describe '#find_file' do
     shared_examples 'finding a wiki file' do
+      let(:image) { File.open(Rails.root.join('spec', 'fixtures', 'big-image.png')) }
+
       before do
-        file = File.open(Rails.root.join('spec', 'fixtures', 'dk.png'))
         subject.wiki # Make sure the wiki repo exists
 
-        BareRepoOperations.new(subject.repository.path_to_repo).commit_file(file, 'image.png')
+        BareRepoOperations.new(subject.repository.path_to_repo).commit_file(image, 'image.png')
       end
 
       it 'returns the latest version of the file if it exists' do
@@ -191,6 +192,13 @@ describe ProjectWiki do
       it 'returns a Gitlab::Git::WikiFile instance' do
         file = subject.find_file('image.png')
         expect(file).to be_a Gitlab::Git::WikiFile
+      end
+
+      it 'returns the whole file' do
+        file = subject.find_file('image.png')
+        image.rewind
+
+        expect(file.raw_data.b).to eq(image.read.b)
       end
     end
 

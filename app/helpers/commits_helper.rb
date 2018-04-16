@@ -93,25 +93,18 @@ module CommitsHelper
     return unless current_controller?(:commits)
 
     if @path.blank?
-      return link_to(
-        _("Browse Files"),
-        project_tree_path(project, commit),
-        class: "btn btn-default"
-      )
+      url = project_tree_path(project, commit)
+      tooltip = _("Browse Files")
     elsif @repo.blob_at(commit.id, @path)
-      return link_to(
-        _("Browse File"),
-        project_blob_path(project,
-                                    tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      url = project_blob_path(project, tree_join(commit.id, @path))
+      tooltip = _("Browse File")
     elsif @path.present?
-      return link_to(
-        _("Browse Directory"),
-        project_tree_path(project,
-                                    tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      url = project_tree_path(project, tree_join(commit.id, @path))
+      tooltip = _("Browse Directory")
+    end
+
+    link_to url, class: "btn btn-default has-tooltip", title: tooltip, data: { container: "body" } do
+      sprite_icon('folder-open')
     end
   end
 
@@ -170,7 +163,7 @@ module CommitsHelper
     tooltip = "#{action.capitalize} this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
     btn_class = "btn btn-#{btn_class}" unless btn_class.nil?
 
-    if can_collaborate_with_project?
+    if can_collaborate_with_project?(@project)
       link_to action.capitalize, "#modal-#{action}-commit", 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {

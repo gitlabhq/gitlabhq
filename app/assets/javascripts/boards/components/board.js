@@ -5,7 +5,7 @@ import Sortable from 'vendor/Sortable';
 import Vue from 'vue';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list.vue';
-import boardBlankState from './board_blank_state';
+import BoardBlankState from './board_blank_state.vue';
 import './board_delete';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -18,7 +18,7 @@ gl.issueBoards.Board = Vue.extend({
   components: {
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
-    boardBlankState,
+    BoardBlankState,
   },
   props: {
     list: Object,

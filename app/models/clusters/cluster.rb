@@ -15,7 +15,7 @@ module Clusters
     belongs_to :user
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
-    has_many :projects, through: :cluster_projects, class_name: '::Project'
+    has_many :projects, -> { auto_include(false) }, through: :cluster_projects, class_name: '::Project'
 
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true

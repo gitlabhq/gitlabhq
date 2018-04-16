@@ -1,5 +1,0 @@
----
-title: Free open file descriptors and libgit2 buffers in UpdatePagesService
-merge_request:
-author:
-type: performance

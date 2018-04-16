@@ -915,6 +915,29 @@ Example response:
 }
 ```
 
+## Languages
+
+Get languages used in a project with percentage value.
+
+```
+GET /projects/:id/languages
+```
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/languages"
+```
+
+Example response:
+
+```json
+{
+  "Ruby": 66.69,
+  "JavaScript": 22.98,
+  "HTML": 7.91,
+  "CoffeeScript": 2.42
+}
+```
+
 ## Archive a project
 
 Archives the project if the user is either admin or the project owner of this project. This action is
