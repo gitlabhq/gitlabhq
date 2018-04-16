@@ -201,17 +201,21 @@ module Geo
       # Remove the deleted path in case it exists, but it may not be there
       gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
 
-      # Make sure we have a namespace directory
-      gitlab_shell.add_namespace(project.repository_storage_path, deleted_disk_path_temp)
-
       # Make sure we have the most current state of exists?
       repository.expire_exists_cache
 
-      if repository.exists? && !gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
-        raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
+      # Move the current canonical repository to the deleted path for reference
+      if repository.exists?
+        ensure_repository_namespace(deleted_disk_path_temp)
+
+        unless gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
+          raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
+        end
       end
 
-      gitlab_shell.add_namespace(project.repository_storage_path, repository.disk_path)
+      # Move the temporary repository to the canonical path
+
+      ensure_repository_namespace(repository.disk_path)
 
       unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
         raise Gitlab::Shell::Error, 'Can not move temporary repository'
@@ -221,6 +225,13 @@ module Geo
       unless gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
         raise Gitlab::Shell::Error, 'Can not remove outdated main repository'
       end
+    end
+
+    def ensure_repository_namespace(disk_path)
+      gitlab_shell.add_namespace(
+        project.repository_storage_path,
+        File.dirname(disk_path)
+      )
     end
 
     # To prevent the retry time from storing invalid dates in the database,
