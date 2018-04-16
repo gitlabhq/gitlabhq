@@ -56,6 +56,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
+<<<<<<< HEAD
     import_sources = params[:application_setting][:import_sources]
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
@@ -64,13 +65,20 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
         source.to_str
       end
     end
+=======
+    params[:application_setting] ||= {}
 
-    enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
+    if params[:application_setting].key?(:enabled_oauth_sign_in_sources)
+      enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
+      enabled_oauth_sign_in_sources&.delete("")
+>>>>>>> 37c8c97c22a... Merge branch 'dz-fix-admin-import-sources' into 'master'
 
-    params[:application_setting][:disabled_oauth_sign_in_sources] =
-      AuthHelper.button_based_providers.map(&:to_s) -
-      Array(enabled_oauth_sign_in_sources)
+      params[:application_setting][:disabled_oauth_sign_in_sources] =
+        AuthHelper.button_based_providers.map(&:to_s) -
+        Array(enabled_oauth_sign_in_sources)
+    end
 
+    params[:application_setting][:import_sources]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
