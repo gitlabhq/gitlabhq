@@ -36,7 +36,7 @@ const router = new VueRouter({
   base: `${gon.relative_url_root}/-/ide/`,
   routes: [
     {
-      path: '/project/:namespace/:project',
+      path: '/project/:namespace/:project*',
       component: EmptyRouterComponent,
       children: [
         {
