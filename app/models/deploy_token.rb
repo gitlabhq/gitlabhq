@@ -4,6 +4,7 @@ class DeployToken < ActiveRecord::Base
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
+  GITLAB_DEPLOY_TOKEN = 'gitlab-deploy-token'.freeze
 
   default_value_for(:expires_at) { Forever.date }
 
