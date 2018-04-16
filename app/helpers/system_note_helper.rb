@@ -1,4 +1,6 @@
 module SystemNoteHelper
+  prepend EE::SystemNoteHelper
+
   ICON_NAMES_BY_ACTION = {
     'commit' => 'commit',
     'description' => 'pencil',

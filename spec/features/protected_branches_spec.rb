@@ -84,10 +84,10 @@ feature 'Protected Branches', :js do
 
         within form do
           page.within(".js-allowed-to-merge") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("1 role, 0 users, 0 groups")
+            expect(page.find(".dropdown-toggle-text")).to have_content("No one")
           end
           page.within(".js-allowed-to-push") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("1 role, 0 users, 0 groups")
+            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Masters")
           end
         end
       end

@@ -1,5 +1,9 @@
 module Gitlab
   module Geo
+    # This class is responsible for:
+    #   * Requesting an LfsObject file from the primary
+    #   * Saving it in the right place on successful download
+    #   * Returning a detailed Result object
     class LfsTransfer < Transfer
       def initialize(lfs_object)
         @file_type = :lfs

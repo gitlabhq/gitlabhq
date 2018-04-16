@@ -3,8 +3,8 @@ import axios from '~/lib/utils/axios_utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import Flash from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';
+import AccessDropdown from 'ee/projects/settings/access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
-import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 
 const PB_LOCAL_STORAGE_KEY = 'protected-branches-defaults';
 
@@ -30,7 +30,7 @@ export default class ProtectedBranchCreate {
     this.onSelectCallback = this.onSelect.bind(this);
 
     // Allowed to Merge dropdown
-    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new ProtectedBranchAccessDropdown({
+    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new AccessDropdown({
       $dropdown: $allowedToMergeDropdown,
       accessLevelsData: gon.merge_access_levels,
       onSelect: this.onSelectCallback,
@@ -38,7 +38,7 @@ export default class ProtectedBranchCreate {
     });
 
     // Allowed to Push dropdown
-    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new ProtectedBranchAccessDropdown({
+    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new AccessDropdown({
       $dropdown: $allowedToPushDropdown,
       accessLevelsData: gon.push_access_levels,
       onSelect: this.onSelectCallback,
@@ -82,12 +82,12 @@ export default class ProtectedBranchCreate {
       },
     };
 
-    Object.keys(ACCESS_LEVELS).forEach((level) => {
+    Object.keys(ACCESS_LEVELS).forEach(level => {
       const accessLevel = ACCESS_LEVELS[level];
       const selectedItems = this[`${accessLevel}_dropdown`].getSelectedItems();
       const levelAttributes = [];
 
-      selectedItems.forEach((item) => {
+      selectedItems.forEach(item => {
         if (item.type === LEVEL_TYPES.USER) {
           levelAttributes.push({
             user_id: item.user_id,
@@ -115,10 +115,14 @@ export default class ProtectedBranchCreate {
       if (savedDefaults != null) {
         this[`${ACCESS_LEVELS.MERGE}_dropdown`].setSelectedItems(savedDefaults.merge);
         let updatedLabel = this[`${ACCESS_LEVELS.MERGE}_dropdown`].toggleLabel();
-        this[`${ACCESS_LEVELS.MERGE}_dropdown`].$dropdown.find('.dropdown-toggle-text').text(updatedLabel);
+        this[`${ACCESS_LEVELS.MERGE}_dropdown`].$dropdown
+          .find('.dropdown-toggle-text')
+          .text(updatedLabel);
         this[`${ACCESS_LEVELS.PUSH}_dropdown`].setSelectedItems(savedDefaults.push);
         updatedLabel = this[`${ACCESS_LEVELS.PUSH}_dropdown`].toggleLabel();
-        this[`${ACCESS_LEVELS.PUSH}_dropdown`].$dropdown.find('.dropdown-toggle-text').text(updatedLabel);
+        this[`${ACCESS_LEVELS.PUSH}_dropdown`].$dropdown
+          .find('.dropdown-toggle-text')
+          .text(updatedLabel);
       }
     }
   }

@@ -25,12 +25,18 @@ to perform audits for your Docker-based apps.
 
 ## How it works
 
+>**Note:**
+In [GitLab Ultimate][ee] 10.7, another job name has been introduced: `container_scanning`.
+This new job name will replace `sast:container` which is scheduled to be removed in
+GitLab 11.0. You are advised to update your current `.gitlab-ci.yml` configuration
+to reflect that change.
+
 In order for the report to show in the merge request, you need to specify a
-`sast:container` job (exact name) that will analyze the code and upload the
+`container_scanning` job (exact name) that will analyze the code and upload the
 resulting `gl-sast-container-report.json` file as an artifact (exact filename).
 GitLab will then check this file and show the information inside the merge request.
 
-For more information on how the `sast:container` job should look like, check the
+For more information on how the `container_scanning` job should look like, check the
 example on [analyzing a Docker image for vulnerabilities][cc-docs].
 
 [ee-3672]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672

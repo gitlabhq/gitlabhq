@@ -3,22 +3,29 @@ require 'spec_helper'
 describe Gitlab::Geo::JobArtifactDownloader, :geo do
   let(:job_artifact) { create(:ci_job_artifact) }
 
-  subject do
-    described_class.new(:job_artifact, job_artifact.id)
-  end
+  context '#execute' do
+    context 'with job artifact' do
+      it 'returns a FileDownloader::Result object' do
+        downloader = described_class.new(:job_artifact, job_artifact.id)
+        result = Gitlab::Geo::Transfer::Result.new(success: true, bytes_downloaded: 1)
 
-  context '#download_from_primary' do
-    it 'with a job artifact' do
-      allow_any_instance_of(Gitlab::Geo::JobArtifactTransfer)
-        .to receive(:download_from_primary).and_return(100)
+        allow_any_instance_of(Gitlab::Geo::JobArtifactTransfer)
+          .to receive(:download_from_primary).and_return(result)
 
-      expect(subject.execute).to eq(100)
+        expect(downloader.execute).to be_a(Gitlab::Geo::FileDownloader::Result)
+      end
     end
 
-    it 'with an unknown job artifact' do
-      expect(described_class.new(:job_artifact, 10000)).not_to receive(:download_from_primary)
+    context 'with unknown job artifact' do
+      let(:downloader) { described_class.new(:job_artifact, 10000) }
 
-      expect(subject.execute).to be_nil
+      it 'returns a FileDownloader::Result object' do
+        expect(downloader.execute).to be_a(Gitlab::Geo::FileDownloader::Result)
+      end
+
+      it 'returns a result indicating a failure before a transfer was attempted' do
+        expect(downloader.execute.failed_before_transfer).to be_truthy
+      end
     end
   end
 end

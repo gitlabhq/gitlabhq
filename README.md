@@ -22,7 +22,7 @@ The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab
 
 ## Free trial
 
-You can request a free trial of GitLab Enterprise Edition [on our website](https://about.gitlab.com/free-trial/).
+You can request a free trial of GitLab Ultimate [on our website](https://about.gitlab.com/free-trial/).
 
 ## Subscriber onboarding information
 

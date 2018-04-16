@@ -528,108 +528,46 @@ describe ObjectStorage do
     end
   end
 
-  describe '#store_workhorse_file!' do
+  describe '#cache!' do
     subject do
-      uploader.store_workhorse_file!(params, :file)
+      uploader.cache!(uploaded_file)
     end
 
     context 'when local file is used' do
       context 'when valid file is used' do
-        let(:target_path) do
-          File.join(uploader_class.root, uploader_class::TMP_UPLOAD_PATH)
+        let(:uploaded_file) do
+          fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
         end
 
-        before do
-          FileUtils.mkdir_p(target_path)
-        end
+        it "properly caches the file" do
+          subject
 
-        context 'when no filename is specified' do
-          let(:params) do
-            { "file.path" => "test/file" }
-          end
-
-          it 'raises an error' do
-            expect { subject }.to raise_error(uploader_class::RemoteStoreError, /Missing filename/)
-          end
-        end
-
-        context 'when invalid file is specified' do
-          let(:file_path) do
-            File.join(target_path, "..", "test.file")
-          end
-
-          before do
-            FileUtils.touch(file_path)
-          end
-
-          let(:params) do
-            { "file.path" => file_path,
-              "file.name" => "my_file.txt" }
-          end
-
-          it 'raises an error' do
-            expect { subject }.to raise_error(uploader_class::RemoteStoreError, /Bad file path/)
-          end
-        end
-
-        context 'when filename is specified' do
-          let(:params) do
-            { "file.path" => tmp_file,
-              "file.name" => "my_file.txt" }
-          end
-
-          let(:tmp_file) { Tempfile.new('filename', target_path) }
-
-          before do
-            FileUtils.touch(tmp_file)
-          end
-
-          after do
-            FileUtils.rm_f(tmp_file)
-          end
-
-          it 'succeeds' do
-            expect { subject }.not_to raise_error
-
-            expect(uploader).to be_exists
-          end
-
-          it 'proper path is being used' do
-            subject
-
-            expect(uploader.path).to start_with(uploader_class.root)
-            expect(uploader.path).to end_with("my_file.txt")
-          end
-
-          it 'source file to not exist' do
-            subject
-
-            expect(File.exist?(tmp_file.path)).to be_falsey
-          end
+          expect(uploader).to be_exists
+          expect(uploader.path).to start_with(uploader_class.root)
+          expect(uploader.filename).to eq('rails_sample.jpg')
         end
       end
     end
 
     context 'when remote file is used' do
+      let(:temp_file) { Tempfile.new("test") }
+
       let!(:fog_connection) do
         stub_uploads_object_storage(uploader_class)
       end
 
+      before do
+        FileUtils.touch(temp_file)
+      end
+
+      after do
+        FileUtils.rm_f(temp_file)
+      end
+
       context 'when valid file is used' do
-        context 'when no filename is specified' do
-          let(:params) do
-            { "file.remote_id" => "test/123123" }
-          end
-
-          it 'raises an error' do
-            expect { subject }.to raise_error(uploader_class::RemoteStoreError, /Missing filename/)
-          end
-        end
-
         context 'when invalid file is specified' do
-          let(:params) do
-            { "file.remote_id" => "../test/123123",
-              "file.name" => "my_file.txt" }
+          let(:uploaded_file) do
+            UploadedFile.new(temp_file.path, remote_id: "../test/123123")
           end
 
           it 'raises an error' do
@@ -638,9 +576,8 @@ describe ObjectStorage do
         end
 
         context 'when non existing file is specified' do
-          let(:params) do
-            { "file.remote_id" => "test/12312300",
-              "file.name" => "my_file.txt" }
+          let(:uploaded_file) do
+            UploadedFile.new(temp_file.path, remote_id: "test/123123")
           end
 
           it 'raises an error' do
@@ -648,10 +585,9 @@ describe ObjectStorage do
           end
         end
 
-        context 'when filename is specified' do
-          let(:params) do
-            { "file.remote_id" => "test/123123",
-              "file.name" => "my_file.txt" }
+        context 'when valid file is specified' do
+          let(:uploaded_file) do
+            UploadedFile.new(temp_file.path, filename: "my_file.txt", remote_id: "test/123123")
           end
 
           let!(:fog_file) do
@@ -661,35 +597,36 @@ describe ObjectStorage do
             )
           end
 
-          it 'succeeds' do
+          it 'file to be cached and remote stored' do
             expect { subject }.not_to raise_error
 
             expect(uploader).to be_exists
-          end
-
-          it 'path to not be temporary' do
-            subject
-
+            expect(uploader).to be_cached
             expect(uploader.path).not_to be_nil
-            expect(uploader.path).not_to include('tmp/upload')
-            expect(uploader.url).to include('/my_file.txt')
+            expect(uploader.path).not_to include('tmp/cache')
+            expect(uploader.url).not_to be_nil
+            expect(uploader.path).not_to include('tmp/cache')
+            expect(uploader.object_store).to eq(described_class::Store::REMOTE)
           end
 
-          it 'url is used' do
-            subject
+          context 'when file is stored' do
+            subject do
+              uploader.store!(uploaded_file)
+            end
 
-            expect(uploader.url).not_to be_nil
-            expect(uploader.url).to include('/my_file.txt')
+            it 'file to be remotely stored in permament location' do
+              subject
+
+              expect(uploader).to be_exists
+              expect(uploader).not_to be_cached
+              expect(uploader.path).not_to be_nil
+              expect(uploader.path).not_to include('tmp/upload')
+              expect(uploader.path).not_to include('tmp/cache')
+              expect(uploader.url).to include('/my_file.txt')
+              expect(uploader.object_store).to eq(described_class::Store::REMOTE)
+            end
           end
         end
-      end
-    end
-
-    context 'when no file is used' do
-      let(:params) { {} }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(uploader_class::RemoteStoreError, /Bad file/)
       end
     end
   end

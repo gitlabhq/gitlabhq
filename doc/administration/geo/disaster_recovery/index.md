@@ -1,13 +1,13 @@
 # Disaster Recovery
 
-Geo replicates your database, your Git repositories, and few other assets. 
+Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
 failover with minimal effort, in a disaster situation.
 
 See [Geo current limitations][geo-limitations] for more information.
 
 CAUTION: **Warning:**
-Disaster recovery for multi-secondary configurations is in **Alpha**. 
+Disaster recovery for multi-secondary configurations is in **Alpha**.
 For the latest updates, check the multi-secondary [Disaster Recovery epic][gitlab-org&65].
 
 ## Promoting secondary Geo replica in single-secondary configurations
@@ -56,11 +56,11 @@ must disable the primary.
     ```bash
     yum remove gitlab-ee
     ```
-    
+
     > **Ubuntu 14.04 LTS**: If you are using an older version of Ubuntu
     or any other distro based on the Upstart init system, you can prevent GitLab
     from starting if the machine reboots by doing the following:
-    
+
     ```bash
     initctl stop gitlab-runsvvdir
     echo 'manual' > /etc/init/gitlab-runsvdir.override
@@ -72,12 +72,16 @@ must disable the primary.
     Since there are many ways you may prefer to accomplish this, we will avoid a
     single recommendation. You may need to:
       - Reconfigure the load balancers
-      - Change DNS records (e.g., point the primary DNS record to the secondary 
+      - Change DNS records (e.g., point the primary DNS record to the secondary
         node in order to stop usage of the primary)
       - Stop the virtual servers
       - Block traffic through a firewall
       - Revoke object storage permissions from the primary
       - Physically disconnect a machine
+
+1. If you plan to
+   [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
+   you may wish to lower the TTL now to speed up propagation.
 
 ### Step 3. Promoting a secondary Geo replica
 
@@ -121,7 +125,7 @@ The command above does the following changes:
 - Executes `gitlab-ctl reconfigure` to apply the changes in `/etc/gitlab/gitlab.rb`
 - Runs `gitlab-rake geo:set_secondary_as_primary`
 
-You need to make sure all the affected machines no longer have `geo_secondary_role['enable'] = true` in 
+You need to make sure all the affected machines no longer have `geo_secondary_role['enable'] = true` in
 `/etc/gitlab/gitlab.rb`, that you execute the database promotion on the required database nodes
 and you execute the `gitlab-rake geo:set_secondary_as_primary` in a machine running the application server.
 
@@ -145,6 +149,10 @@ secondary domain, like changing Git remotes and API URLs.
     # Change the existing external_url configuration
     external_url 'https://gitlab.example.com'
     ```
+
+    NOTE: **Note**
+    Changing `external_url` won't prevent access via the old secondary URL, as
+    long as the secondary DNS records are still intact.
 
 1. Reconfigure the secondary node for the change to take effect:
 
@@ -174,13 +182,75 @@ To bring a new secondary online, follow the [Geo setup instructions][setup-geo].
 
 ## Promoting secondary Geo replica in multi-secondary configurations
 
-CAUTION: **Warning:**
-Disaster Recovery for multi-secondary configurations is in **Alpha** development. 
-Do not use this as your only Disaster Recovery strategy as you may lose data.
+If you have more than one secondary and you need to promote one of them we suggest you to follow
+[Promoting secondary Geo replica in single-secondary configurations](#promoting-secondary-geo-replica-in-single-secondary-configurations)
+and after that you also need two extra steps.
 
-Disaster Recovery does not yet support systems with multiple
-secondary Geo replicas (e.g., one primary and two or more secondaries). We are
-working on it, see [gitlab-org/gitlab-ee#4284] for details.
+### Step 1. Prepare the new primary to serve one or more secondaries
+
+1. SSH into your **secondary** and login as root:
+
+    ```bash
+    sudo -i
+    ```
+
+1. Edit `/etc/gitlab/gitlab.rb`
+
+    ```ruby
+    ##
+    # Primary and Secondary addresses
+    # - replace '1.2.3.4' with the primary public or VPC address
+    # - replace '5.6.7.8' with the secondary public or VPC address
+    ##
+    postgresql['md5_auth_cidr_addresses'] = ['1.2.3.4/32', '5.6.7.8/32']
+
+    # Every secondary server needs to have its own slot so specify the number of secondary nodes you're going to have
+    postgresql['max_replication_slots'] = 1
+
+    ##
+    ## Disable automatic database migrations temporarily
+    ## (until PostgreSQL is restarted and listening on the private address).
+    ##
+    gitlab_rails['auto_migrate'] = false
+
+    ```
+
+    For more details about these settings you can read [Configure the primary server][configure-the-primary-server]
+
+1. Save the file and reconfigure GitLab for the database listen changes and
+   the replication slot changes to be applied.
+
+    ```bash
+    gitlab-ctl reconfigure
+    ```
+
+    Restart PostgreSQL for its changes to take effect:
+
+    ```bash
+    gitlab-ctl restart postgresql
+    ```
+
+1. Re-enable migrations now that PostgreSQL is restarted and listening on the
+   private address.
+
+    Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
+
+    ```ruby
+    gitlab_rails['auto_migrate'] = true
+    ```
+
+    Save the file and reconfigure GitLab:
+
+    ```bash
+    gitlab-ctl reconfigure
+    ```
+
+### Step 2. Initiate the replication process
+
+Now we need to make each secondary listen to changes on the new primary. To do that you need
+to [initiate the replication process][initiate-the-replication-process] again but this time
+for another primary. All the old replication settings will be overwritten.
+
 
 ## Troubleshooting
 
@@ -206,3 +276,5 @@ section to resolve the error. Otherwise, the secret is lost and you'll need to
 [sec-tfa]: ../../../security/two_factor_authentication.md#disabling-2fa-for-everyone
 [gitlab-org/omnibus-gitlab#3058]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058
 [gitlab-org/gitlab-ee#4284]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4284
+[initiate-the-replication-process]: ../replication/database.html#step-3-initiate-the-replication-process
+[configure-the-primary-server]: ../replication/database.html#step-1-configure-the-primary-server

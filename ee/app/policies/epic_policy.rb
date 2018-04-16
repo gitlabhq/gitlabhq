@@ -10,8 +10,5 @@ class EpicPolicy < BasePolicy
     enable :create_note
   end
 
-  rule { can?(:admin_epic) }.policy do
-    enable :update_note
-    enable :admin_note
-  end
+  rule { can?(:create_note) }.enable :award_emoji
 end

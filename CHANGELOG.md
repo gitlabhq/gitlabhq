@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.6.4 (2018-04-09)
+
+### Fixed (9 changes, 1 of them is from the community)
+
+- Correct copy text for the promote milestone and label modals. !17726
+- Avoid validation errors when running the Pages domain verification service. !17992
+- Fix autolinking URLs containing ampersands. !18045
+- Fix exceptions raised when migrating pipeline stages in the background. !18076
+- Work around Prometheus Helm chart name changes to fix integration. !18206 (joshlambert)
+- Don't show Jump to Discussion button on Issues.
+- Fix data race between ObjectStorage background_upload and Pages publishing.
+- Fix listing commit branch/tags that contain special characters.
+- Fix 404 in group boards when moving issue between lists.
+
+### Performance (1 change)
+
+- Free open file descriptors and libgit2 buffers in UpdatePagesService.
+
+
 ## 10.6.3 (2018-04-03)
 
 ### Security (2 changes)

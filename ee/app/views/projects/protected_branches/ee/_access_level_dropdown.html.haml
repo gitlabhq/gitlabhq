@@ -1,9 +1,0 @@
-- default_label = 'Select'
-- dropdown_label = default_label
-
-%div{ class: "#{input_basic_name}-container" }
-  - if access_levels.present?
-    - dropdown_label = [pluralize(level_frequencies[:role], 'role'), pluralize(level_frequencies[:user], 'user'), pluralize(level_frequencies[:group], 'group')].to_sentence
-
-  = dropdown_tag(dropdown_label, options: { toggle_class: "#{toggle_class} js-multiselect", dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
-                                 data: { default_label: default_label, preselected_items: access_levels_data(access_levels) } })

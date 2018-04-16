@@ -1,27 +1,35 @@
-import _ from 'underscore';
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import stage from '~/pipelines/components/stage.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Pipelines stage component', () => {
   let StageComponent;
   let component;
+  let mock;
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+
     StageComponent = Vue.extend(stage);
 
-    component = new StageComponent({
-      propsData: {
-        stage: {
-          status: {
-            group: 'success',
-            icon: 'icon_status_success',
-            title: 'success',
-          },
-          dropdown_path: 'foo',
+    component = mountComponent(StageComponent, {
+      stage: {
+        status: {
+          group: 'success',
+          icon: 'icon_status_success',
+          title: 'success',
         },
-        updateDropdown: false,
+        dropdown_path: 'path.json',
       },
-    }).$mount();
+      updateDropdown: false,
+    });
+  });
+
+  afterEach(() => {
+    component.$destroy();
+    mock.restore();
   });
 
   it('should render a dropdown with the status icon', () => {
@@ -31,23 +39,11 @@ describe('Pipelines stage component', () => {
   });
 
   describe('with successfull request', () => {
-    const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({ html: 'foo' }), {
-        status: 200,
-      }));
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
+      mock.onGet('path.json').reply(200, { html: 'foo' });
     });
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, interceptor,
-      );
-    });
-
-    it('should render the received data', (done) => {
+    it('should render the received data', done => {
       component.$el.querySelector('button').click();
 
       setTimeout(() => {
@@ -60,20 +56,8 @@ describe('Pipelines stage component', () => {
   });
 
   describe('when request fails', () => {
-    const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({}), {
-        status: 500,
-      }));
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, interceptor,
-      );
+      mock.onGet('path.json').reply(500);
     });
 
     it('should close the dropdown', () => {
@@ -86,33 +70,18 @@ describe('Pipelines stage component', () => {
   });
 
   describe('update endpoint correctly', () => {
-    const updatedInterceptor = (request, next) => {
-      if (request.url === 'bar') {
-        next(request.respondWith(JSON.stringify({ html: 'this is the updated content' }), {
-          status: 200,
-        }));
-      }
-      next();
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(updatedInterceptor);
+      mock.onGet('bar.json').reply(200, { html: 'this is the updated content' });
     });
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, updatedInterceptor,
-      );
-    });
-
-    it('should update the stage to request the new endpoint provided', (done) => {
+    it('should update the stage to request the new endpoint provided', done => {
       component.stage = {
         status: {
           group: 'running',
           icon: 'running',
           title: 'running',
         },
-        dropdown_path: 'bar',
+        dropdown_path: 'bar.json',
       };
 
       Vue.nextTick(() => {
@@ -121,7 +90,7 @@ describe('Pipelines stage component', () => {
         setTimeout(() => {
           expect(
             component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
-            ).toEqual('this is the updated content');
+          ).toEqual('this is the updated content');
           done();
         });
       });

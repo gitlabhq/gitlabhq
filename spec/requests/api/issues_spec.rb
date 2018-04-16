@@ -388,6 +388,30 @@ describe API::Issues do
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
+    context 'when group has subgroups', :nested_groups do
+      let(:subgroup_1) { create(:group, parent: group) }
+      let(:subgroup_2) { create(:group, parent: subgroup_1) }
+
+      let(:subgroup_1_project) { create(:project, namespace: subgroup_1) }
+      let(:subgroup_2_project) { create(:project, namespace: subgroup_2) }
+
+      let!(:issue_1) { create(:issue, project: subgroup_1_project) }
+      let!(:issue_2) { create(:issue, project: subgroup_2_project) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'also returns subgroups projects issues' do
+        get api(base_url, user)
+
+        issue_ids = json_response.map { |issue| issue['id'] }
+
+        expect_paginated_array_response(size: 5)
+        expect(issue_ids).to include(issue_1.id, issue_2.id)
+      end
+    end
+
     it 'returns all group issues (including opened and closed)' do
       get api(base_url, admin)
 

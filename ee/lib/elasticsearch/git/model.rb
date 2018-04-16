@@ -32,15 +32,13 @@ module Elasticsearch
               },
               code_analyzer: {
                 type: 'custom',
-                tokenizer: 'standard',
-                filter: %w(code edgeNGram_filter lowercase asciifolding),
-                char_filter: ["code_mapping"]
+                tokenizer: 'whitespace',
+                filter: %w(code edgeNGram_filter lowercase asciifolding)
               },
               code_search_analyzer: {
                 type: 'custom',
-                tokenizer: 'standard',
-                filter: %w(lowercase asciifolding),
-                char_filter: ["code_mapping"]
+                tokenizer: 'whitespace',
+                filter: %w(lowercase asciifolding)
               }
             },
             tokenizer: {
@@ -62,21 +60,17 @@ module Elasticsearch
                 patterns: [
                   "(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)",
                   "(\\d+)",
-                  "(?=([\\p{Lu}]+[\\p{L}]+))"
+                  "(?=([\\p{Lu}]+[\\p{L}]+))",
+                  '"((?:\\"|[^"]|\\")*)"', # capture terms inside quotes, removing the quotes
+                  "'((?:\\'|[^']|\\')*)'", # same as above, for single quotes
+                  '\.([^.]+)(?=\.|\s|\Z)', # separate terms on periods
+                  '\/?([^\/]+)(?=\/|\b)' # separate path terms (like/this/one)
                 ]
               },
               edgeNGram_filter: {
                 type: 'edgeNGram',
                 min_gram: 2,
                 max_gram: 40
-              }
-            },
-            char_filter: {
-              code_mapping: {
-                type: "mapping",
-                mappings: [
-                  ". => ' '"
-                ]
               }
             }
           }

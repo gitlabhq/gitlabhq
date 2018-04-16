@@ -61,6 +61,7 @@ project_tree:
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
+    - :unprotect_access_levels
   - protected_tags:
     - :create_access_levels
   - :project_feature
@@ -134,6 +135,8 @@ excluded_attributes:
     - :trace
     - :token
     - :when
+    - :artifacts_file
+    - :artifacts_metadata
   push_event_payload:
     - :event_id
   project_badges:

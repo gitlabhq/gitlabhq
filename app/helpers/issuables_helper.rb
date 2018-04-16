@@ -159,16 +159,18 @@ module IssuablesHelper
     label_names.join(', ')
   end
 
-  def issuables_state_counter_text(issuable_type, state = :all)
+  def issuables_state_counter_text(issuable_type, state, display_count)
     titles = {
       opened: "Open"
     }
 
     state_title = titles[state] || state.to_s.humanize
-    count = issuables_count_for_state(issuable_type, state)
-
     html = content_tag(:span, state_title)
-    html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+
+    if display_count
+      count = issuables_count_for_state(issuable_type, state)
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+    end
 
     html.html_safe
   end
@@ -191,23 +193,8 @@ module IssuablesHelper
     end
   end
 
-  def issuable_filter_params
-    [
-      :search,
-      :author_id,
-      :assignee_id,
-      :milestone_title,
-      :weight,
-      :label_name
-    ]
-  end
-
   def issuable_reference(issuable)
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
-  end
-
-  def issuable_filter_present?
-    issuable_filter_params.any? { |k| params.key?(k) }
   end
 
   def issuable_initial_data(issuable)

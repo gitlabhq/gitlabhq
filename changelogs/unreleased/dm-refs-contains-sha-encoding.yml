@@ -1,5 +1,0 @@
----
-title: Fix listing commit branch/tags that contain special characters
-merge_request:
-author:
-type: fixed

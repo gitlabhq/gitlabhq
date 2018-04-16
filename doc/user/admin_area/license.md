@@ -8,9 +8,9 @@ The license has the form of a base64 encoded ASCII text with a `.gitlab-license`
 extension and can be obtained when you [purchase one][pricing] or when you sign
 up for a [free trial].
 
-> **Note:** As of GitLab Enterprise Edition 9.4.0, a new EE instance without a valid license
-will only have CE features active. A trial license will activate all EE features,
-but the instance will fall back to CE only functionality after the trial expires.
+> **Note:** As of GitLab Enterprise Edition 9.4.0, a new instance without a valid license
+will only have Core features active. A trial license will activate all Ultimate features,
+but the instance will fall back to Core only functionality after the trial expires.
 
 ## Uploading your license
 

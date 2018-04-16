@@ -143,11 +143,11 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
 
   # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project,  through:   :forked_project_link
+  has_one  :forked_project_link, foreign_key: "forked_to_project_id"
+  has_one  :forked_from_project, -> { auto_include(false) }, through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
+  has_many :forks, -> { auto_include(false) }, through: :forked_project_links, source: :forked_to_project
   # TODO: replace these relations with the fork network versions
 
   has_one :root_of_fork_network,
@@ -155,7 +155,7 @@ class Project < ActiveRecord::Base
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
-  has_one :fork_network, through: :fork_network_member
+  has_one :fork_network, -> { auto_include(false) }, through: :fork_network_member
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -172,27 +172,27 @@ class Project < ActiveRecord::Base
   has_many :protected_tags
 
   has_many :project_authorizations
-  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
+  has_many :authorized_users, -> { auto_include(false) }, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   alias_method :members, :project_members
-  has_many :users, through: :project_members
+  has_many :users, -> { auto_include(false) }, through: :project_members
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
-  has_many :deploy_keys, through: :deploy_keys_projects
+  has_many :deploy_keys, -> { auto_include(false) }, through: :deploy_keys_projects
   has_many :users_star_projects
-  has_many :starrers, through: :users_star_projects, source: :user
+  has_many :starrers, -> { auto_include(false) }, through: :users_star_projects, source: :user
   has_many :releases
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :lfs_objects, -> { auto_include(false) }, through: :lfs_objects_projects
   has_many :lfs_file_locks
   has_many :project_group_links
-  has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :invited_groups, -> { auto_include(false) }, through: :project_group_links, source: :group
   has_many :pages_domains
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
@@ -204,7 +204,7 @@ class Project < ActiveRecord::Base
   has_one :statistics, class_name: 'ProjectStatistics'
 
   has_one :cluster_project, class_name: 'Clusters::Project'
-  has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
+  has_many :clusters, -> { auto_include(false) }, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   has_many :prometheus_metrics
 
@@ -223,14 +223,16 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
-  has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :runners, -> { auto_include(false) }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
+  has_many :project_deploy_tokens
+  has_many :deploy_tokens, -> { auto_include(false) }, through: :project_deploy_tokens
 
-  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :active_runners, -> { active.auto_include(false) }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
@@ -1486,7 +1488,9 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo_notify!
-    send_move_instructions(full_path_was)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_was) unless started?
     expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was

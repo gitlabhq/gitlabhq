@@ -2,7 +2,6 @@ class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
 
   before_action :build, except: [:index, :cancel_all]
-
   before_action :authorize_read_build!,
     only: [:index, :show, :status, :raw, :trace]
   before_action :authorize_update_build!,
@@ -45,8 +44,11 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
-    @builds = @builds.where("id not in (?)", @build.id)
+    @builds = @project.pipelines
+      .find_by_sha(@build.sha)
+      .builds
+      .order('id DESC')
+      .present(current_user: current_user)
     @pipeline = @build.pipeline
 
     respond_to do |format|
@@ -128,7 +130,7 @@ class Projects::JobsController < Projects::ApplicationController
         if stream.file?
           send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
         else
-          render_404
+          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
         end
       end
     end

@@ -1,5 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.6.4 (2018-04-09)
+
+### Fixed (4 changes)
+
+- Fixes incorrect assignation of cluster details. !5047
+- Geo: Make synced/failed scopes more consistent. !5171
+- [Geo] Fix project rename when wiki does not exist.
+- Fix Scoped Boards bug filtering by No Milestone.
+
+### Other (1 change)
+
+- [Geo] Log JID for sync related jobs.
+
+
 ## 10.6.3 (2018-04-03)
 
 - No changes.

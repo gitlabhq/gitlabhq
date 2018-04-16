@@ -211,6 +211,7 @@ module Gitlab
 
     def check_download_access!
       passed = deploy_key? ||
+        deploy_token? ||
         user_can_download_code? ||
         build_can_download_code? ||
         guest_can_download_code?
@@ -251,6 +252,11 @@ module Gitlab
     end
 
     def check_change_access!(changes)
+      # If there are worktrees with a HEAD pointing to a non-existent object,
+      # calls to `git rev-list --all` will fail in git 2.15+. This should also
+      # clear stale lock files.
+      project.repository.clean_stale_repository_files
+
       changes_list = Gitlab::ChangesList.new(changes)
 
       push_size_in_bytes = 0
@@ -292,6 +298,14 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
+    def deploy_token
+      actor if deploy_token?
+    end
+
+    def deploy_token?
+      actor.is_a?(DeployToken)
+    end
+
     def ci?
       actor == :ci
     end
@@ -299,6 +313,8 @@ module Gitlab
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
+      elsif deploy_token?
+        deploy_token.has_access_to?(project)
       elsif user
         user.can?(:read_project, project)
       elsif ci?

@@ -22,7 +22,7 @@ describe Ci::Pipeline do
     performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
     sast_artifact: [Ci::Build::SAST_FILE, 'sast'],
     dependency_scanning_artifact: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'],
-    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container'],
+    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'container_scanning'],
     dast_artifact: [Ci::Build::DAST_FILE, 'dast']
   }.freeze
 

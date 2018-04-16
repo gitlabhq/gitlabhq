@@ -1,11 +1,17 @@
 class Geo::ProjectRegistry < Geo::BaseRegistry
   include ::EachBatch
   include ::IgnorableColumn
+  include ::ShaAttribute
 
   ignore_column :last_repository_verification_at
   ignore_column :last_repository_verification_failed
   ignore_column :last_wiki_verification_at
   ignore_column :last_wiki_verification_failed
+  ignore_column :repository_verification_checksum
+  ignore_column :wiki_verification_checksum
+
+  sha_attribute :repository_verification_checksum_sha, ::Gitlab::Geo.geo_database_configured?
+  sha_attribute :wiki_verification_checksum_sha, ::Gitlab::Geo.geo_database_configured?
 
   belongs_to :project
 
@@ -16,8 +22,8 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   scope :synced_wikis, -> { where(resync_wiki: false) }
   scope :failed_repos, -> { where(arel_table[:repository_retry_count].gt(0)) }
   scope :failed_wikis, -> { where(arel_table[:wiki_retry_count].gt(0)) }
-  scope :verified_repos, -> { where.not(repository_verification_checksum: nil) }
-  scope :verified_wikis, -> { where.not(wiki_verification_checksum: nil) }
+  scope :verified_repos, -> { where.not(repository_verification_checksum_sha: nil) }
+  scope :verified_wikis, -> { where.not(wiki_verification_checksum_sha: nil) }
   scope :verification_failed_repos, -> { where.not(last_repository_verification_failure: nil) }
   scope :verification_failed_wikis, -> { where.not(last_wiki_verification_failure: nil) }
 

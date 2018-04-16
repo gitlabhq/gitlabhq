@@ -20,7 +20,7 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'does not calculate the checksum when not running on a primary' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect_any_instance_of(Gitlab::Git::Checksum).not_to receive(:calculate)
+      expect(project_without_repositories.repository).not_to receive(:checksum)
 
       subject.perform(project_without_repositories.id)
     end
@@ -28,7 +28,7 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'does not calculate the checksum when project is pending deletion' do
       project_with_repositories.update!(pending_delete: true)
 
-      expect_any_instance_of(Gitlab::Git::Checksum).not_to receive(:calculate)
+      expect(project_with_repositories.repository).not_to receive(:checksum)
 
       subject.perform(project_with_repositories.id)
     end
@@ -100,7 +100,7 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
           repository_verification_checksum: 'f123',
           wiki_verification_checksum: 'e123')
 
-      subject.perform(project_with_repositories.id - 1.hour)
+      subject.perform(project_with_repositories.id)
 
       expect(repository_state.reload).to have_attributes(
         repository_verification_checksum: 'f123',
@@ -121,14 +121,42 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
       )
     end
 
-    it 'keeps track of failures when calculating the repository checksum' do
+    it 'does not mark the calculating as failed when there is no repo' do
       subject.perform(project_without_repositories.id)
 
       expect(project_without_repositories.repository_state).to have_attributes(
+        repository_verification_checksum: '0000000000000000000000000000000000000000',
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum: '0000000000000000000000000000000000000000',
+        last_wiki_verification_failure: nil
+      )
+    end
+
+    it 'keeps track of failures when calculating the repository checksum' do
+      repository = double
+
+      allow(Repository).to receive(:new).with(
+        project_with_repositories.full_path,
+        project_with_repositories,
+        disk_path: project_with_repositories.disk_path
+      ).and_return(repository)
+
+      allow(Repository).to receive(:new).with(
+        project_with_repositories.wiki.full_path,
+        project_with_repositories,
+        disk_path: project_with_repositories.wiki.disk_path,
+        is_wiki: true
+      ).and_return(repository)
+
+      allow(repository).to receive(:checksum).twice.and_raise('Something went wrong')
+
+      subject.perform(project_with_repositories.id)
+
+      expect(project_with_repositories.repository_state).to have_attributes(
         repository_verification_checksum: nil,
-        last_repository_verification_failure: /No repository for such path/,
+        last_repository_verification_failure: 'Something went wrong',
         wiki_verification_checksum: nil,
-        last_wiki_verification_failure: /No repository for such path/
+        last_wiki_verification_failure: 'Something went wrong'
       )
     end
   end

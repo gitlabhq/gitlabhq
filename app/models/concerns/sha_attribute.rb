@@ -2,9 +2,9 @@ module ShaAttribute
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def sha_attribute(name)
+    def sha_attribute(name, database_available = true)
       return if ENV['STATIC_VERIFICATION']
-      return unless table_exists?
+      return unless database_available && table_exists?
 
       column = columns.find { |c| c.name == name.to_s }
 

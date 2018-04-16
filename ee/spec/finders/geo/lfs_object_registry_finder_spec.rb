@@ -22,30 +22,66 @@ describe Geo::LfsObjectRegistryFinder, :geo do
     stub_lfs_object_storage
   end
 
-  context 'aggregate pushdown not supported' do
-    before do
-      allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
+  shared_examples 'counts all the things' do
+    describe '#count_local_lfs_objects' do
+      before do
+        lfs_object_1
+        lfs_object_2
+        lfs_object_3
+        lfs_object_4
+      end
+
+      it 'counts LFS objects' do
+        expect(subject.count_local_lfs_objects).to eq 4
+      end
+
+      it 'ignores remote LFS objects' do
+        lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+        expect(subject.count_local_lfs_objects).to eq 3
+      end
+
+      context 'with selective sync' do
+        before do
+          allow_any_instance_of(LfsObjectsProject).to receive(:update_project_statistics).and_return(nil)
+
+          create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_1)
+          create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_2)
+          create(:lfs_objects_project, project: unsynced_project, lfs_object: lfs_object_3)
+
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
+
+        it 'counts LFS objects' do
+          expect(subject.count_local_lfs_objects).to eq 2
+        end
+
+        it 'ignores remote LFS objects' do
+          lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_local_lfs_objects).to eq 1
+        end
+      end
     end
 
     describe '#count_synced_lfs_objects' do
       it 'delegates to #legacy_find_synced_lfs_objects' do
+        allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
+
         expect(subject).to receive(:legacy_find_synced_lfs_objects).and_call_original
 
         subject.count_synced_lfs_objects
       end
-    end
 
-    describe '#count_failed_lfs_objects' do
-      it 'delegates to #legacy_find_failed_lfs_objects' do
-        expect(subject).to receive(:legacy_find_failed_lfs_objects).and_call_original
+      it 'delegates to #fdw_find_synced_lfs_objects for PostgreSQL 10' do
+        allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
+        allow(subject).to receive(:use_legacy_queries?).and_return(false)
 
-        subject.count_failed_lfs_objects
+        expect(subject).to receive(:fdw_find_synced_lfs_objects).and_return(double(count: 1))
+
+        subject.count_synced_lfs_objects
       end
-    end
-  end
 
-  shared_examples 'counts all the things' do
-    describe '#count_synced_lfs_objects' do
       it 'counts LFS objects that has been synced' do
         create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
@@ -88,9 +124,10 @@ describe Geo::LfsObjectRegistryFinder, :geo do
         end
 
         it 'ignores remote LFS objects' do
-          create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id)
+          create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
           create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
           create(:geo_file_registry, :lfs, file_id: lfs_object_3.id)
+          lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
           expect(subject.count_synced_lfs_objects).to eq 1
         end
@@ -98,6 +135,22 @@ describe Geo::LfsObjectRegistryFinder, :geo do
     end
 
     describe '#count_failed_lfs_objects' do
+      it 'delegates to #legacy_find_failed_lfs_objects' do
+        allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
+
+        expect(subject).to receive(:legacy_find_failed_lfs_objects).and_call_original
+
+        subject.count_failed_lfs_objects
+      end
+
+      it 'delegates to #find_failed_lfs_objects' do
+        allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
+
+        expect(subject).to receive(:find_failed_lfs_objects).and_call_original
+
+        subject.count_failed_lfs_objects
+      end
+
       it 'counts LFS objects that sync has failed' do
         create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object_2.id)
@@ -140,11 +193,87 @@ describe Geo::LfsObjectRegistryFinder, :geo do
         end
 
         it 'ignores remote LFS objects' do
-          create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id, success: false)
+          create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false)
           create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, success: false)
           create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, success: false)
+          lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
           expect(subject.count_failed_lfs_objects).to eq 1
+        end
+      end
+    end
+
+    describe '#count_synced_missing_on_primary_lfs_objects' do
+      it 'delegates to #legacy_find_synced_missing_on_primary_lfs_objects' do
+        allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
+
+        expect(subject).to receive(:legacy_find_synced_missing_on_primary_lfs_objects).and_call_original
+
+        subject.count_synced_missing_on_primary_lfs_objects
+      end
+
+      it 'delegates to #fdw_find_synced_missing_on_primary_lfs_objects for PostgreSQL 10' do
+        allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
+        allow(subject).to receive(:use_legacy_queries?).and_return(false)
+
+        expect(subject).to receive(:fdw_find_synced_missing_on_primary_lfs_objects).and_return(double(count: 1))
+
+        subject.count_synced_missing_on_primary_lfs_objects
+      end
+
+      it 'counts LFS objects that have been synced and are missing on the primary' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, missing_on_primary: true)
+
+        expect(subject.count_synced_missing_on_primary_lfs_objects).to eq 1
+      end
+
+      it 'excludes LFS objects that are not missing on the primary' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id)
+
+        expect(subject.count_synced_missing_on_primary_lfs_objects).to eq 0
+      end
+
+      it 'excludes LFS objects that are not synced' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, success: false, missing_on_primary: true)
+
+        expect(subject.count_synced_missing_on_primary_lfs_objects).to eq 0
+      end
+
+      it 'ignores remote LFS objects' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id, missing_on_primary: true)
+
+        expect(subject.count_synced_missing_on_primary_lfs_objects).to eq 0
+      end
+
+      context 'with selective sync' do
+        before do
+          allow_any_instance_of(LfsObjectsProject).to receive(:update_project_statistics).and_return(nil)
+
+          create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_1)
+          create(:lfs_objects_project, project: synced_project, lfs_object: lfs_object_2)
+          create(:lfs_objects_project, project: unsynced_project, lfs_object: lfs_object_3)
+
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
+
+        it 'delegates to #legacy_find_synced_missing_on_primary_lfs_objects' do
+          expect(subject).to receive(:legacy_find_synced_missing_on_primary_lfs_objects).and_call_original
+
+          subject.count_synced_missing_on_primary_lfs_objects
+        end
+
+        it 'counts LFS objects that has been synced' do
+          create(:geo_file_registry, :lfs, file_id: lfs_object_1.id, missing_on_primary: true)
+          create(:geo_file_registry, :lfs, file_id: lfs_object_2.id, missing_on_primary: true)
+          create(:geo_file_registry, :lfs, file_id: lfs_object_3.id, missing_on_primary: true)
+
+          expect(subject.count_synced_missing_on_primary_lfs_objects).to eq 2
+        end
+
+        it 'ignores remote LFS objects' do
+          create(:geo_file_registry, :lfs, file_id: lfs_object_remote_1.id, missing_on_primary: true)
+
+          expect(subject.count_synced_missing_on_primary_lfs_objects).to eq 0
         end
       end
     end

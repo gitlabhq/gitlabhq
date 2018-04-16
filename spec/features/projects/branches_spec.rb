@@ -197,6 +197,26 @@ describe 'Branches' do
         expect(page).to have_content("Protected branches can be managed in project settings")
       end
     end
+
+    it 'shows the merge request button' do
+      visit project_branches_path(project)
+
+      page.within first('.all-branches li') do
+        expect(page).to have_content 'Merge request'
+      end
+    end
+
+    context 'when the project is archived' do
+      let(:project) { create(:project, :public, :repository, :archived) }
+
+      it 'does not show the merge request button when the project is archived' do
+        visit project_branches_path(project)
+
+        page.within first('.all-branches li') do
+          expect(page).not_to have_content 'Merge request'
+        end
+      end
+    end
   end
 
   context 'logged out' do
@@ -206,7 +226,7 @@ describe 'Branches' do
 
     it 'does not show merge request button' do
       page.within first('.all-branches li') do
-        expect(page).not_to have_content 'Merge Request'
+        expect(page).not_to have_content 'Merge request'
       end
     end
   end

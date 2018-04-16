@@ -1,0 +1,5 @@
+---
+title: Display error message on job's tooltip if this one fails
+merge_request: 17782
+author:
+type: added

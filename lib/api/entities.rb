@@ -394,6 +394,7 @@ module API
       expose :name
       expose :push_access_levels, using: Entities::ProtectedRefAccess
       expose :merge_access_levels, using: Entities::ProtectedRefAccess
+      expose :unprotect_access_levels, using: Entities::ProtectedRefAccess
     end
 
     class Milestone < Grape::Entity
@@ -956,7 +957,7 @@ module API
     end
 
     class Tag < Grape::Entity
-      expose :name, :message
+      expose :name, :message, :target
 
       expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)

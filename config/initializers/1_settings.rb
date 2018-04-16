@@ -350,6 +350,7 @@ Settings.artifacts['max_size'] ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
+Settings.artifacts['object_store']['direct_upload'] = false if Settings.artifacts['object_store']['direct_upload'].nil?
 Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
 Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifacts['object_store']['proxy_download'].nil?
 # Convert upload connection settings to use string keys, to make Fog happy

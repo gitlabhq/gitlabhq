@@ -79,7 +79,7 @@ module Gitlab
         def common_query_context(environment, timeframe_start:, timeframe_end:)
           base_query_context(timeframe_start, timeframe_end).merge({
             ci_environment_slug: environment.slug,
-            kube_namespace: environment.project.deployment_platform(environment: environment)&.actual_namespace || '',
+            kube_namespace: environment.deployment_platform&.actual_namespace || '',
             environment_filter: %{container_name!="POD",environment="#{environment.slug}"}
           })
         end

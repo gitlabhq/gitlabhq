@@ -11,6 +11,7 @@ module Gitlab
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
+                    unprotect_access_levels: 'ProtectedBranch::UnprotectAccessLevel',
                     create_access_levels: 'ProtectedTag::CreateAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,

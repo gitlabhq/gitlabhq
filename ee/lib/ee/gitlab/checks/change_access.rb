@@ -20,6 +20,7 @@ module EE
           super(skip_commits_check: true)
 
           push_rule_check
+          file_size_check
           # Check of commits should happen as the last step
           # given they're expensive in terms of performance
           commits_check
@@ -28,6 +29,30 @@ module EE
         end
 
         private
+
+        def file_size_check
+          return if push_rule.nil? || push_rule.max_file_size.zero?
+
+          max_file_size = push_rule.max_file_size
+
+          large_file = changes.find do |c|
+            size_in_mb = ::Gitlab::Utils.bytes_to_megabytes(c.blob_size)
+
+            c.operation != :deleted && size_in_mb > max_file_size
+          end
+
+          if large_file
+            raise ::Gitlab::GitAccess::UnauthorizedError, %Q{File "#{large_file.new_path}" is larger than the allowed size of #{max_file_size} MB}
+          end
+        end
+
+        def changes
+          strong_memoize(:changes) do
+            return [] unless newrev
+
+            project.repository.raw_changes_between(oldrev, newrev)
+          end
+        end
 
         def push_rule
           project.push_rule
@@ -152,9 +177,7 @@ module EE
         def push_rule_checks_commit?
           return false unless push_rule
 
-          push_rule.max_file_size > 0 ||
-            push_rule.file_name_regex.present? ||
-            push_rule.prevent_secrets
+          push_rule.file_name_regex.present? || push_rule.prevent_secrets
         end
 
         override :validations_for_commit
@@ -168,11 +191,7 @@ module EE
         def push_rule_commit_validations(commit)
           return [] unless push_rule
 
-          [file_name_validation].tap do |validations|
-            if push_rule.max_file_size > 0
-              validations << file_size_validation(commit, push_rule.max_file_size)
-            end
-          end
+          [file_name_validation]
         end
 
         def validate_path_locks?
@@ -205,17 +224,6 @@ module EE
               end
             rescue ::PushRule::MatchError => e
               raise ::Gitlab::GitAccess::UnauthorizedError, e.message
-            end
-          end
-        end
-
-        def file_size_validation(commit, max_file_size)
-          lambda do |diff|
-            return if diff.deleted_file
-
-            blob = project.repository.blob_at(commit.id, diff.new_path)
-            if blob && blob.size && blob.size > max_file_size.megabytes
-              return "File #{diff.new_path.inspect} is larger than the allowed size of #{max_file_size} MB"
             end
           end
         end

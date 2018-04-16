@@ -63,7 +63,7 @@ A popover can contain a header section with a different background color if that
 
 ![Popover usage](img/popover-placement-below.png)
 
-This example shows two sections, where each section includes an actionable element. The first section shows a summary of the content shown when clicking the "read more" link. With this information the user can decide to dive deeper or start their GitLab Enterprise Edition trial immediately.
+This example shows two sections, where each section includes an actionable element. The first section shows a summary of the content shown when clicking the "read more" link. With this information the user can decide to dive deeper or start their GitLab Ultimate trial immediately.
 
 ### Placement
 By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport or it blocks related content, the tooltip should be moved to the side or above as needed.

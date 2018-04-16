@@ -36,7 +36,6 @@ class PushRule < ActiveRecord::Base
       commit_committer_check ||
       member_check ||
       file_name_regex.present? ||
-      max_file_size > 0 ||
       prevent_secrets
   end
 

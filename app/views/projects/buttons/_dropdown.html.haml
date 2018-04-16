@@ -1,13 +1,17 @@
-- if current_user
+- can_create_issue = show_new_issue_link?(@project)
+- can_create_project_snippet = can?(current_user, :create_project_snippet, @project)
+- can_push_code = can?(current_user, :push_code, @project)
+- create_mr_from_new_fork = can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
+- merge_project = merge_request_source_project_for_project(@project)
+
+- show_menu = can_create_issue || can_create_project_snippet || can_push_code || create_mr_from_new_fork || merge_project
+
+- if show_menu
   .project-action-button.dropdown.inline
     %a.btn.dropdown-toggle.has-tooltip{ href: '#', title: _('Create new...'), 'data-toggle' => 'dropdown', 'data-container' => 'body', 'aria-label' => _('Create new...') }
       = icon('plus')
       = icon("caret-down")
     %ul.dropdown-menu.dropdown-menu-align-right.project-home-dropdown
-      - can_create_issue = can?(current_user, :create_issue, @project)
-      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-      - can_create_project_snippet = can?(current_user, :create_project_snippet, @project)
-
       - if can_create_issue || merge_project || can_create_project_snippet
         %li.dropdown-header= _('This project')
 
@@ -20,17 +24,17 @@
       - if can_create_project_snippet
         %li= link_to _('New snippet'), new_project_snippet_path(@project)
 
-      - if can?(current_user, :push_code, @project)
+      - if can_push_code
         %li.dropdown-header= _('This repository')
 
-      - if can?(current_user, :push_code, @project)
+      - if can_push_code
         %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
         - unless @project.empty_repo?
           %li= link_to _('New branch'), new_project_branch_path(@project)
           %li= link_to _('New tag'), new_project_tag_path(@project)
-      - elsif current_user && current_user.already_forked?(@project)
+      - elsif can_collaborate_with_project?(@project)
         %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
-      - elsif can?(current_user, :fork_project, @project)
+      - elsif create_mr_from_new_fork
         - continue_params = { to:         project_new_blob_path(@project, @project.default_branch || 'master'),
                               notice:     edit_in_new_fork_notice,
                               notice_now: edit_in_new_fork_notice_now }
