@@ -197,7 +197,7 @@ export default class Notes {
     );
 
     this.$wrapperEl.on('click', '.js-toggle-lazy-diff', this.loadLazyDiff);
-    this.$wrapperEl.on('click', '.js-toggle-lazy-diff-retry-button', this.loadLazyDiff);
+    this.$wrapperEl.on('click', '.js-toggle-lazy-diff-retry-button', this.onClickRetryLazyLoad.bind(this));
 
     // fetch notes when tab becomes visible
     this.$wrapperEl.on('visibilitychange', this.visibilityChange);
@@ -1433,6 +1433,17 @@ export default class Notes {
     syntaxHighlight(fileHolder);
   }
 
+  onClickRetryLazyLoad(e) {
+    const $retryButton = $(e.currentTarget);
+
+    $retryButton.prop('disabled', true);
+
+    return this.loadLazyDiff(e)
+    .then(() => {
+      $retryButton.prop('disabled', false);
+    });
+  }
+
   loadLazyDiff(e) {
     const $container = $(e.currentTarget).closest('.js-toggle-container');
     Notes.renderPlaceholderComponent($container);
@@ -1453,7 +1464,7 @@ export default class Notes {
      * Unresolved discussions don't have an endpoint being provided.
      */
     if (url) {
-      axios
+      return axios
       .get(url)
       .then(({ data }) => {
         // Reset state in case last request returned error
@@ -1467,6 +1478,7 @@ export default class Notes {
         $errorContainer.removeClass('hidden');
       });
     }
+    return Promise.resolve();
   }
 
   toggleCommitList(e) {
