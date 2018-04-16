@@ -28,7 +28,7 @@ integrated platform
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
-- **(Ultimate)** [Web IDE](web_ide/index.md)
+- [Web IDE](web_ide/index.md)
 
 **Issues and merge requests:**
 
