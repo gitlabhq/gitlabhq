@@ -2,6 +2,7 @@
 - import_data = @project.import_data || @project.build_import_data
 - protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
 - is_one_user_option = default_mirror_users.count == 1
+- the_remote_mirror = @project.remote_mirrors.first
 
 %section.settings.project-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -23,6 +24,23 @@
 
           = render 'shared/mirror_update_button'
           = render 'projects/mirrors/pull/mirror_update_fail'
+
+          = the_remote_mirror.inspect
+          = render "shared/remote_mirror_update_button", remote_mirror: the_remote_mirror
+          - if the_remote_mirror.last_error.present?
+            .panel.panel-danger
+              .panel-heading
+                - if the_remote_mirror.last_update_at
+                  The remote repository failed to update #{time_ago_with_tooltip(the_remote_mirror.last_update_at)}.
+                - else
+                  The remote repository failed to update.
+
+                - if the_remote_mirror.last_successful_update_at
+                  Last successful update #{time_ago_with_tooltip(the_remote_mirror.last_successful_update_at)}.
+              .panel-body
+                %pre
+                  :preserve
+                    #{h(the_remote_mirror.last_error.strip)}
 
           .form-group.has-feedback
             = label_tag :url, 'Git repository URL', class: 'label-light-but-actually-light-i-promise'
