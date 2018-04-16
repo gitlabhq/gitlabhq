@@ -10,6 +10,6 @@ export const SHELL_MIN_WIDTH = 1620;
 
 export const SCROLL_BAR_SIZE = 15;
 
-export const TIMELINE_END_OFFSET_HALF = 6;
+export const TIMELINE_END_OFFSET_HALF = 8;
 
 export const TIMELINE_END_OFFSET_FULL = 16;
