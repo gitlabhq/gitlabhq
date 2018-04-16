@@ -4,6 +4,25 @@ module API
 
     before { authenticate! }
 
+    helpers ::API::Helpers::Runner
+    helpers do
+      params :optional_runner_update_params_ce do
+        optional :description, type: String, desc: 'The description of the runner'
+        optional :active, type: Boolean, desc: 'The state of a runner'
+        optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
+        optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
+        optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
+        optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
+                                desc: 'The access_level of the runner'
+        optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
+      end
+
+      params :runner_update_params do
+        use :optional_runner_update_params_ce
+        at_least_one_of(*(@declared_params - [:id]))
+      end
+    end
+
     resource :runners do
       desc 'Get runners available for user' do
         success Entities::Runner
@@ -50,22 +69,14 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the runner'
-        optional :description, type: String, desc: 'The description of the runner'
-        optional :active, type: Boolean, desc: 'The state of a runner'
-        optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
-        optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
-        optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
-        optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
-                                desc: 'The access_level of the runner'
-        optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
-        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
+        use :runner_update_params
       end
       put ':id' do
         runner = get_runner(params.delete(:id))
         authenticate_update_runner!(runner)
         update_service = Ci::UpdateRunnerService.new(runner)
 
-        if update_service.update(declared_params(include_missing: false))
+        if update_service.update(runner_update_attributes)
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)

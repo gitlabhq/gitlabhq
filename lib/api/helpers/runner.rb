@@ -59,6 +59,19 @@ module API
       def max_artifacts_size
         Gitlab::CurrentSettings.max_artifacts_size.megabytes.to_i
       end
+
+      def runner_create_attributes(project = nil)
+        attributes_for_keys(runner_create_attribute_keys(project))
+          .merge(get_runner_details_from_request)
+      end
+
+      def runner_create_attribute_keys(project = nil)
+        [:description, :locked, :run_untagged, :tag_list, :maximum_timeout]
+      end
+
+      def runner_update_attributes
+        declared_params(include_missing: false)
+      end
     end
   end
 end

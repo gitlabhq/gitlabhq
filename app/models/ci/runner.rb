@@ -19,7 +19,6 @@ module Ci
 
     before_validation :set_default_values
 
-    scope :specific, ->() { where(is_shared: false) }
     scope :shared, ->() { where(is_shared: true) }
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
@@ -76,6 +75,10 @@ module Ci
 
     def self.contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
+    end
+
+    def self.specific
+      where(is_shared: false)
     end
 
     def set_default_values

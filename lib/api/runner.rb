@@ -2,13 +2,8 @@ module API
   class Runner < Grape::API
     helpers ::API::Helpers::Runner
 
-    resource :runners do
-      desc 'Registers a new Runner' do
-        success Entities::RunnerRegistrationDetails
-        http_codes [[201, 'Runner was created'], [403, 'Forbidden']]
-      end
-      params do
-        requires :token, type: String, desc: 'Registration token'
+    helpers do
+      params :optional_runner_register_params_ce do
         optional :description, type: String, desc: %q(Runner's description)
         optional :info, type: Hash, desc: %q(Runner's metadata)
         optional :locked, type: Boolean, desc: 'Should Runner be locked for current project'
@@ -16,17 +11,29 @@ module API
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
-      post '/' do
-        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list, :maximum_timeout])
-          .merge(get_runner_details_from_request)
 
+      params :runner_register_params do
+        use :optional_runner_register_params_ce
+      end
+    end
+
+    resource :runners do
+      desc 'Registers a new Runner' do
+        success Entities::RunnerRegistrationDetails
+        http_codes [[201, 'Runner was created'], [403, 'Forbidden']]
+      end
+      params do
+        requires :token, type: String, desc: 'Registration token'
+        use :runner_register_params
+      end
+      post '/' do
         runner =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            Ci::Runner.create(attributes.merge(is_shared: true))
+            Ci::Runner.create(runner_create_attributes.merge(is_shared: true))
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for project.
-            project.runners.create(attributes)
+            project.runners.create(runner_create_attributes(project))
           end
 
         return forbidden! unless runner
