@@ -174,9 +174,7 @@
           {{ title }}
         </a>
       </span>
-      <span
-        class="flex-truncate-child"
-        v-else>
+      <span v-else>
         Can't find HEAD commit for this branch
       </span>
     </div>
