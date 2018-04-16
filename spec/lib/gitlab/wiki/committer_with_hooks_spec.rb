@@ -143,6 +143,7 @@ describe Gitlab::Wiki::CommitterWithHooks, seed_helper: true do
     end
   end
 
+  # TODO: Uncomment once Gitaly updates the ruby vendor code
   # context 'when Gitaly is enabled' do
   #   it_behaves_like 'calling wiki hooks'
   # end
