@@ -89,12 +89,6 @@
     sast: SAST,
     dast: DAST,
     sastContainer: SAST_CONTAINER,
-    data() {
-      return {
-        isSastFullReportVisible: false,
-        isDependencyScanningFullReportVisible: false,
-      };
-    },
     computed: {
       ...mapState(['sast', 'sastContainer', 'dast', 'dependencyScanning', 'summaryCounts']),
       ...mapGetters([
@@ -169,12 +163,6 @@
         'fetchDastReports',
         'fetchDependencyScanningReports',
       ]),
-      openSASTFullReport() {
-        this.isSastFullReportVisible = true;
-      },
-      openDependencyScanningFullReport() {
-        this.isDependencyScanningFullReportVisible = true;
-      },
     },
   };
 </script>
