@@ -1,4 +1,4 @@
-# Administrator documentation
+# Administrator documentation **[CORE ONLY]**
 
 Learn how to administer your GitLab instance (Community Edition and
 Enterprise Edition).
