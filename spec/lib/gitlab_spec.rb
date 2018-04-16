@@ -16,11 +16,8 @@ describe Gitlab do
 
     it 'is true when on other gitlab subdomain' do
       stub_config_setting(url: 'https://example.gitlab.com')
-<<<<<<< HEAD
-=======
 
       expect(described_class.com?).to eq true
->>>>>>> upstream/master
     end
 
     it 'is false when not on GitLab.com' do
