@@ -189,8 +189,8 @@
         />
 
         <issues-list
-          class="report-block-group-list"
-          v-if="sast.newIssues.length"
+          class="js-sast-issue-list report-block-group-list"
+          v-if="sast.newIssues.length || sast.resolvedIssues.length || sast.allIssues.length"
           :unresolved-issues="sast.newIssues"
           :resolved-issues="sast.resolvedIssues"
           :all-issues="sast.allIssues"
@@ -207,8 +207,9 @@
         />
 
         <issues-list
-          class="report-block-group-list"
-          v-if="dependencyScanning.newIssues.length"
+          class="js-dss-issue-list report-block-group-list"
+          v-if="dependencyScanning.newIssues.length ||
+          dependencyScanning.resolvedIssues.length || dependencyScanning.allIssues.length"
           :unresolved-issues="dependencyScanning.newIssues"
           :resolved-issues="dependencyScanning.resolvedIssues"
           :all-issues="dependencyScanning.allIssues"
@@ -226,7 +227,7 @@
 
         <issues-list
           class="report-block-group-list"
-          v-if="sastContainer.newIssues.length"
+          v-if="sastContainer.newIssues.length || sastContainer.resolvedIssues.length"
           :unresolved-issues="sastContainer.newIssues"
           :neutral-issues="sastContainer.resolvedIssues"
           :type="$options.sastContainer"
@@ -243,7 +244,7 @@
 
         <issues-list
           class="report-block-group-list"
-          v-if="dast.newIssues.length"
+          v-if="dast.newIssues.length || dast.resolvedIssues.length"
           :unresolved-issues="dast.newIssues"
           :resolved-issues="dast.resolvedIssues"
           :type="$options.dast"
