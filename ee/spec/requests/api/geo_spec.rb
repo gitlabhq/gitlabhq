@@ -208,6 +208,8 @@ describe API::Geo do
       end
 
       it 'responds with 200' do
+        allow(::GeoNodeStatus).to receive(:fast_current_node_status).and_return(::GeoNodeStatus.current_node_status)
+
         get api('/geo/status'), nil, request.headers
 
         expect(response).to have_gitlab_http_status(200)

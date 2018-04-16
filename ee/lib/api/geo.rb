@@ -34,7 +34,7 @@ module API
       get 'status' do
         authenticate_by_gitlab_geo_node_token!
 
-        status = ::GeoNodeStatus.current_node_status
+        status = ::GeoNodeStatus.fast_current_node_status
         present status, with: EE::API::Entities::GeoNodeStatus
       end
     end

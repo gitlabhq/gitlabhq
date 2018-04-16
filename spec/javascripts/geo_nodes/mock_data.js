@@ -49,7 +49,7 @@ export const mockNode = {
   nodeActionActive: false,
   basePath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1',
   repairPath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/repair',
-  statusPath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/status?refresh=true',
+  statusPath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/status',
   editPath: 'http://127.0.0.1:3001/admin/geo_nodes/1/edit',
 };
 
