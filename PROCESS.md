@@ -228,7 +228,9 @@ have a milestone, it might be 'just' a bug!
 
 For instance, if 10.5.0 adds a feature, and that feature doesn't work correctly,
 then this is a regression in 10.5. If 10.5.1 then fixes that, but 10.5.3 somehow
-reintroduces the bug, then this bug is still a regression in 10.5.
+reintroduces the bug, then this bug is still a regression in 10.5. If the 
+upcoming release is 10.6-RC1, and the fix is not yet merged, then the bug no 
+longer counts as a regression.
 
 Because GitLab.com runs release candidates of new releases, a regression can be
 reported in a release before its 'official' release date on the 22nd of the
