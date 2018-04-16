@@ -197,6 +197,8 @@ export default class Notes {
     );
 
     this.$wrapperEl.on('click', '.js-toggle-lazy-diff', this.loadLazyDiff);
+    this.$wrapperEl.on('click', '.js-toggle-lazy-diff-retry-button', this.loadLazyDiff);
+
     // fetch notes when tab becomes visible
     this.$wrapperEl.on('visibilitychange', this.visibilityChange);
     // when issue status changes, we need to refresh data
@@ -243,6 +245,7 @@ export default class Notes {
     this.$wrapperEl.off('click', '.js-comment-resolve-button');
     this.$wrapperEl.off('click', '.system-note-commit-list-toggler');
     this.$wrapperEl.off('click', '.js-toggle-lazy-diff');
+    this.$wrapperEl.off('click', '.js-toggle-lazy-diff-retry-button');
     this.$wrapperEl.off('ajax:success', '.js-main-target-form');
     this.$wrapperEl.off('ajax:success', '.js-discussion-note-form');
     this.$wrapperEl.off('ajax:complete', '.js-main-target-form');
