@@ -42,7 +42,7 @@ coordinate, and track your progress your way with GitLab’s flexible project
 management tools.
 
 - Chat operations
-  - [GitLab ChatOps](/ci/chatops/README.md) **[ULTIMATE]**
+  - [GitLab ChatOps](ci/chatops/README.md) **[ULTIMATE]**
   - [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)
   - [Slack slash commands](user/project/integrations/slack_slash_commands.md)
 - [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
