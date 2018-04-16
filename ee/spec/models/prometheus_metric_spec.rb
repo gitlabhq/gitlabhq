@@ -17,9 +17,9 @@ describe PrometheusMetric do
       end
     end
 
-    it_behaves_like 'group_title', :business, 'Business'
-    it_behaves_like 'group_title', :response, 'Response'
-    it_behaves_like 'group_title', :system, 'System'
+    it_behaves_like 'group_title', :business, 'Business metrics (Custom)'
+    it_behaves_like 'group_title', :response, 'Response metrics (Custom)'
+    it_behaves_like 'group_title', :system, 'System metrics (Custom)'
   end
 
   describe '#to_query_metric' do

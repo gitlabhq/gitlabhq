@@ -1,69 +1,73 @@
 <script>
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import stageColumnComponent from './stage_column_component.vue';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import StageColumnComponent from './stage_column_component.vue';
+import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/first
 
-  import linkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/first
-
-  export default {
-    components: {
-      linkedPipelinesColumn,
-      stageColumnComponent,
-      loadingIcon,
+export default {
+  components: {
+    LinkedPipelinesColumn,
+    StageColumnComponent,
+    LoadingIcon,
+  },
+  props: {
+    isLoading: {
+      type: Boolean,
+      required: true,
     },
-    props: {
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
-      pipeline: {
-        type: Object,
-        required: true,
-      },
+    pipeline: {
+      type: Object,
+      required: true,
+    },
+    actionDisabled: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+
+  computed: {
+    graph() {
+      return this.pipeline.details && this.pipeline.details.stages;
+    },
+    triggered() {
+      return this.pipeline.triggered || [];
+    },
+    triggeredBy() {
+      const response = this.pipeline.triggered_by;
+      return response ? [response] : [];
+    },
+    hasTriggered() {
+      return !!this.triggered.length;
+    },
+    hasTriggeredBy() {
+      return !!this.triggeredBy.length;
+    },
+  },
+
+  methods: {
+    capitalizeStageName(name) {
+      return name.charAt(0).toUpperCase() + name.slice(1);
     },
 
-    computed: {
-      graph() {
-        return this.pipeline.details && this.pipeline.details.stages;
-      },
-      triggered() {
-        return this.pipeline.triggered || [];
-      },
-      triggeredBy() {
-        const response = this.pipeline.triggered_by;
-        return response ? [response] : [];
-      },
-      hasTriggered() {
-        return !!this.triggered.length;
-      },
-      hasTriggeredBy() {
-        return !!this.triggeredBy.length;
-      },
+    isFirstColumn(index) {
+      return index === 0;
     },
 
-    methods: {
-      capitalizeStageName(name) {
-        return name.charAt(0).toUpperCase() + name.slice(1);
-      },
+    stageConnectorClass(index, stage) {
+      let className;
 
-      isFirstColumn(index) {
-        return index === 0;
-      },
+      // If it's the first stage column and only has one job
+      if (index === 0 && stage.groups.length === 1) {
+        className = 'no-margin';
+      } else if (index > 0) {
+        // If it is not the first column
+        className = 'left-margin';
+      }
 
-      stageConnectorClass(index, stage) {
-        let className;
-
-        // If it's the first stage column and only has one job
-        if (index === 0 && stage.groups.length === 1) {
-          className = 'no-margin';
-        } else if (index > 0) {
-          // If it is not the first column
-          className = 'left-margin';
-        }
-
-        return className;
-      },
+      return className;
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="build-content middle-block js-pipeline-graph">
@@ -101,6 +105,7 @@
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
+          :action-disabled="actionDisabled"
           :has-triggered-by="hasTriggeredBy"
         />
       </ul>

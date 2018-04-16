@@ -139,10 +139,10 @@ RSpec.describe Geo::WikiSyncService do
           expect(registry.last_wiki_successful_sync_at).not_to be_nil
         end
 
-        it 'resets the wiki_verification_checksum' do
+        it 'resets the wiki_verification_checksum_sha' do
           subject.execute
 
-          expect(registry.wiki_verification_checksum).to be_nil
+          expect(registry.wiki_verification_checksum_sha).to be_nil
         end
 
         it 'resets the last_wiki_verification_failure' do

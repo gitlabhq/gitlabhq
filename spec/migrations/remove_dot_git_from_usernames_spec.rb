@@ -4,7 +4,7 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161226122833_remove_dot_git_from_usernames.rb')
 
 describe RemoveDotGitFromUsernames do
-  let(:user) { create(:user) }
+  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
   let(:migration) { described_class.new }
 
   describe '#up' do
@@ -23,7 +23,7 @@ describe RemoveDotGitFromUsernames do
 
   context 'when new path exists already' do
     describe '#up' do
-      let(:user2) { create(:user) }
+      let(:user2) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       before do
         update_namespace(user, 'test.git')

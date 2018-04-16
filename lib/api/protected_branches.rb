@@ -45,12 +45,20 @@ module API
         optional :merge_access_level, type: Integer,
                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                       desc: 'Access levels allowed to merge (defaults: `40`, master access level)'
+        optional :unprotect_access_level, type: Integer,
+                                          values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                          desc: 'Access levels allowed to unprotect (defaults: `40`, master access level)'
         optional :allowed_to_push, type: Array, desc: 'An array of users/groups allowed to push' do
           optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
           optional :user_id, type: Integer
           optional :group_id, type: Integer
         end
         optional :allowed_to_merge, type: Array, desc: 'An array of users/groups allowed to merge' do
+          optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
+          optional :user_id, type: Integer
+          optional :group_id, type: Integer
+        end
+        optional :allowed_to_unprotect, type: Array, desc: 'An array of users/groups allowed to unprotect' do
           optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
           optional :user_id, type: Integer
           optional :group_id, type: Integer

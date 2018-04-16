@@ -1,23 +1,20 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '../../lib/utils/axios_utils';
 
 export default class PipelineService {
   constructor(endpoint) {
-    this.pipeline = Vue.resource(endpoint);
+    this.pipeline = endpoint;
   }
 
   getPipeline() {
-    return this.pipeline.get();
+    return axios.get(this.pipeline);
   }
 
-  // eslint-disable-next-line
+  // eslint-disable-next-line class-methods-use-this
   postAction(endpoint) {
-    return Vue.http.post(`${endpoint}.json`);
+    return axios.post(`${endpoint}.json`);
   }
 
   static getSecurityReport(endpoint) {
-    return Vue.http.get(endpoint);
+    return axios.get(endpoint);
   }
 }

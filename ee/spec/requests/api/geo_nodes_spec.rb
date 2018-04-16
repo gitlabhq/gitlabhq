@@ -101,32 +101,6 @@ describe API::GeoNodes, :geo, api: true do
       expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
     end
 
-    it 'fetches the real-time status with `refresh=true`' do
-      stub_current_geo_node(primary)
-      new_status = build(:geo_node_status, :healthy, geo_node: secondary, attachments_count: 923, lfs_objects_count: 652)
-
-      expect(GeoNode).to receive(:find).and_return(secondary)
-      expect_any_instance_of(Geo::NodeStatusFetchService).to receive(:call).and_return(new_status)
-
-      get api("/geo_nodes/#{secondary.id}/status", admin), refresh: true
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
-      expect(json_response['attachments_count']).to eq(923)
-      expect(json_response['lfs_objects_count']).to eq(652)
-    end
-
-    it 'returns 404 when no Geo Node status is not found' do
-      stub_current_geo_node(primary)
-      secondary_status.destroy!
-
-      expect(GeoNode).to receive(:find).and_return(secondary)
-
-      get api("/geo_nodes/#{secondary.id}/status", admin)
-
-      expect(response).to have_gitlab_http_status(404)
-    end
-
     it_behaves_like '404 response' do
       let(:request) { get api("/geo_nodes/#{unexisting_node_id}/status", admin) }
     end

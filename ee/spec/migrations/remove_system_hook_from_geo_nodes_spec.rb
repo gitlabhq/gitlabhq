@@ -3,6 +3,7 @@ require Rails.root.join('ee', 'db', 'post_migrate', '20170811082658_remove_syste
 
 describe RemoveSystemHookFromGeoNodes, :migration do
   let(:geo_nodes) { table(:geo_nodes) }
+  let(:web_hooks) { table(:web_hooks) }
 
   before do
     allow_any_instance_of(WebHookService).to receive(:execute)
@@ -13,8 +14,8 @@ describe RemoveSystemHookFromGeoNodes, :migration do
       port: 3000
     }
 
-    create(:system_hook)
-    hook_id = create(:system_hook).id
+    web_hooks.create!(type: 'SystemHook')
+    hook_id = web_hooks.create!(type: 'SystemHook').id
 
     geo_nodes.create!(node_attrs.merge(primary: true))
     geo_nodes.create!(node_attrs.merge(system_hook_id: hook_id, port: 3001))

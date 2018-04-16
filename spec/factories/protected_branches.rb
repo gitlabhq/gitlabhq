@@ -7,8 +7,10 @@ FactoryBot.define do
       # EE
       authorize_user_to_push nil
       authorize_user_to_merge nil
+      authorize_user_to_unprotect nil
       authorize_group_to_push nil
       authorize_group_to_merge nil
+      authorize_group_to_unprotect nil
 
       default_push_level true
       default_merge_level true
@@ -65,12 +67,20 @@ FactoryBot.define do
         protected_branch.merge_access_levels.new(user: user)
       end
 
+      if user = evaluator.authorize_user_to_unprotect
+        protected_branch.unprotect_access_levels.new(user: user)
+      end
+
       if group = evaluator.authorize_group_to_push
         protected_branch.push_access_levels.new(group: group)
       end
 
       if group = evaluator.authorize_group_to_merge
         protected_branch.merge_access_levels.new(group: group)
+      end
+
+      if group = evaluator.authorize_group_to_unprotect
+        protected_branch.unprotect_access_levels.new(group: group)
       end
 
       next unless protected_branch.merge_access_levels.empty?

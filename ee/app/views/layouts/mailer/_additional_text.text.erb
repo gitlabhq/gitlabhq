@@ -1,0 +1,4 @@
+<% if Gitlab::CurrentSettings.email_additional_text.present? %>
+
+<%= Gitlab::CurrentSettings.email_additional_text %>
+<% end %>

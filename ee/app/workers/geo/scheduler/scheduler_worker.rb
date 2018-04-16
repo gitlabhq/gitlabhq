@@ -4,6 +4,7 @@ module Geo
       include ApplicationWorker
       include GeoQueue
       include ExclusiveLeaseGuard
+      include ::Gitlab::Geo::LogHelpers
       include ::Gitlab::Utils::StrongMemoize
 
       DB_RETRIEVE_BATCH_SIZE = 1000
@@ -68,7 +69,14 @@ module Geo
 
       private
 
+      # Subclasses should override this method to provide additional metadata
+      # in log messages
       def worker_metadata
+        {}
+      end
+
+      def base_log_data(message)
+        super(message).merge(worker_metadata)
       end
 
       def db_retrieve_batch_size
@@ -99,8 +107,8 @@ module Geo
         (Time.now.utc - start_time) >= run_time
       end
 
-      def take_batch(*arrays)
-        interleave(*arrays).uniq.compact.take(db_retrieve_batch_size)
+      def take_batch(*arrays, batch_size: db_retrieve_batch_size)
+        interleave(*arrays).uniq.compact.take(batch_size)
       end
 
       # Combines the elements of multiple, arbitrary-length arrays into a single array.
@@ -184,18 +192,6 @@ module Geo
         strong_memoize(:current_node_enabled) do
           Gitlab::Geo.current_node_enabled?
         end
-      end
-
-      def log_info(message, extra_args = {})
-        args = { class: self.class.name, message: message }.merge(extra_args)
-        args.merge!(worker_metadata) if worker_metadata
-        Gitlab::Geo::Logger.info(args)
-      end
-
-      def log_error(message, extra_args = {})
-        args = { class: self.class.name, message: message }.merge(extra_args)
-        args.merge!(worker_metadata) if worker_metadata
-        Gitlab::Geo::Logger.error(args)
       end
     end
   end

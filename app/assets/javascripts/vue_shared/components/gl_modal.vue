@@ -1,47 +1,42 @@
 <script>
-  const buttonVariants = [
-    'danger',
-    'primary',
-    'success',
-    'warning',
-  ];
+const buttonVariants = ['danger', 'primary', 'success', 'warning'];
 
-  export default {
-    name: 'GlModal',
+export default {
+  name: 'GlModal',
 
-    props: {
-      id: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      headerTitleText: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      footerPrimaryButtonVariant: {
-        type: String,
-        required: false,
-        default: 'primary',
-        validator: value => buttonVariants.indexOf(value) !== -1,
-      },
-      footerPrimaryButtonText: {
-        type: String,
-        required: false,
-        default: '',
-      },
+  props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
     },
-
-    methods: {
-      emitCancel(event) {
-        this.$emit('cancel', event);
-      },
-      emitSubmit(event) {
-        this.$emit('submit', event);
-      },
+    headerTitleText: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+    footerPrimaryButtonVariant: {
+      type: String,
+      required: false,
+      default: 'primary',
+      validator: value => buttonVariants.includes(value),
+    },
+    footerPrimaryButtonText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+
+  methods: {
+    emitCancel(event) {
+      this.$emit('cancel', event);
+    },
+    emitSubmit(event) {
+      this.$emit('submit', event);
+    },
+  },
+};
 </script>
 
 <template>
@@ -60,7 +55,7 @@
           <slot name="header">
             <button
               type="button"
-              class="close"
+              class="close js-modal-close-action"
               data-dismiss="modal"
               :aria-label="s__('Modal|Close')"
               @click="emitCancel($event)"
@@ -83,7 +78,7 @@
           <slot name="footer">
             <button
               type="button"
-              class="btn"
+              class="btn js-modal-cancel-action"
               data-dismiss="modal"
               @click="emitCancel($event)"
             >
@@ -91,7 +86,7 @@
             </button>
             <button
               type="button"
-              class="btn"
+              class="btn js-modal-primary-action"
               :class="`btn-${footerPrimaryButtonVariant}`"
               data-dismiss="modal"
               @click="emitSubmit($event)"

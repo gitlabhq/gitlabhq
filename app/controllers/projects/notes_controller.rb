@@ -68,7 +68,7 @@ class Projects::NotesController < Projects::ApplicationController
   private
 
   def render_json_with_notes_serializer
-    Notes::RenderService.new(current_user).execute([note], project)
+    Notes::RenderService.new(current_user).execute([note])
 
     render json: note_serializer.represent(note)
   end

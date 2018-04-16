@@ -17,9 +17,9 @@ import './models/milestone';
 import './models/project';
 import './models/assignee';
 import './stores/boards_store';
-import './stores/modal_store';
+import ModalStore from './stores/modal_store';
 import BoardService from './services/board_service';
-import './mixins/modal_mixins';
+import modalMixin from './mixins/modal_mixins';
 import './mixins/sortable_default_options';
 import './filters/due_date_filters';
 import './components/board';
@@ -37,7 +37,6 @@ import tooltip from '~/vue_shared/directives/tooltip'; // eslint-disable-line im
 export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
-  const ModalStore = gl.issueBoards.ModalStore;
   const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
 
   window.gl = window.gl || {};
@@ -255,7 +254,7 @@ export default () => {
 
   gl.IssueBoardsModalAddBtn = new Vue({
     el: document.getElementById('js-add-issues-btn'),
-    mixins: [gl.issueBoards.ModalMixins],
+    mixins: [modalMixin],
     data() {
       return {
         modal: ModalStore.store,

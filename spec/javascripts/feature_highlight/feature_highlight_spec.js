@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import * as featureHighlightHelper from '~/feature_highlight/feature_highlight_helper';
 import * as featureHighlight from '~/feature_highlight/feature_highlight';
+import * as popover from '~/shared/popover';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 
@@ -29,7 +29,6 @@ describe('feature highlight', () => {
       mock = new MockAdapter(axios);
       mock.onGet('/test').reply(200);
       spyOn(window, 'addEventListener');
-      spyOn(window, 'removeEventListener');
       featureHighlight.setupFeatureHighlightPopover('test', 0);
     });
 
@@ -45,14 +44,14 @@ describe('feature highlight', () => {
     });
 
     it('setup mouseenter', () => {
-      const toggleSpy = spyOn(featureHighlightHelper.togglePopover, 'call');
+      const toggleSpy = spyOn(popover.togglePopover, 'call');
       $(selector).trigger('mouseenter');
 
       expect(toggleSpy).toHaveBeenCalledWith(jasmine.any(Object), true);
     });
 
     it('setup debounced mouseleave', (done) => {
-      const toggleSpy = spyOn(featureHighlightHelper.togglePopover, 'call');
+      const toggleSpy = spyOn(popover.togglePopover, 'call');
       $(selector).trigger('mouseleave');
 
       // Even though we've set the debounce to 0ms, setTimeout is needed for the debounce
@@ -64,12 +63,7 @@ describe('feature highlight', () => {
 
     it('setup show.bs.popover', () => {
       $(selector).trigger('show.bs.popover');
-      expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function));
-    });
-
-    it('setup hide.bs.popover', () => {
-      $(selector).trigger('hide.bs.popover');
-      expect(window.removeEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function));
+      expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function), { once: true });
     });
 
     it('removes disabled attribute', () => {
@@ -85,7 +79,7 @@ describe('feature highlight', () => {
     it('toggles when clicked', () => {
       $(selector).trigger('mouseenter');
       const popoverId = $(selector).attr('aria-describedby');
-      const toggleSpy = spyOn(featureHighlightHelper.togglePopover, 'call');
+      const toggleSpy = spyOn(popover.togglePopover, 'call');
 
       $(`#${popoverId} .dismiss-feature-highlight`).click();
 

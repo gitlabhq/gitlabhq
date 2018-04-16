@@ -1,0 +1,10 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :container_registry_token_expire_delay, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success"

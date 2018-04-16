@@ -7,8 +7,9 @@ import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 
-import SecurityReportApp from 'ee/pipelines/components/security_reports/security_report_app.vue'; // eslint-disable-line import/first
+import SecurityReportApp from 'ee/vue_shared/security_reports/split_security_reports_app.vue'; // eslint-disable-line import/first
 import SastSummaryWidget from 'ee/pipelines/components/security_reports/report_summary_widget.vue'; // eslint-disable-line import/first
+import store from 'ee/vue_shared/security_reports/store'; // eslint-disable-line import/first
 
 Vue.use(Translate);
 
@@ -28,13 +29,36 @@ export default () => {
     data() {
       return {
         mediator,
+        actionDisabled: null,
       };
+    },
+    created() {
+      eventHub.$on('graphAction', this.postAction);
+    },
+    beforeDestroy() {
+      eventHub.$off('graphAction', this.postAction);
+    },
+    methods: {
+      postAction(action) {
+        this.actionDisabled = action;
+
+        this.mediator.service.postAction(action)
+          .then(() => {
+            this.mediator.refreshPipeline();
+            this.actionDisabled = null;
+          })
+          .catch(() => {
+            this.actionDisabled = null;
+            Flash(__('An error occurred while making the request.'));
+          });
+      },
     },
     render(createElement) {
       return createElement('pipeline-graph', {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
+          actionDisabled: this.actionDisabled,
         },
       });
     },
@@ -99,54 +123,23 @@ export default () => {
     const blobPath = datasetOptions.blobPath;
     const dependencyScanningEndpoint = datasetOptions.dependencyScanningEndpoint;
 
-    if (endpoint) {
-      mediator.fetchSastReport(endpoint, blobPath)
-      .then(() => {
-        // update the badge
-        if (mediator.store.state.securityReports.sast.newIssues.length) {
-          updateBadgeCount(mediator.store.state.securityReports.sast.newIssues.length);
-        }
-      })
-      .catch(() => {
-        Flash(__('Something went wrong while fetching SAST.'));
-      });
-    }
-
-    if (dependencyScanningEndpoint) {
-      mediator.fetchDependencyScanningReport(dependencyScanningEndpoint)
-      .then(() => {
-        // update the badge
-        if (mediator.store.state.securityReports.dependencyScanning.newIssues.length) {
-          updateBadgeCount(
-            mediator.store.state.securityReports.dependencyScanning.newIssues.length,
-          );
-        }
-      })
-      .catch(() => {
-        Flash(__('Something went wrong while fetching Dependency Scanning.'));
-      });
-    }
-
     // Widget summary
     // eslint-disable-next-line no-new
     new Vue({
       el: sastSummary,
+      store,
       components: {
         SastSummaryWidget,
       },
-      data() {
-        return {
-          mediator,
-        };
+      methods: {
+        updateBadge(count) {
+          updateBadgeCount(count);
+        },
       },
       render(createElement) {
         return createElement('sast-summary-widget', {
-          props: {
-            hasDependencyScanning: dependencyScanningEndpoint !== undefined,
-            hasSast: endpoint !== undefined,
-            sastIssues: this.mediator.store.state.securityReports.sast.newIssues.length,
-            dependencyScanningIssues:
-              this.mediator.store.state.securityReports.dependencyScanning.newIssues.length,
+          on: {
+            updateBadgeCount: this.updateBadge,
           },
         });
       },
@@ -156,20 +149,24 @@ export default () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: securityTab,
+      store,
       components: {
         SecurityReportApp,
       },
-      data() {
-        return {
-          mediator,
-        };
+      methods: {
+        updateBadge(count) {
+          updateBadgeCount(count);
+        },
       },
       render(createElement) {
         return createElement('security-report-app', {
           props: {
-            securityReports: this.mediator.store.state.securityReports,
-            hasDependencyScanning: dependencyScanningEndpoint !== undefined,
-            hasSast: endpoint !== undefined,
+            headBlobPath: blobPath,
+            sastHeadPath: endpoint,
+            dependencyScanningHeadPath: dependencyScanningEndpoint,
+          },
+          on: {
+            updateBadgeCount: this.updateBadge,
           },
         });
       },

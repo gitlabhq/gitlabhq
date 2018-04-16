@@ -46,6 +46,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Uploads configuration](uploads.md): Configure GitLab uploads storage.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
+- [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data. **[STARTER ONLY]**
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
 
@@ -55,6 +56,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
 - [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
+- **(Premium)** [Additional email text](../user/admin_area/settings/email.md): Set a custom message that appears at the bottom of every email.
 
 ### Maintaining GitLab
 
@@ -100,7 +102,7 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
+- **(Premium)** [Additional custom email text](../user/admin_area/settings/email.md): Set a custom message that appears at the bottom of the every email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md

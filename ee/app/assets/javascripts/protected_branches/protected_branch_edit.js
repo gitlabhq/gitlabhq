@@ -4,8 +4,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
+import AccessDropdown from 'ee/projects/settings/access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
-import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 
 export default class ProtectedBranchEdit {
   constructor(options) {
@@ -15,15 +15,19 @@ export default class ProtectedBranchEdit {
     this.$allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
     this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
 
-    this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.closest(`.${ACCESS_LEVELS.MERGE}-container`);
-    this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.closest(`.${ACCESS_LEVELS.PUSH}-container`);
+    this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.closest(
+      `.${ACCESS_LEVELS.MERGE}-container`,
+    );
+    this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.closest(
+      `.${ACCESS_LEVELS.PUSH}-container`,
+    );
 
     this.buildDropdowns();
   }
 
   buildDropdowns() {
     // Allowed to merge dropdown
-    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new ProtectedBranchAccessDropdown({
+    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new AccessDropdown({
       accessLevel: ACCESS_LEVELS.MERGE,
       accessLevelsData: gon.merge_access_levels,
       $dropdown: this.$allowedToMergeDropdown,
@@ -32,7 +36,7 @@ export default class ProtectedBranchEdit {
     });
 
     // Allowed to push dropdown
-    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new ProtectedBranchAccessDropdown({
+    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new AccessDropdown({
       accessLevel: ACCESS_LEVELS.PUSH,
       accessLevelsData: gon.push_access_levels,
       $dropdown: this.$allowedToPushDropdown,
@@ -64,33 +68,38 @@ export default class ProtectedBranchEdit {
       return acc;
     }, {});
 
-    axios.patch(this.$wrap.data('url'), {
-      protected_branch: formData,
-    }).then(({ data }) => {
-      this.hasChanges = false;
+    axios
+      .patch(this.$wrap.data('url'), {
+        protected_branch: formData,
+      })
+      .then(({ data }) => {
+        this.hasChanges = false;
 
-      Object.keys(ACCESS_LEVELS).forEach((level) => {
-        const accessLevelName = ACCESS_LEVELS[level];
+        Object.keys(ACCESS_LEVELS).forEach(level => {
+          const accessLevelName = ACCESS_LEVELS[level];
 
-        // The data coming from server will be the new persisted *state* for each dropdown
-        this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
+          // The data coming from server will be the new persisted *state* for each dropdown
+          this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
+        });
+        this.$allowedToMergeDropdown.enable();
+        this.$allowedToPushDropdown.enable();
+      })
+      .catch(() => {
+        this.$allowedToMergeDropdown.enable();
+        this.$allowedToPushDropdown.enable();
+        Flash('Failed to update branch!', null, $('.js-protected-branches-list'));
       });
-      this.$allowedToMergeDropdown.enable();
-      this.$allowedToPushDropdown.enable();
-    }).catch(() => {
-      this.$allowedToMergeDropdown.enable();
-      this.$allowedToPushDropdown.enable();
-      Flash('Failed to update branch!', null, $('.js-protected-branches-list'));
-    });
   }
 
   setSelectedItemsToDropdown(items = [], dropdownName) {
-    const itemsToAdd = items.map((currentItem) => {
+    const itemsToAdd = items.map(currentItem => {
       if (currentItem.user_id) {
         // Do this only for users for now
         // get the current data for selected items
         const selectedItems = this[dropdownName].getSelectedItems();
-        const currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
+        const currentSelectedItem = _.findWhere(selectedItems, {
+          user_id: currentItem.user_id,
+        });
 
         return {
           id: currentItem.id,

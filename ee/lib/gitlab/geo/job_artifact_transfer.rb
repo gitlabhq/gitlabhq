@@ -1,5 +1,9 @@
 module Gitlab
   module Geo
+    # This class is responsible for:
+    #   * Requesting an ::Ci::JobArtifact file from the primary
+    #   * Saving it in the right place on successful download
+    #   * Returning a detailed Result object
     class JobArtifactTransfer < Transfer
       def initialize(job_artifact)
         @file_type = :job_artifact

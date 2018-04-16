@@ -55,10 +55,12 @@ module BoardsHelper
   end
 
   def board_list_data
+    include_descendant_groups = @group&.present?
+
     {
       toggle: "dropdown",
-      list_labels_path: labels_filter_path(true),
-      labels: labels_filter_path(true),
+      list_labels_path: labels_filter_path(true, include_ancestor_groups: true),
+      labels: labels_filter_path(true, include_descendant_groups: include_descendant_groups),
       labels_endpoint: @labels_endpoint,
       namespace_path: @namespace_path,
       project_path: @project&.path,

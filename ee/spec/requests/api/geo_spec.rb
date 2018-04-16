@@ -103,17 +103,30 @@ describe API::Geo do
       expect(response).to have_gitlab_http_status(401)
     end
 
-    context 'file file exists' do
-      it 'responds with 200 with X-Sendfile' do
-        get api("/geo/transfers/file/#{upload.id}"), nil, req_header
+    context 'when the Upload record exists' do
+      context 'when the file exists' do
+        it 'responds with 200 with X-Sendfile' do
+          get api("/geo/transfers/file/#{upload.id}"), nil, req_header
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.headers['Content-Type']).to eq('application/octet-stream')
-        expect(response.headers['X-Sendfile']).to end_with('dk.png')
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.headers['Content-Type']).to eq('application/octet-stream')
+          expect(response.headers['X-Sendfile']).to end_with('dk.png')
+        end
+      end
+
+      context 'file does not exist' do
+        it 'responds with 404 and a specific geo code' do
+          File.unlink(upload.absolute_path)
+
+          get api("/geo/transfers/file/#{upload.id}"), nil, req_header
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(json_response['geo_code']).to eq(Gitlab::Geo::FileUploader::FILE_NOT_FOUND_GEO_CODE)
+        end
       end
     end
 
-    context 'file does not exist' do
+    context 'when the Upload record does not exist' do
       it 'responds with 404' do
         get api("/geo/transfers/file/100000"), nil, req_header
 
@@ -139,13 +152,26 @@ describe API::Geo do
       expect(response).to have_gitlab_http_status(401)
     end
 
-    context 'LFS file exists' do
-      it 'responds with 200 with X-Sendfile' do
-        get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
+    context 'LFS object exists' do
+      context 'file exists' do
+        it 'responds with 200 with X-Sendfile' do
+          get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.headers['Content-Type']).to eq('application/octet-stream')
-        expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.headers['Content-Type']).to eq('application/octet-stream')
+          expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
+        end
+      end
+
+      context 'file does not exist' do
+        it 'responds with 404 and a specific geo code' do
+          File.unlink(lfs_object.file.path)
+
+          get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(json_response['geo_code']).to eq(Gitlab::Geo::FileUploader::FILE_NOT_FOUND_GEO_CODE)
+        end
       end
     end
 
@@ -182,6 +208,8 @@ describe API::Geo do
       end
 
       it 'responds with 200' do
+        allow(::GeoNodeStatus).to receive(:fast_current_node_status).and_return(::GeoNodeStatus.current_node_status)
+
         get api('/geo/status'), nil, request.headers
 
         expect(response).to have_gitlab_http_status(200)

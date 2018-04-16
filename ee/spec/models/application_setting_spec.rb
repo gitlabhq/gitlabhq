@@ -24,6 +24,15 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
 
+    describe 'when additional email text is enabled' do
+      before do
+        stub_licensed_features(email_additional_text: true)
+      end
+
+      it { is_expected.to allow_value("a" * subject.email_additional_text_character_limit).for(:email_additional_text) }
+      it { is_expected.not_to allow_value("a" * (subject.email_additional_text_character_limit + 1)).for(:email_additional_text) }
+    end
+
     describe 'when external authorization service is enabled' do
       before do
         stub_licensed_features(external_authorization_service: true)

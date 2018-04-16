@@ -10,8 +10,30 @@ applications.
 ## Overview
 
 With Auto DevOps, the software development process becomes easier to set up
-as every project can have a complete workflow from build to deploy and monitoring,
-with minimal to zero configuration.
+as every project can have a complete workflow from verification to monitoring
+without needing to configure anything. Just push your code and GitLab takes
+care of everything else. This makes it easier to start new projects and brings
+consistency to how applications are set up throughout a company.
+
+## Comparison to application platforms and PaaS
+
+Auto DevOps provides functionality described by others as an application
+platform or as a Platform as a Service (PaaS). It takes inspiration from the
+innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
+in a couple of ways:
+
+1. Auto DevOps works with any Kubernetes cluster, you're not limited to running
+   on GitLab's infrastructure (note that many features also work without Kubernetes).
+1. There is no additional cost (no markup on the infrastructure costs), and you
+   can use a self-hosted Kubernetes cluster or Containers as a Service on any
+   public cloud (for example [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
+1. Auto DevOps has more features including security testing, performance testing,
+   and code quality testing.
+1. It offers an incremental graduation path. If you need advanced customizations
+   you can start modifying the templates without having to start over on a
+   completely different platform.
+
+## Features
 
 Comprised of a set of stages, Auto DevOps brings these best practices to your
 project in an easy and automatic way:
@@ -231,19 +253,6 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dependency_scanning.md).
 
-### Auto Dependency Scanning **[ULTIMATE]**
-
-> Introduced in [GitLab Ultimate][ee] 10.7.
-
-Dependency Scanning uses the
-[Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
-to run analysis on the project dependencies and checks for potential security issues. Once the
-report is created, it's uploaded as an artifact which you can later download and
-check out.
-
-In GitLab Ultimate, any security warnings are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html).
-
 ### Auto Container Scanning
 
 > Introduced in GitLab 10.4.
@@ -397,12 +406,12 @@ into your project to enable staging and canary deployments, and more.
 ### Custom buildpacks
 
 If the automatic buildpack detection fails for your project, or if you want to
-use a custom buildpack, you can override the buildpack using a project variable
-or a `.buildpack` file in your project:
+use a custom buildpack, you can override the buildpack(s) using a project variable
+or a `.buildpacks` file in your project:
 
 - **Project variable** - Create a project variable `BUILDPACK_URL` with the URL
   of the buildpack to use.
-- **`.buildpack` file** - Add a file in your project's repo called  `.buildpack`
+- **`.buildpacks` file** - Add a file in your project's repo called  `.buildpacks`
   and add the URL of the buildpack to use on a line in the file. If you want to
   use multiple buildpacks, you can enter them in, one on each line.
 
@@ -469,18 +478,20 @@ The following variables can be used for setting up the Auto DevOps domain,
 providing a custom Helm chart, or scaling your application. PostgreSQL can be
 also be customized, and you can easily use a [custom buildpack](#custom-buildpacks).
 
-| **Variable** | **Description** |
-| ------------ | --------------- |
-| `AUTO_DEVOPS_DOMAIN`        | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops). |
-| `AUTO_DEVOPS_CHART`         | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app). |
-| `PRODUCTION_REPLICAS`       | The number of replicas to deploy in the production environment; defaults to 1. |
-| `CANARY_PRODUCTION_REPLICAS`| The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. |
-| `POSTGRES_ENABLED`  | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
-| `POSTGRES_USER`     | The PostgreSQL user; defaults to `user`. Set it to use a custom username. |
-| `POSTGRES_PASSWORD` | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`       | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name. |
-| `BUILDPACK_URL`  | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`|
-| `SAST_CONFIDENCE_LEVEL`  | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
+| **Variable**                 | **Description**                                                                                                                                                                                                               |
+| ------------                 | ---------------                                                                                                                                                                                                               |
+| `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops).                                                                                              |
+| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).                                                             |
+| `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
+| `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
+| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |
+| `CANARY_PRODUCTION_REPLICAS` | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1  |
+| `POSTGRES_ENABLED`           | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL.                                                                                                        |
+| `POSTGRES_USER`              | The PostgreSQL user; defaults to `user`. Set it to use a custom username.                                                                                                                                                     |
+| `POSTGRES_PASSWORD`          | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password.                                                                                                                                     |
+| `POSTGRES_DB`                | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name.                               |
+| `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
+| `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
 
 TIP: **Tip:**
@@ -512,8 +523,9 @@ The general rule is: `TRACK_ENV_REPLICAS`. Where:
 That way, you can define your own `TRACK_ENV_REPLICAS` variables with which
 you will be able to scale the pod's replicas easily.
 
-In the example below, the environment's name is `qa` which would result in
-looking for the `QA_REPLICAS` environment variable:
+In the example below, the environment's name is `qa` and it deploys the track
+`foo` which would result in looking for the `FOO_QA_REPLICAS` environment
+variable:
 
 ```yaml
 QA testing:
@@ -521,11 +533,11 @@ QA testing:
   environment:
     name: qa
   script:
-  - deploy qa
+  - deploy foo
 ```
 
-If, in addition, there was also a `track: foo` defined in the application's Helm
-chart, like:
+The track `foo` being referenced would also need to be defined in the
+application's Helm chart, like:
 
 ```yaml
 replicaCount: 1
@@ -546,8 +558,6 @@ service:
   externalPort: 5000
   internalPort: 5000
 ```
-
-then the environment variable would be `FOO_QA_REPLICAS`.
 
 ## Currently supported languages
 

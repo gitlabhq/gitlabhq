@@ -408,7 +408,7 @@ describe API::Runner do
             expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
                                                        'alias' => nil, 'command' => nil },
-                                                     { 'name' => 'docker:dind', 'entrypoint' => '/bin/sh',
+                                                     { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
                                                        'alias' => 'docker', 'command' => 'sleep 30' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
@@ -952,12 +952,53 @@ describe API::Runner do
 
       describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
         context 'when using token as parameter' do
-          it 'authorizes posting artifacts to running job' do
-            authorize_artifacts_with_token_in_params
+          context 'posting artifacts to running job' do
+            subject do
+              authorize_artifacts_with_token_in_params
+            end
 
-            expect(response).to have_gitlab_http_status(200)
-            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-            expect(json_response['TempPath']).not_to be_nil
+            shared_examples 'authorizes local file' do
+              it 'succeeds' do
+                subject
+
+                expect(response).to have_gitlab_http_status(200)
+                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
+                expect(json_response['RemoteObject']).to be_nil
+              end
+            end
+
+            context 'when using local storage' do
+              it_behaves_like 'authorizes local file'
+            end
+
+            context 'when using remote storage' do
+              context 'when direct upload is enabled' do
+                before do
+                  stub_artifacts_object_storage(enabled: true, direct_upload: true)
+                end
+
+                it 'succeeds' do
+                  subject
+
+                  expect(response).to have_gitlab_http_status(200)
+                  expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                  expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
+                  expect(json_response['RemoteObject']).to have_key('ID')
+                  expect(json_response['RemoteObject']).to have_key('GetURL')
+                  expect(json_response['RemoteObject']).to have_key('StoreURL')
+                  expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                end
+              end
+
+              context 'when direct upload is disabled' do
+                before do
+                  stub_artifacts_object_storage(enabled: true, direct_upload: false)
+                end
+
+                it_behaves_like 'authorizes local file'
+              end
+            end
           end
 
           it 'fails to post too large artifact' do
@@ -1053,20 +1094,45 @@ describe API::Runner do
               end
             end
 
-            context 'when uses regular file post' do
-              before do
-                upload_artifacts(file_upload, headers_with_token, false)
-              end
-
-              it_behaves_like 'successful artifacts upload'
-            end
-
             context 'when uses accelerated file post' do
-              before do
-                upload_artifacts(file_upload, headers_with_token, true)
+              context 'for file stored locally' do
+                before do
+                  upload_artifacts(file_upload, headers_with_token)
+                end
+
+                it_behaves_like 'successful artifacts upload'
               end
 
-              it_behaves_like 'successful artifacts upload'
+              context 'for file stored remotelly' do
+                let!(:fog_connection) do
+                  stub_artifacts_object_storage(direct_upload: true)
+                end
+
+                before do
+                  fog_connection.directories.get('artifacts').files.create(
+                    key: 'tmp/upload/12312300',
+                    body: 'content'
+                  )
+
+                  upload_artifacts(file_upload, headers_with_token,
+                    { 'file.remote_id' => remote_id })
+                end
+
+                context 'when valid remote_id is used' do
+                  let(:remote_id) { '12312300' }
+
+                  it_behaves_like 'successful artifacts upload'
+                end
+
+                context 'when invalid remote_id is used' do
+                  let(:remote_id) { 'invalid id' }
+
+                  it 'responds with bad request' do
+                    expect(response).to have_gitlab_http_status(500)
+                    expect(json_response['message']).to eq("Missing file")
+                  end
+                end
+              end
             end
 
             context 'when using runners token' do
@@ -1210,15 +1276,19 @@ describe API::Runner do
         end
 
         context 'when artifacts are being stored outside of tmp path' do
+          let(:new_tmpdir) { Dir.mktmpdir }
+
           before do
+            # init before overwriting tmp dir
+            file_upload
+
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
-            @tmpdir = Dir.mktmpdir
-            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return(@tmpdir)
+            allow(Dir).to receive(:tmpdir).and_return(new_tmpdir)
           end
 
           after do
-            FileUtils.remove_entry @tmpdir
+            FileUtils.remove_entry(new_tmpdir)
           end
 
           it' "fails to post artifacts for outside of tmp path"' do
@@ -1228,12 +1298,11 @@ describe API::Runner do
           end
         end
 
-        def upload_artifacts(file, headers = {}, accelerated = true)
-          params = if accelerated
-                     { 'file.path' => file.path, 'file.name' => file.original_filename }
-                   else
-                     { 'file' => file }
-                   end
+        def upload_artifacts(file, headers = {}, params = {})
+          params = params.merge({
+            'file.path' => file.path,
+            'file.name' => file.original_filename
+          })
 
           post api("/jobs/#{job.id}/artifacts"), params, headers
         end

@@ -8,18 +8,40 @@ module Projects
       prepend ::EE::Projects::Settings::RepositoryController
 
       def show
-        @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
+        render_show
+      end
 
-        define_protected_refs
+      def create_deploy_token
+        @new_deploy_token = DeployTokens::CreateService.new(@project, current_user, deploy_token_params).execute
+
+        if @new_deploy_token.persisted?
+          flash.now[:notice] = s_('DeployTokens|Your new project deploy token has been created.')
+        end
+
+        render_show
       end
 
       private
+
+      def render_show
+        @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
+        @deploy_tokens = @project.deploy_tokens.active
+
+        define_deploy_token
+        define_protected_refs
+
+        render 'show'
+      end
 
       def define_protected_refs
         @protected_branches = @project.protected_branches.order(:name).page(params[:page])
         @protected_tags = @project.protected_tags.order(:name).page(params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
+
+        @protected_branches_count = @protected_branches.reduce(0) { |sum, branch| sum + branch.matching(@project.repository.branches).size }
+        @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(@project.repository.tags).size }
+
         load_gon_index
       end
 
@@ -50,6 +72,14 @@ module Projects
         gon.push(protectable_tags_for_dropdown)
         gon.push(protectable_branches_for_dropdown)
         gon.push(access_levels_options)
+      end
+
+      def define_deploy_token
+        @new_deploy_token ||= DeployToken.new
+      end
+
+      def deploy_token_params
+        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry)
       end
     end
   end

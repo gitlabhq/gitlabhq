@@ -3,6 +3,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include GitlabRoutingHelper
   include MarkupHelper
   include TreeHelper
+  include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
   presents :merge_request
@@ -158,11 +159,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_revert_on_current_merge_request?
-    user_can_collaborate_with_project? && cached_can_be_reverted?
+    can_collaborate_with_project?(project) && cached_can_be_reverted?
   end
 
   def can_cherry_pick_on_current_merge_request?
-    user_can_collaborate_with_project? && can_be_cherry_picked?
+    can_collaborate_with_project?(project) && can_be_cherry_picked?
   end
 
   def can_push_to_source_branch?
@@ -199,12 +200,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     issues.map do |issue|
       issue.to_reference(project)
     end.sort.to_sentence
-  end
-
-  def user_can_collaborate_with_project?
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project)) ||
-      can_push_to_source_branch?
   end
 
   def user_can_fork_project?

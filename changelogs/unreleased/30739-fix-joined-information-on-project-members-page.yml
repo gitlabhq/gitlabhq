@@ -1,0 +1,5 @@
+---
+title: Fix `joined` information on project members page
+merge_request: 18290
+author: Fabian Schneider
+type: fixed

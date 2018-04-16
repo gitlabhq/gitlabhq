@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PushRule do
+  using RSpec::Parameterized::TableSyntax
+
   let(:global_push_rule) { create(:push_rule_sample) }
   let(:push_rule) { create(:push_rule) }
   let(:user) { create(:user) }
@@ -83,32 +85,32 @@ describe PushRule do
   describe '#commit_validation?' do
     let(:settings_with_global_default) { %i(reject_unsigned_commits) }
 
-    settings = {
-      commit_message_regex: 'regex',
-      branch_name_regex: 'regex',
-      author_email_regex: 'regex',
-      file_name_regex: 'regex',
-      reject_unsigned_commits: true,
-      commit_committer_check: true,
-      member_check: true,
-      prevent_secrets: true,
-      max_file_size: 1
-    }
+    where(:setting, :value, :result) do
+      :commit_message_regex    | 'regex'       | true
+      :branch_name_regex       | 'regex'       | true
+      :author_email_regex      | 'regex'       | true
+      :file_name_regex         | 'regex'       | true
+      :reject_unsigned_commits | true          | true
+      :commit_committer_check  | true          | true
+      :member_check            | true          | true
+      :prevent_secrets         | true          | true
+      :max_file_size           | 1             | false
+    end
 
-    settings.each do |setting, value|
-      context "when #{setting} is enabled at global level" do
+    with_them do
+      context "when rule is enabled at global level" do
         before do
           global_push_rule.update_column(setting, value)
         end
 
-        it "returns true at project level" do
+        it "returns the default value at project level" do
           rule = project.push_rule
 
           if settings_with_global_default.include?(setting)
             rule.update_column(setting, nil)
           end
 
-          expect(rule.commit_validation?).to eq(true)
+          expect(rule.commit_validation?).to eq(result)
         end
       end
     end

@@ -32,10 +32,15 @@ When you choose to allow only one of the protocols, a couple of things will happ
 On top of these UI restrictions, GitLab will deny all Git actions on the protocol
 not selected.
 
+CAUTION: **Important:**
+Starting with [GitLab 10.7][ce-18021], HTTP(s) protocol will be allowed for
+git clone/fetch requests done by GitLab Runner from CI/CD Jobs, even if
+_Only SSH_ was selected.
+
 > **Note:** Please keep in mind that disabling an access protocol does not actually
-  block access to the server itself. The ports used for the protocol, be it SSH or
-  HTTP, will still be accessible. What GitLab does is restrict access on the
-  application level.
+block access to the server itself. The ports used for the protocol, be it SSH or
+HTTP, will still be accessible. What GitLab does is restrict access on the
+application level.
 
 ## Allow mirrors to be setup for projects
 
@@ -47,4 +52,5 @@ work in every repository and can only be re-enabled on a per-project basis by an
 ![Mirror settings](img/mirror_settings.png)
 
 [ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
+[ce-18021]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021
 [ee-3586]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586

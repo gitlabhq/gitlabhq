@@ -57,14 +57,19 @@ Here you can run housekeeping, archive, rename, transfer, or remove a project.
 NOTE: **Note:**
 Only project Owners and Admin users have the [permissions] to archive a project.
 
-An archived project will be hidden by default in the project listings.
+Archiving a project makes it read-only for all users and indicates that it is
+no longer actively maintained. Projects that have been archived can also be
+unarchived.
+
+When a project is archived, the repository, issues, merge requests and all
+other features are read-only. Archived projects are also hidden
+in project listings.
+
+To archive a project:
 
 1. Navigate to your project's **Settings > General > Advanced settings**.
-1. Under "Archive project", hit the **Archive project** button.
+1. In the Archive project section, click the **Archive project** button.
 1. Confirm the action when asked to.
-
-An archived project can be fully restored and will therefore retain its
-repository and all associated resources whilst in an archived state.
 
 #### Renaming a repository
 

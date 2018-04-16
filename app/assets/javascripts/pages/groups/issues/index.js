@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
     filteredSearchTokenKeys: FilteredSearchTokenKeysIssues,
+    isGroupDecendent: true,
   });
   projectSelect();
 });

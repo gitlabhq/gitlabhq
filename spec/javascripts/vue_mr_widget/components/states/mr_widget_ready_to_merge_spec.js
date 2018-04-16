@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import readyToMergeComponent from '~/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
+import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import * as simplePoll from '~/lib/utils/simple_poll';
 
 const commitMessage = 'This is the commit message';
 const commitMessageWithDescription = 'This is the commit message description';
 const createComponent = (customConfig = {}) => {
-  const Component = Vue.extend(readyToMergeComponent);
+  const Component = Vue.extend(ReadyToMerge);
   const mr = {
     isPipelineActive: false,
     pipeline: null,
@@ -36,7 +36,7 @@ const createComponent = (customConfig = {}) => {
   });
 };
 
-describe('MRWidgetReadyToMerge', () => {
+describe('ReadyToMerge', () => {
   let vm;
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('MRWidgetReadyToMerge', () => {
 
   describe('props', () => {
     it('should have props', () => {
-      const { mr, service } = readyToMergeComponent.props;
+      const { mr, service } = ReadyToMerge.props;
 
       expect(mr.type instanceof Object).toBeTruthy();
       expect(mr.required).toBeTruthy();

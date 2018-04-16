@@ -103,29 +103,62 @@ keys must be manually replicated to the secondary node.
     find /etc/ssh -iname ssh_host_* -exec cp {} {}.backup.`date +%F` \;
     ```
 
-1. SSH into the **primary** node, and execute the command below:
+1. Copy OpenSSH host keys from **primary**:
+
+    If you can access your primary node using the **root** user:
 
     ```bash
-    sudo find /etc/ssh -iname ssh_host_* -not -iname '*.pub'
+    # Run this from the secondary node, change `primary-node-fqdn` for the IP or FQDN of the server
+    scp root@primary-node-fqdn:/etc/ssh/ssh_host_*_key* /etc/ssh
     ```
 
-1. For each file in that list replace the file from the primary node to
-   the **same** location on your **secondary** node.
+    If you only have access through a user with **sudo** privileges:
+    
+    ```bash
+    # Run this from your primary node:
+    sudo tar --transform 's/.*\///g' -zcvf ~/geo-host-key.tar.gz /etc/ssh/ssh_host_*_key*
+
+    # Run this from your secondary node:
+    scp user-with-sudo@primary-node-fqdn:geo-host-key.tar.gz .
+    tar zxvf ~/geo-host-key.tar.gz -C /etc/ssh
+    ```
 
 1. On your **secondary** node, ensure the file permissions are correct:
 
     ```bash
-    chown root:root /etc/ssh/ssh_host_*
-    chmod 0600 /etc/ssh/ssh_host_*
+    chown root:root /etc/ssh/ssh_host_*_key*
+    chmod 0600 /etc/ssh/ssh_host_*_key*
     ```
-
-1. Regenerate the public keys from the private keys:
+    
+1. To verify key fingerprint matches, execute the following command on both nodes:
 
     ```bash
-    find /etc/ssh -iname ssh_host_* -not -iname '*.backup*' -exec sh -c 'ssh-keygen -y -f "{}" > "{}.pub"' \;
+    for file in /etc/ssh/ssh_host_*_key; do ssh-keygen -lf $file; done
+    ```
+    
+    You should get an output similar to this one and they should be identical on both nodes:
+    
+    ```bash
+    1024 SHA256:FEZX2jQa2bcsd/fn/uxBzxhKdx4Imc4raXrHwsbtP0M root@serverhostname (DSA)
+    256 SHA256:uw98R35Uf+fYEQ/UnJD9Br4NXUFPv7JAUln5uHlgSeY root@serverhostname (ECDSA)
+    256 SHA256:sqOUWcraZQKd89y/QQv/iynPTOGQxcOTIXU/LsoPmnM root@serverhostname (ED25519)
+    2048 SHA256:qwa+rgir2Oy86QI+PZi/QVR+MSmrdrpsuH7YyKknC+s root@serverhostname (RSA)
     ```
 
-1. Restart sshd:
+1. Verify that you have the correct public keys for the existing private keys:
+
+    ```bash
+    # This will print the fingerprint for private keys:
+    for file in /etc/ssh/ssh_host_*_key; do ssh-keygen -lf $file; done
+ 
+    # This will print the fingerprint for public keys:
+    for file in /etc/ssh/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
+    ```
+    
+    NOTE: **Note**:
+    The output for private keys and public keys command should generate the same fingerprint.
+ 
+1. Restart sshd on your **secondary** node:
 
     ```bash
     # Debian or Ubuntu installations

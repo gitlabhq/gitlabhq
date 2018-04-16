@@ -11,7 +11,7 @@ module Ci
     end
 
     condition(:owner_of_job) do
-      can?(:developer_access) && @subject.triggered_by?(@user)
+      @subject.triggered_by?(@user)
     end
 
     rule { protected_ref }.policy do
@@ -19,6 +19,6 @@ module Ci
       prevent :erase_build
     end
 
-    rule { can?(:master_access) | owner_of_job }.enable :erase_build
+    rule { can?(:admin_build) | (can?(:update_build) & owner_of_job) }.enable :erase_build
   end
 end

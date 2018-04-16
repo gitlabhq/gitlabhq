@@ -15,6 +15,7 @@ class Service < ActiveRecord::Base
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
+  default_value_for :confidential_note_events, true
   default_value_for :job_events, true
   default_value_for :pipeline_events, true
   default_value_for :wiki_page_events, true
@@ -43,6 +44,7 @@ class Service < ActiveRecord::Base
   scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
+  scope :confidential_note_hooks, -> { where(confidential_note_events: true, active: true) }
   scope :job_hooks, -> { where(job_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
@@ -169,8 +171,10 @@ class Service < ActiveRecord::Base
   def self.prop_accessor(*args)
     args.each do |arg|
       class_eval %{
-        def #{arg}
-          properties['#{arg}']
+        unless method_defined?(arg)
+          def #{arg}
+            properties['#{arg}']
+          end
         end
 
         def #{arg}=(value)
@@ -203,7 +207,11 @@ class Service < ActiveRecord::Base
     args.each do |arg|
       class_eval %{
         def #{arg}?
-          ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+          if Gitlab.rails5?
+            !ActiveModel::Type::Boolean::FALSE_VALUES.include?(#{arg})
+          else
+            ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+          end
         end
       }
     end

@@ -40,10 +40,8 @@ export default class pipelinesMediator {
   }
 
   successCallback(response) {
-    return response.json().then((data) => {
-      this.state.isLoading = false;
-      this.store.storePipeline(data);
-    });
+    this.state.isLoading = false;
+    this.store.storePipeline(response.data);
   }
 
   errorCallback() {
@@ -52,27 +50,11 @@ export default class pipelinesMediator {
   }
 
   refreshPipeline() {
-    this.service.getPipeline()
+    this.poll.stop();
+
+    return this.service.getPipeline()
       .then(response => this.successCallback(response))
-      .catch(() => this.errorCallback());
-  }
-
-  /**
-   * EE only
-   */
-  fetchSastReport(endpoint, blobPath) {
-    return PipelineService.getSecurityReport(endpoint)
-      .then(response => response.json())
-      .then((data) => {
-        this.store.storeSastReport(data, blobPath);
-      });
-  }
-
-  fetchDependencyScanningReport(endpoint, blobPath) {
-    return PipelineService.getSecurityReport(endpoint)
-      .then(response => response.json())
-      .then((data) => {
-        this.store.storeDependencyScanningReport(data, blobPath);
-      });
+      .catch(() => this.errorCallback())
+      .finally(() => this.poll.restart());
   }
 }

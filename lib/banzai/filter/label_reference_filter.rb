@@ -8,8 +8,8 @@ module Banzai
         Label
       end
 
-      def find_object(project, id)
-        find_labels(project).find(id)
+      def find_object(parent_object, id)
+        find_labels(parent_object).find(id)
       end
 
       def self.references_in(text, pattern = Label.reference_pattern)
@@ -32,16 +32,25 @@ module Banzai
         end
       end
 
-      def find_label(project_ref, label_id, label_name)
-        project = parent_from_ref(project_ref)
-        return unless project
+      def find_label(parent_ref, label_id, label_name)
+        parent = parent_from_ref(parent_ref)
+        return unless parent
 
         label_params = label_params(label_id, label_name)
-        find_labels(project).find_by(label_params)
+        find_labels(parent).find_by(label_params)
       end
 
-      def find_labels(project)
-        LabelsFinder.new(nil, project_id: project.id).execute(skip_authorization: true)
+      def find_labels(parent)
+        params = if parent.is_a?(Group)
+                   { group_id: parent.id,
+                     include_ancestor_groups: true,
+                     only_group_labels: true }
+                 else
+                   { project_id: parent.id,
+                     include_ancestor_groups: true }
+                 end
+
+        LabelsFinder.new(nil, params).execute(skip_authorization: true)
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
@@ -59,25 +68,39 @@ module Banzai
         end
       end
 
-      def url_for_object(label, project)
+      def url_for_object(label, parent)
         h = Gitlab::Routing.url_helpers
-        h.project_issues_url(project, label_name: label.name, only_path: context[:only_path])
+
+        if parent.is_a?(Project)
+          h.project_issues_url(parent, label_name: label.name, only_path: context[:only_path])
+        elsif context[:label_url_method]
+          h.public_send(context[:label_url_method], parent, label_name: label.name, only_path: context[:only_path]) # rubocop:disable GitlabSecurity/PublicSend
+        end
       end
 
       def object_link_text(object, matches)
-        project_path     = full_project_path(matches[:namespace], matches[:project])
-        project_from_ref = from_ref_cached(project_path)
-        reference        = project_from_ref.to_human_reference(project)
-        label_suffix     = " <i>in #{reference}</i>" if reference.present?
+        label_suffix = ''
+
+        if project || full_path_ref?(matches)
+          project_path    = full_project_path(matches[:namespace], matches[:project])
+          parent_from_ref = from_ref_cached(project_path)
+          reference       = parent_from_ref.to_human_reference(project || group)
+
+          label_suffix = " <i>in #{reference}</i>" if reference.present?
+        end
 
         LabelsHelper.render_colored_label(object, label_suffix)
+      end
+
+      def full_path_ref?(matches)
+        matches[:namespace] && matches[:project]
       end
 
       def unescape_html_entities(text)
         CGI.unescapeHTML(text.to_s)
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         # use title of wrapped element instead
         nil
       end

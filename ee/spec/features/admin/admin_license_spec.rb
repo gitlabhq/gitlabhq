@@ -58,7 +58,7 @@ feature "License Admin" do
         visit admin_license_path
 
         page.within '.gitlab-ee-license-banner' do
-          expect(page).to have_content('Your Enterprise Edition trial license expired on')
+          expect(page).to have_content('Your trial license expired on')
           expect(page).not_to have_content('Pushing code and creation of issues and merge requests has been disabled')
         end
       end

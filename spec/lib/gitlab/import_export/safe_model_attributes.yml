@@ -394,6 +394,7 @@ Service:
 - default
 - wiki_page_events
 - confidential_issues_events
+- confidential_note_events
 ProjectHook:
 - id
 - url
@@ -414,6 +415,7 @@ ProjectHook:
 - token
 - group_id
 - confidential_issues_events
+- confidential_note_events
 - repository_update_events
 ProtectedBranch:
 - id
@@ -500,6 +502,14 @@ ProtectedBranch::MergeAccessLevel:
 - user_id
 - group_id
 ProtectedBranch::PushAccessLevel:
+- id
+- protected_branch_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
+ProtectedBranch::UnprotectAccessLevel:
 - id
 - protected_branch_id
 - access_level

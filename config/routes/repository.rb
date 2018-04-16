@@ -2,10 +2,11 @@
 
 resource :repository, only: [:create] do
   member do
-    get ':ref/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, ref: /.+/ }, action: 'archive', as: 'archive'
-
     # deprecated since GitLab 9.5
-    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }, as: 'archive_alternative'
+    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }, as: 'archive_alternative', defaults: { append_sha: true }
+
+    # deprecated since GitLab 10.7
+    get ':id/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+/ }, action: 'archive', as: 'archive_deprecated', defaults: { append_sha: true }
   end
 end
 

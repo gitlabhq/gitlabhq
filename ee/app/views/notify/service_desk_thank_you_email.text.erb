@@ -3,3 +3,4 @@ Thank you for your support request! We are tracking your request as ticket #<%= 
 To unsubscribe from this issue, please paste the following link into your browser:
 
 <%= @unsubscribe_url %>
+<%# EE-specific start %><%= render 'layouts/mailer/additional_text' %><%# EE-specific end %>

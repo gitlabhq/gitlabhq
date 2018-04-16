@@ -1,0 +1,5 @@
+---
+title: Fix finding wiki file when Gitaly is enabled
+merge_request:
+author:
+type: fixed

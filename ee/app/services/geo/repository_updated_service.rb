@@ -2,6 +2,8 @@ module Geo
   class RepositoryUpdatedService
     include ::Gitlab::Geo::ProjectLogHelpers
 
+    RepositoryUpdateError = Class.new(StandardError)
+
     def initialize(project, params = {})
       @project = project
       @params  = params
@@ -34,14 +36,18 @@ module Geo
     def reset_repository_checksum!
       return if repository_state.nil?
 
-      repository_state.update!("#{repository_checksum_column}" => nil)
+      repository_state.update!("#{repository_checksum_column}" => nil, "#{repository_failure_column}" => nil)
     rescue => e
       log_error('Cannot reset repository checksum', e)
-      raise Gitlab::Git::Checksum::Failure, "Cannot reset repository checksum: #{e}"
+      raise RepositoryUpdateError, "Cannot reset repository checksum: #{e}"
     end
 
     def repository_checksum_column
       "#{Geo::RepositoryUpdatedEvent.sources.key(source)}_verification_checksum"
+    end
+
+    def repository_failure_column
+      "last_#{Geo::RepositoryUpdatedEvent.sources.key(source)}_verification_failure"
     end
   end
 end

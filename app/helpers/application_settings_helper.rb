@@ -75,10 +75,12 @@ module ApplicationSettingsHelper
       css_class = 'btn'
       css_class << ' active' unless disabled
       checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
+      name = Gitlab::Auth::OAuth::Provider.label_for(source)
 
       label_tag(checkbox_name, class: css_class) do
         check_box_tag(checkbox_name, source, !disabled,
-                      autocomplete: 'off') + Gitlab::Auth::OAuth::Provider.label_for(source)
+                      autocomplete: 'off',
+                      id: name.tr(' ', '_')) + name
       end
     end
   end

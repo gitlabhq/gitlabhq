@@ -56,7 +56,6 @@ describe('AppComponent', () => {
       expect(vm.modalKind).toBe('warning');
       expect(vm.modalMessage).toBe('');
       expect(vm.modalActionLabel).toBe('');
-      expect(vm.errorMessage).toBe('');
     });
   });
 
@@ -91,10 +90,9 @@ describe('AppComponent', () => {
         spyOn(vm.store, 'setNodes');
 
         vm.fetchGeoNodes();
-        expect(vm.hasError).toBeFalsy();
         setTimeout(() => {
           expect(vm.store.setNodes).toHaveBeenCalledWith(mockNodes);
-          expect(vm.isLoading).toBeFalsy();
+          expect(vm.isLoading).toBe(false);
           done();
         }, 0);
       });
@@ -104,10 +102,9 @@ describe('AppComponent', () => {
         statusCode = 500;
 
         vm.fetchGeoNodes();
-        expect(vm.hasError).toBeFalsy();
         setTimeout(() => {
-          expect(vm.hasError).toBeTruthy();
-          expect(vm.errorMessage.response.data).toBe(response);
+          expect(vm.isLoading).toBe(false);
+          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while fetching nodes');
           done();
         }, 0);
       });
@@ -380,39 +377,13 @@ describe('AppComponent', () => {
   });
 
   describe('template', () => {
-    it('renders container elements correctly', () => {
-      expect(vm.$el.classList.contains('panel', 'panel-default')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('.panel-heading').length).not.toBe(0);
-      expect(vm.$el.querySelector('.panel-heading').innerText.trim()).toBe('Geo nodes (0)');
+    it('renders container element with class `geo-nodes-container`', () => {
+      expect(vm.$el.classList.contains('geo-nodes-container')).toBe(true);
     });
 
     it('renders loading animation when `isLoading` is true', () => {
       vm.isLoading = true;
       expect(vm.$el.querySelectorAll('.loading-animation.prepend-top-20.append-bottom-20').length).not.toBe(0);
-    });
-
-    it('renders list of nodes', (done) => {
-      vm.store.setNodes(mockNodes);
-      vm.isLoading = false;
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelectorAll('.loading-animation.prepend-top-20.append-bottom-20').length).toBe(0);
-        expect(vm.$el.querySelectorAll('ul.geo-nodes').length).not.toBe(0);
-        done();
-      });
-    });
-
-    it('renders error message', (done) => {
-      vm.hasError = true;
-      vm.isLoading = false;
-      vm.errorMessage = 'Something went wrong.';
-
-      Vue.nextTick(() => {
-        const errEl = 'p.health-message.prepend-left-15.append-right-15';
-        expect(vm.$el.querySelectorAll(errEl).length).not.toBe(0);
-        expect(vm.$el.querySelector(errEl).innerText.trim()).toBe(vm.errorMessage);
-        done();
-      });
     });
   });
 });

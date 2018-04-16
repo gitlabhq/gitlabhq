@@ -1,2 +1,2 @@
 %td
-  = render partial: 'projects/protected_tags/ee/access_level_dropdown', locals: { protected_tag: protected_tag, access_levels: protected_tag.create_access_levels, level_frequencies: access_level_frequencies(protected_tag.create_access_levels), input_basic_name: 'create_access_levels', toggle_class: 'js-allowed-to-create' }
+  = render partial: 'projects/settings/ee/access_level_dropdown', locals: { protected_tag: protected_tag, access_levels: protected_tag.create_access_levels, level_frequencies: access_level_frequencies(protected_tag.create_access_levels), input_basic_name: 'create_access_levels', toggle_class: 'js-allowed-to-create' }

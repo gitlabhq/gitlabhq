@@ -23,8 +23,7 @@ module API
           file = response[:file]
           present_disk_file!(file.path, file.filename)
         else
-          status response[:code]
-          response
+          error! response, response.delete(:code)
         end
       end
 
@@ -35,7 +34,7 @@ module API
       get 'status' do
         authenticate_by_gitlab_geo_node_token!
 
-        status = ::GeoNodeStatus.current_node_status
+        status = ::GeoNodeStatus.fast_current_node_status
         present status, with: EE::API::Entities::GeoNodeStatus
       end
     end

@@ -87,6 +87,14 @@ describe Geo::ProjectRegistryFinder, :geo do
       expect(subject.count_synced_wikis).to eq 1
     end
 
+    it 'counts synced wikis with nil wiki_access_level (which means enabled wiki)' do
+      project_synced.project_feature.update!(wiki_access_level: nil)
+
+      create(:geo_project_registry, :synced, project: project_synced)
+
+      expect(subject.count_synced_wikis).to eq 1
+    end
+
     context 'with selective sync' do
       before do
         secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -385,23 +393,19 @@ describe Geo::ProjectRegistryFinder, :geo do
   end
 
   shared_examples 'find outdated registries for repositories/wikis' do
-    it 'returns registries that verified on primary but not on secondary' do
+    it 'does not return registries that are verified on primary and secondary' do
       project_verified    = create(:repository_state, :repository_verified, :wiki_verified).project
       repository_verified = create(:repository_state, :repository_verified).project
       wiki_verified       = create(:repository_state, :wiki_verified).project
 
       create(:geo_project_registry, :repository_verified, :wiki_verified, project: project_verified)
-      registry_repository_verified = create(:geo_project_registry, :repository_verified, project: repository_verified)
-      registry_wiki_verified       = create(:geo_project_registry, :wiki_verified, project: wiki_verified)
+      create(:geo_project_registry, :repository_verified, project: repository_verified)
+      create(:geo_project_registry, :wiki_verified, project: wiki_verified)
 
-      expect(subject.find_registries_to_verify(batch_size: 100))
-        .to match_array([
-          registry_repository_verified,
-          registry_wiki_verified
-        ])
+      expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
     end
 
-    it 'does not return registries were unverified/outdated on primary' do
+    it 'does not return registries that were unverified/outdated on primary' do
       project_unverified_primary  = create(:project)
       project_outdated_primary    = create(:repository_state, :repository_outdated, :wiki_outdated).project
       repository_outdated_primary = create(:repository_state, :repository_outdated, :wiki_verified).project
@@ -436,7 +440,15 @@ describe Geo::ProjectRegistryFinder, :geo do
         ])
     end
 
-    it 'does not return registries that both verification failed on primary' do
+    it 'does not return registries that failed on primary' do
+      verification_failed_primary = create(:repository_state, :repository_failed, :wiki_failed).project
+
+      create(:geo_project_registry, project: verification_failed_primary)
+
+      expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
+    end
+
+    it 'returns registries where one failed and one verified on the primary' do
       verification_failed_primary = create(:repository_state, :repository_failed, :wiki_failed).project
       repository_failed_primary   = create(:repository_state, :repository_failed, :wiki_verified).project
       wiki_failed_primary         = create(:repository_state, :repository_verified, :wiki_failed).project
@@ -452,22 +464,17 @@ describe Geo::ProjectRegistryFinder, :geo do
         ])
     end
 
-    it 'returns registries that verification failed on secondary' do
+    it 'does not return registries where verification failed on secondary' do
       # Verification failed on secondary
       verification_failed_secondary = create(:repository_state, :repository_verified, :wiki_verified).project
       repository_failed_secondary   = create(:repository_state, :repository_verified).project
       wiki_failed_secondary         = create(:repository_state, :wiki_verified).project
 
-      registry_verification_failed_secondary = create(:geo_project_registry, :repository_verification_failed, :wiki_verification_failed, project: verification_failed_secondary)
-      registry_repository_failed_secondary   = create(:geo_project_registry, :repository_verification_failed, project: repository_failed_secondary)
-      registry_wiki_failed_secondary         = create(:geo_project_registry, :wiki_verification_failed, project: wiki_failed_secondary)
+      create(:geo_project_registry, :repository_verification_failed, :wiki_verification_failed, project: verification_failed_secondary)
+      create(:geo_project_registry, :repository_verification_failed, project: repository_failed_secondary)
+      create(:geo_project_registry, :wiki_verification_failed, project: wiki_failed_secondary)
 
-      expect(subject.find_registries_to_verify(batch_size: 100))
-        .to match_array([
-          registry_verification_failed_secondary,
-          registry_repository_failed_secondary,
-          registry_wiki_failed_secondary
-        ])
+      expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
     end
   end
 
@@ -484,6 +491,14 @@ describe Geo::ProjectRegistryFinder, :geo do
 
         create(:geo_project_registry, :synced, project: project_synced)
         create(:geo_project_registry, :synced, project: create(:project, :wiki_disabled))
+
+        expect(subject.count_synced_wikis).to eq 1
+      end
+
+      it 'counts synced wikis with nil wiki_access_level (which means enabled wiki)' do
+        project_synced.project_feature.update!(wiki_access_level: nil)
+
+        create(:geo_project_registry, :synced, project: project_synced)
 
         expect(subject.count_synced_wikis).to eq 1
       end

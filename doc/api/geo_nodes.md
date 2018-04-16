@@ -154,15 +154,18 @@ Example response:
     "attachments_count": 1,
     "attachments_synced_count": 1,
     "attachments_failed_count": 0,
+    "attachments_synced_missing_on_primary_count": 0,
     "attachments_synced_in_percentage": "100.00%",
     "db_replication_lag_seconds": 0,
     "lfs_objects_count": 0,
     "lfs_objects_synced_count": 0,
     "lfs_objects_failed_count": 0,
+    "lfs_objects_synced_missing_on_primary_count": 0,
     "lfs_objects_synced_in_percentage": "0.00%",
     "job_artifacts_count": 2,
     "job_artifacts_synced_count": 1,
     "job_artifacts_failed_count": 1,
+    "job_artifacts_synced_missing_on_primary_count": 0,
     "job_artifacts_synced_in_percentage": "50.00%",
     "repositories_count": 41,
     "repositories_failed_count": 1,
@@ -189,10 +192,6 @@ Example response:
 GET /geo_nodes/:id/status
 ```
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `refresh` | boolean | no       | Attempt to fetch the latest status from the Geo node directly, ignoring the cache |
-
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/2/status
 ```
@@ -209,15 +208,18 @@ Example response:
   "attachments_count": 1,
   "attachments_synced_count": 1,
   "attachments_failed_count": 0,
+  "attachments_synced_missing_on_primary_count": 0,
   "attachments_synced_in_percentage": "100.00%",
   "db_replication_lag_seconds": 0,
   "lfs_objects_count": 0,
   "lfs_objects_synced_count": 0,
   "lfs_objects_failed_count": 0,
+  "lfs_objects_synced_missing_on_primary_count": 0,
   "lfs_objects_synced_in_percentage": "0.00%",
   "job_artifacts_count": 2,
   "job_artifacts_synced_count": 1,
   "job_artifacts_failed_count": 1,
+  "job_artifacts_synced_missing_on_primary_count": 0,
   "job_artifacts_synced_in_percentage": "50.00%",
   "repositories_count": 41,
   "repositories_failed_count": 1,
@@ -233,7 +235,7 @@ Example response:
 }
 ```
 
-## Retrieve project sync failures ocurred on the current node
+## Retrieve project sync failures that occurred on the current node
 
 
 ```

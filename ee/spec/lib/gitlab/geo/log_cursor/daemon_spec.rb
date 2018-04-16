@@ -125,10 +125,11 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           expect(registry.reload.resync_repository).to be true
         end
 
-        it 'resets the repository verification checksum' do
+        it 'resets the repository verification checksum and failure' do
           daemon.run_once!
 
-          expect(registry.reload).to have_attributes(resync_repository: true, repository_verification_checksum: nil)
+          expect(registry.reload).to have_attributes(
+            resync_repository: true, repository_verification_checksum_sha: nil, last_repository_verification_failure: nil)
         end
       end
 
@@ -145,10 +146,11 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           expect(registry.reload.resync_wiki).to be true
         end
 
-        it 'resets the wiki verification checksum' do
+        it 'resets the wiki verification checksum and failure' do
           daemon.run_once!
 
-          expect(registry.reload).to have_attributes(resync_wiki: true, wiki_verification_checksum: nil)
+          expect(registry.reload).to have_attributes(
+            resync_wiki: true, wiki_verification_checksum_sha: nil, last_wiki_verification_failure: nil)
         end
       end
 

@@ -37,14 +37,17 @@ class GeoNodeStatus < ActiveRecord::Base
     lfs_objects_synced_count: 'Number of local LFS objects synced on secondary',
     lfs_objects_failed_count: 'Number of local LFS objects failed to sync on secondary',
     lfs_objects_registry_count: 'Number of LFS objects in the registry',
+    lfs_objects_synced_missing_on_primary_count: 'Number of LFS objects marked as synced due to the file missing on the primary',
     job_artifacts_count: 'Total number of local job artifacts available on primary',
     job_artifacts_synced_count: 'Number of local job artifacts synced on secondary',
     job_artifacts_failed_count: 'Number of local job artifacts failed to sync on secondary',
     job_artifacts_registry_count: 'Number of job artifacts in the registry',
+    job_artifacts_synced_missing_on_primary_count: 'Number of job artifacts marked as synced due to the file missing on the primary',
     attachments_count: 'Total number of local file attachments available on primary',
     attachments_synced_count: 'Number of local file attachments synced on secondary',
     attachments_failed_count: 'Number of local file attachments failed to sync on secondary',
     attachments_registry_count: 'Number of attachments in the registry',
+    attachments_synced_missing_on_primary_count: 'Number of attachments marked as synced due to the file missing on the primary',
     replication_slots_count: 'Total number of replication slots on the primary',
     replication_slots_used_count: 'Number of replication slots in use on the primary',
     replication_slots_max_retained_wal_bytes: 'Maximum number of bytes retained in the WAL on the primary',
@@ -82,6 +85,24 @@ class GeoNodeStatus < ActiveRecord::Base
     status
   end
 
+  def self.fast_current_node_status
+    # Primary's status is easy to calculate so we can calculate it on the fly
+    return current_node_status if Gitlab::Geo.primary?
+
+    spawn_worker
+
+    attrs = Rails.cache.read(cache_key) || {}
+    new(attrs)
+  end
+
+  def self.spawn_worker
+    ::Geo::MetricsUpdateWorker.perform_async
+  end
+
+  def self.cache_key
+    "geo-node:#{Gitlab::Geo.current_node.id}:status"
+  end
+
   def self.from_json(json_data)
     json_data.slice!(*allowed_params)
 
@@ -104,6 +125,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def initialize_feature_flags
     self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+  end
+
+  def update_cache!
+    Rails.cache.write(self.class.cache_key, attributes)
   end
 
   def load_data_from_current_node
@@ -168,12 +193,15 @@ class GeoNodeStatus < ActiveRecord::Base
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
       self.lfs_objects_registry_count = lfs_objects_finder.count_registry_lfs_objects
+      self.lfs_objects_synced_missing_on_primary_count = lfs_objects_finder.count_synced_missing_on_primary_lfs_objects
       self.job_artifacts_synced_count = job_artifacts_finder.count_synced_job_artifacts
       self.job_artifacts_failed_count = job_artifacts_finder.count_failed_job_artifacts
       self.job_artifacts_registry_count = job_artifacts_finder.count_registry_job_artifacts
+      self.job_artifacts_synced_missing_on_primary_count = job_artifacts_finder.count_synced_missing_on_primary_job_artifacts
       self.attachments_synced_count = attachments_finder.count_synced_attachments
       self.attachments_failed_count = attachments_finder.count_failed_attachments
       self.attachments_registry_count = attachments_finder.count_registry_attachments
+      self.attachments_synced_missing_on_primary_count = attachments_finder.count_synced_missing_on_primary_attachments
     end
   end
 

@@ -18,6 +18,34 @@ describe GeoNodeStatus, :geo do
     stub_current_geo_node(secondary)
   end
 
+  describe '#fast_current_node_status' do
+    it 'reads the cache and spawns the worker' do
+      expect(described_class).to receive(:spawn_worker).once
+
+      rails_cache = double
+      expect(rails_cache).to receive(:read).with(described_class.cache_key)
+      expect(Rails).to receive(:cache).and_return(rails_cache)
+
+      described_class.fast_current_node_status
+    end
+
+    it 'returns status for primary with no cache' do
+      stub_current_geo_node(primary)
+
+      expect(described_class.fast_current_node_status).to eq described_class.current_node_status
+    end
+  end
+
+  describe '#update_cache!' do
+    it 'writes a cache' do
+      rails_cache = double
+      expect(rails_cache).to receive(:write).with(described_class.cache_key, kind_of(Hash))
+      expect(Rails).to receive(:cache).and_return(rails_cache)
+
+      described_class.new.update_cache!
+    end
+  end
+
   describe '#healthy?' do
     context 'when health is blank' do
       it 'returns true' do
@@ -95,6 +123,21 @@ describe GeoNodeStatus, :geo do
     end
   end
 
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#attachments_synced_missing_on_primary_count', :delete do
+    it 'only counts successful syncs' do
+      create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      uploads = Upload.all.pluck(:id)
+
+      create(:geo_file_registry, :avatar, file_id: uploads[0], missing_on_primary: true)
+      create(:geo_file_registry, :avatar, file_id: uploads[1])
+      create(:geo_file_registry, :avatar, file_id: uploads[2], success: false)
+
+      expect(subject.attachments_synced_missing_on_primary_count).to eq(1)
+    end
+  end
+
   describe '#attachments_failed_count', :delete do
     it 'counts failed avatars, attachment, personal snippets and files' do
       # These two should be ignored
@@ -156,7 +199,41 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#lfs_objects_failed' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_synced_count', :delete do
+    it 'counts synced LFS objects' do
+      # These four should be ignored
+      create(:geo_file_registry, success: false)
+      create(:geo_file_registry, :avatar)
+      create(:geo_file_registry, file_type: :attachment)
+      create(:geo_file_registry, :lfs, :with_file, success: false)
+
+      create(:geo_file_registry, :lfs, :with_file, success: true)
+
+      expect(subject.lfs_objects_synced_count).to eq(1)
+    end
+  end
+
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_synced_missing_on_primary_count', :delete do
+    it 'counts LFS objects marked as synced due to file missing on the primary' do
+      # These four should be ignored
+      create(:geo_file_registry, success: false)
+      create(:geo_file_registry, :avatar, missing_on_primary: true)
+      create(:geo_file_registry, file_type: :attachment, missing_on_primary: true)
+      create(:geo_file_registry, :lfs, :with_file, success: false)
+
+      create(:geo_file_registry, :lfs, :with_file, success: true, missing_on_primary: true)
+
+      expect(subject.lfs_objects_synced_missing_on_primary_count).to eq(1)
+    end
+  end
+
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_failed_count', :delete do
     it 'counts failed LFS objects' do
       # These four should be ignored
       create(:geo_file_registry, success: false)
@@ -170,7 +247,9 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#lfs_objects_synced_in_percentage' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#lfs_objects_synced_in_percentage', :delete do
     let(:lfs_object_project) { create(:lfs_objects_project, project: project_1) }
 
     before do
@@ -198,34 +277,53 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#job_artifacts_synced_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_synced_count', :delete do
     it 'counts synced job artifacts' do
       # These should be ignored
-      create(:geo_file_registry, success: false)
-      create(:geo_file_registry, :avatar, success: false)
-      create(:geo_file_registry, file_type: :attachment, success: true)
-      create(:geo_file_registry, :lfs, :with_file, success: true)
+      create(:geo_file_registry, success: true)
       create(:geo_job_artifact_registry, :with_artifact, success: false)
+
       create(:geo_job_artifact_registry, :with_artifact, success: true)
 
       expect(subject.job_artifacts_synced_count).to eq(1)
     end
   end
 
-  describe '#job_artifacts_failed_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_synced_missing_on_primary_count', :delete do
+    it 'counts job artifacts marked as synced due to file missing on the primary' do
+      # These should be ignored
+      create(:geo_file_registry, success: true, missing_on_primary: true)
+      create(:geo_job_artifact_registry, :with_artifact, success: true)
+
+      create(:geo_job_artifact_registry, :with_artifact, success: true, missing_on_primary: true)
+
+      expect(subject.job_artifacts_synced_missing_on_primary_count).to eq(1)
+    end
+  end
+
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_failed_count', :delete do
     it 'counts failed job artifacts' do
       # These should be ignored
       create(:geo_file_registry, success: false)
       create(:geo_file_registry, :avatar, success: false)
       create(:geo_file_registry, file_type: :attachment, success: false)
       create(:geo_job_artifact_registry, :with_artifact, success: true)
+
       create(:geo_job_artifact_registry, :with_artifact, success: false)
 
       expect(subject.job_artifacts_failed_count).to eq(1)
     end
   end
 
-  describe '#job_artifacts_synced_in_percentage' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#job_artifacts_synced_in_percentage', :delete do
     context 'when artifacts are available' do
       before do
         [project_1, project_2, project_3, project_4].each_with_index do |project, index|

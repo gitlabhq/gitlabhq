@@ -1,4 +1,7 @@
 module Geo
+  # This class is responsible for:
+  #   * Handling file requests from the secondary over the API
+  #   * Returning the necessary response data to send the file back
   class FileUploadService < FileService
     attr_reader :auth_header
 

@@ -935,11 +935,6 @@ pre.light-well {
     }
   }
 
-  .dropdown-menu-toggle {
-    width: 100%;
-    max-width: 300px;
-  }
-
   .flash-container {
     padding: 0;
   }
@@ -1141,5 +1136,13 @@ pre.light-well {
 
   .ci-template pre {
     white-space: pre-wrap;
+  }
+}
+
+.project-badge {
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
   }
 }

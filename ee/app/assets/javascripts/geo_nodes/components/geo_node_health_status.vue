@@ -24,18 +24,23 @@
 </script>
 
 <template>
-  <div
-    class="node-detail-value node-health-status"
-    :class="healthCssClass"
-  >
-    <icon
-      :size="16"
-      :name="statusIconName"
-    />
-    <span
-      class="status-text prepend-left-5"
+  <div class="prepend-top-15 detail-section-item">
+    <div class="node-detail-title">
+      {{ s__('GeoNodes|Health status:') }}
+    </div>
+    <div
+      class="node-detail-value node-health-status"
+      :class="healthCssClass"
     >
-      {{ status }}
-    </span>
+      <icon
+        :size="16"
+        :name="statusIconName"
+      />
+      <span
+        class="status-text prepend-left-5"
+      >
+        {{ status }}
+      </span>
+    </div>
   </div>
 </template>

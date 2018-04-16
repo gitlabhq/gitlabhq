@@ -57,6 +57,29 @@ feature 'Admin updates settings' do
     end
   end
 
+  scenario 'Modify import sources' do
+    expect(Gitlab::CurrentSettings.import_sources).not_to be_empty
+
+    page.within('.as-visibility-access') do
+      Gitlab::ImportSources.options.map do |name, _|
+        uncheck name
+      end
+
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.import_sources).to be_empty
+
+    page.within('.as-visibility-access') do
+      check "Repo by URL"
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.import_sources).to eq(['git'])
+  end
+
   scenario 'Change Visibility and Access Controls' do
     page.within('.as-visibility-access') do
       uncheck 'Project export enabled'
@@ -85,6 +108,26 @@ feature 'Admin updates settings' do
 
     expect(Gitlab::CurrentSettings.home_page_url).to eq "https://about.gitlab.com/"
     expect(page).to have_content "Application settings saved successfully"
+  end
+
+  scenario 'Modify oauth providers' do
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
+
+    page.within('.as-signin') do
+      uncheck 'Google'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+
+    page.within('.as-signin') do
+      check "Google"
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
   end
 
   scenario 'Change Help page' do
@@ -148,7 +191,7 @@ feature 'Admin updates settings' do
   scenario 'Change Performance bar settings' do
     group = create(:group)
 
-    page.within('.as-performance') do
+    page.within('.as-performance-bar') do
       check 'Enable the Performance Bar'
       fill_in 'Allowed group', with: group.path
       click_on 'Save changes'
@@ -158,7 +201,7 @@ feature 'Admin updates settings' do
     expect(find_field('Enable the Performance Bar')).to be_checked
     expect(find_field('Allowed group').value).to eq group.path
 
-    page.within('.as-performance') do
+    page.within('.as-performance-bar') do
       uncheck 'Enable the Performance Bar'
       click_on 'Save changes'
     end
@@ -192,6 +235,26 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.unique_ips_limit_per_user).to eq(15)
   end
 
+  scenario 'Configure web terminal' do
+    page.within('.as-terminal') do
+      fill_in 'Max session time', with: 15
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.terminal_max_session_time).to eq(15)
+  end
+
+  scenario 'Enable outbound requests' do
+    page.within('.as-outbound') do
+      check 'Allow requests to the local network from hooks and services'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
+  end
+
   scenario 'Change Slack Notifications Service template settings' do
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'
@@ -214,16 +277,6 @@ feature 'Admin updates settings' do
     expect(find_field('Webhook').value).to eq 'http://localhost'
     expect(find_field('Username').value).to eq 'test_user'
     expect(find('#service_push_channel').value).to eq '#test_channel'
-  end
-
-  context 'sign-in restrictions', :js do
-    it 'de-activates oauth sign-in source' do
-      page.within('.as-signin') do
-        find('input#application_setting_enabled_oauth_sign_in_sources_[value=gitlab]').send_keys(:return)
-
-        expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
-      end
-    end
   end
 
   scenario 'Change Keys settings' do

@@ -96,7 +96,8 @@ module Boards
       resource.as_json(
         only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position, :weight],
         labels: true,
-        sidebar_endpoints: true,
+        issue_endpoints: true,
+        include_full_project_path: board.group_board?,
         include: {
           project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },

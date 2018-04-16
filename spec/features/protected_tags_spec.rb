@@ -13,7 +13,9 @@ feature 'Protected Tags', :js do
       find(".js-allowed-to-#{operation}").click
       wait_for_requests
 
-      Array(option).each { |opt| click_on(opt) }
+      within('.dropdown-content') do
+        Array(option).each { |opt| click_on(opt) }
+      end
 
       find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
     end
@@ -81,7 +83,10 @@ feature 'Protected Tags', :js do
       set_allowed_to('create')
       click_on "Protect"
 
-      within(".protected-tags-list") { expect(page).to have_content("2 matching tags") }
+      within(".protected-tags-list") do
+        expect(page).to have_content("Protected tag (2)")
+        expect(page).to have_content("2 matching tags")
+      end
     end
 
     it "displays all the tags matching the wildcard" do

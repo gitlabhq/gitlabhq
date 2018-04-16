@@ -146,6 +146,28 @@ this file. For example:
 2014-06-10T18:18:26Z 14299 TID-55uqo INFO: Booting Sidekiq 3.0.0 with redis options {:url=>"redis://localhost:6379/0", :namespace=>"sidekiq"}
 ```
 
+Instead of the format above, you can opt to generate JSON logs for
+Sidekiq. For example:
+
+```json
+{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z"}
+```
+
+For Omnibus GitLab installations, add the configuration option:
+
+```ruby
+sidekiq['log_format'] = 'json'
+```
+
+For source installations, edit the `gitlab.yml` and set the Sidekiq
+`log_format` configuration option:
+
+```yaml
+  ## Sidekiq
+  sidekiq:
+    log_format: json
+```
+
 ## `gitlab-shell.log`
 
 This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for

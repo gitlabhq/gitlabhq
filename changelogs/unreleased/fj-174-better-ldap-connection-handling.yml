@@ -1,0 +1,5 @@
+---
+title: Add better LDAP connection handling
+merge_request: 18039
+author:
+type: fixed

@@ -8,6 +8,7 @@ import CEProtectedBranchEditList from '~/protected_branches/protected_branch_edi
 import CEProtectedTagCreate from '~/protected_tags/protected_tag_create';
 import CEProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
 import MirrorPull from 'ee/mirrors/mirror_pull';
+import DueDateSelectors from '~/due_date_select';
 
 import ProtectedBranchCreate from 'ee/protected_branches/protected_branch_create';
 import ProtectedBranchEditList from 'ee/protected_branches/protected_branch_edit_list';
@@ -40,4 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mirrorPull) {
     mirrorPull.init();
   }
+
+  new DueDateSelectors();
 });

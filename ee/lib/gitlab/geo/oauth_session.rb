@@ -78,7 +78,6 @@ module Gitlab
         cipher.__send__(operation) # rubocop:disable GitlabSecurity/PublicSend
         cipher.iv = salt
         cipher.key = Gitlab::Application.secrets.db_key_base
-        cipher.auth_data = ''
         cipher
       end
 

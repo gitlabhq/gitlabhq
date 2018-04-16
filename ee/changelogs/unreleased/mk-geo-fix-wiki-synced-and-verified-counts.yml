@@ -1,0 +1,5 @@
+---
+title: 'Geo: Fix enabled wiki counts with FDW (impacts synced and verified counts)'
+merge_request: 5352
+author:
+type: fixed

@@ -249,10 +249,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
       end
 
       context 'project attributes' do
-        it 'contains the html description' do
-          expect(saved_project_json).to include("description_html" => 'description')
-        end
-
         it 'does not contain the runners token' do
           expect(saved_project_json).not_to include("runners_token" => 'token')
         end
@@ -279,7 +275,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      group: group,
                      approvals_before_merge: 1
                     )
-    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

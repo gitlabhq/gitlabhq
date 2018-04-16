@@ -106,7 +106,7 @@ If you want to auto-cancel all pending non-HEAD pipelines on branch, when
 new pipeline will be created (after your git push or manually from UI),
 check **Auto-cancel pending pipelines** checkbox and save the changes.
 
-## Badges
+## Pipeline Badges
 
 In the pipelines settings page you can find pipeline status and test coverage
 badges for your project. The latest successful pipeline will be used to read

@@ -81,7 +81,7 @@ module EE
     end
 
     def self.possible_licensed_attributes
-      repository_mirror_attributes + external_authorization_service_attributes
+      repository_mirror_attributes + external_authorization_service_attributes + [:email_additional_text]
     end
   end
 end
