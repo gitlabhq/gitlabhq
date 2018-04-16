@@ -1,4 +1,4 @@
-# Disaster Recovery
+# Disaster Recovery **[PREMIUM ONLY]**
 
 Geo replicates your database, your Git repositories, and few other assets. 
 We will support and replicate more data in the future, that will enable you to
