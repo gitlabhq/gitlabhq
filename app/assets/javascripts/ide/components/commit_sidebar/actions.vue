@@ -21,7 +21,7 @@
       commitToCurrentBranchText() {
         return sprintf(
           __('Commit to %{branchName} branch'),
-          { branchName: `<strong>${this.currentBranchId}</strong>` },
+          { branchName: `<strong class="monospace">${this.currentBranchId}</strong>` },
           false,
         );
       },

@@ -5,6 +5,7 @@ import icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import commitFilesList from './commit_sidebar/list.vue';
+import CommitMessageField from './commit_sidebar/message_field.vue';
 import * as consts from '../stores/modules/commit/constants';
 import Actions from './commit_sidebar/actions.vue';
 
@@ -15,6 +16,7 @@ export default {
     commitFilesList,
     Actions,
     LoadingButton,
+    CommitMessageField,
   },
   directives: {
     tooltip,
@@ -38,15 +40,9 @@ export default {
       'changedFiles',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters('commit', [
-      'commitButtonDisabled',
-      'discardDraftButtonDisabled',
-      'branchName',
-    ]),
+    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
     statusSvg() {
-      return this.lastCommitMsg
-        ? this.committedStateSvgPath
-        : this.noChangesStateSvgPath;
+      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
     },
   },
   methods: {
@@ -64,9 +60,7 @@ export default {
       });
     },
     forceCreateNewBranch() {
-      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() =>
-        this.commitChanges(),
-      );
+      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
   },
 };
@@ -105,16 +99,10 @@ export default {
         @submit.prevent.stop="commitChanges"
         v-if="!rightPanelCollapsed"
       >
-        <div class="multi-file-commit-fieldset">
-          <textarea
-            class="form-control multi-file-commit-message"
-            name="commit-message"
-            :value="commitMessage"
-            :placeholder="__('Write a commit message...')"
-            @input="updateCommitMessage($event.target.value)"
-          >
-          </textarea>
-        </div>
+        <commit-message-field
+          :text="commitMessage"
+          @input="updateCommitMessage"
+        />
         <div class="clearfix prepend-top-15">
           <actions />
           <loading-button

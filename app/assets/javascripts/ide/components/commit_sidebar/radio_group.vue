@@ -85,7 +85,7 @@
     >
       <input
         type="text"
-        class="form-control"
+        class="form-control monospace"
         :placeholder="newBranchName"
         @input="updateBranchName($event.target.value)"
       />
