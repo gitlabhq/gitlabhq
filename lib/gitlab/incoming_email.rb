@@ -52,8 +52,6 @@ module Gitlab
       private
 
       def address_regex
-        return /^incoming\+(.+)@(incoming\.)?gitlab\.com$/ if Gitlab.com?
-
         wildcard_address = config.address
         return nil unless wildcard_address
 
