@@ -738,20 +738,6 @@ $color-average-score: $orange-400;
 $color-low-score: $red-400;
 
 /*
-Repo editor
-*/
-$repo-editor-grey: #f6f7f9;
-$repo-editor-grey-darker: #e9ebee;
-$repo-editor-linear-gradient: linear-gradient(
-  to right,
-  $repo-editor-grey 0%,
-  $repo-editor-grey-darker,
-  20%,
-  $repo-editor-grey 40%,
-  $repo-editor-grey 100%
-);
-
-/*
 Performance Bar
 */
 $perf-bar-text: #999;

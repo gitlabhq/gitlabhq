@@ -106,9 +106,9 @@ module API
     end
 
     def find_project(id)
-      if id =~ /^\d+$/
+      if id.is_a?(Integer) || id =~ /^\d+$/
         Project.find_by(id: id)
-      else
+      elsif id.include?("/")
         Project.find_by_full_path(id)
       end
     end

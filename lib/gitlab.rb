@@ -19,12 +19,4 @@ module Gitlab
   def self.dev_env_or_com?
     Rails.env.test? || Rails.env.development? || com?
   end
-
-  def self.dev?
-    Gitlab.config.gitlab.url == 'https://dev.gitlab.org'
-  end
-
-  def self.inc_controlled?
-    dev? || com?
-  end
 end

@@ -308,7 +308,9 @@ except master.
 
 ## `only` and `except` (complex)
 
-> Introduced in GitLab 10.0
+> `refs` and `kubernetes` policies introduced in GitLab 10.0
+
+> `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
