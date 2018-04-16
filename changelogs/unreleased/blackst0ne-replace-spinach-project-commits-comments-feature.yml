@@ -1,0 +1,5 @@
+---
+title: Replace the `project/commits/comments.feature` spinach test with an rspec analog
+merge_request: 18356
+author: "@blackst0ne"
+type: other
