@@ -1,0 +1,5 @@
+---
+title: 'API: add languages of project GET /projects/:id/languages'
+merge_request: 17770
+author: Roger Rüttimann
+type: added

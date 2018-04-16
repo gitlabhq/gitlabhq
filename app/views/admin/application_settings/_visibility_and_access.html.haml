@@ -32,6 +32,7 @@
     .form-group.row
       = f.label :import_sources, class: 'col-form-label col-sm-2'
       .col-sm-10
+        = hidden_field_tag 'application_setting[import_sources][]'
         - import_sources_checkboxes('import-sources-help').each do |source|
           .form-check= source
         %span.form-text.text-muted#import-sources-help

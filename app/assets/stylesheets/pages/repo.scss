@@ -429,6 +429,7 @@
   .projects-sidebar {
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     .context-header {
       width: auto;
@@ -438,8 +439,8 @@
 
   .multi-file-commit-panel-inner {
     display: flex;
-    flex: 1;
     flex-direction: column;
+    height: 100%;
   }
 
   .multi-file-commit-panel-inner-scroll {

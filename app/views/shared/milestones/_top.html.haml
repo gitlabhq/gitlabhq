@@ -1,7 +1,8 @@
-- page_title @milestone.title
+- page_title milestone.title
 - @breadcrumb_link = dashboard_milestone_path(milestone.safe_title, title: milestone.title)
 
 - group = local_assigns[:group]
+- is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
 .detail-page-header
   %a.btn.btn-secondary.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
@@ -31,21 +32,23 @@
         - else
           = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
+= render 'shared/milestones/deprecation_message' if is_dynamic_milestone
+
 .detail-page-description.milestone-detail
   %h2.title
     = markdown_field(milestone, :title)
-  - if @milestone.group_milestone? && @milestone.description.present?
+  - if milestone.group_milestone? && milestone.description.present?
     %div
       .description
         .wiki
-          = markdown_field(@milestone, :description)
+          = markdown_field(milestone, :description)
 
 - if milestone.complete?(current_user) && milestone.active?
   .alert.alert-success.prepend-top-default
     - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
     %span All issues for this milestone are closed. #{close_msg}
 
-- if @milestone.legacy_group_milestone? || @milestone.dashboard_milestone?
+- if is_dynamic_milestone
   .table-holder
     %table.table
       %thead
@@ -68,7 +71,7 @@
               Open
           %td
             = ms.expires_at
-- elsif @milestone.group_milestone?
+- elsif milestone.group_milestone?
   %br
   View
   = link_to 'Issues', issues_group_path(@group, milestone_title: milestone.title)

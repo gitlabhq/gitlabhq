@@ -19,11 +19,32 @@
   %h2.snippet-title.prepend-top-0.append-bottom-0
     = markdown_field(@snippet, :title)
 
-  - if @snippet.updated_at != @snippet.created_at
-    = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago', exclude_author: true)
   - if @snippet.description.present?
     .description
       .wiki
         = markdown_field(@snippet, :description)
       %textarea.hidden.js-task-list-field
         = @snippet.description
+
+  - if @snippet.updated_at != @snippet.created_at
+    = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago', exclude_author: true)
+
+  - if public_snippet?
+    .embed-snippet
+      .input-group
+        .input-group-btn
+          %button.btn.embed-toggle{ 'data-toggle': 'dropdown', type: 'button' }
+            %span.js-embed-action= _("Embed")
+            = sprite_icon('angle-down', size: 12)
+          %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list
+            %li
+              %button.js-embed-btn.btn.btn-transparent.is-active{ type: 'button' }
+                %strong.embed-toggle-list-item= _("Embed")
+            %li
+              %button.js-share-btn.btn.btn-transparent{ type: 'button' }
+                %strong.embed-toggle-list-item= _("Share")
+        %input.js-snippet-url-area.snippet-embed-input.form-control{ type: "text", autocomplete: 'off', value: snippet_embed }
+        .input-group-btn
+          %button.js-clipboard-btn.btn.btn-default.has-tooltip{ title: "Copy to clipboard", 'data-clipboard-target': '#snippet-url-area' }
+            = sprite_icon('duplicate', size: 16)
+    .clearfix
