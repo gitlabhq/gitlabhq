@@ -1,4 +1,4 @@
-# File Locking
+# File Locking **[PREMIUM]**
 
 >**Notes:**
 - [Introduced][ee-440] in [GitLab Premium][ee] 8.9.

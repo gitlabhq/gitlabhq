@@ -1,4 +1,4 @@
-# SAML SSO for Groups (Beta)
+# SAML SSO for Groups (Beta) **[PREMIUM]**
 
 > Introduced in [GitLab Premium][https://about.gitlab.com/products/] 10.7.
 

@@ -296,7 +296,7 @@ later download and check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dast.md).
 
-### Auto Browser Performance Testing
+### Auto Browser Performance Testing **[PREMIUM]**
 
 > Introduced in [GitLab Premium][ee] 10.4.
 

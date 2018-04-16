@@ -2,7 +2,7 @@
 comments: false
 ---
 
-# Installation
+# Installation **[CORE ONLY]**
 
 GitLab can be installed via various ways. Check the [installation methods][methods]
 for an overview.
@@ -37,7 +37,7 @@ the full process of installing GitLab on Google Container Engine (GKE), pushing 
 - _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md) -
   Quickly test any version of GitLab on DigitalOcean using Docker Machine.
 - [GitLab Pivotal Tile](pivotal/index.md) - Install and configure GitLab
-  Premium on Pivotal Cloud Foundry.
+  Premium on Pivotal Cloud Foundry. **[PREMIUM ONLY]**
 - [Getting started with GitLab and DigitalOcean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/): requirements, installation process, updates.
 - [Demo: Cloud Native Development with GitLab](https://about.gitlab.com/2017/04/18/cloud-native-demo/): video demonstration on how to install GitLab on Kubernetes, build a project, create Review Apps, store Docker images in Container Registry, deploy to production on Kubernetes, and monitor with Prometheus.
 

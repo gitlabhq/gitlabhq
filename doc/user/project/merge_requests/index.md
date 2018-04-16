@@ -40,7 +40,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) (available in GitLab Ultimate)
 - Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) (available in GitLab Ultimate)
 - Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) (available in GitLab Ultimate)
-- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Premium)
+- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) **[PREMIUM]**
 
 ## Use cases
 
@@ -282,7 +282,7 @@ merge request widget area.
 
 [Read more about Dynamic Application Security Testing reports.](dast.md)
 
-## Browser Performance Testing
+## Browser Performance Testing **[PREMIUM]**
 
 > Introduced in [GitLab Premium][products] 10.3.
 

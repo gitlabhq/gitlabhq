@@ -222,7 +222,7 @@ to reach your apps. This heavily depends on your domain provider, but in case
 you aren't sure, just create an A record with a wildcard host like
 `*.example.com.`.
 
-## Setting the environment scope
+## Setting the environment scope **[PREMIUM]**
 
 NOTE: **Note:**
 This is only available for [GitLab Premium][ee] where you can add more than
@@ -281,7 +281,7 @@ The result will then be:
 - The staging cluster will be used for the "deploy to staging" job.
 - The production cluster will be used for the "deploy to production" job.
 
-## Multiple Kubernetes clusters
+## Multiple Kubernetes clusters **[PREMIUM]**
 
 > Introduced in [GitLab Premium][ee] 10.3.
 
@@ -346,9 +346,7 @@ and add a Kubernetes cluster again.
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards
-
-> Available in [GitLab Premium][ee].
+### Deploy Boards **[PREMIUM]**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
@@ -358,9 +356,7 @@ workflow they already use without any need to access Kubernetes.
 
 [> Read more about Deploy Boards](../deploy_boards.md)
 
-### Canary Deployments
-
-> Available in [GitLab Premium][ee].
+### Canary Deployments **[PREMIUM]**
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without

@@ -202,7 +202,7 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Limiting environment scopes of secret variables
+### Limiting environment scopes of secret variables **[PREMIUM]**
 
 >**Notes:**
 [Introduced][ee-2112] in [GitLab Premium][premium] 9.4.

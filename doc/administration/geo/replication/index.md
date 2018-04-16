@@ -1,4 +1,4 @@
-# Geo (Geo Replication)
+# Geo (Geo Replication) **[PREMIUM]**
 
 > **Notes:**
 - Geo is part of [GitLab Premium][ee].

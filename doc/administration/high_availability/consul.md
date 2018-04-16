@@ -1,4 +1,4 @@
-# Working with the bundled Consul service
+# Working with the bundled Consul service **[PREMIUM ONLY]**
 
 ## Overview
 

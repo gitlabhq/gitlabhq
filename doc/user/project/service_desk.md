@@ -1,4 +1,4 @@
-# Service Desk
+# Service Desk **[PREMIUM]**
 
 > [Introduced][ee-149] in [GitLab Premium 9.1][eep-9.1].
 

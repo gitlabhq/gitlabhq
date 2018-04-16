@@ -1,4 +1,4 @@
-# Using GitLab CI/CD with a GitHub repository
+# Using GitLab CI/CD with a GitHub repository **[PREMIUM]**
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
 creating a [CI/CD project][cicd-projects] to connect your GitHub repository to

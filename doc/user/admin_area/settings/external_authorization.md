@@ -1,4 +1,4 @@
-# External authorization control
+# External authorization control **[PREMIUM]**
 
 >
 [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4216) in
