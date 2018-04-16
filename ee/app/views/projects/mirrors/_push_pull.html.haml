@@ -1,6 +1,7 @@
 - expanded = Rails.env.test?
 - import_data = @project.import_data || @project.build_import_data
 - protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
+- is_one_user_option = default_mirror_users.count == 1
 
 %section.settings.project-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -52,7 +53,8 @@
 
             .form-group
               = f.label :mirror_user_id, 'Mirror user', class: 'label-light-but-actually-light-i-promise'
-              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: (default_mirror_users.count == 1).to_s )
+              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: is_one_user_option.to_s)
+              = f.hidden_field :mirror_user_id, value: default_mirror_users.first if is_one_user_option
               .help-block
                 This user will be the author of all events in the activity feed that are the result of an update,
                 like new branches being created or new commits being pushed to existing branches.
