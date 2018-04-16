@@ -136,7 +136,7 @@ describe Projects::Settings::CiCdController do
 
       context 'when auto devops is disabled by custom config' do
         before do
-          expect_any_instance_of(Project).to receive(:auto_devops_conflicts_with_ci_config?).and_return(true)
+          expect_any_instance_of(Project).to receive(:auto_devops_conflicts_with_custom_ci_config?).and_return(true)
         end
 
         it 'sets a warning flash' do
@@ -146,7 +146,7 @@ describe Projects::Settings::CiCdController do
 
       context 'when auto devops is not disabled by custom config' do
         before do
-          expect_any_instance_of(Project).to receive(:auto_devops_conflicts_with_ci_config?).and_return(false)
+          expect_any_instance_of(Project).to receive(:auto_devops_conflicts_with_custom_ci_config?).and_return(false)
         end
 
         it 'does not set a warning flash' do

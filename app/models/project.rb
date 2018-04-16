@@ -1875,7 +1875,7 @@ class Project < ActiveRecord::Base
     memoized_results[cache_key]
   end
 
-  def auto_devops_conflicts_with_ci_config?
+  def auto_devops_conflicts_with_custom_ci_config?
     return false if auto_devops.previous_changes.include?('enabled')
 
     auto_devops.enabled? && ci_config_path.present?
