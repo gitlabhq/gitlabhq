@@ -32,10 +32,10 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Premium)
-- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Starter)
-- [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Starter)
-- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
+- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) **[PREMIUM]**
+- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers **[STARTER]**
+- [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history **[STARTER]**
+- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
 
 ## Use cases
 
@@ -43,7 +43,7 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Starter)
+1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
 1. You build and test your changes with GitLab CI/CD
 1. You request the approval from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
@@ -56,7 +56,7 @@ B. Consider you're a web developer writing a webpage for your company's:
 1. You gather feedback from your reviewers
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
-1. You request the [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your manager (available in GitLab Starter)
+1. You request the [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your manager **[STARTER]**
 1. Once approved, your merge request is [squashed and merged](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/) (Squash and Merge is available in GitLab Starter)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
