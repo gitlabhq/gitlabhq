@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ideRepoTree from '~/ide/components/ide_repo_tree.vue';
+import IdeTree from '~/ide/components/ide_tree.vue';
 import createComponent from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 
@@ -8,7 +8,7 @@ describe('IdeRepoTree', () => {
   let tree;
 
   beforeEach(() => {
-    const IdeRepoTree = Vue.extend(ideRepoTree);
+    const IdeRepoTree = Vue.extend(IdeTree);
 
     tree = {
       tree: [file()],
@@ -33,9 +33,7 @@ describe('IdeRepoTree', () => {
     tree.loading = true;
 
     vm.$nextTick(() => {
-      expect(
-        vm.$el.querySelectorAll('.multi-file-loading-container').length,
-      ).toEqual(3);
+      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toEqual(3);
 
       done();
     });

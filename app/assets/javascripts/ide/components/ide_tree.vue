@@ -1,17 +1,20 @@
 <script>
+import { mapGetters, mapState } from 'vuex';
+import Icon from '~/vue_shared/components/icon.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import RepoFile from './repo_file.vue';
+import NewDropdown from './new_dropdown/index.vue';
 
 export default {
   components: {
+    Icon,
     RepoFile,
     SkeletonLoadingContainer,
+    NewDropdown,
   },
-  props: {
-    tree: {
-      type: Object,
-      required: true,
-    },
+  computed: {
+    ...mapState(['currentBranchId']),
+    ...mapGetters(['currentProject', 'currentTree']),
   },
 };
 </script>
@@ -20,7 +23,7 @@ export default {
   <div
     class="ide-file-list"
   >
-    <template v-if="tree.loading">
+    <template v-if="!currentTree || currentTree.loading">
       <div
         class="multi-file-loading-container"
         v-for="n in 3"
@@ -30,8 +33,16 @@ export default {
       </div>
     </template>
     <template v-else>
+      <header class="ide-tree-header">
+        {{ __('Edit') }}
+        <new-dropdown
+          :project-id="currentProject.name_with_namespace"
+          :branch="currentBranchId"
+          path=""
+        />
+      </header>
       <repo-file
-        v-for="file in tree.tree"
+        v-for="file in currentTree.tree"
         :key="file.key"
         :file="file"
         :level="0"

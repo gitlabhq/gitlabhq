@@ -23,18 +23,6 @@ export const projectsWithTrees = state =>
     };
   });
 
-export const currentProjectWithTree = state => ({
-  ...state.projects[state.currentProjectId],
-  branches: Object.keys(state.projects[state.currentProjectId].branches).map(branchId => {
-    const branch = state.projects[state.currentProjectId].branches[branchId];
-
-    return {
-      ...branch,
-      tree: state.trees[branch.treeId],
-    };
-  }),
-});
-
 export const currentMergeRequest = state => {
   if (state.projects[state.currentProjectId]) {
     return state.projects[state.currentProjectId].mergeRequests[state.currentMergeRequestId];
@@ -43,6 +31,9 @@ export const currentMergeRequest = state => {
 };
 
 export const currentProject = state => state.projects[state.currentProjectId];
+
+export const currentTree = state =>
+  state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
 // eslint-disable-next-line no-confusing-arrow
 export const currentIcon = state =>
@@ -55,7 +46,7 @@ export const hasMergeRequest = state => !!state.currentMergeRequestId;
 export const activityBarComponent = state => {
   switch (state.currentActivityView) {
     case ActivityBarViews.edit:
-      return 'project-tree';
+      return 'ide-tree';
     case ActivityBarViews.commit:
       return 'commit-section';
     default:

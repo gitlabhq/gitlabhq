@@ -12,10 +12,10 @@ describe('RepoCommitSection', () => {
   function createComponent() {
     const Component = Vue.extend(repoCommitSection);
 
-    vm = createComponentWithStore(Component, store, {
-      noChangesStateSvgPath: 'svg',
-      committedStateSvgPath: 'commitsvg',
-    });
+    store.state.noChangesStateSvgPath = 'svg';
+    store.state.committedStateSvgPath = 'commitsvg';
+
+    vm = createComponentWithStore(Component, store);
 
     vm.$store.state.currentProjectId = 'abcproject';
     vm.$store.state.currentBranchId = 'master';
@@ -75,33 +75,25 @@ describe('RepoCommitSection', () => {
       resetStore(vm.$store);
       const Component = Vue.extend(repoCommitSection);
 
-      vm = createComponentWithStore(Component, store, {
-        noChangesStateSvgPath: 'nochangessvg',
-        committedStateSvgPath: 'svg',
-      }).$mount();
+      store.state.noChangesStateSvgPath = 'nochangessvg';
+      store.state.committedStateSvgPath = 'svg';
 
-      expect(
-        vm.$el.querySelector('.js-empty-state').textContent.trim(),
-      ).toContain('No changes');
-      expect(
-        vm.$el.querySelector('.js-empty-state img').getAttribute('src'),
-      ).toBe('nochangessvg');
+      vm = createComponentWithStore(Component, store).$mount();
+
+      expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('No changes');
+      expect(vm.$el.querySelector('.js-empty-state img').getAttribute('src')).toBe('nochangessvg');
     });
   });
 
   it('renders a commit section', () => {
-    const changedFileElements = [
-      ...vm.$el.querySelectorAll('.multi-file-commit-list li'),
-    ];
+    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list li')];
     const submitCommit = vm.$el.querySelector('form .btn');
 
     expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
-      expect(changedFile.textContent.trim()).toContain(
-        vm.$store.state.changedFiles[i].path,
-      );
+      expect(changedFile.textContent.trim()).toContain(vm.$store.state.changedFiles[i].path);
     });
 
     expect(submitCommit.disabled).toBeTruthy();
@@ -117,9 +109,7 @@ describe('RepoCommitSection', () => {
 
     getSetTimeoutPromise()
       .then(() => {
-        expect(vm.$store.state.commit.commitMessage).toBe(
-          'testing commit message',
-        );
+        expect(vm.$store.state.commit.commitMessage).toBe('testing commit message');
       })
       .then(done)
       .catch(done.fail);
@@ -127,9 +117,7 @@ describe('RepoCommitSection', () => {
 
   describe('discard draft button', () => {
     it('hidden when commitMessage is empty', () => {
-      expect(
-        vm.$el.querySelector('.multi-file-commit-form .btn-default'),
-      ).toBeNull();
+      expect(vm.$el.querySelector('.multi-file-commit-form .btn-default')).toBeNull();
     });
 
     it('resets commitMessage when clicking discard button', done => {
@@ -141,9 +129,7 @@ describe('RepoCommitSection', () => {
         })
         .then(Vue.nextTick)
         .then(() => {
-          expect(vm.$store.state.commit.commitMessage).not.toBe(
-            'testing commit message',
-          );
+          expect(vm.$store.state.commit.commitMessage).not.toBe('testing commit message');
         })
         .then(done)
         .catch(done.fail);

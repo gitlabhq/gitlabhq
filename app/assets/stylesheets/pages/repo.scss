@@ -446,25 +446,6 @@
     border-top: 1px solid $white-dark;
     border-top-left-radius: $border-radius-small;
   }
-
-  .branch-header {
-    background: $white-dark;
-    display: flex;
-  }
-
-  .branch-header-title {
-    flex: 1;
-    padding: $grid-size $gl-padding;
-    font-weight: $gl-font-weight-bold;
-
-    svg {
-      vertical-align: middle;
-    }
-  }
-
-  .branch-header-btns {
-    padding: $gl-vert-padding $gl-padding;
-  }
 }
 
 .multi-file-context-bar-icon {
@@ -900,4 +881,17 @@
   z-index: 2;
   background: transparent;
   resize: none;
+}
+
+.ide-tree-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-bottom: 1px solid $white-dark;
+
+  .ide-new-btn {
+    margin-left: auto;
+  }
 }
