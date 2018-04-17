@@ -49,6 +49,7 @@ export default {
       },
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       resolved: false,
       resolvable: true,
@@ -100,6 +101,7 @@ export default {
       },
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       resolved: false,
       resolvable: true,
@@ -141,6 +143,7 @@ export default {
       note_html: '<p dir="auto">comment 3</p>',
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       resolved: false,
       resolvable: true,
@@ -182,6 +185,7 @@ export default {
       note_html: '<p dir="auto">comment 4</p>',
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       resolved: false,
       resolvable: true,
@@ -223,6 +227,7 @@ export default {
       note_html: '<p dir="auto">comment 5</p>',
       current_user: {
         can_edit: true,
+        can_award_emoji: true,
       },
       resolved: false,
       resolvable: true,
