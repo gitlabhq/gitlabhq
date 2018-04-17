@@ -2,7 +2,6 @@ module Gitlab
   module Git
     class Wiki
       DuplicatePageError = Class.new(StandardError)
-      OperationError = Class.new(StandardError)
 
       CommitDetails = Struct.new(:name, :email, :message) do
         def to_h
