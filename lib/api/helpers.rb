@@ -103,9 +103,9 @@ module API
     end
 
     def find_project(id)
-      if id =~ /^\d+$/
+      if id.is_a?(Integer) || id =~ /^\d+$/
         Project.find_by(id: id)
-      else
+      elsif id.include?("/")
         Project.find_by_full_path(id)
       end
     end
@@ -468,8 +468,8 @@ module API
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
-    def send_git_archive(repository, ref:, format:)
-      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    def send_git_archive(repository, **kwargs)
+      header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
     def send_artifacts_entry(build, entry)

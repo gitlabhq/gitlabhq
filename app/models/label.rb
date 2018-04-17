@@ -18,8 +18,8 @@ class Label < ActiveRecord::Base
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
   has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
-  has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
+  has_many :issues, -> { auto_include(false) }, through: :label_links, source: :target, source_type: 'Issue'
+  has_many :merge_requests, -> { auto_include(false) }, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   before_validation :strip_whitespace_from_title_and_color
 

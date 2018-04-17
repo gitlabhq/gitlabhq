@@ -18,6 +18,11 @@ module FilterSpecHelper
       context.reverse_merge!(project: project)
     end
 
+    render_context = Banzai::RenderContext
+      .new(context[:project], context[:current_user])
+
+    context = context.merge(render_context: render_context)
+
     described_class.call(html, context)
   end
 

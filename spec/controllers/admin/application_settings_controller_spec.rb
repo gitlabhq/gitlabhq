@@ -72,11 +72,10 @@ describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.restricted_visibility_levels).to eq([10, 20])
     end
 
-    it 'falls back to defaults when settings are omitted' do
-      put :update, application_setting: {}
+    it 'updates the restricted_visibility_levels when empty array is passed' do
+      put :update, application_setting: { restricted_visibility_levels: [] }
 
       expect(response).to redirect_to(admin_application_settings_path)
-      expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PRIVATE)
       expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
     end
   end

@@ -33,7 +33,7 @@
                 = link_to 'Block', block_admin_user_path(user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put
             - if user.access_locked?
               %li
-                = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
+                = link_to _('Unlock'), unlock_admin_user_path(user), method: :put, data: { confirm: _('Are you sure?') }
           - if can?(current_user, :destroy_user, user)
             %li.divider
             - if user.can_be_removed?

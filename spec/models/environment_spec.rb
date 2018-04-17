@@ -368,6 +368,32 @@ describe Environment do
     end
   end
 
+  describe '#deployment_platform' do
+    context 'when there is a deployment platform for environment' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp,
+               environment_scope: '*', projects: [project])
+      end
+
+      it 'finds a deployment platform' do
+        expect(environment.deployment_platform).to eq cluster.platform
+      end
+    end
+
+    context 'when there is no deployment platform for environment' do
+      it 'returns nil' do
+        expect(environment.deployment_platform).to be_nil
+      end
+    end
+
+    it 'checks deployment platforms associated with a project' do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name)
+
+      environment.deployment_platform
+    end
+  end
+
   describe '#terminals' do
     subject { environment.terminals }
 

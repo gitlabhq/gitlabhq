@@ -3,7 +3,7 @@ module CompareHelper
     from.present? &&
       to.present? &&
       from != to &&
-      can?(current_user, :create_merge_request, project) &&
+      can?(current_user, :create_merge_request_from, project) &&
       project.repository.branch_exists?(from) &&
       project.repository.branch_exists?(to)
   end

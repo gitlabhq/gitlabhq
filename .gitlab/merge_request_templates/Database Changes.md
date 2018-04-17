@@ -45,4 +45,4 @@ When removing columns, tables, indexes or other structures:
 - [ ] [Squashed related commits together](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 - [ ] Internationalization required/considered
 - [ ] If paid feature, have we considered GitLab.com plan and how it works for groups and is there a design for promoting it to users who aren't on the correct plan
-- [ ] End-to-end tests pass (`package-qa` manual pipeline job)
+- [ ] End-to-end tests pass (`package-and-qa` manual pipeline job)

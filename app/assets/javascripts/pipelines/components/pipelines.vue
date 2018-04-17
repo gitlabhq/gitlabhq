@@ -7,10 +7,7 @@
   import TablePagination from '../../vue_shared/components/table_pagination.vue';
   import NavigationTabs from '../../vue_shared/components/navigation_tabs.vue';
   import NavigationControls from './nav_controls.vue';
-  import {
-    getParameterByName,
-    parseQueryStringIntoObject,
-  } from '../../lib/utils/common_utils';
+  import { getParameterByName } from '../../lib/utils/common_utils';
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
@@ -19,10 +16,7 @@
       NavigationTabs,
       NavigationControls,
     },
-    mixins: [
-      pipelinesMixin,
-      CIPaginationMixin,
-    ],
+    mixins: [pipelinesMixin, CIPaginationMixin],
     props: {
       store: {
         type: Object,
@@ -147,25 +141,26 @@
        */
       shouldRenderTabs() {
         const { stateMap } = this.$options;
-        return this.hasMadeRequest &&
-          [
-            stateMap.loading,
-            stateMap.tableList,
-            stateMap.error,
-            stateMap.emptyTab,
-          ].includes(this.stateToRender);
+        return (
+          this.hasMadeRequest &&
+          [stateMap.loading, stateMap.tableList, stateMap.error, stateMap.emptyTab].includes(
+            this.stateToRender,
+          )
+        );
       },
 
       shouldRenderButtons() {
-        return (this.newPipelinePath ||
-          this.resetCachePath ||
-          this.ciLintPath) && this.shouldRenderTabs;
+        return (
+          (this.newPipelinePath || this.resetCachePath || this.ciLintPath) && this.shouldRenderTabs
+        );
       },
 
       shouldRenderPagination() {
-        return !this.isLoading &&
+        return (
+          !this.isLoading &&
           this.state.pipelines.length &&
-          this.state.pageInfo.total > this.state.pageInfo.perPage;
+          this.state.pageInfo.total > this.state.pageInfo.perPage
+        );
       },
 
       emptyTabMessage() {
@@ -229,15 +224,13 @@
     },
     methods: {
       successCallback(resp) {
-        return resp.json().then((response) => {
-          // Because we are polling & the user is interacting verify if the response received
-          // matches the last request made
-          if (_.isEqual(parseQueryStringIntoObject(resp.url.split('?')[1]), this.requestData)) {
-            this.store.storeCount(response.count);
-            this.store.storePagination(resp.headers);
-            this.setCommonData(response.pipelines);
-          }
-        });
+        // Because we are polling & the user is interacting verify if the response received
+        // matches the last request made
+        if (_.isEqual(resp.config.params, this.requestData)) {
+          this.store.storeCount(resp.data.count);
+          this.store.storePagination(resp.headers);
+          this.setCommonData(resp.data.pipelines);
+        }
       },
       /**
        * Handles URL and query parameter changes.
@@ -251,8 +244,9 @@
         this.updateInternalState(parameters);
 
         // fetch new data
-        return this.service.getPipelines(this.requestData)
-          .then((response) => {
+        return this.service
+          .getPipelines(this.requestData)
+          .then(response => {
             this.isLoading = false;
             this.successCallback(response);
 
@@ -271,13 +265,11 @@
       handleResetRunnersCache(endpoint) {
         this.isResetCacheButtonLoading = true;
 
-        this.service.postAction(endpoint)
+        this.service
+          .postAction(endpoint)
           .then(() => {
             this.isResetCacheButtonLoading = false;
-            createFlash(
-              s__('Pipelines|Project cache successfully reset.'),
-              'notice',
-            );
+            createFlash(s__('Pipelines|Project cache successfully reset.'), 'notice');
           })
           .catch(() => {
             this.isResetCacheButtonLoading = false;

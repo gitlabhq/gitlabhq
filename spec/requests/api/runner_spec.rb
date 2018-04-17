@@ -408,7 +408,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
                                                        'alias' => nil, 'command' => nil },
-                                                     { 'name' => 'docker:dind', 'entrypoint' => '/bin/sh',
+                                                     { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
                                                        'alias' => 'docker', 'command' => 'sleep 30' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)

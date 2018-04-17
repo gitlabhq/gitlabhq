@@ -54,8 +54,7 @@ module NotificationRecipientService
           users = users.includes(:notification_settings)
         end
 
-        users = Array(users)
-        users.compact!
+        users = Array(users).compact
         recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
 

@@ -46,6 +46,31 @@ describe Awardable do
     end
   end
 
+  describe '#user_can_award?' do
+    let(:user) { create(:user) }
+
+    before do
+      issue.project.add_guest(user)
+    end
+
+    it 'does not allow upvoting or downvoting your own issue' do
+      issue.update!(author: user)
+
+      expect(issue.user_can_award?(user, AwardEmoji::DOWNVOTE_NAME)).to be_falsy
+      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_falsy
+    end
+
+    it 'is truthy when the user is allowed to award emoji' do
+      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_truthy
+    end
+
+    it 'is falsy when the project is archived' do
+      issue.project.update!(archived: true)
+
+      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_falsy
+    end
+  end
+
   describe "#toggle_award_emoji" do
     it "adds an emoji if it isn't awarded yet" do
       expect { issue.toggle_award_emoji("thumbsup", award_emoji.user) }.to change { AwardEmoji.count }.by(1)

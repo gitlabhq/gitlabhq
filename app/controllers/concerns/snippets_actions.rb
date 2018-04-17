@@ -17,6 +17,10 @@ module SnippetsActions
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+  def js_request?
+    request.format.js?
+  end
+
   private
 
   def convert_line_endings(content)

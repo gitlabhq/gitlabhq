@@ -111,6 +111,7 @@ POST /projects/import
 | `namespace` | integer/string | no | The ID or path of the namespace that the project will be imported to. Defaults to the current user's namespace |
 | `file` | string | yes | The file to be uploaded |
 | `path` | string | yes | Name and path for new project |
+| `overwrite` | boolean | no | If there is a project with the same path the import will overwrite it. Default to false |
 | `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md)] |
 
 The override params passed will take precendence over all values defined inside the export file.

@@ -344,7 +344,6 @@
 
   svg {
     vertical-align: middle;
-    margin-right: 3px;
   }
 
   .stage-column {
@@ -495,17 +494,12 @@
         svg {
           fill: $gl-text-color-secondary;
           position: relative;
-          left: 5px;
-          top: 2px;
-          width: 18px;
-          height: 18px;
+          top: -1px;
         }
 
         &.play {
           svg {
-            width: #{$ci-action-icon-size - 8};
-            height: #{$ci-action-icon-size - 8};
-            left: 8px;
+            left: 2px;
           }
         }
       }

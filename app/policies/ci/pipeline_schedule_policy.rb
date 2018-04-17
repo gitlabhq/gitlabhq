@@ -7,23 +7,17 @@ module Ci
     end
 
     condition(:owner_of_schedule) do
-      can?(:developer_access) && pipeline_schedule.owned_by?(@user)
+      pipeline_schedule.owned_by?(@user)
     end
 
-    condition(:non_owner_of_schedule) do
-      !pipeline_schedule.owned_by?(@user)
-    end
+    rule { can?(:create_pipeline) }.enable :play_pipeline_schedule
 
-    rule { can?(:developer_access) }.policy do
-      enable :play_pipeline_schedule
-    end
-
-    rule { can?(:master_access) | owner_of_schedule }.policy do
+    rule { can?(:admin_pipeline) | (can?(:update_build) & owner_of_schedule) }.policy do
       enable :update_pipeline_schedule
       enable :admin_pipeline_schedule
     end
 
-    rule { can?(:master_access) & non_owner_of_schedule }.policy do
+    rule { can?(:admin_pipeline_schedule) & ~owner_of_schedule }.policy do
       enable :take_ownership_pipeline_schedule
     end
 

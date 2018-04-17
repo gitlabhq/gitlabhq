@@ -51,8 +51,7 @@ const createComponent = () => {
 
 const messages = {
   loadingMetrics: 'Loading deployment statistics',
-  hasMetrics:
-    '<a href="/root/acets-review-apps/environments/15/metrics"> Memory </a> usage is <b> unchanged </b> at 0MB',
+  hasMetrics: 'Memory  usage is  unchanged  at 0MB',
   loadFailed: 'Failed to load deployment statistics',
   metricsUnavailable: 'Deployment statistics are not available currently',
 };
