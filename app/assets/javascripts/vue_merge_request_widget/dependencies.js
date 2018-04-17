@@ -27,6 +27,7 @@ export { default as ConflictsState } from './components/states/mr_widget_conflic
 export { default as NothingToMergeState } from './components/states/nothing_to_merge.vue';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch.vue';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed.vue';
+export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
 export { default as ShaMismatchState } from './components/states/sha_mismatch.vue';
 export { default as UnresolvedDiscussionsState } from './components/states/unresolved_discussions.vue';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked.vue';
@@ -44,5 +45,4 @@ export { default as SquashBeforeMerge } from 'ee/vue_merge_request_widget/compon
 export { default as notify } from '../lib/utils/notify';
 export { default as SourceBranchRemovalStatus } from './components/source_branch_removal_status.vue';
 
-export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
 export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options';
