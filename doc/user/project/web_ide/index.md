@@ -1,7 +1,7 @@
 # Web IDE
 
-> Introduced in [GitLab Ultimate][ee] 10.4.
-> Brought to [GitLab CE][ce] in 10.7.
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ee/issues/4539) [GitLab Ultimate][ee] 10.4.
+> [Brought to GitLab Core][core](https://gitlab.com/gitlab-org/gitlab-ce/issues/44157) in 10.7.
 
 The Web IDE editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.
@@ -30,4 +30,4 @@ the 'Commit Button'.
 
 ![Commit changes](img/commit_changes.png)
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
