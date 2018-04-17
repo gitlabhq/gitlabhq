@@ -1,9 +1,7 @@
-# Web IDE **[ULTIMATE]**
+# Web IDE
 
 > Introduced in [GitLab Ultimate][ee] 10.4.
-
-> **Warning:** Web IDE is in **Beta**. For the latest updates, check the
-> associated [epic](https://gitlab.com/groups/gitlab-org/-/epics/26).
+> Brought to [GitLab CE][ce] in 10.7.
 
 The Web IDE editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.
