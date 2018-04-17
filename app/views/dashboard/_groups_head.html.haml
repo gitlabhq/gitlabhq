@@ -10,6 +10,7 @@
     = nav_link(page: dashboard_groups_path) do
       = link_to dashboard_groups_path, title: _("Your groups") do
         Your groups
+        %span.badge.count= limited_counter_with_delimiter(current_user.groups)
     = nav_link(page: explore_groups_path) do
       = link_to explore_groups_path, title: _("Explore public groups") do
         Explore public groups
