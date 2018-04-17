@@ -343,7 +343,7 @@ group-level objects are available.
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
 
-| Tier | Number of Project IssueBboards | Board with configuration in Project Issue Boards | Number of Group Issue Boards | Board with configuration in Group Issue Boards |
+| Tier | Number of Project Issue Boards | Board with configuration in Project Issue Boards | Number of Group Issue Boards | Board with configuration in Group Issue Boards |
 | --- | --- | --- | --- | --- |
 | Core    | 1        | No  | 1        | No  |
 | Starter  | Multiple | Yes | 1        | No  |
