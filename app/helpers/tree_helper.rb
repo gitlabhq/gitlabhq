@@ -90,7 +90,7 @@ module TreeHelper
   end
 
   def commit_in_single_accessible_branch
-    branch_name = html_escape(selected_branch)
+    branch_name = ERB::Util.html_escape(selected_branch)
 
     message = _("Your changes can be committed to %{branch_name} because a merge "\
                 "request is open.") % { branch_name: "<strong>#{branch_name}</strong>" }
@@ -123,7 +123,7 @@ module TreeHelper
 
   # returns the relative path of the first subdir that doesn't have only one directory descendant
   def flatten_tree(root_path, tree)
-    return tree.flat_path.sub(%r{\A#{root_path}/}, '') if tree.flat_path.present?
+    return tree.flat_path.sub(%r{\A#{Regexp.escape(root_path)}/}, '') if tree.flat_path.present?
 
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?

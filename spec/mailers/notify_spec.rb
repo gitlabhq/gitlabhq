@@ -390,11 +390,11 @@ describe Notify do
         end
       end
 
-      describe 'that have new commits' do
+      shared_examples 'a push to an existing merge request' do
         let(:push_user) { create(:user) }
 
         subject do
-          described_class.push_to_merge_request_email(recipient.id, merge_request.id, push_user.id, new_commits: merge_request.commits)
+          described_class.push_to_merge_request_email(recipient.id, merge_request.id, push_user.id, new_commits: merge_request.commits, existing_commits: existing_commits)
         end
 
         it_behaves_like 'a multiple recipients email'
@@ -418,6 +418,18 @@ describe Notify do
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
           end
         end
+      end
+
+      describe 'that have new commits' do
+        let(:existing_commits) { [] }
+
+        it_behaves_like 'a push to an existing merge request'
+      end
+
+      describe 'that have new commits on top of an existing one' do
+        let(:existing_commits) { [merge_request.commits.first] }
+
+        it_behaves_like 'a push to an existing merge request'
       end
     end
 

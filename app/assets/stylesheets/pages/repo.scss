@@ -308,14 +308,73 @@
   height: 100%;
 }
 
-.multi-file-editor-btn-group {
-  padding: $gl-bar-padding $gl-padding;
-  border-top: 1px solid $white-dark;
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .file-container {
+    background-color: $gray-darker;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    .file-content {
+      padding: $gl-padding;
+      max-width: 100%;
+      max-height: 100%;
+
+      img {
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .isZoomable {
+        cursor: pointer;
+        cursor: zoom-in;
+
+        &.isZoomed {
+          cursor: pointer;
+          cursor: zoom-out;
+          max-width: none;
+          max-height: none;
+          margin-right: $gl-padding;
+        }
+      }
+    }
+
+    .file-info {
+      font-size: $label-font-size;
+      color: $diff-image-info-color;
+    }
+  }
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
+}
+
+.ide-mode-tabs {
   border-bottom: 1px solid $white-dark;
-  background: $white-light;
+
+  .nav-links {
+    border-bottom: 0;
+
+    li a {
+      padding: $gl-padding-8 $gl-padding;
+      line-height: $gl-btn-line-height;
+    }
+  }
+}
+
+.ide-btn-group {
+  padding: $gl-padding-4 $gl-vert-padding;
 }
 
 .ide-status-bar {
+  border-top: 1px solid $white-dark;
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
@@ -370,6 +429,7 @@
   .projects-sidebar {
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     .context-header {
       width: auto;
@@ -379,8 +439,8 @@
 
   .multi-file-commit-panel-inner {
     display: flex;
-    flex: 1;
     flex-direction: column;
+    height: 100%;
   }
 
   .multi-file-commit-panel-inner-scroll {

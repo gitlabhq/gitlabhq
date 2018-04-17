@@ -149,6 +149,10 @@ export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn
   }
 };
 
+export const setFileViewMode = ({ state, commit }, { file, viewMode }) => {
+  commit(types.SET_FILE_VIEWMODE, { file, viewMode });
+};
+
 export const discardFileChanges = ({ state, commit }, path) => {
   const file = state.entries[path];
 

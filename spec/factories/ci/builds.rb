@@ -206,7 +206,7 @@ FactoryBot.define do
       options do
         {
             image: { name: 'ruby:2.1', entrypoint: '/bin/sh' },
-            services: ['postgres', { name: 'docker:dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }],
+            services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }],
             after_script: %w(ls date),
             artifacts: {
                 name: 'artifacts_file',
@@ -236,6 +236,11 @@ FactoryBot.define do
 
     trait :protected do
       protected true
+    end
+
+    trait :script_failure do
+      failed
+      failure_reason 1
     end
   end
 end

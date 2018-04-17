@@ -54,7 +54,8 @@
             Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
-    - if @build.started?
+
+    - if @build.running? || @build.has_trace?
       .build-trace-container.prepend-top-default
         .top-bar.js-top-bar
           .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
@@ -88,26 +89,10 @@
         %pre.build-trace#build-trace
           %code.bash.js-build-output
           .build-loader-animation.js-build-refresh
-    - elsif @build.playable?
-      = render 'empty_state',
-        illustration: 'illustrations/manual_action.svg',
-        illustration_size: 'svg-394',
-        title: _('This job requires a manual action'),
-        content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments'),
-        action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), method: :post, class: 'btn btn-primary', title: _('Trigger this manual action') )
-    - elsif @build.created?
-      = render 'empty_state',
-        illustration: 'illustrations/job_not_triggered.svg',
-        illustration_size: 'svg-306',
-        title: _('This job has not been triggered yet'),
-        content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
     - else
-      = render 'empty_state',
-        illustration: 'illustrations/pending_job_empty.svg',
-        illustration_size: 'svg-430',
-        title: _('This job has not started yet'),
-        content: _('This job is in pending state and is waiting to be picked by a runner')
-  = render "sidebar"
+      = render "empty_states"
+
+  = render "sidebar", builds: @builds
 
 .js-build-options{ data: javascript_build_options }
 

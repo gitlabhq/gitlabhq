@@ -84,6 +84,8 @@ describe Project do
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
     it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
     it { is_expected.to have_many(:lfs_file_locks) }
+    it { is_expected.to have_many(:project_deploy_tokens) }
+    it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -2022,6 +2024,22 @@ describe Project do
         expect(forked_project.lfs_storage_project).to eq forked_project
       end
     end
+
+    describe '#all_lfs_objects' do
+      let(:lfs_object) { create(:lfs_object) }
+
+      before do
+        project.lfs_objects << lfs_object
+      end
+
+      it 'returns the lfs object for a project' do
+        expect(project.all_lfs_objects).to contain_exactly(lfs_object)
+      end
+
+      it 'returns the lfs object for a fork' do
+        expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+      end
+    end
   end
 
   describe '#pushes_since_gc' do
@@ -3227,6 +3245,7 @@ describe Project do
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
       expect(project).to receive(:after_create_default_branch)
+      expect(project).to receive(:refresh_markdown_cache!)
 
       project.after_import
     end

@@ -43,6 +43,10 @@ module IconsHelper
     content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes)
   end
 
+  def external_snippet_icon(name)
+    content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}")
+  end
+
   def audit_icon(names, options = {})
     case names
     when "standard"

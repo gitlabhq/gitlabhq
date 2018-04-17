@@ -1,0 +1,5 @@
+---
+title: Fix `JobsController#raw` endpoint can not read traces in database
+merge_request: 18101
+author:
+type: fixed

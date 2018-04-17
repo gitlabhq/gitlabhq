@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var argumentsParser = require('commander');
 var webpackConfig = require('./webpack.config.js');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
@@ -13,6 +14,24 @@ if (webpackConfig.plugins) {
     );
   });
 }
+
+var testFiles = argumentsParser
+  .option(
+    '-f, --filter-spec [filter]',
+    'Filter run spec files by path. Multiple filters are like a logical OR.',
+    (val, memo) => {
+      memo.push(val);
+      return memo;
+    },
+    []
+  )
+  .parse(process.argv).filterSpec;
+
+webpackConfig.plugins.push(
+  new webpack.DefinePlugin({
+    'process.env.TEST_FILES': JSON.stringify(testFiles),
+  })
+);
 
 webpackConfig.devtool = 'cheap-inline-source-map';
 
@@ -39,7 +58,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
-      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
+      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw|.png)', included: false },
     ],
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],

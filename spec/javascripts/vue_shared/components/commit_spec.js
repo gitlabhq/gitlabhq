@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import commitComp from '~/vue_shared/components/commit.vue';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Commit component', () => {
   let props;
@@ -10,25 +11,28 @@ describe('Commit component', () => {
     CommitComponent = Vue.extend(commitComp);
   });
 
+  afterEach(() => {
+    component.$destroy();
+  });
+
   it('should render a fork icon if it does not represent a tag', () => {
-    component = new CommitComponent({
-      propsData: {
-        tag: false,
-        commitRef: {
-          name: 'master',
-          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
-        },
-        commitUrl: 'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
-        shortSha: 'b7836edd',
-        title: 'Commit message',
-        author: {
-          avatar_url: 'https://gitlab.com/uploads/-/system/user/avatar/300478/avatar.png',
-          web_url: 'https://gitlab.com/jschatz1',
-          path: '/jschatz1',
-          username: 'jschatz1',
-        },
+    component = mountComponent(CommitComponent, {
+      tag: false,
+      commitRef: {
+        name: 'master',
+        ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
       },
-    }).$mount();
+      commitUrl:
+        'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+      shortSha: 'b7836edd',
+      title: 'Commit message',
+      author: {
+        avatar_url: 'https://gitlab.com/uploads/-/system/user/avatar/300478/avatar.png',
+        web_url: 'https://gitlab.com/jschatz1',
+        path: '/jschatz1',
+        username: 'jschatz1',
+      },
+    });
 
     expect(component.$el.querySelector('.icon-container').children).toContain('svg');
   });
@@ -41,7 +45,8 @@ describe('Commit component', () => {
           name: 'master',
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
-        commitUrl: 'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+        commitUrl:
+          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
@@ -53,9 +58,7 @@ describe('Commit component', () => {
         commitIconSvg: '<svg></svg>',
       };
 
-      component = new CommitComponent({
-        propsData: props,
-      }).$mount();
+      component = mountComponent(CommitComponent, props);
     });
 
     it('should render a tag icon if it represents a tag', () => {
@@ -63,7 +66,9 @@ describe('Commit component', () => {
     });
 
     it('should render a link to the ref url', () => {
-      expect(component.$el.querySelector('.ref-name').getAttribute('href')).toEqual(props.commitRef.ref_url);
+      expect(component.$el.querySelector('.ref-name').getAttribute('href')).toEqual(
+        props.commitRef.ref_url,
+      );
     });
 
     it('should render the ref name', () => {
@@ -71,7 +76,9 @@ describe('Commit component', () => {
     });
 
     it('should render the commit short sha with a link to the commit url', () => {
-      expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(props.commitUrl);
+      expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(
+        props.commitUrl,
+      );
       expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
     });
 
@@ -88,21 +95,25 @@ describe('Commit component', () => {
 
       it('Should render the author avatar with title and alt attributes', () => {
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('data-original-title'),
+          component.$el
+            .querySelector('.commit-title .avatar-image-container img')
+            .getAttribute('data-original-title'),
         ).toContain(props.author.username);
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('alt'),
+          component.$el
+            .querySelector('.commit-title .avatar-image-container img')
+            .getAttribute('alt'),
         ).toContain(`${props.author.username}'s avatar`);
       });
     });
 
     it('should render the commit title', () => {
-      expect(
-        component.$el.querySelector('a.commit-row-message').getAttribute('href'),
-      ).toEqual(props.commitUrl);
-      expect(
-        component.$el.querySelector('a.commit-row-message').textContent,
-      ).toContain(props.title);
+      expect(component.$el.querySelector('a.commit-row-message').getAttribute('href')).toEqual(
+        props.commitUrl,
+      );
+      expect(component.$el.querySelector('a.commit-row-message').textContent).toContain(
+        props.title,
+      );
     });
   });
 
@@ -114,19 +125,18 @@ describe('Commit component', () => {
           name: 'master',
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
-        commitUrl: 'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+        commitUrl:
+          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
         shortSha: 'b7836edd',
         title: null,
         author: {},
       };
 
-      component = new CommitComponent({
-        propsData: props,
-      }).$mount();
+      component = mountComponent(CommitComponent, props);
 
-      expect(
-        component.$el.querySelector('.commit-title span').textContent,
-      ).toContain('Cant find HEAD commit for this branch');
+      expect(component.$el.querySelector('.commit-title span').textContent).toContain(
+        "Can't find HEAD commit for this branch",
+      );
     });
   });
 });

@@ -39,6 +39,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
+- [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 
 #### Customizing GitLab's appearance
 
@@ -85,7 +86,6 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md
