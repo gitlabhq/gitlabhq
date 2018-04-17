@@ -256,8 +256,8 @@ Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#
 
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
-- **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group. **[STARTER]**
+- **Webhooks**: configure [webhooks](../project/integrations/webhooks.md) to your group.
+- **Push rules**: configure [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group. **[STARTER]**
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
 for the group. **[STARTER ONLY]**
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
