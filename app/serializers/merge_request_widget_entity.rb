@@ -210,7 +210,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   # Custom CI path
   #
   expose :has_new_ci_config do |merge_request|
-    ci_config = merge_request.project.ci_config_path.presence || '.gitlab-ci.yml'
+    ci_config = merge_request.project.ci_yaml_file_path
     merge_request.merge_request_diff.merge_request_diff_files.where(new_path: ci_config, new_file: true).any?
   end
 
