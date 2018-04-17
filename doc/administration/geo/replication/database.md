@@ -354,11 +354,14 @@ The following guide assumes that:
     gitlab-ctl reconfigure
     ```
 
-1. Restart PostgreSQL for its changes to take effect:
+1. Restart PostgreSQL for the IP change to take effect and Reconfigure again:
 
     ```bash
     gitlab-ctl restart postgresql
+    gitlab-ctl reconfigure
     ```
+    
+    This last reconfigure will provision the FDW configuration and enable it.
 
 ### Step 3. Initiate the replication process
 
