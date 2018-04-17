@@ -470,7 +470,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
+          repository.expire_has_local_branches_cache
           expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+
+      context 'memoizes the value' do
+        it 'returns true' do
+          expect(repository).to receive(:uncached_has_local_branches?).once.and_call_original
+
+          2.times do
+            expect(repository.has_local_branches?).to eq(true)
+          end
         end
       end
     end
