@@ -25,16 +25,19 @@ export default {
   },
   computed: {
     allLines() {
-      return this.text.replace(/\n$/g, '\n\n').split('\n');
+      return this.text.split('\n').map((line, i) => ({
+        text: line.substr(0, this.getLineLength(i)) || ' ',
+        highlightedText: line.substr(this.getLineLength(i)),
+      }));
     },
   },
   methods: {
     handleScroll() {
-      this.$nextTick(() => {
-        if (this.$refs.textarea) {
+      if (this.$refs.textarea) {
+        this.$nextTick(() => {
           this.scrollTop = this.$refs.textarea.scrollTop;
-        }
-      });
+        });
+      }
     },
     getLineLength(i) {
       return i === 0 ? MAX_TITLE_LENGTH : MAX_BODY_LENGTH;
@@ -99,11 +102,11 @@ export default {
               :key="index"
             >
               <span
-                v-text="line.substr(0, getLineLength(index)) || ' '"
+                v-text="line.text"
               >
               </span><mark
-                v-show="line.length > getLineLength(index)"
-                v-text="line.substr(getLineLength(index))"
+                v-show="line.highlightedText"
+                v-text="line.highlightedText"
               >
               </mark>
             </div>
