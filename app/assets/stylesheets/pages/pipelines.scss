@@ -463,6 +463,14 @@
     margin-bottom: 10px;
     white-space: normal;
 
+    .ci-job-dropdown-container {
+      // override dropdown.scss
+      .dropdown-menu li button {
+        padding: 0;
+        text-align: center;
+      }
+    }
+
     // ensure .build-content has hover style when action-icon is hovered
     .ci-job-dropdown-container:hover .build-content {
       @extend .build-content:hover;

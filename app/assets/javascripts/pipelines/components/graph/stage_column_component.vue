@@ -29,7 +29,7 @@ export default {
       required: false,
       default: '',
     },
-    actionDisabled: {
+    requestDoneForLink: {
       type: String,
       required: false,
       default: null,
@@ -74,7 +74,7 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
-            :action-disabled="actionDisabled"
+            :request-done-for-link="requestDoneForLink"
           />
 
           <dropdown-job-component

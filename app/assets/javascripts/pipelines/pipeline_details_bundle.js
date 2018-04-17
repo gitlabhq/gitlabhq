@@ -25,7 +25,7 @@ export default () => {
     data() {
       return {
         mediator,
-        actionDisabled: null,
+        requestDoneForLink: '',
       };
     },
     created() {
@@ -36,15 +36,13 @@ export default () => {
     },
     methods: {
       postAction(action) {
-        this.actionDisabled = action;
-
         this.mediator.service.postAction(action)
           .then(() => {
             this.mediator.refreshPipeline();
-            this.actionDisabled = null;
+            this.requestDoneForLink = action;
           })
           .catch(() => {
-            this.actionDisabled = null;
+            this.requestDoneForLink = action;
             Flash(__('An error occurred while making the request.'));
           });
       },
@@ -54,7 +52,7 @@ export default () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
-          actionDisabled: this.actionDisabled,
+          requestDoneForLink: this.requestDoneForLink,
         },
       });
     },

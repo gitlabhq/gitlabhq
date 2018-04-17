@@ -17,7 +17,7 @@ export default {
       type: Object,
       required: true,
     },
-    actionDisabled: {
+    requestDoneForLink: {
       type: String,
       required: false,
       default: null,
@@ -75,7 +75,7 @@ export default {
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
-          :action-disabled="actionDisabled"
+          :request-done-for-link="requestDoneForLink"
         />
       </ul>
     </div>
