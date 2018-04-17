@@ -39,6 +39,26 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
     inspect_source(source)
   end
 
+  it 'flags violation for return inside included > def > block' do
+    source = <<~RUBY
+      included do
+        def a_method
+          return if something
+
+          call do
+            return if something_else
+          end
+        end
+      end
+    RUBY
+    inspect_source(source)
+
+    expect(cop.offenses.size).to eq(1)
+    offense = cop.offenses.first
+
+    expect(offense.line).to eq(6)
+  end
+
   shared_examples 'examples with whitelisted method' do |whitelisted_method|
     it "doesn't flag violation for return inside #{whitelisted_method}" do
       source = <<~RUBY
@@ -64,7 +84,7 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
           #{def_method} do
             return if something
 
-            do_something_mode
+            do_something_more
           end
         end
       RUBY
