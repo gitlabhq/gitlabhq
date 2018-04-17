@@ -1410,6 +1410,26 @@ describe MergeRequest do
         it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
     end
+
+    context 'when project does not have pipelines enabled' do
+      subject { build(:merge_request, target_project: build(:project, :builds_disabled)) }
+
+      context 'when merges are restricted to green builds' do
+        before do
+          subject.target_project.only_allow_merge_if_pipeline_succeeds = true
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+
+      context 'when merges are not restricted to green builds' do
+        before do
+          subject.target_project.only_allow_merge_if_pipeline_succeeds = false
+        end
+
+        it { expect(subject.mergeable_ci_state?).to be_truthy }
+      end
+    end
   end
 
   describe '#mergeable_discussions_state?' do
