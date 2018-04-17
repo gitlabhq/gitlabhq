@@ -75,18 +75,28 @@ module Gitlab
           end
         end
 
-        def read(length = nil)
+        def read(length = nil, outbuf = "")
           out = ""
 
-          until eof? || (length && out.length >= length)
+          length ||= size - tell
+
+          until length <= 0 || eof?
             data = get_chunk
             break if data.empty?
 
-            out << data
-            @tell += data.bytesize
+            chunk_bytes = [BUFFER_SIZE - chunk_offset, length].min
+            chunk_data = data.byteslice(0, chunk_bytes)
+
+            out << chunk_data
+            @tell += chunk_data.bytesize
+            length -= chunk_data.bytesize
           end
 
-          out = out[0, length] if length && out.length > length
+          # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
+          if outbuf
+            outbuf.slice!(0, outbuf.bytesize)
+            outbuf << out
+          end
 
           out
         end
@@ -158,7 +168,7 @@ module Gitlab
             # Provider: GCS
             # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
             # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPOK 200
-            @chunk_range ||= (chunk_start...(chunk_start + @chunk.length))
+            @chunk_range ||= (chunk_start...(chunk_start + @chunk.bytesize))
           end
 
           @chunk[chunk_offset..BUFFER_SIZE]
