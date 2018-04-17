@@ -5,8 +5,8 @@
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
-    "karma": "karma start config/karma.config.js --single-run",
-    "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
+    "karma": "karma start --single-run true config/karma.config.js",
+    "karma-coverage": "BABEL_ENV=coverage karma start --single-run true config/karma.config.js",
     "karma-start": "karma start config/karma.config.js",
     "prettier-staged": "node ./scripts/frontend/prettier.js",
     "prettier-staged-save": "node ./scripts/frontend/prettier.js save",
@@ -16,7 +16,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.17.0",
+    "@gitlab-org/gitlab-svgs": "^1.18.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.0",
@@ -98,6 +98,7 @@
     "axios-mock-adapter": "^1.10.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.5",
+    "commander": "^2.15.1",
     "eslint": "^3.18.0",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-import-resolver-webpack": "^0.8.3",

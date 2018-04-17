@@ -22,7 +22,7 @@ export default {
     ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
     ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.raw;
+      return this.file && this.file.binary && !this.file.content;
     },
     editTabCSS() {
       return {
@@ -217,7 +217,7 @@ export default {
     <content-viewer
       v-if="shouldHideEditor || file.viewMode === 'preview'"
       :content="file.content || file.raw"
-      :path="file.rawPath"
+      :path="file.rawPath || file.path"
       :file-size="file.size"
       :project-path="file.projectId"/>
   </div>

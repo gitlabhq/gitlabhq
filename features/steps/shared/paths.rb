@@ -264,24 +264,12 @@ module SharedPaths
     visit project_path(project)
   end
 
-  step 'I visit project "Shop" activity page' do
-    visit activity_project_path(project)
-  end
-
   step 'I visit project "Forked Shop" merge requests page' do
     visit project_merge_requests_path(@forked_project)
   end
 
   step 'I visit edit project "Shop" page' do
     visit edit_project_path(project)
-  end
-
-  step 'I visit project branches page' do
-    visit project_branches_path(@project)
-  end
-
-  step 'I visit project protected branches page' do
-    visit project_protected_branches_path(@project)
   end
 
   step 'I visit compare refs page' do
@@ -379,10 +367,6 @@ module SharedPaths
 
   step 'I visit forked project "Shop" merge requests page' do
     visit project_merge_requests_path(project)
-  end
-
-  step 'I visit project "Shop" milestones page' do
-    visit project_milestones_path(project)
   end
 
   step 'I visit project "Shop" team page' do

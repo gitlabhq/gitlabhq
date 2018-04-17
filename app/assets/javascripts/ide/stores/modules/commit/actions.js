@@ -121,8 +121,6 @@ export const updateFilesAfterCommit = (
       `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
     );
   }
-
-  dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
 };
 
 export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
@@ -150,31 +148,31 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
 
       if (!data.short_id) {
         flash(data.message, 'alert', document, null, false, true);
-        return;
+        return null;
       }
 
       dispatch('setLastCommitMessage', data);
+      dispatch('updateCommitMessage', '');
+      return dispatch('updateFilesAfterCommit', {
+        data,
+        branch: getters.branchName,
+      })
+        .then(() => {
+          if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
+            dispatch(
+              'redirectToUrl',
+              createNewMergeRequestUrl(
+                rootState.projects[rootState.currentProjectId].web_url,
+                getters.branchName,
+                rootState.currentBranchId,
+              ),
+              { root: true },
+            );
+          }
 
-      if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
-        dispatch(
-          'redirectToUrl',
-          createNewMergeRequestUrl(
-            rootState.projects[rootState.currentProjectId].web_url,
-            getters.branchName,
-            rootState.currentBranchId,
-          ),
-          { root: true },
-        );
-      } else {
-        dispatch('updateFilesAfterCommit', {
-          data,
-          branch: getters.branchName,
-        });
-      }
-
-      commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
-
-      dispatch('discardDraft');
+          commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+        })
+        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');

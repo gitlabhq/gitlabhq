@@ -3,6 +3,7 @@ import store from '~/ide/stores';
 import listCollapsed from '~/ide/components/commit_sidebar/list_collapsed.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
+import { removeWhitespace } from '../../../helpers/vue_component_helper';
 
 describe('Multi-file editor commit sidebar list collapsed', () => {
   let vm;
@@ -30,7 +31,7 @@ describe('Multi-file editor commit sidebar list collapsed', () => {
   });
 
   it('renders added & modified files count', () => {
-    expect(vm.$el.textContent.replace(/\s+/g, ' ').trim()).toBe('1 1');
+    expect(removeWhitespace(vm.$el.textContent).trim()).toBe('1 1');
   });
 
   describe('addedFilesLength', () => {

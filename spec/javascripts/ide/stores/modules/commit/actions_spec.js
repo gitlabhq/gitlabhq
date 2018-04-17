@@ -304,21 +304,6 @@ describe('IDE commit module actions', () => {
         .then(done)
         .catch(done.fail);
     });
-
-    it('resets stores commit actions', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(store.state.commit.commitAction).not.toBe(consts.COMMIT_TO_NEW_BRANCH);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
   });
 
   describe('commitChanges', () => {
@@ -436,29 +421,24 @@ describe('IDE commit module actions', () => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(store.state.openFiles[0].lastCommit.message).toBe('test message');
+            expect(store.state.entries[store.state.openFiles[0].path].lastCommit.message).toBe(
+              'test message',
+            );
 
             done();
           })
           .catch(done.fail);
       });
 
-      it('redirects to new merge request page', done => {
-        spyOn(eventHub, '$on');
-
-        store.state.commit.commitAction = '3';
+      it('resets stores commit actions', done => {
+        store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
 
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-              `webUrl/merge_requests/new?merge_request[source_branch]=${
-                store.getters['commit/newBranchName']
-              }&merge_request[target_branch]=master`,
-            );
-
-            done();
+            expect(store.state.commit.commitAction).not.toBe(consts.COMMIT_TO_NEW_BRANCH);
           })
+          .then(done)
           .catch(done.fail);
       });
 
@@ -470,6 +450,42 @@ describe('IDE commit module actions', () => {
           })
           .then(done)
           .catch(done.fail);
+      });
+
+      describe('merge request', () => {
+        it('redirects to new merge request page', done => {
+          spyOn(eventHub, '$on');
+
+          store.state.commit.commitAction = '3';
+
+          store
+            .dispatch('commit/commitChanges')
+            .then(() => {
+              expect(urlUtils.visitUrl).toHaveBeenCalledWith(
+                `webUrl/merge_requests/new?merge_request[source_branch]=${
+                  store.getters['commit/newBranchName']
+                }&merge_request[target_branch]=master`,
+              );
+
+              done();
+            })
+            .catch(done.fail);
+        });
+
+        it('resets changed files before redirecting', done => {
+          spyOn(eventHub, '$on');
+
+          store.state.commit.commitAction = '3';
+
+          store
+            .dispatch('commit/commitChanges')
+            .then(() => {
+              expect(store.state.stagedFiles.length).toBe(0);
+
+              done();
+            })
+            .catch(done.fail);
+        });
       });
     });
 

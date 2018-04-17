@@ -45,6 +45,7 @@ and time spent on
 templates for issue and merge request description fields for your project
 - [Slash commands (quick actions)](quick_actions.md): Textual shortcuts for
 common actions on issues or merge requests
+- [Web IDE](web_ide/index.md)
 
 **GitLab CI/CD:**
 
