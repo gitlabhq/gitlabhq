@@ -94,7 +94,7 @@ html [type="button"],
 
 .card {
   &.card-without-border {
-    border: 0;
+    @extend .border-0;
   }
 
   &.card-without-margin {
