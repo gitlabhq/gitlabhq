@@ -162,7 +162,7 @@ module Ci
         build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
 
-      before_transition pending: :running do |build|
+      after_transition pending: :running do |build|
         build.ensure_metadata.update_timeout_state
       end
     end
