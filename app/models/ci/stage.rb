@@ -13,9 +13,12 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
     has_many :builds, foreign_key: :stage_id
 
-    validates :project, presence: true, unless: :importing?
-    validates :pipeline, presence: true, unless: :importing?
-    validates :name, presence: true, unless: :importing?
+    with_options unless: :importing? do
+      validates :project, presence: true
+      validates :pipeline, presence: true
+      validates :name, presence: true
+      validates :index, presence: true
+    end
 
     after_initialize do |stage|
       self.status = DEFAULT_STATUS if self.status.nil?
