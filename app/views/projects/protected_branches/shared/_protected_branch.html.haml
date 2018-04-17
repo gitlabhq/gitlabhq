@@ -2,7 +2,7 @@
 
 %tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
   %td
-    %span.ref-name= protected_branch.name
+    %span.ref-name.qa-protected-branch-name= protected_branch.name
 
     - if @project.root_ref?(protected_branch.name)
       %span.label.label-info.prepend-left-5 default
