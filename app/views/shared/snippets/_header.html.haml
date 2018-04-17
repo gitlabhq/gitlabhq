@@ -7,7 +7,7 @@
     %span.creator
       Authored
       = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
-      by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "d-none d-sm-block")}
+      by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "d-none d-sm-inline")}
 
   .detail-page-header-actions
     - if @snippet.project_id?
