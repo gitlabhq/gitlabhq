@@ -216,7 +216,6 @@ module Gitlab
         assert_type!(commit_details, CommitDetails)
 
         gollum_wiki.delete_page(gollum_page_by_path(page_path), commit_details.to_h)
-
         nil
       end
 
