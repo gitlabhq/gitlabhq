@@ -120,6 +120,10 @@ export const setEmptyStateSvgs = ({ commit }, svgs) => {
   commit(types.SET_EMPTY_STATE_SVGS, svgs);
 };
 
+export const setCurrentBranchId = ({ commit }, currentBranchId) => {
+  commit(types.SET_CURRENT_BRANCH, currentBranchId);
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

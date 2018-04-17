@@ -196,6 +196,10 @@
       box-shadow: inset 3px 0 $color-700;
     }
   }
+
+  .ide-context-header a {
+    color: $color-700;
+  }
 }
 
 body {

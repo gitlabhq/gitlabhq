@@ -49,7 +49,7 @@ export default {
         </div>
       </template>
       <template v-else>
-        <div class="context-header">
+        <div class="context-header ide-context-header">
           <a
             :href="currentProject.web_url"
           >
@@ -76,7 +76,6 @@ export default {
                 {{ currentProject.name }}
               </div>
               <div
-                v-if="currentBranchId !== ''"
                 class="sidebar-context-title ide-sidebar-branch-title"
               >
                 <icon
@@ -96,15 +95,3 @@ export default {
     </div>
   </resizable-panel>
 </template>
-
-<style>
-.ide-sidebar-branch-title {
-  font-weight: normal;
-}
-
-.ide-sidebar-branch-title svg {
-  position: relative;
-  top: 3px;
-  margin-top: -1px;
-}
-</style>

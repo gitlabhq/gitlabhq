@@ -895,3 +895,13 @@
     margin-left: auto;
   }
 }
+
+.ide-sidebar-branch-title {
+  font-weight: $gl-font-weight-normal;
+
+  svg {
+    position: relative;
+    top: 3px;
+    margin-top: -1px;
+  }
+}
