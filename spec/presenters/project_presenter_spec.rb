@@ -321,7 +321,7 @@ describe ProjectPresenter do
 
           expect(presenter.autodevops_anchor_data).to eq(OpenStruct.new(enabled: false,
                                                                         label: 'Enable Auto DevOps',
-                                                                        link: presenter.project_settings_ci_cd_path(project, anchor: 'js-autodevops-settings')))
+                                                                        link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings')))
         end
       end
     end

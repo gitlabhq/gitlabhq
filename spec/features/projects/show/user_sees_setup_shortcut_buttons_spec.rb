@@ -65,7 +65,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       describe 'Auto DevOps button' do
         it '"Enable Auto DevOps" button linked to settings page' do
           page.within('.project-stats') do
-            expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'js-autodevops-settings'))
+            expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
           end
         end
 
@@ -75,7 +75,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           visit project_path(project)
 
           page.within('.project-stats') do
-            expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'js-autodevops-settings'))
+            expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
           end
         end
       end
@@ -212,7 +212,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       describe 'Auto DevOps button' do
         it '"Enable Auto DevOps" button linked to settings page' do
           page.within('.project-stats') do
-            expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'js-autodevops-settings'))
+            expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
           end
         end
 
@@ -222,7 +222,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           visit project_path(project)
 
           page.within('.project-stats') do
-            expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'js-autodevops-settings'))
+            expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
           end
         end
 
