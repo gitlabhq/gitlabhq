@@ -2,11 +2,8 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
-<<<<<<< HEAD
         prepend QA::EE::Page::MergeRequest::Show
 
-=======
->>>>>>> upstream/master
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
           element :fast_forward_message, 'Fast-forward merge without a merge commit'
