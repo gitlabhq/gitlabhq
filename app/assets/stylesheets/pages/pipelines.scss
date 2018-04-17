@@ -16,7 +16,7 @@
     margin: 0;
     white-space: normal;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       justify-content: flex-end;
     }
   }
