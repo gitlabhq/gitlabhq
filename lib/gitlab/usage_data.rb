@@ -91,6 +91,7 @@ module Gitlab
             pages_domains: PagesDomain.count,
             projects: Project.count,
             projects_imported_from_github: Project.where(import_type: 'github').count,
+            projects_reporting_ci_cd_back_to_github: GithubService.without_defaults.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,

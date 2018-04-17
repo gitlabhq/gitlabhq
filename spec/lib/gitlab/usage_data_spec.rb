@@ -107,6 +107,7 @@ describe Gitlab::UsageData do
         notes
         projects
         projects_imported_from_github
+        projects_reporting_ci_cd_back_to_github
         projects_jira_active
         projects_slack_notifications_active
         projects_slack_slash_active
