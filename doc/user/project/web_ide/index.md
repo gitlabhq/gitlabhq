@@ -1,10 +1,27 @@
 # Web IDE
 
+<<<<<<< HEAD
 > Introduced in [GitLab Ultimate][ee] 10.4.
 > Brought to [GitLab CE][ce] in 10.7.
 
 The Web IDE makes it faster and easier to contribute changes to your projects
 by providing an advanced editor with commit staging.
+=======
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ee/issues/4539) [GitLab Ultimate][ee] 10.4.
+> [Brought to GitLab Core][core](https://gitlab.com/gitlab-org/gitlab-ce/issues/44157) in 10.7.
+
+The Web IDE editor makes it faster and easier to contribute changes to your
+projects by providing an advanced editor with commit staging.
+
+## Enable the Web IDE
+
+While in the early stages of the Beta, access to the Web IDE is by opting in.
+
+To enable the Web IDE, click on your profile image in the top right corner and
+navigate to **Settings > Preferences**, check **Enable Web IDE** and save.
+
+![Enable Web IDE](img/enable_web_ide.png)
+>>>>>>> origin/master
 
 ## Open the Web IDE
 
@@ -21,6 +38,7 @@ the 'Commit Button'.
 
 ![Commit changes](img/commit_changes.png)
 
+<<<<<<< HEAD
 ## Comparing changes
 
 Before you commit your changes, you can compare them with the previous commit
@@ -32,3 +50,6 @@ shows you a preview of the merge request diff if you commit your changes.
 
 [ee]: https://about.gitlab.com/products/
 [ce]: https://about.gitlab.com/products/
+=======
+[ee]: https://about.gitlab.com/pricing/
+>>>>>>> origin/master
