@@ -101,4 +101,39 @@ module SnippetsHelper
     # Return snippet with chunk array
     { snippet_object: snippet, snippet_chunks: snippet_chunks }
   end
+
+  def snippet_embed
+    "<script src=\"#{url_for(only_path: false, overwrite_params: nil)}.js\"></script>"
+  end
+
+  def embedded_snippet_raw_button
+    blob = @snippet.blob
+    return if blob.empty? || blob.raw_binary? || blob.stored_externally?
+
+    snippet_raw_url = if @snippet.is_a?(PersonalSnippet)
+                        raw_snippet_url(@snippet)
+                      else
+                        raw_project_snippet_url(@snippet.project, @snippet)
+                      end
+
+    link_to external_snippet_icon('doc_code'), snippet_raw_url, class: 'btn', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw'
+  end
+
+  def embedded_snippet_download_button
+    download_url = if @snippet.is_a?(PersonalSnippet)
+                     raw_snippet_url(@snippet, inline: false)
+                   else
+                     raw_project_snippet_url(@snippet.project, @snippet, inline: false)
+                   end
+
+    link_to external_snippet_icon('download'), download_url, class: 'btn', target: '_blank', title: 'Download', rel: 'noopener noreferrer'
+  end
+
+  def public_snippet?
+    if @snippet.project_id?
+      can?(nil, :read_project_snippet, @snippet)
+    else
+      can?(nil, :read_personal_snippet, @snippet)
+    end
+  end
 end

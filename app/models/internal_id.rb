@@ -23,9 +23,12 @@ class InternalId < ActiveRecord::Base
   #
   # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
   # As such, the increment is atomic and safe to be called concurrently.
-  def increment_and_save!
+  #
+  # If a `maximum_iid` is passed in, this overrides the incremented value if it's
+  # greater than that. This can be used to correct the increment value if necessary.
+  def increment_and_save!(maximum_iid)
     lock!
-    self.last_value = (last_value || 0) + 1
+    self.last_value = [(last_value || 0) + 1, (maximum_iid || 0) + 1].max
     save!
     last_value
   end
@@ -89,7 +92,16 @@ class InternalId < ActiveRecord::Base
         # and increment its last value
         #
         # Note this will acquire a ROW SHARE lock on the InternalId record
-        (lookup || create_record).increment_and_save!
+
+        # Note we always calculate the maximum iid present here and
+        # pass it in to correct the InternalId entry if it's last_value is off.
+        #
+        # This can happen in a transition phase where both `AtomicInternalId` and
+        # `NonatomicInternalId` code runs (e.g. during a deploy).
+        #
+        # This is subject to be cleaned up with the 10.8 release:
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/45389.
+        (lookup || create_record).increment_and_save!(maximum_iid)
       end
     end
 
@@ -115,11 +127,15 @@ class InternalId < ActiveRecord::Base
         InternalId.create!(
           **scope,
           usage: usage_value,
-          last_value: init.call(subject) || 0
+          last_value: maximum_iid
         )
       end
     rescue ActiveRecord::RecordNotUnique
       lookup
+    end
+
+    def maximum_iid
+      @maximum_iid ||= init.call(subject) || 0
     end
   end
 end
