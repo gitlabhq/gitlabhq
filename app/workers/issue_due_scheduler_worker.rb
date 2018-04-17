@@ -3,8 +3,8 @@ class IssueDueSchedulerWorker
   include CronjobQueue
 
   def perform
-    Issue.opened.due_tomorrow.group(:project_id).pluck(:project_id).each do |project_id|
-      MailScheduler::IssueDueWorker.perform_async(project_id)
-    end
+    project_ids = Issue.opened.due_tomorrow.group(:project_id).pluck(:project_id).map { |id| [id] }
+
+    MailScheduler::IssueDueWorker.bulk_perform_async(project_ids)
   end
 end
