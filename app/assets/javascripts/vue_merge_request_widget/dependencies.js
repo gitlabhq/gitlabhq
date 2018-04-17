@@ -44,5 +44,5 @@ export { default as SquashBeforeMerge } from 'ee/vue_merge_request_widget/compon
 export { default as notify } from '../lib/utils/notify';
 export { default as SourceBranchRemovalStatus } from './components/source_branch_removal_status.vue';
 
-export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options';
 export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
+export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options';
