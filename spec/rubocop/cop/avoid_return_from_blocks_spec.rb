@@ -53,8 +53,29 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
     end
   end
 
-  %i[each each_filename times loop define_method lambda helpers class_methods describe included namespace validations].each do |whitelisted_method|
+  %i[each each_filename times loop].each do |whitelisted_method|
     it_behaves_like 'examples with whitelisted method', whitelisted_method
+  end
+
+  shared_examples 'examples with def methods' do |def_method|
+    it "doesn't flag violation for return inside #{def_method}" do
+      source = <<~RUBY
+        helpers do
+          #{def_method} do
+            return if something
+
+            do_something_mode
+          end
+        end
+      RUBY
+      inspect_source(source)
+
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  %i[define_method lambda].each do |def_method|
+    it_behaves_like 'examples with def methods', def_method
   end
 
   it "doesn't flag violation for return inside a lambda" do

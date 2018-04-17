@@ -22,7 +22,8 @@ module RuboCop
     #
     class AvoidReturnFromBlocks < RuboCop::Cop::Cop
       MSG = 'Do not return from a block, use next or break instead.'
-      WHITELISTED_METHODS = %i[each each_filename times loop define_method lambda helpers class_methods describe included namespace validations].freeze
+      DEF_METHODS = %i[define_method lambda].freeze
+      WHITELISTED_METHODS = %i[each each_filename times loop].freeze
 
       def on_block(node)
         block_body = node.body
@@ -31,11 +32,13 @@ module RuboCop
         return unless top_block?(node)
 
         block_body.each_node(:return) do |return_node|
-          next if contained_blocks(node, return_node).all?(&method(:whitelisted?))
+          next if parent_blocks(node, return_node).all?(&method(:whitelisted?))
 
           add_offense(return_node)
         end
       end
+
+      private
 
       def top_block?(node)
         current_node = node
@@ -49,15 +52,21 @@ module RuboCop
         top_block == node
       end
 
-      def contained_blocks(node, current_node)
+      def parent_blocks(node, current_node)
         blocks = []
 
-        until node == current_node
+        until node == current_node || def?(current_node)
           blocks << current_node if current_node.type == :block
           current_node = current_node.parent
         end
 
-        blocks << node
+        blocks << node if node == current_node && !def?(node)
+        blocks
+      end
+
+      def def?(node)
+        node.type == :def || node.type == :defs ||
+          (node.type == :block && DEF_METHODS.include?(node.method_name))
       end
 
       def whitelisted?(block_node)
