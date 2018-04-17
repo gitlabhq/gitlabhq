@@ -208,13 +208,23 @@ or ~"Stretch". Any open issue for a previous milestone should be labeled
 Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be. If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning         | Estimate time to fix                                                   | Guidance |
-|-------|-----------------|------------------------------------------------------------------------|----------|
-| ~P1   | Immediate       | Immediate hotfix to production                                         | This would normally correspond to a S1 severity below |
-| ~P2   | Urgent Priority | The current release (regular & patch)                                  | The issue is (almost) guaranteed to occur in the near future |
-| ~P3   | High Priority   | The next release (regular & patch)                                     | The issue is likely to occur in the near future |
-| ~P4   | Medium Priority | Within the next 3 major releases (1 quarter duration)                  | The issue _may_ occur but it's not likely |
-| ~P5   | Low Priority    | Anything outside the next 3 major releases (the next quarter duration) | The issue is prominent but does not impact user workflow and a workaround if any is well documented  |
+| Label | Meaning         | Estimate time to fix                                             | Guidance |
+|-------|-----------------|------------------------------------------------------------------|----------|
+| ~P1   | Immediate       | Immediate hotfix to production                                   | This would normally correspond to a S1 severity below |
+| ~P2   | Urgent Priority | The current release                                              |  |
+| ~P3   | High Priority   | The next release                                                 |  |
+| ~P4   | Medium Priority | Within the next 3 releases (1 quarter duration)                  |  |
+| ~P5   | Low Priority    | Anything outside the next 3 releases (the next quarter duration) | The issue is prominent but does not impact user workflow and a workaround if any is well documented  |
+
+#### Team specific priority guidance
+
+| Label | Availability / Performance                                   | Security | 
+|-------|--------------------------------------------------------------|----------|
+| ~P1   |                                                              |          |
+| ~P2   | The issue is (almost) guaranteed to occur in the near future |          |
+| ~P3   | The issue is likely to occur in the near future              |          |
+| ~P4   | The issue _may_ occur but it's not likely                    |          |
+| ~P5   |          |          |
 
 ### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
 
