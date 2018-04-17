@@ -936,6 +936,8 @@ describe NotificationService, :mailer do
 
     describe '#issue_due' do
       before do
+        issue.update!(due_date: Date.today)
+
         update_custom_notification(:issue_due, @u_guest_custom, resource: project)
         update_custom_notification(:issue_due, @u_custom_global)
       end
