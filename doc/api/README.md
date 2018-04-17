@@ -18,11 +18,11 @@ following locations:
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
 - [Environments](environments.md)
-- [Epics](epics.md)
-- [Epic Issues](epic_issues.md)
+- [Epics](epics.md) **[ULTIMATE]**
+- [Epic Issues](epic_issues.md) **[ULTIMATE]**
 - [Events](events.md)
 - [Feature flags](features.md)
-- [Geo Nodes](geo_nodes.md)
+- [Geo Nodes](geo_nodes.md) **[PREMIUM]**
 - [Gitignores templates](templates/gitignores.md)
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
@@ -37,7 +37,7 @@ following locations:
 - [Labels](labels.md)
 - [License](license.md)
 - [Merge Requests](merge_requests.md)
-- [Merge Request Approvals](merge_request_approvals.md)
+- [Merge Request Approvals](merge_request_approvals.md) **[STARTER]**
 - [Project milestones](milestones.md)
 - [Group milestones](group_milestones.md)
 - [Namespaces](namespaces.md)
