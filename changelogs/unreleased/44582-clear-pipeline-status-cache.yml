@@ -1,0 +1,5 @@
+---
+title: Now `rake cache:clear` will also clear pipeline status cache
+merge_request: 18257
+author:
+type: fixed

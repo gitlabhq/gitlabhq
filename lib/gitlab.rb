@@ -12,19 +12,15 @@ module Gitlab
     Gitlab.config.gitlab.url == COM_URL || gl_subdomain?
   end
 
+  def self.org?
+    Gitlab.config.gitlab.url == 'https://dev.gitlab.org'
+  end
+
   def self.gl_subdomain?
     SUBDOMAIN_REGEX === Gitlab.config.gitlab.url
   end
 
   def self.dev_env_or_com?
-    Rails.env.test? || Rails.env.development? || com?
-  end
-
-  def self.dev?
-    Gitlab.config.gitlab.url == 'https://dev.gitlab.org'
-  end
-
-  def self.inc_controlled?
-    dev? || com?
+    Rails.env.test? || Rails.env.development? || org? || com?
   end
 end

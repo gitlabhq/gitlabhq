@@ -9,7 +9,7 @@
       lines: {
         type: Number,
         required: false,
-        default: 6,
+        default: 3,
       },
     },
     computed: {
