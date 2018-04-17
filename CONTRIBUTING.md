@@ -210,21 +210,21 @@ This label documents the planned timeline & urgency which is used to measure aga
 
 | Label | Meaning         | Estimate time to fix                                             | Guidance |
 |-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Immediate       | Immediate hotfix to production                                   | This would normally correspond to a S1 severity below |
+| ~P1   | Immediate       | Immediate hotfix (outside of the normal release process)         | This would normally correspond to a S1 severity below |
 | ~P2   | Urgent Priority | The current release                                              |  |
-| ~P3   | High Priority   | The next release                                                 |  |
-| ~P4   | Medium Priority | Within the next 3 releases (1 quarter duration)                  |  |
-| ~P5   | Low Priority    | Anything outside the next 3 releases (the next quarter duration) | The issue is prominent but does not impact user workflow and a workaround if any is well documented  |
+| ~P3   | High Priority   | The next release after the current release                       |  |
+| ~P4   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
+| ~P5   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
 
-#### Team specific priority guidance
+#### Specific Priority guidance
 
-| Label | Availability / Performance                                   | Security | 
-|-------|--------------------------------------------------------------|----------|
-| ~P1   |                                                              |          |
-| ~P2   | The issue is (almost) guaranteed to occur in the near future |          |
-| ~P3   | The issue is likely to occur in the near future              |          |
-| ~P4   | The issue _may_ occur but it's not likely                    |          |
-| ~P5   |          |          |
+| Label | Availability / Performance                                   | 
+|-------|--------------------------------------------------------------|
+| ~P1   |                                                              | 
+| ~P2   | The issue is (almost) guaranteed to occur in the near future |  
+| ~P3   | The issue is likely to occur in the near future              |
+| ~P4   | The issue _may_ occur but it's not likely                    |
+| ~P5   |          |
 
 ### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
 
@@ -236,6 +236,15 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 | ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
 | ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
 | ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
+
+#### Specific Severity guidance
+
+| Label | Security Impact                                                   | 
+|-------|-------------------------------------------------------------------|
+| ~S1   | >50% customers impacted (possible company extinction level event) | 
+| ~S2   | Multiple customers impacted (but not apocalyptic)                 |  
+| ~S3   | A single customer impacted                                        |
+| ~S4   | No customer impact, or expected impact within 30 days             |
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
