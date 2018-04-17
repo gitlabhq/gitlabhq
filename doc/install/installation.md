@@ -93,9 +93,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.16.2.tar.gz
-    echo '9acc4339b7a2ab484eea69d705923271682b7058015219cf5a7e6ed8dee5b5fb  git-2.16.2.tar.gz' | shasum -a256 -c - && tar -xzf git-2.16.2.tar.gz
-    cd git-2.16.2/
+    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.16.3.tar.gz
+    echo 'dda229e9c73f4fbb7d4324e0d993e11311673df03f73b194c554c2e9451e17cd  git-2.16.3.tar.gz' | shasum -a256 -c - && tar -xzf git-2.16.3.tar.gz
+    cd git-2.16.3/
     ./configure
     make prefix=/usr/local all
 
