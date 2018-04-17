@@ -765,7 +765,7 @@
 
 // Hack alert: we've rewritten `btn` class in a way that
 // we've broken it and it is not possible to use with `btn-link`
-// wich causes a blank button when it's disabled and hovering
+// which causes a blank button when it's disabled and hovering
 // The css in here is the boostrap one
 .btn-link-retry {
   &[disabled] {
