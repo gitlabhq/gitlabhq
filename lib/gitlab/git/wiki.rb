@@ -4,9 +4,9 @@ module Gitlab
       DuplicatePageError = Class.new(StandardError)
       OperationError = Class.new(StandardError)
 
-      CommitDetails = Struct.new(:user_id, :username, :name, :email, :message) do
+      CommitDetails = Struct.new(:name, :email, :message) do
         def to_h
-          { user_id: user_id, username: username, name: name, email: email, message: message }
+          { name: name, email: email, message: message }
         end
       end
       PageBlob = Struct.new(:name)
@@ -141,10 +141,6 @@ module Gitlab
         end
       end
 
-      def gollum_wiki
-        @gollum_wiki ||= Gollum::Wiki.new(@repository.path)
-      end
-
       private
 
       # options:
@@ -161,6 +157,10 @@ module Gitlab
                         path: gollum_page.path,
                         limit: options[:limit],
                         offset: options[:offset])
+      end
+
+      def gollum_wiki
+        @gollum_wiki ||= Gollum::Wiki.new(@repository.path)
       end
 
       def gollum_page_by_path(page_path)
@@ -204,11 +204,8 @@ module Gitlab
 
         filename = File.basename(name)
         dir = (tmp_dir = File.dirname(name)) == '.' ? '' : tmp_dir
-        committer = committer_with_hooks(commit_details)
 
-        gollum_wiki.write_page(filename, format, content, { committer: committer }, dir)
-
-        committer.commit
+        gollum_wiki.write_page(filename, format, content, commit_details.to_h, dir)
 
         nil
       rescue Gollum::DuplicatePageError => e
@@ -218,11 +215,7 @@ module Gitlab
       def gollum_delete_page(page_path, commit_details)
         assert_type!(commit_details, CommitDetails)
 
-        committer = committer_with_hooks(commit_details)
-
-        gollum_wiki.delete_page(gollum_page_by_path(page_path), committer: committer)
-
-        committer.commit
+        gollum_wiki.delete_page(gollum_page_by_path(page_path), commit_details.to_h)
 
         nil
       end
@@ -232,7 +225,7 @@ module Gitlab
         assert_type!(commit_details, CommitDetails)
 
         page = gollum_page_by_path(page_path)
-        committer = committer_with_hooks(commit_details)
+        committer = Gollum::Committer.new(page.wiki, commit_details.to_h)
 
         # Instead of performing two renames if the title has changed,
         # the update_page will only update the format and content and
@@ -296,10 +289,6 @@ module Gitlab
         gitaly_wiki_client.get_all_pages.map do |wiki_page, version|
           Gitlab::Git::WikiPage.new(wiki_page, version)
         end
-      end
-
-      def committer_with_hooks(commit_details)
-        Gitlab::Wiki::CommitterWithHooks.new(self, commit_details.to_h)
       end
     end
   end

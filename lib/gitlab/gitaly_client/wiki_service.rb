@@ -200,8 +200,6 @@ module Gitlab
 
       def gitaly_commit_details(commit_details)
         Gitaly::WikiCommitDetails.new(
-          user_id: commit_details.user_id,
-          user_name: encode_binary(commit_details.username),
           name: encode_binary(commit_details.name),
           email: encode_binary(commit_details.email),
           message: encode_binary(commit_details.message)

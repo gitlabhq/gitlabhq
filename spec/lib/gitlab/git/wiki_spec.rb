@@ -30,7 +30,7 @@ describe Gitlab::Git::Wiki do
   end
 
   def commit_details(name)
-    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "created page #{name}")
+    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "created page #{name}")
   end
 
   def destroy_page(title, dir = '')
