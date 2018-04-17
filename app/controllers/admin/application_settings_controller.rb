@@ -56,22 +56,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
-<<<<<<< HEAD
-    import_sources = params[:application_setting][:import_sources]
-    if import_sources.nil?
-      params[:application_setting][:import_sources] = []
-    else
-      import_sources.map! do |source|
-        source.to_str
-      end
-    end
-=======
     params[:application_setting] ||= {}
 
     if params[:application_setting].key?(:enabled_oauth_sign_in_sources)
       enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
       enabled_oauth_sign_in_sources&.delete("")
->>>>>>> 37c8c97c22a... Merge branch 'dz-fix-admin-import-sources' into 'master'
 
       params[:application_setting][:disabled_oauth_sign_in_sources] =
         AuthHelper.button_based_providers.map(&:to_s) -
