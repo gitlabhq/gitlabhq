@@ -89,7 +89,7 @@ on projects and code.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - **(Premium/Ultimate)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
-- **(Ultimate)** [Web IDE](user/project/web_ide/index.md)
+- [Web IDE](user/project/web_ide/index.md)
 
 #### Repositories
 
