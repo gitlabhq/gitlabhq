@@ -8,13 +8,8 @@
   - @options && @options.each do |key, value|
     = hidden_field_tag key, value, id: nil
   .dropdown
-<<<<<<< HEAD
-    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: 'ref', submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown" }
-    .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown.dropdown-menu-paging{ class: ("dropdown-menu-right" if local_assigns[:align_right]) }
-=======
     = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: 'ref', submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown qa-branches-select" }
     .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown.dropdown-menu-paging.qa-branches-dropdown{ class: ("dropdown-menu-align-right" if local_assigns[:align_right]) }
->>>>>>> master
       .dropdown-page-one
         = dropdown_title _("Switch branch/tag")
         = dropdown_filter _("Search branches and tags")
