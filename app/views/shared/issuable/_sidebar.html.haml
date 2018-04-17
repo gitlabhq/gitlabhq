@@ -23,7 +23,7 @@
           = icon('clock-o', 'aria-hidden': 'true')
           %span.milestone-title
             - if issuable.milestone
-              %span.has-tooltip{ title: "#{issuable.milestone.title}<br>#{milestone_tooltip_title(issuable.milestone)}", data: { container: 'body', html: 1, placement: 'left' } }
+              %span.has-tooltip{ title: "#{issuable.milestone.title}<br>#{milestone_tooltip_title(issuable.milestone)}", data: { container: 'body', html: true, placement: 'left' } }
                 = issuable.milestone.title
             - else
               = _('None')
@@ -34,7 +34,7 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.hide-collapsed
           - if issuable.milestone
-            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: 1 }
+            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: true }
           - else
             %span.no-value
               = _('None')
