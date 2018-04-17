@@ -136,8 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize tooltips
-  $body.tooltip({
-    selector: '.has-tooltip, [data-toggle="tooltip"]',
+  $('.has-tooltip, [data-toggle="tooltip"]').tooltip({
     placement(tip, el) {
       return $(el).data('placement') || 'bottom';
     },

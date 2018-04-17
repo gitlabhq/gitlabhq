@@ -10,6 +10,3 @@ $.fn.extend({
   disable() { return $(this).prop('disabled', true).addClass('disabled'); },
   enable() { return $(this).prop('disabled', false).removeClass('disabled'); },
 });
-
-// Enable Bootstrap tooltips
-$('[data-toggle="tooltip"]').tooltip();
