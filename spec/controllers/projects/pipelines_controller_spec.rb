@@ -35,10 +35,10 @@ describe Projects::PipelinesController do
 
       expect(json_response).to include('pipelines')
       expect(json_response['pipelines'].count).to eq 4
-      expect(json_response['count']['all']).to eq 4
-      expect(json_response['count']['running']).to eq 1
-      expect(json_response['count']['pending']).to eq 1
-      expect(json_response['count']['finished']).to eq 1
+      expect(json_response['count']['all']).to eq '4'
+      expect(json_response['count']['running']).to eq '1'
+      expect(json_response['count']['pending']).to eq '1'
+      expect(json_response['count']['finished']).to eq '1'
     end
 
     context 'when performing gitaly calls', :request_store do

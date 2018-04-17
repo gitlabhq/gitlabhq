@@ -18,17 +18,10 @@ class Projects::PipelinesController < Projects::ApplicationController
       .page(params[:page])
       .per(30)
 
-    @running_count = PipelinesFinder
-      .new(project, scope: 'running').execute.count
-
-    @pending_count = PipelinesFinder
-      .new(project, scope: 'pending').execute.count
-
-    @finished_count = PipelinesFinder
-      .new(project, scope: 'finished').execute.count
-
-    @pipelines_count = PipelinesFinder
-      .new(project).execute.count
+    @running_count = limited_pipelines_count(project, 'running')
+    @pending_count = limited_pipelines_count(project, 'pending')
+    @finished_count = limited_pipelines_count(project, 'finished')
+    @pipelines_count = limited_pipelines_count(project)
 
     @pipelines.map(&:commit) # List commits for batch loading
 
@@ -184,5 +177,11 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def authorize_update_pipeline!
     return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+  end
+
+  def limited_pipelines_count(project, scope = nil)
+    finder = PipelinesFinder.new(project, scope: scope)
+
+    view_context.limited_counter_with_delimiter(finder.execute)
   end
 end
