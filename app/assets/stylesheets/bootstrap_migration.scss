@@ -91,3 +91,13 @@ html [type="button"],
     }
   }
 }
+
+.card {
+  &.card-without-border {
+    border: 0;
+  }
+
+  &.card-without-margin {
+    margin: 0;
+  }
+}
