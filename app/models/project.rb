@@ -1631,6 +1631,7 @@ class Project < ActiveRecord::Base
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)
   end
@@ -1879,6 +1880,14 @@ class Project < ActiveRecord::Base
     return false if auto_devops.previous_changes.include?('enabled')
 
     auto_devops.enabled? && ci_config_path.present?
+  end
+
+  def ci_yaml_file_path
+    if ci_config_path.blank?
+      '.gitlab-ci.yml'
+    else
+      ci_config_path
+    end
   end
 
   private

@@ -409,14 +409,6 @@ module Ci
       end
     end
 
-    def ci_yaml_file_path
-      if project.ci_config_path.blank?
-        '.gitlab-ci.yml'
-      else
-        project.ci_config_path
-      end
-    end
-
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
@@ -489,7 +481,6 @@ module Ci
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_PIPELINE_ID', value: id.to_s)
-        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
     end
 
@@ -536,7 +527,7 @@ module Ci
       return unless project
       return unless sha
 
-      project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
+      project.repository.gitlab_ci_yml_for(sha, project.ci_yaml_file_path)
     rescue GRPC::NotFound, GRPC::Internal
       nil
     end

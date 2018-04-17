@@ -173,7 +173,7 @@ describe Ci::Pipeline, :mailer do
     it 'includes all predefined variables in a valid order' do
       keys = subject.map { |variable| variable[:key] }
 
-      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
+      expect(keys).to eq %w[CI_PIPELINE_ID CI_PIPELINE_SOURCE]
     end
   end
 
@@ -980,28 +980,6 @@ describe Ci::Pipeline, :mailer do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
-    end
-  end
-
-  describe '#ci_yaml_file_path' do
-    subject { pipeline.ci_yaml_file_path }
-
-    it 'returns the path from project' do
-      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
-
-      is_expected.to eq('custom/path')
-    end
-
-    it 'returns default when custom path is nil' do
-      allow(pipeline.project).to receive(:ci_config_path) { nil }
-
-      is_expected.to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns default when custom path is empty' do
-      allow(pipeline.project).to receive(:ci_config_path) { '' }
-
-      is_expected.to eq('.gitlab-ci.yml')
     end
   end
 

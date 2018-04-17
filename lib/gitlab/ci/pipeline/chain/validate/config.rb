@@ -9,7 +9,7 @@ module Gitlab
             def perform!
               unless @pipeline.config_processor
                 unless @pipeline.ci_yaml_file
-                  return error("Missing #{@pipeline.ci_yaml_file_path} file")
+                  return error("Missing #{project.project.ci_yaml_file_path} file")
                 end
 
                 if @command.save_incompleted && @pipeline.has_yaml_errors?

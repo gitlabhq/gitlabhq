@@ -3009,6 +3009,18 @@ describe Project do
     end
   end
 
+  describe '#predefined_variables' do
+    let(:project) { create(:project) }
+
+    subject { project.predefined_variables }
+
+    it 'includes all predefined variables in a valid order' do
+      keys = subject.map { |variable| variable[:key] }
+
+      expect(keys).to eq %w[CI_PROJECT_ID CI_PROJECT_NAME CI_PROJECT_PATH CI_PROJECT_PATH_SLUG CI_PROJECT_NAMESPACE CI_PROJECT_URL CI_PROJECT_VISIBILITY CI_CONFIG_PATH]
+    end
+  end
+
   describe '#auto_devops_enabled?' do
     set(:project) { create(:project) }
 
@@ -3623,6 +3635,30 @@ describe Project do
 
         it { is_expected.to eq(true) }
       end
+    end
+  end
+
+  describe '#ci_yaml_file_path' do
+    let(:project) { create(:project) }
+
+    subject { project.ci_yaml_file_path }
+
+    it 'returns the path from project' do
+      allow(project).to receive(:ci_config_path) { 'custom/path' }
+
+      is_expected.to eq('custom/path')
+    end
+
+    it 'returns default when custom path is nil' do
+      allow(project).to receive(:ci_config_path) { nil }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns default when custom path is empty' do
+      allow(project).to receive(:ci_config_path) { '' }
+
+      is_expected.to eq('.gitlab-ci.yml')
     end
   end
 end
