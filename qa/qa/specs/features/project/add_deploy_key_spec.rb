@@ -13,7 +13,6 @@ module QA
         resource.key = deploy_key_value
       end
 
-      expect(deploy_key.title).to eq(deploy_key_title)
       expect(deploy_key.fingerprint).to eq(key.fingerprint)
     end
   end
