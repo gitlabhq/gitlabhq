@@ -42,17 +42,18 @@ coordinate, and track your progress your way with GitLab’s flexible project
 management tools.
 
 - Chat operations
+  - [GitLab ChatOps](ci/chatops/README.md) **[ULTIMATE]**
   - [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)
   - [Slack slash commands](user/project/integrations/slack_slash_commands.md)
 - [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Project Issue Boards](user/project/issue_board.md)
 - [Group Issue Boards](user/project/issue_board.md#group-issue-boards)
-- **(Starter/Premium/Ultimate)** [Related Issues](user/project/issues/related_issues.md): create a relationship between issues
+- [Related Issues](user/project/issues/related_issues.md): create a relationship between issues.**[STARTER]**
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
-  - **(Starter/Premium/Ultimate)** [Burndown Charts](user/project/milestones/burndown_charts.md): Watch your project's progress throughout a specific milestone.
+  - [Burndown Charts](user/project/milestones/burndown_charts.md): Watch your project's progress throughout a specific milestone. **[STARTER]**
 - [Todos](workflow/todos.md): A chronological list of to-dos that are waiting for your input, all in a simple dashboard.
 - [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
@@ -80,15 +81,15 @@ on projects and code.
   - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Groups](user/group/index.md): Organize your projects in groups.
   - [Subgroups](user/group/subgroups/index.md)
-  - **(Ultimate)** [Epics](user/group/epics/index.md)
-  - **(Ultimate)** [Roadmap](user/group/roadmap/index.md)
-  - **(Starter/Premium/Ultimate)** [Contribution Analytics](user/group/contribution_analytics/index.md): See detailed statistics of group contributors.
+  - [Epics](user/group/epics/index.md) **[ULTIMATE]**
+  - [Roadmap](user/group/roadmap/index.md) **[ULTIMATE]**
+  - [Contribution Analytics](user/group/contribution_analytics/index.md): See detailed statistics of group contributors. **[STARTER]**
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
-  - **(Starter/Premium/Ultimate)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
-  - **(Starter/Premium/Ultimate)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
+  - [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance. **[STARTER]**
+  - [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results. **[STARTER]**
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
-- **(Premium/Ultimate)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
+- [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account. **[PREMIUM]**
 - [Web IDE](user/project/web_ide/index.md)
 
 #### Repositories
@@ -101,7 +102,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [File templates](user/project/repository/web_editor.md#template-dropdowns)
   - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
   - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
-  - **(Premium/Ultimate)** [File locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
+  - [File locking](user/project/file_lock.md): Lock a file to avoid merge conflicts. **[PREMIUM]**
 - [Branches](user/project/repository/branches/index.md)
   - [Default branch](user/project/repository/branches/index.md#default-branch)
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
@@ -109,15 +110,15 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
 - [Commits](user/project/repository/index.md#commits)
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
-- **(Starter/Premium/Ultimate)** [Repository Mirroring](workflow/repository_mirroring.md)
-- **(Starter/Premium/Ultimate)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
+- [Repository Mirroring](workflow/repository_mirroring.md) **[STARTER]**
+- [Push rules](push_rules/push_rules.md): Additional control over pushes to your project. **[STARTER]**
 
 #### Integrations
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
-- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
-- **(Premium/Ultimate)** [JIRA Development Panel](integration/jira_development_panel.md): See GitLab information in the JIRA Development Panel
+- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up.
+- [JIRA Development Panel](integration/jira_development_panel.md): See GitLab information in the JIRA Development Panel. **[PREMIUM]**
 
 #### Automation
 
@@ -135,8 +136,8 @@ auto scales to run your tests faster.
 - [Merge Requests](user/project/merge_requests/index.md)
   - [Work In Progress Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
   - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
-  - **(Starter/Premium/Ultimate)** [Merge Request approval](user/project/merge_requests/merge_request_approvals.md): Make sure every merge request is approved by one or more people before getting merged.
-  - **(Ultimate)** [Static Application Security Testing](user/project/merge_requests/sast.md): Scan your code for vulnerabilities and display the results in merge requests.
+  - [Merge Request approval](user/project/merge_requests/merge_request_approvals.md): Make sure every merge request is approved by one or more people before getting merged. **[STARTER]**
+  - [Static Application Security Testing](user/project/merge_requests/sast.md): Scan your code for vulnerabilities and display the results in merge requests. **[ULTIMATE]**
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
@@ -158,8 +159,8 @@ confidently and securely with GitLab’s built-in Continuous Delivery and Deploy
 
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy a static site directly from GitLab.
 - [Auto Deploy](topics/autodevops/index.md#auto-deploy): Configure GitLab CI/CD for the deployment of your application.
-- **(Premium/Ultimate)** [Deploy Boards](user/project/deploy_boards.md): View of the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment.
-- **(Premium/Ultimate)** [Canary Deployments](user/project/canary_deployments.md): A popular CI strategy, where a small portion of the fleet is updated to the new version first.
+- [Deploy Boards](user/project/deploy_boards.md): View of the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment. **[PREMIUM]**
+- [Canary Deployments](user/project/canary_deployments.md): A popular CI strategy, where a small portion of the fleet is updated to the new version first. **[PREMIUM]**
 - [Environments and deployments](ci/environments.md): With environments, you can control the continuous deployment of your software within GitLab.
 
 ### Configure

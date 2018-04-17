@@ -19,7 +19,7 @@ Taking the trigger term as `project-name`, the commands are:
 | `/project-name issue search <query>` | Shows up to 5 issues matching `<query>` |
 | `/project-name issue move <id> to <project>` | Moves issue ID `<id>` to `<project>` |
 | `/project-name deploy <from> to <to>` | Deploy from the `<from>` environment to the `<to>` environment |
-| `/project-name run <job name> <arguments>` | Execute [ChatOps](../ci/chatops/README.md) job `<job name>` on `master` (available in GitLab Ultimate only) |
+| `/project-name run <job name> <arguments>` | Execute [ChatOps](../ci/chatops/README.md) job `<job name>` on `master` **[ULTIMATE]** |
 
 Note that if you are using the [GitLab Slack application](https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html) for
 your GitLab.com projects, you need to [add the `gitlab` keyword at the beginning of the command](https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html#usage).

@@ -1,4 +1,4 @@
-# Multiple Assignees for Issues
+# Multiple Assignees for Issues **[STARTER]**
 
 > **Note:**
 [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)

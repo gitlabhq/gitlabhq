@@ -55,12 +55,12 @@ changes you made after picking the template and return it to its initial status.
 
 ![Description templates](img/description_templates.png)
 
-## Setting a default template for issues and merge requests
+## Setting a default template for issues and merge requests  **[STARTER**
 
 >
 **Notes:**
 - This feature was introduced before [description templates](#overview) and is
-  available only for [GitLab Enterprise Starter][products]. It can be enabled
+  available in [GitLab Starter][products]. It can be enabled
   in the project's settings.
 - Templates for issues were [introduced][ee-28] in GitLab EE 8.1.
 - Templates for merge requests were [introduced][ee-7478ece] in GitLab EE 6.9.

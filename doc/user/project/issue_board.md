@@ -1,4 +1,4 @@
-# Issue Board
+# Issue Boards
 
 >**Note:**
 [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
@@ -267,7 +267,7 @@ to another list the label changes and a system not is recorded.
 
 ![Issue Board system notes](img/issue_board_system_notes.png)
 
-## Multiple issue boards
+## Multiple Issue Boards
 
 > Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
 
@@ -283,7 +283,7 @@ Multiple issue boards feature is available for **projects in GitLab Starter Edit
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
-## Board with configuration
+## Configurable Issue Board **[STARTER]**
 
 > Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
 
@@ -303,7 +303,7 @@ If you don't have editing permission in a board, you're still able to see the co
 
 ![Viewing board configuration](img/issue_board_view_scope.png)
 
-## Group Issue Boards
+## Group Issue Boards **[PREMIUM]**
 
 > Introduced in [GitLab Enterprise Edition 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
@@ -316,7 +316,7 @@ group-level objects are available.
 
 ![Group issue board](img/group_issue_board.png)
 
-## Focus mode
+## Focus mode **[STARTER]**
 
 > Introduced in [GitLab Enterprise Edition 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
 
@@ -329,12 +329,13 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 [Developers and up](../permissions.md) can use all the functionality of the
 Issue Board, that is create/delete lists and drag issues around.
 
-##  Group Issue Board
+## Group Issue Boards
 
->Introduced in GitLab 10.6
+> Introduced in GitLab 10.6
 
-Group issue board is analogous to project-level issue board and it is accessible at the group
-navigation level. A group-level issue board allows you to view all issues from all projects in that group or descendant subgroups. Similarly, you can only filter by group labels for these
+Group Issue Board is analogous to project-level issue board and it is accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
 
@@ -342,7 +343,7 @@ group-level objects are available.
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
 
-| Tier | Number of project issue boards | Board with configuration in project issue boards | Number of group issue boards | Board with configuration in group issue boards |
+| Tier | Number of Project Issue Boards | Board with configuration in Project Issue Boards | Number of Group Issue Boards | Board with configuration in Group Issue Boards |
 | --- | --- | --- | --- | --- |
 | Core    | 1        | No  | 1        | No  |
 | Starter  | Multiple | Yes | 1        | No  |

@@ -1,6 +1,4 @@
-# Push Rules
-
-> Available in [GitLab Enterprise Editions][ee].
+# Push Rules **[STARTER]**
 
 Gain additional control over pushes to your repository.
 

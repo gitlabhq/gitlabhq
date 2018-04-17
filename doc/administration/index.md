@@ -1,4 +1,4 @@
-# Administrator documentation
+# Administrator documentation **[CORE ONLY]**
 
 Learn how to administer your GitLab instance (Community Edition and
 Enterprise Edition).
@@ -25,14 +25,14 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ### Installing GitLab
 
 - [Install](../install/README.md): Requirements, directory structures, and installation methods.
-  - **(Starter/Premium)** [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
-  - **(Starter/Premium)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
-  - **(Starter/Premium)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
+  - [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers. **[STARTER ONLY]**
+  - [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database. **[STARTER ONLY]**
+  - [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only) **[STARTER ONLY]**
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
   - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
-- **(Premium)** [Geo](geo/replication/index.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
-- **(Premium)** [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation.
-- **(Premium)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
+- [Geo](geo/replication/index.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version. **[PREMIUM ONLY]**
+- [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation. **[PREMIUM ONLY]**
+- [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry. **[PREMIUM ONLY]**
 
 ### Configuring GitLab
 
@@ -47,8 +47,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
-- **(Starter/Premium)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
-- **(Premium)** [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
+- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data. **[STARTER ONLY]**
+- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
 
 #### Customizing GitLab's appearance
 
@@ -90,12 +90,12 @@ created in snippets, wikis, and repos.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-  - **(Starter/Premium)** [Sync LDAP](auth/ldap-ee.md)
-  - **(Starter/Premium)** [Kerberos authentication](../integration/kerberos.md)
-- **(Starter/Premium)** [Email users](../tools/email.md): Email GitLab users from within GitLab.
+  - [Sync LDAP](auth/ldap-ee.md) **[STARTER ONLY]**
+  - [Kerberos authentication](../integration/kerberos.md) **[STARTER ONLY]**
+- [Email users](../tools/email.md): Email GitLab users from within GitLab. **[STARTER ONLY]**
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
-- **(Starter/Premium)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
-- **(Premium)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
+- [Audit logs and events](audit_events.md): View the changes made within the GitLab server. **[STARTER ONLY]**
+- [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance. **[PREMIUM ONLY]**
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
   users to [reply by email], create [issues by email] and
   [merge requests by email], and to enable [Service Desk].
@@ -123,7 +123,7 @@ created in snippets, wikis, and repos.
 - [Repository checks](repository_checks.md): Periodic Git repository checks.
 - [Repository storage paths](repository_storage_paths.md): Manage the paths used to store repositories.
 - [Repository storage rake tasks](raketasks/storage.md): A collection of rake tasks to list and migrate existing projects and attachments associated with it from Legacy storage to Hashed storage.
-- **(Starter/Premium)** [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
+- [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size. **[STARTER ONLY]**
 
 ## Continuous Integration settings
 

@@ -1,4 +1,4 @@
-# Auditor users
+# Auditor users **[PREMIUM ONLY]**
 
 >[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
 

@@ -1,7 +1,4 @@
-# Kerberos integration
-
->**Note:**
-Available in [GitLab Starter][ee].
+# Kerberos integration **[STARTER ONLY]**
 
 GitLab can integrate with [Kerberos][kerb] as an authentication mechanism.
 
@@ -23,7 +20,6 @@ For GitLab to offer Kerberos token-based authentication, perform the
 following prerequisites. You still need to configure your system for
 Kerberos usage, such as specifying realms. GitLab will make use of the
 system's Kerberos settings.
-
 
 ### GitLab keytab
 

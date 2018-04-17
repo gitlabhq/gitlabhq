@@ -1,4 +1,4 @@
-# Static Application Security Testing (SAST)
+# Static Application Security Testing (SAST) **[ULTIMATE]**
 
 > [Introduced][ee-3775] in [GitLab Ultimate][ee] 10.3.
 

@@ -141,7 +141,7 @@ Example response:
   }
 ```
 
-## Create a board (Starter-Only)
+## Create a board **[STARTER]**
 
 Creates a board.
 
@@ -209,7 +209,7 @@ Example response:
   }
 ```
 
-## Delete a board (Starter-Only)
+## Delete a board **[STARTER]**
 
 Deletes a board.
 

@@ -48,10 +48,10 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-### Using object storage
+### Using object storage **[PREMIUM]**
 
 >**Notes:**
-- [Introduced][ee-3867] in [GitLab Enterprise Edition Premium][eep] 10.5.
+- [Introduced][ee-3867] in [GitLab Premium][eep] 10.5.
 
 If you don't want to use the local disk where GitLab is installed to store the
 uploads, you can use an object storage provider like AWS S3 instead.
@@ -206,5 +206,5 @@ _The uploads are stored by default in
 
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
+[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Premium"
 [ee-3867]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3867

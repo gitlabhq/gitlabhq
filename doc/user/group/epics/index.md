@@ -1,4 +1,4 @@
-# Epics
+# Epics **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.2.
 

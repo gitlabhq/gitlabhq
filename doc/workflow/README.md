@@ -44,9 +44,9 @@ comments: false
   - [Merge requests versions](../user/project/merge_requests/versions.md)
   - ["Work In Progress" merge requests](../user/project/merge_requests/work_in_progress_merge_requests.md)
   - [Fast-forward merge requests](../user/project/merge_requests/fast_forward_merge.md)
-  - (EE) [Merge request approvals](../user/project/merge_requests/merge_request_approvals.md)
-- (EE) [Repository mirroring](repository_mirroring.md)
-- (EE Premium) [Service Desk](../user/project/service_desk.md)
+  - [Merge request approvals](../user/project/merge_requests/merge_request_approvals.md) **[STARTER]**
+- [Repository mirroring](repository_mirroring.md) **[STARTER]**
+- [Service Desk](../user/project/service_desk.md) **[PREMIUM]**
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, Bitbucket, etc](importing/README.md)
 - [Todos](todos.md)

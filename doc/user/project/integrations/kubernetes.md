@@ -81,9 +81,7 @@ GitLab CI/CD build environment:
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards
-
-> Available in [GitLab Premium][ee].
+### Deploy Boards **[PREMIUM]**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
@@ -93,9 +91,7 @@ workflow they already use without any need to access Kubernetes.
 
 [> Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
 
-### Canary Deployments
-
-> Available in [GitLab Premium][ee].
+### Canary Deployments **[PREMIUM]**
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without

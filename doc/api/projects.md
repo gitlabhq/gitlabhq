@@ -1407,10 +1407,7 @@ POST /projects/:id/housekeeping
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
-## Push Rules
-
->**Note:**
-Available in [GitLab Starter](https://about.gitlab.com/products).
+## Push Rules **[STARTER]**
 
 ### Get project push rules
 
@@ -1507,9 +1504,9 @@ Read more in the [Project import/export](project_import_export.md) documentation
 
 Read more in the [Project members](members.md) documentation.
 
-## Start the pull mirroring process for a Project
+## Start the pull mirroring process for a Project **[STARTER]**
 
-> Introduced in GitLab 10.3. **Note:** Available in [GitLab Starter](https://about.gitlab.com/products).
+> Introduced in [GitLab Starter](https://about.gitlab.com/products) 10.3.
 
 ```
 POST /projects/:id/mirror/pull

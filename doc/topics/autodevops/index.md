@@ -227,7 +227,7 @@ In GitLab Starter, differences between the source and
 target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
 
-### Auto SAST
+### Auto SAST **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.3.
 
@@ -240,7 +240,7 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
-### Auto Dependency Scanning
+### Auto Dependency Scanning **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.7.
 
@@ -292,7 +292,7 @@ up in the merge request widget for easy discovery. When the branch is deleted,
 for example after the merge request is merged, the Review App will automatically
 be deleted.
 
-### Auto DAST
+### Auto DAST **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.4.
 
@@ -305,7 +305,7 @@ later download and check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dast.md).
 
-### Auto Browser Performance Testing
+### Auto Browser Performance Testing **[PREMIUM]**
 
 > Introduced in [GitLab Premium][ee] 10.4.
 

@@ -1,10 +1,10 @@
-# Epics API
+# Epics API **[ULTIMATE]**
 
 Every API call to epic must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
 
-Epics are available only in Ultimate. If epics feature is not available a `403` status code will be returned.
+If epics feature is not available a `403` status code will be returned.
 
 ## Epic issues API
 

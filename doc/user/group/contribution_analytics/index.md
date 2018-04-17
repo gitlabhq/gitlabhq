@@ -1,7 +1,7 @@
-# Contribution Analytics
+# Contribution Analytics **[STARTER]**
 
 >**Note:**
-This feature was introduced in [GitLab Starter][ee] 8.3.
+Introduced in [GitLab Starter][ee] 8.3.
 
 Track your team members' activity across your organization.
 

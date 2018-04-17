@@ -45,17 +45,17 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 [Analyze code quality with the Code Climate CLI](code_climate.md).
 
-## Static Application Security Testing (SAST)
+## Static Application Security Testing (SAST) **[ULTIMATE]**
 
-**(Ultimate)** [Scan your code for vulnerabilities](sast.md)
+[Scan your code for vulnerabilities](sast.md)
 
-## Dependency Scanning
+## Dependency Scanning **[ULTIMATE]**
 
-**(Ultimate)** [Scan your dependencies for vulnerabilities](dependency_scanning.md)
+[Scan your dependencies for vulnerabilities](dependency_scanning.md)
 
-## Dependency Scanning
+## Dependency Scanning **[ULTIMATE]**
 
-**(Ultimate)** [Scan your dependencies for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html)
+[Scan your dependencies for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html)
 
 ## Container Scanning
 

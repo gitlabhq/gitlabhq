@@ -126,16 +126,11 @@ and drag issues around. Read though the
 [documentation on Issue Boards permissions](project/issue_board.md#permissions)
 to learn more.
 
-### File Locking permissions
-
-> Available in [GitLab Premium](https://about.gitlab.com/products/) and [GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
+### File Locking permissions **[PREMIUM]**
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
 Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
-
-File Locking is available in
-[GitLab Premium](https://about.gitlab.com/products/) only.
 
 ### Confidential Issues permissions
 
@@ -199,7 +194,7 @@ will find the option to flag the user as external.
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
 
-## Auditor users
+## Auditor users **[PREMIUM ONLY]**
 
 >[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
 
@@ -286,15 +281,12 @@ for details about the pipelines security model.
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) to learn more.
 
-## Auditor users permissions
+## Auditor users permissions **[PREMIUM ONLY]**
 
 > Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
 with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
-
-Auditor users are available in [GitLab Premium](https://about.gitlab.com/products/)
-only.
 
 [^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
