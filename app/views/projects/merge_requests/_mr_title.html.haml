@@ -24,7 +24,7 @@
       %button.btn.btn-secondary.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
         Options
         = icon('caret-down')
-      .dropdown-menu.dropdown-menu-align-right.d-lg-none.d-xl-none
+      .dropdown-menu.dropdown-menu-right.d-lg-none.d-xl-none
         %ul
           - if can_update_merge_request
             %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)

@@ -35,7 +35,7 @@
           - if params[:project_id].present?
             = hidden_field_tag(:project_id, params[:project_id])
           = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit', title: 'Filter by project', filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-            placeholder: 'Search projects', data: { data: todo_projects_options, default_label: 'Project' } })
+            placeholder: 'Search projects', data: { data: todo_projects_options, default_label: 'Project', display: 'static' } })
         .filter-item.inline
           - if params[:author_id].present?
             = hidden_field_tag(:author_id, params[:author_id])
@@ -60,7 +60,7 @@
               - else
                 = sort_title_recently_created
               = icon('chevron-down')
-            %ul.dropdown-menu.dropdown-menu-sort
+            %ul.dropdown-menu.dropdown-menu-sort.dropdown-menu-right
               %li
                 = link_to todos_filter_path(sort: sort_value_label_priority) do
                   = sort_title_label_priority

@@ -108,7 +108,7 @@ module SharedIssuable
   step 'I sort the list by "Least popular"' do
     find('button.dropdown-toggle').click
 
-    page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
+    page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
       click_link 'Least popular'
     end
   end

@@ -52,7 +52,7 @@
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
                 = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
                 = sprite_icon('angle-down', css_class: 'caret-down')
-              .dropdown-menu-nav.dropdown-menu-align-right
+              .dropdown-menu.dropdown-menu-nav.dropdown-menu-right
                 %ul
                   %li.current-user
                     .user-name.bold

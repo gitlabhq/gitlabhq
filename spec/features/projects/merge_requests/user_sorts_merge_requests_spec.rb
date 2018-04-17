@@ -18,7 +18,7 @@ describe 'User sorts merge requests' do
   it 'keeps the sort option' do
     find('button.dropdown-toggle').click
 
-    page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
+    page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
       click_link('Last updated')
     end
 
@@ -43,7 +43,7 @@ describe 'User sorts merge requests' do
     it 'sorts by popularity' do
       find('button.dropdown-toggle').click
 
-      page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
+      page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
         click_link('Popularity')
       end
 

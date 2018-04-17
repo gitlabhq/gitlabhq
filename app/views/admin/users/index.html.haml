@@ -13,7 +13,7 @@
         .dropdown
           - toggle_text = if @sort.present? then sort_options_hash[@sort] else sort_title_name end
           = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
-          %ul.dropdown-menu.dropdown-menu-align-right
+          %ul.dropdown-menu.dropdown-menu-right
             %li.dropdown-header
               Sort by
             %li

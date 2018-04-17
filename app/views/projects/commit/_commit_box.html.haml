@@ -30,7 +30,7 @@
       %a.btn.btn-secondary.dropdown-toggle{ data: { toggle: "dropdown" } }
         %span= _('Options')
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-align-right
+      %ul.dropdown-menu.dropdown-menu-right
         %li.d-block.d-sm-none.d-md-none
           = link_to project_tree_path(@project, @commit) do
             #{ _('Browse Files') }

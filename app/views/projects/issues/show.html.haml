@@ -34,7 +34,7 @@
       %button.btn.btn-secondary.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
         Options
         = icon('caret-down')
-      .dropdown-menu.dropdown-menu-align-right.d-lg-none.d-xl-none
+      .dropdown-menu.dropdown-menu-right.d-lg-none.d-xl-none
         %ul
           - unless current_user == @issue.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @issue.author.id, ref_url: issue_url(@issue))

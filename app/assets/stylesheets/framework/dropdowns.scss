@@ -206,11 +206,10 @@
 
 .dropdown-menu,
 .dropdown-menu-nav {
-  @include set-invisible;
+  display: none;
   position: absolute;
   width: auto;
   top: 100%;
-  left: 0;
   z-index: 300;
   min-width: 240px;
   max-width: 500px;
@@ -472,11 +471,6 @@
   @include media-breakpoint-down(sm) {
     width: 100%;
   }
-}
-
-.dropdown-menu-align-right {
-  left: auto;
-  right: 0;
 }
 
 .dropdown-menu-selectable {

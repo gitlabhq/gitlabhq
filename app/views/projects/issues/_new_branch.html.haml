@@ -22,7 +22,7 @@
         = icon('caret-down')
 
       .droplab-dropdown
-        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
+        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ data: { dropdown: true } }
           - if can_create_merge_request
             %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: _('Create merge request') } }
               .menu-item

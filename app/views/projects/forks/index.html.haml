@@ -16,7 +16,7 @@
         - else
           = sort_title_recently_created
         = icon('chevron-down')
-      %ul.dropdown-menu.dropdown-menu-align-right
+      %ul.dropdown-menu.dropdown-menu-right
         %li
           - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
           = link_to page_filter_path(sort: sort_value_recently_created, without: excluded_filters) do
