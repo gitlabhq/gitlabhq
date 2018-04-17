@@ -21,6 +21,7 @@ export default {
 
 <template>
   <div
+    v-if="currentTree"
     class="ide-file-list"
   >
     <template v-if="currentTree.loading">

@@ -421,12 +421,6 @@
     margin-right: 0;
   }
 
-  .projects-sidebar {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
   .multi-file-commit-panel-inner {
     display: flex;
     flex: 1;
@@ -444,15 +438,6 @@
     border-left: 1px solid $white-dark;
     border-top: 1px solid $white-dark;
     border-top-left-radius: $border-radius-small;
-  }
-}
-
-.multi-file-context-bar-icon {
-  padding: 10px;
-
-  svg {
-    margin-right: 10px;
-    float: left;
   }
 }
 

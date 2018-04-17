@@ -55,7 +55,6 @@ export const getBranchData = (
             branch: data,
           });
           commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
-          commit(types.SET_CURRENT_BRANCH, branchId);
           resolve(data);
         })
         .catch(() => {

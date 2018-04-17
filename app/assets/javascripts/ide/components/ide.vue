@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import ideSidebar from './ide_side_bar.vue';
-import ideContextbar from './ide_context_bar.vue';
 import repoTabs from './repo_tabs.vue';
 import ideStatusBar from './ide_status_bar.vue';
 import repoEditor from './repo_editor.vue';
@@ -9,7 +8,6 @@ import repoEditor from './repo_editor.vue';
 export default {
   components: {
     ideSidebar,
-    ideContextbar,
     repoTabs,
     ideStatusBar,
     repoEditor,
@@ -92,9 +90,5 @@ export default {
         </div>
       </template>
     </div>
-    <!-- <ide-contextbar
-      :no-changes-state-svg-path="noChangesStateSvgPath"
-      :committed-state-svg-path="committedStateSvgPath"
-    /> -->
   </div>
 </template>
