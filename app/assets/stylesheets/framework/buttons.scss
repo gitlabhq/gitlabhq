@@ -422,25 +422,43 @@
   }
 }
 
-.btn-link.btn-secondary-hover-link {
-  color: $gl-text-color-secondary;
+.btn-link {
+  padding: 0;
+  background-color: transparent;
+  color: $blue-600;
+  font-weight: normal;
+  border-radius: 0;
+  border-color: transparent;
 
   &:hover,
   &:active,
   &:focus {
-    color: $gl-link-color;
-    text-decoration: none;
+    color: $blue-800;
+    text-decoration: underline;
+    background-color: transparent;
+    border-color: transparent;
   }
-}
 
-.btn-link.btn-primary-hover-link {
-  color: inherit;
+  &.btn-secondary-hover-link {
+    color: $gl-text-color-secondary;
 
-  &:hover,
-  &:active,
-  &:focus {
-    color: $gl-link-color;
-    text-decoration: none;
+    &:hover,
+    &:active,
+    &:focus {
+      color: $gl-link-color;
+      text-decoration: none;
+    }
+  }
+
+  &.btn-primary-hover-link {
+    color: inherit;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: $gl-link-color;
+      text-decoration: none;
+    }
   }
 }
 

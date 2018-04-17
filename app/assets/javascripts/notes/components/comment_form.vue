@@ -99,6 +99,10 @@ export default {
         'js-note-target-reopen': !this.isOpen,
       };
     },
+    supportQuickActions() {
+      // Disable quick actions support for Epics
+      return this.noteableType !== constants.EPIC_NOTEABLE_TYPE;
+    },
     markdownDocsPath() {
       return this.getNotesData.markdownDocsPath;
     },
@@ -313,10 +317,10 @@ Please check your network connection and try again.`;
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
       issuable-type="issue"
-      v-else-if="!canCreateNote"
+      v-else-if="isLocked(getNoteableData) && !canCreateNote"
     />
     <ul
-      v-else
+      v-else-if="canCreateNote"
       class="notes notes-form timeline">
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
@@ -355,7 +359,7 @@ Please check your network connection and try again.`;
                   name="note[note]"
                   class="note-textarea js-vue-comment-form
 js-gfm-input js-autosize markdown-area js-vue-textarea"
-                  data-supports-quick-actions="true"
+                  :data-supports-quick-actions="supportQuickActions"
                   aria-label="Description"
                   v-model="note"
                   ref="textarea"

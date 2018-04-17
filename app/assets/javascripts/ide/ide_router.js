@@ -36,11 +36,11 @@ const router = new VueRouter({
   base: `${gon.relative_url_root}/-/ide/`,
   routes: [
     {
-      path: '/project/:namespace/:project',
+      path: '/project/:namespace/:project+',
       component: EmptyRouterComponent,
       children: [
         {
-          path: ':targetmode/:branch/*',
+          path: ':targetmode(edit|tree|blob)/:branch/*',
           component: EmptyRouterComponent,
         },
         {
@@ -77,7 +77,11 @@ router.beforeEach((to, from, next) => {
               if (to.params[0]) {
                 const path =
                   to.params[0].slice(-1) === '/' ? to.params[0].slice(0, -1) : to.params[0];
-                const treeEntry = store.state.entries[path];
+                const treeEntryKey = Object.keys(store.state.entries).find(
+                  key => key === path && !store.state.entries[key].pending,
+                );
+                const treeEntry = store.state.entries[treeEntryKey];
+
                 if (treeEntry) {
                   store.dispatch('handleTreeEntryAction', treeEntry);
                 }

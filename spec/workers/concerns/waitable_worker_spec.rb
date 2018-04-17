@@ -14,6 +14,12 @@ describe WaitableWorker do
       include ApplicationWorker
       prepend WaitableWorker
 
+      # This is a workaround for a Ruby 2.3.7 bug. rspec-mocks cannot restore
+      # the visibility of prepended modules. See
+      # https://github.com/rspec/rspec-mocks/issues/1231 for more details.
+      def self.bulk_perform_inline(args_list)
+      end
+
       def perform(i = 0)
         self.class.counter += i
       end

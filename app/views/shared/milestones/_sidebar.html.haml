@@ -72,7 +72,7 @@
         .title.hide-collapsed
           Issues
           %span.badge= milestone.issues_visible_to_user(current_user).count
-          - if project && can?(current_user, :create_issue, project)
+          - if show_new_issue_link?(project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
         .value.hide-collapsed.bold

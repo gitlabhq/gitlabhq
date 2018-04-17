@@ -1,0 +1,5 @@
+---
+title: Store sha256 checksum of artifact metadata
+merge_request: 18149
+author:
+type: added

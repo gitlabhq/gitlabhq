@@ -29,4 +29,15 @@ describe 'User browses jobs' do
       expect(ci_lint_tool_link[:href]).to end_with(ci_lint_path)
     end
   end
+
+  context 'with a failed job' do
+    let!(:build) { create(:ci_build, :coverage, :failed, pipeline: pipeline) }
+
+    it 'displays a tooltip with the failure reason' do
+      page.within('.ci-table') do
+        failed_job_link = page.find('.ci-failed')
+        expect(failed_job_link[:title]).to eq('Failed <br> (unknown failure)')
+      end
+    end
+  end
 end

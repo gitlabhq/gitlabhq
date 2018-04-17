@@ -8,6 +8,49 @@ describe Projects::ImportExport::ExportService do
     let(:service) { described_class.new(project, user) }
     let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
 
+    it 'saves the version' do
+      expect(Gitlab::ImportExport::VersionSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the avatar' do
+      expect(Gitlab::ImportExport::AvatarSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the models' do
+      expect(Gitlab::ImportExport::ProjectTreeSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the uploads' do
+      expect(Gitlab::ImportExport::UploadsSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the repo' do
+      # once for the normal repo, once for the wiki
+      expect(Gitlab::ImportExport::RepoSaver).to receive(:new).twice.and_call_original
+
+      service.execute
+    end
+
+    it 'saves the lfs objects' do
+      expect(Gitlab::ImportExport::LfsSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the wiki repo' do
+      expect(Gitlab::ImportExport::WikiRepoSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
     context 'when all saver services succeed' do
       before do
         allow(service).to receive(:save_services).and_return(true)

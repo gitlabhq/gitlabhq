@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+# This script formats the output of the `git diff <old_rev> <new_rev> --raw`
+# command so it can be processed by `git cat-file`
+
+# We need to convert this:
+# ":100644 100644 5f53439... 85bc2f9... R060\tfiles/js/commit.js.coffee\tfiles/js/commit.coffee"
+# To:
+# "85bc2f9 R\tfiles/js/commit.js.coffee\tfiles/js/commit.coffee"
+
+ARGF.each do |line|
+  _, _, old_blob_id, new_blob_id, rest = line.split(/\s/, 5)
+
+  old_blob_id.gsub!(/[^\h]/, '')
+  new_blob_id.gsub!(/[^\h]/, '')
+
+  # We can't pass '0000000...' to `git cat-file` given it will not return info about the deleted file
+  blob_id = new_blob_id =~ /\A0+\z/ ? old_blob_id : new_blob_id
+
+  $stdout.puts "#{blob_id} #{rest}"
+end

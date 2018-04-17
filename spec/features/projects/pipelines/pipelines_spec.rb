@@ -394,6 +394,23 @@ describe 'Pipelines', :js do
             expect(build.reload).to be_canceled
           end
         end
+
+        context 'for a failed pipeline' do
+          let!(:build) do
+            create(:ci_build, :failed, pipeline: pipeline,
+                                       stage: 'build',
+                                       name: 'build')
+          end
+
+          it 'should display the failure reason' do
+            find('.js-builds-dropdown-button').click
+
+            within('.js-builds-dropdown-list') do
+              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              expect(build_element['data-title']).to eq('build - failed <br> (unknown failure)')
+            end
+          end
+        end
       end
 
       context 'with pagination' do

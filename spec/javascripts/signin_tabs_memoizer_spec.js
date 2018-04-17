@@ -4,7 +4,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 (() => {
   describe('SigninTabsMemoizer', () => {
     const fixtureTemplate = 'static/signin_tabs.html.raw';
-    const tabSelector = 'ul.nav-tabs';
+    const tabSelector = 'ul.new-session-tabs';
     const currentTabKey = 'current_signin_tab';
     let memo;
 
@@ -27,7 +27,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
     it('does nothing if no tab was previously selected', () => {
       createMemoizer();
 
-      expect(document.querySelector('li a.active').getAttribute('id')).toEqual('standard');
+      expect(document.querySelector(`${tabSelector} > li.active a`).getAttribute('href')).toEqual('#ldap');
     });
 
     it('shows last selected tab on boot', () => {
@@ -48,9 +48,9 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
     it('saves last selected tab on change', () => {
       createMemoizer();
 
-      document.getElementById('standard').click();
+      document.querySelector('a[href="#login-pane"]').click();
 
-      expect(memo.readData()).toEqual('#standard');
+      expect(memo.readData()).toEqual('#login-pane');
     });
 
     it('overrides last selected tab with hash tag when given', () => {

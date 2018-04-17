@@ -46,10 +46,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Project.find_by_path('project').description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
       end
 
-      it 'has the project html description' do
-        expect(Project.find_by_path('project').description_html).to eq('description')
-      end
-
       it 'has the same label associated to two issues' do
         expect(ProjectLabel.find_by_title('test2').issues.count).to eq(2)
       end
@@ -314,6 +310,24 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it_behaves_like 'restores project successfully'
+      end
+    end
+
+    context 'when the project has overriden params in import data' do
+      it 'overwrites the params stored in the JSON' do
+        project.create_import_data(data: { override_params: { description: "Overridden" } })
+
+        restored_project_json
+
+        expect(project.description).to eq("Overridden")
+      end
+
+      it 'does not allow setting params that are excluded from import_export settings' do
+        project.create_import_data(data: { override_params: { lfs_enabled: true } })
+
+        restored_project_json
+
+        expect(project.lfs_enabled).to be_nil
       end
     end
 
