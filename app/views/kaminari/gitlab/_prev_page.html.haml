@@ -9,4 +9,4 @@
 - page_url = current_page.first? ? '#' : url
 
 %li.page-item{ class: ('disabled' if current_page.first?) }
-  = link_to raw(t 'views.pagination.next'), page_url, rel: 'next', remote: remote, class: 'page-link'
+  = link_to raw(t 'views.pagination.previous'), page_url, rel: 'prev', remote: remote, class: 'page-link'
