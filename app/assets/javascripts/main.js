@@ -136,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize tooltips
-  $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
     placement(tip, el) {
