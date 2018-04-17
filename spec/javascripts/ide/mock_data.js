@@ -5,6 +5,7 @@ export const projectData = {
   web_url: '',
   avatar_url: '',
   path: '',
+  name_with_namespace: 'namespace/abcproject',
   branches: {
     master: {
       treeId: 'abcproject/master',

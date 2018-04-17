@@ -1,41 +1,43 @@
 import Vue from 'vue';
 import IdeTree from '~/ide/components/ide_tree.vue';
-import createComponent from '../../helpers/vue_mount_component_helper';
-import { file } from '../helpers';
+import store from '~/ide/stores';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { resetStore, file } from '../helpers';
+import { projectData } from '../mock_data';
 
 describe('IdeRepoTree', () => {
   let vm;
-  let tree;
 
   beforeEach(() => {
     const IdeRepoTree = Vue.extend(IdeTree);
 
-    tree = {
-      tree: [file()],
+    store.state.currentProjectId = 'abcproject';
+    store.state.currentBranchId = 'master';
+    store.state.projects.abcproject = Object.assign({}, projectData);
+    Vue.set(store.state.trees, 'abcproject/master', {
+      tree: [file('fileName')],
       loading: false,
-    };
-
-    vm = createComponent(IdeRepoTree, {
-      tree,
     });
+
+    vm = createComponentWithStore(IdeRepoTree, store).$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
+
+    resetStore(vm.$store);
   });
 
-  it('renders a sidebar', () => {
-    expect(vm.$el.querySelector('.loading-file')).toBeNull();
-    expect(vm.$el.querySelector('.file')).not.toBeNull();
-  });
-
-  it('renders 3 loading files if tree is loading', done => {
-    tree.loading = true;
+  it('renders loading', done => {
+    vm.currentTree.loading = true;
 
     vm.$nextTick(() => {
-      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toEqual(3);
-
+      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toBe(3);
       done();
     });
+  });
+
+  it('renders list of files', () => {
+    expect(vm.$el.textContent).toContain('fileName');
   });
 });

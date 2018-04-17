@@ -23,7 +23,7 @@ export default {
   <div
     class="ide-file-list"
   >
-    <template v-if="!currentTree || currentTree.loading">
+    <template v-if="currentTree.loading">
       <div
         class="multi-file-loading-container"
         v-for="n in 3"

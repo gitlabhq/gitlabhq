@@ -1,17 +1,18 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import ExternalLinks from './ide_external_links.vue';
 import { ActivityBarViews } from '../stores/state';
 
 export default {
   components: {
     Icon,
-    ExternalLinks,
   },
   computed: {
     ...mapGetters(['currentProject']),
     ...mapState(['currentActivityView']),
+    goBackUrl() {
+      return document.referrer || this.currentProject.web_url;
+    },
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
@@ -23,11 +24,17 @@ export default {
 <template>
   <nav class="ide-activity-bar">
     <ul class="list-unstyled">
-      <li>
-        <external-links
-          class="ide-activity-bar-link"
-          :project-url="currentProject.web_url"
-        />
+      <li v-once>
+        <a
+          :href="goBackUrl"
+          class="ide-sidebar-link"
+          :aria-label="s__('IDE|Go back')"
+        >
+          <icon
+            :size="16"
+            name="go-back"
+          />
+        </a>
       </li>
       <li>
         <button
