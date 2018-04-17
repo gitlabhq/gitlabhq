@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { mountComponent } from 'spec/helpers';
+import { mountComponentWithStore } from 'spec/helpers';
+import store from '~/diffs/store';
 import ChangedFiles from '~/diffs/components/changed_files.vue';
 
 const vueMatchers = {
@@ -30,6 +31,10 @@ describe('ChangedFiles', () => {
 
   beforeEach(() => {
     jasmine.addMatchers(vueMatchers);
+    setFixtures(`
+      <div id="dummy-element"></div>
+      <div class="js-tabs-affix"></div>
+    `);
   });
 
   describe('with no changed files', () => {
@@ -38,7 +43,7 @@ describe('ChangedFiles', () => {
     };
 
     it('does not render', () => {
-      const vm = mountComponent(Component, props);
+      const vm = mountComponentWithStore(Component, { el: '#dummy-element', props, store });
 
       expect(vm).not.toRender();
     });
@@ -47,14 +52,18 @@ describe('ChangedFiles', () => {
   describe('with single file added', () => {
     let vm;
     const props = {
-      diffFiles: [{
-        addedLines: 10,
-        removedLines: 20,
-      }],
+      diffFiles: [
+        {
+          addedLines: 10,
+          removedLines: 20,
+          blobPath: 'some/code.txt',
+          filePath: 'some/code.txt',
+        },
+      ],
     };
 
     beforeEach(() => {
-      vm = mountComponent(Component, props);
+      vm = mountComponentWithStore(Component, { props, store });
     });
 
     it('shows files changes', () => {

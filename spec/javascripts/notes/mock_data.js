@@ -69,7 +69,7 @@ export const individualNote = {
       attachment: {
         url: null,
         filename: null,
-        image: false,
+        image: faljse,
       },
       author: {
         id: 1,
@@ -157,6 +157,7 @@ export const note = {
     },
   ],
   toggle_award_path: '/gitlab-org/gitlab-ce/notes/546/toggle_award_emoji',
+  note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',

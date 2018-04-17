@@ -69,7 +69,7 @@ export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
     const mergeRequestTabs = document.querySelector('.js-tabs-affix');
     const navbar = document.querySelector('.navbar-gitlab');
-    const peek = document.getElementById('peek');
+    const peek = document.getElementById('js-peek');
     const paddingTop = 16;
     this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 

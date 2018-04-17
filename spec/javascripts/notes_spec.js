@@ -70,11 +70,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mock = new MockAdapter(axios);
 
         mock
-          .onPatch(
-            `${
-              gl.TEST_HOST
-            }/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
-          )
+          .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
           .reply(200, {});
 
         $('.js-comment-button').on('click', function(e) {
@@ -94,9 +90,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           .attr('checked', true)[1]
           .dispatchEvent(changeEvent);
 
-        expect($('.js-task-list-field.original-task-list').val()).toBe(
-          '- [x] Task List Item',
-        );
+        expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
 
       it('submits an ajax request on tasklist:changed', function(done) {
@@ -104,9 +98,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
         setTimeout(() => {
           expect(axios.patch).toHaveBeenCalledWith(
-            `${
-              gl.TEST_HOST
-            }/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
+            `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
             {
               note: { note: '' },
             },
@@ -201,9 +193,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           updatedNote.note = 'bar';
           this.notes.updateNote(updatedNote, $targetNote);
 
-          expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith(
-            $targetNote,
-          );
+          expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith($targetNote);
           expect(this.notes.setupNewNote).toHaveBeenCalled();
 
           done();
@@ -283,10 +273,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           Notes.isNewNote.and.returnValue(true);
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(
-            note.html,
-            $notesList,
-          );
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, $notesList);
         });
       });
 
@@ -301,10 +288,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
-          expect(Notes.animateUpdateNote).toHaveBeenCalledWith(
-            note.html,
-            $note,
-          );
+          expect(Notes.animateUpdateNote).toHaveBeenCalledWith(note.html, $note);
           expect(notes.setupNewNote).toHaveBeenCalledWith($newNote);
         });
 
@@ -332,10 +316,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
             $notesList.find.and.returnValue($note);
             Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
-            expect(notes.putConflictEditWarningInPlace).toHaveBeenCalledWith(
-              note,
-              $note,
-            );
+            expect(notes.putConflictEditWarningInPlace).toHaveBeenCalledWith(note, $note);
           });
         });
       });
@@ -401,10 +382,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $form.length = 1;
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
-        notes = jasmine.createSpyObj('notes', [
-          'isParallelView',
-          'updateNotesCount',
-        ]);
+        notes = jasmine.createSpyObj('notes', ['isParallelView', 'updateNotesCount']);
         notes.note_ids = [];
 
         spyOn(Notes, 'isNewNote');
@@ -465,10 +443,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
 
         it('should call Notes.animateAppendNote', () => {
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(
-            note.html,
-            discussionContainer,
-          );
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, discussionContainer);
         });
       });
     });
@@ -572,9 +547,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mockNotesPost();
 
         $('.js-comment-button').click();
-        expect($notesContainer.find('.note.being-posted').length > 0).toEqual(
-          true,
-        );
+        expect($notesContainer.find('.note.being-posted').length > 0).toEqual(true);
       });
 
       it('should remove placeholder note when new comment is done posting', done => {
@@ -618,9 +591,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $('.js-comment-button').click();
 
         setTimeout(() => {
-          expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(
-            true,
-          );
+          expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(true);
 
           done();
         });
@@ -735,14 +706,10 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         spyOn(gl.awardsHandler, 'addAwardToEmojiBar').and.callThrough();
         $('.js-comment-button').click();
 
-        expect(
-          $notesContainer.find('.system-note.being-posted').length,
-        ).toEqual(1); // Placeholder shown
+        expect($notesContainer.find('.system-note.being-posted').length).toEqual(1); // Placeholder shown
 
         setTimeout(() => {
-          expect(
-            $notesContainer.find('.system-note.being-posted').length,
-          ).toEqual(0); // Placeholder removed
+          expect($notesContainer.find('.system-note.being-posted').length).toEqual(0); // Placeholder removed
           done();
         });
       });
@@ -816,9 +783,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should return form metadata object from form reference', () => {
         $form.find('textarea.js-note-text').val(sampleComment);
-        const { formData, formContent, formAction } = this.notes.getFormData(
-          $form,
-        );
+        const { formData, formContent, formAction } = this.notes.getFormData($form);
 
         expect(formData.indexOf(sampleComment) > -1).toBe(true);
         expect(formContent).toEqual(sampleComment);
@@ -834,9 +799,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         const { formContent } = this.notes.getFormData($form);
 
         expect(_.escape).toHaveBeenCalledWith(sampleComment);
-        expect(formContent).toEqual(
-          '&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;',
-        );
+        expect(formContent).toEqual('&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;');
       });
     });
 
@@ -846,8 +809,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('should return true when comment begins with a quick action', () => {
-        const sampleComment =
-          '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
+        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
         const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
         expect(hasQuickActions).toBeTruthy();
@@ -871,8 +833,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
     describe('stripQuickActions', () => {
       it('should strip quick actions from the comment which begins with a quick action', () => {
         this.notes = new Notes();
-        const sampleComment =
-          '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
+        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
         const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('');
@@ -880,8 +841,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should strip quick actions from the comment but leaves plain comment if it is present', () => {
         this.notes = new Notes();
-        const sampleComment =
-          '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
+        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
         const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('Merging this');
@@ -889,8 +849,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should NOT strip string that has slashes within', () => {
         this.notes = new Notes();
-        const sampleComment =
-          'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
+        const sampleComment = 'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
         const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe(sampleComment);
@@ -910,29 +869,21 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should return executing quick action description when note has single quick action', () => {
         const sampleComment = '/close';
-        expect(
-          this.notes.getQuickActionDescription(
-            sampleComment,
-            availableQuickActions,
-          ),
-        ).toBe('Applying command to close this issue');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe(
+          'Applying command to close this issue',
+        );
       });
 
       it('should return generic multiple quick action description when note has multiple quick actions', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(
-          this.notes.getQuickActionDescription(
-            sampleComment,
-            availableQuickActions,
-          ),
-        ).toBe('Applying multiple commands');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe(
+          'Applying multiple commands',
+        );
       });
 
       it('should return generic quick action description when available quick actions list is not populated', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getQuickActionDescription(sampleComment)).toBe(
-          'Applying command',
-        );
+        expect(this.notes.getQuickActionDescription(sampleComment)).toBe('Applying command');
       });
     });
 
@@ -962,17 +913,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         expect($tempNote.attr('id')).toEqual(uniqueId);
         expect($tempNote.hasClass('being-posted')).toBeTruthy();
         expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
-        $tempNote
-          .find('.timeline-icon > a, .note-header-info > a')
-          .each(function() {
-            expect($(this).attr('href')).toEqual(`/${currentUsername}`);
-          });
-        expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(
-          currentUserAvatar,
-        );
-        expect(
-          $tempNote.find('.timeline-content').hasClass('discussion'),
-        ).toBeFalsy();
+        $tempNote.find('.timeline-icon > a, .note-header-info > a').each(function() {
+          expect($(this).attr('href')).toEqual(`/${currentUsername}`);
+        });
+        expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
+        expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
         expect(
           $tempNoteHeader
             .find('.hidden-xs')
@@ -1003,9 +948,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
-        expect(
-          $tempNote.find('.timeline-content').hasClass('discussion'),
-        ).toBeTruthy();
+        expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
       });
 
       it('should return a escaped user name', () => {
@@ -1062,11 +1005,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('shows a flash message', () => {
-        this.notes.addFlash(
-          'Error message',
-          FLASH_TYPE_ALERT,
-          this.notes.parentTimeline.get(0),
-        );
+        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         expect($('.flash-alert').is(':visible')).toBeTruthy();
       });
@@ -1079,11 +1018,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('hides visible flash message', () => {
-        this.notes.addFlash(
-          'Error message 1',
-          FLASH_TYPE_ALERT,
-          this.notes.parentTimeline.get(0),
-        );
+        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         this.notes.clearFlash();
 
