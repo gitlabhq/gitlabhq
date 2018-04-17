@@ -36,11 +36,14 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers **[STARTER]**
 - [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
+<<<<<<< HEAD
 - Analyze your source code for vulnerabilities with [Static Application Security Testing](#static-application-security-testing) **[ULTIMATE]**
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) **[ULTIMATE]**
 - Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) **[ULTIMATE]**
 - Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) **[ULTIMATE]**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) **[PREMIUM]**
+=======
+>>>>>>> upstream/master
 
 ## Use cases
 

@@ -33,7 +33,7 @@ feature 'Gcp Cluster', :js do
           visit project_clusters_path(project)
 
           click_link 'Add Kubernetes cluster'
-          click_link 'Create on GKE'
+          click_link 'Create on Google Kubernetes Engine'
         end
 
         context 'when user filled form with valid parameters' do
@@ -139,7 +139,7 @@ feature 'Gcp Cluster', :js do
         visit project_clusters_path(project)
 
         click_link 'Add Kubernetes cluster'
-        click_link 'Create on GKE'
+        click_link 'Create on Google Kubernetes Engine'
 
         fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_name', with: 'dev-cluster'
@@ -159,7 +159,7 @@ feature 'Gcp Cluster', :js do
         visit project_clusters_path(project)
 
         click_link 'Add Kubernetes cluster'
-        click_link 'Create on GKE'
+        click_link 'Create on Google Kubernetes Engine'
 
         fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_name', with: 'dev-cluster'
@@ -177,7 +177,7 @@ feature 'Gcp Cluster', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create on GKE'
+      click_link 'Create on Google Kubernetes Engine'
     end
 
     it 'user sees a login page' do

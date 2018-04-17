@@ -89,7 +89,10 @@ on projects and code.
   - [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results. **[STARTER]**
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+<<<<<<< HEAD
 - [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account. **[PREMIUM]**
+=======
+>>>>>>> upstream/master
 - [Web IDE](user/project/web_ide/index.md)
 
 #### Repositories

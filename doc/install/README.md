@@ -31,8 +31,8 @@ the hardware requirements.
 - [Install GitLab on DC/OS](https://mesosphere.com/blog/gitlab-dcos/) via [GitLab-Mesosphere integration](https://about.gitlab.com/2016/09/16/announcing-gitlab-and-mesosphere/)
 - [Install GitLab on Azure](azure/index.md)
 - [Install GitLab on Google Cloud Platform](google_cloud_platform/index.md)
-- [Install GitLab on Google Container Engine (GKE)](https://about.gitlab.com/2017/01/23/video-tutorial-idea-to-production-on-google-container-engine-gke/): video tutorial on
-the full process of installing GitLab on Google Container Engine (GKE), pushing an application to GitLab, building the app with GitLab CI/CD, and deploying to production.
+- [Install GitLab on Google Kubernetes Engine (GKE)](https://about.gitlab.com/2017/01/23/video-tutorial-idea-to-production-on-google-container-engine-gke/): video tutorial on
+the full process of installing GitLab on Google Kubernetes Engine (GKE), pushing an application to GitLab, building the app with GitLab CI/CD, and deploying to production.
 - [Install on AWS](https://about.gitlab.com/aws/)
 - _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md) -
   Quickly test any version of GitLab on DigitalOcean using Docker Machine.

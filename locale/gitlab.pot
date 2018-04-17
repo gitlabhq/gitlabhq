@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-04-05 09:57+0200\n"
 "PO-Revision-Date: 2018-04-05 09:57+0200\n"
+=======
+"POT-Creation-Date: 2018-04-17 11:44+0200\n"
+"PO-Revision-Date: 2018-04-17 11:44+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -370,7 +375,7 @@ msgstr ""
 msgid "April"
 msgstr ""
 
-msgid "Archived project! Repository is read-only"
+msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
@@ -490,9 +495,79 @@ msgstr ""
 msgid "Background jobs"
 msgstr ""
 
+msgid "Badges"
+msgstr ""
+
+msgid "Badges|A new badge was added."
+msgstr ""
+
+msgid "Badges|Add badge"
+msgstr ""
+
+msgid "Badges|Adding the badge failed, please check the entered URLs and try again."
+msgstr ""
+
+msgid "Badges|Badge image URL"
+msgstr ""
+
+msgid "Badges|Badge image preview"
+msgstr ""
+
+msgid "Badges|Delete badge"
+msgstr ""
+
+msgid "Badges|Delete badge?"
+msgstr ""
+
+msgid "Badges|Deleting the badge failed, please try again."
+msgstr ""
+
+msgid "Badges|Group Badge"
+msgstr ""
+
+msgid "Badges|Link"
+msgstr ""
+
+msgid "Badges|No badge image"
+msgstr ""
+
+msgid "Badges|No image to preview"
+msgstr ""
+
+msgid "Badges|Project Badge"
+msgstr ""
+
+msgid "Badges|Reload badge image"
+msgstr ""
+
+msgid "Badges|Save changes"
+msgstr ""
+
+msgid "Badges|Saving the badge failed, please check the entered URLs and try again."
+msgstr ""
+
+msgid "Badges|The %{docsLinkStart}variables%{docsLinkEnd} GitLab supports: %{placeholders}"
+msgstr ""
+
+msgid "Badges|The badge was deleted."
+msgstr ""
+
+msgid "Badges|The badge was saved."
+msgstr ""
+
+msgid "Badges|This group has no badges"
+msgstr ""
+
+msgid "Badges|This project has no badges"
+msgstr ""
+
+msgid "Badges|Your badges"
+msgstr ""
+
 msgid "Begin with the selected commit"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -545,6 +620,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
+=======
+msgid "Blame"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Branch (%{branch_count})"
@@ -729,18 +807,24 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel this job"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr ""
 
@@ -900,6 +984,12 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
+msgid "Click any <strong>project name</strong> in the project list below to navigate to the project milestone."
+msgstr ""
+
+msgid "Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone."
+msgstr ""
+
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
 msgstr ""
 
@@ -984,7 +1074,7 @@ msgstr ""
 msgid "ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab"
 msgstr ""
 
-msgid "ClusterIntegration|Create on GKE"
+msgid "ClusterIntegration|Create on Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Enter the details for an existing Kubernetes cluster"
@@ -1408,6 +1498,9 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
+msgid "ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images."
+msgstr ""
+
 msgid "Continuous Integration and Deployment"
 msgstr ""
 
@@ -1605,6 +1698,78 @@ msgstr[1] ""
 msgid "Deploy Keys"
 msgstr ""
 
+msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
+msgstr ""
+
+msgid "DeployTokens|Add a deploy token"
+msgstr ""
+
+msgid "DeployTokens|Allows read-only access to the registry images"
+msgstr ""
+
+msgid "DeployTokens|Allows read-only access to the repository"
+msgstr ""
+
+msgid "DeployTokens|Copy deploy token to clipboard"
+msgstr ""
+
+msgid "DeployTokens|Copy username to clipboard"
+msgstr ""
+
+msgid "DeployTokens|Create deploy token"
+msgstr ""
+
+msgid "DeployTokens|Created"
+msgstr ""
+
+msgid "DeployTokens|Deploy Tokens"
+msgstr ""
+
+msgid "DeployTokens|Deploy tokens allow read-only access to your repository and registry images."
+msgstr ""
+
+msgid "DeployTokens|Expires"
+msgstr ""
+
+msgid "DeployTokens|Name"
+msgstr ""
+
+msgid "DeployTokens|Pick a name for the application, and we'll give you a unique deploy token."
+msgstr ""
+
+msgid "DeployTokens|Revoke"
+msgstr ""
+
+msgid "DeployTokens|Revoke %{name}"
+msgstr ""
+
+msgid "DeployTokens|Scopes"
+msgstr ""
+
+msgid "DeployTokens|This action cannot be undone."
+msgstr ""
+
+msgid "DeployTokens|This project has no active Deploy Tokens."
+msgstr ""
+
+msgid "DeployTokens|Use this token as a password. Make sure you save it - you won't be able to access it again."
+msgstr ""
+
+msgid "DeployTokens|Use this username as a login."
+msgstr ""
+
+msgid "DeployTokens|Username"
+msgstr ""
+
+msgid "DeployTokens|You are about to revoke"
+msgstr ""
+
+msgid "DeployTokens|Your New Deploy Token"
+msgstr ""
+
+msgid "DeployTokens|Your new project deploy token has been created."
+msgstr ""
+
 msgid "Description"
 msgstr ""
 
@@ -1692,19 +1857,26 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Elasticsearch"
 msgstr ""
 
 msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Email"
 msgstr ""
 
 msgid "Emails"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enable"
+=======
+msgid "Embed"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Enable Auto DevOps"
@@ -1722,9 +1894,12 @@ msgstr ""
 msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enable classification control using an external service"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -2012,7 +2187,14 @@ msgstr ""
 msgid "GeoNodes|Disabling a node stops the sync process. Are you sure?"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|Does not match the primary storage configuration"
+=======
+msgid "Gitaly"
+msgstr ""
+
+msgid "Gitaly Servers"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Failed"
@@ -2419,6 +2601,9 @@ msgid "Jan"
 msgstr ""
 
 msgid "January"
+msgstr ""
+
+msgid "Job has been erased"
 msgstr ""
 
 msgid "Jobs"
@@ -2977,9 +3162,12 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Online IDE integration settings."
 msgstr ""
 
@@ -3040,6 +3228,12 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Permalink"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Personal Access Token"
 msgstr ""
 
@@ -3193,6 +3387,9 @@ msgstr ""
 msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again."
 msgstr ""
 
+msgid "Please select at least one filter to see results"
+msgstr ""
+
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 
@@ -3223,6 +3420,12 @@ msgstr ""
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
+msgid "Profiles|Change username"
+msgstr ""
+
+msgid "Profiles|Current path: %{path}"
+msgstr ""
+
 msgid "Profiles|Delete Account"
 msgstr ""
 
@@ -3241,7 +3444,19 @@ msgstr ""
 msgid "Profiles|Invalid username"
 msgstr ""
 
+msgid "Profiles|Path"
+msgstr ""
+
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|Update username"
+msgstr ""
+
+msgid "Profiles|Username change failed - %{message}"
+msgstr ""
+
+msgid "Profiles|Username successfully changed"
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
@@ -3274,6 +3489,9 @@ msgstr ""
 msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
 
+msgid "Project Badges"
+msgstr ""
+
 msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
@@ -3301,6 +3519,7 @@ msgstr ""
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ProjectCreationLevel|Allowed to create projects"
 msgstr ""
 
@@ -3325,6 +3544,8 @@ msgstr ""
 msgid "ProjectFeature|Only team members"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "ProjectFileTree|Name"
 msgstr ""
 
@@ -3377,6 +3598,9 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
+msgid "PrometheusDashboard|Time"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"
@@ -3457,6 +3681,9 @@ msgstr ""
 msgid "Promote"
 msgstr ""
 
+msgid "Promote these project milestones into a group milestone."
+msgstr ""
+
 msgid "Promote to Group Label"
 msgstr ""
 
@@ -3488,6 +3715,9 @@ msgid "PushRule|Committer restriction"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
+msgstr ""
+
+msgid "Raw"
 msgstr ""
 
 msgid "Read more"
@@ -3583,7 +3813,14 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Response"
+=======
+msgid "Retry this job"
+msgstr ""
+
+msgid "Retry verification"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Reveal value"
@@ -3597,7 +3834,11 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
+=======
+msgid "Review"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Reviewing"
@@ -3756,6 +3997,7 @@ msgstr ""
 msgid "Setup a specific Runner automatically"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider"
 msgstr ""
 
@@ -3766,6 +4008,9 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
+=======
+msgid "Share"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Show command"
@@ -3978,6 +4223,9 @@ msgid "State your message to activate"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Stop this environment"
 msgstr ""
 
 msgid "Stopped"
@@ -4243,6 +4491,15 @@ msgstr ""
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
 msgstr ""
 
+msgid "This job does not have a trace."
+msgstr ""
+
+msgid "This job has been canceled"
+msgstr ""
+
+msgid "This job has been skipped"
+msgstr ""
+
 msgid "This job has not been triggered yet"
 msgstr ""
 
@@ -4262,6 +4519,9 @@ msgid "This merge request is locked."
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
+msgstr ""
+
+msgid "This page will be removed in a future release."
 msgstr ""
 
 msgid "This project"
@@ -4532,6 +4792,9 @@ msgstr ""
 msgid "Unstar"
 msgstr ""
 
+msgid "Unverified"
+msgstr ""
+
 msgid "Up to date"
 msgstr ""
 
@@ -4568,7 +4831,11 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
+=======
+msgid "Use group milestones to manage issues from multiple projects in the same milestone."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Use the following registration token during setup:"
@@ -4595,6 +4862,12 @@ msgstr ""
 msgid "Various settings that affect GitLab performance."
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Verified"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "View and edit lines"
 msgstr ""
 
@@ -4652,6 +4925,7 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -4661,6 +4935,8 @@ msgstr ""
 msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Wiki"
 msgstr ""
 
@@ -5013,6 +5289,7 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
 msgid "detected %d fixed vulnerability"
 msgid_plural "detected %d fixed vulnerabilities"
 msgstr[0] ""
@@ -5024,6 +5301,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "detected no vulnerabilities"
+=======
+msgid "deploy token"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
@@ -5113,6 +5393,9 @@ msgid "mrWidget|Closed by"
 msgstr ""
 
 msgid "mrWidget|Closes"
+msgstr ""
+
+msgid "mrWidget|Create an issue to resolve them later"
 msgstr ""
 
 msgid "mrWidget|Deployment statistics are not available currently"
@@ -5209,6 +5492,9 @@ msgid "mrWidget|The source branch will not be removed"
 msgstr ""
 
 msgid "mrWidget|There are merge conflicts"
+msgstr ""
+
+msgid "mrWidget|There are unresolved discussions. Please resolve these discussions"
 msgstr ""
 
 msgid "mrWidget|This merge request failed to be merged automatically"
