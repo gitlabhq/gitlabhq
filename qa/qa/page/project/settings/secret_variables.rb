@@ -18,12 +18,11 @@ module QA
             element :reveal_values, '.js-secret-value-reveal-button'
           end
 
-          def fill_variable_key(key)
-            fill_in('Input variable key', with: key, match: :first)
-          end
-
-          def fill_variable_value(value)
-            fill_in('Input variable value', with: value, match: :first)
+          def fill_variable(key, value)
+            all('.js-ci-variable-input-key')[-1].set(key)
+            # After we fill the key, JS would generate another field so
+            # we need to fill the one before last one instead of last one
+            all('.js-ci-variable-input-value')[-2].set(value)
           end
 
           def save_variables

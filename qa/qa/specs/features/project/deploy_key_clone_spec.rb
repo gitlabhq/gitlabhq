@@ -65,7 +65,9 @@ module QA
               - ssh-add -D
               - echo "$#{deploy_key_name}" | ssh-add -
               - git clone #{@repository_uri.git_uri}
-              - sha1sum #{@project.name}/.gitlab-ci.yml
+              - cd #{@project.name}
+              - git checkout #{deploy_key_name}
+              - sha1sum .gitlab-ci.yml
             tags:
               - qa
               - docker
