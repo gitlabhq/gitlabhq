@@ -338,6 +338,7 @@ class Repository
     return unless empty?
 
     expire_method_caches(%i(has_visible_content?))
+    raw_repository.expire_has_local_branches_cache
   end
 
   def lookup_cache

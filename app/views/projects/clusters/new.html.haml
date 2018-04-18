@@ -8,6 +8,6 @@
     %h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up Kubernetes cluster integration')
 
     %p= s_('ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab')
-    = link_to s_('ClusterIntegration|Create on GKE'), gcp_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
+    = link_to s_('ClusterIntegration|Create on Google Kubernetes Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
     %p= s_('ClusterIntegration|Enter the details for an existing Kubernetes cluster')
     = link_to s_('ClusterIntegration|Add an existing Kubernetes cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'

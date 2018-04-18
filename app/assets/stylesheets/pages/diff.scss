@@ -160,6 +160,11 @@
         }
       }
     }
+
+    .diff-loading-error-block {
+      padding: $gl-padding * 2 $gl-padding;
+      text-align: center;
+    }
   }
 
   .image {
