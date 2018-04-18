@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def append(data, offset)
-        write do |stream|
+        write('a+b') do |stream|
           current_length = stream.size
           return -current_length unless current_length == offset
 
@@ -75,7 +75,7 @@ module Gitlab
         stream&.close
       end
 
-      def write(mode = 'a+b')
+      def write(mode)
         stream = Gitlab::Ci::Trace::Stream.new do
           if current_path
             File.open(current_path, mode)

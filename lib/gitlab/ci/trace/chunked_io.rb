@@ -114,7 +114,6 @@ module Gitlab
 
         def write(data)
           start_pos = tell
-          data = data.force_encoding(Encoding::BINARY)
 
           while tell < start_pos + data.bytesize
             # get slice from current offset till the end where it falls into chunk
@@ -178,7 +177,7 @@ module Gitlab
             current_chunk.tap do |chunk|
               raise FailedToGetChunkError unless chunk
 
-              @chunk = chunk.data.force_encoding(Encoding::BINARY)
+              @chunk = chunk.data
               @chunk_range = chunk.range
             end
           end

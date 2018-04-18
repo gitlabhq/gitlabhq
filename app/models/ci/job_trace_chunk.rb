@@ -28,7 +28,7 @@ module Ci
         raw_data
       else
         raise 'Unsupported data store'
-      end&.force_encoding(Encoding::BINARY)
+      end&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
     end
 
     def set_data(value)
