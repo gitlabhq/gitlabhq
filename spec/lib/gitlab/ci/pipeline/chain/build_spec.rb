@@ -5,6 +5,10 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
   set(:user) { create(:user) }
   let(:pipeline) { Ci::Pipeline.new }
 
+  let(:variables_attributes) do
+    [{ key: 'first', secret_value: 'world' },
+     { key: 'second', secret_value: 'second_world' }]
+  end
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       source: :push,
@@ -15,7 +19,8 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
       trigger_request: nil,
       schedule: nil,
       project: project,
-      current_user: user)
+      current_user: user,
+      variables_attributes: variables_attributes)
   end
 
   let(:step) { described_class.new(pipeline, command) }
@@ -39,6 +44,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
     expect(pipeline.tag).to be false
     expect(pipeline.user).to eq user
     expect(pipeline.project).to eq project
+    expect(pipeline.variables.size).to eq variables_attributes.count
   end
 
   it 'sets a valid config source' do
