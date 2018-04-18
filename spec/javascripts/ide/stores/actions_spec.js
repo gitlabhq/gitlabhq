@@ -1,7 +1,9 @@
 import * as urlUtils from '~/lib/utils/url_utility';
+import * as actions from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
+import testAction from '../../helpers/vuex_action_helper';
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -191,9 +193,7 @@ describe('Multi-file store actions', () => {
           })
           .then(f => {
             expect(f.tempFile).toBeTruthy();
-            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(
-              1,
-            );
+            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
             done();
           })
@@ -301,6 +301,45 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateActivityBarView', () => {
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
+      testAction(
+        actions.updateActivityBarView,
+        'test',
+        {},
+        [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setEmptyStateSvgs', () => {
+    it('commits setEmptyStateSvgs', done => {
+      testAction(
+        actions.setEmptyStateSvgs,
+        'svg',
+        {},
+        [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setCurrentBranchId', () => {
+    it('commits setCurrentBranchId', done => {
+      testAction(
+        actions.setCurrentBranchId,
+        'branchId',
+        {},
+        [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
+        [],
+        done,
+      );
     });
   });
 });
