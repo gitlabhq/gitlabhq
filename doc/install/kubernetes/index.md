@@ -13,7 +13,6 @@ should be deployed, upgraded, and configured.
 * **[Cloud Native GitLab Chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation GitLab chart, currently in alpha. Will support large deployments with horizontal scaling of individual GitLab components.
 * Other Charts
   * [GitLab Runner Chart](gitlab_runner_chart.md): For deploying just the GitLab Runner.
-  * [Advanced GitLab Installation](gitlab_chart.md): Deprecated, being replaced by the [cloud native GitLab chart](#cloud-native-gitlab-chart). Provides additional deployment options, but provides less functionality out-of-the-box.
   * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab chart.
 
 ## GitLab-Omnibus Chart (Recommended)
