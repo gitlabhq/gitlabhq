@@ -533,4 +533,36 @@ describe CommitStatus do
       end
     end
   end
+
+  describe '#enqueue' do
+    let!(:current_time) { Time.new(2018, 4, 5, 14, 0, 0) }
+
+    before do
+      allow(Time).to receive(:now).and_return(current_time)
+    end
+
+    shared_examples 'commit status enqueued' do
+      it 'sets queued_at value when enqueued' do
+        expect { commit_status.enqueue }.to change { commit_status.reload.queued_at }.from(nil).to(current_time)
+      end
+    end
+
+    context 'when initial state is :created' do
+      let(:commit_status) { create(:commit_status, :created) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+
+    context 'when initial state is :skipped' do
+      let(:commit_status) { create(:commit_status, :skipped) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+
+    context 'when initial state is :manual' do
+      let(:commit_status) { create(:commit_status, :manual) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+  end
 end

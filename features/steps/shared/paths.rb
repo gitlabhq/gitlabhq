@@ -435,12 +435,4 @@ module SharedPaths
     mr = MergeRequest.find_by(title: title)
     project_merge_request_path(mr.target_project, mr)
   end
-
-  # ----------------------------------------
-  # Errors
-  # ----------------------------------------
-
-  step 'page status code should be 404' do
-    expect(status_code).to eq 404
-  end
 end

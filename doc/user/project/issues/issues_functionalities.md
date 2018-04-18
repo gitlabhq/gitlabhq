@@ -41,10 +41,7 @@ it's reassigned to someone else to take it from there.
 if a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
-##### 3.1. Multiple Assignees
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+##### 3.1. Multiple Assignees **[STARTER]**
 
 Often multiple people likely work on the same issue together,
 which can especially be difficult to track in large teams
@@ -89,10 +86,7 @@ but they are immediately available to all projects in the group.
 > **Tip:**
 if the label doesn't exist yet, when you click **Edit**, it opens a dropdown menu from which you can select **Create new label**.
 
-#### 8. Weight
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+#### 8. Weight **[STARTER]**
 
 - Attribute a weight (in a 0 to 9 range) to that issue. Easy to complete
 should weight 1 and very hard to complete should weight 9.
