@@ -78,8 +78,22 @@ export default {
       if (!this.mouseOver) {
         this.$nextTick(() => {
           const el = this.$refs.virtualScrollList.$el;
+          const scrollTop = this.focusedIndex * FILE_FINDER_ROW_HEIGHT;
+          const bottom = this.listShowCount * FILE_FINDER_ROW_HEIGHT;
 
-          el.scrollTop = this.focusedIndex * 55;
+          if (this.focusedIndex === 0) {
+            // if index is the first index, scroll straight to start
+            el.scrollTop = 0;
+          } else if (this.focusedIndex === this.filteredBlobsLength - 1) {
+            // if index is the last index, scroll to the end
+            el.scrollTop = this.filteredBlobsLength * FILE_FINDER_ROW_HEIGHT;
+          } else if (scrollTop >= bottom + el.scrollTop) {
+            // if element is off the bottom of the scroll list, scroll down one item
+            el.scrollTop = scrollTop - bottom + FILE_FINDER_ROW_HEIGHT;
+          } else if (scrollTop < el.scrollTop) {
+            // if element is off the top of the scroll list, scroll up one item
+            el.scrollTop = scrollTop;
+          }
         });
       }
     },
@@ -141,8 +155,9 @@ export default {
         this.focusedIndex = index;
       }
     },
-    onMouseMove() {
+    onMouseMove(index) {
       this.cancelMouseOver = false;
+      this.onMouseOver(index);
     },
   },
 };
@@ -152,7 +167,6 @@ export default {
   <div
     class="ide-file-finder-overlay"
     @mousedown.self="toggleFileFinder(false)"
-    @mousemove="onMouseMove"
   >
     <div
       class="dropdown-menu diff-file-changes ide-file-finder show"
@@ -205,6 +219,7 @@ export default {
                 :index="index"
                 @click="openFile"
                 @mouseover="onMouseOver"
+                @mousemove="onMouseMove"
               />
             </li>
           </template>

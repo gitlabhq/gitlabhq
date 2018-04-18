@@ -50,6 +50,9 @@ export default {
     mouseOverRow() {
       this.$emit('mouseover', this.index);
     },
+    mouseMove() {
+      this.$emit('mousemove', this.index);
+    },
   },
 };
 </script>
@@ -63,6 +66,7 @@ export default {
     }"
     @click.prevent="clickRow"
     @mouseover="mouseOverRow"
+    @mousemove="mouseMove"
   >
     <file-icon
       :file-name="file.name"
