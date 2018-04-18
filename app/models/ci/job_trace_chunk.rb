@@ -32,9 +32,9 @@ module Ci
     end
 
     def set_data(value)
-      in_lock do
-        raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
+      raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
 
+      in_lock do
         if redis?
           redis_set_data(value)
         elsif db?
@@ -44,8 +44,9 @@ module Ci
         end
 
         save! if changed?
-        schedule_to_db if fullfilled?
       end
+
+      schedule_to_db if fullfilled?
     end
 
     def truncate(offset = 0)
