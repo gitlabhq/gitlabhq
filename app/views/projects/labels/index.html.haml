@@ -17,12 +17,12 @@
           = link_to new_project_label_path(@project), class: "btn btn-new" do
             New label
 
-    .labels
+    .labels-container.prepend-top-5
       - if can_admin_label
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
         .prioritized-labels{ class: ('hide' if hide) }
-          %h5 Prioritized Labels
+          %h5.prepend-top-0 Prioritized Labels
           %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
             #js-priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
               = render 'shared/empty_states/priority_labels'

@@ -143,6 +143,10 @@
     cursor: move;
     cursor: -webkit-grab;
     cursor: -moz-grab;
+    margin-bottom: 5px;
+
+    padding: 11px 10px 11px $gl-padding;
+    border-radius: $border-radius-default;
 
     &:active {
       cursor: -webkit-grabbing;
@@ -151,6 +155,10 @@
 
     &.sortable-ghost {
       opacity: 0.3;
+    }
+
+    .prioritized-labels & {
+      box-shadow: 0 1px 2px $issue-boards-card-shadow;
     }
   }
 
@@ -318,4 +326,10 @@
     vertical-align: inherit;
     font-size: $label-font-size;
   }
+}
+
+.labels-container {
+  background-color: $gray-light;
+  border-radius: $border-radius-default;
+  padding: $gl-padding $gl-padding-8;
 }
