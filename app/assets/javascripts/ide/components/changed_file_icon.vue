@@ -1,12 +1,12 @@
 <script>
 import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 
 export default {
   components: {
-    icon,
+    Icon,
   },
   directives: {
     tooltip,

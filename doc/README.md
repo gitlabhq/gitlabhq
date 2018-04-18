@@ -80,6 +80,7 @@ on projects and code.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+- [Web IDE](user/project/web_ide/index.md)
 
 #### Repositories
 

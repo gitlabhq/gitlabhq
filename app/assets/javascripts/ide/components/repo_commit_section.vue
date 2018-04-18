@@ -6,8 +6,9 @@ import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import commitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
-import Actions from './commit_sidebar/actions.vue';
+import CommitMessageField from './commit_sidebar/message_field.vue';
 import * as consts from '../stores/modules/commit/constants';
+import Actions from './commit_sidebar/actions.vue';
 
 export default {
   components: {
@@ -17,6 +18,7 @@ export default {
     EmptyState,
     Actions,
     LoadingButton,
+    CommitMessageField,
   },
   directives: {
     tooltip,
@@ -92,16 +94,10 @@ export default {
         @submit.prevent.stop="commitChanges"
         v-if="!rightPanelCollapsed"
       >
-        <div class="multi-file-commit-fieldset">
-          <textarea
-            class="form-control multi-file-commit-message"
-            name="commit-message"
-            :value="commitMessage"
-            :placeholder="__('Write a commit message...')"
-            @input="updateCommitMessage($event.target.value)"
-          >
-          </textarea>
-        </div>
+        <commit-message-field
+          :text="commitMessage"
+          @input="updateCommitMessage"
+        />
         <div class="clearfix prepend-top-15">
           <actions />
           <loading-button

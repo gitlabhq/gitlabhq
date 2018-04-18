@@ -14,6 +14,11 @@
 
   .commit-title {
     margin: 0;
+    white-space: normal;
+
+    @media (max-width: $screen-sm-max) {
+      justify-content: flex-end;
+    }
   }
 
   .ci-table {

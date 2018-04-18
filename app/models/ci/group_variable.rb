@@ -4,7 +4,7 @@ module Ci
     include HasVariable
     include Presentable
 
-    belongs_to :group
+    belongs_to :group, class_name: "::Group"
 
     alias_attribute :secret_value, :value
 

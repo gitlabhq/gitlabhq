@@ -680,11 +680,6 @@
   }
 }
 
-.multi-file-commit-message.form-control {
-  height: 160px;
-  resize: none;
-}
-
 .dirty-diff {
   // !important need to override monaco inline style
   width: 4px !important;
@@ -873,4 +868,75 @@
   display: flex;
   align-items: center;
   font-weight: $gl-font-weight-bold;
+}
+
+.ide-commit-message-field {
+  height: 200px;
+  background-color: $white-light;
+
+  .md-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .nav-links {
+    height: 30px;
+  }
+
+  .help-block {
+    margin-top: 2px;
+    color: $blue-500;
+    cursor: pointer;
+  }
+}
+
+.ide-commit-message-textarea-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .note-textarea {
+    font-family: $monospace_font;
+  }
+}
+
+.ide-commit-message-highlights-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: -100px;
+  bottom: 0;
+  padding-right: 100px;
+  pointer-events: none;
+  z-index: 1;
+
+  .highlights {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: transparent;
+  }
+
+  mark {
+    margin-left: -1px;
+    padding: 0 2px;
+    border-radius: $border-radius-small;
+    background-color: $orange-200;
+    color: transparent;
+    opacity: 0.6;
+  }
+}
+
+.ide-commit-message-textarea {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: transparent;
+  resize: none;
 }
