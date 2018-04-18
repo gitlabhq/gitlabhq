@@ -1,9 +1,7 @@
 import $ from 'jquery';
 
-import 'popper.js/dist/umd/popper';
-
 // bootstrap jQuery plugins
-import 'bootstrap/dist/js/bootstrap.bundle';
+import 'bootstrap';
 
 // custom jQuery functions
 $.fn.extend({
