@@ -34,14 +34,6 @@ module Awardable
       order_votes_desc(AwardEmoji::DOWNVOTE_NAMES)
     end
 
-    def order_all_upvotes_desc
-      order_votes_desc(AwardEmoji.all_award_emoji(:thumbsup))
-    end
-
-    def order_all_downvotes_desc
-      order_votes_desc(AwardEmoji.all_award_emoji(:thumbsdown))
-    end
-
     def order_votes_desc(emoji_names)
       awardable_table = self.arel_table
       awards_table = AwardEmoji.arel_table
@@ -76,14 +68,6 @@ module Awardable
 
   def upvotes
     award_emoji.upvotes.count
-  end
-
-  def all_downvotes
-    award_emoji.all_downvotes.count
-  end
-
-  def all_upvotes
-    award_emoji.all_upvotes.count
   end
 
   def emoji_awardable?
