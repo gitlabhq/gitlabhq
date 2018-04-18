@@ -14,7 +14,7 @@
                data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Toggle dropdown' do
     = icon('caret-down', class: 'toggle-icon icon')
 
-  %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ class: button_responsive_class, data: { dropdown: true } }
+  %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ data: { dropdown: true } }
     %li.close-item{ class: "#{issuable_button_visibility(issuable, true) || 'droplab-item-selected'}",
                     data: { text: "Close #{display_issuable_type}", url: close_issuable_path(issuable),
                     button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color", method: button_method } }
