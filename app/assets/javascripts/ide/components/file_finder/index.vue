@@ -185,11 +185,7 @@ export default {
           @click="clearSearchInput"
         ></i>
       </div>
-      <div
-        :style="{
-          'pointer-events': cancelMouseOver ? 'none' : ''
-        }"
-      >
+      <div>
         <virtual-list
           :size="listHeight"
           :remain="listShowCount"
