@@ -29,9 +29,10 @@ module MirrorHelper
     options_from_collection_for_select(default_mirror_users, :id, :name, @project.mirror_user_id || current_user.id)
   end
 
-  def mirror_repositories_count(project = @project)
-    count = project.username_only_import_url.present? ? 1 : 0
-
-    count + @project.remote_mirrors.count { |mirror| mirror.safe_url.present? == true }
+  def mirrored_repositories_count(project = @project)
+    count = project.mirror == true ? 1 : 0
+    p 'LUKE'
+    p @project.remote_mirrors.to_a.count { |mirror| mirror.enabled }
+    count + @project.remote_mirrors.to_a.count { |mirror| mirror.enabled }
   end
 end

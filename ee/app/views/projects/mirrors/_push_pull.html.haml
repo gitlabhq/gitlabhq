@@ -14,7 +14,7 @@
       = link_to 'Read more', help_page_path('workflow/repository_mirroring'), target: '_blank'
 
   .settings-content
-    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: { project_mirror_endpoint: ssh_host_keys_project_mirror_path(@project, :json) } } do |f|
+    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: { project_mirror_ssh_endpoint: ssh_host_keys_project_mirror_path(@project, :json), project_mirror_endpoint: project_mirror_path(@project) } } do |f|
       .panel.panel-default
         .panel-heading
           %h3.panel-title Mirror a repository
@@ -53,8 +53,12 @@
 
             .form-group
               = f.label :mirror_user_id, 'Mirror user', class: 'label-light-but-actually-light-i-promise'
-              = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: is_one_user_option.to_s)
-              = f.hidden_field :mirror_user_id, value: default_mirror_users.first if is_one_user_option
+              - if is_one_user_option
+                = select_tag(:mirror_user_id_select, options_for_mirror_user, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: true)
+                = f.hidden_field :mirror_user_id, value: default_mirror_users.first.id if is_one_user_option
+              - else
+                = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true)
+
               .help-block
                 This user will be the author of all events in the activity feed that are the result of an update,
                 like new branches being created or new commits being pushed to existing branches.
@@ -81,27 +85,28 @@
         .panel-footer
           = f.submit 'Mirror repository', class: 'btn btn-create', name: :update_remote_mirror
 
-    .panel.panel-default
-      %table.table
-        %thead
-          %tr
-            %th= "Mirrored repositories (#{mirror_repositories_count})"
-            %th Direction
-            %th Last update
-            %th
-        %tbody
-          - if @project.mirror == true
+    - if mirrored_repositories_count > 0
+      .panel.panel-default
+        %table.table
+          %thead
             %tr
-              %td= @project.username_only_import_url
-              %td Pull
-              %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
-              %td
-                %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
-          - @project.remote_mirrors.each_with_index do |mirror, index|
-            - if mirror.enabled == true
+              %th= "Mirrored repositories (#{mirrored_repositories_count})"
+              %th Direction
+              %th Last update
+              %th
+          %tbody
+            - if @project.mirror
               %tr
-                %td= mirror.safe_url
-                %td Push
-                %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                %td= @project.username_only_import_url
+                %td Pull
+                %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
                 %td
-                  %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_index: index } }= icon('trash-o')
+                  %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
+            - @project.remote_mirrors.each_with_index do |mirror, index|
+              - if mirror.enabled
+                %tr
+                  %td= mirror.safe_url
+                  %td Push
+                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                  %td
+                    %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_index: index } }= icon('trash-o')

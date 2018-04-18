@@ -67,7 +67,7 @@ export default class MirrorPull {
    * provided Git Repository URL.
    */
   handleDetectHostKeys() {
-    const projectMirrorSSHEndpoint = this.$form.data('project-mirror-endpoint');
+    const projectMirrorSSHEndpoint = this.$form.data('project-mirror-ssh-endpoint');
     const repositoryUrl = this.$repositoryUrl.val();
     const $btnLoadSpinner = this.$btnDetectHostKeys.find('.detect-host-keys-load-spinner');
 

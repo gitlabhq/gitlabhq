@@ -6,16 +6,17 @@ import Flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
-  init(container) {
-    this.container = container;
-    this.mirrorDirectionSelect = container.querySelector('.js-mirror-direction');
-    this.$insertionPoint = $('.js-form-insertion-point', container);
-    this.urlInput = container.querySelector('.js-mirror-url');
-    this.protectedBranchesInput = container.querySelector('.js-mirror-protected');
+  init(form) {
+    this.form = form;
+    this.mirrorDirectionSelect = form.querySelector('.js-mirror-direction');
+    this.$insertionPoint = $('.js-form-insertion-point', form);
+    this.urlInput = form.querySelector('.js-mirror-url');
+    this.protectedBranchesInput = form.querySelector('.js-mirror-protected');
+    this.mirrorEndpoint = form.dataset.projectMirrorEndpoint;
 
     this.directionFormMap = {
-      push: container.querySelector('.js-push-mirrors-form').innerHTML,
-      pull: container.querySelector('.js-pull-mirrors-form').innerHTML,
+      push: form.querySelector('.js-push-mirrors-form').innerHTML,
+      pull: form.querySelector('.js-pull-mirrors-form').innerHTML,
     };
 
     this.boundUpdateForm = this.handleUpdate.bind(this);
@@ -62,11 +63,11 @@ export default {
   },
 
   updateUrl() {
-    this.container.querySelector('.js-mirror-url-hidden').value = this.urlInput.value;
+    this.form.querySelector('.js-mirror-url-hidden').value = this.urlInput.value;
   },
 
   updateProtectedBranches() {
-    this.container.querySelector('.js-mirror-protected-hidden').value = this.protectedBranchesInput.checked ? this.protectedBranchesInput.value : '0';
+    this.form.querySelector('.js-mirror-protected-hidden').value = this.protectedBranchesInput.checked ? this.protectedBranchesInput.value : '0';
   },
 
   initMirrorPull() {
@@ -81,7 +82,7 @@ export default {
   },
 
   initSelect2() {
-    $('.js-mirror-user', this.container).select2({
+    $('.js-mirror-user', this.form).select2({
       width: 'resolve',
       dropdownAutoWidth: true,
     });
@@ -93,18 +94,26 @@ export default {
     this.protectedBranchesInput.addEventListener('change', this.boundUpdateProtectedBranches);
   },
 
+  addMirror() {
+
+  },
+
   deleteMirror(event) {
     const target = event.currentTarget;
+    const isPullMirror = target.classList.contains('js-delete-pull-mirror');
     const payload = { project: {} };
 
-    if (target.classList.contains('js-delete-pull-mirror')) {
+    if (isPullMirror) {
       payload.project.mirror = false;
     } else {
-      payload.project[`remote_mirrors_attributes[${target.dataset.mirrorIndex}]`] = {
-        enabled: false,
+      payload.project = {
+        remote_mirrors_attributes: {
+          id: target.dataset.mirrorIndex,
+          enabled: 0,
+        },
       };
     }
 
-    return axios.put('/h5bp/html5-boilerplate/mirror', payload);
+    return axios.put(this.mirrorEndpoint, payload);
   },
 };
