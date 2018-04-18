@@ -1,5 +1,4 @@
 - page_title "Contribution Analytics"
-- header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
 
 - if @group.feature_available?(:contribution_analytics)
   .sub-header-block
@@ -76,48 +75,7 @@
         %p.light Issues closed per group member
         %canvas#issues_closed{ height: 250 }
 
-  .gray-content-block
-    .oneline
-      Contributions per group member
-
-  .table-holder
-    %table.table.sortable-table#event-stats
-      %thead
-        %tr
-          %th.sortable
-            Name
-            = icon('sort')
-          %th.sortable
-            Pushed
-            = icon('sort')
-          %th.sortable
-            Opened issues
-            = icon('sort')
-          %th.sortable
-            Closed issues
-            = icon('sort')
-          %th.sortable
-            Opened MR
-            = icon('sort')
-          %th.sortable
-            Accepted MR
-            = icon('sort')
-          %th.sortable
-            Total Contributions
-            = icon('sort')
-      %tbody
-        - @users.each_with_index do |user, index|
-          %tr
-            %td
-              %strong
-                = link_to user.name, user
-            %td= @stats[:push][index]
-            %td= @stats[:issues_created][index]
-            %td= @stats[:issues_closed][index]
-            %td= @stats[:merge_requests_created][index]
-            %td= @stats[:merge_requests_merged][index]
-            %td= @stats[:total_events][index]
-
+  #js-group-member-contributions{ data: { member_contributions_path: group_analytics_path(@group, { start_date: @start_date, format: :json }) } }
   -# haml-lint:disable InlineJavaScript
   %script#js-analytics-data{ type: "application/json" }
     - data = {}
