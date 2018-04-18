@@ -1,0 +1,6 @@
+---
+title: Allow merging if "only merge when pipeline succeeds" is enabled but the pipelines
+  feature is disabled
+merge_request: 18437
+author:
+type: changed
