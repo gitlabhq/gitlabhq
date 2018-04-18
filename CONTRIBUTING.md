@@ -210,11 +210,10 @@ This label documents the planned timeline & urgency which is used to measure aga
 
 | Label | Meaning         | Estimate time to fix                                             | Guidance |
 |-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Immediate       | Immediate hotfix (outside of the normal release process)         | This would normally correspond to a S1 severity below |
-| ~P2   | Urgent Priority | The current release                                              |  |
-| ~P3   | High Priority   | The next release after the current release                       |  |
-| ~P4   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
-| ~P5   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+| ~P1   | Urgent Priority | The current release                                              |  |
+| ~P2   | High Priority   | The next release                                                 |  |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
 
 #### Specific Priority guidance
 
@@ -224,7 +223,6 @@ This label documents the planned timeline & urgency which is used to measure aga
 | ~P2   | The issue is (almost) guaranteed to occur in the near future |  
 | ~P3   | The issue is likely to occur in the near future              |
 | ~P4   | The issue _may_ occur but it's not likely                    |
-| ~P5   |          |
 
 ### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
 
