@@ -18,12 +18,12 @@ describe Ci::CreatePipelineService do
       message: 'Message',
       ref: ref_name,
       trigger_request: nil,
-      variables: nil)
+      variables_attributes: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }],
-                 variables_attributes: variables }
+                 variables_attributes: variables_attributes }
 
       described_class.new(project, user, params).execute(
         source, trigger_request: trigger_request)
@@ -549,17 +549,17 @@ describe Ci::CreatePipelineService do
     end
 
     context 'when pipeline variables are specified' do
-      let(:variables) do
+      let(:variables_attributes) do
         [{ key: 'first', secret_value: 'world' },
          { key: 'second', secret_value: 'second_world' }]
       end
 
-      subject { execute_service(variables: variables) }
+      subject { execute_service(variables_attributes: variables_attributes) }
 
       it 'creates a pipeline with specified variables' do
-        expect(subject.variables.count).to eq(variables.count)
-        expect(subject.variables.first.key).to eq(variables.first[:key])
-        expect(subject.variables.last.secret_value).to eq(variables.last[:secret_value])
+        expect(subject.variables.count).to eq(variables_attributes.count)
+        expect(subject.variables.first.key).to eq(variables_attributes.first[:key])
+        expect(subject.variables.last.secret_value).to eq(variables_attributes.last[:secret_value])
       end
     end
   end
