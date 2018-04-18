@@ -25,6 +25,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def upload_finalize
+    binding.pry
     if store_file!(oid, size)
       head 200
     else
@@ -82,6 +83,6 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def create_params
-    params.merge("file.name" => oid[LfsObject::FILE_NAME_RANGE]
+    params.merge("file.name" => oid[LfsObject::FILE_NAME_RANGE])
   end
 end

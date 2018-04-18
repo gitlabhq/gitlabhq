@@ -21,6 +21,26 @@ describe LfsObject do
     end
   end
 
+  describe '#verify_filename!' do
+    context 'when file name is mitakenly saved' do
+      it 'raises an error' do
+        lfs_object = build(:lfs_object)
+
+        lfs_object.send(:write_attribute, :file, 'aiueo')
+
+        expect { lfs_object.save! }.to raise_error('invalid filename')
+      end
+    end
+
+    context 'when file name is correctly saved' do
+      it 'does not raise an error' do
+        lfs_object = build(:lfs_object)
+
+        expect { lfs_object.save! }.not_to raise_error
+      end
+    end
+  end
+
   describe '#schedule_background_upload' do
     before do
       stub_lfs_setting(enabled: true)
