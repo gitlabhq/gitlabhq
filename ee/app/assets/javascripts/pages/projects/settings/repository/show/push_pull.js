@@ -25,7 +25,8 @@ export default {
 
     this.boundUpdateForm();
     this.registerUpdateListeners();
-    $('.js-delete-mirror').on('click', this.deleteMirror.bind(this));
+    $('.js-mirrored-repositories-table')
+      .on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
   },
 
   handleUpdate() {
