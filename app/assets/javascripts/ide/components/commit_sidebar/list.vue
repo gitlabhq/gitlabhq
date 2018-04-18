@@ -29,7 +29,7 @@ export default {
       required: false,
       default: true,
     },
-    icon: {
+    iconName: {
       type: String,
       required: true,
     },
@@ -78,9 +78,6 @@ export default {
   >
     <header
       class="multi-file-commit-panel-header"
-      :class="{
-        'is-collapsed': rightPanelCollapsed,
-      }"
     >
       <div
         v-if="!rightPanelCollapsed"
@@ -91,7 +88,7 @@ export default {
       >
         <icon
           v-once
-          :name="icon"
+          :name="iconName"
           :size="18"
         />
         {{ titleText }}
@@ -123,7 +120,7 @@ export default {
     <list-collapsed
       v-if="rightPanelCollapsed"
       :files="fileList"
-      :icon="icon"
+      :icon-name="iconName"
       :title="title"
     />
     <template v-else>

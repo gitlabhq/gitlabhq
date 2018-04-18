@@ -1,10 +1,10 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import commitFilesList from './commit_sidebar/list.vue';
+import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import CommitMessageField from './commit_sidebar/message_field.vue';
 import * as consts from '../stores/modules/commit/constants';
@@ -13,8 +13,8 @@ import Actions from './commit_sidebar/actions.vue';
 export default {
   components: {
     DeprecatedModal,
-    icon,
-    commitFilesList,
+    Icon,
+    CommitFilesList,
     EmptyState,
     Actions,
     LoadingButton,
@@ -72,7 +72,7 @@ export default {
       v-if="changedFiles.length || stagedFiles.length"
     >
       <commit-files-list
-        icon="unstaged"
+        icon-name="unstaged"
         :title="__('Unstaged')"
         :file-list="changedFiles"
         action="stageAllChanges"
@@ -80,7 +80,7 @@ export default {
         item-action-component="stage-button"
       />
       <commit-files-list
-        icon="staged"
+        icon-name="staged"
         :title="__('Staged')"
         :file-list="stagedFiles"
         action="unstageAllChanges"

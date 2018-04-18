@@ -28,7 +28,7 @@ describe('IDE changed file icon', () => {
     it('equals file-addition when a temp file', () => {
       vm.file.tempFile = true;
 
-      expect(vm.changedIcon).toBe('file-additions');
+      expect(vm.changedIcon).toBe('file-addition');
     });
   });
 

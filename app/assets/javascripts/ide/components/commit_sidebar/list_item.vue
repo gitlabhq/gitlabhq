@@ -33,7 +33,7 @@ export default {
   computed: {
     iconName() {
       const prefix = this.stagedList ? '-solid' : '';
-      return this.file.tempFile ? `file-additions${prefix}` : `file-modified${prefix}`;
+      return this.file.tempFile ? `file-addition${prefix}` : `file-modified${prefix}`;
     },
     iconClass() {
       return `multi-file-${this.file.tempFile ? 'additions' : 'modified'} append-right-8`;

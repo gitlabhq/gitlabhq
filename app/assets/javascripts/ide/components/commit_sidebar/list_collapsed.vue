@@ -1,11 +1,11 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { sprintf, n__, __ } from '~/locale';
 
 export default {
   components: {
-    icon,
+    Icon,
   },
   directives: {
     tooltip,
@@ -15,7 +15,7 @@ export default {
       type: Array,
       required: true,
     },
-    icon: {
+    iconName: {
       type: String,
       required: true,
     },
@@ -52,7 +52,7 @@ export default {
       return sprintf(__('%{title} changes'), { title: this.title });
     },
     additionIconName() {
-      return this.title.toLowerCase() === 'staged' ? 'file-additions-solid' : 'file-additions';
+      return this.title.toLowerCase() === 'staged' ? 'file-addition-solid' : 'file-addition';
     },
     modifiedIconName() {
       return this.title.toLowerCase() === 'staged' ? 'file-modified-solid' : 'file-modified';
@@ -74,7 +74,7 @@ export default {
     >
       <icon
         v-once
-        :name="icon"
+        :name="iconName"
         :size="18"
       />
     </div>

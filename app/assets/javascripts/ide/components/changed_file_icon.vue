@@ -29,8 +29,8 @@ export default {
   },
   computed: {
     changedIcon() {
-      const prefix = this.file.staged && !this.showStagedIcon ? '-solid' : '';
-      return this.file.tempFile ? `file-additions${prefix}` : `file-modified${prefix}`;
+      const suffix = this.file.staged && !this.showStagedIcon ? '-solid' : '';
+      return this.file.tempFile ? `file-addition${suffix}` : `file-modified${suffix}`;
     },
     stagedIcon() {
       return `${this.changedIcon}-solid`;
