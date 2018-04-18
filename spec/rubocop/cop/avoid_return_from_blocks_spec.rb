@@ -9,20 +9,13 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
   subject(:cop) { described_class.new }
 
   it 'flags violation for return inside a block' do
-    source = <<~RUBY
+    expect_offense(<<~RUBY)
       call do
         do_something
         return if something_else
+        ^^^^^^ Do not return from a block, use next or break instead.
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses.size).to eq(1)
-    offense = cop.offenses.first
-
-    expect(offense.line).to eq(3)
-    expect(cop.highlights).to eq(['return'])
-    expect(offense.message).to eq('Do not return from a block, use next or break instead.')
   end
 
   it "doesn't call add_offense twice for nested blocks" do
@@ -40,36 +33,28 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
   end
 
   it 'flags violation for return inside included > def > block' do
-    source = <<~RUBY
+    expect_offense(<<~RUBY)
       included do
         def a_method
           return if something
 
           call do
             return if something_else
+            ^^^^^^ Do not return from a block, use next or break instead.
           end
         end
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses.size).to eq(1)
-    offense = cop.offenses.first
-
-    expect(offense.line).to eq(6)
   end
 
   shared_examples 'examples with whitelisted method' do |whitelisted_method|
     it "doesn't flag violation for return inside #{whitelisted_method}" do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         items.#{whitelisted_method} do |item|
           do_something
           return if something_else
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -79,7 +64,7 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
 
   shared_examples 'examples with def methods' do |def_method|
     it "doesn't flag violation for return inside #{def_method}" do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         helpers do
           #{def_method} do
             return if something
@@ -88,9 +73,6 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
           end
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -99,19 +81,16 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
   end
 
   it "doesn't flag violation for return inside a lambda" do
-    source = <<~RUBY
+    expect_no_offenses(<<~RUBY)
       lambda do
         do_something
         return if something_else
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses).to be_empty
   end
 
   it "doesn't flag violation for return used inside a method definition" do
-    source = <<~RUBY
+    expect_no_offenses(<<~RUBY)
       describe Klass do
         def a_method
           do_something
@@ -119,42 +98,30 @@ describe RuboCop::Cop::AvoidReturnFromBlocks do
         end
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses).to be_empty
   end
 
   it "doesn't flag violation for next inside a block" do
-    source = <<~RUBY
+    expect_no_offenses(<<~RUBY)
       call do
         do_something
         next if something_else
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses).to be_empty
   end
 
   it "doesn't flag violation for break inside a block" do
-    source = <<~RUBY
+    expect_no_offenses(<<~RUBY)
       call do
         do_something
         break if something_else
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses).to be_empty
   end
 
   it "doesn't check when block is empty" do
-    source = <<~RUBY
+    expect_no_offenses(<<~RUBY)
       call do
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses).to be_empty
   end
 end
