@@ -20,7 +20,7 @@ module Ci
     has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_pipeline_id
 
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
-    has_many :triggered_pipelines, -> { auto_include(false) }, through: :sourced_pipelines, source: :pipeline
+    has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'

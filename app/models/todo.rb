@@ -22,7 +22,7 @@ class Todo < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :note
   belongs_to :project
-  belongs_to :target, -> { auto_include(false) }, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :target, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
