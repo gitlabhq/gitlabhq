@@ -66,7 +66,7 @@ const bindEvents = () => {
       .on('click', (e) => { e.preventDefault(); })
       .popover({
         title: $pushNewProjectTipTrigger.data('title'),
-        placement: 'auto bottom',
+        placement: 'bottom',
         html: 'true',
         content: $('.push-new-project-tip-template').html(),
       })
