@@ -54,12 +54,6 @@ export default {
       required: false,
       default: false,
     },
-
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
 
   computed: {
@@ -136,7 +130,6 @@ export default {
       :tooltip-text="status.action.title"
       :link="status.action.path"
       :action-icon="status.action.icon"
-      :button-disabled="actionDisabled"
     />
 
   </div>

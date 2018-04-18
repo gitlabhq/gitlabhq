@@ -29,11 +29,6 @@ export default {
       required: false,
       default: '',
     },
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
 
   methods: {
@@ -74,7 +69,6 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
-            :action-disabled="actionDisabled"
           />
 
           <dropdown-job-component

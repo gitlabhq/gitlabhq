@@ -31,20 +31,18 @@ export default {
       type: String,
       required: true,
     },
-
-    buttonDisabled: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
+  data() {
+    return {
+      isDisabled: false,
+      linkRequested: '',
+    };
+  },
+
   computed: {
     cssClass() {
       const actionIconDash = dasherize(this.actionIcon);
       return `${actionIconDash} js-icon-${actionIconDash}`;
-    },
-    isDisabled() {
-      return this.buttonDisabled === this.link;
     },
   },
 
@@ -52,8 +50,21 @@ export default {
     onClickAction() {
       $(this.$el).tooltip('hide');
       eventHub.$emit('graphAction', this.link);
+      this.linkRequested = this.link;
+      this.isDisabled = true;
     },
+    updateDisabled(actionUrl) {
+      if (actionUrl === this.linkRequested) {
+        this.isDisabled = false;
+      }
+    }
   },
+  created() {
+      eventHub.$on('graphActionFinished', this.updateDisabled);
+    },
+    beforeDestroy() {
+      eventHub.$off('graphActionFinished', this.updateDisabled);
+    },
 };
 </script>
 <template>

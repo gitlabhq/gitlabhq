@@ -17,11 +17,6 @@ export default {
       type: Object,
       required: true,
     },
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
 
   computed: {
@@ -75,7 +70,6 @@ export default {
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
-          :action-disabled="actionDisabled"
         />
       </ul>
     </div>
