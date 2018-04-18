@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-04-05 09:57+0200\n"
-"PO-Revision-Date: 2018-04-05 09:57+0200\n"
-=======
-"POT-Creation-Date: 2018-04-17 11:44+0200\n"
-"PO-Revision-Date: 2018-04-17 11:44+0200\n"
->>>>>>> upstream/master
+"POT-Creation-Date: 2018-04-18 09:58+0200\n"
+"PO-Revision-Date: 2018-04-18 09:58+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -25,6 +20,16 @@ msgstr ""
 
 msgid " and"
 msgstr ""
+
+msgid " degraded on %d point"
+msgid_plural " degraded on %d points"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid " improved on %d point"
+msgid_plural " improved on %d points"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -58,6 +63,11 @@ msgstr[1] ""
 
 msgid "%d metric"
 msgid_plural "%d metrics"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d vulnerability"
+msgid_plural "%d vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -102,6 +112,11 @@ msgstr[1] ""
 
 msgid "%{text} is available"
 msgstr ""
+
+msgid "%{type} detected %d vulnerability"
+msgid_plural "%{type} detected %d vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
@@ -186,10 +201,16 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
+msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
+msgstr ""
+
 msgid "Add new directory"
 msgstr ""
 
 msgid "Add todo"
+msgstr ""
+
+msgid "Additional text"
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -241,9 +262,6 @@ msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}"
-msgstr ""
-
-msgid "Advanced"
 msgstr ""
 
 msgid "Advanced settings"
@@ -567,7 +585,6 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -620,9 +637,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-=======
+msgstr ""
+
 msgid "Blame"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Branch (%{branch_count})"
@@ -783,7 +800,7 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
-msgid "Business"
+msgid "Business metrics (Custom)"
 msgstr ""
 
 msgid "ByAuthor|by"
@@ -816,15 +833,12 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr ""
 
@@ -1857,26 +1871,22 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Elasticsearch"
 msgstr ""
 
 msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Email"
 msgstr ""
 
 msgid "Emails"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Enable"
-=======
 msgid "Embed"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Enable"
 msgstr ""
 
 msgid "Enable Auto DevOps"
@@ -1894,12 +1904,9 @@ msgstr ""
 msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Enable classification control using an external service"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -2178,23 +2185,19 @@ msgstr ""
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
 msgstr ""
 
+msgid "GeoNodes|%{eventId} events behind"
+msgstr ""
+
 msgid "GeoNodes|Checksummed"
 msgstr ""
 
-msgid "GeoNodes|Database replication lag:"
+msgid "GeoNodes|Data replication lag:"
 msgstr ""
 
 msgid "GeoNodes|Disabling a node stops the sync process. Are you sure?"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GeoNodes|Does not match the primary storage configuration"
-=======
-msgid "Gitaly"
-msgstr ""
-
-msgid "Gitaly Servers"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Failed"
@@ -2212,22 +2215,19 @@ msgstr ""
 msgid "GeoNodes|Health status:"
 msgstr ""
 
-msgid "GeoNodes|Last event ID processed by cursor:"
+msgid "GeoNodes|Last event ID seen from primary:"
 msgstr ""
 
-msgid "GeoNodes|Last event ID seen from primary:"
+msgid "GeoNodes|Latest event log status:"
 msgstr ""
 
 msgid "GeoNodes|Loading nodes"
 msgstr ""
 
-msgid "GeoNodes|Local Attachments:"
-msgstr ""
-
 msgid "GeoNodes|Local LFS objects:"
 msgstr ""
 
-msgid "GeoNodes|Local job artifacts:"
+msgid "GeoNodes|Local attachments:"
 msgstr ""
 
 msgid "GeoNodes|New node"
@@ -2254,19 +2254,22 @@ msgstr ""
 msgid "GeoNodes|Replication slots:"
 msgstr ""
 
-msgid "GeoNodes|Repositories checksummed:"
-msgstr ""
-
 msgid "GeoNodes|Repositories:"
 msgstr ""
 
 msgid "GeoNodes|Repository checksums verified:"
 msgstr ""
 
+msgid "GeoNodes|Repository verification progress:"
+msgstr ""
+
 msgid "GeoNodes|Selective"
 msgstr ""
 
 msgid "GeoNodes|Something went wrong while changing node status"
+msgstr ""
+
+msgid "GeoNodes|Something went wrong while fetching nodes"
 msgstr ""
 
 msgid "GeoNodes|Something went wrong while removing node"
@@ -2299,7 +2302,7 @@ msgstr ""
 msgid "GeoNodes|Wiki checksums verified:"
 msgstr ""
 
-msgid "GeoNodes|Wikis checksummed:"
+msgid "GeoNodes|Wikis checksums calculated verifies:"
 msgstr ""
 
 msgid "GeoNodes|Wikis:"
@@ -3162,12 +3165,9 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Online IDE integration settings."
 msgstr ""
 
@@ -3187,6 +3187,9 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Options"
+msgstr ""
+
+msgid "Other information"
 msgstr ""
 
 msgid "Otherwise it is recommended you start with one of the options below."
@@ -3228,12 +3231,9 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "Permalink"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "Personal Access Token"
 msgstr ""
 
@@ -3348,10 +3348,25 @@ msgstr ""
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
+msgid "Pipeline|Existing branch name, tag"
+msgstr ""
+
 msgid "Pipeline|Retry pipeline"
 msgstr ""
 
 msgid "Pipeline|Retry pipeline #%{pipelineId}?"
+msgstr ""
+
+msgid "Pipeline|Run Pipeline"
+msgstr ""
+
+msgid "Pipeline|Run on"
+msgstr ""
+
+msgid "Pipeline|Run pipeline"
+msgstr ""
+
+msgid "Pipeline|Search branches"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
@@ -3519,7 +3534,6 @@ msgstr ""
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ProjectCreationLevel|Allowed to create projects"
 msgstr ""
 
@@ -3535,17 +3549,6 @@ msgstr ""
 msgid "ProjectCreationLevel|No one"
 msgstr ""
 
-msgid "ProjectFeature|Disabled"
-msgstr ""
-
-msgid "ProjectFeature|Everyone with access"
-msgstr ""
-
-msgid "ProjectFeature|Only team members"
-msgstr ""
-
-=======
->>>>>>> upstream/master
 msgid "ProjectFileTree|Name"
 msgstr ""
 
@@ -3559,6 +3562,12 @@ msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
+msgstr ""
+
+msgid "ProjectSettings|Failed to protect the tag"
+msgstr ""
+
+msgid "ProjectSettings|Failed to update tag!"
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
@@ -3798,6 +3807,9 @@ msgstr ""
 msgid "Repository storage"
 msgstr ""
 
+msgid "RepositorySettingsAccessLevel|Select"
+msgstr ""
+
 msgid "Request Access"
 msgstr ""
 
@@ -3813,14 +3825,13 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Response"
-=======
+msgid "Response metrics (Custom)"
+msgstr ""
+
 msgid "Retry this job"
 msgstr ""
 
 msgid "Retry verification"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Reveal value"
@@ -3834,11 +3845,10 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
-=======
 msgid "Review"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
 msgstr ""
 
 msgid "Reviewing"
@@ -3997,7 +4007,9 @@ msgstr ""
 msgid "Setup a specific Runner automatically"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Share"
+msgstr ""
+
 msgid "Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider"
 msgstr ""
 
@@ -4008,9 +4020,6 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
-=======
-msgid "Share"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Show command"
@@ -4061,12 +4070,6 @@ msgid "Something went wrong on our end."
 msgstr ""
 
 msgid "Something went wrong when toggling the button"
-msgstr ""
-
-msgid "Something went wrong while fetching Dependency Scanning."
-msgstr ""
-
-msgid "Something went wrong while fetching SAST."
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -4240,13 +4243,16 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
-msgid "System"
+msgid "Sync information"
 msgstr ""
 
 msgid "System Hooks"
 msgstr ""
 
 msgid "System header and footer:"
+msgstr ""
+
+msgid "System metrics (Custom)"
 msgstr ""
 
 msgid "Tag (%{tag_count})"
@@ -4441,9 +4447,6 @@ msgid "There are no merge requests to show"
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
-msgstr ""
-
-msgid "There was an error loading results"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
@@ -4774,7 +4777,13 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
+msgid "Try again"
+msgstr ""
+
 msgid "Turn on Service Desk"
+msgstr ""
+
+msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unknown"
@@ -4831,11 +4840,10 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
-=======
+msgstr ""
+
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Use the following registration token during setup:"
@@ -4862,12 +4870,12 @@ msgstr ""
 msgid "Various settings that affect GitLab performance."
 msgstr ""
 
-<<<<<<< HEAD
-=======
+msgid "Verification information"
+msgstr ""
+
 msgid "Verified"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "View and edit lines"
 msgstr ""
 
@@ -4925,7 +4933,6 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -4935,8 +4942,6 @@ msgstr ""
 msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Wiki"
 msgstr ""
 
@@ -5197,28 +5202,64 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "ciReport|%{linkStartTag}Learn more about DAST %{linkEndTag}"
+msgstr ""
+
+msgid "ciReport|%{linkStartTag}Learn more about Dependency Scanning %{linkEndTag}"
+msgstr ""
+
+msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
+msgstr ""
+
+msgid "ciReport|%{linkStartTag}Learn more about SAST image %{linkEndTag}"
+msgstr ""
+
+msgid "ciReport|%{reportName} is loading"
+msgstr ""
+
+msgid "ciReport|%{reportName} resulted in error while loading results"
+msgstr ""
+
 msgid "ciReport|%{type} detected no new security vulnerabilities"
 msgstr ""
 
 msgid "ciReport|%{type} detected no security vulnerabilities"
 msgstr ""
 
+msgid "ciReport|%{type} detected no vulnerabilities"
+msgstr ""
+
 msgid "ciReport|Code quality"
 msgstr ""
 
-msgid "ciReport|DAST detected no alerts by analyzing the review app"
+msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr ""
 
-msgid "ciReport|Dependency scanning"
+msgid "ciReport|Container scanning is loading"
+msgstr ""
+
+msgid "ciReport|Container scanning resulted in error while loading results"
+msgstr ""
+
+msgid "ciReport|DAST is loading"
+msgstr ""
+
+msgid "ciReport|DAST resulted in error while loading results"
+msgstr ""
+
+msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code\\'s dependencies."
 msgstr ""
 
 msgid "ciReport|Dependency scanning detected"
 msgstr ""
 
-msgid "ciReport|Dependency scanning detected no new security vulnerabilities"
+msgid "ciReport|Dependency scanning is loading"
 msgstr ""
 
-msgid "ciReport|Dependency scanning detected no security vulnerabilities"
+msgid "ciReport|Dependency scanning resulted in error while loading results"
+msgstr ""
+
+msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
 msgstr ""
 
 msgid "ciReport|Failed to load %{reportName} report"
@@ -5245,19 +5286,13 @@ msgstr ""
 msgid "ciReport|Performance metrics"
 msgstr ""
 
-msgid "ciReport|SAST"
-msgstr ""
-
 msgid "ciReport|SAST detected"
 msgstr ""
 
-msgid "ciReport|SAST detected no new security vulnerabilities"
+msgid "ciReport|SAST is loading"
 msgstr ""
 
-msgid "ciReport|SAST detected no security vulnerabilities"
-msgstr ""
-
-msgid "ciReport|SAST:container no vulnerabilities were found"
+msgid "ciReport|SAST resulted in error while loading results"
 msgstr ""
 
 msgid "ciReport|Security scanning"
@@ -5266,10 +5301,22 @@ msgstr ""
 msgid "ciReport|Security scanning failed loading any results"
 msgstr ""
 
+msgid "ciReport|Security scanning is loading"
+msgstr ""
+
 msgid "ciReport|Show complete code vulnerabilities report"
 msgstr ""
 
-msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}"
+msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."
+msgstr ""
+
+msgid "ciReport|There was an error loading SAST report"
+msgstr ""
+
+msgid "ciReport|There was an error loading dependency scanning report"
+msgstr ""
+
+msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
@@ -5289,7 +5336,9 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-<<<<<<< HEAD
+msgid "deploy token"
+msgstr ""
+
 msgid "detected %d fixed vulnerability"
 msgid_plural "detected %d fixed vulnerabilities"
 msgstr[0] ""
@@ -5301,9 +5350,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "detected no vulnerabilities"
-=======
-msgid "deploy token"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
@@ -5313,9 +5359,6 @@ msgid "here"
 msgstr ""
 
 msgid "importing"
-msgstr ""
-
-msgid "in progress"
 msgstr ""
 
 msgid "is invalid because there is downstream lock"
