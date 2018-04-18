@@ -110,6 +110,15 @@ describe Burndown do
         # Create issues
         issues = create_list(:issue, count, issue_params)
 
+        issues.each do |issue|
+          # Turns out we need to make sure older events that are not "closed"
+          # won't be caught by the query.
+          Event.create!(author: user,
+                        target: issue,
+                        created_at: Date.yesterday,
+                        action: Event::CREATED)
+        end
+
         # Close issues
         closed = issues.slice(0..count / 2)
         closed.each { |issue| close_issue(issue) }
