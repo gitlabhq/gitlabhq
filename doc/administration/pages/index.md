@@ -124,6 +124,12 @@ The Pages daemon doesn't listen to the outside world.
     ```
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```ruby
+    sudo gitlab-ctl restart gitlab-pages
+    ```
+
 
 Watch the [video tutorial][video-admin] for this configuration.
 
@@ -155,6 +161,11 @@ outside world.
     respectively.
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```ruby
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ## Advanced configuration
 
@@ -192,6 +203,11 @@ world. Custom domains are supported, but no TLS.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```ruby
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ### Custom domains with TLS support
 
@@ -225,6 +241,11 @@ world. Custom domains and TLS are supported.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```ruby
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ### Custom domain verification
 
@@ -252,6 +273,11 @@ are stored.
      ```
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```ruby
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ## Set maximum pages size
 
