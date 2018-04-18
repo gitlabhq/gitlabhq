@@ -1,0 +1,5 @@
+---
+title: Fix size and position for fork icon
+merge_request: 18399
+author: George Tsiolis
+type: fixed
