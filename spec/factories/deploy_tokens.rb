@@ -12,7 +12,7 @@ FactoryBot.define do
     end
 
     trait :gitlab_deploy_token do
-      name DeployToken::GITLAB_DEPLOY_TOKEN
+      name DeployToken::GITLAB_DEPLOY_TOKEN_NAME
     end
 
     trait :expired do

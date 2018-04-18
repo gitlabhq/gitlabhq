@@ -1881,7 +1881,7 @@ class Project < ActiveRecord::Base
 
   def gitlab_deploy_token
     @gitlab_deploy_token ||=
-      deploy_tokens.active.find_by(name: DeployToken::GITLAB_DEPLOY_TOKEN)
+      deploy_tokens.active.find_by(name: DeployToken::GITLAB_DEPLOY_TOKEN_NAME)
   end
 
   private
