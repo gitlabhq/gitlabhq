@@ -27,6 +27,7 @@ module Ci
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
         seeds_block: block,
+        variables: params[:variables_attributes],
         project: project,
         current_user: current_user,
 
