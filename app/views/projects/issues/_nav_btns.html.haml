@@ -1,4 +1,4 @@
-= link_to params.merge(rss_url_options), class: 'btn btn-secondary append-right-10 has-tooltip', title: 'Subscribe' do
+= link_to safe_params.merge(rss_url_options), class: 'btn btn-secondary append-right-10 has-tooltip', title: 'Subscribe' do
   = icon('rss')
 - if @can_bulk_update
   = button_tag "Edit issues", class: "btn btn-secondary append-right-10 js-bulk-update-toggle"

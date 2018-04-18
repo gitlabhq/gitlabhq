@@ -26,16 +26,16 @@
   - else
     %ul.merge-request-tabs.nav-links.no-top.no-bottom
       %li.commits-tab.active
-        = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
+        = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
           Commits
           %span.badge.badge-pill= @commits.size
       - if @pipelines.any?
         %li.builds-tab
-          = link_to url_for(params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
+          = link_to url_for(safe_params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
             Pipelines
             %span.badge.badge-pill= @pipelines.size
       %li.diffs-tab
-        = link_to url_for(params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+        = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
           Changes
           %span.badge.badge-pill= @merge_request.diff_size
 
@@ -46,7 +46,7 @@
         -# This tab is always loaded via AJAX
       - if @pipelines.any?
         #pipelines.pipelines.tab-pane
-          = render 'projects/merge_requests/pipelines', endpoint: url_for(params.merge(action: 'pipelines', format: :json)), disable_initialization: true
+          = render 'projects/merge_requests/pipelines', endpoint: url_for(safe_params.merge(action: 'pipelines', format: :json)), disable_initialization: true
 
   .mr-loading-status
     = spinner
