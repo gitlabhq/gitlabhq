@@ -58,14 +58,11 @@
 }
 
 .label-row {
-  .label-name {
-    display: inline-block;
-    margin-bottom: 10px;
+  display: flex;
 
-    @media (min-width: $screen-sm-min) {
-      width: 100px;
-      margin-bottom: 0;
-    }
+  .label-name {
+    width: 200px;
+    flex-shrink: 0;
 
     .label {
       overflow: hidden;
@@ -78,14 +75,6 @@
     display: block;
     margin-bottom: 10px;
     margin-left: 50px;
-
-    @media (min-width: $screen-sm-min) {
-      display: inline-block;
-      width: 100px;
-      margin-left: 10px;
-      margin-bottom: 0;
-      vertical-align: top;
-    }
   }
 
   .label-description {
@@ -98,14 +87,6 @@
 
     a {
       color: $blue-600;
-    }
-
-    @media (min-width: $screen-sm-min) {
-      display: inline-block;
-      max-width: 50%;
-      margin-left: 10px;
-      margin-bottom: 0;
-      vertical-align: top;
     }
   }
 
@@ -131,19 +112,14 @@
 }
 
 .manage-labels-list {
-  @media(min-width: $screen-md-min) {
-    &.content-list li {
-      padding: $gl-padding 0;
-    }
-  }
-
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
     cursor: move;
     cursor: -webkit-grab;
     cursor: -moz-grab;
     margin-bottom: 5px;
-
+    display: flex;
+    justify-content: space-between;
     padding: 11px 10px 11px $gl-padding;
     border-radius: $border-radius-default;
 
@@ -176,27 +152,6 @@
       }
     }
   }
-
-  .dropdown {
-    @media (min-width: $screen-sm-min) {
-      float: right;
-    }
-  }
-
-  @media (max-width: $screen-xs-max) {
-    .dropdown-menu {
-      min-width: 100%;
-    }
-  }
-}
-
-.draggable-handler {
-  display: inline-block;
-  vertical-align: top;
-  margin: 5px 0;
-  opacity: 0;
-  transition: opacity .3s;
-  color: $gray-darkest;
 }
 
 .prioritized-labels {
@@ -290,11 +245,6 @@
 }
 
 .label-subscribe-button {
-  @media(min-width: $screen-md-min) {
-    min-width: 105px;
-    margin-left: $gl-padding;
-  }
-
   .label-subscribe-button-icon {
     &[disabled] {
       opacity: 0.5;
@@ -335,6 +285,7 @@
 
 .label-actions-list {
   list-style: none;
+  flex-shrink: 0;
 }
 
 .label-badge {
@@ -355,8 +306,17 @@
 .label-links {
   list-style: none;
   padding: 0;
+  white-space: nowrap;
 }
 
 .label-link-item {
   padding: 0;
+}
+
+.label-list-item {
+  .content-list &:before,
+  .content-list &:after {
+    content: none;
+    display: block;
+  }
 }
