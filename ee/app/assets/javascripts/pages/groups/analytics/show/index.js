@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import Chart from 'chart.js';
+import initGroupMemberContributions from 'ee/group_member_contributions';
 
 document.addEventListener('DOMContentLoaded', () => {
   const dataEl = document.getElementById('js-analytics-data');
@@ -32,6 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     });
 
-    $('#event-stats').tablesorter();
+    initGroupMemberContributions();
   }
 });
