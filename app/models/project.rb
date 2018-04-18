@@ -1041,13 +1041,6 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
-  def user_can_push_to_empty_repo?(user)
-    return false unless empty_repo?
-    return false unless Ability.allowed?(user, :push_code, self)
-
-    !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
-  end
-
   def forked?
     return true if fork_network && fork_network.root_project != self
 
@@ -2008,10 +2001,11 @@ class Project < ActiveRecord::Base
 
   def fetch_branch_allows_maintainer_push?(user, branch_name)
     check_access = -> do
+      next false if empty_repo?
+
       merge_request = source_of_merge_requests.opened
                         .where(allow_maintainer_to_push: true)
                         .find_by(source_branch: branch_name)
-
       merge_request&.can_be_merged_by?(user)
     end
 

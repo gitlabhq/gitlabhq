@@ -32,6 +32,12 @@ describe Gitlab::UserAccess do
       let(:empty_project) { create(:project_empty_repo) }
       let(:project_access) { described_class.new(user, project: empty_project) }
 
+      it 'returns true for admins' do
+        user.update!(admin: true)
+
+        expect(access.can_push_to_branch?('master')).to be_truthy
+      end
+
       it 'returns true if user is master' do
         empty_project.add_master(user)
 
@@ -70,6 +76,12 @@ describe Gitlab::UserAccess do
     describe 'push to protected branch' do
       let(:branch) { create :protected_branch, project: project, name: "test" }
       let(:not_existing_branch) { create :protected_branch, :developers_can_merge, project: project }
+
+      it 'returns true for admins' do
+        user.update!(admin: true)
+
+        expect(access.can_push_to_branch?(branch.name)).to be_truthy
+      end
 
       it 'returns true if user is a master' do
         project.add_master(user)
