@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CEProtectedTagEditList();
   }
 
-  const pushPullContainer = document.querySelector('.js-mirror-form');
+  const pushPullContainer = document.querySelector('.js-mirror-settings');
 
   if (!pushPullContainer) return;
 

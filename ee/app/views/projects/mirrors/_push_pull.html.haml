@@ -3,7 +3,7 @@
 - protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
 - is_one_user_option = default_mirror_users.count == 1
 
-%section.settings.project-mirror-settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings.project-mirror-settings.js-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Mirroring repositories
@@ -83,30 +83,37 @@
               = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
-          = f.submit 'Mirror repository', class: 'btn btn-create', name: :update_remote_mirror
+          = f.submit 'Mirror repository', class: 'btn btn-create js-add-mirror', name: :update_remote_mirror
 
-    - if mirrored_repositories_count > 0
-      .panel.panel-default
-        %table.table.js-mirrored-repositories-table
-          %thead
+    .panel.panel-default
+      %table.table
+        %thead
+          %tr
+            %th= "Mirrored repositories (#{mirrored_repositories_count})"
+            %th Direction
+            %th Last update
+            %th
+        %tbody.js-mirrors-table-body
+          - if @project.mirror
             %tr
-              %th= "Mirrored repositories (#{mirrored_repositories_count})"
-              %th Direction
-              %th Last update
-              %th
-          %tbody
-            - if @project.mirror
+              %td= @project.username_only_import_url
+              %td Pull
+              %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
+              %td
+                %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
+          - @project.remote_mirrors.each_with_index do |mirror, index|
+            - if mirror.enabled
               %tr
-                %td= @project.username_only_import_url
-                %td Pull
-                %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
+                %td= mirror.safe_url
+                %td Push
+                %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
                 %td
-                  %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
-            - @project.remote_mirrors.each_with_index do |mirror, index|
-              - if mirror.enabled
-                %tr
-                  %td= mirror.safe_url
-                  %td Push
-                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
-                  %td
-                    %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_index: index } }= icon('trash-o')
+                  %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_id: mirror.id } }= icon('trash-o')
+
+      %template.js-tr-template
+        %tr
+          %td <%- safeUrl %>
+          %td <%- direction %>
+          %td.js-mirror-timeago <%- timeago %>
+          %td
+            %button.js-delete-mirror.btn.btn-transparent{ type: 'button', class: 'js-delete-<%-direction%>-mirror', data: { mirror_id: '<%- id %>' } }= icon('trash-o')

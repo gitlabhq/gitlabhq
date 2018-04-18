@@ -1,22 +1,27 @@
 import $ from 'jquery';
+import _ from 'underscore';
 import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import MirrorPull from 'ee/mirrors/mirror_pull';
 import { __ } from '~/locale';
 import Flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { renderTimeago } from '~/lib/utils/datetime_utility';
 
 export default {
-  init(form) {
-    this.form = form;
-    this.mirrorDirectionSelect = form.querySelector('.js-mirror-direction');
-    this.$insertionPoint = $('.js-form-insertion-point', form);
-    this.urlInput = form.querySelector('.js-mirror-url');
-    this.protectedBranchesInput = form.querySelector('.js-mirror-protected');
-    this.mirrorEndpoint = form.dataset.projectMirrorEndpoint;
+  init(container) {
+    this.container = container;
+    this.form = container.querySelector('.js-mirror-form');
+    this.mirrorDirectionSelect = this.form.querySelector('.js-mirror-direction');
+    this.$insertionPoint = $('.js-form-insertion-point', this.form);
+    this.urlInput = this.form.querySelector('.js-mirror-url');
+    this.protectedBranchesInput = this.form.querySelector('.js-mirror-protected');
+    this.mirrorEndpoint = this.form.dataset.projectMirrorEndpoint;
+    this.$table = $('.js-mirrors-table-body', this.container);
+    this.trTemplate = _.template(this.container.querySelector('.js-tr-template').innerHTML);
 
     this.directionFormMap = {
-      push: form.querySelector('.js-push-mirrors-form').innerHTML,
-      pull: form.querySelector('.js-pull-mirrors-form').innerHTML,
+      push: this.form.querySelector('.js-push-mirrors-form').innerHTML,
+      pull: this.form.querySelector('.js-pull-mirrors-form').innerHTML,
     };
 
     this.boundUpdateForm = this.handleUpdate.bind(this);
@@ -25,8 +30,11 @@ export default {
 
     this.boundUpdateForm();
     this.registerUpdateListeners();
-    $('.js-mirrored-repositories-table')
+
+    $(this.$table)
       .on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
+    $('.js-add-mirror')
+      .on('click', this.addMirror.bind(this));
   },
 
   handleUpdate() {
@@ -95,8 +103,41 @@ export default {
     this.protectedBranchesInput.addEventListener('change', this.boundUpdateProtectedBranches);
   },
 
-  addMirror() {
+  addMirror(event) {
+    event.preventDefault();
+    const direction = this.mirrorDirectionSelect.value;
+    const isPull = this.mirrorDirectionSelect.value === 'pull';
 
+    const payload = new FormData(this.form);
+    return axios.post(this.form.action, payload)
+      .then(({ data }) => {
+        let safeUrl;
+        let updatedAt;
+        let id;
+
+        debugger;
+
+        if (isPull) {
+          safeUrl = data.username_only_import_url;
+          updatedAt = data.mirror_last_update_at;
+        } else {
+          const mirror = data.remote_mirrors_attributes[0];
+          safeUrl = mirror.safe_url;
+          updatedAt = mirror.last_update_at;
+        }
+
+        const insertDirection = isPull ? this.$table.prepend : this.$table.append;
+
+        const $tr = insertDirection(this.trTemplate({
+          direction,
+          safeUrl,
+          updatedAt,
+          id,
+        }));
+
+        renderTimeago($('.js-mirror-timeago', $tr));
+      })
+      .catch(() => Flash(__('Failed to add mirror.')));
   },
 
   deleteMirror(event) {
@@ -109,12 +150,16 @@ export default {
     } else {
       payload.project = {
         remote_mirrors_attributes: {
-          id: target.dataset.mirrorIndex,
+          id: target.dataset.mirrorId,
           enabled: 0,
         },
       };
     }
 
-    return axios.put(this.mirrorEndpoint, payload);
+    return axios.put(this.mirrorEndpoint, payload)
+      .then(() => {
+        $(target).closest('tr').remove();
+      })
+      .catch(() => Flash(__('Failed to remove mirror.')));
   },
 };
