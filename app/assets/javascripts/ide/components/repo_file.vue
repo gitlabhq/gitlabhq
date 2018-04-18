@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import fileIcon from '~/vue_shared/components/file_icon.vue';
 import router from '../ide_router';
@@ -29,6 +29,10 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['getChangesInFolder']),
+    folderChangedCount() {
+      return this.getChangesInFolder(this.file.path);
+    },
     isTree() {
       return this.file.type === 'tree';
     },
@@ -101,9 +105,14 @@ export default {
           <mr-file-icon
             v-if="file.mrChange"
           />
+          <span
+            v-if="isTree && folderChangedCount > 0"
+          >
+            {{ folderChangedCount }}
+          </span>
           <changed-file-icon
+            v-else-if="file.changed || file.tempFile"
             :file="file"
-            v-if="file.changed || file.tempFile"
           />
         </span>
         <new-dropdown
