@@ -72,11 +72,39 @@ describe Groups::AnalyticsController do
     stats = assigns[:stats]
 
     # NOTE: The array ordering matters! The view references them all by index
-    expect(stats[:total_events]).to eq([2, 2, 2])
-    expect(stats[:merge_requests_merged]).to eq([0, 0, 0])
     expect(stats[:merge_requests_created]).to eq([0, 1, 1])
     expect(stats[:issues_closed]).to eq([1, 1, 0])
     expect(stats[:push]).to eq([1, 0, 1])
+  end
+
+  it "returns member contributions JSON when format is JSON" do
+    get :show, group_id: group.path, format: :json
+
+    expect(json_response.length).to eq(3)
+
+    first_user = json_response.at(0)
+    expect(first_user["username"]).to eq(user.username)
+    expect(first_user["user_web_url"]).to eq("/#{user.username}")
+    expect(first_user["fullname"]).to eq(user.name)
+    expect(first_user["push"]).to eq(1)
+    expect(first_user["issues_created"]).to eq(0)
+    expect(first_user["issues_closed"]).to eq(1)
+    expect(first_user["merge_requests_created"]).to eq(0)
+    expect(first_user["merge_requests_merged"]).to eq(0)
+    expect(first_user["total_events"]).to eq(2)
+  end
+
+  it 'does not cause N+1 queries when the format is JSON' do
+    control_count = ActiveRecord::QueryRecorder.new do
+      get :show, group_id: group.path, format: :json
+    end
+
+    controller.instance_variable_set(:@group, nil)
+    user4 = create(:user)
+    group.add_user(user4, GroupMember::DEVELOPER)
+
+    expect { get :show, group_id: group.path, format: :json }
+      .not_to exceed_query_limit(control_count)
   end
 
   describe 'with views' do
