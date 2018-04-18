@@ -120,7 +120,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        return forbidden!('Job is not retryable') unless build.retryable?
+        break forbidden!('Job is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
 
@@ -138,7 +138,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:erase_build, build)
-        return forbidden!('Job is not erasable!') unless build.erasable?
+        break forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
         present build, with: Entities::Job

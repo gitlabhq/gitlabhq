@@ -1651,7 +1651,7 @@ class Project < ActiveRecord::Base
 
   def container_registry_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      return variables unless Gitlab.config.registry.enabled
+      break variables unless Gitlab.config.registry.enabled
 
       variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port)
 

@@ -12,7 +12,7 @@ module Geo
 
         unless file_registry
           log_error('Could not find file_registry')
-          return
+          break
         end
 
         if File.exist?(file_path)

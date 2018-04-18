@@ -53,7 +53,7 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          return if user && !user.active?
+          break if user && !user.active?
 
           authenticators = []
 

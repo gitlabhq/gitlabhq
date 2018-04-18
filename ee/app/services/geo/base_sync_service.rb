@@ -35,7 +35,7 @@ module Geo
           # Clean up the state of sync to start a new cycle
           registry.delete
           log_info("Clean up #{type} sync status")
-          return
+          break
         end
 
         log_info("Finished #{type} sync")

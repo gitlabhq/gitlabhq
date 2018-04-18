@@ -34,7 +34,7 @@ class PostReceive
 
       unless @user
         log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-        return false
+        return false # rubocop:disable Cop/AvoidReturnFromBlocks
       end
 
       if Gitlab::Git.tag_ref?(ref)

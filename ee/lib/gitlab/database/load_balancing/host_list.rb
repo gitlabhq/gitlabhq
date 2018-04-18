@@ -28,11 +28,11 @@ module Gitlab
               host = @hosts[@index]
               @index = (@index + 1) % @hosts.length
 
-              return host if host.online?
+              break host if host.online?
 
               # Return nil once we have cycled through all hosts and none were
               # available.
-              return if @index == started_at
+              break if @index == started_at
             end
           end
         end
