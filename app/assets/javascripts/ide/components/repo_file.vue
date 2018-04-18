@@ -97,7 +97,7 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right">
+        <span class="pull-right ide-file-icon-holder">
           <mr-file-icon
             v-if="file.mrChange"
           />

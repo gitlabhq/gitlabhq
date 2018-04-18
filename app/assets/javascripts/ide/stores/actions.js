@@ -60,7 +60,7 @@ export const createTempEntry = (
     }
 
     worker.addEventListener('message', ({ data }) => {
-      const { file } = data;
+      const { file, parentPath } = data;
 
       worker.terminate();
 
@@ -74,6 +74,10 @@ export const createTempEntry = (
         commit(types.TOGGLE_FILE_OPEN, file.path);
         commit(types.ADD_FILE_TO_CHANGED, file.path);
         dispatch('setFileActive', file.path);
+      }
+
+      if (parentPath && !state.entries[parentPath].opened) {
+        commit(types.TOGGLE_TREE_OPEN, parentPath);
       }
 
       resolve(file);

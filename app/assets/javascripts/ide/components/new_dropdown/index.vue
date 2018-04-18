@@ -27,6 +27,13 @@
         dropdownOpen: false,
       };
     },
+    watch: {
+      dropdownOpen() {
+        this.$nextTick(() => {
+          this.$refs.dropdownMenu.scrollIntoView();
+        });
+      },
+    },
     methods: {
       ...mapActions([
         'createTempEntry',
@@ -71,7 +78,10 @@
           css-classes="pull-left"
         />
       </button>
-      <ul class="dropdown-menu dropdown-menu-right">
+      <ul
+        class="dropdown-menu dropdown-menu-right"
+        ref="dropdownMenu"
+      >
         <li>
           <a
             href="#"

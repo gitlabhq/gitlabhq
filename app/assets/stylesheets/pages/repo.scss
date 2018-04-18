@@ -54,6 +54,7 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       max-width: inherit;
+      line-height: 22px;
 
       svg {
         vertical-align: middle;
@@ -66,13 +67,17 @@
       }
     }
 
+    .ide-file-icon-holder {
+      display: flex;
+      align-items: center;
+    }
+
     .ide-file-changed-icon {
       margin-left: auto;
     }
 
     .ide-new-btn {
       display: none;
-      margin-bottom: -4px;
       margin-right: -8px;
     }
 
@@ -104,6 +109,7 @@
 .file-col-commit-message {
   display: flex;
   overflow: visible;
+  align-items: center;
   padding: 6px 12px;
 }
 
