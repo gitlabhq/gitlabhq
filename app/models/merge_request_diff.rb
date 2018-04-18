@@ -13,8 +13,8 @@ class MergeRequestDiff < ActiveRecord::Base
   belongs_to :merge_request
   manual_inverse_association :merge_request, :merge_request_diff
 
-  has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
-  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
+  has_many :merge_request_diff_files, -> { auto_include(false).order(:merge_request_diff_id, :relative_order) }
+  has_many :merge_request_diff_commits, -> { auto_include(false).order(:merge_request_diff_id, :relative_order) }
 
   state_machine :state, initial: :empty do
     state :collected
