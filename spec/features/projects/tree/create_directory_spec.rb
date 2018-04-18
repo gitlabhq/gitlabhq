@@ -50,6 +50,8 @@ feature 'Multi-file editor new directory', :js do
 
     click_button('Commit')
 
+    find('.js-ide-edit-mode').click
+
     expect(page).to have_content('folder name')
   end
 end

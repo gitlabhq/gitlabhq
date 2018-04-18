@@ -775,6 +775,9 @@
   }
 
   &.active {
+    // extend width over border of sidebar section
+    width: calc(100% + 1px);
+    padding-right: $gl-padding + 1px;
     background-color: $white-light;
     border-top-color: $white-dark;
     border-bottom-color: $white-dark;
