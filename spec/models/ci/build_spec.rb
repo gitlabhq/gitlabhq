@@ -2061,27 +2061,25 @@ describe Ci::Build do
 
       let(:deploy_token_variables) do
         [
-          { key: 'CI_DEPLOY_USER', value: DeployToken::GITLAB_DEPLOY_TOKEN, public: true },
+          { key: 'CI_DEPLOY_USER', value: DeployToken::GITLAB_DEPLOY_TOKEN_NAME, public: true },
           { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: true }
         ]
       end
 
-      context 'when gitlab-deploy-token exist' do
+      context 'when gitlab-deploy-token exists' do
         before do
           project.deploy_tokens << deploy_token
         end
 
         it 'should include deploy token variables' do
-          deploy_token_variables.each do |deploy_token_variable|
-            is_expected.to include(deploy_token_variable)
-          end
+          is_expected.to include(*deploy_token_variables)
         end
       end
 
       context 'when gitlab-deploy-token does not exist' do
         it 'should not include deploy token variables' do
-          deploy_token_variables.each do |deploy_token_variable|
-            is_expected.not_to include(deploy_token_variable)
+          %w(CI_DEPLOY_USER CI_DEPLOY_PASSWORD).each do |deploy_token_key|
+            expect(subject.find { |v| v[:key] == deploy_token_key}).to be_nil
           end
         end
       end

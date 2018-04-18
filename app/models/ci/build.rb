@@ -661,7 +661,7 @@ module Ci
 
     def deploy_token_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_DEPLOY_USER', value: DeployToken::GITLAB_DEPLOY_TOKEN)
+        variables.append(key: 'CI_DEPLOY_USER', value: DeployToken::GITLAB_DEPLOY_TOKEN_NAME)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: project.gitlab_deploy_token.token)
       end
     end
