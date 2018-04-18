@@ -2,7 +2,7 @@
 - show_export_button = local_assigns.fetch(:show_export_button, true)
 
 - if show_rss_button
-  = link_to params.merge(rss_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe' do
+  = link_to safe_params.merge(rss_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe' do
     = icon('rss')
 
 - if show_export_button
