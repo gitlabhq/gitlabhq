@@ -74,7 +74,7 @@ module Projects
     end
 
     def extract_archive!(temp_path)
-      if artifacts_filename.ends_with?('.zip')
+      if artifacts.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
         raise InvaildStateError, 'unsupported artifacts format'
@@ -97,7 +97,7 @@ module Projects
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
       build.artifacts_file.use_file do |artifacts_path|
-        unless system(*%W(unzip -qq -n #{artifacts_path} #{site_path} -d #{temp_path}))
+        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
           raise FailedToExtractError, 'pages failed to extract'
         end
       end
@@ -130,10 +130,6 @@ module Projects
       1 + max_size / BLOCK_SIZE
     end
 
-    def artifacts_filename
-      build.artifacts_file.filename
-    end
-
     def max_size
       max_pages_size = Gitlab::CurrentSettings.max_pages_size.megabytes
 
@@ -160,6 +156,10 @@ module Projects
 
     def ref
       build.ref
+    end
+
+    def artifacts
+      build.artifacts_file.path
     end
 
     def delete_artifact!
