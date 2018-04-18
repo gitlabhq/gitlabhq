@@ -20,8 +20,16 @@ module Ci
       validates :index, presence: true
     end
 
-    after_initialize do |stage|
+    after_initialize do
       self.status = DEFAULT_STATUS if self.status.nil?
+    end
+
+    before_validation do
+      next unless index.nil?
+
+      statuses.pluck(:stage_idx).tap do |indices|
+        self.index = indices.max_by { |index| indices.count(index) }
+      end
     end
 
     state_machine :status, initial: :created do

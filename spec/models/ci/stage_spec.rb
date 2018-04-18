@@ -51,7 +51,7 @@ describe Ci::Stage, :models do
     end
   end
 
-  describe 'update_status' do
+  describe '#update_status' do
     context 'when stage objects needs to be updated' do
       before do
         create(:ci_build, :success, stage_id: stage.id)
@@ -84,6 +84,23 @@ describe Ci::Stage, :models do
         stage.update_status
 
         expect(stage.reload).to be_failed
+      end
+    end
+  end
+
+  describe '#index' do
+    context 'when stage has been imported and does not have index set' do
+      before do
+        create(:ci_build, :running, stage_id: stage.id, stage_idx: 10)
+        stage.update_column(:index, nil)
+      end
+
+      it 'recalculates index before updating status' do
+        expect(stage.reload.index).to be_nil
+
+        stage.update_status
+
+        expect(stage.reload.index).to eq 10
       end
     end
   end
