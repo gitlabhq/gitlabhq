@@ -20,3 +20,18 @@
     color: $black;
   }
 }
+
+.gl-sortable {
+  .header {
+    user-select: none;
+
+    &:hover {
+      cursor: pointer;
+      background-color: $theme-gray-100;
+    }
+
+    &:focus {
+      outline: 1px solid $focus-border-color;
+    }
+  }
+}
