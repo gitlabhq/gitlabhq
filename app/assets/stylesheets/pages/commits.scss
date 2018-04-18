@@ -181,10 +181,6 @@
   align-items: center;
   flex-grow: 1;
 
-  .merge-request-branches & {
-    flex-direction: column;
-  }
-
   .project_namespace {
     color: $gl-text-color-secondary;
   }
