@@ -8,6 +8,8 @@ module Gitlab
   module Auth
     module LDAP
       class User < Gitlab::Auth::OAuth::User
+        extend ::Gitlab::Utils::Override
+
         class << self
           def find_by_uid_and_provider(uid, provider)
             identity = ::Identity.with_extern_uid(provider, uid).take
@@ -33,12 +35,21 @@ module Gitlab
           gl_user.changed? || gl_user.identities.any?(&:changed?)
         end
 
+        override :omniauth_should_save?
+        def omniauth_should_save?
+          changed? && super
+        end
+
         def block_after_signup?
           ldap_config.block_auto_created_users
         end
 
         def allowed?
           Gitlab::Auth::LDAP::Access.allowed?(gl_user)
+        end
+
+        def valid_sign_in?
+          allowed?
         end
 
         def ldap_config
