@@ -13,7 +13,7 @@ describe('Multi-file editor commit sidebar list', () => {
     vm = createComponentWithStore(Component, store, {
       title: 'Staged',
       fileList: [],
-      icon: 'staged',
+      iconName: 'staged',
       action: 'stageAllChanges',
       actionBtnText: 'stage all',
       itemActionComponent: 'stage-button',

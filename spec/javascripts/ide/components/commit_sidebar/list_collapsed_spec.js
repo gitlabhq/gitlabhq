@@ -19,7 +19,7 @@ describe('Multi-file editor commit sidebar list collapsed', () => {
         },
         file('file2'),
       ],
-      icon: 'staged',
+      iconName: 'staged',
       title: 'Staged',
     });
 
