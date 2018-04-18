@@ -65,7 +65,10 @@ module Labels
 
     def update_label_links(labels, old_label_id:, new_label_id:)
       # use 'labels' relation to get label_link ids only of issues/MRs
-      # in the project being transferred
+      # in the project being transferred.
+      # IDs are fetched in a separate query because MySQL doesn't
+      # allow referring of 'label_links' table in UPDATE query:
+      # https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/62435068
       link_ids = labels.pluck('label_links.id')
 
       LabelLink.where(id: link_ids, label_id: old_label_id)
