@@ -859,6 +859,10 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   .projects-list-search-container {
     padding: 8px 0;
     overflow-y: auto;
+
+    li.section-empty.section-failure {
+      color: $callout-danger-color;
+    }
   }
 
   .section-header,
@@ -867,13 +871,6 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     padding: 0 15px;
     color: $gl-text-color-secondary;
     font-size: $gl-font-size;
-  }
-
-  .projects-list-frequent-container,
-  .projects-list-search-container {
-    li.section-empty.section-failure {
-      color: $callout-danger-color;
-    }
   }
 
   .search-input-container {
