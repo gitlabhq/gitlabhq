@@ -237,6 +237,22 @@ describe 'Issue Boards', :js do
   end
 
   context 'labels' do
+    it 'shows current labels when editing' do
+      click_card(card)
+
+      page.within('.labels') do
+        click_link 'Edit'
+
+        wait_for_requests
+
+        page.within('.value') do
+          expect(page).to have_selector('.label', count: 2)
+          expect(page).to have_content(development.title)
+          expect(page).to have_content(stretch.title)
+        end
+      end
+    end
+
     it 'adds a single label' do
       click_card(card)
 
@@ -296,7 +312,9 @@ describe 'Issue Boards', :js do
 
         wait_for_requests
 
-        click_link stretch.title
+        within('.dropdown-menu-labels') do
+          click_link stretch.title
+        end
 
         wait_for_requests
 
