@@ -119,7 +119,7 @@ export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
     if (setTimeago) {
       // Recreate with custom template
       $(el).tooltip({
-        template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+        template: '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
       });
     }
 
