@@ -863,6 +863,10 @@ class MergeRequest < ActiveRecord::Base
     !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_service)
   end
 
+  def has_new_ci_config?
+    merge_request_diff.merge_request_diff_files.where(new_path: project.ci_yaml_file_path, new_file: true).any?
+  end
+
   def branch_missing?
     !source_branch_exists? || !target_branch_exists?
   end

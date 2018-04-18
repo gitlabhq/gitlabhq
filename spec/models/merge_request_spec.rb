@@ -964,6 +964,28 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_new_ci_config?' do
+    context 'when merge request has a new gitlab-ci.yml file' do
+      before do
+        allow(subject).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(subject.has_new_ci_config?).to eq true
+      end
+    end
+
+    context 'when merge request does not have a new gitlab-ci.yml file' do
+      before do
+        allow(subject).to receive_message_chain(:merge_request_diff, :merge_request_diff_files, :where, :any?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(subject.has_new_ci_config?).to eq false
+      end
+    end
+  end
+
   describe '#all_pipelines' do
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do
