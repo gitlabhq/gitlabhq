@@ -340,7 +340,7 @@ module Gitlab
         if enabled
           gitaly_namespace_client(storage).rename(old_name, new_name)
         else
-          return false if exists?(storage, new_name) || !exists?(storage, old_name)
+          break false if exists?(storage, new_name) || !exists?(storage, old_name)
 
           FileUtils.mv(full_path(storage, old_name), full_path(storage, new_name))
         end

@@ -87,7 +87,7 @@ module Gitlab
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            return coverage if coverage.present?
+            return coverage if coverage.present? # rubocop:disable Cop/AvoidReturnFromBlocks
           end
 
           nil

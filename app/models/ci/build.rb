@@ -479,7 +479,7 @@ module Ci
 
     def user_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        return variables if user.blank?
+        break variables if user.blank?
 
         variables.append(key: 'GITLAB_USER_ID', value: user.id.to_s)
         variables.append(key: 'GITLAB_USER_EMAIL', value: user.email)
@@ -594,7 +594,7 @@ module Ci
 
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        return variables unless persisted?
+        break variables unless persisted?
 
         variables
           .append(key: 'CI_JOB_ID', value: id.to_s)
@@ -643,7 +643,7 @@ module Ci
 
     def persisted_environment_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        return variables unless persisted? && persisted_environment.present?
+        break variables unless persisted? && persisted_environment.present?
 
         variables.concat(persisted_environment.predefined_variables)
 
