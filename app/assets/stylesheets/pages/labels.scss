@@ -63,8 +63,7 @@
     margin-bottom: 10px;
 
     @media (min-width: $screen-sm-min) {
-      width: 200px;
-      margin-left: $gl-padding * 2;
+      width: 100px;
       margin-bottom: 0;
     }
 
@@ -332,4 +331,32 @@
   background-color: $gray-light;
   border-radius: $border-radius-default;
   padding: $gl-padding $gl-padding-8;
+}
+
+.label-actions-list {
+  list-style: none;
+}
+
+.label-badge {
+  color: $theme-gray-900;
+  font-weight: $gl-font-weight-bold;
+  padding: $gl-padding-4;
+  border-radius: $border-radius-default;
+}
+
+.label-badge-blue {
+  background-color: $theme-blue-100;
+}
+
+.label-badge-gray {
+  background-color: $theme-gray-100;
+}
+
+.label-links {
+  list-style: none;
+  padding: 0;
+}
+
+.label-link-item {
+  padding: 0;
 }

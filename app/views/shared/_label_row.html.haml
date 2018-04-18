@@ -2,29 +2,21 @@
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 
-%span.label-row
-  - if can?(current_user, :admin_label, @project)
-    .draggable-handler
-      = icon('bars')
-    .js-toggle-priority.toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
-      dom_id: dom_id(label), type: label.type } }
-      %button.add-priority.btn.has-tooltip{ title: 'Prioritize', type: 'button', :'data-placement' => 'top' }
-        = icon('star-o')
-      %button.remove-priority.btn.has-tooltip{ title: 'Remove priority', type: 'button', :'data-placement' => 'top' }
-        = icon('star')
-  %span.label-name
+.label-row.inline
+  .label-name
     = link_to_label(label, subject: @project, tooltip: false)
-  - if defined?(@project) && @project.group.present?
-    %span.label-type
-      = label.model_name.human.titleize
-
-  %span.label-description
+  .label-description
     - if label.description.present?
       .description-text
         = markdown_field(label, :description)
-    .hidden-xs.hidden-sm
+    %ul.label-links
       - if show_label_issues_link
-        = link_to_label(label, subject: subject) { 'Issues' }
+        %li.label-link-item.inline
+          = link_to_label(label, subject: subject) { 'Issues' }
       - if show_label_merge_requests_link
         &middot;
-        = link_to_label(label, subject: subject, type: :merge_request) { 'Merge requests' }
+        %li.label-link-item.inline
+          = link_to_label(label, subject: subject, type: :merge_request) { 'Merge requests' }
+      - if label.priorities.present?
+        %li.label-link-item.inline
+          .label-badge.label-badge-blue Prioritized label
