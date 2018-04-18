@@ -24,6 +24,7 @@ export default {
       focusedIndex: 0,
       searchText: '',
       mouseOver: false,
+      cancelMouseOver: false,
     };
   },
   computed: {
@@ -97,6 +98,7 @@ export default {
         case UP_KEY_CODE:
           e.preventDefault();
           this.mouseOver = false;
+          this.cancelMouseOver = true;
           if (this.focusedIndex > 0) {
             this.focusedIndex -= 1;
           } else {
@@ -106,6 +108,7 @@ export default {
         case DOWN_KEY_CODE:
           e.preventDefault();
           this.mouseOver = false;
+          this.cancelMouseOver = true;
           if (this.focusedIndex < this.filteredBlobsLength - 1) {
             this.focusedIndex += 1;
           } else {
@@ -133,8 +136,13 @@ export default {
       router.push(`/project${file.url}`);
     },
     onMouseOver(index) {
-      this.mouseOver = true;
-      this.focusedIndex = index;
+      if (!this.cancelMouseOver) {
+        this.mouseOver = true;
+        this.focusedIndex = index;
+      }
+    },
+    onMouseMove() {
+      this.cancelMouseOver = false;
     },
   },
 };
@@ -144,6 +152,7 @@ export default {
   <div
     class="ide-file-finder-overlay"
     @mousedown.self="toggleFileFinder(false)"
+    @mousemove="onMouseMove"
   >
     <div
       class="dropdown-menu diff-file-changes ide-file-finder show"
@@ -176,7 +185,11 @@ export default {
           @click="clearSearchInput"
         ></i>
       </div>
-      <div>
+      <div
+        :style="{
+          'pointer-events': cancelMouseOver ? 'none' : ''
+        }"
+      >
         <virtual-list
           :size="listHeight"
           :remain="listShowCount"
