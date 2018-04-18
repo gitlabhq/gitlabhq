@@ -105,4 +105,8 @@ table {
   &.card-without-margin {
     margin: 0;
   }
+
+  &.bg-light {
+    @extend .border-0;
+  }
 }
