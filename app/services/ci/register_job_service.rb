@@ -6,6 +6,9 @@ module Ci
 
     attr_reader :runner
 
+    JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30].freeze
+    JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
+
     Result = Struct.new(:build, :valid?)
 
     def initialize(runner)
@@ -32,7 +35,7 @@ module Ci
         end
       end
 
-      builds.find do |build|
+      builds.auto_include(false).find do |build|
         next unless runner.can_pick?(build)
 
         begin
@@ -106,8 +109,20 @@ module Ci
     end
 
     def register_success(job)
-      job_queue_duration_seconds.observe({ shared_runner: @runner.shared? }, Time.now - job.created_at)
+      labels = { shared_runner: runner.shared?,
+                 jobs_running_for_project: jobs_running_for_project(job) }
+
+      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
+    end
+
+    def jobs_running_for_project(job)
+      return '+Inf' unless runner.shared?
+
+      # excluding currently started job
+      running_jobs_count = job.project.builds.running.where(runner: Ci::Runner.shared)
+                              .limit(JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET + 1).count - 1
+      running_jobs_count < JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET ? running_jobs_count : "#{JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET}+"
     end
 
     def failed_attempt_counter
@@ -119,7 +134,7 @@ module Ci
     end
 
     def job_queue_duration_seconds
-      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time')
+      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time', {}, JOB_QUEUE_DURATION_SECONDS_BUCKETS)
     end
   end
 end

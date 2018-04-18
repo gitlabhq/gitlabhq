@@ -1,0 +1,5 @@
+---
+title: Use RFC 3676 mail signature delimiters
+merge_request: 17979
+author: Enrico Scholz
+type: changed

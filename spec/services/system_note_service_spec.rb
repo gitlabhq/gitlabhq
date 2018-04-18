@@ -995,7 +995,13 @@ describe SystemNoteService do
       it 'sets the note text' do
         noteable.update_attribute(:time_estimate, 277200)
 
-        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h,"
+      end
+
+      it 'appends a comma to separate the note from the update_at time' do
+        noteable.update_attribute(:time_estimate, 277200)
+
+        expect(subject.note).to end_with(',')
       end
     end
 

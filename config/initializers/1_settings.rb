@@ -536,6 +536,10 @@ Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= Settingslogic.ne
 Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
 
+Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
+Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
+
 #
 # Sidekiq
 #
