@@ -202,6 +202,7 @@ export default {
               :key="file.key"
             >
               <item
+                class="disable-hover"
                 :file="file"
                 :search-text="searchText"
                 :focused="index === focusedIndex"
