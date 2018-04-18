@@ -10,8 +10,7 @@ class DiffFileEntity < Grape::Entity
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file|
-    # This is causing a N+1 query
-    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first
+    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first if diff_file.submodule?
   end
 
   expose :blob, using: BlobEntity
