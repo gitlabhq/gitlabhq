@@ -2,6 +2,8 @@ class LfsObject < ActiveRecord::Base
   include AfterCommitQueue
   include ObjectStorage::BackgroundMove
 
+  FILE_NAME_RANGE = (4..-1).freeze
+
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :lfs_objects_projects
 
@@ -39,9 +41,9 @@ class LfsObject < ActiveRecord::Base
     Digest::SHA256.file(path).hexdigest
   end
 
-  def :verify_filename!
+  def verify_filename!
     return unless self.file_identifier
 
-    self.errors.add(:filename, "invalid filename") unless self.file_identifier == oid[0, 2]
+    self.errors.add(:filename, "invalid filename") unless self.file_identifier == oid[FILE_NAME_RANGE]
   end
 end

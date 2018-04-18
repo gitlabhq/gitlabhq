@@ -82,6 +82,6 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def create_params
-    params.merge("file.name" => oid[4..-1])
+    params.merge("file.name" => oid[LfsObject::FILE_NAME_RANGE]
   end
 end
