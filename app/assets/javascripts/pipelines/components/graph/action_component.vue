@@ -45,7 +45,12 @@ export default {
       return `${actionIconDash} js-icon-${actionIconDash}`;
     },
   },
-
+  created() {
+    eventHub.$on('graphActionFinished', this.updateDisabled);
+  },
+  beforeDestroy() {
+    eventHub.$off('graphActionFinished', this.updateDisabled);
+  },
   methods: {
     onClickAction() {
       $(this.$el).tooltip('hide');
@@ -57,14 +62,8 @@ export default {
       if (actionUrl === this.linkRequested) {
         this.isDisabled = false;
       }
-    }
+    },
   },
-  created() {
-      eventHub.$on('graphActionFinished', this.updateDisabled);
-    },
-    beforeDestroy() {
-      eventHub.$off('graphActionFinished', this.updateDisabled);
-    },
 };
 </script>
 <template>
@@ -73,7 +72,8 @@ export default {
     @click="onClickAction"
     v-tooltip
     :title="tooltipText"
-    class="js-ci-action btn btn-blank btn-transparent ci-action-icon-container ci-action-icon-wrapper"
+    class="js-ci-action btn btn-blank btn-transparent
+ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
     :disabled="isDisabled"
