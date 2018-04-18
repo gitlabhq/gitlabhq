@@ -42,6 +42,11 @@ html [type="button"],
   text-align: right;
 }
 
+table {
+  // Remove any table border lines
+  border-spacing: 0;
+}
+
 // Polyfill deprecated selectors
 
 .hidden {
