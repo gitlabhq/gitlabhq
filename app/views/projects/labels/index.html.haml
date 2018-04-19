@@ -1,7 +1,14 @@
 - @no_container = true
 - page_title "Labels"
-- hide_class = ''
 - can_admin_label = can?(current_user, :admin_label, @project)
+- hide_class = ''
+
+- if can_admin_label
+  - content_for(:header_content) do
+    .nav-controls
+      = link_to new_project_label_path(@project), class: "btn btn-new" do
+        New label
+
 
 - if @labels.exists? || @prioritized_labels.exists?
   #promote-label-modal
@@ -11,11 +18,6 @@
         Labels can be applied to issues and merge requests.
         - if can_admin_label
           Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
-
-      - if can_admin_label
-        .nav-controls
-          = link_to new_project_label_path(@project), class: "btn btn-new" do
-            New label
 
     .labels-container.prepend-top-5
       - if can_admin_label
