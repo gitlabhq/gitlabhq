@@ -205,11 +205,8 @@ class Project < ActiveRecord::Base
 
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
-<<<<<<< HEAD
 
   has_many :prometheus_metrics
-=======
->>>>>>> upstream/master
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
