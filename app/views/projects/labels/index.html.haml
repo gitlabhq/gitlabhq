@@ -9,7 +9,6 @@
       = link_to new_project_label_path(@project), class: "btn btn-new" do
         New label
 
-
 - if @labels.exists? || @prioritized_labels.exists?
   #promote-label-modal
   %div{ class: container_class }
@@ -40,3 +39,7 @@
             = paginate @labels, theme: 'gitlab'
 - else
   = render 'shared/empty_states/labels'
+
+%template#js-badge-item-template
+  %li.label-link-item.js-priority-badge.inline.prepend-left-10
+    .label-badge.label-badge-blue Prioritized label
