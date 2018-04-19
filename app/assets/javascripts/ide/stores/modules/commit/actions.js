@@ -98,23 +98,14 @@ export const updateFilesAfterCommit = (
     { root: true },
   );
 
-  rootState.changedFiles.forEach(entry => {
+  rootState.stagedFiles.forEach(file => {
+    const changedFile = rootState.changedFiles.find(f => f.path === file.path);
+
     commit(
-      rootTypes.SET_LAST_COMMIT_DATA,
+      rootTypes.UPDATE_FILE_AFTER_COMMIT,
       {
-        entry,
+        file,
         lastCommit,
-      },
-      { root: true },
-    );
-
-    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.content);
-
-    commit(
-      rootTypes.SET_FILE_RAW_DATA,
-      {
-        file: entry,
-        raw: entry.content,
       },
       { root: true },
     );
@@ -122,18 +113,21 @@ export const updateFilesAfterCommit = (
     commit(
       rootTypes.TOGGLE_FILE_CHANGED,
       {
-        file: entry,
+        file,
         changed: false,
       },
       { root: true },
     );
 
-    dispatch('updateTempFlagForEntry', { entry, tempFile: false }, { root: true });
+    dispatch('updateTempFlagForEntry', { file, tempFile: false }, { root: true });
+
+    eventHub.$emit(`editor.update.model.content.${file.key}`, {
+      content: file.content,
+      changed: !!changedFile,
+    });
   });
 
-  commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
-
-  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
+  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH && rootGetters.activeFile) {
     router.push(
       `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
     );
@@ -186,6 +180,8 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
               { root: true },
             );
           }
+
+          commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
     })

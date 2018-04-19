@@ -3,15 +3,16 @@ import Disposable from './disposable';
 import eventHub from '../../eventhub';
 
 export default class Model {
-  constructor(monaco, file) {
+  constructor(monaco, file, head = null) {
     this.monaco = monaco;
     this.disposable = new Disposable();
     this.file = file;
+    this.head = head;
     this.content = file.content !== '' ? file.content : file.raw;
 
     this.disposable.add(
       (this.originalModel = this.monaco.editor.createModel(
-        this.file.raw,
+        head ? head.content : this.file.raw,
         undefined,
         new this.monaco.Uri(null, null, `original/${this.file.key}`),
       )),
@@ -34,10 +35,12 @@ export default class Model {
     this.events = new Map();
 
     this.updateContent = this.updateContent.bind(this);
+    this.updateNewContent = this.updateNewContent.bind(this);
     this.dispose = this.dispose.bind(this);
 
     eventHub.$on(`editor.update.model.dispose.${this.file.key}`, this.dispose);
-    eventHub.$on(`editor.update.model.content.${this.file.path}`, this.updateContent);
+    eventHub.$on(`editor.update.model.content.${this.file.key}`, this.updateContent);
+    eventHub.$on(`editor.update.model.new.content.${this.file.key}`, this.updateNewContent);
   }
 
   get url() {
@@ -79,8 +82,15 @@ export default class Model {
     );
   }
 
-  updateContent(content) {
+  updateContent({ content, changed }) {
     this.getOriginalModel().setValue(content);
+
+    if (!changed) {
+      this.getModel().setValue(content);
+    }
+  }
+
+  updateNewContent(content) {
     this.getModel().setValue(content);
   }
 
@@ -89,6 +99,7 @@ export default class Model {
     this.events.clear();
 
     eventHub.$off(`editor.update.model.dispose.${this.file.key}`, this.dispose);
-    eventHub.$off(`editor.update.model.content.${this.file.path}`, this.updateContent);
+    eventHub.$off(`editor.update.model.content.${this.file.key}`, this.updateContent);
+    eventHub.$off(`editor.update.model.new.content.${this.file.key}`, this.updateNewContent);
   }
 }
