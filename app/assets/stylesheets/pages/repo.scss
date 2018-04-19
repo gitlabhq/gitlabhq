@@ -378,7 +378,11 @@
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+
+  > div + div {
+    padding-left: $gl-padding;
+  }
 
   svg {
     vertical-align: middle;
