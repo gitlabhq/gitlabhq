@@ -1414,7 +1414,6 @@ describe Ci::Build do
       expect { build.save! }
         .to change { build.project.statistics.reload.build_artifacts_size }
         .by(19)
-<<<<<<< HEAD
     end
 
     context 'when the artifact size stays the same' do
@@ -1425,8 +1424,6 @@ describe Ci::Build do
 
         build.save!
       end
-=======
->>>>>>> upstream/master
     end
   end
 
