@@ -27,14 +27,12 @@ export default {
   components: {
     Icon,
   },
-
   props: {
     status: {
       type: Object,
       required: true,
     },
   },
-
   computed: {
     cssClass() {
       const status = this.status.group;

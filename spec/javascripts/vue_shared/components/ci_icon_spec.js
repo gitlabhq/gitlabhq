@@ -27,7 +27,7 @@ describe('CI Icon component', () => {
         icon: 'icon_status_success',
         group: 'success',
       },
-    })();
+    });
 
     expect(vm.$el.classList.contains('ci-status-icon-success')).toEqual(true);
   });
