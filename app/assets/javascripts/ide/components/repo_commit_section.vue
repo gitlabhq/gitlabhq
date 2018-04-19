@@ -24,7 +24,7 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState(['changedFiles', 'stagedFiles', 'noChangesStateSvgPath', 'committedStateSvgPath']),
+    ...mapState(['changedFiles', 'stagedFiles']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
   },
@@ -108,8 +108,6 @@ export default {
     </template>
     <empty-state
       v-else
-      :no-changes-state-svg-path="noChangesStateSvgPath"
-      :committed-state-svg-path="committedStateSvgPath"
     />
   </div>
 </template>

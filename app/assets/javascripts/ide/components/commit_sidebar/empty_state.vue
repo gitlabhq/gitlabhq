@@ -10,18 +10,8 @@ export default {
   directives: {
     tooltip,
   },
-  props: {
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
-    ...mapState(['lastCommitMsg']),
+    ...mapState(['lastCommitMsg', 'noChangesStateSvgPath', 'committedStateSvgPath']),
     statusSvg() {
       return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
     },
