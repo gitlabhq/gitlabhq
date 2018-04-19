@@ -20,7 +20,6 @@ export default class ProjectLabelSubscription {
     const oldStatus = $btn.attr('data-status');
 
     $btn.addClass('disabled');
-    $span.toggleClass('hidden');
 
     axios.post(url).then(() => {
       let newStatus;
@@ -32,7 +31,6 @@ export default class ProjectLabelSubscription {
         [newStatus, newAction] = ['unsubscribed', 'Subscribe'];
       }
 
-      $span.toggleClass('hidden');
       $btn.removeClass('disabled');
 
       this.$buttons.attr('data-status', newStatus);
