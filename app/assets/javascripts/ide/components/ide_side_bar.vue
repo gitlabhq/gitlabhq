@@ -1,9 +1,9 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import ProjectAvatarImage from '~/vue_shared/components/project_avatar/image.vue';
-import icon from '~/vue_shared/components/icon.vue';
-import panelResizer from '~/vue_shared/components/panel_resizer.vue';
-import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import Identicon from '../../vue_shared/components/identicon.vue';
 import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
@@ -12,9 +12,9 @@ import CommitSection from './repo_commit_section.vue';
 
 export default {
   components: {
-    icon,
-    panelResizer,
-    skeletonLoadingContainer,
+    Icon,
+    PanelResizer,
+    SkeletonLoadingContainer,
     ResizablePanel,
     ActivityBar,
     ProjectAvatarImage,
@@ -87,11 +87,9 @@ export default {
           </a>
         </div>
         <div class="multi-file-commit-panel-inner-scroll">
-          <keep-alive>
-            <component
-              :is="activityBarComponent"
-            />
-          </keep-alive>
+          <component
+            :is="activityBarComponent"
+          />
         </div>
       </template>
     </div>
