@@ -78,6 +78,8 @@ class Projects::JobsController < Projects::ApplicationController
             result.merge!(trace.to_h)
           end
 
+          result[:html] = result[:html].presence || 'No job log'
+
           render json: result
         end
       end

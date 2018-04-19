@@ -187,12 +187,9 @@ a {
   animation: fadeInFull $fade-in-duration 1;
 }
 
-
 .animation-container {
-  background: $repo-editor-grey;
   height: 40px;
   overflow: hidden;
-  position: relative;
 
   &.animation-container-small {
     height: 12px;
@@ -205,60 +202,43 @@ a {
     }
   }
 
-  &::before {
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: blockTextShine;
-    animation-timing-function: linear;
-    background-image: $repo-editor-linear-gradient;
-    background-repeat: no-repeat;
-    background-size: 800px 45px;
-    content: ' ';
-    display: block;
-    height: 100%;
+  [class^="skeleton-line-"] {
     position: relative;
-  }
-
-  div {
-    background: $white-light;
-    height: 6px;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-
-  .skeleton-line-1 {
-    left: 0;
-    top: 8px;
-  }
-
-  .skeleton-line-2 {
-    left: 150px;
-    top: 0;
+    background-color: $theme-gray-100;
     height: 10px;
-  }
+    overflow: hidden;
 
-  .skeleton-line-3 {
-    left: 0;
-    top: 23px;
-  }
+    &:not(:last-of-type) {
+      margin-bottom: 4px;
+    }
 
-  .skeleton-line-4 {
-    left: 0;
-    top: 38px;
+    &::after {
+      content: ' ';
+      display: block;
+      animation: blockTextShine 1s linear infinite forwards;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: linear-gradient(
+        to right,
+        $theme-gray-100 0%,
+        $theme-gray-50 20%,
+        $theme-gray-100 40%,
+        $theme-gray-100 100%
+      );
+      height: 10px;
+    }
   }
+}
 
-  .skeleton-line-5 {
-    left: 200px;
-    top: 28px;
-    height: 10px;
-  }
+$skeleton-line-widths: (
+  156px,
+  235px,
+  200px,
+);
 
-  .skeleton-line-6 {
-    top: 14px;
-    left: 230px;
-    height: 10px;
+@for $count from 1 through length($skeleton-line-widths) {
+  .skeleton-line-#{$count} {
+    width: nth($skeleton-line-widths, $count);
   }
 }
 

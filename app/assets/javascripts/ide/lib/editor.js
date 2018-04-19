@@ -77,8 +77,8 @@ export default class Editor {
     }
   }
 
-  createModel(file) {
-    return this.modelManager.addModel(file);
+  createModel(file, head = null) {
+    return this.modelManager.addModel(file, head);
   }
 
   attachModel(model) {

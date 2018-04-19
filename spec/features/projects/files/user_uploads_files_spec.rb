@@ -7,11 +7,11 @@ describe 'Projects > Files > User uploads files' do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
-  let(:project) { create(:project, :repository, name: 'Shop') }
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :repository, name: 'Shop', creator: user) }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
-  let(:user) { project.creator }
 
   before do
     project.add_master(user)

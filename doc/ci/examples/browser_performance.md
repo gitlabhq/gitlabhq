@@ -17,7 +17,7 @@ performance:
   variables:
     URL: https://example.com
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - mkdir gitlab-exporter
     - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
@@ -94,7 +94,7 @@ performance:
   stage: performance
   image: docker:git
   services:
-    - docker:dind
+    - docker:stable-dind
   dependencies:
     - review
   script:

@@ -137,7 +137,7 @@ module Projects
       return true unless Gitlab.config.registry.enabled
 
       ContainerRepository.build_root_repository(project).tap do |repository|
-        return repository.has_tags? ? repository.delete_tags! : true
+        break repository.has_tags? ? repository.delete_tags! : true
       end
     end
 
