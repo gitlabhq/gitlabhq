@@ -91,8 +91,9 @@ describe Ci::Stage, :models do
   describe '#index' do
     context 'when stage has been imported and does not have index set' do
       before do
-        create(:ci_build, :running, stage_id: stage.id, stage_idx: 10)
         stage.update_column(:index, nil)
+
+        create(:ci_build, :running, stage_id: stage.id, stage_idx: 10)
       end
 
       it 'recalculates index before updating status' do
