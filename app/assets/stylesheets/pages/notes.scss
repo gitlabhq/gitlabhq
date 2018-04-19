@@ -473,11 +473,6 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', $screen-md-max) {
-    float: none;
-    margin-left: 0;
-  }
-
   .btn-group > .discussion-next-btn {
     margin-left: -1px;
   }
