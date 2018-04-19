@@ -81,7 +81,7 @@
     display: block;
 
     .description-text {
-      margin: 0 $gl-padding 10px 0;
+      margin: 0 0 10px 0;
     }
 
     a {
@@ -309,7 +309,7 @@
 
 .label-links {
   list-style: none;
-  padding: 0 $gl-padding 0 0;
+  padding: 0;
   white-space: nowrap;
 }
 

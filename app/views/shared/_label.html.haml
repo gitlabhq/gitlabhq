@@ -5,7 +5,7 @@
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 
-%li.label-list-item{ class: label.priorities.present? ? '' : 'no-hand', id: label_css_id, data: { id: label.id } }
+%li.label-list-item{ class: label.priority? ? '' : 'no-hand', id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
   %ul.label-actions-list
     %li.inline
