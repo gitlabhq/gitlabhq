@@ -1,7 +1,6 @@
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/ide/stores/actions';
 import store from '~/ide/stores';
-import * as actions from '~/ide/stores/actions';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';

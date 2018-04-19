@@ -33,10 +33,7 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
-export const toggleRightPanelCollapsed = (
-  { dispatch, state },
-  e = undefined,
-) => {
+export const toggleRightPanelCollapsed = ({ dispatch, state }, e = undefined) => {
   if (e) {
     $(e.currentTarget)
       .tooltip('hide')
@@ -141,11 +138,11 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
-export const updateTempFlagForEntry = ({ commit, dispatch, state }, { entry, tempFile }) => {
-  commit(types.UPDATE_TEMP_FLAG, { path: entry.path, tempFile });
+export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, tempFile }) => {
+  commit(types.UPDATE_TEMP_FLAG, { path: file.path, tempFile });
 
-  if (entry.parentPath) {
-    dispatch('updateTempFlagForEntry', { entry: state.entries[entry.parentPath], tempFile });
+  if (file.parentPath) {
+    dispatch('updateTempFlagForEntry', { entry: state.entries[file.parentPath], tempFile });
   }
 };
 
