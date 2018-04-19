@@ -57,46 +57,6 @@
   border-bottom-left-radius: $border-radius-base;
 }
 
-.label-row {
-  display: flex;
-
-  .label-name {
-    width: 200px;
-    flex-shrink: 0;
-
-    .label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-  }
-
-  .label-type {
-    display: block;
-    margin-bottom: 10px;
-    margin-left: 50px;
-  }
-
-  .label-description {
-    display: block;
-
-    .description-text {
-      margin: 0 0 10px 0;
-    }
-
-    a {
-      color: $blue-600;
-    }
-  }
-
-  .label {
-    padding: 4px $grid-size;
-    font-size: $label-font-size;
-    position: relative;
-    top: ($grid-size / 2);
-  }
-}
-
 .color-label {
   padding: 0 $grid-size;
   line-height: 16px;
@@ -322,5 +282,37 @@
   .content-list &:after {
     content: none;
     display: block;
+  }
+
+  .label-name {
+    width: 150px;
+    flex-shrink: 0;
+
+    .label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+  }
+
+  .label-type {
+    display: block;
+    margin-bottom: 10px;
+    margin-left: 50px;
+  }
+
+  .label-description {
+    flex-grow: 1;
+
+    a {
+      color: $blue-600;
+    }
+  }
+
+  .label {
+    padding: 4px $grid-size;
+    font-size: $label-font-size;
+    position: relative;
+    top: ($grid-size / 2);
   }
 }

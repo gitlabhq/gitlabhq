@@ -2,12 +2,12 @@
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 
-.label-row
-  .label-name
-    = link_to_label(label, subject: @project, tooltip: false)
-  .label-description
+.label-name
+  = link_to_label(label, subject: @project, tooltip: false)
+.label-description
+  .append-right-15.prepend-left-15
     - if label.description.present?
-      .description-text
+      .description-text.append-bottom-10
         = markdown_field(label, :description)
     %ul.label-links
       - if show_label_issues_link
