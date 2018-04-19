@@ -87,9 +87,11 @@ export default {
           </a>
         </div>
         <div class="multi-file-commit-panel-inner-scroll">
-          <component
-            :is="activityBarComponent"
-          />
+          <keep-alive>
+            <component
+              :is="activityBarComponent"
+            />
+          </keep-alive>
         </div>
       </template>
     </div>
