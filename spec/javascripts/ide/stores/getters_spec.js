@@ -81,6 +81,36 @@ describe('IDE store getters', () => {
       expect(getters.getChangesInFolder(localState)('test')).toBe(1);
     });
 
+    it('returns length of changed & staged files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/123',
+          name: '123',
+        },
+      );
+
+      localState.stagedFiles.push(
+        {
+          path: 'test/123',
+          name: '123',
+        },
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/12345',
+          name: '12345',
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(2);
+    });
+
     it('returns length of changed & tempFiles files for a path', () => {
       localState.changedFiles.push(
         {
