@@ -4,7 +4,7 @@
       = _('Assignee')
       = icon('spinner spin')
 - else
-  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
+  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: sidebar_assignee_tooltip_label(issuable) }
     - if issuable.assignee
       = link_to_member(@project, issuable.assignee, size: 24)
     - else

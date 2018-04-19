@@ -1,5 +1,6 @@
 module EntityDateHelper
   include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::TagHelper
 
   def interval_in_words(diff)
     return 'Not started' unless diff
@@ -33,5 +34,31 @@ module EntityDateHelper
     duration_hash[:seconds] = seconds if seconds > 0
 
     duration_hash
+  end
+
+  # Generates an HTML-formatted string for remaining dates based on start_date and due_date
+  #
+  # It returns "Past due" for expired entities
+  # It returns "Upcoming" for upcoming entities
+  # If due date is provided, it returns "# days|weeks|months remaining|ago"
+  # If start date is provided and elapsed, with no due date, it returns "# days elapsed"
+  def remaining_days_in_words(entity)
+    if entity.try(:expired?)
+      content_tag(:strong, 'Past due')
+    elsif entity.try(:upcoming?)
+      content_tag(:strong, 'Upcoming')
+    elsif entity.due_date
+      is_upcoming = (entity.due_date - Date.today).to_i > 0
+      time_ago = time_ago_in_words(entity.due_date)
+      content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
+      content.slice!("about ")
+      content << " " + (is_upcoming ? _("remaining") : _("ago"))
+      content.html_safe
+    elsif entity.start_date && entity.start_date.past?
+      days    = entity.elapsed_days
+      content = content_tag(:strong, days)
+      content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
+    end
   end
 end

@@ -83,7 +83,7 @@ export default class LabelsSelect {
         $dropdown.trigger('loading.gl.dropdown');
         axios.put(issueUpdateURL, data)
           .then(({ data }) => {
-            var labelCount, template, labelTooltipTitle, labelTitles;
+            var labelCount, template, labelTooltipTitle, labelTitles, formattedLabels;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -115,8 +115,7 @@ export default class LabelsSelect {
               labelTooltipTitle = labelTitles.join(', ');
             }
             else {
-              labelTooltipTitle = '';
-              $sidebarLabelTooltip.tooltip('destroy');
+              labelTooltipTitle = __('Labels');
             }
 
             $sidebarLabelTooltip

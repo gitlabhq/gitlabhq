@@ -7,7 +7,7 @@
       - if current_user
         %span.issuable-header-text.hide-collapsed.float-left
           = _('Todo')
-      %a.gutter-toggle.float-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left' } }
         = sidebar_gutter_toggle_icon
       - if current_user
         = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
@@ -19,7 +19,7 @@
       .block.assignee
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
       .block.milestone
-        .sidebar-collapsed-icon
+        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
           = icon('clock-o', 'aria-hidden': 'true')
           %span.milestone-title
             - if issuable.milestone
@@ -34,8 +34,7 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.hide-collapsed
           - if issuable.milestone
-            %a{ href: milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: 'true' }}
-              = issuable.milestone.title
+            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 'true' }
           - else
             %span.no-value
               = _('None')
@@ -51,7 +50,7 @@
             = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
-          .sidebar-collapsed-icon
+          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 1 }, title: sidebar_due_date_tooltip_label(issuable) }
             = icon('calendar', 'aria-hidden': 'true')
             %span.js-due-date-sidebar-value
               = issuable.due_date.try(:to_s, :medium) || 'None'
@@ -97,7 +96,7 @@
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
               = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
-          .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
+          .value.issuable-show-labels.dont-hide.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|
                 = link_to_label(label, subject: issuable.project, type: issuable.to_ability_name)

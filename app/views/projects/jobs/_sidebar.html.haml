@@ -1,15 +1,8 @@
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
-      .block
-        %strong.inline.prepend-top-8
-          = @build.name
-        - if can?(current_user, :update_build, @build) && @build.retryable?
-          = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button float-right btn btn-inverted-secondary btn-retry d-block d-lg-none d-xl-none', method: :post
-        %a.gutter-toggle.float-right.d-block.d-sm-none.d-md-none.js-sidebar-build-toggle{ href: "#", 'aria-label': 'Toggle Sidebar', role: 'button' }
-          = icon('angle-double-right')
 
-      #js-details-block-vue
+      #js-details-block-vue{ data: { can_user_retry: can?(current_user, :update_build, @build) && @build.retryable? } }
 
       - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
         .block

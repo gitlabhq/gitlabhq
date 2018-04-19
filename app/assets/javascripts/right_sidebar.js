@@ -5,6 +5,7 @@ import _ from 'underscore';
 import Cookies from 'js-cookie';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
 
 function Sidebar(currentUser) {
   this.toggleTodo = this.toggleTodo.bind(this);
@@ -41,12 +42,14 @@ Sidebar.prototype.addEventListeners = function() {
 };
 
 Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
-  var $allGutterToggleIcons, $this, $thisIcon;
+  var $allGutterToggleIcons, $this, isExpanded, tooltipLabel;
   e.preventDefault();
   $this = $(this);
-  $thisIcon = $this.find('i');
+  isExpanded = $this.find('i').hasClass('fa-angle-double-right');
+  tooltipLabel = isExpanded ? __('Expand sidebar') : __('Collapse sidebar');
   $allGutterToggleIcons = $('.js-sidebar-toggle i');
-  if ($thisIcon.hasClass('fa-angle-double-right')) {
+
+  if (isExpanded) {
     $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
     $('aside.right-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
     $('.layout-page').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
@@ -57,6 +60,9 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
 
     if (gl.lazyLoader) gl.lazyLoader.loadCheck();
   }
+
+  $this.attr('data-original-title', tooltipLabel);
+
   if (!triggered) {
     Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
   }
