@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 - show_rss_button = local_assigns.fetch(:show_rss_button, true)
 - show_export_button = local_assigns.fetch(:show_export_button, true)
 
@@ -9,10 +8,6 @@
 - if show_export_button
   = render 'projects/issues/export_issues/button'
 
-=======
-= link_to safe_params.merge(rss_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe' do
-  = icon('rss')
->>>>>>> upstream/master
 - if @can_bulk_update
   = button_tag "Edit issues", class: "btn btn-default append-right-10 js-bulk-update-toggle"
 - if show_new_issue_link?(@project)
