@@ -8,10 +8,10 @@ function showTooltip(target, title) {
   if (!$target.data('hideTooltip')) {
     $target
       .attr('title', title)
-      .tooltip('fixTitle')
+      .tooltip('_fixTitle')
       .tooltip('show')
       .attr('title', originalTitle)
-      .tooltip('fixTitle');
+      .tooltip('_fixTitle');
   }
 }
 

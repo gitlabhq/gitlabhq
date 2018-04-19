@@ -121,7 +121,7 @@ export default class LabelsSelect {
 
             $sidebarLabelTooltip
               .attr('title', labelTooltipTitle)
-              .tooltip('fixTitle');
+              .tooltip('_fixTitle');
 
             $('.has-tooltip', $value).tooltip({
               container: 'body'

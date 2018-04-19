@@ -392,7 +392,7 @@ class AwardsHandler {
       .removeAttr('data-title')
       .removeAttr('data-original-title')
       .attr('title', this.toSentence(authors))
-      .tooltip('fixTitle');
+      .tooltip('_fixTitle');
   }
 
   addYouToUserList(votesBlock, emoji) {
@@ -405,7 +405,7 @@ class AwardsHandler {
     users.unshift('You');
     return awardBlock
       .attr('title', this.toSentence(users))
-      .tooltip('fixTitle');
+      .tooltip('_fixTitle');
   }
 
   createAwardButtonForVotesBlock(votesBlock, emojiName) {

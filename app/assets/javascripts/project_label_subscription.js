@@ -42,7 +42,7 @@ export default class ProjectLabelSubscription {
         const $button = $(button);
 
         if ($button.attr('data-original-title')) {
-          $button.tooltip('hide').attr('data-original-title', newAction).tooltip('fixTitle');
+          $button.tooltip('hide').attr('data-original-title', newAction).tooltip('_fixTitle');
         }
 
         return button;

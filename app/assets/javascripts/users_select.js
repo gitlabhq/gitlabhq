@@ -199,7 +199,7 @@ function UsersSelect(currentUser, els, options = {}) {
               };
             }
             $value.html(assigneeTemplate(user));
-            $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('fixTitle');
+            $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('_fixTitle');
             return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
           });
       };

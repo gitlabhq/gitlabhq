@@ -116,7 +116,7 @@ export default class BlobViewer {
       this.copySourceBtn.classList.add('disabled');
     }
 
-    $(this.copySourceBtn).tooltip('fixTitle');
+    $(this.copySourceBtn).tooltip('_fixTitle');
   }
 
   switchToViewer(name) {
