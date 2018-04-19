@@ -24,7 +24,9 @@ describe Uniquify do
 
     it 'allows to pass an initial value for the counter' do
       start_counting_from = 2
-      result = uniquify.string('test_string', start_counting_from) { |s| s == 'test_string' }
+      uniquify = described_class.new(start_counting_from)
+
+      result = uniquify.string('test_string') { |s| s == 'test_string' }
 
       expect(result).to eq('test_string2')
     end

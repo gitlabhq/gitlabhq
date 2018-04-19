@@ -198,7 +198,7 @@ class Issue < ActiveRecord::Base
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 
     start_counting_from = 2
-    Uniquify.new.string(-> (counter) { "#{to_branch_name}-#{counter}" }, start_counting_from) do |suggested_branch_name|
+    Uniquify.new(start_counting_from).string(-> (counter) { "#{to_branch_name}-#{counter}" }) do |suggested_branch_name|
       project.repository.branch_exists?(suggested_branch_name)
     end
   end
