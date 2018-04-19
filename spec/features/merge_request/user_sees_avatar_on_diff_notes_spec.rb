@@ -35,7 +35,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
       expect(page).not_to have_selector('.diff-comment-avatar-holders')
     end
 
-    it 'does not render avatars after commening on discussion tab' do
+    it 'does not render avatars after commenting on discussion tab' do
       click_button 'Reply...'
 
       page.within('.js-discussion-note-form') do

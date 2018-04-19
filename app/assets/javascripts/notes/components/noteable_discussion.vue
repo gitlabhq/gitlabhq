@@ -291,7 +291,7 @@ Please check your network connection and try again.`;
               :discussion="shouldRenderDiffs ? discussion : undefined"
               :class="wrapperClass"
             >
-              <div class="discussion-notes">
+              <div class="discussion-notes js-discussion-note-form">
                 <ul class="notes">
                   <component
                     v-for="note in note.notes"
