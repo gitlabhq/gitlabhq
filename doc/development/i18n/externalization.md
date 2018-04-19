@@ -45,7 +45,7 @@ We basically have 4 types of files:
 1. Ruby files: basically Models and Controllers.
 1. HAML files: these are the view files.
 1. ERB files: used for email templates.
-1. JavaScript files: we mostly need to work with VUE JS templates.
+1. JavaScript files: we mostly need to work with Vue templates.
 
 ### Ruby files
 
@@ -131,6 +131,9 @@ There is also and alternative method to [translate messages from validation erro
 
 ### Interpolation
 
+Placeholders in translated text should match the code style of the respective source file.
+For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+
 - In Ruby/HAML:
 
     ```ruby
@@ -141,11 +144,19 @@ There is also and alternative method to [translate messages from validation erro
 
     ```js
     import { __, sprintf } from '~/locale';
-    sprintf(__('Hello %{username}'), { username: 'Joe' }) => 'Hello Joe'
+
+    sprintf(__('Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
     ```
 
-The placeholders should match the code style of the respective source file.
-For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+    By default, `sprintf` escapes the placeholder values.
+    If you want to take care of that yourself, you can pass `false` as third argument.
+
+    ```js
+    import { __, sprintf } from '~/locale';
+
+    sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }); // => 'This is &lt;strong&gt;bold&lt;/strong&gt;'
+    sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }, false); // => 'This is <strong>bold</strong>'
+    ```
 
 ### Plurals
 

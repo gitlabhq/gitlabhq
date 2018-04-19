@@ -1,6 +1,9 @@
 module Boards
   class IssuesController < Boards::ApplicationController
     include BoardsResponses
+    include ControllerWithCrossProjectAccessCheck
+
+    requires_cross_project_access if: -> { board&.group_board? }
 
     before_action :whitelist_query_limiting, only: [:index, :update]
     before_action :authorize_read_issue, only: [:index]
@@ -64,11 +67,19 @@ module Boards
     end
 
     def issues_finder
-      IssuesFinder.new(current_user, project_id: board_parent.id)
+      if board.group_board?
+        IssuesFinder.new(current_user, group_id: board_parent.id)
+      else
+        IssuesFinder.new(current_user, project_id: board_parent.id)
+      end
     end
 
     def project
-      board_parent
+      @project ||= if board.group_board?
+                     Project.find(issue_params[:project_id])
+                   else
+                     board_parent
+                   end
     end
 
     def move_params
@@ -85,7 +96,8 @@ module Boards
       resource.as_json(
         only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
         labels: true,
-        sidebar_endpoints: true,
+        issue_endpoints: true,
+        include_full_project_path: board.group_board?,
         include: {
           project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },

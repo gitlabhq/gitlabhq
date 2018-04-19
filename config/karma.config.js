@@ -1,11 +1,12 @@
 var path = require('path');
 var webpack = require('webpack');
+var argumentsParser = require('commander');
 var webpackConfig = require('./webpack.config.js');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
 // remove problematic plugins
 if (webpackConfig.plugins) {
-  webpackConfig.plugins = webpackConfig.plugins.filter(function (plugin) {
+  webpackConfig.plugins = webpackConfig.plugins.filter(function(plugin) {
     return !(
       plugin instanceof webpack.optimize.CommonsChunkPlugin ||
       plugin instanceof webpack.optimize.ModuleConcatenationPlugin ||
@@ -13,6 +14,24 @@ if (webpackConfig.plugins) {
     );
   });
 }
+
+var testFiles = argumentsParser
+  .option(
+    '-f, --filter-spec [filter]',
+    'Filter run spec files by path. Multiple filters are like a logical OR.',
+    (val, memo) => {
+      memo.push(val);
+      return memo;
+    },
+    []
+  )
+  .parse(process.argv).filterSpec;
+
+webpackConfig.plugins.push(
+  new webpack.DefinePlugin({
+    'process.env.TEST_FILES': JSON.stringify(testFiles),
+  })
+);
 
 webpackConfig.devtool = 'cheap-inline-source-map';
 
@@ -24,7 +43,7 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers:  ['ChromeHeadlessCustom'],
+    browsers: ['ChromeHeadlessCustom'],
     customLaunchers: {
       ChromeHeadlessCustom: {
         base: 'ChromeHeadless',
@@ -34,12 +53,12 @@ module.exports = function(config) {
           // escalated kernel privileges (e.g. docker run --cap-add=CAP_SYS_ADMIN)
           '--no-sandbox',
         ],
-      }
+      },
     },
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
-      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
+      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw|.png)', included: false },
     ],
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
@@ -55,7 +74,7 @@ module.exports = function(config) {
       reports: ['html', 'text-summary'],
       dir: 'coverage-javascript/',
       subdir: '.',
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
     };
     karmaConfig.browserNoActivityTimeout = 60000; // 60 seconds
   }

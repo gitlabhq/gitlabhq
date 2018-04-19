@@ -52,12 +52,12 @@ class Event < ActiveRecord::Base
   belongs_to :target, -> {
     # If the association for "target" defines an "author" association we want to
     # eager-load this so Banzai & friends don't end up performing N+1 queries to
-    # get the authors of notes, issues, etc.
-    if reflections['events'].active_record.reflect_on_association(:author)
-      includes(:author)
-    else
-      self
+    # get the authors of notes, issues, etc. (likewise for "noteable").
+    incs = %i(author noteable).select do |a|
+      reflections['events'].active_record.reflect_on_association(a)
     end
+
+    incs.reduce(self) { |obj, a| obj.includes(a) }
   }, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   has_one :push_event_payload
@@ -65,6 +65,7 @@ class Event < ActiveRecord::Base
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push?
+  after_create :track_user_interacted_projects
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -109,7 +110,10 @@ class Event < ActiveRecord::Base
       end
     end
 
+    # Remove this method when removing Gitlab.rails5? code.
     def subclass_from_attributes(attrs)
+      return super if Gitlab.rails5?
+
       # Without this Rails will keep calling this method on the returned class,
       # resulting in an infinite loop.
       return unless self == Event
@@ -158,7 +162,7 @@ class Event < ActiveRecord::Base
 
   def project_name
     if project
-      project.name_with_namespace
+      project.full_name
     else
       "(deleted project)"
     end
@@ -388,5 +392,12 @@ class Event < ActiveRecord::Base
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
       .update_all(last_repository_updated_at: created_at)
+  end
+
+  def track_user_interacted_projects
+    # Note the call to .available? is due to earlier migrations
+    # that would otherwise conflict with the call to .track
+    # (because the table does not exist yet).
+    UserInteractedProject.track(self) if UserInteractedProject.available?
   end
 end

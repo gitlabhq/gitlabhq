@@ -8,6 +8,8 @@ module Gitlab
     class Repository
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
+      include Gitlab::EncodingHelper
+      include Gitlab::Utils::StrongMemoize
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -22,6 +24,7 @@ module Gitlab
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
+      EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -30,6 +33,7 @@ module Gitlab
       DeleteBranchError = Class.new(StandardError)
       CreateTreeError = Class.new(StandardError)
       TagExistsError = Class.new(StandardError)
+      ChecksumError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the repository path
@@ -72,9 +76,6 @@ module Gitlab
         end
       end
 
-      # Full path to repo
-      attr_reader :path
-
       # Directory name of repo
       attr_reader :name
 
@@ -93,20 +94,24 @@ module Gitlab
         @relative_path = relative_path
         @gl_repository = gl_repository
 
-        storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @gitlab_projects = Gitlab::Git::GitlabProjects.new(
-          storage_path,
+          storage,
           relative_path,
           global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
           logger: Rails.logger
         )
-        @path = File.join(storage_path, @relative_path)
+
         @name = @relative_path.split("/").last
-        @attributes = Gitlab::Git::InfoAttributes.new(path)
       end
 
       def ==(other)
         path == other.path
+      end
+
+      def path
+        @path ||= File.join(
+          Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
+        )
       end
 
       # Default branch in the repository
@@ -137,12 +142,12 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status:  Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
             circuit_breaker.perform do
-              File.exist?(File.join(@path, 'refs'))
+              File.exist?(File.join(path, 'refs'))
             end
           end
         end
@@ -227,13 +232,13 @@ module Gitlab
         end
       end
 
+      def expire_has_local_branches_cache
+        clear_memoization(:has_local_branches)
+      end
+
       def has_local_branches?
-        gitaly_migrate(:has_local_branches) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.has_local_branches?
-          else
-            has_local_branches_rugged?
-          end
+        strong_memoize(:has_local_branches) do
+          uncached_has_local_branches?
         end
       end
 
@@ -295,7 +300,8 @@ module Gitlab
       #
       # Ref names must start with `refs/`.
       def ref_exists?(ref_name)
-        gitaly_migrate(:ref_exists) do |is_enabled|
+        gitaly_migrate(:ref_exists,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?(ref_name)
           else
@@ -393,17 +399,24 @@ module Gitlab
         nil
       end
 
-      def archive_prefix(ref, sha)
+      def archive_prefix(ref, sha, append_sha:)
+        append_sha = (ref != sha) if append_sha.nil?
+
         project_name = self.name.chomp('.git')
-        "#{project_name}-#{ref.tr('/', '-')}-#{sha}"
+        formatted_ref = ref.tr('/', '-')
+
+        prefix_segments = [project_name, formatted_ref]
+        prefix_segments << sha if append_sha
+
+        prefix_segments.join('-')
       end
 
-      def archive_metadata(ref, storage_path, format = "tar.gz")
+      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
         return {} if commit.nil?
 
-        prefix = archive_prefix(ref, commit.id)
+        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
 
         {
           'RepoPath' => path,
@@ -479,9 +492,8 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
-        # TODO support options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1049
         gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled && !options[:all]
+          if is_enabled
             gitaly_commit_client.find_commits(options)
           else
             raw_log(options).map { |c| Commit.decorate(self, c) }
@@ -508,18 +520,13 @@ module Gitlab
       def count_commits(options)
         count_commits_options = process_count_commits_options(options)
 
-        # TODO add support for options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1050
         gitaly_migrate(:count_commits) do |is_enabled|
-          if is_enabled && !options[:all]
+          if is_enabled
             count_commits_by_gitaly(count_commits_options)
           else
             count_commits_by_shelling_out(count_commits_options)
           end
         end
-      end
-
-      def sha_from_ref(ref)
-        rev_parse_target(ref).oid
       end
 
       # Return the object that +revspec+ points to.  If +revspec+ is an
@@ -553,6 +560,24 @@ module Gitlab
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to, options = {})
         count_commits(from: from, to: to, **options)
+      end
+
+      # old_rev and new_rev are commit ID's
+      # the result of this method is an array of Gitlab::Git::RawDiffChange
+      def raw_changes_between(old_rev, new_rev)
+        result = []
+
+        circuit_breaker.perform do
+          Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+            last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+            if wait_threads.any? { |waiter| !waiter.value&.success? }
+              raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+            end
+          end
+        end
+
+        result
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -717,7 +742,7 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_branch(branch_name, user, target)
           else
@@ -727,7 +752,7 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:operation_user_add_tag, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_add_tag(tag_name, user: user, target: target, message: message)
           else
@@ -737,7 +762,7 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+        gitaly_migrate(:operation_user_delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_operations_client.user_delete_branch(branch_name, user)
           else
@@ -812,7 +837,7 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        gitaly_migrate(:revert) do |is_enabled|
+        gitaly_migrate(:revert, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           args = {
             user: user,
             commit: commit,
@@ -878,7 +903,7 @@ module Gitlab
 
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch) do |is_enabled|
+        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.delete_branch(branch_name)
           else
@@ -890,7 +915,8 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        gitaly_migrate(:delete_refs) do |is_enabled|
+        gitaly_migrate(:delete_refs,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_delete_refs(*ref_names)
           else
@@ -905,7 +931,7 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch) do |is_enabled|
+        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.create_branch(ref, start_point)
           else
@@ -988,11 +1014,32 @@ module Gitlab
         raise InvalidRef
       end
 
+      def info_attributes
+        return @info_attributes if @info_attributes
+
+        content =
+          gitaly_migrate(:get_info_attributes) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.info_attributes
+            else
+              attributes_path = File.join(File.expand_path(path), 'info', 'attributes')
+
+              if File.exist?(attributes_path)
+                File.read(attributes_path)
+              else
+                ""
+              end
+            end
+          end
+
+        @info_attributes = AttributesParser.new(content)
+      end
+
       # Returns the Git attributes for the given file path.
       #
       # See `Gitlab::Git::Attributes` for more information.
       def attributes(path)
-        @attributes.attributes(path)
+        info_attributes.attributes(path)
       end
 
       def gitattribute(path, name)
@@ -1004,15 +1051,16 @@ module Gitlab
       # This only checks the root .gitattributes file,
       # it does not traverse subfolders to find additional .gitattributes files
       #
-      # This method is around 30 times slower than `attributes`,
-      # which uses `$GIT_DIR/info/attributes`
+      # This method is around 30 times slower than `attributes`, which uses
+      # `$GIT_DIR/info/attributes`. Consider caching AttributesAtRefParser
+      # and reusing that for multiple calls instead of this method.
       def attributes_at(ref, file_path)
         parser = AttributesAtRefParser.new(self, ref)
         parser.attributes(file_path)
       end
 
       def languages(ref = nil)
-        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_commit_client.languages(ref)
           else
@@ -1039,7 +1087,8 @@ module Gitlab
       end
 
       def license_short_name
-        gitaly_migrate(:license_short_name) do |is_enabled|
+        gitaly_migrate(:license_short_name,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.license_short_name
           else
@@ -1191,15 +1240,9 @@ module Gitlab
       end
 
       def fsck
-        gitaly_migrate(:git_fsck) do |is_enabled|
-          msg, status = if is_enabled
-                          gitaly_fsck
-                        else
-                          shell_fsck
-                        end
+        msg, status = gitaly_repository_client.fsck
 
-          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
-        end
+        raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
       end
 
       def create_from_bundle(bundle_path)
@@ -1371,8 +1414,21 @@ module Gitlab
         raise CommandError.new(e)
       end
 
+      def clean_stale_repository_files
+        gitaly_migrate(:repository_cleanup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+          gitaly_repository_client.cleanup if is_enabled && exists?
+        end
+      rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
+        Rails.logger.error("Unable to clean repository on storage #{storage} with path #{path}: #{e.message}")
+        Gitlab::Metrics.counter(
+          :failed_repository_cleanup_total,
+          'Number of failed repository cleanup events'
+        ).increment
+      end
+
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
+        gitaly_migrate(:branch_names_contains_sha,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.branch_names_contains_sha(sha)
           else
@@ -1382,7 +1438,8 @@ module Gitlab
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
+        gitaly_migrate(:tag_names_contains_sha,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.tag_names_contains_sha(sha)
           else
@@ -1397,7 +1454,7 @@ module Gitlab
         offset = 2
         args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
-        run_git(args).first.scrub.split(/^--$/)
+        run_git(args).first.scrub.split(/^--\n/)
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1415,7 +1472,7 @@ module Gitlab
 
         return [] if empty? || safe_query.blank?
 
-        args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{safe_query})
+        args = %W(ls-tree -r --name-status --full-tree #{ref || root_ref} -- #{safe_query})
 
         run_git(args).first.lines.map(&:strip)
       end
@@ -1435,22 +1492,12 @@ module Gitlab
         output
       end
 
-      def can_be_merged?(source_sha, target_branch)
-        gitaly_migrate(:can_be_merged) do |is_enabled|
-          if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
-          else
-            rugged_can_be_merged?(source_sha, target_branch)
-          end
-        end
-      end
-
-      def last_commit_id_for_path(sha, path)
+      def last_commit_for_path(sha, path)
         gitaly_migrate(:last_commit_for_path) do |is_enabled|
           if is_enabled
-            last_commit_for_path_by_gitaly(sha, path).id
+            last_commit_for_path_by_gitaly(sha, path)
           else
-            last_commit_id_for_path_by_shelling_out(sha, path)
+            last_commit_for_path_by_rugged(sha, path)
           end
         end
       end
@@ -1475,7 +1522,54 @@ module Gitlab
         run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
       end
 
+      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
+        base_args = %w(worktree add --detach)
+
+        # Note that we _don't_ want to test for `.present?` here: If the caller
+        # passes an non nil empty value it means it still wants sparse checkout
+        # but just isn't interested in any file, perhaps because it wants to
+        # checkout files in by a changeset but that changeset only adds files.
+        if sparse_checkout_files
+          # Create worktree without checking out
+          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
+
+          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
+
+          # After sparse checkout configuration, checkout `branch` in worktree
+          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
+        else
+          # Create worktree and checkout `branch` in it
+          run_git!(base_args + [worktree_path, branch], env: env)
+        end
+
+        yield
+      ensure
+        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
+        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
+      end
+
+      def checksum
+        gitaly_migrate(:calculate_checksum) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.calculate_checksum
+          else
+            calculate_checksum_by_shelling_out
+          end
+        end
+      end
+
       private
+
+      def uncached_has_local_branches?
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.has_local_branches?
+          else
+            has_local_branches_rugged?
+          end
+        end
+      end
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
         if shell
@@ -1500,7 +1594,7 @@ module Gitlab
         names.lines.each do |line|
           next unless line.start_with?(refs_prefix)
 
-          refs << line.rstrip[left_slice_count..-1]
+          refs << encode_utf8(line.rstrip[left_slice_count..-1])
         end
 
         refs
@@ -1561,33 +1655,6 @@ module Gitlab
         File.exist?(path) && !clean_stuck_worktree(path)
       end
 
-      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
-        base_args = %w(worktree add --detach)
-
-        # Note that we _don't_ want to test for `.present?` here: If the caller
-        # passes an non nil empty value it means it still wants sparse checkout
-        # but just isn't interested in any file, perhaps because it wants to
-        # checkout files in by a changeset but that changeset only adds files.
-        if sparse_checkout_files
-          # Create worktree without checking out
-          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
-
-          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
-
-          # After sparse checkout configuration, checkout `branch` in worktree
-          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
-        else
-          # Create worktree and checkout `branch` in it
-          run_git!(base_args + [worktree_path, branch], env: env)
-        end
-
-        yield
-      ensure
-        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
-        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
-      end
-
       def clean_stuck_worktree(path)
         return false unless File.mtime(path) < 15.minutes.ago
 
@@ -1606,14 +1673,6 @@ module Gitlab
         worktree_info_path = File.join(worktree_git_path, 'info')
         FileUtils.mkdir_p(worktree_info_path)
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
-      end
-
-      def gitaly_fsck
-        gitaly_repository_client.fsck
-      end
-
-      def shell_fsck
-        run_git(%W[--git-dir=#{path} fsck], nice: true)
       end
 
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
@@ -1773,21 +1832,11 @@ module Gitlab
       end
 
       def alternate_object_directories
-        relative_paths = relative_object_directories
-
-        if relative_paths.any?
-          relative_paths.map { |d| File.join(path, d) }
-        else
-          absolute_object_directories.flat_map { |d| d.split(File::PATH_SEPARATOR) }
-        end
+        relative_object_directories.map { |d| File.join(path, d) }
       end
 
       def relative_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      def absolute_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).flatten.compact
+        Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
@@ -1898,7 +1947,7 @@ module Gitlab
       end
 
       def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path(sha, path)
+        sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
       end
 
@@ -2406,14 +2455,6 @@ module Gitlab
           .map { |c| commit(c) }
       end
 
-      def gitaly_can_be_merged?(their_commit, our_commit)
-        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
-      end
-
-      def rugged_can_be_merged?(their_commit, our_commit)
-        !rugged.merge_commits(our_commit, their_commit).conflicts?
-      end
-
       def last_commit_for_path_by_gitaly(sha, path)
         gitaly_commit_client.last_commit_for_path(sha, path)
       end
@@ -2441,6 +2482,67 @@ module Gitlab
 
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
+      end
+
+      def sha_from_ref(ref)
+        rev_parse_target(ref).oid
+      end
+
+      def calculate_checksum_by_shelling_out
+        raise NoRepository unless exists?
+
+        args = %W(--git-dir=#{path} show-ref --heads --tags)
+        output, status = run_git(args)
+
+        if status.nil? || !status.zero?
+          # Empty repositories return with a non-zero status and an empty output.
+          return EMPTY_REPOSITORY_CHECKSUM if output&.empty?
+
+          raise ChecksumError, output
+        end
+
+        refs = output.split("\n")
+
+        result = refs.inject(nil) do |checksum, ref|
+          value = Digest::SHA1.hexdigest(ref).hex
+
+          if checksum.nil?
+            value
+          else
+            checksum ^ value
+          end
+        end
+
+        result.to_s(16)
+      end
+
+      def build_git_cmd(*args)
+        object_directories = alternate_object_directories.join(File::PATH_SEPARATOR)
+
+        env = { 'PWD' => self.path }
+        env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories if object_directories.present?
+
+        [
+          env,
+          ::Gitlab.config.git.bin_path,
+          *args,
+          { chdir: self.path }
+        ]
+      end
+
+      def git_diff_cmd(old_rev, new_rev)
+        old_rev = old_rev == ::Gitlab::Git::BLANK_SHA ? ::Gitlab::Git::EMPTY_TREE_ID : old_rev
+
+        build_git_cmd('diff', old_rev, new_rev, '--raw')
+      end
+
+      def git_cat_file_cmd
+        format = '%(objectname) %(objectsize) %(rest)'
+        build_git_cmd('cat-file', "--batch-check=#{format}")
+      end
+
+      def format_git_cat_file_script
+        File.expand_path('../support/format-git-cat-file-input', __FILE__)
       end
     end
   end

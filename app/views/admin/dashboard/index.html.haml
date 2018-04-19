@@ -126,6 +126,7 @@
               GitLab
               %span.pull-right
                 = Gitlab::VERSION
+                = "(#{Gitlab::REVISION})"
             %p
               GitLab Shell
               %span.pull-right
@@ -164,7 +165,7 @@
             %h4 Latest projects
             - @projects.each do |project|
               %p
-                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
+                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
                 %span.light.pull-right
                   #{time_ago_with_tooltip(project.created_at)}
       .col-md-4

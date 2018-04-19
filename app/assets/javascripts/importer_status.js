@@ -1,11 +1,15 @@
-import { __ } from './locale';
+import $ from 'jquery';
+import _ from 'underscore';
+import { __, sprintf } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
+import { convertPermissionToBoolean } from './lib/utils/common_utils';
 
 class ImporterStatus {
-  constructor(jobsUrl, importUrl) {
+  constructor({ jobsUrl, importUrl, ciCdOnly }) {
     this.jobsUrl = jobsUrl;
     this.importUrl = importUrl;
+    this.ciCdOnly = ciCdOnly;
     this.initStatusPage();
     this.setAutoUpdate();
   }
@@ -45,6 +49,7 @@ class ImporterStatus {
       repo_id: id,
       target_namespace: targetNamespace,
       new_name: newName,
+      ci_cd_only: this.ciCdOnly,
     })
     .then(({ data }) => {
       const job = $(`tr#repo_${id}`);
@@ -54,7 +59,13 @@ class ImporterStatus {
       $('table.import-jobs tbody').prepend(job);
 
       job.addClass('active');
-      job.find('.import-actions').html('<i class="fa fa-spinner fa-spin" aria-label="importing"></i> started');
+      const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
+      job.find('.import-actions').html(sprintf(
+        _.escape(__('%{loadingIcon} Started')), {
+          loadingIcon: `<i class="fa fa-spinner fa-spin" aria-label="${_.escape(connectingVerb)}"></i>`,
+        },
+        false,
+      ));
     })
     .catch(() => flash(__('An error occurred while importing project')));
   }
@@ -71,13 +82,16 @@ class ImporterStatus {
           switch (job.import_status) {
             case 'finished':
               jobItem.removeClass('active').addClass('success');
-              statusField.html('<span><i class="fa fa-check"></i> done</span>');
+              statusField.html(`<span><i class="fa fa-check"></i> ${__('Done')}</span>`);
               break;
             case 'scheduled':
-              statusField.html(`${spinner} scheduled`);
+              statusField.html(`${spinner} ${__('Scheduled')}`);
               break;
             case 'started':
-              statusField.html(`${spinner} started`);
+              statusField.html(`${spinner} ${__('Started')}`);
+              break;
+            case 'failed':
+              statusField.html(__('Failed'));
               break;
             default:
               statusField.html(job.import_status);
@@ -98,7 +112,11 @@ function initImporterStatus() {
 
   if (importerStatus) {
     const data = importerStatus.dataset;
-    return new ImporterStatus(data.jobsImportPath, data.importPath);
+    return new ImporterStatus({
+      jobsUrl: data.jobsImportPath,
+      importUrl: data.importPath,
+      ciCdOnly: convertPermissionToBoolean(data.ciCdOnly),
+    });
   }
 }
 

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ShortcutsNetwork from '../../../../shortcuts_network';
 import Network from '../network';
 

@@ -145,6 +145,18 @@ feature 'Login' do
             expect { enter_code(codes.sample) }
               .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
+
+          it 'invalidates backup codes twice in a row' do
+            random_code = codes.delete(codes.sample)
+            expect { enter_code(random_code) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
+
+            gitlab_sign_out
+            gitlab_sign_in(user)
+
+            expect { enter_code(codes.sample) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
+          end
         end
 
         context 'with invalid code' do
@@ -380,7 +392,7 @@ feature 'Login' do
     end
 
     def ensure_one_active_tab
-      expect(page).to have_selector('.nav-tabs > li.active', count: 1)
+      expect(page).to have_selector('ul.new-session-tabs > li.active', count: 1)
     end
 
     def ensure_one_active_pane

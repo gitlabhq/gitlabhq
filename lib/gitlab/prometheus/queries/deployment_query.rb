@@ -2,7 +2,7 @@ module Gitlab
   module Prometheus
     module Queries
       class DeploymentQuery < BaseQuery
-        def query(environment_id, deployment_id)
+        def query(deployment_id)
           Deployment.find_by(id: deployment_id).try do |deployment|
             environment_slug = deployment.environment.slug
 
@@ -24,6 +24,11 @@ module Gitlab
               cpu_after: client_query(cpu_avg_query, time: timeframe_end)
             }
           end
+        end
+
+        def self.transform_reactive_result(result)
+          result[:metrics] = result.delete :data
+          result
         end
       end
     end

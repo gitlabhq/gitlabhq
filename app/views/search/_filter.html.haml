@@ -22,7 +22,7 @@
     %span.dropdown-toggle-text
       Project:
       - if @project.present?
-        = @project.name_with_namespace
+        = @project.full_name
       - else
         Any
     = icon("chevron-down")

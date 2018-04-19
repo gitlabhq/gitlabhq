@@ -1,51 +1,49 @@
 <script>
-  import { mapState, mapGetters } from 'vuex';
-  import ideSidebar from './ide_side_bar.vue';
-  import ideContextbar from './ide_context_bar.vue';
-  import repoTabs from './repo_tabs.vue';
-  import repoFileButtons from './repo_file_buttons.vue';
-  import ideStatusBar from './ide_status_bar.vue';
-  import repoPreview from './repo_preview.vue';
-  import repoEditor from './repo_editor.vue';
+import { mapState, mapGetters } from 'vuex';
+import ideSidebar from './ide_side_bar.vue';
+import ideContextbar from './ide_context_bar.vue';
+import repoTabs from './repo_tabs.vue';
+import ideStatusBar from './ide_status_bar.vue';
+import repoEditor from './repo_editor.vue';
 
-  export default {
-    components: {
-      ideSidebar,
-      ideContextbar,
-      repoTabs,
-      repoFileButtons,
-      ideStatusBar,
-      repoEditor,
-      repoPreview,
+export default {
+  components: {
+    ideSidebar,
+    ideContextbar,
+    repoTabs,
+    ideStatusBar,
+    repoEditor,
+  },
+  props: {
+    emptyStateSvgPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      emptyStateSvgPath: {
-        type: String,
-        required: true,
-      },
+    noChangesStateSvgPath: {
+      type: String,
+      required: true,
     },
-    computed: {
-      ...mapState([
-        'currentBlobView',
-        'selectedFile',
-      ]),
-      ...mapGetters([
-        'changedFiles',
-        'activeFile',
-      ]),
+    committedStateSvgPath: {
+      type: String,
+      required: true,
     },
-    mounted() {
-      const returnValue = 'Are you sure you want to lose unsaved changes?';
-      window.onbeforeunload = (e) => {
-        if (!this.changedFiles.length) return undefined;
+  },
+  computed: {
+    ...mapState(['changedFiles', 'openFiles', 'viewer', 'currentMergeRequestId']),
+    ...mapGetters(['activeFile', 'hasChanges']),
+  },
+  mounted() {
+    const returnValue = 'Are you sure you want to lose unsaved changes?';
+    window.onbeforeunload = e => {
+      if (!this.changedFiles.length) return undefined;
 
-        Object.assign(e, {
-          returnValue,
-        });
-        return returnValue;
-      };
-    },
-  };
+      Object.assign(e, {
+        returnValue,
+      });
+      return returnValue;
+    };
+  },
+};
 </script>
 
 <template>
@@ -59,20 +57,28 @@
       <template
         v-if="activeFile"
       >
-        <repo-tabs/>
-        <component
-          class="multi-file-edit-pane-content"
-          :is="currentBlobView"
+        <repo-tabs
+          :active-file="activeFile"
+          :files="openFiles"
+          :viewer="viewer"
+          :has-changes="hasChanges"
+          :merge-request-id="currentMergeRequestId"
         />
-        <repo-file-buttons />
+        <repo-editor
+          class="multi-file-edit-pane-content"
+          :file="activeFile"
+        />
         <ide-status-bar
-          :file="selectedFile"
+          :file="activeFile"
         />
       </template>
       <template
         v-else
       >
-        <div class="ide-empty-state">
+        <div
+          v-once
+          class="ide-empty-state"
+        >
           <div class="row js-empty-state">
             <div class="col-xs-12">
               <div class="svg-content svg-250">
@@ -94,6 +100,9 @@
         </div>
       </template>
     </div>
-    <ide-contextbar/>
+    <ide-contextbar
+      :no-changes-state-svg-path="noChangesStateSvgPath"
+      :committed-state-svg-path="committedStateSvgPath"
+    />
   </div>
 </template>

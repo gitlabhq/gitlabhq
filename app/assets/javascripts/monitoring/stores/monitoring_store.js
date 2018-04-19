@@ -1,7 +1,7 @@
 import _ from 'underscore';
 
 function sortMetrics(metrics) {
-  return _.chain(metrics).sortBy('weight').sortBy('title').value();
+  return _.chain(metrics).sortBy('title').sortBy('weight').value();
 }
 
 function normalizeMetrics(metrics) {

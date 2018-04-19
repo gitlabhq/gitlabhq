@@ -14,16 +14,17 @@ class SubmitUsagePingService
   def execute
     return false unless Gitlab::CurrentSettings.usage_ping_enabled?
 
-    response = HTTParty.post(
+    response = Gitlab::HTTP.post(
       URL,
       body: Gitlab::UsageData.to_json(force_refresh: true),
+      allow_local_requests: true,
       headers: { 'Content-type' => 'application/json' }
     )
 
     store_metrics(response)
 
     true
-  rescue HTTParty::Error => e
+  rescue Gitlab::HTTP::Error => e
     Rails.logger.info "Unable to contact GitLab, Inc.: #{e}"
 
     false

@@ -5,7 +5,7 @@ module Gitlab
     REGISTRY_SCOPES = [:read_registry].freeze
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user, :sudo].freeze
+    API_SCOPES = [:api, :read_user, :sudo, :read_repository].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
@@ -26,6 +26,7 @@ module Gitlab
           lfs_token_check(login, password, project) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password) ||
+          deploy_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
@@ -40,8 +41,8 @@ module Gitlab
       end
 
       def find_with_user_password(login, password)
-        # Avoid resource intensive login checks if password is not provided
-        return unless password.present?
+        # Avoid resource intensive checks if login credentials are not provided
+        return unless login.present? && password.present?
 
         # Nothing to do here if internal auth is disabled and LDAP is
         # not configured
@@ -50,13 +51,29 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          # If no user is found, or it's an LDAP server, try LDAP.
-          #   LDAP users are only authenticated via LDAP
-          if user.nil? || user.ldap_user?
-            # Second chance - try LDAP authentication
-            Gitlab::Auth::LDAP::Authentication.login(login, password)
-          elsif Gitlab::CurrentSettings.password_authentication_enabled_for_git?
-            user if user.active? && user.valid_password?(password)
+          break if user && !user.active?
+
+          authenticators = []
+
+          if user
+            authenticators << Gitlab::Auth::OAuth::Provider.authentication(user, 'database')
+
+            # Add authenticators for all identities if user is not nil
+            user&.identities&.each do |identity|
+              authenticators << Gitlab::Auth::OAuth::Provider.authentication(user, identity.provider)
+            end
+          else
+            # If no user is provided, try LDAP.
+            #   LDAP users are only authenticated via LDAP
+            authenticators << Gitlab::Auth::LDAP::Authentication
+          end
+
+          authenticators.compact!
+
+          # return found user that was authenticated first for given login credentials
+          authenticators.find do |auth|
+            authenticated_user = auth.login(login, password)
+            break authenticated_user if authenticated_user
           end
         end
       end
@@ -147,12 +164,29 @@ module Gitlab
       def abilities_for_scopes(scopes)
         abilities_by_scope = {
           api: full_authentication_abilities,
-          read_registry: [:read_container_image]
+          read_registry: [:read_container_image],
+          read_repository: [:download_code]
         }
 
         scopes.flat_map do |scope|
           abilities_by_scope.fetch(scope.to_sym, [])
         end.uniq
+      end
+
+      def deploy_token_check(login, password)
+        return unless password.present?
+
+        token =
+          DeployToken.active.find_by(token: password)
+
+        return unless token && login
+        return if login != token.username
+
+        scopes = abilities_for_scopes(token.scopes)
+
+        if valid_scoped_token?(token, available_scopes)
+          Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
+        end
       end
 
       def lfs_token_check(login, password, project)

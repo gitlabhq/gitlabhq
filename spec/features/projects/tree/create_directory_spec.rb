@@ -8,8 +8,6 @@ feature 'Multi-file editor new directory', :js do
     project.add_master(user)
     sign_in(user)
 
-    set_cookie('new_repo', 'true')
-
     visit project_tree_path(project, :master)
 
     wait_for_requests
@@ -46,7 +44,7 @@ feature 'Multi-file editor new directory', :js do
 
     wait_for_requests
 
-    find('.multi-file-commit-panel-collapse-btn').click
+    click_button 'Stage all'
 
     fill_in('commit-message', with: 'commit message ide')
 

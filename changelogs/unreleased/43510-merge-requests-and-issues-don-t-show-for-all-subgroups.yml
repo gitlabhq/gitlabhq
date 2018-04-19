@@ -1,6 +1,0 @@
----
-title: Ensure group issues and merge requests pages show results from subgroups when
-  there are no results from the current group
-merge_request: 17312
-author:
-type: fixed

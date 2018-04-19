@@ -12,7 +12,15 @@ module Boards
       private
 
       def available_labels_for(board)
-        LabelsFinder.new(current_user, project_id: parent.id).execute
+        options = { include_ancestor_groups: true }
+
+        if board.group_board?
+          options.merge!(group_id: parent.id, only_group_labels: true)
+        else
+          options[:project_id] = parent.id
+        end
+
+        LabelsFinder.new(current_user, options).execute
       end
 
       def next_position(board)

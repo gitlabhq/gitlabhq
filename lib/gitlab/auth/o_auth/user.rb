@@ -124,6 +124,9 @@ module Gitlab
           Gitlab::Auth::LDAP::Person.find_by_uid(auth_hash.uid, adapter) ||
             Gitlab::Auth::LDAP::Person.find_by_email(auth_hash.uid, adapter) ||
             Gitlab::Auth::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
+
+        rescue Gitlab::Auth::LDAP::LDAPConnectionError
+          nil
         end
 
         def ldap_config
@@ -161,7 +164,7 @@ module Gitlab
 
         def find_by_uid_and_provider
           identity = Identity.with_extern_uid(auth_hash.provider, auth_hash.uid).take
-          identity && identity.user
+          identity&.user
         end
 
         def build_new_user

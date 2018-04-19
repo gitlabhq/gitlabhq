@@ -19,6 +19,10 @@ describe RemoveEmptyForkNetworks, :migration do
     deleted_project.destroy!
   end
 
+  after do
+    Upload.reset_column_information
+  end
+
   it 'deletes only the fork network without members' do
     expect(fork_networks.count).to eq(2)
 

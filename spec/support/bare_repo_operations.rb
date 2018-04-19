@@ -1,19 +1,23 @@
 require 'zlib'
 
 class BareRepoOperations
-  # The ID of empty tree.
-  # See http://stackoverflow.com/a/40884093/1856239 and https://github.com/git/git/blob/3ad8b5bf26362ac67c9020bf8c30eee54a84f56d/cache.h#L1011-L1012
-  EMPTY_TREE_ID = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'.freeze
-
   include Gitlab::Popen
 
   def initialize(path_to_repo)
     @path_to_repo = path_to_repo
   end
 
+  def commit_tree(tree_id, msg, parent: Gitlab::Git::EMPTY_TREE_ID)
+    commit_tree_args = ['commit-tree', tree_id, '-m', msg]
+    commit_tree_args += ['-p', parent] unless parent == Gitlab::Git::EMPTY_TREE_ID
+    commit_id = execute(commit_tree_args)
+
+    commit_id[0]
+  end
+
   # Based on https://stackoverflow.com/a/25556917/1856239
   def commit_file(file, dst_path, branch = 'master')
-    head_id = execute(['show', '--format=format:%H', '--no-patch', branch], allow_failure: true)[0] || EMPTY_TREE_ID
+    head_id = execute(['show', '--format=format:%H', '--no-patch', branch], allow_failure: true)[0] || Gitlab::Git::EMPTY_TREE_ID
 
     execute(['read-tree', '--empty'])
     execute(['read-tree', head_id])
@@ -26,11 +30,9 @@ class BareRepoOperations
 
     tree_id = execute(['write-tree'])
 
-    commit_tree_args = ['commit-tree', tree_id[0], '-m', "Add #{dst_path}"]
-    commit_tree_args += ['-p', head_id] unless head_id == EMPTY_TREE_ID
-    commit_id = execute(commit_tree_args)
+    commit_id = commit_tree(tree_id[0], "Add #{dst_path}", parent: head_id)
 
-    execute(['update-ref', "refs/heads/#{branch}", commit_id[0]])
+    execute(['update-ref', "refs/heads/#{branch}", commit_id])
   end
 
   private

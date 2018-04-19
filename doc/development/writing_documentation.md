@@ -1,12 +1,8 @@
-# Writing documentation
+# GitLab Documentation guidelines
 
   - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
   - **[Technical Articles](#technical-articles)**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
-
-## Documentation style guidelines
-
-All the docs follow the same [styleguide](doc_styleguide.md).
 
 ## Contributing to docs
 
@@ -19,7 +15,7 @@ The one responsible for writing the first piece of documentation is the develope
 wrote the code. It's the job of the Product Manager to ensure all features are
 shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
 this is the only way to keep the docs up-to-date. If you have any questions about it,
-please ask a Technical Writer. Otherwise, when your content is ready, assign one of
+ask a Technical Writer. Otherwise, when your content is ready, assign one of
 them to review it for you.
 
 We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
@@ -27,23 +23,18 @@ is documented.
 
 Whenever you submit a merge request for the documentation, use the documentation MR description template.
 
-### Documentation directory structure
+Please check the [documentation workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/) before getting started.
 
-The documentation is structured based on the GitLab UI structure itself,
-separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
-[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
+## Documentation structure
 
-To learn where to place a new document, check the [documentation style guide](doc_styleguide.md#location-and-naming-of-documents).
+- Overview and use cases: what it is, why it is necessary, why one would use it
+- Requirements: what do we need to get started
+- Tutorial: how to set it up, how to use it
 
-In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
-all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+Always link a new document from its topic-related index, otherwise, it will
+not be included it in the documentation site search.
 
-The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
-been deprecated and the majority their docs have been moved to their correct location
-in small iterations. Please don't create new docs in these folders.
-
-To move a document from its location to another directory, read the section
-[changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
+_Note: to be extended._
 
 ### Feature overview and use cases
 
@@ -73,16 +64,169 @@ overview there.
 > **Overview** and **use cases** are required to **every** Enterprise Edition feature,
 and for every **major** feature present in Community Edition.
 
-### Markdown
+## Markdown and styles
 
 Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
 
-### Previewing locally
+All the docs follow the [documentation style guidelines](doc_styleguide.md).
 
-To preview your changes to documentation locally, please follow
-this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
+## Documentation directory structure
 
-### Testing
+The documentation is structured based on the GitLab UI structure itself,
+separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
+[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development). 
+
+In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
+all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+
+The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
+been deprecated and the majority their docs have been moved to their correct location
+in small iterations. Please don't create new docs in these folders.
+
+### Location and naming documents
+
+The documentation hierarchy can be vastly improved by providing a better layout
+and organization of directories.
+
+Having a structured document layout, we will be able to have meaningful URLs
+like `docs.gitlab.com/user/project/merge_requests/index.html`. With this pattern,
+you can immediately tell that you are navigating a user related documentation
+and is about the project and its merge requests.
+
+Do not create summaries of similar types of content (e.g. an index of all articles, videos, etc.),
+rather organize content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
+The table below shows what kind of documentation goes where.
+
+| Directory | What belongs here |
+| --------- | -------------- |
+| `doc/user/` | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`. |
+| `doc/administration/`  | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`. |
+| `doc/api/` | API related documentation. |
+| `doc/development/` | Documentation related to the development of GitLab. Any styleguides should go here. |
+| `doc/legal/` | Legal documents about contributing to GitLab. |
+| `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
+| `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
+
+---
+
+**General rules:**
+
+1. The correct naming and location of a new document, is a combination
+   of the relative URL of the document in question and the GitLab Map design
+   that is used for UX purposes ([source][graffle], [image][gitlab-map]).
+1. When creating a new document and it has more than one word in its name,
+   make sure to use underscores instead of spaces or dashes (`-`). For example,
+   a proper naming would be `import_projects_from_github.md`. The same rule
+   applies to images.
+1. Start a new directory with an `index.md` file.
+1. There are four main directories, `user`, `administration`, `api` and `development`.
+1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
+   `profile/`, `dashboard/` and `admin_area/`.
+   1. `doc/user/project/` should contain all project related documentation.
+   1. `doc/user/group/` should contain all group related documentation.
+   1. `doc/user/profile/` should contain all profile related documentation.
+      Every page you would navigate under `/profile` should have its own document,
+      i.e. `account.md`, `applications.md`, `emails.md`, etc.
+   1. `doc/user/dashboard/` should contain all dashboard related documentation.
+   1. `doc/user/admin_area/` should contain all admin related documentation
+      describing what can be achieved by accessing GitLab's admin interface
+      (_not to be confused with `doc/administration` where server access is
+      required_).
+      1. Every category under `/admin/application_settings` should have its
+         own document located at `doc/user/admin_area/settings/`. For example,
+         the **Visibility and Access Controls** category should have a document
+         located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+
+If you are unsure where a document should live, you can ping `@axil` or `@marcia` in your
+merge request.
+
+### Changing document location
+
+Changing a document's location is not to be taken lightly. Remember that the
+documentation is available to all installations under `help/` and not only to
+GitLab.com or http://docs.gitlab.com. Make sure this is discussed with the
+Documentation team beforehand.
+
+If you indeed need to change a document's location, do NOT remove the old
+document, but rather replace all of its contents with a new line:
+
+```
+This document was moved to [another location](path/to/new_doc.md).
+```
+
+where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
+
+---
+
+For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
+`doc/administration/lfs.md`, then the steps would be:
+
+1. Copy `doc/workflow/lfs/lfs_administration.md` to `doc/administration/lfs.md`
+1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
+
+    ```
+    This document was moved to [another location](../../administration/lfs.md).
+    ```
+
+1. Find and replace any occurrences of the old location with the new one.
+   A quick way to find them is to use `git grep`. First go to the root directory
+   where you cloned the `gitlab-ce` repository and then do:
+
+    ```
+    git grep -n "workflow/lfs/lfs_administration"
+    git grep -n "lfs/lfs_administration"
+    ```
+
+NOTE: **Note:**
+If the document being moved has any Disqus comments on it, there are extra steps
+to follow documented just [below](#redirections-for-pages-with-disqus-comments).
+
+Things to note:
+
+- Since we also use inline documentation, except for the documentation itself,
+  the document might also be referenced in the views of GitLab (`app/`) which will
+  render when visiting `/help`, and sometimes in the testing suite (`spec/`).
+- The above `git grep` command will search recursively in the directory you run
+  it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
+  and will print the file and the line where this file is mentioned.
+  You may ask why the two greps. Since we use relative paths to link to
+  documentation, sometimes it might be useful to search a path deeper.
+- The `*.md` extension is not used when a document is linked to GitLab's
+  built-in help page, that's why we omit it in `git grep`.
+- Use the checklist on the documentation MR description template.
+
+### Redirections for pages with Disqus comments
+
+If the documentation page being relocated already has any Disqus comments,
+we need to preserve the Disqus thread.
+
+Disqus uses an identifier per page, and for docs.gitlab.com, the page identifier
+is configured to be the page URL. Therefore, when we change the document location,
+we need to preserve the old URL as the same Disqus identifier.
+
+To do that, add to the frontmatter the variable `redirect_from`,
+using the old URL as value. For example, let's say I moved the document
+available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
+`https://docs.gitlab.com/my-new-location/index.html`.
+
+Into the **new document** frontmatter add the following:
+
+```yaml
+---
+redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
+---
+```
+
+Note: it is necessary to include the file name in the `redirect_from` URL,
+even if it's `index.html` or `README.html`.
+
+## Testing
 
 We treat documentation as code, thus have implemented some testing.
 Currently, the following tests are in place:
@@ -101,7 +245,7 @@ Currently, the following tests are in place:
     Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
     essential to avoid them.
 
-### Branch naming
+## Branch naming
 
 If your contribution contains **only** documentation changes, you can speed up
 the CI process by following some branch naming conventions. You have three
@@ -116,7 +260,53 @@ choices:
 If your branch name matches any of the above, it will run only the docs
 tests. If it doesn't, the whole test suite will run (including docs).
 
-### Previewing the changes live
+## Merge requests for GitLab documentation
+
+Before getting started, make sure you read the introductory section
+"[contributing to docs](#contributing-to-docs)" above and the
+[tech writing workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/)
+for GitLab Team members.
+
+- Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Documentation.md)
+- Use the correct [branch name](#branch-naming)
+- Label the MR `Documentation`
+- Assign the correct milestone (see note below)
+
+
+NOTE: **Note:**
+If the release version you want to add the documentation to has already been
+frozen or released, use the label `Pick into X.Y` to get it merged into
+the correct release. Avoid picking into a past release as much as you can, as
+it increases the work of the release managers.
+
+### Cherry-picking from CE to EE
+
+As we have the `master` branch of CE merged into EE once a day, it's common to
+run into merge conflicts. To avoid them, we [test for merge conflicts against EE](#testing)
+with the `ee-compat-check` job, and use the following method of creating equivalent
+branches for CE and EE.
+
+Follow this [method for cherry-picking from CE to EE](automatic_ce_ee_merge.md#cherry-picking-from-ce-to-ee), with a few adjustments:
+
+- Create the [CE branch](#branch-naming) starting with `docs-`,
+  e.g.: `git checkout -b docs-example`
+- Create the EE-equivalent branch ending with `-ee`, e.g.,
+  `git checkout -b docs-example-ee`
+- Once all the jobs are passing in CE and EE, and you've addressed the
+feedback from your own team, assign the CE MR to a technical writer for review
+- When both MRs are ready, the EE merge request will be merged first, and the
+CE-equivalent will be merged next.
+- Note that the review will occur only in the CE MR, as the EE MR
+contains the same commits as the CE MR.
+- If you have a few more changes that apply to the EE-version only, you can submit
+a couple more commits to the EE branch, but ask the reviewer to review the EE merge request
+additionally to the CE MR. If there are many EE-only changes though, start a new MR
+to EE only.
+
+## Previewing the changes live
+
+To preview your changes to documentation locally, please follow
+this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
 
 If you want to preview the doc changes of your merge request live, you can use
 the manual `review-docs-deploy` job in your merge request. You will need at
@@ -176,7 +366,7 @@ working on. If you don't, the remote docs branch won't be removed either,
 and the server where the Review Apps are hosted will eventually be out of
 disk space.
 
-#### Technical aspects
+### Technical aspects
 
 If you want to know the hot details, here's what's really happening:
 
@@ -211,6 +401,74 @@ The following GitLab features are used among others:
 - [Artifacts](../ci/yaml/README.md#artifacts)
 - [Specific Runner](../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
 
+## GitLab `/help`
+
+Every GitLab instance includes the documentation, which is available from `/help`
+(`http://my-instance.com/help`), e.g., <https://gitlab.com/help>.
+
+When you're building a new feature, you may need to link the documentation
+from GitLab, the application. This is normally done in files inside the
+`app/views/` directory with the help of the `help_page_path` helper method.
+
+In its simplest form, the HAML code to generate a link to the `/help` page is:
+
+```haml
+= link_to 'Help page', help_page_path('user/permissions')
+```
+
+The `help_page_path` contains the path to the document you want to link to with
+the following conventions:
+
+- it is relative to the `doc/` directory in the GitLab repository
+- the `.md` extension must be omitted
+- it must not end with a slash (`/`)
+
+Below are some special cases where should be used depending on the context.
+You can combine one or more of the following:
+
+1. **Linking to an anchor link.** Use `anchor` as part of the `help_page_path`
+   method:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
+    ```
+
+1. **Opening links in a new tab.** This should be the default behavior:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
+    ```
+
+1. **Linking to a circle icon.** Usually used in settings where a long
+   description cannot be used, like near checkboxes. You can basically use
+   any font awesome icon, but prefer the `question-circle`:
+
+    ```haml
+    = link_to icon('question-circle'), help_page_path('user/permissions')
+    ```
+
+1. **Using a button link.** Useful in places where text would be out of context
+   with the rest of the page layout:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
+    ```
+
+1. **Using links inline of some text.**
+
+    ```haml
+    Description to #{link_to 'Help page', help_page_path('user/permissions')}.
+    ```
+
+1. **Adding a period at the end of the sentence.** Useful when you don't want
+   the period to be part of the link:
+
+    ```haml
+    = succeed '.' do
+      Learn more in the
+      = link_to 'Help page', help_page_path('user/permissions')
+    ```
+
 ## General Documentation vs Technical Articles
 
 ### General documentation
@@ -225,7 +483,7 @@ They are topic-related documentation, written with an user-friendly approach and
 
 A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
 
-They should be placed in a new directory named `/article-title/index.md` under a topic-related folder, and their images should be placed in `/article-title/img/`. For example, a new article on GitLab Pages should be placed in `doc/user/project/pages/article-title/` and a new article on GitLab CI/CD should be placed in `doc/ci/article-title/`.
+They should be placed in a new directory named `/article-title/index.md` under a topic-related folder, and their images should be placed in `/article-title/img/`. For example, a new article on GitLab Pages should be placed in `doc/user/project/pages/article-title/` and a new article on GitLab CI/CD should be placed in `doc/ci/examples/article-title/`.
 
 #### Types of Technical Articles
 
@@ -279,3 +537,5 @@ date: 2017-02-01
 
 Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
 
+[gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
+[graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle

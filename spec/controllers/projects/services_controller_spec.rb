@@ -23,6 +23,18 @@ describe Projects::ServicesController do
       end
     end
 
+    context 'when validations fail' do
+      let(:service_params) { { active: 'true', token: '' } }
+
+      it 'returns error messages in JSON response' do
+        put :test, namespace_id: project.namespace, project_id: project, id: :hipchat, service: service_params
+
+        expect(json_response['message']).to eq "Validations failed."
+        expect(json_response['service_response']).to eq "Token can't be blank"
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
     context 'success' do
       context 'with empty project' do
         let(:project) { create(:project) }

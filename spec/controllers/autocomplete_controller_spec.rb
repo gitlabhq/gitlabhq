@@ -246,7 +246,7 @@ describe AutocompleteController do
           expect(json_response.size).to eq(1)
 
           expect(json_response.first['id']).to eq authorized_project.id
-          expect(json_response.first['name_with_namespace']).to eq authorized_project.name_with_namespace
+          expect(json_response.first['name_with_namespace']).to eq authorized_project.full_name
         end
       end
     end
@@ -267,7 +267,7 @@ describe AutocompleteController do
           expect(json_response.size).to eq(1)
 
           expect(json_response.first['id']).to eq authorized_search_project.id
-          expect(json_response.first['name_with_namespace']).to eq authorized_search_project.name_with_namespace
+          expect(json_response.first['name_with_namespace']).to eq authorized_search_project.full_name
         end
       end
     end

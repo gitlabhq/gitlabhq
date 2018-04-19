@@ -14,8 +14,6 @@
     .col-lg-12
       #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json) } }
 
-      = webpack_bundle_tag('common_vue')
-
   .row.prepend-top-10
     .col-lg-12
       .panel.panel-default
@@ -29,6 +27,10 @@
             = s_('ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:').html_safe % { link_2fa: link_2fa, link_token: link_token }
           %pre
             docker login #{Gitlab.config.registry.host_port}
+          %br
+          %p
+            - deploy_token = link_to(_('deploy token'), help_page_path('user/projects/deploy_tokens/index', anchor: 'read-container-registry-images'), target: '_blank')
+            = s_('ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images.').html_safe % { deploy_token: deploy_token }
           %br
           %p
             = s_('ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands').html_safe % { build: "<code>build</code>".html_safe, push: "<code>push</code>".html_safe }

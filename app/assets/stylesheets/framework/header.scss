@@ -1,60 +1,24 @@
 .navbar-gitlab {
-  &.navbar-gitlab {
-    padding: 0 16px;
-    z-index: 1000;
-    margin-bottom: 0;
-    min-height: $header-height;
-    border: 0;
-    border-bottom: 1px solid $border-color;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    border-radius: 0;
+  padding: 0 16px;
+  z-index: 1000;
+  margin-bottom: 0;
+  min-height: $header-height;
+  border: 0;
+  border-bottom: 1px solid $border-color;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
 
-    .logo-text {
-      line-height: initial;
+  .logo-text {
+    line-height: initial;
 
-      svg {
-        width: 55px;
-        height: 14px;
-        margin: 0;
-        fill: $white-light;
-      }
-    }
-
-    .container-fluid {
-      padding: 0;
-
-      .user-counter {
-        svg {
-          margin-right: 3px;
-        }
-      }
-
-      .navbar-toggle {
-        right: -10px;
-        border-radius: 0;
-        min-width: 45px;
-        padding: 0;
-        margin-right: -7px;
-        font-size: 14px;
-        text-align: center;
-        color: currentColor;
-
-        &:hover,
-        &:focus,
-        &.active {
-          color: currentColor;
-          background-color: transparent;
-        }
-
-        .more-icon,
-        .close-icon {
-          fill: $white-light;
-          margin: auto;
-        }
-      }
+    svg {
+      width: 55px;
+      height: 14px;
+      margin: 0;
+      fill: $white-light;
     }
   }
 
@@ -184,6 +148,37 @@
   }
 
   .container-fluid {
+    padding: 0;
+
+    .user-counter {
+      svg {
+        margin-right: 3px;
+      }
+    }
+
+    .navbar-toggle {
+      right: -10px;
+      border-radius: 0;
+      min-width: 45px;
+      padding: 0;
+      margin-right: -7px;
+      font-size: 14px;
+      text-align: center;
+      color: currentColor;
+
+      &:hover,
+      &:focus,
+      &.active {
+        color: currentColor;
+        background-color: transparent;
+      }
+
+      .more-icon,
+      .close-icon {
+        fill: $white-light;
+        margin: auto;
+      }
+    }
 
     .navbar-nav {
       @media (max-width: $screen-xs-max) {
@@ -337,7 +332,7 @@
 .breadcrumbs {
   display: -webkit-flex;
   display: flex;
-  min-height: 48px;
+  min-height: $breadcrumb-min-height;
   color: $gl-text-color;
 }
 
@@ -466,7 +461,7 @@
       padding: 0 5px;
       line-height: 12px;
       border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+      box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
       &.issues-count {
         background-color: $green-500;

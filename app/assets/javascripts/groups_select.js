@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import Api from './api';
 import { normalizeHeaders } from './lib/utils/common_utils';

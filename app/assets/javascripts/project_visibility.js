@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 function setVisibilityOptions(namespaceSelector) {
   if (!namespaceSelector || !('selectedIndex' in namespaceSelector)) {
     return;

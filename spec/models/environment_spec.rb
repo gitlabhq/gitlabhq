@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment do
-  set(:project) { create(:project) }
+  let(:project) { create(:project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -142,15 +142,15 @@ describe Environment do
     let(:commit)        { project.commit.parent }
 
     it 'returns deployment id for the environment' do
-      expect(environment.first_deployment_for(commit)).to eq deployment1
+      expect(environment.first_deployment_for(commit.id)).to eq deployment1
     end
 
     it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit)).to eq nil
+      expect(environment.first_deployment_for(head_commit.id)).to eq nil
     end
 
     it 'returns a UTF-8 ref' do
-      expect(environment.first_deployment_for(commit).ref).to be_utf8
+      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
     end
   end
 
@@ -368,6 +368,32 @@ describe Environment do
     end
   end
 
+  describe '#deployment_platform' do
+    context 'when there is a deployment platform for environment' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp,
+               environment_scope: '*', projects: [project])
+      end
+
+      it 'finds a deployment platform' do
+        expect(environment.deployment_platform).to eq cluster.platform
+      end
+    end
+
+    context 'when there is no deployment platform for environment' do
+      it 'returns nil' do
+        expect(environment.deployment_platform).to be_nil
+      end
+    end
+
+    it 'checks deployment platforms associated with a project' do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name)
+
+      environment.deployment_platform
+    end
+  end
+
   describe '#terminals' do
     subject { environment.terminals }
 
@@ -452,8 +478,8 @@ describe Environment do
       end
 
       it 'returns the metrics from the deployment service' do
-        expect(project.monitoring_service)
-          .to receive(:environment_metrics).with(environment)
+        expect(environment.prometheus_adapter)
+          .to receive(:query).with(:environment, environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -508,12 +534,12 @@ describe Environment do
 
     context 'when the environment has additional metrics' do
       before do
-        allow(environment).to receive(:has_additional_metrics?).and_return(true)
+        allow(environment).to receive(:has_metrics?).and_return(true)
       end
 
       it 'returns the additional metrics from the deployment service' do
-        expect(project.prometheus_service).to receive(:additional_environment_metrics)
-                                                .with(environment)
+        expect(environment.prometheus_adapter).to receive(:query)
+                                                .with(:additional_metrics_environment, environment)
                                                 .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -522,43 +548,10 @@ describe Environment do
 
     context 'when the environment does not have metrics' do
       before do
-        allow(environment).to receive(:has_additional_metrics?).and_return(false)
+        allow(environment).to receive(:has_metrics?).and_return(false)
       end
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#has_additional_metrics??' do
-    subject { environment.has_additional_metrics? }
-
-    context 'when the enviroment is available' do
-      context 'with a deployment service' do
-        let(:project) { create(:prometheus_project) }
-
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
-        end
-
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
-        end
-      end
-
-      context 'without a monitoring service' do
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'when the environment is unavailable' do
-      let(:project) { create(:prometheus_project) }
-
-      before do
-        environment.stop
-      end
-
-      it { is_expected.to be_falsy }
     end
   end
 
@@ -652,6 +645,14 @@ describe Environment do
       it 'returns the full external URL' do
         expect(environment.external_url_for(source_path, sha)).to eq('http://example.com/file.html')
       end
+    end
+  end
+
+  describe '#prometheus_adapter' do
+    it 'calls prometheus adapter service' do
+      expect_any_instance_of(Prometheus::AdapterService).to receive(:prometheus_adapter)
+
+      subject.prometheus_adapter
     end
   end
 end

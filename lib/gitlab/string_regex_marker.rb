@@ -1,13 +1,15 @@
 module Gitlab
   class StringRegexMarker < StringRangeMarker
     def mark(regex, group: 0, &block)
-      regex_match = raw_line.match(regex)
-      return rich_line unless regex_match
+      ranges = []
 
-      begin_index, end_index = regex_match.offset(group)
-      name_range = begin_index..(end_index - 1)
+      raw_line.scan(regex) do
+        begin_index, end_index = Regexp.last_match.offset(group)
 
-      super([name_range], &block)
+        ranges << (begin_index..(end_index - 1))
+      end
+
+      super(ranges, &block)
     end
   end
 end

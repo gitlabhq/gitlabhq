@@ -66,6 +66,7 @@ RSpec.configure do |config|
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
   config.include StubENV
+  config.include ExpectOffense
 
   config.infer_spec_type_from_file_location!
 
@@ -97,6 +98,10 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+  config.after(:all) do
+    TestEnv.clean_test_path
+  end
+
   config.before(:example) do
     # Skip pre-receive hook check so we can use the web editor and merge.
     allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
@@ -104,7 +109,8 @@ RSpec.configure do |config|
     allow_any_instance_of(Gitlab::Git::GitlabProjects).to receive(:fork_repository).and_wrap_original do |m, *args|
       m.call(*args)
 
-      shard_path, repository_relative_path = args
+      shard_name, repository_relative_path = args
+      shard_path = Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
       # We can't leave the hooks in place after a fork, as those would fail in tests
       # The "internal" API is not available
       FileUtils.rm_rf(File.join(shard_path, repository_relative_path, 'hooks'))
@@ -196,6 +202,22 @@ RSpec.configure do |config|
     allow(view).to receive(:can?) do |*args|
       Ability.allowed?(*args)
     end
+  end
+
+  config.before(:each, :http_pages_enabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
+  end
+
+  config.before(:each, :https_pages_enabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(['1.1.1.1:443'])
+  end
+
+  config.before(:each, :http_pages_disabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(false)
+  end
+
+  config.before(:each, :https_pages_disabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(false)
   end
 end
 

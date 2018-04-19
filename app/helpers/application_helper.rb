@@ -228,9 +228,7 @@ module ApplicationHelper
       scope: params[:scope],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
-      assignee_username: params[:assignee_username],
       author_id: params[:author_id],
-      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name]
     }
@@ -285,6 +283,10 @@ module ApplicationHelper
     class_names
   end
 
+  # EE feature: System header and footer, unavailable in CE
+  def system_message_class
+  end
+
   # Returns active css class when condition returns true
   # otherwise returns nil.
   #
@@ -300,7 +302,7 @@ module ApplicationHelper
 
   def linkedin_url(user)
     name = user.linkedin
-    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+    if name =~ %r{\Ahttps?://(www\.)?linkedin\.com/in/}
       name
     else
       "https://www.linkedin.com/in/#{name}"
@@ -309,10 +311,10 @@ module ApplicationHelper
 
   def twitter_url(user)
     name = user.twitter
-    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+    if name =~ %r{\Ahttps?://(www\.)?twitter\.com/}
       name
     else
-      "https://www.twitter.com/#{name}"
+      "https://twitter.com/#{name}"
     end
   end
 
@@ -320,11 +322,14 @@ module ApplicationHelper
     cookies["sidebar_collapsed"] == "true"
   end
 
-  def show_new_ide?
-    cookies["new_repo"] == "true" && body_data_page != 'projects:show'
-  end
-
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
+
+  # Overridden in EE
+  def read_only_message
+    return unless Gitlab::Database.read_only?
+
+    _('You are on a read-only GitLab instance.')
   end
 end

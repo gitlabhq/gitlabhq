@@ -28,6 +28,14 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  describe 'after create actions' do
+    it 'invalidate personal_projects_count caches' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      create_project(user, opts)
+    end
+  end
+
   context "admin creates project with other user's namespace_id" do
     it 'sets the correct permissions' do
       admin = create(:admin)
@@ -69,6 +77,16 @@ describe Projects::CreateService, '#execute' do
     it 'handles invalid options' do
       opts[:default_branch] = 'master'
       expect(create_project(user, opts)).to eq(nil)
+    end
+
+    it 'sets invalid service as inactive' do
+      create(:service, type: 'JiraService', project: nil, template: true, active: true)
+
+      project = create_project(user, opts)
+      service = project.services.first
+
+      expect(project).to be_persisted
+      expect(service.active).to be false
     end
   end
 
@@ -153,7 +171,7 @@ describe Projects::CreateService, '#execute' do
 
     context 'when another repository already exists on disk' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       let(:opts) do
         {
@@ -164,7 +182,7 @@ describe Projects::CreateService, '#execute' do
 
       context 'with legacy storage' do
         before do
-          gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         after do
@@ -200,7 +218,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         before do
-          gitlab_shell.add_repository(repository_storage, hashed_path)
+          gitlab_shell.create_repository(repository_storage, hashed_path)
         end
 
         after do
@@ -232,14 +250,15 @@ describe Projects::CreateService, '#execute' do
   end
 
   context 'when a bad service template is created' do
-    it 'reports an error in the imported project' do
+    it 'sets service to be inactive' do
       opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-ce'
       create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
 
       project = create_project(user, opts)
+      service = project.services.first
 
-      expect(project.errors.full_messages_for(:base).first).to match(/Unable to save project. Error: Unable to save DroneCiService/)
-      expect(project.services.count).to eq 0
+      expect(project).to be_persisted
+      expect(service.active).to be false
     end
   end
 

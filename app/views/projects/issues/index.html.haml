@@ -4,11 +4,8 @@
 - page_title "Issues"
 - new_issue_email = @project.new_issuable_address(current_user, 'issue')
 
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_vue'
-
 = content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
+  = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
   %div{ class: (container_class) }

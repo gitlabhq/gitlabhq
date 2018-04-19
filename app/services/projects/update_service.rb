@@ -24,6 +24,8 @@ module Projects
           system_hook_service.execute_hooks_for(project, :update)
         end
 
+        update_pages_config if changing_pages_https_only?
+
         success
       else
         model_errors = project.errors.full_messages.to_sentence
@@ -58,7 +60,7 @@ module Projects
     def enabling_wiki?
       return false if @project.wiki_enabled?
 
-      params[:project_feature_attributes][:wiki_access_level].to_i > ProjectFeature::DISABLED
+      params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
     end
 
     def ensure_wiki_exists
@@ -66,6 +68,14 @@ module Projects
     rescue ProjectWiki::CouldNotCreateWikiError
       log_error("Could not create wiki for #{project.full_name}")
       Gitlab::Metrics.counter(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki')
+    end
+
+    def update_pages_config
+      Projects::UpdatePagesConfigurationService.new(project).execute
+    end
+
+    def changing_pages_https_only?
+      project.previous_changes.include?(:pages_https_only)
     end
   end
 end

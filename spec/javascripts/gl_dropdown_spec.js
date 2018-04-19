@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
+import $ from 'jquery';
 import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -255,4 +256,29 @@ describe('glDropdown', function describeDropdown() {
       });
     });
   });
+
+  it('should keep selected item after selecting a second time', () => {
+    const options = {
+      isSelectable(item, $el) {
+        return !$el.hasClass('is-active');
+      },
+      toggleLabel(item) {
+        return item && item.id;
+      },
+    };
+    initDropDown.call(this, false, false, options);
+    const $item = $(`${ITEM_SELECTOR}:first() a`, this.$dropdownMenuElement);
+
+    // select item the first time
+    this.dropdownButtonElement.click();
+    $item.click();
+    expect($item).toHaveClass('is-active');
+    // select item the second time
+    this.dropdownButtonElement.click();
+    $item.click();
+    expect($item).toHaveClass('is-active');
+
+    expect($('.dropdown-toggle-text')).toHaveText(this.projectsData[0].id.toString());
+  });
 });
+

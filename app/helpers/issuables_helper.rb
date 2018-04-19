@@ -9,6 +9,32 @@ module IssuablesHelper
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
+  def sidebar_gutter_tooltip_text
+    sidebar_gutter_collapsed? ? _('Expand sidebar') : _('Collapse sidebar')
+  end
+
+  def sidebar_assignee_tooltip_label(issuable)
+    if issuable.assignee
+      issuable.assignee.name
+    else
+      issuable.allows_multiple_assignees? ? _('Assignee(s)') : _('Assignee')
+    end
+  end
+
+  def sidebar_due_date_tooltip_label(issuable)
+    if issuable.due_date
+      "#{_('Due date')}<br />#{due_date_remaining_days(issuable)}"
+    else
+      _('Due date')
+    end
+  end
+
+  def due_date_remaining_days(issuable)
+    remaining_days_in_words = remaining_days_in_words(issuable)
+
+    "#{issuable.due_date.to_s(:medium)} (#{remaining_days_in_words})"
+  end
+
   def multi_label_name(current_labels, default_label)
     if current_labels && current_labels.any?
       title = current_labels.first.try(:title)
@@ -99,7 +125,7 @@ module IssuablesHelper
     project = Project.find_by(id: project_id)
 
     if project
-      project.name_with_namespace
+      project.full_name
     else
       default_label
     end
@@ -153,22 +179,28 @@ module IssuablesHelper
   def issuable_labels_tooltip(labels, limit: 5)
     first, last = labels.partition.with_index { |_, i| i < limit  }
 
-    label_names = first.collect(&:name)
-    label_names << "and #{last.size} more" unless last.empty?
+    if labels && labels.any?
+      label_names = first.collect(&:name)
+      label_names << "and #{last.size} more" unless last.empty?
 
-    label_names.join(', ')
+      label_names.join(', ')
+    else
+      _("Labels")
+    end
   end
 
-  def issuables_state_counter_text(issuable_type, state)
+  def issuables_state_counter_text(issuable_type, state, display_count)
     titles = {
       opened: "Open"
     }
 
     state_title = titles[state] || state.to_s.humanize
-    count = issuables_count_for_state(issuable_type, state)
-
     html = content_tag(:span, state_title)
-    html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+
+    if display_count
+      count = issuables_count_for_state(issuable_type, state)
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+    end
 
     html.html_safe
   end
@@ -191,22 +223,8 @@ module IssuablesHelper
     end
   end
 
-  def issuable_filter_params
-    [
-      :search,
-      :author_id,
-      :assignee_id,
-      :milestone_title,
-      :label_name
-    ]
-  end
-
   def issuable_reference(issuable)
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
-  end
-
-  def issuable_filter_present?
-    issuable_filter_params.any? { |k| params.key?(k) }
   end
 
   def issuable_initial_data(issuable)
@@ -333,7 +351,7 @@ module IssuablesHelper
   def issuable_todo_button_data(issuable, todo, is_collapsed)
     {
       todo_text: "Add todo",
-      mark_text: "Mark done",
+      mark_text: "Mark todo as done",
       todo_icon: (is_collapsed ? icon('plus-square') : nil),
       mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
       issuable_id: issuable.id,
@@ -376,5 +394,12 @@ module IssuablesHelper
 
   def parent
     @project || @group
+  end
+
+  def issuable_milestone_tooltip_title(issuable)
+    if issuable.milestone
+      milestone_tooltip = milestone_tooltip_title(issuable.milestone)
+      _('Milestone') + (milestone_tooltip ? ': ' + milestone_tooltip : '')
+    end
   end
 end

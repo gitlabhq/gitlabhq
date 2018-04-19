@@ -1,5 +1,0 @@
----
-title: Fix code and wiki search results pages when non-ASCII text is displayed
-merge_request: 17413
-author:
-type: fixed

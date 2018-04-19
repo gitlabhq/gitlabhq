@@ -1,7 +1,10 @@
 /* global dateFormat */
 
+import $ from 'jquery';
 import Pikaday from 'pikaday';
+import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
+import { timeFor } from './lib/utils/datetime_utility';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 
 class DueDateSelect {
@@ -13,6 +16,7 @@ class DueDateSelect {
     this.$dropdownParent = $dropdownParent;
     this.$datePicker = $dropdownParent.find('.js-due-date-calendar');
     this.$block = $block;
+    this.$sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon');
     this.$selectbox = $dropdown.closest('.selectbox');
     this.$value = $block.find('.value');
     this.$valueContent = $block.find('.value-content');
@@ -127,7 +131,8 @@ class DueDateSelect {
 
   submitSelectedDate(isDropdown) {
     const selectedDateValue = this.datePayload[this.abilityName].due_date;
-    const displayedDateStyle = this.displayedDate !== 'No due date' ? 'bold' : 'no-value';
+    const hasDueDate = this.displayedDate !== 'No due date';
+    const displayedDateStyle = hasDueDate ? 'bold' : 'no-value';
 
     this.$loading.removeClass('hidden').fadeIn();
 
@@ -144,10 +149,13 @@ class DueDateSelect {
 
     return axios.put(this.issueUpdateURL, this.datePayload)
       .then(() => {
+        const tooltipText = hasDueDate ? `${__('Due date')}<br />${selectedDateValue} (${timeFor(selectedDateValue)})` : __('Due date');
         if (isDropdown) {
           this.$dropdown.trigger('loaded.gl.dropdown');
           this.$dropdown.dropdown('toggle');
         }
+        this.$sidebarCollapsedValue.attr('data-original-title', tooltipText);
+
         return this.$loading.fadeOut();
       });
   }

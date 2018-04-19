@@ -1,60 +1,119 @@
 <script>
-  import detailRow from './sidebar_detail_row.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import timeagoMixin from '../../vue_shared/mixins/timeago';
-  import { timeIntervalInWords } from '../../lib/utils/datetime_utility';
+import detailRow from './sidebar_detail_row.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import timeagoMixin from '../../vue_shared/mixins/timeago';
+import { timeIntervalInWords } from '../../lib/utils/datetime_utility';
 
-  export default {
-    name: 'SidebarDetailsBlock',
-    components: {
-      detailRow,
-      loadingIcon,
+export default {
+  name: 'SidebarDetailsBlock',
+  components: {
+    detailRow,
+    loadingIcon,
+  },
+  mixins: [timeagoMixin],
+  props: {
+    job: {
+      type: Object,
+      required: true,
     },
-    mixins: [
-      timeagoMixin,
-    ],
-    props: {
-      job: {
-        type: Object,
-        required: true,
-      },
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
+    isLoading: {
+      type: Boolean,
+      required: true,
     },
-    computed: {
-      shouldRenderContent() {
-        return !this.isLoading && Object.keys(this.job).length > 0;
-      },
-      coverage() {
-        return `${this.job.coverage}%`;
-      },
-      duration() {
-        return timeIntervalInWords(this.job.duration);
-      },
-      queued() {
-        return timeIntervalInWords(this.job.queued);
-      },
-      runnerId() {
-        return `#${this.job.runner.id}`;
-      },
-      renderBlock() {
-        return this.job.merge_request ||
-          this.job.duration ||
-          this.job.finished_data ||
-          this.job.erased_at ||
-          this.job.queued ||
-          this.job.runner ||
-          this.job.coverage ||
-          this.job.tags.length ||
-          this.job.cancel_path;
-      },
+    canUserRetry: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-  };
+    runnerHelpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    shouldRenderContent() {
+      return !this.isLoading && Object.keys(this.job).length > 0;
+    },
+    coverage() {
+      return `${this.job.coverage}%`;
+    },
+    duration() {
+      return timeIntervalInWords(this.job.duration);
+    },
+    queued() {
+      return timeIntervalInWords(this.job.queued);
+    },
+    runnerId() {
+      return `#${this.job.runner.id}`;
+    },
+    retryButtonClass() {
+      let className = 'js-retry-button pull-right btn btn-retry visible-md-block visible-lg-block';
+      className +=
+        this.job.status && this.job.recoverable
+          ? ' btn-primary'
+          : ' btn-inverted-secondary';
+      return className;
+    },
+    hasTimeout() {
+      return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
+    },
+    timeout() {
+      if (this.job.metadata == null) {
+        return '';
+      }
+
+      let t = this.job.metadata.timeout_human_readable;
+      if (this.job.metadata.timeout_source !== '') {
+        t += ` (from ${this.job.metadata.timeout_source})`;
+      }
+
+      return t;
+    },
+    renderBlock() {
+      return (
+        this.job.merge_request ||
+        this.job.duration ||
+        this.job.finished_data ||
+        this.job.erased_at ||
+        this.job.queued ||
+        this.job.runner ||
+        this.job.coverage ||
+        this.job.tags.length ||
+        this.job.cancel_path
+      );
+    },
+  },
+};
 </script>
 <template>
   <div>
+    <div class="block">
+      <strong class="inline prepend-top-8">
+        {{ job.name }}
+      </strong>
+      <a
+        v-if="canUserRetry"
+        :class="retryButtonClass"
+        :href="job.retry_path"
+        data-method="post"
+        rel="nofollow"
+      >
+        {{ __('Retry') }}
+      </a>
+      <button
+        type="button"
+        :aria-label="__('Toggle Sidebar')"
+        class="btn btn-blank gutter-toggle pull-right
+          visible-xs-block visible-sm-block js-sidebar-build-toggle"
+      >
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-angle-double-right"
+        ></i>
+      </button>
+    </div>
     <template v-if="shouldRenderContent">
       <div
         class="block retry-link"
@@ -65,16 +124,16 @@
           class="js-new-issue btn btn-new btn-inverted"
           :href="job.new_issue_path"
         >
-          New issue
+          {{ __('New issue') }}
         </a>
         <a
-          v-if="job.retry_path"
+          v-if="canUserRetry"
           class="js-retry-job btn btn-inverted-secondary"
           :href="job.retry_path"
           data-method="post"
           rel="nofollow"
         >
-          Retry
+          {{ __('Retry') }}
         </a>
       </div>
       <div :class="{block : renderBlock }">
@@ -83,7 +142,7 @@
           v-if="job.merge_request"
         >
           <span class="build-light-text">
-            Merge Request:
+            {{ __('Merge Request:') }}
           </span>
           <a :href="job.merge_request.path">
             !{{ job.merge_request.iid }}
@@ -115,6 +174,13 @@
           :value="queued"
         />
         <detail-row
+          class="js-job-timeout"
+          v-if="hasTimeout"
+          title="Timeout"
+          :help-url="runnerHelpUrl"
+          :value="timeout"
+        />
+        <detail-row
           class="js-job-runner"
           v-if="job.runner"
           title="Runner"
@@ -131,7 +197,7 @@
           v-if="job.tags.length"
         >
           <span class="build-light-text">
-            Tags:
+            {{ __('Tags:') }}
           </span>
           <span
             v-for="(tag, i) in job.tags"
@@ -151,7 +217,7 @@
             data-method="post"
             rel="nofollow"
           >
-            Cancel
+            {{ __('Cancel') }}
           </a>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';

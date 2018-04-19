@@ -1,3 +1,4 @@
+import eventHub from '../../eventhub';
 import Disposable from './disposable';
 import Model from './model';
 
@@ -8,20 +9,35 @@ export default class ModelManager {
     this.models = new Map();
   }
 
-  hasCachedModel(path) {
-    return this.models.has(path);
+  hasCachedModel(key) {
+    return this.models.has(key);
   }
 
-  addModel(file) {
-    if (this.hasCachedModel(file.path)) {
-      return this.models.get(file.path);
+  getModel(key) {
+    return this.models.get(key);
+  }
+
+  addModel(file, head = null) {
+    if (this.hasCachedModel(file.key)) {
+      return this.getModel(file.key);
     }
 
-    const model = new Model(this.monaco, file);
+    const model = new Model(this.monaco, file, head);
     this.models.set(model.path, model);
     this.disposable.add(model);
 
+    eventHub.$on(
+      `editor.update.model.dispose.${file.key}`,
+      this.removeCachedModel.bind(this, file),
+    );
+
     return model;
+  }
+
+  removeCachedModel(file) {
+    this.models.delete(file.key);
+
+    eventHub.$off(`editor.update.model.dispose.${file.key}`, this.removeCachedModel);
   }
 
   dispose() {

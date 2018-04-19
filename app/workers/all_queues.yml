@@ -18,6 +18,7 @@
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
 - cronjob:trending_projects
+- cronjob:issue_due_scheduler
 
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_provision
@@ -39,16 +40,21 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- mail_scheduler:mail_scheduler_issue_due
+
+- object_storage_upload
+- object_storage:object_storage_background_move
+- object_storage:object_storage_migrate_uploads
+
 - pipeline_cache:expire_job_cache
 - pipeline_cache:expire_pipeline_cache
 - pipeline_creation:create_pipeline
 - pipeline_creation:run_pipeline_schedule
+- pipeline_background:archive_trace
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
-- pipeline_default:create_trace_artifact
 - pipeline_default:pipeline_metrics
 - pipeline_default:pipeline_notification
-- pipeline_default:update_head_pipeline_for_merge_request
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
@@ -58,6 +64,7 @@
 - pipeline_processing:pipeline_success
 - pipeline_processing:pipeline_update
 - pipeline_processing:stage_update
+- pipeline_processing:update_head_pipeline_for_merge_request
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_single_repository

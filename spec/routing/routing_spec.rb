@@ -9,7 +9,7 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
@@ -210,7 +210,7 @@ describe Profiles::KeysController, "routing" do
 
   # get all the ssh-keys of a user
   it "to #get_keys" do
-    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end

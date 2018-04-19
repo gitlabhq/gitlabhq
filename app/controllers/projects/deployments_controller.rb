@@ -24,7 +24,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   end
 
   def additional_metrics
-    return render_404 unless deployment.has_additional_metrics?
+    return render_404 unless deployment.has_metrics?
 
     respond_to do |format|
       format.json do

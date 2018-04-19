@@ -27,6 +27,8 @@ export default class DecorationsController {
   }
 
   decorate(model) {
+    if (!this.editor.instance) return;
+
     const decorations = this.getAllDecorationsForModel(model);
     const oldDecorations = this.editorDecorations.get(model.url) || [];
 
@@ -34,6 +36,15 @@ export default class DecorationsController {
       model.url,
       this.editor.instance.deltaDecorations(oldDecorations, decorations),
     );
+  }
+
+  hasDecorations(model) {
+    return this.decorations.has(model.url);
+  }
+
+  removeDecorations(model) {
+    this.decorations.delete(model.url);
+    this.editorDecorations.delete(model.url);
   }
 
   dispose() {

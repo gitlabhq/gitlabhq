@@ -49,15 +49,13 @@ module TreeHelper
 
     return false unless on_top_of_branch?(project, ref)
 
-    can_collaborate_with_project?(project)
+    can_collaborate_with_project?(project, ref: ref)
   end
 
   def tree_edit_branch(project = @project, ref = @ref)
     return unless can_edit_tree?(project, ref)
 
-    project = project.present(current_user: current_user)
-
-    if project.can_current_user_push_to_branch?(ref)
+    if user_access(project).can_push_to_branch?(ref)
       ref
     else
       project = tree_edit_project(project)
@@ -88,7 +86,16 @@ module TreeHelper
   end
 
   def commit_in_fork_help
-    "A new branch will be created in your fork and a new merge request will be started."
+    _("A new branch will be created in your fork and a new merge request will be started.")
+  end
+
+  def commit_in_single_accessible_branch
+    branch_name = ERB::Util.html_escape(selected_branch)
+
+    message = _("Your changes can be committed to %{branch_name} because a merge "\
+                "request is open.") % { branch_name: "<strong>#{branch_name}</strong>" }
+
+    message.html_safe
   end
 
   def path_breadcrumbs(max_links = 6)
@@ -116,7 +123,7 @@ module TreeHelper
 
   # returns the relative path of the first subdir that doesn't have only one directory descendant
   def flatten_tree(root_path, tree)
-    return tree.flat_path.sub(%r{\A#{root_path}/}, '') if tree.flat_path.present?
+    return tree.flat_path.sub(%r{\A#{Regexp.escape(root_path)}/}, '') if tree.flat_path.present?
 
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?
@@ -124,5 +131,9 @@ module TreeHelper
     else
       return tree.name
     end
+  end
+
+  def selected_branch
+    @branch_name || tree_edit_branch
   end
 end

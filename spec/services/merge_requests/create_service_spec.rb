@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::CreateService do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user) }
@@ -28,6 +30,7 @@ describe MergeRequests::CreateService do
 
       it 'creates an MR' do
         expect(merge_request).to be_valid
+        expect(merge_request.work_in_progress?).to be(false)
         expect(merge_request.title).to eq('Awesome merge_request')
         expect(merge_request.assignee).to be_nil
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
@@ -60,6 +63,40 @@ describe MergeRequests::CreateService do
         }
 
         expect(Event.where(attributes).count).to eq(1)
+      end
+
+      describe 'when marked with /wip' do
+        context 'in title and in description' do
+          let(:opts) do
+            {
+              title: 'WIP: Awesome merge_request',
+              description: "well this is not done yet\n/wip",
+              source_branch: 'feature',
+              target_branch: 'master',
+              assignee: assignee
+            }
+          end
+
+          it 'sets MR to WIP' do
+            expect(merge_request.work_in_progress?).to be(true)
+          end
+        end
+
+        context 'in description only' do
+          let(:opts) do
+            {
+              title: 'Awesome merge_request',
+              description: "well this is not done yet\n/wip",
+              source_branch: 'feature',
+              target_branch: 'master',
+              assignee: assignee
+            }
+          end
+
+          it 'sets MR to WIP' do
+            expect(merge_request.work_in_progress?).to be(true)
+          end
+        end
       end
 
       context 'when merge request is assigned to someone' do
@@ -265,7 +302,7 @@ describe MergeRequests::CreateService do
     end
 
     context 'when source and target projects are different' do
-      let(:target_project) { create(:project) }
+      let(:target_project) { fork_project(project, nil, repository: true) }
 
       let(:opts) do
         {
@@ -295,6 +332,26 @@ describe MergeRequests::CreateService do
         end
 
         it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+
+      context 'when the user has access to both projects' do
+        before do
+          target_project.add_developer(user)
+          project.add_developer(user)
+        end
+
+        it 'creates the merge request' do
+          merge_request = described_class.new(project, user, opts).execute
+
+          expect(merge_request).to be_persisted
+        end
+
+        it 'does not create the merge request when the target project is archived' do
+          target_project.update!(archived: true)
+
           expect { described_class.new(project, user, opts).execute }
             .to raise_error Gitlab::Access::AccessDeniedError
         end

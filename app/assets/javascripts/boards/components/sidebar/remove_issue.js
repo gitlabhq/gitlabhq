@@ -17,14 +17,10 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       type: Object,
       required: true,
     },
-    issueUpdate: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
     updateUrl() {
-      return this.issueUpdate;
+      return this.issue.path;
     },
   },
   methods: {
@@ -32,17 +28,21 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       const issue = this.issue;
       const lists = issue.getLists();
       const listLabelIds = lists.map(list => list.label.id);
-      let labelIds = this.issue.labels
+
+      let labelIds = issue.labels
         .map(label => label.id)
         .filter(id => !listLabelIds.includes(id));
       if (labelIds.length === 0) {
         labelIds = [''];
       }
+
       const data = {
         issue: {
           label_ids: labelIds,
         },
       };
+
+      // Post the remove data
       Vue.http.patch(this.updateUrl, data).catch(() => {
         Flash(__('Failed to remove issue from board, please try again.'));
 

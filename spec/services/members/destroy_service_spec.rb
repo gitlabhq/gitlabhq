@@ -19,30 +19,9 @@ describe Members::DestroyService do
     end
   end
 
-  def number_of_assigned_issuables(user)
-    Issue.assigned_to(user).count + MergeRequest.assigned_to(user).count
-  end
-
   shared_examples 'a service destroying a member' do
     it 'destroys the member' do
       expect { described_class.new(current_user).execute(member, opts) }.to change { member.source.members_and_requesters.count }.by(-1)
-    end
-
-    it 'unassigns issues and merge requests' do
-      if member.invite?
-        expect { described_class.new(current_user).execute(member, opts) }
-          .not_to change { number_of_assigned_issuables(member_user) }
-      else
-        create :issue, assignees: [member_user]
-        issue = create :issue, project: group_project, assignees: [member_user]
-        merge_request = create :merge_request, target_project: group_project, source_project: group_project, assignee: member_user
-
-        expect { described_class.new(current_user).execute(member, opts) }
-          .to change { number_of_assigned_issuables(member_user) }.from(3).to(1)
-
-        expect(issue.reload.assignee_ids).to be_empty
-        expect(merge_request.reload.assignee_id).to be_nil
-      end
     end
 
     it 'destroys member notification_settings' do
@@ -53,6 +32,29 @@ describe Members::DestroyService do
         expect { described_class.new(current_user).execute(member, opts) }
           .not_to change { member_user.notification_settings.count }
       end
+    end
+  end
+
+  shared_examples 'a service destroying a member with access' do
+    it_behaves_like 'a service destroying a member'
+
+    it 'invalidates cached counts for todos and assigned issues and merge requests', :aggregate_failures do
+      create(:issue, project: group_project, assignees: [member_user])
+      create(:merge_request, source_project: group_project, assignee: member_user)
+      create(:todo, :pending, project: group_project, user: member_user)
+      create(:todo, :done, project: group_project, user: member_user)
+
+      expect(member_user.assigned_open_merge_requests_count).to be(1)
+      expect(member_user.assigned_open_issues_count).to be(1)
+      expect(member_user.todos_pending_count).to be(1)
+      expect(member_user.todos_done_count).to be(1)
+
+      described_class.new(current_user).execute(member, opts)
+
+      expect(member_user.assigned_open_merge_requests_count).to be(0)
+      expect(member_user.assigned_open_issues_count).to be(0)
+      expect(member_user.todos_pending_count).to be(0)
+      expect(member_user.todos_done_count).to be(0)
     end
   end
 
@@ -74,29 +76,39 @@ describe Members::DestroyService do
     end
   end
 
-  context 'with a member' do
+  context 'with a member with access' do
     before do
-      group_project.add_developer(member_user)
-      group.add_developer(member_user)
+      group_project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
     end
 
     context 'when current user cannot destroy the given member' do
-      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+      context 'with a project member' do
         let(:member) { group_project.members.find_by(user_id: member_user.id) }
+
+        before do
+          group_project.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+
+        it_behaves_like 'a service destroying a member with access' do
+          let(:opts) { { skip_authorization: true } }
+        end
       end
 
-      it_behaves_like 'a service destroying a member' do
-        let(:opts) { { skip_authorization: true } }
-        let(:member) { group_project.members.find_by(user_id: member_user.id) }
-      end
-
-      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+      context 'with a group member' do
         let(:member) { group.members.find_by(user_id: member_user.id) }
-      end
 
-      it_behaves_like 'a service destroying a member' do
-        let(:opts) { { skip_authorization: true } }
-        let(:member) { group.members.find_by(user_id: member_user.id) }
+        before do
+          group.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+
+        it_behaves_like 'a service destroying a member with access' do
+          let(:opts) { { skip_authorization: true } }
+        end
       end
     end
 
@@ -106,12 +118,24 @@ describe Members::DestroyService do
         group.add_owner(current_user)
       end
 
-      it_behaves_like 'a service destroying a member' do
+      context 'with a project member' do
         let(:member) { group_project.members.find_by(user_id: member_user.id) }
+
+        before do
+          group_project.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service destroying a member with access'
       end
 
-      it_behaves_like 'a service destroying a member' do
+      context 'with a group member' do
         let(:member) { group.members.find_by(user_id: member_user.id) }
+
+        before do
+          group.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service destroying a member with access'
       end
     end
   end

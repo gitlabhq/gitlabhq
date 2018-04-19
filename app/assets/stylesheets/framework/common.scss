@@ -14,6 +14,10 @@
   color: $gl-text-color-secondary;
 }
 
+.text-tertiary {
+  color: $gl-text-color-tertiary;
+}
+
 .text-primary,
 .text-primary:hover {
   color: $brand-primary;
@@ -440,6 +444,10 @@ img.emoji {
 .disabled-content {
   pointer-events: none;
   opacity: .5;
+}
+
+.break-word {
+  word-wrap: break-word;
 }
 
 /** COMMON CLASSES **/

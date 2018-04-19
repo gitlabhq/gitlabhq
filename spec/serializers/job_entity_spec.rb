@@ -38,7 +38,7 @@ describe JobEntity do
 
   it 'contains details' do
     expect(subject).to include :status
-    expect(subject[:status]).to include :icon, :favicon, :text, :label
+    expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
   end
 
   context 'when job is retryable' do
@@ -126,7 +126,72 @@ describe JobEntity do
 
     it 'contains details' do
       expect(subject).to include :status
-      expect(subject[:status]).to include :icon, :favicon, :text, :label
+      expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
+    end
+  end
+
+  context 'when job failed' do
+    let(:job) { create(:ci_build, :script_failure) }
+
+    it 'contains details' do
+      expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
+    end
+
+    it 'states that it failed' do
+      expect(subject[:status][:label]).to eq('failed')
+    end
+
+    it 'should indicate the failure reason on tooltip' do
+      expect(subject[:status][:tooltip]).to eq('failed <br> (script failure)')
+    end
+
+    it 'should include a callout message with a verbose output' do
+      expect(subject[:callout_message]).to eq('There has been a script failure. Check the job log for more information')
+    end
+
+    it 'should state that it is not recoverable' do
+      expect(subject[:recoverable]).to be_falsy
+    end
+  end
+
+  context 'when job is allowed to fail' do
+    let(:job) { create(:ci_build, :allowed_to_fail, :script_failure) }
+
+    it 'contains details' do
+      expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
+    end
+
+    it 'states that it failed' do
+      expect(subject[:status][:label]).to eq('failed (allowed to fail)')
+    end
+
+    it 'should indicate the failure reason on tooltip' do
+      expect(subject[:status][:tooltip]).to eq('failed <br> (script failure) (allowed to fail)')
+    end
+
+    it 'should include a callout message with a verbose output' do
+      expect(subject[:callout_message]).to eq('There has been a script failure. Check the job log for more information')
+    end
+
+    it 'should state that it is not recoverable' do
+      expect(subject[:recoverable]).to be_falsy
+    end
+  end
+
+  context 'when job failed and is recoverable' do
+    let(:job) { create(:ci_build, :api_failure) }
+
+    it 'should state it is recoverable' do
+      expect(subject[:recoverable]).to be_truthy
+    end
+  end
+
+  context 'when job passed' do
+    let(:job) { create(:ci_build, :success) }
+
+    it 'should not include callout message or recoverable keys' do
+      expect(subject).not_to include('callout_message')
+      expect(subject).not_to include('recoverable')
     end
   end
 end

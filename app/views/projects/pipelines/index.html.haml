@@ -7,8 +7,9 @@
     "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
     "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
     "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
-    "new-pipeline-path" => new_project_pipeline_path(@project),
+    "no-pipelines-svg-path" => image_path('illustrations/pipelines_pending.svg'),
     "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
-    "has-ci" => @repository.gitlab_ci_yml,
-    "ci-lint-path" => ci_lint_path,
-    "reset-cache-path" => reset_cache_project_settings_ci_cd_path(@project) } }
+    "new-pipeline-path" => can?(current_user, :create_pipeline, @project) && new_project_pipeline_path(@project),
+    "ci-lint-path" => can?(current_user, :create_pipeline, @project) && project_ci_lint_path(@project),
+    "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project) ,
+    "has-gitlab-ci" => (@project.has_ci? && @project.builds_enabled?).to_s } }

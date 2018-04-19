@@ -40,7 +40,7 @@ scope(path: '*namespace_id/:project_id',
     # /info/refs?service=git-receive-pack, but nothing else.
     #
     git_http_handshake = lambda do |request|
-      ProjectUrlConstrainer.new.matches?(request) &&
+      ::Constraints::ProjectUrlConstrainer.new.matches?(request) &&
         (request.query_string.blank? ||
          request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/))
     end

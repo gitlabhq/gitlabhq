@@ -5,9 +5,9 @@ feature 'Issue Sidebar' do
 
   let(:group) { create(:group, :nested) }
   let(:project) { create(:project, :public, namespace: group) }
-  let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
+  let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
   let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
@@ -112,27 +112,34 @@ feature 'Issue Sidebar' do
 
     context 'editing issue labels', :js do
       before do
+        issue.update_attributes(labels: [label])
         page.within('.block.labels') do
           find('.edit-link').click
         end
       end
 
-      it 'shows option to create a new label' do
-        page.within('.block.labels') do
-          expect(page).to have_content 'Create new'
+      it 'shows the current set of labels' do
+        page.within('.issuable-show-labels') do
+          expect(page).to have_content label.title
         end
       end
 
-      context 'creating a new label', :js do
+      it 'shows option to create a project label' do
+        page.within('.block.labels') do
+          expect(page).to have_content 'Create project'
+        end
+      end
+
+      context 'creating a project label', :js do
         before do
           page.within('.block.labels') do
-            click_link 'Create new'
+            click_link 'Create project'
           end
         end
 
         it 'shows dropdown switches to "create label" section' do
           page.within('.block.labels') do
-            expect(page).to have_content 'Create new label'
+            expect(page).to have_content 'Create project label'
           end
         end
 
@@ -159,6 +166,50 @@ feature 'Issue Sidebar' do
             end
           end
         end
+      end
+    end
+
+    context 'interacting with collapsed sidebar', :js do
+      collapsed_sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+      expanded_sidebar_selector = 'aside.right-sidebar.right-sidebar-expanded'
+      confidentiality_sidebar_block = '.block.confidentiality'
+      lock_sidebar_block = '.block.lock'
+      collapsed_sidebar_block_icon = '.sidebar-collapsed-icon'
+
+      before do
+        resize_screen_sm
+      end
+
+      it 'confidentiality block expands then collapses sidebar' do
+        expect(page).to have_css(collapsed_sidebar_selector)
+
+        page.within(confidentiality_sidebar_block) do
+          find(collapsed_sidebar_block_icon).click
+        end
+
+        expect(page).to have_css(expanded_sidebar_selector)
+
+        page.within(confidentiality_sidebar_block) do
+          page.find('button', text: 'Cancel').click
+        end
+
+        expect(page).to have_css(collapsed_sidebar_selector)
+      end
+
+      it 'lock block expands then collapses sidebar' do
+        expect(page).to have_css(collapsed_sidebar_selector)
+
+        page.within(lock_sidebar_block) do
+          find(collapsed_sidebar_block_icon).click
+        end
+
+        expect(page).to have_css(expanded_sidebar_selector)
+
+        page.within(lock_sidebar_block) do
+          page.find('button', text: 'Cancel').click
+        end
+
+        expect(page).to have_css(collapsed_sidebar_selector)
       end
     end
   end

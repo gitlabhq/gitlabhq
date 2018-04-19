@@ -1,96 +1,102 @@
 <script>
-  import _ from 'underscore';
-  import { s__, sprintf } from '../../locale';
-  import applicationRow from './application_row.vue';
-  import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import {
-    APPLICATION_INSTALLED,
-    INGRESS,
-  } from '../constants';
+import _ from 'underscore';
+import { s__, sprintf } from '../../locale';
+import applicationRow from './application_row.vue';
+import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import { APPLICATION_INSTALLED, INGRESS } from '../constants';
 
-  export default {
-    components: {
-      applicationRow,
-      clipboardButton,
+export default {
+  components: {
+    applicationRow,
+    clipboardButton,
+  },
+  props: {
+    applications: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    props: {
-      applications: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      helpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      ingressHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      ingressDnsHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      managePrometheusPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
+    helpPath: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      generalApplicationDescription() {
-        return sprintf(
-          _.escape(s__(
+    ingressHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    ingressDnsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    managePrometheusPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    generalApplicationDescription() {
+      return sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|Install applications on your Kubernetes cluster.
             Read more about %{helpLink}`,
-          )), {
-            helpLink: `<a href="${this.helpPath}">
+          ),
+        ),
+        {
+          helpLink: `<a href="${this.helpPath}">
               ${_.escape(s__('ClusterIntegration|installing applications'))}
             </a>`,
-          },
-          false,
-        );
-      },
-      ingressId() {
-        return INGRESS;
-      },
-      ingressInstalled() {
-        return this.applications.ingress.status === APPLICATION_INSTALLED;
-      },
-      ingressExternalIp() {
-        return this.applications.ingress.externalIp;
-      },
-      ingressDescription() {
-        const extraCostParagraph = sprintf(
-          _.escape(s__(
+        },
+        false,
+      );
+    },
+    ingressId() {
+      return INGRESS;
+    },
+    ingressInstalled() {
+      return this.applications.ingress.status === APPLICATION_INSTALLED;
+    },
+    ingressExternalIp() {
+      return this.applications.ingress.externalIp;
+    },
+    ingressDescription() {
+      const extraCostParagraph = sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|%{boldNotice} This will add some extra resources
             like a load balancer, which may incur additional costs depending on
-            the hosting provider your Kubernetes cluster is installed on. If you are using GKE,
-            you can %{pricingLink}.`,
-          )), {
-            boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
-            pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
+            the hosting provider your Kubernetes cluster is installed on. If you are using
+            Google Kubernetes Engine, you can %{pricingLink}.`,
+          ),
+        ),
+        {
+          boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
+          pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
               ${_.escape(s__('ClusterIntegration|check the pricing here'))}</a>`,
-          },
-          false,
-        );
+        },
+        false,
+      );
 
-        const externalIpParagraph = sprintf(
-          _.escape(s__(
+      const externalIpParagraph = sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS
             at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`,
-          )), {
-            ingressHelpLink: `<a href="${this.ingressHelpPath}">
+          ),
+        ),
+        {
+          ingressHelpLink: `<a href="${this.ingressHelpPath}">
               ${_.escape(s__('ClusterIntegration|More information'))}
             </a>`,
-          },
-          false,
-        );
+        },
+        false,
+      );
 
-        return `
+      return `
           <p>
             ${extraCostParagraph}
           </p>
@@ -98,26 +104,32 @@
             ${externalIpParagraph}
           </p>
         `;
-      },
-      prometheusDescription() {
-        return sprintf(
-          _.escape(s__(
+    },
+    prometheusDescription() {
+      return sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|Prometheus is an open-source monitoring system
             with %{gitlabIntegrationLink} to monitor deployed applications.`,
-          )), {
-            gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+          ),
+        ),
+        {
+          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
               target="_blank" rel="noopener noreferrer">
               ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
-          },
-          false,
-        );
-      },
+        },
+        false,
+      );
     },
-  };
+  },
+};
 </script>
 
 <template>
-  <section class="settings no-animate expanded">
+  <section
+    id="cluster-applications"
+    class="settings no-animate expanded"
+  >
     <div class="settings-header">
       <h4>
         {{ s__('ClusterIntegration|Applications') }}
@@ -183,7 +195,7 @@
                     <clipboard-button
                       :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      css-class="btn btn-default js-clipboard-btn"
+                      class="js-clipboard-btn"
                     />
                   </span>
                 </div>
@@ -202,7 +214,7 @@
               >
                 {{ s__(`ClusterIntegration|The IP address is in
                 the process of being assigned. Please check your Kubernetes
-                cluster or Quotas on GKE if it takes a long time.`) }}
+                cluster or Quotas on Google Kubernetes Engine if it takes a long time.`) }}
 
                 <a
                   :href="ingressHelpPath"

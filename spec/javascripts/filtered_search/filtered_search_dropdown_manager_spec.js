@@ -1,8 +1,9 @@
+import $ from 'jquery';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
 
 describe('Filtered Search Dropdown Manager', () => {
   beforeEach(() => {
-    spyOn(jQuery, 'ajax');
+    spyOn($, 'ajax');
   });
 
   describe('addWordToInput', () => {

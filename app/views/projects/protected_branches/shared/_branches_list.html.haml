@@ -1,8 +1,8 @@
-.panel.panel-default.protected-branches-list.js-protected-branches-list
+.protected-branches-list.js-protected-branches-list.qa-protected-branches-list
   - if @protected_branches.empty?
     .panel-heading
       %h3.panel-title
-        Protected branch (#{@protected_branches.size})
+        Protected branch (#{@protected_branches_count})
     %p.settings-message.text-center
       There are currently no protected branches, protect a branch with the form above.
   - else
@@ -16,7 +16,7 @@
           %col
       %thead
         %tr
-          %th Protected branch (#{@protected_branches.size})
+          %th Protected branch (#{@protected_branches_count})
           %th Last commit
           %th Allowed to merge
           %th Allowed to push

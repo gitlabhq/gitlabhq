@@ -1,6 +1,5 @@
 - show_create = local_assigns.fetch(:show_create, false)
 
-- show_new_branch_form = show_new_ide? && show_create && can?(current_user, :push_code, @project)
 - dropdown_toggle_text = @ref || @project.default_branch
 = form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
   = hidden_field_tag :destination, destination
@@ -9,21 +8,10 @@
   - @options && @options.each do |key, value|
     = hidden_field_tag key, value, id: nil
   .dropdown
-    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: 'ref', submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown" }
-    .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown.dropdown-menu-paging{ class: ("dropdown-menu-align-right" if local_assigns[:align_right]) }
+    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: 'ref', submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown qa-branches-select" }
+    .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown.dropdown-menu-paging.qa-branches-dropdown{ class: ("dropdown-menu-align-right" if local_assigns[:align_right]) }
       .dropdown-page-one
         = dropdown_title _("Switch branch/tag")
         = dropdown_filter _("Search branches and tags")
         = dropdown_content
         = dropdown_loading
-        - if show_new_branch_form
-          = dropdown_footer do
-            %ul.dropdown-footer-list
-              %li
-                %a.dropdown-toggle-page{ href: "#" }
-                  Create new branch
-      - if show_new_branch_form
-        .dropdown-page-two
-          = dropdown_title("Create new branch", options: { back: true })
-          = dropdown_content do
-            .js-new-branch-dropdown

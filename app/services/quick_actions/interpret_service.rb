@@ -200,7 +200,7 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
+      available_labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true).execute
 
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         available_labels.any?
@@ -367,9 +367,9 @@ module QuickActions
       "#{verb} this #{noun} as Work In Progress."
     end
     condition do
-      issuable.persisted? &&
-        issuable.respond_to?(:work_in_progress?) &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      issuable.respond_to?(:work_in_progress?) &&
+        # Allow it to mark as WIP on MR creation page _or_ through MR notes.
+        (issuable.new_record? || current_user.can?(:"update_#{issuable.to_ability_name}", issuable))
     end
     command :wip do
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
@@ -582,7 +582,7 @@ module QuickActions
 
     def find_labels(labels_param)
       extract_references(labels_param, :label) |
-        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute
+        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split, include_ancestor_groups: true).execute
     end
 
     def find_label_references(labels_param)
@@ -613,6 +613,7 @@ module QuickActions
 
     def extract_references(arg, type)
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
+
       ext.analyze(arg, author: current_user)
 
       ext.references(type)

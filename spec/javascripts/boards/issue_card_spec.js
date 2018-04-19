@@ -4,8 +4,8 @@
 
 import Vue from 'vue';
 
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/stores/boards_store';
@@ -41,6 +41,8 @@ describe('Issue card component', () => {
       confidential: false,
       labels: [list.label],
       assignees: [],
+      reference_path: '#1',
+      real_path: '/test/1',
     });
 
     component = new Vue({

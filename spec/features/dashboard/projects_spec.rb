@@ -37,6 +37,14 @@ feature 'Dashboard Projects' do
 
       expect(page).to have_xpath("//time[@datetime='#{project.last_repository_updated_at.getutc.iso8601}']")
     end
+
+    it 'shows the last_activity_at attribute as the update date' do
+      project.update_attributes!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+
+      visit dashboard_projects_path
+
+      expect(page).to have_xpath("//time[@datetime='#{project.last_activity_at.getutc.iso8601}']")
+    end
   end
 
   context 'when last_repository_updated_at and last_activity_at are missing' do
@@ -81,7 +89,7 @@ feature 'Dashboard Projects' do
   end
 
   describe 'with a pipeline', :clean_gitlab_redis_shared_state do
-    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created
@@ -94,7 +102,7 @@ feature 'Dashboard Projects' do
       visit dashboard_projects_path
 
       page.within('.controls') do
-        expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit)}']")
+        expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
         expect(page).to have_css('.ci-status-link')
         expect(page).to have_css('.ci-status-icon-success')
         expect(page).to have_link('Commit: passed')

@@ -1,5 +1,6 @@
 /* eslint-disable new-cap, comma-dangle, no-new */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';

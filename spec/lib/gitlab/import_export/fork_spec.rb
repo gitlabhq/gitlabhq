@@ -7,7 +7,7 @@ describe 'forked project import' do
   let!(:project_with_repo) { create(:project, :repository, name: 'test-repo-restorer', path: 'test-repo-restorer') }
   let!(:project) { create(:project, name: 'test-repo-restorer-no-repo', path: 'test-repo-restorer-no-repo') }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
+  let(:shared) { project.import_export_shared }
   let(:forked_from_project) { create(:project, :repository) }
   let(:forked_project) { fork_project(project_with_repo, nil, repository: true) }
   let(:repo_saver) { Gitlab::ImportExport::RepoSaver.new(project: project_with_repo, shared: shared) }

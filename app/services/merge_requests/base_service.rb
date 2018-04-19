@@ -24,6 +24,25 @@ module MergeRequests
 
     private
 
+    def handle_wip_event(merge_request)
+      if wip_event = params.delete(:wip_event)
+        # We update the title that is provided in the params or we use the mr title
+        title = params[:title] || merge_request.title
+        params[:title] = case wip_event
+                         when 'wip' then MergeRequest.wip_title(title)
+                         when 'unwip' then MergeRequest.wipless_title(title)
+                         end
+      end
+    end
+
+    def filter_params(merge_request)
+      super
+
+      unless merge_request.can_allow_maintainer_to_push?(current_user)
+        params.delete(:allow_maintainer_to_push)
+      end
+    end
+
     def merge_request_metrics_service(merge_request)
       MergeRequestMetricsService.new(merge_request.metrics)
     end

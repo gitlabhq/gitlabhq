@@ -42,7 +42,10 @@ module Boards
           )
         end
 
-        attrs[:move_between_ids] = move_between_ids if move_between_ids
+        if move_between_ids
+          attrs[:move_between_ids] = move_between_ids
+          attrs[:board_group_id] =  board.group&.id
+        end
 
         attrs
       end
@@ -60,8 +63,10 @@ module Boards
         label_ids =
           if moving_to_list.movable?
             moving_from_list.label_id
+          elsif board.group_board?
+            ::Label.on_group_boards(parent.id).pluck(:label_id)
           else
-            Label.on_project_boards(parent.id).pluck(:label_id)
+            ::Label.on_project_boards(parent.id).pluck(:label_id)
           end
 
         Array(label_ids).compact

@@ -56,29 +56,29 @@ module Banzai
 
       # Implement in child class
       # Example: project.merge_requests.find
-      def find_object(project, id)
+      def find_object(parent_object, id)
       end
 
       # Override if the link reference pattern produces a different ID (global
       # ID vs internal ID, for instance) to the regular reference pattern.
-      def find_object_from_link(project, id)
-        find_object(project, id)
+      def find_object_from_link(parent_object, id)
+        find_object(parent_object, id)
       end
 
       # Implement in child class
       # Example: project_merge_request_url
-      def url_for_object(object, project)
+      def url_for_object(object, parent_object)
       end
 
-      def find_object_cached(project, id)
-        cached_call(:banzai_find_object, id, path: [object_class, project.id]) do
-          find_object(project, id)
+      def find_object_cached(parent_object, id)
+        cached_call(:banzai_find_object, id, path: [object_class, parent_object.id]) do
+          find_object(parent_object, id)
         end
       end
 
-      def find_object_from_link_cached(project, id)
-        cached_call(:banzai_find_object_from_link, id, path: [object_class, project.id]) do
-          find_object_from_link(project, id)
+      def find_object_from_link_cached(parent_object, id)
+        cached_call(:banzai_find_object_from_link, id, path: [object_class, parent_object.id]) do
+          find_object_from_link(parent_object, id)
         end
       end
 
@@ -88,9 +88,9 @@ module Banzai
         end
       end
 
-      def url_for_object_cached(object, project)
-        cached_call(:banzai_url_for_object, object, path: [object_class, project.id]) do
-          url_for_object(object, project)
+      def url_for_object_cached(object, parent_object)
+        cached_call(:banzai_url_for_object, object, path: [object_class, parent_object.id]) do
+          url_for_object(object, parent_object)
         end
       end
 
@@ -171,7 +171,7 @@ module Banzai
           end
 
           if object
-            title = object_link_title(object)
+            title = object_link_title(object, matches)
             klass = reference_class(object_sym)
 
             data = data_attributes_for(link_content || match, parent, object,
@@ -196,13 +196,15 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object, link_content: false, link_reference: false)
+      def data_attributes_for(text, parent, object, link_content: false, link_reference: false)
+        object_parent_type = parent.is_a?(Group) ? :group : :project
+
         data_attribute(
-          original:       text,
-          link:           link_content,
-          link_reference: link_reference,
-          project:        project.id,
-          object_sym =>   object.id
+          original:             text,
+          link:                 link_content,
+          link_reference:       link_reference,
+          object_parent_type => parent.id,
+          object_sym =>         object.id
         )
       end
 
@@ -213,10 +215,14 @@ module Banzai
           extras << "comment #{$1}"
         end
 
+        extension = matches[:extension] if matches.names.include?("extension")
+
+        extras << extension if extension
+
         extras
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         object.title
       end
 
@@ -336,6 +342,12 @@ module Banzai
 
       def parent
         parent_type == :project ? project : group
+      end
+
+      def full_group_path(group_ref)
+        return current_parent_path unless group_ref
+
+        group_ref
       end
     end
   end

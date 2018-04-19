@@ -16,7 +16,7 @@ describe Gitlab::Workhorse do
     let(:ref) { 'master' }
     let(:format) { 'zip' }
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
-    let(:base_params) { repository.archive_metadata(ref, storage_path, format) }
+    let(:base_params) { repository.archive_metadata(ref, storage_path, format, append_sha: nil) }
     let(:gitaly_params) do
       base_params.merge(
         'GitalyServer' => {
@@ -29,7 +29,7 @@ describe Gitlab::Workhorse do
     let(:cache_disabled) { false }
 
     subject do
-      described_class.send_git_archive(repository, ref: ref, format: format)
+      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil)
     end
 
     before do
@@ -55,7 +55,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_archive feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_archive feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -100,7 +100,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_send_git_patch feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_send_git_patch feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -173,7 +173,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_send_git_diff feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_send_git_diff feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -275,7 +275,7 @@ describe Gitlab::Workhorse do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
-    let(:repo_path) { repository.path_to_repo }
+    let(:repo_path) { 'ignored but not allowed to be empty in gitlab-workhorse' }
     let(:action) { 'info_refs' }
     let(:params) do
       {
@@ -455,7 +455,7 @@ describe Gitlab::Workhorse do
       end
     end
 
-    context 'when Gitaly workhorse_raw_show feature is disabled', :skip_gitaly_mock do
+    context 'when Gitaly workhorse_raw_show feature is disabled', :disable_gitaly do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 

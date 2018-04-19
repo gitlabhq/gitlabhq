@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import readyToMergeComponent from '~/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
+import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import * as simplePoll from '~/lib/utils/simple_poll';
 
 const commitMessage = 'This is the commit message';
 const commitMessageWithDescription = 'This is the commit message description';
 const createComponent = (customConfig = {}) => {
-  const Component = Vue.extend(readyToMergeComponent);
+  const Component = Vue.extend(ReadyToMerge);
   const mr = {
     isPipelineActive: false,
     pipeline: null,
@@ -36,7 +36,7 @@ const createComponent = (customConfig = {}) => {
   });
 };
 
-describe('MRWidgetReadyToMerge', () => {
+describe('ReadyToMerge', () => {
   let vm;
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('MRWidgetReadyToMerge', () => {
 
   describe('props', () => {
     it('should have props', () => {
-      const { mr, service } = readyToMergeComponent.props;
+      const { mr, service } = ReadyToMerge.props;
 
       expect(mr.type instanceof Object).toBeTruthy();
       expect(mr.required).toBeTruthy();
@@ -517,13 +517,9 @@ describe('MRWidgetReadyToMerge', () => {
 
   describe('Remove source branch checkbox', () => {
     describe('when user can merge but cannot delete branch', () => {
-      it('isRemoveSourceBranchButtonDisabled should be true', () => {
-        expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
-      });
-
       it('should be disabled in the rendered output', () => {
         const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-        expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+        expect(checkboxElement).toBeNull();
       });
     });
 
@@ -540,7 +536,7 @@ describe('MRWidgetReadyToMerge', () => {
 
       it('should be enabled in rendered output', () => {
         const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
-        expect(checkboxElement.getAttribute('disabled')).toBeNull();
+        expect(checkboxElement).not.toBeNull();
       });
     });
   });
@@ -549,12 +545,12 @@ describe('MRWidgetReadyToMerge', () => {
     describe('when allowed to merge', () => {
       beforeEach(() => {
         vm = createComponent({
-          mr: { isMergeAllowed: true },
+          mr: { isMergeAllowed: true, canRemoveSourceBranch: true },
         });
       });
 
       it('shows remove source branch checkbox', () => {
-        expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).toBeDefined();
+        expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).not.toBeNull();
       });
 
       it('shows modify commit message button', () => {

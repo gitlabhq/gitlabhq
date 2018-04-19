@@ -1,3 +1,6 @@
+- can_collaborate = can_collaborate_with_project?(@project)
+- can_create_mr_from_fork = can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
+
 .tree-ref-container
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path, show_create: true
@@ -15,7 +18,7 @@
       %li
         = link_to truncate(title, length: 40), project_tree_path(@project, tree_join(@ref, path))
 
-    - if current_user
+    - if can_collaborate || can_create_mr_from_fork
       %li
         %a.btn.add-to-tree{ addtotree_toggle_attributes }
           = sprite_icon('plus', size: 16, css_class: 'pull-left')
@@ -35,7 +38,7 @@
                 %li
                   = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal' } do
                     #{ _('New directory') }
-              - elsif can?(current_user, :fork_project, @project)
+              - elsif can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
                 %li
                   - continue_params = { to:         project_new_blob_path(@project, @id),
                                         notice:     edit_in_new_fork_notice,
@@ -61,24 +64,25 @@
                   = link_to fork_path, method: :post do
                     #{ _('New directory') }
 
-              %li.divider
-              %li.dropdown-header
-                #{ _('This repository') }
-              %li
-                = link_to new_project_branch_path(@project) do
-                  #{ _('New branch') }
-              %li
-                = link_to new_project_tag_path(@project) do
-                  #{ _('New tag') }
+              - if can?(current_user, :push_code, @project)
+                %li.divider
+                %li.dropdown-header
+                  #{ _('This repository') }
+                %li
+                  = link_to new_project_branch_path(@project) do
+                    #{ _('New branch') }
+                %li
+                  = link_to new_project_tag_path(@project) do
+                    #{ _('New tag') }
 
 .tree-controls
-  - if show_new_ide?
-    = succeed " " do
-      = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-        = _('Web IDE')
-
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
+
+  - if can_collaborate
+    = succeed " " do
+      = link_to ide_edit_path(@project, @id, ""), class: 'btn btn-default' do
+        = _('Web IDE')
 
   = render 'projects/buttons/download', project: @project, ref: @ref

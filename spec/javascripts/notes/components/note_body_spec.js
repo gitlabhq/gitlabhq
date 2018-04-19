@@ -18,6 +18,7 @@ describe('issue_note_body component', () => {
       propsData: {
         note,
         canEdit: true,
+        canAwardEmoji: true,
       },
     }).$mount();
   });

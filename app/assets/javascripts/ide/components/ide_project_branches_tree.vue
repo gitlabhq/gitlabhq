@@ -1,31 +1,31 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
-import repoTree from './ide_repo_tree.vue';
-import newDropdown from './new_dropdown/index.vue';
+  import icon from '~/vue_shared/components/icon.vue';
+  import repoTree from './ide_repo_tree.vue';
+  import newDropdown from './new_dropdown/index.vue';
 
-export default {
-  components: {
-    repoTree,
-    icon,
-    newDropdown,
-  },
-  props: {
-    projectId: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      repoTree,
+      icon,
+      newDropdown,
     },
-    branch: {
-      type: Object,
-      required: true,
+    props: {
+      projectId: {
+        type: String,
+        required: true,
+      },
+      branch: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
   <div class="branch-container">
     <div class="branch-header">
-      <div class="branch-header-title">
+      <div class="branch-header-title str-truncated ref-name">
         <icon
           name="branch"
           :size="12"
@@ -40,8 +40,8 @@ export default {
         />
       </div>
     </div>
-    <div>
-      <repo-tree :tree-id="branch.treeId" />
-    </div>
+    <repo-tree
+      :tree="branch.tree"
+    />
   </div>
 </template>

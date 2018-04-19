@@ -18,6 +18,7 @@ describe Group do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
+    it { is_expected.to have_many(:badges).class_name('GroupBadge') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -239,7 +240,7 @@ describe Group do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["only images allowed"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff"])
     end
   end
 

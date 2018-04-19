@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class TargetBranchDropdown {
   constructor() {
     this.$dropdown = $('.js-target-branch-dropdown');

@@ -175,7 +175,7 @@
         </a>
       </span>
       <span v-else>
-        Cant find HEAD commit for this branch
+        Can't find HEAD commit for this branch
       </span>
     </div>
   </div>

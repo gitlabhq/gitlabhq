@@ -163,6 +163,42 @@ describe API::Issues do
         expect(first_issue['id']).to eq(issue.id)
       end
 
+      context 'filtering before a specific date' do
+        let!(:issue2) { create(:issue, project: project, author: user, created_at: Date.new(2000, 1, 1), updated_at: Date.new(2000, 1, 1)) }
+
+        it 'returns issues created before a specific date' do
+          get api('/issues?created_before=2000-01-02T00:00:00.060Z', user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+
+        it 'returns issues updated before a specific date' do
+          get api('/issues?updated_before=2000-01-02T00:00:00.060Z', user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+      end
+
+      context 'filtering after a specific date' do
+        let!(:issue2) { create(:issue, project: project, author: user, created_at: 1.week.from_now, updated_at: 1.week.from_now) }
+
+        it 'returns issues created after a specific date' do
+          get api("/issues?created_after=#{issue2.created_at}", user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+
+        it 'returns issues updated after a specific date' do
+          get api("/issues?updated_after=#{issue2.updated_at}", user)
+
+          expect(json_response.size).to eq(1)
+          expect(first_issue['id']).to eq(issue2.id)
+        end
+      end
+
       it 'returns an array of labeled issues' do
         get api("/issues", user), labels: label.title
 
@@ -347,6 +383,30 @@ describe API::Issues do
       group_project.add_reporter(user)
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
+
+    context 'when group has subgroups', :nested_groups do
+      let(:subgroup_1) { create(:group, parent: group) }
+      let(:subgroup_2) { create(:group, parent: subgroup_1) }
+
+      let(:subgroup_1_project) { create(:project, namespace: subgroup_1) }
+      let(:subgroup_2_project) { create(:project, namespace: subgroup_2) }
+
+      let!(:issue_1) { create(:issue, project: subgroup_1_project) }
+      let!(:issue_2) { create(:issue, project: subgroup_2_project) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'also returns subgroups projects issues' do
+        get api(base_url, user)
+
+        issue_ids = json_response.map { |issue| issue['id'] }
+
+        expect_paginated_array_response(size: 5)
+        expect(issue_ids).to include(issue_1.id, issue_2.id)
+      end
+    end
 
     it 'returns all group issues (including opened and closed)' do
       get api(base_url, admin)

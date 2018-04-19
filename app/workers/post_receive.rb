@@ -33,7 +33,7 @@ class PostReceive
 
       unless @user
         log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-        return false
+        return false # rubocop:disable Cop/AvoidReturnFromBlocks
       end
 
       if Gitlab::Git.tag_ref?(ref)
@@ -55,7 +55,7 @@ class PostReceive
   end
 
   def process_wiki_changes(post_received)
-    # Nothing defined here yet.
+    post_received.project.touch(:last_activity_at, :last_repository_updated_at)
   end
 
   def log(message)

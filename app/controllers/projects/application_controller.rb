@@ -1,12 +1,13 @@
 class Projects::ApplicationController < ApplicationController
   include RoutableActions
+  include ChecksCollaboration
 
   skip_before_action :authenticate_user!
   before_action :project
   before_action :repository
   layout 'project'
 
-  helper_method :repository, :can_collaborate_with_project?
+  helper_method :repository, :can_collaborate_with_project?, :user_access
 
   private
 
@@ -29,13 +30,6 @@ class Projects::ApplicationController < ApplicationController
 
   def repository
     @repository ||= project.repository
-  end
-
-  def can_collaborate_with_project?(project = nil)
-    project ||= @project
-
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project))
   end
 
   def authorize_action!(action)

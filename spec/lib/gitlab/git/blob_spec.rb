@@ -500,4 +500,33 @@ describe Gitlab::Git::Blob, seed_helper: true do
       end
     end
   end
+
+  describe '#load_all_data!' do
+    let(:full_data) { 'abcd' }
+    let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abc') }
+
+    subject { blob.load_all_data!(repository) }
+
+    it 'loads missing data' do
+      expect(Gitlab::GitalyClient).to receive(:migrate)
+        .with(:git_blob_load_all_data).and_return(full_data)
+
+      subject
+
+      expect(blob.data).to eq(full_data)
+    end
+
+    context 'with a fully loaded blob' do
+      let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: full_data) }
+
+      it "doesn't perform any loading" do
+        expect(Gitlab::GitalyClient).not_to receive(:migrate)
+          .with(:git_blob_load_all_data)
+
+        subject
+
+        expect(blob.data).to eq(full_data)
+      end
+    end
+  end
 end

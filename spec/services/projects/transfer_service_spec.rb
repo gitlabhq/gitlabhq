@@ -37,6 +37,12 @@ describe Projects::TransferService do
       transfer_project(project, user, group)
     end
 
+    it 'invalidates the user\'s personal_project_count cache' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      transfer_project(project, user, group)
+    end
+
     it 'executes system hooks' do
       transfer_project(project, user, group) do |service|
         expect(service).to receive(:execute_system_hooks)
@@ -146,12 +152,12 @@ describe Projects::TransferService do
 
   context 'namespace which contains orphan repository with same projects path name' do
     let(:repository_storage) { 'default' }
-    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
     before do
       group.add_owner(user)
 
-      unless gitlab_shell.add_repository(repository_storage, "#{group.full_path}/#{project.path}")
+      unless gitlab_shell.create_repository(repository_storage, "#{group.full_path}/#{project.path}")
         raise 'failed to add repository'
       end
 

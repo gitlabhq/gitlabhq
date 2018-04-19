@@ -1,23 +1,25 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 
 import Flash from '~/flash';
 import { __ } from '~/locale';
+import '~/vue_shared/models/label';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
 import './models/issue';
-import './models/label';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
-import './stores/modal_store';
+import ModalStore from './stores/modal_store';
 import BoardService from './services/board_service';
-import './mixins/modal_mixins';
+import modalMixin from './mixins/modal_mixins';
 import './mixins/sortable_default_options';
 import './filters/due_date_filters';
 import './components/board';
@@ -29,7 +31,6 @@ import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/fi
 export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
-  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
 
@@ -89,7 +90,7 @@ export default () => {
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
     },
     mounted () {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;
@@ -174,11 +175,12 @@ export default () => {
 
   gl.IssueBoardsModalAddBtn = new Vue({
     el: document.getElementById('js-add-issues-btn'),
-    mixins: [gl.issueBoards.ModalMixins],
+    mixins: [modalMixin],
     data() {
       return {
         modal: ModalStore.store,
         store: Store.state,
+        canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
     },
     computed: {
@@ -232,6 +234,7 @@ export default () => {
           :class="{ 'disabled': disabled }"
           :title="tooltipTitle"
           :aria-disabled="disabled"
+          v-if="canAdminList"
           @click="openModal">
           Add issues
         </button>

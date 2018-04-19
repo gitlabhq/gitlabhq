@@ -1,0 +1,5 @@
+---
+  title: Do not use '-f' with 'rm' in gitlab-basics docs
+  merge_request: 18027
+  author: Elias Werberich
+  type: changed

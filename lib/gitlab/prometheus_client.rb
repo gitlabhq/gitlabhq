@@ -57,7 +57,11 @@ module Gitlab
     rescue OpenSSL::SSL::SSLError
       raise PrometheusClient::Error, "#{rest_client.url} contains invalid SSL data"
     rescue RestClient::ExceptionWithResponse => ex
-      handle_exception_response(ex.response)
+      if ex.response
+        handle_exception_response(ex.response)
+      else
+        raise PrometheusClient::Error, "Network connection error"
+      end
     rescue RestClient::Exception
       raise PrometheusClient::Error, "Network connection error"
     end

@@ -1,23 +1,20 @@
 import Visibility from 'visibilityjs';
+import { __ } from '../../locale';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
-import emptyState from '../components/empty_state.vue';
-import errorState from '../components/error_state.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import pipelinesTableComponent from '../components/pipelines_table.vue';
+import EmptyState from '../components/empty_state.vue';
+import SvgBlankState from '../components/blank_state.vue';
+import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
+import PipelinesTableComponent from '../components/pipelines_table.vue';
 import eventHub from '../event_hub';
+import { CANCEL_REQUEST } from '../constants';
 
 export default {
   components: {
-    pipelinesTableComponent,
-    errorState,
-    emptyState,
-    loadingIcon,
-  },
-  computed: {
-    shouldRenderErrorState() {
-      return this.hasError && !this.isLoading;
-    },
+    PipelinesTableComponent,
+    SvgBlankState,
+    EmptyState,
+    LoadingIcon,
   },
   data() {
     return {
@@ -55,36 +52,59 @@ export default {
       }
     });
 
-    eventHub.$on('refreshPipelines', this.fetchPipelines);
     eventHub.$on('postAction', this.postAction);
+    eventHub.$on('clickedDropdown', this.updateTable);
   },
   beforeDestroy() {
-    eventHub.$off('refreshPipelines');
-    eventHub.$on('postAction', this.postAction);
+    eventHub.$off('postAction', this.postAction);
+    eventHub.$off('clickedDropdown', this.updateTable);
   },
   destroyed() {
     this.poll.stop();
   },
   methods: {
+    updateTable() {
+      // Cancel ongoing request
+      if (this.isMakingRequest) {
+        this.service.cancelationSource.cancel(CANCEL_REQUEST);
+      }
+      // Stop polling
+      this.poll.stop();
+      // Update the table
+      return this.getPipelines()
+        .then(() => this.poll.restart());
+    },
     fetchPipelines() {
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
-        this.service.getPipelines(this.requestData)
-          .then(response => this.successCallback(response))
-          .catch(() => this.errorCallback());
+        this.getPipelines();
       }
+    },
+    getPipelines() {
+      return this.service.getPipelines(this.requestData)
+        .then(response => this.successCallback(response))
+        .catch((error) => this.errorCallback(error));
     },
     setCommonData(pipelines) {
       this.store.storePipelines(pipelines);
       this.isLoading = false;
       this.updateGraphDropdown = true;
       this.hasMadeRequest = true;
+
+      // In case the previous polling request returned an error, we need to reset it
+      if (this.hasError) {
+        this.hasError = false;
+      }
     },
-    errorCallback() {
-      this.hasError = true;
+    errorCallback(error) {
+      this.hasMadeRequest = true;
       this.isLoading = false;
-      this.updateGraphDropdown = false;
+
+      if (error && error.message && error.message !== CANCEL_REQUEST) {
+        this.hasError = true;
+        this.updateGraphDropdown = false;
+      }
     },
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
@@ -95,8 +115,8 @@ export default {
     },
     postAction(endpoint) {
       this.service.postAction(endpoint)
-        .then(() => eventHub.$emit('refreshPipelines'))
-        .catch(() => new Flash('An error occurred while making the request.'));
+        .then(() => this.fetchPipelines())
+        .catch(() => Flash(__('An error occurred while making the request.')));
     },
   },
 };

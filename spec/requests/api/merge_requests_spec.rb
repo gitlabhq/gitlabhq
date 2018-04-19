@@ -172,6 +172,42 @@ describe API::MergeRequests do
         end
       end
 
+      it 'returns merge requests created before a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', created_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?created_before=2000-01-02T00:00:00.060Z', user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests created after a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', created_at: 1.week.from_now)
+
+        get api("/merge_requests?created_after=#{merge_request2.created_at}", user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests updated before a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', updated_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?updated_before=2000-01-02T00:00:00.060Z', user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
+      it 'returns merge requests updated after a specific date' do
+        merge_request2 = create(:merge_request, :simple, source_project: project, target_project: project, source_branch: 'feature_1', updated_at: 1.week.from_now)
+
+        get api("/merge_requests?updated_after=#{merge_request2.updated_at}", user)
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request2.id)
+      end
+
       context 'search params' do
         before do
           merge_request.update(title: 'Search title', description: 'Search description')
@@ -580,6 +616,25 @@ describe API::MergeRequests do
         expect(json_response['changes_count']).to eq('5+')
       end
     end
+
+    context 'for forked projects' do
+      let(:user2) { create(:user) }
+      let(:project) { create(:project, :public, :repository) }
+      let(:forked_project) { fork_project(project, user2, repository: true) }
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: forked_project,
+               target_project: project,
+               source_branch: 'fixes',
+               allow_maintainer_to_push: true)
+      end
+
+      it 'includes the `allow_maintainer_to_push` field' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+        expect(json_response['allow_maintainer_to_push']).to be_truthy
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/participants' do
@@ -779,6 +834,7 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
+      let(:project) { create(:project, :public, :repository) }
       let!(:forked_project) { fork_project(project, user2, repository: true) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
@@ -805,7 +861,7 @@ describe API::MergeRequests do
         expect(json_response['title']).to eq('Test merge_request')
       end
 
-      it 'returns 422 when target project has disabled merge requests' do
+      it 'returns 403 when target project has disabled merge requests' do
         project.project_feature.update(merge_requests_access_level: 0)
 
         post api("/projects/#{forked_project.id}/merge_requests", user2),
@@ -815,7 +871,7 @@ describe API::MergeRequests do
              author: user2,
              target_project_id: project.id
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns 400 when source_branch is missing" do
@@ -834,6 +890,14 @@ describe API::MergeRequests do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
         target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
         expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'allows setting `allow_maintainer_to_push`' do
+        post api("/projects/#{forked_project.id}/merge_requests", user2),
+          title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
+          author: user2, target_project_id: project.id, allow_maintainer_to_push: true
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['allow_maintainer_to_push']).to be_truthy
       end
 
       context 'when target_branch and target_project_id is specified' do

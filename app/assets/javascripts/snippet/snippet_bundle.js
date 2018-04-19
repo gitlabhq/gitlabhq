@@ -1,5 +1,7 @@
 /* global ace */
 
+import $ from 'jquery';
+
 export default () => {
   const editor = ace.edit('editor');
 

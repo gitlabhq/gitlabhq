@@ -45,6 +45,18 @@ feature 'Merge Request button' do
           end
         end
       end
+
+      context 'when the project is archived' do
+        it 'hides the link' do
+          project.update!(archived: true)
+
+          visit url
+
+          within("#content-body") do
+            expect(page).not_to have_link(label)
+          end
+        end
+      end
     end
 
     context 'logged in as non-member' do
@@ -81,8 +93,8 @@ feature 'Merge Request button' do
   context 'on branches page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Merge request' }
-      let(:url) { project_branches_path(project, search: 'feature') }
-      let(:fork_url) { project_branches_path(forked_project, search: 'feature') }
+      let(:url) { project_branches_filtered_path(project, state: 'all', search: 'feature') }
+      let(:fork_url) { project_branches_filtered_path(forked_project, state: 'all', search: 'feature') }
     end
   end
 

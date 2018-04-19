@@ -3,7 +3,7 @@ import { throttle } from 'underscore';
 import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
 
-export const getDiffChangeType = (change) => {
+export const getDiffChangeType = change => {
   if (change.modified) {
     return 'modified';
   } else if (change.added) {
@@ -16,12 +16,7 @@ export const getDiffChangeType = (change) => {
 };
 
 export const getDecorator = change => ({
-  range: new monaco.Range(
-    change.lineNumber,
-    1,
-    change.endLineNumber,
-    1,
-  ),
+  range: new monaco.Range(change.lineNumber, 1, change.endLineNumber, 1),
   options: {
     isWholeLine: true,
     linesDecorationsClassName: `dirty-diff dirty-diff-${getDiffChangeType(change)}`,
@@ -31,6 +26,7 @@ export const getDecorator = change => ({
 export default class DirtyDiffController {
   constructor(modelManager, decorationsController) {
     this.disposable = new Disposable();
+    this.models = new Map();
     this.editorSimpleWorker = null;
     this.modelManager = modelManager;
     this.decorationsController = decorationsController;
@@ -42,7 +38,15 @@ export default class DirtyDiffController {
   }
 
   attachModel(model) {
+    if (this.models.has(model.url)) return;
+
     model.onChange(() => this.throttledComputeDiff(model));
+    model.onDispose(() => {
+      this.decorationsController.removeDecorations(model);
+      this.models.delete(model.url);
+    });
+
+    this.models.set(model.url, model);
   }
 
   computeDiff(model) {
@@ -54,16 +58,22 @@ export default class DirtyDiffController {
   }
 
   reDecorate(model) {
-    this.decorationsController.decorate(model);
+    if (this.decorationsController.hasDecorations(model)) {
+      this.decorationsController.decorate(model);
+    } else {
+      this.computeDiff(model);
+    }
   }
 
   decorate({ data }) {
     const decorations = data.changes.map(change => getDecorator(change));
-    this.decorationsController.addDecorations(data.path, 'dirtyDiff', decorations);
+    const model = this.modelManager.getModel(data.path);
+    this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
   }
 
   dispose() {
     this.disposable.dispose();
+    this.models.clear();
 
     this.dirtyDiffWorker.removeEventListener('message', this.decorate);
     this.dirtyDiffWorker.terminate();

@@ -1,20 +1,11 @@
+import $ from 'jquery';
 import axios from '../lib/utils/axios_utils';
 import { __ } from '../locale';
 import Flash from '../flash';
 import LazyLoader from '../lazy_loader';
+import { togglePopover } from '../shared/popover';
 
 export const getSelector = highlightId => `.js-feature-highlight[data-highlight=${highlightId}]`;
-
-export function togglePopover(show) {
-  const isAlreadyShown = this.hasClass('js-popover-show');
-  if ((show && isAlreadyShown) || (!show && !isAlreadyShown)) {
-    return false;
-  }
-  this.popover(show ? 'show' : 'hide');
-  this.toggleClass('disable-animation js-popover-show', show);
-
-  return true;
-}
 
 export function dismiss(highlightId) {
   axios.post(this.attr('data-dismiss-endpoint'), {
@@ -24,23 +15,6 @@ export function dismiss(highlightId) {
 
   togglePopover.call(this, false);
   this.hide();
-}
-
-export function mouseleave() {
-  if (!$('.popover:hover').length > 0) {
-    const $featureHighlight = $(this);
-    togglePopover.call($featureHighlight, false);
-  }
-}
-
-export function mouseenter() {
-  const $featureHighlight = $(this);
-
-  const showedPopover = togglePopover.call($featureHighlight, true);
-  if (showedPopover) {
-    $('.popover')
-      .on('mouseleave', mouseleave.bind($featureHighlight));
-  }
 }
 
 export function inserted() {

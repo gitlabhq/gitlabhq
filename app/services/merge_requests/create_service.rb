@@ -34,6 +34,12 @@ module MergeRequests
       super
     end
 
+    # Override from IssuableBaseService
+    def handle_quick_actions_on_create(merge_request)
+      super
+      handle_wip_event(merge_request)
+    end
+
     private
 
     def update_merge_requests_head_pipeline(merge_request)
@@ -65,8 +71,8 @@ module MergeRequests
       params.delete(:source_project_id)
       params.delete(:target_project_id)
 
-      unless can?(current_user, :read_project, @source_project) &&
-          can?(current_user, :read_project, @project)
+      unless can?(current_user, :create_merge_request_from, @source_project) &&
+          can?(current_user, :create_merge_request_in, @project)
 
         raise Gitlab::Access::AccessDeniedError
       end

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '~/behaviors/autosize';
 
 function load() {

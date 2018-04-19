@@ -46,7 +46,7 @@ class HipchatService < Service
   end
 
   def self.supported_events
-    %w(push issue confidential_issue merge_request note tag_push pipeline)
+    %w(push issue confidential_issue merge_request note confidential_note tag_push pipeline)
   end
 
   def execute(data)
@@ -120,7 +120,7 @@ class HipchatService < Service
     else
       message << "pushed to #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{CGI.escape(ref)}\">#{ref}</a> "
-      message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/, '')}</a> "
+      message << "of <a href=\"#{project.web_url}\">#{project.full_name.gsub!(/\s/, '')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|
@@ -274,7 +274,7 @@ class HipchatService < Service
   end
 
   def project_name
-    project.name_with_namespace.gsub(/\s/, '')
+    project.full_name.gsub(/\s/, '')
   end
 
   def project_url

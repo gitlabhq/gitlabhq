@@ -63,7 +63,7 @@
   - if admin
     %td
       - if job.project
-        = link_to job.project.name_with_namespace, admin_project_path(job.project)
+        = link_to job.project.full_name, admin_project_path(job.project)
     %td
       - if job.try(:runner)
         = runner_link(job.runner)

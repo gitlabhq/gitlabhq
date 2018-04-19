@@ -222,6 +222,11 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
+  # Overridden on EE module
+  def multiple_issue_boards_available?
+    false
+  end
+
   def full_path_was
     if parent_id_was.nil?
       path_was
@@ -243,8 +248,8 @@ class Namespace < ActiveRecord::Base
     all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
-  def features
-    []
+  def refresh_project_authorizations
+    owner.refresh_authorized_projects
   end
 
   private

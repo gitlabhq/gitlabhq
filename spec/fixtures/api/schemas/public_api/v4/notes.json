@@ -4,6 +4,7 @@
     "type": "object",
     "properties" : {
       "id": { "type": "integer" },
+      "type": { "type": ["string", "null"] },
       "body": { "type": "string" },
       "attachment": { "type": ["string", "null"] },
       "author": {

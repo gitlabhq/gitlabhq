@@ -51,9 +51,10 @@ class IssuableBaseService < BaseService
     return unless milestone_id
 
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
+    group_ids = project.group&.self_and_ancestors&.pluck(:id)
 
     milestone =
-      Milestone.for_projects_and_groups([project.id], [project.group&.id]).find_by_id(milestone_id)
+      Milestone.for_projects_and_groups([project.id], group_ids).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
@@ -106,7 +107,11 @@ class IssuableBaseService < BaseService
   end
 
   def available_labels
-    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: true).execute
+  end
+
+  def handle_quick_actions_on_create(issuable)
+    merge_quick_actions_into_params!(issuable)
   end
 
   def merge_quick_actions_into_params!(issuable)
@@ -131,7 +136,7 @@ class IssuableBaseService < BaseService
   end
 
   def create(issuable)
-    merge_quick_actions_into_params!(issuable)
+    handle_quick_actions_on_create(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)

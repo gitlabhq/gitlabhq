@@ -17,8 +17,11 @@ module Banzai
       end
 
       def find_object(project, id)
+        return unless project.is_a?(Project)
+
         if project && project.valid_repo?
-          project.commit(id)
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/43894
+          Gitlab::GitalyClient.allow_n_plus_1_calls { project.commit(id) }
         end
       end
 

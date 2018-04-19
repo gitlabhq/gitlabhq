@@ -10,8 +10,6 @@ feature 'Multi-file editor upload file', :js do
     project.add_master(user)
     sign_in(user)
 
-    set_cookie('new_repo', 'true')
-
     visit project_tree_path(project, :master)
 
     wait_for_requests

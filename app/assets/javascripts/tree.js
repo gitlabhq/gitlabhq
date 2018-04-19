@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, class-methods-use-this */
+
+import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
 
 export default class TreeView {

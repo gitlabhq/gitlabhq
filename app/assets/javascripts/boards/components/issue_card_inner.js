@@ -1,5 +1,6 @@
+import $ from 'jquery';
 import Vue from 'vue';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -31,6 +32,10 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       required: false,
       default: false,
     },
+    groupId: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -40,7 +45,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     };
   },
   components: {
-    userAvatarLink,
+    UserAvatarLink,
   },
   computed: {
     numberOverLimit() {
@@ -62,9 +67,6 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       }
 
       return this.issue.assignees.length > this.numberOverLimit;
-    },
-    cardUrl() {
-      return `${this.issueLinkBase}/${this.issue.iid}`;
     },
     issueId() {
       if (this.issue.iid) {
@@ -142,13 +144,13 @@ gl.issueBoards.IssueCardInner = Vue.extend({
           />
           <a
             class="js-no-trigger"
-            :href="cardUrl"
+            :href="issue.path"
             :title="issue.title">{{ issue.title }}</a>
           <span
             class="card-number"
             v-if="issueId"
           >
-            {{ issueId }}
+            {{ issue.referencePath }}
           </span>
         </h4>
         <div class="card-assignee">

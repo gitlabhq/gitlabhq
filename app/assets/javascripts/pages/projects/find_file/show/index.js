@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ProjectFindFile from '~/project_find_file';
 import ShortcutsFindFile from '~/shortcuts_find_file';
 

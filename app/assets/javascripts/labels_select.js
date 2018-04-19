@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
 /* global Issuable */
 /* global ListLabel */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
@@ -8,6 +10,7 @@ import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
 import flash from './flash';
+import ModalStore from './boards/stores/modal_store';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -80,7 +83,7 @@ export default class LabelsSelect {
         $dropdown.trigger('loading.gl.dropdown');
         axios.put(issueUpdateURL, data)
           .then(({ data }) => {
-            var labelCount, template, labelTooltipTitle, labelTitles;
+            var labelCount, template, labelTooltipTitle, labelTitles, formattedLabels;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -112,8 +115,7 @@ export default class LabelsSelect {
               labelTooltipTitle = labelTitles.join(', ');
             }
             else {
-              labelTooltipTitle = '';
-              $sidebarLabelTooltip.tooltip('destroy');
+              labelTooltipTitle = __('Labels');
             }
 
             $sidebarLabelTooltip
@@ -348,7 +350,7 @@ export default class LabelsSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsModel = gl.issueBoards.ModalStore.store.filter;
+            boardsModel = ModalStore.store.filter;
           }
 
           if (boardsModel) {

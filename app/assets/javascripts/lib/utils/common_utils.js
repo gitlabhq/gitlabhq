@@ -1,4 +1,4 @@
-import jQuery from 'jquery';
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
@@ -33,6 +33,7 @@ export const checkPageAndAction = (page, action) => {
 
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
 export const hasVueMRDiscussionsCookie = () => Cookies.get('vue_mr_discussions');
 
@@ -142,7 +143,7 @@ export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
 export const scrollToElement = (element) => {
   let $el = element;
-  if (!(element instanceof jQuery)) {
+  if (!(element instanceof $)) {
     $el = $(element);
   }
   const top = $el.offset().top;

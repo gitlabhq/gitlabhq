@@ -60,13 +60,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
       format.patch  do
-        return render_404 unless @merge_request.diff_refs
+        break render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
       end
 
       format.diff do
-        return render_404 unless @merge_request.diff_refs
+        break render_404 unless @merge_request.diff_refs
 
         send_git_diff @project.repository, @merge_request.diff_refs
       end
@@ -187,7 +187,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       begin
         @merge_request.environments_for(current_user).map do |environment|
           project = environment.project
-          deployment = environment.first_deployment_for(@merge_request.diff_head_commit)
+          deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
 
           stop_url =
             if environment.stop_action? && can?(current_user, :create_deployment, environment)

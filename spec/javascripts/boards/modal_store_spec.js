@@ -1,15 +1,14 @@
 /* global ListIssue */
 
+import '~/vue_shared/models/label';
 import '~/boards/models/issue';
-import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
-import '~/boards/stores/modal_store';
+import Store from '~/boards/stores/modal_store';
 
 describe('Modal store', () => {
   let issue;
   let issue2;
-  const Store = gl.issueBoards.ModalStore;
 
   beforeEach(() => {
     // Setup default state

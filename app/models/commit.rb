@@ -9,6 +9,7 @@ class Commit
   include Mentionable
   include Referable
   include StaticModel
+  include ::Gitlab::Utils::StrongMemoize
 
   attr_mentionable :safe_message, pipeline: :single_line
 
@@ -29,9 +30,12 @@ class Commit
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
+  # Used by GFM to match and present link extensions on node texts and hrefs.
+  LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
   def banzai_render_context(field)
-    context = { pipeline: :single_line, project: self.project }
+    pipeline = field == :description ? :commit_description : :single_line
+    context = { pipeline: pipeline, project: self.project }
     context[:author] = self.author if self.author
 
     context
@@ -141,7 +145,8 @@ class Commit
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
+    @link_reference_pattern ||=
+      super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/)
   end
 
   def to_reference(from = nil, full: false)
@@ -174,7 +179,7 @@ class Commit
       if safe_message.blank?
         no_commit_message
       else
-        safe_message.split("\n", 2).first
+        safe_message.split(/[\r\n]/, 2).first
       end
   end
 
@@ -225,11 +230,13 @@ class Commit
   end
 
   def parents
-    @parents ||= parent_ids.map { |id| project.commit(id) }
+    @parents ||= parent_ids.map { |oid| Commit.lazy(project, oid) }
   end
 
   def parent
-    @parent ||= project.commit(self.parent_id) if self.parent_id
+    strong_memoize(:parent) do
+      project.commit_by(oid: self.parent_id) if self.parent_id
+    end
   end
 
   def notes
@@ -241,7 +248,7 @@ class Commit
   end
 
   def notes_with_associations
-    notes.includes(:author)
+    notes.includes(:author, :award_emoji)
   end
 
   def merge_requests

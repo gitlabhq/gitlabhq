@@ -53,13 +53,13 @@ you can find a clear separation of concerns:
 ```
 new_feature
 ├── components
-│   └── component.js.es6
+│   └── component.vue
 │   └── ...
-├── store
-│  └── new_feature_store.js.es6
-├── service
-│  └── new_feature_service.js.es6
-├── new_feature_bundle.js.es6
+├── stores
+│  └── new_feature_store.js
+├── services
+│  └── new_feature_service.js
+├── new_feature_bundle.js
 ```
 _For consistency purposes, we recommend you to follow the same structure._
 
@@ -523,8 +523,8 @@ export default new Vuex.Store({
 ```
 _Note:_ If the state of the application is too complex, an individual file for the state may be better.
 
-#### `actions.js`
-An action commits a mutatation. In this file, we will write the actions that will call the respective mutation:
+##### `actions.js`
+An action commits a mutation. In this file, we will write the actions that will commit the respective mutation:
 
 ```javascript
   import * as types from './mutation_types';
@@ -550,7 +550,7 @@ import { mapActions } from 'vuex';
 };
 ```
 
-#### `getters.js`
+##### `getters.js`
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop. This can be done through the `getters`:
 
 ```javascript
@@ -573,7 +573,7 @@ import { mapGetters } from 'vuex';
 };
 ```
 
-#### `mutations.js`
+##### `mutations.js`
 The only way to actually change state in a Vuex store is by committing a mutation.
 
 ```javascript
@@ -586,7 +586,7 @@ The only way to actually change state in a Vuex store is by committing a mutatio
   };
 ```
 
-#### `mutations_types.js`
+##### `mutations_types.js`
 From [vuex mutations docs][vuex-mutations]:
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 
@@ -661,7 +661,7 @@ describe('component', () => {
     };
 
     // populate the store
-    store.dipatch('addUser', user);
+    store.dispatch('addUser', user);
 
     vm = new Component({
       store,
