@@ -58,8 +58,8 @@ export default {
 </script>
 
 <template>
-  <a
-    href="#"
+  <button
+    type="button"
     class="diff-changed-file"
     :class="{
       'is-focused': focused,
@@ -109,5 +109,5 @@ export default {
         :file="file"
       />
     </span>
-  </a>
+  </button>
 </template>

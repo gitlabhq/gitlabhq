@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import FindFileComponent from '~/ide/components/file_finder/index.vue';
-import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/ide/constants';
+import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import router from '~/ide/ide_router';
 import { file, resetStore } from '../../helpers';
 import { mountComponentWithStore } from '../../../helpers/vue_mount_component_helper';

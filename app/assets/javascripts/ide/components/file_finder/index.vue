@@ -8,11 +8,13 @@ import {
   MAX_FILE_FINDER_RESULTS,
   FILE_FINDER_ROW_HEIGHT,
   FILE_FINDER_EMPTY_ROW_HEIGHT,
+} from '../../constants';
+import {
   UP_KEY_CODE,
   DOWN_KEY_CODE,
   ENTER_KEY_CODE,
   ESC_KEY_CODE,
-} from '../../constants';
+} from '../../../lib/utils/keycodes';
 
 export default {
   components: {
@@ -191,7 +193,7 @@ export default {
         ></i>
         <i
           role="button"
-          aria-hidden="true"
+          :aria-label="__('Clear search input')"
           class="fa fa-times dropdown-input-clear"
           :class="{
             show: showClearInputButton
@@ -225,16 +227,16 @@ export default {
           </template>
           <li
             v-else
-            class="dropdown-menu-empty-itemhidden"
+            class="dropdown-menu-empty-item"
           >
-            <a href="#">
+            <div class="append-right-default prepend-left-default prepend-top-8 append-bottom-8">
               <template v-if="loading">
                 {{ __('Loading...') }}
               </template>
               <template v-else>
                 {{ __('No files found.') }}
               </template>
-            </a>
+            </div>
           </li>
         </virtual-list>
       </div>
