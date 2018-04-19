@@ -548,6 +548,8 @@ You can find a full list of unsupported variables below:
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
 
 These variables are also not supported in a contex of a
 [dynamic environment name][dynamic-environments].
