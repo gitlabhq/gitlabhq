@@ -1472,7 +1472,7 @@ describe Ci::Build do
         { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
+        { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
