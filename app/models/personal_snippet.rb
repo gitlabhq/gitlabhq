@@ -3,4 +3,5 @@ class PersonalSnippet < Snippet
   document_type 'snippet'
   index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
   include Elastic::SnippetsSearch
+  include WithUploads
 end
