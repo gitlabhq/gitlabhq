@@ -30,6 +30,19 @@ describe('Multi-file editor library model', () => {
     expect(model.baseModel).not.toBeNull();
   });
 
+  it('creates model with head file to compare against', () => {
+    const f = file('path');
+    model.dispose();
+
+    model = new Model(monaco, f, {
+      ...f,
+      content: '123 testing',
+    });
+
+    expect(model.head).not.toBeNull();
+    expect(model.getOriginalModel().getValue()).toBe('123 testing');
+  });
+
   it('adds eventHub listener', () => {
     expect(eventHub.$on).toHaveBeenCalledWith(
       `editor.update.model.dispose.${model.file.key}`,

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
@@ -30,6 +31,22 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   } else {
     commit(types.SET_RIGHT_PANEL_COLLAPSED, collapsed);
   }
+};
+
+export const toggleRightPanelCollapsed = (
+  { dispatch, state },
+  e = undefined,
+) => {
+  if (e) {
+    $(e.currentTarget)
+      .tooltip('hide')
+      .blur();
+  }
+
+  dispatch('setPanelCollapsedStatus', {
+    side: 'right',
+    collapsed: !state.rightPanelCollapsed,
+  });
 };
 
 export const setResizingStatus = ({ commit }, resizing) => {
@@ -102,6 +119,14 @@ export const scrollToTab = () => {
       tabEl.focus();
     }
   });
+};
+
+export const stageAllChanges = ({ state, commit }) => {
+  state.changedFiles.forEach(file => commit(types.STAGE_CHANGE, file.path));
+};
+
+export const unstageAllChanges = ({ state, commit }) => {
+  state.stagedFiles.forEach(file => commit(types.UNSTAGE_CHANGE, file.path));
 };
 
 export const updateViewer = ({ commit }, viewer) => {

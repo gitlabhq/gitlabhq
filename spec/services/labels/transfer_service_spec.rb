@@ -8,6 +8,7 @@ describe Labels::TransferService do
     let(:group_3) { create(:group) }
     let(:project_1) { create(:project, namespace: group_2) }
     let(:project_2) { create(:project, namespace: group_3) }
+    let(:project_3) { create(:project, namespace: group_1) }
 
     let(:group_label_1) { create(:group_label, group: group_1, name: 'Group Label 1') }
     let(:group_label_2) { create(:group_label, group: group_1, name: 'Group Label 2') }
@@ -23,6 +24,7 @@ describe Labels::TransferService do
       create(:labeled_issue, project: project_1, labels: [group_label_4])
       create(:labeled_issue, project: project_1, labels: [project_label_1])
       create(:labeled_issue, project: project_2, labels: [group_label_5])
+      create(:labeled_issue, project: project_3, labels: [group_label_1])
       create(:labeled_merge_request, source_project: project_1, labels: [group_label_1, group_label_2])
       create(:labeled_merge_request, source_project: project_2, labels: [group_label_5])
     end
@@ -51,6 +53,14 @@ describe Labels::TransferService do
       service.execute
 
       expect(project_1.labels.where(title: group_label_4.title)).to be_empty
+    end
+
+    it 'updates only label links in the given project' do
+      service.execute
+
+      targets = LabelLink.where(label_id: group_label_1.id).map(&:target)
+
+      expect(targets).to eq(project_3.issues)
     end
   end
 end
