@@ -22,7 +22,7 @@ class Milestone < ActiveRecord::Base
   belongs_to :group
 
   has_many :issues
-  has_many :labels, -> { distinct.reorder('labels.title').auto_include(false) }, through: :issues
+  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 

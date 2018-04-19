@@ -26,13 +26,16 @@ export default {
   },
   computed: {
     closeLabel() {
-      if (this.tab.changed || this.tab.tempFile) {
+      if (this.fileHasChanged) {
         return `${this.tab.name} changed`;
       }
       return `Close ${this.tab.name}`;
     },
     showChangedIcon() {
-      return this.tab.changed ? !this.tabMouseOver : false;
+      return this.fileHasChanged ? !this.tabMouseOver : false;
+    },
+    fileHasChanged() {
+      return this.tab.changed || this.tab.tempFile || this.tab.staged;
     },
   },
 
@@ -42,18 +45,18 @@ export default {
       this.updateDelayViewerUpdated(true);
 
       if (tab.pending) {
-        this.openPendingTab(tab);
+        this.openPendingTab({ file: tab, keyPrefix: tab.staged ? 'staged' : 'unstaged' });
       } else {
         this.$router.push(`/project${tab.url}`);
       }
     },
     mouseOverTab() {
-      if (this.tab.changed) {
+      if (this.fileHasChanged) {
         this.tabMouseOver = true;
       }
     },
     mouseOutTab() {
-      if (this.tab.changed) {
+      if (this.fileHasChanged) {
         this.tabMouseOver = false;
       }
     },

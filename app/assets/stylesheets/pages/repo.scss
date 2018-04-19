@@ -68,6 +68,10 @@
 
     .ide-file-changed-icon {
       margin-left: auto;
+
+      > svg {
+        display: block;
+      }
     }
 
     .ide-new-btn {
@@ -369,7 +373,11 @@
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+
+  > div + div {
+    padding-left: $gl-padding;
+  }
 
   svg {
     vertical-align: middle;
@@ -449,9 +457,13 @@
   overflow: auto;
 }
 
-.multi-file-commit-empty-state-container {
-  align-items: center;
-  justify-content: center;
+.ide-commit-empty-state {
+  padding: 0 $gl-padding;
+}
+
+.ide-commit-empty-state-container {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .multi-file-commit-panel-header {
@@ -460,35 +472,22 @@
   margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
-
-  &.is-collapsed {
-    border-bottom: 1px solid $white-dark;
-
-    svg {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .multi-file-commit-panel-collapse-btn {
-      margin-right: auto;
-      margin-left: auto;
-      border-left: 0;
-    }
-  }
 }
 
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
-  padding: 0 $gl-btn-padding;
+  padding-left: $grid-size;
 
   svg {
     margin-right: $gl-btn-padding;
+    color: $theme-gray-700;
   }
 }
 
 .multi-file-commit-panel-collapse-btn {
   border-left: 1px solid $white-dark;
+  margin-left: auto;
 }
 
 .multi-file-commit-list {
@@ -502,12 +501,14 @@
   display: flex;
   padding: 0;
   align-items: center;
+  border-radius: $border-radius-default;
 
   .multi-file-discard-btn {
     display: none;
+    margin-top: -2px;
     margin-left: auto;
+    margin-right: $grid-size;
     color: $gl-link-color;
-    padding: 0 2px;
 
     &:focus,
     &:hover {
@@ -519,26 +520,31 @@
     background: $white-normal;
 
     .multi-file-discard-btn {
-      display: block;
+      display: flex;
     }
   }
 }
 
-.multi-file-addition {
+.multi-file-additions,
+.multi-file-additions-solid {
   fill: $green-500;
 }
 
-.multi-file-modified {
+.multi-file-modified,
+.multi-file-modified-solid {
   fill: $orange-500;
 }
 
 .multi-file-commit-list-collapsed {
   display: flex;
   flex-direction: column;
+  padding: $gl-padding 0;
 
-  > svg {
+  svg {
+    display: block;
     margin-left: auto;
     margin-right: auto;
+    color: $theme-gray-700;
   }
 
   .file-status-icon {
@@ -550,7 +556,7 @@
 
 .multi-file-commit-list-path {
   padding: $grid-size / 2;
-  padding-left: $gl-padding;
+  padding-left: $grid-size;
   background: none;
   border: 0;
   text-align: left;
@@ -733,6 +739,41 @@
   &.dragleft {
     left: 0;
   }
+}
+
+.ide-commit-list-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 16px;
+
+  &:not(.is-collapsed) {
+    flex: 1;
+    min-height: 140px;
+  }
+
+  &.is-collapsed {
+    .multi-file-commit-panel-header {
+      margin-left: -$gl-padding;
+      margin-right: -$gl-padding;
+
+      svg {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .multi-file-commit-panel-collapse-btn {
+        margin-right: auto;
+        margin-left: auto;
+        border-left: 0;
+      }
+    }
+  }
+}
+
+.ide-staged-action-btn {
+  margin-left: auto;
+  color: $gl-link-color;
 }
 
 .ide-commit-radios {
