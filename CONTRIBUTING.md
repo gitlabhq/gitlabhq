@@ -210,7 +210,7 @@ This label documents the planned timeline & urgency which is used to measure aga
 
 | Label | Meaning         | Estimate time to fix                                             | Guidance |
 |-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Urgent Priority | The current release                                              |  |
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
 | ~P2   | High Priority   | The next release                                                 |  |
 | ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
 | ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
