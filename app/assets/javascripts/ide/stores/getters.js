@@ -37,4 +37,4 @@ export const hasChanges = state => !!state.changedFiles.length;
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
 export const getChangesInFolder = state => path =>
-  state.changedFiles.filter(f => f.path.indexOf(path) === 0 && !f.tempFile).length;
+  state.changedFiles.filter(f => f.path.replace(new RegExp(`/${f.name}$`), '') === path).length;

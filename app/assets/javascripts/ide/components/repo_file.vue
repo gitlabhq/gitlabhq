@@ -1,22 +1,24 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import fileIcon from '~/vue_shared/components/file_icon.vue';
+import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import router from '../ide_router';
-import newDropdown from './new_dropdown/index.vue';
-import fileStatusIcon from './repo_file_status_icon.vue';
-import changedFileIcon from './changed_file_icon.vue';
-import mrFileIcon from './mr_file_icon.vue';
+import NewDropdown from './new_dropdown/index.vue';
+import FileStatusIcon from './repo_file_status_icon.vue';
+import ChangedFileIcon from './changed_file_icon.vue';
+import MrFileIcon from './mr_file_icon.vue';
 
 export default {
   name: 'RepoFile',
   components: {
-    skeletonLoadingContainer,
-    newDropdown,
-    fileStatusIcon,
-    fileIcon,
-    changedFileIcon,
-    mrFileIcon,
+    SkeletonLoadingContainer,
+    NewDropdown,
+    FileStatusIcon,
+    FileIcon,
+    ChangedFileIcon,
+    MrFileIcon,
+    Icon,
   },
   props: {
     file: {
@@ -107,8 +109,14 @@ export default {
           />
           <span
             v-if="isTree && folderChangedCount > 0"
+            class="ide-tree-changes"
           >
             {{ folderChangedCount }}
+            <icon
+              name="file-modified"
+              :size="12"
+              css-classes="prepend-left-5 multi-file-modified"
+            />
           </span>
           <changed-file-icon
             v-else-if="file.changed || file.tempFile"

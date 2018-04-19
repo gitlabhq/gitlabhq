@@ -72,4 +72,37 @@ describe('IDE store getters', () => {
       expect(getters.currentMergeRequest(localState)).toBeNull();
     });
   });
+
+  describe('getChangesInFolder', () => {
+    it('returns length of changed files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/123',
+          name: '123',
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(1);
+    });
+
+    it('returns length of changed & tempFiles files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'test/newfile',
+          name: 'newfile',
+          tempFile: true,
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(2);
+    });
+  });
 });

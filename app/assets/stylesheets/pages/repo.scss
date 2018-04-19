@@ -66,10 +66,6 @@
       }
     }
 
-    .ide-file-changed-icon {
-      margin-left: auto;
-    }
-
     .ide-new-btn {
       display: none;
       margin-bottom: -4px;
@@ -908,4 +904,10 @@
   z-index: 2;
   background: transparent;
   resize: none;
+}
+
+.ide-tree-changes {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
 }
