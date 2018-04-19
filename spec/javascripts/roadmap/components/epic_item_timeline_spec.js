@@ -108,6 +108,16 @@ describe('EpicItemTimelineComponent', () => {
         expect(vm.getTimelineBarStartOffset()).toBe('left: 0;');
       });
 
+      it('returns `right: 8px;` when Epic startDate is in last timeframe month and endDate is out of range', () => {
+        vm = createComponent({
+          epic: Object.assign({}, mockEpic, {
+            startDate: mockTimeframe[mockTimeframe.length - 1],
+            endDateOutOfRange: true,
+          }),
+        });
+        expect(vm.getTimelineBarStartOffset()).toBe('right: 8px;');
+      });
+
       it('returns proportional `left` value based on Epic startDate and days in the month', () => {
         vm = createComponent({
           epic: Object.assign({}, mockEpic, {

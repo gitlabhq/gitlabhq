@@ -1,0 +1,6 @@
+---
+title: Fix Epic timeline bar misalignment when start date is in last timeframe month
+  and end date is out of range
+merge_request: 5360
+author:
+type: fixed
