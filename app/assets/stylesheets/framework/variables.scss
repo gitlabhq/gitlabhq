@@ -247,6 +247,7 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
+$sidebar-block-hover-color: #ebebeb;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
@@ -373,6 +374,8 @@ $dropdown-hover-color: $blue-400;
 $link-active-background: rgba(0, 0, 0, 0.04);
 $link-hover-background: rgba(0, 0, 0, 0.06);
 $inactive-badge-background: rgba(0, 0, 0, 0.08);
+$sidebar-toggle-height: 60px;
+$sidebar-milestone-toggle-bottom-margin: 10px;
 
 /*
 * Buttons

@@ -96,7 +96,9 @@ describe Milestone do
         allow(milestone).to receive(:due_date).and_return(Date.today.prev_year)
       end
 
-      it { expect(milestone.expired?).to be_truthy }
+      it 'returns true when due_date is in the past' do
+        expect(milestone.expired?).to be_truthy
+      end
     end
 
     context "not expired" do
@@ -104,17 +106,19 @@ describe Milestone do
         allow(milestone).to receive(:due_date).and_return(Date.today.next_year)
       end
 
-      it { expect(milestone.expired?).to be_falsey }
+      it 'returns false when due_date is in the future' do
+        expect(milestone.expired?).to be_falsey
+      end
     end
   end
 
   describe '#upcoming?' do
-    it 'returns true' do
+    it 'returns true when start_date is in the future' do
       milestone = build(:milestone, start_date: Time.now + 1.month)
       expect(milestone.upcoming?).to be_truthy
     end
 
-    it 'returns false' do
+    it 'returns false when start_date is in the past' do
       milestone = build(:milestone, start_date: Date.today.prev_year)
       expect(milestone.upcoming?).to be_falsey
     end
