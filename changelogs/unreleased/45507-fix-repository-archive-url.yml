@@ -1,0 +1,6 @@
+---
+title: Fix specifying a non-default ref when requesting an archive using the legacy
+  URL
+merge_request: 18468
+author:
+type: fixed
