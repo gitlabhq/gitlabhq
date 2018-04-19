@@ -117,7 +117,7 @@ class Projects::BlobController < Projects::ApplicationController
     @lines.map! do |line|
       # These are marked as context lines but are loaded from blobs.
       # We also have context lines loaded from diffs in other places.
-      diff_line = Gitlab::Diff::Line.new(line ,'context', nil, nil, nil)
+      diff_line = Gitlab::Diff::Line.new(line, 'context', nil, nil, nil)
       diff_line.rich_text = line
       diff_line
     end
@@ -140,7 +140,7 @@ class Projects::BlobController < Projects::ApplicationController
     # Match line is not needed when it reaches the top limit or bottom limit of the file.
     return unless new_pos
 
-    @match_line = Gitlab::Diff::Line.new(@match_line ,'match', nil, old_pos, new_pos)
+    @match_line = Gitlab::Diff::Line.new(@match_line, 'match', nil, old_pos, new_pos)
 
     @form.bottom? ? @lines.push(@match_line) : @lines.unshift(@match_line)
   end

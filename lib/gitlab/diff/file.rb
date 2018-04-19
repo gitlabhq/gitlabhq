@@ -242,7 +242,7 @@ module Gitlab
 
         return unless last_line.new_pos < total_blob_lines(blob)
 
-        match_line = Gitlab::Diff::Line.new("" ,'match', nil, last_line.old_pos, last_line.new_pos)
+        match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
         lines.push(match_line)
       end
 
