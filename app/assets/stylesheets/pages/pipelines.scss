@@ -462,60 +462,60 @@
     text-overflow: ellipsis;
   }
 
+  .ci-job-dropdown-container {
+    // override dropdown.scss
+    .dropdown-menu li button {
+      padding: 0;
+      text-align: center;
+    }
+  }
+
+  .ci-action-icon-container {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+
+    // Action Icons in big pipeline-graph nodes
+    &.ci-action-icon-wrapper {
+      height: 30px;
+      width: 30px;
+      background: $white-light;
+      border: 1px solid $border-color;
+      border-radius: 100%;
+      display: block;
+
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $dropdown-toggle-active-border-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
+      }
+
+      svg {
+        fill: $gl-text-color-secondary;
+        position: relative;
+        top: -1px;
+      }
+
+      &.play {
+        svg {
+          left: 2px;
+        }
+      }
+    }
+ }
+
   .build {
     position: relative;
     width: 186px;
     margin-bottom: 10px;
     white-space: normal;
 
-    .ci-job-dropdown-container {
-      // override dropdown.scss
-      .dropdown-menu li button {
-        padding: 0;
-        text-align: center;
-      }
-    }
-
     // ensure .build-content has hover style when action-icon is hovered
     .ci-job-dropdown-container:hover .build-content {
       @extend .build-content:hover;
-    }
-
-    .ci-action-icon-container {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-
-      // Action Icons in big pipeline-graph nodes
-      &.ci-action-icon-wrapper {
-        height: 30px;
-        width: 30px;
-        background: $white-light;
-        border: 1px solid $border-color;
-        border-radius: 100%;
-        display: block;
-
-        &:hover {
-          background-color: $stage-hover-bg;
-          border: 1px solid $dropdown-toggle-active-border-color;
-
-          svg {
-            fill: $gl-text-color;
-          }
-        }
-
-        svg {
-          fill: $gl-text-color-secondary;
-          position: relative;
-          top: -1px;
-        }
-
-        &.play {
-          svg {
-            left: 2px;
-          }
-        }
-      }
     }
 
     .ci-status-icon svg {
@@ -599,6 +599,55 @@
 
       .curve {
         display: block;
+      }
+    }
+  }
+}
+
+
+/**
+ Icons inside dropdown
+*/
+.big-pipeline-graph-dropdown-menu,
+.mini-pipeline-graph-dropdown-menu {
+
+  // override dropdown.scss
+  &.dropdown-menu li button {
+    padding: 0;
+    text-align: center;
+  }
+
+  .ci-action-icon-container {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+
+    // Action Icons in big pipeline-graph nodes
+    &.ci-action-icon-wrapper {
+      height: $ci-action-dropdown-button-size;
+      width: $ci-action-dropdown-button-size;
+
+      background: $white-light;
+      border: 1px solid $border-color;
+      border-radius: 50%;
+      display: block;
+
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $dropdown-toggle-active-border-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
+      }
+
+      svg {
+        width: $ci-action-dropdown-svg-size;
+        height: $ci-action-dropdown-svg-size;
+        fill: $gl-text-color-secondary;
+        position: relative;
+        top: 0px;
+        vertical-align: initial;
       }
     }
   }

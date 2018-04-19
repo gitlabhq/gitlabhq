@@ -95,6 +95,7 @@
         axios
           .get(this.stage.dropdown_path)
           .then(({ data }) => {
+            // TODO: REMOVE THIS ONCE WE HAVE BACKEND
             this.dropdownContent = [
               {
                 id: 966,
