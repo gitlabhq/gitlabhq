@@ -23,7 +23,7 @@
         - if merge_request.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block
             &nbsp;
-            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: true, toggle: 'tooltip', title: issuable_milestone_tooltip_title(merge_request) } do
+            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: 'true', toggle: 'tooltip', title: issuable_milestone_tooltip_title(merge_request) } do
               = icon('clock-o')
               = merge_request.milestone.title
         - if merge_request.target_project.default_branch != merge_request.target_branch

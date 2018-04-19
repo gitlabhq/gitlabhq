@@ -90,7 +90,7 @@
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
             - tooltip = build.tooltip_message
-            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: true, title: tooltip, container: 'body' }) do
+            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: 'true', title: tooltip, container: 'body' }) do
               = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)
