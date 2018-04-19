@@ -119,8 +119,11 @@ export default {
             />
           </span>
           <changed-file-icon
-            v-else-if="file.changed || file.tempFile"
+            v-else-if="file.changed || file.tempFile || file.staged"
             :file="file"
+            :show-tooltip="true"
+            :show-staged-icon="true"
+            class="prepend-top-5 pull-right"
           />
         </span>
         <new-dropdown

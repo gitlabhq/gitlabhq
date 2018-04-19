@@ -69,6 +69,16 @@ describe('Multi-file store mutations', () => {
     });
   });
 
+  describe('CLEAR_STAGED_CHANGES', () => {
+    it('clears stagedFiles array', () => {
+      localState.stagedFiles.push('a');
+
+      mutations.CLEAR_STAGED_CHANGES(localState);
+
+      expect(localState.stagedFiles.length).toBe(0);
+    });
+  });
+
   describe('UPDATE_VIEWER', () => {
     it('sets viewer state', () => {
       mutations.UPDATE_VIEWER(localState, 'diff');

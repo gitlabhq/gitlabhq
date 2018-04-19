@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
@@ -29,12 +31,18 @@ export const currentMergeRequest = state => {
 };
 
 // eslint-disable-next-line no-confusing-arrow
-export const currentIcon = state =>
+export const collapseButtonIcon = state =>
   state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
 
-export const hasChanges = state => !!state.changedFiles.length;
+export const hasChanges = state => !!state.changedFiles.length || !!state.stagedFiles.length;
+
+// eslint-disable-next-line no-confusing-arrow
+export const collapseButtonTooltip = state =>
+  state.rightPanelCollapsed ? __('Expand sidebar') : __('Collapse sidebar');
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
 export const getChangesInFolder = state => path =>
   state.changedFiles.filter(f => f.path.replace(new RegExp(`/${f.name}$`), '') === path).length;
+
+export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
