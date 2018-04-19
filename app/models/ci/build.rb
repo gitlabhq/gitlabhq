@@ -31,6 +31,7 @@ module Ci
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :gitlab_deploy_token, to: :project
 
     ##
     # The "environment" field for builds is a String, and is the unexpanded name!
@@ -608,6 +609,8 @@ module Ci
           .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false)
+
+        variables.concat(deploy_token_variables) if gitlab_deploy_token
       end
     end
 
@@ -628,7 +631,6 @@ module Ci
         variables.append(key: "CI_PIPELINE_TRIGGERED", value: 'true') if trigger_request
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
         variables.concat(legacy_variables)
-        variables.concat(deploy_token_variables) if project.gitlab_deploy_token
       end
     end
 
@@ -661,8 +663,8 @@ module Ci
 
     def deploy_token_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_DEPLOY_USER', value: DeployToken::GITLAB_DEPLOY_TOKEN_NAME)
-        variables.append(key: 'CI_DEPLOY_PASSWORD', value: project.gitlab_deploy_token.token)
+        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.name)
+        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token)
       end
     end
 

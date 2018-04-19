@@ -4002,7 +4002,7 @@ describe Project do
       it { is_expected.to be_nil }
     end
 
-    context 'when there is a gitlab deploy token associated with a different name' do
+    context 'when there is a deploy token associated with a different name' do
       let!(:deploy_token) { create(:deploy_token, projects: [project]) }
 
       it { is_expected.to be_nil }
