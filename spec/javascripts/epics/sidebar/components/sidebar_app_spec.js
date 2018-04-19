@@ -85,9 +85,10 @@ describe('epicSidebar', () => {
       epicsWebUrl,
     });
 
-    const datePickers = vm.$el.querySelectorAll('.block');
-    expect(datePickers[0].querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
-    expect(datePickers[1].querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
+    const startDatePicker = vm.$el.querySelector('.block.start-date');
+    const endDatePicker = vm.$el.querySelector('.block.end-date');
+    expect(startDatePicker.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
+    expect(endDatePicker.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
   });
 
   describe('when collapsed', () => {

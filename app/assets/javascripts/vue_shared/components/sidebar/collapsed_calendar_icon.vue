@@ -1,6 +1,11 @@
 <script>
+  import tooltip from '~/vue_shared/directives/tooltip';
+
   export default {
     name: 'CollapsedCalendarIcon',
+    directives: {
+      tooltip,
+    },
     props: {
       containerClass: {
         type: String,
@@ -17,6 +22,11 @@
         required: false,
         default: true,
       },
+      tooltipText: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     methods: {
       click() {
@@ -30,6 +40,11 @@
   <div
     :class="containerClass"
     @click="click"
+    v-tooltip
+    data-container="body"
+    data-placement="left"
+    data-html="1"
+    :title="tooltipText"
   >
     <i
       v-if="showIcon"

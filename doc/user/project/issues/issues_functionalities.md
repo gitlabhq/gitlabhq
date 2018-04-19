@@ -28,7 +28,7 @@ Comments and system notes also appear automatically in response to various actio
 #### 2. Todos
 
 - Add todo: add that issue to your [GitLab Todo](../../../workflow/todos.html) list
-- Mark done: mark that issue as done (reflects on the Todo list)
+- Mark todo as done: mark that issue as done (reflects on the Todo list)
 
 #### 3. Assignee
 

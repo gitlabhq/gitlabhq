@@ -7,7 +7,7 @@
       - if current_user
         %span.issuable-header-text.hide-collapsed.pull-left
           = _('Todo')
-      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+      %a.gutter-toggle.pull-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left' } }
         = sidebar_gutter_toggle_icon
       - if current_user
         = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
@@ -20,12 +20,11 @@
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
       = render "shared/issuable/sidebar_item_epic", issuable: issuable
       .block.milestone
-        .sidebar-collapsed-icon
+        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
           = icon('clock-o', 'aria-hidden': 'true')
           %span.milestone-title
             - if issuable.milestone
-              %span.has-tooltip{ title: "#{issuable.milestone.title}<br>#{milestone_tooltip_title(issuable.milestone)}", data: { container: 'body', html: 1, placement: 'left' } }
-                = issuable.milestone.title
+              = issuable.milestone.title
             - else
               = _('None')
         .title.hide-collapsed
@@ -35,7 +34,7 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
         .value.hide-collapsed
           - if issuable.milestone
-            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: 1 }
+            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 1 }
           - else
             %span.no-value
               = _('None')
@@ -51,7 +50,7 @@
             = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
-          .sidebar-collapsed-icon
+          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 1 }, title: sidebar_due_date_tooltip_label(issuable) }
             = icon('calendar', 'aria-hidden': 'true')
             %span.js-due-date-sidebar-value
               = issuable.due_date.try(:to_s, :medium) || 'None'

@@ -6,6 +6,7 @@
   import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
   import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
   import SidebarCollapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
+  import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
   import SidebarLabelsSelect from '~/vue_shared/components/sidebar/labels_select/base.vue';
   import SidebarService from '../services/sidebar_service';
   import Store from '../stores/sidebar_store';
@@ -13,6 +14,7 @@
   export default {
     name: 'EpicSidebar',
     components: {
+      ToggleSidebar,
       SidebarDatePicker,
       SidebarCollapsedGroupedDatePicker,
       SidebarLabelsSelect,
@@ -141,6 +143,12 @@
     :class="{ 'right-sidebar-expanded' : !collapsed, 'right-sidebar-collapsed': collapsed }"
   >
     <div class="issuable-sidebar js-issuable-update">
+      <div class="block issuable-sidebar-header">
+        <toggle-sidebar
+          :collapsed="collapsed"
+          @toggle="toggleSidebar"
+        />
+      </div>
       <sidebar-date-picker
         v-if="!collapsed"
         block-class="start-date"
@@ -171,7 +179,6 @@
         :collapsed="collapsed"
         :min-date="store.startDateTime"
         :max-date="store.endDateTime"
-        :show-toggle-sidebar="true"
         @toggleCollapse="toggleSidebar"
       />
       <sidebar-labels-select

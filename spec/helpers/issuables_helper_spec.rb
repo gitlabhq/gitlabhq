@@ -22,11 +22,15 @@ describe IssuablesHelper do
   end
 
   describe '#issuable_labels_tooltip' do
-    it 'returns label text' do
+    it 'returns label text with no labels' do
+      expect(issuable_labels_tooltip([])).to eq("Labels")
+    end
+
+    it 'returns label text with labels within max limit' do
       expect(issuable_labels_tooltip([label])).to eq(label.title)
     end
 
-    it 'returns label text' do
+    it 'returns label text with labels exceeding max limit' do
       expect(issuable_labels_tooltip([label, label2], limit: 1)).to eq("#{label.title}, and 1 more")
     end
   end
