@@ -1,10 +1,11 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import commitFilesList from './commit_sidebar/list.vue';
+import CommitFilesList from './commit_sidebar/list.vue';
+import EmptyState from './commit_sidebar/empty_state.vue';
 import CommitMessageField from './commit_sidebar/message_field.vue';
 import * as consts from '../stores/modules/commit/constants';
 import Actions from './commit_sidebar/actions.vue';
@@ -12,8 +13,9 @@ import Actions from './commit_sidebar/actions.vue';
 export default {
   components: {
     DeprecatedModal,
-    icon,
-    commitFilesList,
+    Icon,
+    CommitFilesList,
+    EmptyState,
     Actions,
     LoadingButton,
     CommitMessageField,
@@ -32,33 +34,17 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'currentProjectId',
-      'currentBranchId',
-      'rightPanelCollapsed',
-      'lastCommitMsg',
-      'changedFiles',
-    ]),
+    ...mapState(['changedFiles', 'stagedFiles', 'rightPanelCollapsed']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
-    statusSvg() {
-      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
-    },
   },
   methods: {
-    ...mapActions(['setPanelCollapsedStatus']),
     ...mapActions('commit', [
       'updateCommitMessage',
       'discardDraft',
       'commitChanges',
       'updateCommitAction',
     ]),
-    toggleCollapsed() {
-      this.setPanelCollapsedStatus({
-        side: 'right',
-        collapsed: !this.rightPanelCollapsed,
-      });
-    },
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
@@ -69,9 +55,6 @@ export default {
 <template>
   <div
     class="multi-file-commit-panel-section"
-    :class="{
-      'multi-file-commit-empty-state-container': !changedFiles.length
-    }"
   >
     <deprecated-modal
       id="ide-create-branch-modal"
@@ -85,15 +68,27 @@ export default {
           Would you like to create a new branch?`) }}
       </template>
     </deprecated-modal>
-    <commit-files-list
-      title="Staged"
-      :file-list="changedFiles"
-      :collapsed="rightPanelCollapsed"
-      @toggleCollapsed="toggleCollapsed"
-    />
     <template
-      v-if="changedFiles.length"
+      v-if="changedFiles.length || stagedFiles.length"
     >
+      <commit-files-list
+        icon-name="unstaged"
+        :title="__('Unstaged')"
+        :file-list="changedFiles"
+        action="stageAllChanges"
+        :action-btn-text="__('Stage all')"
+        item-action-component="stage-button"
+      />
+      <commit-files-list
+        icon-name="staged"
+        :title="__('Staged')"
+        :file-list="stagedFiles"
+        action="unstageAllChanges"
+        :action-btn-text="__('Unstage all')"
+        item-action-component="unstage-button"
+        :show-toggle="false"
+        :staged-list="true"
+      />
       <form
         class="form-horizontal multi-file-commit-form"
         @submit.prevent.stop="commitChanges"
@@ -123,38 +118,10 @@ export default {
         </div>
       </form>
     </template>
-    <div
-      v-else-if="!rightPanelCollapsed"
-      class="row js-empty-state"
-    >
-      <div class="col-xs-10 col-xs-offset-1">
-        <div class="svg-content svg-80">
-          <img :src="statusSvg" />
-        </div>
-      </div>
-      <div class="col-xs-10 col-xs-offset-1">
-        <div
-          class="text-content text-center"
-          v-if="!lastCommitMsg"
-        >
-          <h4>
-            {{ __('No changes') }}
-          </h4>
-          <p>
-            {{ __('Edit files in the editor and commit changes here') }}
-          </p>
-        </div>
-        <div
-          class="text-content text-center"
-          v-else
-        >
-          <h4>
-            {{ __('All changes are committed') }}
-          </h4>
-          <p v-html="lastCommitMsg">
-          </p>
-        </div>
-      </div>
-    </div>
+    <empty-state
+      v-else
+      :no-changes-state-svg-path="noChangesStateSvgPath"
+      :committed-state-svg-path="committedStateSvgPath"
+    />
   </div>
 </template>

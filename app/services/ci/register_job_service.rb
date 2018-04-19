@@ -35,7 +35,7 @@ module Ci
         end
       end
 
-      builds.auto_include(false).find do |build|
+      builds.find do |build|
         next unless runner.can_pick?(build)
 
         begin

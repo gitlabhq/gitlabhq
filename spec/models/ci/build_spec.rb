@@ -1414,6 +1414,7 @@ describe Ci::Build do
       expect { build.save! }
         .to change { build.project.statistics.reload.build_artifacts_size }
         .by(19)
+<<<<<<< HEAD
     end
 
     context 'when the artifact size stays the same' do
@@ -1424,9 +1425,38 @@ describe Ci::Build do
 
         build.save!
       end
+=======
+>>>>>>> upstream/master
     end
   end
 
+<<<<<<< HEAD
+  context 'when destroying the build' do
+    let!(:build) { create(:ci_build, artifacts_size: 23) }
+
+    it 'updates project statistics' do
+      expect(ProjectStatistics)
+        .to receive(:increment_statistic)
+        .and_call_original
+
+      expect { build.destroy! }
+        .to change { build.project.statistics.reload.build_artifacts_size }
+        .by(-23)
+=======
+    context 'when the artifact size stays the same' do
+      it 'does not update project statistics' do
+        build.name = 'changed'
+
+        expect(build).not_to receive(:update_project_statistics_after_save)
+
+        build.save!
+      end
+>>>>>>> upstream/master
+    end
+  end
+
+<<<<<<< HEAD
+=======
   context 'when destroying the build' do
     let!(:build) { create(:ci_build, artifacts_size: 23) }
 
@@ -1440,6 +1470,7 @@ describe Ci::Build do
         .by(-23)
     end
 
+>>>>>>> upstream/master
     context 'when the build is destroyed due to the project being destroyed' do
       it 'does not update the project statistics' do
         expect(ProjectStatistics)

@@ -69,6 +69,11 @@ class Projects::WikisController < Projects::ApplicationController
     else
       render action: "edit"
     end
+  rescue Gitlab::Git::Wiki::OperationError => e
+    @page = build_page(wiki_params)
+    @error = e
+
+    render 'edit'
   end
 
   def history
@@ -95,9 +100,13 @@ class Projects::WikisController < Projects::ApplicationController
                 status: 302,
                 notice: "Page was successfully deleted"
   rescue Gitlab::Git::Wiki::OperationError => e
+<<<<<<< HEAD
     @page = build_page(wiki_params)
     @error = e
 
+=======
+    @error = e
+>>>>>>> upstream/master
     render 'edit'
   end
 
