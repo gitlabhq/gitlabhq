@@ -495,6 +495,15 @@ module EE
                  .external_authorization_service_default_label
     end
 
+    override :licensed_features
+    def licensed_features
+      return super unless License.current
+
+      License.current.features.select do |feature|
+        License.global_feature?(feature) || licensed_feature_available?(feature)
+      end
+    end
+
     private
 
     def set_override_pull_mirror_available

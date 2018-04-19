@@ -1,0 +1,5 @@
+---
+title: Fix GITLAB_FEATURES CI/CD env var for public projects
+merge_request: 5242
+author:
+type: fixed
