@@ -1,9 +1,9 @@
 - if show_promotions? && !@project.feature_available?(:issue_weights)
   .block.weight
     .sidebar-collapsed-icon{ data: { toggle: "dropdown", target: ".weight" } }
-      = icon('balance-scale')
-      %span
-        No
+      %span{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: _("Weight") }
+        = icon('balance-scale')
+        %span No
     .title.hide-collapsed
       = _('Weight')
       = link_to _('Edit'), '#', class: 'edit-link promote-weight-link pull-right', data: { toggle: "dropdown", target: ".weight" }
