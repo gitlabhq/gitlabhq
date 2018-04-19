@@ -2084,6 +2084,9 @@ msgstr ""
 msgid "Failed to change the owner"
 msgstr ""
 
+msgid "Failed to check related branches."
+msgstr ""
+
 msgid "Failed to remove issue from board, please try again."
 msgstr ""
 
