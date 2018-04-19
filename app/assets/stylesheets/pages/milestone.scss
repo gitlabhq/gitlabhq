@@ -53,10 +53,6 @@
 }
 
 .milestone-sidebar {
-  .gutter-toggle {
-    margin-bottom: 10px;
-  }
-
   .milestone-progress {
     .title {
       padding-top: 5px;
@@ -102,7 +98,17 @@
     margin-right: 0;
   }
 
+  .right-sidebar-expanded & {
+    .gutter-toggle {
+      margin-bottom: $sidebar-milestone-toggle-bottom-margin;
+    }
+  }
+
   .right-sidebar-collapsed & {
+    .milestone-progress {
+      padding-top: 0;
+    }
+
     .reference {
       border-top: 1px solid $border-gray-normal;
     }
