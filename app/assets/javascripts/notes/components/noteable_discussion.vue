@@ -72,6 +72,28 @@ export default {
       'allDiscussions',
       'unresolvedDiscussions',
     ]),
+    actionTextHtml() {
+      let text = 'started a discussion';
+
+      if (!this.discussion.diffDiscussion) {
+        return text;
+      }
+
+      text += ' on';
+      if (!this.discussion.active) {
+        text += ' an old version of';
+      }
+
+      // TODO: psimyn
+      const url = `TODO:diffs/${this.discussion.id}`;
+      if (url) {
+        text += ` <a href="${url}">the diff</a>`;
+      } else {
+        text += ' the diff';
+      }
+
+      return text;
+    },
     discussion() {
       return {
         ...this.note.notes[0],
@@ -224,9 +246,7 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li
-    :data-discussion-id="note.id"
-    class="note note-discussion timeline-entry">
+  <li class="note note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -237,7 +257,10 @@ Please check your network connection and try again.`;
         />
       </div>
       <div class="timeline-content">
-        <div class="discussion">
+        <div
+          class="discussion"
+          :data-discussion-id="note.id"
+        >
           <div
             v-if="renderHeader"
             class="discussion-header"
@@ -249,7 +272,7 @@ Please check your network connection and try again.`;
               :include-toggle="true"
               :expanded="note.expanded"
               @toggleHandler="toggleDiscussionHandler"
-              action-text="started a discussion"
+              :action-text-html="actionTextHtml"
               class="discussion"
             />
             <note-edited-text
@@ -268,7 +291,7 @@ Please check your network connection and try again.`;
               :discussion="shouldRenderDiffs ? discussion : undefined"
               :class="wrapperClass"
             >
-              <div class="discussion-notes">
+              <div class="discussion-notes js-discussion-note-form">
                 <ul class="notes">
                   <component
                     v-for="note in note.notes"

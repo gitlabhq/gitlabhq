@@ -15,7 +15,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, or `approval_required`. |
+| `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable` or `directly_addressed`. |
 | `author_id` | integer | no | The ID of an author |
 | `project_id` | integer | no | The ID of a project |
 | `state` | string | no | The state of the todo. Can be either `pending` or `done` |

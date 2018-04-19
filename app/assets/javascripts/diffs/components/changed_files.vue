@@ -66,6 +66,8 @@ export default {
   mounted() {
     this.mrTabsEl = document.querySelector('.js-tabs-affix');
 
+    if (!mrTabsEl) return;
+
     this.throttledHandleScroll = _.throttle(this.handleScroll, 50);
     document.addEventListener('scroll', this.throttledHandleScroll);
 

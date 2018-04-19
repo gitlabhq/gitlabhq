@@ -5,6 +5,7 @@ class DiscussionEntity < Grape::Entity
   expose :position, if: -> (d, _) { defined? d.diff_file }
   expose :line_code, if: -> (d, _) { defined? d.diff_file }
   expose :expanded?, as: :expanded
+  expose :active?, as: :active, if: -> (d, _) { defined? d.active? }
 
   expose :notes do |discussion, opts|
     request.note_entity.represent(discussion.notes, opts)

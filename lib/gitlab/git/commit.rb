@@ -486,6 +486,8 @@ module Gitlab
       end
 
       def tree_entry(path)
+        return unless path.present?
+
         @repository.gitaly_migrate(:commit_tree_entry) do |is_migrated|
           if is_migrated
             gitaly_tree_entry(path)

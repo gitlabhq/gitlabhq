@@ -259,7 +259,7 @@ module BlobHelper
     options = []
 
     if error == :collapsed
-      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, expanded: true, format: nil)))
+      options << link_to('load it anyway', url_for(safe_params.merge(viewer: viewer.type, expanded: true, format: nil)))
     end
 
     # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,

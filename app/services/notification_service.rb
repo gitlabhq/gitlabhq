@@ -373,6 +373,20 @@ class NotificationService
     end
   end
 
+  def issue_due(issue)
+    recipients = NotificationRecipientService.build_recipients(
+      issue,
+      issue.author,
+      action: 'due',
+      custom_action: :issue_due,
+      skip_current_user: false
+    )
+
+    recipients.each do |recipient|
+      mailer.send(:issue_due_email, recipient.user.id, issue.id, recipient.reason).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)

@@ -1,0 +1,156 @@
+@import "framework/variables";
+
+.gitlab-embed-snippets {
+  @import "highlight/embedded";
+  @import "framework/images";
+
+  $border-style: 1px solid $border-color;
+
+  font-family: $regular_font;
+  font-size: $gl-font-size;
+  line-height: $code_line_height;
+  color: $gl-text-color;
+  margin: 20px;
+  font-weight: 200;
+
+  .gl-snippet-icon {
+    display: inline-block;
+    background: url(asset_path('ext_snippet_icons/ext_snippet_icons.png')) no-repeat;
+    overflow: hidden;
+    text-align: left;
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+
+    &.gl-snippet-icon-doc_code { background-position: 0 0;  }
+    &.gl-snippet-icon-doc_text {  background-position: 0 -16px; }
+    &.gl-snippet-icon-download {  background-position: 0 -32px; }
+  }
+
+  .blob-viewer {
+    background-color: $white-light;
+    text-align: left;
+  }
+
+  .file-content.code {
+    border: $border-style;
+    border-radius: 0 0 4px 4px;
+    display: flex;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    table-layout: fixed;
+
+    .blob-content {
+      overflow-x: auto;
+
+      pre {
+        padding: 10px;
+        border: 0;
+        border-radius: 0;
+        font-family: $monospace_font;
+        font-size: $code_font_size;
+        line-height: $code_line_height;
+        margin: 0;
+        overflow: auto;
+        overflow-y: hidden;
+        white-space: pre;
+        word-wrap: normal;
+        border-left: $border-style;
+      }
+    }
+
+    .line-numbers {
+      padding: 10px;
+      text-align: right;
+      float: left;
+
+      .diff-line-num {
+        font-family: $monospace_font;
+        display: block;
+        font-size: $code_font_size;
+        min-height: $code_line_height;
+        white-space: nowrap;
+        color: $black-transparent;
+        min-width: 30px;
+      }
+
+      .diff-line-num:hover {
+        color: $almost-black;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .file-title-flex-parent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $gray-light;
+    border: $border-style;
+    border-bottom: 0;
+    padding: $gl-padding-top $gl-padding;
+    margin: 0;
+    border-radius: $border-radius-default $border-radius-default 0 0;
+
+    .file-header-content {
+      .file-title-name {
+        font-weight: $gl-font-weight-bold;
+      }
+
+      .gitlab-embedded-snippets-title {
+        text-decoration: none;
+        color: $gl-text-color;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .gitlab-logo {
+        display: inline-block;
+        padding-left: 5px;
+        text-decoration: none;
+        color: $gl-text-color-secondary;
+
+        .logo-text {
+          background: image_url('ext_snippet_icons/logo.png') no-repeat left center;
+          background-size: 18px;
+          font-weight: $gl-font-weight-normal;
+          padding-left: 24px;
+        }
+      }
+    }
+
+    img,
+    .gl-snippet-icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  .btn-group {
+    a.btn {
+      background-color: $white-light;
+      text-decoration: none;
+      padding: 7px 9px;
+      border: $border-style;
+      border-right: 0;
+
+      &:hover {
+        background-color: $white-normal;
+        border-color: $border-white-normal;
+        text-decoration: none;
+      }
+
+      &:first-child {
+        border-radius: 3px 0 0 3px;
+      }
+
+      &:last-child {
+        border-radius: 0 3px 3px 0;
+        border-right: $border-style;
+      }
+    }
+  }
+}

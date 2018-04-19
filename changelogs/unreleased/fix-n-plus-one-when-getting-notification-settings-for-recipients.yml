@@ -1,5 +1,0 @@
----
-title: Add Goldiloader to fix N+1 issues when calculating email recipients
-merge_request:
-author:
-type: performance

@@ -1,0 +1,5 @@
+---
+title: Fixed IDE not showing loading state when tree is loading
+merge_request:
+author:
+type: fixed

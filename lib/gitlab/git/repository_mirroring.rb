@@ -26,7 +26,7 @@ module Gitlab
           # When the remote repo does not have tags.
           if target.nil? || path.nil?
             Rails.logger.info "Empty or invalid list of tags for remote: #{remote}. Output: #{output}"
-            return []
+            break []
           end
 
           name = path.split('/', 3).last
