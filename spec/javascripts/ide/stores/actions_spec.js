@@ -352,7 +352,7 @@ describe('Multi-file store actions', () => {
 
       testAction(
         actions.updateTempFlagForEntry,
-        { entry: f, tempFile: false },
+        { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
         [],
@@ -375,10 +375,10 @@ describe('Multi-file store actions', () => {
 
       testAction(
         actions.updateTempFlagForEntry,
-        { entry: f, tempFile: false },
+        { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
-        [{ type: 'updateTempFlagForEntry', payload: { entry: parent, tempFile: false } }],
+        [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
         done,
       );
     });

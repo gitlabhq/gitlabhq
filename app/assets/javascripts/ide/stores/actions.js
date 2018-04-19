@@ -142,7 +142,7 @@ export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, temp
   commit(types.UPDATE_TEMP_FLAG, { path: file.path, tempFile });
 
   if (file.parentPath) {
-    dispatch('updateTempFlagForEntry', { entry: state.entries[file.parentPath], tempFile });
+    dispatch('updateTempFlagForEntry', { file: state.entries[file.parentPath], tempFile });
   }
 };
 

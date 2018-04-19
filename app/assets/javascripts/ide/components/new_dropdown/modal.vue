@@ -75,7 +75,7 @@ export default {
       @submit.prevent="createEntryInStore"
     >
       <fieldset class="form-group append-bottom-0">
-        <label class="label-light col-sm-3">
+        <label class="label-light col-sm-3 ide-new-modal-label">
           {{ __('Name') }}
         </label>
         <div class="col-sm-9">
