@@ -10,6 +10,6 @@ export default {
   },
 
   unbind(el) {
-    $(el).tooltip('destroy');
+    $(el).tooltip('dispose');
   },
 };

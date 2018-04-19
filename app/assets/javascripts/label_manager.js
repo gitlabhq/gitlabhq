@@ -35,7 +35,7 @@ export default class LabelManager {
     const $label = $(`#${$btn.data('domId')}`);
     const action = $btn.parents('.js-prioritized-labels').length ? 'remove' : 'add';
     const $tooltip = $(`#${$btn.find('.has-tooltip:visible').attr('aria-describedby')}`);
-    $tooltip.tooltip('destroy');
+    $tooltip.tooltip('dispose');
     _this.toggleLabelPriority($label, action);
     _this.toggleEmptyState($label, $btn, action);
   }

@@ -43,7 +43,7 @@
         if (confirm('Are you sure you want to stop this environment?')) {
           this.isLoading = true;
 
-          $(this.$el).tooltip('destroy');
+          $(this.$el).tooltip('dispose');
 
           eventHub.$emit('postAction', this.stopUrl);
         }

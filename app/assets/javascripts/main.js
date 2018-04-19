@@ -46,7 +46,7 @@ document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
-  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('dispose');
   // Close any open popover
   $('[data-toggle="popover"]').popover('destroy');
 });
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
-    $(this).tooltip('destroy')
+    $(this).tooltip('dispose')
       .closest('li')
       .fadeOut();
   });
