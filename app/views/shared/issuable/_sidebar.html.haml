@@ -19,7 +19,7 @@
       .block.assignee
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
       .block.milestone
-        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
+        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left' } }
           = icon('clock-o', 'aria-hidden': 'true')
           %span.milestone-title
             - if issuable.milestone
@@ -50,7 +50,7 @@
             = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
-          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 1 }, title: sidebar_due_date_tooltip_label(issuable) }
+          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true' }, title: sidebar_due_date_tooltip_label(issuable) }
             = icon('calendar', 'aria-hidden': 'true')
             %span.js-due-date-sidebar-value
               = issuable.due_date.try(:to_s, :medium) || 'None'
