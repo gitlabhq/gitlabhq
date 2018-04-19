@@ -69,7 +69,7 @@ export const individualNote = {
       attachment: {
         url: null,
         filename: null,
-        image: faljse,
+        image: false,
       },
       author: {
         id: 1,
