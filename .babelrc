@@ -1,7 +1,7 @@
 {
   "presets": [["latest", { "es2015": { "modules": false } }], "stage-2"],
   "env": {
-    "development": {
+    "karma": {
       "plugins": ["rewire"]
     },
     "coverage": {
