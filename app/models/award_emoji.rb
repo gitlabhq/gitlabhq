@@ -1,6 +1,17 @@
 class AwardEmoji < ActiveRecord::Base
-  DOWNVOTE_NAMES = %w(thumbsdown thumbsdown_tone1 thumbsdown_tone2 thumbsdown_tone3 thumbsdown_tone4 thumbsdown_tone5)
-  UPVOTE_NAMES   = %w(thumbsup thumbsup_tone1 thumbsup_tone2 thumbsup_tone3 thumbsup_tone4 thumbsup_tone5)
+  DOWNVOTE_NAMES = %w(thumbsdown
+                      thumbsdown_tone1
+                      thumbsdown_tone2
+                      thumbsdown_tone3
+                      thumbsdown_tone4
+                      thumbsdown_tone5).freeze
+
+  UPVOTE_NAMES = %w(thumbsup
+                    thumbsup_tone1
+                    thumbsup_tone2
+                    thumbsup_tone3
+                    thumbsup_tone4
+                    thumbsup_tone5).freeze
 
   include Participable
   include GhostUser
@@ -26,16 +37,23 @@ class AwardEmoji < ActiveRecord::Base
         .where('name IN (?) AND awardable_type = ? AND awardable_id IN (?)', [*DOWNVOTE_NAMES, *UPVOTE_NAMES], type, ids)
         .group('name', 'awardable_id')
     end
+
+    def downvote?(name)
+      DOWNVOTE_NAMES.include?(name)
+    end
+
+    def upvote?(name)
+      UPVOTE_NAMES.include?(name)
+    end
   end
 
   def downvote?
-    DOWNVOTE_NAMES.include?(name)
+    self.class.downvote?(name)
   end
 
   def upvote?
-    UPVOTE_NAMES.include?(name)
+    self.class.upvote?(name)
   end
-
 
   def expire_etag_cache
     awardable.try(:expire_etag_cache)

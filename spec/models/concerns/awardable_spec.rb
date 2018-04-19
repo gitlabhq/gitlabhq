@@ -25,6 +25,11 @@ describe Awardable do
     end
 
     describe ".awarded" do
+      before do
+        award_emoji.update_column(:name, 'thumbsdown')
+        award_emoji2.update_column(:name, 'thumbsup')
+      end
+
       it "filters by user and emoji name" do
         expect(Issue.awarded(award_emoji.user, "thumbsup")).to be_empty
         expect(Issue.awarded(award_emoji.user, "thumbsdown")).to eq [issue]
@@ -56,22 +61,26 @@ describe Awardable do
     it 'does not allow upvoting or downvoting your own issue' do
       issue.update!(author: user)
 
-      expect(issue.user_can_award?(user, AwardEmoji::DOWNVOTE_NAME)).to be_falsy
-      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_falsy
+      expect(issue.user_can_award?(user, AwardEmoji::DOWNVOTE_NAMES.sample)).to be_falsy
+      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAMES.sample)).to be_falsy
     end
 
     it 'is truthy when the user is allowed to award emoji' do
-      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_truthy
+      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAMES.sample)).to be_truthy
     end
 
     it 'is falsy when the project is archived' do
       issue.project.update!(archived: true)
 
-      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_falsy
+      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAMES.sample)).to be_falsy
     end
   end
 
   describe "#toggle_award_emoji" do
+    before do
+      award_emoji.update_column(:name, 'thumbsdown')
+    end
+
     it "adds an emoji if it isn't awarded yet" do
       expect { issue.toggle_award_emoji("thumbsup", award_emoji.user) }.to change { AwardEmoji.count }.by(1)
     end

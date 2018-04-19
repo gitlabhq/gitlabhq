@@ -75,7 +75,7 @@ module Awardable
   end
 
   def awardable_votes?(name)
-    AwardEmoji::UPVOTE_NAME == name || AwardEmoji::DOWNVOTE_NAME == name
+    AwardEmoji.upvote?(name) || AwardEmoji.downvote?(name)
   end
 
   def user_can_award?(current_user, name)
