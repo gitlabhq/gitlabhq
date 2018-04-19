@@ -10,7 +10,9 @@ module Gitlab
 
         delegate :close, :tell, :seek, :size, :url, :truncate, to: :stream, allow_nil: true
 
-        delegate :valid?, to: :stream, as: :present?, allow_nil: true
+        delegate :valid?, to: :stream, allow_nil: true
+
+        alias_method :present?, :valid?
 
         def initialize
           @stream = yield

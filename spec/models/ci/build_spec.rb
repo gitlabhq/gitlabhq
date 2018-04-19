@@ -2182,10 +2182,6 @@ describe Ci::Build do
         it "doesn't save timeout_source" do
           expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
         end
-
-        it 'raises an exception' do
-          expect { job.run! }.to raise_error(StateMachines::InvalidTransition)
-        end
       end
     end
 
