@@ -1,6 +1,16 @@
 <script>
 /**
  * Falls back to the code used in `copy_to_clipboard.js`
+ *
+ * Renders a button with a clipboard icon that copies the content of `data-clipboard-text`
+ * when clicked.
+ *
+ * @example
+ * <clipboard-button
+ *   title="Copy to clipbard"
+ *   text="Content to be copied"
+ *    css-class="btn-transparent"
+ * />
  */
 import tooltip from '../directives/tooltip';
 
