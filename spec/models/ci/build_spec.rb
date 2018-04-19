@@ -1403,29 +1403,51 @@ describe Ci::Build do
     end
   end
 
-  describe '#update_project_statistics' do
+  context 'when updating the build' do
+    let(:build) { create(:ci_build, artifacts_size: 23) }
+
+    it 'updates project statistics' do
+      build.artifacts_size = 42
+
+      expect(build).to receive(:update_project_statistics_after_save).and_call_original
+
+      expect { build.save! }
+        .to change { build.project.statistics.reload.build_artifacts_size }
+        .by(19)
+    end
+
+    context 'when the artifact size stays the same' do
+      it 'does not update project statistics' do
+        build.name = 'changed'
+
+        expect(build).not_to receive(:update_project_statistics_after_save)
+
+        build.save!
+      end
+    end
+  end
+
+  context 'when destroying the build' do
     let!(:build) { create(:ci_build, artifacts_size: 23) }
 
-    it 'updates project statistics when the artifact size changes' do
-      expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(build.project_id, [], [:build_artifacts_size])
+    it 'updates project statistics' do
+      expect(ProjectStatistics)
+        .to receive(:increment_statistic)
+        .and_call_original
 
-      build.artifacts_size = 42
-      build.save!
+      expect { build.destroy! }
+        .to change { build.project.statistics.reload.build_artifacts_size }
+        .by(-23)
     end
 
-    it 'does not update project statistics when the artifact size stays the same' do
-      expect(ProjectCacheWorker).not_to receive(:perform_async)
+    context 'when the build is destroyed due to the project being destroyed' do
+      it 'does not update the project statistics' do
+        expect(ProjectStatistics)
+          .not_to receive(:increment_statistic)
 
-      build.name = 'changed'
-      build.save!
-    end
-
-    it 'updates project statistics when the build is destroyed' do
-      expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(build.project_id, [], [:build_artifacts_size])
-
-      build.destroy
+        build.project.update_attributes(pending_delete: true)
+        build.project.destroy!
+      end
     end
   end
 
