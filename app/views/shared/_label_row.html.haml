@@ -2,7 +2,7 @@
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 
-.label-row.inline
+.label-row
   .label-name
     = link_to_label(label, subject: @project, tooltip: false)
   .label-description

@@ -79,10 +79,9 @@
 
   .label-description {
     display: block;
-    margin-bottom: 10px;
 
     .description-text {
-      margin-bottom: $gl-padding;
+      margin: 0 $gl-padding 10px 0;
     }
 
     a {
@@ -134,6 +133,10 @@
 
     .prioritized-labels & {
       box-shadow: 0 1px 2px $issue-boards-card-shadow;
+    }
+
+    &.no-hand {
+      cursor: auto;
     }
   }
 
@@ -286,6 +289,7 @@
 .label-actions-list {
   list-style: none;
   flex-shrink: 0;
+  padding: 0;
 }
 
 .label-badge {
@@ -305,7 +309,7 @@
 
 .label-links {
   list-style: none;
-  padding: 0;
+  padding: 0 $gl-padding 0 0;
   white-space: nowrap;
 }
 
