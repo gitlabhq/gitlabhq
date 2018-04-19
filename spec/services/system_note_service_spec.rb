@@ -947,7 +947,7 @@ describe SystemNoteService do
       it 'sets the note text' do
         noteable.update_attribute(:time_estimate, 277200)
 
-        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h,"
       end
     end
 
@@ -981,34 +981,6 @@ describe SystemNoteService do
 
     it 'mentions the created issue in the system note' do
       expect(subject.note).to include(issue.to_reference)
-    end
-  end
-
-  describe '.change_time_estimate' do
-    subject { described_class.change_time_estimate(noteable, project, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'time_tracking' }
-    end
-
-    context 'with a time estimate' do
-      it 'sets the note text' do
-        noteable.update_attribute(:time_estimate, 277200)
-
-        expect(subject.note).to eq "changed time estimate to 1w 4d 5h,"
-      end
-
-      it 'appends a comma to separate the note from the update_at time' do
-        noteable.update_attribute(:time_estimate, 277200)
-
-        expect(subject.note).to end_with(',')
-      end
-    end
-
-    context 'without a time estimate' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed time estimate"
-      end
     end
   end
 
