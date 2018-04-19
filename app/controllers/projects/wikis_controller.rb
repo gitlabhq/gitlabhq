@@ -100,13 +100,7 @@ class Projects::WikisController < Projects::ApplicationController
                 status: 302,
                 notice: "Page was successfully deleted"
   rescue Gitlab::Git::Wiki::OperationError => e
-<<<<<<< HEAD
-    @page = build_page(wiki_params)
     @error = e
-
-=======
-    @error = e
->>>>>>> upstream/master
     render 'edit'
   end
 
