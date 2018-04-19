@@ -20,6 +20,10 @@ module Gitlab
           subject
         end
 
+        def present(**attributes)
+          self
+        end
+
         class_methods do
           def presenter?
             true

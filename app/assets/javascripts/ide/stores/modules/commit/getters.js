@@ -1,12 +1,17 @@
 import * as consts from './constants';
 
-export const discardDraftButtonDisabled = state => state.commitMessage === '' || state.submitCommitLoading;
+const BRANCH_SUFFIX_COUNT = 5;
+
+export const discardDraftButtonDisabled = state =>
+  state.commitMessage === '' || state.submitCommitLoading;
 
 export const commitButtonDisabled = (state, getters, rootState) =>
-  getters.discardDraftButtonDisabled || !rootState.changedFiles.length;
+  getters.discardDraftButtonDisabled || !rootState.stagedFiles.length;
 
 export const newBranchName = (state, _, rootState) =>
-  `${gon.current_username}-${rootState.currentBranchId}-patch-${`${new Date().getTime()}`.substr(-5)}`;
+  `${gon.current_username}-${rootState.currentBranchId}-patch-${`${new Date().getTime()}`.substr(
+    -BRANCH_SUFFIX_COUNT,
+  )}`;
 
 export const branchName = (state, getters, rootState) => {
   if (

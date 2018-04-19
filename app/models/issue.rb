@@ -34,7 +34,7 @@ class Issue < ActiveRecord::Base
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
-  has_many :assignees, -> { auto_include(false) }, class_name: "User", through: :issue_assignees
+  has_many :assignees, class_name: "User", through: :issue_assignees
 
   validates :project, presence: true
 
@@ -49,6 +49,7 @@ class Issue < ActiveRecord::Base
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+  scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }

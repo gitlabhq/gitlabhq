@@ -1,3 +1,4 @@
+<script>
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
@@ -7,7 +8,10 @@ import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
 
 export default {
-  name: 'MRWidgetReadyToMerge',
+  name: 'ReadyToMerge',
+  components: {
+    statusIcon,
+  },
   props: {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
@@ -25,9 +29,6 @@ export default {
       successSvg,
       warningSvg,
     };
-  },
-  components: {
-    statusIcon,
   },
   computed: {
     shouldShowMergeWhenPipelineSucceedsText() {
@@ -217,136 +218,146 @@ export default {
         });
     },
   },
-  template: `
-    <div class="mr-widget-body media">
-      <status-icon :status="iconClass" />
-      <div class="media-body">
-        <div class="mr-widget-body-controls media space-children">
-          <span class="btn-group append-bottom-5">
-            <button
-              @click="handleMergeButtonClick()"
-              :disabled="isMergeButtonDisabled"
-              :class="mergeButtonClass"
-              type="button"
-              class="qa-merge-button">
-              <i
-                v-if="isMakingRequest"
-                class="fa fa-spinner fa-spin"
-                aria-hidden="true" />
-              {{mergeButtonText}}
-            </button>
-            <button
-              v-if="shouldShowMergeOptionsDropdown"
-              :disabled="isMergeButtonDisabled"
-              type="button"
-              class="btn btn-sm btn-info dropdown-toggle js-merge-moment"
-              data-toggle="dropdown"
-              aria-label="Select merge moment">
-              <i
-                class="fa fa-chevron-down"
-                aria-hidden="true" />
-            </button>
-            <ul
-              v-if="shouldShowMergeOptionsDropdown"
-              class="dropdown-menu dropdown-menu-right"
-              role="menu">
-              <li>
-                <a
-                  @click.prevent="handleMergeButtonClick(true)"
-                  class="merge_when_pipeline_succeeds"
-                  href="#">
-                  <span class="media">
-                    <span
-                      v-html="successSvg"
-                      class="merge-opt-icon"
-                      aria-hidden="true"></span>
-                    <span class="media-body merge-opt-title">Merge when pipeline succeeds</span>
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  @click.prevent="handleMergeButtonClick(false, true)"
-                  class="accept-merge-request"
-                  href="#">
-                  <span class="media">
-                    <span
-                      v-html="warningSvg"
-                      class="merge-opt-icon"
-                      aria-hidden="true"></span>
-                    <span class="media-body merge-opt-title">Merge immediately</span>
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </span>
-          <div class="media-body-wrap space-children">
-            <template v-if="shouldShowMergeControls()">
-              <label v-if="mr.canRemoveSourceBranch">
-                <input
-                  id="remove-source-branch-input"
-                  v-model="removeSourceBranch"
-                  class="js-remove-source-branch-checkbox"
-                  :disabled="isRemoveSourceBranchButtonDisabled"
-                  type="checkbox"/> Remove source branch
-              </label>
+};
+</script>
 
-              <!-- Placeholder for EE extension of this component -->
-              <squash-before-merge
-                v-if="shouldShowSquashBeforeMerge"
-                :mr="mr"
-                :is-merge-button-disabled="isMergeButtonDisabled" />
-
-              <span
-                v-if="mr.ffOnlyEnabled"
-                class="js-fast-forward-message">
-                Fast-forward merge without a merge commit
-              </span>
-              <button
-                v-else
-                @click="toggleCommitMessageEditor"
-                :disabled="isMergeButtonDisabled"
-                class="js-modify-commit-message-button btn btn-default btn-xs"
-                type="button">
-                Modify commit message
-              </button>
-            </template>
-            <template v-else>
-              <span class="bold js-resolve-mr-widget-items-message">
-                You can only merge once the items above are resolved
-              </span>
-            </template>
-          </div>
-        </div>
-        <div
-          v-if="showCommitMessageEditor"
-          class="prepend-top-default commit-message-editor">
-          <div class="form-group clearfix">
-            <label
-              class="control-label"
-              for="commit-message">
-              Commit message
+<template>
+  <div class="mr-widget-body media">
+    <status-icon :status="iconClass" />
+    <div class="media-body">
+      <div class="mr-widget-body-controls media space-children">
+        <span class="btn-group append-bottom-5">
+          <button
+            @click="handleMergeButtonClick()"
+            :disabled="isMergeButtonDisabled"
+            :class="mergeButtonClass"
+            type="button"
+            class="qa-merge-button">
+            <i
+              v-if="isMakingRequest"
+              class="fa fa-spinner fa-spin"
+              aria-hidden="true"
+            ></i>
+            {{ mergeButtonText }}
+          </button>
+          <button
+            v-if="shouldShowMergeOptionsDropdown"
+            :disabled="isMergeButtonDisabled"
+            type="button"
+            class="btn btn-sm btn-info dropdown-toggle js-merge-moment"
+            data-toggle="dropdown"
+            aria-label="Select merge moment">
+            <i
+              class="fa fa-chevron-down"
+              aria-hidden="true"
+            ></i>
+          </button>
+          <ul
+            v-if="shouldShowMergeOptionsDropdown"
+            class="dropdown-menu dropdown-menu-right"
+            role="menu">
+            <li>
+              <a
+                @click.prevent="handleMergeButtonClick(true)"
+                class="merge_when_pipeline_succeeds"
+                href="#">
+                <span class="media">
+                  <span
+                    v-html="successSvg"
+                    class="merge-opt-icon"
+                    aria-hidden="true"></span>
+                  <span class="media-body merge-opt-title">Merge when pipeline succeeds</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                @click.prevent="handleMergeButtonClick(false, true)"
+                class="accept-merge-request"
+                href="#">
+                <span class="media">
+                  <span
+                    v-html="warningSvg"
+                    class="merge-opt-icon"
+                    aria-hidden="true"></span>
+                  <span class="media-body merge-opt-title">Merge immediately</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </span>
+        <div class="media-body-wrap space-children">
+          <template v-if="shouldShowMergeControls()">
+            <label v-if="mr.canRemoveSourceBranch">
+              <input
+                id="remove-source-branch-input"
+                v-model="removeSourceBranch"
+                class="js-remove-source-branch-checkbox"
+                :disabled="isRemoveSourceBranchButtonDisabled"
+                type="checkbox"/> Remove source branch
             </label>
-            <div class="col-sm-10">
-              <div class="commit-message-container">
-                <div class="max-width-marker"></div>
-                <textarea
-                  v-model="commitMessage"
-                  class="form-control js-commit-message"
-                  required="required"
-                  rows="14"
-                  name="Commit message"></textarea>
-              </div>
-              <p class="hint">Try to keep the first line under 52 characters and the others under 72</p>
-              <div class="hint">
-                <a
-                  @click.prevent="updateCommitMessage"
-                  href="#">{{commitMessageLinkTitle}}</a>
-              </div>
+
+            <!-- Placeholder for EE extension of this component -->
+            <squash-before-merge
+              v-if="shouldShowSquashBeforeMerge"
+              :mr="mr"
+              :is-merge-button-disabled="isMergeButtonDisabled" />
+
+            <span
+              v-if="mr.ffOnlyEnabled"
+              class="js-fast-forward-message">
+              Fast-forward merge without a merge commit
+            </span>
+            <button
+              v-else
+              @click="toggleCommitMessageEditor"
+              :disabled="isMergeButtonDisabled"
+              class="js-modify-commit-message-button btn btn-default btn-xs"
+              type="button">
+              Modify commit message
+            </button>
+          </template>
+          <template v-else>
+            <span class="bold js-resolve-mr-widget-items-message">
+              You can only merge once the items above are resolved
+            </span>
+          </template>
+        </div>
+      </div>
+      <div
+        v-if="showCommitMessageEditor"
+        class="prepend-top-default commit-message-editor">
+        <div class="form-group clearfix">
+          <label
+            class="control-label"
+            for="commit-message">
+            Commit message
+          </label>
+          <div class="col-sm-10">
+            <div class="commit-message-container">
+              <div class="max-width-marker"></div>
+              <textarea
+                id="commit-message"
+                v-model="commitMessage"
+                class="form-control js-commit-message"
+                required="required"
+                rows="14"
+                name="Commit message"></textarea>
+            </div>
+            <p class="hint">
+              Try to keep the first line under 52 characters and the others under 72
+            </p>
+            <div class="hint">
+              <a
+                @click.prevent="updateCommitMessage"
+                href="#"
+              >
+                {{ commitMessageLinkTitle }}
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `,
-};
+  </div>
+</template>

@@ -180,7 +180,7 @@ module DiffHelper
   private
 
   def diff_btn(title, name, selected)
-    params_copy = params.dup
+    params_copy = safe_params.dup
     params_copy[:view] = name
 
     # Always use HTML to handle case where JSON diff rendered this button

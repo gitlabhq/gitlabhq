@@ -1,9 +1,10 @@
 # rubocop:disable Naming/FileName
-require_relative 'cop/gitlab/has_many_through_scope'
-require_relative 'cop/gitlab/httparty'
 require_relative 'cop/gitlab/module_with_instance_variables'
 require_relative 'cop/gitlab/predicate_memoization'
+require_relative 'cop/gitlab/httparty'
 require_relative 'cop/include_sidekiq_worker'
+require_relative 'cop/avoid_return_from_blocks'
+require_relative 'cop/avoid_break_from_strong_memoize'
 require_relative 'cop/line_break_around_conditional_block'
 require_relative 'cop/migration/add_column'
 require_relative 'cop/migration/add_concurrent_foreign_key'

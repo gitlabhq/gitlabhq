@@ -62,7 +62,7 @@ gem 'akismet', '~> 2.0'
 # Two-factor authentication
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 3.0.0'
+gem 'attr_encrypted', '~> 3.1.0'
 gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
@@ -82,16 +82,9 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
-# Before updating this gem, check if
-# https://github.com/gollum/gollum-lib/pull/292 has been merged.
-# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
-# in config/initializers/gollum.rb
-gem 'gollum-lib', '~> 4.2', require: false
+gem 'gitlab-gollum-lib', '~> 4.2', require: false
 
-# Before updating this gem, check if
-# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
-# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
-gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
+gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
@@ -147,7 +140,7 @@ gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.6'
 gem 'asciidoctor-plantuml', '0.0.8'
-gem 'rouge', '~> 2.0'
+gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
@@ -422,7 +415,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.94.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.97.0', require: 'gitaly'
 gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
@@ -441,5 +434,3 @@ gem 'grape_logging', '~> 1.7'
 
 # Asset synchronization
 gem 'asset_sync', '~> 2.2.0'
-
-gem 'goldiloader', '~> 2.0'
