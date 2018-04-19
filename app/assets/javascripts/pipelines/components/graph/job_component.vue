@@ -48,12 +48,6 @@ export default {
       required: false,
       default: '',
     },
-
-    isDropdown: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   computed: {
