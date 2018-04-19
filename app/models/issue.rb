@@ -197,10 +197,10 @@ class Issue < ActiveRecord::Base
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 
-    index = 2
-    index += 1 while project.repository.branch_exists?("#{to_branch_name}-#{index}")
-
-    "#{to_branch_name}-#{index}"
+    start_counting_from = 2
+    Uniquify.new.string(-> (counter) { "#{to_branch_name}-#{counter}" }, start_counting_from) do |suggested_branch_name|
+      project.repository.branch_exists?(suggested_branch_name)
+    end
   end
 
   # Returns boolean if a related branch exists for the current issue

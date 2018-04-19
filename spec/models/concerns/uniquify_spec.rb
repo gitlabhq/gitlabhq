@@ -22,6 +22,13 @@ describe Uniquify do
       expect(result).to eq('test_string2')
     end
 
+    it 'allows to pass an initial value for the counter' do
+      start_counting_from = 2
+      result = uniquify.string('test_string', start_counting_from) { |s| s == 'test_string' }
+
+      expect(result).to eq('test_string2')
+    end
+
     it 'allows passing in a base function that defines the location of the counter' do
       result = uniquify.string(-> (counter) { "test_#{counter}_string" }) do |s|
         s == 'test__string'

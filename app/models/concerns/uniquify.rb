@@ -3,11 +3,14 @@ class Uniquify
   # by appending a counter to it. Uniqueness is determined by
   # repeated calls to the passed block.
   #
+  # You can pass an initial value for the counter, if not given
+  # counting starts from 1.
+  #
   # If `base` is a function/proc, we expect that calling it with a
   # candidate counter returns a string to test/return.
-  def string(base)
+  def string(base, counter = nil)
     @base = base
-    @counter = nil
+    @counter = counter
 
     increment_counter! while yield(base_string)
     base_string
