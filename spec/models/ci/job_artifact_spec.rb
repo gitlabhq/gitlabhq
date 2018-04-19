@@ -168,4 +168,43 @@ describe Ci::JobArtifact do
       end
     end
   end
+
+  describe 'file is being stored' do
+    subject { create(:ci_job_artifact, :archive) }
+
+    context 'when object has nil store' do
+      before do
+        subject.update_column(:file_store, nil)
+        subject.reload
+      end
+
+      it 'is stored locally' do
+        expect(subject.file_store).to be(nil)
+        expect(subject.file).to be_file_storage
+        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+      end
+    end
+
+    context 'when existing object has local store' do
+      it 'is stored locally' do
+        expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
+        expect(subject.file).to be_file_storage
+        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+      end
+    end
+
+    context 'when direct upload is enabled' do
+      before do
+        stub_artifacts_object_storage(direct_upload: true)
+      end
+
+      context 'when file is stored' do
+        it 'is stored remotely' do
+          expect(subject.file_store).to eq(ObjectStorage::Store::REMOTE)
+          expect(subject.file).not_to be_file_storage
+          expect(subject.file.object_store).to eq(ObjectStorage::Store::REMOTE)
+        end
+      end
+    end
+  end
 end
