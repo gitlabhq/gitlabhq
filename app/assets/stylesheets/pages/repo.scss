@@ -743,32 +743,11 @@
 
 .ide-commit-list-container {
   display: flex;
+  flex: 1;
   flex-direction: column;
   width: 100%;
+  min-height: 140px;
   padding: 0 16px;
-
-  &:not(.is-collapsed) {
-    flex: 1;
-    min-height: 140px;
-  }
-
-  &.is-collapsed {
-    .multi-file-commit-panel-header {
-      margin-left: -$gl-padding;
-      margin-right: -$gl-padding;
-
-      svg {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .multi-file-commit-panel-collapse-btn {
-        margin-right: auto;
-        margin-left: auto;
-        border-left: 0;
-      }
-    }
-  }
 }
 
 .ide-staged-action-btn {

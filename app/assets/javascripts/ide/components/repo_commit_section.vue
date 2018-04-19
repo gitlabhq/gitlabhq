@@ -76,7 +76,6 @@ export default {
         action="unstageAllChanges"
         :action-btn-text="__('Unstage all')"
         item-action-component="unstage-button"
-        :show-toggle="false"
         :staged-list="true"
       />
       <form
