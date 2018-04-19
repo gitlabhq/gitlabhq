@@ -1,7 +1,10 @@
 import * as urlUtils from '~/lib/utils/url_utility';
 import store from '~/ide/stores';
+import * as actions from '~/ide/stores/actions';
+import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
+import testAction from '../../helpers/vuex_action_helper';
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -191,9 +194,7 @@ describe('Multi-file store actions', () => {
           })
           .then(f => {
             expect(f.tempFile).toBeTruthy();
-            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(
-              1,
-            );
+            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
             done();
           })
@@ -289,6 +290,42 @@ describe('Multi-file store actions', () => {
           });
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('stageAllChanges', () => {
+    it('adds all files from changedFiles to stagedFiles', done => {
+      store.state.changedFiles.push(file(), file('new'));
+
+      testAction(
+        actions.stageAllChanges,
+        null,
+        store.state,
+        [
+          { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
+          { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('unstageAllChanges', () => {
+    it('removes all files from stagedFiles after unstaging', done => {
+      store.state.stagedFiles.push(file(), file('new'));
+
+      testAction(
+        actions.unstageAllChanges,
+        null,
+        store.state,
+        [
+          { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[0].path },
+          { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[1].path },
+        ],
+        [],
+        done,
+      );
     });
   });
 
