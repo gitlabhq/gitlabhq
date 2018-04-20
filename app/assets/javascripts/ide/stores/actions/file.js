@@ -29,7 +29,6 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
-      dispatch('updateDelayViewerUpdated', true);
       router.push(`/project${nextFileToOpen.url}`);
     }
   } else if (!state.openFiles.length) {

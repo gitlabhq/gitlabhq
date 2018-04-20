@@ -19,7 +19,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing']),
     ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;
@@ -77,7 +77,6 @@ export default {
       'setFileViewMode',
       'setFileEOL',
       'updateViewer',
-      'updateDelayViewerUpdated',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -89,14 +88,6 @@ export default {
         baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
       })
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated
-            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
-            : Promise.resolve();
-
-          return viewerPromise;
-        })
-        .then(() => {
-          this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
         .catch(err => {

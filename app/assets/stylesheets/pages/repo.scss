@@ -153,24 +153,6 @@
       border-bottom-color: $white-light;
     }
   }
-
-  .dropdown {
-    display: flex;
-    margin-left: auto;
-    margin-bottom: 1px;
-    padding: 0 $grid-size;
-    border-left: 1px solid $white-dark;
-    background-color: $white-light;
-
-    &.shadow {
-      box-shadow: 0 0 10px $dropdown-shadow-color;
-    }
-
-    .btn {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-  }
 }
 
 .multi-file-tab {
@@ -298,7 +280,7 @@
       opacity: 0.4;
     }
 
-    .cursors-layer {
+    .editor.original .cursors-layer {
       display: none;
     }
   }

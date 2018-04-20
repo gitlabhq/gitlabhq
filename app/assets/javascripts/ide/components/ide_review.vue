@@ -17,7 +17,7 @@ export default {
     ...mapGetters(['currentProject', 'currentTree']),
   },
   mounted() {
-    this.updateViewer('editor');
+    this.updateViewer('diff');
   },
   methods: {
     ...mapActions(['updateViewer']),
@@ -39,20 +39,26 @@ export default {
       </div>
     </template>
     <template v-else>
-      <header class="ide-tree-header">
-        {{ __('Edit') }}
-        <new-dropdown
-          :project-id="currentProject.name_with_namespace"
-          :branch="currentBranchId"
-          path=""
-        />
+      <header class="ide-tree-header ide-review-header">
+        {{ __('Review') }}
+        <div class="prepend-top-5 clgray">
+          {{ __('Lastest changed') }}
+        </div>
       </header>
       <repo-file
         v-for="file in currentTree.tree"
         :key="file.key"
         :file="file"
         :level="0"
+        :disable-action-dropdown="true"
       />
     </template>
   </div>
 </template>
+
+<style>
+.ide-review-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+</style>

@@ -32,16 +32,6 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      showShadow: false,
-    };
-  },
-  updated() {
-    if (!this.$refs.tabsScroller) return;
-
-    this.showShadow = this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
-  },
   methods: {
     ...mapActions(['updateViewer', 'removePendingTab']),
     openFileViewer(viewer) {
@@ -71,12 +61,5 @@ export default {
         :tab="tab"
       />
     </ul>
-    <editor-mode
-      :viewer="viewer"
-      :show-shadow="showShadow"
-      :has-changes="hasChanges"
-      :merge-request-id="mergeRequestId"
-      @click="openFileViewer"
-    />
   </div>
 </template>
