@@ -54,6 +54,10 @@ table {
   visibility: hidden !important;
 }
 
+.hide {
+  display: none;
+}
+
 .dropdown-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
