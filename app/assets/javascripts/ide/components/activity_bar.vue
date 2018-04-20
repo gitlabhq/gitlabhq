@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import { ActivityBarViews } from '../stores/state';
+import { ActivityBarViews } from '../constants';
 
 export default {
   components: {

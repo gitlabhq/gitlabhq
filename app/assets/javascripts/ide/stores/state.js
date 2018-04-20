@@ -1,7 +1,4 @@
-export const ActivityBarViews = {
-  edit: 'ide-tree',
-  commit: 'commit-section',
-};
+import { ActivityBarViews } from '../constants';
 
 export default () => ({
   currentProjectId: '',

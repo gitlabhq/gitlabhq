@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import ideSidebar from '~/ide/components/ide_side_bar.vue';
-import { ActivityBarViews } from '~/ide/stores/state';
+import { ActivityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
 import { projectData } from '../mock_data';
