@@ -39,15 +39,4 @@ export const hasChanges = state => !!state.changedFiles.length || !!state.staged
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
-export const activityBarComponent = state => {
-  switch (state.currentActivityView) {
-    case ActivityBarViews.edit:
-      return 'ide-tree';
-    case ActivityBarViews.commit:
-      return 'commit-section';
-    default:
-      return null;
-  }
-};
-
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);

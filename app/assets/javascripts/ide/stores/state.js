@@ -1,6 +1,6 @@
 export const ActivityBarViews = {
-  edit: 0,
-  commit: 1,
+  edit: 'ide-tree',
+  commit: 'commit-section',
 };
 
 export default () => ({

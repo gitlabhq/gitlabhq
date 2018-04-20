@@ -23,8 +23,8 @@ export default {
     IdeTree,
   },
   computed: {
-    ...mapState(['loading', 'currentBranchId']),
-    ...mapGetters(['currentProject', 'activityBarComponent']),
+    ...mapState(['loading', 'currentBranchId', 'currentActivityView']),
+    ...mapGetters(['currentProject']),
   },
 };
 </script>
@@ -88,7 +88,7 @@ export default {
         </div>
         <div class="multi-file-commit-panel-inner-scroll">
           <component
-            :is="activityBarComponent"
+            :is="currentActivityView"
           />
         </div>
       </template>
