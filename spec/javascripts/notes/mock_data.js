@@ -99,6 +99,8 @@ export const individualNote = {
         { name: 'art', user: { id: 1, name: 'Root', username: 'root' } },
       ],
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji',
+      noteable_note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
+      note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1390',
@@ -158,6 +160,7 @@ export const note = {
   ],
   toggle_award_path: '/gitlab-org/gitlab-ce/notes/546/toggle_award_emoji',
   note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
+  noteable_note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',
@@ -199,6 +202,7 @@ export const discussionMock = {
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1395/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1395&user_id=1',
@@ -245,6 +249,7 @@ export const discussionMock = {
       emoji_awardable: true,
       award_emoji: [],
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1396/toggle_award_emoji',
+      noteable_note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1396&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1396',
@@ -289,6 +294,7 @@ export const discussionMock = {
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1437/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1437&user_id=1',
@@ -336,6 +342,7 @@ export const loggedOutnoteableData = {
     can_create_note: false,
     can_update: false,
   },
+  noteable_note_url: 'https://localhost:3000/group/project/merge_requests/1#note_1',
   create_note_path: '/gitlab-org/gitlab-ce/notes?target_id=98&target_type=issue',
   preview_note_path:
     '/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue',
