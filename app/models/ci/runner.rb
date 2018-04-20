@@ -121,9 +121,14 @@ module Ci
     end
 
     def can_pick?(build)
+      return false unless build
+      return false unless build.pending?
+
       return false if self.ref_protected? && !build.protected?
 
       assignable_for?(build.project_id) && accepting_tags?(build)
+
+      # TODO: Check namespace minutes in EE
     end
 
     def only_for?(project)

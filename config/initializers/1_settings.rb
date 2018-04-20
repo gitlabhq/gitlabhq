@@ -459,6 +459,10 @@ Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
 Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
 
+Settings.cron_jobs['job_queues_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['job_queues_cron_worker']['cron'] ||= '*/15 * * * *'
+Settings.cron_jobs['job_queues_cron_worker']['job_class'] = 'Ci::JobQueuesCronWorker'
+
 #
 # Sidekiq
 #

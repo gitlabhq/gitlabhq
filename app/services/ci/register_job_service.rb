@@ -14,6 +14,39 @@ module Ci
     end
 
     def execute
+      result = if Feature.enabled?('ci_redis_job_queueing')
+        redis_execute
+      else
+        db_execute
+      end
+
+      result.tap do
+        if result.build
+          register_success(result.build)
+        else
+          register_failure
+        end
+      end
+    end
+
+    private
+
+    def redis_execute
+      runner_queue = Gitlab::Ci::Queueing::RunnerQueue.new(runner)
+
+      result = Result.new(nil, true)
+      
+      until enqueued_job = runner_queue.dequeue
+        build = Ci::Build.find_by(build_id)
+        result = process_build!(build)
+        runner_queue.remove!(enqueued_job) if result.valid?
+        return result if result.build
+      end
+
+      result
+    end
+
+    def db_execute
       builds =
         if runner.shared?
           builds_for_shared_runner
@@ -21,52 +54,54 @@ module Ci
           builds_for_specific_runner
         end
 
-      valid = true
+      # pick builds that does not have other tags than runner's one
+      builds = builds.matches_tag_ids(runner.tags.ids)
 
-      if Feature.enabled?('ci_job_request_with_tags_matcher')
-        # pick builds that does not have other tags than runner's one
-        builds = builds.matches_tag_ids(runner.tags.ids)
-
-        # pick builds that have at least one tag
-        unless runner.run_untagged?
-          builds = builds.with_any_tags
-        end
+      # pick builds that have at least one tag
+      unless runner.run_untagged?
+        builds = builds.with_any_tags
       end
+
+      result = Result.new(nil, true)
 
       builds.find do |build|
-        next unless runner.can_pick?(build)
-
-        begin
-          # In case when 2 runners try to assign the same build, second runner will be declined
-          # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          begin
-            build.runner_id = runner.id
-            build.run!
-            register_success(build)
-
-            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
-          rescue Ci::Build::MissingDependenciesError
-            build.drop!(:missing_dependency_failure)
-          end
-        rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
-          # We are looping to find another build that is not conflicting
-          # It also indicates that this build can be picked and passed to runner.
-          # If we don't do it, basically a bunch of runners would be competing for a build
-          # and thus we will generate a lot of 409. This will increase
-          # the number of generated requests, also will reduce significantly
-          # how many builds can be picked by runner in a unit of time.
-          # In case we hit the concurrency-access lock,
-          # we still have to return 409 in the end,
-          # to make sure that this is properly handled by runner.
-          valid = false
-        end
+        result = process_build!(build)
+        return result if result.build
       end
 
-      register_failure
-      Result.new(nil, valid)
+      result
     end
 
-    private
+    def process_build!(build)
+      unless runner.can_pick?(build)
+        return Result.new(nil, true)
+      end
+
+      begin
+        # In case when 2 runners try to assign the same build, second runner will be declined
+        # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
+        begin
+          build.runner_id = runner.id
+          build.run!
+
+          return Result.new(build, true)
+        rescue Ci::Build::MissingDependenciesError
+          build.drop!(:missing_dependency_failure)
+          return Result.new(nil, true)
+        end
+      rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
+        # We are looping to find another build that is not conflicting
+        # It also indicates that this build can be picked and passed to runner.
+        # If we don't do it, basically a bunch of runners would be competing for a build
+        # and thus we will generate a lot of 409. This will increase
+        # the number of generated requests, also will reduce significantly
+        # how many builds can be picked by runner in a unit of time.
+        # In case we hit the concurrency-access lock,
+        # we still have to return 409 in the end,
+        # to make sure that this is properly handled by runner.
+        return Result.new(nil, false)
+      end
+    end
 
     def builds_for_shared_runner
       new_builds.
