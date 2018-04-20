@@ -44,7 +44,12 @@ module Gitlab
               next unless project_id
 
               build_id = redis.brpoplpush(queue_project_key(project), queue_project_key(project))
-              next unless build_id
+              unless build_id
+                # We don't have any builds for this project,
+                # we should remove it from the list
+                redis.lrem(queue_key, 1, project_id)
+                next
+              end
 
               return EnqueuedBuild.new(project_id, build_id, queue_key, queue_project_key(project))
             end
