@@ -3,7 +3,7 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include NonatomicInternalId
+      include AtomicInternalId
       include Issuable
       include Noteable
       include Referable
@@ -11,6 +11,8 @@ module EE
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
+
+      has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.epics&.maximum(:iid) }
 
       has_many :epic_issues
 
