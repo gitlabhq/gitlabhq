@@ -141,7 +141,7 @@ module Issues
     end
 
     def notify_participants
-      notification_service.issue_moved(@old_issue, @new_issue, @current_user)
+      notification_service.async.issue_moved(@old_issue, @new_issue, @current_user)
     end
   end
 end
