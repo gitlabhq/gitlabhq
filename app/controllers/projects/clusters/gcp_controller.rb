@@ -1,8 +1,8 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
-  before_action :authorize_google_api, except: [:login, :list_projects]
-  before_action :authorize_google_project_billing, only: [:new, :create]
   before_action :authorize_create_cluster!, only: [:new, :create]
+  before_action :authorize_google_api, except: [:login, :list_projects]
+  before_action :get_gcp_projects, only: [:new, :create]
   before_action :verify_billing, only: [:create]
 
   def login
@@ -36,21 +36,20 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def list_projects
-    projects = GoogleApi::CloudPlatform::Client.new(token_in_session, nil).projects_list
     respond_to do |format|
-      format.json { render status: :ok, json: { projects: projects } }
+      format.json { render status: :ok, json: { projects: gcp_projects } }
     end
   end
 
   private
 
   def verify_billing
-    case google_project_billing_status
+    case gcp_projects&.empty?
     when nil
       flash.now[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
-    when false
-      flash.now[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
     when true
+      flash.now[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
+    when false
       return
     end
 
@@ -82,13 +81,13 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     end
   end
 
-  def authorize_google_project_billing
+  def get_gcp_projects
     redis_token_key = ListGcpProjectsWorker.store_session_token(token_in_session)
     ListGcpProjectsWorker.perform_async(redis_token_key)
   end
 
-  def google_project_billing_status
-    ListGcpProjectsWorker.get_billing_state(token_in_session)
+  def gcp_projects
+    ListGcpProjectsWorker.get_projects(token_in_session)
   end
 
   def token_in_session

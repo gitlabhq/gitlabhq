@@ -7,7 +7,7 @@ describe ListGcpProjectsWorker do
     subject { described_class.new.perform('token_key') }
 
     before do
-      allow(described_class).to receive(:get_billing_state)
+      allow(described_class).to receive(:read_projects).and_return([double])
       allow_any_instance_of(described_class).to receive(:update_billing_change_counter)
     end
 
@@ -27,9 +27,9 @@ describe ListGcpProjectsWorker do
           subject
         end
 
-        it 'stores billing status in redis' do
+        it 'stores projects in redis' do
           expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
-          expect(described_class).to receive(:set_billing_state).with(token, true)
+          expect(described_class).to receive(:store_projects).with(token, anything)
 
           subject
         end
@@ -67,15 +67,15 @@ describe ListGcpProjectsWorker do
     before do
       allow(described_class).to receive(:get_session_token).and_return('bogustoken')
       allow_any_instance_of(described_class).to receive(:try_obtain_lease_for).and_return('randomuuid')
-      allow(described_class).to receive(:set_billing_state)
+      allow(described_class).to receive(:store_projects)
     end
 
-    context 'when previous state was false' do
+    context 'when there are no projects in redis' do
       before do
-        expect(described_class).to receive(:get_billing_state).and_return(false)
+        expect(described_class).to receive(:read_projects).and_return([])
       end
 
-      context 'when the current state is false' do
+      context 'when the service does not return projects' do
         before do
           expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([])
         end
@@ -87,7 +87,7 @@ describe ListGcpProjectsWorker do
         end
       end
 
-      context 'when the current state is true' do
+      context 'when the service returns projects' do
         before do
           expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
         end
@@ -100,13 +100,13 @@ describe ListGcpProjectsWorker do
       end
     end
 
-    context 'when previous state was true' do
+    context 'when there are projects in redis' do
       before do
-        expect(described_class).to receive(:get_billing_state).and_return(true)
+        expect(described_class).to receive(:read_projects).and_return([double])
         expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
       end
 
-      it 'increment the billing change counter' do
+      it 'increments the billing change counter' do
         expect_any_instance_of(described_class).to receive_message_chain(:billing_changed_counter, :increment)
 
         subject

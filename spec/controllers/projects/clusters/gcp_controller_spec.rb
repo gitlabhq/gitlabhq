@@ -77,7 +77,7 @@ describe Projects::Clusters::GcpController do
         end
 
         it 'has new object' do
-          expect(controller).to receive(:authorize_google_project_billing)
+          expect(controller).to receive(:get_gcp_projects)
 
           go
 
@@ -137,14 +137,12 @@ describe Projects::Clusters::GcpController do
       context 'when access token is valid' do
         before do
           stub_google_api_validate_token
-          allow_any_instance_of(described_class).to receive(:authorize_google_project_billing)
+          allow_any_instance_of(described_class).to receive(:get_gcp_projects)
         end
 
         context 'when google project billing is enabled' do
           before do
-            redis_double = double
-            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-            allow(redis_double).to receive(:get).with(ListGcpProjectsWorker.redis_shared_state_key_for('token')).and_return('true')
+            allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([double])
           end
 
           it 'creates a new cluster' do
@@ -158,6 +156,10 @@ describe Projects::Clusters::GcpController do
         end
 
         context 'when google project billing is not enabled' do
+          before do
+            allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([])
+          end
+
           it 'renders the cluster form with an error' do
             go
 
@@ -203,25 +205,19 @@ describe Projects::Clusters::GcpController do
   describe 'GET list_projects' do
     describe 'functionality' do
       let(:user) { create(:user) }
-      let(:api_response) { [project_id: 'test-project-1234'] }
+      let(:gcp_projects) { [project_id: 'test-project-1234'] }
 
       before do
         project.add_master(user)
         sign_in(user)
 
-        allow_any_instance_of(GoogleApi::CloudPlatform::Client).to receive(:projects_list).and_return(api_response)
-      end
-
-      it 'calls the Google Cloud Platform projects_list' do
-        expect_any_instance_of(GoogleApi::CloudPlatform::Client).to receive(:projects_list)
-
-        go
+        allow_any_instance_of(described_class).to receive(:gcp_projects).and_return(gcp_projects)
       end
 
       it 'renders the response as json' do
         go
 
-        expect(response.body).to eq({ projects: api_response }.to_json)
+        expect(response.body).to eq({ projects: gcp_projects }.to_json)
       end
     end
 

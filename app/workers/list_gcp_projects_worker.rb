@@ -6,7 +6,7 @@ class ListGcpProjectsWorker
 
   LEASE_TIMEOUT = 3.seconds.to_i
   SESSION_KEY_TIMEOUT = 5.minutes
-  BILLING_TIMEOUT = 1.hour
+  PROJECT_TIMEOUT = 1.hour
   BILLING_CHANGED_LABELS = { state_transition: nil }.freeze
 
   def self.get_session_token(token_key)
@@ -23,10 +23,10 @@ class ListGcpProjectsWorker
     end
   end
 
-  def self.get_billing_state(token)
+  def self.read_projects(token)
     Gitlab::Redis::SharedState.with do |redis|
       value = redis.get(redis_shared_state_key_for(token))
-      ActiveRecord::Type::Boolean.new.type_cast_from_user(value)
+      JSON.parse(value)
     end
   end
 
@@ -37,9 +37,9 @@ class ListGcpProjectsWorker
     return unless token
     return unless try_obtain_lease_for(token)
 
-    billing_enabled_state = !ListGcpProjectsService.new.execute(token).empty?
-    update_billing_change_counter(self.class.get_billing_state(token), billing_enabled_state)
-    self.class.set_billing_state(token, billing_enabled_state)
+    billing_enabled_projects = ListGcpProjectsService.new.execute(token)
+    update_billing_change_counter(!self.class.read_projects(token).empty?, !billing_enabled_projects.empty?)
+    self.class.store_projects(token, billing_enabled_projects.to_json)
   end
 
   private
@@ -53,12 +53,12 @@ class ListGcpProjectsWorker
   end
 
   def self.redis_shared_state_key_for(token)
-    "gitlab:gcp:#{Digest::SHA1.hexdigest(token)}:billing_enabled"
+    "gitlab:gcp:#{Digest::SHA1.hexdigest(token)}:projects"
   end
 
-  def self.set_billing_state(token, value)
+  def self.store_projects(token, value)
     Gitlab::Redis::SharedState.with do |redis|
-      redis.set(redis_shared_state_key_for(token), value, ex: BILLING_TIMEOUT)
+      redis.set(redis_shared_state_key_for(token), value, ex: PROJECT_TIMEOUT)
     end
   end
 
