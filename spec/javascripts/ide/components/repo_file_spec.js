@@ -48,6 +48,33 @@ describe('RepoFile', () => {
     });
   });
 
+  describe('folder', () => {
+    it('renders changes count inside folder', () => {
+      const f = {
+        ...file('folder'),
+        path: 'testing',
+        type: 'tree',
+        branchId: 'master',
+        projectId: 'project',
+      };
+
+      store.state.changedFiles.push({
+        ...file('index'),
+        path: 'testing/index',
+      });
+
+      createComponent({
+        file: f,
+        level: 0,
+      });
+
+      const treeChangesEl = vm.$el.querySelector('.ide-tree-changes');
+
+      expect(treeChangesEl).not.toBeNull();
+      expect(treeChangesEl.textContent).toContain('1');
+    });
+  });
+
   describe('locked file', () => {
     let f;
 
@@ -72,8 +99,7 @@ describe('RepoFile', () => {
 
     it('renders a tooltip', () => {
       expect(
-        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset
-          .originalTitle,
+        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle,
       ).toContain('Locked by testuser');
     });
   });
