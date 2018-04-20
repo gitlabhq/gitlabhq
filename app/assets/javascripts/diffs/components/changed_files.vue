@@ -58,15 +58,16 @@ export default {
     },
     toggleWhitespacePath() {
       if (this.whitespaceVisible) {
-        return mergeUrlParams({w: 1}, window.location.href);
+        return mergeUrlParams({ w: 1 }, window.location.href);
       }
-      return mergeUrlParams({w: 0}, window.location.href);
+
+      return mergeUrlParams({ w: 0 }, window.location.href);
     },
   },
   mounted() {
     this.mrTabsEl = document.querySelector('.js-tabs-affix');
 
-    if (!mrTabsEl) return;
+    if (!this.mrTabsEl) return;
 
     this.throttledHandleScroll = _.throttle(this.handleScroll, 50);
     document.addEventListener('scroll', this.throttledHandleScroll);
@@ -85,11 +86,12 @@ export default {
     pluralize,
     setMaxWidth() {
       const { width } = this.mrTabsEl.getBoundingClientRect();
+
       this.maxWidth = `${width}px`;
     },
     handleScroll() {
       const mrTabsBottom = this.mrTabsEl.getBoundingClientRect().bottom;
-      const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom
+      const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom;
 
       const scrollPosition = window.scrollY;
 
