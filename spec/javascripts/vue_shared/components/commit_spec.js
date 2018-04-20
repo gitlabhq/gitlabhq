@@ -66,7 +66,7 @@ describe('Commit component', () => {
 
     it('should render a link to the ref url', () => {
       expect(component.$el.querySelector('.ref-name').getAttribute('href')).toEqual(
-        props.commitRef.ref_url,
+        props.commitRef.ref_url
       );
     });
 
@@ -76,15 +76,21 @@ describe('Commit component', () => {
 
     it('should render the commit short sha with a link to the commit url', () => {
       expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(
-        props.commitUrl,
+        props.commitUrl
       );
       expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
+    });
+
+    it('should render icon for commit', () => {
+      expect(
+        component.$el.querySelector('.js-commit-icon use').getAttribute('xlink:href')
+      ).toContain('commit');
     });
 
     describe('Given commit title and author props', () => {
       it('should render a link to the author profile', () => {
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href'),
+          component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href')
         ).toEqual(props.author.path);
       });
 
@@ -92,22 +98,22 @@ describe('Commit component', () => {
         expect(
           component.$el
             .querySelector('.commit-title .avatar-image-container img')
-            .getAttribute('data-original-title'),
+            .getAttribute('data-original-title')
         ).toContain(props.author.username);
         expect(
           component.$el
             .querySelector('.commit-title .avatar-image-container img')
-            .getAttribute('alt'),
+            .getAttribute('alt')
         ).toContain(`${props.author.username}'s avatar`);
       });
     });
 
     it('should render the commit title', () => {
       expect(component.$el.querySelector('a.commit-row-message').getAttribute('href')).toEqual(
-        props.commitUrl,
+        props.commitUrl
       );
       expect(component.$el.querySelector('a.commit-row-message').textContent).toContain(
-        props.title,
+        props.title
       );
     });
   });
@@ -130,7 +136,7 @@ describe('Commit component', () => {
       component = mountComponent(CommitComponent, props);
 
       expect(component.$el.querySelector('.commit-title span').textContent).toContain(
-        "Can't find HEAD commit for this branch",
+        "Can't find HEAD commit for this branch"
       );
     });
   });
