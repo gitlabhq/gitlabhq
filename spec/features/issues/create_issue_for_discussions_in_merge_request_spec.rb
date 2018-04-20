@@ -14,7 +14,7 @@ feature 'Resolving all open discussions in a merge request from an issue', :js d
     end
 
     it 'shows a button to resolve all discussions by creating a new issue' do
-      within('#resolve-count-app') do
+      within('.line-resolve-all-container') do
         expect(page).to have_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
     end
