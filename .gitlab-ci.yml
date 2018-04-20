@@ -80,7 +80,7 @@ stages:
 
 .use-mysql: &use-mysql
   services:
-    - mysql:latest
+    - mysql:5.7
     - redis:alpine
 
 # BEGIN EE-only service helpers
