@@ -18,6 +18,10 @@ class DeployToken < ActiveRecord::Base
 
   scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
 
+  def self.gitlab_deploy_token
+    active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)
+  end
+
   def revoke!
     update!(revoked: true)
   end

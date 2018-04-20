@@ -609,8 +609,7 @@ module Ci
           .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false)
-
-        variables.concat(deploy_token_variables) if gitlab_deploy_token
+          .concat(deploy_token_variables)
       end
     end
 
@@ -663,8 +662,10 @@ module Ci
 
     def deploy_token_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless gitlab_deploy_token
+
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.name)
-        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token)
+        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
       end
     end
 
