@@ -201,7 +201,6 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
 
-<<<<<<< HEAD
   def related_issues(current_user, preload: nil)
     related_issues = Issue
                        .select(['issues.*', 'issue_links.id AS issue_link_id'])
@@ -219,8 +218,6 @@ class Issue < ActiveRecord::Base
     )
   end
 
-=======
->>>>>>> upstream/master
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 
