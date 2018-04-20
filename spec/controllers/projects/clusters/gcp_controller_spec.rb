@@ -140,32 +140,17 @@ describe Projects::Clusters::GcpController do
           allow_any_instance_of(described_class).to receive(:get_gcp_projects)
         end
 
-        context 'when google project billing is enabled' do
-          before do
-            allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([double])
-          end
-
-          it 'creates a new cluster' do
-            expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { go }.to change { Clusters::Cluster.count }
-              .and change { Clusters::Providers::Gcp.count }
-            expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-            expect(project.clusters.first).to be_gcp
-            expect(project.clusters.first).to be_kubernetes
-          end
+        before do
+          allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([double])
         end
 
-        context 'when google project billing is not enabled' do
-          before do
-            allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([])
-          end
-
-          it 'renders the cluster form with an error' do
-            go
-
-            expect(response).to set_flash.now[:alert]
-            expect(response).to render_template('new')
-          end
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+          expect { go }.to change { Clusters::Cluster.count }
+            .and change { Clusters::Providers::Gcp.count }
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          expect(project.clusters.first).to be_gcp
+          expect(project.clusters.first).to be_kubernetes
         end
       end
 

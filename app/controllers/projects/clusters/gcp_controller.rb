@@ -2,8 +2,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :create]
   before_action :authorize_google_api, except: [:login, :list_projects]
-  before_action :get_gcp_projects, only: [:new, :create]
-  before_action :verify_billing, only: [:create]
+  before_action :get_gcp_projects, only: [:new]
 
   def login
     begin
@@ -42,21 +41,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   private
-
-  def verify_billing
-    case gcp_projects&.empty?
-    when nil
-      flash.now[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
-    when true
-      flash.now[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
-    when false
-      return
-    end
-
-    @cluster = ::Clusters::Cluster.new(create_params)
-
-    render :new
-  end
 
   def create_params
     params.require(:cluster).permit(
