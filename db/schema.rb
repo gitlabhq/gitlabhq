@@ -1020,6 +1020,7 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   create_table "geo_hashed_storage_migrated_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
     t.text "old_disk_path", null: false
     t.text "new_disk_path", null: false
     t.text "old_wiki_disk_path", null: false
@@ -1125,6 +1126,7 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   create_table "geo_repository_created_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
     t.text "repo_path", null: false
     t.text "wiki_path"
     t.text "project_name", null: false
@@ -1135,6 +1137,7 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
@@ -1145,6 +1148,7 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   create_table "geo_repository_renamed_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
     t.text "old_path_with_namespace", null: false
     t.text "new_path_with_namespace", null: false
     t.text "old_wiki_path_with_namespace", null: false
