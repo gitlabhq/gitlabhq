@@ -7,7 +7,6 @@ describe Gitlab::BackgroundMigration::MigrateStageIndex, :migration, schema: 201
   let(:stages) { table(:ci_stages) }
   let(:jobs) { table(:ci_builds) }
 
-
   before do
     namespaces.create(id: 10, name: 'gitlab-org', path: 'gitlab-org')
     projects.create!(id: 11, namespace_id: 10, name: 'gitlab', path: 'gitlab')
