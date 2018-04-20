@@ -28,8 +28,16 @@ module Gitlab
 
         def enqueue(build)
           with_redis do |redis|
-            redis.rpush(queue_project_key(build.project_id), build_id)
+            return if enqueued?(build)
+
+            redis.rpush(queue_project_key(build.project_id), build.id)
             redis.rpush(queue_jobs_key(queue_job_bucket(build.project_id)), build.project_id)
+          end
+        end
+
+        def enqueued?(build)
+          queue_jobs_keys.any? do |queue_key|
+            redis.lindex(queue_key, build.id)
           end
         end
 
@@ -39,7 +47,8 @@ module Gitlab
             # Runner once job is picked it is gonna be removed from the list
             queue_jobs_keys.sample.each do |queue_key|
               # TODO: instead of pop, we could grab
-              # a random index from that list it would make it spread more evenly
+              # a random index from that list
+              # as it would make it spread more evenly
               project_id = redis.brpoplpush(queue_key, queue_key)
               next unless project_id
 
@@ -47,6 +56,7 @@ module Gitlab
               unless build_id
                 # We don't have any builds for this project,
                 # we should remove it from the list
+                # !! unlikely to happen, but it will !!
                 redis.lrem(queue_key, 1, project_id)
                 next
               end
