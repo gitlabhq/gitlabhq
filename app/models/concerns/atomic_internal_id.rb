@@ -27,8 +27,9 @@ module AtomicInternalId
   module ClassMethods
     def has_internal_id(column, scope:, init:) # rubocop:disable Naming/PredicateName
       before_validation(on: :create) do
-        if read_attribute(column).blank?
-          scope_attrs = { scope => association(scope).reader }
+        scope_value = association(scope).reader
+        if read_attribute(column).blank? && scope_value
+          scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
           usage = self.class.table_name.to_sym
 
           new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
