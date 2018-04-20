@@ -26,8 +26,8 @@ describe('RepoTabs', () => {
       const tabs = [...vm.$el.querySelectorAll('.multi-file-tab')];
 
       expect(tabs.length).toEqual(2);
-      expect(tabs[0].classList.contains('active')).toEqual(true);
-      expect(tabs[1].classList.contains('active')).toEqual(false);
+      expect(tabs[0].parentNode.classList.contains('active')).toEqual(true);
+      expect(tabs[1].parentNode.classList.contains('active')).toEqual(false);
 
       done();
     });
