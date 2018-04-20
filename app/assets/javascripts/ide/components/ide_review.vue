@@ -1,64 +1,26 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import RepoFile from './repo_file.vue';
-import NewDropdown from './new_dropdown/index.vue';
+import IdeTreeList from './ide_tree_list.vue';
 
 export default {
   components: {
-    Icon,
-    RepoFile,
-    SkeletonLoadingContainer,
-    NewDropdown,
-  },
-  computed: {
-    ...mapState(['currentBranchId']),
-    ...mapGetters(['currentProject', 'currentTree']),
-  },
-  mounted() {
-    this.updateViewer('diff');
-  },
-  methods: {
-    ...mapActions(['updateViewer']),
+    IdeTreeList,
   },
 };
 </script>
 
 <template>
-  <div
-    class="ide-file-list"
+  <ide-tree-list
+    viewer-type="diff"
+    header-class="ide-review-header"
+    :disable-action-dropdown="true"
   >
-    <template v-if="!currentTree || currentTree.loading">
-      <div
-        class="multi-file-loading-container"
-        v-for="n in 3"
-        :key="n"
-      >
-        <skeleton-loading-container />
+    <template
+      slot="header"
+    >
+      {{ __('Review') }}
+      <div class="prepend-top-5 ide-review-sub-header">
+        {{ __('Lastest changed') }}
       </div>
     </template>
-    <template v-else>
-      <header class="ide-tree-header ide-review-header">
-        {{ __('Review') }}
-        <div class="prepend-top-5 clgray">
-          {{ __('Lastest changed') }}
-        </div>
-      </header>
-      <repo-file
-        v-for="file in currentTree.tree"
-        :key="file.key"
-        :file="file"
-        :level="0"
-        :disable-action-dropdown="true"
-      />
-    </template>
-  </div>
+  </ide-tree-list>
 </template>
-
-<style>
-.ide-review-header {
-  flex-direction: column;
-  align-items: flex-start;
-}
-</style>

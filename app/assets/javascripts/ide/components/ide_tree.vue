@@ -1,58 +1,33 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import RepoFile from './repo_file.vue';
+import { mapState, mapGetters } from 'vuex';
 import NewDropdown from './new_dropdown/index.vue';
+import IdeTreeList from './ide_tree_list.vue';
 
 export default {
   components: {
-    Icon,
-    RepoFile,
-    SkeletonLoadingContainer,
     NewDropdown,
+    IdeTreeList,
   },
   computed: {
     ...mapState(['currentBranchId']),
-    ...mapGetters(['currentProject', 'currentTree']),
-  },
-  mounted() {
-    this.updateViewer('editor');
-  },
-  methods: {
-    ...mapActions(['updateViewer']),
+    ...mapGetters(['currentProject']),
   },
 };
 </script>
 
 <template>
-  <div
-    class="ide-file-list"
+  <ide-tree-list
+    viewer-type="editor"
   >
-    <template v-if="!currentTree || currentTree.loading">
-      <div
-        class="multi-file-loading-container"
-        v-for="n in 3"
-        :key="n"
-      >
-        <skeleton-loading-container />
-      </div>
-    </template>
-    <template v-else>
-      <header class="ide-tree-header">
-        {{ __('Edit') }}
-        <new-dropdown
-          :project-id="currentProject.name_with_namespace"
-          :branch="currentBranchId"
-          path=""
-        />
-      </header>
-      <repo-file
-        v-for="file in currentTree.tree"
-        :key="file.key"
-        :file="file"
-        :level="0"
+    <template
+      slot="header"
+    >
+      {{ __('Edit') }}
+      <new-dropdown
+        :project-id="currentProject.name_with_namespace"
+        :branch="currentBranchId"
+        path=""
       />
     </template>
-  </div>
+  </ide-tree-list>
 </template>

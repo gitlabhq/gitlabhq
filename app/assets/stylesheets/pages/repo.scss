@@ -902,3 +902,12 @@
     margin-top: -1px;
   }
 }
+
+.ide-review-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ide-review-sub-header {
+  color: $gl-text-color-secondary;
+}
