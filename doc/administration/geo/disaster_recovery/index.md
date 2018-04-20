@@ -188,7 +188,7 @@ and after that you also need two extra steps.
 
 ### Step 1. Prepare the new primary to serve one or more secondaries
 
-1. SSH into your **secondary** and login as root:
+1. SSH into your new **primary** and login as root:
 
     ```bash
     sudo -i
@@ -197,6 +197,9 @@ and after that you also need two extra steps.
 1. Edit `/etc/gitlab/gitlab.rb`
 
     ```ruby
+    ## Enable a Geo Primary role (if you haven't yet)
+    geo_primary_role['enable'] = true
+
     ##
     # Primary and Secondary addresses
     # - replace '1.2.3.4' with the primary public or VPC address
