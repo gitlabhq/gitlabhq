@@ -22,7 +22,6 @@
   }
 
   .ci-table {
-
     .label {
       margin-bottom: 3px;
     }
@@ -123,7 +122,6 @@
   }
 
   .branch-commit {
-
     .ref-name {
       font-weight: $gl-font-weight-bold;
       max-width: 100px;
@@ -505,7 +503,7 @@
         }
       }
     }
- }
+  }
 
   .build {
     position: relative;
@@ -547,7 +545,6 @@
       background-color: $stage-hover-bg;
       border: 1px solid $dropdown-toggle-active-border-color;
     }
-
 
     // Connect first build in each stage with right horizontal line
     &:first-child {
@@ -604,15 +601,18 @@
   }
 }
 
-
 /**
- Icons inside dropdown
+ Action icons inside dropdowns:
+ - mini graph in pipelines table
+ - dropdown in big graph
+ - mini graph in MR widget pipeline
+ - mini graph in Commit widget pipeline
 */
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
-
   // override dropdown.scss
-  &.dropdown-menu li button {
+  &.dropdown-menu li button,
+  &.dropdown-menu li a.ci-action-icon-container {
     padding: 0;
     text-align: center;
   }
@@ -622,7 +622,6 @@
     right: 5px;
     top: 5px;
 
-    // Action Icons in big pipeline-graph nodes
     &.ci-action-icon-wrapper {
       height: $ci-action-dropdown-button-size;
       width: $ci-action-dropdown-button-size;
@@ -650,6 +649,11 @@
         vertical-align: initial;
       }
     }
+  }
+
+  // SVGs in the commit widget and mr widget
+  a.ci-action-icon-container.ci-action-icon-wrapper svg {
+    top: 2px;
   }
 }
 
@@ -778,74 +782,6 @@ button.mini-pipeline-graph-dropdown-toggle {
     &:hover > .mini-pipeline-graph-dropdown-item,
     &:hover > .ci-job-component > .mini-pipeline-graph-dropdown-item {
       @extend .mini-pipeline-graph-dropdown-item:hover;
-    }
-
-    // Action icon on the right
-    a.ci-action-icon-wrapper {
-      border-radius: 50%;
-      border: 1px solid $border-color;
-      width: $ci-action-icon-size;
-      height: $ci-action-icon-size;
-      padding: 2px 0 0 5px;
-      font-size: 12px;
-      background-color: $white-light;
-      position: absolute;
-      top: 50%;
-      right: $gl-padding;
-      margin-top: -#{$ci-action-icon-size / 2};
-
-      &:hover,
-      &:focus {
-        background-color: $stage-hover-bg;
-        border: 1px solid $dropdown-toggle-active-border-color;
-      }
-
-      svg {
-        fill: $gl-text-color-secondary;
-        width: #{$ci-action-icon-size - 6};
-        height: #{$ci-action-icon-size - 6};
-        left: -3px;
-        position: relative;
-        top: -1px;
-
-        &.icon-action-stop,
-        &.icon-action-cancel {
-          width: 12px;
-          height: 12px;
-          top: 1px;
-          left: -1px;
-        }
-
-        &.icon-action-play {
-          width: 11px;
-          height: 11px;
-          top: 1px;
-          left: 1px;
-        }
-
-        &.icon-action-retry {
-          width: 16px;
-          height: 16px;
-          top: 0;
-          left: -3px;
-        }
-      }
-
-      &:hover svg,
-      &:focus svg {
-        fill: $gl-text-color;
-      }
-
-      &.icon-action-retry,
-      &.icon-action-play {
-        svg {
-          width: #{$ci-action-icon-size - 6};
-          height: #{$ci-action-icon-size - 6};
-          left: 8px;
-        }
-      }
-
-
     }
 
     // link to the build
@@ -988,7 +924,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   &.dropdown-menu {
     transform: translate(-80%, 0);
 
-    @media(min-width: $screen-md-min) {
+    @media (min-width: $screen-md-min) {
       transform: translate(-50%, 0);
       right: auto;
       left: 50%;
