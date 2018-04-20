@@ -123,6 +123,7 @@ module Ci
     def can_pick?(build)
       return false unless build
       return false unless build.pending?
+      return false unless !shared? || build.project.shared_runners_enabled?
 
       return false if self.ref_protected? && !build.protected?
 
