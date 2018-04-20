@@ -1,19 +1,32 @@
 module Ci
-  class JobQueuesWorker
+  class JobQueuesCronWorker
     include ApplicationWorker
     include PipelineQueue
   
     queue_namespace :pipeline_processing
     
-    def perform(build_id)
+    def perform
       with_exclusive_lease do
-        Ci::Build.pending.select(:id).find_each do |build|
-          BuildQueueWorker.perform_async_rate_limited(build.id)
+        all_pending_builds.find_each do |build|
+          updated_at = updated_at_of_build(build)
+
+          BuildQueueWorker.perform_async_rate_limited(build.id, updated_at.to_i)
         end
       end
     end
 
     private
+
+    def all_pending_builds
+      Ci::Build.includes(:project).pending
+    end
+
+    def updated_at_of_build(build)
+      [
+        build.project.all_active_runners.maximum(&:updated_at),
+        build.project.udated_at
+      ].maximum
+    end
 
     def exclusive_lease_key
       "ci:job_queues_worker"

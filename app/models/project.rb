@@ -1314,6 +1314,10 @@ class Project < ActiveRecord::Base
     active_runners.any?(&block) || active_shared_runners.any?(&block)
   end
 
+  def all_active_runners
+    Gitlab::SQL::Union.new([active_runners, active_shared_runners])
+  end
+
   def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end

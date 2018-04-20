@@ -13,8 +13,8 @@ class BuildQueueWorker
   end
 
   # Don't schedule jobs, again, if they are already were processed recently
-  def perform_async_rate_limited(build_id)
-    lease_key = "ci:build_queue_worker:#{build_id}:async"
+  def perform_async_rate_limited(build_id, updated_at)
+    lease_key = "ci:build_queue_worker:#{build_id}:updated:#{updated_at}"
     uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: ASYNC_TIMEOUT).try_obtain
     return unless uuid
 
