@@ -69,7 +69,7 @@ stages:
 
 .use-mysql: &use-mysql
   services:
-    - mysql:latest
+    - mysql:5.7
     - redis:alpine
 
 # Skip all jobs except the ones that begin with 'docs/'.
