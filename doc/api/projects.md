@@ -1545,7 +1545,3 @@ GET /projects/:id/snapshot
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `wiki`    | boolean | no | Whether to download the wiki, rather than project, repository |
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
