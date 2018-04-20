@@ -5,9 +5,9 @@ $grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
-$sidebar-transition-duration: .3s;
+$sidebar-transition-duration: 0.3s;
 $sidebar-breakpoint: 1024px;
-$default-transition-duration: .15s;
+$default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 
@@ -129,7 +129,6 @@ $theme-green-800: #145d33;
 $theme-green-900: #0d4524;
 $theme-green-950: #072d16;
 
-
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
 $almost-black: #242424;
@@ -163,7 +162,7 @@ $gl-text-color-secondary: #707070;
 $gl-text-color-tertiary: #949494;
 $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1);
-$gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
+$gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
 $gl-text-color-disabled: #919191;
 $gl-text-green: $green-600;
 $gl-text-green-hover: $green-700;
@@ -248,6 +247,7 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
+$sidebar-block-hover-color: #ebebeb;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
@@ -262,6 +262,7 @@ $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
 $flash-height: 52px;
 $context-header-height: 60px;
+$breadcrumb-min-height: 48px;
 
 /*
 * Common component specific colors
@@ -296,7 +297,7 @@ $tanuki-yellow: #fca326;
  */
 $gl-primary: $blue-500;
 $gl-success: $green-500;
-$gl-success-focus: rgba($gl-success, .4);
+$gl-success-focus: rgba($gl-success, 0.4);
 $gl-info: $blue-500;
 $gl-warning: $orange-500;
 $gl-danger: $red-500;
@@ -331,8 +332,11 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
+  'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$regular_font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif,
+  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
 /*
 * Dropdowns
@@ -343,16 +347,16 @@ $dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
-$dropdown-empty-row-bg: rgba(#000, .04);
+$dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-border-color: $border-color;
-$dropdown-shadow-color: rgba(#000, .1);
-$dropdown-divider-color: rgba(#000, .1);
+$dropdown-shadow-color: rgba(#000, 0.1);
+$dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-color: #555;
 $dropdown-input-fa-color: #c7c7c7;
 $dropdown-input-focus-border: $focus-border-color;
-$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
-$dropdown-loading-bg: rgba(#fff, .6);
+$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, 0.4);
+$dropdown-loading-bg: rgba(#fff, 0.6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-item-hover-bg: $gray-darker;
@@ -367,9 +371,11 @@ $dropdown-hover-color: $blue-400;
 /*
 * Contextual Sidebar
 */
-$link-active-background: rgba(0, 0, 0, .04);
-$link-hover-background: rgba(0, 0, 0, .06);
-$inactive-badge-background: rgba(0, 0, 0, .08);
+$link-active-background: rgba(0, 0, 0, 0.04);
+$link-hover-background: rgba(0, 0, 0, 0.06);
+$inactive-badge-background: rgba(0, 0, 0, 0.08);
+$sidebar-toggle-height: 60px;
+$sidebar-milestone-toggle-bottom-margin: 10px;
 
 /*
 * Buttons
@@ -397,14 +403,14 @@ $status-icon-margin: $gl-btn-padding;
 /*
  *  Award emoji
  */
-$award-emoji-menu-shadow: rgba(0, 0, 0, .175);
+$award-emoji-menu-shadow: rgba(0, 0, 0, 0.175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 
 /*
  * Search Box
  */
-$search-input-border-color: rgba($blue-400, .8);
+$search-input-border-color: rgba($blue-400, 0.8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
 $search-input-width: 220px;
 $location-badge-active-bg: $blue-500;
@@ -429,7 +435,7 @@ $zen-control-color: #555;
 * Calendar
 */
 $calendar-hover-bg: #ecf3fe;
-$calendar-border-color: rgba(#000, .1);
+$calendar-border-color: rgba(#000, 0.1);
 $calendar-user-contrib-text: #959494;
 
 /*
@@ -452,6 +458,17 @@ $ci-skipped-color: #888;
 */
 $issue-boards-font-size: 14px;
 $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
+/*
+ The following heights are used in boards.scss and are used for calculation of the board height.
+ They probably should be derived in a smarter way.
+*/
+$issue-boards-filter-height: 68px;
+$issue-boards-breadcrumbs-height-xs: 63px;
+$issue-board-list-difference-xs: $header-height +
+  $issue-boards-breadcrumbs-height-xs;
+$issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
+$issue-board-list-difference-md: $issue-board-list-difference-sm +
+  $issue-boards-filter-height;
 
 /*
 * Avatar
@@ -567,14 +584,14 @@ $label-padding: 7px;
 $label-padding-modal: 10px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
-$label-remove-border: rgba(0, 0, 0, .1);
+$label-remove-border: rgba(0, 0, 0, 0.1);
 $label-border-radius: 100px;
 
 /*
 * Animation
 */
 $fade-in-duration: 200ms;
-$fade-mask-transition-duration: .1s;
+$fade-mask-transition-duration: 0.1s;
 $fade-mask-transition-curve: ease-in-out;
 
 /*
@@ -642,7 +659,6 @@ $stat-graph-selection-stroke: #333;
 $select2-drop-shadow1: rgba(76, 86, 103, 0.247059);
 $select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
 
-
 /*
 * Todo
 */
@@ -679,7 +695,6 @@ CI variable lists
 */
 $ci-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
 
-
 /*
 Filtered Search
 */
@@ -702,13 +717,6 @@ $color-average-score: $orange-400;
 $color-low-score: $red-400;
 
 /*
-Repo editor
-*/
-$repo-editor-grey: #f6f7f9;
-$repo-editor-grey-darker: #e9ebee;
-$repo-editor-linear-gradient: linear-gradient(to right, $repo-editor-grey 0%, $repo-editor-grey-darker, 20%, $repo-editor-grey 40%, $repo-editor-grey 100%);
-
-/*
 Performance Bar
 */
 $perf-bar-text: #999;
@@ -717,8 +725,8 @@ $perf-bar-staging: #291430;
 $perf-bar-development: #4c1210;
 $perf-bar-bucket-bg: #111;
 $perf-bar-bucket-color: #ccc;
-$perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
-$perf-bar-bucket-box-shadow-to: rgba($black, .25);
+$perf-bar-bucket-box-shadow-from: rgba($white-light, 0.2);
+$perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
 
 /*
 Issuable warning
@@ -748,3 +756,8 @@ $border-color-settings: #e1e1e1;
 Modals
 */
 $modal-body-height: 134px;
+
+/*
+Prometheus
+*/
+$prometheus-table-row-highlight-color: $theme-gray-100;

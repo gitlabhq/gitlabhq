@@ -7,7 +7,7 @@ describe Gitlab::Ci::Variables::Collection do
 
       collection = described_class.new([variable])
 
-      expect(collection.first.to_hash).to eq variable
+      expect(collection.first.to_runner_variable).to eq variable
     end
 
     it 'can be initialized without an argument' do
@@ -94,6 +94,21 @@ describe Gitlab::Ci::Variables::Collection do
 
       expect(collection.to_runner_variables)
         .to eq [{ key: 'TEST', value: 1, public: true }]
+    end
+  end
+
+  describe '#to_hash' do
+    it 'returns regular hash in valid order without duplicates' do
+      collection = described_class.new
+        .append(key: 'TEST1', value: 'test-1')
+        .append(key: 'TEST2', value: 'test-2')
+        .append(key: 'TEST1', value: 'test-3')
+
+      expect(collection.to_hash).to eq('TEST1' => 'test-3',
+                                       'TEST2' => 'test-2')
+
+      expect(collection.to_hash).to include(TEST1: 'test-3')
+      expect(collection.to_hash).not_to include(TEST1: 'test-1')
     end
   end
 end

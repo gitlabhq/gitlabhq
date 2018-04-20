@@ -743,7 +743,7 @@ describe SystemNoteService do
           expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
-        it "blocks cross reference when #{type.underscore}_events is true" do
+        it "creates cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
           expect(cross_reference(type)).to eq(success_message)
@@ -909,7 +909,13 @@ describe SystemNoteService do
       it 'sets the note text' do
         noteable.update_attribute(:time_estimate, 277200)
 
-        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h,"
+      end
+
+      it 'appends a comma to separate the note from the update_at time' do
+        noteable.update_attribute(:time_estimate, 277200)
+
+        expect(subject.note).to end_with(',')
       end
     end
 

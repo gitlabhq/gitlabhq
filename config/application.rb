@@ -113,6 +113,7 @@ module Gitlab
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
+    config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"
 
     # Import gitlab-svgs directly from vendored directory
@@ -170,7 +171,7 @@ module Gitlab
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     # Gitlab Read-only middleware support
-    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
+    config.middleware.insert_after ActionDispatch::Flash, '::Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
       g.factory_bot false

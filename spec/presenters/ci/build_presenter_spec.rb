@@ -72,13 +72,44 @@ describe Ci::BuildPresenter do
       end
     end
 
-    context 'when build is not auto-canceled' do
-      before do
-        expect(build).to receive(:auto_canceled?).and_return(false)
-      end
+    context 'when build failed' do
+      let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
-      it 'does not have a status title' do
-        expect(presenter.status_title).to be_nil
+      it 'returns the reason of failure' do
+        status_title = presenter.status_title
+
+        expect(status_title).to eq('Failed <br> (unknown failure)')
+      end
+    end
+
+    context 'when build has failed && retried' do
+      let(:build) { create(:ci_build, :failed, :retried, pipeline: pipeline) }
+
+      it 'does not include retried title' do
+        status_title = presenter.status_title
+
+        expect(status_title).not_to include('(retried)')
+        expect(status_title).to eq('Failed <br> (unknown failure)')
+      end
+    end
+
+    context 'when build has failed and is allowed to' do
+      let(:build) { create(:ci_build, :failed, :allowed_to_fail, pipeline: pipeline) }
+
+      it 'returns the reason of failure' do
+        status_title = presenter.status_title
+
+        expect(status_title).to eq('Failed <br> (unknown failure)')
+      end
+    end
+
+    context 'For any other build' do
+      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+
+      it 'returns the status' do
+        tooltip_description = presenter.status_title
+
+        expect(tooltip_description).to eq('Success')
       end
     end
   end
@@ -131,6 +162,93 @@ describe Ci::BuildPresenter do
 
       it 'returns variables' do
         expect(presenter.trigger_variables).to eq(trigger_request.user_variables)
+      end
+    end
+  end
+
+  describe '#tooltip_message' do
+    context 'When build has failed' do
+      let(:build) { create(:ci_build, :script_failure, pipeline: pipeline) }
+
+      it 'returns the reason of failure' do
+        tooltip = subject.tooltip_message
+
+        expect(tooltip).to eq("#{build.name} - failed <br> (script failure)")
+      end
+    end
+
+    context 'When build has failed and retried' do
+      let(:build) { create(:ci_build, :script_failure, :retried, pipeline: pipeline) }
+
+      it 'should include the reason of failure and the retried title' do
+        tooltip = subject.tooltip_message
+
+        expect(tooltip).to eq("#{build.name} - failed <br> (script failure) (retried)")
+      end
+    end
+
+    context 'When build has failed and is allowed to' do
+      let(:build) { create(:ci_build, :script_failure, :allowed_to_fail, pipeline: pipeline) }
+
+      it 'should include the reason of failure' do
+        tooltip = subject.tooltip_message
+
+        expect(tooltip).to eq("#{build.name} - failed <br> (script failure) (allowed to fail)")
+      end
+    end
+
+    context 'For any other build (no retried)' do
+      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+
+      it 'should include build name and status' do
+        tooltip = subject.tooltip_message
+
+        expect(tooltip).to eq("#{build.name} - passed")
+      end
+    end
+
+    context 'For any other build (retried)' do
+      let(:build) { create(:ci_build, :success, :retried, pipeline: pipeline) }
+
+      it 'should include build name and status' do
+        tooltip = subject.tooltip_message
+
+        expect(tooltip).to eq("#{build.name} - passed (retried)")
+      end
+    end
+  end
+
+  describe '#callout_failure_message' do
+    let(:build) { create(:ci_build, :failed, :script_failure) }
+
+    it 'returns a verbose failure reason' do
+      description = subject.callout_failure_message
+      expect(description).to eq('There has been a script failure. Check the job log for more information')
+    end
+  end
+
+  describe '#recoverable?' do
+    let(:build) { create(:ci_build, :failed, :script_failure) }
+
+    context 'when is a script or missing dependency failure' do
+      let(:failure_reasons) { %w(script_failure missing_dependency_failure) }
+
+      it 'should return false' do
+        failure_reasons.each do |failure_reason|
+          build.update_attribute(:failure_reason, failure_reason)
+          expect(presenter.recoverable?).to be_falsy
+        end
+      end
+    end
+
+    context 'when is any other failure type' do
+      let(:failure_reasons) { %w(unknown_failure api_failure stuck_or_timeout_failure runner_system_failure) }
+
+      it 'should return true' do
+        failure_reasons.each do |failure_reason|
+          build.update_attribute(:failure_reason, failure_reason)
+          expect(presenter.recoverable?).to be_truthy
+        end
       end
     end
   end

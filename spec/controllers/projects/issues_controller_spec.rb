@@ -938,7 +938,7 @@ describe Projects::IssuesController do
   end
 
   describe 'POST create_merge_request' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :public) }
 
     before do
       project.add_developer(user)
@@ -953,6 +953,22 @@ describe Projects::IssuesController do
       create_merge_request
 
       expect(response).to match_response_schema('merge_request')
+    end
+
+    it 'is not available when the project is archived' do
+      project.update!(archived: true)
+
+      create_merge_request
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'is not available for users who cannot create merge requests' do
+      sign_in(create(:user))
+
+      create_merge_request
+
+      expect(response).to have_gitlab_http_status(404)
     end
 
     def create_merge_request
@@ -974,7 +990,7 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolve_with_issue_path resolved])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolved])
       end
 
       context 'with cross-reference system note', :request_store do

@@ -113,6 +113,8 @@ class List {
         issue.id = data.id;
         issue.iid = data.iid;
         issue.project = data.project;
+        issue.path = data.real_path;
+        issue.referencePath = data.reference_path;
 
         if (this.issuesSize > 1) {
           const moveBeforeId = this.issues[1].id;

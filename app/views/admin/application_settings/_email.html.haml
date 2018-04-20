@@ -1,0 +1,26 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :email_author_in_body do
+            = f.check_box :email_author_in_body
+            Include author name in notification email body
+          .help-block
+            Some email servers do not support overriding the email sender name.
+            Enable this option to include the name of the author of the issue,
+            merge request or comment in the email body instead.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :html_emails_enabled do
+            = f.check_box :html_emails_enabled
+            Enable HTML emails
+          .help-block
+            By default GitLab sends emails in HTML and plain text formats so mail
+            clients can choose what format to use. Disable this option if you only
+            want to send emails in plain text format.
+
+  = f.submit 'Save changes', class: "btn btn-success"

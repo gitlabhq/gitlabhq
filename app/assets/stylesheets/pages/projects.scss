@@ -9,7 +9,6 @@
 .new_project,
 .edit-project,
 .import-project {
-
   .help-block {
     margin-bottom: 10px;
   }
@@ -18,18 +17,25 @@
     border-radius: $border-radius-base;
   }
 
-  .input-group > div {
+  .input-group {
+    display: flex;
 
-    &:last-child {
-      padding-right: 0;
+    .select2-container {
+      display: unset;
+      max-width: unset;
+      width: unset !important;
+      flex-grow: 1;
+    }
+
+    > div {
+      &:last-child {
+        padding-right: 0;
+      }
     }
   }
 
   @media (max-width: $screen-xs-max) {
     .input-group > div {
-
-      margin-bottom: 14px;
-
       &:last-child {
         margin-bottom: 0;
       }
@@ -41,17 +47,24 @@
   }
 
   .input-group-addon {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: unset;
+    width: unset;
+    max-width: 50%;
+    text-align: left;
 
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
       border: 1px solid $border-color;
+      max-width: 100%;
+      flex-grow: 1;
     }
 
     + .select2 a,
     + .btn-default {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
+      border-radius: 0 $border-radius-base $border-radius-base 0;
     }
   }
 }
@@ -290,7 +303,7 @@
       font-size: 13px;
       font-weight: $gl-font-weight-bold;
       line-height: 13px;
-      letter-spacing: .4px;
+      letter-spacing: 0.4px;
       padding: 6px 14px;
       text-align: center;
       vertical-align: middle;
@@ -443,7 +456,7 @@ a.deploy-project-label {
     text-decoration: none;
 
     &.disabled {
-      opacity: .3;
+      opacity: 0.3;
       cursor: not-allowed;
     }
   }
@@ -600,26 +613,26 @@ a.deploy-project-label {
   }
 
   .first-column {
-    @media(min-width: $screen-xs-min) {
+    @media (min-width: $screen-xs-min) {
       max-width: 50%;
       padding-right: 30px;
     }
 
-    @media(max-width: $screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       max-width: 100%;
       width: 100%;
     }
   }
 
   .second-column {
-    @media(min-width: $screen-xs-min) {
+    @media (min-width: $screen-xs-min) {
       width: 50%;
       flex: 1;
       padding-left: 30px;
       position: relative;
     }
 
-    @media(max-width: $screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       max-width: 100%;
       width: 100%;
       padding-left: 0;
@@ -632,7 +645,7 @@ a.deploy-project-label {
     }
 
     &::before {
-      content: "OR";
+      content: 'OR';
       position: absolute;
       left: -10px;
       top: 50%;
@@ -656,7 +669,7 @@ a.deploy-project-label {
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       background-color: $border-color;
       bottom: 0;
@@ -921,14 +934,6 @@ pre.light-well {
       border-right: solid 1px transparent;
     }
   }
-}
-
-.protected-tags-list,
-.protected-branches-list {
-  .dropdown-menu-toggle {
-    width: 100%;
-    max-width: 300px;
-  }
 
   .flash-container {
     padding: 0;
@@ -1110,4 +1115,34 @@ pre.light-well {
 .issuable-footer {
   padding-top: $gl-padding;
   padding-bottom: 37px;
+}
+
+.project-ci-body {
+  .incorrect-syntax {
+    font-size: 18px;
+    color: $lint-incorrect-color;
+  }
+
+  .correct-syntax {
+    font-size: 18px;
+    color: $lint-correct-color;
+  }
+}
+
+.project-ci-linter {
+  .ci-editor {
+    height: 400px;
+  }
+
+  .ci-template pre {
+    white-space: pre-wrap;
+  }
+}
+
+.project-badge {
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
 }

@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SafeParamsHelper
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
@@ -227,10 +228,6 @@ class ApplicationController < ActionController::Base
     # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
     filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
-  end
-
-  def gitlab_ldap_access(&block)
-    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
   end
 
   # JSON for infinite scroll via Pager object

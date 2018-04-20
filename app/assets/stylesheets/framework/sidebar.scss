@@ -16,7 +16,7 @@
 .nav-header-btn {
   padding: 10px $gl-sidebar-padding;
   color: inherit;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
   position: absolute;
   top: 0;
   cursor: pointer;
@@ -88,7 +88,6 @@
 
 .right-sidebar {
   border-left: 1px solid $border-color;
-  height: calc(100% - #{$header-height});
 }
 
 .with-performance-bar .right-sidebar.affix {
@@ -135,6 +134,12 @@
   .issuable-sidebar {
     padding: 0 3px;
     width: calc(100% + 35px);
+  }
+}
+
+.issuable-sidebar .labels {
+  .value.dont-hide ~ .selectbox {
+    padding-top: $gl-padding-8;
   }
 }
 

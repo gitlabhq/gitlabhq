@@ -45,6 +45,18 @@ feature 'Merge Request button' do
           end
         end
       end
+
+      context 'when the project is archived' do
+        it 'hides the link' do
+          project.update!(archived: true)
+
+          visit url
+
+          within("#content-body") do
+            expect(page).not_to have_link(label)
+          end
+        end
+      end
     end
 
     context 'logged in as non-member' do

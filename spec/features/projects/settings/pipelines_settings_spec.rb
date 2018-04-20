@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-feature "Pipelines settings" do
+describe "Projects > Settings > Pipelines settings" do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 
-  background do
+  before do
     sign_in(user)
     project.add_role(user, role)
   end
 
   context 'for developer' do
-    given(:role) { :developer }
+    let(:role) { :developer }
 
-    scenario 'to be disallowed to view' do
+    it 'to be disallowed to view' do
       visit project_settings_ci_cd_path(project)
 
       expect(page.status_code).to eq(404)
@@ -21,9 +21,9 @@ feature "Pipelines settings" do
   end
 
   context 'for master' do
-    given(:role) { :master }
+    let(:role) { :master }
 
-    scenario 'be allowed to change' do
+    it 'be allowed to change' do
       visit project_settings_ci_cd_path(project)
 
       fill_in('Test coverage parsing', with: 'coverage_regex')
@@ -34,7 +34,7 @@ feature "Pipelines settings" do
       expect(page).to have_field('Test coverage parsing', with: 'coverage_regex')
     end
 
-    scenario 'updates auto_cancel_pending_pipelines' do
+    it 'updates auto_cancel_pending_pipelines' do
       visit project_settings_ci_cd_path(project)
 
       page.check('Auto-cancel redundant, pending pipelines')

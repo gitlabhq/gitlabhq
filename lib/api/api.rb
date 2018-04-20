@@ -78,6 +78,14 @@ module API
       rack_response({ 'message' => '404 Not found' }.to_json, 404)
     end
 
+    rescue_from UploadedFile::InvalidPathError do |e|
+      rack_response({ 'message' => e.message }.to_json, 400)
+    end
+
+    rescue_from ObjectStorage::RemoteStoreError do |e|
+      rack_response({ 'message' => e.message }.to_json, 500)
+    end
+
     # Retain 405 error rather than a 500 error for Grape 0.15.0+.
     # https://github.com/ruby-grape/grape/blob/a3a28f5b5dfbb2797442e006dbffd750b27f2a76/UPGRADING.md#changes-to-method-not-allowed-routes
     rescue_from Grape::Exceptions::MethodNotAllowed do |e|
@@ -146,6 +154,7 @@ module API
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectMilestones
+    mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
     mount ::API::Repositories

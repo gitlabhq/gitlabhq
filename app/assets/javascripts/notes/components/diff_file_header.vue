@@ -1,24 +1,24 @@
 <script>
-  import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      ClipboardButton,
-      Icon,
+export default {
+  components: {
+    ClipboardButton,
+    Icon,
+  },
+  props: {
+    diffFile: {
+      type: Object,
+      required: true,
     },
-    props: {
-      diffFile: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    titleTag() {
+      return this.diffFile.discussionPath ? 'a' : 'span';
     },
-    computed: {
-      titleTag() {
-        return this.diffFile.discussionPath ? 'a' : 'span';
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>

@@ -53,7 +53,7 @@ class Group < Namespace
       Gitlab::Database.postgresql?
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
@@ -189,12 +189,6 @@ class Group < Namespace
     owners.include?(user) && owners.size == 1
   end
 
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
-    end
-  end
-
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 
@@ -230,13 +224,13 @@ class Group < Namespace
       end
 
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: source_ids)
   end
 
   def members_with_descendants
     GroupMember
-      .active_without_invites
+      .active_without_invites_and_requests
       .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
@@ -290,6 +284,10 @@ class Group < Namespace
 
   def hashed_storage?(_feature)
     false
+  end
+
+  def refresh_project_authorizations
+    refresh_members_authorized_projects(blocking: false)
   end
 
   private

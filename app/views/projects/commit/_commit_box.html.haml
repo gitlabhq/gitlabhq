@@ -1,3 +1,5 @@
+- can_collaborate = can_collaborate_with_project?(@project)
+
 .page-content-header.js-commit-box{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
   .header-main-content
     = render partial: 'signature', object: @commit.signature
@@ -32,12 +34,13 @@
         %li.visible-xs-block.visible-sm-block
           = link_to project_tree_path(@project, @commit) do
             #{ _('Browse Files') }
-        - unless @commit.has_been_reverted?(current_user)
+        - if can_collaborate && !@commit.has_been_reverted?(current_user)
           %li.clearfix
             = revert_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
-        %li.clearfix
-          = cherry_pick_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
-        - if can_collaborate_with_project?
+        - if can_collaborate
+          %li.clearfix
+            = cherry_pick_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
+        - if can?(current_user, :push_code, @project)
           %li.clearfix
             = link_to s_("CreateTag|Tag"), new_project_tag_path(@project, ref: @commit)
         %li.divider
@@ -49,10 +52,10 @@
 
 .commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
-    = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
+    = markdown_field(@commit, :title)
   - if @commit.description.present?
     %pre.commit-description
-      = preserve(markdown(@commit.description, pipeline: :single_line, author: @commit.author))
+      = preserve(markdown_field(@commit, :description))
 
 .info-well
   .well-segment.branch-info

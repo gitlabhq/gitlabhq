@@ -1,56 +1,60 @@
 <script>
-  import $ from 'jquery';
-  import syntaxHighlight from '~/syntax_highlight';
-  import imageDiffHelper from '~/image_diff/helpers/index';
-  import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-  import DiffFileHeader from './diff_file_header.vue';
+import $ from 'jquery';
+import syntaxHighlight from '~/syntax_highlight';
+import imageDiffHelper from '~/image_diff/helpers/index';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import DiffFileHeader from './diff_file_header.vue';
 
-  export default {
-    components: {
-      DiffFileHeader,
+export default {
+  components: {
+    DiffFileHeader,
+  },
+  props: {
+    discussion: {
+      type: Object,
+      required: true,
     },
-    props: {
-      discussion: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    isImageDiff() {
+      return !this.diffFile.text;
     },
-    computed: {
-      isImageDiff() {
-        return !this.diffFile.text;
-      },
-      diffFileClass() {
-        const { text } = this.diffFile;
-        return text ? 'text-file' : 'js-image-file';
-      },
-      diffRows() {
-        return $(this.discussion.truncatedDiffLines);
-      },
-      diffFile() {
-        return convertObjectPropsToCamelCase(this.discussion.diffFile);
-      },
-      imageDiffHtml() {
-        return this.discussion.imageDiffHtml;
-      },
+    diffFileClass() {
+      const { text } = this.diffFile;
+      return text ? 'text-file' : 'js-image-file';
     },
-    mounted() {
-      if (this.isImageDiff) {
-        const canCreateNote = false;
-        const renderCommentBadge = true;
-        imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
-      } else {
-        const fileHolder = $(this.$refs.fileHolder);
-        this.$nextTick(() => {
-          syntaxHighlight(fileHolder);
-        });
-      }
+    diffRows() {
+      return $(this.discussion.truncatedDiffLines);
     },
-    methods: {
-      rowTag(html) {
-        return html.outerHTML ? 'tr' : 'template';
-      },
+    diffFile() {
+      return convertObjectPropsToCamelCase(this.discussion.diffFile);
     },
-  };
+    imageDiffHtml() {
+      return this.discussion.imageDiffHtml;
+    },
+  },
+  mounted() {
+    if (this.isImageDiff) {
+      const canCreateNote = false;
+      const renderCommentBadge = true;
+      imageDiffHelper.initImageDiff(
+        this.$refs.fileHolder,
+        canCreateNote,
+        renderCommentBadge,
+      );
+    } else {
+      const fileHolder = $(this.$refs.fileHolder);
+      this.$nextTick(() => {
+        syntaxHighlight(fileHolder);
+      });
+    }
+  },
+  methods: {
+    rowTag(html) {
+      return html.outerHTML ? 'tr' : 'template';
+    },
+  },
+};
 </script>
 
 <template>

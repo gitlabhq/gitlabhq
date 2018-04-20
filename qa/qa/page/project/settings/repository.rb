@@ -14,6 +14,12 @@ module QA
               DeployKeys.perform(&block)
             end
           end
+
+          def expand_protected_branches(&block)
+            expand_section('Protected Branches') do
+              ProtectedBranches.perform(&block)
+            end
+          end
         end
       end
     end

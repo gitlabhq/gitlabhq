@@ -19,7 +19,7 @@ module Gitlab
                     custom_attributes: 'ProjectCustomAttribute',
                     project_badges: 'Badge' }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
 
       PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 

@@ -349,6 +349,18 @@ describe 'Pipelines', :js do
 
           it { expect(page).not_to have_selector('.build-artifacts') }
         end
+
+        context 'with trace artifact' do
+          before do
+            create(:ci_build, :success, :trace_artifact, pipeline: pipeline)
+
+            visit_project_pipelines
+          end
+
+          it 'does not show trace artifact as artifacts' do
+            expect(page).not_to have_selector('.build-artifacts')
+          end
+        end
       end
 
       context 'mini pipeline graph' do
@@ -380,6 +392,23 @@ describe 'Pipelines', :js do
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
+          end
+        end
+
+        context 'for a failed pipeline' do
+          let!(:build) do
+            create(:ci_build, :failed, pipeline: pipeline,
+                                       stage: 'build',
+                                       name: 'build')
+          end
+
+          it 'should display the failure reason' do
+            find('.js-builds-dropdown-button').click
+
+            within('.js-builds-dropdown-list') do
+              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              expect(build_element['data-title']).to eq('build - failed <br> (unknown failure)')
+            end
           end
         end
       end
@@ -488,7 +517,7 @@ describe 'Pipelines', :js do
           end
 
           it 'creates a new pipeline' do
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
@@ -497,7 +526,7 @@ describe 'Pipelines', :js do
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Create pipeline'
+            click_on 'Run pipeline'
           end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
@@ -510,7 +539,7 @@ describe 'Pipelines', :js do
               click_link 'master'
             end
 
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
           end
         end
@@ -528,7 +557,7 @@ describe 'Pipelines', :js do
         it 'has field to add a new pipeline' do
           expect(page).to have_selector('.js-branch-select')
           expect(find('.js-branch-select')).to have_content project.default_branch
-          expect(page).to have_content('Create for')
+          expect(page).to have_content('Run on')
         end
       end
 

@@ -305,6 +305,14 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
+Settings.artifacts['object_store'] ||= Settingslogic.new({})
+Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
+Settings.artifacts['object_store']['remote_directory'] ||= nil
+Settings.artifacts['object_store']['direct_upload'] = false if Settings.artifacts['object_store']['direct_upload'].nil?
+Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
+Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifacts['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Registry
@@ -340,6 +348,14 @@ Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pa
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
+Settings.lfs['object_store'] ||= Settingslogic.new({})
+Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
+Settings.lfs['object_store']['remote_directory'] ||= nil
+Settings.lfs['object_store']['direct_upload'] = false if Settings.lfs['object_store']['direct_upload'].nil?
+Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
+Settings.lfs['object_store']['proxy_download'] = false if Settings.lfs['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Uploads
@@ -347,6 +363,14 @@ Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] ||
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
+Settings.uploads['object_store'] ||= Settingslogic.new({})
+Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
+Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
+Settings.uploads['object_store']['direct_upload'] = false if Settings.uploads['object_store']['direct_upload'].nil?
+Settings.uploads['object_store']['background_upload'] = true if Settings.uploads['object_store']['background_upload'].nil?
+Settings.uploads['object_store']['proxy_download'] = false if Settings.uploads['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.uploads['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Mattermost
@@ -431,6 +455,16 @@ Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= Settingslogic.ne
 Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
 
+Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
+Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
+
+#
+# Sidekiq
+#
+Settings['sidekiq'] ||= Settingslogic.new({})
+Settings['sidekiq']['log_format'] ||= 'default'
+
 #
 # GitLab Shell
 #
@@ -467,12 +501,7 @@ unless Settings.repositories.storages['default']
 end
 
 Settings.repositories.storages.each do |key, storage|
-  storage = Settingslogic.new(storage)
-
-  # Expand relative paths
-  storage['path'] = Settings.absolute(storage['path'])
-
-  Settings.repositories.storages[key] = storage
+  Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 
 #
@@ -486,7 +515,7 @@ repositories_storages          = Settings.repositories.storages.values
 repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 

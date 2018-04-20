@@ -8,7 +8,7 @@
     .settings-header
       %h4
         General project settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Update your project name, description, avatar, and other general settings.
@@ -64,7 +64,7 @@
     .settings-header
       %h4
         Permissions
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
@@ -79,7 +79,7 @@
     .settings-header
       %h4
         Merge request settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your merge request restrictions.
@@ -94,7 +94,7 @@
     .settings-header
       %h4
         Advanced settings
-      %button.btn.js-settings-toggle
+      %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
         Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project.
@@ -114,17 +114,18 @@
               Archive project
           - if @project.archived?
             %p
-              Unarchiving the project will mark its repository as active. The project can be committed to.
+              Unarchiving the project will restore people's ability to make changes to it.
+              The repository can be committed to, and issues, comments and other entities can be created.
               %strong Once active this project shows up in the search and on the dashboard.
             = link_to 'Unarchive project', unarchive_project_path(@project),
-                data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                data: { confirm: "Are you sure that you want to unarchive this project?" },
                 method: :post, class: "btn btn-success"
           - else
             %p
-              Archiving the project will mark its repository as read-only. It is hidden from the dashboard and doesn't show up in searches.
-              %strong Archived projects cannot be committed to!
+              Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches.
+              %strong The repository cannot be committed to, and no issues, comments or other entities can be created.
             = link_to 'Archive project', archive_project_path(@project),
-                data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                data: { confirm: "Are you sure that you want to archive this project?" },
                 method: :post, class: "btn btn-warning"
       .sub-section.rename-respository
         %h4.warning-title

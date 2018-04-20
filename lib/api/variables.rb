@@ -31,7 +31,7 @@ module API
         key = params[:key]
         variable = user_project.variables.find_by(key: key)
 
-        return not_found!('Variable') unless variable
+        break not_found!('Variable') unless variable
 
         present variable, with: Entities::Variable
       end
@@ -67,7 +67,7 @@ module API
       put ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
 
-        return not_found!('Variable') unless variable
+        break not_found!('Variable') unless variable
 
         variable_params = declared_params(include_missing: false).except(:key)
 

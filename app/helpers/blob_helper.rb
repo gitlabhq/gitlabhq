@@ -33,6 +33,17 @@ module BlobHelper
                     ref)
   end
 
+  def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
+    return unless blob = readable_blob(options, path, project, ref)
+
+    edit_button_tag(blob,
+                    'btn btn-default',
+                    _('Web IDE'),
+                    ide_edit_path(project, ref, path, options),
+                    project,
+                    ref)
+  end
+
   def modify_file_button(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
     return unless current_user
 
@@ -48,7 +59,7 @@ module BlobHelper
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
-    elsif can?(current_user, :fork_project, project)
+    elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
       edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action), action)
     end
   end
@@ -248,7 +259,7 @@ module BlobHelper
     options = []
 
     if error == :collapsed
-      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, expanded: true, format: nil)))
+      options << link_to('load it anyway', url_for(safe_params.merge(viewer: viewer.type, expanded: true, format: nil)))
     end
 
     # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,
@@ -269,7 +280,7 @@ module BlobHelper
       options << link_to("submit an issue", new_project_issue_path(project))
     end
 
-    merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
+    merge_project = merge_request_source_project_for_project(@project)
     if merge_project
       options << link_to("create a merge request", project_new_merge_request_path(project))
     end
@@ -323,7 +334,7 @@ module BlobHelper
       # Web IDE (Beta) requires the user to have this feature enabled
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       edit_link_tag(text, edit_path, common_classes)
-    elsif current_user && can?(current_user, :fork_project, project)
+    elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
       edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
     end
   end

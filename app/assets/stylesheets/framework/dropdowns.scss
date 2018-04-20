@@ -481,7 +481,8 @@
 
 .dropdown-menu-selectable {
   li {
-    a {
+    a,
+    button {
       padding: 8px 40px;
       position: relative;
 
@@ -501,10 +502,8 @@
           -moz-osx-font-smoothing: grayscale;
         }
 
-        &.dropdown-menu-user-link {
-          &::before {
-            top: 50%;
-          }
+        &.dropdown-menu-user-link::before {
+          top: 50%;
         }
       }
 
@@ -624,7 +623,7 @@
 }
 
 .dropdown-content {
-  max-height: $dropdown-max-height;
+  max-height: 252px;
   overflow-y: auto;
 }
 
@@ -700,6 +699,31 @@
   height: 15px;
   border-radius: $border-radius-base;
 }
+
+.git-revision-dropdown {
+  .dropdown-content {
+    max-height: 215px;
+  }
+}
+
+.sidebar-move-issue-dropdown {
+  .dropdown-content {
+    max-height: 160px;
+  }
+}
+
+.dropdown-menu-author {
+  .dropdown-content {
+    max-height: 215px;
+  }
+}
+
+.dropdown-menu-labels {
+  .dropdown-content {
+    max-height: 128px;
+  }
+}
+
 
 .dropdown-menu-due-date {
   .dropdown-content {

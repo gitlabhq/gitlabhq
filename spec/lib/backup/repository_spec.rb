@@ -7,6 +7,8 @@ describe Backup::Repository do
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
+    allow(FileUtils).to receive(:mkdir_p).and_return(true)
+    allow(FileUtils).to receive(:mv).and_return(true)
 
     allow_any_instance_of(String).to receive(:color) do |string, _color|
       string
@@ -33,7 +35,7 @@ describe Backup::Repository do
     let(:timestamp) { Time.utc(2017, 3, 22) }
     let(:temp_dirs) do
       Gitlab.config.repositories.storages.map do |name, storage|
-        File.join(storage['path'], '..', 'repositories.old.' + timestamp.to_i.to_s)
+        File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
       end
     end
 
@@ -66,6 +68,17 @@ describe Backup::Repository do
 
           expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} - error")
         end
+      end
+    end
+
+    describe 'folders without permissions' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EACCES)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:access_denied_error)
+        subject.restore
       end
     end
   end

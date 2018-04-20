@@ -12,7 +12,7 @@ month on the 22nd for a certain branch.
 
 In order to schedule a pipeline:
 
-1. Navigate to your project's **Pipelines ➔ Schedules** and click the
+1. Navigate to your project's **CI / CD ➔ Schedules** and click the
    **New Schedule** button.
 1. Fill in the form
 1. Hit **Save pipeline schedule** for the changes to take effect.
