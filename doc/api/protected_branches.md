@@ -12,8 +12,7 @@ The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS`
 60 => Admin access
 ```
 
-**Note:** The admin access level (`60`) may be removed in a future release and
-should not be considered stable. We are currently evaluating restrictions to
+**Note:** The admin access level (`60`) may be removed in GitLab 11.0. We are currently evaluating restrictions to
 the Owner role as an alternative.
 
 ## List protected branches
