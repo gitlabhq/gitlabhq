@@ -1,6 +1,5 @@
 <script>
 import ActionComponent from './action_component.vue';
-import DropdownActionComponent from './dropdown_action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 
@@ -32,7 +31,6 @@ import tooltip from '../../../vue_shared/directives/tooltip';
 export default {
   components: {
     ActionComponent,
-    DropdownActionComponent,
     JobNameComponent,
   },
 
@@ -49,12 +47,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-
-    isDropdown: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
 
     actionDisabled: {
@@ -134,19 +126,11 @@ export default {
     </div>
 
     <action-component
-      v-if="hasAction && !isDropdown"
+      v-if="hasAction"
       :tooltip-text="status.action.title"
       :link="status.action.path"
       :action-icon="status.action.icon"
       :button-disabled="actionDisabled"
-    />
-
-    <dropdown-action-component
-      v-if="hasAction && isDropdown"
-      :tooltip-text="status.action.title"
-      :link="status.action.path"
-      :action-icon="status.action.icon"
-      :action-method="status.action.method"
     />
   </div>
 </template>

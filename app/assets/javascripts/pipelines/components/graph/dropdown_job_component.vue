@@ -1,7 +1,7 @@
 <script>
   import $ from 'jquery';
-  import jobNameComponent from './job_name_component.vue';
-  import jobComponent from './job_component.vue';
+  import JobNameComponent from './job_name_component.vue';
+  import JobComponent from './job_component.vue';
   import tooltip from '../../../vue_shared/directives/tooltip';
 
   /**
@@ -33,8 +33,8 @@
     },
 
     components: {
-      jobComponent,
-      jobNameComponent,
+      JobComponent,
+      JobNameComponent,
     },
 
     props: {
@@ -56,17 +56,17 @@
 
     methods: {
       /**
-     * When the user right clicks or cmd/ctrl + click in the job name
-     * the dropdown should not be closed and the link should open in another tab,
-     * so we stop propagation of the click event inside the dropdown.
-     *
-     * Since this component is rendered multiple times per page we need to guarantee we only
-     * target the click event of this component.
-     */
+       * When the user right clicks or cmd/ctrl + click in the job name or the action icon
+       * the dropdown should not be closed so we stop propagation of the click event inside the dropdown.
+       *
+       * Since this component is rendered multiple times per page we need to guarantee we only
+       * target the click event of this component.
+       */
       stopDropdownClickPropagation() {
-        $(this.$el
-          .querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
-          .on('click', (e) => {
+        $(
+          '.js-grouped-pipeline-dropdown button, .js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item',
+          this.$el,
+        ).on('click', (e) => {
             e.stopPropagation();
           });
       },
@@ -101,7 +101,6 @@
             :key="i">
             <job-component
               :job="item"
-              :is-dropdown="true"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
             />
           </li>
