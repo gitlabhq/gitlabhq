@@ -61,8 +61,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   available() {
-    this.availableButton.classList.remove('hide');
-    this.unavailableButton.classList.add('hide');
+    this.availableButton.classList.remove('hidden');
+    this.unavailableButton.classList.add('hidden');
   }
 
   bindEvents() {
@@ -231,7 +231,7 @@ export default class CreateMergeRequestDropdown {
   }
 
   hide() {
-    this.wrapperEl.classList.add('hide');
+    this.wrapperEl.classList.add('hidden');
   }
 
   init() {
@@ -405,8 +405,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   unavailable() {
-    this.availableButton.classList.add('hide');
-    this.unavailableButton.classList.remove('hide');
+    this.availableButton.classList.add('hidden');
+    this.unavailableButton.classList.remove('hidden');
   }
 
   updateInputState(target, ref, result) {

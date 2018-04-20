@@ -205,7 +205,7 @@ ul.related-merge-requests > li {
     }
   }
 
-  .btn-group:not(.hide) {
+  .btn-group:not(.hidden) {
     display: flex;
   }
 
@@ -258,8 +258,8 @@ ul.related-merge-requests > li {
     }
 
     .create-mr-dropdown-wrap {
-      .btn-group:not(.hide) {
-        display: inline-block;
+      .btn-group:not(.hidden) {
+        display: inline-flex;
       }
     }
   }
