@@ -1,5 +1,3 @@
-import { ActivityBarViews } from './state';
-
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
