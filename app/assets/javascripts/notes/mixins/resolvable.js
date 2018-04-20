@@ -25,11 +25,9 @@ export default {
           return __('Comment and unresolve discussion');
         }
 
-        return __('Comment and resolve discussion');
+        return __('Comment & resolve discussion');
       }
-      return this.discussionResolved
-        ? __('Unresolve discussion')
-        : __('Resolve discussion');
+      return this.discussionResolved ? __('Unresolve discussion') : __('Resolve discussion');
     },
   },
   methods: {
@@ -49,9 +47,7 @@ export default {
         })
         .catch(() => {
           this.isResolving = false;
-          const msg = __(
-            'Something went wrong while resolving this discussion. Please try again.',
-          );
+          const msg = __('Something went wrong while resolving this discussion. Please try again.');
           Flash(msg, 'alert', this.$el);
         });
     },
