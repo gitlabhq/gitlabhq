@@ -13,8 +13,14 @@ entry.
 - Fix XSS on diff view stored on filenames.
 - Fix GitLab Auth0 integration signing in the wrong user.
 
+<<<<<<< HEAD
 ### Fixed (63 changes, 20 of them are from the community)
 
+=======
+### Fixed (65 changes, 20 of them are from the community)
+
+- File uploads in remote storage now support project renaming. !4597
+>>>>>>> upstream/master
 - Fixed bug in dropdown selector when selecting the same selection again. !14631 (bitsapien)
 - Fixed group deletion linked to Mattermost. !16209 (Julien Millau)
 - Create commit API and Web IDE obey LFS filters. !16718
@@ -55,9 +61,15 @@ entry.
 - Work around Prometheus Helm chart name changes to fix integration. !18206 (joshlambert)
 - Prioritize weight over title when sorting charts. !18233
 - Verify that deploy token has valid access when pulling container registry image. !18260
+<<<<<<< HEAD
 - Ensure hooks run when a deploy key without a user pushes.
 - Stop redirecting the page in pipeline main actions.
 - Fixed IDE button opening the wrong URL in tree list.
+=======
+- Stop redirecting the page in pipeline main actions.
+- Fixed IDE button opening the wrong URL in tree list.
+- Ensure hooks run when a deploy key without a user pushes.
+>>>>>>> upstream/master
 - Fix 404 in group boards when moving issue between lists.
 - Display state indicator for issuable references in non-project scope (e.g. when referencing issuables from group scope).
 - Add missing port to artifact links.
@@ -66,12 +78,22 @@ entry.
 - Don't show Jump to Discussion button on Issues.
 - Fix bug rendering group icons when forking.
 - Automatically cleanup stale worktrees and lock files upon a push.
+<<<<<<< HEAD
 - Fix Firefox stealing formatting characters on issue notes.
 - Include matching branches and tags in protected branches / tags count. (Jan Beckmann)
 - Fix relative uri when "#" is in branch name. (Jan)
 - Test if remote repository exists when importing wikis.
 - Fix 500 error when a merge request from a fork has conflicts and has not yet been updated.
 - Hide emoji popup after multiple spaces. (Jan Beckmann)
+=======
+- Use the GitLab version as part of the appearances cache key.
+- Fix Firefox stealing formatting characters on issue notes.
+- Include matching branches and tags in protected branches / tags count. (Jan Beckmann)
+- Fix 500 error when a merge request from a fork has conflicts and has not yet been updated.
+- Test if remote repository exists when importing wikis.
+- Hide emoji popup after multiple spaces. (Jan Beckmann)
+- Fix relative uri when "#" is in branch name. (Jan)
+>>>>>>> upstream/master
 - Escape Markdown characters properly when using autocomplete.
 - Ignore project internal references in group context.
 - Fix finding wiki file when Gitaly is enabled.
@@ -108,7 +130,11 @@ entry.
 - Fixes remove source branch checkbox being visible when user cannot remove the branch.
 - Make /-/ delimiter optional for search endpoints.
 
+<<<<<<< HEAD
 ### Performance (25 changes, 11 of them are from the community)
+=======
+### Performance (24 changes, 11 of them are from the community)
+>>>>>>> upstream/master
 
 - Move AssigneeTitle vue component. !17397 (George Tsiolis)
 - Move TimeTrackingCollapsedState vue component. !17399 (George Tsiolis)
@@ -128,7 +154,10 @@ entry.
 - Cache personal projects count. !18197
 - Reduce complexity of issuable finder query. !18219
 - Reduce number of queries when viewing a merge request.
+<<<<<<< HEAD
 - Support Markdown rendering using multiple projects.
+=======
+>>>>>>> upstream/master
 - Free open file descriptors and libgit2 buffers in UpdatePagesService.
 - Memoize Git::Repository#has_visible_content?.
 - Require at least one filter when listing issues or merge requests on dashboard page.
@@ -136,7 +165,11 @@ entry.
 - Bulk deleting refs is handled by Gitaly by default.
 - ListCommitsByOid is executed by Gitaly by default.
 
+<<<<<<< HEAD
 ### Added (37 changes, 7 of them are from the community)
+=======
+### Added (38 changes, 7 of them are from the community)
+>>>>>>> upstream/master
 
 - Add HTTPS-only pages. !16273 (rfwatson)
 - adds closed by informations in issue api. !17042 (haseebeqx)
@@ -144,6 +177,10 @@ entry.
 - Add per-runner configured job timeout. !17221
 - Add alternate archive route for simplified packaging. !17225
 - Add support for pipeline variables expressions in only/except. !17316
+<<<<<<< HEAD
+=======
+- Add object storage support for LFS objects, CI artifacts, and uploads. !17358
+>>>>>>> upstream/master
 - Added confirmation modal for changing username. !17405
 - Implement foreground verification of CI artifacts. !17578
 - Extend API for exporting a project with direct upload URL. !17686
@@ -164,9 +201,15 @@ entry.
 - Support LFS objects when importing/exporting GitLab project archives. !18115
 - Store sha256 checksum of artifact metadata. !18149
 - Limit the number of failed logins when using LDAP for authentication. !43525
+<<<<<<< HEAD
 - Allow to store uploads by default on Object Storage.
 - Allow assigning and filtering issuables by ancestor group labels.
 - Include subgroup issues when searching for group issues using the API.
+=======
+- Allow assigning and filtering issuables by ancestor group labels.
+- Include subgroup issues when searching for group issues using the API.
+- Allow to store uploads by default on Object Storage.
+>>>>>>> upstream/master
 - Add slash command for moving issues. (Adam Pahlevi)
 - Render MR commit SHA instead "diffs" when viable.
 - Send @mention notifications even if a user has explicitly unsubscribed from item.

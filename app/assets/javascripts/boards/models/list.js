@@ -114,8 +114,11 @@ class List {
         issue.iid = data.iid;
         issue.milestone = data.milestone;
         issue.project = data.project;
+<<<<<<< HEAD
         issue.assignees = data.assignees;
         issue.labels = data.labels;
+=======
+>>>>>>> upstream/master
         issue.path = data.real_path;
         issue.referencePath = data.reference_path;
 

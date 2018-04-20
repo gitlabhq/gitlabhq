@@ -565,6 +565,7 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+<<<<<<< HEAD
 PrometheusMetric:
 - id
 - created_at
@@ -582,6 +583,8 @@ LfsFileLock:
 - user_id
 - project_id
 - created_at
+=======
+>>>>>>> upstream/master
 Badge:
 - id
 - link_url
