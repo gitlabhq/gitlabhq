@@ -1,5 +1,5 @@
 class DiffFileEntity < Grape::Entity
-  include RequestAwareEntity
+  include Gitlab::Routing
   include DiffHelper
   include SubmoduleHelper
   include BlobHelper

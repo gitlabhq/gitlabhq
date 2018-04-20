@@ -9,7 +9,7 @@ describe DiffFileEntity do
   let(:diff_refs) { commit.diff_refs }
   let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
-  let(:entity) { described_class.new(diff_file) }
+  let(:entity) { described_class.new(diff_file, request: {}) }
 
   subject { entity.as_json }
 
