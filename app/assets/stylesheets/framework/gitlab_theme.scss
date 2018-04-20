@@ -186,8 +186,6 @@
   }
 
   .ide-sidebar-link {
-    &:hover,
-    &:focus,
     &.active {
       color: $color-700;
     }

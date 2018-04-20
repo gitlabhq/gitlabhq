@@ -777,10 +777,12 @@
   }
 
   &:hover {
+    color: $gl-text-color;
     background-color: $theme-gray-100;
   }
 
   &:focus {
+    color: $gl-text-color;
     background-color: $theme-gray-200;
   }
 
