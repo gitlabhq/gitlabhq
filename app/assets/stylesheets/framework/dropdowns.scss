@@ -24,7 +24,7 @@
   display: none;
 }
 
-.open {
+.show {
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;
@@ -387,7 +387,7 @@
   transform: translateY(0);
 }
 
-.comment-type-dropdown.open .dropdown-menu {
+.comment-type-dropdown.show .dropdown-menu {
   display: block;
 }
 

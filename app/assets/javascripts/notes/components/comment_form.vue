@@ -387,6 +387,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     name="button"
                     type="button"
                     class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    data-display="static"
                     data-toggle="dropdown"
                     aria-label="Open comment type dropdown">
                     <i
