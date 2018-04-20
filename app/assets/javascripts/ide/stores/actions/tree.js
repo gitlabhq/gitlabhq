@@ -93,3 +93,13 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
       resolve();
     }
   });
+
+export const updateChangesCount = ({ commit, dispatch, state }, { path, count }) => {
+  commit(types.UPDATE_FOLDER_CHANGE_COUNT, { path, count });
+
+  const parentPath = state.entries[path].parentPath;
+
+  if (parentPath) {
+    dispatch('updateChangesCount', { path: parentPath, count });
+  }
+};

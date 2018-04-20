@@ -31,4 +31,9 @@ export default {
       changedFiles: [],
     });
   },
+  [types.UPDATE_FOLDER_CHANGE_COUNT](state, { path, count }) {
+    Object.assign(state.entries[path], {
+      changesCount: state.entries[path].changesCount + count,
+    });
+  },
 };

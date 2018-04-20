@@ -42,15 +42,4 @@ export const collapseButtonTooltip = state =>
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
-export const getChangesInFolder = (state, getters) => path => {
-  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
-  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f)).length;
-  const stagedFilesCount = state.stagedFiles.filter(
-    f => filePathMatches(f) && !getters.getChangedFile(f.path),
-  ).length;
-
-  return changedFilesCount + stagedFilesCount;
-};
-
-export const getChangedFile = state => path => state.stagedFiles.find(f => f.path === path);
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);

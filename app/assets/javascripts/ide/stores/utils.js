@@ -42,6 +42,8 @@ export const dataStructure = () => ({
   viewMode: 'edit',
   previewMode: null,
   size: 0,
+  parentPath: null,
+  changesCount: 0,
 });
 
 export const decorateData = entity => {
@@ -64,6 +66,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath = '',
   } = entity;
 
   return {
@@ -87,6 +90,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath,
   };
 };
 
