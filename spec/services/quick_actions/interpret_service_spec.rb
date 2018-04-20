@@ -775,8 +775,8 @@ describe QuickActions::InterpretService do
     end
 
     context '/copy_metadata command' do
-      let!(:todo_label) { create(:label, project: project, title: 'To Do') }
-      let!(:inreview_label) { create(:label, project: project, title: 'In Review') }
+      let(:todo_label) { create(:label, project: project, title: 'To Do') }
+      let(:inreview_label) { create(:label, project: project, title: 'In Review') }
 
       it_behaves_like 'empty command' do
         let(:content) { '/copy_metadata' }
@@ -795,6 +795,17 @@ describe QuickActions::InterpretService do
           let(:source_issuable) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
 
           let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'when more than one issuable is passed' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+          let(:other_label) { create(:label, project: project, title: 'Other') }
+          let(:other_source_issuable) { create(:labeled_issue, project: project, labels: [other_label]) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference} #{other_source_issuable.to_reference}" }
           let(:issuable) { issue }
         end
       end
