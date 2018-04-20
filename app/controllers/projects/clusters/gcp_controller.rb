@@ -83,12 +83,12 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def authorize_google_project_billing
-    redis_token_key = CheckGcpProjectBillingWorker.store_session_token(token_in_session)
-    CheckGcpProjectBillingWorker.perform_async(redis_token_key)
+    redis_token_key = ListGcpProjectsWorker.store_session_token(token_in_session)
+    ListGcpProjectsWorker.perform_async(redis_token_key)
   end
 
   def google_project_billing_status
-    CheckGcpProjectBillingWorker.get_billing_state(token_in_session)
+    ListGcpProjectsWorker.get_billing_state(token_in_session)
   end
 
   def token_in_session

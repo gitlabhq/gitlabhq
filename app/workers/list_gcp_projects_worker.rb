@@ -1,6 +1,6 @@
 require 'securerandom'
 
-class CheckGcpProjectBillingWorker
+class ListGcpProjectsWorker
   include ApplicationWorker
   include ClusterQueue
 
@@ -64,7 +64,7 @@ class CheckGcpProjectBillingWorker
 
   def try_obtain_lease_for(token)
     Gitlab::ExclusiveLease
-      .new("check_gcp_project_billing_worker:#{token.hash}", timeout: LEASE_TIMEOUT)
+      .new("list_gcp_projects_worker:#{token.hash}", timeout: LEASE_TIMEOUT)
       .try_obtain
   end
 

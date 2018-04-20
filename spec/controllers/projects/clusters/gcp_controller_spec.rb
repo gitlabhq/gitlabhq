@@ -144,7 +144,7 @@ describe Projects::Clusters::GcpController do
           before do
             redis_double = double
             allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-            allow(redis_double).to receive(:get).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for('token')).and_return('true')
+            allow(redis_double).to receive(:get).with(ListGcpProjectsWorker.redis_shared_state_key_for('token')).and_return('true')
           end
 
           it 'creates a new cluster' do

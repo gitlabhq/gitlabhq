@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CheckGcpProjectBillingWorker do
+describe ListGcpProjectsWorker do
   describe '.perform' do
     let(:token) { 'bogustoken' }
 

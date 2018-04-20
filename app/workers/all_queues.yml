@@ -24,7 +24,7 @@
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
-- gcp_cluster:check_gcp_project_billing
+- gcp_cluster:list_gcp_projects
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 
 - github_import_advance_stage
