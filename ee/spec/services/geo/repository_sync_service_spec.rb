@@ -7,6 +7,8 @@ describe Geo::RepositorySyncService do
   set(:secondary) { create(:geo_node) }
 
   let(:lease) { double(try_obtain: true) }
+  let(:project) { create(:project_empty_repo) }
+  let(:repository) { project.repository }
 
   subject { described_class.new(project) }
 
@@ -15,16 +17,13 @@ describe Geo::RepositorySyncService do
   end
 
   it_behaves_like 'geo base sync execution'
+  it_behaves_like 'geo base sync fetch and repack'
 
   describe '#execute' do
-    let(:project) { create(:project_empty_repo) }
-    let(:repository) { project.repository }
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.git" }
 
     before do
-      allow(Gitlab::ExclusiveLease).to receive(:new)
-        .with(subject.lease_key, anything)
-        .and_return(lease)
+      allow(subject).to receive(:exclusive_lease).and_return(lease)
 
       allow_any_instance_of(Repository).to receive(:fetch_as_mirror)
         .and_return(true)
@@ -338,6 +337,14 @@ describe Geo::RepositorySyncService do
 
     it_behaves_like 'sync retries use the snapshot RPC' do
       let(:repository) { project.repository }
+    end
+  end
+
+  describe '#schedule_repack' do
+    it 'schedule GitGarbageCollectWorker for full repack' do
+      Sidekiq::Testing.fake! do
+        expect { subject.send(:schedule_repack) }.to change { GitGarbageCollectWorker.jobs.count }.by(1)
+      end
     end
   end
 end

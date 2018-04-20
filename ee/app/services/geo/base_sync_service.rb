@@ -61,10 +61,18 @@ module Geo
       if redownload
         redownload_repository
         set_temp_repository_as_main
+        schedule_repack
+      elsif repository.exists?
+        fetch_geo_mirror(repository)
       else
         ensure_repository
         fetch_geo_mirror(repository)
+        schedule_repack
       end
+    end
+
+    def schedule_repack
+      raise NotImplementedError
     end
 
     def redownload_repository
