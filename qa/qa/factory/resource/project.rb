@@ -17,10 +17,10 @@ module QA
           Page::Project::Show.act { project_name }
         end
 
-        product :repository_ssh_uri do
+        product :repository_ssh_location do
           Page::Project::Show.act do
             choose_repository_clone_ssh
-            repository_location_uri
+            repository_location
           end
         end
 

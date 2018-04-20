@@ -23,7 +23,7 @@ module QA
           Git::Repository.perform do |repository|
             repository.location = Page::Project::Show.act do
               choose_repository_clone_http
-              repository_location
+              repository_location.git_uri
             end
 
             repository.use_default_credentials

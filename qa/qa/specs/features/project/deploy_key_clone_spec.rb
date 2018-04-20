@@ -16,7 +16,7 @@ module QA
         resource.name = 'deploy-key-clone-project'
       end
 
-      @repository_uri = @project.repository_ssh_uri
+      @repository_location = @project.repository_ssh_location
 
       Factory::Resource::Runner.fabricate! do |resource|
         resource.project = @project
@@ -60,11 +60,11 @@ module QA
           cat-config:
             script:
               - mkdir -p ~/.ssh
-              - ssh-keyscan -p #{@repository_uri.port} #{@repository_uri.host} >> ~/.ssh/known_hosts
+              - ssh-keyscan -p #{@repository_location.port} #{@repository_location.host} >> ~/.ssh/known_hosts
               - eval $(ssh-agent -s)
               - ssh-add -D
               - echo "$#{deploy_key_name}" | ssh-add -
-              - git clone #{@repository_uri.git_uri}
+              - git clone #{@repository_location.git_uri}
               - cd #{@project.name}
               - git checkout #{deploy_key_name}
               - sha1sum .gitlab-ci.yml

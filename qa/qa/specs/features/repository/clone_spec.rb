@@ -4,7 +4,7 @@ module QA
       given(:location) do
         Page::Project::Show.act do
           choose_repository_clone_http
-          repository_location
+          repository_location.git_uri
         end
       end
 
