@@ -54,7 +54,7 @@ describe 'Merge request > User sees versions', :js do
   describe 'switch between versions' do
     before do
       page.within '.mr-version-dropdown' do
-        find('.btn-default').click
+        find('.btn-secondary').click
         click_link 'version 1'
       end
 
@@ -93,7 +93,7 @@ describe 'Merge request > User sees versions', :js do
   describe 'compare with older version' do
     before do
       page.within '.mr-version-compare-dropdown' do
-        find('.btn-default').click
+        find('.btn-secondary').click
         click_link 'version 1'
       end
 
@@ -151,7 +151,7 @@ describe 'Merge request > User sees versions', :js do
   describe 'compare with same version' do
     before do
       page.within '.mr-version-compare-dropdown' do
-        find('.btn-default').click
+        find('.btn-secondary').click
         click_link 'version 1'
       end
     end
@@ -162,7 +162,7 @@ describe 'Merge request > User sees versions', :js do
       end
 
       page.within '.mr-version-dropdown' do
-        find('.btn-default').click
+        find('.btn-secondary').click
         click_link 'version 1'
       end
       expect(page).to have_content '0 changed files'
@@ -172,7 +172,7 @@ describe 'Merge request > User sees versions', :js do
   describe 'compare with newer version' do
     before do
       page.within '.mr-version-compare-dropdown' do
-        find('.btn-default').click
+        find('.btn-secondary').click
         click_link 'version 2'
       end
     end
@@ -183,7 +183,7 @@ describe 'Merge request > User sees versions', :js do
       end
 
       page.within '.mr-version-dropdown' do
-        find('.btn-default').click
+        find('.btn-secondary').click
         click_link 'version 1'
       end
 
