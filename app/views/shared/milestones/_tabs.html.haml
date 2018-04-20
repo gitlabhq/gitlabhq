@@ -3,7 +3,7 @@
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
-  %ul.nav-links.scrolling-tabs.js-milestone-tabs
+  %ul.nav-links.scrolling-tabs.js-milestone-tabs.nav.nav-tabs
     - if issues_accessible
       %li.active
         = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do

@@ -3,7 +3,7 @@
 
 %div{ class: container_class }
   .top-area.adjust
-    %ul.nav-links.issues-state-filters
+    %ul.nav-links.issues-state-filters.nav.nav-tabs
       %li{ class: active_when(@mode == 'overview') }>
         = link_to s_('Branches|Overview'), project_branches_path(@project), title: s_('Branches|Show overview of the branches')
 

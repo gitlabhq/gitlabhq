@@ -1,7 +1,7 @@
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
-  %ul.nav-links.event-filter.scrolling-tabs
+  %ul.nav-links.event-filter.scrolling-tabs.nav.nav-tabs
     = event_filter_link EventFilter.all, _('All'), s_('EventFilterBy|Filter by all')
     - if event_filter_visible(:repository)
       = event_filter_link EventFilter.push, _('Push events'), s_('EventFilterBy|Filter by push events')

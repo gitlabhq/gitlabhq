@@ -1,7 +1,7 @@
 - failed_builds = @pipeline.statuses.latest.failed
 
 .tabs-holder
-  %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
       = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
         = _("Pipeline")

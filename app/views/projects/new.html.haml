@@ -28,7 +28,7 @@
         %template.push-new-project-tip-template= render partial: "new_project_push_tip"
 
     .col-lg-9.js-toggle-container
-      %ul.nav-links.gitlab-tabs{ role: 'tablist' }
+      %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
         %li{ class: active_when(active_tab == 'blank'), role: 'presentation' }
           %a{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.d-none.d-sm-block Blank project

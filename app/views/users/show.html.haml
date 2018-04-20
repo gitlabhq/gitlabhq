@@ -81,7 +81,7 @@
     .scrolling-tabs-container
       .fade-left= icon('angle-left')
       .fade-right= icon('angle-right')
-      %ul.nav-links.user-profile-nav.scrolling-tabs
+      %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
         - if profile_tab?(:activity)
           %li.js-activity-tab
             = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do

@@ -38,7 +38,7 @@
         = icon('angle-left')
       .fade-right
         = icon('angle-right')
-      %ul.nav-links.scrolling-tabs
+      %ul.nav-links.nav.nav-tabs.scrolling-tabs
         = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
           = link_to admin_users_path do
             Active

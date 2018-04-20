@@ -1,7 +1,7 @@
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
-  %ul.nav-links.search-filter.scrolling-tabs
+  %ul.nav-links.search-filter.scrolling-tabs.nav.nav-tabs
     - if @project
       - if project_search_tabs?(:blobs)
         %li{ class: active_when(@scope == 'blobs') }

@@ -30,7 +30,7 @@
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           .fade-left= icon('angle-left')
           .fade-right= icon('angle-right')
-          .nav-links.scrolling-tabs
+          .nav-links.scrolling-tabs.nav.nav-tabs
             %ul.merge-request-tabs.nav-tabs.nav
               %li.notes-tab
                 = tab_link_for @merge_request, :show, force_link: @commit.present? do

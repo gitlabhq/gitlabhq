@@ -2,7 +2,7 @@
 - page_title "Logs"
 
 %div{ class: container_class }
-  %ul.nav-links.log-tabs
+  %ul.nav-links.log-tabs.nav.nav-tabs
     - @loggers.each do |klass|
       %li{ class: active_when(klass == @loggers.first) }>
         = link_to klass.file_name, "##{klass.file_name_noext}", data: { toggle: 'tab' }

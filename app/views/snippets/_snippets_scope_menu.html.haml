@@ -1,7 +1,7 @@
 - subject = local_assigns.fetch(:subject, current_user)
 - include_private = local_assigns.fetch(:include_private, false)
 
-.nav-links.snippet-scope-menu.mobile-separator
+.nav-links.snippet-scope-menu.mobile-separator.nav.nav-tabs
   %li{ class: active_when(params[:scope].nil?) }
     = link_to subject_snippets_path(subject) do
       All

@@ -25,7 +25,7 @@
           New Project
         = button_tag "Search", class: "btn btn-primary btn-search hide"
 
-    %ul.nav-links
+    %ul.nav-links.nav.nav-tabs
       - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
       = nav_link(opts) do
         = link_to admin_projects_path do

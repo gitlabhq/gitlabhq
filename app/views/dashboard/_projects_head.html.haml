@@ -4,7 +4,7 @@
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
-  %ul.nav-links.scrolling-tabs.mobile-separator
+  %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
     = nav_link(page: [dashboard_projects_path, root_path]) do
       = link_to dashboard_projects_path, class: 'shortcuts-activity', data: {placement: 'right'} do
         Your projects
