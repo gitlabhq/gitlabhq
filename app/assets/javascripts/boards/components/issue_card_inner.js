@@ -179,7 +179,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
         v-if="showLabelFooter"
       >
         <button
-          class="label color-label has-tooltip"
+          class="badge color-label has-tooltip"
           v-for="label in issue.labels"
           type="button"
           v-if="showLabel(label)"

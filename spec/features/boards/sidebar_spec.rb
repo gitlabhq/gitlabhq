@@ -246,7 +246,7 @@ describe 'Issue Boards', :js do
         wait_for_requests
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 2)
+          expect(page).to have_selector('.badge', count: 2)
           expect(page).to have_content(development.title)
           expect(page).to have_content(stretch.title)
         end
@@ -268,12 +268,12 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 3)
+          expect(page).to have_selector('.badge', count: 3)
           expect(page).to have_content(bug.title)
         end
       end
 
-      expect(card).to have_selector('.label', count: 3)
+      expect(card).to have_selector('.badge', count: 3)
       expect(card).to have_content(bug.title)
     end
 
@@ -293,13 +293,13 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 4)
+          expect(page).to have_selector('.badge', count: 4)
           expect(page).to have_content(bug.title)
           expect(page).to have_content(regression.title)
         end
       end
 
-      expect(card).to have_selector('.label', count: 4)
+      expect(card).to have_selector('.badge', count: 4)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
     end
@@ -321,12 +321,12 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 1)
+          expect(page).to have_selector('.badge', count: 1)
           expect(page).not_to have_content(stretch.title)
         end
       end
 
-      expect(card).to have_selector('.label', count: 1)
+      expect(card).to have_selector('.badge', count: 1)
       expect(card).not_to have_content(stretch.title)
     end
 
