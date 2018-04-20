@@ -200,5 +200,9 @@ RSpec.describe Geo::WikiSyncService do
         end
       end
     end
+
+    it_behaves_like 'sync retries use the snapshot RPC' do
+      let(:repository) { project.wiki.repository }
+    end
   end
 end
