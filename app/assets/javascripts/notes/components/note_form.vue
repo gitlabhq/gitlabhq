@@ -66,9 +66,7 @@ export default {
       return this.getNotesDataByProp('markdownDocsPath');
     },
     quickActionsDocsPath() {
-      return !this.isEditing
-        ? this.getNotesDataByProp('quickActionsDocsPath')
-        : undefined;
+      return !this.isEditing ? this.getNotesDataByProp('quickActionsDocsPath') : undefined;
     },
     currentUserId() {
       return this.getUserDataByProp('id');
@@ -95,24 +93,17 @@ export default {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
 
-      this.$emit(
-        'handleFormUpdate',
-        this.updatedNoteBody,
-        this.$refs.editNoteForm,
-        () => {
-          this.isSubmitting = false;
+      this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
+        this.isSubmitting = false;
 
-          if (shouldResolve) {
-            this.resolveHandler(beforeSubmitDiscussionState);
-          }
-        },
-      );
+        if (shouldResolve) {
+          this.resolveHandler(beforeSubmitDiscussionState);
+        }
+      });
     },
     editMyLastNote() {
       if (this.updatedNoteBody === '') {
-        const lastNoteInDiscussion = this.getDiscussionLastNote(
-          this.updatedNoteBody,
-        );
+        const lastNoteInDiscussion = this.getDiscussionLastNote(this.note);
 
         if (lastNoteInDiscussion) {
           eventHub.$emit('enterEditMode', {
@@ -123,11 +114,7 @@ export default {
     },
     cancelHandler(shouldConfirm = false) {
       // Sends information about confirm message and if the textarea has changed
-      this.$emit(
-        'cancelForm',
-        shouldConfirm,
-        this.noteBody !== this.updatedNoteBody,
-      );
+      this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
     },
   },
 };
