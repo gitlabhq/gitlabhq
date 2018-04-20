@@ -222,7 +222,7 @@ describe('RepoEditor', () => {
       vm.setupEditor();
 
       expect(vm.editor.onPositionChange).toHaveBeenCalled();
-      expect(vm.model.events.size).toBe(1);
+      expect(vm.model.events.size).toBe(2);
     });
 
     it('updates state when model content changed', done => {

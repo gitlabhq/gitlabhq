@@ -5,7 +5,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
   let(:user)          { project.creator }
   let(:guest)         { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
-  let!(:note)          { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
+  let!(:note)         { create(:diff_note_on_merge_request, project: project, noteable: merge_request, note: "| Markdown | Table |\n|-------|---------|\n| first | second |") }
   let(:path)          { "files/ruby/popen.rb" }
   let(:position) do
     Gitlab::Diff::Position.new(
@@ -110,6 +110,15 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
             expect(page.find(".line-holder-placeholder")).to be_visible
             expect(page.find(".timeline-content #note_#{note.id}")).to be_visible
+          end
+
+          it 'renders tables in lazy-loaded resolved diff dicussions' do
+            find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
+
+            wait_for_requests
+
+            expect(page.find(".timeline-content #note_#{note.id}")).not_to have_css(".line_holder")
+            expect(page.find(".timeline-content #note_#{note.id}")).to have_css("tr", count: 2)
           end
         end
 
