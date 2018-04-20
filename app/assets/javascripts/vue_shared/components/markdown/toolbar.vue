@@ -59,7 +59,7 @@
       v-if="canAttachFile"
       class="uploading-container"
     >
-      <span class="uploading-progress-container d-none">
+      <span class="uploading-progress-container hide">
         <i
           class="fa fa-file-image-o toolbar-button-icon"
           aria-hidden="true"
@@ -75,7 +75,7 @@
           </i>
         </span>
       </span>
-      <span class="uploading-error-container d-none">
+      <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
           <i
             class="fa fa-file-image-o toolbar-button-icon"
@@ -111,7 +111,7 @@
         Attach a file
       </button>
       <button
-        class="btn btn-secondary btn-sm d-none button-cancel-uploading-files"
+        class="btn btn-secondary btn-sm hide button-cancel-uploading-files"
         type="button"
       >
         Cancel
