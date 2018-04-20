@@ -80,7 +80,7 @@ stages:
 
 .use-mysql: &use-mysql
   services:
-    - mysql:latest
+    - mysql:5.7
     - redis:alpine
 
 # BEGIN EE-only service helpers
@@ -103,7 +103,7 @@ stages:
 
 .use-mysql-with-elasticsearch: &use-mysql-with-elasticsearch
   services:
-    - mysql:latest
+    - mysql:5.7
     - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
