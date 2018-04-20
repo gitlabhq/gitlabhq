@@ -203,10 +203,11 @@ module NotificationRecipientService
       attr_reader :action
       attr_reader :previous_assignee
       attr_reader :skip_current_user
-      def initialize(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
+      def initialize(target, current_user, action:, custom_action: nil, previous_assignee: nil, skip_current_user: true)
         @target = target
         @current_user = current_user
         @action = action
+        @custom_action = custom_action
         @previous_assignee = previous_assignee
         @skip_current_user = skip_current_user
       end
@@ -236,7 +237,13 @@ module NotificationRecipientService
           add_mentions(current_user, target: target)
 
           # Add the assigned users, if any
-          assignees = custom_action == :new_issue ? target.assignees : target.assignee
+          assignees = case custom_action
+                      when :new_issue
+                        target.assignees
+                      else
+                        target.assignee
+                      end
+
           # We use the `:participating` notification level in order to match existing legacy behavior as captured
           # in existing specs (notification_service_spec.rb ~ line 507)
           add_recipients(assignees, :participating, NotificationReason::ASSIGNED) if assignees

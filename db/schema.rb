@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180406204716) do
+ActiveRecord::Schema.define(version: 20180418053107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -367,6 +367,7 @@ ActiveRecord::Schema.define(version: 20180406204716) do
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
+  add_index "ci_job_artifacts", ["file_store"], name: "index_ci_job_artifacts_on_file_store", using: :btree
   add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
   add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
 
@@ -1334,6 +1335,7 @@ ActiveRecord::Schema.define(version: 20180406204716) do
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
+    t.boolean "issue_due"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree

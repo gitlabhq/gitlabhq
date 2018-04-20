@@ -1437,6 +1437,12 @@ describe Repository do
 
       repository.expire_emptiness_caches
     end
+
+    it 'expires the memoized repository cache' do
+      allow(repository.raw_repository).to receive(:expire_has_local_branches_cache).and_call_original
+
+      repository.expire_emptiness_caches
+    end
   end
 
   describe 'skip_merges option' do

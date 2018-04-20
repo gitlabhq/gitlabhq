@@ -10,8 +10,11 @@
 [0;m[0KWaiting for services to be up and running...
 [0;m[0KPulling docker image dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.16-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6 ...
 [0;m[0KUsing docker image sha256:1b06077bb03d9d42d801b53f45701bb6a7e862ca02e1e75f30ca7fcf1270eb02 for dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.16-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6 ...
-[0;msection_start:1522927103:prepare_script[0KRunning on runner-30d62d59-project-13083-concurrent-0 via runner-30d62d59-prm-1522922015-ddc29478...
-section_end:1522927104:prepare_script[0Ksection_start:1522927104:get_sources[0K[32;1mFetching changes for master with git depth set to 20...[0;m
+[0;msection_start:1522927103:prepare_script
+[0KRunning on runner-30d62d59-project-13083-concurrent-0 via runner-30d62d59-prm-1522922015-ddc29478...
+section_end:1522927104:prepare_script
+[0Ksection_start:1522927104:get_sources
+[0K[32;1mFetching changes for master with git depth set to 20...[0;m
 Removing .gitlab_shell_secret
 Removing .gitlab_workhorse_secret
 Removing .yarn-cache/
@@ -35,17 +38,23 @@ From https://gitlab.com/gitlab-org/gitlab-ce
    2dbcb9cb..641bb13b  master     -> origin/master
 [32;1mChecking out 21488c74 as master...[0;m
 [32;1mSkipping Git submodules setup[0;m
-section_end:1522927113:get_sources[0Ksection_start:1522927113:restore_cache[0K[32;1mChecking cache for ruby-2.3.6-with-yarn...[0;m
+section_end:1522927113:get_sources
+[0Ksection_start:1522927113:restore_cache
+[0K[32;1mChecking cache for ruby-2.3.6-with-yarn...[0;m
 Downloading cache.zip from http://runners-cache-5-internal.gitlab.com:444/runner/project/13083/ruby-2.3.6-with-yarn[0;m 
 [32;1mSuccessfully extracted cache[0;m
-section_end:1522927128:restore_cache[0Ksection_start:1522927128:download_artifacts[0K[32;1mDownloading artifacts for retrieve-tests-metadata (61303215)...[0;m
+section_end:1522927128:restore_cache
+[0Ksection_start:1522927128:download_artifacts
+[0K[32;1mDownloading artifacts for retrieve-tests-metadata (61303215)...[0;m
 Downloading artifacts from coordinator... ok      [0;m  id[0;m=61303215 responseStatus[0;m=200 OK token[0;m=AdWPNg2R
 [32;1mDownloading artifacts for compile-assets (61303216)...[0;m
 Downloading artifacts from coordinator... ok      [0;m  id[0;m=61303216 responseStatus[0;m=200 OK token[0;m=iy2yYbq8
 [32;1mDownloading artifacts for setup-test-env (61303217)...[0;m
 Downloading artifacts from coordinator... ok      [0;m  id[0;m=61303217 responseStatus[0;m=200 OK token[0;m=ur1g79-4
 [0;33mWARNING: tmp/tests/gitlab-shell/.gitlab_shell_secret: chmod tmp/tests/gitlab-shell/.gitlab_shell_secret: no such file or directory (suppressing repeats)[0;m 
-section_end:1522927141:download_artifacts[0Ksection_start:1522927141:build_script[0K[32;1m$ bundle --version[0;m
+section_end:1522927141:download_artifacts
+[0Ksection_start:1522927141:build_script
+[0K[32;1m$ bundle --version[0;m
 Bundler version 1.16.1
 [32;1m$ date[0;m
 Thu Apr  5 11:19:01 UTC 2018
@@ -3415,15 +3424,22 @@ Pending: (Failures listed here are expected and do not affect your suite's statu
 Finished in 5 minutes 7 seconds (files took 16.6 seconds to load)
 819 examples, 0 failures, 92 pending
 
-section_end:1522927514:build_script[0Ksection_start:1522927514:after_script[0K[32;1mRunning after script...[0;m
+section_end:1522927514:build_script
+[0Ksection_start:1522927514:after_script
+[0K[32;1mRunning after script...[0;m
 [32;1m$ date[0;m
 Thu Apr  5 11:25:14 UTC 2018
-section_end:1522927515:after_script[0Ksection_start:1522927515:archive_cache[0K[32;1mNot uploading cache ruby-2.3.6-with-yarn due to policy[0;m
-section_end:1522927516:archive_cache[0Ksection_start:1522927516:upload_artifacts[0K[32;1mUploading artifacts...[0;m
+section_end:1522927515:after_script
+[0Ksection_start:1522927515:archive_cache
+[0K[32;1mNot uploading cache ruby-2.3.6-with-yarn due to policy[0;m
+section_end:1522927516:archive_cache
+[0Ksection_start:1522927516:upload_artifacts
+[0K[32;1mUploading artifacts...[0;m
 coverage/: found 5 matching files                 [0;m 
 knapsack/: found 5 matching files                 [0;m 
 rspec_flaky/: found 4 matching files              [0;m 
 [0;33mWARNING: tmp/capybara/: no matching files         [0;m 
 Uploading artifacts to coordinator... ok          [0;m  id[0;m=61303283 responseStatus[0;m=201 Created token[0;m=rusBKvxM
-section_end:1522927520:upload_artifacts[0K[32;1mJob succeeded
+section_end:1522927520:upload_artifacts
+[0K[32;1mJob succeeded
 [0;m

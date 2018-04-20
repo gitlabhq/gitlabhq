@@ -4,7 +4,7 @@
 - load_async = local_assigns.fetch(:load_async, viewer.load_async? && render_error.nil?)
 - external_embed = local_assigns.fetch(:external_embed, false)
 
-- viewer_url = local_assigns.fetch(:viewer_url) { url_for(params.merge(viewer: viewer.type, format: :json)) } if load_async
+- viewer_url = local_assigns.fetch(:viewer_url) { url_for(safe_params.merge(viewer: viewer.type, format: :json)) } if load_async
 .blob-viewer{ data: { type: viewer.type, rich_type: rich_type, url: viewer_url }, class: ('hidden' if hidden) }
   - if render_error
     = render 'projects/blob/render_error', viewer: viewer

@@ -10,7 +10,9 @@ module Gitlab
 
         delegate :close, :tell, :seek, :size, :url, :truncate, to: :stream, allow_nil: true
 
-        delegate :valid?, to: :stream, as: :present?, allow_nil: true
+        delegate :valid?, to: :stream, allow_nil: true
+
+        alias_method :present?, :valid?
 
         def initialize
           @stream = yield
@@ -90,7 +92,7 @@ module Gitlab
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            return coverage if coverage.present?
+            return coverage if coverage.present? # rubocop:disable Cop/AvoidReturnFromBlocks
           end
 
           nil

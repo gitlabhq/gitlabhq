@@ -25,7 +25,7 @@ module API
         get ":id/#{noteables_str}/:noteable_id/discussions" do
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
-          return not_found!("Discussions") unless can?(current_user, noteable_read_ability_name(noteable), noteable)
+          break not_found!("Discussions") unless can?(current_user, noteable_read_ability_name(noteable), noteable)
 
           notes = noteable.notes
             .inc_relations_for_view
@@ -50,7 +50,7 @@ module API
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
           if notes.empty? || !can?(current_user, noteable_read_ability_name(noteable), noteable)
-            return not_found!("Discussion")
+            break not_found!("Discussion")
           end
 
           discussion = Discussion.build(notes, noteable)
@@ -98,7 +98,7 @@ module API
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
           if notes.empty? || !can?(current_user, noteable_read_ability_name(noteable), noteable)
-            return not_found!("Notes")
+            break not_found!("Notes")
           end
 
           present notes, with: Entities::Note
@@ -117,8 +117,8 @@ module API
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
-          return not_found!("Discussion") if notes.empty?
-          return bad_request!("Discussion is an individual note.") unless notes.first.part_of_discussion?
+          break not_found!("Discussion") if notes.empty?
+          break bad_request!("Discussion is an individual note.") unless notes.first.part_of_discussion?
 
           opts = {
             note: params[:body],
