@@ -502,16 +502,18 @@ feature 'Jobs' do
     end
   end
 
-  describe "POST /:project/jobs/:id/retry" do
+  describe "POST /:project/jobs/:id/retry", :js do
     context "Job from project", :js do
       before do
         job.run!
+        job.cancel!
         visit project_job_path(project, job)
-        find('.js-cancel-job').click()
+        wait_for_requests
+
         find('.js-retry-button').click
       end
 
-      it 'shows the right status and buttons', :js do
+      it 'shows the right status and buttons' do
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end

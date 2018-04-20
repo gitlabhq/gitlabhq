@@ -96,7 +96,7 @@
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
               = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
-          .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
+          .value.issuable-show-labels.dont-hide.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|
                 = link_to_label(label, subject: issuable.project, type: issuable.to_ability_name)
