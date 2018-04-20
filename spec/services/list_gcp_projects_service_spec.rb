@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CheckGcpProjectBillingService do
+describe ListGcpProjectsService do
   include GoogleApi::CloudPlatformHelpers
 
   let(:service) { described_class.new }

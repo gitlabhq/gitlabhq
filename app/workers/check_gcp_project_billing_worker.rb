@@ -37,7 +37,7 @@ class CheckGcpProjectBillingWorker
     return unless token
     return unless try_obtain_lease_for(token)
 
-    billing_enabled_state = !CheckGcpProjectBillingService.new.execute(token).empty?
+    billing_enabled_state = !ListGcpProjectsService.new.execute(token).empty?
     update_billing_change_counter(self.class.get_billing_state(token), billing_enabled_state)
     self.class.set_billing_state(token, billing_enabled_state)
   end

@@ -22,13 +22,13 @@ describe CheckGcpProjectBillingWorker do
         end
 
         it 'calls the service' do
-          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
+          expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
 
           subject
         end
 
         it 'stores billing status in redis' do
-          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
+          expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
           expect(described_class).to receive(:set_billing_state).with(token, true)
 
           subject
@@ -41,7 +41,7 @@ describe CheckGcpProjectBillingWorker do
         end
 
         it 'does not call the service' do
-          expect(CheckGcpProjectBillingService).not_to receive(:new)
+          expect(ListGcpProjectsService).not_to receive(:new)
 
           subject
         end
@@ -54,7 +54,7 @@ describe CheckGcpProjectBillingWorker do
       end
 
       it 'does not call the service' do
-        expect(CheckGcpProjectBillingService).not_to receive(:new)
+        expect(ListGcpProjectsService).not_to receive(:new)
 
         subject
       end
@@ -77,7 +77,7 @@ describe CheckGcpProjectBillingWorker do
 
       context 'when the current state is false' do
         before do
-          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([])
+          expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([])
         end
 
         it 'increments the billing change counter' do
@@ -89,7 +89,7 @@ describe CheckGcpProjectBillingWorker do
 
       context 'when the current state is true' do
         before do
-          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
+          expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
         end
 
         it 'increments the billing change counter' do
@@ -103,7 +103,7 @@ describe CheckGcpProjectBillingWorker do
     context 'when previous state was true' do
       before do
         expect(described_class).to receive(:get_billing_state).and_return(true)
-        expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
+        expect(ListGcpProjectsService).to receive_message_chain(:new, :execute).and_return([double])
       end
 
       it 'increment the billing change counter' do
