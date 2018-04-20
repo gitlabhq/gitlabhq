@@ -1,5 +1,0 @@
----
-title: Fix a bug migrating CI job artifact registry entries to a separate table
-merge_request: 5345
-author:
-type: fixed

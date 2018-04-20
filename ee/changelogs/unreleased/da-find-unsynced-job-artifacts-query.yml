@@ -1,5 +1,0 @@
----
-title: Geo - Improve the query performance to find unsynced job artifacts
-merge_request: 5350
-author:
-type: performance
