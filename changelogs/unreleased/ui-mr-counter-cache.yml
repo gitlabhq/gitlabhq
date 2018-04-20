@@ -1,5 +1,0 @@
----
-title: Deleting a MR you are assigned to should decrements counter
-merge_request: 17951
-author: m b
-type: fixed
