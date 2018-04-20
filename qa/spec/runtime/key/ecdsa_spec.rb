@@ -11,7 +11,8 @@ describe QA::Runtime::Key::ECDSA do
 
   describe '#new' do
     it 'does not support arbitrary bits' do
-      expect { described_class.new(123) }.to raise_error(RuntimeError)
+      expect { described_class.new(123) }
+        .to raise_error(QA::Service::Shellout::CommandError)
     end
   end
 end
