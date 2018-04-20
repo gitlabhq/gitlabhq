@@ -138,9 +138,6 @@ describe Projects::Clusters::GcpController do
         before do
           stub_google_api_validate_token
           allow_any_instance_of(described_class).to receive(:get_gcp_projects)
-        end
-
-        before do
           allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([double])
         end
 
