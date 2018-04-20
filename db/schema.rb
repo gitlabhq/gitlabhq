@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180418053107) do
+ActiveRecord::Schema.define(version: 20180420061925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -442,6 +442,17 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
   add_index "ci_pipelines", ["status"], name: "index_ci_pipelines_on_status", using: :btree
   add_index "ci_pipelines", ["user_id"], name: "index_ci_pipelines_on_user_id", using: :btree
+
+  create_table "ci_runner_groups", force: :cascade do |t|
+    t.integer "runner_id"
+    t.integer "group_id"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "ci_runner_groups", ["group_id"], name: "index_ci_runner_groups_on_group_id", using: :btree
+  add_index "ci_runner_groups", ["runner_id", "group_id"], name: "index_ci_runner_groups_on_runner_id_and_group_id", unique: true, using: :btree
+  add_index "ci_runner_groups", ["runner_id"], name: "index_ci_runner_groups_on_runner_id", using: :btree
 
   create_table "ci_runner_projects", force: :cascade do |t|
     t.integer "runner_id", null: false
@@ -1257,6 +1268,7 @@ ActiveRecord::Schema.define(version: 20180418053107) do
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
+    t.string "runners_token"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1267,6 +1279,7 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["require_two_factor_authentication"], name: "index_namespaces_on_require_two_factor_authentication", using: :btree
+  add_index "namespaces", ["runners_token"], name: "index_namespaces_on_runners_token", unique: true, using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
   create_table "notes", force: :cascade do |t|
@@ -1392,6 +1405,8 @@ ActiveRecord::Schema.define(version: 20180418053107) do
     t.datetime_with_timezone "verified_at"
     t.string "verification_code", null: false
     t.datetime_with_timezone "enabled_until"
+    t.text "acme_challenge_token"
+    t.text "acme_challenge_response"
   end
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
@@ -1488,6 +1503,14 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   end
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
+
+  create_table "project_settings", force: :cascade do |t|
+    t.integer "project_id"
+    t.boolean "group_runners_enabled", default: true
+  end
+
+  add_index "project_settings", ["group_runners_enabled"], name: "index_project_settings_on_group_runners_enabled", using: :btree
+  add_index "project_settings", ["project_id"], name: "index_project_settings_on_project_id", using: :btree
 
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1643,6 +1666,7 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2076,6 +2100,8 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
+  add_foreign_key "ci_runner_groups", "ci_runners", column: "runner_id", name: "fk_d8a0baa93b", on_delete: :cascade
+  add_foreign_key "ci_runner_groups", "namespaces", column: "group_id", name: "fk_cdafb3bbba", on_delete: :cascade
   add_foreign_key "ci_runner_projects", "projects", name: "fk_4478a6f1e4", on_delete: :cascade
   add_foreign_key "ci_stages", "ci_pipelines", column: "pipeline_id", name: "fk_fb57e6cc56", on_delete: :cascade
   add_foreign_key "ci_stages", "projects", name: "fk_2360681d1d", on_delete: :cascade
@@ -2165,6 +2191,7 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+  add_foreign_key "project_settings", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
