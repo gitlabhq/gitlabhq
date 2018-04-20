@@ -248,7 +248,7 @@ describe 'Filter issues', :js do
 
     context 'issue label clicked' do
       it 'filters and displays in search bar' do
-        find('.issues-list .issue .issue-main-info .issuable-info a .label', text: multiple_words_label.title).click
+        find('.issues-list .issue .issue-main-info .issuable-info a .badge', text: multiple_words_label.title).click
 
         expect_issues_list_count(1)
         expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
