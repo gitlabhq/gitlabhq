@@ -66,10 +66,26 @@ export default {
 
 <template>
   <li
+    :class="{
+      active: tab.active
+    }"
     @click="clickFile(tab)"
     @mouseover="mouseOverTab"
     @mouseout="mouseOutTab"
   >
+    <div
+      class="multi-file-tab"
+      :title="tab.url"
+    >
+      <file-icon
+        :file-name="tab.name"
+        :size="16"
+      />
+      {{ tab.name }}
+      <file-status-icon
+        :file="tab"
+      />
+    </div>
     <button
       type="button"
       class="multi-file-tab-close"
@@ -86,22 +102,5 @@ export default {
         :file="tab"
       />
     </button>
-
-    <div
-      class="multi-file-tab"
-      :class="{
-        active: tab.active
-      }"
-      :title="tab.url"
-    >
-      <file-icon
-        :file-name="tab.name"
-        :size="16"
-      />
-      {{ tab.name }}
-      <file-status-icon
-        :file="tab"
-      />
-    </div>
   </li>
 </template>

@@ -141,7 +141,17 @@
   }
 
   li {
-    position: relative;
+    display: flex;
+    align-items: center;
+    padding: $grid-size $gl-padding;
+    background-color: $gray-normal;
+    border-right: 1px solid $white-dark;
+    border-bottom: 1px solid $white-dark;
+
+    &.active {
+      background-color: $white-light;
+      border-bottom-color: $white-light;
+    }
   }
 
   .dropdown {
@@ -164,35 +174,23 @@
 }
 
 .multi-file-tab {
-  @include str-truncated(150px);
-  padding: ($gl-padding / 2) ($gl-padding + 12) ($gl-padding / 2) $gl-padding;
-  background-color: $gray-normal;
-  border-right: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
+  @include str-truncated(141px);
   cursor: pointer;
 
   svg {
     vertical-align: middle;
   }
-
-  &.active {
-    background-color: $white-light;
-    border-bottom-color: $white-light;
-  }
 }
 
 .multi-file-tab-close {
-  position: absolute;
-  right: 8px;
-  top: 50%;
   width: 16px;
   height: 16px;
   padding: 0;
+  margin-left: $grid-size;
   background: none;
   border: 0;
   border-radius: $border-radius-default;
   color: $theme-gray-900;
-  transform: translateY(-50%);
 
   svg {
     position: relative;
@@ -301,6 +299,7 @@
 
 .multi-file-editor-holder {
   height: 100%;
+  min-height: 0;
 }
 
 .preview-container {
@@ -774,10 +773,9 @@
   display: flex;
   align-items: center;
   position: relative;
-  height: 55px;
+  height: 60px;
   width: 100%;
-  margin: 2.5px 0;
-  padding: $gl-padding-8 $gl-padding;
+  padding: 0 $gl-padding;
   color: $gl-text-color-secondary;
   background-color: transparent;
   border: 0;
@@ -789,9 +787,12 @@
     margin: 0 auto;
   }
 
-  &:hover,
+  &:hover {
+    background-color: $theme-gray-100;
+  }
+
   &:focus {
-    background-color: $white-light;
+    background-color: $theme-gray-200;
   }
 
   &.active {
