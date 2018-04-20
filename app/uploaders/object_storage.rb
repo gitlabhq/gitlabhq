@@ -183,14 +183,6 @@ module ObjectStorage
           StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
         }
       end
-
-      def default_object_store
-        if self.object_store_enabled? && self.direct_upload_enabled?
-          Store::REMOTE
-        else
-          Store::LOCAL
-        end
-      end
     end
 
     # allow to configure and overwrite the filename
@@ -211,12 +203,13 @@ module ObjectStorage
     end
 
     def object_store
-      @object_store ||= model.try(store_serialization_column) || self.class.default_object_store
+      # We use Store::LOCAL as null value indicates the local storage
+      @object_store ||= model.try(store_serialization_column) || Store::LOCAL
     end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def object_store=(value)
-      @object_store = value || self.class.default_object_store
+      @object_store = value || Store::LOCAL
       @storage = storage_for(object_store)
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -297,6 +290,15 @@ module ObjectStorage
       # We use that for "accelerated" uploads, where we store result on remote storage
       if new_file.is_a?(::UploadedFile) && new_file.remote_id
         return cache_remote_file!(new_file.remote_id, new_file.original_filename)
+      end
+
+      super
+    end
+
+    def store!(new_file = nil)
+      # when direct upload is enabled, always store on remote storage
+      if self.class.object_store_enabled? && self.class.direct_upload_enabled?
+        self.object_store = Store::REMOTE
       end
 
       super

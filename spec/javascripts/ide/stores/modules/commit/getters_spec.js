@@ -34,17 +34,17 @@ describe('IDE commit module getters', () => {
       discardDraftButtonDisabled: false,
     };
     const rootState = {
-      changedFiles: ['a'],
+      stagedFiles: ['a'],
     };
 
-    it('returns false when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
+    it('returns false when discardDraftButtonDisabled is false & stagedFiles is not empty', () => {
       expect(
         getters.commitButtonDisabled(state, localGetters, rootState),
       ).toBeFalsy();
     });
 
-    it('returns true when discardDraftButtonDisabled is false & changedFiles is empty', () => {
-      rootState.changedFiles.length = 0;
+    it('returns true when discardDraftButtonDisabled is false & stagedFiles is empty', () => {
+      rootState.stagedFiles.length = 0;
 
       expect(
         getters.commitButtonDisabled(state, localGetters, rootState),
@@ -61,7 +61,7 @@ describe('IDE commit module getters', () => {
 
     it('returns true when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
       localGetters.discardDraftButtonDisabled = false;
-      rootState.changedFiles.length = 0;
+      rootState.stagedFiles.length = 0;
 
       expect(
         getters.commitButtonDisabled(state, localGetters, rootState),
