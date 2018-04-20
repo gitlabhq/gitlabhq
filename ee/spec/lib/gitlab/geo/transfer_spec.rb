@@ -71,7 +71,7 @@ describe Gitlab::Geo::Transfer do
 
           result = subject.download_from_primary
 
-          expect_result(result, success: false, bytes_downloaded: 0)
+          expect_result(result, success: false, bytes_downloaded: 0, primary_missing_file: false)
         end
       end
     end
@@ -102,9 +102,13 @@ describe Gitlab::Geo::Transfer do
     end
   end
 
-  def expect_result(result, success:, bytes_downloaded:, primary_missing_file: nil)
+  def expect_result(result, success:, bytes_downloaded:, primary_missing_file:)
     expect(result.success).to eq(success)
     expect(result.bytes_downloaded).to eq(bytes_downloaded)
     expect(result.primary_missing_file).to eq(primary_missing_file)
+
+    # Sanity check to help ensure a valid test
+    expect(success).not_to be_nil
+    expect(primary_missing_file).not_to be_nil
   end
 end

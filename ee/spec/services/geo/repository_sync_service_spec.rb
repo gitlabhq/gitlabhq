@@ -335,5 +335,9 @@ describe Geo::RepositorySyncService do
         end
       end
     end
+
+    it_behaves_like 'sync retries use the snapshot RPC' do
+      let(:repository) { project.repository }
+    end
   end
 end

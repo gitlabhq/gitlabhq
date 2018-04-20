@@ -1,5 +1,0 @@
----
-title: 'Ensure Geo secondary nodes only run cron jobs appropriate for secondaries'
-merge_request:
-author:
-type: fixed

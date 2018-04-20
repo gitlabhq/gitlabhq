@@ -1,5 +1,79 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.7.0 (2018-04-22)
+
+### Fixed (25 changes)
+
+- Issue Boards: Ensure that horizontal scroll bars are shown on overflow. !4944
+- Fix validation error message when historical data is empty. !4961
+- Fixes incorrect assignation of cluster details. !5047
+- Fixed personal snippets uploads when background upload is enabled. !5049
+- Fixed incorrect count of verified wikis on a Geo secondary node. !5084
+- Fix unapproved unassigned merge request emails failing to send. !5092
+- Geo secondary repository verification messages now appear in geo.log. !5095
+- Geo: Sync wiki when it is enabled. !5139
+- Geo: Make synced/failed scopes more consistent. !5171
+- Updates style of arrown in downstream pipeline. !5172
+- Add better LDAP connection handling in EE and fixing some LDAP group syncing problems. !5173
+- Fix an exception in the Geo repository sync worker. !5223
+- Geo - Fix wiki repository verification on a secondary node. !5315
+- Show repository checksum UI elements only when feature is enabled. !5341
+- Fix a bug migrating CI job artifact registry entries to a separate table. !5345
+- Render show all report for sast and dependency scanning. !5363
+- Fix label and issuable referencing in epics and epic notes.
+- Add icons to epic system notes issue actions.
+- [Geo] Fix project rename when wiki does not exist.
+- Catch errors in LoadBalancing::Host#online?.
+- Fix Scoped Boards bug filtering by No Milestone.
+- Skip repository-changing events on Geo secondaries if the repository hasn't been backfilled yet.
+- Ensure Geo secondary nodes only run cron jobs appropriate for secondaries.
+- Geo - Returns a dummy checksum when there is no repository on disk.
+- Fix Elasticsearch missing terms with special characters.
+
+### Deprecated (1 change)
+
+- Rename SAST:container to Container Scannning.
+
+### Changed (9 changes)
+
+- Geo - Perform the repository verification per shard on a secondary node. !5068
+- Allow enabling classification policy control without external authorization service. !5083
+- Update Geo nodes layout for better usability. !5199
+- Document manual disaster recovery process for systems with multiple secondaries.
+- Don't send schedule confirmations for chat jobs.
+- Geo - Switch from time-based checking of outdated checksums to the nil-checksum-based approach.
+- Make /-/ delimiter optional for epics and search endpoints.
+- Order boards dropdown alphabetically.
+- Renders grouped security reports in MR widget & split security reports in CI view.
+
+### Performance (3 changes)
+
+- Geo - Improve the query performance to find unsynced job artifacts. !5350
+- Reimplement Roadmap timeline rendering for better performance.
+- Geo: Migrate CI job artifacts into their own registry table.
+
+### Added (11 changes)
+
+- Geo ensure files moved to object storage are cleaned up. !4689
+- Timeout for external authorization is now configurable. !4971
+- Add system header and footer as new appearance options. !4972
+- Authenticate using TLS certificate for requests to external authorization service. !5028
+- Add admin setting for custom additional text in emails. !5031
+- Mark files missing on primary as synced, but retry them. !5050
+- Log every access when external authorization is enabled. !5117
+- Add total CPU/Memory metrics, adds weighting for proper sorting. !5260
+- Add comment thread to Epics.
+- Render dependency scanning in MR widget and CI view.
+- Add a Go back button to WebIDE to allow returning to where it was launched from.
+
+### Other (4 changes, 1 of them is from the community)
+
+- Move default group project creation level to Starter. !5148
+- Replace the `project/issues/weight.feature` spinach test with an rspec analog. !5194 (blackst0ne)
+- [Geo] Log JID for sync related jobs.
+- Breaks utils function to parse codeclimate and sast into separate functions.
+
+
 ## 10.6.4 (2018-04-09)
 
 ### Fixed (4 changes)

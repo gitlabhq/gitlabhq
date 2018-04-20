@@ -8,6 +8,9 @@ have filesystem access. For a user configurable Git hook interface, see
 [Push Rules](https://docs.gitlab.com/ee/push_rules/push_rules.html),
 available in GitLab Enterprise Edition.
 
+>
+**Note:** Custom Git hooks won't be replicated to secondary nodes if you use [GitLab Geo][gitlab-geo]
+
 Git natively supports hooks that are executed on different actions.
 Examples of server-side git hooks include pre-receive, post-receive, and update.
 See [Git SCM Server-Side Hooks][hooks] for more information about each hook type.
@@ -82,5 +85,6 @@ STDERR takes precedence over STDOUT.
 
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
 [webhooks]: ../user/project/integrations/webhooks.md
+[gitlab-geo]: ../administration/geo/replication/index.md
 [5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073
 [93]: https://gitlab.com/gitlab-org/gitlab-shell/merge_requests/93

@@ -1,5 +1,0 @@
----
-title: Catch errors in LoadBalancing::Host#online?
-merge_request:
-author:
-type: fixed

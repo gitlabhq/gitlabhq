@@ -1,5 +1,0 @@
----
-title: Fix unapproved unassigned merge request emails failing to send
-merge_request: 5092
-author:
-type: fixed

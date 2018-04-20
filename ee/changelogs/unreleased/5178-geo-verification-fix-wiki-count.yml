@@ -1,5 +1,0 @@
----
-title: Fixed incorrect count of verified wikis on a Geo secondary node
-merge_request: 5084
-author:
-type: fixed

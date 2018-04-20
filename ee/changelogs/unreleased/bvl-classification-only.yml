@@ -1,6 +1,0 @@
----
-title: Allow enabling classification policy control without external authorization
-  service
-merge_request: 5083
-author:
-type: changed

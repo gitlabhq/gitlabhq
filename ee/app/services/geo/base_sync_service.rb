@@ -55,16 +55,31 @@ module Geo
     def fetch_repository(redownload)
       log_info("Trying to fetch #{type}")
       clean_up_temporary_repository
+
       update_registry!(started_at: DateTime.now)
 
       if redownload
-        log_info("Redownloading #{type}")
-        fetch_geo_mirror(build_temporary_repository)
+        redownload_repository
         set_temp_repository_as_main
       else
         ensure_repository
         fetch_geo_mirror(repository)
       end
+    end
+
+    def redownload_repository
+      log_info("Redownloading #{type}")
+
+      return if fetch_snapshot
+
+      log_info("Attempting to fetch repository via git")
+
+      # `git fetch` needs an empty bare repository to fetch into
+      unless gitlab_shell.create_repository(project.repository_storage, disk_path_temp)
+        raise Gitlab::Shell::Error, 'Can not create a temporary repository'
+      end
+
+      fetch_geo_mirror(temp_repo)
     end
 
     def retry_count
@@ -97,6 +112,26 @@ module Geo
       repository.with_config(header) do
         repository.fetch_as_mirror(url, remote_name: GEO_REMOTE_NAME, forced: true)
       end
+    end
+
+    # Use snapshotting for redownloads *only* when enabled.
+    #
+    # If writes happen to the repository while snapshotting, it may be
+    # returned in an inconsistent state. However, a subsequent git fetch
+    # will be enqueued by the log cursor, which should resolve any problems
+    # it is possible to fix.
+    def fetch_snapshot
+      return unless Feature.enabled?(:geo_redownload_with_snapshot)
+
+      log_info("Attempting to fetch repository via snapshot")
+
+      temp_repo.create_from_snapshot(
+        ::Gitlab::Geo.primary_node.snapshot_url(temp_repo),
+        ::Gitlab::Geo::RepoSyncRequest.new.authorization
+      )
+    rescue => err
+      log_error('Snapshot attempt failed', err)
+      false
     end
 
     def registry
@@ -171,21 +206,15 @@ module Geo
       @deleted_path ||= "@failed-geo-sync/#{repository.disk_path}"
     end
 
-    def build_temporary_repository
-      unless gitlab_shell.create_repository(project.repository_storage, disk_path_temp)
-        raise Gitlab::Shell::Error, 'Can not create a temporary repository'
-      end
-
-      log_info("Created temporary repository")
-
-      ::Repository.new(repository.full_path, repository.project, disk_path: disk_path_temp, is_wiki: repository.is_wiki)
+    def temp_repo
+      @temp_repo ||= ::Repository.new(repository.full_path, repository.project, disk_path: disk_path_temp, is_wiki: repository.is_wiki)
     end
 
     def clean_up_temporary_repository
       exists = gitlab_shell.exists?(project.repository_storage_path, disk_path_temp)
 
       if exists && !gitlab_shell.remove_repository(project.repository_storage_path, disk_path_temp)
-        raise Gitlab::Shell::Error, "Temporary #{type} can not been removed"
+        raise Gitlab::Shell::Error, "Temporary #{type} can not be removed"
       end
     end
 
@@ -218,7 +247,7 @@ module Geo
       ensure_repository_namespace(repository.disk_path)
 
       unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
-        raise Gitlab::Shell::Error, 'Can not move temporary repository'
+        raise Gitlab::Shell::Error, 'Can not move temporary repository to canonical location'
       end
 
       # Purge the original repository

@@ -1,5 +1,0 @@
----
-title: Add better LDAP connection handling in EE and fixing some LDAP group syncing problems
-merge_request: 5173
-author:
-type: fixed

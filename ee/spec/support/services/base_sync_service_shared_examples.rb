@@ -47,3 +47,60 @@ shared_examples 'cleans temporary repositories' do
     end
   end
 end
+
+shared_examples 'sync retries use the snapshot RPC' do
+  let(:retry_count) { Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD }
+
+  context 'snapshot synchronization method' do
+    before do
+      allow(subject).to receive(:temp_repo) { repository }
+    end
+
+    def receive_create_from_snapshot
+      receive(:create_from_snapshot).with(primary.snapshot_url(repository), match(/^GL-Geo/)) { Gitaly::CreateRepositoryFromSnapshotResponse.new }
+    end
+
+    it 'does not attempt to snapshot for initial sync' do
+      expect(repository).not_to receive_create_from_snapshot
+      expect(subject).to receive(:fetch_geo_mirror).with(repository)
+
+      subject.execute
+    end
+
+    it 'does not attempt to snapshot for ordinary retries' do
+      create(:geo_project_registry, project: project, repository_retry_count: retry_count - 1, wiki_retry_count: retry_count - 1)
+
+      expect(repository).not_to receive_create_from_snapshot
+      expect(subject).to receive(:fetch_geo_mirror).with(repository)
+
+      subject.execute
+    end
+
+    context 'registry is ready to be snapshotted' do
+      let!(:registry) { create(:geo_project_registry, project: project, repository_retry_count: retry_count + 1, wiki_retry_count: retry_count + 1) }
+
+      it 'attempts to snapshot' do
+        expect(repository).to receive_create_from_snapshot
+        expect(subject).not_to receive(:fetch_geo_mirror).with(repository)
+
+        subject.execute
+      end
+
+      it 'attempts to fetch if snapshotting raises an exception' do
+        expect(repository).to receive_create_from_snapshot.and_raise(ArgumentError)
+        expect(subject).to receive(:fetch_geo_mirror).with(repository)
+
+        subject.execute
+      end
+
+      it 'does not attempt to snapshot if the feature flag is disabled' do
+        stub_feature_flags(geo_redownload_with_snapshot: false)
+
+        expect(repository).not_to receive_create_from_snapshot
+        expect(subject).to receive(:fetch_geo_mirror).with(repository)
+
+        subject.execute
+      end
+    end
+  end
+end
