@@ -44,13 +44,13 @@ module QA
 
           def key_titles
             within_project_deploy_keys do
-              all_element(:key_title)
+              all_elements(:key_title)
             end
           end
 
           def key_fingerprints
             within_project_deploy_keys do
-              all_element(:key_fingerprint)
+              all_elements(:key_fingerprint)
             end
           end
 
