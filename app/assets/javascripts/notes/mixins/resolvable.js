@@ -22,7 +22,7 @@ export default {
     resolveButtonTitle() {
       if (this.updatedNoteBody) {
         if (this.discussionResolved) {
-          return __('Comment and unresolve discussion');
+          return __('Comment & unresolve discussion');
         }
 
         return __('Comment & resolve discussion');
