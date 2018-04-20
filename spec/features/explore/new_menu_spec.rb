@@ -66,7 +66,7 @@ feature 'Top Plus Menu', :js do
 
       page.within '.header-content' do
         find('.header-new-dropdown-toggle').click
-        expect(page).to have_selector('.header-new.dropdown.open', count: 1)
+        expect(page).to have_selector('.header-new.dropdown.show', count: 1)
         find('.header-new-project-snippet a').click
       end
 
@@ -88,7 +88,7 @@ feature 'Top Plus Menu', :js do
 
       page.within '.header-content' do
         find('.header-new-dropdown-toggle').click
-        expect(page).to have_selector('.header-new.dropdown.open', count: 1)
+        expect(page).to have_selector('.header-new.dropdown.show', count: 1)
         find('.header-new-group-project a').click
       end
 
@@ -156,7 +156,7 @@ feature 'Top Plus Menu', :js do
   def click_topmenuitem(item_name)
     page.within '.header-content' do
       find('.header-new-dropdown-toggle').click
-      expect(page).to have_selector('.header-new.dropdown.open', count: 1)
+      expect(page).to have_selector('.header-new.dropdown.show', count: 1)
       click_link item_name
     end
   end
