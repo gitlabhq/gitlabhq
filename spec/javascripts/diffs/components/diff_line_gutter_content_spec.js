@@ -135,7 +135,7 @@ describe('DiffLineGutterContent', () => {
       const component = createComponent({ lineNumber, lineCode });
       const link = component.$el.querySelector('a');
 
-      expect(link.href.replace(document.location, '')).toEqual(`#${lineCode}`);
+      expect(link.href.indexOf(`#${lineCode}`) > -1).toEqual(true);
       expect(link.dataset.linenumber).toEqual(lineNumber.toString());
     });
 
