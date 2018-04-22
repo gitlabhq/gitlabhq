@@ -1,0 +1,5 @@
+---
+title: Adds SSO page for GitLab.com per group SAML beta
+merge_request: 5508
+author:
+type: changed
