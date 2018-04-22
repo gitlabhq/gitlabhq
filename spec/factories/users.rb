@@ -70,13 +70,15 @@ FactoryBot.define do
       transient do
         extern_uid '123456'
         provider 'ldapmain'
+        saml_provider nil
       end
 
       after(:create) do |user, evaluator|
         user.identities << create(
           :identity,
           provider: evaluator.provider,
-          extern_uid: evaluator.extern_uid
+          extern_uid: evaluator.extern_uid,
+          saml_provider: evaluator.saml_provider
         )
       end
     end
