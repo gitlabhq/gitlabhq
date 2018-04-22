@@ -14,6 +14,26 @@ describe Gitlab::Auth::OAuth::IdentityLinker do
     it "doesn't create new identity" do
       expect { subject.create_or_update }.not_to change { Identity.count }
     end
+
+    it "#created? returns false" do
+      subject.create_or_update
+
+      expect(subject).not_to be_created
+    end
+  end
+
+  context 'identity already linked to different user' do
+    let!(:identity) {  create(:identity, provider: provider, extern_uid: uid) }
+
+    it "#created? returns false" do
+      subject.create_or_update
+
+      expect(subject).not_to be_created
+    end
+
+    it 'exposes error message' do
+      expect(subject.error_message).to eq 'Extern uid has already been taken'
+    end
   end
 
   context 'identity needs to be created' do

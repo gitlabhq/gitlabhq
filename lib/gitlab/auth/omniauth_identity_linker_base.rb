@@ -13,6 +13,10 @@ module Gitlab
         @created
       end
 
+      def error_message
+        ''
+      end
+
       def create_or_update
         raise NotImplementedError
       end
