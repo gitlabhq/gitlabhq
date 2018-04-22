@@ -21,6 +21,12 @@ describe Gitlab::Auth::GroupSaml::IdentityLinker do
 
       expect(subject).not_to be_changed
     end
+
+    it 'adds user to group' do
+      subject.link
+
+      expect(saml_provider.group.member?(user)).to eq(true)
+    end
   end
 
   context 'identity needs to be created' do
@@ -50,6 +56,12 @@ describe Gitlab::Auth::GroupSaml::IdentityLinker do
       subject.link
 
       expect(subject).to be_changed
+    end
+
+    it 'adds user to group' do
+      subject.link
+
+      expect(saml_provider.group.member?(user)).to eq(true)
     end
   end
 end

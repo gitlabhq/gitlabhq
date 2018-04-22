@@ -10,6 +10,12 @@ module Gitlab
           @saml_provider = saml_provider
         end
 
+        def link
+          super
+
+          update_group_membership unless failed?
+        end
+
         protected
 
         def identity
@@ -17,6 +23,10 @@ module Gitlab
                                                       saml_provider: saml_provider,
                                                       extern_uid: uid.to_s)
                                     .first_or_initialize
+        end
+
+        def update_group_membership
+          MembershipUpdater.new(current_user, saml_provider).execute
         end
       end
     end
