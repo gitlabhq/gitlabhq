@@ -95,6 +95,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if identity_linker.created?
         redirect_identity_linked
+      elsif identity_linker.error_message.present?
+        redirect_identity_link_failed(identity_linker.error_message)
       else
         redirect_identity_exists
       end
@@ -105,6 +107,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def redirect_identity_exists
     redirect_to after_sign_in_path_for(current_user)
+  end
+
+  def redirect_identity_link_failed(error_message)
+    redirect_to profile_account_path, notice: "Authentication failed: #{error_message}"
   end
 
   def redirect_identity_linked
