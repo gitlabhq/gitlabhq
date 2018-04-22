@@ -1,0 +1,5 @@
+---
+title: Per-Group SAML (for GitLab.com) strips LRM chars from ADFS certificate fingerprints
+merge_request: 5466
+author:
+type: fixed
