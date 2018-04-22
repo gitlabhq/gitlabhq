@@ -11,7 +11,7 @@ module OmniAuth
         group_lookup = Gitlab::Auth::GroupSaml::GroupLookup.new(env)
 
         unless group_lookup.group_saml_enabled?
-          raise ActionController::RoutingError, group_lookup.path
+          self.class.invalid_group!(group_lookup.path)
         end
 
         saml_provider = group_lookup.saml_provider
@@ -25,6 +25,10 @@ module OmniAuth
       # These will need addtional work to securely support
       def other_phase
         call_app!
+      end
+
+      def self.invalid_group!(path)
+        raise ActionController::RoutingError, path
       end
 
       def self.callback?(env)
