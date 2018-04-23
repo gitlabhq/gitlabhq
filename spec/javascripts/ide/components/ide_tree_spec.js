@@ -28,15 +28,6 @@ describe('IdeRepoTree', () => {
     resetStore(vm.$store);
   });
 
-  it('renders loading', done => {
-    vm.currentTree.loading = true;
-
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toBe(3);
-      done();
-    });
-  });
-
   it('renders list of files', () => {
     expect(vm.$el.textContent).toContain('fileName');
   });

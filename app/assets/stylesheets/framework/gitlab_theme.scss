@@ -188,9 +188,6 @@
   .ide-sidebar-link {
     &.active {
       color: $color-700;
-    }
-
-    &.active {
       box-shadow: inset 3px 0 $color-700;
     }
   }
