@@ -1,9 +1,13 @@
 <script>
-  import { __, n__, sprintf } from '../../../locale';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-  import userAvatarImage from '../../../vue_shared/components/user_avatar/user_avatar_image.vue';
+  import { __, n__, sprintf } from '~/locale';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
   export default {
+    directives: {
+      tooltip,
+    },
     components: {
       loadingIcon,
       userAvatarImage,
@@ -72,7 +76,13 @@
 
 <template>
   <div>
-    <div class="sidebar-collapsed-icon">
+    <div
+      class="sidebar-collapsed-icon"
+      v-tooltip
+      data-container="body"
+      data-placement="left"
+      :title="participantLabel"
+    >
       <i
         class="fa fa-users"
         aria-hidden="true"
