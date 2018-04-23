@@ -515,6 +515,8 @@ export default class Notes {
             .find(contentContainerClass + ' .content')
             .append($notes.closest('.content').children());
         }
+      } else {
+        Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
       }
     } else {
       // append new note to all matching discussions
