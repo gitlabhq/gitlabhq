@@ -1,3 +1,5 @@
+require 'settingslogic'
+
 require_dependency 'gitlab'
 
 class Settings < Settingslogic

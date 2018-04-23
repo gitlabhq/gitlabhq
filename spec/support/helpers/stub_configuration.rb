@@ -1,7 +1,7 @@
 require 'active_support/core_ext/hash/transform_values'
 require 'active_support/hash_with_indifferent_access'
 
-require_dependency Rails.root.join('ee/spec/support/helpers/ee/stub_configuration')
+require_dependency Gitlab.root.join('ee/spec/support/helpers/ee/stub_configuration')
 
 module StubConfiguration
   prepend EE::StubConfiguration
