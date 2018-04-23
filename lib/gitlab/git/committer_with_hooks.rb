@@ -1,5 +1,5 @@
 module Gitlab
-  module Wiki
+  module Git
     class CommitterWithHooks < Gollum::Committer
       attr_reader :gl_wiki
 
@@ -9,6 +9,9 @@ module Gitlab
       end
 
       def commit
+        # TODO: Remove after 10.8
+        return super unless allowed_to_run_hooks?
+
         result = Gitlab::Git::OperationService.new(git_user, gl_wiki.repository).with_branch(
           @wiki.ref,
           start_branch_name: @wiki.ref
@@ -23,6 +26,11 @@ module Gitlab
       end
 
       private
+
+      # TODO: Remove after 10.8
+      def allowed_to_run_hooks?
+        @options[:user_id] != 0 && @options[:username].present?
+      end
 
       def git_user
         @git_user ||= Gitlab::Git::User.new(@options[:username],

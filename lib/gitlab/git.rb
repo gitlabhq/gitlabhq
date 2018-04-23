@@ -1,3 +1,5 @@
+require_dependency 'gitlab/encoding_helper'
+
 module Gitlab
   module Git
     # The ID of empty tree.

@@ -12,9 +12,21 @@
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Update your CI/CD configuration, like job timeout or Auto DevOps.
+      Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report.
   .settings-content
     = render 'form'
+
+%section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = s_('CICD|Auto DevOps (Beta)')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = s_('CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.')
+      = link_to s_('CICD|Learn more about Auto DevOps'), help_page_path('topics/autodevops/index.md')
+  .settings-content
+    = render 'autodevops_form'
 
 %section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
