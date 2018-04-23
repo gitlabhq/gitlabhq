@@ -30,7 +30,7 @@
   .file-editor.code
     %pre.js-edit-mode-pane#editor= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
-      .js-edit-mode-pane#preview.d-none
+      .js-edit-mode-pane#preview.hide
         .center
           %h2
             %i.icon-spinner.icon-spin

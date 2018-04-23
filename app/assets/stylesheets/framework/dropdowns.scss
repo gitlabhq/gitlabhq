@@ -24,7 +24,7 @@
   display: none;
 }
 
-.show {
+.show.dropdown {
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;

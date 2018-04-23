@@ -2,7 +2,7 @@
 - sum_removed_lines = diff_files.sum(&:removed_lines)
 .commit-stat-summary.dropdown
   Showing
-  %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown" } }<
+  %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown", display: "static" } }<
     = pluralize(diff_files.size, "changed file")
     = icon("caret-down", class: "prepend-left-5")
   %span.diff-stats-additions-deletions-expanded#diff-stats
