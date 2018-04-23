@@ -33,7 +33,6 @@ export default {
     ActionComponent,
     JobNameComponent,
   },
-
   directives: {
     tooltip,
   },
@@ -42,14 +41,17 @@ export default {
       type: Object,
       required: true,
     },
-
     cssClassJobName: {
       type: String,
       required: false,
       default: '',
     },
+    requestFinishedFor: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
-
   computed: {
     status() {
       return this.job && this.job.status ? this.job.status : {};
@@ -124,7 +126,7 @@ export default {
       :tooltip-text="status.action.title"
       :link="status.action.path"
       :action-icon="status.action.icon"
+      :request-finished-for="requestFinishedFor"
     />
-
   </div>
 </template>

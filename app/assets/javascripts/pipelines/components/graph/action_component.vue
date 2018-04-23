@@ -31,6 +31,12 @@ export default {
       type: String,
       required: true,
     },
+
+    requestFinishedFor: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -45,11 +51,12 @@ export default {
       return `${actionIconDash} js-icon-${actionIconDash}`;
     },
   },
-  created() {
-    eventHub.$on('graphActionFinished', this.updateDisabled);
-  },
-  beforeDestroy() {
-    eventHub.$off('graphActionFinished', this.updateDisabled);
+  watch: {
+    requestFinishedFor() {
+      if (this.requestFinishedFor === this.linkRequested) {
+        this.isDisabled = false;
+      }
+    },
   },
   methods: {
     onClickAction() {
@@ -57,11 +64,6 @@ export default {
       eventHub.$emit('graphAction', this.link);
       this.linkRequested = this.link;
       this.isDisabled = true;
-    },
-    updateDisabled(actionUrl) {
-      if (actionUrl === this.linkRequested) {
-        this.isDisabled = false;
-      }
     },
   },
 };
@@ -72,8 +74,8 @@ export default {
     @click="onClickAction"
     v-tooltip
     :title="tooltipText"
-    class="js-ci-action btn btn-blank btn-transparent
-ci-action-icon-container ci-action-icon-wrapper"
+    class="js-ci-action btn btn-blank
+btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
     :disabled="isDisabled"

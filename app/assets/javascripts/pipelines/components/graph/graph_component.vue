@@ -7,7 +7,6 @@ export default {
     StageColumnComponent,
     LoadingIcon,
   },
-
   props: {
     isLoading: {
       type: Boolean,
@@ -16,6 +15,11 @@ export default {
     pipeline: {
       type: Object,
       required: true,
+    },
+    requestFinishedFor: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
 
@@ -70,6 +74,7 @@ export default {
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
+          :request-finished-for="requestFinishedFor"
         />
       </ul>
     </div>

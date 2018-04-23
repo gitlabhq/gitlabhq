@@ -29,6 +29,12 @@ export default {
       required: false,
       default: '',
     },
+
+    requestFinishedFor: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 
   methods: {
@@ -74,6 +80,7 @@ export default {
           <dropdown-job-component
             v-if="job.size > 1"
             :job="job"
+            :request-finished-for="requestFinishedFor"
           />
 
         </li>
