@@ -38,10 +38,11 @@
       ({{ keys.length }})
     </h5>
     <ul
-      class="well-list"
+      class="list-group"
       v-if="keys.length"
     >
       <li
+        class="list-group-item border-0"
         v-for="deployKey in keys"
         :key="deployKey.id"
       >
