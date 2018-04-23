@@ -55,7 +55,6 @@ describe('Commit component', () => {
           path: '/jschatz1',
           username: 'jschatz1',
         },
-        commitIconSvg: '<svg></svg>',
       };
 
       component = mountComponent(CommitComponent, props);
@@ -82,8 +81,10 @@ describe('Commit component', () => {
       expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
     });
 
-    it('should render the given commitIconSvg', () => {
-      expect(component.$el.querySelector('.js-commit-icon').children).toContain('svg');
+    it('should render icon for commit', () => {
+      expect(
+        component.$el.querySelector('.js-commit-icon use').getAttribute('xlink:href'),
+      ).toContain('commit');
     });
 
     describe('Given commit title and author props', () => {
