@@ -67,6 +67,7 @@ for ensuring the integrity of the data.
 
 [disaster-recovery]: index.md
 [foreground-verification]: ../../raketasks/check.md
+[ee-5064]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5064
 [ee-5699]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5699
 [ee-5195]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5195
 [ee-5196]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5196
