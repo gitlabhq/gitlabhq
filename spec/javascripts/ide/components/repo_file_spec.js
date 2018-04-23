@@ -56,12 +56,8 @@ describe('RepoFile', () => {
         type: 'tree',
         branchId: 'master',
         projectId: 'project',
+        changesCount: '1',
       };
-
-      store.state.changedFiles.push({
-        ...file('index'),
-        path: 'testing/index',
-      });
 
       createComponent({
         file: f,
