@@ -25,7 +25,7 @@ import '~/lib/utils/common_utils';
     }, 333);
   };
 
-  fdescribe('AwardsHandler', function() {
+  describe('AwardsHandler', function() {
     preloadFixtures('snippets/show.html.raw');
     beforeEach(function(done) {
       loadFixtures('snippets/show.html.raw');
