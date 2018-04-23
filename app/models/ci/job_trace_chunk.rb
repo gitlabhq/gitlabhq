@@ -4,14 +4,13 @@ module Ci
 
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
-    after_destroy :redis_delete_data, if: :redis?
-
     default_value_for :data_store, :redis
 
     WriteError = Class.new(StandardError)
 
     CHUNK_SIZE = 128.kilobytes
-    CHUNK_REDIS_TTL = 1.week
+    CHUNK_REDIS_TTL = 1.day
+    CHUNK_REDIS_TTL_REFRESH = 6.hours
     LOCK_RETRY = 100
     LOCK_SLEEP = 1
     LOCK_TTL = 5.minutes
@@ -87,6 +86,12 @@ module Ci
       end
     end
 
+    def redis_extend_ttl
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.setex(redis_data_key, CHUNK_REDIS_TTL, data)
+      end
+    end
+
     private
 
     def schedule_to_db
@@ -115,7 +120,7 @@ module Ci
       Gitlab::Redis::SharedState.with do |redis|
         redis.del(redis_data_key)
       end
-    end
+    end    
 
     def redis_data_key
       "gitlab:ci:trace:#{job_id}:chunks:#{chunk_index}:data"
