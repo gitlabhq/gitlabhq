@@ -282,7 +282,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
         it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
-          job.trace.write do |stream|
+          job.trace.write('a+b') do |stream|
             stream.append(' and more trace', 11)
           end
 
