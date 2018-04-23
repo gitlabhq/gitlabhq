@@ -1,5 +1,0 @@
----
-title: Memoize Git::Repository#has_visible_content?
-merge_request:
-author:
-type: performance

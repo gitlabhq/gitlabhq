@@ -67,9 +67,9 @@ and examples in [the `qa/` directory][instance-qa-examples].
 
 ## Where can I ask for help?
 
-You can ask question in the `#qa` channel on Slack (GitLab internal) or you can
-find an issue you would like to work on in [the issue tracker][gitlab-qa-issues]
-and start a new discussion there.
+You can ask question in the `#quality` channel on Slack (GitLab internal) or
+you can find an issue you would like to work on in
+[the issue tracker][gitlab-qa-issues] and start a new discussion there.
 
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa

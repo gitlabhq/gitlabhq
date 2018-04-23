@@ -524,7 +524,7 @@ export default new Vuex.Store({
 _Note:_ If the state of the application is too complex, an individual file for the state may be better.
 
 ##### `actions.js`
-An action commits a mutatation. In this file, we will write the actions that will call the respective mutation:
+An action commits a mutation. In this file, we will write the actions that will commit the respective mutation:
 
 ```javascript
   import * as types from './mutation_types';
@@ -661,7 +661,7 @@ describe('component', () => {
     };
 
     // populate the store
-    store.dipatch('addUser', user);
+    store.dispatch('addUser', user);
 
     vm = new Component({
       store,

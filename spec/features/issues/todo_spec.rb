@@ -14,7 +14,7 @@ feature 'Manually create a todo item from issue', :js do
   it 'creates todo when clicking button' do
     page.within '.issuable-sidebar' do
       click_button 'Add todo'
-      expect(page).to have_content 'Mark done'
+      expect(page).to have_content 'Mark todo as done'
     end
 
     page.within '.header-content .todos-count' do
@@ -31,7 +31,7 @@ feature 'Manually create a todo item from issue', :js do
   it 'marks a todo as done' do
     page.within '.issuable-sidebar' do
       click_button 'Add todo'
-      click_button 'Mark done'
+      click_button 'Mark todo as done'
     end
 
     expect(page).to have_selector('.todos-count', visible: false)

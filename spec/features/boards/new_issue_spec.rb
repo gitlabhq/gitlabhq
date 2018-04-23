@@ -63,6 +63,13 @@ describe 'Issue Boards new issue', :js do
       page.within(first('.board .issue-count-badge-count')) do
         expect(page).to have_content('1')
       end
+
+      page.within(first('.card')) do
+        issue = project.issues.find_by_title('bug')
+
+        expect(page).to have_content(issue.to_reference)
+        expect(page).to have_link(issue.title, href: issue_path(issue))
+      end
     end
 
     it 'shows sidebar when creating new issue' do
