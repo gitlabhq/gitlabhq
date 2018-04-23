@@ -685,7 +685,8 @@ describe API::Projects do
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
-        request_access_enabled: true
+        request_access_enabled: true,
+        jobs_enabled: true
       })
 
       post api("/projects/user/#{user.id}", admin), project
