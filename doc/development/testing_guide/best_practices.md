@@ -100,7 +100,7 @@ really fast since:
 
 - Gems loading is skipped
 - Rails app boot is skipped
-- Gitlab::Shell and Gitaly setup are skipped
+- gitlab-shell and Gitaly setup are skipped
 - Test repositories setup are skipped
 
 Note that in some cases, you might have to add some `require_dependency 'foo'`
