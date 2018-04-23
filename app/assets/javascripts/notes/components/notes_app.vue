@@ -50,7 +50,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['notes', 'noteableType', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters(['notes', 'getNotesDataByProp', 'discussionCount']),
+    noteableType() {
+      return this.noteableData.noteableType;
+    },
     allNotes() {
     if (this.isLoading) {
         const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;

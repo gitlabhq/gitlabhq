@@ -41,7 +41,3 @@ module CapybaraHelpers
     page.driver.browser.manage.delete_cookie('_gitlab_session')
   end
 end
-
-RSpec.configure do |config|
-  config.include CapybaraHelpers, type: :feature
-end

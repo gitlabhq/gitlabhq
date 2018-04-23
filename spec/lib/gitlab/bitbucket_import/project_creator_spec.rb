@@ -15,7 +15,7 @@ describe Gitlab::BitbucketImport::ProjectCreator do
            has_wiki?: false)
   end
 
-  let(:namespace) { create(:group, owner: user) }
+  let(:namespace) { create(:group) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
   let(:access_params) { { bitbucket_access_token: token, bitbucket_access_token_secret: secret } }

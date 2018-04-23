@@ -17,6 +17,8 @@ document.addEventListener(
         const noteableData = JSON.parse(notesDataset.noteableData);
         let currentUserData = {};
 
+        noteableData.noteableType = notesDataset.noteableType;
+
         if (parsedUserData) {
           currentUserData = {
             id: parsedUserData.id,

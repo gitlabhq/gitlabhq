@@ -12,7 +12,11 @@ end
 
 WebMock.enable!
 
-%w(select2_helper test_env repo_helpers wait_for_requests sidekiq project_forks_helper webmock).each do |f|
+%w(select2_helper test_env repo_helpers wait_for_requests project_forks_helper).each do |f|
+  require Rails.root.join('spec', 'support', 'helpers', f)
+end
+
+%w(sidekiq webmock).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
