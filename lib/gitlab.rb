@@ -1,8 +1,13 @@
-require_dependency 'gitlab/git'
+require_dependency 'settings'
+require_dependency 'gitlab/popen'
 
 module Gitlab
   def self.root
     Pathname.new(File.expand_path('..', __dir__))
+  end
+
+  def self.config
+    Settings
   end
 
   COM_URL = 'https://gitlab.com'.freeze
@@ -11,6 +16,7 @@ module Gitlab
   SUBSCRIPTIONS_URL = 'https://customers.gitlab.com'.freeze
   SUBSCRIPTIONS_PLANS_URL = "#{SUBSCRIPTIONS_URL}/plans".freeze
   VERSION = File.read(root.join("VERSION")).strip.freeze
+  REVISION = Gitlab::Popen.popen(%W(#{config.git.bin_path} log --pretty=format:%h -n 1)).first.chomp.freeze
 
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
