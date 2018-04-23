@@ -34,13 +34,10 @@ export default {
       type: String,
       required: false,
       default: '',
-<<<<<<< HEAD
     },
     hasTriggeredBy: {
       type: Boolean,
       required: true,
-=======
->>>>>>> upstream/master
     },
   },
 
