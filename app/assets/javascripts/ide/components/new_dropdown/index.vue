@@ -51,7 +51,7 @@
     <div
       class="dropdown"
       :class="{
-        open: dropdownOpen,
+        show: dropdownOpen,
       }"
     >
       <button
