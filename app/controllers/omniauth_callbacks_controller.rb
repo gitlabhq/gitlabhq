@@ -80,9 +80,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth)
 
-      identity_linker.create_or_update
+      identity_linker.link
 
-      if identity_linker.created?
+      if identity_linker.changed?
         redirect_identity_linked
       elsif identity_linker.error_message.present?
         redirect_identity_link_failed(identity_linker.error_message)

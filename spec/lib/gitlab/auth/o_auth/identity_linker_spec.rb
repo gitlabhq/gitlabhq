@@ -12,23 +12,23 @@ describe Gitlab::Auth::OAuth::IdentityLinker do
     let!(:identity) { user.identities.create!(provider: provider, extern_uid: uid) }
 
     it "doesn't create new identity" do
-      expect { subject.create_or_update }.not_to change { Identity.count }
+      expect { subject.link }.not_to change { Identity.count }
     end
 
-    it "#created? returns false" do
-      subject.create_or_update
+    it "sets #changed? to false" do
+      subject.link
 
-      expect(subject).not_to be_created
+      expect(subject).not_to be_changed
     end
   end
 
   context 'identity already linked to different user' do
     let!(:identity) {  create(:identity, provider: provider, extern_uid: uid) }
 
-    it "#created? returns false" do
-      subject.create_or_update
+    it "#changed? returns false" do
+      subject.link
 
-      expect(subject).not_to be_created
+      expect(subject).not_to be_changed
     end
 
     it 'exposes error message' do
@@ -38,25 +38,25 @@ describe Gitlab::Auth::OAuth::IdentityLinker do
 
   context 'identity needs to be created' do
     it 'creates linked identity' do
-      expect { subject.create_or_update }.to change { user.identities.count }
+      expect { subject.link }.to change { user.identities.count }
     end
 
     it 'sets identity provider' do
-      subject.create_or_update
+      subject.link
 
       expect(user.identities.last.provider).to eq provider
     end
 
     it 'sets identity extern_uid' do
-      subject.create_or_update
+      subject.link
 
       expect(user.identities.last.extern_uid).to eq uid
     end
 
-    it 'sets #created? to true' do
-      subject.create_or_update
+    it 'sets #changed? to true' do
+      subject.link
 
-      expect(subject).to be_created
+      expect(subject).to be_changed
     end
   end
 end
