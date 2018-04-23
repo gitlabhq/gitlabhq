@@ -13,8 +13,11 @@ module Gitlab
   COM_URL = 'https://gitlab.com'.freeze
   APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}
   SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
+<<<<<<< HEAD
   SUBSCRIPTIONS_URL = 'https://customers.gitlab.com'.freeze
   SUBSCRIPTIONS_PLANS_URL = "#{SUBSCRIPTIONS_URL}/plans".freeze
+=======
+>>>>>>> upstream/master
   VERSION = File.read(root.join("VERSION")).strip.freeze
   REVISION = Gitlab::Popen.popen(%W(#{config.git.bin_path} log --pretty=format:%h -n 1)).first.chomp.freeze
 

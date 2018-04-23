@@ -56,6 +56,7 @@ class Settings < Settingslogic
       (base_url(gitlab) + [gitlab.relative_url_root]).join('')
     end
 
+<<<<<<< HEAD
     def kerberos_protocol
       kerberos.https ? "https" : "http"
     end
@@ -81,6 +82,8 @@ class Settings < Settingslogic
       kerberos.enabled && (build_gitlab_kerberos_url != build_gitlab_url)
     end
 
+=======
+>>>>>>> upstream/master
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []

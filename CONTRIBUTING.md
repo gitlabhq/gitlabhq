@@ -26,7 +26,9 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
   - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
-  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#priority-labels-deliverable-stretch-next-patch-release)
+  - [Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
+  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#bug-priority-labels-p1-p2-p3-etc)
+  - [Severity labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#bug-severity-labels-s1-s2-s3-etc)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
 - [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
@@ -128,6 +130,8 @@ Most issues will have labels for at least one of the following:
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
 - Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Priority: ~P1, ~P2, ~P3, ~P4
+- Severity: ~S1, ~S2, ~S3, ~S4
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -211,7 +215,7 @@ This label documents the planned timeline & urgency which is used to measure aga
 
 | Label | Meaning         | Estimate time to fix                                             | Guidance |
 |-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Urgent Priority | The current release                                              |  |
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
 | ~P2   | High Priority   | The next release                                                 |  |
 | ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
 | ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
