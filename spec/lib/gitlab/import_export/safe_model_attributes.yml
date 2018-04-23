@@ -576,12 +576,6 @@ PrometheusMetric:
 - title
 - query
 - group
-LfsFileLock:
-- id
-- path
-- user_id
-- project_id
-- created_at
 Badge:
 - id
 - link_url

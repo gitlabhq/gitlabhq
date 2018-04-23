@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
+  add_index "ci_job_artifacts", ["file_store"], name: "index_ci_job_artifacts_on_file_store", using: :btree
   add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
   add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
 
@@ -1264,12 +1265,14 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
   create_table "internal_ids", id: :bigserial, force: :cascade do |t|
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.integer "usage", null: false
     t.integer "last_value", null: false
+    t.integer "namespace_id"
   end
 
-  add_index "internal_ids", ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, using: :btree
+  add_index "internal_ids", ["usage", "namespace_id"], name: "index_internal_ids_on_usage_and_namespace_id", unique: true, where: "(namespace_id IS NOT NULL)", using: :btree
+  add_index "internal_ids", ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, where: "(project_id IS NOT NULL)", using: :btree
 
   create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
@@ -2753,6 +2756,7 @@ ActiveRecord::Schema.define(version: 20180419031622) do
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
+  add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade

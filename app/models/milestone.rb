@@ -8,7 +8,7 @@ class Milestone < ActiveRecord::Base
   Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
-  include NonatomicInternalId
+  include AtomicInternalId
   include Sortable
   include Referable
   include StripAttribute
@@ -23,6 +23,9 @@ class Milestone < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :group
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.milestones&.maximum(:iid) }
+  has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.milestones&.maximum(:iid) }
 
   has_many :boards
   has_many :issues

@@ -20,7 +20,12 @@ describe Epic do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(NonatomicInternalId) }
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:epic) }
+      let(:scope_attrs) { { namespace: instance.group } }
+      let(:usage) { :epics }
+    end
   end
 
   describe '.order_start_or_end_date_asc' do

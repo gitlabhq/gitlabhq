@@ -48,6 +48,76 @@ shared_examples 'cleans temporary repositories' do
   end
 end
 
+shared_examples 'geo base sync fetch and repack' do
+  describe '#fetch_repository' do
+    let(:fetch_repository) { subject.send(:fetch_repository, false) }
+
+    before do
+      allow(subject).to receive(:fetch_geo_mirror).and_return(true)
+    end
+
+    it 'cleans up temporary repository' do
+      is_expected.to receive(:clean_up_temporary_repository)
+
+      fetch_repository
+    end
+
+    it 'updates registry' do
+      is_expected.to receive(:update_registry!)
+
+      fetch_repository
+    end
+
+    it 'fetches repository from geo node' do
+      is_expected.to receive(:fetch_geo_mirror).with(subject.send(:repository))
+
+      fetch_repository
+    end
+
+    context 'redownload' do
+      let(:fetch_repository) { subject.send(:fetch_repository, true) }
+
+      before do
+        stub_feature_flags(geo_redownload_with_snapshot: false)
+      end
+
+      it 'fetches repository from geo node into temporary location' do
+        temporary_repository = instance_double('Repository')
+
+        is_expected.to receive(:temp_repo) { temporary_repository }
+        is_expected.to receive(:fetch_geo_mirror).with(temporary_repository)
+        is_expected.to receive(:set_temp_repository_as_main)
+
+        fetch_repository
+      end
+
+      it 'schedule git repack' do
+        is_expected.to receive(:schedule_repack)
+
+        fetch_repository
+      end
+    end
+
+    context 'repository does not exist' do
+      before do
+        allow_any_instance_of(Repository).to receive(:exists?) { false }
+      end
+
+      it 'ensures repository is created' do
+        is_expected.to receive(:ensure_repository)
+
+        fetch_repository
+      end
+
+      it 'schedule git repack' do
+        is_expected.to receive(:schedule_repack)
+
+        fetch_repository
+      end
+    end
+  end
+end
+
 shared_examples 'sync retries use the snapshot RPC' do
   let(:retry_count) { Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD }
 

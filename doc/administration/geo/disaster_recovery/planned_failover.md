@@ -122,48 +122,7 @@ or removing references to the missing data.
 
 ### Verify the integrity of replicated data
 
-NOTE: **Note:**
-Automatic background verification of repositories and wikis was added in GitLab
-EE 10.6, but is disabled by default. To enable it, run
-`sudo gitlab-rails runner 'Feature.enable(:geo_repository_verification)'` on
-the **primary**.
-
-Visit the **Admin Area ➔ Geo nodes** dashboard on the **secondary** and expand
-the **Advanced** tab for that node to view automatic checksumming status for
-repositories and wikis. As with replication, successes are shown in green,
-pending work in grey, and failures in red.
-
-![Verification status](img/verification-status.png)
-
-Until [issue #5064][ee-5064] is completed, background verification doesn't cover
-CI job artifacts and traces, LFS objects, or user uploads in file storage.
-Verifytheir integrity manually by following [these instructions][foreground-verification]
-on both nodes, and comparing the output between them.
-
-Verification ensures that the transferred data matches a calculated checksum,
-proving that the content on the **secondary** matches that on the **primary**.
-Following a planned failover, any corrupted data may be **lost**, depending on
-the extent of the corruption.
-
-Data in object storage is **not verified**, as the object store is responsible
-for ensuring the integrity of the data.
-
-If verification is lagging significantly behind replication, consider giving
-the node more time before scheduling a planned failover.
-
-If verification fails on the **primary**, this indicates that Geo is
-successfully replicating a corrupted object; restore it from backup or remove it
-it from the primary to resolve the issue.
-
-If verification succeeds on the **primary** but fails on the **secondary**, this
-indicates that the object was corrupted during the replication process. Until
-[issue #5195][ee-5195] is implemented, Geo won't automatically resolve
-verification failures of this kind, so you should remove the registry entries to
-force Geo to re-replicate the files:
-
-```
-sudo gitlab-rails runner 'Geo::ProjectRegistry.verification_failed.delete_all'
-```
+This [content was moved to another location][background-verification].
 
 ### Notify users of scheduled maintenance
 
@@ -183,7 +142,7 @@ access to the primary for the duration of the maintenance window.
 1. At the scheduled time, using your cloud provider or your node's firewall, block
    all HTTP, HTTPS and SSH traffic to/from the primary, **except** for your IP and
    the secondary's IP.
-        
+
      For instance, if your secondary originates all its traffic from `5.6.7.8` and
      your IP is `100.0.0.1`, you might run the following commands on the server(s)
      making up your primary node:
@@ -263,8 +222,8 @@ Don't forget to remove the broadcast message after failover is complete.
 [disaster-recovery]: index.md
 [ee-4930]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4930
 [ee-5064]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5064
-[ee-5195]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5195
 [foreground-verification]: ../../raketasks/check.md
+[background-verification]: background_verification.md
 [geo-status-api]: ../../../api/geo_nodes.html#retrieve-project-sync-failures-ocurred-on-the-current-node
 [limitations]: ../replication/index.md#current-limitations
 [moving-repositories]: ../../operations/moving_repositories.md
