@@ -923,13 +923,7 @@ button.mini-pipeline-graph-dropdown-toggle {
    * Center dropdown menu in mini graph
    */
   &.dropdown-menu {
-    transform: translate(-80%, 0);
-
-    @media (min-width: $screen-md-min) {
-      transform: translate(-50%, 0);
-      right: auto;
-      left: 50%;
-    }
+    transform: translate(-50%, 0);
   }
 }
 
