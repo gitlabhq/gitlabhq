@@ -1,5 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.7.1 (2018-04-23)
+
+### Fixed (4 changes)
+
+- Geo: Fix enabled wiki counts with FDW (impacts synced and verified counts). !5352
+- Fix Epic timeline bar misalignment when start date is in last timeframe month and end date is out of range. !5360
+- Adds border top to codeclimate report in MR widget.
+- Avoid wrong closing dates being caught by the query on Burndown charts.
+
+### Performance (1 change)
+
+- Geo - Improve the query performance to find unverified projects on primary node. !5348
+
+
 ## 10.7.0 (2018-04-22)
 
 ### Fixed (25 changes)

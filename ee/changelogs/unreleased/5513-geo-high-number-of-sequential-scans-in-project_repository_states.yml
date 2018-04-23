@@ -1,6 +1,0 @@
----
-title: Geo - Improve the query performance to find unverified projects on primary
-  node
-merge_request: 5348
-author:
-type: performance
