@@ -50,7 +50,7 @@ module Gitlab
         end
 
         def valid_sign_in?
-          allowed?
+          allowed? && super
         end
 
         def ldap_config

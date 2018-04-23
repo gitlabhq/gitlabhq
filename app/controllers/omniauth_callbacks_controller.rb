@@ -5,10 +5,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   protect_from_forgery except: [:kerberos, :saml, :cas3]
 
+  def handle_omniauth
+    omniauth_flow(Gitlab::Auth::OAuth)
+  end
+
   Gitlab.config.omniauth.providers.each do |provider|
-    define_method provider['name'] do
-      handle_omniauth
-    end
+    alias_method provider['name'], :handle_omniauth
   end
 
   # Extend the standard implementation to also increment
@@ -80,10 +82,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private
-
-  def handle_omniauth
-    omniauth_flow(Gitlab::Auth::OAuth)
-  end
 
   def omniauth_flow(auth_module, identity_linker: nil)
     if current_user
