@@ -119,11 +119,17 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+    ```shell
     pages_external_url 'http://example.io'
     ```
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```shell
+    sudo gitlab-ctl restart gitlab-pages
+    ```
+
 
 Watch the [video tutorial][video-admin] for this configuration.
 
@@ -143,7 +149,7 @@ outside world.
 1. Place the certificate and key inside `/etc/gitlab/ssl`
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
-    ```ruby
+    ```shell
     pages_external_url 'https://example.io'
 
     pages_nginx['redirect_http_to_https'] = true
@@ -155,6 +161,11 @@ outside world.
     respectively.
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```shell
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ## Advanced configuration
 
@@ -180,7 +191,7 @@ world. Custom domains are supported, but no TLS.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+    ```shell
     pages_external_url "http://example.io"
     nginx['listen_addresses'] = ['1.1.1.1']
     pages_nginx['enable'] = false
@@ -192,6 +203,11 @@ world. Custom domains are supported, but no TLS.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```shell
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ### Custom domains with TLS support
 
@@ -210,7 +226,7 @@ world. Custom domains and TLS are supported.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+    ```shell
     pages_external_url "https://example.io"
     nginx['listen_addresses'] = ['1.1.1.1']
     pages_nginx['enable'] = false
@@ -225,6 +241,11 @@ world. Custom domains and TLS are supported.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```shell
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ### Custom domain verification
 
@@ -247,11 +268,16 @@ are stored.
    If you wish to store them in another location you must set it up in
    `/etc/gitlab/gitlab.rb`:
 
-     ```ruby
+     ```shell
      gitlab_rails['pages_path'] = "/mnt/storage/pages"
      ```
 
 1. [Reconfigure GitLab][reconfigure]
+1. Restart gitlab-pages by running the following command:
+
+     ```shell
+    sudo gitlab-ctl restart gitlab-pages
+    ```
 
 ## Set maximum pages size
 

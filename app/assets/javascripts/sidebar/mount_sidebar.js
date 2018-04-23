@@ -27,6 +27,7 @@ function mountAssigneesComponent(mediator) {
         mediator,
         field: el.dataset.field,
         signedIn: el.hasAttribute('data-signed-in'),
+        issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
       },
     }),
   });
