@@ -106,7 +106,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     render json: StageSerializer
       .new(project: @project, current_user: @current_user)
-      .represent(@pipeline)
+      .represent(@stage, details: true)
   end
 
   def retry

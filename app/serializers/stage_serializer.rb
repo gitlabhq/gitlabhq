@@ -3,5 +3,5 @@ class StageSerializer < BaseSerializer
 
   InvalidResourceError = Class.new(StandardError)
 
-  entity StageDetailsEntity
+  entity StageEntity
 end
