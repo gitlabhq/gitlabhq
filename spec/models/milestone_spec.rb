@@ -1,6 +1,26 @@
 require 'spec_helper'
 
 describe Milestone do
+  describe 'modules' do
+    context 'with a project' do
+      it_behaves_like 'AtomicInternalId' do
+        let(:internal_id_attribute) { :iid }
+        let(:instance) { build(:milestone, project: build(:project), group: nil) }
+        let(:scope_attrs) { { project: instance.project } }
+        let(:usage) { :milestones }
+      end
+    end
+
+    context 'with a group' do
+      it_behaves_like 'AtomicInternalId' do
+        let(:internal_id_attribute) { :iid }
+        let(:instance) { build(:milestone, project: nil, group: build(:group)) }
+        let(:scope_attrs) { { namespace: instance.group } }
+        let(:usage) { :milestones }
+      end
+    end
+  end
+
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
