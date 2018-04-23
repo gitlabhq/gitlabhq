@@ -141,6 +141,10 @@ class Group < Namespace
     self[:lfs_enabled]
   end
 
+  def owned_by?(user)
+    owners.include?(user)
+  end
+
   def add_users(users, access_level, current_user: nil, expires_at: nil)
     GroupMember.add_users(
       self,
