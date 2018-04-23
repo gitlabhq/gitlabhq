@@ -90,6 +90,10 @@ export default {
       this.maxWidth = `${width}px`;
     },
     handleScroll() {
+      if (!this.mrTabsEl || !this.$refs.wrapper) {
+        return;
+      }
+
       const mrTabsBottom = this.mrTabsEl.getBoundingClientRect().bottom;
       const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom;
 

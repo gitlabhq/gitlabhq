@@ -73,7 +73,6 @@ export default {
     },
   },
   mounted() {
-    console.log($(this.$el))
     new BlobForkSuggestion({
       openButtons: $(this.$el).find('.js-edit-blob-link-fork-toggler'),
       forkButtons: $(this.$el).find('.js-fork-suggestion-button'),
