@@ -80,6 +80,20 @@ if (testFiles.length > 0) {
   console.log('Running all tests');
 }
 
+beforeAll(() => {
+  const allowedAjaxUrls = [FIXTURES_PATH, window.location.origin, '/_karma_webpack_/'];
+
+  const openRequest = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function requestFallback(method, url, ...args) {
+    if (allowedAjaxUrls.find(allowedUrl => url.indexOf(allowedUrl) === 0)) {
+      openRequest.apply(this, method, url, args);
+      return;
+    }
+
+    fail(`Ajax request was not mocked: ${method} ${url}`);
+  };
+});
+
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function(path) {
