@@ -34,7 +34,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         wait_for_requests
 
-        expect(page).to have_selector('span.label', text: label.title)
+        expect(page).to have_selector('span.badge', text: label.title)
       end
     end
 
@@ -45,7 +45,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
       wait_for_requests
 
-      expect(page).not_to have_selector('span.label', text: child_group_label.title)
+      expect(page).not_to have_selector('span.badge', text: child_group_label.title)
     end
   end
 
@@ -159,9 +159,9 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       find('.btn-create').click
 
       expect(page.find('.issue-details h2.title')).to have_content('new created issue')
-      expect(page).to have_selector('span.label', text: grandparent_group_label.title)
-      expect(page).to have_selector('span.label', text: parent_group_label.title)
-      expect(page).to have_selector('span.label', text: project_label_1.title)
+      expect(page).to have_selector('span.badge', text: grandparent_group_label.title)
+      expect(page).to have_selector('span.badge', text: parent_group_label.title)
+      expect(page).to have_selector('span.badge', text: project_label_1.title)
     end
   end
 
