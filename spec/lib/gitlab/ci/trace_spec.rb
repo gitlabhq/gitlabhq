@@ -535,7 +535,7 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
     context 'when job does not have trace artifact' do
       context 'when trace file stored in default path' do
         let(:build) { create(:ci_build, :success, :trace_live) }
-        let(:src_path) { trace.read { |s| return s.path } }
+        let(:src_path) { trace.read { |s| s.path } }
         let(:src_checksum) { Digest::SHA256.file(src_path).hexdigest }
 
         before do

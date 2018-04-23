@@ -79,8 +79,8 @@ module Ci
 
     def use_database!
       in_lock do
-        return if db?
-        return unless size > 0
+        break if db?
+        break unless size > 0
 
         self.update!(raw_data: data, data_store: :db)
         redis_delete_data
