@@ -6,15 +6,6 @@
 The Web IDE editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.
 
-## Enable the Web IDE
-
-While in the early stages of the Beta, access to the Web IDE is by opting in.
-
-To enable the Web IDE, click on your profile image in the top right corner and
-navigate to **Settings > Preferences**, check **Enable Web IDE** and save.
-
-![Enable Web IDE](img/enable_web_ide.png)
-
 ## Open the Web IDE
 
 The Web IDE can be opened when viewing a file, from the repository file list,
