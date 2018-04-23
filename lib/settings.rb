@@ -1,9 +1,7 @@
 require 'settingslogic'
 
-require_dependency 'gitlab'
-
 class Settings < Settingslogic
-  source ENV.fetch('GITLAB_CONFIG') { Gitlab.root.join('config/gitlab.yml') }
+  source ENV.fetch('GITLAB_CONFIG') { Pathname.new(File.expand_path('..', __dir__)).join('config/gitlab.yml') }
   namespace ENV.fetch('GITLAB_ENV') { Rails.env }
 
   class << self
