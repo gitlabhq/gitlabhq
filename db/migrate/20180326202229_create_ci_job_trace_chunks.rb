@@ -8,7 +8,7 @@ class CreateCiJobTraceChunks < ActiveRecord::Migration
       t.integer :job_id, null: false
       t.integer :chunk_index, null: false
       t.integer :data_store, null: false
-      t.text :raw_data
+      t.binary :raw_data
 
       t.foreign_key :ci_builds, column: :job_id, on_delete: :cascade
       t.index [:job_id, :chunk_index], unique: true
