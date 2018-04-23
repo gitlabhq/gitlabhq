@@ -1,0 +1,5 @@
+---
+title: Update doorkeeper to 4.3.2 to fix GitLab OAuth authentication
+merge_request: 18543
+author:
+type: fixed
