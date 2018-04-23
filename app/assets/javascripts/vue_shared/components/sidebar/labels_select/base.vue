@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
 import LoadingIcon from '../../loading_icon.vue';
@@ -98,10 +99,17 @@ export default {
     this.labelsDropdown = new LabelsSelect(this.$refs.dropdownButton, {
       handleClick: this.handleClick,
     });
+    $(this.$refs.dropdown).on('hidden.gl.dropdown', this.handleDropdownHidden);
   },
   methods: {
     handleClick(label) {
       this.$emit('onLabelClick', label);
+    },
+    handleCollapsedValueClick() {
+      this.$emit('toggleCollapse');
+    },
+    handleDropdownHidden() {
+      this.$emit('onDropdownClose');
     },
   },
 };
@@ -112,6 +120,7 @@ export default {
     <dropdown-value-collapsed
       v-if="showCreate"
       :labels="context.labels"
+      @onValueClick="handleCollapsedValueClick"
     />
     <dropdown-title
       :can-edit="canEdit"
@@ -133,7 +142,10 @@ export default {
         :name="hiddenInputName"
         :label="label"
       />
-      <div class="dropdown">
+      <div
+        class="dropdown"
+        ref="dropdown"
+      >
         <dropdown-button
           :ability-name="abilityName"
           :field-name="hiddenInputName"
