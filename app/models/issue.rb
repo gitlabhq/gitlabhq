@@ -34,7 +34,7 @@ class Issue < ActiveRecord::Base
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
-  has_many :assignees, -> { auto_include(false) }, class_name: "User", through: :issue_assignees
+  has_many :assignees, class_name: "User", through: :issue_assignees
 
   validates :project, presence: true
 
@@ -49,6 +49,7 @@ class Issue < ActiveRecord::Base
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+  scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
@@ -193,6 +194,15 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
 
+  def suggested_branch_name
+    return to_branch_name unless project.repository.branch_exists?(to_branch_name)
+
+    start_counting_from = 2
+    Uniquify.new(start_counting_from).string(-> (counter) { "#{to_branch_name}-#{counter}" }) do |suggested_branch_name|
+      project.repository.branch_exists?(suggested_branch_name)
+    end
+  end
+
   # Returns boolean if a related branch exists for the current issue
   # ignores merge requests branchs
   def has_related_branch?
@@ -247,11 +257,8 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def can_be_worked_on?(current_user)
-    !self.closed? &&
-      !self.project.forked? &&
-      self.related_branches(current_user).empty? &&
-      self.closed_by_merge_requests(current_user).empty?
+  def can_be_worked_on?
+    !self.closed? && !self.project.forked?
   end
 
   # Returns `true` if the current issue can be viewed by either a logged in User

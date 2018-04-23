@@ -61,7 +61,7 @@ module RuboCop
           return true unless opts
 
           each_hash_node_pair(opts) do |key, value|
-            return value == 'nil' if key == :default
+            break value == 'nil' if key == :default
           end
         end
 
@@ -69,7 +69,7 @@ module RuboCop
           return true unless opts
 
           each_hash_node_pair(opts) do |key, value|
-            return value != 'false' if key == :null
+            break value != 'false' if key == :null
           end
         end
 

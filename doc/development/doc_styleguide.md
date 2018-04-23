@@ -157,6 +157,39 @@ below.
 
     Otherwise, leave this mention out.
 
+### Product badges
+
+When a feature is available in EE-only tiers, add the corresponding tier according to the
+feature availability:
+
+- For GitLab Starter and GitLab.com Bronze: `**[STARTER]**`
+- For GitLab Premium and GitLab.com Silver: `**[PREMIUM]**`
+- For GitLab Ultimate and GitLab.com Gold: `**[ULTIMATE]**`
+- For GitLab Core and GitLab.com Free: `**[CORE]**`
+
+To exclude GitLab.com tiers (when the feature is not available in GitLab.com), add the
+keyword "only":
+
+- For GitLab Starter: `**[STARTER ONLY]**`
+- For GitLab Premium: `**[PREMIUM ONLY]**`
+- For GitLab Ultimate: `**[ULTIMATE ONLY]**`
+- For GitLab Core: `**[CORE ONLY]**`
+
+The tier should be ideally added to headers, so that the full badge will be displayed.
+But it can be also mentioned from paragraphs, list items, and table cells. For these cases,
+the tier mention will be represented by an orange question mark.
+E.g., `**[STARTER]**` renders **[STARTER]**, `**[STARTER ONLY]**` renders **[STARTER ONLY]**.
+
+The absence of tiers' mentions mean that the feature is available in GitLab Core,
+GitLab.com Free, and higher tiers.
+
+#### How it works
+
+Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/244),
+the special markup `**[STARTER]**` will generate a `span` element to trigger the
+badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
+"only" is added, the corresponding GitLab.com badge will not be displayed.
+
 ### GitLab Restart
 
 There are many cases that a restart/reconfigure of GitLab is required. To

@@ -217,7 +217,7 @@ module NotesActions
 
   def note_project
     strong_memoize(:note_project) do
-      return nil unless project
+      next nil unless project
 
       note_project_id = params[:note_project_id]
 
@@ -228,7 +228,7 @@ module NotesActions
           project
         end
 
-      return access_denied! unless can?(current_user, :create_note, the_project)
+      next access_denied! unless can?(current_user, :create_note, the_project)
 
       the_project
     end
