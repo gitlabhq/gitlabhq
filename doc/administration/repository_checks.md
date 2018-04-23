@@ -35,10 +35,6 @@ in `repocheck.log`:
     - `/var/log/gitlab/gitlab-rails` for Omnibus installations
     - `/home/git/gitlab/log` for installations from source
 
-Once you have resolved the issue use the admin panel to trigger a new
-repository check on the project. This will clear the 'check failed'
-state.
-
 If for some reason the periodic repository check caused a lot of false
 alarms you can choose to clear *all* repository check states by
 clicking "Clear all repository checks" on the 'Settings' page of the
