@@ -14,8 +14,8 @@ describe('Skeleton loading container', () => {
     vm.$destroy();
   });
 
-  it('renders 6 skeleton lines by default', () => {
-    expect(vm.$el.querySelector('.skeleton-line-6')).not.toBeNull();
+  it('renders 3 skeleton lines by default', () => {
+    expect(vm.$el.querySelector('.skeleton-line-3')).not.toBeNull();
   });
 
   it('renders in full mode by default', () => {

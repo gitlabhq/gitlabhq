@@ -1,0 +1,5 @@
+---
+title: Add an API endpoint to download git repository snapshots
+merge_request: 18173
+author:
+type: added
