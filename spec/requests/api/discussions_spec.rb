@@ -32,13 +32,13 @@ describe API::Discussions do
   end
 
   context "when noteable is an Epic" do
-    let(:group) { create(:group, :public, owner: user) }
+    let(:group) { create(:group, :public) }
     let(:ext_group) { create(:group, :public) }
     let(:epic) { create(:epic, group: group, author: user) }
     let!(:epic_note) { create(:discussion_note, noteable: epic, project: project, author: user) }
 
     before do
-      group.add_developer(user)
+      group.add_owner(user)
       stub_licensed_features(epics: true)
     end
 

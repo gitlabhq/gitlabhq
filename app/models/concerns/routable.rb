@@ -102,7 +102,7 @@ module Routable
   # the route. Caching this per request ensures that even if we have multiple instances,
   # we will not have to duplicate work, avoiding N+1 queries in some cases.
   def full_path
-    return uncached_full_path unless RequestStore.active?
+    return uncached_full_path unless RequestStore.active? && id
 
     RequestStore[full_path_key] ||= uncached_full_path
   end
@@ -122,6 +122,11 @@ module Routable
     else
       path
     end
+  end
+
+  # Group would override this to check from association
+  def owned_by?(user)
+    owner == user
   end
 
   private
