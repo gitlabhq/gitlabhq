@@ -10,7 +10,7 @@ shared_examples "protected branches > access control > CE" do
 
         unless allowed_to_push_button.text == access_type_name
           allowed_to_push_button.click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          within(".dropdown.show .dropdown-menu") { click_on access_type_name }
         end
       end
 
@@ -55,7 +55,7 @@ shared_examples "protected branches > access control > CE" do
 
         unless allowed_to_merge_button.text == access_type_name
           allowed_to_merge_button.click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          within(".dropdown.show .dropdown-menu") { click_on access_type_name }
         end
       end
 
