@@ -104,9 +104,9 @@ class Projects::PipelinesController < Projects::ApplicationController
     @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
-    respond_to do |format|
-      format.json { render json: { html: view_to_html_string('projects/pipelines/_stage') } }
-    end
+    render json: StageSerializer
+      .new(project: @project, current_user: @current_user)
+      .represent(@pipeline)
   end
 
   def retry
