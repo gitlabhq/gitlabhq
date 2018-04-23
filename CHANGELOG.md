@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.7.1 (2018-04-23)
+
+### Fixed (11 changes)
+
+- [API] Fix URLs in the `Link` header for `GET /projects/:id/repository/contributors` when no value is passed for `order_by` or `sort`. !18393
+- Fix a case with secret variables being empty sometimes. !18400
+- Fix `Trace::HttpIO` can not render multi-byte chars. !18417
+- Fix specifying a non-default ref when requesting an archive using the legacy URL. !18468
+- Respect visibility options and description when importing project from template. !18473
+- Removes 'No Job log' message from build trace. !18523
+- Align action icons in pipeline graph.
+- Fix direct_upload when records with null file_store are used.
+- Removed alert box in IDE when redirecting to new merge request.
+- Fixed IDE not loading for sub groups.
+- Fixed IDE not showing loading state when tree is loading.
+
+### Performance (4 changes)
+
+- Validate project path prior to hitting the database. !18322
+- Add index to file_store on ci_job_artifacts. !18444
+- Fix N+1 queries when loading participants for a commit note.
+- Support Markdown rendering using multiple projects.
+
+### Added (1 change)
+
+- Add an API endpoint to download git repository snapshots. !18173
+
+
 ## 10.7.0 (2018-04-22)
 
 ### Security (6 changes, 2 of them are from the community)
