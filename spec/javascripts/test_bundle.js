@@ -8,7 +8,7 @@ import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
 
-import { getDefaultAdapter } from '~/lib/utils/axios_utils';
+import axios from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
 
 import customMatchers from './matchers';
@@ -91,7 +91,10 @@ beforeEach(() => {
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
 });
 
-const axiosDefaultAdapter = getDefaultAdapter();
+// see https://github.com/axios/axios/tree/master/lib/adapters
+const axiosDummyAdapter = () => fail('Axios request not mocked!');
+axiosDummyAdapter.isNotMocked = true;
+axios.defaults.adapter = axiosDummyAdapter;
 
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
@@ -131,7 +134,7 @@ describe('test errors', () => {
   });
 
   it('restores axios adapter after mocking', () => {
-    if (getDefaultAdapter() !== axiosDefaultAdapter) {
+    if (axios.defaults.adapter !== axiosDummyAdapter) {
       fail('axios adapter is not restored! Did you forget a restore() on MockAdapter?');
     }
   });
