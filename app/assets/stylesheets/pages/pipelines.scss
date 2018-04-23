@@ -231,13 +231,6 @@
 }
 
 .stage-cell {
-  &.table-section {
-    @media (min-width: $screen-md-min) {
-      min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
-      margin-right: -4px;
-    }
-  }
-
   .mini-pipeline-graph-dropdown-toggle svg {
     height: $ci-action-icon-size;
     width: $ci-action-icon-size;
@@ -643,33 +636,8 @@ button.mini-pipeline-graph-dropdown-toggle {
   height: $ci-action-icon-size;
   margin: 0;
   padding: 0;
-  transition: all 0.2s linear;
   position: relative;
   vertical-align: middle;
-
-  > .fa.fa-caret-down {
-    position: absolute;
-    left: 20px;
-    top: 5px;
-    display: inline-block;
-    visibility: hidden;
-    opacity: 0;
-    color: inherit;
-    font-size: 12px;
-    transition: visibility 0.1s, opacity 0.1s linear;
-  }
-
-  &:active,
-  &:focus,
-  &:hover {
-    outline: none;
-    width: 35px;
-
-    .fa.fa-caret-down {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
 
   // Dropdown button animation in mini pipeline graph
   &.ci-status-icon-success {
@@ -787,8 +755,6 @@ button.mini-pipeline-graph-dropdown-toggle {
           left: 8px;
         }
       }
-
-
     }
 
     // link to the build

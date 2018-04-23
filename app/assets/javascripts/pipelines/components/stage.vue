@@ -154,12 +154,6 @@
       >
         <icon :name="borderlessIcon" />
       </span>
-
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true"
-      >
-      </i>
     </button>
 
     <ul

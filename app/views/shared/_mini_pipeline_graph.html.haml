@@ -8,7 +8,6 @@
       .stage-container.dropdown{ class: klass }
         %button.mini-pipeline-graph-dropdown-toggle.has-tooltip.js-builds-dropdown-button{ class: "ci-status-icon-#{detailed_status.group}", type: 'button', data: { toggle: 'dropdown', title: "#{stage.name}: #{detailed_status.label}", placement: 'top', "stage-endpoint" => stage_project_pipeline_path(pipeline.project, pipeline, stage: stage.name) } }
           = sprite_icon(icon_status)
-          = icon('caret-down')
 
         %ul.dropdown-menu.mini-pipeline-graph-dropdown-menu.js-builds-dropdown-container
           %li.js-builds-dropdown-list.scrollable-menu
