@@ -3,10 +3,10 @@ import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('clipboard button', () => {
+  const Component = Vue.extend(clipboardButton);
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(clipboardButton);
     vm = mountComponent(Component, {
       text: 'copy me',
       title: 'Copy this value into Clipboard!',

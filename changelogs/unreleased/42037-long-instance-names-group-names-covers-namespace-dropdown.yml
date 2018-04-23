@@ -1,5 +1,0 @@
----
-title: Long instance urls do not overflow anymore during project creation
-merge_request: 17717
-author:
-type: fixed

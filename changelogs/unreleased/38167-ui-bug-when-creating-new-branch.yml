@@ -1,5 +1,0 @@
----
-title: Fixed bug in dropdown selector when selecting the same selection again
-merge_request: 14631
-author: bitsapien
-type: fixed
