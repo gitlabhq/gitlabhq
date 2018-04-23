@@ -19,7 +19,7 @@ export default {
     >
       {{ __('Review') }}
       <div class="prepend-top-5 ide-review-sub-header">
-        {{ __('Lastest changed') }}
+        {{ __('Lastest changes') }}
       </div>
     </template>
   </ide-tree-list>
