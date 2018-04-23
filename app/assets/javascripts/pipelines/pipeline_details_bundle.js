@@ -29,7 +29,7 @@ export default () => {
     data() {
       return {
         mediator,
-        actionDisabled: null,
+        requestFinishedFor: null,
       };
     },
     created() {
@@ -40,15 +40,17 @@ export default () => {
     },
     methods: {
       postAction(action) {
-        this.actionDisabled = action;
+        // Click was made, reset this variable
+        this.requestFinishedFor = null;
 
-        this.mediator.service.postAction(action)
+        this.mediator.service
+          .postAction(action)
           .then(() => {
             this.mediator.refreshPipeline();
-            this.actionDisabled = null;
+            this.requestFinishedFor = action;
           })
           .catch(() => {
-            this.actionDisabled = null;
+            this.requestFinishedFor = action;
             Flash(__('An error occurred while making the request.'));
           });
       },
@@ -58,7 +60,7 @@ export default () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
-          actionDisabled: this.actionDisabled,
+          requestFinishedFor: this.requestFinishedFor,
         },
       });
     },
@@ -83,7 +85,8 @@ export default () => {
     },
     methods: {
       postAction(action) {
-        this.mediator.service.postAction(action.path)
+        this.mediator.service
+          .postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
           .catch(() => Flash(__('An error occurred while making the request.')));
       },

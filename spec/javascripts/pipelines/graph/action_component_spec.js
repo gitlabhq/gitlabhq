@@ -6,7 +6,7 @@ import mountComponent from '../../helpers/vue_mount_component_helper';
 describe('pipeline graph action component', () => {
   let component;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const ActionComponent = Vue.extend(actionComponent);
     component = mountComponent(ActionComponent, {
       tooltipText: 'bar',
@@ -22,7 +22,7 @@ describe('pipeline graph action component', () => {
   });
 
   it('should emit an event with the provided link', () => {
-    eventHub.$on('graphAction', (link) => {
+    eventHub.$on('graphAction', link => {
       expect(link).toEqual('foo');
     });
   });
@@ -31,7 +31,7 @@ describe('pipeline graph action component', () => {
     expect(component.$el.getAttribute('data-original-title')).toEqual('bar');
   });
 
-  it('should update bootstrap tooltip when title changes', (done) => {
+  it('should update bootstrap tooltip when title changes', done => {
     component.tooltipText = 'changed';
 
     setTimeout(() => {
@@ -43,5 +43,46 @@ describe('pipeline graph action component', () => {
   it('should render an svg', () => {
     expect(component.$el.querySelector('.ci-action-icon-wrapper')).toBeDefined();
     expect(component.$el.querySelector('svg')).toBeDefined();
+  });
+
+  it('disables the button when clicked', done => {
+    component.$el.click();
+
+    component.$nextTick(() => {
+      expect(component.$el.getAttribute('disabled')).toEqual('disabled');
+      done();
+    });
+  });
+
+  it('re-enabled the button when `requestFinishedFor` matches `linkRequested`', done => {
+    component.$el.click();
+
+    component
+      .$nextTick()
+      .then(() => {
+        expect(component.$el.getAttribute('disabled')).toEqual('disabled');
+        component.requestFinishedFor = 'foo';
+      })
+      .then(() => {
+        expect(component.$el.getAttribute('disabled')).toBeNull();
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('does not re-enable the button when `requestFinishedFor` does not matches `linkRequested`', done => {
+    component.$el.click();
+
+    component
+      .$nextTick()
+      .then(() => {
+        expect(component.$el.getAttribute('disabled')).toEqual('disabled');
+        component.requestFinishedFor = 'bar';
+      })
+      .then(() => {
+        expect(component.$el.getAttribute('disabled')).toEqual('disabled');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 });
