@@ -17,13 +17,13 @@ module QA
           end
 
           def fill_variable(key, value)
-            keys = all('.qa-ci-variable-input-key')
+            keys = all_elements(:ci_variable_input_key)
             index = keys.size - 1
 
             # After we fill the key, JS would generate another field so
             # we need to use the same index to find the corresponding one.
             keys[index].set(key)
-            all('.qa-ci-variable-input-value')[index].set(value)
+            all_elements(:ci_variable_input_value)[index].set(value)
           end
 
           def save_variables
