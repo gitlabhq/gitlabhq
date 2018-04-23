@@ -3996,7 +3996,7 @@ describe Project do
       it { is_expected.to be_nil }
     end
 
-    context 'when there is a gitlab deploy token associated but it has expired' do
+    context 'when there is a gitlab deploy token associated but it is expired' do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :expired, projects: [project]) }
 
       it { is_expected.to be_nil }
@@ -4004,6 +4004,13 @@ describe Project do
 
     context 'when there is a deploy token associated with a different name' do
       let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated to a different project' do
+      let(:project_2) { create(:project) }
+      let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
 
       it { is_expected.to be_nil }
     end
