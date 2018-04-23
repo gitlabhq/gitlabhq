@@ -1,0 +1,5 @@
+---
+title: Fix undefined `html_escape` method during markdown rendering
+merge_request: 18418
+author:
+type: fixed

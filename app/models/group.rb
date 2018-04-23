@@ -53,7 +53,7 @@ class Group < Namespace
       Gitlab::Database.postgresql?
     end
 
-    def sort(method)
+    def sort_by_attribute(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
@@ -125,6 +125,10 @@ class Group < Namespace
     self[:lfs_enabled]
   end
 
+  def owned_by?(user)
+    owners.include?(user)
+  end
+
   def add_users(users, access_level, current_user: nil, expires_at: nil)
     GroupMember.add_users(
       self,
@@ -187,12 +191,6 @@ class Group < Namespace
   # Parent owners are ignored for nested groups.
   def last_owner?(user)
     owners.include?(user) && owners.size == 1
-  end
-
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
-    end
   end
 
   def post_create_hook
@@ -290,6 +288,10 @@ class Group < Namespace
 
   def hashed_storage?(_feature)
     false
+  end
+
+  def refresh_project_authorizations
+    refresh_members_authorized_projects(blocking: false)
   end
 
   private

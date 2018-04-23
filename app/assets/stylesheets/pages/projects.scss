@@ -935,11 +935,6 @@ pre.light-well {
     }
   }
 
-  .dropdown-menu-toggle {
-    width: 100%;
-    max-width: 300px;
-  }
-
   .flash-container {
     padding: 0;
   }
@@ -1120,4 +1115,34 @@ pre.light-well {
 .issuable-footer {
   padding-top: $gl-padding;
   padding-bottom: 37px;
+}
+
+.project-ci-body {
+  .incorrect-syntax {
+    font-size: 18px;
+    color: $lint-incorrect-color;
+  }
+
+  .correct-syntax {
+    font-size: 18px;
+    color: $lint-correct-color;
+  }
+}
+
+.project-ci-linter {
+  .ci-editor {
+    height: 400px;
+  }
+
+  .ci-template pre {
+    white-space: pre-wrap;
+  }
+}
+
+.project-badge {
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
 }

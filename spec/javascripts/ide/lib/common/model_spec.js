@@ -11,7 +11,10 @@ describe('Multi-file editor library model', () => {
     spyOn(eventHub, '$on').and.callThrough();
 
     monacoLoader(['vs/editor/editor.main'], () => {
-      model = new Model(monaco, file('path'));
+      const f = file('path');
+      f.mrChange = { diff: 'ABC' };
+      f.baseRaw = 'test';
+      model = new Model(monaco, f);
 
       done();
     });
@@ -21,21 +24,35 @@ describe('Multi-file editor library model', () => {
     model.dispose();
   });
 
-  it('creates original model & new model', () => {
+  it('creates original model & base model & new model', () => {
     expect(model.originalModel).not.toBeNull();
     expect(model.model).not.toBeNull();
+    expect(model.baseModel).not.toBeNull();
+  });
+
+  it('creates model with head file to compare against', () => {
+    const f = file('path');
+    model.dispose();
+
+    model = new Model(monaco, f, {
+      ...f,
+      content: '123 testing',
+    });
+
+    expect(model.head).not.toBeNull();
+    expect(model.getOriginalModel().getValue()).toBe('123 testing');
   });
 
   it('adds eventHub listener', () => {
     expect(eventHub.$on).toHaveBeenCalledWith(
-      `editor.update.model.dispose.${model.file.path}`,
+      `editor.update.model.dispose.${model.file.key}`,
       jasmine.anything(),
     );
   });
 
   describe('path', () => {
     it('returns file path', () => {
-      expect(model.path).toBe('path');
+      expect(model.path).toBe(model.file.key);
     });
   });
 
@@ -51,6 +68,12 @@ describe('Multi-file editor library model', () => {
     });
   });
 
+  describe('getBaseModel', () => {
+    it('returns base model', () => {
+      expect(model.getBaseModel()).toBe(model.baseModel);
+    });
+  });
+
   describe('setValue', () => {
     it('updates models value', () => {
       model.setValue('testing 123');
@@ -60,13 +83,6 @@ describe('Multi-file editor library model', () => {
   });
 
   describe('onChange', () => {
-    it('caches event by path', () => {
-      model.onChange(() => {});
-
-      expect(model.events.size).toBe(1);
-      expect(model.events.keys().next().value).toBe('path');
-    });
-
     it('calls callback on change', done => {
       const spy = jasmine.createSpy();
       model.onChange(spy);
@@ -105,9 +121,19 @@ describe('Multi-file editor library model', () => {
       model.dispose();
 
       expect(eventHub.$off).toHaveBeenCalledWith(
-        `editor.update.model.dispose.${model.file.path}`,
+        `editor.update.model.dispose.${model.file.key}`,
         jasmine.anything(),
       );
+    });
+
+    it('calls onDispose callback', () => {
+      const disposeSpy = jasmine.createSpy();
+
+      model.onDispose(disposeSpy);
+
+      model.dispose();
+
+      expect(disposeSpy).toHaveBeenCalled();
     });
   });
 });

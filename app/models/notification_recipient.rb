@@ -48,7 +48,7 @@ class NotificationRecipient
     when :custom
       custom_enabled? || %i[participating mention].include?(@type)
     when :watch, :participating
-      !excluded_watcher_action?
+      !action_excluded?
     when :mention
       @type == :mention
     else
@@ -83,24 +83,33 @@ class NotificationRecipient
 
   def has_access?
     DeclarativePolicy.subject_scope do
-      return false unless user.can?(:receive_notifications)
-      return true if @skip_read_ability
+      break false unless user.can?(:receive_notifications)
+      break true if @skip_read_ability
 
-      return false if @target && !user.can?(:read_cross_project)
-      return false if @project && !user.can?(:read_project, @project)
+      break false if @target && !user.can?(:read_cross_project)
+      break false if @project && !user.can?(:read_project, @project)
 
-      return true unless read_ability
-      return true unless DeclarativePolicy.has_policy?(@target)
+      break true unless read_ability
+      break true unless DeclarativePolicy.has_policy?(@target)
 
       user.can?(read_ability, @target)
     end
   end
 
+  def action_excluded?
+    excluded_watcher_action? || excluded_participating_action?
+  end
+
   def excluded_watcher_action?
-    return false unless @custom_action
-    return false if notification_level == :custom
+    return false unless @custom_action && notification_level == :watch
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
+  end
+
+  def excluded_participating_action?
+    return false unless @custom_action && notification_level == :participating
+
+    NotificationSetting::EXCLUDED_PARTICIPATING_EVENTS.include?(@custom_action)
   end
 
   private

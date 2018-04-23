@@ -1,0 +1,12 @@
+%p.details
+  #{link_to @issue.author_name, user_url(@issue.author)}'s issue is due soon.
+
+- if @issue.assignees.any?
+  %p
+    Assignee: #{@issue.assignee_list}
+%p
+  This issue is due on: #{@issue.due_date.to_s(:medium)}
+
+- if @issue.description
+  %div
+  = markdown(@issue.description, pipeline: :email, author: @issue.author)

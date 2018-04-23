@@ -33,7 +33,7 @@ describe Gitlab::GitalyClient::CommitService do
         initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863').raw
         request        = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
-          left_commit_id: '4b825dc642cb6eb9a060e54bf8d69288fbee4904',
+          left_commit_id: Gitlab::Git::EMPTY_TREE_ID,
           right_commit_id: initial_commit.id,
           collapse_diffs: true,
           enforce_limits: true,
@@ -77,7 +77,7 @@ describe Gitlab::GitalyClient::CommitService do
         initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
         request        = Gitaly::CommitDeltaRequest.new(
           repository: repository_message,
-          left_commit_id: '4b825dc642cb6eb9a060e54bf8d69288fbee4904',
+          left_commit_id: Gitlab::Git::EMPTY_TREE_ID,
           right_commit_id: initial_commit.id
         )
 
@@ -90,7 +90,7 @@ describe Gitlab::GitalyClient::CommitService do
 
   describe '#between' do
     let(:from) { 'master' }
-    let(:to) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
+    let(:to) { Gitlab::Git::EMPTY_TREE_ID }
 
     it 'sends an RPC request' do
       request = Gitaly::CommitsBetweenRequest.new(
@@ -155,7 +155,7 @@ describe Gitlab::GitalyClient::CommitService do
   end
 
   describe '#find_commit' do
-    let(:revision) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
+    let(:revision) { Gitlab::Git::EMPTY_TREE_ID }
     it 'sends an RPC request' do
       request = Gitaly::FindCommitRequest.new(
         repository: repository_message, revision: revision

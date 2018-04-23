@@ -7,8 +7,8 @@ if defined?(Unicorn)
     # Unicorn self-process killer
     require 'unicorn/worker_killer'
 
-    min = (ENV['GITLAB_UNICORN_MEMORY_MIN'] || 300 * 1 << 20).to_i
-    max = (ENV['GITLAB_UNICORN_MEMORY_MAX'] || 350 * 1 << 20).to_i
+    min = (ENV['GITLAB_UNICORN_MEMORY_MIN'] || 400 * 1 << 20).to_i
+    max = (ENV['GITLAB_UNICORN_MEMORY_MAX'] || 650 * 1 << 20).to_i
 
     # Max memory size (RSS) per worker
     use Unicorn::WorkerKiller::Oom, min, max

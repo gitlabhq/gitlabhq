@@ -55,6 +55,14 @@ describe Gitlab::DataBuilder::Note do
         .to be > issue.hook_attrs['updated_at']
     end
 
+    context 'with confidential issue' do
+      let(:issue) { create(:issue, project: project, confidential: true) }
+
+      it 'sets event_type to confidential_note' do
+        expect(data[:event_type]).to eq('confidential_note')
+      end
+    end
+
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
   end

@@ -6,6 +6,7 @@ export const defaultEditorOptions = {
   minimap: {
     enabled: false,
   },
+  wordWrap: 'on',
 };
 
 export default [

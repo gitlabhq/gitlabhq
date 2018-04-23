@@ -9,25 +9,25 @@ export default class ModelManager {
     this.models = new Map();
   }
 
-  hasCachedModel(path) {
-    return this.models.has(path);
+  hasCachedModel(key) {
+    return this.models.has(key);
   }
 
-  getModel(path) {
-    return this.models.get(path);
+  getModel(key) {
+    return this.models.get(key);
   }
 
-  addModel(file) {
-    if (this.hasCachedModel(file.path)) {
-      return this.getModel(file.path);
+  addModel(file, head = null) {
+    if (this.hasCachedModel(file.key)) {
+      return this.getModel(file.key);
     }
 
-    const model = new Model(this.monaco, file);
+    const model = new Model(this.monaco, file, head);
     this.models.set(model.path, model);
     this.disposable.add(model);
 
     eventHub.$on(
-      `editor.update.model.dispose.${file.path}`,
+      `editor.update.model.dispose.${file.key}`,
       this.removeCachedModel.bind(this, file),
     );
 
@@ -35,12 +35,9 @@ export default class ModelManager {
   }
 
   removeCachedModel(file) {
-    this.models.delete(file.path);
+    this.models.delete(file.key);
 
-    eventHub.$off(
-      `editor.update.model.dispose.${file.path}`,
-      this.removeCachedModel,
-    );
+    eventHub.$off(`editor.update.model.dispose.${file.key}`, this.removeCachedModel);
   }
 
   dispose() {

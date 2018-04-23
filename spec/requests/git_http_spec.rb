@@ -163,7 +163,7 @@ describe 'Git HTTP requests' do
             download(path) do |response|
               json_body = ActiveSupport::JSON.decode(response.body)
 
-              expect(json_body['RepoPath']).to include(wiki.repository.disk_path)
+              expect(json_body['Repository']['relative_path']).to eq(wiki.repository.relative_path)
             end
           end
         end
@@ -344,20 +344,11 @@ describe 'Git HTTP requests' do
         context 'and the user requests a redirected path' do
           let!(:redirect) { project.route.create_redirect('foo/bar') }
           let(:path) { "#{redirect.path}.git" }
-          let(:project_moved_message) do
-            <<-MSG.strip_heredoc
-              Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-              Please update your Git remote:
-
-                git remote set-url origin #{project.http_url_to_repo} and try again.
-            MSG
-          end
-
-          it 'downloads get status 404 with "project was moved" message' do
+          it 'downloads get status 200 for redirects' do
             clone_get(path, {})
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to match(project_moved_message)
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -559,20 +550,19 @@ describe 'Git HTTP requests' do
 
                     Please update your Git remote:
 
-                      git remote set-url origin #{project.http_url_to_repo} and try again.
+                      git remote set-url origin #{project.http_url_to_repo}.
                   MSG
                 end
 
-                it 'downloads get status 404 with "project was moved" message' do
+                it 'downloads get status 200' do
                   clone_get(path, env)
-                  expect(response).to have_gitlab_http_status(:not_found)
-                  expect(response.body).to match(project_moved_message)
+
+                  expect(response).to have_gitlab_http_status(:ok)
                 end
 
                 it 'uploads get status 404 with "project was moved" message' do
                   upload(path, env) do |response|
-                    expect(response).to have_gitlab_http_status(:not_found)
-                    expect(response.body).to match(project_moved_message)
+                    expect(response).to have_gitlab_http_status(:ok)
                   end
                 end
               end

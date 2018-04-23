@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Auth::LDAP::Access do
+  include LdapHelpers
+
   let(:access) { described_class.new user }
   let(:user) { create(:omniauth_user) }
 
@@ -32,8 +34,10 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     context 'when the user is found' do
+      let(:ldap_user) { Gitlab::Auth::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
+
       before do
-        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
       end
 
       context 'and the user is disabled via active directory' do
@@ -118,6 +122,22 @@ describe Gitlab::Auth::LDAP::Access do
             access.allowed?
           end
         end
+      end
+    end
+
+    context 'when the connection fails' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'does not block the user' do
+        access.allowed?
+
+        expect(user.ldap_blocked?).to be_falsey
+      end
+
+      it 'denies access' do
+        expect(access.allowed?).to be_falsey
       end
     end
   end

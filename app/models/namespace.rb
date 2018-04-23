@@ -248,8 +248,8 @@ class Namespace < ActiveRecord::Base
     all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
-  def features
-    []
+  def refresh_project_authorizations
+    owner.refresh_authorized_projects
   end
 
   private

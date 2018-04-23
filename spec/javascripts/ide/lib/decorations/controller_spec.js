@@ -36,9 +36,7 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('returns decorations by model URL', () => {
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       const decorations = controller.getAllDecorationsForModel(model);
 
@@ -48,39 +46,29 @@ describe('Multi-file editor library decorations controller', () => {
 
   describe('addDecorations', () => {
     it('caches decorations in a new map', () => {
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       expect(controller.decorations.size).toBe(1);
     });
 
     it('does not create new cache model', () => {
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue2' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue2' }]);
 
       expect(controller.decorations.size).toBe(1);
     });
 
     it('caches decorations by model URL', () => {
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       expect(controller.decorations.size).toBe(1);
-      expect(controller.decorations.keys().next().value).toBe('path');
+      expect(controller.decorations.keys().next().value).toBe('path--path');
     });
 
     it('calls decorate method', () => {
       spyOn(controller, 'decorate');
 
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       expect(controller.decorate).toHaveBeenCalled();
     });
@@ -92,10 +80,7 @@ describe('Multi-file editor library decorations controller', () => {
 
       controller.decorate(model);
 
-      expect(controller.editor.instance.deltaDecorations).toHaveBeenCalledWith(
-        [],
-        [],
-      );
+      expect(controller.editor.instance.deltaDecorations).toHaveBeenCalledWith([], []);
     });
 
     it('caches decorations', () => {
@@ -111,15 +96,13 @@ describe('Multi-file editor library decorations controller', () => {
 
       controller.decorate(model);
 
-      expect(controller.editorDecorations.keys().next().value).toBe('path');
+      expect(controller.editorDecorations.keys().next().value).toBe('path--path');
     });
   });
 
   describe('dispose', () => {
     it('clears cached decorations', () => {
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       controller.dispose();
 
@@ -127,12 +110,39 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('clears cached editorDecorations', () => {
-      controller.addDecorations(model, 'key', [
-        { decoration: 'decorationValue' },
-      ]);
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       controller.dispose();
 
+      expect(controller.editorDecorations.size).toBe(0);
+    });
+  });
+
+  describe('hasDecorations', () => {
+    it('returns true when decorations are cached', () => {
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+
+      expect(controller.hasDecorations(model)).toBe(true);
+    });
+
+    it('returns false when no model decorations exist', () => {
+      expect(controller.hasDecorations(model)).toBe(false);
+    });
+  });
+
+  describe('removeDecorations', () => {
+    beforeEach(() => {
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.decorate(model);
+    });
+
+    it('removes cached decorations', () => {
+      expect(controller.decorations.size).not.toBe(0);
+      expect(controller.editorDecorations.size).not.toBe(0);
+
+      controller.removeDecorations(model);
+
+      expect(controller.decorations.size).toBe(0);
       expect(controller.editorDecorations.size).toBe(0);
     });
   });

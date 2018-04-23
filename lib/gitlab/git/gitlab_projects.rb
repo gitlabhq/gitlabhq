@@ -4,19 +4,13 @@ module Gitlab
       include Gitlab::Git::Popen
       include Gitlab::Utils::StrongMemoize
 
-      ShardNameNotFoundError = Class.new(StandardError)
-
-      # Absolute path to directory where repositories are stored.
-      # Example: /home/git/repositories
-      attr_reader :shard_path
+      # Name of shard where repositories are stored.
+      # Example: nfs-file06
+      attr_reader :shard_name
 
       # Relative path is a directory name for repository with .git at the end.
       # Example: gitlab-org/gitlab-test.git
       attr_reader :repository_relative_path
-
-      # Absolute path to the repository.
-      # Example: /home/git/repositorities/gitlab-org/gitlab-test.git
-      attr_reader :repository_absolute_path
 
       # This is the path at which the gitlab-shell hooks directory can be found.
       # It's essential for integration between git and GitLab proper. All new
@@ -25,13 +19,12 @@ module Gitlab
 
       attr_reader :logger
 
-      def initialize(shard_path, repository_relative_path, global_hooks_path:, logger:)
-        @shard_path = shard_path
+      def initialize(shard_name, repository_relative_path, global_hooks_path:, logger:)
+        @shard_name = shard_name
         @repository_relative_path = repository_relative_path
 
         @logger = logger
         @global_hooks_path = global_hooks_path
-        @repository_absolute_path = File.join(shard_path, repository_relative_path)
         @output = StringIO.new
       end
 
@@ -39,6 +32,22 @@ module Gitlab
         io = @output.dup
         io.rewind
         io.read
+      end
+
+      # Absolute path to the repository.
+      # Example: /home/git/repositorities/gitlab-org/gitlab-test.git
+      # Probably will be removed when we fully migrate to Gitaly, part of
+      # https://gitlab.com/gitlab-org/gitaly/issues/1124.
+      def repository_absolute_path
+        strong_memoize(:repository_absolute_path) do
+          File.join(shard_path, repository_relative_path)
+        end
+      end
+
+      def shard_path
+        strong_memoize(:shard_path) do
+          Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
+        end
       end
 
       # Import project via git clone --bare
@@ -53,12 +62,12 @@ module Gitlab
         end
       end
 
-      def fork_repository(new_shard_path, new_repository_relative_path)
+      def fork_repository(new_shard_name, new_repository_relative_path)
         Gitlab::GitalyClient.migrate(:fork_repository) do |is_enabled|
           if is_enabled
-            gitaly_fork_repository(new_shard_path, new_repository_relative_path)
+            gitaly_fork_repository(new_shard_name, new_repository_relative_path)
           else
-            git_fork_repository(new_shard_path, new_repository_relative_path)
+            git_fork_repository(new_shard_name, new_repository_relative_path)
           end
         end
       end
@@ -205,17 +214,6 @@ module Gitlab
 
       private
 
-      def shard_name
-        strong_memoize(:shard_name) do
-          shard_name_from_shard_path(shard_path)
-        end
-      end
-
-      def shard_name_from_shard_path(shard_path)
-        Gitlab.config.repositories.storages.find { |_, info| info['path'] == shard_path }&.first ||
-          raise(ShardNameNotFoundError, "no shard found for path '#{shard_path}'")
-      end
-
       def git_import_repository(source, timeout)
         # Skip import if repo already exists
         return false if File.exist?(repository_absolute_path)
@@ -252,8 +250,9 @@ module Gitlab
         false
       end
 
-      def git_fork_repository(new_shard_path, new_repository_relative_path)
+      def git_fork_repository(new_shard_name, new_repository_relative_path)
         from_path = repository_absolute_path
+        new_shard_path = Gitlab.config.repositories.storages.fetch(new_shard_name).legacy_disk_path
         to_path = File.join(new_shard_path, new_repository_relative_path)
 
         # The repository cannot already exist
@@ -271,8 +270,8 @@ module Gitlab
         run(cmd, nil) && Gitlab::Git::Repository.create_hooks(to_path, global_hooks_path)
       end
 
-      def gitaly_fork_repository(new_shard_path, new_repository_relative_path)
-        target_repository = Gitlab::Git::Repository.new(shard_name_from_shard_path(new_shard_path), new_repository_relative_path, nil)
+      def gitaly_fork_repository(new_shard_name, new_repository_relative_path)
+        target_repository = Gitlab::Git::Repository.new(new_shard_name, new_repository_relative_path, nil)
         raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
 
         Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)

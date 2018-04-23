@@ -32,40 +32,18 @@ require 'rainbow/ext/string'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
+# Requires helpers, and shared contexts/examples first since they're used in other support files
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
-  config.mock_with :rspec
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
-
-  config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Devise::Test::ControllerHelpers, type: :view
-  config.include Devise::Test::IntegrationHelpers, type: :feature
-  config.include Warden::Test::Helpers, type: :request
-  config.include LoginHelpers, type: :feature
-  config.include SearchHelpers, type: :feature
-  config.include CookieHelper, :js
-  config.include InputHelper, :js
-  config.include SelectionHelper, :js
-  config.include InspectRequests, :js
-  config.include WaitForRequests, :js
-  config.include LiveDebugger, :js
-  config.include StubConfiguration
-  config.include EmailHelpers, :mailer, type: :mailer
-  config.include TestEnv
-  config.include ActiveJob::TestHelper
-  config.include ActiveSupport::Testing::TimeHelpers
-  config.include StubGitlabCalls
-  config.include StubGitlabData
-  config.include ApiHelpers, :api
-  config.include Gitlab::Routing, type: :routing
-  config.include MigrationsHelpers, :migration
-  config.include StubFeatureFlags
-  config.include StubENV
 
   config.infer_spec_type_from_file_location!
 
@@ -81,7 +59,33 @@ RSpec.configure do |config|
     metadata[:type] = match[1].singularize.to_sym if match
   end
 
-  config.raise_errors_for_deprecations!
+  config.include ActiveJob::TestHelper
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.include CycleAnalyticsHelpers
+  config.include ExpectOffense
+  config.include FactoryBot::Syntax::Methods
+  config.include FixtureHelpers
+  config.include GitlabRoutingHelper
+  config.include StubFeatureFlags
+  config.include StubGitlabCalls
+  config.include StubGitlabData
+  config.include TestEnv
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include LoginHelpers, type: :feature
+  config.include SearchHelpers, type: :feature
+  config.include EmailHelpers, :mailer, type: :mailer
+  config.include Warden::Test::Helpers, type: :request
+  config.include Gitlab::Routing, type: :routing
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.include ApiHelpers, :api
+  config.include CookieHelper, :js
+  config.include InputHelper, :js
+  config.include SelectionHelper, :js
+  config.include InspectRequests, :js
+  config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
+  config.include MigrationsHelpers, :migration
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -97,6 +101,10 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+  config.after(:all) do
+    TestEnv.clean_test_path
+  end
+
   config.before(:example) do
     # Skip pre-receive hook check so we can use the web editor and merge.
     allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
@@ -104,7 +112,8 @@ RSpec.configure do |config|
     allow_any_instance_of(Gitlab::Git::GitlabProjects).to receive(:fork_repository).and_wrap_original do |m, *args|
       m.call(*args)
 
-      shard_path, repository_relative_path = args
+      shard_name, repository_relative_path = args
+      shard_path = Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
       # We can't leave the hooks in place after a fork, as those would fail in tests
       # The "internal" API is not available
       FileUtils.rm_rf(File.join(shard_path, repository_relative_path, 'hooks'))
@@ -196,6 +205,22 @@ RSpec.configure do |config|
     allow(view).to receive(:can?) do |*args|
       Ability.allowed?(*args)
     end
+  end
+
+  config.before(:each, :http_pages_enabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
+  end
+
+  config.before(:each, :https_pages_enabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(['1.1.1.1:443'])
+  end
+
+  config.before(:each, :http_pages_disabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(false)
+  end
+
+  config.before(:each, :https_pages_disabled) do |_|
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(false)
   end
 end
 

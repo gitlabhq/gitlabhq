@@ -25,13 +25,38 @@ export default () => {
     data() {
       return {
         mediator,
+        requestFinishedFor: null,
       };
+    },
+    created() {
+      eventHub.$on('graphAction', this.postAction);
+    },
+    beforeDestroy() {
+      eventHub.$off('graphAction', this.postAction);
+    },
+    methods: {
+      postAction(action) {
+        // Click was made, reset this variable
+        this.requestFinishedFor = null;
+
+        this.mediator.service
+          .postAction(action)
+          .then(() => {
+            this.mediator.refreshPipeline();
+            this.requestFinishedFor = action;
+          })
+          .catch(() => {
+            this.requestFinishedFor = action;
+            Flash(__('An error occurred while making the request.'));
+          });
+      },
     },
     render(createElement) {
       return createElement('pipeline-graph', {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
+          requestFinishedFor: this.requestFinishedFor,
         },
       });
     },
@@ -56,7 +81,8 @@ export default () => {
     },
     methods: {
       postAction(action) {
-        this.mediator.service.postAction(action.path)
+        this.mediator.service
+          .postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
           .catch(() => Flash(__('An error occurred while making the request.')));
       },

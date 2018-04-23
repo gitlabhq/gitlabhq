@@ -90,15 +90,14 @@ module Projects
       unless @project.gitlab_project_import?
         @project.write_repository_config
         @project.create_wiki unless skip_wiki?
-        create_services_from_active_templates(@project)
-
-        @project.create_labels
       end
 
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
       setup_authorizations
+
+      current_user.invalidate_personal_projects_count
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -121,21 +120,29 @@ module Projects
       Project.transaction do
         @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
 
-        if @project.save && !@project.import?
-          raise 'Failed to create repository' unless @project.create_repository
+        if @project.save
+          unless @project.gitlab_project_import?
+            create_services_from_active_templates(@project)
+            @project.create_labels
+          end
+
+          unless @project.import?
+            raise 'Failed to create repository' unless @project.create_repository
+          end
         end
       end
     end
 
     def fail(error:)
       message = "Unable to save project. Error: #{error}"
-      message << "Project ID: #{@project.id}" if @project && @project.id
+      log_message = message.dup
 
-      Rails.logger.error(message)
+      log_message << " Project ID: #{@project.id}" if @project&.id
+      Rails.logger.error(log_message)
 
-      if @project && @project.import?
+      if @project
         @project.errors.add(:base, message)
-        @project.mark_import_as_failed(message)
+        @project.mark_import_as_failed(message) if @project.import?
       end
 
       @project

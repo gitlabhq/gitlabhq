@@ -12,11 +12,11 @@ module Banzai
       [@data-reference-type="issue" or @data-reference-type="merge_request"]
     ).freeze
 
-    attr_reader :project, :user
+    attr_reader :context
 
-    def initialize(project, user)
-      @project = project
-      @user = user
+    # context - An instance of Banzai::RenderContext.
+    def initialize(context)
+      @context = context
     end
 
     # Returns Hash in the form { node => issuable_instance }
@@ -25,8 +25,10 @@ module Banzai
         document.xpath(QUERY)
       end
 
-      issue_parser = Banzai::ReferenceParser::IssueParser.new(project, user)
-      merge_request_parser = Banzai::ReferenceParser::MergeRequestParser.new(project, user)
+      issue_parser = Banzai::ReferenceParser::IssueParser.new(context)
+
+      merge_request_parser =
+        Banzai::ReferenceParser::MergeRequestParser.new(context)
 
       issuables_for_nodes = issue_parser.records_for_nodes(nodes).merge(
         merge_request_parser.records_for_nodes(nodes)

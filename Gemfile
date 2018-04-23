@@ -6,7 +6,6 @@ end
 gem_versions = {}
 gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
 gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['html-pipeline']                   = rails5? ? '~> 2.6.0' : '~> 1.11.0'
 gem_versions['rails']                           = rails5? ? '5.0.6'    : '4.2.10'
 gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
@@ -28,7 +27,7 @@ gem 'default_value_for', gem_versions['default_value_for']
 gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.26.0'
+gem 'rugged', '~> 0.27'
 gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
@@ -44,14 +43,15 @@ gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.5.2'
+gem 'omniauth-google-oauth2', '~> 0.5.3'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
-gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -62,7 +62,7 @@ gem 'akismet', '~> 2.0'
 # Two-factor authentication
 gem 'devise-two-factor', '~> 3.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 3.0.0'
+gem 'attr_encrypted', '~> 3.1.0'
 gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
@@ -82,16 +82,9 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
-# Before updating this gem, check if
-# https://github.com/gollum/gollum-lib/pull/292 has been merged.
-# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
-# in config/initializers/gollum.rb
-gem 'gollum-lib', '~> 4.2', require: false
+gem 'gitlab-gollum-lib', '~> 4.2', require: false
 
-# Before updating this gem, check if
-# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
-# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
-gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
+gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
@@ -117,9 +110,9 @@ gem 'carrierwave', '~> 1.2'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 2.0'
+gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 0.5'
+gem 'fog-google', '~> 1.3.3'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
@@ -135,7 +128,7 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
-gem 'html-pipeline', gem_versions['html-pipeline']
+gem 'html-pipeline', '~> 2.7.1'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
@@ -145,9 +138,9 @@ gem 'rdoc', '~> 4.2'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
-gem 'asciidoctor', '~> 1.5.2'
-gem 'asciidoctor-plantuml', '0.0.7'
-gem 'rouge', '~> 2.0'
+gem 'asciidoctor', '~> 1.5.6'
+gem 'asciidoctor-plantuml', '0.0.8'
+gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
@@ -162,7 +155,7 @@ group :unicorn do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.4.0'
+gem 'state_machines-activerecord', '~> 0.5.1'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 5.0'
@@ -231,7 +224,7 @@ gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.0.3'
+gem 'loofah', '~> 2.2'
 
 # Working with license
 gem 'licensee', '~> 8.9'
@@ -309,7 +302,7 @@ end
 
 group :development do
   gem 'foreman', '~> 0.84.0'
-  gem 'brakeman', '~> 3.6.0', require: false
+  gem 'brakeman', '~> 4.2', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
@@ -375,6 +368,8 @@ group :development, :test do
   gem 'stackprof', '~> 0.2.10', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
+
+  gem 'timecop', '~> 0.8.0'
 end
 
 group :test do
@@ -382,9 +377,9 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
-  gem 'test_after_commit', '~> 1.1'
+  gem 'rails-controller-testing' if rails5? # Rails5 only gem.
+  gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
   gem 'sham_rack', '~> 1.3.6'
-  gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
 end
@@ -420,7 +415,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.88.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.97.0', require: 'gitaly'
 gem 'grpc', '~> 1.10.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

@@ -10,6 +10,11 @@ of your repository and contains definitions of how your project should be built.
 If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
+NOTE: **Note:**
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+you may need to enable pipeline triggering in your project's
+**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+
 ## Jobs
 
 The YAML file defines a set of jobs with constraints stating when they should
@@ -303,7 +308,9 @@ except master.
 
 ## `only` and `except` (complex)
 
-> Introduced in GitLab 10.0
+> `refs` and `kubernetes` policies introduced in GitLab 10.0
+
+> `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -315,9 +322,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Two keys are now available: `refs` and `kubernetes`. Refs strategy equals to
-simplified only/except configuration, whereas kubernetes strategy accepts only
-`active` keyword.
+Three keys are now available: `refs`, `kubernetes` and `variables`.
+Refs strategy equals to simplified only/except configuration, whereas
+kubernetes strategy accepts only `active` keyword.
+
+`variables` keyword is used to define variables expressions. In other words
+you can use predefined variables / secret variables / project / group or
+environment-scoped variables to define an expression GitLab is going to
+evaluate in order to decide whether a job should be created or not.
 
 See the example below. Job is going to be created only when pipeline has been
 scheduled or runs for a `master` branch, and only if kubernetes service is
@@ -331,6 +343,20 @@ job:
       - schedules
     kubernetes: active
 ```
+
+Example of using variables expressions:
+
+```yaml
+deploy:
+  only:
+    refs:
+      - branches
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Learn more about variables expressions on [a separate page][variables-expressions].
 
 ## `tags`
 
@@ -845,13 +871,21 @@ skip the download step.
 - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 - Windows support was added in GitLab Runner v.1.0.0.
 - From GitLab 9.2, caches are restored before artifacts.
-- Currently not all executors are supported.
+- Not all executors are [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 - Job artifacts are only collected for successful jobs by default.
 
 `artifacts` is used to specify a list of files and directories which should be
-attached to the job after success. You can only use paths that are within the
-project workspace. To pass artifacts between different jobs, see [dependencies](#dependencies).
-Below are some examples.
+attached to the job after success.
+
+The artifacts will be sent to GitLab after the job finishes successfully and will
+be available for download in the GitLab UI.
+
+[Read more about artifacts.](../../user/project/pipelines/job_artifacts.md)
+
+### `artifacts:paths`
+
+You can only use paths that are within the project workspace. To pass artifacts
+between different jobs, see [dependencies](#dependencies).
 
 Send all files in `binaries` and `.config`:
 
@@ -860,22 +894,6 @@ artifacts:
   paths:
   - binaries/
   - .config
-```
-
-Send all Git untracked files:
-
-```yaml
-artifacts:
-  untracked: true
-```
-
-Send all Git untracked files and files in `binaries`:
-
-```yaml
-artifacts:
-  untracked: true
-  paths:
-  - binaries/
 ```
 
 To disable artifact passing, define the job with empty [dependencies](#dependencies):
@@ -909,11 +927,6 @@ release-job:
     - tags
 ```
 
-The artifacts will be sent to GitLab after the job finishes successfully and will
-be available for download in the GitLab UI.
-
-[Read more about artifacts.](../../user/project/pipelines/job_artifacts.md)
-
 ### `artifacts:name`
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
@@ -930,26 +943,30 @@ To create an archive with a name of the current job:
 job:
   artifacts:
     name: "$CI_JOB_NAME"
+    paths:
+    - binaries/
 ```
 
 To create an archive with a name of the current branch or tag including only
-the files that are untracked by Git:
+the binaries directory:
 
 ```yaml
 job:
    artifacts:
      name: "$CI_COMMIT_REF_NAME"
-     untracked: true
+    paths:
+    - binaries/
 ```
 
 To create an archive with a name of the current job and the current branch or
-tag including only the files that are untracked by Git:
+tag including only the binaries directory:
 
 ```yaml
 job:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    untracked: true
+    paths:
+    - binaries/
 ```
 
 To create an archive with a name of the current [stage](#stages) and branch name:
@@ -958,7 +975,8 @@ To create an archive with a name of the current [stage](#stages) and branch name
 job:
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
-    untracked: true
+    paths:
+    - binaries/
 ```
 
 ---
@@ -970,7 +988,8 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 job:
   artifacts:
     name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
-    untracked: true
+    paths:
+    - binaries/
 ```
 
 If you use **Windows PowerShell** to run your shell scripts you need to replace
@@ -980,7 +999,33 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 job:
   artifacts:
     name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
-    untracked: true
+    paths:
+    - binaries/
+```
+
+### `artifacts:untracked`
+
+`artifacts:untracked` is used to add all Git untracked files as artifacts (along
+to the paths defined in `artifacts:paths`).
+
+NOTE: **Note:**
+To exclude the folders/files which should not be a part of `untracked` just
+add them to `.gitignore`.
+
+Send all Git untracked files:
+
+```yaml
+artifacts:
+  untracked: true
+```
+
+Send all Git untracked files and files in `binaries`:
+
+```yaml
+artifacts:
+  untracked: true
+  paths:
+  - binaries/
 ```
 
 ### `artifacts:when`
@@ -1526,8 +1571,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
-Each instance of GitLab CI has an embedded debug tool called Lint.
-You can find the link under `/ci/lint` of your gitlab instance.
+Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/ci/lint`)
 
 ## Using reserved keywords
 
@@ -1549,3 +1595,4 @@ CI with various languages.
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
+[variables-expressions]: ../variables/README.md#variables-expressions

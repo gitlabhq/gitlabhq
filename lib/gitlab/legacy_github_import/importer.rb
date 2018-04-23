@@ -259,7 +259,7 @@ module Gitlab
       def import_wiki
         unless project.wiki.repository_exists?
           wiki = WikiFormatter.new(project)
-          gitlab_shell.import_repository(project.repository_storage_path, wiki.disk_path, wiki.import_url)
+          gitlab_shell.import_repository(project.repository_storage, wiki.disk_path, wiki.import_url)
         end
       rescue Gitlab::Shell::Error => e
         # GitHub error message when the wiki repo has not been created,

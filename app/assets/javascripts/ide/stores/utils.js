@@ -1,5 +1,7 @@
 export const dataStructure = () => ({
   id: '',
+  // Key will contain a mixture of ID and path
+  // it can also contain a prefix `pending-` for files opened in review mode
   key: '',
   type: '',
   projectId: '',
@@ -13,6 +15,7 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
+  staged: false,
   lastCommitPath: '',
   lastCommit: {
     id: '',
@@ -36,9 +39,12 @@ export const dataStructure = () => ({
   editorColumn: 1,
   fileLanguage: '',
   eol: '',
+  viewMode: 'edit',
+  previewMode: null,
+  size: 0,
 });
 
-export const decorateData = (entity) => {
+export const decorateData = entity => {
   const {
     id,
     projectId,
@@ -55,9 +61,9 @@ export const decorateData = (entity) => {
     changed = false,
     parentTreeUrl = '',
     base64 = false,
-
+    previewMode,
     file_lock,
-
+    html,
   } = entity;
 
   return {
@@ -78,26 +84,25 @@ export const decorateData = (entity) => {
     renderError,
     content,
     base64,
-
+    previewMode,
     file_lock,
-
+    html,
   };
 };
 
-export const findEntry = (tree, type, name, prop = 'name') => tree.find(
-  f => f.type === type && f[prop] === name,
-);
+export const findEntry = (tree, type, name, prop = 'name') =>
+  tree.find(f => f.type === type && f[prop] === name);
 
 export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
-export const setPageTitle = (title) => {
+export const setPageTitle = title => {
   document.title = title;
 };
 
 export const createCommitPayload = (branch, newBranch, state, rootState) => ({
   branch,
   commit_message: state.commitMessage,
-  actions: rootState.changedFiles.map(f => ({
+  actions: rootState.stagedFiles.map(f => ({
     action: f.tempFile ? 'create' : 'update',
     file_path: f.path,
     content: f.content,
@@ -120,6 +125,11 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
-export const sortTree = sortedTree => sortedTree.map(entity => Object.assign(entity, {
-  tree: entity.tree.length ? sortTree(entity.tree) : [],
-})).sort(sortTreesByTypeAndName);
+export const sortTree = sortedTree =>
+  sortedTree
+    .map(entity =>
+      Object.assign(entity, {
+        tree: entity.tree.length ? sortTree(entity.tree) : [],
+      }),
+    )
+    .sort(sortTreesByTypeAndName);

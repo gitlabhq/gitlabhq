@@ -1,5 +1,6 @@
 import * as types from './mutation_types';
 import projectMutations from './mutations/project';
+import mergeRequestMutation from './mutations/merge_request';
 import fileMutations from './mutations/file';
 import treeMutations from './mutations/tree';
 import branchMutations from './mutations/branch';
@@ -11,10 +12,7 @@ export default {
   [types.TOGGLE_LOADING](state, { entry, forceValue = undefined }) {
     if (entry.path) {
       Object.assign(state.entries[entry.path], {
-        loading:
-          forceValue !== undefined
-            ? forceValue
-            : !state.entries[entry.path].loading,
+        loading: forceValue !== undefined ? forceValue : !state.entries[entry.path].loading,
       });
     } else {
       Object.assign(entry, {
@@ -51,6 +49,11 @@ export default {
       lastCommitMsg,
     });
   },
+  [types.CLEAR_STAGED_CHANGES](state) {
+    Object.assign(state, {
+      stagedFiles: [],
+    });
+  },
   [types.SET_ENTRIES](state, entries) {
     Object.assign(state, {
       entries,
@@ -83,9 +86,7 @@ export default {
 
     if (!foundEntry) {
       Object.assign(state.trees[`${projectId}/${branchId}`], {
-        tree: state.trees[`${projectId}/${branchId}`].tree.concat(
-          data.treeList,
-        ),
+        tree: state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList),
       });
     }
   },
@@ -99,7 +100,24 @@ export default {
       delayViewerUpdated,
     });
   },
+  [types.UPDATE_FILE_AFTER_COMMIT](state, { file, lastCommit }) {
+    const changedFile = state.changedFiles.find(f => f.path === file.path);
+
+    Object.assign(state.entries[file.path], {
+      raw: file.content,
+      changed: !!changedFile,
+      staged: false,
+      lastCommit: Object.assign(state.entries[file.path].lastCommit, {
+        id: lastCommit.commit.id,
+        url: lastCommit.commit_path,
+        message: lastCommit.commit.message,
+        author: lastCommit.commit.author_name,
+        updatedAt: lastCommit.commit.authored_date,
+      }),
+    });
+  },
   ...projectMutations,
+  ...mergeRequestMutation,
   ...fileMutations,
   ...treeMutations,
   ...branchMutations,

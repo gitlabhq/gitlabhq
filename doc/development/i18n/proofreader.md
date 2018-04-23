@@ -10,6 +10,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Chinese Traditional
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
 - Chinese Traditional, Hong Kong
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Dutch
@@ -22,6 +23,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
 - Japanese
+  - Yamana Tokiuji - [GitLab](https://gitlab.com/tokiuji), [Crowdin](https://crowdin.com/profile/yamana)
 - Korean
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)

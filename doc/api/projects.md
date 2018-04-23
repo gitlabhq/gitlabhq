@@ -16,6 +16,21 @@ Values for the project visibility level are:
 * `public`:
   The project can be cloned without any authentication.
 
+## Project merge method
+
+There are currently three options for `merge_method` to choose from:
+
+* `merge`:
+  A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
+
+* `rebase_merge`:
+  A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
+  This way you could make sure that if this merge request would build, after merging to target branch it would also build.
+
+* `ff`:
+  No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+
+
 ## List all projects
 
 Get a list of all visible projects across GitLab for the authenticated user.
@@ -94,6 +109,7 @@ GET /projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -173,6 +189,7 @@ GET /projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -278,6 +295,7 @@ GET /users/:user_id/projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -357,6 +375,7 @@ GET /users/:user_id/projects
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -467,6 +486,7 @@ GET /projects/:id
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -550,6 +570,7 @@ POST /projects
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
+| `merge_method` | string | no | Set the merge method used |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -586,6 +607,7 @@ POST /projects/user/:user_id
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
+| `merge_method` | string | no | Set the merge method used |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -621,6 +643,7 @@ PUT /projects/:id
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
+| `merge_method` | string | no | Set the merge method used |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -724,6 +747,7 @@ Example responses:
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
+    "merge_method": "merge",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -801,6 +825,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -877,6 +902,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -886,6 +912,29 @@ Example response:
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members"
   }
+}
+```
+
+## Languages
+
+Get languages used in a project with percentage value.
+
+```
+GET /projects/:id/languages
+```
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/languages"
+```
+
+Example response:
+
+```json
+{
+  "Ruby": 66.69,
+  "JavaScript": 22.98,
+  "HTML": 7.91,
+  "CoffeeScript": 2.42
 }
 ```
 
@@ -971,6 +1020,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1065,6 +1115,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
+  "merge_method": "merge",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1344,3 +1395,30 @@ Read more in the [Project members](members.md) documentation.
 ## Project badges
 
 Read more in the [Project Badges](project_badges.md) documentation.
+
+## Issue and merge request description templates
+
+The non-default [issue and merge request description templates](../user/project/description_templates.md) are managed inside the project's repository. So you can manage them via the API through the [Repositories API](repositories.md) and the [Repository Files API](repository_files.md).
+
+## Download snapshot of a git repository
+
+> Introduced in GitLab 10.7
+
+This endpoint may only be accessed by an administrative user.
+
+Download a snapshot of the project (or wiki, if requested) git repository. This
+snapshot is always in uncompressed [tar](https://en.wikipedia.org/wiki/Tar_(computing))
+format.
+
+If a repository is corrupted to the point where `git clone` does not work, the
+snapshot may allow some of the data to be retrieved.
+
+```
+GET /projects/:id/snapshot
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `wiki`    | boolean | no | Whether to download the wiki, rather than project, repository |
+

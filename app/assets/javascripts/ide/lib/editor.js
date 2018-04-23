@@ -65,6 +65,11 @@ export default class Editor {
         (this.instance = this.monaco.editor.createDiffEditor(domElement, {
           ...defaultEditorOptions,
           readOnly: true,
+          quickSuggestions: false,
+          occurrencesHighlight: false,
+          renderLineHighlight: 'none',
+          hideCursorInOverviewRuler: true,
+          renderSideBySide: Editor.renderSideBySide(domElement),
         })),
       );
 
@@ -72,12 +77,12 @@ export default class Editor {
     }
   }
 
-  createModel(file) {
-    return this.modelManager.addModel(file);
+  createModel(file, head = null) {
+    return this.modelManager.addModel(file, head);
   }
 
   attachModel(model) {
-    if (this.instance.getEditorType() === 'vs.editor.IDiffEditor') {
+    if (this.isDiffEditorType) {
       this.instance.setModel({
         original: model.getOriginalModel(),
         modified: model.getModel(),
@@ -105,11 +110,19 @@ export default class Editor {
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
+  attachMergeRequestModel(model) {
+    this.instance.setModel({
+      original: model.getBaseModel(),
+      modified: model.getModel(),
+    });
+
+    this.monaco.editor.createDiffNavigator(this.instance, {
+      alwaysRevealFirst: true,
+    });
+  }
+
   setupMonacoTheme() {
-    this.monaco.editor.defineTheme(
-      gitlabTheme.themeName,
-      gitlabTheme.monacoTheme,
-    );
+    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
 
     this.monaco.editor.setTheme('gitlab');
   }
@@ -141,6 +154,7 @@ export default class Editor {
 
   updateDimensions() {
     this.instance.layout();
+    this.updateDiffView();
   }
 
   setPosition({ lineNumber, column }) {
@@ -157,8 +171,22 @@ export default class Editor {
   onPositionChange(cb) {
     if (!this.instance.onDidChangeCursorPosition) return;
 
-    this.disposable.add(
-      this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)),
-    );
+    this.disposable.add(this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)));
+  }
+
+  updateDiffView() {
+    if (!this.isDiffEditorType) return;
+
+    this.instance.updateOptions({
+      renderSideBySide: Editor.renderSideBySide(this.instance.getDomNode()),
+    });
+  }
+
+  get isDiffEditorType() {
+    return this.instance.getEditorType() === 'vs.editor.IDiffEditor';
+  }
+
+  static renderSideBySide(domElement) {
+    return domElement.offsetWidth >= 700;
   }
 }

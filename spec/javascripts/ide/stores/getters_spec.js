@@ -2,7 +2,7 @@ import * as getters from '~/ide/stores/getters';
 import state from '~/ide/stores/state';
 import { file } from '../helpers';
 
-describe('Multi-file store getters', () => {
+describe('IDE store getters', () => {
   let localState;
 
   beforeEach(() => {
@@ -37,19 +37,31 @@ describe('Multi-file store getters', () => {
       expect(modifiedFiles.length).toBe(1);
       expect(modifiedFiles[0].name).toBe('changed');
     });
+
+    it('returns angle left when collapsed', () => {
+      localState.rightPanelCollapsed = true;
+
+      expect(getters.collapseButtonIcon(localState)).toBe('angle-double-left');
+    });
   });
 
-  describe('addedFiles', () => {
-    it('returns a list of added files', () => {
-      localState.openFiles.push(file());
-      localState.changedFiles.push(file('added'));
-      localState.changedFiles[0].changed = true;
-      localState.changedFiles[0].tempFile = true;
+  describe('currentMergeRequest', () => {
+    it('returns Current Merge Request', () => {
+      localState.currentProjectId = 'abcproject';
+      localState.currentMergeRequestId = 1;
+      localState.projects.abcproject = {
+        mergeRequests: {
+          1: { mergeId: 1 },
+        },
+      };
 
-      const modifiedFiles = getters.addedFiles(localState);
+      expect(getters.currentMergeRequest(localState).mergeId).toBe(1);
+    });
 
-      expect(modifiedFiles.length).toBe(1);
-      expect(modifiedFiles[0].name).toBe('added');
+    it('returns null if no active Merge Request was found', () => {
+      localState.currentProjectId = 'otherproject';
+
+      expect(getters.currentMergeRequest(localState)).toBeNull();
     });
   });
 });

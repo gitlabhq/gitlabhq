@@ -8,7 +8,7 @@ class Milestone < ActiveRecord::Base
   Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
-  include NonatomicInternalId
+  include AtomicInternalId
   include Sortable
   include Referable
   include StripAttribute
@@ -20,6 +20,9 @@ class Milestone < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :group
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.milestones&.maximum(:iid) }
+  has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.milestones&.maximum(:iid) }
 
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
@@ -34,8 +37,8 @@ class Milestone < ActiveRecord::Base
 
   scope :for_projects_and_groups, -> (project_ids, group_ids) do
     conditions = []
-    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
-    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
+    conditions << arel_table[:project_id].in(project_ids) if project_ids&.compact&.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids&.compact&.any?
 
     where(conditions.reduce(:or))
   end
@@ -138,7 +141,7 @@ class Milestone < ActiveRecord::Base
     User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
   end
 
-  def self.sort(method)
+  def self.sort_by_attribute(method)
     case method.to_s
     when 'due_date_asc'
       reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))

@@ -10,12 +10,13 @@ describe Gitlab::GitAccess do
   let(:protocol) { 'ssh' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
+  let(:auth_result_type) { nil }
 
   let(:access) do
     described_class.new(actor, project,
       protocol, authentication_abilities: authentication_abilities,
                 namespace_path: namespace_path, project_path: project_path,
-                redirected_path: redirected_path)
+                redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 
   let(:changes) { '_any' }
@@ -45,12 +46,33 @@ describe Gitlab::GitAccess do
 
       before do
         disable_protocol('http')
+        project.add_master(user)
       end
 
       it 'blocks http push and pull' do
         aggregate_failures do
           expect { push_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
           expect { pull_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+        end
+      end
+
+      context 'when request is made from CI' do
+        let(:auth_result_type) { :build }
+
+        it "doesn't block http pull" do
+          aggregate_failures do
+            expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+          end
+        end
+
+        context 'when legacy CI credentials are used' do
+          let(:auth_result_type) { :ci }
+
+          it "doesn't block http pull" do
+            aggregate_failures do
+              expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+            end
+          end
         end
       end
     end
@@ -121,6 +143,33 @@ describe Gitlab::GitAccess do
 
           it 'does not block pushes with "not found"' do
             expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
+          end
+        end
+
+        context 'when actor is DeployToken' do
+          let(:actor) { create(:deploy_token, projects: [project]) }
+
+          context 'when DeployToken is active and belongs to project' do
+            it 'allows pull access' do
+              expect { pull_access_check }.not_to raise_error
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            end
+          end
+
+          context 'when DeployToken does not belong to project' do
+            let(:another_project) { create(:project) }
+            let(:actor) { create(:deploy_token, projects: [another_project]) }
+
+            it 'blocks pull access' do
+              expect { pull_access_check }.to raise_not_found
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_not_found
+            end
           end
         end
       end
@@ -240,14 +289,21 @@ describe Gitlab::GitAccess do
   end
 
   shared_examples 'check_project_moved' do
-    it 'enqueues a redirected message' do
+    it 'enqueues a redirected message for pushing' do
       push_access_check
 
       expect(Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)).not_to be_nil
     end
+
+    it 'allows push and pull access' do
+      aggregate_failures do
+        expect { push_access_check }.not_to raise_error
+        expect { pull_access_check }.not_to raise_error
+      end
+    end
   end
 
-  describe '#check_project_moved!', :clean_gitlab_redis_shared_state do
+  describe '#add_project_moved_message!', :clean_gitlab_redis_shared_state do
     before do
       project.add_master(user)
     end
@@ -261,61 +317,17 @@ describe Gitlab::GitAccess do
       end
     end
 
-    context 'when a permanent redirect and ssh protocol' do
+    context 'with a redirect and ssh protocol' do
       let(:redirected_path) { 'some/other-path' }
-
-      before do
-        allow_any_instance_of(Gitlab::Checks::ProjectMoved).to receive(:permanent_redirect?).and_return(true)
-      end
-
-      it 'allows push and pull access' do
-        aggregate_failures do
-          expect { push_access_check }.not_to raise_error
-        end
-      end
 
       it_behaves_like 'check_project_moved'
     end
 
-    context 'with a permanent redirect and http protocol' do
+    context 'with a redirect and http protocol' do
       let(:redirected_path) { 'some/other-path' }
       let(:protocol) { 'http' }
-
-      before do
-        allow_any_instance_of(Gitlab::Checks::ProjectMoved).to receive(:permanent_redirect?).and_return(true)
-      end
-
-      it 'allows_push and pull access' do
-        aggregate_failures do
-          expect { push_access_check }.not_to raise_error
-        end
-      end
 
       it_behaves_like 'check_project_moved'
-    end
-
-    context 'with a temporal redirect and ssh protocol' do
-      let(:redirected_path) { 'some/other-path' }
-
-      it 'blocks push and pull access' do
-        aggregate_failures do
-          expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /Project '#{redirected_path}' was moved to '#{project.full_path}'/)
-          expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.ssh_url_to_repo}/)
-
-          expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /Project '#{redirected_path}' was moved to '#{project.full_path}'/)
-          expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.ssh_url_to_repo}/)
-        end
-      end
-    end
-
-    context 'with a temporal redirect and http protocol' do
-      let(:redirected_path) { 'some/other-path' }
-      let(:protocol) { 'http' }
-
-      it 'does not allow to push and pull access' do
-        expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
-        expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
-      end
     end
   end
 
@@ -609,6 +621,41 @@ describe Gitlab::GitAccess do
       end
     end
 
+    describe 'deploy token permissions' do
+      let(:deploy_token) { create(:deploy_token) }
+      let(:actor) { deploy_token }
+
+      context 'pull code' do
+        context 'when project is authorized' do
+          before do
+            deploy_token.projects << project
+          end
+
+          it { expect { pull_access_check }.not_to raise_error }
+        end
+
+        context 'when unauthorized' do
+          context 'from public project' do
+            let(:project) { create(:project, :public, :repository) }
+
+            it { expect { pull_access_check }.not_to raise_error }
+          end
+
+          context 'from internal project' do
+            let(:project) { create(:project, :internal, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+
+          context 'from private project' do
+            let(:project) { create(:project, :private, :repository) }
+
+            it { expect { pull_access_check }.to raise_not_found }
+          end
+        end
+      end
+    end
+
     describe 'build authentication_abilities permissions' do
       let(:authentication_abilities) { build_authentication_abilities }
 
@@ -868,6 +915,20 @@ describe Gitlab::GitAccess do
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+      end
+    end
+
+    context 'when pushing to a project' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'cleans up the files' do
+        expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
+        expect { push_access_check }.not_to raise_error
       end
     end
   end

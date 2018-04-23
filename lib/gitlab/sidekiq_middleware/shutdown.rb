@@ -25,7 +25,7 @@ module Gitlab
       # can be only one shutdown thread in the process.
       def self.create_shutdown_thread
         mu_synchronize do
-          return unless @shutdown_thread.nil?
+          break unless @shutdown_thread.nil?
 
           @shutdown_thread = Thread.new { yield }
         end

@@ -1,7 +1,9 @@
 export default () => ({
   currentProjectId: '',
   currentBranchId: '',
+  currentMergeRequestId: '',
   changedFiles: [],
+  stagedFiles: [],
   endpoints: {},
   lastCommitMsg: '',
   lastCommitPath: '',

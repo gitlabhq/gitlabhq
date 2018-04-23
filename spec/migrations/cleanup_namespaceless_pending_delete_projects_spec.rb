@@ -10,9 +10,9 @@ describe CleanupNamespacelessPendingDeleteProjects, :migration, schema: 20180222
 
   describe '#up' do
     it 'only cleans up pending delete projects' do
-      create(:project)
-      create(:project, pending_delete: true)
-      project = build(:project, pending_delete: true, namespace_id: nil)
+      create(:project) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      create(:project, pending_delete: true) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      project = build(:project, pending_delete: true, namespace_id: nil) # rubocop:disable RSpec/FactoriesInMigrationSpecs
       project.save(validate: false)
 
       expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id]])
@@ -21,8 +21,8 @@ describe CleanupNamespacelessPendingDeleteProjects, :migration, schema: 20180222
     end
 
     it 'does nothing when no pending delete projects without namespace found' do
-      create(:project)
-      create(:project, pending_delete: true)
+      create(:project) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      create(:project, pending_delete: true) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       expect(NamespacelessProjectDestroyWorker).not_to receive(:bulk_perform_async)
 

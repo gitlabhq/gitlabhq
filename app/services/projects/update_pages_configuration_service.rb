@@ -18,7 +18,8 @@ module Projects
 
     def pages_config
       {
-        domains: pages_domains_config
+        domains: pages_domains_config,
+        https_only: project.pages_https_only?
       }
     end
 
@@ -27,7 +28,8 @@ module Projects
         {
           domain: domain.domain,
           certificate: domain.certificate,
-          key: domain.key
+          key: domain.key,
+          https_only: project.pages_https_only? && domain.https?
         }
       end
     end

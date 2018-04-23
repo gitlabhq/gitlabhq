@@ -1,11 +1,17 @@
 <script>
 /* global monaco */
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
+import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
+import IdeFileButtons from './ide_file_buttons.vue';
 
 export default {
+  components: {
+    ContentViewer,
+    IdeFileButtons,
+  },
   props: {
     file: {
       type: Object,
@@ -13,30 +19,39 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'leftPanelCollapsed',
-      'rightPanelCollapsed',
-      'viewer',
-      'delayViewerUpdated',
-    ]),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
+    ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.raw;
+      return this.file && this.file.binary && !this.file.content;
+    },
+    editTabCSS() {
+      return {
+        active: this.file.viewMode === 'edit',
+      };
+    },
+    previewTabCSS() {
+      return {
+        active: this.file.viewMode === 'preview',
+      };
     },
   },
   watch: {
     file(oldVal, newVal) {
-      if (newVal.path !== this.file.path) {
+      // Compare key to allow for files opened in review mode to be cached differently
+      if (newVal.key !== this.file.key) {
         this.initMonaco();
       }
-    },
-    leftPanelCollapsed() {
-      this.editor.updateDimensions();
     },
     rightPanelCollapsed() {
       this.editor.updateDimensions();
     },
     viewer() {
       this.createEditorInstance();
+    },
+    panelResizing() {
+      if (!this.panelResizing) {
+        this.editor.updateDimensions();
+      }
     },
   },
   beforeDestroy() {
@@ -59,6 +74,7 @@ export default {
       'changeFileContent',
       'setFileLanguage',
       'setEditorPosition',
+      'setFileViewMode',
       'setFileEOL',
       'updateViewer',
       'updateDelayViewerUpdated',
@@ -68,9 +84,14 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getRawFileData(this.file)
+      this.getRawFileData({
+        path: this.file.path,
+        baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
+      })
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated ? this.updateViewer('editor') : Promise.resolve();
+          const viewerPromise = this.delayViewerUpdated
+            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
+            : Promise.resolve();
 
           return viewerPromise;
         })
@@ -78,7 +99,7 @@ export default {
           this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
-        .catch((err) => {
+        .catch(err => {
           flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
@@ -99,11 +120,20 @@ export default {
     setupEditor() {
       if (!this.file || !this.editor.instance) return;
 
-      this.model = this.editor.createModel(this.file);
+      const head = this.getStagedFile(this.file.path);
 
-      this.editor.attachModel(this.model);
+      this.model = this.editor.createModel(
+        this.file,
+        this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
+      );
 
-      this.model.onChange((model) => {
+      if (this.viewer === 'mrdiff') {
+        this.editor.attachMergeRequestModel(this.model);
+      } else {
+        this.editor.attachModel(this.model);
+      }
+
+      this.model.onChange(model => {
         const { file } = model;
 
         if (file.active) {
@@ -146,16 +176,49 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div
-      v-if="shouldHideEditor"
-      v-html="file.html"
-    >
+    <div class="ide-mode-tabs clearfix">
+      <ul
+        class="nav-links pull-left"
+        v-if="!shouldHideEditor">
+        <li :class="editTabCSS">
+          <a
+            href="javascript:void(0);"
+            role="button"
+            @click.prevent="setFileViewMode({ file, viewMode: 'edit' })">
+            <template v-if="viewer === 'editor'">
+              {{ __('Edit') }}
+            </template>
+            <template v-else>
+              {{ __('Review') }}
+            </template>
+          </a>
+        </li>
+        <li
+          v-if="file.previewMode"
+          :class="previewTabCSS">
+          <a
+            href="javascript:void(0);"
+            role="button"
+            @click.prevent="setFileViewMode({ file, viewMode:'preview' })">
+            {{ file.previewMode.previewTitle }}
+          </a>
+        </li>
+      </ul>
+      <ide-file-buttons
+        :file="file"
+      />
     </div>
     <div
-      v-show="!shouldHideEditor"
+      v-show="!shouldHideEditor && file.viewMode === 'edit'"
       ref="editor"
       class="multi-file-editor-holder"
     >
     </div>
+    <content-viewer
+      v-if="shouldHideEditor || file.viewMode === 'preview'"
+      :content="file.content || file.raw"
+      :path="file.rawPath || file.path"
+      :file-size="file.size"
+      :project-path="file.projectId"/>
   </div>
 </template>

@@ -228,9 +228,7 @@ module ApplicationHelper
       scope: params[:scope],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
-      assignee_username: params[:assignee_username],
       author_id: params[:author_id],
-      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name]
     }
@@ -285,6 +283,10 @@ module ApplicationHelper
     class_names
   end
 
+  # EE feature: System header and footer, unavailable in CE
+  def system_message_class
+  end
+
   # Returns active css class when condition returns true
   # otherwise returns nil.
   #
@@ -322,5 +324,12 @@ module ApplicationHelper
 
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
+
+  # Overridden in EE
+  def read_only_message
+    return unless Gitlab::Database.read_only?
+
+    _('You are on a read-only GitLab instance.')
   end
 end

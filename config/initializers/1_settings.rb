@@ -1,131 +1,4 @@
-# rubocop:disable GitlabSecurity/PublicSend
-
-require_dependency Rails.root.join('lib/gitlab') # Load Gitlab as soon as possible
-
-class Settings < Settingslogic
-  source ENV.fetch('GITLAB_CONFIG') { "#{Rails.root}/config/gitlab.yml" }
-  namespace Rails.env
-
-  class << self
-    def gitlab_on_standard_port?
-      on_standard_port?(gitlab)
-    end
-
-    def host_without_www(url)
-      host(url).sub('www.', '')
-    end
-
-    def build_gitlab_ci_url
-      custom_port =
-        if on_standard_port?(gitlab)
-          nil
-        else
-          ":#{gitlab.port}"
-        end
-
-      [
-        gitlab.protocol,
-        "://",
-        gitlab.host,
-        custom_port,
-        gitlab.relative_url_root
-      ].join('')
-    end
-
-    def build_pages_url
-      base_url(pages).join('')
-    end
-
-    def build_gitlab_shell_ssh_path_prefix
-      user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
-
-      if gitlab_shell.ssh_port != 22
-        "ssh://#{user_host}:#{gitlab_shell.ssh_port}/"
-      else
-        if gitlab_shell.ssh_host.include? ':'
-          "[#{user_host}]:"
-        else
-          "#{user_host}:"
-        end
-      end
-    end
-
-    def build_base_gitlab_url
-      base_url(gitlab).join('')
-    end
-
-    def build_gitlab_url
-      (base_url(gitlab) + [gitlab.relative_url_root]).join('')
-    end
-
-    # check that values in `current` (string or integer) is a contant in `modul`.
-    def verify_constant_array(modul, current, default)
-      values = default || []
-      unless current.nil?
-        values = []
-        current.each do |constant|
-          values.push(verify_constant(modul, constant, nil))
-        end
-        values.delete_if { |value| value.nil? }
-      end
-
-      values
-    end
-
-    # check that `current` (string or integer) is a contant in `modul`.
-    def verify_constant(modul, current, default)
-      constant = modul.constants.find { |name| modul.const_get(name) == current }
-      value = constant.nil? ? default : modul.const_get(constant)
-      if current.is_a? String
-        value = modul.const_get(current.upcase) rescue default
-      end
-
-      value
-    end
-
-    def absolute(path)
-      File.expand_path(path, Rails.root)
-    end
-
-    private
-
-    def base_url(config)
-      custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
-
-      [
-        config.protocol,
-        "://",
-        config.host,
-        custom_port
-      ]
-    end
-
-    def on_standard_port?(config)
-      config.port.to_i == (config.https ? 443 : 80)
-    end
-
-    # Extract the host part of the given +url+.
-    def host(url)
-      url = url.downcase
-      url = "http://#{url}" unless url.start_with?('http')
-
-      # Get rid of the path so that we don't even have to encode it
-      url_without_path = url.sub(%r{(https?://[^/]+)/?.*}, '\1')
-
-      URI.parse(url_without_path).host
-    end
-
-    # Runs every minute in a random ten-minute period on Sundays, to balance the
-    # load on the server receiving these pings. The usage ping is safe to run
-    # multiple times because of a 24 hour exclusive lock.
-    def cron_for_usage_ping
-      hour = rand(24)
-      minute = rand(6)
-
-      "#{minute}0-#{minute}9 #{hour} * * 0"
-    end
-  end
-end
+require_dependency File.expand_path('../../lib/gitlab', __dir__) # Load Gitlab as soon as possible
 
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
@@ -305,6 +178,14 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
+Settings.artifacts['object_store'] ||= Settingslogic.new({})
+Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
+Settings.artifacts['object_store']['remote_directory'] ||= nil
+Settings.artifacts['object_store']['direct_upload'] = false if Settings.artifacts['object_store']['direct_upload'].nil?
+Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
+Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifacts['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Registry
@@ -340,6 +221,14 @@ Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pa
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
+Settings.lfs['object_store'] ||= Settingslogic.new({})
+Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
+Settings.lfs['object_store']['remote_directory'] ||= nil
+Settings.lfs['object_store']['direct_upload'] = false if Settings.lfs['object_store']['direct_upload'].nil?
+Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
+Settings.lfs['object_store']['proxy_download'] = false if Settings.lfs['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Uploads
@@ -347,6 +236,14 @@ Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] ||
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
+Settings.uploads['object_store'] ||= Settingslogic.new({})
+Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
+Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
+Settings.uploads['object_store']['direct_upload'] = false if Settings.uploads['object_store']['direct_upload'].nil?
+Settings.uploads['object_store']['background_upload'] = true if Settings.uploads['object_store']['background_upload'].nil?
+Settings.uploads['object_store']['proxy_download'] = false if Settings.uploads['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.uploads['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Mattermost
@@ -431,6 +328,16 @@ Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= Settingslogic.ne
 Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'PagesDomainVerificationCronWorker'
 
+Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
+Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
+
+#
+# Sidekiq
+#
+Settings['sidekiq'] ||= Settingslogic.new({})
+Settings['sidekiq']['log_format'] ||= 'default'
+
 #
 # GitLab Shell
 #
@@ -467,12 +374,7 @@ unless Settings.repositories.storages['default']
 end
 
 Settings.repositories.storages.each do |key, storage|
-  storage = Settingslogic.new(storage)
-
-  # Expand relative paths
-  storage['path'] = Settings.absolute(storage['path'])
-
-  Settings.repositories.storages[key] = storage
+  Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 
 #
@@ -486,7 +388,7 @@ repositories_storages          = Settings.repositories.storages.values
 repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 

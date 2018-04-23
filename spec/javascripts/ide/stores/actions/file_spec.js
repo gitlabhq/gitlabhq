@@ -1,11 +1,14 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
+import * as actions from '~/ide/stores/actions/file';
+import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
+import testAction from '../../../helpers/vuex_action_helper';
 
-describe('Multi-file store file actions', () => {
+describe('IDE store file actions', () => {
   beforeEach(() => {
     spyOn(router, 'push');
   });
@@ -29,7 +32,7 @@ describe('Multi-file store file actions', () => {
 
     it('closes open files', done => {
       store
-        .dispatch('closeFile', localFile.path)
+        .dispatch('closeFile', localFile)
         .then(() => {
           expect(localFile.opened).toBeFalsy();
           expect(localFile.active).toBeFalsy();
@@ -44,7 +47,7 @@ describe('Multi-file store file actions', () => {
       store.state.changedFiles.push(localFile);
 
       store
-        .dispatch('closeFile', localFile.path)
+        .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
           expect(store.state.openFiles.length).toBe(0);
@@ -65,10 +68,26 @@ describe('Multi-file store file actions', () => {
       store.state.entries[f.path] = f;
 
       store
-        .dispatch('closeFile', localFile.path)
+        .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
           expect(router.push).toHaveBeenCalledWith(`/project${f.url}`);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('removes file if it pending', done => {
+      store.state.openFiles.push({
+        ...localFile,
+        pending: true,
+      });
+
+      store
+        .dispatch('closeFile', localFile)
+        .then(() => {
+          expect(store.state.openFiles.length).toBe(0);
 
           done();
         })
@@ -189,7 +208,7 @@ describe('Multi-file store file actions', () => {
 
     it('calls the service', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(service.getFileData).toHaveBeenCalledWith('getFileDataURL');
 
@@ -200,7 +219,7 @@ describe('Multi-file store file actions', () => {
 
     it('sets the file data', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(localFile.blamePath).toBe('blame_path');
 
@@ -211,7 +230,7 @@ describe('Multi-file store file actions', () => {
 
     it('sets document title', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(document.title).toBe('testing getFileData');
 
@@ -222,7 +241,7 @@ describe('Multi-file store file actions', () => {
 
     it('sets the file as active', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(localFile.active).toBeTruthy();
 
@@ -231,9 +250,20 @@ describe('Multi-file store file actions', () => {
         .catch(done.fail);
     });
 
+    it('sets the file not as active if we pass makeFileActive false', done => {
+      store
+        .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
+        .then(() => {
+          expect(localFile.active).toBeFalsy();
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
     it('adds the file to open files', done => {
       store
-        .dispatch('getFileData', localFile)
+        .dispatch('getFileData', { path: localFile.path })
         .then(() => {
           expect(store.state.openFiles.length).toBe(1);
           expect(store.state.openFiles[0].name).toBe(localFile.name);
@@ -256,7 +286,7 @@ describe('Multi-file store file actions', () => {
 
     it('calls getRawFileData service method', done => {
       store
-        .dispatch('getRawFileData', tmpFile)
+        .dispatch('getRawFileData', { path: tmpFile.path })
         .then(() => {
           expect(service.getRawFileData).toHaveBeenCalledWith(tmpFile);
 
@@ -267,9 +297,25 @@ describe('Multi-file store file actions', () => {
 
     it('updates file raw data', done => {
       store
-        .dispatch('getRawFileData', tmpFile)
+        .dispatch('getRawFileData', { path: tmpFile.path })
         .then(() => {
           expect(tmpFile.raw).toBe('raw');
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('calls also getBaseRawFileData service method', done => {
+      spyOn(service, 'getBaseRawFileData').and.returnValue(Promise.resolve('baseraw'));
+
+      tmpFile.mrChange = { new_file: false };
+
+      store
+        .dispatch('getRawFileData', { path: tmpFile.path, baseSha: 'SHA' })
+        .then(() => {
+          expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
+          expect(tmpFile.baseRaw).toBe('baseraw');
 
           done();
         })
@@ -359,6 +405,7 @@ describe('Multi-file store file actions', () => {
 
     beforeEach(() => {
       spyOn(eventHub, '$on');
+      spyOn(eventHub, '$emit');
 
       tmpFile = file();
       tmpFile.content = 'testing';
@@ -415,6 +462,166 @@ describe('Multi-file store file actions', () => {
 
           done();
         })
+        .catch(done.fail);
+    });
+
+    it('pushes route for active file', done => {
+      tmpFile.active = true;
+      store.state.openFiles.push(tmpFile);
+
+      store
+        .dispatch('discardFileChanges', tmpFile.path)
+        .then(() => {
+          expect(router.push).toHaveBeenCalledWith(`/project${tmpFile.url}`);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('emits eventHub event to dispose cached model', done => {
+      store
+        .dispatch('discardFileChanges', tmpFile.path)
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalled();
+
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('stageChange', () => {
+    it('calls STAGE_CHANGE with file path', done => {
+      testAction(
+        actions.stageChange,
+        'path',
+        store.state,
+        [{ type: types.STAGE_CHANGE, payload: 'path' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('unstageChange', () => {
+    it('calls UNSTAGE_CHANGE with file path', done => {
+      testAction(
+        actions.unstageChange,
+        'path',
+        store.state,
+        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('openPendingTab', () => {
+    let f;
+
+    beforeEach(() => {
+      f = {
+        ...file(),
+        projectId: '123',
+      };
+
+      store.state.entries[f.path] = f;
+    });
+
+    it('makes file pending in openFiles', done => {
+      store
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
+        .then(() => {
+          expect(store.state.openFiles[0].pending).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('returns true when opened', done => {
+      store
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
+        .then(added => {
+          expect(added).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('pushes router URL when added', done => {
+      store.state.currentBranchId = 'master';
+
+      store
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
+        .then(() => {
+          expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('calls scrollToTab', done => {
+      const scrollToTabSpy = jasmine.createSpy('scrollToTab');
+      const oldScrollToTab = store._actions.scrollToTab; // eslint-disable-line
+      store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
+
+      store
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
+        .then(() => {
+          expect(scrollToTabSpy).toHaveBeenCalled();
+          store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('returns false when passed in file is active & viewer is diff', done => {
+      f.active = true;
+      store.state.openFiles.push(f);
+      store.state.viewer = 'diff';
+
+      store
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
+        .then(added => {
+          expect(added).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('removePendingTab', () => {
+    let f;
+
+    beforeEach(() => {
+      spyOn(eventHub, '$emit');
+
+      f = {
+        ...file('pendingFile'),
+        pending: true,
+      };
+    });
+
+    it('removes pending file from open files', done => {
+      store.state.openFiles.push(f);
+
+      store
+        .dispatch('removePendingTab', f)
+        .then(() => {
+          expect(store.state.openFiles.length).toBe(0);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('emits event to dispose model', done => {
+      store
+        .dispatch('removePendingTab', f)
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.${f.key}`);
+        })
+        .then(done)
         .catch(done.fail);
     });
   });

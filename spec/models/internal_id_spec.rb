@@ -5,7 +5,7 @@ describe InternalId do
   let(:usage) { :issues }
   let(:issue) { build(:issue, project: project) }
   let(:scope) { { project: project } }
-  let(:init) { ->(s) { s.project.issues.size } }
+  let(:init) { ->(s) { s.project.issues.maximum(:iid) } }
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
@@ -36,6 +36,29 @@ describe InternalId do
 
         it 'calculates last_value values automatically' do
           expect(subject).to eq(project.issues.size + 1)
+        end
+      end
+
+      context 'with an InternalId record present and existing issues with a higher internal id' do
+        # This can happen if the old NonatomicInternalId is still in use
+        before do
+          issues = Array.new(rand(1..10)).map { create(:issue, project: project) }
+
+          issue = issues.last
+          issue.iid = issues.map { |i| i.iid }.max + 1
+          issue.save
+        end
+
+        let(:maximum_iid) { project.issues.map { |i| i.iid }.max }
+
+        it 'updates last_value to the maximum internal id present' do
+          subject
+
+          expect(described_class.find_by(project: project, usage: described_class.usages[usage.to_s]).last_value).to eq(maximum_iid + 1)
+        end
+
+        it 'returns next internal id correctly' do
+          expect(subject).to eq(maximum_iid + 1)
         end
       end
 
@@ -81,7 +104,8 @@ describe InternalId do
 
   describe '#increment_and_save!' do
     let(:id) { create(:internal_id) }
-    subject { id.increment_and_save! }
+    let(:maximum_iid) { nil }
+    subject { id.increment_and_save!(maximum_iid) }
 
     it 'returns incremented iid' do
       value = id.last_value
@@ -100,6 +124,15 @@ describe InternalId do
 
       it 'returns 1' do
         expect(subject).to eq(1)
+      end
+    end
+
+    context 'with maximum_iid given' do
+      let(:id) { create(:internal_id, last_value: 1) }
+      let(:maximum_iid) { id.last_value + 10 }
+
+      it 'returns maximum_iid instead' do
+        expect(subject).to eq(12)
       end
     end
   end

@@ -12,10 +12,14 @@ module Banzai
       # 'regular' references, we need to use the global ID to disambiguate
       # between group and project milestones.
       def find_object(project, id)
+        return unless project.is_a?(Project)
+
         find_milestone_with_finder(project, id: id)
       end
 
       def find_object_from_link(project, iid)
+        return unless project.is_a?(Project)
+
         find_milestone_with_finder(project, iid: iid)
       end
 
@@ -40,7 +44,7 @@ module Banzai
         project_path = full_project_path(namespace_ref, project_ref)
         project = parent_from_ref(project_path)
 
-        return unless project
+        return unless project && project.is_a?(Project)
 
         milestone_params = milestone_params(milestone_id, milestone_name)
 
@@ -84,7 +88,7 @@ module Banzai
         end
       end
 
-      def object_link_title(object)
+      def object_link_title(object, matches)
         nil
       end
     end

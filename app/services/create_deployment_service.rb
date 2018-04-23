@@ -19,8 +19,8 @@ class CreateDeploymentService
 
       environment.fire_state_event(action)
 
-      return unless environment.save
-      return if environment.stopped?
+      break unless environment.save
+      break if environment.stopped?
 
       deploy.tap(&:update_merge_request_metrics!)
     end

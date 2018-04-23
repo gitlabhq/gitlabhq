@@ -26,7 +26,7 @@
           - if issue.milestone
             %span.issuable-milestone.hidden-xs
               &nbsp;
-              = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 1, toggle: 'tooltip', title: issuable_milestone_tooltip_title(issue) } do
+              = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 1, toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
                 = icon('clock-o')
                 = issue.milestone.title
           - if issue.due_date

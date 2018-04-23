@@ -7,7 +7,7 @@
 - unless expanded
   - diff_data = { lines_path: project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion) }
 
-.diff-file.file-holder{ class: diff_file_class, data: diff_data }
+.diff-file.file-holder.js-lazy-load-discussion{ class: diff_file_class, data: diff_data }
   .js-file-title.file-title.file-title-flex-parent
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: discussion_path(discussion), show_toggle: false
@@ -28,8 +28,11 @@
           %tr.line_holder.line-holder-placeholder
             %td.old_line.diff-line-num
             %td.new_line.diff-line-num
-            %td.line_content
+            %td.line_content.js-success-lazy-load
               .js-code-placeholder
+            %td.js-error-lazy-load-diff.hidden.diff-loading-error-block
+              - button = button_tag(_("Try again"), class: "btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button")
+              = _("Unable to load the diff. %{button_try_again}").html_safe % { button_try_again: button}
           = render "discussions/diff_discussion", discussions: [discussion], expanded: true
   - else
     - partial = (diff_file.new_file? || diff_file.deleted_file?) ? 'single_image_diff' : 'replaced_image_diff'

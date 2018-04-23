@@ -72,7 +72,7 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :issues_events, :confidential_issues_events
-      expose :note_events, :pipeline_events, :wiki_page_events
+      expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
 
@@ -206,6 +206,7 @@ module API
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :printing_merge_request_link_enabled
+      expose :merge_method
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
@@ -405,6 +406,7 @@ module API
 
     class IssueBasic < ProjectEntity
       expose :closed_at
+      expose :closed_by, using: Entities::UserBasic
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
@@ -792,7 +794,7 @@ module API
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
-      expose :pipeline_events, :wiki_page_events
+      expose :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
@@ -926,7 +928,7 @@ module API
     end
 
     class Tag < Grape::Entity
-      expose :name, :message
+      expose :name, :message, :target
 
       expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
@@ -951,6 +953,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :maximum_timeout
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
@@ -1119,7 +1122,7 @@ module API
       end
 
       class RunnerInfo < Grape::Entity
-        expose :timeout
+        expose :metadata_timeout, as: :timeout
       end
 
       class Step < Grape::Entity

@@ -86,3 +86,11 @@ Example response:
   ]
 }
 ```
+
+## Delete a feature
+
+Removes a feature gate. Response is equal when the gate exists, or doesn't.
+
+```
+DELETE /features/:name
+```

@@ -4,8 +4,10 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
+import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
+import ModalStore from './boards/stores/modal_store';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {
@@ -24,7 +26,7 @@ export default class MilestoneSelect {
     }
 
     $els.each((i, dropdown) => {
-      let collapsedSidebarLabelTemplate, milestoneLinkNoneTemplate, milestoneLinkTemplate, selectedMilestone, selectedMilestoneDefault;
+      let milestoneLinkNoneTemplate, milestoneLinkTemplate, selectedMilestone, selectedMilestoneDefault;
       const $dropdown = $(dropdown);
       const projectId = $dropdown.data('projectId');
       const milestonesUrl = $dropdown.data('milestones');
@@ -51,7 +53,6 @@ export default class MilestoneSelect {
       if (issueUpdateURL) {
         milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
         milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
-        collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- name %><br /><%- remaining %>" data-placement="left" data-html="true"> <%- title %> </span>');
       }
       return $dropdown.glDropdown({
         showMenuAbove: showMenuAbove,
@@ -94,10 +95,10 @@ export default class MilestoneSelect {
             if (showMenuAbove) {
               $dropdown.data('glDropdown').positionMenuAbove();
             }
-            $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
+            $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`).addClass('is-active');
           }),
         renderRow: milestone => `
-          <li data-milestone-id="${milestone.name}">
+          <li data-milestone-id="${_.escape(milestone.name)}">
             <a href='#' class='dropdown-menu-milestone-link'>
               ${_.escape(milestone.title)}
             </a>
@@ -125,7 +126,6 @@ export default class MilestoneSelect {
             return milestone.id;
           }
         },
-        isSelected: milestone => milestone.name === selectedMilestone,
         hidden: () => {
           $selectBox.hide();
           // display:block overrides the hide-collapse rule
@@ -137,7 +137,7 @@ export default class MilestoneSelect {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
           }
           $('a.is-active', $el).removeClass('is-active');
-          $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
+          $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: (clickEvent) => {
@@ -158,13 +158,14 @@ export default class MilestoneSelect {
           const isMRIndex = (page === page && page === 'projects:merge_requests:index');
           const isSelecting = (selected.name !== selectedMilestone);
           selectedMilestone = isSelecting ? selected.name : selectedMilestoneDefault;
+
           if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
             e.preventDefault();
             return;
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsStore = gl.issueBoards.ModalStore.store.filter;
+            boardsStore = ModalStore.store.filter;
           }
 
           if (boardsStore) {
@@ -213,10 +214,16 @@ export default class MilestoneSelect {
                   data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
-                  return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
+                  return $sidebarCollapsedValue
+                    .attr('data-original-title', `${data.milestone.name}<br />${data.milestone.remaining}`)
+                    .find('span')
+                    .text(data.milestone.title);
                 } else {
                   $value.html(milestoneLinkNoneTemplate);
-                  return $sidebarCollapsedValue.find('span').text('No');
+                  return $sidebarCollapsedValue
+                    .attr('data-original-title', __('Milestone'))
+                    .find('span')
+                    .text(__('None'));
                 }
               })
               .catch(() => {

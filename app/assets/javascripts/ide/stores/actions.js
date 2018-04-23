@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
@@ -6,8 +7,7 @@ import FilesDecoratorWorker from './workers/files_decorator_worker';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
-export const setInitialData = ({ commit }, data) =>
-  commit(types.SET_INITIAL_DATA, data);
+export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
   state.changedFiles.forEach(file => {
@@ -22,7 +22,7 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', file.path));
+  state.openFiles.forEach(file => dispatch('closeFile', file));
 };
 
 export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
@@ -31,6 +31,22 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   } else {
     commit(types.SET_RIGHT_PANEL_COLLAPSED, collapsed);
   }
+};
+
+export const toggleRightPanelCollapsed = (
+  { dispatch, state },
+  e = undefined,
+) => {
+  if (e) {
+    $(e.currentTarget)
+      .tooltip('hide')
+      .blur();
+  }
+
+  dispatch('setPanelCollapsedStatus', {
+    side: 'right',
+    collapsed: !state.rightPanelCollapsed,
+  });
 };
 
 export const setResizingStatus = ({ commit }, resizing) => {
@@ -43,14 +59,11 @@ export const createTempEntry = (
 ) =>
   new Promise(resolve => {
     const worker = new FilesDecoratorWorker();
-    const fullName =
-      name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
+    const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
     if (state.entries[name]) {
       flash(
-        `The name "${name
-          .split('/')
-          .pop()}" is already taken in this directory.`,
+        `The name "${name.split('/').pop()}" is already taken in this directory.`,
         'alert',
         document,
         null,
@@ -108,6 +121,14 @@ export const scrollToTab = () => {
   });
 };
 
+export const stageAllChanges = ({ state, commit }) => {
+  state.changedFiles.forEach(file => commit(types.STAGE_CHANGE, file.path));
+};
+
+export const unstageAllChanges = ({ state, commit }) => {
+  state.stagedFiles.forEach(file => commit(types.UNSTAGE_CHANGE, file.path));
+};
+
 export const updateViewer = ({ commit }, viewer) => {
   commit(types.UPDATE_VIEWER, viewer);
 };
@@ -119,3 +140,4 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
+export * from './actions/merge_request';
