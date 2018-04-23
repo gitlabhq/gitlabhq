@@ -191,10 +191,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
-      end
-
-      it 'returns no job log message' do
-        expect(json_response['html']).to eq('No job log')
+        expect(json_response['html']).to be_nil
       end
     end
 
