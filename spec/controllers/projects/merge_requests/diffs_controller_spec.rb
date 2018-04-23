@@ -26,6 +26,7 @@ describe Projects::MergeRequests::DiffsController do
     context 'with default params' do
       context 'for the same project' do
         before do
+          allow(controller).to receive(:has_vue_discussions_cookie?).and_return(false)
           go
         end
 
@@ -58,6 +59,7 @@ describe Projects::MergeRequests::DiffsController do
 
     context 'with ignore_whitespace_change' do
       before do
+      allow(controller).to receive(:has_vue_discussions_cookie?).and_return(false)
         go(w: 1)
       end
 

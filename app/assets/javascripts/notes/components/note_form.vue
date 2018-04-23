@@ -153,7 +153,7 @@ export default {
         <textarea
           id="note_note"
           name="note[note]"
-          class="note-textarea js-gfm-input
+          class="note-textarea js-gfm-input js-note-text
 js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           :data-supports-quick-actions="!isEditing"
           aria-label="Description"

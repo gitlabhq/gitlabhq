@@ -231,7 +231,7 @@ module Gitlab
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
       end
 
-      # This adds the bottom line to the array which contains
+      # This adds the bottom match line to the array if needed. It contains
       # the data to load more context lines.
       def diff_lines_for_serializer
         lines = highlighted_diff_lines
@@ -240,10 +240,12 @@ module Gitlab
 
         last_line = lines.last
 
-        return unless last_line.new_pos < total_blob_lines(blob)
+        if last_line.new_pos < total_blob_lines(blob)
+          match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
+          lines.push(match_line)
+        end
 
-        match_line = Gitlab::Diff::Line.new("" ,'match', nil, last_line.old_pos, last_line.new_pos)
-        lines.push(match_line)
+        lines
       end
 
       private

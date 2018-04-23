@@ -515,6 +515,8 @@ export default class Notes {
             .find(contentContainerClass + ' .content')
             .append($notes.closest('.content').children());
         }
+      } else {
+        Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
       }
     } else {
       // append new note to all matching discussions
@@ -1297,7 +1299,7 @@ export default class Notes {
     const { discussion_html } = data;
     const lines = $(discussion_html).find('.line_holder');
     lines.addClass('fade-in');
-    $container.find('tbody').prepend(lines);
+    $container.find('.diff-content > table > tbody').prepend(lines);
     const fileHolder = $container.find('.file-holder');
     $container.find('.line-holder-placeholder').remove();
     syntaxHighlight(fileHolder);

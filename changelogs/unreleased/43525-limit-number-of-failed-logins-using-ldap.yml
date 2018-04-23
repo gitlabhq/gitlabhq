@@ -1,5 +1,0 @@
----
-title: Limit the number of failed logins when using LDAP for authentication
-merge_request: 43525
-author:
-type: added

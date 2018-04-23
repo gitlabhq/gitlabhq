@@ -1,7 +1,7 @@
 module Gitlab
   module Diff
     class Line
-      attr_reader :line_code, :type, :index, :old_pos, :new_pos, :meta_positions
+      attr_reader :line_code, :type, :index, :old_pos, :new_pos
       attr_writer :rich_text
       attr_accessor :text
 

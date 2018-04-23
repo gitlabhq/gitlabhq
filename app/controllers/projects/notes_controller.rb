@@ -35,7 +35,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.resolve!(current_user)
 
-    MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(note.noteable)
+    ::MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(note.noteable)
 
     discussion = note.discussion
 

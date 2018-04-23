@@ -1,12 +1,15 @@
 <script>
+import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
+import EditButton from './edit_button.vue';
 
 export default {
   components: {
     ClipboardButton,
     Icon,
+    EditButton,
   },
   directives: {
     Tooltip,
@@ -68,6 +71,16 @@ export default {
     isDiscussionsExpanded() {
       return this.discussionsExpanded && this.expanded;
     },
+  },
+  mounted() {
+    console.log($(this.$el))
+    new BlobForkSuggestion({
+      openButtons: $(this.$el).find('.js-edit-blob-link-fork-toggler'),
+      forkButtons: $(this.$el).find('.js-fork-suggestion-button'),
+      cancelButtons: $(this.$el).find('.js-cancel-fork-suggestion-button'),
+      suggestionSections: $(this.$el).find('.js-file-fork-suggestion-section'),
+      actionTextPieces: $(this.$el).find('.js-file-fork-suggestion-section-action'),
+    }).init();
   },
   methods: {
     handleToggle(e, checkTarget) {
@@ -196,12 +209,9 @@ export default {
           <icon name="comment" />
         </button>
 
-        <a
-          :href="diffFile.editPath"
-          class="btn btn-default js-edit-blob"
-        >
-          Edit
-        </a>
+        <edit-button
+          :edit-path="diffFile.editPath"
+        />
       </template>
 
       <a
