@@ -12,17 +12,30 @@ entry.
 - Fix specifying a non-default ref when requesting an archive using the legacy URL. !18468
 - Respect visibility options and description when importing project from template. !18473
 - Removes 'No Job log' message from build trace. !18523
+<<<<<<< HEAD
+=======
+- Align action icons in pipeline graph.
+>>>>>>> upstream/master
 - Fix direct_upload when records with null file_store are used.
 - Removed alert box in IDE when redirecting to new merge request.
 - Fixed IDE not loading for sub groups.
 - Fixed IDE not showing loading state when tree is loading.
+<<<<<<< HEAD
 - Align action icons in pipeline graph.
 
 ### Performance (3 changes)
+=======
+
+### Performance (4 changes)
+>>>>>>> upstream/master
 
 - Validate project path prior to hitting the database. !18322
 - Add index to file_store on ci_job_artifacts. !18444
 - Fix N+1 queries when loading participants for a commit note.
+<<<<<<< HEAD
+=======
+- Support Markdown rendering using multiple projects.
+>>>>>>> upstream/master
 
 ### Added (1 change)
 
