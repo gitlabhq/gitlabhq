@@ -16,6 +16,15 @@ describe Deployment do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe 'modules' do
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:deployment) }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :deployments }
+    end
+  end
+
   describe 'after_create callbacks' do
     let(:environment) { create(:environment) }
     let(:store) { Gitlab::EtagCaching::Store.new }
