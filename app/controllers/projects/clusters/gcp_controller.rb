@@ -71,7 +71,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def gcp_projects
-    ListGcpProjectsWorker.get_projects(token_in_session)
+    ListGcpProjectsWorker.read_projects(token_in_session)
   end
 
   def token_in_session
