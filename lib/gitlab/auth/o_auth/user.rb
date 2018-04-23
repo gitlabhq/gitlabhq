@@ -71,14 +71,14 @@ module Gitlab
         end
 
         def find_and_update!
-          save if omniauth_should_save?
+          save if should_save?
 
           gl_user
         end
 
         protected
 
-        def omniauth_should_save?
+        def should_save?
           true
         end
 

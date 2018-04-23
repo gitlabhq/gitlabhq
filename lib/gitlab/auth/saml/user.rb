@@ -36,15 +36,11 @@ module Gitlab
           user
         end
 
-        def changed?
+        override :should_save?
+        def should_save?
           return true unless gl_user
 
           gl_user.changed? || gl_user.identities.any?(&:changed?)
-        end
-
-        override :omniauth_should_save?
-        def omniauth_should_save?
-          changed? && super
         end
 
         protected

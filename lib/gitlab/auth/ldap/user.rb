@@ -32,13 +32,9 @@ module Gitlab
           self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider)
         end
 
-        def changed?
+        override :should_save?
+        def should_save?
           gl_user.changed? || gl_user.identities.any?(&:changed?)
-        end
-
-        override :omniauth_should_save?
-        def omniauth_should_save?
-          changed? && super
         end
 
         def block_after_signup?
