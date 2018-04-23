@@ -12,11 +12,13 @@ feature 'Blob shortcuts', :js do
     sign_in(user)
   end
 
-  shared_examples "quotes selected text" do
-    select_element('.note-text')
-    find('body').native.send_key('r')
+  shared_examples "quotes the selected text" do
+    it "quotes the selected text" do
+      select_element('.note-text')
+      find('body').native.send_key('r')
 
-    expect(find('.js-main-target-form .js-vue-comment-form').value).to include(note_text)
+      expect(find('.js-main-target-form .js-vue-comment-form').value).to include(note_text)
+    end
   end
 
   describe 'pressing "r"' do
