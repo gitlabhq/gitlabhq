@@ -92,6 +92,7 @@ describe('Issue', function() {
       function mockCanCreateBranch(canCreateBranch) {
         mock.onGet(/(.*)\/can_create_branch$/).reply(200, {
           can_create_branch: canCreateBranch,
+          suggested_branch_name: 'foo-99',
         });
       }
 

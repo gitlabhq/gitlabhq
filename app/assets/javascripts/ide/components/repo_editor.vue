@@ -20,9 +20,9 @@ export default {
   },
   computed: {
     ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
-    ...mapGetters(['currentMergeRequest']),
+    ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.raw;
+      return this.file && this.file.binary && !this.file.content;
     },
     editTabCSS() {
       return {
@@ -120,7 +120,12 @@ export default {
     setupEditor() {
       if (!this.file || !this.editor.instance) return;
 
-      this.model = this.editor.createModel(this.file);
+      const head = this.getStagedFile(this.file.path);
+
+      this.model = this.editor.createModel(
+        this.file,
+        this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
+      );
 
       if (this.viewer === 'mrdiff') {
         this.editor.attachMergeRequestModel(this.model);
@@ -212,7 +217,7 @@ export default {
     <content-viewer
       v-if="shouldHideEditor || file.viewMode === 'preview'"
       :content="file.content || file.raw"
-      :path="file.rawPath"
+      :path="file.rawPath || file.path"
       :file-size="file.size"
       :project-path="file.projectId"/>
   </div>

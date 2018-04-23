@@ -1,15 +1,22 @@
 <script>
+import { __ } from '~/locale';
 import Flash from '~/flash';
+import tooltip from '~/vue_shared/directives/tooltip';
+import issuableMixin from '~/vue_shared/mixins/issuable';
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
-import issuableMixin from '../../../vue_shared/mixins/issuable';
-import Icon from '../../../vue_shared/components/icon.vue';
-import eventHub from '../../event_hub';
 
 export default {
   components: {
     editForm,
     Icon,
   },
+
+  directives: {
+    tooltip,
+  },
+
   mixins: [issuableMixin],
 
   props: {
@@ -43,6 +50,10 @@ export default {
 
     isLockDialogOpen() {
       return this.mediator.store.isLockDialogOpen;
+    },
+
+    tooltipLabel() {
+      return this.isLocked ? __('Locked') : __('Unlocked');
     },
   },
 
@@ -85,6 +96,10 @@ export default {
     <div
       class="sidebar-collapsed-icon"
       @click="toggleForm"
+      v-tooltip
+      data-container="body"
+      data-placement="left"
+      :title="tooltipLabel"
     >
       <icon
         :name="lockIcon"

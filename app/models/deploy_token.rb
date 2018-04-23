@@ -8,7 +8,7 @@ class DeployToken < ActiveRecord::Base
   default_value_for(:expires_at) { Forever.date }
 
   has_many :project_deploy_tokens, inverse_of: :deploy_token
-  has_many :projects, -> { auto_include(false) }, through: :project_deploy_tokens
+  has_many :projects, through: :project_deploy_tokens
 
   validate :ensure_at_least_one_scope
   before_save :ensure_token
@@ -34,7 +34,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def has_access_to?(requested_project)
-    project == requested_project
+    active? && project == requested_project
   end
 
   # This is temporal. Currently we limit DeployToken

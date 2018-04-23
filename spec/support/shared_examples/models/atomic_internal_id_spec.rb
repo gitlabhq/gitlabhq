@@ -19,6 +19,14 @@ shared_examples_for 'AtomicInternalId' do
       it { is_expected.to validate_numericality_of(internal_id_attribute) }
     end
 
+    describe 'Creating an instance' do
+      subject { instance.save! }
+
+      it 'saves a new instance properly' do
+        expect { subject }.not_to raise_error
+      end
+    end
+
     describe 'internal id generation' do
       subject { instance.save! }
 

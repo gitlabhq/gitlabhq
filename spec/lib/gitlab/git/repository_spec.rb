@@ -470,7 +470,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
+          repository.expire_has_local_branches_cache
           expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+
+      context 'memoizes the value' do
+        it 'returns true' do
+          expect(repository).to receive(:uncached_has_local_branches?).once.and_call_original
+
+          2.times do
+            expect(repository.has_local_branches?).to eq(true)
+          end
         end
       end
     end
@@ -1041,6 +1052,44 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.count_commits_between('feature', 'master') }
 
     it { is_expected.to eq(17) }
+  end
+
+  describe '#raw_changes_between' do
+    let(:old_rev) { }
+    let(:new_rev) { }
+    let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
+
+    context 'initial commit' do
+      let(:old_rev) { Gitlab::Git::BLANK_SHA }
+      let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+
+      it 'returns the changes' do
+        expect(changes).to be_present
+        expect(changes.size).to eq(3)
+      end
+    end
+
+    context 'with an invalid rev' do
+      let(:old_rev) { 'foo' }
+      let(:new_rev) { 'bar' }
+
+      it 'returns an error' do
+        expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
+      end
+    end
+
+    context 'with valid revs' do
+      let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
+      let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+      it 'returns the changes' do
+        expect(changes.size).to eq(9)
+        expect(changes.first.operation).to eq(:modified)
+        expect(changes.first.new_path).to eq('.gitmodules')
+        expect(changes.last.operation).to eq(:added)
+        expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
+      end
+    end
   end
 
   describe '#merge_base' do

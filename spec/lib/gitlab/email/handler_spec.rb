@@ -25,17 +25,23 @@ describe Gitlab::Email::Handler do
         described_class.for('email', address).class
       end
 
-      expect(matched_handlers.uniq).to match_array(Gitlab::Email::Handler::HANDLERS)
+      expect(matched_handlers.uniq).to match_array(ce_handlers)
     end
 
     it 'can pick exactly one handler for each address' do
       addresses.each do |address|
-        matched_handlers = Gitlab::Email::Handler::HANDLERS.select do |handler|
+        matched_handlers = ce_handlers.select do |handler|
           handler.new('email', address).can_handle?
         end
 
         expect(matched_handlers.count).to eq(1), "#{address} matches #{matched_handlers.count} handlers: #{matched_handlers}"
       end
+    end
+  end
+
+  def ce_handlers
+    @ce_handlers ||= Gitlab::Email::Handler::HANDLERS.reject do |handler|
+      handler.name.start_with?('Gitlab::Email::Handler::EE::')
     end
   end
 end

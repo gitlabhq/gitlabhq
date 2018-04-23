@@ -41,7 +41,7 @@ module NotesActions
     @note = Notes::CreateService.new(note_project, current_user, create_params).execute
 
     if @note.is_a?(Note)
-      Notes::RenderService.new(current_user).execute([@note], @project)
+      Notes::RenderService.new(current_user).execute([@note])
     end
 
     respond_to do |format|
@@ -56,7 +56,7 @@ module NotesActions
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
     if @note.is_a?(Note)
-      Notes::RenderService.new(current_user).execute([@note], @project)
+      Notes::RenderService.new(current_user).execute([@note])
     end
 
     respond_to do |format|
@@ -217,7 +217,7 @@ module NotesActions
 
   def note_project
     strong_memoize(:note_project) do
-      return nil unless project
+      next nil unless project
 
       note_project_id = params[:note_project_id]
 
@@ -228,7 +228,7 @@ module NotesActions
           project
         end
 
-      return access_denied! unless can?(current_user, :create_note, the_project)
+      next access_denied! unless can?(current_user, :create_note, the_project)
 
       the_project
     end

@@ -84,6 +84,17 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#info_attributes' do
+    it 'reads the info attributes' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:get_info_attributes)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([])
+
+      client.info_attributes
+    end
+  end
+
   describe '#has_local_branches?' do
     it 'sends a has_local_branches message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -143,6 +154,17 @@ describe Gitlab::GitalyClient::RepositoryService do
         .and_return(double(checksum: 0))
 
       client.calculate_checksum
+    end
+  end
+
+  describe '#create_from_snapshot' do
+    it 'sends a create_repository_from_snapshot message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository_from_snapshot)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double)
+
+      client.create_from_snapshot('http://example.com?wiki=1', 'Custom xyz')
     end
   end
 end

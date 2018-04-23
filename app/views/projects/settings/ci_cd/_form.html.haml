@@ -3,48 +3,6 @@
     = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
       = form_errors(@project)
       %fieldset.builds-feature
-        .form-group
-          %h5 Auto DevOps (Beta)
-          %p
-            Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.
-            = link_to 'Learn more about Auto DevOps', help_page_path('topics/autodevops/index.md')
-            - message = auto_devops_warning_message(@project)
-            - if message
-              %p.settings-message.text-center
-                = message.html_safe
-          = f.fields_for :auto_devops_attributes, @auto_devops do |form|
-            .radio.js-enable-autodevops{ data: { auto_devops_enabled: @auto_devops&.enabled?.to_s } }
-              = form.label :enabled_true do
-                = form.radio_button :enabled, 'true'
-                %strong Enable Auto DevOps
-                %br
-                %span.descr
-                  - unless @project.ci_config_path.present?
-                    The Auto DevOps pipeline configuration is being used
-                  - else
-                    The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
-                    = link_to 'Remove custom CI file', project_blob_path(@project, tree_join(@project.default_branch, @project.ci_config_path), commit_message: 'Delete custom gitlab-ci', branch_name: @project.repository.next_branch('patch'), create_merge_request: 1, original_branch: @project.default_branch), method: :delete
-
-            .radio
-              = form.label :enabled_false do
-                = form.radio_button :enabled, 'false'
-                %strong Disable Auto DevOps
-                %br
-                %span.descr
-                  An explicit <code>.gitlab-ci.yml</code> needs to be specified before you can begin using Continuous Integration and Delivery.
-
-            .radio
-              = form.label :enabled_ do
-                = form.radio_button :enabled, ''
-                %strong Instance default (#{Gitlab::CurrentSettings.auto_devops_enabled? ? 'enabled' : 'disabled'})
-                %br
-                %span.descr
-                  Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific <code>.gitlab-ci.yml</code>.
-            %p
-              You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.
-            = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
-
-        %hr
         .form-group.append-bottom-default.js-secret-runner-token
           = f.label :runners_token, "Runner token", class: 'label-light'
           .form-control.js-secret-value-placeholder

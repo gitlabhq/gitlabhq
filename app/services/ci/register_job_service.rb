@@ -44,7 +44,7 @@ module Ci
             build.run!
             register_success(build)
 
-            return Result.new(build, true)
+            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
           rescue Ci::Build::MissingDependenciesError
             build.drop!(:missing_dependency_failure)
           end
@@ -110,7 +110,7 @@ module Ci
       labels = { shared_runner: runner.shared?,
                  jobs_running_for_project: jobs_running_for_project(job) }
 
-      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at)
+      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
     end
 

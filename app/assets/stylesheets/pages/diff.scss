@@ -160,6 +160,11 @@
         }
       }
     }
+
+    .diff-loading-error-block {
+      padding: $gl-padding * 2 $gl-padding;
+      text-align: center;
+    }
   }
 
   .image {
@@ -813,7 +818,6 @@
 }
 
 .discussion-notes {
-  padding: 0 $gl-padding $gl-padding;
   min-height: 35px;
 
   &:first-child {

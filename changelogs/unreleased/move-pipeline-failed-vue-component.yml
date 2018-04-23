@@ -1,0 +1,5 @@
+---
+title: Move PipelineFailed vue component
+merge_request: 18277
+author: George Tsiolis
+type: performance

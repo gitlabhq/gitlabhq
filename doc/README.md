@@ -80,6 +80,7 @@ on projects and code.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+- [Web IDE](user/project/web_ide/index.md)
 
 #### Repositories
 
@@ -159,8 +160,12 @@ applications are always responsive and available. GitLab collects and displays
 performance metrics for deployed apps using Prometheus so you can know in an
 instant how code changes impact your production environment.
 
+- [GitLab Prometheus](administration/monitoring/prometheus/index.md): Configure the bundled Prometheus to collect various metrics from your GitLab instance.
+- [Prometheus project integration](user/project/integrations/prometheus.md): Configure the Prometheus integration per project and monitor your CI/CD environments.
+- [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md): Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch.
+- [GitLab Performance Monitoring](administration/monitoring/performance/index.md): Use InfluxDB and Grafana to monitor the performance of your GitLab instance (will be eventually replaced by Prometheus).
+- [Health check](user/admin_area/monitoring/health_check.md): GitLab provides liveness and readiness probes to indicate service health and reachability to required services.
 - [GitLab Cycle Analytics](user/project/cycle_analytics.md): Cycle Analytics measures the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have.
-- [GitLab Performance Monitoring](administration/monitoring/performance/index.md)
 
 ## Getting started with GitLab
 
@@ -179,7 +184,7 @@ instant how code changes impact your production environment.
 ### Git and GitLab
 
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
-- [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
+- [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
 
 ## Administrator documentation

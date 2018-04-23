@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
+import * as actions from '~/ide/stores/actions/file';
+import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
+import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store file actions', () => {
   beforeEach(() => {
@@ -402,6 +405,7 @@ describe('IDE store file actions', () => {
 
     beforeEach(() => {
       spyOn(eventHub, '$on');
+      spyOn(eventHub, '$emit');
 
       tmpFile = file();
       tmpFile.content = 'testing';
@@ -460,6 +464,57 @@ describe('IDE store file actions', () => {
         })
         .catch(done.fail);
     });
+
+    it('pushes route for active file', done => {
+      tmpFile.active = true;
+      store.state.openFiles.push(tmpFile);
+
+      store
+        .dispatch('discardFileChanges', tmpFile.path)
+        .then(() => {
+          expect(router.push).toHaveBeenCalledWith(`/project${tmpFile.url}`);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('emits eventHub event to dispose cached model', done => {
+      store
+        .dispatch('discardFileChanges', tmpFile.path)
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalled();
+
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('stageChange', () => {
+    it('calls STAGE_CHANGE with file path', done => {
+      testAction(
+        actions.stageChange,
+        'path',
+        store.state,
+        [{ type: types.STAGE_CHANGE, payload: 'path' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('unstageChange', () => {
+    it('calls UNSTAGE_CHANGE with file path', done => {
+      testAction(
+        actions.unstageChange,
+        'path',
+        store.state,
+        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
+        [],
+        done,
+      );
+    });
   });
 
   describe('openPendingTab', () => {
@@ -476,7 +531,7 @@ describe('IDE store file actions', () => {
 
     it('makes file pending in openFiles', done => {
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(store.state.openFiles[0].pending).toBe(true);
         })
@@ -486,7 +541,7 @@ describe('IDE store file actions', () => {
 
     it('returns true when opened', done => {
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(added => {
           expect(added).toBe(true);
         })
@@ -498,7 +553,7 @@ describe('IDE store file actions', () => {
       store.state.currentBranchId = 'master';
 
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
         })
@@ -512,7 +567,7 @@ describe('IDE store file actions', () => {
       store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
 
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(scrollToTabSpy).toHaveBeenCalled();
           store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
@@ -527,7 +582,7 @@ describe('IDE store file actions', () => {
       store.state.viewer = 'diff';
 
       store
-        .dispatch('openPendingTab', f)
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(added => {
           expect(added).toBe(false);
         })

@@ -3,6 +3,14 @@ module Gitlab
     module Status
       module Build
         module Common
+          def illustration
+            {
+              image: 'illustrations/skipped-job_empty.svg',
+              size: 'svg-430',
+              title: _('This job does not have a trace.')
+            }
+          end
+
           def has_details?
             can?(user, :read_build, subject)
           end

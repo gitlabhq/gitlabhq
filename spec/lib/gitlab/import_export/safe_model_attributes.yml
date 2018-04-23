@@ -537,12 +537,6 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
-LfsFileLock:
-- id
-- path
-- user_id
-- project_id
-- created_at
 Badge:
 - id
 - link_url

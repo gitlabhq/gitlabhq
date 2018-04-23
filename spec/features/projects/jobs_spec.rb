@@ -464,6 +464,17 @@ feature 'Jobs' do
         expect(page).to have_content('This job has been skipped')
       end
     end
+
+    context 'when job is failed but has no trace' do
+      let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+
+      it 'renders empty state' do
+        visit project_job_path(project, job)
+
+        expect(job).not_to have_trace
+        expect(page).to have_content('This job does not have a trace.')
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do
@@ -480,16 +491,18 @@ feature 'Jobs' do
     end
   end
 
-  describe "POST /:project/jobs/:id/retry" do
+  describe "POST /:project/jobs/:id/retry", :js do
     context "Job from project", :js do
       before do
         job.run!
+        job.cancel!
         visit project_job_path(project, job)
-        find('.js-cancel-job').click()
+        wait_for_requests
+
         find('.js-retry-button').click
       end
 
-      it 'shows the right status and buttons', :js do
+      it 'shows the right status and buttons' do
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end

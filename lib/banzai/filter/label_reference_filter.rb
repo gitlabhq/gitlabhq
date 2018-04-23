@@ -8,8 +8,8 @@ module Banzai
         Label
       end
 
-      def find_object(project, id)
-        find_labels(project).find(id)
+      def find_object(parent_object, id)
+        find_labels(parent_object).find(id)
       end
 
       def self.references_in(text, pattern = Label.reference_pattern)
