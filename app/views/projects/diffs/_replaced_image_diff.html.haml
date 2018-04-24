@@ -14,7 +14,7 @@
     .wrap
       .frame.deleted
         = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
-      %p.image-info.d-none
+      %p.image-info.hide
         %span.meta-filesize= number_to_human_size(old_blob.size)
         |
         %strong W:
@@ -24,7 +24,7 @@
         %span.meta-height
     .wrap
       = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.new_path }
-      %p.image-info.d-none
+      %p.image-info.hide
         %span.meta-filesize= number_to_human_size(blob.size)
         |
         %strong W:
@@ -33,7 +33,7 @@
         %strong H:
         %span.meta-height
 
-  .swipe.view.d-none
+  .swipe.view.hide
     .swipe-frame
       .frame.deleted
         = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
@@ -43,7 +43,7 @@
         %span.top-handle
         %span.bottom-handle
 
-  .onion-skin.view.d-none
+  .onion-skin.view.hide
     .onion-skin-frame
       .frame.deleted
         = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
@@ -54,7 +54,7 @@
           .dragger{ :style => "left: 0px;" }
         .opaque
 
-.view-modes.d-none
+.view-modes.hide
   %ul.view-modes-menu
     %li.two-up{ data: { mode: 'two-up' } } 2-up
     %li.swipe{ data: { mode: 'swipe' } } Swipe
