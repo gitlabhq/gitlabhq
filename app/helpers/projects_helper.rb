@@ -493,7 +493,7 @@ module ProjectsHelper
       visibilityHelpPath: help_page_path('public_access/public_access'),
       registryAvailable: Gitlab.config.registry.enabled,
       registryHelpPath: help_page_path('user/project/container_registry'),
-      lfsAvailable: Gitlab.config.lfs.enabled && current_user.admin?,
+      lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
     }
 

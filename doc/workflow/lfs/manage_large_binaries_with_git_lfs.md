@@ -251,13 +251,4 @@ It is possible to host LFS objects externally by setting a custom LFS url with `
 
 Because GitLab verifies the existence of objects referenced by LFS pointers, push will fail when LFS is enabled for the project.
 
-LFS can be disabled for a project by Owners and Masters using the [Project API](../../api/projects.md#edit-project).
-
-```bash
-curl --request PUT \
-  --url https://example.com/api/v4/projects/<PROJECT_ID> \
-  --header 'Private-Token: <YOUR_PRIVATE_TOKEN>' \
-  --data 'lfs_enabled=false'
-```
-
-Note, `<PROJECT_ID>` can also be substituted with a [namespaced path](../../api/README.md#namespaced-path-encoding).
+LFS can be disabled from the [Project settings](../../user/project/settings/index.md).
