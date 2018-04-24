@@ -60,7 +60,23 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
   end
 
+  def syncs_since_gc
+    Gitlab::Redis::SharedState.with { |redis| redis.get(syncs_since_gc_redis_shared_state_key).to_i }
+  end
+
+  def increment_syncs_since_gc
+    Gitlab::Redis::SharedState.with { |redis| redis.incr(syncs_since_gc_redis_shared_state_key) }
+  end
+
+  def reset_syncs_since_gc
+    Gitlab::Redis::SharedState.with { |redis| redis.del(syncs_since_gc_redis_shared_state_key) }
+  end
+
   private
+
+  def syncs_since_gc_redis_shared_state_key
+    "projects/#{id}/syncs_since_gc"
+  end
 
   def never_synced_repository?
     last_repository_synced_at.nil?

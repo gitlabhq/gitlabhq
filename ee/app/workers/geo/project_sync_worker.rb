@@ -31,6 +31,8 @@ module Geo
 
       Geo::RepositorySyncService.new(project).execute if registry.repository_sync_due?(scheduled_time)
       Geo::WikiSyncService.new(project).execute if registry.wiki_sync_due?(scheduled_time)
+
+      execute_housekeeping(project)
     end
 
     private
@@ -52,6 +54,12 @@ module Geo
         success = registry.save
         log_info("#{success ? 'Successfully marked' : 'Failed to mark'} disabled wiki as synced", registry_id: registry.id, project_id: registry.project_id)
       end
+    end
+
+    def execute_housekeeping(project)
+      housekeeping = Geo::ProjectHousekeepingService.new(project)
+      housekeeping.increment!
+      housekeeping.execute if housekeeping.needed?
     end
   end
 end

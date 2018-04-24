@@ -1,0 +1,99 @@
+# Geo::ProjectHousekeepingService class
+#
+# Used for git housekeeping in Geo Secondary node
+#
+# Ex.
+#   Geo::ProjectHousekeepingService.new(project).execute
+#
+module Geo
+  class ProjectHousekeepingService < BaseService
+    # Timeout set to 24h
+    LEASE_TIMEOUT = 86400
+
+    attr_reader :project
+
+    def initialize(project)
+      @project = project
+    end
+
+    def execute
+      lease_uuid = try_obtain_lease
+      return false unless lease_uuid.present?
+
+      yield if block_given?
+
+      execute_gitlab_shell_gc(lease_uuid)
+    end
+
+    def needed?
+      syncs_since_gc > 0 && period_match? && housekeeping_enabled?
+    end
+
+    def increment!
+      Gitlab::Metrics.measure(:geo_increment_syncs_since_gc) do
+        registry.increment_syncs_since_gc
+      end
+    end
+
+    def registry
+      @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
+    end
+
+    private
+
+    def execute_gitlab_shell_gc(lease_uuid)
+      GitGarbageCollectWorker.perform_async(project.id, task, lease_key, lease_uuid)
+    ensure
+      if syncs_since_gc >= gc_period
+        Gitlab::Metrics.measure(:geo_reset_syncs_since_gc) do
+          registry.reset_syncs_since_gc
+        end
+      end
+    end
+
+    def try_obtain_lease
+      Gitlab::Metrics.measure(:geo_obtain_housekeeping_lease) do
+        lease = ::Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
+        lease.try_obtain
+      end
+    end
+
+    def lease_key
+      "geo_project_housekeeping:#{project.id}"
+    end
+
+    def syncs_since_gc
+      registry.syncs_since_gc
+    end
+
+    def task
+      if syncs_since_gc % gc_period == 0
+        :gc
+      elsif syncs_since_gc % full_repack_period == 0
+        :full_repack
+      else
+        :incremental_repack
+      end
+    end
+
+    def period_match?
+      [gc_period, full_repack_period, repack_period].any? { |period| syncs_since_gc % period == 0 }
+    end
+
+    def housekeeping_enabled?
+      Gitlab::CurrentSettings.housekeeping_enabled
+    end
+
+    def gc_period
+      Gitlab::CurrentSettings.housekeeping_gc_period
+    end
+
+    def full_repack_period
+      Gitlab::CurrentSettings.housekeeping_full_repack_period
+    end
+
+    def repack_period
+      Gitlab::CurrentSettings.housekeeping_incremental_repack_period
+    end
+  end
+end
