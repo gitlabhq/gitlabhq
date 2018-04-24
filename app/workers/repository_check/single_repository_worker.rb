@@ -5,13 +5,18 @@ module RepositoryCheck
 
     def perform(project_id)
       project = Project.find(project_id)
-      project.update_columns(
-        last_repository_check_failed: !check(project),
-        last_repository_check_at: Time.now
-      )
+
+      save_result(project, !check)
     end
 
     private
+
+    def save_result(project, failure)
+      project.update_columns(
+        last_repository_check_failed: failure,
+        last_repository_check_at: Time.now
+      )
+    end
 
     def check(project)
       check_repo(project) && check_wiki_repo(project)
