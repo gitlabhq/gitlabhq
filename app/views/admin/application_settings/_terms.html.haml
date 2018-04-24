@@ -9,7 +9,7 @@
             = f.check_box :enforce_terms
             = _("Require all users to accept Terms of Service when they access GitLab.")
           .help-block
-            When enabled, users cannot use GitLab until the terms have been accepted.
+            = _("When enabled, users cannot use GitLab until the terms have been accepted.")
     .form-group
       .col-sm-12
         = f.label :terms do
@@ -17,6 +17,6 @@
       .col-sm-12
         = f.text_area :terms, class: 'form-control', rows: 8
         .help-block
-          Markdown enabled
+          = _("Markdown enabled")
 
-  = f.submit 'Save changes', class: "btn btn-success"
+  = f.submit _("Save changes"), class: "btn btn-success"
