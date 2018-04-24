@@ -9,7 +9,3 @@ module FixtureHelpers
     File.expand_path(Rails.root.join(dir, 'spec', 'fixtures', filename))
   end
 end
-
-RSpec.configure do |config|
-  config.include FixtureHelpers
-end

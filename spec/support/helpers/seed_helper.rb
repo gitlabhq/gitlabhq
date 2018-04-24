@@ -9,7 +9,7 @@ TEST_MUTABLE_REPO_PATH = 'mutable-repo.git'.freeze
 TEST_BROKEN_REPO_PATH  = 'broken-repo.git'.freeze
 
 module SeedHelper
-  GITLAB_GIT_TEST_REPO_URL = File.expand_path('../gitlab-git-test.git', __FILE__).freeze
+  GITLAB_GIT_TEST_REPO_URL = File.expand_path('../gitlab-git-test.git', __dir__).freeze
 
   def ensure_seeds
     if File.exist?(SEED_STORAGE_PATH)
@@ -106,13 +106,5 @@ bla/bla.txt
   # repositories
   def git_env
     { 'GIT_TEMPLATE_DIR' => '' }
-  end
-end
-
-RSpec.configure do |config|
-  config.include SeedHelper, :seed_helper
-
-  config.before(:all, :seed_helper) do
-    ensure_seeds
   end
 end

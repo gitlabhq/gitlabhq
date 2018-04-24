@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Wiki::CommitterWithHooks, seed_helper: true do
+describe Gitlab::Git::CommitterWithHooks, seed_helper: true do
   shared_examples 'calling wiki hooks' do
     let(:project) { create(:project) }
     let(:user) { project.owner }
