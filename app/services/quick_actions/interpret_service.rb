@@ -271,6 +271,26 @@ module QuickActions
       end
     end
 
+    desc 'Copy labels and milestone from other issue or merge request'
+    explanation do |source_issuable|
+      "Copy labels and milestone from #{source_issuable.to_reference}."
+    end
+    params '#issue | !merge_request'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    parse_params do |issuable_param|
+      extract_references(issuable_param, :issue).first ||
+        extract_references(issuable_param, :merge_request).first
+    end
+    command :copy_metadata do |source_issuable|
+      if source_issuable.present? && source_issuable.project.id == issuable.project.id
+        @updates[:add_label_ids] = source_issuable.labels.map(&:id)
+        @updates[:milestone_id] = source_issuable.milestone.id if source_issuable.milestone
+      end
+    end
+
     desc 'Add a todo'
     explanation 'Adds a todo.'
     condition do
