@@ -272,6 +272,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Rename "Approve Additionally" to "Add approval".
 
 
+## 10.5.8 (2018-04-24)
+
+- No changes.
+
 ## 10.5.7 (2018-04-03)
 
 - No changes.
