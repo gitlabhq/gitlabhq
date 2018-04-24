@@ -195,6 +195,6 @@ export default class UserTabs {
   }
 
   getCurrentAction() {
-    return this.$parentEl.find('.nav-links .active a').data('action');
+    return this.$parentEl.find('.nav-links a.active').data('action');
   }
 }
