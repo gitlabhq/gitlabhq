@@ -47,6 +47,12 @@ ActiveRecord::Schema.define(version: 20180502125859) do
     t.text "message_font_color"
   end
 
+  create_table "application_setting_terms", force: :cascade do |t|
+    t.integer "cached_markdown_version"
+    t.text "terms", null: false
+    t.text "terms_html"
+  end
+
   create_table "application_settings", force: :cascade do |t|
     t.integer "default_projects_limit"
     t.boolean "signup_enabled"
