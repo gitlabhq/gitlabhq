@@ -4,6 +4,7 @@ describe QuickActions::InterpretService do
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
+  let(:developer3) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
   let(:service) { described_class.new(project, developer) }
@@ -112,6 +113,41 @@ describe QuickActions::InterpretService do
 
           expect(updates).to eq(assignee_ids: [user.id])
         end
+      end
+    end
+  end
+
+  describe '#explain' do
+    describe 'unassign command' do
+      let(:content) { '/unassign' }
+      let(:issue) { create(:issue, project: project, assignees: [developer, developer2]) }
+
+      it "includes all assignees' references" do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Removes assignees @#{developer.username} and @#{developer2.username}."])
+      end
+    end
+
+    describe 'unassign command with assignee references' do
+      let(:content) { "/unassign @#{developer.username} @#{developer3.username}" }
+      let(:issue) { create(:issue, project: project, assignees: [developer, developer2, developer3]) }
+
+      it 'includes only selected assignee references' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Removes assignees @#{developer.username} and @#{developer3.username}."])
+      end
+    end
+
+    describe 'unassign command with non-existent assignee reference' do
+      let(:content) { "/unassign @#{developer.username} @#{developer3.username}" }
+      let(:issue) { create(:issue, project: project, assignees: [developer, developer2]) }
+
+      it 'ignores non-existent assignee references' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Removes assignee @#{developer.username}."])
       end
     end
   end
