@@ -20,6 +20,14 @@ export default {
     });
   },
 
+  [types.SET_MERGE_REQUEST_DIFFS](state, mergeRequestDiffs) {
+    Object.assign(state, {
+      mergeRequestDiffs: convertObjectPropsToCamelCase(mergeRequestDiffs, {
+        deep: true,
+      }),
+    });
+  },
+
   [types.SET_DIFF_VIEW_TYPE](state, diffViewType) {
     Object.assign(state, { diffViewType });
   },

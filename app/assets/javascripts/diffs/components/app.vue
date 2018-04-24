@@ -36,6 +36,7 @@ export default {
       isLoading: state => state.diffs.isLoading,
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
+      mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
     }),
     ...mapGetters(['isParallelView']),
   },
@@ -89,7 +90,9 @@ export default {
       class="diffs tab-pane"
     >
       <div v-if="diffFiles.length">
-        <compare-versions />
+        <compare-versions
+          :merge-request-diffs="mergeRequestDiffs"
+        />
         <changed-files
           :diff-files="diffFiles"
           :active-file="activeFile"
