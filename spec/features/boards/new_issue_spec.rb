@@ -64,7 +64,7 @@ describe 'Issue Boards new issue', :js do
         expect(page).to have_content('1')
       end
 
-      page.within(first('.card')) do
+      page.within(first('.board-card')) do
         issue = project.issues.find_by_title('bug')
 
         expect(page).to have_content(issue.to_reference)
