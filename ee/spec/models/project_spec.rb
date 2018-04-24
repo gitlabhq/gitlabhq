@@ -1310,17 +1310,6 @@ describe Project do
     end
   end
 
-  describe '#user_can_push_to_empty_repo?' do
-    it 'returns false when the external service denies access' do
-      user = create(:user)
-      project = create(:project)
-      project.add_master(user)
-      external_service_deny_access(user, project)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-  end
-
   describe 'project import state transitions' do
     context 'state transition: [:started] => [:finished]' do
       context 'elasticsearch indexing disabled' do
