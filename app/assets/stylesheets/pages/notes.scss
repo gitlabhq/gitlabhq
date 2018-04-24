@@ -639,6 +639,10 @@ ul.notes {
   margin-left: -55px;
   position: absolute;
   z-index: 10;
+
+  .new & {
+    margin-top: -10px;
+  }
 }
 
 .discussion-body,
