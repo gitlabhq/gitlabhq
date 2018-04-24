@@ -17,6 +17,7 @@
 }
 
 .ide-view {
+  position: relative;
   display: flex;
   height: calc(100vh - #{$header-height});
   margin-top: 0;
@@ -68,6 +69,10 @@
 
     .ide-file-changed-icon {
       margin-left: auto;
+
+      > svg {
+        display: block;
+      }
     }
 
     .ide-new-btn {
@@ -378,7 +383,11 @@
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+
+  > div + div {
+    padding-left: $gl-padding;
+  }
 
   svg {
     vertical-align: middle;
@@ -521,9 +530,13 @@
   overflow: auto;
 }
 
-.multi-file-commit-empty-state-container {
-  align-items: center;
-  justify-content: center;
+.ide-commit-empty-state {
+  padding: 0 $gl-padding;
+}
+
+.ide-commit-empty-state-container {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .multi-file-commit-panel-header {
@@ -532,35 +545,22 @@
   margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
-
-  &.is-collapsed {
-    border-bottom: 1px solid $white-dark;
-
-    svg {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .multi-file-commit-panel-collapse-btn {
-      margin-right: auto;
-      margin-left: auto;
-      border-left: 0;
-    }
-  }
 }
 
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
-  padding: 0 $gl-btn-padding;
+  padding-left: $grid-size;
 
   svg {
     margin-right: $gl-btn-padding;
+    color: $theme-gray-700;
   }
 }
 
 .multi-file-commit-panel-collapse-btn {
   border-left: 1px solid $white-dark;
+  margin-left: auto;
 }
 
 .multi-file-commit-list {
@@ -574,12 +574,14 @@
   display: flex;
   padding: 0;
   align-items: center;
+  border-radius: $border-radius-default;
 
   .multi-file-discard-btn {
     display: none;
+    margin-top: -2px;
     margin-left: auto;
+    margin-right: $grid-size;
     color: $gl-link-color;
-    padding: 0 2px;
 
     &:focus,
     &:hover {
@@ -591,26 +593,31 @@
     background: $white-normal;
 
     .multi-file-discard-btn {
-      display: block;
+      display: flex;
     }
   }
 }
 
-.multi-file-addition {
+.multi-file-additions,
+.multi-file-additions-solid {
   fill: $green-500;
 }
 
-.multi-file-modified {
+.multi-file-modified,
+.multi-file-modified-solid {
   fill: $orange-500;
 }
 
 .multi-file-commit-list-collapsed {
   display: flex;
   flex-direction: column;
+  padding: $gl-padding 0;
 
-  > svg {
+  svg {
+    display: block;
     margin-left: auto;
     margin-right: auto;
+    color: $theme-gray-700;
   }
 
   .file-status-icon {
@@ -622,7 +629,7 @@
 
 .multi-file-commit-list-path {
   padding: $grid-size / 2;
-  padding-left: $gl-padding;
+  padding-left: $grid-size;
   background: none;
   border: 0;
   text-align: left;
@@ -660,11 +667,6 @@
   .btn {
     font-size: $gl-font-size;
   }
-}
-
-.multi-file-commit-message.form-control {
-  height: 160px;
-  resize: none;
 }
 
 .dirty-diff {
@@ -812,6 +814,41 @@
   }
 }
 
+.ide-commit-list-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 16px;
+
+  &:not(.is-collapsed) {
+    flex: 1;
+    min-height: 140px;
+  }
+
+  &.is-collapsed {
+    .multi-file-commit-panel-header {
+      margin-left: -$gl-padding;
+      margin-right: -$gl-padding;
+
+      svg {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .multi-file-commit-panel-collapse-btn {
+        margin-right: auto;
+        margin-left: auto;
+        border-left: 0;
+      }
+    }
+  }
+}
+
+.ide-staged-action-btn {
+  margin-left: auto;
+  color: $gl-link-color;
+}
+
 .ide-commit-radios {
   label {
     font-weight: normal;
@@ -838,4 +875,95 @@
   display: flex;
   align-items: center;
   font-weight: $gl-font-weight-bold;
+}
+
+.ide-file-finder-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.ide-file-finder {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  .highlighted {
+    color: $blue-500;
+    font-weight: $gl-font-weight-bold;
+  }
+}
+
+.ide-commit-message-field {
+  height: 200px;
+  background-color: $white-light;
+
+  .md-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .nav-links {
+    height: 30px;
+  }
+
+  .help-block {
+    margin-top: 2px;
+    color: $blue-500;
+    cursor: pointer;
+  }
+}
+
+.ide-commit-message-textarea-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .note-textarea {
+    font-family: $monospace_font;
+  }
+}
+
+.ide-commit-message-highlights-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: -100px;
+  bottom: 0;
+  padding-right: 100px;
+  pointer-events: none;
+  z-index: 1;
+
+  .highlights {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: transparent;
+  }
+
+  mark {
+    margin-left: -1px;
+    padding: 0 2px;
+    border-radius: $border-radius-small;
+    background-color: $orange-200;
+    color: transparent;
+    opacity: 0.6;
+  }
+}
+
+.ide-commit-message-textarea {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: transparent;
+  resize: none;
 }

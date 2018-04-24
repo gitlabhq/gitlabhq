@@ -1,7 +1,9 @@
-import * as urlUtils from '~/lib/utils/url_utility';
+import actions, { stageAllChanges, unstageAllChanges, toggleFileFinder } from '~/ide/stores/actions';
 import store from '~/ide/stores';
+import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
+import testAction from '../../helpers/vuex_action_helper';
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -14,12 +16,12 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      spyOn(urlUtils, 'visitUrl');
+      const visitUrl = spyOnDependency(actions, 'visitUrl');
 
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
+          expect(visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -191,9 +193,7 @@ describe('Multi-file store actions', () => {
           })
           .then(f => {
             expect(f.tempFile).toBeTruthy();
-            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(
-              1,
-            );
+            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
             done();
           })
@@ -292,6 +292,42 @@ describe('Multi-file store actions', () => {
     });
   });
 
+  describe('stageAllChanges', () => {
+    it('adds all files from changedFiles to stagedFiles', done => {
+      store.state.changedFiles.push(file(), file('new'));
+
+      testAction(
+        stageAllChanges,
+        null,
+        store.state,
+        [
+          { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
+          { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('unstageAllChanges', () => {
+    it('removes all files from stagedFiles after unstaging', done => {
+      store.state.stagedFiles.push(file(), file('new'));
+
+      testAction(
+        unstageAllChanges,
+        null,
+        store.state,
+        [
+          { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[0].path },
+          { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[1].path },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('updateViewer', () => {
     it('updates viewer state', done => {
       store
@@ -301,6 +337,19 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
+        done,
+      );
     });
   });
 });

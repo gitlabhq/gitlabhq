@@ -29,7 +29,7 @@
             docker login #{Gitlab.config.registry.host_port}
           %br
           %p
-            - deploy_token = link_to(_('deploy token'), help_page_path('user/projects/deploy_tokens/index', anchor: 'read-container-registry-images'), target: '_blank')
+            - deploy_token = link_to(_('deploy token'), help_page_path('user/project/deploy_tokens/index', anchor: 'read-container-registry-images'), target: '_blank')
             = s_('ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images.').html_safe % { deploy_token: deploy_token }
           %br
           %p

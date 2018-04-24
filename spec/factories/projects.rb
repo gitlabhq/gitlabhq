@@ -1,4 +1,4 @@
-require_relative '../support/test_env'
+require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
   # Project without repository
@@ -148,6 +148,13 @@ FactoryBot.define do
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
+      end
+    end
+
+    trait :stubbed_repository do
+      after(:build) do |project|
+        allow(project).to receive(:empty_repo?).and_return(false)
+        allow(project.repository).to receive(:empty?).and_return(false)
       end
     end
 

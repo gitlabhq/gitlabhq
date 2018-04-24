@@ -1,0 +1,5 @@
+---
+title: Update links to /ci/lint with ones to project ci/lint
+merge_request: 18539
+author: Takuya Noguchi
+type: fixed

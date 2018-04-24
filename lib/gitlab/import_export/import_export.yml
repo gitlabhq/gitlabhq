@@ -27,8 +27,6 @@ project_tree:
   - :releases
   - project_members:
     - :user
-  - lfs_file_locks:
-    - :user
   - merge_requests:
     - notes:
       - :author
@@ -66,6 +64,7 @@ project_tree:
   - :project_feature
   - :custom_attributes
   - :project_badges
+  - :ci_cd_settings
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -75,6 +74,8 @@ included_attributes:
     - :username
   author:
     - :name
+  ci_cd_settings:
+    - :group_runners_enabled
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:

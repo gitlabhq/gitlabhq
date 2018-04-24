@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
@@ -30,6 +31,22 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   } else {
     commit(types.SET_RIGHT_PANEL_COLLAPSED, collapsed);
   }
+};
+
+export const toggleRightPanelCollapsed = (
+  { dispatch, state },
+  e = undefined,
+) => {
+  if (e) {
+    $(e.currentTarget)
+      .tooltip('hide')
+      .blur();
+  }
+
+  dispatch('setPanelCollapsedStatus', {
+    side: 'right',
+    collapsed: !state.rightPanelCollapsed,
+  });
 };
 
 export const setResizingStatus = ({ commit }, resizing) => {
@@ -104,6 +121,14 @@ export const scrollToTab = () => {
   });
 };
 
+export const stageAllChanges = ({ state, commit }) => {
+  state.changedFiles.forEach(file => commit(types.STAGE_CHANGE, file.path));
+};
+
+export const unstageAllChanges = ({ state, commit }) => {
+  state.stagedFiles.forEach(file => commit(types.UNSTAGE_CHANGE, file.path));
+};
+
 export const updateViewer = ({ commit }, viewer) => {
   commit(types.UPDATE_VIEWER, viewer);
 };
@@ -112,7 +137,13 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
+export const toggleFileFinder = ({ commit }, fileFindVisible) =>
+  commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
 export * from './actions/merge_request';
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

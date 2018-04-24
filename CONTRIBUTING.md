@@ -26,7 +26,9 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
   - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
-  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#priority-labels-deliverable-stretch-next-patch-release)
+  - [Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
+  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#bug-priority-labels-p1-p2-p3-etc)
+  - [Severity labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#bug-severity-labels-s1-s2-s3-etc)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
 - [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
@@ -126,7 +128,9 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
-- Priority: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Priority: ~P1, ~P2, ~P3, ~P4
+- Severity: ~S1, ~S2, ~S3, ~S4
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -185,10 +189,10 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")
 
-Priority labels help us clearly communicate expectations of the work for the
-release. There are two levels of priority labels:
+Milestone labels help us clearly communicate expectations of the work for the
+release. There are three levels of Milestone labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
@@ -203,16 +207,46 @@ Each issue scheduled for the current milestone should be labeled ~Deliverable
 or ~"Stretch". Any open issue for a previous milestone should be labeled 
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Severity labels (~S1, ~S2, etc.)
+### Bug Priority labels (~P1, ~P2, ~P3 & etc.)
 
-Severity labels help us clearly communicate the impact of a ~bug on users.
+Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be. If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
+This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning                                  | Example |
-|-------|------------------------------------------|---------|
-| ~S1   | Feature broken, no workaround            | Unable to create an issue |
-| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
-| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
-| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
+| Label | Meaning         | Estimate time to fix                                             | Guidance |
+|-------|-----------------|------------------------------------------------------------------|----------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
+| ~P2   | High Priority   | The next release                                                 |  |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+
+#### Specific Priority guidance
+
+| Label | Availability / Performance                                   | 
+|-------|--------------------------------------------------------------|
+| ~P1   |                                                              | 
+| ~P2   | The issue is (almost) guaranteed to occur in the near future |  
+| ~P3   | The issue is likely to occur in the near future              |
+| ~P4   | The issue _may_ occur but it's not likely                    |
+
+### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
+
+Severity labels help us clearly communicate the impact of a ~bug on users. 
+
+| Label | Meaning           | Impact of the defect                                  | Example |
+|-------|-------------------|-------------------------------------------------------|---------|
+| ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
+| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
+| ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
+| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
+
+#### Specific Severity guidance
+
+| Label | Security Impact                                                   | 
+|-------|-------------------------------------------------------------------|
+| ~S1   | >50% customers impacted (possible company extinction level event) | 
+| ~S2   | Multiple customers impacted (but not apocalyptic)                 |  
+| ~S3   | A single customer impacted                                        |
+| ~S4   | No customer impact, or expected impact within 30 days             |
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
