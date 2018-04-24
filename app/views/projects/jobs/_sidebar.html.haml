@@ -44,7 +44,7 @@
             %p
               %button.btn.group.btn-group.d-flex.js-reveal-variables Reveal Variables
 
-            %dl.js-build-variables.trigger-build-variables.d-none
+            %dl.js-build-variables.trigger-build-variables.hide
               - @build.trigger_variables.each do |trigger_variable|
                 %dt.js-build-variable.trigger-build-variable= trigger_variable[:key]
                 %dd.js-build-value.trigger-build-value= trigger_variable[:value]
