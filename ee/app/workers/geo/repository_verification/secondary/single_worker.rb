@@ -18,7 +18,7 @@ module Geo
           return unless Gitlab::Geo.secondary?
 
           @registry = Geo::ProjectRegistry.find_by_id(registry_id)
-          return if registry.nil? || project.pending_delete?
+          return if registry.nil? || project.nil? || project.pending_delete?
 
           try_obtain_lease do
             verify_checksum(:repository)
