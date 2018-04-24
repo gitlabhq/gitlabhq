@@ -1,4 +1,4 @@
-class SwapTraceChunkWorker
+class BuildTraceSwapChunkWorker
   include ApplicationWorker
   include PipelineQueue
 
