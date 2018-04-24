@@ -53,7 +53,8 @@ Example response:
    "dsa_key_restriction": 0,
    "ecdsa_key_restriction": 0,
    "ed25519_key_restriction": 0,
-
+   "enforce_terms": true,
+   "terms": "Hello world!",
 }
 ```
 
@@ -177,6 +178,8 @@ PUT /application/settings
 | `external_auth_client_cert` | string | no | The certificate to use to authenticate with the external authorization service |
 | `external_auth_client_key` | string | no | Private key for the certificate when authentication is required for the external authorization service, this is encrypted when stored |
 | `external_auth_client_key_pass` | string | no | Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
+| `enforce_terms`                          | boolean          | no                                            | Enforce application ToS to all users                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `terms`                                  | text             | yes (if `enforce_terms` is true)              | Markdown content for the ToS                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -218,6 +221,12 @@ Example response:
   "external_authorization_service_enabled": true,
   "external_authorization_service_url": "https://authorize.me",
   "external_authorization_service_default_label": "default",
-  "external_authorization_service_timeout": 0.5
+  "external_authorization_service_timeout": 0.5,
+  "rsa_key_restriction": 0,
+  "dsa_key_restriction": 0,
+  "ecdsa_key_restriction": 0,
+  "ed25519_key_restriction": 0,
+  "enforce_terms": true,
+  "terms": "Hello world!",
 }
 ```

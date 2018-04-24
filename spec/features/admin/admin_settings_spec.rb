@@ -110,6 +110,18 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  scenario 'Terms of Service' do
+    page.within('.as-terms') do
+      check 'Require all users to accept Terms of Service when they access GitLab.'
+      fill_in 'Terms of Service Agreement', with: 'Be nice!'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.enforce_terms).to be(true)
+    expect(Gitlab::CurrentSettings.terms).to eq 'Be nice!'
+    expect(page).to have_content 'Application settings saved successfully'
+  end
+
   scenario 'Modify oauth providers' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
 
