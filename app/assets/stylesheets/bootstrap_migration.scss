@@ -52,6 +52,16 @@ table {
   pointer-events: none;
 }
 
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    .d#{$infix}-table-header-group  { display: table-header-group !important; }
+  }
+}
+
+
 // Polyfill deprecated selectors
 
 .hidden {
