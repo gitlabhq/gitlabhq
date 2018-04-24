@@ -478,6 +478,13 @@ entry.
 - Use host URL to build JIRA remote link icon.
 
 
+## 10.5.8 (2018-04-24)
+
+### Security (1 change)
+
+- Sanitizes user name to avoid XSS attacks.
+
+
 ## 10.5.7 (2018-04-03)
 
 ### Security (2 changes)
