@@ -67,7 +67,7 @@ const bindEvents = () => {
       .popover({
         title: $pushNewProjectTipTrigger.data('title'),
         placement: 'bottom',
-        html: 'true',
+        html: true,
         content: $('.push-new-project-tip-template').html(),
       })
       .on('shown.bs.popover', () => {
