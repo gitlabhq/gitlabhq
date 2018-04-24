@@ -88,6 +88,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Breaks utils function to parse codeclimate and sast into separate functions.
 
 
+## 10.6.5 (2018-04-24)
+
+- No changes.
+
 ## 10.6.4 (2018-04-09)
 
 ### Fixed (4 changes)
