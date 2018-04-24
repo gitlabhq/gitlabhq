@@ -138,8 +138,10 @@ module QuickActions
         'Remove assignee'
       end
     end
-    explanation do
-      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
+    explanation do |users = nil|
+      assignees = issuable.assignees
+      assignees &= users if users.present? && issuable.allows_multiple_assignees?
+      "Removes #{'assignee'.pluralize(assignees.size)} #{assignees.map(&:to_reference).to_sentence}."
     end
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
