@@ -237,6 +237,13 @@ entry.
 - Upgrade Gitaly to upgrade its charlock_holmes.
 
 
+## 10.6.5 (2018-04-24)
+
+### Security (1 change)
+
+- Sanitizes user name to avoid XSS attacks.
+
+
 ## 10.6.4 (2018-04-09)
 
 ### Fixed (8 changes, 1 of them is from the community)
