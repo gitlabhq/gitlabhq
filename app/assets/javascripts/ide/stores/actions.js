@@ -144,3 +144,6 @@ export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
 export * from './actions/merge_request';
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

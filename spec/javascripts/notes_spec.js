@@ -3,7 +3,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
@@ -222,7 +221,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('sets target when hash matches', () => {
-        spyOn(urlUtils, 'getLocationHash').and.returnValue(hash);
+        spyOnDependency(Notes, 'getLocationHash').and.returnValue(hash);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -231,7 +230,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('unsets target when hash does not match', () => {
-        spyOn(urlUtils, 'getLocationHash').and.returnValue('note_doesnotexist');
+        spyOnDependency(Notes, 'getLocationHash').and.returnValue('note_doesnotexist');
 
         Notes.updateNoteTargetSelector($note);
 
@@ -239,7 +238,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('unsets target when there is not a hash fragment anymore', () => {
-        spyOn(urlUtils, 'getLocationHash').and.returnValue(null);
+        spyOnDependency(Notes, 'getLocationHash').and.returnValue(null);
 
         Notes.updateNoteTargetSelector($note);
 
