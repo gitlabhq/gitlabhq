@@ -42,7 +42,7 @@
 
           - if @build.trigger_variables.any?
             %p
-              %button.btn.group.btn-group.d-flex.js-reveal-variables Reveal Variables
+              %button.btn.group.btn-group.js-reveal-variables Reveal Variables
 
             %dl.js-build-variables.trigger-build-variables.hide
               - @build.trigger_variables.each do |trigger_variable|

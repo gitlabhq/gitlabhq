@@ -56,7 +56,7 @@ export default {
         actions.push({
           label: 'New issue',
           path: this.job.new_issue_path,
-          cssClass: 'js-new-issue btn btn-new btn-inverted d-block d-lg-none d-xl-none',
+          cssClass: 'js-new-issue btn btn-new btn-inverted d-none d-md-block d-lg-block d-xl-block',
           type: 'link',
         });
       }
