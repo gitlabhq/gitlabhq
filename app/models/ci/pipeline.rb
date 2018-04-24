@@ -7,11 +7,14 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
+    include AtomicInternalId
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
+
+    has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.pipelines.maximum(:iid) }
 
     has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
