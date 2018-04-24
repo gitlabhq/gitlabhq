@@ -6,6 +6,8 @@ module RepositoryCheck
     RUN_TIME = 3600
 
     def perform
+      break unless Gitlab::CurrentSettings.repository_checks_enabled
+
       start = Time.now
 
       # This loop will break after a little more than one hour ('a little
@@ -15,7 +17,6 @@ module RepositoryCheck
       # check, only one (or two) will be checked at a time.
       project_ids.each do |project_id|
         break if Time.now - start >= RUN_TIME
-        break unless Gitlab::CurrentSettings.repository_checks_enabled
 
         next unless try_obtain_lease(project_id)
 
