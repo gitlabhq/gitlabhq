@@ -18,11 +18,12 @@ entry.
 - Fixed IDE not showing loading state when tree is loading.
 - Align action icons in pipeline graph.
 
-### Performance (3 changes)
+### Performance (4 changes)
 
 - Validate project path prior to hitting the database. !18322
 - Add index to file_store on ci_job_artifacts. !18444
 - Fix N+1 queries when loading participants for a commit note.
+- Support Markdown rendering using multiple projects.
 
 ### Added (1 change)
 
