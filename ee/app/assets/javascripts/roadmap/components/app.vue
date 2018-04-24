@@ -26,6 +26,10 @@
         type: Boolean,
         required: true,
       },
+      newEpicEndpoint: {
+        type: String,
+        required: true,
+      },
       emptyStateIllustrationPath: {
         type: String,
         required: true,
@@ -113,7 +117,10 @@
 </script>
 
 <template>
-  <div class="roadmap-container">
+  <div
+    class="roadmap-container"
+    :class="{ 'overflow-reset': isEpicsListEmpty }"
+  >
     <loading-icon
       class="loading-animation prepend-top-20 append-bottom-20"
       size="2"
@@ -131,6 +138,7 @@
       :timeframe-start="timeframeStart"
       :timeframe-end="timeframeEnd"
       :has-filters-applied="hasFiltersApplied"
+      :new-epic-endpoint="newEpicEndpoint"
       :empty-state-illustration-path="emptyStateIllustrationPath"
     />
   </div>

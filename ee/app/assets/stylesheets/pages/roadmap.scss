@@ -20,6 +20,10 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
 
 .roadmap-container {
   overflow: hidden;
+
+  &.overflow-reset {
+    overflow: initial;
+  }
 }
 
 .roadmap-shell {

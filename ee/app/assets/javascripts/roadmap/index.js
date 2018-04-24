@@ -52,6 +52,7 @@ export default () => {
         store,
         service,
         hasFiltersApplied,
+        newEpicEndpoint: dataset.newEpicEndpoint,
         emptyStateIllustrationPath: dataset.emptyStateIllustration,
       };
     },
@@ -61,6 +62,7 @@ export default () => {
           store: this.store,
           service: this.service,
           hasFiltersApplied: this.hasFiltersApplied,
+          newEpicEndpoint: this.newEpicEndpoint,
           emptyStateIllustrationPath: this.emptyStateIllustrationPath,
         },
       });

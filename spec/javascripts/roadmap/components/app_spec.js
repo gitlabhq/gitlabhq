@@ -8,7 +8,7 @@ import RoadmapStore from 'ee/roadmap/store/roadmap_store';
 import RoadmapService from 'ee/roadmap/service/roadmap_service';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockGroupId, epicsPath, rawEpics, mockSvgPath } from '../mock_data';
+import { mockTimeframe, mockGroupId, epicsPath, mockNewEpicEndpoint, rawEpics, mockSvgPath } from '../mock_data';
 
 const createComponent = () => {
   const Component = Vue.extend(appComponent);
@@ -21,6 +21,7 @@ const createComponent = () => {
     store,
     service,
     hasFiltersApplied: true,
+    newEpicEndpoint: mockNewEpicEndpoint,
     emptyStateIllustrationPath: mockSvgPath,
   });
 };
@@ -179,6 +180,17 @@ describe('AppComponent', () => {
   describe('template', () => {
     it('renders roadmap container with class `roadmap-container`', () => {
       expect(vm.$el.classList.contains('roadmap-container')).toBe(true);
+    });
+
+    it('renders roadmap container with classes `roadmap-container overflow-reset` when isEpicsListEmpty prop is true', (done) => {
+      vm.isEpicsListEmpty = true;
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.classList.contains('roadmap-container')).toBe(true);
+          expect(vm.$el.classList.contains('overflow-reset')).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });
