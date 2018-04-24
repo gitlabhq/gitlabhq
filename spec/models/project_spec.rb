@@ -1625,7 +1625,6 @@ describe Project do
     end
   end
 
-<<<<<<< HEAD
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
@@ -1694,8 +1693,6 @@ describe Project do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe '#container_registry_url' do
     let(:project) { create(:project) }
 
