@@ -42,6 +42,19 @@ export const collapseButtonTooltip = state =>
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
+export const allBlobs = state =>
+  Object.keys(state.entries)
+    .reduce((acc, key) => {
+      const entry = state.entries[key];
+
+      if (entry.type === 'blob') {
+        acc.push(entry);
+      }
+
+      return acc;
+    }, [])
+    .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt);
+
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

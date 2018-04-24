@@ -137,6 +137,9 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
+export const toggleFileFinder = ({ commit }, fileFindVisible) =>
+  commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

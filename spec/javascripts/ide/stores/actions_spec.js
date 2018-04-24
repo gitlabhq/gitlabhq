@@ -339,4 +339,17 @@ describe('Multi-file store actions', () => {
         .catch(done.fail);
     });
   });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        actions.toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
 });

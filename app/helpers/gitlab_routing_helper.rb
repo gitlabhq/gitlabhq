@@ -83,6 +83,14 @@ module GitlabRoutingHelper
     end
   end
 
+  def edit_milestone_path(entity, *args)
+    if entity.parent.is_a?(Group)
+      edit_group_milestone_path(entity.parent, entity, *args)
+    else
+      edit_project_milestone_path(entity.parent, entity, *args)
+    end
+  end
+
   def toggle_subscription_path(entity, *args)
     if entity.is_a?(Issue)
       toggle_subscription_project_issue_path(entity.project, entity)
