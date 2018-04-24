@@ -1,4 +1,4 @@
-import actions, { stageAllChanges, unstageAllChanges } from '~/ide/stores/actions';
+import actions, { stageAllChanges, unstageAllChanges, toggleFileFinder } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
@@ -343,7 +343,7 @@ describe('Multi-file store actions', () => {
   describe('toggleFileFinder', () => {
     it('commits TOGGLE_FILE_FINDER', done => {
       testAction(
-        actions.toggleFileFinder,
+        toggleFileFinder,
         true,
         null,
         [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
