@@ -1,5 +1,0 @@
----
-title: Add object storage support for LFS objects, CI artifacts, and uploads.
-merge_request: 17358
-author:
-type: added

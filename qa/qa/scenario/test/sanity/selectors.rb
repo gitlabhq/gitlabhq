@@ -31,7 +31,7 @@ module QA
                 current changes in this merge request.
 
                 For more help see documentation in `qa/page/README.md` file or
-                ask for help on #qa channel on Slack (GitLab Team only).
+                ask for help on #quality channel on Slack (GitLab Team only).
 
                 If you are not a Team Member, and you still need help to
                 contribute, please open an issue in GitLab QA issue tracker.

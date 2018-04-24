@@ -325,7 +325,7 @@ describe Project do
     let(:owner)     { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
     let(:project)   { create(:project, path: 'sample-project', namespace: namespace) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group', owner: owner) }
+    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
 
     context 'when nil argument' do
       it 'returns nil' do
@@ -3583,6 +3583,46 @@ describe Project do
       end
 
       it { is_expected.not_to be_valid }
+    end
+  end
+
+  describe '#gitlab_deploy_token' do
+    let(:project) { create(:project) }
+
+    subject { project.gitlab_deploy_token }
+
+    context 'when there is a gitlab deploy token associated' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
+
+      it { is_expected.to eq(deploy_token) }
+    end
+
+    context 'when there is no a gitlab deploy token associated' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but is has been revoked' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :revoked, projects: [project]) }
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but it is expired' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :expired, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated with a different name' do
+      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated to a different project' do
+      let(:project_2) { create(:project) }
+      let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
+
+      it { is_expected.to be_nil }
     end
   end
 end
