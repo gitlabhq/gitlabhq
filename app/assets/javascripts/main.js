@@ -48,7 +48,7 @@ document.addEventListener('beforeunload', () => {
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('dispose');
   // Close any open popover
-  $('[data-toggle="popover"]').popover('destroy');
+  $('[data-toggle="popover"]').popover('dispose');
 });
 
 window.addEventListener('hashchange', handleLocationHash);
