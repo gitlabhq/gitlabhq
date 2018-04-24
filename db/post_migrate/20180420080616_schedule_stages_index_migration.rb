@@ -3,7 +3,7 @@ class ScheduleStagesIndexMigration < ActiveRecord::Migration
 
   DOWNTIME = false
   MIGRATION = 'MigrateStageIndex'.freeze
-  BATCH_SIZE = 2000
+  BATCH_SIZE = 8000
 
   disable_ddl_transaction!
 
