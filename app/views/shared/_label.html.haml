@@ -11,18 +11,18 @@
     %li.inline
       .label-badge.label-badge-gray= label.model_name.human.capitalize
     - if can?(current_user, :admin_label, @project)
-      %li.inline.js-toggle-priority.toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
+      %li.inline.js-toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
         dom_id: dom_id(label), type: label.type } }
-        %button.add-priority.btn.has-tooltip{ title: 'Prioritize', type: 'button', :'data-placement' => 'top' }
+        %button.label-action.add-priority.btn.btn-transparent.has-tooltip{ title: 'Prioritize', type: 'button', :'data-placement' => 'top' }
           = icon('star-o')
-        %button.remove-priority.btn.has-tooltip{ title: 'Remove priority', type: 'button', :'data-placement' => 'top' }
+        %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: 'Remove priority', type: 'button', :'data-placement' => 'top' }
           = icon('star')
       %li.inline
-        = link_to edit_label_path(label) do
+        = link_to edit_label_path(label), class: 'btn btn-transparent label-action' do
           = icon('pencil')
     %li.inline
       .dropdown
-        %button{ type: 'button', class: 'btn btn-transparent js-label-options-dropdown', data: { toggle: 'dropdown' } }
+        %button{ type: 'button', class: 'btn btn-transparent js-label-options-dropdown label-action', data: { toggle: 'dropdown' } }
           = custom_icon('ellipsis_v')
         .dropdown-menu.dropdown-menu-align-right
           %ul

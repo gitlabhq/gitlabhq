@@ -135,22 +135,6 @@
   }
 }
 
-.toggle-priority {
-  display: inline-block;
-  vertical-align: top;
-
-  button {
-    border-color: transparent;
-    padding: 5px 8px;
-    vertical-align: top;
-    font-size: 14px;
-
-    &:hover {
-      border-color: transparent;
-    }
-  }
-}
-
 .filtered-labels {
   font-size: 0;
   padding: 12px 16px;
@@ -310,5 +294,22 @@
     font-size: $label-font-size;
     position: relative;
     top: ($grid-size / 2);
+  }
+
+  .label-action {
+    color: $theme-gray-800;
+    cursor: pointer;
+
+    svg {
+      fill: $theme-gray-800;
+    }
+
+    &:hover {
+      color: $blue-600;
+
+      svg {
+        fill: $blue-600;
+      }
+    }
   }
 }
