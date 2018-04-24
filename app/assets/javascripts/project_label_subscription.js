@@ -15,7 +15,6 @@ export default class ProjectLabelSubscription {
     event.preventDefault();
 
     const $btn = $(event.currentTarget);
-    const $span = $btn.find('span');
     const url = $btn.attr('data-url');
     const oldStatus = $btn.attr('data-status');
 
