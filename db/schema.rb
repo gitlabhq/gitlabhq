@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.boolean "enforce_terms", default: false
   end
 
   create_table "audit_events", force: :cascade do |t|
