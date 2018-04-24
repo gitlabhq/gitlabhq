@@ -26,7 +26,7 @@ class ListGcpProjectsWorker
   def self.read_projects(token)
     Gitlab::Redis::SharedState.with do |redis|
       value = redis.get(redis_shared_state_key_for(token))
-      JSON.parse(value)
+      value ? JSON.parse(value) : []
     end
   end
 
