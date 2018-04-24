@@ -100,7 +100,7 @@ module Gitlab
           FileUtils.rm(trace_path, force: true)
         end
 
-        job.chunks.destroy_all
+        job.chunks.delete_all
         job.erase_old_trace!
       end
 
@@ -111,7 +111,7 @@ module Gitlab
         if job.chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
             archive_stream!(stream)
-            stream.destroy!
+            stream.delete!
           end
         elsif current_path
           File.open(current_path) do |stream|

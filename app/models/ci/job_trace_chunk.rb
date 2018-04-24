@@ -4,8 +4,6 @@ module Ci
 
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
-    after_destroy :redis_delete_data, if: :redis?
-
     default_value_for :data_store, :redis
 
     WriteError = Class.new(StandardError)
