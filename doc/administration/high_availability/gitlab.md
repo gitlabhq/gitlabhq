@@ -57,6 +57,7 @@ for each GitLab application server in your environment.
 
     # Disable components that will not be on the GitLab application server
     roles ['application_role']
+    nginx['enable'] = true
 
     # PostgreSQL connection details
     gitlab_rails['db_adapter'] = 'postgresql'
