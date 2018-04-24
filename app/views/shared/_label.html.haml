@@ -45,7 +45,7 @@
         - if can_subscribe_to_label_in_different_levels?(label)
           %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
             %span Unsubscribe
-          .dropdown{ class: ('hidden' unless status.unsubscribed?) }
+          .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
             %button.label-subscribe-button.btn.btn-default{ data: { toggle: 'dropdown' } }
               %span
                 Subscribe
@@ -53,10 +53,10 @@
             .dropdown-menu.dropdown-menu-align-right
               %ul
                 %li
-                  %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_project_label_path(@project, label) } }
+                  %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
                     %span Subscribe at project level
                 %li
-                  %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
+                  %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
                     %span Subscribe at group level
         - else
           %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ data: { status: status, url: toggle_subscription_path } }
