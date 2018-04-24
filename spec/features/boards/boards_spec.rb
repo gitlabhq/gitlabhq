@@ -335,7 +335,7 @@ describe 'Issue Boards', :js do
 
           wait_for_requests
 
-          expect(page).to have_css('#js-add-list.open')
+          expect(page).to have_css('#js-add-list.show')
         end
 
         it 'creates new list from a new label' do
