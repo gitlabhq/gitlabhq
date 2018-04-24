@@ -50,8 +50,8 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts_archive, ->() do
-      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
-        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+      joins('LEFT JOIN ci_job_artifacts ON ci_builds.id = ci_job_artifacts.job_id AND ci_job_artifacts.file_type = ', Ci::JobArtifact.file_types[:archive].to_s)
+        .where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR ci_job_artifacts.job_id IS NOT NULL', '')
     end
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
