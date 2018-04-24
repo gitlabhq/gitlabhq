@@ -48,7 +48,6 @@ export default () => {
           .catch(() => {
             this.requestFinishedFor = action;
             Flash(__('An error occurred while making the request.'));
-            eventHub.$emit('graphActionFinished', action);
           });
       },
     },

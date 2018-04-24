@@ -805,6 +805,11 @@ button.mini-pipeline-graph-dropdown-toggle {
       line-height: $line-height-base;
       white-space: nowrap;
 
+      // Match dropdown.scss for all `a` tags
+      &.non-details-job-component {
+        padding: 8px 16px;
+      }
+
       .ci-job-name-component {
         align-items: center;
         display: flex;

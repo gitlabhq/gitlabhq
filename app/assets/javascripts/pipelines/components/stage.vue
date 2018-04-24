@@ -96,7 +96,7 @@ export default {
       axios
         .get(this.stage.dropdown_path)
         .then(({ data }) => {
-          this.dropdownContent = data;
+          this.dropdownContent = data.latest_statuses;
           this.isLoading = false;
         })
         .catch(() => {
@@ -117,7 +117,7 @@ export default {
      */
     stopDropdownClickPropagation() {
       $(
-        this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item')
+        this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item'),
       ).on('click', e => {
         e.stopPropagation();
       });
@@ -183,7 +183,7 @@ export default {
           <li
             v-for="job in dropdownContent"
             :key="job.id"
-        >
+          >
             <job-component
               :job="job"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
