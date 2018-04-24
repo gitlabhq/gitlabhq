@@ -62,5 +62,19 @@ describe Backup::Files do
         subject.restore
       end
     end
+
+    describe 'folders that are a mountpoint' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
+        allow(subject).to receive(:run_pipeline!).and_return(true)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:resource_busy_error).with("/var/gitlab-registry")
+                             .and_call_original
+
+        expect { subject.restore }.to raise_error(/is a mountpoint/)
+      end
+    end
   end
 end

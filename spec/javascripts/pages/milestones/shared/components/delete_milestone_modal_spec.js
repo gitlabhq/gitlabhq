@@ -3,7 +3,6 @@ import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
-import * as urlUtility from '~/lib/utils/url_utility';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
@@ -40,7 +39,7 @@ describe('delete_milestone_modal.vue', () => {
           },
         });
       });
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
+      const redirectSpy = spyOnDependency(deleteMilestoneModal, 'redirectTo');
 
       vm.onSubmit()
       .then(() => {
@@ -60,7 +59,7 @@ describe('delete_milestone_modal.vue', () => {
         eventHub.$emit.calls.reset();
         return Promise.reject(dummyError);
       });
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
+      const redirectSpy = spyOnDependency(deleteMilestoneModal, 'redirectTo');
 
       vm.onSubmit()
         .catch((error) => {

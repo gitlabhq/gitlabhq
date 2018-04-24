@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
 
-import * as utils from '~/lib/utils/url_utility';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -177,7 +176,7 @@ describe('AppComponent', () => {
       it('should fetch groups for provided page details and update window state', (done) => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockGroups));
         spyOn(vm, 'updateGroups').and.callThrough();
-        spyOn(utils, 'mergeUrlParams').and.callThrough();
+        const mergeUrlParams = spyOnDependency(appComponent, 'mergeUrlParams').and.callThrough();
         spyOn(window.history, 'replaceState');
         spyOn($, 'scrollTo');
 
@@ -193,7 +192,7 @@ describe('AppComponent', () => {
         setTimeout(() => {
           expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
-          expect(utils.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
+          expect(mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith({
             page: jasmine.any(String),
           }, jasmine.any(String), jasmine.any(String));

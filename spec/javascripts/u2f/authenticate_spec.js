@@ -3,7 +3,7 @@ import U2FAuthenticate from '~/u2f/authenticate';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
 
-describe('U2FAuthenticate', () => {
+describe('U2FAuthenticate', function () {
   preloadFixtures('u2f/authenticate.html.raw');
 
   beforeEach((done) => {
