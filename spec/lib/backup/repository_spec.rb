@@ -81,6 +81,18 @@ describe Backup::Repository do
         subject.restore
       end
     end
+
+    describe 'folder that is a mountpoint' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:resource_busy_error).and_call_original
+
+        expect { subject.restore }.to raise_error(/is a mountpoint/)
+      end
+    end
   end
 
   describe '#empty_repo?' do
