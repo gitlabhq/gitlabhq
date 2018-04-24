@@ -25,7 +25,7 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     it 'returns hash attributes of a stage' do
       expect(subject.attributes).to be_a Hash
       expect(subject.attributes)
-        .to include(:name, :index, :pipeline, :project)
+        .to include(:name, :priority, :pipeline, :project)
     end
   end
 

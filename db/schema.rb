@@ -486,7 +486,7 @@ ActiveRecord::Schema.define(version: 20180420080616) do
     t.string "name"
     t.integer "status"
     t.integer "lock_version"
-    t.integer "index"
+    t.integer "priority"
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree

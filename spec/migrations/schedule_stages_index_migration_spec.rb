@@ -21,7 +21,7 @@ describe ScheduleStagesIndexMigration, :sidekiq, :migration do
   it 'schedules delayed background migrations in batches' do
     Sidekiq::Testing.fake! do
       Timecop.freeze do
-        expect(stages.all).to all(have_attributes(index: be_nil))
+        expect(stages.all).to all(have_attributes(priority: be_nil))
 
         migrate!
 

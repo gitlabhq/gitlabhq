@@ -89,9 +89,9 @@ describe Ci::Stage, :models do
   end
 
   describe '#index' do
-    context 'when stage has been imported and does not have index set' do
+    context 'when stage has been imported and does not have priority index set' do
       before do
-        stage.update_column(:index, nil)
+        stage.update_column(:priority, nil)
       end
 
       context 'when stage has statuses' do
@@ -100,21 +100,21 @@ describe Ci::Stage, :models do
         end
 
         it 'recalculates index before updating status' do
-          expect(stage.reload.index).to be_nil
+          expect(stage.reload.priority).to be_nil
 
           stage.update_status
 
-          expect(stage.reload.index).to eq 10
+          expect(stage.reload.priority).to eq 10
         end
       end
 
       context 'when stage does not have statuses' do
         it 'fallbacks to zero' do
-          expect(stage.reload.index).to be_nil
+          expect(stage.reload.priority).to be_nil
 
           stage.update_status
 
-          expect(stage.reload.index).to eq 0
+          expect(stage.reload.priority).to eq 0
         end
       end
     end

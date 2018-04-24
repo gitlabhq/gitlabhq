@@ -231,8 +231,8 @@ Ci::Pipeline:
 Ci::Stage:
 - id
 - name
-- index
 - status
+- priority
 - lock_version
 - project_id
 - pipeline_id

@@ -19,7 +19,7 @@ module Gitlab
 
           def attributes
             { name: @attributes.fetch(:name),
-              index: @attributes.fetch(:index),
+              priority: @attributes.fetch(:index),
               pipeline: @pipeline,
               project: @pipeline.project }
           end
