@@ -19,7 +19,6 @@ FactoryBot.define do
         owner.namespace = namespace
       end
     end
-<<<<<<< HEAD
 
     trait :with_build_minutes do
       namespace_statistics factory: :namespace_statistics, shared_runners_seconds: 400.minutes.to_i
@@ -49,7 +48,5 @@ FactoryBot.define do
         namespace.plan = create(evaluator.plan)
       end
     end
-=======
->>>>>>> upstream/master
   end
 end
