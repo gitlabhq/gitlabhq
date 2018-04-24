@@ -18,11 +18,11 @@
   .form-group.row.js-toggle-colors-container
     .col-sm-10.offset-sm-2
       = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
-  .form-group.row.js-toggle-colors-container.d-none
+  .form-group.row.js-toggle-colors-container.hide
     = f.label :color, "Background Color", class: 'col-form-label col-sm-2'
     .col-sm-10
       = f.color_field :color, class: "form-control"
-  .form-group.row.js-toggle-colors-container.d-none
+  .form-group.row.js-toggle-colors-container.hide
     = f.label :font, "Font Color", class: 'col-form-label col-sm-2'
     .col-sm-10
       = f.color_field :font, class: "form-control"

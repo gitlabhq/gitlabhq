@@ -194,7 +194,7 @@
               %strong Removed projects cannot be restored!
             = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
 
-.save-project-loader.d-none
+.save-project-loader.hide
   .center
     %h2
       %i.fa.fa-spinner.fa-spin

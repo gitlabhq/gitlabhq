@@ -2,7 +2,7 @@
 
 .row
   .col-lg-12.js-ci-variable-list-section{ data: { save_endpoint: save_endpoint } }
-    .hidden.alert.alert-danger.js-ci-variable-error-box
+    .hide.alert.alert-danger.js-ci-variable-error-box
 
     %ul.ci-variable-list
       - @variables.each.each do |variable|
@@ -10,7 +10,7 @@
       = render 'ci/variables/variable_row', form_field: 'variables'
     .prepend-top-20
       %button.btn.btn-success.js-secret-variables-save-button{ type: 'button' }
-        %span.hidden.js-secret-variables-save-loading-icon
+        %span.hide.js-secret-variables-save-loading-icon
           = icon('spinner spin')
         = _('Save variables')
       %button.btn.btn-info.btn-inverted.prepend-left-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@variables.size == 0}" } }

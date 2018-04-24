@@ -9,9 +9,9 @@
       .username.form-group
         = f.label :username
         = f.text_field :username, class: "form-control middle", pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: 'Please create a username with only alphanumeric characters.'
-        %p.validation-error.d-none Username is already taken.
-        %p.validation-success.d-none Username is available.
-        %p.validation-pending.d-none Checking username availability...
+        %p.validation-error.hide Username is already taken.
+        %p.validation-success.hide Username is available.
+        %p.validation-pending.hide Checking username availability...
       .form-group
         = f.label :email
         = f.email_field :email, class: "form-control middle", required: true, title: "Please provide a valid email address."

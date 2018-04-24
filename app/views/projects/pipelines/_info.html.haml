@@ -30,6 +30,6 @@
       = link_to("#", class: "js-details-expand d-none d-sm-none d-md-inline") do
         %span.text-expander
           \...
-      %span.js-details-content.d-none
+      %span.js-details-content.hide
         = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
       = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")

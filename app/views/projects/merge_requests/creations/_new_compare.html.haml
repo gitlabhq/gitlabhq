@@ -2,7 +2,7 @@
   New Merge Request
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline js-requires-input" } do |f|
-  .d-none.alert.alert-danger.mr-compare-errors
+  .hide.alert.alert-danger.mr-compare-errors
   .js-merge-request-new-compare.row.col-md-12{ 'data-target-project-url': project_new_merge_request_update_branches_path(@source_project), 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
     .col-md-6.pl-0
       .card.card-new-merge-request
