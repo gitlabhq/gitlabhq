@@ -43,3 +43,6 @@ export const collapseButtonTooltip = state =>
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

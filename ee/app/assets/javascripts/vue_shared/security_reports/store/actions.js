@@ -153,3 +153,6 @@ export const fetchDependencyScanningReports = ({ state, dispatch }) => {
     dispatch('receiveDependencyScanningError');
   });
 };
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
