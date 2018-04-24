@@ -216,10 +216,6 @@ module SharedPaths
     visit edit_project_path(@project)
   end
 
-  step "I visit my project's files page" do
-    visit project_tree_path(@project, root_ref)
-  end
-
   step 'I visit a binary file in the repo' do
     visit project_blob_path(@project,
       File.join(root_ref, 'files/images/logo-black.png'))

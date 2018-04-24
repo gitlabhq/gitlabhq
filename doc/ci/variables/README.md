@@ -88,8 +88,11 @@ future GitLab releases.**
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **GITLAB_FEATURES**             | 10.6   | all    | The comma separated list of licensed features available for your instance and plan |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
+<<<<<<< HEAD
 | **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
 | **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
+=======
+>>>>>>> upstream/master
 | **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 
@@ -607,5 +610,8 @@ my-job:
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
+<<<<<<< HEAD
 [trigger-job-token]: ../triggers/README.md#ci-job-token
+=======
+>>>>>>> upstream/master
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token

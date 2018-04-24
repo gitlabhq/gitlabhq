@@ -1,7 +1,10 @@
 class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
   extend ::Gitlab::Utils::Override
+<<<<<<< HEAD
   prepend EE::OmniauthCallbacksController
   prepend EE::Ldap::OmniauthCallbacksController
+=======
+>>>>>>> upstream/master
 
   def self.define_providers!
     return unless Gitlab::Auth::LDAP::Config.enabled?

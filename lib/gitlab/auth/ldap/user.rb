@@ -9,7 +9,10 @@ module Gitlab
     module LDAP
       class User < Gitlab::Auth::OAuth::User
         extend ::Gitlab::Utils::Override
+<<<<<<< HEAD
         prepend ::EE::Gitlab::Auth::LDAP::User
+=======
+>>>>>>> upstream/master
 
         class << self
           def find_by_uid_and_provider(uid, provider)

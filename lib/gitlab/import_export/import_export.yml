@@ -66,6 +66,7 @@ project_tree:
   - :custom_attributes
   - :prometheus_metrics
   - :project_badges
+  - :ci_cd_settings
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -75,6 +76,8 @@ included_attributes:
     - :username
   author:
     - :name
+  ci_cd_settings:
+    - :group_runners_enabled
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:

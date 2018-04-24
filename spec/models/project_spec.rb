@@ -95,6 +95,15 @@ describe Project do
       end
     end
 
+    context 'when creating a new project' do
+      it 'automatically creates a CI/CD settings row' do
+        project = create(:project)
+
+        expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
+        expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
     describe '#members & #requesters' do
       let(:project) { create(:project, :public, :access_requestable) }
       let(:requester) { create(:user) }
