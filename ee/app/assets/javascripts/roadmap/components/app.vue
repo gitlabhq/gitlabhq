@@ -22,6 +22,10 @@
         type: Object,
         required: true,
       },
+      hasFiltersApplied: {
+        type: Boolean,
+        required: true,
+      },
       emptyStateIllustrationPath: {
         type: String,
         required: true,
@@ -126,6 +130,7 @@
       v-if="isEpicsListEmpty"
       :timeframe-start="timeframeStart"
       :timeframe-end="timeframeEnd"
+      :has-filters-applied="hasFiltersApplied"
       :empty-state-illustration-path="emptyStateIllustrationPath"
     />
   </div>

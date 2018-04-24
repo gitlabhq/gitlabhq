@@ -20,6 +20,7 @@ const createComponent = () => {
   return mountComponent(Component, {
     store,
     service,
+    hasFiltersApplied: true,
     emptyStateIllustrationPath: mockSvgPath,
   });
 };
