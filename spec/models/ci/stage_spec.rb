@@ -92,16 +92,30 @@ describe Ci::Stage, :models do
     context 'when stage has been imported and does not have index set' do
       before do
         stage.update_column(:index, nil)
-
-        create(:ci_build, :running, stage_id: stage.id, stage_idx: 10)
       end
 
-      it 'recalculates index before updating status' do
-        expect(stage.reload.index).to be_nil
+      context 'when stage has statuses' do
+        before do
+          create(:ci_build, :running, stage_id: stage.id, stage_idx: 10)
+        end
 
-        stage.update_status
+        it 'recalculates index before updating status' do
+          expect(stage.reload.index).to be_nil
 
-        expect(stage.reload.index).to eq 10
+          stage.update_status
+
+          expect(stage.reload.index).to eq 10
+        end
+      end
+
+      context 'when stage does not have statuses' do
+        it 'fallbacks to zero' do
+          expect(stage.reload.index).to be_nil
+
+          stage.update_status
+
+          expect(stage.reload.index).to eq 0
+        end
       end
     end
   end

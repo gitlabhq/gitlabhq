@@ -24,12 +24,14 @@ module Ci
       self.status = DEFAULT_STATUS if self.status.nil?
     end
 
-    before_validation do
-      next unless index.nil?
+    before_validation unless: :importing? do
+      next if index.present?
 
-      statuses.pluck(:stage_idx).tap do |indices|
-        self.index = indices.max_by { |index| indices.count(index) }
-      end
+      self.index = statuses.select(:stage_idx)
+        .where('stage_idx IS NOT NULL')
+        .group(:stage_idx)
+        .order('COUNT(*) DESC')
+        .first&.stage_idx.to_i
     end
 
     state_machine :status, initial: :created do
