@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 ## EE-specific
 get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
 post 'unsubscribes/:email', to: 'unsubscribes#create'
 ## EE-specific
 
-=======
->>>>>>> upstream/master
 # Allows individual providers to be directed to a chosen controller
 # Call from inside devise_scope
 def override_omniauth(provider, controller, path_prefix = '/users/auth')
