@@ -15,8 +15,7 @@ module QA
         end
       end
 
-      def location=(address)
-        @location = address
+      def uri=(address)
         @uri = URI(address)
       end
 

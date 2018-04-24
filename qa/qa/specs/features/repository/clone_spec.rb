@@ -4,7 +4,7 @@ module QA
       given(:location) do
         Page::Project::Show.act do
           choose_repository_clone_http
-          repository_location.git_uri
+          repository_location
         end
       end
 
@@ -18,7 +18,7 @@ module QA
         end
 
         Git::Repository.perform do |repository|
-          repository.location = location
+          repository.uri = location.uri
           repository.use_default_credentials
 
           repository.act do
@@ -33,7 +33,7 @@ module QA
 
       scenario 'user performs a deep clone' do
         Git::Repository.perform do |repository|
-          repository.location = location
+          repository.uri = location.uri
           repository.use_default_credentials
 
           repository.act { clone }
@@ -44,7 +44,7 @@ module QA
 
       scenario 'user performs a shallow clone' do
         Git::Repository.perform do |repository|
-          repository.location = location
+          repository.uri = location.uri
           repository.use_default_credentials
 
           repository.act { shallow_clone }
