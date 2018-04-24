@@ -4,6 +4,6 @@ class AddIndexToCiStage < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :ci_stages, :index, :integer
+    add_column :ci_stages, :index, :integer, limit: 2
   end
 end
