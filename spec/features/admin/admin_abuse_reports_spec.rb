@@ -45,7 +45,7 @@ describe "Admin::AbuseReports", :js  do
           visit admin_abuse_reports_path
 
           expect(page).to have_selector('.pagination')
-          expect(page).to have_selector('.pagination .page', count: (report_count.to_f / AbuseReport.default_per_page).ceil)
+          expect(page).to have_selector('.pagination [data-test=page]', count: (report_count.to_f / AbuseReport.default_per_page).ceil)
         end
       end
     end

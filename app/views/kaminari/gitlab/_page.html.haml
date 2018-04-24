@@ -6,5 +6,5 @@
 -#    total_pages:   total number of pages
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
-%li.page-item{ class: [active_when(page.current?), ('sibling' if page.next? || page.prev?)] }
+%li.page-item{ class: [active_when(page.current?), ('sibling' if page.next? || page.prev?)], data: { test: 'page' } }
   = link_to page, url, { remote: remote, rel: page.next? ? 'next' : page.prev? ? 'prev' : nil, class: 'page-link' }
