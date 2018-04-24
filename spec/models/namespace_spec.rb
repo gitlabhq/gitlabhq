@@ -411,6 +411,21 @@ describe Namespace do
     end
   end
 
+  describe '#self_and_hierarchy', :nested_groups do
+    let!(:group) { create(:group, path: 'git_lab') }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+    let!(:another_group) { create(:group, path: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'foo', parent: another_group) }
+
+    it 'returns the correct tree' do
+      expect(group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      expect(nested_group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      expect(very_deep_nested_group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+    end
+  end
+
   describe '#ancestors', :nested_groups do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
