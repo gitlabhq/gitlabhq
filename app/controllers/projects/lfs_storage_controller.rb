@@ -25,7 +25,6 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def upload_finalize
-    binding.pry
     if store_file!(oid, size)
       head 200
     else
