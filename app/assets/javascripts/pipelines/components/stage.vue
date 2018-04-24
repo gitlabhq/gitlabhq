@@ -13,7 +13,7 @@
  */
 
 import $ from 'jquery';
-import { _ } from '~/locale';
+import { __ } from '../../locale';
 import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../event_hub';
@@ -103,7 +103,7 @@ export default {
           this.closeDropdown();
           this.isLoading = false;
 
-          Flash(_('Something went wrong on our end.'));
+          Flash(__('Something went wrong on our end.'));
         });
     },
 
