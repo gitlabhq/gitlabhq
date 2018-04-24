@@ -68,6 +68,11 @@ class Project < ActiveRecord::Base
 
   after_save :update_project_statistics, if: :namespace_id_changed?
   after_create :create_project_feature, unless: :project_feature
+
+  after_create :create_ci_cd_settings,
+    unless: :ci_cd_settings,
+    if: proc { ProjectCiCdSetting.available? }
+
   after_create :set_last_activity_at
   after_create :set_last_repository_updated_at
   after_update :update_forks_visibility_level
@@ -231,6 +236,7 @@ class Project < ActiveRecord::Base
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   has_many :project_badges, class_name: 'ProjectBadge'
+  has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
