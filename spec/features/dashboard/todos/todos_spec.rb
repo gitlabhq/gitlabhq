@@ -246,7 +246,7 @@ feature 'Dashboard Todos' do
     it 'is has the right number of pages' do
       visit dashboard_todos_path
 
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
+      expect(page).to have_selector('.gl-pagination [data-test=page]', count: 2)
     end
 
     describe 'mark all as done', :js do
