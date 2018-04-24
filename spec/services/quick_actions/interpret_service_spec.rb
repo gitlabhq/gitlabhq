@@ -817,6 +817,7 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+<<<<<<< HEAD
     context 'issuable weights licensed' do
       before do
         stub_licensed_features(issue_weights: true)
@@ -851,6 +852,8 @@ describe QuickActions::InterpretService do
       end
     end
 
+=======
+>>>>>>> upstream/master
     context '/copy_metadata command' do
       let(:todo_label) { create(:label, project: project, title: 'To Do') }
       let(:inreview_label) { create(:label, project: project, title: 'In Review') }
