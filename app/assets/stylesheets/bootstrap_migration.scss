@@ -57,7 +57,7 @@ table {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 
-    .d#{$infix}-table-header-group  { display: table-header-group !important; }
+    .d#{$infix}-table-header-group { display: table-header-group !important; }
   }
 }
 
