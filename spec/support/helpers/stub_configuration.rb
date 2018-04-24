@@ -1,3 +1,6 @@
+require 'active_support/core_ext/hash/transform_values'
+require 'active_support/hash_with_indifferent_access'
+
 module StubConfiguration
   def stub_application_setting(messages)
     add_predicates(messages)

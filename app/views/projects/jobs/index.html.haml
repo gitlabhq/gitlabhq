@@ -15,7 +15,7 @@
         - unless @repository.gitlab_ci_yml
           = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
 
-        = link_to ci_lint_path, class: 'btn btn-secondary' do
+        = link_to project_ci_lint_path(@project), class: 'btn btn-secondary' do
           %span CI lint
 
   .content-list.builds-content-list

@@ -1,5 +1,0 @@
----
-title: Fix `Trace::HttpIO` can not render multi-byte chars
-merge_request: 18417
-author:
-type: fixed
