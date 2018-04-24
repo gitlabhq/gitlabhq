@@ -209,12 +209,21 @@ class Project < ActiveRecord::Base
   has_many :commit_statuses
   has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
 
+  # This has to be defined before `has_many :builds, depenedent: :destroy`,
+  # otherwise we will not delete any data, due to trace chunks
+  # going through :builds
+  before_destroy do
+    puts "destroying all chunks"
+    self.run_after_commit(&build_trace_chunks.delayed_cleanup_blk)
+  end
+
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
+  has_many :build_trace_chunks, class_name: 'Ci::JobTraceChunk', foreign_key: :job_id, through: :builds, source: :chunks
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'

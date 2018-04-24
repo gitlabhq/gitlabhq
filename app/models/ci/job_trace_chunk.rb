@@ -19,6 +19,30 @@ module Ci
       db: 2
     }
 
+    def self.delayed_cleanup_blk
+      ids = all.redis.pluck(:job_id, :chunk_index).map do |data|
+        "gitlab:ci:trace:#{data.first}:chunks:#{data.second}:data"
+      end
+
+      puts "before cleanup: #{ids.count}"
+
+      Proc.new do
+        puts "after cleanup: #{ids.count}"
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.del(ids)
+        end unless ids.empty?
+
+        true
+      end
+    end
+
+    def self.fast_destroy_all
+      delayed_cleanup_blk.tap do |cleanup|
+        delete_all
+        cleanup.call
+      end
+    end
+
     def data
       if redis?
         redis_data
