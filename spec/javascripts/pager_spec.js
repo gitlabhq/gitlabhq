@@ -1,7 +1,5 @@
-/* global fixture */
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import * as utils from '~/lib/utils/url_utility';
 import Pager from '~/pager';
 
 describe('pager', () => {
@@ -25,7 +23,7 @@ describe('pager', () => {
 
     it('should use current url if data-href attribute not provided', () => {
       const href = `${gl.TEST_HOST}/some_list`;
-      spyOn(utils, 'removeParams').and.returnValue(href);
+      spyOnDependency(Pager, 'removeParams').and.returnValue(href);
       Pager.init();
       expect(Pager.url).toBe(href);
     });
@@ -39,9 +37,9 @@ describe('pager', () => {
     it('keeps extra query parameters from url', () => {
       window.history.replaceState({}, null, '?filter=test&offset=100');
       const href = `${gl.TEST_HOST}/some_list?filter=test`;
-      spyOn(utils, 'removeParams').and.returnValue(href);
+      const removeParams = spyOnDependency(Pager, 'removeParams').and.returnValue(href);
       Pager.init();
-      expect(utils.removeParams).toHaveBeenCalledWith(['limit', 'offset']);
+      expect(removeParams).toHaveBeenCalledWith(['limit', 'offset']);
       expect(Pager.url).toEqual(href);
     });
   });
