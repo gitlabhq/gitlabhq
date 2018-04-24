@@ -90,7 +90,7 @@ module TreeHelper
   end
 
   def commit_in_single_accessible_branch
-    branch_name = html_escape(selected_branch)
+    branch_name = ERB::Util.html_escape(selected_branch)
 
     message = _("Your changes can be committed to %{branch_name} because a merge "\
                 "request is open.") % { branch_name: "<strong>#{branch_name}</strong>" }

@@ -9,6 +9,7 @@ module Gitlab
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
       include Gitlab::EncodingHelper
+      include Gitlab::Utils::StrongMemoize
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -231,13 +232,13 @@ module Gitlab
         end
       end
 
+      def expire_has_local_branches_cache
+        clear_memoization(:has_local_branches)
+      end
+
       def has_local_branches?
-        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.has_local_branches?
-          else
-            has_local_branches_rugged?
-          end
+        strong_memoize(:has_local_branches) do
+          uncached_has_local_branches?
         end
       end
 
@@ -299,7 +300,8 @@ module Gitlab
       #
       # Ref names must start with `refs/`.
       def ref_exists?(ref_name)
-        gitaly_migrate(:ref_exists) do |is_enabled|
+        gitaly_migrate(:ref_exists,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?(ref_name)
           else
@@ -1256,6 +1258,10 @@ module Gitlab
         true
       end
 
+      def create_from_snapshot(url, auth)
+        gitaly_repository_client.create_from_snapshot(url, auth)
+      end
+
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         gitaly_migrate(:rebase) do |is_enabled|
           if is_enabled
@@ -1558,6 +1564,16 @@ module Gitlab
       end
 
       private
+
+      def uncached_has_local_branches?
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.has_local_branches?
+          else
+            has_local_branches_rugged?
+          end
+        end
+      end
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
         if shell

@@ -67,6 +67,12 @@ You can access a new installation with the login **`root`** and password **`5ive
 
 GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
 
+## Licensing
+
+GitLab Community Edition (CE) is available freely under the MIT Expat license.
+
+All third party components incorporated into the GitLab Software are licensed under the original license provided by the owner of the applicable component.
+
 ## Install a development environment
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).

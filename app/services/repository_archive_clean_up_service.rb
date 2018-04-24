@@ -10,7 +10,7 @@ class RepositoryArchiveCleanUpService
 
   def execute
     Gitlab::Metrics.measure(:repository_archive_clean_up) do
-      return unless File.directory?(path)
+      next unless File.directory?(path)
 
       clean_up_old_archives
       clean_up_empty_directories

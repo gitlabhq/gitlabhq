@@ -27,8 +27,6 @@ project_tree:
   - :releases
   - project_members:
     - :user
-  - lfs_file_locks:
-    - :user
   - merge_requests:
     - notes:
       - :author

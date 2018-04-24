@@ -31,10 +31,25 @@ describe('Sidebar details block', () => {
     });
   });
 
+  describe("when user can't retry", () => {
+    it('should not render a retry button', () => {
+      vm = new SidebarComponent({
+        propsData: {
+          job: {},
+          canUserRetry: false,
+          isLoading: true,
+        },
+      }).$mount();
+
+      expect(vm.$el.querySelector('.js-retry-job')).toBeNull();
+    });
+  });
+
   beforeEach(() => {
     vm = new SidebarComponent({
       propsData: {
         job,
+        canUserRetry: true,
         isLoading: false,
       },
     }).$mount();
@@ -42,7 +57,9 @@ describe('Sidebar details block', () => {
 
   describe('actions', () => {
     it('should render link to new issue', () => {
-      expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(job.new_issue_path);
+      expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
+        job.new_issue_path,
+      );
       expect(vm.$el.querySelector('.js-new-issue').textContent.trim()).toEqual('New issue');
     });
 
@@ -57,43 +74,35 @@ describe('Sidebar details block', () => {
 
   describe('information', () => {
     it('should render merge request link', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-mr')),
-      ).toEqual('Merge Request: !2');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-mr'))).toEqual('Merge Request: !2');
 
-      expect(
-        vm.$el.querySelector('.js-job-mr a').getAttribute('href'),
-      ).toEqual(job.merge_request.path);
+      expect(vm.$el.querySelector('.js-job-mr a').getAttribute('href')).toEqual(
+        job.merge_request.path,
+      );
     });
 
     it('should render job duration', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-duration')),
-      ).toEqual('Duration: 6 seconds');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-duration'))).toEqual(
+        'Duration: 6 seconds',
+      );
     });
 
     it('should render erased date', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-erased')),
-      ).toEqual('Erased: 3 weeks ago');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-erased'))).toEqual('Erased: 3 weeks ago');
     });
 
     it('should render finished date', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-finished')),
-      ).toEqual('Finished: 3 weeks ago');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-finished'))).toEqual(
+        'Finished: 3 weeks ago',
+      );
     });
 
     it('should render queued date', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-queued')),
-      ).toEqual('Queued: 9 seconds');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-queued'))).toEqual('Queued: 9 seconds');
     });
 
     it('should render runner ID', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-runner')),
-      ).toEqual('Runner: #1');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-runner'))).toEqual('Runner: #1');
     });
 
     it('should render timeout information', () => {
@@ -103,15 +112,11 @@ describe('Sidebar details block', () => {
     });
 
     it('should render coverage', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-coverage')),
-      ).toEqual('Coverage: 20%');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-coverage'))).toEqual('Coverage: 20%');
     });
 
     it('should render tags', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-tags')),
-      ).toEqual('Tags: tag');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-tags'))).toEqual('Tags: tag');
     });
   });
 });

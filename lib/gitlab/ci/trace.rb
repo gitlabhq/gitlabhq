@@ -45,7 +45,7 @@ module Gitlab
       def append(data, offset)
         write do |stream|
           current_length = stream.size
-          return -current_length unless current_length == offset
+          break -current_length unless current_length == offset
 
           data = job.hide_secrets(data)
           stream.append(data, offset)

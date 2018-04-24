@@ -72,6 +72,18 @@ concurrent: 10
 ##
 checkInterval: 30
 
+## For RBAC support:
+rbac:
+  create: false
+
+  ## Run the gitlab-bastion container with the ability to deploy/manage containers of jobs
+  ## cluster-wide or only within namespace
+  clusterWideAccess: false
+
+  ## Use the following Kubernetes Service Account name if RBAC is disabled in this Helm chart (see rbac.create)
+  ##
+  # serviceAccountName: default
+
 ## Configuration for the Pods that that the runner launches for each new job
 ##
 runners:
@@ -115,6 +127,12 @@ runners:
     memoryRequests: 128Mi
 
 ```
+
+### Enabling RBAC support
+
+If your cluster has RBAC enabled, you can choose to either have the chart create its own sevice account or provide one.
+
+To have the chart create the service account for you, set `rbac.create` to true. 
 
 ### Controlling maximum Runner concurrency
 
