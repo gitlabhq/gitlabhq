@@ -307,10 +307,10 @@ ActiveRecord::Schema.define(version: 20180418053107) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
-    t.integer "artifacts_file_store"
-    t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "artifacts_file_store"
+    t.integer "artifacts_metadata_store"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
@@ -357,13 +357,13 @@ ActiveRecord::Schema.define(version: 20180418053107) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
-    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
     t.binary "file_sha256"
+    t.integer "file_store"
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
