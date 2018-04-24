@@ -73,19 +73,11 @@
 .manage-labels-list {
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
-    cursor: move;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
     padding: 11px 10px 11px $gl-padding;
     border-radius: $border-radius-default;
-
-    &:active {
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
-    }
 
     &.sortable-ghost {
       opacity: 0.3;
@@ -93,10 +85,14 @@
 
     .prioritized-labels & {
       box-shadow: 0 1px 2px $issue-boards-card-shadow;
-    }
+      cursor: move;
+      cursor: -webkit-grab;
+      cursor: -moz-grab;
 
-    &.no-hand {
-      cursor: auto;
+      &:active {
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
+      }
     }
   }
 
