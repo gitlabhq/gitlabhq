@@ -23,7 +23,7 @@ You can create as many deploy tokens as you like from the settings of your proje
 
 ![Personal access tokens page](img/deploy_tokens.png)
 
-## Revoking a personal access token
+## Revoking a deploy token
 
 At any time, you can revoke any deploy token by just clicking the
 respective **Revoke** button under the 'Active deploy tokens' area.

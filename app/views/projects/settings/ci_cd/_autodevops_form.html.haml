@@ -1,0 +1,40 @@
+.row.prepend-top-default
+  .col-lg-12
+    = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
+      = form_errors(@project)
+      %fieldset.builds-feature
+        .form-group
+          - message = auto_devops_warning_message(@project)
+          - ci_file_formatted = '<code>.gitlab-ci.yml</code>'.html_safe
+          - if message
+            %p.settings-message.text-center
+              = message.html_safe
+          = f.fields_for :auto_devops_attributes, @auto_devops do |form|
+            .radio
+              = form.label :enabled_true do
+                = form.radio_button :enabled, 'true'
+                %strong= s_('CICD|Enable Auto DevOps')
+                %br
+                = s_('CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project.').html_safe % { ci_file: ci_file_formatted }
+
+            .radio
+              = form.label :enabled_false do
+                = form.radio_button :enabled, 'false'
+                %strong= s_('CICD|Disable Auto DevOps')
+                %br
+                = s_('CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery.').html_safe % { ci_file: ci_file_formatted }
+
+            .radio
+              = form.label :enabled_ do
+                = form.radio_button :enabled, ''
+                %strong= s_('CICD|Instance default (%{state})') % { state: "#{Gitlab::CurrentSettings.auto_devops_enabled? ? _('enabled') : _('disabled')}" }
+                %br
+                = s_('CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}.').html_safe % { ci_file: ci_file_formatted }
+
+            = form.label :domain, class:"prepend-top-10" do
+              = _('Domain')
+            = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
+            .help-block
+              = s_('CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.')
+
+          = f.submit 'Save changes', class: "btn btn-success prepend-top-15"
