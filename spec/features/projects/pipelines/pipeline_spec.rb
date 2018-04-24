@@ -163,7 +163,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows Pipeline tab as active' do
-        expect(page).to have_css('.js-pipeline-tab-link.active')
+        expect(page).to have_css('.js-pipeline-tab-link .active')
       end
     end
 
@@ -259,7 +259,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows Jobs tab as active' do
-        expect(page).to have_css('li.js-builds-tab-link.active')
+        expect(page).to have_css('li.js-builds-tab-link .active')
       end
     end
 
