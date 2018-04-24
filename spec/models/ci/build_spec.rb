@@ -2055,6 +2055,34 @@ describe Ci::Build do
         expect(build).not_to be_persisted
       end
     end
+
+    context 'for deploy tokens' do
+      let(:deploy_token) { create(:deploy_token, :gitlab_deploy_token) }
+
+      let(:deploy_token_variables) do
+        [
+          { key: 'CI_DEPLOY_USER', value: deploy_token.name, public: true },
+          { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false }
+        ]
+      end
+
+      context 'when gitlab-deploy-token exists' do
+        before do
+          project.deploy_tokens << deploy_token
+        end
+
+        it 'should include deploy token variables' do
+          is_expected.to include(*deploy_token_variables)
+        end
+      end
+
+      context 'when gitlab-deploy-token does not exist' do
+        it 'should not include deploy token variables' do
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+        end
+      end
+    end
   end
 
   describe '#scoped_variables' do
@@ -2103,7 +2131,9 @@ describe Ci::Build do
                   CI_REGISTRY_USER
                   CI_REGISTRY_PASSWORD
                   CI_REPOSITORY_URL
-                  CI_ENVIRONMENT_URL]
+                  CI_ENVIRONMENT_URL
+                  CI_DEPLOY_USER
+                  CI_DEPLOY_PASSWORD]
 
         build.scoped_variables.map { |env| env[:key] }.tap do |names|
           expect(names).not_to include(*keys)
