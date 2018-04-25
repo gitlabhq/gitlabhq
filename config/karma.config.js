@@ -33,7 +33,7 @@ webpackConfig.plugins.push(
   })
 );
 
-webpackConfig.devtool = 'cheap-inline-source-map';
+webpackConfig.devtool = process.env.BABEL_ENV !== 'coverage' && 'cheap-inline-source-map';
 
 // Karma configuration
 module.exports = function(config) {
