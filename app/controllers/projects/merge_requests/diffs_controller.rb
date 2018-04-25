@@ -1,7 +1,6 @@
 class Projects::MergeRequests::DiffsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
-  include NotesHelper
   include RendersNotes
 
   before_action :apply_diff_view_cookie!
@@ -12,11 +11,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def show
     @environment = @merge_request.environments_for(current_user).last
 
-    if has_vue_discussions_cookie?
-      render json: DiffsSerializer.new.represent(@diffs, serializeable_vars)
-    else
-      render json: { html: view_to_html_string("projects/merge_requests/diffs/_diffs") }
-    end
+    render json: DiffsSerializer.new.represent(@diffs, serializeable_vars)
   end
 
   def diff_for_path

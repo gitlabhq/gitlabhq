@@ -174,11 +174,11 @@ module NotesHelper
     discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
   end
 
-  def has_vue_discussions_cookie?
-    true
+  def rendered_for_merge_request?
+    params[:from_merge_request].present?
   end
 
   def serialize_notes?
-    has_vue_discussions_cookie? && !params['html']
+    rendered_for_merge_request? && !params['html']
   end
 end

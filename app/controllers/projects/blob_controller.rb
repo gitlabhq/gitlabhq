@@ -103,7 +103,7 @@ class Projects::BlobController < Projects::ApplicationController
       @match_line = "@@ -#{line}+#{line} @@"
     end
 
-    if has_vue_discussions_cookie?
+    if rendered_for_merge_request?
       render_diff_lines
     else
       render layout: false
