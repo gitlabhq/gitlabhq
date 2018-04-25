@@ -32,41 +32,18 @@ require 'rainbow/ext/string'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
+# Requires helpers, and shared contexts/examples first since they're used in other support files
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
-  config.mock_with :rspec
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
-
-  config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Devise::Test::ControllerHelpers, type: :view
-  config.include Devise::Test::IntegrationHelpers, type: :feature
-  config.include Warden::Test::Helpers, type: :request
-  config.include LoginHelpers, type: :feature
-  config.include SearchHelpers, type: :feature
-  config.include CookieHelper, :js
-  config.include InputHelper, :js
-  config.include SelectionHelper, :js
-  config.include InspectRequests, :js
-  config.include WaitForRequests, :js
-  config.include LiveDebugger, :js
-  config.include StubConfiguration
-  config.include EmailHelpers, :mailer, type: :mailer
-  config.include TestEnv
-  config.include ActiveJob::TestHelper
-  config.include ActiveSupport::Testing::TimeHelpers
-  config.include StubGitlabCalls
-  config.include StubGitlabData
-  config.include ApiHelpers, :api
-  config.include Gitlab::Routing, type: :routing
-  config.include MigrationsHelpers, :migration
-  config.include StubFeatureFlags
-  config.include StubENV
-  config.include ExpectOffense
 
   config.infer_spec_type_from_file_location!
 
@@ -82,7 +59,33 @@ RSpec.configure do |config|
     metadata[:type] = match[1].singularize.to_sym if match
   end
 
-  config.raise_errors_for_deprecations!
+  config.include ActiveJob::TestHelper
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.include CycleAnalyticsHelpers
+  config.include ExpectOffense
+  config.include FactoryBot::Syntax::Methods
+  config.include FixtureHelpers
+  config.include GitlabRoutingHelper
+  config.include StubFeatureFlags
+  config.include StubGitlabCalls
+  config.include StubGitlabData
+  config.include TestEnv
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include LoginHelpers, type: :feature
+  config.include SearchHelpers, type: :feature
+  config.include EmailHelpers, :mailer, type: :mailer
+  config.include Warden::Test::Helpers, type: :request
+  config.include Gitlab::Routing, type: :routing
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.include ApiHelpers, :api
+  config.include CookieHelper, :js
+  config.include InputHelper, :js
+  config.include SelectionHelper, :js
+  config.include InspectRequests, :js
+  config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
+  config.include MigrationsHelpers, :migration
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.

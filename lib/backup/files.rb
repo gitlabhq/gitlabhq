@@ -53,6 +53,8 @@ module Backup
           FileUtils.mv(files, timestamped_files_path)
         rescue Errno::EACCES
           access_denied_error(app_files_dir)
+        rescue Errno::EBUSY
+          resource_busy_error(app_files_dir)
         end
       end
     end

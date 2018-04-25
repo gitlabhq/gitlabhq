@@ -32,6 +32,7 @@ class UsersFinder
     users = by_active(users)
     users = by_external_identity(users)
     users = by_external(users)
+    users = by_2fa(users)
     users = by_created_at(users)
     users = by_custom_attributes(users)
 
@@ -75,5 +76,16 @@ class UsersFinder
     return users unless params[:external]
 
     users.external
+  end
+
+  def by_2fa(users)
+    case params[:two_factor]
+    when 'enabled'
+      users.with_two_factor
+    when 'disabled'
+      users.without_two_factor
+    else
+      users
+    end
   end
 end

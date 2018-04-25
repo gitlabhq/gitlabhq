@@ -146,7 +146,13 @@ export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, temp
   }
 };
 
+export const toggleFileFinder = ({ commit }, fileFindVisible) =>
+  commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
 export * from './actions/merge_request';
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

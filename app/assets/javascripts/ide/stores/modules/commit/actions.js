@@ -196,3 +196,6 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
       commit(types.UPDATE_LOADING, false);
     });
 };
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

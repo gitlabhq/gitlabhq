@@ -108,4 +108,12 @@ describe('Multi-file store mutations', () => {
       expect(localState.entries.test.changed).toBe(false);
     });
   });
+
+  describe('TOGGLE_FILE_FINDER', () => {
+    it('updates fileFindVisible', () => {
+      mutations.TOGGLE_FILE_FINDER(localState, true);
+
+      expect(localState.fileFindVisible).toBe(true);
+    });
+  });
 });

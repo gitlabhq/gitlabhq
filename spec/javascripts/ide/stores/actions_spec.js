@@ -1,5 +1,9 @@
-import * as urlUtils from '~/lib/utils/url_utility';
-import * as actions from '~/ide/stores/actions';
+import actions, {
+  stageAllChanges,
+  unstageAllChanges,
+  toggleFileFinder,
+  updateTempFlagForEntry,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
@@ -17,12 +21,12 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      spyOn(urlUtils, 'visitUrl');
+      const visitUrl = spyOnDependency(actions, 'visitUrl');
 
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
+          expect(visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -298,7 +302,7 @@ describe('Multi-file store actions', () => {
       store.state.changedFiles.push(file(), file('new'));
 
       testAction(
-        actions.stageAllChanges,
+        stageAllChanges,
         null,
         store.state,
         [
@@ -316,7 +320,7 @@ describe('Multi-file store actions', () => {
       store.state.stagedFiles.push(file(), file('new'));
 
       testAction(
-        actions.unstageAllChanges,
+        unstageAllChanges,
         null,
         store.state,
         [
@@ -351,7 +355,7 @@ describe('Multi-file store actions', () => {
       store.state.entries[f.path] = f;
 
       testAction(
-        actions.updateTempFlagForEntry,
+        updateTempFlagForEntry,
         { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
@@ -374,11 +378,24 @@ describe('Multi-file store actions', () => {
       store.state.entries[f.path] = f;
 
       testAction(
-        actions.updateTempFlagForEntry,
+        updateTempFlagForEntry,
         { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
         [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
+        done,
+      );
+    });
+  });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
         done,
       );
     });
