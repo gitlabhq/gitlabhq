@@ -10,8 +10,6 @@ feature 'Multi-file editor new directory', :js do
 
     visit project_tree_path(project, :master)
 
-    live_debug
-
     wait_for_requests
 
     click_link('Web IDE')
