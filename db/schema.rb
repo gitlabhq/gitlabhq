@@ -1824,6 +1824,18 @@ ActiveRecord::Schema.define(version: 20180503150427) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "term_agreements", force: :cascade do |t|
+    t.integer "term_id", null: false
+    t.integer "user_id", null: false
+    t.boolean "accepted", default: false, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "term_agreements", ["term_id"], name: "index_term_agreements_on_term_id", using: :btree
+  add_index "term_agreements", ["user_id", "term_id"], name: "term_agreements_unique_index", unique: true, using: :btree
+  add_index "term_agreements", ["user_id"], name: "index_term_agreements_on_user_id", using: :btree
+
   create_table "timelogs", force: :cascade do |t|
     t.integer "time_spent", null: false
     t.integer "user_id"
@@ -2212,6 +2224,8 @@ ActiveRecord::Schema.define(version: 20180503150427) do
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
+  add_foreign_key "term_agreements", "application_setting_terms", column: "term_id"
+  add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
