@@ -1,0 +1,5 @@
+---
+title: Introduce new ProjectCiCdSetting model with group_runners_enabled
+merge_request: 18144
+author:
+type: performance

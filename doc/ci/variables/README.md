@@ -87,6 +87,8 @@ future GitLab releases.**
 | **GITLAB_USER_LOGIN**           | 10.0   | all    | The login username of the user who started the job |
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 
 ## 9.0 Renaming
 
@@ -546,6 +548,8 @@ You can find a full list of unsupported variables below:
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
 
 These variables are also not supported in a contex of a
 [dynamic environment name][dynamic-environments].
@@ -562,3 +566,4 @@ These variables are also not supported in a contex of a
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token

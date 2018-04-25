@@ -1,16 +1,20 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import ideSidebar from './ide_side_bar.vue';
-import repoTabs from './repo_tabs.vue';
-import ideStatusBar from './ide_status_bar.vue';
-import repoEditor from './repo_editor.vue';
+import IdeSidebar from './ide_side_bar.vue';
+import RepoTabs from './repo_tabs.vue';
+import IdeStatusBar from './ide_status_bar.vue';
+import RepoEditor from './repo_editor.vue';
+import FindFile from './file_finder/index.vue';
+
+const originalStopCallback = Mousetrap.stopCallback;
 
 export default {
   components: {
-    ideSidebar,
-    repoTabs,
-    ideStatusBar,
-    repoEditor,
+    IdeSidebar,
+    RepoTabs,
+    IdeStatusBar,
+    RepoEditor,
+    FindFile,
   },
   props: {
     emptyStateSvgPath: {
@@ -19,7 +23,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(['changedFiles', 'openFiles', 'viewer', 'currentMergeRequestId']),
+    ...mapState([
+      'changedFiles',
+      'openFiles',
+      'viewer',
+      'currentMergeRequestId',
+      'fileFindVisible',
+    ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
   mounted() {
@@ -27,19 +37,38 @@ export default {
     window.onbeforeunload = e => {
       if (!this.changedFiles.length) return undefined;
 
-      Object.assign(e, {
-        returnValue,
+      Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
+        if (e.preventDefault) {
+          e.preventDefault();
+        }
+
+        this.toggleFileFinder(!this.fileFindVisible);
       });
-      return returnValue;
-    };
-  },
-};
+
+      Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
+    },
+    methods: {
+      ...mapActions(['toggleFileFinder']),
+      mousetrapStopCallback(e, el, combo) {
+        if (combo === 't' && el.classList.contains('dropdown-input-field')) {
+          return true;
+        } else if (combo === 'command+p' || combo === 'ctrl+p') {
+          return false;
+        }
+
+        return originalStopCallback(e, el, combo);
+      },
+    },
+  };
 </script>
 
 <template>
   <div
     class="ide-view"
   >
+    <find-file
+      v-show="fileFindVisible"
+    />
     <ide-sidebar />
     <div
       class="multi-file-edit-pane"

@@ -17,6 +17,7 @@
 }
 
 .ide-view {
+  position: relative;
   display: flex;
   height: calc(100vh - #{$header-height});
   margin-top: 0;
@@ -830,6 +831,26 @@
 .ide-activity-bar {
   position: relative;
   flex: 0 0 60px;
+}
+
+.ide-file-finder-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.ide-file-finder {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  .highlighted {
+    color: $blue-500;
+    font-weight: $gl-font-weight-bold;
+  }
 }
 
 .ide-commit-message-field {

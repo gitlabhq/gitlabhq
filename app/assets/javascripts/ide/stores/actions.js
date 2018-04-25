@@ -33,10 +33,7 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
-export const toggleRightPanelCollapsed = (
-  { dispatch, state },
-  e = undefined,
-) => {
+export const toggleRightPanelCollapsed = ({ dispatch, state }, e = undefined) => {
   if (e) {
     $(e.currentTarget)
       .tooltip('hide')
@@ -149,7 +146,13 @@ export const setCurrentBranchId = ({ commit }, currentBranchId) => {
   commit(types.SET_CURRENT_BRANCH, currentBranchId);
 };
 
+export const toggleFileFinder = ({ commit }, fileFindVisible) =>
+  commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
 export * from './actions/merge_request';
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
