@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.7.2 (2018-04-25)
+
+### Security (2 changes)
+
+- Serve archive requests with the correct file in all cases.
+- Sanitizes user name to avoid XSS attacks.
+
+
 ## 10.7.1 (2018-04-23)
 
 ### Fixed (11 changes)
