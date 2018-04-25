@@ -1,0 +1,5 @@
+---
+title: 'Replace the `admin/license.feature` spinach test with an rspec analog'
+merge_request: 5477
+author: "@blackst0ne"
+type: other
