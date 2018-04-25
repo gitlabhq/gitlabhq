@@ -1047,6 +1047,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'lfs object is linked to the project' do
+              expect(lfs_object.file_identifier).to eq(lfs_object.oid[4..-1])
               expect(lfs_object.projects.pluck(:id)).to include(project.id)
             end
           end
