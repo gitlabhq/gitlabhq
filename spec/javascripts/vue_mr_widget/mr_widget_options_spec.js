@@ -16,8 +16,15 @@ const returnPromise = data =>
 describe('mrWidgetOptions', () => {
   let vm;
   let MrWidgetOptions;
+  let smartIntervalMock;
+  let smartIntervalSpy;
 
   beforeEach(() => {
+    smartIntervalMock = jasmine.createSpyObj('SmartIntervalMock', ['resume', 'stopTimer']);
+    smartIntervalSpy = spyOnDependency(mrWidgetOptions, 'SmartInterval').and.callFake(
+      () => smartIntervalMock,
+    );
+
     // Prevent component mounting
     delete mrWidgetOptions.el;
 
@@ -152,28 +159,23 @@ describe('mrWidgetOptions', () => {
 
     describe('initPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(vm, 'checkStatus').and.returnValue(Promise.resolve());
-        jasmine.clock().install();
         vm.initPolling();
 
-        expect(vm.checkStatus).not.toHaveBeenCalled();
-
-        jasmine.clock().tick(10000);
-
-        expect(vm.pollingInterval).toBeDefined();
-        expect(vm.checkStatus).toHaveBeenCalled();
-
-        jasmine.clock().uninstall();
+        expect(smartIntervalSpy).toHaveBeenCalled();
+        const smartIntervalOptions = smartIntervalSpy.calls.mostRecent().args[0];
+        expect(smartIntervalOptions.callback).toBe(vm.checkStatus);
+        expect(vm.pollingInterval).toBe(smartIntervalMock);
       });
     });
 
     describe('initDeploymentsPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(vm, 'fetchDeployments').and.returnValue(Promise.resolve());
         vm.initDeploymentsPolling();
 
-        expect(vm.deploymentsInterval).toBeDefined();
-        expect(vm.fetchDeployments).toHaveBeenCalled();
+        expect(smartIntervalSpy).toHaveBeenCalled();
+        const smartIntervalOptions = smartIntervalSpy.calls.mostRecent().args[0];
+        expect(smartIntervalOptions.callback).toBe(vm.fetchDeployments);
+        expect(vm.deploymentsInterval).toBe(smartIntervalMock);
       });
     });
 
@@ -341,18 +343,16 @@ describe('mrWidgetOptions', () => {
 
     describe('resumePolling', () => {
       it('should call stopTimer on pollingInterval', () => {
-        spyOn(vm.pollingInterval, 'resume');
-
         vm.resumePolling();
+
         expect(vm.pollingInterval.resume).toHaveBeenCalled();
       });
     });
 
     describe('stopPolling', () => {
       it('should call stopTimer on pollingInterval', () => {
-        spyOn(vm.pollingInterval, 'stopTimer');
-
         vm.stopPolling();
+
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
       });
     });

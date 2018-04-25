@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { isTestEnvironment } from '~/environment';
 
 /**
  * Instances of SmartInterval extend the functionality of `setInterval`, make it configurable
@@ -20,6 +21,10 @@ export default class SmartInterval {
    *                    be executed before the first interval.
    */
   constructor(opts = {}) {
+    if (isTestEnvironment()) {
+      throw new Error('SmartInterval should be mocked in tests!');
+    }
+
     this.cfg = {
       callback: opts.callback,
       startingInterval: opts.startingInterval,

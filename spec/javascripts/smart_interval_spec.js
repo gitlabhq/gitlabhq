@@ -27,6 +27,10 @@ describe('SmartInterval', function() {
     return new SmartInterval(defaultParams);
   }
 
+  beforeEach(() => {
+    spyOnDependency(SmartInterval, 'isTestEnvironment').and.returnValue(false);
+  });
+
   describe('Increment Interval', function() {
     beforeEach(function() {
       this.smartInterval = createDefaultSmartInterval();
