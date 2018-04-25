@@ -256,8 +256,7 @@ namespace :geo do
 
     print 'Last event ID seen from primary: '.rjust(COLUMN_WIDTH)
     last_event = Geo::EventLog.last
-    last_event_id = last_event&.id
-    print last_event_id
+    print last_event&.id
     puts "(#{time_ago_in_words(last_event&.created_at)} ago)"
 
     print 'Last event ID processed by cursor: '.rjust(COLUMN_WIDTH)
@@ -265,7 +264,10 @@ namespace :geo do
 
     if cursor_last_event_id
       print cursor_last_event_id
-      puts "(#{time_ago_in_words(Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at)} ago)"
+
+      last_cursor_event_date = Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at
+
+      puts "(#{time_ago_in_words(last_cursor_event_date)} ago)" if last_cursor_event_date
     end
 
     print 'Last status was pulled by primary node: '.rjust(COLUMN_WIDTH)
