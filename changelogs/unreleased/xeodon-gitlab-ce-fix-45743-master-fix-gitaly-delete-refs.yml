@@ -1,0 +1,5 @@
+---
+title: Fix error when deleting an empty list of refs
+merge_request:
+author:
+type: fixed
