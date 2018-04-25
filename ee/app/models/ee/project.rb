@@ -13,8 +13,6 @@ module EE
       include EE::DeploymentPlatform
       include EachBatch
 
-      before_validation :mark_remote_mirrors_for_removal
-
       before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.mirror_available }
       before_save :set_next_execution_timestamp_to_now, if: ->(project) { project.mirror? && project.mirror_changed? && project.import_state }
 
@@ -33,7 +31,6 @@ module EE
       has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
       has_many :audit_events, as: :entity
-      has_many :remote_mirrors, inverse_of: :project
       has_many :path_locks
 
       has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
@@ -54,7 +51,6 @@ module EE
           .where("import_state.retry_count <= ?", ::Gitlab::Mirror::MAX_RETRY)
       end
 
-      scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
       scope :with_wiki_enabled,   -> { with_feature_enabled(:wiki) }
 
       scope :verified_repos, -> { joins(:repository_state).merge(ProjectRepositoryState.verified_repos) }
@@ -72,10 +68,6 @@ module EE
         numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
       validates :approvals_before_merge, numericality: true, allow_blank: true
-
-      accepts_nested_attributes_for :remote_mirrors,
-        allow_destroy: true,
-        reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
       with_options if: :mirror? do
         validates :import_url, presence: true
@@ -206,30 +198,6 @@ module EE
 
     def mirror_hard_failed?
       self.import_state.retry_limit_exceeded?
-    end
-
-    def has_remote_mirror?
-      feature_available?(:repository_mirrors) &&
-        remote_mirror_available? &&
-        remote_mirrors.enabled.exists?
-    end
-
-    def updating_remote_mirror?
-      remote_mirrors.enabled.started.exists?
-    end
-
-    def update_remote_mirrors
-      return unless feature_available?(:repository_mirrors) && remote_mirror_available?
-
-      remote_mirrors.enabled.each(&:sync)
-    end
-
-    def mark_stuck_remote_mirrors_as_failed!
-      remote_mirrors.stuck.update_all(
-        update_status: :failed,
-        last_error: 'The remote mirror took to long to complete.',
-        last_update_at: Time.now
-      )
     end
 
     def fetch_mirror
@@ -414,10 +382,6 @@ module EE
       username_only_import_url
     end
 
-    def mark_remote_mirrors_for_removal
-      remote_mirrors.each(&:mark_for_delete_if_blank_url)
-    end
-
     def change_repository_storage(new_repository_storage_key)
       return if repository_read_only?
       return if repository_storage == new_repository_storage_key
@@ -506,11 +470,6 @@ module EE
 
         disabled_services
       end
-    end
-
-    def remote_mirror_available?
-      remote_mirror_available_overridden ||
-        ::Gitlab::CurrentSettings.mirror_available
     end
 
     def pull_mirror_available?

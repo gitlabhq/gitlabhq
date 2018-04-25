@@ -7,34 +7,6 @@ describe Projects::MirrorsController do
     set(:project) { create(:project, :repository) }
     let(:url) { 'http://foo.com' }
 
-    context 'when remote mirrors are disabled' do
-      before do
-        stub_application_setting(mirror_available: false)
-      end
-
-      context 'when user is admin' do
-        let(:admin) { create(:user, :admin) }
-
-        it 'creates a new remote mirror' do
-          sign_in(admin)
-
-          expect do
-            do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
-          end.to change { RemoteMirror.count }.to(1)
-        end
-      end
-
-      context 'when user is not admin' do
-        it 'does not create a new remote mirror' do
-          sign_in(project.owner)
-
-          expect do
-            do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
-          end.not_to change { RemoteMirror.count }
-        end
-      end
-    end
-
     context 'when the current project is a mirror' do
       let(:project) { create(:project, :repository, :mirror) }
 
@@ -64,16 +36,6 @@ describe Projects::MirrorsController do
             end.to change { RemoteMirror.count }.to(1)
           end
         end
-      end
-    end
-
-    context 'when the current project is not a mirror' do
-      it 'allows to create a remote mirror' do
-        sign_in(project.owner)
-
-        expect do
-          do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com' } })
-        end.to change { RemoteMirror.count }.to(1)
       end
     end
 
@@ -275,40 +237,6 @@ describe Projects::MirrorsController do
 
         expect(response).to redirect_to(project_settings_repository_path(project))
         expect(flash[:alert]).to match(/must be a valid URL/)
-      end
-    end
-
-    context 'With valid URL for a push' do
-      before do
-        @remote_mirror_attributes = { "0" => { "enabled" => "0", url: 'https://updated.example.com' } }
-      end
-
-      it 'processes a successful update' do
-        do_put(project, remote_mirrors_attributes: @remote_mirror_attributes)
-
-        expect(response).to redirect_to(project_settings_repository_path(project))
-        expect(flash[:notice]).to match(/successfully updated/)
-      end
-
-      it 'should create a RemoteMirror object' do
-        expect { do_put(project, remote_mirrors_attributes: @remote_mirror_attributes) }.to change(RemoteMirror, :count).by(1)
-      end
-    end
-
-    context 'With invalid URL for a push' do
-      before do
-        @remote_mirror_attributes = { "0" => { "enabled" => "0", url: 'ftp://invalid.invalid' } }
-      end
-
-      it 'processes an unsuccessful update' do
-        do_put(project, remote_mirrors_attributes: @remote_mirror_attributes)
-
-        expect(response).to redirect_to(project_settings_repository_path(project))
-        expect(flash[:alert]).to match(/must be a valid URL/)
-      end
-
-      it 'should not create a RemoteMirror object' do
-        expect { do_put(project, remote_mirrors_attributes: @remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
       end
     end
   end

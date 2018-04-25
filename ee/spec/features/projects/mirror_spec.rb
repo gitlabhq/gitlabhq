@@ -13,20 +13,6 @@ feature 'Project mirror', :js do
       sign_in user
     end
 
-    context 'unlicensed' do
-      before do
-        stub_licensed_features(repository_mirrors: false)
-      end
-
-      it 'returns 404' do
-        reqs = inspect_requests do
-          visit project_mirror_path(project)
-        end
-
-        expect(reqs.first.status_code).to eq(404)
-      end
-    end
-
     context 'with Update now button' do
       let(:timestamp) { Time.now }
 

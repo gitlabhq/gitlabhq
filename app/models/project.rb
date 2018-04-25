@@ -68,8 +68,9 @@ class Project < ActiveRecord::Base
   default_value_for :only_mirror_protected_branches, true
 
   add_authentication_token_field :runners_token
-  before_save :ensure_runners_token
+  before_validation :mark_remote_mirrors_for_removal
 
+  before_save :ensure_runners_token
   after_save :update_project_statistics, if: :namespace_id_changed?
 
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
@@ -248,10 +249,16 @@ class Project < ActiveRecord::Base
   has_many :project_badges, class_name: 'ProjectBadge'
   has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :remote_mirrors, inverse_of: :project
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
   accepts_nested_attributes_for :auto_devops, update_only: true
+
+  accepts_nested_attributes_for :remote_mirrors,
+                                allow_destroy: true,
+                                reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -342,6 +349,7 @@ class Project < ActiveRecord::Base
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
+  scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
   scope :with_group_runners_enabled, -> do
     joins(:ci_cd_settings)
@@ -769,6 +777,37 @@ class Project < ActiveRecord::Base
 
   def gitea_import?
     import_type == 'gitea'
+  end
+
+  def has_remote_mirror?
+    remote_mirror_available? && remote_mirrors.enabled.exists?
+  end
+
+  def updating_remote_mirror?
+    remote_mirrors.enabled.started.exists?
+  end
+
+  def update_remote_mirrors
+    return unless remote_mirror_available?
+
+    remote_mirrors.enabled.each(&:sync)
+  end
+
+  def mark_stuck_remote_mirrors_as_failed!
+    remote_mirrors.stuck.update_all(
+      update_status: :failed,
+      last_error: 'The remote mirror took to long to complete.',
+      last_update_at: Time.now
+    )
+  end
+
+  def mark_remote_mirrors_for_removal
+    remote_mirrors.each(&:mark_for_delete_if_blank_url)
+  end
+
+  def remote_mirror_available?
+    remote_mirror_available_overridden ||
+      ::Gitlab::CurrentSettings.mirror_available
   end
 
   def check_limit

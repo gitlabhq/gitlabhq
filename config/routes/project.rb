@@ -200,13 +200,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      ## EE-specific
       resource :mirror, only: [:show, :update] do
         member do
           get :ssh_host_keys, constraints: { format: :json }
           post :update_now
         end
       end
+
+      ## EE-specific
       resources :push_rules, constraints: { id: /\d+/ }, only: [:update]
       ## EE-specific
 

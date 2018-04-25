@@ -6,7 +6,6 @@ module EE
 
         prepended do
           before_action :push_rule, only: [:show]
-          before_action :remote_mirror, only: [:show]
         end
 
         private
@@ -16,12 +15,6 @@ module EE
 
           project.create_push_rule unless project.push_rule
           @push_rule = project.push_rule # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        end
-
-        def remote_mirror
-          return unless project.feature_available?(:repository_mirrors)
-
-          @remote_mirror = project.remote_mirrors.first_or_initialize # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
 
         # rubocop:disable Gitlab/ModuleWithInstanceVariables

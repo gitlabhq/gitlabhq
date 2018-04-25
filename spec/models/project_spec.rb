@@ -2041,6 +2041,83 @@ describe Project do
     it { expect(project.gitea_import?).to be true }
   end
 
+  describe '#has_remote_mirror?' do
+    let(:project) { create(:project, :remote_mirror, :import_started) }
+    subject { project.has_remote_mirror? }
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'returns true when a remote mirror is enabled' do
+      is_expected.to be_truthy
+    end
+
+    it 'returns false when remote mirror is disabled' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      is_expected.to be_falsy
+    end
+  end
+
+  describe '#update_remote_mirrors' do
+    let(:project) { create(:project, :remote_mirror, :import_started) }
+    delegate :update_remote_mirrors, to: :project
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'syncs enabled remote mirror' do
+      expect_any_instance_of(RemoteMirror).to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does nothing when remote mirror is disabled globally and not overridden' do
+      stub_application_setting(mirror_available: false)
+      project.remote_mirror_available_overridden = false
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does not sync disabled remote mirrors' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+  end
+
+  describe '#remote_mirror_available?' do
+    let(:project) { create(:project) }
+
+    context 'when remote mirror global setting is enabled' do
+      it 'returns true' do
+        expect(project.remote_mirror_available?).to be(true)
+      end
+    end
+
+    context 'when remote mirror global setting is disabled' do
+      before do
+        stub_application_setting(mirror_available: false)
+      end
+
+      it 'returns true when overridden' do
+        project.remote_mirror_available_overridden = true
+
+        expect(project.remote_mirror_available?).to be(true)
+      end
+
+      it 'returns false when not overridden' do
+        expect(project.remote_mirror_available?).to be(false)
+      end
+    end
+  end
+
   describe '#ancestors_upto', :nested_groups do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }

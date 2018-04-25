@@ -81,6 +81,11 @@ class ProjectPolicy < BasePolicy
     project.merge_requests_allowing_push_to_user(user).any?
   end
 
+  with_scope :global
+  condition(:mirror_available, score: 0) do
+    ::Gitlab::CurrentSettings.current_application_settings.mirror_available
+  end
+
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
   # because it could be possible for a user to see an issuable-iid
   # (`:read_issue_iid` or `:read_merge_request_iid`) but then wouldn't be
@@ -246,6 +251,8 @@ class ProjectPolicy < BasePolicy
     enable :read_cluster
     enable :create_cluster
   end
+
+  rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
 
   rule { archived }.policy do
     prevent :push_code

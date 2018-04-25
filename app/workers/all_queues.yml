@@ -113,6 +113,7 @@
 - update_user_activity
 - upload_checksum
 - web_hook
+- repository_update_remote_mirror
 
 # EE-specific queues
 
@@ -172,5 +173,4 @@
 - project_update_repository_storage
 - rebase
 - repository_update_mirror
-- repository_update_remote_mirror
 - chat_notification

@@ -73,15 +73,15 @@
   - [object_storage, 1]
   - [plugin, 1]
   - [pipeline_background, 1]
+  - [repository_update_remote_mirror, 1]
+  - [repository_remove_remote, 1]
 
   # EE-specific queues
   - [ldap_group_sync, 2]
   - [create_github_webhook, 2]
   - [chat_notification, 2]
   - [geo, 1]
-  - [repository_remove_remote, 1]
   - [repository_update_mirror, 1]
-  - [repository_update_remote_mirror, 1]
   - [project_import_schedule, 1]
   - [project_update_repository_storage, 1]
   - [admin_emails, 1]

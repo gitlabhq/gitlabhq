@@ -1,6 +1,8 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 
+  prepend EE::RemoteMirror
+
   PROTECTED_BACKOFF_DELAY   = 1.minute
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
@@ -86,9 +88,12 @@ class RemoteMirror < ActiveRecord::Base
     raw.update(options)
   end
 
+  def sync?
+    !enabled?
+  end
+
   def sync
-    return unless enabled?
-    return if Gitlab::Geo.secondary?
+    return if sync?
 
     if recently_scheduled?
       RepositoryUpdateRemoteMirrorWorker.perform_in(backoff_delay, self.id, Time.now)
@@ -103,8 +108,7 @@ class RemoteMirror < ActiveRecord::Base
     return false unless project.repository_exists?
     return false if project.pending_delete?
 
-    # Sync is only enabled when the license permits it
-    project.feature_available?(:repository_mirrors)
+    true
   end
   alias_method :enabled?, :enabled
 
