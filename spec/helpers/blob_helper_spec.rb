@@ -246,8 +246,8 @@ describe BlobHelper do
   describe '#ide_edit_path' do
     let(:project) { create(:project) }
 
-    around(:each) do |example|
-      old_script_name =  Rails.application.routes.default_url_options[:script_name]
+    around do |example|
+      old_script_name = Rails.application.routes.default_url_options[:script_name]
       begin
         example.run
       ensure
