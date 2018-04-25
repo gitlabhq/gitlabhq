@@ -1,0 +1,5 @@
+---
+title: Fix DB LB errors when escaping input
+merge_request:
+author:
+type: fixed
