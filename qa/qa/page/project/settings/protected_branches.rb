@@ -75,7 +75,6 @@ module QA
           def click_allow(action, text)
             click_element :"allowed_to_#{action}_select"
 
-
             within_element(:"allowed_to_#{action}_dropdown") do
               click_on text
 
