@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import SmartInterval from '~/smart_interval';
 
-describe('SmartInterval', function () {
+describe('SmartInterval', function() {
   const DEFAULT_MAX_INTERVAL = 100;
   const DEFAULT_STARTING_INTERVAL = 5;
   const DEFAULT_SHORT_TIMEOUT = 75;
@@ -27,18 +27,19 @@ describe('SmartInterval', function () {
     return new SmartInterval(defaultParams);
   }
 
-  describe('Increment Interval', function () {
-    beforeEach(function () {
+  describe('Increment Interval', function() {
+    beforeEach(function() {
       this.smartInterval = createDefaultSmartInterval();
     });
 
-    it('should increment the interval delay', function (done) {
+    it('should increment the interval delay', function(done) {
       const interval = this.smartInterval;
       setTimeout(() => {
         const intervalConfig = this.smartInterval.cfg;
         const iterationCount = 4;
-        const maxIntervalAfterIterations = intervalConfig.startingInterval *
-          (intervalConfig.incrementByFactorOf ** (iterationCount - 1)); // 40
+        const maxIntervalAfterIterations =
+          intervalConfig.startingInterval *
+          intervalConfig.incrementByFactorOf ** (iterationCount - 1); // 40
         const currentInterval = interval.getCurrentInterval();
 
         // Provide some flexibility for performance of testing environment
@@ -49,7 +50,7 @@ describe('SmartInterval', function () {
       }, DEFAULT_SHORT_TIMEOUT); // 4 iterations, increment by 2x = (5 + 10 + 20 + 40)
     });
 
-    it('should not increment past maxInterval', function (done) {
+    it('should not increment past maxInterval', function(done) {
       const interval = this.smartInterval;
 
       setTimeout(() => {
@@ -60,7 +61,7 @@ describe('SmartInterval', function () {
       }, DEFAULT_LONG_TIMEOUT);
     });
 
-    it('does not increment while waiting for callback', function () {
+    it('does not increment while waiting for callback', function() {
       jasmine.clock().install();
 
       const smartInterval = createDefaultSmartInterval({
@@ -76,12 +77,12 @@ describe('SmartInterval', function () {
     });
   });
 
-  describe('Public methods', function () {
-    beforeEach(function () {
+  describe('Public methods', function() {
+    beforeEach(function() {
       this.smartInterval = createDefaultSmartInterval();
     });
 
-    it('should cancel an interval', function (done) {
+    it('should cancel an interval', function(done) {
       const interval = this.smartInterval;
 
       setTimeout(() => {
@@ -98,7 +99,7 @@ describe('SmartInterval', function () {
       }, DEFAULT_SHORT_TIMEOUT);
     });
 
-    it('should resume an interval', function (done) {
+    it('should resume an interval', function(done) {
       const interval = this.smartInterval;
 
       setTimeout(() => {
@@ -115,15 +116,15 @@ describe('SmartInterval', function () {
     });
   });
 
-  describe('DOM Events', function () {
-    beforeEach(function () {
+  describe('DOM Events', function() {
+    beforeEach(function() {
       // This ensures DOM and DOM events are initialized for these specs.
       setFixtures('<div></div>');
 
       this.smartInterval = createDefaultSmartInterval();
     });
 
-    it('should pause when page is not visible', function (done) {
+    it('should pause when page is not visible', function(done) {
       const interval = this.smartInterval;
 
       setTimeout(() => {
@@ -137,14 +138,16 @@ describe('SmartInterval', function () {
       }, DEFAULT_SHORT_TIMEOUT);
     });
 
-    it('should change to the hidden interval when page is not visible', function (done) {
+    it('should change to the hidden interval when page is not visible', function(done) {
       const HIDDEN_INTERVAL = 1500;
       const interval = createDefaultSmartInterval({ hiddenInterval: HIDDEN_INTERVAL });
 
       setTimeout(() => {
         expect(interval.state.intervalId).toBeTruthy();
-        expect(interval.getCurrentInterval() >= DEFAULT_STARTING_INTERVAL &&
-          interval.getCurrentInterval() <= DEFAULT_MAX_INTERVAL).toBeTruthy();
+        expect(
+          interval.getCurrentInterval() >= DEFAULT_STARTING_INTERVAL &&
+            interval.getCurrentInterval() <= DEFAULT_MAX_INTERVAL,
+        ).toBeTruthy();
 
         // simulates triggering of visibilitychange event
         interval.handleVisibilityChange({ target: { visibilityState: 'hidden' } });
@@ -155,7 +158,7 @@ describe('SmartInterval', function () {
       }, DEFAULT_SHORT_TIMEOUT);
     });
 
-    it('should resume when page is becomes visible at the previous interval', function (done) {
+    it('should resume when page is becomes visible at the previous interval', function(done) {
       const interval = this.smartInterval;
 
       setTimeout(() => {
@@ -175,7 +178,7 @@ describe('SmartInterval', function () {
       }, DEFAULT_SHORT_TIMEOUT);
     });
 
-    it('should cancel on page unload', function (done) {
+    it('should cancel on page unload', function(done) {
       const interval = this.smartInterval;
 
       setTimeout(() => {
@@ -186,7 +189,7 @@ describe('SmartInterval', function () {
       }, DEFAULT_SHORT_TIMEOUT);
     });
 
-    it('should execute callback before first interval', function () {
+    it('should execute callback before first interval', function() {
       const interval = createDefaultSmartInterval({ immediateExecution: true });
       expect(interval.cfg.immediateExecution).toBeFalsy();
     });

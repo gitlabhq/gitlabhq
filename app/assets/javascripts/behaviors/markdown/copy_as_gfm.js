@@ -34,7 +34,7 @@ const gfmRules = {
     },
   },
   AutolinkFilter: {
-    'a'(el, text) {
+    a(el, text) {
       // Fallback on the regular MarkdownFilter's `a` handler.
       if (text !== el.getAttribute('href')) return false;
 
@@ -60,7 +60,7 @@ const gfmRules = {
     },
   },
   ImageLazyLoadFilter: {
-    'img'(el, text) {
+    img(el, text) {
       return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;
     },
   },
@@ -71,7 +71,7 @@ const gfmRules = {
 
       return CopyAsGFM.nodeToGFM(videoEl);
     },
-    'video'(el) {
+    video(el) {
       return `![${el.dataset.title}](${el.getAttribute('src')})`;
     },
   },
@@ -118,11 +118,11 @@ const gfmRules = {
     'a[name]:not([href]):empty'(el) {
       return el.outerHTML;
     },
-    'dl'(el, text) {
+    dl(el, text) {
       let lines = text.trim().split('\n');
       // Add two spaces to the front of subsequent list items lines,
       // or leave the line entirely blank.
-      lines = lines.map((l) => {
+      lines = lines.map(l => {
         const line = l.trim();
         if (line.length === 0) return '';
 
@@ -147,27 +147,30 @@ const gfmRules = {
 
       // Prefixes lines with 4 spaces if the code contains triple backticks
       if (lang === '' && text.match(/^```/gm)) {
-        return text.split('\n').map((l) => {
-          const line = l.trim();
-          if (line.length === 0) return '';
+        return text
+          .split('\n')
+          .map(l => {
+            const line = l.trim();
+            if (line.length === 0) return '';
 
-          return `    ${line}`;
-        }).join('\n');
+            return `    ${line}`;
+          })
+          .join('\n');
       }
 
       return `\`\`\`${lang}\n${text}\n\`\`\``;
     },
     'pre > code'(el, text) {
-       // Don't wrap code blocks in ``
+      // Don't wrap code blocks in ``
       return text;
     },
   },
   MarkdownFilter: {
-    'br'(el) {
+    br(el) {
       // Two spaces at the end of a line are turned into a BR
       return '  ';
     },
-    'code'(el, text) {
+    code(el, text) {
       let backtickCount = 1;
       const backtickMatch = text.match(/`+/);
       if (backtickMatch) {
@@ -179,27 +182,31 @@ const gfmRules = {
 
       return backticks + spaceOrNoSpace + text.trim() + spaceOrNoSpace + backticks;
     },
-    'blockquote'(el, text) {
-      return text.trim().split('\n').map(s => `> ${s}`.trim()).join('\n');
+    blockquote(el, text) {
+      return text
+        .trim()
+        .split('\n')
+        .map(s => `> ${s}`.trim())
+        .join('\n');
     },
-    'img'(el) {
+    img(el) {
       const imageSrc = el.src;
-      const imageUrl = imageSrc && imageSrc !== placeholderImage ? imageSrc : (el.dataset.src || '');
+      const imageUrl = imageSrc && imageSrc !== placeholderImage ? imageSrc : el.dataset.src || '';
       return `![${el.getAttribute('alt')}](${imageUrl})`;
     },
     'a.anchor'(el, text) {
       // Don't render a Markdown link for the anchor link inside a heading
       return text;
     },
-    'a'(el, text) {
+    a(el, text) {
       return `[${text}](${el.getAttribute('href')})`;
     },
-    'li'(el, text) {
+    li(el, text) {
       const lines = text.trim().split('\n');
       const firstLine = `- ${lines.shift()}`;
       // Add four spaces to the front of subsequent list items lines,
       // or leave the line entirely blank.
-      const nextLines = lines.map((s) => {
+      const nextLines = lines.map(s => {
         if (s.trim().length === 0) return '';
 
         return `    ${s}`;
@@ -207,47 +214,47 @@ const gfmRules = {
 
       return `${firstLine}\n${nextLines.join('\n')}`;
     },
-    'ul'(el, text) {
+    ul(el, text) {
       return text;
     },
-    'ol'(el, text) {
+    ol(el, text) {
       // LIs get a `- ` prefix by default, which we replace by `1. ` for ordered lists.
-      return text.replace(/^- /mg, '1. ');
+      return text.replace(/^- /gm, '1. ');
     },
-    'h1'(el, text) {
+    h1(el, text) {
       return `# ${text.trim()}`;
     },
-    'h2'(el, text) {
+    h2(el, text) {
       return `## ${text.trim()}`;
     },
-    'h3'(el, text) {
+    h3(el, text) {
       return `### ${text.trim()}`;
     },
-    'h4'(el, text) {
+    h4(el, text) {
       return `#### ${text.trim()}`;
     },
-    'h5'(el, text) {
+    h5(el, text) {
       return `##### ${text.trim()}`;
     },
-    'h6'(el, text) {
+    h6(el, text) {
       return `###### ${text.trim()}`;
     },
-    'strong'(el, text) {
+    strong(el, text) {
       return `**${text}**`;
     },
-    'em'(el, text) {
+    em(el, text) {
       return `_${text}_`;
     },
-    'del'(el, text) {
+    del(el, text) {
       return `~~${text}~~`;
     },
-    'sup'(el, text) {
+    sup(el, text) {
       return `^${text}`;
     },
-    'hr'(el) {
+    hr(el) {
       return '-----';
     },
-    'table'(el) {
+    table(el) {
       const theadEl = el.querySelector('thead');
       const tbodyEl = el.querySelector('tbody');
       if (!theadEl || !tbodyEl) return false;
@@ -257,8 +264,8 @@ const gfmRules = {
 
       return [theadText, tbodyText].join('\n');
     },
-    'thead'(el, text) {
-      const cells = _.map(el.querySelectorAll('th'), (cell) => {
+    thead(el, text) {
+      const cells = _.map(el.querySelectorAll('th'), cell => {
         let chars = CopyAsGFM.nodeToGFM(cell).length + 2;
 
         let before = '';
@@ -288,7 +295,7 @@ const gfmRules = {
 
       return [text, separatorRow].join('\n');
     },
-    'tr'(el) {
+    tr(el) {
       const cellEls = el.querySelectorAll('td, th');
       if (cellEls.length === 0) return false;
 
@@ -307,8 +314,12 @@ export class CopyAsGFM {
     const isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
     if (isIOS) return;
 
-    $(document).on('copy', '.md, .wiki', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
-    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
+    $(document).on('copy', '.md, .wiki', e => {
+      CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
+    });
+    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', e => {
+      CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection);
+    });
     $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
   }
 
@@ -348,7 +359,7 @@ export class CopyAsGFM {
       // This will break down when the actual code block contains an uneven
       // number of backticks, but this is a rare edge case.
       const backtickMatch = textBefore.match(/`/g);
-      const insideCodeBlock = backtickMatch && (backtickMatch.length % 2) === 1;
+      const insideCodeBlock = backtickMatch && backtickMatch.length % 2 === 1;
 
       if (insideCodeBlock) {
         return text;
@@ -385,7 +396,9 @@ export class CopyAsGFM {
     let lineSelector = '.line';
 
     if (target) {
-      const lineClass = ['left-side', 'right-side'].filter(name => target.classList.contains(name))[0];
+      const lineClass = ['left-side', 'right-side'].filter(name =>
+        target.classList.contains(name),
+      )[0];
       if (lineClass) {
         lineSelector = `.line_content.${lineClass} ${lineSelector}`;
       }
@@ -428,7 +441,8 @@ export class CopyAsGFM {
       return node.textContent;
     }
 
-    const respectWhitespace = respectWhitespaceParam || (node.nodeName === 'PRE' || node.nodeName === 'CODE');
+    const respectWhitespace =
+      respectWhitespaceParam || (node.nodeName === 'PRE' || node.nodeName === 'CODE');
 
     const text = this.innerGFM(node, respectWhitespace);
 

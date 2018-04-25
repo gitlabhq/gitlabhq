@@ -6,11 +6,12 @@ import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
 
-const returnPromise = data => new Promise((resolve) => {
-  resolve({
-    data,
+const returnPromise = data =>
+  new Promise(resolve => {
+    resolve({
+      data,
+    });
   });
-});
 
 describe('mrWidgetOptions', () => {
   let vm;
@@ -127,7 +128,7 @@ describe('mrWidgetOptions', () => {
 
   describe('methods', () => {
     describe('checkStatus', () => {
-      it('should tell service to check status', (done) => {
+      it('should tell service to check status', done => {
         spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
         spyOn(vm.mr, 'setData');
         spyOn(vm, 'handleNotification');
@@ -177,7 +178,7 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('fetchDeployments', () => {
-      it('should fetch deployments', (done) => {
+      it('should fetch deployments', done => {
         spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ id: 1 }]));
 
         vm.fetchDeployments();
@@ -192,7 +193,7 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('fetchActionsContent', () => {
-      it('should fetch content of Cherry Pick and Revert modals', (done) => {
+      it('should fetch content of Cherry Pick and Revert modals', done => {
         spyOn(vm.service, 'fetchMergeActionsContent').and.returnValue(returnPromise('hello world'));
 
         vm.fetchActionsContent();
@@ -238,7 +239,7 @@ describe('mrWidgetOptions', () => {
         };
 
         const allArgs = eventHub.$on.calls.allArgs();
-        allArgs.forEach((params) => {
+        allArgs.forEach(params => {
           const eventName = params[0];
           const callback = params[1];
 
@@ -358,7 +359,7 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('rendering relatedLinks', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.mr.relatedLinks = {
         assignToMe: null,
         closing: `
@@ -375,7 +376,7 @@ describe('mrWidgetOptions', () => {
       expect(vm.$el.querySelector('.close-related-link')).toBeDefined();
     });
 
-    it('does not render if state is nothingToMerge', (done) => {
+    it('does not render if state is nothingToMerge', done => {
       vm.mr.state = stateKey.nothingToMerge;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.close-related-link')).toBeNull();
@@ -385,7 +386,7 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('rendering source branch removal status', () => {
-    it('renders when user cannot remove branch and branch should be removed', (done) => {
+    it('renders when user cannot remove branch and branch should be removed', done => {
       vm.mr.canRemoveSourceBranch = false;
       vm.mr.shouldRemoveSourceBranch = true;
       vm.mr.state = 'readyToMerge';
@@ -402,7 +403,7 @@ describe('mrWidgetOptions', () => {
       });
     });
 
-    it('does not render in merged state', (done) => {
+    it('does not render in merged state', done => {
       vm.mr.canRemoveSourceBranch = false;
       vm.mr.shouldRemoveSourceBranch = true;
       vm.mr.state = 'merged';
@@ -430,13 +431,16 @@ describe('mrWidgetOptions', () => {
       deployed_at_formatted: 'Mar 22, 2017 10:44pm',
     };
 
-    beforeEach((done) => {
-      vm.mr.deployments.push({
-        ...deploymentMockData,
-      }, {
-        ...deploymentMockData,
-        id: deploymentMockData.id + 1,
-      });
+    beforeEach(done => {
+      vm.mr.deployments.push(
+        {
+          ...deploymentMockData,
+        },
+        {
+          ...deploymentMockData,
+          id: deploymentMockData.id + 1,
+        },
+      );
 
       vm.$nextTick(done);
     });
