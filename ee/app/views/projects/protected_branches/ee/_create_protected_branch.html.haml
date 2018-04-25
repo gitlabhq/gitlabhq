@@ -1,14 +1,14 @@
 - content_for :merge_access_levels do
   .merge_access_levels-container
     = dropdown_tag('Select',
-                   options: { toggle_class: 'js-allowed-to-merge js-multiselect wide',
-                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable  capitalize-header', filter: true,
+                   options: { toggle_class: 'js-allowed-to-merge qa-allowed-to-merge-select js-multiselect wide',
+                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable qa-allowed-to-merge-dropdown capitalize-header', filter: true,
                    data: { input_id: 'merge_access_levels_attributes', default_label: 'Select' } })
 - content_for :push_access_levels do
   .push_access_levels-container
     = dropdown_tag('Select',
-                   options: { toggle_class: 'js-allowed-to-push js-multiselect wide',
-                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable  capitalize-header', filter: true,
+                   options: { toggle_class: 'js-allowed-to-push qa-allowed-to-push-select js-multiselect wide',
+                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable qa-allowed-to-push-dropdown capitalize-header', filter: true,
                    data: { input_id: 'push_access_levels_attributes', default_label: 'Select' } })
   .help-block
     Only groups that
