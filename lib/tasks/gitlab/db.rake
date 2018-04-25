@@ -70,13 +70,10 @@ namespace :gitlab do
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
 
-    desc 'Output pseudoanonymized dump of selected table'
-    task :pseudonymity_dump, :environment do
+    desc 'Output pseudonymity dump of selected table'
+    task :pseudonymity_dump => :environment do
       sql = "SELECT * FROM users LIMIT 1"
-      result = ""
-      ActiveRecord::Base.connection_pool.with_connection do |connection|
-        result = connection.exec_query(sql)
-      end
+      result = ActiveRecord::Base.connection.exec_query(sql)
       puts result;
     end
   end
