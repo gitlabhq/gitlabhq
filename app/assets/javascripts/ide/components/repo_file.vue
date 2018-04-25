@@ -106,7 +106,8 @@ export default {
             :file="file"
             :show-tooltip="true"
             :show-staged-icon="true"
-            class="prepend-top-5 pull-right"
+            :force-modified-icon="true"
+            class="pull-right"
           />
         </span>
         <new-dropdown
