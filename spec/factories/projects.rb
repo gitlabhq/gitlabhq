@@ -195,6 +195,13 @@ FactoryBot.define do
       end
     end
 
+    trait :stubbed_repository do
+      after(:build) do |project|
+        allow(project).to receive(:empty_repo?).and_return(false)
+        allow(project.repository).to receive(:empty?).and_return(false)
+      end
+    end
+
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki
