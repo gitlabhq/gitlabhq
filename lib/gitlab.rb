@@ -1,4 +1,3 @@
-require_dependency 'settings'
 require_dependency 'gitlab/popen'
 
 module Gitlab
