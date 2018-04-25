@@ -102,7 +102,7 @@ describe('Sidebar details block', () => {
     });
 
     it('should render runner ID', () => {
-      expect(trimWhitespace(vm.$el.querySelector('.js-job-runner'))).toEqual('Runner: #1');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-runner'))).toEqual('Runner: local ci runner (#1)');
     });
 
     it('should render timeout information', () => {

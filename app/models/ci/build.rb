@@ -29,6 +29,7 @@ module Ci
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :gitlab_deploy_token, to: :project
 
     ##
     # The "environment" field for builds is a String, and is the unexpanded name!
@@ -606,6 +607,7 @@ module Ci
           .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false)
+          .concat(deploy_token_variables)
       end
     end
 
@@ -653,6 +655,15 @@ module Ci
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
         variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url) if environment_url
+      end
+    end
+
+    def deploy_token_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless gitlab_deploy_token
+
+        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.name)
+        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
       end
     end
 

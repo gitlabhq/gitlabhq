@@ -68,3 +68,6 @@ export const resolvedDiscussionCount = (state, getters) => {
 
   return Object.keys(resolvedMap).length;
 };
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
