@@ -5,7 +5,6 @@ describe('RavenConfig options', () => {
   const sentryDsn = 'sentryDsn';
   const currentUserId = 'currentUserId';
   const gitlabUrl = 'gitlabUrl';
-  const isProduction = 'isProduction';
   const revision = 'revision';
   let indexReturnValue;
 
@@ -17,7 +16,7 @@ describe('RavenConfig options', () => {
       revision,
     };
 
-    process.env.NODE_ENV = isProduction;
+    spyOnDependency(index, 'isProductionEnvironment').and.returnValue(true);
     process.env.HEAD_COMMIT_SHA = revision;
 
     spyOn(RavenConfig, 'init');
@@ -30,7 +29,7 @@ describe('RavenConfig options', () => {
       sentryDsn,
       currentUserId,
       whitelistUrls: [gitlabUrl],
-      isProduction,
+      isProduction: true,
       release: revision,
       tags: {
         revision,

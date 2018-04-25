@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import { isTestEnvironment } from '~/environment';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
@@ -151,7 +152,7 @@ export default class Editor {
     } catch (e) {
       this.instance = null;
 
-      if (process.env.NODE_ENV !== 'test') {
+      if (!isTestEnvironment()) {
         // eslint-disable-next-line no-console
         console.error(e);
       }

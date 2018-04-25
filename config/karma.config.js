@@ -29,7 +29,10 @@ var testFiles = argumentsParser
 
 webpackConfig.plugins.push(
   new webpack.DefinePlugin({
-    'process.env.TEST_FILES': JSON.stringify(testFiles),
+    'process.env': {
+      NODE_ENV: JSON.stringify('test'),
+      TEST_FILES: JSON.stringify(testFiles),
+    },
   })
 );
 

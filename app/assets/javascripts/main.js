@@ -33,9 +33,10 @@ import './projects_dropdown';
 import initBreadcrumbs from './breadcrumb';
 
 import initDispatcher from './dispatcher';
+import { isProductionEnvironment } from './environment';
 
 // inject test utilities if necessary
-if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
+if (!isProductionEnvironment() && gon && gon.test_env) {
   $.fx.off = true;
   import(/* webpackMode: "eager" */ './test_utils/');
 }

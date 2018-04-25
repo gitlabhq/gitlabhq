@@ -4,6 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import { insertText, getSelectedFragment, nodeMatchesSelector } from '~/lib/utils/common_utils';
 import { placeholderImage } from '~/lazy_loader';
+import { isProductionEnvironment } from '~/environment';
 
 const gfmRules = {
   // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
@@ -506,7 +507,7 @@ export class CopyAsGFM {
 
 // Export CopyAsGFM as a global for rspec to access
 // see /spec/features/copy_as_gfm_spec.rb
-if (process.env.NODE_ENV !== 'production') {
+if (!isProductionEnvironment()) {
   window.CopyAsGFM = CopyAsGFM;
 }
 
