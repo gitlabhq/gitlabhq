@@ -6,10 +6,10 @@ class AddPipelineIidToCiPipelines < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column :ci_pipelines, :iid, :integer
+    add_column :ci_pipelines, :iid_per_project, :integer
   end
 
   def down
-    remove_column :ci_pipelines, :iid, :integer
+    remove_column :ci_pipelines, :iid_per_project, :integer
   end
 end
