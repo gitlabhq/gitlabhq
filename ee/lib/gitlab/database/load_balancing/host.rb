@@ -115,6 +115,8 @@ module Gitlab
           SQL
 
           row['diff'].to_i if row.any?
+        rescue *CONNECTION_ERRORS
+          nil
         end
 
         def primary_write_location
@@ -142,6 +144,8 @@ module Gitlab
           row = query_and_release(query)
 
           row['result'] == 't'
+        rescue *CONNECTION_ERRORS
+          false
         end
 
         def query_and_release(sql)
