@@ -3,10 +3,11 @@ require 'spec_helper'
 describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
 
-  set(:project_with_repositories) { create(:project, :repository, :wiki_repo) }
-  set(:project_without_repositories) { create(:project) }
+  set(:project) { create(:project, :repository, :wiki_repo) }
+  set(:project_empty_repo) { create(:project) }
 
   let!(:primary) { create(:geo_node, :primary) }
+  let(:repository) { double }
 
   before do
     stub_current_geo_node(primary)
@@ -20,17 +21,17 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'does not calculate the checksum when not running on a primary' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect(project_without_repositories.repository).not_to receive(:checksum)
+      expect(project_empty_repo.repository).not_to receive(:checksum)
 
-      subject.perform(project_without_repositories.id)
+      subject.perform(project_empty_repo.id)
     end
 
     it 'does not calculate the checksum when project is pending deletion' do
-      project_with_repositories.update!(pending_delete: true)
+      project.update!(pending_delete: true)
 
-      expect(project_with_repositories.repository).not_to receive(:checksum)
+      expect(project.repository).not_to receive(:checksum)
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
     end
 
     it 'does not raise an error when project could not be found' do
@@ -38,9 +39,9 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'calculates the checksum for unverified projects' do
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
-      expect(project_with_repositories.repository_state).to have_attributes(
+      expect(project.repository_state).to have_attributes(
         repository_verification_checksum: instance_of(String),
         last_repository_verification_failure: nil,
         wiki_verification_checksum: instance_of(String),
@@ -51,11 +52,11 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'calculates the checksum for outdated projects' do
       repository_state =
         create(:repository_state,
-          project: project_with_repositories,
+          project: project,
           repository_verification_checksum: nil,
           wiki_verification_checksum: nil)
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
       repository_state.reload
 
@@ -66,11 +67,11 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'calculates the checksum for outdated repositories' do
       repository_state =
         create(:repository_state,
-          project: project_with_repositories,
+          project: project,
           repository_verification_checksum: nil,
           wiki_verification_checksum: 'e123')
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
       repository_state.reload
 
@@ -81,11 +82,11 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'calculates the checksum for outdated wikis' do
       repository_state =
         create(:repository_state,
-          project: project_with_repositories,
+          project: project,
           repository_verification_checksum: 'f123',
           wiki_verification_checksum: nil)
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
       repository_state.reload
 
@@ -96,11 +97,11 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     it 'does not recalculate the checksum for projects up to date' do
       repository_state =
         create(:repository_state,
-          project: project_with_repositories,
+          project: project,
           repository_verification_checksum: 'f123',
           wiki_verification_checksum: 'e123')
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
       expect(repository_state.reload).to have_attributes(
         repository_verification_checksum: 'f123',
@@ -109,11 +110,11 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'does not calculate the wiki checksum when wiki is not enabled for project' do
-      project_with_repositories.update!(wiki_enabled: false)
+      project.update!(wiki_enabled: false)
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
-      expect(project_with_repositories.repository_state).to have_attributes(
+      expect(project.repository_state).to have_attributes(
         repository_verification_checksum: instance_of(String),
         last_repository_verification_failure: nil,
         wiki_verification_checksum: nil,
@@ -122,9 +123,22 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'does not mark the calculating as failed when there is no repo' do
-      subject.perform(project_without_repositories.id)
+      subject.perform(project_empty_repo.id)
 
-      expect(project_without_repositories.repository_state).to have_attributes(
+      expect(project_empty_repo.repository_state).to have_attributes(
+        repository_verification_checksum: '0000000000000000000000000000000000000000',
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum: '0000000000000000000000000000000000000000',
+        last_wiki_verification_failure: nil
+      )
+    end
+
+    it 'does not mark the calculating as failed for non-valid repo' do
+      project_broken_repo = create(:project, :broken_repo)
+
+      subject.perform(project_broken_repo.id)
+
+      expect(project_broken_repo.repository_state).to have_attributes(
         repository_verification_checksum: '0000000000000000000000000000000000000000',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: '0000000000000000000000000000000000000000',
@@ -133,26 +147,24 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'keeps track of failures when calculating the repository checksum' do
-      repository = double
-
       allow(Repository).to receive(:new).with(
-        project_with_repositories.full_path,
-        project_with_repositories,
-        disk_path: project_with_repositories.disk_path
+        project.full_path,
+        project,
+        disk_path: project.disk_path
       ).and_return(repository)
 
       allow(Repository).to receive(:new).with(
-        project_with_repositories.wiki.full_path,
-        project_with_repositories,
-        disk_path: project_with_repositories.wiki.disk_path,
+        project.wiki.full_path,
+        project,
+        disk_path: project.wiki.disk_path,
         is_wiki: true
       ).and_return(repository)
 
       allow(repository).to receive(:checksum).twice.and_raise('Something went wrong')
 
-      subject.perform(project_with_repositories.id)
+      subject.perform(project.id)
 
-      expect(project_with_repositories.repository_state).to have_attributes(
+      expect(project.repository_state).to have_attributes(
         repository_verification_checksum: nil,
         last_repository_verification_failure: 'Something went wrong',
         wiki_verification_checksum: nil,
