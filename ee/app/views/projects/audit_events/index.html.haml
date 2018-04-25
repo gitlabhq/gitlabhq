@@ -1,10 +1,11 @@
 - page_title "Audit Events"
+- feature_available = @project.feature_available?(:audit_events)
 
-- if show_project_feature_promotion?(:audit_events)
+- if !feature_available && show_promotions?
   = render 'shared/promotions/promote_audit_events'
 
 %h3.page-title Project Audit Events
 %p.light Events in #{@project.full_path}
 
-- if @project.feature_available?(:audit_events)
+- if feature_available
   = render 'shared/audit_events/event_table', events: @events

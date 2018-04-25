@@ -1,4 +1,5 @@
 module MilestonesHelper
+  prepend EE::MilestonesHelper
   include EntityDateHelper
 
   def milestones_filter_path(opts = {})
@@ -192,39 +193,6 @@ module MilestonesHelper
         "starts on #{milestone.start_date.to_s(:medium)}"
       end
     end
-  end
-
-  def data_warning_for(burndown)
-    return unless burndown
-
-    message =
-      if burndown.empty?
-        "The burndown chart can’t be shown, as all issues assigned to this milestone were closed on an older GitLab version before data was recorded. "
-      elsif !burndown.accurate?
-        "Some issues can’t be shown in the burndown chart, as they were closed on an older GitLab version before data was recorded. "
-      end
-
-    if message
-      message += link_to "About burndown charts", help_page_path('user/project/milestones/index', anchor: 'burndown-charts'), class: 'burndown-docs-link'
-
-      content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
-    end
-  end
-
-  def can_generate_chart?(burndown)
-    return unless @project.feature_available?(:burndown_charts, current_user) &&
-        @project.feature_available?(:issue_weights, current_user)
-
-    burndown&.valid? && !burndown&.empty?
-  end
-
-  def show_burndown_placeholder?(warning)
-    return false if cookies['hide_burndown_message'].present?
-
-    return false unless @project.feature_available?(:burndown_charts, current_user) &&
-        @project.feature_available?(:issue_weights, current_user)
-
-    warning.nil? && can?(current_user, :admin_milestone, @project)
   end
 
   def milestone_merge_request_tab_path(milestone)

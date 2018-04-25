@@ -96,10 +96,6 @@ module LicenseHelper
     end
   end
 
-  def show_project_feature_promotion?(project_feature, callout_id = nil)
-    !@project.feature_available?(project_feature) && show_promotions? && (callout_id.nil? || show_callout?(callout_id))
-  end
-
   def show_advanced_search_promotion?
     !Gitlab::CurrentSettings.should_check_namespace_plan? && show_promotions? && show_callout?('promote_advanced_search_dismissed') && !License.feature_available?(:elastic_search)
   end
