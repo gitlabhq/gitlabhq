@@ -52,8 +52,8 @@ export default class AjaxVariableList {
 
   onSaveClicked() {
     const loadingIcon = this.saveButton.querySelector('.js-secret-variables-save-loading-icon');
-    loadingIcon.classList.toggle('hidden', false);
-    this.errorBox.classList.toggle('hidden', true);
+    loadingIcon.classList.toggle('hide', false);
+    this.errorBox.classList.toggle('hide', true);
     // We use this to prevent a user from changing a key before we have a chance
     // to match it up in `updateRowsWithPersistedVariables`
     this.variableList.toggleEnableRow(false);
@@ -70,7 +70,7 @@ export default class AjaxVariableList {
         status === statusCodes.BAD_REQUEST,
     })
       .then((res) => {
-        loadingIcon.classList.toggle('hidden', true);
+        loadingIcon.classList.toggle('hide', true);
         this.variableList.toggleEnableRow(true);
 
         if (res.status === statusCodes.OK && res.data) {
@@ -79,11 +79,11 @@ export default class AjaxVariableList {
         } else if (res.status === statusCodes.BAD_REQUEST) {
           // Validation failed
           this.errorBox.innerHTML = generateErrorBoxContent(res.data);
-          this.errorBox.classList.toggle('hidden', false);
+          this.errorBox.classList.toggle('hide', false);
         }
       })
       .catch(() => {
-        loadingIcon.classList.toggle('hidden', true);
+        loadingIcon.classList.toggle('hide', true);
         this.variableList.toggleEnableRow(true);
         Flash(s__('CiVariable|Error occured while saving variables'));
       });
