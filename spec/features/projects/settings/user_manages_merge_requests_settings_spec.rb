@@ -42,26 +42,6 @@ describe 'Projects > Settings > User manages merge request settings' do
         expect(page).not_to have_content('Only allow merge requests to be merged if all discussions are resolved')
       end
     end
-
-    context 'when Pipelines are initially disabled', :js do
-      before do
-        project.project_feature.update_attribute('builds_access_level', ProjectFeature::DISABLED)
-        visit edit_project_path(project)
-      end
-
-      it 'shows the Merge Requests settings that do not depend on Builds feature' do
-        expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
-        expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
-
-        within('.sharing-permissions-form') do
-          find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .project-feature-toggle').click
-          find('input[value="Save changes"]').send_keys(:return)
-        end
-
-        expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
-        expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
-      end
-    end
   end
 
   context 'when Merge Request are initially disabled', :js do
