@@ -55,7 +55,7 @@ export default {
       return this.noteableData.noteableType;
     },
     allNotes() {
-    if (this.isLoading) {
+      if (this.isLoading) {
         const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
 
         return new Array(totalNotes).fill({
@@ -75,10 +75,7 @@ export default {
 
     const parentElement = this.$el.parentElement;
 
-    if (
-      parentElement &&
-      parentElement.classList.contains('js-vue-notes-event')
-    ) {
+    if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
         this.actionToggleAward({ awardName, noteId });
@@ -96,6 +93,7 @@ export default {
       setUserData: 'setUserData',
       setLastFetchedAt: 'setLastFetchedAt',
       setTargetNoteHash: 'setTargetNoteHash',
+      toggleDiscussion: 'toggleDiscussion',
     }),
     getComponentName(note) {
       if (note.isSkeletonNote) {
@@ -125,9 +123,7 @@ export default {
         .then(() => this.checkLocationHash())
         .catch(() => {
           this.isLoading = false;
-          Flash(
-            'Something went wrong while fetching comments. Please try again.',
-          );
+          Flash('Something went wrong while fetching comments. Please try again.');
         });
     },
     initPolling() {
@@ -142,12 +138,17 @@ export default {
     },
     checkLocationHash() {
       const hash = getLocationHash();
-      const element = document.getElementById(hash);
+      const noteId = hash.replace(/^note_/, '');
 
-      if (hash && element) {
-        this.setTargetNoteHash(hash);
-        this.scrollToNoteIfNeeded($(element));
-      }
+      this.notes.forEach(discussion => {
+        if (discussion.notes) {
+          discussion.notes.forEach(note => {
+            if (`${note.id}` === `${noteId}`) {
+              this.toggleDiscussion({ discussionId: discussion.id });
+            }
+          });
+        }
+      });
     },
   },
 };
