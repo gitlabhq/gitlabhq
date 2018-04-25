@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Build::Play do
   let(:user) { create(:user) }
-  let(:project) { build.project }
-  let(:build) { create(:ci_build, :manual) }
+  let(:project) { create(:project, :stubbed_repository) }
+  let(:build) { create(:ci_build, :manual, project: project) }
   let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 
   subject { described_class.new(status) }
@@ -46,6 +46,8 @@ describe Gitlab::Ci::Status::Build::Play do
       context 'when user can not push to the branch' do
         before do
           build.project.add_developer(user)
+          create(:protected_branch, :masters_can_push,
+                 name: build.ref, project: project)
         end
 
         it { is_expected.not_to have_action }

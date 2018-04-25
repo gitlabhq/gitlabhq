@@ -65,11 +65,11 @@ module Gitlab
 
     # Init new repository
     #
-    # storage - project's storage name
+    # storage - the shard key
     # name - project disk path
     #
     # Ex.
-    #   create_repository("/path/to/storage", "gitlab/gitlab-ci")
+    #   create_repository("default", "gitlab/gitlab-ci")
     #
     def create_repository(storage, name)
       relative_path = name.dup
@@ -291,13 +291,13 @@ module Gitlab
     # Add empty directory for storing repositories
     #
     # Ex.
-    #   add_namespace("/path/to/storage", "gitlab")
+    #   add_namespace("default", "gitlab")
     #
     def add_namespace(storage, name)
       Gitlab::GitalyClient.migrate(:add_namespace,
                                    status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
-          gitaly_namespace_client(storage).add(name)
+          Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
         else
           path = full_path(storage, name)
           FileUtils.mkdir_p(path, mode: 0770) unless exists?(storage, name)
@@ -313,13 +313,13 @@ module Gitlab
     # Every repository inside this directory will be removed too
     #
     # Ex.
-    #   rm_namespace("/path/to/storage", "gitlab")
+    #   rm_namespace("default", "gitlab")
     #
     def rm_namespace(storage, name)
       Gitlab::GitalyClient.migrate(:remove_namespace,
                                status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
-          gitaly_namespace_client(storage).remove(name)
+          Gitlab::GitalyClient::NamespaceService.new(storage).remove(name)
         else
           FileUtils.rm_r(full_path(storage, name), force: true)
         end
@@ -338,7 +338,8 @@ module Gitlab
       Gitlab::GitalyClient.migrate(:rename_namespace,
                                    status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
-          gitaly_namespace_client(storage).rename(old_name, new_name)
+          Gitlab::GitalyClient::NamespaceService.new(storage)
+            .rename(old_name, new_name)
         else
           break false if exists?(storage, new_name) || !exists?(storage, old_name)
 
@@ -374,7 +375,8 @@ module Gitlab
       Gitlab::GitalyClient.migrate(:namespace_exists,
                                    status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
-          gitaly_namespace_client(storage).exists?(dir_name)
+          Gitlab::GitalyClient::NamespaceService.new(storage)
+            .exists?(dir_name)
         else
           File.exist?(full_path(storage, dir_name))
         end
@@ -398,7 +400,7 @@ module Gitlab
     def full_path(storage, dir_name)
       raise ArgumentError.new("Directory name can't be blank") if dir_name.blank?
 
-      File.join(storage, dir_name)
+      File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, dir_name)
     end
 
     def gitlab_shell_projects_path
@@ -473,14 +475,6 @@ module Gitlab
       # Don't pass along the entire parent environment to prevent gitlab-shell
       # from wasting I/O by searching through GEM_PATH
       Bundler.with_original_env { Popen.popen(cmd, nil, vars) }
-    end
-
-    def gitaly_namespace_client(storage_path)
-      storage, _value = Gitlab.config.repositories.storages.find do |storage, value|
-        value.legacy_disk_path == storage_path
-      end
-
-      Gitlab::GitalyClient::NamespaceService.new(storage)
     end
 
     def git_timeout

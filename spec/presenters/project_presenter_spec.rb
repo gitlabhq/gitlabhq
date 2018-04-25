@@ -208,6 +208,17 @@ describe ProjectPresenter do
       it 'returns nil if user cannot push' do
         expect(presenter.new_file_anchor_data).to be_nil
       end
+
+      context 'when the project is empty' do
+        let(:project) { create(:project, :empty_repo) }
+
+        # Since we protect the default branch for empty repos
+        it 'is empty for a developer' do
+          project.add_developer(user)
+
+          expect(presenter.new_file_anchor_data).to be_nil
+        end
+      end
     end
 
     describe '#readme_anchor_data' do

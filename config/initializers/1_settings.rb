@@ -1,4 +1,4 @@
-require_dependency File.expand_path('../../lib/gitlab', __dir__) # Load Gitlab as soon as possible
+require_relative '../settings'
 
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})

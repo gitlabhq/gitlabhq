@@ -1,9 +1,8 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
 import $ from 'jquery';
-import '~/gl_dropdown';
+import GLDropdown from '~/gl_dropdown';
 import '~/lib/utils/common_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('glDropdown', function describeDropdown() {
   preloadFixtures('static/gl_dropdown.html.raw');
@@ -138,13 +137,13 @@ describe('glDropdown', function describeDropdown() {
       expect(this.dropdownContainerElement).toHaveClass('show');
       const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
-        spyOn(urlUtils, 'visitUrl').and.stub();
+        const visitUrl = spyOnDependency(GLDropdown, 'visitUrl').and.stub();
         navigateWithKeys('enter', null, () => {
           expect(this.dropdownContainerElement).not.toHaveClass('show');
           const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
           expect(link).toHaveClass('is-active');
           const linkedLocation = link.attr('href');
-          if (linkedLocation && linkedLocation !== '#') expect(urlUtils.visitUrl).toHaveBeenCalledWith(linkedLocation);
+          if (linkedLocation && linkedLocation !== '#') expect(visitUrl).toHaveBeenCalledWith(linkedLocation);
         });
       });
     });

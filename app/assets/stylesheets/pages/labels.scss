@@ -315,6 +315,10 @@
   display: inline-flex;
   vertical-align: top;
 
+  &:hover .color-label {
+    text-decoration: underline;
+  }
+
   .label {
     vertical-align: inherit;
     font-size: $label-font-size;
