@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import IdeSidebar from './ide_side_bar.vue';
 import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
@@ -32,34 +32,40 @@ export default {
     ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
+  methods: {
+    ...mapActions(['toggleFileFinder']),
+    mousetrapStopCallback(e, el, combo) {
+      if (combo === 't' && el.classList.contains('dropdown-input-field')) {
+        return true;
+      } else if (combo === 'command+p' || combo === 'ctrl+p') {
+        return false;
+      }
+
+      return originalStopCallback(e, el, combo);
+    },
+  },
   mounted() {
     const returnValue = 'Are you sure you want to lose unsaved changes?';
     window.onbeforeunload = e => {
       if (!this.changedFiles.length) return undefined;
 
-      Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
-        if (e.preventDefault) {
-          e.preventDefault();
-        }
-
-        this.toggleFileFinder(!this.fileFindVisible);
+      Object.assign(e, {
+        returnValue,
       });
+      return returnValue;
+    };
 
-      Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
-    },
-    methods: {
-      ...mapActions(['toggleFileFinder']),
-      mousetrapStopCallback(e, el, combo) {
-        if (combo === 't' && el.classList.contains('dropdown-input-field')) {
-          return true;
-        } else if (combo === 'command+p' || combo === 'ctrl+p') {
-          return false;
-        }
+    Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
 
-        return originalStopCallback(e, el, combo);
-      },
-    },
-  };
+      this.toggleFileFinder(!this.fileFindVisible);
+    });
+
+    Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
+  },
+};
 </script>
 
 <template>
