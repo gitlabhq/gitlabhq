@@ -87,7 +87,7 @@
     <div
       :id="id"
       class="modal"
-      :class="id ? '' : 'show'"
+      :class="id ? '' : 'd-block'"
       role="dialog"
       tabindex="-1"
     >
@@ -166,7 +166,7 @@
     </div>
     <div
       v-if="!id"
-      class="modal-backdrop fade in"
+      class="modal-backdrop fade show"
     >
     </div>
   </div>

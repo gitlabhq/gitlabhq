@@ -79,20 +79,19 @@ export default {
     <form
       slot="body"
       @submit.prevent="createEntryInStore"
+      class="form-group row append-bottom-0"
     >
-      <fieldset class="form-group row append-bottom-0">
-        <label class="label-light col-sm-3">
-          {{ formLabelName }}
-        </label>
-        <div class="col-sm-9">
-          <input
-            type="text"
-            class="form-control"
-            v-model="entryName"
-            ref="fieldName"
-          />
-        </div>
-      </fieldset>
+      <label class="label-light col-form-label col-sm-3">
+        {{ formLabelName }}
+      </label>
+      <div class="col-sm-9">
+        <input
+          type="text"
+          class="form-control"
+          v-model="entryName"
+          ref="fieldName"
+        />
+      </div>
     </form>
   </deprecated-modal>
 </template>
