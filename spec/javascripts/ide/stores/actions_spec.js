@@ -1,6 +1,5 @@
-import * as urlUtils from '~/lib/utils/url_utility';
+import actions, { stageAllChanges, unstageAllChanges, toggleFileFinder } from '~/ide/stores/actions';
 import store from '~/ide/stores';
-import * as actions from '~/ide/stores/actions';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
@@ -17,12 +16,12 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      spyOn(urlUtils, 'visitUrl');
+      const visitUrl = spyOnDependency(actions, 'visitUrl');
 
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
+          expect(visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -298,7 +297,7 @@ describe('Multi-file store actions', () => {
       store.state.changedFiles.push(file(), file('new'));
 
       testAction(
-        actions.stageAllChanges,
+        stageAllChanges,
         null,
         store.state,
         [
@@ -316,7 +315,7 @@ describe('Multi-file store actions', () => {
       store.state.stagedFiles.push(file(), file('new'));
 
       testAction(
-        actions.unstageAllChanges,
+        unstageAllChanges,
         null,
         store.state,
         [
@@ -338,6 +337,19 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
+        done,
+      );
     });
   });
 });
