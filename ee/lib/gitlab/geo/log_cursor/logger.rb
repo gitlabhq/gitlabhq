@@ -1,43 +1,57 @@
 module Gitlab
   module Geo
     module LogCursor
-      module Logger
+      class Logger
+        attr_accessor :klass
+
         PID = Process.pid.freeze
 
-        def self.event_info(created_at, message, params = {})
-          args = { pid: PID,
-                   class: caller_name,
-                   message: message,
-                   cursor_delay_s: cursor_delay(created_at) }.merge(params)
+        def initialize(klass, level = Rails.logger.level)
+          @klass = klass
+          geo_logger.build.level = level
+        end
+
+        def event_info(created_at, message, params = {})
+          args = base_log_data(message).merge(
+            cursor_delay_s: cursor_delay(created_at)
+          ).merge(params)
 
           geo_logger.info(args)
         end
 
-        def self.info(message, params = {})
-          geo_logger.info({ pid: PID, class: caller_name, message: message }.merge(params))
+        def info(message, params = {})
+          geo_logger.info(base_log_data(message).merge(params))
         end
 
-        def self.error(message, params = {})
-          geo_logger.error({ pid: PID, class: caller_name, message: message }.merge(params))
+        def error(message, params = {})
+          geo_logger.error(base_log_data(message).merge(params))
         end
 
-        def self.debug(message, params = {})
-          geo_logger.debug({ pid: PID, class: caller_name, message: message }.merge(params))
+        def debug(message, params = {})
+          geo_logger.debug(base_log_data(message).merge(params))
         end
 
-        def self.geo_logger
+        private
+
+        def geo_logger
           Gitlab::Geo::Logger
         end
 
-        def self.caller_name
-          caller_locations[1].to_s.rpartition('/').last[/[a-z_]*/]&.classify
+        def caller_name
+          klass.name
         end
 
-        def self.cursor_delay(created_at)
+        def cursor_delay(created_at)
           (Time.now - created_at).to_f.round(3)
         end
 
-        private_class_method :caller_name, :cursor_delay
+        def base_log_data(message)
+          {
+            pid: PID,
+            class: caller_name,
+            message: message
+          }
+        end
       end
     end
   end
