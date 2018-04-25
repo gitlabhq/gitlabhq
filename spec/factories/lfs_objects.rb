@@ -7,7 +7,20 @@ FactoryBot.define do
   end
 
   trait :with_file do
-    file { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png") }
+    file do
+      src_path = Rails.root + "spec/fixtures/dk.png"
+      tmp_file = Tempfile.new("lfs-file")
+      File.open(src_path, 'r+b') do |stream|
+        IO.copy_stream(stream, tmp_file.path)
+      end
+      tmp_file.close
+
+      UploadedFile.new(tmp_file.path,
+        filename: oid[4..-1],
+        content_type: 'application/octet-stream',
+        sha256: Digest::SHA256.file(tmp_file.path).hexdigest,
+        remote_id: nil)
+    end
   end
 
   # The uniqueness constraint means we can't use the correct OID for all LFS
