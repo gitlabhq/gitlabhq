@@ -111,7 +111,7 @@ namespace :gitlab do
 
           puts "  - #{project.full_path} (id: #{project.id})".color(:red)
 
-          return if counter >= limit # rubocop:disable Lint/NonLocalExitFromIterator
+          return if counter >= limit # rubocop:disable Lint/NonLocalExitFromIterator, Cop/AvoidReturnFromBlocks
         end
       end
     end
@@ -132,7 +132,7 @@ namespace :gitlab do
 
           puts "  - #{upload.path} (id: #{upload.id})".color(:red)
 
-          return if counter >= limit # rubocop:disable Lint/NonLocalExitFromIterator
+          return if counter >= limit # rubocop:disable Lint/NonLocalExitFromIterator, Cop/AvoidReturnFromBlocks
         end
       end
     end

@@ -38,6 +38,15 @@ export default class DecorationsController {
     );
   }
 
+  hasDecorations(model) {
+    return this.decorations.has(model.url);
+  }
+
+  removeDecorations(model) {
+    this.decorations.delete(model.url);
+    this.editorDecorations.delete(model.url);
+  }
+
   dispose() {
     this.decorations.clear();
     this.editorDecorations.clear();

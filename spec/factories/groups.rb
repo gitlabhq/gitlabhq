@@ -5,6 +5,14 @@ FactoryBot.define do
     type 'Group'
     owner nil
 
+    after(:create) do |group|
+      if group.owner
+        # We could remove this after we have proper constraint:
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/43292
+        raise "Don't set owner for groups, use `group.add_owner(user)` instead"
+      end
+    end
+
     trait :public do
       visibility_level Gitlab::VisibilityLevel::PUBLIC
     end
