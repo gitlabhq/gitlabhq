@@ -434,12 +434,12 @@ ActiveRecord::Schema.define(version: 20180425205249) do
     t.integer "config_source"
     t.boolean "protected"
     t.integer "failure_reason"
-    t.integer "iid_per_project"
+    t.integer "iid"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
   add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
-  add_index "ci_pipelines", ["project_id", "iid_per_project"], name: "index_ci_pipelines_on_project_id_and_iid_per_project", unique: true, where: "(iid_per_project IS NOT NULL)", using: :btree
+  add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree

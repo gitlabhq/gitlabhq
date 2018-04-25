@@ -6,10 +6,10 @@ class AddIndexConstraintsToPipelineIid < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_pipelines, [:project_id, :iid_per_project], unique: true, where: 'iid_per_project IS NOT NULL'
+    add_concurrent_index :ci_pipelines, [:project_id, :iid], unique: true, where: 'iid IS NOT NULL'
   end
 
   def down
-    remove_concurrent_index :ci_pipelines, [:project_id, :iid_per_project]
+    remove_concurrent_index :ci_pipelines, [:project_id, :iid]
   end
 end
