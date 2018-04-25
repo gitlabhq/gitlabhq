@@ -2,7 +2,8 @@ module QA
   module Factory
     module Resource
       class Branch < Factory::Base
-        attr_accessor :project, :branch_name, :allow_to_push, :protected
+        attr_accessor :project, :branch_name,
+                      :allow_to_push, :allow_to_merge, :protected
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'protected-branch-project'
@@ -23,6 +24,7 @@ module QA
         def initialize
           @branch_name = 'test/branch'
           @allow_to_push = true
+          @allow_to_merge = true
           @protected = false
         end
 
@@ -61,6 +63,16 @@ module QA
                 page.allow_devs_and_masters_to_push
               else
                 page.allow_no_one_to_push
+              end
+
+              if allow_to_merge
+                page.allow_devs_and_masters_to_merge
+              else
+                page.allow_no_one_to_merge
+              end
+
+              page.wait(reload: false) do
+                !page.first('.btn-create').disabled?
               end
 
               page.protect_branch

@@ -11,6 +11,13 @@ module QA
           view 'app/views/projects/protected_branches/_create_protected_branch.html.haml' do
             element :allowed_to_push_select
             element :allowed_to_push_dropdown
+            element :allowed_to_merge_select
+            element :allowed_to_merge_dropdown
+          end
+
+          view 'app/views/projects/protected_branches/_update_protected_branch.html.haml' do
+            element :allowed_to_push
+            element :allowed_to_merge
           end
 
           view 'app/views/projects/protected_branches/shared/_branches_list.html.haml' do
@@ -30,11 +37,19 @@ module QA
           end
 
           def allow_no_one_to_push
-            allow_to_push('No one')
+            click_allow(:push, 'No one')
           end
 
           def allow_devs_and_masters_to_push
-            allow_to_push('Developers + Masters')
+            click_allow(:push, 'Developers + Masters')
+          end
+
+          def allow_no_one_to_merge
+            click_allow(:merge, 'No one')
+          end
+
+          def allow_devs_and_masters_to_merge
+            click_allow(:merge, 'Developers + Masters')
           end
 
           def protect_branch
@@ -55,11 +70,16 @@ module QA
 
           private
 
-          def allow_to_push(text)
-            click_element :allowed_to_push_select
+          def click_allow(action, text)
+            click_element :"allowed_to_#{action}_select"
 
-            within_element(:allowed_to_push_dropdown) do
+
+            within_element(:"allowed_to_#{action}_dropdown") do
               click_on text
+
+              wait(reload: false) do
+                has_css?('.is-active')
+              end
             end
           end
         end
