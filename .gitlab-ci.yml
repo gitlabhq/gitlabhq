@@ -289,7 +289,6 @@ stages:
 # Trigger a package build in omnibus-gitlab repository
 #
 package-and-qa:
-  <<: *dedicated-runner
   image: ruby:2.4-alpine
   before_script: []
   stage: build
