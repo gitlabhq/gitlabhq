@@ -181,7 +181,6 @@ FactoryBot.define do
         # an API that isn't running
         project.gitlab_shell.rm_directory(project.repository_storage,
                                           File.join("#{project.disk_path}.git", 'hooks'))
-<<<<<<< HEAD
       end
     end
 
@@ -194,8 +193,6 @@ FactoryBot.define do
 
       after(:create) do |project, evaluator|
         project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
-=======
->>>>>>> upstream/master
       end
     end
 
