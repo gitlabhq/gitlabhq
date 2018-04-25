@@ -13,7 +13,7 @@
       .panel
         .panel-heading.alert.alert-danger
           Last repository check
-          = "(#{time_ago_in_words(@project.last_repository_check_at)} ago)"
+          = "(#{time_ago_with_tooltip(@project.last_repository_check_at)})"
           failed. See
           = link_to 'repocheck.log', admin_logs_path
           for error messages.

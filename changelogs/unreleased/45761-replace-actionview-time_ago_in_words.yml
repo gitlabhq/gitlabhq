@@ -1,0 +1,5 @@
+---
+title: Replace time_ago_in_words with JS-based one
+merge_request: 18607
+author: Takuya Noguchi
+type: performance

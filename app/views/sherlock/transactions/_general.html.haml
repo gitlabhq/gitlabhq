@@ -35,5 +35,4 @@
         %span.light
           #{t('sherlock.finished_at')}:
         %strong
-          = time_ago_in_words(@transaction.finished_at)
-          = t('sherlock.ago')
+          = time_ago_with_tooltip @transaction.finished_at

@@ -25,7 +25,7 @@
 
   %td
     - if trigger.last_used
-      #{time_ago_in_words(trigger.last_used)} ago
+      = time_ago_with_tooltip trigger.last_used
     - else
       Never
 

@@ -19,7 +19,7 @@ feature 'Admin uses repository checks' do
     expect(page).to have_content('Repository check was triggered')
   end
 
-  scenario 'to see a single failed repository check' do
+  scenario 'to see a single failed repository check', :js do
     project = create(:project)
     project.update_columns(
       last_repository_check_failed: true,

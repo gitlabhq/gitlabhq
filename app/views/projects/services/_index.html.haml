@@ -27,5 +27,4 @@
             = service.description
           %td.light
             - if service.updated_at.present?
-              = time_ago_in_words service.updated_at
-              ago
+              = time_ago_with_tooltip service.updated_at
