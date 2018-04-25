@@ -283,7 +283,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#sanitized_repo_path' do
+  describe '#sanitize_repo_path' do
     let(:project) { create(:project, :repository) }
     let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
 
