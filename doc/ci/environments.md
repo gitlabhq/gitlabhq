@@ -260,6 +260,8 @@ are unsupported in environment name context:
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in

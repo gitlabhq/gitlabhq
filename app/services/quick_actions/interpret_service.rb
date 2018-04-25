@@ -138,8 +138,10 @@ module QuickActions
         'Remove assignee'
       end
     end
-    explanation do
-      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
+    explanation do |users = nil|
+      assignees = issuable.assignees
+      assignees &= users if users.present? && issuable.allows_multiple_assignees?
+      "Removes #{'assignee'.pluralize(assignees.size)} #{assignees.map(&:to_reference).to_sentence}."
     end
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
@@ -265,6 +267,26 @@ module QuickActions
         @updates[:label_ids] += label_ids
 
         @updates[:label_ids].uniq!
+      end
+    end
+
+    desc 'Copy labels and milestone from other issue or merge request'
+    explanation do |source_issuable|
+      "Copy labels and milestone from #{source_issuable.to_reference}."
+    end
+    params '#issue | !merge_request'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    parse_params do |issuable_param|
+      extract_references(issuable_param, :issue).first ||
+        extract_references(issuable_param, :merge_request).first
+    end
+    command :copy_metadata do |source_issuable|
+      if source_issuable.present? && source_issuable.project.id == issuable.project.id
+        @updates[:add_label_ids] = source_issuable.labels.map(&:id)
+        @updates[:milestone_id] = source_issuable.milestone.id if source_issuable.milestone
       end
     end
 
