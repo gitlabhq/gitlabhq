@@ -13,6 +13,7 @@ following locations:
 - [Broadcast Messages](broadcast_messages.md)
 - [Project-level Variables](project_level_variables.md)
 - [Group-level Variables](group_level_variables.md)
+- [Code Snippets](snippets.md)
 - [Commits](commits.md)
 - [Custom Attributes](custom_attributes.md)
 - [Deployments](deployments.md)
