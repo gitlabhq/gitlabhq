@@ -41,7 +41,7 @@ shared_examples 'cleans temporary repositories' do
       allow(subject).to receive(:fetch_geo_mirror)
 
       expect(gitlab_shell).to receive(:exists?).and_return(true)
-      expect(gitlab_shell).to receive(:remove_repository).with(project.repository_storage_path, temp_repo_path)
+      expect(gitlab_shell).to receive(:remove_repository).with(project.repository_storage, temp_repo_path)
 
       subject.execute
     end

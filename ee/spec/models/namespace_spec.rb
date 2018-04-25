@@ -114,7 +114,7 @@ describe Namespace do
         allow(parent).to receive(:full_path).and_return(new_path)
 
         allow(gitlab_shell).to receive(:mv_namespace)
-          .with(project_legacy_storage.repository_storage_path, full_path_was, new_path)
+          .with(project_legacy_storage.repository_storage, full_path_was, new_path)
           .and_return(true)
 
         expect { parent.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(3)

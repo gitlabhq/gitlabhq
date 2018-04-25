@@ -23,13 +23,13 @@ describe Geo::RepositoryVerification::Primary::BatchWorker, :postgresql, :clean_
       end
 
       it 'skips backfill for repositories on other shards' do
-        unhealthy_not_verified = create(:project, repository_storage: 'broken')
+        create(:project, repository_storage: 'broken')
         unhealthy_outdated = create(:project, repository_storage: 'broken')
 
         create(:repository_state, :repository_outdated, project: unhealthy_outdated)
 
         # Make the shard unhealthy
-        FileUtils.rm_rf(unhealthy_not_verified.repository_storage_path)
+        Gitlab::Shell.new.rm_directory('broken', '/')
 
         expect(Geo::RepositoryVerification::Primary::ShardWorker).to receive(:perform_async).with(healthy_shard)
         expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('broken')

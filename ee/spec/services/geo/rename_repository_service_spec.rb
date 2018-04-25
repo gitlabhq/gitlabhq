@@ -22,7 +22,7 @@ describe Geo::RenameRepositoryService do
 
       it 'raises an error when project repository can not be moved' do
         allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
-          .with(project.repository_storage_path, old_path, new_path)
+          .with(project.repository_storage, old_path, new_path)
           .and_return(false)
 
         expect { service.execute }.to raise_error(Geo::RepositoryCannotBeRenamed, "Repository #{old_path} could not be renamed to #{new_path}")
@@ -30,11 +30,11 @@ describe Geo::RenameRepositoryService do
 
       it 'raises an error when wiki repository can not be moved' do
         allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
-          .with(project.repository_storage_path, old_path, new_path)
+          .with(project.repository_storage, old_path, new_path)
           .and_return(true)
 
         allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
-          .with(project.repository_storage_path, "#{old_path}.wiki", "#{new_path}.wiki")
+          .with(project.repository_storage, "#{old_path}.wiki", "#{new_path}.wiki")
           .and_return(false)
 
         expect { service.execute }.to raise_error(Geo::RepositoryCannotBeRenamed, "Repository #{old_path} could not be renamed to #{new_path}")

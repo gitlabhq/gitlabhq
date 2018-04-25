@@ -33,18 +33,18 @@ describe Geo::RepositoryDestroyService do
       it 'removes the repository from disk' do
         project.delete
 
-        expect(project.gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(project.gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
 
         service.execute
 
-        expect(project.gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+        expect(project.gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
       end
 
       it 'cleans up deleted repositories' do
         project.delete
 
         expect(::GitlabShellWorker).to receive(:perform_in)
-          .with(5.minutes, :remove_repository, project.repository_storage_path, "#{project.disk_path}+#{project.id}+deleted")
+          .with(5.minutes, :remove_repository, project.repository_storage, "#{project.disk_path}+#{project.id}+deleted")
           .and_return(true)
 
         service.execute
@@ -55,18 +55,18 @@ describe Geo::RepositoryDestroyService do
       it 'removes the repository from disk' do
         project.delete
 
-        expect(project.gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(project.gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
 
         service.execute
 
-        expect(project.gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+        expect(project.gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
       end
 
       it 'cleans up deleted repositories' do
         project.delete
 
         expect(::GitlabShellWorker).to receive(:perform_in)
-          .with(5.minutes, :remove_repository, project.repository_storage_path, "#{project.disk_path}+#{project.id}+deleted")
+          .with(5.minutes, :remove_repository, project.repository_storage, "#{project.disk_path}+#{project.id}+deleted")
           .and_return(true)
 
         service.execute

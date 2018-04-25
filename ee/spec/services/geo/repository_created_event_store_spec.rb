@@ -38,8 +38,7 @@ describe Geo::RepositoryCreatedEventStore do
           repo_path: project.disk_path,
           wiki_path: project.wiki.disk_path,
           project_name: project.name,
-          repository_storage_name: project.repository_storage,
-          repository_storage_path: project.repository_storage_path
+          repository_storage_name: project.repository_storage
         )
       end
 

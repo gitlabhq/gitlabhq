@@ -53,8 +53,8 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
     select_all("SELECT id, path FROM routes WHERE path = '#{quote_string(path)}'").present?
   end
 
-  def path_exists?(path, repository_storage_path)
-    repository_storage_path && gitlab_shell.exists?(repository_storage_path, path)
+  def path_exists?(shard, repository_storage_path)
+    repository_storage_path && gitlab_shell.exists?(shard, repository_storage_path)
   end
 
   # Accepts invalid path like test.git and returns test_git or
@@ -70,8 +70,8 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
   def check_routes(base, counter, path)
     route_exists = route_exists?(path)
 
-    Gitlab.config.repositories.storages.each_value do |storage|
-      if route_exists || path_exists?(path, storage.legacy_disk_path)
+    Gitlab.config.repositories.storages.each do |shard, storage|
+      if route_exists || path_exists?(shard, storage.legacy_disk_path)
         counter += 1
         path = "#{base}#{counter}"
 

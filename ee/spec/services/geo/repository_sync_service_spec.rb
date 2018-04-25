@@ -255,12 +255,12 @@ describe Geo::RepositorySyncService do
         expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
 
         expect(subject.gitlab_shell).to receive(:add_namespace).with(
-          project.repository_storage_path,
+          project.repository_storage,
           "@failed-geo-sync/#{File.dirname(repository.disk_path)}"
         ).and_call_original
 
         expect(subject.gitlab_shell).to receive(:add_namespace).with(
-          project.repository_storage_path,
+          project.repository_storage,
           File.dirname(repository.disk_path)
         ).and_call_original
 

@@ -10,6 +10,5 @@ describe Geo::RepositoryCreatedEvent, type: :model do
     it { is_expected.to validate_presence_of(:project_name) }
     it { is_expected.to validate_presence_of(:repo_path) }
     it { is_expected.to validate_presence_of(:repository_storage_name) }
-    it { is_expected.to validate_presence_of(:repository_storage_path) }
   end
 end

@@ -8,7 +8,6 @@ module Geo
       Geo::RepositoryDeletedEvent.new(
         project: project,
         repository_storage_name: project.repository.storage,
-        repository_storage_path: project.repository_storage_path,
         deleted_path: params.fetch(:repo_path),
         deleted_wiki_path: params.fetch(:wiki_path),
         deleted_project_name: project.name)

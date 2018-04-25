@@ -45,12 +45,6 @@ RSpec.describe Geo::DeletedProject, type: :model do
     end
   end
 
-  describe '#repository_storage_path' do
-    it 'returns the repository storage path' do
-      expect(subject.repository_storage_path).to eq(File.absolute_path('tmp/tests/storage_foo'))
-    end
-  end
-
   describe '#wiki' do
     it 'returns a valid wiki repository' do
       expect(subject.wiki).to be_kind_of(ProjectWiki)
@@ -66,9 +60,9 @@ RSpec.describe Geo::DeletedProject, type: :model do
 
   describe '#run_after_commit' do
     it 'runs the given block changing self to the caller' do
-      expect(subject).to receive(:repository_storage_path).once
+      expect(subject).to receive(:repository_storage).once
 
-      subject.run_after_commit { self.repository_storage_path }
+      subject.run_after_commit { self.repository_storage }
     end
   end
 end

@@ -219,7 +219,8 @@ module TestEnv
   end
 
   def copy_repo(project, bare_repo:, refs:)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.disk_path}.git")
+    target_repo_path = File.expand_path(repos_path + "/#{project.disk_path}.git")
+
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -227,7 +228,7 @@ module TestEnv
   end
 
   def repos_path
-    Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+    @repos_path ||= Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
   end
 
   def backup_path

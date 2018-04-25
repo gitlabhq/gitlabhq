@@ -24,13 +24,13 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
   describe '#perform' do
     context 'additional shards' do
       it 'skips backfill for repositories on other shards' do
-        unhealthy_not_synced = create(:project, group: synced_group, repository_storage: 'broken')
+        create(:project, group: synced_group, repository_storage: 'broken')
         unhealthy_dirty = create(:project, group: synced_group, repository_storage: 'broken')
 
         create(:geo_project_registry, :synced, :repository_dirty, project: unhealthy_dirty)
 
         # Make the shard unhealthy
-        FileUtils.rm_rf(unhealthy_not_synced.repository_storage_path)
+        Gitlab::Shell.new.rm_directory('broken', '/')
 
         expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(project_in_synced_group.repository.storage)
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
