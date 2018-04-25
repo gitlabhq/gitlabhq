@@ -104,6 +104,7 @@ module Projects
 
     def rollback_repository(old_path, new_path)
       # There is a possibility project does not have repository or wiki
+<<<<<<< HEAD
       return true unless repo_exists?(old_path)
 
       mv_repository(old_path, new_path)
@@ -114,6 +115,8 @@ module Projects
     end
 
     def mv_repository(from_path, to_path)
+=======
+>>>>>>> upstream/master
       return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
 
       gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)

@@ -83,17 +83,17 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
   end
 
   def move_namespace(namespace_id, path_was, path)
-    repository_storage_paths = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{namespace_id}").map do |row|
-      Gitlab.config.repositories.storages[row['repository_storage']].legacy_disk_path
+    repository_storages = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{namespace_id}").map do |row|
+      row['repository_storage']
     end.compact
 
-    # Move the namespace directory in all storages paths used by member projects
-    repository_storage_paths.each do |repository_storage_path|
+    # Move the namespace directory in all storages used by member projects
+    repository_storages.each do |repository_storage|
       # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, path_was)
+      gitlab_shell.add_namespace(repository_storage, path_was)
 
-      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+      unless gitlab_shell.mv_namespace(repository_storage, path_was, path)
+        Rails.logger.error "Exception moving on shard #{repository_storage} from #{path_was} to #{path}"
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs

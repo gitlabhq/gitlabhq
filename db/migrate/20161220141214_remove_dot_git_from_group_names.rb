@@ -60,7 +60,11 @@ class RemoveDotGitFromGroupNames < ActiveRecord::Migration
 
   def move_namespace(group_id, path_was, path)
     repository_storages = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{group_id}").map do |row|
+<<<<<<< HEAD
       Gitlab.config.repositories.storages[row['repository_storage']].legacy_disk_path
+=======
+      row['repository_storage']
+>>>>>>> upstream/master
     end.compact
 
     # Move the namespace directory in all storages paths used by member projects
