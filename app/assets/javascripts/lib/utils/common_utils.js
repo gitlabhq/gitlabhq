@@ -1,14 +1,14 @@
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
 
-export const getPagePath = (index = 0) =>
-  $('body')
-    .attr('data-page')
-    .split(':')[index];
+export const getPagePath = (index = 0) => {
+  const page = $('body').attr('data-page') || '';
+
+  return page.split(':')[index];
+};
 
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
@@ -60,11 +60,7 @@ export const rstrip = val => {
 export const updateTooltipTitle = ($tooltipEl, newTitle) =>
   $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
 
-export const disableButtonIfEmptyField = (
-  fieldSelector,
-  buttonSelector,
-  eventName = 'input',
-) => {
+export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventName = 'input') => {
   const field = $(fieldSelector);
   const closestSubmit = field.closest('form').find(buttonSelector);
   if (rstrip(field.val()) === '') {
@@ -88,9 +84,7 @@ export const handleLocationHash = () => {
   // This is required to handle non-unicode characters in hash
   hash = decodeURIComponent(hash);
 
-  const target =
-    document.getElementById(hash) ||
-    document.getElementById(`user-content-${hash}`);
+  const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');
@@ -136,9 +130,7 @@ export const parseUrlPathname = url => {
   const parsedUrl = parseUrl(url);
   // parsedUrl.pathname will return an absolute path for Firefox and a relative path for IE11
   // We have to make sure we always have an absolute path.
-  return parsedUrl.pathname.charAt(0) === '/'
-    ? parsedUrl.pathname
-    : `/${parsedUrl.pathname}`;
+  return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
 // We can trust that each param has one & since values containing & will be encoded
@@ -213,15 +205,13 @@ export const insertText = (target, text) => {
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
 
-  const insertedText =
-    text instanceof Function ? text(textBefore, textAfter) : text;
+  const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
   const newText = textBefore + insertedText + textAfter;
 
   // eslint-disable-next-line no-param-reassign
   target.value = newText;
   // eslint-disable-next-line no-param-reassign
-  target.selectionStart = target.selectionEnd =
-    selectionStart + insertedText.length;
+  target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
   target.dispatchEvent(new Event('input'));
@@ -441,9 +431,7 @@ export const setCiStatusFavicon = pageUrl =>
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
 
-  return `<svg ${classAttribute}><use xlink:href="${
-    gon.sprite_icons
-  }#${icon}" /></svg>`;
+  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
 };
 
 /**
@@ -465,10 +453,7 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
     const val = obj[prop];
 
     if (options.deep && (isObject(val) || Array.isArray(val))) {
-      result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(
-        val,
-        options,
-      );
+      result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(val, options);
     } else {
       result[convertToCamelCase(prop)] = obj[prop];
     }

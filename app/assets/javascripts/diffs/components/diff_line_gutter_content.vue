@@ -20,6 +20,10 @@ export default {
       type: String,
       required: true,
     },
+    contextLinesPath: {
+      type: String,
+      required: true,
+    },
     lineType: {
       type: String,
       required: false,
@@ -50,10 +54,6 @@ export default {
       required: false,
       default: false,
     },
-    contextLinesPath: {
-      type: String,
-      required: true,
-    },
     isBottom: {
       type: Boolean,
       required: false,
@@ -79,7 +79,7 @@ export default {
     isMetaLine() {
       return this.lineType === OLD_NO_NEW_LINE_TYPE || this.lineType === NEW_NO_NEW_LINE_TYPE;
     },
-    getLineHref() {
+    lineHref() {
       return this.lineCode ? `#${this.lineCode}` : '#';
     },
     shouldShowCommentButton() {
@@ -98,7 +98,7 @@ export default {
     hasDiscussions() {
       return this.discussions.length > 0;
     },
-    shoulShowAvatarsOnGutter() {
+    shouldShowAvatarsOnGutter() {
       let render = this.hasDiscussions && this.showCommentButton;
 
       if (!this.lineType && this.linePosition === LINE_POSITION_RIGHT) {
@@ -189,11 +189,11 @@ export default {
       <a
         v-if="lineNumber"
         :data-linenumber="lineNumber"
-        :href="getLineHref"
+        :href="lineHref"
       >
       </a>
       <diff-gutter-avatars
-        v-if="shoulShowAvatarsOnGutter"
+        v-if="shouldShowAvatarsOnGutter"
         :discussions="discussions"
       />
     </template>

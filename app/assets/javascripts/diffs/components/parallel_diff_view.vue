@@ -50,9 +50,9 @@ export default {
       };
     },
     handleMouse(e, line, isHover) {
-      const cell = e.target.closest('td');
-
       if (isHover) {
+        const cell = e.target.closest('td');
+
         if (this.$refs.leftLines.indexOf(cell) > -1) {
           this.hoveredLineCode = line.left.lineCode;
           this.hoveredSection = 'left';

@@ -86,10 +86,7 @@ export default {
       return line;
     },
     handleShowCommentForm(params) {
-      this.showCommentForm({
-        diffLines: this.diffLines,
-        lineCode: params.lineCode,
-      });
+      this.showCommentForm({ lineCode: params.lineCode });
     },
     isDiscussionExpanded(lineCode) {
       const discussions = this.discussionsByLineCode[lineCode];

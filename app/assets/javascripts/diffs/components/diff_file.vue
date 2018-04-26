@@ -31,7 +31,7 @@ export default {
     },
     handleScroll() {
       if (!this.updating) {
-        requestAnimationFrame(this.scrollUpdate);
+        requestAnimationFrame(this.scrollUpdate.bind(this));
         this.updating = true;
       }
     },

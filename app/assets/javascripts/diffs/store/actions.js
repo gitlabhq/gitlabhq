@@ -33,6 +33,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
+
   Cookies.set(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
 };
 

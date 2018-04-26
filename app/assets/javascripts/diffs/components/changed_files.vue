@@ -58,9 +58,10 @@ export default {
     },
     toggleWhitespacePath() {
       if (this.whitespaceVisible) {
-        return mergeUrlParams({w: 1}, window.location.href);
+        return mergeUrlParams({ w: 1 }, window.location.href);
       }
-      return mergeUrlParams({w: 0}, window.location.href);
+
+      return mergeUrlParams({ w: 0 }, window.location.href);
     },
   },
   mounted() {
@@ -85,11 +86,16 @@ export default {
     pluralize,
     setMaxWidth() {
       const { width } = this.mrTabsEl.getBoundingClientRect();
+
       this.maxWidth = `${width}px`;
     },
     handleScroll() {
+      if (!this.mrTabsEl || !this.$refs.wrapper) {
+        return;
+      }
+
       const mrTabsBottom = this.mrTabsEl.getBoundingClientRect().bottom;
-      const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom
+      const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom;
 
       const scrollPosition = window.scrollY;
 

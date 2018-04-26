@@ -10,26 +10,9 @@ import {
   MATCH_LINE_TYPE,
 } from '../constants';
 
-export const findDiffLineIndex = options => {
-  const { diffLines, lineCode, linePosition, formId } = options;
-
-  return _.findIndex(diffLines, l => {
-    const line = linePosition ? l[linePosition] : l;
-
-    if (!line) {
-      return null;
-    }
-
-    if (formId) {
-      return line.id === formId;
-    }
-
-    return line.lineCode === lineCode;
-  });
-};
-
-export const findDiffFile = (files, hash) =>
-  files.filter(file => file.fileHash === hash)[0];
+export function findDiffFile(files, hash) {
+  return files.filter(file => file.fileHash === hash)[0];
+}
 
 export const getReversePosition = linePosition => {
   if (linePosition === LINE_POSITION_RIGHT) {
@@ -39,7 +22,7 @@ export const getReversePosition = linePosition => {
   return LINE_POSITION_RIGHT;
 };
 
-export const getNoteFormData = params => {
+export function getNoteFormData(params) {
   const {
     note,
     noteableType,
@@ -65,8 +48,7 @@ export const getNoteFormData = params => {
   // TODO: @fatihacet - Double check empty strings
   const postData = {
     view: diffViewType,
-    line_type:
-      linePosition === LINE_POSITION_RIGHT ? NEW_LINE_TYPE : OLD_LINE_TYPE,
+    line_type: linePosition === LINE_POSITION_RIGHT ? NEW_LINE_TYPE : OLD_LINE_TYPE,
     merge_request_diff_head_sha: diffFile.diffRefs.headSha,
     in_reply_to_discussion_id: '',
     note_project_id: '',
@@ -85,7 +67,7 @@ export const getNoteFormData = params => {
     endpoint: noteableData.create_note_path,
     data: postData,
   };
-};
+}
 
 export const findIndexInInlineLines = (lines, lineNumbers) => {
   const { oldLineNumber, newLineNumber } = lineNumbers;
@@ -109,24 +91,16 @@ export const findIndexInParallelLines = (lines, lineNumbers) => {
   );
 };
 
-export const removeMatchLine = (diffFile, lineNumbers, bottom) => {
-  const indexForInline = findIndexInInlineLines(
-    diffFile.highlightedDiffLines,
-    lineNumbers,
-  );
-
-  const indexForParallel = findIndexInParallelLines(
-    diffFile.parallelDiffLines,
-    lineNumbers,
-  );
-
+export function removeMatchLine(diffFile, lineNumbers, bottom) {
+  const indexForInline = findIndexInInlineLines(diffFile.highlightedDiffLines, lineNumbers);
+  const indexForParallel = findIndexInParallelLines(diffFile.parallelDiffLines, lineNumbers);
   const factor = bottom ? 1 : -1;
 
   diffFile.highlightedDiffLines.splice(indexForInline + factor, 1);
   diffFile.parallelDiffLines.splice(indexForParallel + factor, 1);
-};
+}
 
-export const addLineReferences = (lines, lineNumbers, bottom) => {
+export function addLineReferences(lines, lineNumbers, bottom) {
   const { oldLineNumber, newLineNumber } = lineNumbers;
   const lineCount = lines.length;
   let matchLineIndex = -1;
@@ -138,12 +112,8 @@ export const addLineReferences = (lines, lineNumbers, bottom) => {
       matchLineIndex = index;
     } else {
       Object.assign(line, {
-        oldLine: bottom
-          ? oldLineNumber + index + 1
-          : oldLineNumber + index - lineCount,
-        newLine: bottom
-          ? newLineNumber + index + 1
-          : newLineNumber + index - lineCount,
+        oldLine: bottom ? oldLineNumber + index + 1 : oldLineNumber + index - lineCount,
+        newLine: bottom ? newLineNumber + index + 1 : newLineNumber + index - lineCount,
       });
     }
 
@@ -165,12 +135,10 @@ export const addLineReferences = (lines, lineNumbers, bottom) => {
   }
 
   return linesWithNumbers;
-};
+}
 
-export const addContextLines = options => {
+export function addContextLines(options) {
   const { inlineLines, parallelLines, contextLines, lineNumbers } = options;
-  const inlineIndex = findIndexInInlineLines(inlineLines, lineNumbers);
-  const parallelIndex = findIndexInParallelLines(parallelLines, lineNumbers);
   const normalizedParallelLines = contextLines.map(line => ({
     left: line,
     right: line,
@@ -180,7 +148,9 @@ export const addContextLines = options => {
     inlineLines.push(...contextLines);
     parallelLines.push(...normalizedParallelLines);
   } else {
+    const inlineIndex = findIndexInInlineLines(inlineLines, lineNumbers);
+    const parallelIndex = findIndexInParallelLines(parallelLines, lineNumbers);
     inlineLines.splice(inlineIndex, 0, ...contextLines);
     parallelLines.splice(parallelIndex, 0, ...normalizedParallelLines);
   }
-};
+}
