@@ -24,7 +24,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .get(state.endpoint)
     .then(res => {
       commit(types.SET_LOADING, false);
-      commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs);
+      commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
       commit(types.SET_DIFF_FILES, res.data.diff_files);
       return Vue.nextTick();
     })
