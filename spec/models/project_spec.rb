@@ -449,14 +449,6 @@ describe Project do
     end
   end
 
-  describe '#repository_storage_path' do
-    let(:project) { create(:project) }
-
-    it 'returns the repository storage path' do
-      expect(Dir.exist?(project.repository_storage_path)).to be(true)
-    end
-  end
-
   it 'returns valid url to repo' do
     project = described_class.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
@@ -1108,7 +1100,7 @@ describe Project do
   end
 
   context 'repository storage by default' do
-    let(:project) { create(:project) }
+    let(:project) { build(:project) }
 
     before do
       storages = {
@@ -1461,7 +1453,7 @@ describe Project do
         .and_return(false)
 
       allow(shell).to receive(:create_repository)
-        .with(project.repository_storage_path, project.disk_path)
+        .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
       expect(project).to receive(:create_repository).with(force: true)
@@ -1489,52 +1481,6 @@ describe Project do
         .and_return(true)
 
       project.ensure_repository
-    end
-  end
-
-  describe '#user_can_push_to_empty_repo?' do
-    let(:project) { create(:project) }
-    let(:user)    { create(:user) }
-
-    it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when user is master' do
-      project.add_master(user)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns false when the repo is not empty' do
-      project.add_master(user)
-      expect(project).to receive(:empty_repo?).and_return(false)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
   end
 
@@ -2682,7 +2628,7 @@ describe Project do
 
     describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, project.base_dir)
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, project.base_dir)
 
         project.ensure_storage_path_exists
       end
@@ -2721,12 +2667,12 @@ describe Project do
 
         expect(gitlab_shell).to receive(:mv_repository)
           .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .with(project.repository_storage, "#{project.namespace.full_path}/foo", "#{project.full_path}")
           .and_return(true)
 
         expect(gitlab_shell).to receive(:mv_repository)
           .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .with(project.repository_storage, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
           .and_return(true)
 
         expect_any_instance_of(SystemHooksService)
@@ -2875,7 +2821,7 @@ describe Project do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, hashed_prefix)
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, hashed_prefix)
 
         project.ensure_storage_path_exists
       end

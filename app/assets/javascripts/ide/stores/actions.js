@@ -33,10 +33,7 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
-export const toggleRightPanelCollapsed = (
-  { dispatch, state },
-  e = undefined,
-) => {
+export const toggleRightPanelCollapsed = ({ dispatch, state }, e = undefined) => {
   if (e) {
     $(e.currentTarget)
       .tooltip('hide')
@@ -77,7 +74,7 @@ export const createTempEntry = (
     }
 
     worker.addEventListener('message', ({ data }) => {
-      const { file } = data;
+      const { file, parentPath } = data;
 
       worker.terminate();
 
@@ -91,6 +88,10 @@ export const createTempEntry = (
         commit(types.TOGGLE_FILE_OPEN, file.path);
         commit(types.ADD_FILE_TO_CHANGED, file.path);
         dispatch('setFileActive', file.path);
+      }
+
+      if (parentPath && !state.entries[parentPath].opened) {
+        commit(types.TOGGLE_TREE_OPEN, parentPath);
       }
 
       resolve(file);
@@ -137,6 +138,14 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
+export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, tempFile }) => {
+  commit(types.UPDATE_TEMP_FLAG, { path: file.path, tempFile });
+
+  if (file.parentPath) {
+    dispatch('updateTempFlagForEntry', { file: state.entries[file.parentPath], tempFile });
+  }
+};
+
 export const toggleFileFinder = ({ commit }, fileFindVisible) =>
   commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
 
@@ -144,3 +153,6 @@ export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
 export * from './actions/merge_request';
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
