@@ -10,8 +10,30 @@ applications.
 ## Overview
 
 With Auto DevOps, the software development process becomes easier to set up
-as every project can have a complete workflow from build to deploy and monitoring,
-with minimal to zero configuration.
+as every project can have a complete workflow from verification to monitoring
+without needing to configure anything. Just push your code and GitLab takes
+care of everything else. This makes it easier to start new projects and brings
+consistency to how applications are set up throughout a company.
+
+## Comparison to application platforms and PaaS
+
+Auto DevOps provides functionality described by others as an application
+platform or as a Platform as a Service (PaaS). It takes inspiration from the
+innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
+in a couple of ways:
+
+1. Auto DevOps works with any Kubernetes cluster, you're not limited to running
+   on GitLab's infrastructure (note that many features also work without Kubernetes).
+1. There is no additional cost (no markup on the infrastructure costs), and you
+   can use a self-hosted Kubernetes cluster or Containers as a Service on any
+   public cloud (for example [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
+1. Auto DevOps has more features including security testing, performance testing,
+   and code quality testing.
+1. It offers an incremental graduation path. If you need advanced customizations
+   you can start modifying the templates without having to start over on a
+   completely different platform.
+
+## Features
 
 Comprised of a set of stages, Auto DevOps brings these best practices to your
 project in an easy and automatic way:
