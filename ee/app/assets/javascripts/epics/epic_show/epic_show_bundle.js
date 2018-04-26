@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import '~/vue_shared/models/label';
 import EpicShowApp from './components/epic_show_app.vue';
 
 export default () => {
