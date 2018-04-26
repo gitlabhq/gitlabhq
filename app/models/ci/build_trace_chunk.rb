@@ -1,8 +1,8 @@
 module Ci
-  class JobTraceChunk < ActiveRecord::Base
+  class BuildTraceChunk < ActiveRecord::Base
     extend Gitlab::Ci::Model
 
-    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
+    belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
     after_destroy :redis_delete_data, if: :redis?
 
@@ -118,11 +118,11 @@ module Ci
     end
 
     def redis_data_key
-      "gitlab:ci:trace:#{job_id}:chunks:#{chunk_index}:data"
+      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}:data"
     end
 
     def redis_lock_key
-      "gitlab:ci:trace:#{job_id}:chunks:#{chunk_index}:lock"
+      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}:lock"
     end
 
     def in_lock

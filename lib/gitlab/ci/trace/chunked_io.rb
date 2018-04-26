@@ -5,18 +5,18 @@ module Gitlab
   module Ci
     class Trace
       class ChunkedIO
-        CHUNK_SIZE = ::Ci::JobTraceChunk::CHUNK_SIZE
+        CHUNK_SIZE = ::Ci::BuildTraceChunk::CHUNK_SIZE
 
         FailedToGetChunkError = Class.new(StandardError)
 
-        attr_reader :job
+        attr_reader :build
         attr_reader :tell, :size
         attr_reader :chunk, :chunk_range
 
         alias_method :pos, :tell
 
-        def initialize(job, &block)
-          @job = job
+        def initialize(build, &block)
+          @build = build
           @chunks_cache = []
           @tell = 0
           @size = calculate_size
@@ -140,7 +140,7 @@ module Gitlab
           @size = offset
 
           # remove all next chunks
-          job_chunks.where('chunk_index > ?', chunk_index).destroy_all
+          trace_chunks.where('chunk_index > ?', chunk_index).destroy_all
 
           # truncate current chunk
           current_chunk.truncate(chunk_offset) if chunk_offset != 0
@@ -157,7 +157,7 @@ module Gitlab
         end
 
         def destroy!
-          job_chunks.destroy_all
+          trace_chunks.destroy_all
           @tell = @size = 0
         ensure
           invalidate_chunk_cache
@@ -206,23 +206,23 @@ module Gitlab
         end
 
         def current_chunk
-          @chunks_cache[chunk_index] ||= job_chunks.find_by(chunk_index: chunk_index)
+          @chunks_cache[chunk_index] ||= trace_chunks.find_by(chunk_index: chunk_index)
         end
 
         def build_chunk
-          @chunks_cache[chunk_index] = ::Ci::JobTraceChunk.new(job: job, chunk_index: chunk_index)
+          @chunks_cache[chunk_index] = ::Ci::BuildTraceChunk.new(build: build, chunk_index: chunk_index)
         end
 
         def ensure_chunk
           current_chunk || build_chunk
         end
 
-        def job_chunks
-          ::Ci::JobTraceChunk.where(job: job)
+        def trace_chunks
+          ::Ci::BuildTraceChunk.where(build: build)
         end
 
         def calculate_size
-          job_chunks.order(chunk_index: :desc).first.try(&:end_offset).to_i
+          trace_chunks.order(chunk_index: :desc).first.try(&:end_offset).to_i
         end
       end
     end

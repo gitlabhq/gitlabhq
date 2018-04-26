@@ -4,9 +4,9 @@ class BuildTraceSwapChunkWorker
 
   queue_namespace :pipeline_processing
 
-  def perform(job_trace_chunk_id)
-    Ci::JobTraceChunk.find_by(id: job_trace_chunk_id).try do |job_trace_chunk|
-      job_trace_chunk.use_database!
+  def perform(build_trace_chunk_id)
+    Ci::BuildTraceChunk.find_by(id: build_trace_chunk_id).try do |build_trace_chunk|
+      build_trace_chunk.use_database!
     end
   end
 end

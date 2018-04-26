@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
-  set(:job) { create(:ci_build, :running) }
+describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
+  set(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
   let(:raw_data) { nil }
-
-  let(:job_trace_chunk) do
-    described_class.new(job: job, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
+  
+  let(:build_trace_chunk) do
+    described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
 
   describe 'CHUNK_SIZE' do
@@ -17,13 +17,13 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#data' do
-    subject { job_trace_chunk.data }
+    subject { build_trace_chunk.data }
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
 
       before do
-        job_trace_chunk.send(:redis_set_data, 'Sample data in redis')
+        build_trace_chunk.send(:redis_set_data, 'Sample data in redis')
       end
 
       it { is_expected.to eq('Sample data in redis') }
@@ -38,7 +38,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is others' do
       before do
-        job_trace_chunk.send(:write_attribute, :data_store, -1)
+        build_trace_chunk.send(:write_attribute, :data_store, -1)
       end
 
       it { expect { subject }.to raise_error('Unsupported data store') }
@@ -46,7 +46,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#set_data' do
-    subject { job_trace_chunk.set_data(value) }
+    subject { build_trace_chunk.set_data(value) }
 
     let(:value) { 'Sample data' }
 
@@ -60,11 +60,11 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :redis }
 
       it do
-        expect(job_trace_chunk.send(:redis_data)).to be_nil
+        expect(build_trace_chunk.send(:redis_data)).to be_nil
 
         subject
 
-        expect(job_trace_chunk.send(:redis_data)).to eq(value)
+        expect(build_trace_chunk.send(:redis_data)).to eq(value)
       end
 
       context 'when fullfilled chunk size' do
@@ -82,26 +82,26 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :db }
 
       it 'sets data' do
-        expect(job_trace_chunk.raw_data).to be_nil
+        expect(build_trace_chunk.raw_data).to be_nil
 
         subject
 
-        expect(job_trace_chunk.raw_data).to eq(value)
-        expect(job_trace_chunk.persisted?).to be_truthy
+        expect(build_trace_chunk.raw_data).to eq(value)
+        expect(build_trace_chunk.persisted?).to be_truthy
       end
 
       context 'when raw_data is not changed' do
         it 'does not execute UPDATE' do
-          expect(job_trace_chunk.raw_data).to be_nil
-          job_trace_chunk.save!
+          expect(build_trace_chunk.raw_data).to be_nil
+          build_trace_chunk.save!
 
           # First set
           expect(ActiveRecord::QueryRecorder.new { subject }.count).to be > 0
-          expect(job_trace_chunk.raw_data).to eq(value)
-          expect(job_trace_chunk.persisted?).to be_truthy
+          expect(build_trace_chunk.raw_data).to eq(value)
+          expect(build_trace_chunk.persisted?).to be_truthy
 
           # Second set
-          job_trace_chunk.reload
+          build_trace_chunk.reload
           expect(ActiveRecord::QueryRecorder.new { subject }.count).to be(0)
         end
       end
@@ -117,7 +117,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is others' do
       before do
-        job_trace_chunk.send(:write_attribute, :data_store, -1)
+        build_trace_chunk.send(:write_attribute, :data_store, -1)
       end
 
       it { expect { subject }.to raise_error('Unsupported data store') }
@@ -125,7 +125,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#truncate' do
-    subject { job_trace_chunk.truncate(offset) }
+    subject { build_trace_chunk.truncate(offset) }
 
     shared_examples_for 'truncates' do
       context 'when offset is negative' do
@@ -146,7 +146,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         it 'truncates' do
           subject
 
-          expect(job_trace_chunk.data).to eq(data.byteslice(0, offset))
+          expect(build_trace_chunk.data).to eq(data.byteslice(0, offset))
         end
       end
     end
@@ -156,7 +156,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data) { 'Sample data in redis' }
 
       before do
-        job_trace_chunk.send(:redis_set_data, data)
+        build_trace_chunk.send(:redis_set_data, data)
       end
 
       it_behaves_like 'truncates'
@@ -172,7 +172,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#append' do
-    subject { job_trace_chunk.append(new_data, offset) }
+    subject { build_trace_chunk.append(new_data, offset) }
 
     let(:new_data) { 'Sample new data' }
     let(:offset) { 0 }
@@ -203,7 +203,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         it 'appends' do
           subject
 
-          expect(job_trace_chunk.data).to eq(total_data)
+          expect(build_trace_chunk.data).to eq(total_data)
         end
       end
 
@@ -213,7 +213,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         it 'appends' do
           subject
 
-          expect(job_trace_chunk.data).to eq(data.byteslice(0, offset) + new_data)
+          expect(build_trace_chunk.data).to eq(data.byteslice(0, offset) + new_data)
         end
       end
     end
@@ -223,7 +223,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data) { 'Sample data in redis' }
 
       before do
-        job_trace_chunk.send(:redis_set_data, data)
+        build_trace_chunk.send(:redis_set_data, data)
       end
 
       it_behaves_like 'appends'
@@ -239,7 +239,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#size' do
-    subject { job_trace_chunk.size }
+    subject { build_trace_chunk.size }
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
@@ -248,7 +248,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         let(:data) { 'Sample data in redis' }
 
         before do
-          job_trace_chunk.send(:redis_set_data, data)
+          build_trace_chunk.send(:redis_set_data, data)
         end
 
         it { is_expected.to eq(data.bytesize) }
@@ -276,7 +276,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#use_database!' do
-    subject { job_trace_chunk.use_database! }
+    subject { build_trace_chunk.use_database! }
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
@@ -285,19 +285,19 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         let(:data) { 'Sample data in redis' }
 
         before do
-          job_trace_chunk.send(:redis_set_data, data)
+          build_trace_chunk.send(:redis_set_data, data)
         end
 
         it 'stashes the data' do
-          expect(job_trace_chunk.data_store).to eq('redis')
-          expect(job_trace_chunk.send(:redis_data)).to eq(data)
-          expect(job_trace_chunk.raw_data).to be_nil
+          expect(build_trace_chunk.data_store).to eq('redis')
+          expect(build_trace_chunk.send(:redis_data)).to eq(data)
+          expect(build_trace_chunk.raw_data).to be_nil
 
           subject
 
-          expect(job_trace_chunk.data_store).to eq('db')
-          expect(job_trace_chunk.send(:redis_data)).to be_nil
-          expect(job_trace_chunk.raw_data).to eq(data)
+          expect(build_trace_chunk.data_store).to eq('db')
+          expect(build_trace_chunk.send(:redis_data)).to be_nil
+          expect(build_trace_chunk.raw_data).to eq(data)
         end
       end
 
@@ -320,11 +320,11 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
   describe 'ExclusiveLock' do
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
-      stub_const('Ci::JobTraceChunk::LOCK_RETRY', 1)
+      stub_const('Ci::BuildTraceChunk::LOCK_RETRY', 1)
     end
 
     it 'raise an error' do
-      expect { job_trace_chunk.append('ABC', 0) }.to raise_error('Failed to obtain write lock')
+      expect { build_trace_chunk.append('ABC', 0) }.to raise_error('Failed to obtain write lock')
     end
   end
 
@@ -338,7 +338,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
     end
 
-    shared_examples_for 'deletes all job_trace_chunk and data in redis' do
+    shared_examples_for 'deletes all build_trace_chunk and data in redis' do
       it do
         project.builds.each do |build|
           Gitlab::Redis::SharedState.with do |redis|
@@ -364,20 +364,20 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when job_trace_chunk is destroyed' do
+    context 'when build_trace_chunk is destroyed' do
       let(:subject) do
         project.builds.each { |build| build.chunks.destroy_all }
       end
 
-      it_behaves_like 'deletes all job_trace_chunk and data in redis'
+      it_behaves_like 'deletes all build_trace_chunk and data in redis'
     end
 
-    context 'when job is destroyed' do
+    context 'when build is destroyed' do
       let(:subject) do
         project.builds.destroy_all
       end
 
-      it_behaves_like 'deletes all job_trace_chunk and data in redis'
+      it_behaves_like 'deletes all build_trace_chunk and data in redis'
     end
 
     context 'when project is destroyed' do
@@ -385,7 +385,7 @@ describe Ci::JobTraceChunk, :clean_gitlab_redis_shared_state do
         project.destroy!
       end
 
-      it_behaves_like 'deletes all job_trace_chunk and data in redis'
+      it_behaves_like 'deletes all build_trace_chunk and data in redis'
     end
   end
 end

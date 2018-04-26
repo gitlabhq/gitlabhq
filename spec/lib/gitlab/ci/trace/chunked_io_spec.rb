@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
   include ChunkedIOHelpers
 
-  set(:job) { create(:ci_build, :running) }
-  let(:chunked_io) { described_class.new(job) }
+  set(:build) { create(:ci_build, :running) }
+  let(:chunked_io) { described_class.new(build) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
@@ -13,7 +13,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
   context "#initialize" do
     context 'when a chunk exists' do
       before do
-        job.trace.set('ABC')
+        build.trace.set('ABC')
       end
 
       it { expect(chunked_io.size).to eq(3) }
@@ -22,7 +22,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     context 'when two chunks exist' do
       before do
         stub_buffer_size(4)
-        job.trace.set('ABCDEF')
+        build.trace.set('ABCDEF')
       end
 
       it { expect(chunked_io.size).to eq(6) }
@@ -37,7 +37,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     subject { chunked_io.seek(pos, where) }
 
     before do
-      job.trace.set(sample_trace_raw)
+      build.trace.set(sample_trace_raw)
     end
 
     context 'when moves pos to end of the file' do
@@ -68,7 +68,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     subject { chunked_io.eof? }
 
     before do
-      job.trace.set(sample_trace_raw)
+      build.trace.set(sample_trace_raw)
     end
 
     context 'when current pos is at end of the file' do
@@ -94,7 +94,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     context 'when buffer size is smaller than file size' do
       before do
         stub_buffer_size(sample_trace_raw.bytesize / 2)
-        job.trace.set(sample_trace_raw)
+        build.trace.set(sample_trace_raw)
       end
 
       it 'yields lines' do
@@ -106,7 +106,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     context 'when buffer size is larger than file size' do
       before do
         stub_buffer_size(sample_trace_raw.bytesize * 2)
-        job.trace.set(sample_trace_raw)
+        build.trace.set(sample_trace_raw)
       end
 
       it 'calls get_chunk only once' do
@@ -127,7 +127,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is smaller than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize / 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it { is_expected.to eq(sample_trace_raw) }
@@ -136,7 +136,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is larger than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize * 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it { is_expected.to eq(sample_trace_raw) }
@@ -149,7 +149,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is smaller than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize / 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it 'reads a trace' do
@@ -160,7 +160,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is larger than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize * 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it 'reads a trace' do
@@ -175,7 +175,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is smaller than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize / 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it 'reads a trace' do
@@ -186,7 +186,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is larger than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize * 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it 'reads a trace' do
@@ -201,7 +201,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is smaller than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize / 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it 'reads a trace' do
@@ -212,7 +212,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is larger than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize * 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it 'reads a trace' do
@@ -238,7 +238,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     context 'when buffer size is smaller than file size' do
       before do
         stub_buffer_size(sample_trace_raw.bytesize / 2)
-        job.trace.set(sample_trace_raw)
+        build.trace.set(sample_trace_raw)
       end
 
       it_behaves_like 'all line matching'
@@ -247,7 +247,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     context 'when buffer size is larger than file size' do
       before do
         stub_buffer_size(sample_trace_raw.bytesize * 2)
-        job.trace.set(sample_trace_raw)
+        build.trace.set(sample_trace_raw)
       end
 
       it_behaves_like 'all line matching'
@@ -256,7 +256,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     context 'when pos is at middle of the file' do
       before do
         stub_buffer_size(sample_trace_raw.bytesize / 2)
-        job.trace.set(sample_trace_raw)
+        build.trace.set(sample_trace_raw)
 
         chunked_io.seek(chunked_io.size / 2)
         string_io.seek(string_io.size / 2)
@@ -316,7 +316,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is smaller than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize / 2)
-          job.trace.set(exist_data)
+          build.trace.set(exist_data)
         end
 
         it_behaves_like 'appends a trace'
@@ -325,7 +325,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is larger than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize * 2)
-          job.trace.set(exist_data)
+          build.trace.set(exist_data)
         end
 
         it_behaves_like 'appends a trace'
@@ -349,7 +349,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is smaller than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize / 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it_behaves_like 'truncates a trace'
@@ -358,7 +358,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       context 'when buffer size is larger than file size' do
         before do
           stub_buffer_size(sample_trace_raw.bytesize * 2)
-          job.trace.set(sample_trace_raw)
+          build.trace.set(sample_trace_raw)
         end
 
         it_behaves_like 'truncates a trace'
@@ -370,14 +370,14 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     subject { chunked_io.destroy! }
 
     before do
-      job.trace.set(sample_trace_raw)
+      build.trace.set(sample_trace_raw)
     end
 
     it 'deletes' do
       expect { subject }.to change { chunked_io.size }
         .from(sample_trace_raw.bytesize).to(0)
 
-      expect(Ci::JobTraceChunk.where(job: job).count).to eq(0)
+      expect(Ci::BuildTraceChunk.where(build: build).count).to eq(0)
     end
   end
 end
