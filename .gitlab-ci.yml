@@ -334,6 +334,100 @@ review-docs-cleanup:
   script:
     - ./trigger-build-docs cleanup
 
+# High-level view of the process:
+# 1. Create a GKE cluster, using
+# 2. Build custom Docker images (https://gitlab.com/gitlab-org/build/CNG) for
+#   - gitlab-rails
+#   - gitlab-sidekiq
+#   - gitlab-unicorn
+# 3. Deploy to the cluster using the gitlab chart (https://gitlab.com/charts/gitlab/blob/master/doc/installation/deployment.md)
+# helm dependencies update
+# helm upgrade --install gitlab . \
+#   --timeout 600 \
+#   --set global.hosts.domain=example.local \
+#   --set global.hosts.externalIP=10.10.10.10 \
+#   --set gitlab.migrations.initialRootPassword="example-password" \
+#   --set gitlab.certmanager-issuer.email=me@example.local
+review:
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: "registry.gitlab.com/gitlab-org/gitlab-omnibus-builder:ruby_docker-0.0.7"
+  services:
+    - docker:dind
+  dependencies: []
+  stage: build
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+  before_script:
+    - source scripts/review-apps.sh
+  script:
+    # Build the 3 containers
+    # gitlab-ce
+    - export CNG_REGISTRY="registry.gitlab.com/gitlab-org/build/cng"
+    - export BASE_IMAGE="$CNG_REGISTRY/gitlab-ruby:latest"
+    - git clone --branch master --single-branch --depth=1 https://gitlab.com/gitlab-org/build/CNG.git cng
+    - cd ./cng
+    - pwd
+    - COMPONENT="gitlab-rails-ce" build_if_needed --build-arg "GITLAB_EDITION=gitlab-ce" --build-arg "GITLAB_VERSION=${CI_COMMIT_SHA}" --build-arg "CACHE_BUSTER=$(date -uI)"
+    - COMPONENT="gitlab-sidekiq-ce" build_if_needed --build-arg "GITLAB_EDITION=gitlab-ce" --build-arg "GITLAB_VERSION=${CI_COMMIT_SHA}" --build-arg "CACHE_BUSTER=$(date -uI)"
+    - COMPONENT="gitlab-unicorn-ce" build_if_needed --build-arg "GITLAB_EDITION=gitlab-ce" --build-arg "GITLAB_VERSION=${CI_COMMIT_SHA}" --build-arg "CACHE_BUSTER=$(date -uI)"
+    - cd ../
+    - pwd
+    # - terraform_init
+    # - check_kube_domain
+    # - terraform_up
+    # - download_chart
+    # - ensure_namespace
+    # - install_tiller
+    # - create_secret
+    # - deploy
+    # - echo "export QA_ENVIRONMENT_URL=gitlab-$CI_ENVIRONMENT_SLUG.$AUTO_DEVOPS_DOMAIN" >> variables
+  artifacts:
+    paths:
+      - variables
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://gitlab-$CI_ENVIRONMENT_SLUG.$AUTO_DEVOPS_DOMAIN
+    on_stop: stop_review
+  variables:
+    HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
+    DOMAIN: "-$CI_ENVIRONMENT_SLUG.$AUTO_DEVOPS_DOMAIN"
+  only:
+    refs:
+      - branches
+    # kubernetes: active
+  except:
+    - master
+
+stop_review:
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: docker:stable
+  services:
+    - docker:stable-dind
+  dependencies: []
+  stage: post-cleanup
+  variables:
+    GIT_CHECKOUT: "false"
+  before_script:
+    - source scripts/review-apps.sh
+  script:
+    - git checkout master
+    # - terraform_init
+    # - delete
+    # - cleanup
+    # - terraform_down
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+  allow_failure: true
+  only:
+    refs:
+      - branches
+    # kubernetes: active
+  except:
+    - master
+
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
   <<: *tests-metadata-state
