@@ -31,7 +31,7 @@ module JavaScriptFixturesHelpers
   end
 
   def remove_repository(project)
-    Gitlab::Shell.new.remove_repository(project.repository_storage_path, project.disk_path)
+    Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
   end
 
   private

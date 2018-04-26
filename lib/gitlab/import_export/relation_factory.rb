@@ -17,7 +17,8 @@ module Gitlab
                     auto_devops: :project_auto_devops,
                     label: :project_label,
                     custom_attributes: 'ProjectCustomAttribute',
-                    project_badges: 'Badge' }.freeze
+                    project_badges: 'Badge',
+                    ci_cd_settings: 'ProjectCiCdSetting' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
 

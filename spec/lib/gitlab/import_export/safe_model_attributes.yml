@@ -546,3 +546,5 @@ Badge:
 - created_at
 - updated_at
 - type
+ProjectCiCdSetting:
+- group_runners_enabled

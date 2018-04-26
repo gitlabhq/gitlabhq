@@ -61,7 +61,7 @@ future GitLab releases.**
 | **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
-| **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
+| **CI_PIPELINE_SOURCE**          | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
@@ -87,6 +87,8 @@ future GitLab releases.**
 | **GITLAB_USER_LOGIN**           | 10.0   | all    | The login username of the user who started the job |
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 
 ## 9.0 Renaming
 
@@ -546,6 +548,8 @@ You can find a full list of unsupported variables below:
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
 
 These variables are also not supported in a contex of a
 [dynamic environment name][dynamic-environments].
@@ -562,3 +566,4 @@ These variables are also not supported in a contex of a
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
