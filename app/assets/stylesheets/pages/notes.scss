@@ -407,10 +407,6 @@ ul.notes {
 .note-header {
   display: flex;
   justify-content: space-between;
-
-  @include notes-media('max', $screen-xs-max) {
-    flex-flow: row wrap;
-  }
 }
 
 .note-header-info {
