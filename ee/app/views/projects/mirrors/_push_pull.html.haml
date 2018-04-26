@@ -62,7 +62,7 @@
               .help-block
                 This user will be the author of all events in the activity feed that are the result of an update,
                 like new branches being created or new commits being pushed to existing branches.
-                You can only assign yourself to be the mirror user.
+                Upon creation or when reassigning you can only assign yourself to be the mirror user.
 
             .form-group
               = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left', checked: false
