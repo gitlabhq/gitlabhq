@@ -93,6 +93,15 @@ describe Project do
       end
     end
 
+    context 'when creating a new project' do
+      it 'automatically creates a CI/CD settings row' do
+        project = create(:project)
+
+        expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
+        expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
     describe '#members & #requesters' do
       let(:project) { create(:project, :public, :access_requestable) }
       let(:requester) { create(:user) }
@@ -325,7 +334,7 @@ describe Project do
     let(:owner)     { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
     let(:project)   { create(:project, path: 'sample-project', namespace: namespace) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group', owner: owner) }
+    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
 
     context 'when nil argument' do
       it 'returns nil' do
@@ -1480,52 +1489,6 @@ describe Project do
         .and_return(true)
 
       project.ensure_repository
-    end
-  end
-
-  describe '#user_can_push_to_empty_repo?' do
-    let(:project) { create(:project) }
-    let(:user)    { create(:user) }
-
-    it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when user is master' do
-      project.add_master(user)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns false when the repo is not empty' do
-      project.add_master(user)
-      expect(project).to receive(:empty_repo?).and_return(false)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
   end
 
@@ -3583,6 +3546,46 @@ describe Project do
       end
 
       it { is_expected.not_to be_valid }
+    end
+  end
+
+  describe '#gitlab_deploy_token' do
+    let(:project) { create(:project) }
+
+    subject { project.gitlab_deploy_token }
+
+    context 'when there is a gitlab deploy token associated' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
+
+      it { is_expected.to eq(deploy_token) }
+    end
+
+    context 'when there is no a gitlab deploy token associated' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but is has been revoked' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :revoked, projects: [project]) }
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but it is expired' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :expired, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated with a different name' do
+      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated to a different project' do
+      let(:project_2) { create(:project) }
+      let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
+
+      it { is_expected.to be_nil }
     end
   end
 end

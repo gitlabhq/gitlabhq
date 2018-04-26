@@ -4,6 +4,7 @@ export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
     Object.assign(state.entries[path], {
       active,
+      lastOpenedAt: new Date().getTime(),
     });
 
     if (active && !state.entries[path].pending) {
@@ -191,6 +192,10 @@ export default {
 
         return acc.concat(f);
       }, []);
+    } else {
+      openFiles = state.openFiles.map(f =>
+        Object.assign(f, { active: f.key === key, opened: f.key === key }),
+      );
     }
 
     Object.assign(state, { openFiles });

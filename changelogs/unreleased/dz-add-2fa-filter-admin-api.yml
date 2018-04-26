@@ -1,0 +1,5 @@
+---
+title: Add 2FA filter to users API for admins only
+merge_request: 18503
+author:
+type: changed

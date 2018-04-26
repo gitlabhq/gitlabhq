@@ -115,6 +115,11 @@ export default {
       committedStateSvgPath,
     });
   },
+  [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {
+    Object.assign(state, {
+      fileFindVisible,
+    });
+  },
   [types.UPDATE_FILE_AFTER_COMMIT](state, { file, lastCommit }) {
     const changedFile = state.changedFiles.find(f => f.path === file.path);
 

@@ -1,5 +1,11 @@
-import * as urlUtils from '~/lib/utils/url_utility';
-import * as actions from '~/ide/stores/actions';
+import actions, {
+  stageAllChanges,
+  unstageAllChanges,
+  toggleFileFinder,
+  setCurrentBranchId,
+  setEmptyStateSvgs,
+  updateActivityBarView,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
@@ -17,12 +23,12 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      spyOn(urlUtils, 'visitUrl');
+      const visitUrl = spyOnDependency(actions, 'visitUrl');
 
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
+          expect(visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -298,7 +304,7 @@ describe('Multi-file store actions', () => {
       store.state.changedFiles.push(file(), file('new'));
 
       testAction(
-        actions.stageAllChanges,
+        stageAllChanges,
         null,
         store.state,
         [
@@ -316,7 +322,7 @@ describe('Multi-file store actions', () => {
       store.state.stagedFiles.push(file(), file('new'));
 
       testAction(
-        actions.unstageAllChanges,
+        unstageAllChanges,
         null,
         store.state,
         [
@@ -344,7 +350,7 @@ describe('Multi-file store actions', () => {
   describe('updateActivityBarView', () => {
     it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
       testAction(
-        actions.updateActivityBarView,
+        updateActivityBarView,
         'test',
         {},
         [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
@@ -357,7 +363,7 @@ describe('Multi-file store actions', () => {
   describe('setEmptyStateSvgs', () => {
     it('commits setEmptyStateSvgs', done => {
       testAction(
-        actions.setEmptyStateSvgs,
+        setEmptyStateSvgs,
         'svg',
         {},
         [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
@@ -370,10 +376,23 @@ describe('Multi-file store actions', () => {
   describe('setCurrentBranchId', () => {
     it('commits setCurrentBranchId', done => {
       testAction(
-        actions.setCurrentBranchId,
+        setCurrentBranchId,
         'branchId',
         {},
         [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
         [],
         done,
       );

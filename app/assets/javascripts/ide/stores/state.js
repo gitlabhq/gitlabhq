@@ -21,4 +21,5 @@ export default () => ({
   viewer: 'editor',
   delayViewerUpdated: false,
   currentActivityView: ActivityBarViews.edit,
+  fileFindVisible: false,
 });

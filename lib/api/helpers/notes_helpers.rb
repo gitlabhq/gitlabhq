@@ -64,8 +64,10 @@ module API
         authorize! :create_note, noteable
 
         parent = noteable_parent(noteable)
+
         if opts[:created_at]
-          opts.delete(:created_at) unless current_user.admin? || parent.owner == current_user
+          opts.delete(:created_at) unless
+            current_user.admin? || parent.owned_by?(current_user)
         end
 
         project = parent if parent.is_a?(Project)

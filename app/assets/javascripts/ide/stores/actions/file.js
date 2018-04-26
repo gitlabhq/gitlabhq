@@ -192,7 +192,7 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-  if (getters.activeFile && getters.activeFile === file && state.viewer === 'diff') {
+  if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
     return false;
   }
 

@@ -58,4 +58,24 @@ describe('IDE store getters', () => {
       expect(getters.currentMergeRequest(localState)).toBeNull();
     });
   });
+
+  describe('allBlobs', () => {
+    beforeEach(() => {
+      Object.assign(localState.entries, {
+        index: { type: 'blob', name: 'index', lastOpenedAt: 0 },
+        app: { type: 'blob', name: 'blob', lastOpenedAt: 0 },
+        folder: { type: 'folder', name: 'folder', lastOpenedAt: 0 },
+      });
+    });
+
+    it('returns only blobs', () => {
+      expect(getters.allBlobs(localState).length).toBe(2);
+    });
+
+    it('returns list sorted by lastOpenedAt', () => {
+      localState.entries.app.lastOpenedAt = new Date().getTime();
+
+      expect(getters.allBlobs(localState)[0].name).toBe('blob');
+    });
+  });
 });
