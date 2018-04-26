@@ -20,6 +20,7 @@ module Gitlab
       # 85bc2f9753afd5f4fc5d7c75f74f8d526f26b4f3 107 R060\tfiles/js/commit.js.coffee\tfiles/js/commit.coffee
       def parse(raw_change)
         @blob_id, @blob_size, @raw_operation, raw_paths = raw_change.split(' ', 4)
+        @blob_size = @blob_size.to_i
         @operation = extract_operation
         @old_path, @new_path = extract_paths(raw_paths)
       end

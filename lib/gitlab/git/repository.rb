@@ -565,19 +565,23 @@ module Gitlab
       # old_rev and new_rev are commit ID's
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
-        result = []
+        return [] if new_rev.nil? || new_rev == Gitlab::Git::BLANK_SHA
 
-        circuit_breaker.perform do
-          Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-            last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+        strong_memoize("changes_#{old_rev}_#{new_rev}".to_sym) do
+          result = []
 
-            if wait_threads.any? { |waiter| !waiter.value&.success? }
-              raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+          circuit_breaker.perform do
+            Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+              last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+              if wait_threads.any? { |waiter| !waiter.value&.success? }
+                raise ::Gitlab::Git::Repository::GitError, "Unable to obtain changes between #{old_rev} and #{new_rev}"
+              end
             end
           end
-        end
 
-        result
+          result
+        end
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
