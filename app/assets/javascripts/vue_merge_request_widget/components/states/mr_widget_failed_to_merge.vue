@@ -1,66 +1,65 @@
 <script>
-  import { n__ } from '~/locale';
-  import statusIcon from '../mr_widget_status_icon.vue';
-  import eventHub from '../../event_hub';
+import { n__ } from '~/locale';
+import statusIcon from '../mr_widget_status_icon.vue';
+import eventHub from '../../event_hub';
 
-  export default {
-    name: 'MRWidgetFailedToMerge',
+export default {
+  name: 'MRWidgetFailedToMerge',
 
-    components: {
-      statusIcon,
+  components: {
+    statusIcon,
+  },
+
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
+  },
 
-    props: {
-      mr: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
+  data() {
+    return {
+      timer: 10,
+      isRefreshing: false,
+    };
+  },
+
+  computed: {
+    timerText() {
+      return n__(
+        'Refreshing in a second to show the updated status...',
+        'Refreshing in %d seconds to show the updated status...',
+        this.timer,
+      );
     },
+  },
 
-    data() {
-      return {
-        timer: 10,
-        isRefreshing: false,
-      };
+  mounted() {
+    setInterval(() => {
+      this.updateTimer();
+    }, 1000);
+  },
+
+  created() {
+    eventHub.$emit('DisablePolling');
+  },
+
+  methods: {
+    refresh() {
+      this.isRefreshing = true;
+      eventHub.$emit('MRWidgetUpdateRequested');
+      eventHub.$emit('EnablePolling');
     },
+    updateTimer() {
+      this.timer = this.timer - 1;
 
-    computed: {
-      timerText() {
-        return n__(
-          'Refreshing in a second to show the updated status...',
-          'Refreshing in %d seconds to show the updated status...',
-          this.timer,
-        );
-      },
+      if (this.timer === 0) {
+        this.refresh();
+      }
     },
-
-    mounted() {
-      setInterval(() => {
-        this.updateTimer();
-      }, 1000);
-    },
-
-    created() {
-      eventHub.$emit('DisablePolling');
-    },
-
-    methods: {
-      refresh() {
-        this.isRefreshing = true;
-        eventHub.$emit('MRWidgetUpdateRequested');
-        eventHub.$emit('EnablePolling');
-      },
-      updateTimer() {
-        this.timer = this.timer - 1;
-
-        if (this.timer === 0) {
-          this.refresh();
-        }
-      },
-    },
-
-  };
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body media">
