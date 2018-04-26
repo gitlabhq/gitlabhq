@@ -76,6 +76,11 @@ module QA
               end
 
               page.protect_branch
+
+              # Wait for page load, which resets the expanded sections
+              page.wait(reload: false) do
+                !page.has_content?('Collapse')
+              end
             end
           end
         end
