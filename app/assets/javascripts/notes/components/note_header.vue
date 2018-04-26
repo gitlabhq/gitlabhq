@@ -74,7 +74,7 @@ export default {
           class="fa"
           aria-hidden="true">
         </i>
-        Toggle discussion
+        {{ __('Toggle discussion') }}
       </button>
     </div>
     <a :href="author.path">
