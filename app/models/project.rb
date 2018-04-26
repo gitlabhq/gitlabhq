@@ -236,14 +236,6 @@ class Project < ActiveRecord::Base
   has_many :project_badges, class_name: 'ProjectBadge'
   has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting'
 
-  has_one :settings, -> (project) {
-    query = where(project_id: project)
-    query.presence || begin
-      ProjectSettings.create(project_id: project.id)
-      query
-    end
-  }, class_name: 'ProjectSettings'
-
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
@@ -253,7 +245,7 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
-  delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :settings
+  delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -1879,8 +1871,8 @@ class Project < ActiveRecord::Base
     []
   end
 
-  def toggle_settings!(settings_attribute)
-    settings.toggle!(settings_attribute)
+  def toggle_ci_cd_settings!(settings_attribute)
+    ci_cd_settings.toggle!(settings_attribute)
   end
 
   def gitlab_deploy_token

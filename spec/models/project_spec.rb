@@ -123,26 +123,6 @@ describe Project do
         expect(subject.boards.size).to eq 1
       end
     end
-
-    describe '#settings' do
-      it 'creates lazily a settings record when the project does not have one associated' do
-        project = create :project
-        expect(ProjectSettings.count).to eq 0
-
-        expect(project.settings).to be_a ProjectSettings
-
-        expect(ProjectSettings.count).to eq 1
-      end
-
-      it 'returns the associated record when the project has one associated' do
-        project = create :project, settings: create(:project_settings)
-        expect(ProjectSettings.count).to eq 1
-
-        expect(project.settings).to be_a ProjectSettings
-
-        expect(ProjectSettings.count).to eq 1
-      end
-    end
   end
 
   describe 'modules' do
@@ -3595,13 +3575,13 @@ describe Project do
     end
   end
 
-  describe '#toggle_settings!' do
+  describe '#toggle_ci_cd_settings!' do
     it 'toggles the value on #settings' do
       project = create :project, group_runners_enabled: false
 
       expect(project.group_runners_enabled).to be false
 
-      project.toggle_settings!(:group_runners_enabled)
+      project.toggle_ci_cd_settings!(:group_runners_enabled)
 
       expect(project.group_runners_enabled).to be true
     end
