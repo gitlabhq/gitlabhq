@@ -7,6 +7,7 @@ describe SnippetsController, '(JavaScript fixtures)', type: :controller do
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
   let(:snippet) { create(:personal_snippet, title: 'snippet.md', content: '# snippet', file_name: 'snippet.md', author: admin) }
+  let!(:snippet_note) { create(:discussion_note_on_snippet, noteable: snippet, project: project, author: admin) }
 
   render_views
 

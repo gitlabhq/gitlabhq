@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
+import store from './stores';
 
 document.addEventListener(
   'DOMContentLoaded',
@@ -9,6 +10,7 @@ document.addEventListener(
       components: {
         notesApp,
       },
+      store,
       data() {
         const notesDataset = document.getElementById('js-vue-notes').dataset;
         const parsedUserData = JSON.parse(notesDataset.currentUserData);

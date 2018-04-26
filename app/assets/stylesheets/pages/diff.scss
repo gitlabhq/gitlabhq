@@ -71,6 +71,12 @@
 
         span {
           white-space: pre-wrap;
+
+          &.context-cell {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+          }
         }
 
         .line {
@@ -579,6 +585,15 @@
   }
 }
 
+.sticky-top-bar {
+  position: fixed;
+  width: 100%;
+  background-color: $white-light;
+  border-bottom: solid 1px $border-color;
+  z-index: 190;
+  top: 124px;
+}
+
 .diff-files-changed {
   .inline-parallel-buttons {
     position: relative;
@@ -594,11 +609,8 @@
   }
 
   @media (min-width: $screen-sm-min) {
-    position: -webkit-sticky;
-    position: sticky;
     top: 24px;
     background-color: $white-light;
-    z-index: 190;
 
     &.diff-files-changed-merge-request {
       top: 76px;

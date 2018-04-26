@@ -50,25 +50,7 @@
                 = tab_link_for @merge_request, :diffs do
                   Changes
                   %span.badge= @merge_request.diff_size
-
-        - if has_vue_discussions_cookie?
-          #js-vue-discussion-counter
-        - else
-          #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
-            %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}" }
-              %div
-                .line-resolve-all{ "v-show" => "discussionCount > 0",
-                  ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
-                  %span.line-resolve-btn.is-disabled{ type: "button",
-                      ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
-                    %template{ 'v-if' => 'resolvedDiscussionCount === discussionCount' }
-                      = render 'shared/icons/icon_status_success_solid.svg'
-                    %template{ 'v-else' => '' }
-                      = render 'shared/icons/icon_resolve_discussion.svg'
-                  %span.line-resolve-text
-                    {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
-                = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
-                = render "discussions/jump_to_next"
+        #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
       #notes.notes.tab-pane.voting_notes
@@ -76,20 +58,20 @@
           %section.col-md-12
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
-              = render "projects/merge_requests/discussion"
-              - if has_vue_discussions_cookie?
+              - if rendered_for_merge_request?
                 #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
                   noteable_data: serialize_issuable(@merge_request),
                   noteable_type: 'merge_request',
                   current_user_data: UserSerializer.new.represent(current_user).to_json} }
+              - else
+                = render "projects/merge_requests/discussion"
 
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX
       #pipelines.pipelines.tab-pane
         - if @pipelines.any?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      #diffs.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked? } }
-        -# This tab is always loaded via AJAX
+      #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?, endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', { w: '1' }) } }
 
     .mr-loading-status
       = spinner

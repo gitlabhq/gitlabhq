@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Merge request > User sees discussions' do
+describe 'Merge request > User sees discussions', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }

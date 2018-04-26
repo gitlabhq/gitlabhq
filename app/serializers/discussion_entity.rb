@@ -1,11 +1,19 @@
 class DiscussionEntity < Grape::Entity
   include RequestAwareEntity
+  include NotesHelper
 
   expose :id, :reply_id
+  expose :position, if: -> (d, _) { defined? d.diff_file }
+  expose :line_code, if: -> (d, _) { defined? d.diff_file }
   expose :expanded?, as: :expanded
+  expose :active?, as: :active, if: -> (d, _) { defined? d.active? }
 
   expose :notes do |discussion, opts|
     request.note_entity.represent(discussion.notes, opts)
+  end
+
+  expose :discussion_path do |discussion|
+    discussion_path(discussion)
   end
 
   expose :individual_note?, as: :individual_note
@@ -18,7 +26,7 @@ class DiscussionEntity < Grape::Entity
     new_project_issue_path(discussion.project, merge_request_to_resolve_discussions_of: discussion.noteable.iid, discussion_to_resolve: discussion.id)
   end
 
-  expose :diff_file, using: DiffFileEntity, if: -> (d, _) { defined? d.diff_file }
+  expose :diff_file, using: DiffFileEntity, if: -> (discussion, _) { discussion.respond_to?(:diff_file) }
 
   expose :diff_discussion?, as: :diff_discussion
 

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import DiffFileHeader from '~/notes/components/diff_file_header.vue';
+import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
@@ -7,12 +7,9 @@ const discussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('diff_file_header', () => {
   let vm;
-  const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
-  const diffFile = convertObjectPropsToCamelCase(diffDiscussionMock.diff_file);
-  const props = {
-    diffFile,
-  };
+  let props = {};
   const Component = Vue.extend(DiffFileHeader);
+
   const selectors = {
     get copyButton() {
       return vm.$el.querySelector('button[data-original-title="Copy file path to clipboard"]');
@@ -24,6 +21,14 @@ describe('diff_file_header', () => {
       return vm.$refs.titleWrapper;
     },
   };
+
+  beforeEach(() => {
+    const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
+    const diffFile = convertObjectPropsToCamelCase(diffDiscussionMock.diff_file, { deep: true });
+    props = {
+      diffFile,
+    };
+  });
 
   describe('submodule', () => {
     beforeEach(() => {
@@ -39,14 +44,16 @@ describe('diff_file_header', () => {
 
     it('has button to copy blob path', () => {
       expect(selectors.copyButton).toExist();
-      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(props.diffFile.submoduleLink);
+      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(
+        props.diffFile.submoduleLink,
+      );
     });
   });
 
   describe('changed file', () => {
     beforeEach(() => {
-      props.diffFile.submodule = false;
       props.diffFile.discussionPath = 'some/discussion/id';
+      props.addMergeRequestButtons = true;
 
       vm = mountComponent(Component, props);
     });
@@ -55,26 +62,20 @@ describe('diff_file_header', () => {
       expect(vm.$el.innerHTML).toContain('fa-file-text-o');
     });
 
-    it('links to discussion path', () => {
+    it('links to file hash', () => {
       expect(selectors.titleWrapper).toExist();
       expect(selectors.titleWrapper.tagName).toBe('A');
-      expect(selectors.titleWrapper.getAttribute('href')).toBe(props.diffFile.discussionPath);
-    });
-
-    it('shows plain title if no link given', () => {
-      props.diffFile.discussionPath = undefined;
-      vm = mountComponent(Component, props);
-
-      expect(selectors.titleWrapper.tagName).not.toBe('A');
-      expect(selectors.titleWrapper.href).toBeFalsy();
+      expect(selectors.titleWrapper.getAttribute('href')).toBe(`#${props.diffFile.fileHash}`);
     });
 
     it('has button to copy file path', () => {
       expect(selectors.copyButton).toExist();
-      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(props.diffFile.filePath);
+      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(
+        props.diffFile.filePath,
+      );
     });
 
-    it('shows file mode change', (done) => {
+    it('shows file mode change', done => {
       vm.diffFile = {
         ...props.diffFile,
         modeChanged: true,
@@ -83,11 +84,36 @@ describe('diff_file_header', () => {
       };
 
       Vue.nextTick(() => {
-        expect(
-          vm.$refs.fileMode.textContent.trim(),
-        ).toBe('100755 → 100644');
+        expect(vm.$refs.fileMode.textContent.trim()).toBe('100755 → 100644');
         done();
       });
+    });
+
+    it('has link to View file', () => {
+      const buttonText = `View file @ ${vm.truncatedContentSha}`;
+
+      expect(vm.$el.querySelector('.js-view-file').innerText.trim()).toEqual(buttonText);
+    });
+  });
+
+  describe('replaced file', () => {
+    beforeEach(() => {
+      props.diffFile = {
+        ...props.diffFile,
+        baseSha: 'abcdef1234567890',
+        replacedViewPath: '/base/sha/path.jpg',
+        viewPath: '/base/sha/path.jpg',
+      };
+
+      props.addMergeRequestButtons = true;
+
+      vm = mountComponent(Component, props);
+    });
+
+    it('has link to View replaced file', () => {
+      const buttonText = `View replaced file @ ${vm.truncatedBaseSha}`;
+
+      expect(vm.$el.querySelector('.js-view-file').innerText.trim()).toEqual(buttonText);
     });
   });
 });

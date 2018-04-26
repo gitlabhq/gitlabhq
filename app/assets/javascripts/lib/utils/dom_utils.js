@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { isInIssuePage, isInMRPage, isInEpicPage, hasVueMRDiscussionsCookie } from './common_utils';
+import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 
-const isVueMRDiscussions = () => isInMRPage() && hasVueMRDiscussionsCookie() && !$('#diffs').is(':visible');
+const isVueMRDiscussions = () => isInMRPage() && !$('#diffs').is(':visible');
 
 export const addClassIfElementExists = (element, className) => {
   if (element) {

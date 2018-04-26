@@ -26,12 +26,13 @@ describe Projects::MergeRequests::DiffsController do
     context 'with default params' do
       context 'for the same project' do
         before do
-          go
+          allow(controller).to receive(:rendered_for_merge_request?).and_return(true)
         end
 
-        it 'renders the diffs template to a string' do
-          expect(response).to render_template('projects/merge_requests/diffs/_diffs')
-          expect(json_response).to have_key('html')
+        it 'serializes merge request diff collection' do
+          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+
+          go
         end
       end
 
@@ -53,17 +54,6 @@ describe Projects::MergeRequests::DiffsController do
           expect(response).to be_success
           expect(response.body).to have_content('Subproject commit')
         end
-      end
-    end
-
-    context 'with ignore_whitespace_change' do
-      before do
-        go(w: 1)
-      end
-
-      it 'renders the diffs template to a string' do
-        expect(response).to render_template('projects/merge_requests/diffs/_diffs')
-        expect(json_response).to have_key('html')
       end
     end
 

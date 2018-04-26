@@ -1,5 +1,6 @@
 class NoteEntity < API::Entities::Note
   include RequestAwareEntity
+  include NotesHelper
 
   expose :type
 
@@ -40,6 +41,26 @@ class NoteEntity < API::Entities::Note
 
   expose :report_abuse_path do |note|
     new_abuse_report_path(user_id: note.author.id, ref_url: Gitlab::UrlBuilder.build(note))
+  end
+
+  expose :path do |note|
+    if note.for_personal_snippet?
+      snippet_note_path(note.noteable, note)
+    else
+      project_note_path(note.project, note)
+    end
+  end
+
+  expose :noteable_note_url do |note|
+    noteable_note_url(note)
+  end
+
+  expose :resolve_path, if: -> (note, _) { note.part_of_discussion? && note.resolvable? } do |note|
+    resolve_project_merge_request_discussion_path(note.project, note.noteable, note.discussion_id)
+  end
+
+  expose :resolve_with_issue_path, if: -> (note, _) { note.part_of_discussion? && note.resolvable? } do |note|
+    new_project_issue_path(note.project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id)
   end
 
   expose :attachment, using: NoteAttachmentEntity, if: -> (note, _) { note.attachment? }

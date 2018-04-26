@@ -8,7 +8,7 @@
  * @returns {String}
  */
 export const addDelimiter = text =>
-  (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
+  text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text;
 
 /**
  * Returns '99+' for numbers bigger than 99.
@@ -56,6 +56,14 @@ export const slugify = str => str.trim().toLowerCase();
  * @returns {String}
  */
 export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3)}...`;
+
+/**
+ * Truncate SHA to 8 characters
+ *
+ * @param {String} sha
+ * @returns {String}
+ */
+export const truncateSha = sha => `${sha.substr(0, 8)}`;
 
 /**
  * Capitalizes first character

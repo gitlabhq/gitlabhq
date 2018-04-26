@@ -9,7 +9,11 @@ export default {
   },
   computed: {
     noteableType() {
-      return constants.NOTEABLE_TYPE_MAPPING[this.note.noteable_type];
+      let note = this.note;
+      if (note.notes) {
+        note = note.notes[0];
+      }
+      return constants.NOTEABLE_TYPE_MAPPING[note.noteable_type];
     },
   },
 };

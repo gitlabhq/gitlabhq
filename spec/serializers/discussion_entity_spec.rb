@@ -30,7 +30,7 @@ describe DiscussionEntity do
     let(:note) { create(:diff_note_on_merge_request) }
 
     it 'exposes diff file attributes' do
-      expect(subject).to include(:diff_file, :truncated_diff_lines, :image_diff_html)
+      expect(subject).to include(:diff_file, :truncated_diff_lines, :image_diff_html, :diff_lines, :highlighted_diff_lines)
     end
   end
 end

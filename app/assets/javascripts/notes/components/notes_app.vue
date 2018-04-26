@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
-import store from '../stores/';
 import * as constants from '../constants';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
@@ -39,8 +38,12 @@ export default {
       required: false,
       default: () => ({}),
     },
+    shouldShow: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
-  store,
   data() {
     return {
       isLoading: true,
@@ -72,19 +75,12 @@ export default {
 
     const parentElement = this.$el.parentElement;
 
-    if (
-      parentElement &&
-      parentElement.classList.contains('js-vue-notes-event')
-    ) {
+    if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
         this.actionToggleAward({ awardName, noteId });
       });
     }
-    document.addEventListener('refreshVueNotes', this.fetchNotes);
-  },
-  beforeDestroy() {
-    document.removeEventListener('refreshVueNotes', this.fetchNotes);
   },
   methods: {
     ...mapActions({
@@ -97,6 +93,7 @@ export default {
       setUserData: 'setUserData',
       setLastFetchedAt: 'setLastFetchedAt',
       setTargetNoteHash: 'setTargetNoteHash',
+      toggleDiscussion: 'toggleDiscussion',
     }),
     getComponentName(note) {
       if (note.isSkeletonNote) {
@@ -126,9 +123,7 @@ export default {
         .then(() => this.checkLocationHash())
         .catch(() => {
           this.isLoading = false;
-          Flash(
-            'Something went wrong while fetching comments. Please try again.',
-          );
+          Flash('Something went wrong while fetching comments. Please try again.');
         });
     },
     initPolling() {
@@ -143,11 +138,18 @@ export default {
     },
     checkLocationHash() {
       const hash = getLocationHash();
-      const element = document.getElementById(hash);
+      const noteId = hash && hash.replace(/^note_/, '');
 
-      if (hash && element) {
-        this.setTargetNoteHash(hash);
-        this.scrollToNoteIfNeeded($(element));
+      if (noteId) {
+        this.notes.forEach(discussion => {
+          if (discussion.notes) {
+            discussion.notes.forEach(note => {
+              if (`${note.id}` === `${noteId}`) {
+                this.toggleDiscussion({ discussionId: discussion.id });
+              }
+            });
+          }
+        });
       }
     },
   },
@@ -155,7 +157,9 @@ export default {
 </script>
 
 <template>
-  <div id="notes">
+  <div
+    v-if="shouldShow"
+    id="notes">
     <ul
       id="notes-list"
       class="notes main-notes-list timeline">

@@ -72,7 +72,7 @@ export default {
       this.$emit('handleFormUpdate', note, parentElement, callback);
     },
     formCancelHandler(shouldConfirm, isDirty) {
-      this.$emit('cancelFormEdition', shouldConfirm, isDirty);
+      this.$emit('cancelForm', shouldConfirm, isDirty);
     },
   },
 };
@@ -90,7 +90,7 @@ export default {
       v-if="isEditing"
       ref="noteForm"
       @handleFormUpdate="handleFormUpdate"
-      @cancelFormEdition="formCancelHandler"
+      @cancelForm="formCancelHandler"
       :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"

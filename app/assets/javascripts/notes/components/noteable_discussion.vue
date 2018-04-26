@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionsSvg from 'icons/_next_discussion.svg';
@@ -40,6 +41,21 @@ export default {
       type: Object,
       required: true,
     },
+    renderHeader: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    renderDiffFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    alwaysExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -53,8 +69,28 @@ export default {
       'getNoteableData',
       'discussionCount',
       'resolvedDiscussionCount',
+      'allDiscussions',
       'unresolvedDiscussions',
     ]),
+    actionTextHtml() {
+      let text = 'started a discussion';
+
+      if (!this.discussion.diffDiscussion) {
+        return text;
+      }
+
+      text += ' on';
+      let urlText;
+      if (this.discussion.active) {
+        urlText = 'the diff';
+      } else {
+        urlText = 'an old version of the diff';
+      }
+
+      text += ` <a href="${this.discussion.discussionPath}">${urlText}</a>`;
+
+      return text;
+    },
     discussion() {
       return {
         ...this.note.notes[0],
@@ -62,6 +98,8 @@ export default {
         diffFile: this.note.diff_file,
         diffDiscussion: this.note.diff_discussion,
         imageDiffHtml: this.note.image_diff_html,
+        active: this.note.active,
+        discussionPath: this.note.discussion_path,
       };
     },
     author() {
@@ -94,13 +132,16 @@ export default {
     hasUnresolvedDiscussion() {
       return this.unresolvedDiscussions.length > 0;
     },
+    shouldRenderDiffs() {
+      const { diffDiscussion, diffFile } = this.discussion;
+
+      return diffDiscussion && diffFile && this.renderDiffFile;
+    },
     wrapperComponent() {
-      return this.discussion.diffDiscussion && this.discussion.diffFile
-        ? diffWithNote
-        : 'div';
+      return this.shouldRenderDiffs ? diffWithNote : 'div';
     },
     wrapperClass() {
-      return this.isDiffDiscussion ? '' : 'panel panel-default';
+      return this.isDiffDiscussion ? '' : 'panel panel-default discussion-wrapper';
     },
   },
   mounted() {
@@ -122,12 +163,7 @@ export default {
     this.nextDiscussionsSvg = nextDiscussionsSvg;
   },
   methods: {
-    ...mapActions([
-      'saveNote',
-      'toggleDiscussion',
-      'removePlaceholderNotes',
-      'toggleResolveNote',
-    ]),
+    ...mapActions(['saveNote', 'toggleDiscussion', 'removePlaceholderNotes', 'toggleResolveNote']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -149,10 +185,8 @@ export default {
     },
     cancelReplyForm(shouldConfirm) {
       if (shouldConfirm && this.$refs.noteForm.isDirty) {
-        const msg = 'Are you sure you want to cancel creating this comment?';
-
         // eslint-disable-next-line no-alert
-        if (!confirm(msg)) {
+        if (!confirm('Are you sure you want to cancel creating this comment?')) {
           return;
         }
       }
@@ -191,11 +225,14 @@ Please check your network connection and try again.`;
         });
     },
     jumpToDiscussion() {
+      const discussionIds = this.allDiscussions.map(d => d.id);
       const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
-      const index = unresolvedIds.indexOf(this.note.id);
+      const currentIndex = discussionIds.indexOf(this.note.id);
+      const remainingAfterCurrent = discussionIds.slice(currentIndex + 1);
+      const nextIndex = _.findIndex(remainingAfterCurrent, id => unresolvedIds.indexOf(id) > -1);
 
-      if (index >= 0 && index !== unresolvedIds.length) {
-        const nextId = unresolvedIds[index + 1];
+      if (nextIndex > -1) {
+        const nextId = remainingAfterCurrent[nextIndex];
         const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
 
         if (el) {
@@ -208,9 +245,7 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li
-    :data-discussion-id="note.id"
-    class="note note-discussion timeline-entry">
+  <li class="note note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -221,8 +256,14 @@ Please check your network connection and try again.`;
         />
       </div>
       <div class="timeline-content">
-        <div class="discussion">
-          <div class="discussion-header">
+        <div
+          class="discussion"
+          :data-discussion-id="discussion.discussion_id"
+        >
+          <div
+            v-if="renderHeader"
+            class="discussion-header"
+          >
             <note-header
               :author="author"
               :created-at="discussion.created_at"
@@ -230,7 +271,7 @@ Please check your network connection and try again.`;
               :include-toggle="true"
               :expanded="note.expanded"
               @toggleHandler="toggleDiscussionHandler"
-              action-text="started a discussion"
+              :action-text-html="actionTextHtml"
               class="discussion"
             />
             <note-edited-text
@@ -242,14 +283,14 @@ Please check your network connection and try again.`;
             />
           </div>
           <div
-            v-if="note.expanded"
+            v-if="note.expanded || alwaysExpanded"
             class="discussion-body">
             <component
               :is="wrapperComponent"
-              :discussion="discussion"
+              :discussion="shouldRenderDiffs ? discussion : undefined"
               :class="wrapperClass"
             >
-              <div class="discussion-notes">
+              <div class="discussion-notes js-discussion-note-form">
                 <ul class="notes">
                   <component
                     v-for="note in note.notes"
@@ -334,7 +375,7 @@ Please check your network connection and try again.`;
                     :note="note"
                     :is-editing="false"
                     @handleFormUpdate="saveReply"
-                    @cancelFormEdition="cancelReplyForm"
+                    @cancelForm="cancelReplyForm"
                     ref="noteForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>

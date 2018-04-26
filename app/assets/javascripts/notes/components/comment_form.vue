@@ -7,10 +7,7 @@ import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
 import TaskList from '../../task_list';
-import {
-  capitalizeFirstCharacter,
-  convertToCamelCase,
-} from '../../lib/utils/text_utility';
+import { capitalizeFirstCharacter, convertToCamelCase } from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -62,15 +59,17 @@ export default {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? 'Comment'
-        : 'Start discussion';
+      return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
+    },
+    startDiscussionDescription() {
+      let text = 'Discuss a specific suggestion or question';
+      if (this.getNoteableData.noteableType === 'merge_request') {
+        text += ' that needs to be resolved';
+      }
+      return `${text}.`;
     },
     isOpen() {
-      return (
-        this.openState === constants.OPENED ||
-        this.openState === constants.REOPENED
-      );
+      return this.openState === constants.OPENED || this.openState === constants.REOPENED;
     },
     canCreateNote() {
       return this.getNoteableData.current_user.can_create_note;
@@ -133,9 +132,7 @@ export default {
   mounted() {
     // jQuery is needed here because it is a custom event being dispatched with jQuery.
     $(document).on('issuable:change', (e, isClosed) => {
-      this.toggleIssueLocalState(
-        isClosed ? constants.CLOSED : constants.REOPENED,
-      );
+      this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
     });
 
     this.initAutoSave();
@@ -231,9 +228,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while closing the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while closing the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -246,9 +241,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while reopening the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while reopening the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -285,9 +278,7 @@ Please check your network connection and try again.`;
     },
     initAutoSave() {
       if (this.isLoggedIn) {
-        const noteableType = capitalizeFirstCharacter(
-          convertToCamelCase(this.noteableType),
-        );
+        const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
 
         this.autosave = new Autosave($(this.$refs.textarea), [
           'Note',
@@ -426,7 +417,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Start discussion</strong>
                           <p>
-                            Discuss a specific suggestion or question.
+                            {{ startDiscussionDescription }}
                           </p>
                         </div>
                       </button>

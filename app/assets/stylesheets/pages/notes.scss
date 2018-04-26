@@ -3,9 +3,15 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: $note-targe3-outside; }
-  50% { background: $note-targe3-inside; }
-  to { background: $note-targe3-outside; }
+  from {
+    background: $note-targe3-outside;
+  }
+  50% {
+    background: $note-targe3-inside;
+  }
+  to {
+    background: $note-targe3-outside;
+  }
 }
 
 ul.notes {
@@ -36,7 +42,8 @@ ul.notes {
     }
   }
 
-  > li { // .timeline-entry
+  > li {
+    // .timeline-entry
     padding: 0;
     display: block;
     position: relative;
@@ -153,7 +160,6 @@ ul.notes {
     }
 
     .note-header {
-
       @include notes-media('max', $screen-xs-min) {
         .inline {
           display: block;
@@ -245,7 +251,6 @@ ul.notes {
 
       .system-note-commit-list-toggler {
         color: $gl-link-color;
-        display: none;
         padding: 10px 0 0;
         cursor: pointer;
         position: relative;
@@ -666,7 +671,6 @@ ul.notes {
     background-color: $white-light;
   }
 
-
   a {
     color: $gl-link-color;
   }
@@ -773,6 +777,42 @@ ul.notes {
   }
 }
 
-.line-resolve-text {
-  vertical-align: middle;
+// Vue refactored diff discussion adjustments
+.files {
+  .diff-discussions {
+    .note-discussion.timeline-entry {
+      padding-left: 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      & > .timeline-entry-inner {
+        padding: 0;
+
+        & > .timeline-content {
+          margin-left: 0;
+        }
+
+        & > .timeline-icon {
+          display: none;
+        }
+      }
+      .discussion-body {
+        padding-top: 0;
+
+        .discussion-wrapper {
+          border-color: transparent;
+        }
+      }
+    }
+  }
+
+  .diff-comment-form {
+    display: block;
+  }
+
+  .add-diff-note svg {
+    margin-top: 4px;
+  }
 }

@@ -11,7 +11,8 @@ import axios from './lib/utils/axios_utils';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
-const requestAnimationFrame = window.requestAnimationFrame ||
+const requestAnimationFrame =
+  window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
   window.setTimeout;
@@ -37,21 +38,28 @@ class AwardsHandler {
     this.emoji = emoji;
     this.eventListeners = [];
     // If the user shows intent let's pre-build the menu
-    this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
-      const $menu = $('.emoji-menu');
-      if ($menu.length === 0) {
-        requestAnimationFrame(() => {
-          this.createEmojiMenu();
-        });
-      }
-    });
-    this.registerEventListener('on', $(document), 'click', '.js-add-award', (e) => {
+    this.registerEventListener(
+      'one',
+      $(document),
+      'mouseenter focus',
+      '.js-add-award',
+      'mouseenter focus',
+      () => {
+        const $menu = $('.emoji-menu');
+        if ($menu.length === 0) {
+          requestAnimationFrame(() => {
+            this.createEmojiMenu();
+          });
+        }
+      },
+    );
+    this.registerEventListener('on', $(document), 'click', '.js-add-award', e => {
       e.stopPropagation();
       e.preventDefault();
       this.showEmojiMenu($(e.currentTarget));
     });
 
-    this.registerEventListener('on', $('html'), 'click', (e) => {
+    this.registerEventListener('on', $('html'), 'click', e => {
       const $target = $(e.target);
       if (!$target.closest('.emoji-menu').length) {
         $('.js-awards-block.current').removeClass('current');
@@ -61,12 +69,14 @@ class AwardsHandler {
         }
       }
     });
-    this.registerEventListener('on', $(document), 'click', '.js-emoji-btn', (e) => {
+    this.registerEventListener('on', $(document), 'click', '.js-emoji-btn', e => {
       e.preventDefault();
       const $target = $(e.currentTarget);
       const $glEmojiElement = $target.find('gl-emoji');
       const $spriteIconElement = $target.find('.icon');
-      const emojiName = ($glEmojiElement.length ? $glEmojiElement : $spriteIconElement).data('name');
+      const emojiName = ($glEmojiElement.length ? $glEmojiElement : $spriteIconElement).data(
+        'name',
+      );
 
       $target.closest('.js-awards-block').addClass('current');
       this.addAward(this.getVotesBlock(), this.getAwardUrl(), emojiName);
@@ -83,7 +93,10 @@ class AwardsHandler {
 
   showEmojiMenu($addBtn) {
     if ($addBtn.hasClass('js-note-emoji')) {
-      $addBtn.closest('.note').find('.js-awards-block').addClass('current');
+      $addBtn
+        .closest('.note')
+        .find('.js-awards-block')
+        .addClass('current');
     } else {
       $addBtn.closest('.js-awards-block').addClass('current');
     }
@@ -177,32 +190,38 @@ class AwardsHandler {
     const remainingCategories = Object.keys(categoryMap).slice(1);
     const allCategoriesAddedPromise = remainingCategories.reduce(
       (promiseChain, categoryNameKey) =>
-        promiseChain.then(() =>
-          new Promise((resolve) => {
-            const emojisInCategory = categoryMap[categoryNameKey];
-            const categoryMarkup = this.renderCategory(
-              categoryLabelMap[categoryNameKey],
-              emojisInCategory,
-            );
-            requestAnimationFrame(() => {
-              emojiContentElement.insertAdjacentHTML('beforeend', categoryMarkup);
-              resolve();
-            });
-          }),
-      ),
+        promiseChain.then(
+          () =>
+            new Promise(resolve => {
+              const emojisInCategory = categoryMap[categoryNameKey];
+              const categoryMarkup = this.renderCategory(
+                categoryLabelMap[categoryNameKey],
+                emojisInCategory,
+              );
+              requestAnimationFrame(() => {
+                emojiContentElement.insertAdjacentHTML('beforeend', categoryMarkup);
+                resolve();
+              });
+            }),
+        ),
       Promise.resolve(),
     );
 
-    allCategoriesAddedPromise.then(() => {
-      // Used for tests
-      // We check for the menu in case it was destroyed in the meantime
-      if (menu) {
-        menu.dispatchEvent(new CustomEvent('build-emoji-menu-finish'));
-      }
-    }).catch((err) => {
-      emojiContentElement.insertAdjacentHTML('beforeend', '<p>We encountered an error while adding the remaining categories</p>');
-      throw new Error(`Error occurred in addRemainingEmojiMenuCategories: ${err.message}`);
-    });
+    allCategoriesAddedPromise
+      .then(() => {
+        // Used for tests
+        // We check for the menu in case it was destroyed in the meantime
+        if (menu) {
+          menu.dispatchEvent(new CustomEvent('build-emoji-menu-finish'));
+        }
+      })
+      .catch(err => {
+        emojiContentElement.insertAdjacentHTML(
+          'beforeend',
+          '<p>We encountered an error while adding the remaining categories</p>',
+        );
+        throw new Error(`Error occurred in addRemainingEmojiMenuCategories: ${err.message}`);
+      });
   }
 
   renderCategory(name, emojiList, opts = {}) {
@@ -211,7 +230,9 @@ class AwardsHandler {
         ${name}
       </h5>
       <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
-        ${emojiList.map(emojiName => `
+        ${emojiList
+          .map(
+            emojiName => `
           <li class="emoji-menu-list-item">
             <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
               ${this.emoji.glEmojiTag(emojiName, {
@@ -219,7 +240,9 @@ class AwardsHandler {
               })}
             </button>
           </li>
-        `).join('\n')}
+        `,
+          )
+          .join('\n')}
       </ul>
     `;
   }
@@ -232,7 +255,7 @@ class AwardsHandler {
       top: `${$addBtn.offset().top + $addBtn.outerHeight()}px`,
     };
     if (position === 'right') {
-      css.left = `${($addBtn.offset().left - $menu.outerWidth()) + 20}px`;
+      css.left = `${$addBtn.offset().left - $menu.outerWidth() + 20}px`;
       $menu.addClass('is-aligned-right');
     } else {
       css.left = `${$addBtn.offset().left}px`;
@@ -403,9 +426,7 @@ class AwardsHandler {
       users = origTitle.trim().split(FROM_SENTENCE_REGEX);
     }
     users.unshift('You');
-    return awardBlock
-      .attr('title', this.toSentence(users))
-      .tooltip('fixTitle');
+    return awardBlock.attr('title', this.toSentence(users)).tooltip('fixTitle');
   }
 
   createAwardButtonForVotesBlock(votesBlock, emojiName) {
@@ -416,7 +437,10 @@ class AwardsHandler {
       </button>
     `;
     const $emojiButton = $(buttonHtml);
-    $emojiButton.insertBefore(votesBlock.find('.js-award-holder')).find('.emoji-icon').data('name', emojiName);
+    $emojiButton
+      .insertBefore(votesBlock.find('.js-award-holder'))
+      .find('.emoji-icon')
+      .data('name', emojiName);
     this.animateEmoji($emojiButton);
     $('.award-control').tooltip();
     votesBlock.removeClass('current');
@@ -426,7 +450,7 @@ class AwardsHandler {
     const className = 'pulse animated once short';
     $emoji.addClass(className);
 
-    this.registerEventListener('on', $emoji, animationEndEventString, (e) => {
+    this.registerEventListener('on', $emoji, animationEndEventString, e => {
       $(e.currentTarget).removeClass(className);
     });
   }
@@ -444,15 +468,16 @@ class AwardsHandler {
     if (this.isUserAuthored($emojiButton)) {
       this.userAuthored($emojiButton);
     } else {
-      axios.post(awardUrl, {
-        name: emoji,
-      })
-      .then(({ data }) => {
-        if (data.ok) {
-          callback();
-        }
-      })
-      .catch(() => flash(__('Something went wrong on our end.')));
+      axios
+        .post(awardUrl, {
+          name: emoji,
+        })
+        .then(({ data }) => {
+          if (data.ok) {
+            callback();
+          }
+        })
+        .catch(() => flash(__('Something went wrong on our end.')));
     }
   }
 
@@ -486,26 +511,33 @@ class AwardsHandler {
   }
 
   getFrequentlyUsedEmojis() {
-    return this.frequentlyUsedEmojis || (() => {
-      const frequentlyUsedEmojis = _.uniq((Cookies.get('frequently_used_emojis') || '').split(','));
-      this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(
-        inputName => this.emoji.isEmojiNameValid(inputName),
-      );
+    return (
+      this.frequentlyUsedEmojis ||
+      (() => {
+        const frequentlyUsedEmojis = _.uniq(
+          (Cookies.get('frequently_used_emojis') || '').split(','),
+        );
+        this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(inputName =>
+          this.emoji.isEmojiNameValid(inputName),
+        );
 
-      return this.frequentlyUsedEmojis;
-    })();
+        return this.frequentlyUsedEmojis;
+      })()
+    );
   }
 
   setupSearch() {
     const $search = $('.js-emoji-menu-search');
 
-    this.registerEventListener('on', $search, 'input', (e) => {
-      const term = $(e.target).val().trim();
+    this.registerEventListener('on', $search, 'input', e => {
+      const term = $(e.target)
+        .val()
+        .trim();
       this.searchEmojis(term);
     });
 
     const $menu = $('.emoji-menu');
-    this.registerEventListener('on', $menu, transitionEndEventString, (e) => {
+    this.registerEventListener('on', $menu, transitionEndEventString, e => {
       if (e.target === e.currentTarget) {
         // Clear the search
         this.searchEmojis('');
@@ -523,19 +555,26 @@ class AwardsHandler {
       // Generate a search result block
       const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
       const foundEmojis = this.findMatchingEmojiElements(term).show();
-      const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
+      const ul = $('<ul>')
+        .addClass('emoji-menu-list emoji-menu-search')
+        .append(foundEmojis);
       $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
-      $('.emoji-menu-content').append(h5).append(ul);
+      $('.emoji-menu-content')
+        .append(h5)
+        .append(ul);
     } else {
-      $('.emoji-menu-content').children().show();
+      $('.emoji-menu-content')
+        .children()
+        .show();
     }
   }
 
   findMatchingEmojiElements(query) {
     const emojiMatches = this.emoji.filterEmojiNamesByAlias(query);
     const $emojiElements = $('.emoji-menu-list:not(.frequent-emojis) [data-name]');
-    const $matchingElements = $emojiElements
-      .filter((i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0);
+    const $matchingElements = $emojiElements.filter(
+      (i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0,
+    );
     return $matchingElements.closest('li').clone();
   }
 
@@ -550,16 +589,13 @@ class AwardsHandler {
     $emojiMenu.addClass(IS_RENDERED);
 
     // enqueues animation as a microtask, so it begins ASAP once IS_RENDERED added
-    return Promise.resolve()
-      .then(() => $emojiMenu.addClass(IS_VISIBLE));
+    return Promise.resolve().then(() => $emojiMenu.addClass(IS_VISIBLE));
   }
 
   hideMenuElement($emojiMenu) {
-    $emojiMenu.on(transitionEndEventString, (e) => {
+    $emojiMenu.on(transitionEndEventString, e => {
       if (e.currentTarget === e.target) {
-        $emojiMenu
-          .removeClass(IS_RENDERED)
-          .off(transitionEndEventString);
+        $emojiMenu.removeClass(IS_RENDERED).off(transitionEndEventString);
       }
     });
 
@@ -567,7 +603,7 @@ class AwardsHandler {
   }
 
   destroy() {
-    this.eventListeners.forEach((entry) => {
+    this.eventListeners.forEach(entry => {
       entry.element.off.call(entry.element, ...entry.args);
     });
     $('.emoji-menu').remove();
@@ -577,8 +613,9 @@ class AwardsHandler {
 let awardsHandlerPromise = null;
 export default function loadAwardsHandler(reload = false) {
   if (!awardsHandlerPromise || reload) {
-    awardsHandlerPromise = import(/* webpackChunkName: 'emoji' */ './emoji')
-      .then(Emoji => new AwardsHandler(Emoji));
+    awardsHandlerPromise = import(/* webpackChunkName: 'emoji' */ './emoji').then(
+      Emoji => new AwardsHandler(Emoji),
+    );
   }
   return awardsHandlerPromise;
 }

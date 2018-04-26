@@ -22,22 +22,24 @@ export default {
     resolveButtonTitle() {
       if (this.updatedNoteBody) {
         if (this.discussionResolved) {
-          return __('Comment and unresolve discussion');
+          return __('Comment & unresolve discussion');
         }
 
-        return __('Comment and resolve discussion');
+        return __('Comment & resolve discussion');
       }
-      return this.discussionResolved
-        ? __('Unresolve discussion')
-        : __('Resolve discussion');
+      return this.discussionResolved ? __('Unresolve discussion') : __('Resolve discussion');
     },
   },
   methods: {
     resolveHandler(resolvedState = false) {
       this.isResolving = true;
-      const endpoint = this.note.resolve_path || `${this.note.path}/resolve`;
       const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;
+      let endpoint = `${this.note.path}/resolve`;
+
+      if (discussion) {
+        endpoint = this.note.resolve_path;
+      }
 
       this.toggleResolveNote({ endpoint, isResolved, discussion })
         .then(() => {
@@ -45,9 +47,7 @@ export default {
         })
         .catch(() => {
           this.isResolving = false;
-          const msg = __(
-            'Something went wrong while resolving this discussion. Please try again.',
-          );
+          const msg = __('Something went wrong while resolving this discussion. Please try again.');
           Flash(msg, 'alert', this.$el);
         });
     },

@@ -21,20 +21,21 @@ import '~/lib/utils/common_utils';
     return setTimeout(function() {
       assertFn();
       return done();
-    // Maybe jasmine.clock here?
+      // Maybe jasmine.clock here?
     }, 333);
   };
 
   describe('AwardsHandler', function() {
-    preloadFixtures('merge_requests/diff_comment.html.raw');
+    preloadFixtures('snippets/show.html.raw');
     beforeEach(function(done) {
-      loadFixtures('merge_requests/diff_comment.html.raw');
-      $('body').attr('data-page', 'projects:merge_requests:show');
-      loadAwardsHandler(true).then((obj) => {
-        awardsHandler = obj;
-        spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
-        done();
-      }).catch(fail);
+      loadFixtures('snippets/show.html.raw');
+      loadAwardsHandler(true)
+        .then(obj => {
+          awardsHandler = obj;
+          spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
+          done();
+        })
+        .catch(fail);
 
       let isEmojiMenuBuilt = false;
       openAndWaitForEmojiMenu = function() {
@@ -42,7 +43,9 @@ import '~/lib/utils/common_utils';
           if (isEmojiMenuBuilt) {
             resolve();
           } else {
-            $('.js-add-award').eq(0).click();
+            $('.js-add-award')
+              .eq(0)
+              .click();
             const $menu = $('.emoji-menu');
             $menu.one('build-emoji-menu-finish', () => {
               isEmojiMenuBuilt = true;
@@ -63,7 +66,9 @@ import '~/lib/utils/common_utils';
     });
     describe('::showEmojiMenu', function() {
       it('should show emoji menu when Add emoji button clicked', function(done) {
-        $('.js-add-award').eq(0).click();
+        $('.js-add-award')
+          .eq(0)
+          .click();
         return lazyAssert(done, function() {
           var $emojiMenu;
           $emojiMenu = $('.emoji-menu');
@@ -81,7 +86,9 @@ import '~/lib/utils/common_utils';
         });
       });
       it('should remove emoji menu when body is clicked', function(done) {
-        $('.js-add-award').eq(0).click();
+        $('.js-add-award')
+          .eq(0)
+          .click();
         return lazyAssert(done, function() {
           var $emojiMenu;
           $emojiMenu = $('.emoji-menu');
@@ -92,7 +99,9 @@ import '~/lib/utils/common_utils';
         });
       });
       it('should not remove emoji menu when search is clicked', function(done) {
-        $('.js-add-award').eq(0).click();
+        $('.js-add-award')
+          .eq(0)
+          .click();
         return lazyAssert(done, function() {
           var $emojiMenu;
           $emojiMenu = $('.emoji-menu');
@@ -103,6 +112,7 @@ import '~/lib/utils/common_utils';
         });
       });
     });
+
     describe('::addAwardToEmojiBar', function() {
       it('should add emoji to votes block', function() {
         var $emojiButton, $votesBlock;
@@ -139,7 +149,9 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.userAuthored($thumbsUpEmoji);
-        return expect($thumbsUpEmoji.data("originalTitle")).toBe("You cannot vote on your own issue, MR and note");
+        return expect($thumbsUpEmoji.data('originalTitle')).toBe(
+          'You cannot vote on your own issue, MR and note',
+        );
       });
       it('should restore tooltip back to initial vote list', function() {
         var $thumbsUpEmoji, $votesBlock;
@@ -150,12 +162,14 @@ import '~/lib/utils/common_utils';
         awardsHandler.userAuthored($thumbsUpEmoji);
         jasmine.clock().tick(2801);
         jasmine.clock().uninstall();
-        return expect($thumbsUpEmoji.data("originalTitle")).toBe("sam");
+        return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
       });
     });
     describe('::getAwardUrl', function() {
       return it('returns the url for request', function() {
-        return expect(awardsHandler.getAwardUrl()).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1/toggle_award_emoji');
+        return expect(awardsHandler.getAwardUrl()).toBe(
+          'http://test.host/snippets/1/toggle_award_emoji',
+        );
       });
     });
     describe('::addAward and ::checkMutuality', function() {
@@ -195,7 +209,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("originalTitle")).toBe('You, sam, jerry, max, and andy');
+        return expect($thumbsUpEmoji.data('originalTitle')).toBe('You, sam, jerry, max, and andy');
       });
       return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -205,7 +219,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("originalTitle")).toBe('You and sam');
+        return expect($thumbsUpEmoji.data('originalTitle')).toBe('You and sam');
       });
     });
     describe('::removeYouToUserList', function() {
@@ -218,7 +232,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("originalTitle")).toBe('sam, jerry, max, and andy');
+        return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam, jerry, max, and andy');
       });
       return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -229,7 +243,7 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("originalTitle")).toBe('sam');
+        return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
       });
     });
     describe('::searchEmojis', () => {
@@ -245,7 +259,7 @@ import '~/lib/utils/common_utils';
             expect($('.js-emoji-menu-search').val()).toBe('ali');
           })
           .then(done)
-          .catch((err) => {
+          .catch(err => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
@@ -263,7 +277,7 @@ import '~/lib/utils/common_utils';
             expect($('.js-emoji-menu-search').val()).toBe('');
           })
           .then(done)
-          .catch((err) => {
+          .catch(err => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
@@ -272,37 +286,40 @@ import '~/lib/utils/common_utils';
     describe('emoji menu', function() {
       const emojiSelector = '[data-name="sunglasses"]';
       const openEmojiMenuAndAddEmoji = function() {
-        return openAndWaitForEmojiMenu()
-          .then(() => {
-            const $menu = $('.emoji-menu');
-            const $block = $('.js-awards-block');
-            const $emoji = $menu.find('.emoji-menu-list:not(.frequent-emojis) ' + emojiSelector);
+        return openAndWaitForEmojiMenu().then(() => {
+          const $menu = $('.emoji-menu');
+          const $block = $('.js-awards-block');
+          const $emoji = $menu.find('.emoji-menu-list:not(.frequent-emojis) ' + emojiSelector);
 
-            expect($emoji.length).toBe(1);
-            expect($block.find(emojiSelector).length).toBe(0);
-            $emoji.click();
-            expect($menu.hasClass('.is-visible')).toBe(false);
-            expect($block.find(emojiSelector).length).toBe(1);
-          });
+          expect($emoji.length).toBe(1);
+          expect($block.find(emojiSelector).length).toBe(0);
+          $emoji.click();
+          expect($menu.hasClass('.is-visible')).toBe(false);
+          expect($block.find(emojiSelector).length).toBe(1);
+        });
       };
       it('should add selected emoji to awards block', function(done) {
         return openEmojiMenuAndAddEmoji()
           .then(done)
-          .catch((err) => {
+          .catch(err => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
       it('should remove already selected emoji', function(done) {
         return openEmojiMenuAndAddEmoji()
           .then(() => {
-            $('.js-add-award').eq(0).click();
+            $('.js-add-award')
+              .eq(0)
+              .click();
             const $block = $('.js-awards-block');
-            const $emoji = $('.emoji-menu').find(`.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`);
+            const $emoji = $('.emoji-menu').find(
+              `.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`,
+            );
             $emoji.click();
             expect($block.find(emojiSelector).length).toBe(0);
           })
           .then(done)
-          .catch((err) => {
+          .catch(err => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
@@ -318,12 +335,12 @@ import '~/lib/utils/common_utils';
         return openAndWaitForEmojiMenu()
           .then(() => {
             const emojiMenu = document.querySelector('.emoji-menu');
-            Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), (title) => {
+            Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title => {
               expect(title.textContent.trim().toLowerCase()).not.toBe('frequently used');
             });
           })
           .then(done)
-          .catch((err) => {
+          .catch(err => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
@@ -334,14 +351,15 @@ import '~/lib/utils/common_utils';
         return openAndWaitForEmojiMenu()
           .then(() => {
             const emojiMenu = document.querySelector('.emoji-menu');
-            const hasFrequentlyUsedHeading = Array.prototype.some.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title =>
-              title.textContent.trim().toLowerCase() === 'frequently used'
+            const hasFrequentlyUsedHeading = Array.prototype.some.call(
+              emojiMenu.querySelectorAll('.emoji-menu-title'),
+              title => title.textContent.trim().toLowerCase() === 'frequently used',
             );
 
             expect(hasFrequentlyUsedHeading).toBe(true);
           })
           .then(done)
-          .catch((err) => {
+          .catch(err => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
@@ -361,4 +379,4 @@ import '~/lib/utils/common_utils';
       });
     });
   });
-}).call(window);
+}.call(window));

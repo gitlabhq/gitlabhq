@@ -11,7 +11,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def show
     @environment = @merge_request.environments_for(current_user).last
 
-    render json: { html: view_to_html_string("projects/merge_requests/diffs/_diffs") }
+    render json: DiffsSerializer.new.represent(@diffs, serializeable_vars)
   end
 
   def diff_for_path
@@ -61,6 +61,16 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     else
       @merge_request_diff
     end
+  end
+
+  def serializeable_vars
+    {
+      merge_request: @merge_request,
+      merge_request_diffs: @merge_request_diffs,
+      start_version: @start_version,
+      commit: @commit,
+      latest_diff: @merge_request_diff&.latest?
+    }
   end
 
   def define_diff_comment_vars
