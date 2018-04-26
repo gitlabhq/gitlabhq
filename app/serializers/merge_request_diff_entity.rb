@@ -1,5 +1,5 @@
 class MergeRequestDiffEntity < Grape::Entity
-  include RequestAwareEntity
+  include Gitlab::Routing
   include GitHelper
   include MergeRequestsHelper
 

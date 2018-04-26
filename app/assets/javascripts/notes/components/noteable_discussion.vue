@@ -80,17 +80,14 @@ export default {
       }
 
       text += ' on';
-      if (!this.discussion.active) {
-        text += ' an old version of';
+      let urlText;
+      if (this.discussion.active) {
+        urlText = 'the diff';
+      } else {
+        urlText = 'an old version of the diff';
       }
 
-      // TODO: psimyn
-      const url = `TODO:diffs/${this.discussion.id}`;
-      if (url) {
-        text += ` <a href="${url}">the diff</a>`;
-      } else {
-        text += ' the diff';
-      }
+      text += ` <a href="${this.discussion.discussionPath}">${urlText}</a>`;
 
       return text;
     },
@@ -101,6 +98,8 @@ export default {
         diffFile: this.note.diff_file,
         diffDiscussion: this.note.diff_discussion,
         imageDiffHtml: this.note.image_diff_html,
+        active: this.note.active,
+        discussionPath: this.note.discussion_path,
       };
     },
     author() {
@@ -259,7 +258,7 @@ Please check your network connection and try again.`;
       <div class="timeline-content">
         <div
           class="discussion"
-          :data-discussion-id="note.id"
+          :data-discussion-id="discussion.discussion_id"
         >
           <div
             v-if="renderHeader"

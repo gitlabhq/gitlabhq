@@ -1,30 +1,6 @@
 <script>
 import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 
-const mergeRequestDiffs = [
-  {
-    path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
-    versionIndex: 2, // version #{version_index(merge_request_diff)}
-    shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
-    commitsCount: 2, // merge_request_diff.commits_count
-    createdAt: '2017-03-14T21:27:21Z', // .created_at
-  },
-  {
-    path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
-    versionIndex: 3, // version #{version_index(merge_request_diff)}
-    shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
-    commitsCount: 3, // merge_request_diff.commits_count
-    createdAt: '2017-03-14T21:27:21Z', // .created_at
-  },
-  {
-    path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
-    versionIndex: 5, // version #{version_index(merge_request_diff)}
-    shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
-    commitsCount: 3, // merge_request_diff.commits_count
-    createdAt: '2017-03-14T21:27:21Z', // .created_at
-  },
-];
-
 const mergeRequestDiff = {
   latest: true,
   path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
@@ -48,12 +24,18 @@ export default {
   components: {
     CompareVersionsDropdown,
   },
+  props: {
+    mergeRequestDiffs: {
+      type: Array,
+      required: true,
+    },
+  },
   computed: {
     targetVersions() {
-      return mergeRequestDiffs;
+      return this.mergeRequestDiffs;
     },
     baseVersions() {
-      return mergeRequestDiffs;
+      return this.mergeRequestDiffs;
     },
     baseVersion() {
       return baseVersion;

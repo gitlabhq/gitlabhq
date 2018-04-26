@@ -1,5 +1,6 @@
 class DiscussionEntity < Grape::Entity
   include RequestAwareEntity
+  include NotesHelper
 
   expose :id, :reply_id
   expose :position, if: -> (d, _) { defined? d.diff_file }
@@ -9,6 +10,10 @@ class DiscussionEntity < Grape::Entity
 
   expose :notes do |discussion, opts|
     request.note_entity.represent(discussion.notes, opts)
+  end
+
+  expose :discussion_path do |discussion|
+    discussion_path(discussion)
   end
 
   expose :individual_note?, as: :individual_note

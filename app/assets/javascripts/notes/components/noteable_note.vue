@@ -40,6 +40,7 @@ export default {
     },
     classNameBindings() {
       return {
+        [`note-row-${this.note.id}`]: true,
         'is-editing': this.isEditing && !this.isRequesting,
         'is-requesting being-posted': this.isRequesting,
         'disabled-content': this.isDeleting,
@@ -147,6 +148,7 @@ export default {
     :id="noteAnchorId"
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
+    :data-note-id="note.id"
   >
     <div class="timeline-entry-inner">
       <div class="timeline-icon">

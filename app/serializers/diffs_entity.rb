@@ -31,7 +31,6 @@ class DiffsEntity < Grape::Entity
     options[:merge_request_diffs].as_json
   end
 
-  # Simon: Can we not expose this if merge_request_diffs are <= 1?
   expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs].any? } do |diffs|
     options[:merge_request_diffs]
   end

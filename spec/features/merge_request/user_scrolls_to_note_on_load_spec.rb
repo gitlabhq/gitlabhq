@@ -47,7 +47,7 @@ describe 'Merge request > User scrolls to note on load', :js do
   it 'expands collapsed notes' do
     visit "#{project_merge_request_path(project, merge_request)}#{collapsed_fragment_id}"
     note_element = find(collapsed_fragment_id)
-    note_container = note_element.ancestor('.js-toggle-container')
+    note_container = note_element.ancestor('.timeline-content')
 
     expect(note_element.visible?).to eq true
     expect(note_container.find('.line_content.noteable_line.old', match: :first).visible?).to eq true

@@ -58,7 +58,7 @@
           %section.col-md-12
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
-              - if has_vue_discussions_cookie?
+              - if rendered_for_merge_request?
                 #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
                   noteable_data: serialize_issuable(@merge_request),
                   noteable_type: 'merge_request',
@@ -73,7 +73,7 @@
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?, endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', { w: '1' }) } }
 
-      - unless has_vue_discussions_cookie? # TODO: @fatihacet This should be deleted after refactor
+      - unless rendered_for_merge_request? # TODO: @fatihacet This should be deleted after refactor
         #diffs
 
     .mr-loading-status
