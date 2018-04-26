@@ -40,13 +40,6 @@ export default {
 
       return __('Create file');
     },
-    formLabelName() {
-      if (this.type === 'tree') {
-        return __('Directory name');
-      }
-
-      return __('File name');
-    },
   },
   mounted() {
     this.$refs.fieldName.focus();
@@ -81,17 +74,19 @@ export default {
       @submit.prevent="createEntryInStore"
       class="form-group row append-bottom-0"
     >
-      <label class="label-light col-form-label col-sm-3">
-        {{ formLabelName }}
-      </label>
-      <div class="col-sm-9">
-        <input
-          type="text"
-          class="form-control"
-          v-model="entryName"
-          ref="fieldName"
-        />
-      </div>
+      <fieldset class="form-group append-bottom-0">
+        <label class="label-light col-form-label col-sm-3 ide-new-modal-label">
+          {{ __('Name') }}
+        </label>
+        <div class="col-sm-9">
+          <input
+            type="text"
+            class="form-control"
+            v-model="entryName"
+            ref="fieldName"
+          />
+        </div>
+      </fieldset>
     </form>
   </deprecated-modal>
 </template>
