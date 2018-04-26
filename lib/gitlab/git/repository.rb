@@ -1187,6 +1187,8 @@ module Gitlab
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
           else
+            # When removing this code, also remove source_repository#path
+            # to remove deprecated method calls
             local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
           end
         end
