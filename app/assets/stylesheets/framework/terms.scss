@@ -1,0 +1,37 @@
+.terms {
+  .panel {
+    .panel-heading {
+      display: -webkit-flex;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+        padding: 2px 8px;
+        margin: 5px 2px 5px -8px;
+        border-radius: 4px;
+
+        .logo-text {
+          width: 55px;
+          height: 24px;
+          margin: 0 15px;
+        }
+      }
+
+      .navbar-collapse {
+        padding-right: 0;
+      }
+
+      .nav li a {
+        color: $theme-gray-700;
+      }
+    }
+
+    .panel-content {
+      padding: 0 $gl-padding;
+    }
+  }
+}
