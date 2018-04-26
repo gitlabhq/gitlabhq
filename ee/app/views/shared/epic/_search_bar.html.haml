@@ -1,4 +1,5 @@
 - type = local_assigns.fetch(:type)
+- hide_sort_dropdown = local_assigns.fetch(:hide_sort_dropdown, false)
 - full_path = @project.present? ? @project.full_path : @group.full_path
 
 .epics-filters
@@ -61,5 +62,6 @@
 
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
-        .filter-dropdown-container
-          = render 'shared/epic/sort_dropdown'
+        - unless hide_sort_dropdown
+          .filter-dropdown-container
+            = render 'shared/epic/sort_dropdown'
