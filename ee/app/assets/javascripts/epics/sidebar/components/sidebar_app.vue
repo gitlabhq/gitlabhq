@@ -1,9 +1,10 @@
 <script>
-  /* global ListLabel */
   /* eslint-disable vue/require-default-prop */
+  import _ from 'underscore';
   import Cookies from 'js-cookie';
   import Flash from '~/flash';
   import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+  import ListLabel from '~/vue_shared/models/label';
   import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
   import SidebarCollapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
   import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
@@ -73,6 +74,7 @@
         store,
         // Backend will pass the appropriate css class for the contentContainer
         collapsed: Cookies.get('collapsed_gutter') === 'true',
+        autoExpanded: false,
         savingStartDate: false,
         savingEndDate: false,
         service: new SidebarService(this.endpoint),
@@ -90,6 +92,21 @@
         contentContainer.classList.toggle('right-sidebar-collapsed');
 
         Cookies.set('collapsed_gutter', this.collapsed);
+      },
+      toggleSidebarRevealLabelsDropdown() {
+        const contentContainer = this.$el.closest('.page-with-contextual-sidebar');
+        this.toggleSidebar();
+        // When sidebar is expanded, we need to wait
+        // for rendering to finish before opening
+        // dropdown as otherwise it causes `calc()`
+        // used in CSS to miscalculate collapsed
+        // sidebar size.
+        _.debounce(() => {
+          this.autoExpanded = true;
+          contentContainer
+            .querySelector('.js-sidebar-dropdown-toggle')
+            .dispatchEvent(new Event('click', { bubbles: true, cancelable: false }));
+        }, 100)();
       },
       saveDate(dateType = 'start', newDate) {
         const type = dateType === 'start' ? dateType : 'end';
@@ -122,15 +139,23 @@
           const labelIndex = this.epicContext.labels.findIndex(l => l.id === label.id);
 
           if (labelIndex === -1) {
-            this.epicContext.labels.push(new ListLabel({
-              id: label.id,
-              title: label.title,
-              color: label.color[0],
-              textColor: label.text_color,
-            }));
+            this.epicContext.labels.push(
+              new ListLabel({
+                id: label.id,
+                title: label.title,
+                color: label.color[0],
+                textColor: label.text_color,
+              }),
+            );
           } else {
             this.epicContext.labels.splice(labelIndex, 1);
           }
+        }
+      },
+      handleDropdownClose() {
+        if (this.autoExpanded) {
+          this.autoExpanded = false;
+          this.toggleSidebar();
         }
       },
     },
@@ -192,6 +217,8 @@
         :can-edit="editable"
         :show-create="true"
         @onLabelClick="handleLabelClick"
+        @onDropdownClose="handleDropdownClose"
+        @toggleCollapse="toggleSidebarRevealLabelsDropdown"
       >
         {{ __('None') }}
       </sidebar-labels-select>
