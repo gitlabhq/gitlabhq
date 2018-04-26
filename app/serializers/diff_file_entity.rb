@@ -63,7 +63,11 @@ class DiffFileEntity < Grape::Entity
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    edit_blob_path(merge_request.source_project, merge_request.source_branch, diff_file.new_path)
+    options = merge_request.persisted? ? { from_merge_request_iid: merge_request.iid } : {}
+
+    project_edit_blob_path(merge_request.source_project,
+      tree_join(merge_request.source_branch, diff_file.new_path),
+      options)
   end
 
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
