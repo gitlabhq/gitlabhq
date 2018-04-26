@@ -1,8 +1,8 @@
-require 'webpack/rails/manifest'
+require 'gitlab/webpack/manifest'
 
 module WebpackHelper
   def webpack_bundle_tag(bundle, force_same_domain: false)
-    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: force_same_domain))
+    javascript_include_tag(*entrypoint_paths(bundle, force_same_domain: force_same_domain))
   end
 
   def webpack_controller_bundle_tags
@@ -18,23 +18,22 @@ module WebpackHelper
 
     until route.empty?
       begin
-        asset_paths = gitlab_webpack_asset_paths("pages.#{route.join('.')}", extension: 'js')
+        asset_paths = entrypoint_paths("pages.#{route.join('.')}", extension: 'js')
         bundles.unshift(*asset_paths)
-      rescue Webpack::Rails::Manifest::EntryPointMissingError
+      rescue Gitlab::Webpack::Manifest::AssetMissingError
         # no bundle exists for this path
       end
 
       route.pop
     end
 
-    javascript_include_tag(*bundles)
+    javascript_include_tag(*bundles.uniq)
   end
 
-  # override webpack-rails gem helper until changes can make it upstream
-  def gitlab_webpack_asset_paths(source, extension: nil, force_same_domain: false)
+  def entrypoint_paths(source, extension: nil, force_same_domain: false)
     return "" unless source.present?
 
-    paths = Webpack::Rails::Manifest.asset_paths(source)
+    paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
     if extension
       paths.select! { |p| p.ends_with? ".#{extension}" }
     end

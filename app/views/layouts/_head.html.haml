@@ -38,9 +38,6 @@
     = yield :library_javascripts
 
   = javascript_include_tag locale_path unless I18n.locale == :en
-  = webpack_bundle_tag "webpack_runtime"
-  = webpack_bundle_tag "common"
-  = webpack_bundle_tag "main"
   = webpack_bundle_tag "raven" if Gitlab::CurrentSettings.clientside_sentry_enabled
 
   - if content_for?(:page_specific_javascripts)
