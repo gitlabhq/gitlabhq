@@ -26,11 +26,18 @@ export default {
       required: false,
       default: false,
     },
+    forceModifiedIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     changedIcon() {
       const suffix = this.file.staged && !this.showStagedIcon ? '-solid' : '';
-      return this.file.tempFile ? `file-addition${suffix}` : `file-modified${suffix}`;
+      return this.file.tempFile && !this.forceModifiedIcon
+        ? `file-addition${suffix}`
+        : `file-modified${suffix}`;
     },
     stagedIcon() {
       return `${this.changedIcon}-solid`;
