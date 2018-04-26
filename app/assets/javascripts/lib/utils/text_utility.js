@@ -63,7 +63,7 @@ export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3
  * @param {String} sha
  * @returns {String}
  */
-export const truncateSha = sha => `${sha.substr(0, 8)}`;
+export const truncateSha = sha => sha.substr(0, 8);
 
 /**
  * Capitalizes first character

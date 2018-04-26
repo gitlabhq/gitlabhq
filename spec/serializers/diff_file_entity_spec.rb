@@ -15,7 +15,7 @@ describe DiffFileEntity do
 
   it 'exposes correct attributes' do
     expect(subject).to include(
-      :submodule, :submodule_link, :file_path,
+      :submodule, :submodule_link, :submodule_tree_url, :file_path,
       :deleted_file, :old_path, :new_path, :mode_changed,
       :a_mode, :b_mode, :text, :old_path_html,
       :new_path_html, :highlighted_diff_lines, :parallel_diff_lines

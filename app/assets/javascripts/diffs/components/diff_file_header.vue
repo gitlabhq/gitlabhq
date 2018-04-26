@@ -1,9 +1,12 @@
 <script>
+import $ from 'jquery';
+import _ from 'underscore';
 import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
-import { truncateSha } from '~/lib/utils/text_utility.js';
+import { truncateSha } from '~/lib/utils/text_utility';
+import { s__, sprintf } from '~/locale';
 import EditButton from './edit_button.vue';
 
 export default {
@@ -41,6 +44,11 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      blobForkSuggestion: null,
+    };
+  },
   computed: {
     icon() {
       if (this.diffFile.submodule) {
@@ -66,25 +74,7 @@ export default {
     titleTag() {
       return this.diffFile.fileHash ? 'a' : 'span';
     },
-    baseSha() {
-      return this.diffFile.diffRefs.baseSha;
-    },
-    contentSha() {
-      return this.diffFile.contentSha;
-    },
-    truncatedBaseSha() {
-      return truncateSha(this.baseSha);
-    },
-    truncatedContentSha() {
-      return truncateSha(this.contentSha);
-    },
-    imageDiff() {
-      return !this.diffFile.text;
-    },
-    replacedFile() {
-      return !(this.diffFile.newFile || this.diffFile.deletedFile);
-    },
-    lfs() {
+    isUsingLfs() {
       return this.diffFile.storedExternally && this.diffFile.externalStorage === 'lfs';
     },
     collapseIcon() {
@@ -93,15 +83,39 @@ export default {
     isDiscussionsExpanded() {
       return this.discussionsExpanded && this.expanded;
     },
+    viewFileButtonText() {
+      const truncatedContentSha = _.escape(truncateSha(this.diffFile.contentSha));
+      return sprintf(
+        s__('MergeRequests|View file @ %{commitId}'),
+        {
+          commitId: `<span class="commit-sha">${truncatedContentSha}</span>`,
+        },
+        false,
+      );
+    },
+    viewReplacedFileButtonText() {
+      const truncatedBaseSha = _.escape(truncateSha(this.diffFile.diffRefs.baseSha));
+      return sprintf(
+        s__('MergeRequests|View replaced file @ %{commitId}'),
+        {
+          commitId: `<span class="commit-sha">${truncatedBaseSha}</span>`,
+        },
+        false,
+      );
+    },
   },
   mounted() {
-    new BlobForkSuggestion({
+    this.blobForkSuggestion = new BlobForkSuggestion({
       openButtons: $(this.$el).find('.js-edit-blob-link-fork-toggler'),
       forkButtons: $(this.$el).find('.js-fork-suggestion-button'),
       cancelButtons: $(this.$el).find('.js-cancel-fork-suggestion-button'),
       suggestionSections: $(this.$el).find('.js-file-fork-suggestion-section'),
       actionTextPieces: $(this.$el).find('.js-file-fork-suggestion-section-action'),
-    }).init();
+    });
+    this.blobForkSuggestion.init();
+  },
+  beforeDestroy() {
+    this.blobForkSuggestion.destroy();
   },
   methods: {
     handleToggle(e, checkTarget) {
@@ -133,7 +147,10 @@ export default {
         :is="titleTag"
         :href="titleLink"
       >
-        <i class="fa fa-fw" :class="`fa-${icon}`"></i>
+        <i
+          class="fa fa-fw"
+          :class="`fa-${icon}`"
+        ></i>
         <span v-if="diffFile.renamedFile">
           <strong
             class="file-title-name"
@@ -182,10 +199,10 @@ export default {
       </small>
 
       <span
-        v-if="lfs"
+        v-if="isUsingLfs"
         class="label label-lfs append-right-5"
       >
-        LFS
+        {{ __('LFS') }}
       </span>
     </div>
 
@@ -199,7 +216,7 @@ export default {
         <button
           :class="{ active: isDiscussionsExpanded }"
           class="btn"
-          title="Toggle comments for this file"
+          :title="s__('MergeRequests|Toggle comments for this file')"
           type="button"
         >
           <icon name="comment" />
@@ -214,20 +231,20 @@ export default {
         v-if="diffFile.replacedViewPath"
         class="btn view-file js-view-file"
         :href="diffFile.replacedViewPath"
+        v-html="viewReplacedFileButtonText"
       >
-        View replaced file @ <span class="commit-sha">{{ truncatedBaseSha }}</span>
       </a>
       <a
         class="btn view-file js-view-file"
         :href="diffFile.viewPath"
+        v-html="viewFileButtonText"
       >
-        View file @ <span class="commit-sha">{{ truncatedContentSha }}</span>
       </a>
 
       <button
         v-if="diffFile.environment"
       >
-        View on environment
+        {{ s__('MergeRequests|View on environment') }}
         <!-- = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment -->
       </button>
     </div>
