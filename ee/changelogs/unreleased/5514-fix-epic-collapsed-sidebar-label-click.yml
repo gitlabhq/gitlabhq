@@ -1,0 +1,5 @@
+---
+title: Reveal labels dropdown when labels icon is clicked on collapsed Epic sidebar
+merge_request: 5298
+author:
+type: fixed
