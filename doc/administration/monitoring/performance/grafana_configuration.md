@@ -2,11 +2,12 @@
 
 [Grafana](http://grafana.org/) is a tool that allows you to visualize time
 series metrics through graphs and dashboards. It supports several backend
-data stores, including InfluxDB. GitLab writes performance data to InfluxDB
-and Grafana will allow you to query InfluxDB to display useful graphs.
+data stores, including Prometheus and InfluxDB. GitLab provides performance
+and operational data to Prometheus and InfluxDB. Grafana will allow you to
+query and display useful graphs.
 
-For the easiest installation and configuration, install Grafana on the same
-server as InfluxDB. For larger installations, you may want to split out these
+Grafana will need API access to Prometheus and/or InfluxDB. It can be installed
+on the same server. For larger installations, you may want to split out these
 services.
 
 ## Installation
@@ -27,11 +28,26 @@ in the top bar.
 
 ![Grafana empty data source page](img/grafana_data_source_empty.png)
 
+### Prometheus
+
+Fill in the configuration details for the InfluxDB data source. Save and
+Test Connection to ensure the configuration is correct.
+
+- **Name**: Prometheus
+- **Default**: Checked (Optional)
+- **Type**: Prometheus
+- **Url**: https://localhost:9090 (Or the remote URL if you've Grafana is
+on a separate server)
+- **Access**: proxy
+- **Scrape interval**: 15s (This is the default configured in GitLab omnibus)
+
+### InfluxDB
+
 Fill in the configuration details for the InfluxDB data source. Save and
 Test Connection to ensure the configuration is correct.
 
 - **Name**: InfluxDB
-- **Default**: Checked
+- **Default**: Checked (Optional)
 - **Type**: InfluxDB 0.9.x (Even if you're using InfluxDB 0.10.x)
 - **Url**: https://localhost:8086 (Or the remote URL if you've installed InfluxDB
 on a separate server)
@@ -42,7 +58,7 @@ on a separate server)
 
 ![Grafana data source configurations](img/grafana_data_source_configuration.png)
 
-## Apply retention policies and create continuous queries
+## Apply retention policies and create continuous queries (InfluxDB only)
 
 If you intend to import the GitLab provided Grafana dashboards, you will need to
 set up the right retention policies and continuous queries. The easiest way of
