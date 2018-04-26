@@ -282,8 +282,14 @@
       opacity: 0.4;
     }
 
-    .editor.original .cursors-layer {
-      display: none;
+    .editor.original {
+      .view-lines {
+        cursor: default;
+      }
+
+      .cursors-layer {
+        display: none;
+      }
     }
   }
 }

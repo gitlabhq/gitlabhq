@@ -62,6 +62,12 @@ describe('IDE activity bar', () => {
 
       expect(vm.updateActivityBarView).toHaveBeenCalledWith(ActivityBarViews.commit);
     });
+
+    it('calls updateActivityBarView with review value on click', () => {
+      vm.$el.querySelector('.js-ide-review-mode').click();
+
+      expect(vm.updateActivityBarView).toHaveBeenCalledWith(ActivityBarViews.review);
+    });
   });
 
   describe('active item', () => {
