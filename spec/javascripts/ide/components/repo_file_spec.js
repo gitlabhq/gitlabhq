@@ -5,7 +5,7 @@ import router from '~/ide/ide_router';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file } from '../helpers';
 
-fdescribe('RepoFile', () => {
+describe('RepoFile', () => {
   let vm;
 
   function createComponent(propsData) {
