@@ -1897,7 +1897,7 @@ describe User do
       let(:group) { create(:group) }
       let(:another_user) { create(:user) }
       let(:subgroup) { create(:group, parent: group) }
-      let(:project) { create(:project, group: subgroup) }
+      let!(:project) { create(:project, group: subgroup, runners: [runner_1]) }
 
       def add_user(access)
         group.add_user(user, access)
