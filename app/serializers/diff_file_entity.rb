@@ -58,8 +58,6 @@ class DiffFileEntity < Grape::Entity
     new_path
   end
 
-  # TODO check if these are not creating a n+1 call
-  # we should probably also pass project as parameter
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
