@@ -19,9 +19,8 @@ module Ci
       db: 2
     }
 
-<<<<<<< HEAD:app/models/ci/job_trace_chunk.rb
     def self.delayed_cleanup_blk
-      ids = all.redis.pluck(:job_id, :chunk_index).map do |data|
+      ids = all.redis.pluck(:build_id, :chunk_index).map do |data|
         "gitlab:ci:trace:#{data.first}:chunks:#{data.second}:data"
       end
 
@@ -44,10 +43,8 @@ module Ci
       end
     end
 
-=======
     ##
     # Data is memoized for optimizing #size and #end_offset
->>>>>>> live-trace-v2:app/models/ci/build_trace_chunk.rb
     def data
       @data ||= get_data
     end

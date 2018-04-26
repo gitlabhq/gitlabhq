@@ -8,7 +8,7 @@ class BuildFinishedWorker
     Ci::Build.find_by(id: build_id).try do |build|
       # Swap all trace chunks to Database from Redis
       # TODO: Do we need that?
-      build.chunks.redis.map(&:use_database!)
+      build.trace_chunks.redis.map(&:use_database!)
 
       # We execute that in sync as this access the files in order to access local data, and reduce IO
       BuildTraceSectionsWorker.new.perform(build.id)

@@ -228,7 +228,7 @@ class Project < ActiveRecord::Base
   # still using `dependent: :destroy` here.
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
-  has_many :build_trace_chunks, class_name: 'Ci::JobTraceChunk', foreign_key: :job_id, through: :builds, source: :chunks
+  has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'

@@ -111,7 +111,7 @@ module Gitlab
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
             archive_stream!(stream)
-            stream.delete!
+            stream.destroy!
           end
         elsif current_path
           File.open(current_path) do |stream|

@@ -276,6 +276,7 @@ project:
 - uploads
 - members_and_requesters
 - build_trace_section_names
+- build_trace_chunks
 - root_of_fork_network
 - fork_network_member
 - fork_network
