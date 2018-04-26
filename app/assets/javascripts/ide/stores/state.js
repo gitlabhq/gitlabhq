@@ -1,4 +1,4 @@
-import { ActivityBarViews } from '../constants';
+import { activityBarViews } from '../constants';
 
 export default () => ({
   currentProjectId: '',
@@ -20,6 +20,6 @@ export default () => ({
   entries: {},
   viewer: 'editor',
   delayViewerUpdated: false,
-  currentActivityView: ActivityBarViews.edit,
+  currentActivityView: activityBarViews.edit,
   fileFindVisible: false,
 });
