@@ -3,6 +3,7 @@ import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
+import { truncateSha } from '~/lib/utils/text_utility.js';
 import EditButton from './edit_button.vue';
 
 export default {
@@ -41,6 +42,27 @@ export default {
     },
   },
   computed: {
+    icon() {
+      if (this.diffFile.submodule) {
+        return 'archive';
+      }
+
+      return this.diffFile.blob.icon;
+    },
+    titleLink() {
+      if (this.diffFile.submodule) {
+        return this.diffFile.submoduleTreeUrl || this.diffFile.submoduleLink;
+      }
+
+      return `#${this.diffFile.fileHash}`;
+    },
+    filePath() {
+      if (this.diffFile.submodule) {
+        return `${this.diffFile.filePath} @ ${truncateSha(this.diffFile.blob.id)}`;
+      }
+
+      return this.diffFile.filePath;
+    },
     titleTag() {
       return this.diffFile.fileHash ? 'a' : 'span';
     },
@@ -51,10 +73,10 @@ export default {
       return this.diffFile.contentSha;
     },
     truncatedBaseSha() {
-      return this.truncate(this.baseSha);
+      return truncateSha(this.baseSha);
     },
     truncatedContentSha() {
-      return this.truncate(this.contentSha);
+      return truncateSha(this.contentSha);
     },
     imageDiff() {
       return !this.diffFile.text;
@@ -91,9 +113,6 @@ export default {
         this.$emit('toggleFile');
       }
     },
-    truncate(sha) {
-      return sha.slice(0, 8);
-    },
   },
 };
 </script>
@@ -113,83 +132,65 @@ export default {
         aria-hidden="true"
         class="diff-toggle-caret"
       />
-      <div
-        v-if="diffFile.submodule"
+      <component
+        ref="titleWrapper"
+        :is="titleTag"
+        :href="titleLink"
       >
-        <span>
-          <icon name="archive" />
+        <i class="fa fa-fw" :class="`fa-${icon}`"></i>
+        <span v-if="diffFile.renamedFile">
           <strong
-            v-html="diffFile.submoduleLink"
-            class="file-title-name"
-          ></strong>
-          <clipboard-button
-            :text="diffFile.submoduleLink"
-            title="Copy file path to clipboard"
-            css-class="btn-default btn-transparent btn-clipboard"
-          />
-        </span>
-      </div>
-      <template v-else>
-        <component
-          ref="titleWrapper"
-          :is="titleTag"
-          :href="`#${diffFile.fileHash}`"
-        >
-          <i class="fa fa-fw" :class="`fa-${diffFile.blob.icon}`"></i>
-          <span v-if="diffFile.renamedFile">
-            <strong
-              class="file-title-name"
-              v-tooltip
-              :title="diffFile.oldPath"
-              data-container="body"
-            >
-              {{ diffFile.oldPath }}
-            </strong>
-            &rarr;
-            <strong
-              class="file-title-name"
-              v-tooltip
-              :title="diffFile.newPath"
-              data-container="body"
-            >
-              {{ diffFile.newPath }}
-            </strong>
-          </span>
-
-          <strong
-            v-else
             class="file-title-name"
             v-tooltip
             :title="diffFile.oldPath"
             data-container="body"
           >
-            {{ diffFile.filePath }}
-            <span v-if="diffFile.deletedFile">
-              deleted
-            </span>
+            {{ diffFile.oldPath }}
           </strong>
-        </component>
-
-        <clipboard-button
-          title="Copy file path to clipboard"
-          :text="diffFile.filePath"
-          css-class="btn-default btn-transparent btn-clipboard"
-        />
-
-        <small
-          v-if="diffFile.modeChanged"
-          ref="fileMode"
-        >
-          {{ diffFile.aMode }} → {{ diffFile.bMode }}
-        </small>
-
-        <span
-          v-if="lfs"
-          class="label label-lfs append-right-5"
-        >
-          LFS
+          &rarr;
+          <strong
+            class="file-title-name"
+            v-tooltip
+            :title="diffFile.newPath"
+            data-container="body"
+          >
+            {{ diffFile.newPath }}
+          </strong>
         </span>
-      </template>
+
+        <strong
+          v-else
+          class="file-title-name"
+          v-tooltip
+          :title="filePath"
+          data-container="body"
+        >
+          {{ filePath }}
+          <span v-if="diffFile.deletedFile">
+            deleted
+          </span>
+        </strong>
+      </component>
+
+      <clipboard-button
+        title="Copy file path to clipboard"
+        :text="diffFile.filePath"
+        css-class="btn-default btn-transparent btn-clipboard"
+      />
+
+      <small
+        v-if="diffFile.modeChanged"
+        ref="fileMode"
+      >
+        {{ diffFile.aMode }} → {{ diffFile.bMode }}
+      </small>
+
+      <span
+        v-if="lfs"
+        class="label label-lfs append-right-5"
+      >
+        LFS
+      </span>
     </div>
 
     <div
