@@ -1,8 +1,7 @@
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import inlineDiffView from './inline_diff_view.vue';
 import parallelDiffView from './parallel_diff_view.vue';
-import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 
 export default {
   components: {
@@ -16,13 +15,7 @@ export default {
     },
   },
   computed: {
-    ...mapState({
-      diffViewType: state => state.diffs.diffViewType,
-    }),
-  },
-  created() {
-    this.INLINE_DIFF_VIEW_TYPE = INLINE_DIFF_VIEW_TYPE;
-    this.PARALLEL_DIFF_VIEW_TYPE = PARALLEL_DIFF_VIEW_TYPE;
+    ...mapGetters(['isInlineView', 'isParallelView']),
   },
 };
 </script>
@@ -31,12 +24,12 @@ export default {
   <div class="diff-content">
     <div class="diff-viewer">
       <inline-diff-view
-        v-if="diffViewType === INLINE_DIFF_VIEW_TYPE"
+        v-if="isInlineView"
         :diff-file="diffFile"
         :diff-lines="diffFile.highlightedDiffLines || []"
       />
       <parallel-diff-view
-        v-if="diffViewType === PARALLEL_DIFF_VIEW_TYPE"
+        v-if="isParallelView"
         :diff-file="diffFile"
         :diff-lines="diffFile.parallelDiffLines || []"
       />
