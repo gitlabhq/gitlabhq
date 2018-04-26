@@ -143,7 +143,7 @@ module Gitlab
           trace_chunks.where('chunk_index > ?', chunk_index).destroy_all
 
           # truncate current chunk
-          current_chunk.truncate(chunk_offset) if chunk_offset != 0
+          current_chunk.truncate(chunk_offset)
         ensure
           invalidate_chunk_cache
         end

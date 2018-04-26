@@ -21,36 +21,14 @@ module Ci
       db: 2
     }
 
+    ##
+    # Data is memoized for optimizing #size and #end_offset
     def data
-      if redis?
-        redis_data
-      elsif db?
-        raw_data
-      else
-        raise 'Unsupported data store'
-      end&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
-    end
-
-    def set_data(value)
-      raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
-
-      in_lock do
-        if redis?
-          redis_set_data(value)
-        elsif db?
-          self.raw_data = value
-        else
-          raise 'Unsupported data store'
-        end
-
-        save! if changed?
-      end
-
-      schedule_to_db if fullfilled?
+      @data ||= get_data
     end
 
     def truncate(offset = 0)
-      self.append("", offset)
+      self.append("", offset) if offset < size
     end
 
     def append(new_data, offset)
@@ -58,7 +36,7 @@ module Ci
       raise ArgumentError, 'Offset is out of bound' if offset > current_data.bytesize || offset < 0
       raise ArgumentError, 'Outside of chunk size' if CHUNK_SIZE < offset + new_data.bytesize
 
-      self.set_data(current_data.byteslice(0, offset) + new_data)
+      set_data(current_data.byteslice(0, offset) + new_data)
     end
 
     def size
@@ -88,6 +66,36 @@ module Ci
     end
 
     private
+
+    def get_data
+      if redis?
+        redis_data
+      elsif db?
+        raw_data
+      else
+        raise 'Unsupported data store'
+      end&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
+    end
+
+    def set_data(value)
+      raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
+
+      in_lock do
+        if redis?
+          redis_set_data(value)
+        elsif db?
+          self.raw_data = value
+        else
+          raise 'Unsupported data store'
+        end
+
+        @data = value
+
+        save! if changed?
+      end
+
+      schedule_to_db if fullfilled?
+    end
 
     def schedule_to_db
       return if db?
