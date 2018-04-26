@@ -33,8 +33,6 @@ export default {
 
     $(this.$table)
       .on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
-    $('.js-add-mirror')
-      .on('click', this.addMirror.bind(this));
   },
 
   handleUpdate() {
@@ -101,43 +99,6 @@ export default {
     this.mirrorDirectionSelect.addEventListener('change', this.boundUpdateForm);
     this.urlInput.addEventListener('change', this.boundUpdateUrl);
     this.protectedBranchesInput.addEventListener('change', this.boundUpdateProtectedBranches);
-  },
-
-  addMirror(event) {
-    event.preventDefault();
-    const direction = this.mirrorDirectionSelect.value;
-    const isPull = this.mirrorDirectionSelect.value === 'pull';
-
-    const payload = new FormData(this.form);
-    return axios.post(this.form.action, payload)
-      .then(({ data }) => {
-        let safeUrl;
-        let updatedAt;
-        let id;
-
-        debugger;
-
-        if (isPull) {
-          safeUrl = data.username_only_import_url;
-          updatedAt = data.mirror_last_update_at;
-        } else {
-          const mirror = data.remote_mirrors_attributes[0];
-          safeUrl = mirror.safe_url;
-          updatedAt = mirror.last_update_at;
-        }
-
-        const insertDirection = isPull ? this.$table.prepend : this.$table.append;
-
-        const $tr = insertDirection(this.trTemplate({
-          direction,
-          safeUrl,
-          updatedAt,
-          id,
-        }));
-
-        renderTimeago($('.js-mirror-timeago', $tr));
-      })
-      .catch(() => Flash(__('Failed to add mirror.')));
   },
 
   deleteMirror(event) {
