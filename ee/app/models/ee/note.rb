@@ -21,11 +21,6 @@ module EE
       !for_epic? && super
     end
 
-    override :can_create_notification?
-    def can_create_notification?
-      !for_epic? && super
-    end
-
     override :etag_key
     def etag_key
       if for_epic?

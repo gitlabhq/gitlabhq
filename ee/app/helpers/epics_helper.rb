@@ -15,11 +15,17 @@ module EpicsHelper
       end_date: epic.end_date
     }
 
+    participants = UserSerializer.new.represent(epic.participants)
+    initial = opts[:initial].merge(labels: epic.labels,
+                                   participants: participants,
+                                   subscribed: epic.subscribed?(current_user))
+
     {
-      initial: opts[:initial].merge(labels: epic.labels).to_json,
+      initial: initial.to_json,
       meta: epic_meta.to_json,
       namespace: group.path,
       labels_path: group_labels_path(group, format: :json, only_group_labels: true, include_ancestor_groups: true),
+      toggle_subscription_path: toggle_subscription_group_epic_path(group, epic),
       labels_web_url: group_labels_path(group),
       epics_web_url: group_epics_path(group)
     }

@@ -95,6 +95,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       member do
         get :discussions, format: :json
         get :realtime_changes
+        post :toggle_subscription
       end
 
       resources :epic_issues, only: [:index, :create, :destroy, :update], as: 'issues', path: 'issues'

@@ -1,4 +1,6 @@
 class Notify < BaseMailer
+  prepend EE::Notify
+
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
 
@@ -98,6 +100,7 @@ class Notify < BaseMailer
   def subject(*extra)
     subject = ""
     subject << "#{@project.name} | " if @project
+    subject << "#{@group.name} | " if @group
     subject << extra.join(' | ') if extra.present?
     subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.present?
     subject
@@ -121,10 +124,9 @@ class Notify < BaseMailer
     @reason = headers['X-GitLab-NotificationReason']
 
     if Gitlab::IncomingEmail.enabled? && @sent_notification
-      address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
-      address.display_name = @project.full_name
-
-      headers['Reply-To'] = address
+      headers['Reply-To'] = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key)).tap do |address|
+        address.display_name = reply_display_name(model)
+      end
 
       fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
       headers['References'] ||= []
@@ -134,6 +136,11 @@ class Notify < BaseMailer
     end
 
     mail(headers)
+  end
+
+  # `model` is used on EE code
+  def reply_display_name(_model)
+    @project.full_name
   end
 
   # Send an email that starts a new conversation thread,
