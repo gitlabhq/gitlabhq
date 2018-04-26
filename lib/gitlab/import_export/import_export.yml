@@ -107,6 +107,7 @@ excluded_attributes:
     - :last_repository_check_at
     - :storage_version
     - :description_html
+    - :group_runners_enabled
   snippets:
     - :expired_at
   merge_request_diff:
