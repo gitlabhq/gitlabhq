@@ -12,9 +12,9 @@ module Ci
 
     CHUNK_SIZE = 128.kilobytes
     CHUNK_REDIS_TTL = 1.week
-    LOCK_RETRY = 100
-    LOCK_SLEEP = 1
-    LOCK_TTL = 5.minutes
+    WRITE_LOCK_RETRY = 100
+    WRITE_LOCK_SLEEP = 1
+    WRITE_LOCK_TTL = 5.minutes
 
     enum data_store: {
       redis: 1,
@@ -122,18 +122,18 @@ module Ci
     end
 
     def redis_lock_key
-      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}:lock"
+      "trace_write:#{build_id}:chunks:#{chunk_index}"
     end
 
     def in_lock
-      lease = Gitlab::ExclusiveLease.new(redis_lock_key, timeout: LOCK_TTL)
+      lease = Gitlab::ExclusiveLease.new(redis_lock_key, timeout: WRITE_LOCK_TTL)
       retry_count = 0
 
       until uuid = lease.try_obtain
         # Keep trying until we obtain the lease. To prevent hammering Redis too
         # much we'll wait for a bit between retries.
-        sleep(LOCK_SLEEP)
-        break if LOCK_RETRY < (retry_count += 1)
+        sleep(WRITE_LOCK_SLEEP)
+        break if WRITE_LOCK_RETRY < (retry_count += 1)
       end
 
       raise WriteError, 'Failed to obtain write lock' unless uuid
