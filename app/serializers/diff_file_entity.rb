@@ -13,6 +13,10 @@ class DiffFileEntity < Grape::Entity
     submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first if diff_file.submodule?
   end
 
+  expose :submodule_tree_url do |diff_file|
+    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).last if diff_file.submodule?
+  end
+
   expose :blob, using: BlobEntity
 
   expose :blob_path do |diff_file|
