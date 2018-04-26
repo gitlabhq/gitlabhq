@@ -436,7 +436,7 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
       it "can be erased" do
         trace.erase!
         expect(trace.exist?).to be(false)
-        expect(Ci::JobTraceChunk.where(job: build)).not_to be_exist
+        expect(Ci::BuildTraceChunk.where(build: build)).not_to be_exist
       end
 
       it "returns live trace data" do
@@ -512,7 +512,7 @@ describe Gitlab::Ci::Trace, :clean_gitlab_redis_cache do
         expect(build.trace.exist?).to be_truthy
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
-        expect(Ci::JobTraceChunk.where(job: build)).not_to be_exist
+        expect(Ci::BuildTraceChunk.where(build: build)).not_to be_exist
         expect(src_checksum)
           .to eq(Digest::SHA256.file(build.job_artifacts_trace.file.path).hexdigest)
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
-  set(:job) { create(:ci_build, :running) }
+  set(:build) { create(:ci_build, :running) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
@@ -83,7 +83,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write((1..8).to_a.join("\n"))
             chunked_io.seek(0, IO::SEEK_SET)
           end
@@ -137,7 +137,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write('12345678')
             chunked_io.seek(0, IO::SEEK_SET)
           end
@@ -175,7 +175,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write('12345678')
             chunked_io.seek(0, IO::SEEK_SET)
           end
@@ -234,7 +234,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write(File.binread(path))
             chunked_io.seek(0, IO::SEEK_SET)
           end
@@ -283,7 +283,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write("1234")
             chunked_io.seek(0, IO::SEEK_SET)
           end
@@ -318,7 +318,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write("12\n34\n56")
             chunked_io.seek(0, IO::SEEK_SET)
           end
@@ -473,7 +473,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     context 'when stream is ChunkedIO' do
       let(:stream) do
         described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(job).tap do |chunked_io|
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
             chunked_io.write(data)
             chunked_io.seek(0, IO::SEEK_SET)
           end
