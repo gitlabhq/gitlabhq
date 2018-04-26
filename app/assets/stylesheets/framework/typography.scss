@@ -114,7 +114,7 @@
     font-size: 0.95em;
   }
 
-  blockquote {
+  .blockquote {
     color: $gl-grayish-blue;
     font-size: inherit;
     padding: 8px 24px;
@@ -122,12 +122,12 @@
     border-left: 3px solid $white-dark;
   }
 
-  blockquote:dir(rtl) {
+  .blockquote:dir(rtl) {
     border-left: 0;
     border-right: 3px solid $white-dark;
   }
 
-  blockquote p {
+  .blockquote p {
     color: $gl-grayish-blue !important;
     font-size: inherit;
     line-height: 1.5;
