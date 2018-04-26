@@ -86,6 +86,7 @@ export default {
     </div>
     <div
       v-else
+      :class="{ active: shouldShow }"
       id="diffs"
       class="diffs tab-pane"
     >

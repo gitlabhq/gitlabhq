@@ -42,8 +42,8 @@ export default {
     },
     mergeRequestDiff() {
       return mergeRequestDiff;
-    }
-  }
+    },
+  },
 };
 </script>
 
