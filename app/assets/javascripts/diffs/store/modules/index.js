@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import * as actions from '../actions';
+import actions from '../actions';
 import getters from '../getters';
 import mutations from '../mutations';
 import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../../constants';

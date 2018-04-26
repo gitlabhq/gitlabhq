@@ -65,3 +65,14 @@ export const loadMoreLines = ({ commit }, options) => {
     });
   });
 };
+
+export default {
+  setEndpoint,
+  setLoadingState,
+  fetchDiffFiles,
+  setInlineDiffViewType,
+  setParallelDiffViewType,
+  showCommentForm,
+  cancelCommentForm,
+  loadMoreLines,
+};
