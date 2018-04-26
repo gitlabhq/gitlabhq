@@ -238,6 +238,13 @@ class Group < Namespace
       .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
+  # Returns all members that are part of the group, it's subgroups, and ancestor groups
+  def direct_and_indirect_members
+    GroupMember
+      .active_without_invites_and_requests
+      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+  end
+
   def users_with_parents
     User
       .where(id: members_with_parents.select(:user_id))
@@ -248,6 +255,30 @@ class Group < Namespace
     User
       .where(id: members_with_descendants.select(:user_id))
       .reorder(nil)
+  end
+
+  # Returns all users that are members of the group because:
+  # 1. They belong to the group
+  # 2. They belong to a project that belongs to the group
+  # 3. They belong to a sub-group or project in such sub-group
+  # 4. They belong to an ancestor group
+  def direct_and_indirect_users
+    union = Gitlab::SQL::Union.new([
+      User
+        .where(id: direct_and_indirect_members.select(:user_id))
+        .reorder(nil),
+      project_users_with_descendants
+    ])
+
+    User.from("(#{union.to_sql}) #{User.table_name}")
+  end
+
+  # Returns all users that are members of projects
+  # belonging to the current group or sub-groups
+  def project_users_with_descendants
+    User
+      .joins(projects: :group)
+      .where(namespaces: { id: self_and_descendants.select(:id) })
   end
 
   def max_member_access_for_user(user)

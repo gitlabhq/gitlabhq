@@ -100,8 +100,9 @@ export default {
       };
     },
     supportQuickActions() {
+      return true;
       // Disable quick actions support for Epics
-      return this.noteableType !== constants.EPIC_NOTEABLE_TYPE;
+      //return this.noteableType !== constants.EPIC_NOTEABLE_TYPE;
     },
     markdownDocsPath() {
       return this.getNotesData.markdownDocsPath;
