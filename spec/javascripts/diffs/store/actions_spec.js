@@ -181,4 +181,21 @@ describe('DiffsStoreActions', () => {
       );
     });
   });
+
+  describe('expandAllFiles', () => {
+    it('should change the collapsed prop from the diffFiles', done => {
+      testAction(
+        actions.expandAllFiles,
+        null,
+        { },
+        [
+          {
+            type: types.EXPAND_ALL_FILES,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
 });

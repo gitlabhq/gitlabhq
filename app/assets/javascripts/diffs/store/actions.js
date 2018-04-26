@@ -74,6 +74,10 @@ export const loadCollapsedDiff = ({ commit }, file) =>
     });
   });
 
+export const expandAllFiles = ({ commit }) => {
+  commit(types.EXPAND_ALL_FILES);
+};
+
 export default {
   setEndpoint,
   setLoadingState,
@@ -84,4 +88,5 @@ export default {
   cancelCommentForm,
   loadMoreLines,
   loadCollapsedDiff,
+  expandAllFiles,
 };

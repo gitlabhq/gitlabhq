@@ -7,4 +7,7 @@ export default {
   isInlineView(state) {
     return state.diffViewType === INLINE_DIFF_VIEW_TYPE;
   },
+  areAllFilesCollapsed(state) {
+    return state.diffFiles.every(file => file.collapsed);
+  },
 };
