@@ -17,12 +17,6 @@ export default {
     RepoEditor,
     FindFile,
   },
-  props: {
-    emptyStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
     ...mapState([
       'changedFiles',
@@ -30,6 +24,7 @@ export default {
       'viewer',
       'currentMergeRequestId',
       'fileFindVisible',
+      'emptyStateSvgPath',
     ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },

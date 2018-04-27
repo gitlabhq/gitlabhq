@@ -100,7 +100,7 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right">
+        <span class="pull-right ide-file-icon-holder">
           <mr-file-icon
             v-if="file.mrChange"
           />
@@ -109,7 +109,8 @@ export default {
             :file="file"
             :show-tooltip="true"
             :show-staged-icon="true"
-            class="prepend-top-5 pull-right"
+            :force-modified-icon="true"
+            class="pull-right"
           />
         </span>
         <new-dropdown

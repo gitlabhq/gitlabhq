@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import { ActivityBarViews } from '../constants';
+import { activityBarViews } from '../constants';
 
 export default {
   components: {
@@ -17,7 +17,7 @@ export default {
   methods: {
     ...mapActions(['updateActivityBarView']),
   },
-  ActivityBarViews,
+  activityBarViews,
 };
 </script>
 
@@ -41,9 +41,10 @@ export default {
           type="button"
           class="ide-sidebar-link js-ide-edit-mode"
           :class="{
-            active: currentActivityView === $options.ActivityBarViews.edit
+            active: currentActivityView === $options.activityBarViews.edit
           }"
-          @click.prevent="updateActivityBarView($options.ActivityBarViews.edit)"
+          @click.prevent="updateActivityBarView($options.activityBarViews.edit)"
+          :aria-label="s__('IDE|Edit mode')"
         >
           <icon
             name="code"
@@ -69,9 +70,10 @@ export default {
           type="button"
           class="ide-sidebar-link js-ide-commit-mode"
           :class="{
-            active: currentActivityView === $options.ActivityBarViews.commit
+            active: currentActivityView === $options.activityBarViews.commit
           }"
-          @click.prevent="updateActivityBarView($options.ActivityBarViews.commit)"
+          @click.prevent="updateActivityBarView($options.activityBarViews.commit)"
+          :aria-label="s__('IDE|Commit mode')"
         >
           <icon
             name="commit"

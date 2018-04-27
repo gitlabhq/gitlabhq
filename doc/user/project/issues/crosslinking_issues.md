@@ -60,4 +60,4 @@ or simply link both issue and merge request as described in the
 
 ### Close an issue by merging a merge request
 
-To [close an issue when a merge request is merged](closing_issues.md#via-merge-request), use the [automatic issue closing patern](automatic_issue_closing.md).
+To [close an issue when a merge request is merged](closing_issues.md#via-merge-request), use the [automatic issue closing pattern](automatic_issue_closing.md).

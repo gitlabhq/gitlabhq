@@ -188,11 +188,11 @@ export default class ActivityCalendar {
       },
       {
         text: 'W',
-        y: 29 + this.dayYPos(2),
+        y: 29 + this.dayYPos(3),
       },
       {
         text: 'F',
-        y: 29 + this.dayYPos(3),
+        y: 29 + this.dayYPos(5),
       },
     ];
     this.svg

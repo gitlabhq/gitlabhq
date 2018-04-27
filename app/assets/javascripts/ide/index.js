@@ -22,11 +22,7 @@ function initIde(el) {
       });
     },
     render(createElement) {
-      return createElement('ide', {
-        props: {
-          emptyStateSvgPath: el.dataset.emptyStateSvgPath,
-        },
-      });
+      return createElement('ide');
     },
   });
 }

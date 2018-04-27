@@ -100,6 +100,7 @@ export default {
       <changed-file-icon
         v-else
         :file="tab"
+        :force-modified-icon="true"
       />
     </button>
   </li>

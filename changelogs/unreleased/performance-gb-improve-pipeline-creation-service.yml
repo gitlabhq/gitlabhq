@@ -1,0 +1,5 @@
+---
+title: Improve performance of a service responsible for creating a pipeline
+merge_request: 18582
+author:
+type: performance

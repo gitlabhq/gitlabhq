@@ -236,7 +236,7 @@ export class Foo {
 }
 ```
 
-On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized oustside of the constructor.
+On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized outside of the constructor.
 
 1. Prefer `.map`, `.reduce` or `.filter` over `.forEach`
 A forEach will most likely cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
