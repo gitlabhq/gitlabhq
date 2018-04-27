@@ -47,7 +47,7 @@
           = f.label :ci_config_path, 'Custom CI config path', class: 'label-light'
           = f.text_field :ci_config_path, class: 'form-control js-ci-config-path', placeholder: '.gitlab-ci.yml'
           %p.help-block
-            The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>
+            Specify a custom CI config file or use the default <code>.gitlab-ci.yml</code>.
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
         %hr
@@ -118,11 +118,7 @@
                 JaCoCo (Java/Kotlin)
                 %code Total.*?([0-9]{1,3})%
 
-        = f.submit 'Save changes', class: "btn btn-save js-save-button"
-
-        %btn.btn.btn-save.js-save-button-modal.hidden{ data: { toggle: 'modal', target: '#modal-disable-autodevops' } }
-          Save changes
-        = render 'projects/pipelines_settings/autodevops_modal'
+        = f.submit 'Save changes', class: "btn btn-save"
 
 %hr
 

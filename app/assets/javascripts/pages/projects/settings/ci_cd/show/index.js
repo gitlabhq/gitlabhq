@@ -25,5 +25,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // eslint-disable-next-line no-new
-  new AutoDevopsForm('#js-general-pipeline-settings');
+  new AutoDevopsForm('#autodevops-settings');
 });

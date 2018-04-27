@@ -9,39 +9,39 @@ export default {
     Icon,
   },
   props: {
-    newCiYaml: {
+    newCiConfig: {
       type: Boolean,
       required: true,
     },
-    customCiYaml: {
-      type: Boolean,
-      required: true,
-    },
-    ciConfigPath: {
+    customCiConfigPath: {
       type: String,
       required: true,
     },
   },
   computed: {
     warningMessage() {
-      if (this.customCiYaml) {
-        return sprintf(
+      let warningMessage = '';
+      if (this.customCiConfigPath !== '' && this.newCiConfig) {
+        warningMessage = sprintf(
           s__(`mrWidget|This branch contains %{filename} which is being used as a custom CI config file.
       Merging will disable the Auto DevOps pipeline configuration for this project.`),
           {
-            filename: `<code>${_.escape(this.ciConfigPath)}</code>`,
+            filename: `<code>${_.escape(this.customCiConfigPath)}</code>`,
+          },
+          false,
+        );
+      } else if (this.customCiConfigPath === '' && this.newCiConfig) {
+        warningMessage = sprintf(
+          s__(`mrWidget|This branch contains a %{gitlabCiYaml} file. 
+      Merging will disable the Auto Devops pipeline configuration for this project.`),
+          {
+            gitlabCiYaml: '<code>gitlab-ci.yml</code>',
           },
           false,
         );
       }
-      return sprintf(
-        s__(`mrWidget|This branch contains a %{gitlabCiYaml} file. 
-      Merging will disable the Auto Devops pipeline configuration for this project.`),
-        {
-          gitlabCiYaml: '<code>gitlab-ci.yml</code>',
-        },
-        false,
-      );
+
+      return warningMessage;
     },
   },
 };

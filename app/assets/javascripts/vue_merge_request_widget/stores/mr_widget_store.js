@@ -96,9 +96,8 @@ export default class MergeRequestStore {
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
-    this.hasNewGitLabCiYaml = data.has_new_gitlab_ci_yaml;
-    this.hasNewCustomCiConfigYaml = data.has_new_custom_ci_config_yaml;
-    this.projectCiConfigPath = data.project_ci_config_path;
+    this.hasNewCiConfig = data.has_new_ci_config;
+    this.projectCustomCiConfigPath = data.project_custom_ci_config_path;
 
     this.setState(data);
   }

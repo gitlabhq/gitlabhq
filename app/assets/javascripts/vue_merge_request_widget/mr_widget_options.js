@@ -63,7 +63,7 @@ export default {
       return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderAutoDevOpsWarning() {
-      return this.mr.hasNewCustomCiConfigYaml || this.mr.hasNewGitLabCiYaml;
+      return this.mr.hasNewCiConfig;
     },
     shouldRenderPipelines() {
       return this.mr.hasCI;
@@ -266,9 +266,8 @@ export default {
         :deployment="deployment"
       />
       <mr-widget-autodevops
-        :custom-ci-yaml="mr.hasNewCustomCiConfigYaml"
-        :new-ci-yaml="mr.hasNewGitLabCiYaml"
-        :ci-config-path="mr.projectCiConfigPath"
+        :new-ci-config="mr.hasNewCiConfig"
+        :custom-ci-config-path="mr.projectCustomCiConfigPath"
         v-if="shouldRenderAutoDevOpsWarning"
       />
       <div class="mr-widget-section">
