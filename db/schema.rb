@@ -446,8 +446,6 @@ ActiveRecord::Schema.define(version: 20180425131009) do
   create_table "ci_runner_groups", force: :cascade do |t|
     t.integer "runner_id"
     t.integer "group_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   add_index "ci_runner_groups", ["group_id"], name: "index_ci_runner_groups_on_group_id", using: :btree

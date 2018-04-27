@@ -9,8 +9,6 @@ class AddCiRunnerGroups < ActiveRecord::Migration
     create_table :ci_runner_groups do |t|
       t.integer :runner_id
       t.integer :group_id
-
-      t.timestamps_with_timezone null: false
     end
 
     add_concurrent_index :ci_runner_groups, :runner_id
