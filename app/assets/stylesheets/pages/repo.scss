@@ -484,13 +484,12 @@
   align-items: center;
   margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
-  padding: $gl-btn-padding 0;
+  padding: $gl-btn-padding $gl-padding;
 }
 
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
-  padding-left: $grid-size;
 
   svg {
     margin-right: $gl-btn-padding;
@@ -506,7 +505,7 @@
 .multi-file-commit-list {
   flex: 1;
   overflow: auto;
-  padding: $gl-padding 0;
+  padding: $gl-padding;
   min-height: 60px;
 }
 
@@ -602,7 +601,9 @@
 
 .multi-file-commit-form {
   padding: $gl-padding;
+  background-color: $white-light;
   border-top: 1px solid $white-dark;
+  border-left: 1px solid $white-dark;
 
   .btn {
     font-size: $gl-font-size;
@@ -760,12 +761,20 @@
   flex-direction: column;
   width: 100%;
   min-height: 140px;
-  padding: 0 16px;
 }
 
-.ide-staged-action-btn {
+.ide-commit-list-container.is-first {
+  border-bottom: 1px solid $white-dark;
+}
+
+.ide-commit-file-count {
+  min-width: 22px;
   margin-left: auto;
-  color: $gl-link-color;
+  background-color: $gray-light;
+  border-radius: $border-radius-default;
+  border: 1px solid $white-dark;
+  line-height: 20px;
+  text-align: center;
 }
 
 .ide-commit-radios {
@@ -946,4 +955,49 @@
     top: 3px;
     margin-top: -1px;
   }
+}
+
+.multi-file-commit-form {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.commit-form-compact {
+  .btn {
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.commit-form-slide-up-enter-active,
+.commit-form-slide-up-leave-active {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  transition: all 0.3s ease;
+}
+
+.is-full .commit-form-slide-up-enter {
+  transform: translateY(100%);
+}
+
+.is-full .commit-form-slide-up-enter-to {
+  transform: translateY(0);
+}
+
+.commit-form-slide-up-enter,
+.commit-form-slide-up-leave-to {
+  opacity: 0;
+}
+
+.is-compact .commit-form-slide-up-leave {
+  transform: translateY(0);
+}
+
+.is-compact .commit-form-slide-up-leave-to {
+  transform: translateY(100%);
 }

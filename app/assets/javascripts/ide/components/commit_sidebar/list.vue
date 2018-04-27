@@ -76,13 +76,11 @@ export default {
           :size="18"
         />
         {{ titleText }}
-        <button
-          type="button"
-          class="btn btn-blank btn-link ide-staged-action-btn"
-          @click="actionBtnClicked"
+        <span
+          class="ide-commit-file-count"
         >
-          {{ actionBtnText }}
-        </button>
+          {{ fileList.length }}
+        </span>
       </div>
     </header>
     <ul

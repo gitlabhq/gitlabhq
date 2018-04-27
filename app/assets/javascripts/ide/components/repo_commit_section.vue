@@ -1,14 +1,11 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
-import CommitMessageField from './commit_sidebar/message_field.vue';
 import * as consts from '../stores/modules/commit/constants';
-import Actions from './commit_sidebar/actions.vue';
 
 export default {
   components: {
@@ -16,25 +13,15 @@ export default {
     Icon,
     CommitFilesList,
     EmptyState,
-    Actions,
-    LoadingButton,
-    CommitMessageField,
   },
   directives: {
     tooltip,
   },
   computed: {
     ...mapState(['changedFiles', 'stagedFiles']),
-    ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
   },
   methods: {
-    ...mapActions('commit', [
-      'updateCommitMessage',
-      'discardDraft',
-      'commitChanges',
-      'updateCommitAction',
-    ]),
+    ...mapActions('commit', ['commitChanges', 'updateCommitAction']),
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
@@ -62,6 +49,7 @@ export default {
       v-if="changedFiles.length || stagedFiles.length"
     >
       <commit-files-list
+        class="is-first"
         icon-name="unstaged"
         :title="__('Unstaged')"
         :file-list="changedFiles"
@@ -78,33 +66,6 @@ export default {
         item-action-component="unstage-button"
         :staged-list="true"
       />
-      <form
-        class="form-horizontal multi-file-commit-form"
-        @submit.prevent.stop="commitChanges"
-      >
-        <commit-message-field
-          :text="commitMessage"
-          @input="updateCommitMessage"
-        />
-        <div class="clearfix prepend-top-15">
-          <actions />
-          <loading-button
-            :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm pull-left"
-            :label="__('Commit')"
-            @click="commitChanges"
-          />
-          <button
-            v-if="!discardDraftButtonDisabled"
-            type="button"
-            class="btn btn-default btn-sm pull-right"
-            @click="discardDraft"
-          >
-            {{ __('Discard draft') }}
-          </button>
-        </div>
-      </form>
     </template>
     <empty-state
       v-else
