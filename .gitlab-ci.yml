@@ -110,7 +110,7 @@ stages:
 # Jobs that only need to pull cache
 .dedicated-no-docs-pull-cache-job: &dedicated-no-docs-pull-cache-job
   <<: *dedicated-runner
-  <<: *except-docs-and-qa
+  <<: *except-docs
   <<: *pull-cache
   dependencies:
     - setup-test-env
