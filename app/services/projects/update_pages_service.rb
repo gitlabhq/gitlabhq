@@ -40,7 +40,7 @@ module Projects
     rescue InvaildStateError => e
       error(e.message)
     rescue => e
-      error(e.message, false)
+      error(e.message)
       raise e
     end
 
@@ -48,17 +48,15 @@ module Projects
 
     def success
       @status.success
-      delete_artifact!
       super
     end
 
-    def error(message, allow_delete_artifact = true)
+    def error(message)
       register_failure
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop(:script_failure)
-      delete_artifact! if allow_delete_artifact
       super
     end
 
@@ -160,11 +158,6 @@ module Projects
 
     def artifacts
       build.artifacts_file.path
-    end
-
-    def delete_artifact!
-      build.reload # Reload stable object to prevent erase artifacts with old state
-      build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     def latest_sha
