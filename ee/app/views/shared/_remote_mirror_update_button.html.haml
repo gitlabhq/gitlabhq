@@ -1,13 +1,11 @@
-- if @project.has_remote_mirror?
-  .append-bottom-default
-    - if remote_mirror.update_in_progress?
-      %span.btn.disabled
-        = icon("refresh spin")
-        Updating&hellip;
-    - else
-      = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn" do
-        = icon("refresh")
-        Update Now
-    - if @remote_mirror.last_successful_update_at
-      %p.inline.prepend-left-10
-        Successfully updated #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
+- if remote_mirror.update_in_progress?
+  %span.btn.disabled
+    = icon("refresh spin")
+    Updating&hellip;
+- else
+  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn" do
+    = icon("refresh")
+    Update Now
+- if @remote_mirror.last_successful_update_at
+  %p.inline.prepend-left-10
+    Successfully updated #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.

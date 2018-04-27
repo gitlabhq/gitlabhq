@@ -93,12 +93,16 @@
             %th Direction
             %th Last update
             %th
+            %th
+            %th
         %tbody.js-mirrors-table-body
           - if @project.mirror
             %tr
               %td= @project.username_only_import_url
               %td Pull
               %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
+              %td error badge
+              %td update now button
               %td
                 %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
           - @project.remote_mirrors.each_with_index do |mirror, index|
@@ -107,6 +111,10 @@
                 %td= mirror.safe_url
                 %td Push
                 %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                %td
+                  - if mirror.last_error.present?
+                    .badge{ data: { toggle: 'tooltip' }, title: h(mirror.last_error.strip) } Error
+                %td= render "shared/remote_mirror_update_button", remote_mirror: mirror
                 %td
                   %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_id: mirror.id } }= icon('trash-o')
 
