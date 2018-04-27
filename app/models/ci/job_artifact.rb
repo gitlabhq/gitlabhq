@@ -25,6 +25,11 @@ module Ci
       trace: 3
     }
 
+    enum path_type: {
+      era_2: nil,
+      era_1: 1
+    }
+
     def update_file_store
       # The file.object_store is set during `uploader.store!`
       # which happens after object is inserted/updated
@@ -61,7 +66,7 @@ module Ci
     end
 
     def update_project_statistics_after_destroy
-      update_project_statistics(-self.size)
+      update_project_statistics(-self.size) if self.size
     end
 
     def update_project_statistics(difference)
