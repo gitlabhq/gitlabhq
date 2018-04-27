@@ -1,0 +1,5 @@
+---
+title: 'Geo: Admin page will not crash with 500 because of InvalidSignatureTimeError'
+merge_request: 5495
+author:
+type: fixed
