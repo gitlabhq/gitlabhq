@@ -427,10 +427,7 @@ namespace :gitlab do
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|
-          File.join(
-            p.repository_storage_path,
-            "#{p.disk_path}.git"
-          )
+          p.repository.path_to_repo
         end
 
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }

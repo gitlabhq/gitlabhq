@@ -55,7 +55,7 @@ first group being the name of the distro and subsequent groups split like:
 Another example of GitLab as a company would be the following:
 
 - Organization Group - GitLab
-  - Category Subroup - Marketing
+  - Category Subgroup - Marketing
       - (project) Design
       - (project) General
   - Category Subgroup - Software

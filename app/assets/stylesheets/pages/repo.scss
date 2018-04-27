@@ -68,6 +68,11 @@
       }
     }
 
+    .ide-file-icon-holder {
+      display: flex;
+      align-items: center;
+    }
+
     .ide-file-changed-icon {
       margin-left: auto;
 
@@ -78,7 +83,7 @@
 
     .ide-new-btn {
       display: none;
-      margin-bottom: -4px;
+      margin-right: -8px;
     }
 
     &:hover,
@@ -90,10 +95,8 @@
       }
     }
 
-    &.folder {
-      svg {
-        fill: $gl-text-color-secondary;
-      }
+    .folder-icon {
+      fill: $gl-text-color-secondary;
     }
   }
 
@@ -111,7 +114,8 @@
 .file-col-commit-message {
   display: flex;
   overflow: visible;
-  padding: 6px 10px;
+  align-items: center;
+  padding: 6px 12px;
 }
 
 .multi-file-loading-container {
@@ -440,6 +444,12 @@
     a:focus {
       text-decoration: none;
     }
+  }
+
+  .projects-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
   .multi-file-commit-panel-inner {
@@ -1000,4 +1010,8 @@
 
 .is-compact .commit-form-slide-up-leave-to {
   transform: translateY(100%);
+}
+
+.ide-new-modal-label {
+  line-height: 34px;
 }

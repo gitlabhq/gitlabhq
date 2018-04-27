@@ -13,6 +13,7 @@ following locations:
 - [Broadcast Messages](broadcast_messages.md)
 - [Project-level Variables](project_level_variables.md)
 - [Group-level Variables](group_level_variables.md)
+- [Code Snippets](snippets.md)
 - [Commits](commits.md)
 - [Custom Attributes](custom_attributes.md)
 - [Deployments](deployments.md)
@@ -84,6 +85,29 @@ Although there were some patenting and licensing concerns with GraphQL, these
 have been resolved to our satisfaction by the relicensing of the reference
 implementations under MIT, and the use of the OWF license for the GraphQL
 specification.
+
+## Compatibility Guidelines
+
+The HTTP API is versioned using a single number, the current one being 4. This
+number symbolises the same as the major version number as described by 
+[SemVer](https://semver.org/). This mean that backward incompatible changes
+will require this version number to change. However, the minor version is
+not explicit. This allows for a stable API endpoint, but also means new 
+features can be added to the API in the same version number.
+
+New features and bug fixes are released in tandem with a new GitLab, and apart
+from incidental patch and security releases, are released on the 22nd each
+month. Backward incompatible changes (e.g. endpoints removal, parameters 
+removal etc.), as well as removal of entire API versions are done in tandem 
+with a major point release of GitLab itself. All deprecations and changes 
+between two versions should be listed in the documentation. For the changes 
+between v3 and v4; please read the [v3 to v4 documentation](v3_to_v4.md)
+
+#### Current status
+
+Currently two API versions are available, v3 and v4. v3 is deprecated and 
+will soon be removed. Deletion is scheduled for 
+[GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/36819).
 
 ## Basic usage
 
@@ -269,7 +293,7 @@ The following table gives an overview of how the API functions generally behave.
 | `GET`   | Access one or more resources and return the result as JSON. |
 | `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Returns `204 No Content` if the resuource was deleted successfully. |
+| `DELETE` | Returns `204 No Content` if the resource was deleted successfully. |
 
 The following table shows the possible return codes for API requests.
 

@@ -24,12 +24,14 @@ module QA
         dependency Factory::Repository::Push, as: :target do |push, factory|
           factory.project.visit!
           push.project = factory.project
-          push.branch_name = "master:#{factory.target_branch}"
+          push.branch_name = 'master'
+          push.remote_branch = factory.target_branch
         end
 
         dependency Factory::Repository::Push, as: :source do |push, factory|
           push.project = factory.project
-          push.branch_name = "#{factory.target_branch}:#{factory.source_branch}"
+          push.branch_name = factory.target_branch
+          push.remote_branch = factory.source_branch
           push.file_name = "added_file.txt"
           push.file_content = "File Added"
         end
