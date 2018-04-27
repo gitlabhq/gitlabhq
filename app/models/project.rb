@@ -1297,7 +1297,7 @@ class Project < ActiveRecord::Base
   end
 
   def group_runners
-    @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_group(self.id) : Ci::Runner.none
+    @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_group_of_project(self.id) : Ci::Runner.none
   end
 
   def any_runners?(&block)

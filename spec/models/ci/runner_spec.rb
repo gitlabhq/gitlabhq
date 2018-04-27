@@ -151,7 +151,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '.belonging_to_group' do
+  describe '.belonging_to_parent_group_of_project' do
     it 'returns the specific group runner' do
       # own
       specific_group = create :group
@@ -163,7 +163,7 @@ describe Ci::Runner do
       create :project, group: other_group
       create :ci_runner, :specific, groups: [other_group]
 
-      expect(described_class.belonging_to_group(specific_project.id)).to eq [specific_runner]
+      expect(described_class.belonging_to_parent_group_of_project(specific_project.id)).to eq [specific_runner]
     end
 
     it 'returns the group runner from a parent group', :nested_groups do
@@ -172,7 +172,7 @@ describe Ci::Runner do
       project = create :project, group: group
       runner = create :ci_runner, :specific, groups: [parent_group]
 
-      expect(described_class.belonging_to_group(project.id)).to eq [runner]
+      expect(described_class.belonging_to_parent_group_of_project(project.id)).to eq [runner]
     end
   end
 

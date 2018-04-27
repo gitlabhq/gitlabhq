@@ -34,7 +34,7 @@ module Ci
 
     scope :belonging_to_any_project, -> { joins(:runner_projects) }
 
-    scope :belonging_to_group, -> (project_id) {
+    scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
       hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
 
@@ -42,7 +42,7 @@ module Ci
     }
 
     scope :owned_or_shared, -> (project_id) do
-      union = Gitlab::SQL::Union.new([belonging_to_project(project_id), belonging_to_group(project_id), shared])
+      union = Gitlab::SQL::Union.new([belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), shared])
       from("(#{union.to_sql}) ci_runners")
     end
 

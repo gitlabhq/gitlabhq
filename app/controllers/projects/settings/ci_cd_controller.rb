@@ -79,7 +79,7 @@ module Projects
 
         @shared_runners_count = @shared_runners.count(:all)
 
-        @group_runners = ::Ci::Runner.belonging_to_group(@project.id)
+        @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id)
       end
 
       def define_secret_variables
