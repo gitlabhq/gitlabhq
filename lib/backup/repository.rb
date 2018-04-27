@@ -11,59 +11,62 @@ module Backup
 
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{display_repo_path(project)} ... "
-        path_to_project_repo = path_to_repo(project)
+        # path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
-        # Create namespace dir or hashed path if missing
-        if project.hashed_storage?(:repository)
-          FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
-        else
-          FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+        if project.repository_exists?
+          project.repository.create_from_bundle(path_to_project_bundle)
         end
-
-        if empty_repo?(project)
-          progress.puts "[SKIPPED]".color(:cyan)
-        else
-          in_path(path_to_project_repo) do |dir|
-            FileUtils.mkdir_p(path_to_tars(project))
-            cmd = %W(tar -cf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
-            output, status = Gitlab::Popen.popen(cmd)
-
-            unless status.zero?
-              progress_warn(project, cmd.join(' '), output)
-            end
-          end
-
-          cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_project_repo} bundle create #{path_to_project_bundle} --all)
-          output, status = Gitlab::Popen.popen(cmd)
-
-          if status.zero?
-            progress.puts "[DONE]".color(:green)
-          else
-            progress_warn(project, cmd.join(' '), output)
-          end
-        end
-
-        wiki = ProjectWiki.new(project)
-        path_to_wiki_repo = path_to_repo(wiki)
-        path_to_wiki_bundle = path_to_bundle(wiki)
-
-        if File.exist?(path_to_wiki_repo)
-          progress.print " * #{display_repo_path(wiki)} ... "
-
-          if empty_repo?(wiki)
-            progress.puts " [SKIPPED]".color(:cyan)
-          else
-            cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_wiki_repo} bundle create #{path_to_wiki_bundle} --all)
-            output, status = Gitlab::Popen.popen(cmd)
-            if status.zero?
-              progress.puts " [DONE]".color(:green)
-            else
-              progress_warn(wiki, cmd.join(' '), output)
-            end
-          end
-        end
-      end
+      #   # Create namespace dir or hashed path if missing
+      #   if project.hashed_storage?(:repository)
+      #     FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
+      #   else
+      #     FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+      #   end
+      #
+      #   if empty_repo?(project)
+      #     progress.puts "[SKIPPED]".color(:cyan)
+      #   else
+      #     in_path(path_to_project_repo) do |dir|
+      #       FileUtils.mkdir_p(path_to_tars(project))
+      #       cmd = %W(tar -cf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+      #       output, status = Gitlab::Popen.popen(cmd)
+      #
+      #       unless status.zero?
+      #         progress_warn(project, cmd.join(' '), output)
+      #       end
+      #     end
+      #
+      #     cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_project_repo} bundle create #{path_to_project_bundle} --all)
+      #     output, status = Gitlab::Popen.popen(cmd)
+      #
+      #     if status.zero?
+      #       progress.puts "[DONE]".color(:green)
+      #     else
+      #       progress_warn(project, cmd.join(' '), output)
+      #     end
+      #   end
+      #
+      #   wiki = ProjectWiki.new(project)
+      #   path_to_wiki_repo = path_to_repo(wiki)
+      #   path_to_wiki_bundle = path_to_bundle(wiki)
+      #
+      #   if File.exist?(path_to_wiki_repo)
+      #     progress.print " * #{display_repo_path(wiki)} ... "
+      #
+      #     if empty_repo?(wiki)
+      #       progress.puts " [SKIPPED]".color(:cyan)
+      #     else
+      #       cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_wiki_repo} bundle create #{path_to_wiki_bundle} --all)
+      #       output, status = Gitlab::Popen.popen(cmd)
+      #       if status.zero?
+      #         progress.puts " [DONE]".color(:green)
+      #       else
+      #         progress_warn(wiki, cmd.join(' '), output)
+      #       end
+      #     end
+      #   end
+       end
     end
 
     def prepare_directories
