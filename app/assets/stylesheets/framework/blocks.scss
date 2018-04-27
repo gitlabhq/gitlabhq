@@ -46,7 +46,7 @@
   }
 
   &.middle-block {
-    margin-top: 0;
+    margin-top: $gl-padding-24;
     margin-bottom: 0;
   }
 
@@ -61,7 +61,7 @@
   }
 
   &.footer-block {
-    margin-top: 0;
+    margin-top: $gl-padding-24;
     border-bottom: 0;
     margin-bottom: -$gl-padding;
   }
