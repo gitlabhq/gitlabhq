@@ -325,7 +325,7 @@ The prerequisites for a HA Redis setup are the following:
     # machines to connect to it.
     redis['port'] = 6379
 
-    # The same password for Redeis authentication you set up for the master node.
+    # The same password for Redis authentication you set up for the master node.
     redis['password'] = 'redis-password-goes-here'
 
     # The IP of the master Redis node.
