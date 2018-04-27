@@ -2,7 +2,8 @@ module QA
   module Factory
     module Repository
       class Push < Factory::Base
-        attr_writer :file_name, :file_content, :commit_message, :branch_name, :new_branch
+        attr_accessor :file_name, :file_content, :commit_message,
+                      :branch_name, :new_branch, :remote_branch
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-code'
@@ -17,23 +18,32 @@ module QA
           @new_branch = true
         end
 
+        def remote_branch
+          @remote_branch ||= branch_name
+        end
+
         def fabricate!
           project.visit!
 
           Git::Repository.perform do |repository|
-            repository.location = Page::Project::Show.act do
+            repository.uri = Page::Project::Show.act do
               choose_repository_clone_http
-              repository_location
+              repository_location.uri
             end
 
             repository.use_default_credentials
             repository.clone
             repository.configure_identity('GitLab QA', 'root@gitlab.com')
 
-            repository.checkout(@branch_name) unless @new_branch
-            repository.add_file(@file_name, @file_content)
-            repository.commit(@commit_message)
-            repository.push_changes(@branch_name)
+            if new_branch
+              repository.checkout_new_branch(branch_name)
+            else
+              repository.checkout(branch_name)
+            end
+
+            repository.add_file(file_name, file_content)
+            repository.commit(commit_message)
+            repository.push_changes("#{branch_name}:#{remote_branch}")
           end
         end
       end
