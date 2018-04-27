@@ -1165,6 +1165,11 @@ describe Project do
           project.runners << specific_runner
           expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
         end
+
+        it 'returns false if match cannot be found' do
+          project.runners << specific_runner
+          expect(project.any_runners? { false }).to be_falsey
+        end
       end
 
       context 'for shared runners enabled' do
@@ -1178,6 +1183,11 @@ describe Project do
         it 'checks the presence of shared runner' do
           shared_runner
           expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          shared_runner
+          expect(project.any_runners? { false }).to be_falsey
         end
       end
     end
@@ -1211,6 +1221,11 @@ describe Project do
         it 'checks the presence of group runner' do
           group_runner
           expect(project.any_runners? { |runner| runner == group_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          group_runner
+          expect(project.any_runners? { false }).to be_falsey
         end
       end
     end
