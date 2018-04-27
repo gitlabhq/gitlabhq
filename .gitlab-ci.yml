@@ -819,7 +819,7 @@ coverage:
     - coverage/assets/
 
 lint:javascript:report:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   stage: post-test
   dependencies:
     - compile-assets
