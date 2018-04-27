@@ -303,10 +303,12 @@ module Gitlab
 
         def logger
           strong_memoize(:logger) do
-            level = options[:debug] ? :debug : Rails.logger.level
-
-            Gitlab::Geo::LogCursor::Logger.new(self.class, level)
+            Gitlab::Geo::LogCursor::Logger.new(self.class, log_level)
           end
+        end
+
+        def log_level
+          options[:debug] ? :debug : Rails.logger.level
         end
       end
     end

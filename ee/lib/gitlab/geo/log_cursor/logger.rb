@@ -6,29 +6,27 @@ module Gitlab
 
         PID = Process.pid.freeze
 
-        def initialize(klass, level = Rails.logger.level)
+        def initialize(klass, level = nil)
           @klass = klass
-          geo_logger.build.level = level
+          geo_logger.build.level = level unless level.nil?
         end
 
         def event_info(created_at, message, params = {})
-          args = base_log_data(message).merge(
-            cursor_delay_s: cursor_delay(created_at)
-          ).merge(params)
+          params = params.merge(cursor_delay_s: cursor_delay(created_at))
 
-          geo_logger.info(args)
+          info(message, params)
         end
 
         def info(message, params = {})
-          geo_logger.info(base_log_data(message).merge(params))
+          geo_logger.info(base_log_data(message, params))
         end
 
         def error(message, params = {})
-          geo_logger.error(base_log_data(message).merge(params))
+          geo_logger.error(base_log_data(message, params))
         end
 
         def debug(message, params = {})
-          geo_logger.debug(base_log_data(message).merge(params))
+          geo_logger.debug(base_log_data(message, params))
         end
 
         private
@@ -45,12 +43,12 @@ module Gitlab
           (Time.now - created_at).to_f.round(3)
         end
 
-        def base_log_data(message)
+        def base_log_data(message, params = {})
           {
             pid: PID,
             class: caller_name,
             message: message
-          }
+          }.merge(params)
         end
       end
     end
