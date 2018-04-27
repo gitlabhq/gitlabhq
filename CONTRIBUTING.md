@@ -25,12 +25,12 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
+  - [Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)](#team-labels-cicd-discussion-quality-platform-etc)
   - [Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
   - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#bug-priority-labels-p1-p2-p3-etc)
   - [Severity labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#bug-severity-labels-s1-s2-s3-etc)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
-- [Implement design & UI elements](#implement-design-ui-elements)
+- [Implement design & UI elements](#implement-design--ui-elements)
 - [Issue tracker](#issue-tracker)
   - [Issue triaging](#issue-triaging)
   - [Feature proposals](#feature-proposals)
@@ -115,7 +115,7 @@ is a great place to start. Issues with a lower weight (1 or 2) are deemed
 suitable for beginners. These issues will be of reasonable size and challenge,
 for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
-please consider we favor 
+please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
@@ -128,7 +128,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
+- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
 - Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -172,13 +172,13 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
+### Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
+The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
 ~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
@@ -200,12 +200,12 @@ release. There are three levels of Milestone labels:
 - ~Stretch: Issues that are a stretch goal for delivering in the current
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
-- ~"Next Patch Release": Issues to put in the next patch release. Work on these 
+- ~"Next Patch Release": Issues to put in the next patch release. Work on these
   first, and add the "Pick Into X" label to the merge request, along with the
   appropriate milestone.
 
 Each issue scheduled for the current milestone should be labeled ~Deliverable
-or ~"Stretch". Any open issue for a previous milestone should be labeled 
+or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
 ### Bug Priority labels (~P1, ~P2, ~P3 & etc.)
@@ -222,16 +222,16 @@ This label documents the planned timeline & urgency which is used to measure aga
 
 #### Specific Priority guidance
 
-| Label | Availability / Performance                                   | 
+| Label | Availability / Performance                                   |
 |-------|--------------------------------------------------------------|
-| ~P1   |                                                              | 
+| ~P1   |                                                              |
 | ~P2   | The issue is (almost) guaranteed to occur in the near future |  
 | ~P3   | The issue is likely to occur in the near future              |
 | ~P4   | The issue _may_ occur but it's not likely                    |
 
 ### Bug Severity labels (~S1, ~S2, ~S3 & etc.)
 
-Severity labels help us clearly communicate the impact of a ~bug on users. 
+Severity labels help us clearly communicate the impact of a ~bug on users.
 
 | Label | Meaning           | Impact of the defect                                  | Example |
 |-------|-------------------|-------------------------------------------------------|---------|
@@ -242,9 +242,9 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 
 #### Specific Severity guidance
 
-| Label | Security Impact                                                   | 
+| Label | Security Impact                                                   |
 |-------|-------------------------------------------------------------------|
-| ~S1   | >50% customers impacted (possible company extinction level event) | 
+| ~S1   | >50% customers impacted (possible company extinction level event) |
 | ~S2   | Multiple customers impacted (but not apocalyptic)                 |  
 | ~S3   | A single customer impacted                                        |
 | ~S4   | No customer impact, or expected impact within 30 days             |
@@ -746,4 +746,3 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.
-      
