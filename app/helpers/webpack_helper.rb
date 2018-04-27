@@ -15,12 +15,18 @@ module WebpackHelper
              end
 
     route = [*controller.controller_path.split('/'), action].compact
-    entrypoint = "pages.#{route.join('.')}"
 
-    begin
-      chunks = entrypoint_paths(entrypoint, extension: 'js')
-    rescue Gitlab::Webpack::Manifest::AssetMissingError
-      # no bundle exists for this path
+    until chunks.any? || route.empty?
+      entrypoint = "pages.#{route.join('.')}"
+      begin
+        chunks = entrypoint_paths(entrypoint, extension: 'js')
+      rescue Gitlab::Webpack::Manifest::AssetMissingError
+        # no bundle exists for this path
+      end
+      route.pop
+    end
+
+    if chunks.empty?
       chunks = entrypoint_paths("default", extension: 'js')
     end
 
