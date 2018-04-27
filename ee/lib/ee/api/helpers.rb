@@ -18,7 +18,7 @@ module EE
           unless auth_header && ::Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
             unauthorized!
           end
-        rescue ::Gitlab::Geo::InvalidDecryptionKeyError, ::Gitlab::Geo::SignatureTimeInvalidError => e
+        rescue ::Gitlab::Geo::InvalidDecryptionKeyError, ::Gitlab::Geo::InvalidSignatureTimeError => e
           render_api_error!(e.to_s, 401)
         end
       end
