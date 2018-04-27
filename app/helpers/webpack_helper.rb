@@ -6,7 +6,7 @@ module WebpackHelper
   end
 
   def webpack_controller_bundle_tags
-    bundles = []
+    chunks = []
 
     action = case controller.action_name
              when 'create' then 'new'
@@ -15,19 +15,16 @@ module WebpackHelper
              end
 
     route = [*controller.controller_path.split('/'), action].compact
+    entrypoint = "pages.#{route.join('.')}"
 
-    until route.empty?
-      begin
-        asset_paths = entrypoint_paths("pages.#{route.join('.')}", extension: 'js')
-        bundles.unshift(*asset_paths)
-      rescue Gitlab::Webpack::Manifest::AssetMissingError
-        # no bundle exists for this path
-      end
-
-      route.pop
+    begin
+      chunks = entrypoint_paths(entrypoint, extension: 'js')
+    rescue Gitlab::Webpack::Manifest::AssetMissingError
+      # no bundle exists for this path
+      chunks = entrypoint_paths("default", extension: 'js')
     end
 
-    javascript_include_tag(*bundles.uniq)
+    javascript_include_tag(*chunks)
   end
 
   def entrypoint_paths(source, extension: nil, force_same_domain: false)

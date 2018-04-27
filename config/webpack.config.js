@@ -25,6 +25,7 @@ const defaultEntries = ['./webpack', './commons', './main'];
 function generateEntries() {
   // generate automatic entry points
   const autoEntries = {};
+  const autoEntriesMap = {};
   const pageEntries = glob.sync('pages/**/index.js', {
     cwd: path.join(ROOT_PATH, 'app/assets/javascripts'),
   });
@@ -33,14 +34,29 @@ function generateEntries() {
   function generateAutoEntries(path, prefix = '.') {
     const chunkPath = path.replace(/\/index\.js$/, '');
     const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = defaultEntries.concat(`${prefix}/${path}`);
+    autoEntriesMap[chunkName] = `${prefix}/${path}`;
   }
 
   pageEntries.forEach(path => generateAutoEntries(path));
 
-  autoEntriesCount = Object.keys(autoEntries).length;
+  const autoEntryKeys = Object.keys(autoEntriesMap);
+  autoEntriesCount = autoEntryKeys.length;
+
+  // import ancestor entrypoints within their children
+  autoEntryKeys.forEach(entry => {
+    const entryPaths = [autoEntriesMap[entry]];
+    const segments = entry.split('.');
+    while (segments.pop()) {
+      const ancestor = segments.join('.');
+      if (autoEntryKeys.includes(ancestor)) {
+        entryPaths.unshift(autoEntriesMap[ancestor]);
+      }
+    }
+    autoEntries[entry] = defaultEntries.concat(entryPaths);
+  });
 
   const manualEntries = {
+    default: defaultEntries,
     raven: './raven/index.js',
     ide: './ide/index.js',
   };
