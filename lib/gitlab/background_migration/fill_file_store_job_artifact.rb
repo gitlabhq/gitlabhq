@@ -10,8 +10,8 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        FillFileStoreJobArtifact::JobArtifact
-          .where('file_store = NULL')
+        Gitlab::BackgroundMigration::FillFileStoreJobArtifact::JobArtifact
+          .where('file_store is NULL')
           .where(id: (start_id..stop_id))
           .update_all(file_store: 1)
       end
