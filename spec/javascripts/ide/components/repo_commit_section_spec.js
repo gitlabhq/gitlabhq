@@ -3,7 +3,6 @@ import store from '~/ide/stores';
 import service from '~/ide/services';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoCommitSection', () => {
@@ -105,30 +104,28 @@ describe('RepoCommitSection', () => {
 
   it('renders a commit section', () => {
     const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list li')];
-    const submitCommit = vm.$el.querySelector('form .btn');
     const allFiles = vm.$store.state.changedFiles.concat(vm.$store.state.stagedFiles);
 
-    expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
     expect(changedFileElements.length).toEqual(4);
 
     changedFileElements.forEach((changedFile, i) => {
       expect(changedFile.textContent.trim()).toContain(allFiles[i].path);
     });
-
-    expect(submitCommit.disabled).toBeTruthy();
-    expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeNull();
   });
 
   it('adds changed files into staged files', done => {
-    vm.$el.querySelector('.ide-staged-action-btn').click();
-
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.ide-commit-list-container').textContent).toContain(
-        'No changes',
-      );
-
-      done();
-    });
+    vm.$el.querySelector('.multi-file-discard-btn .btn').click();
+    vm
+      .$nextTick()
+      .then(() => vm.$el.querySelector('.multi-file-discard-btn .btn').click())
+      .then(vm.$nextTick)
+      .then(() => {
+        expect(vm.$el.querySelector('.ide-commit-list-container').textContent).toContain(
+          'No changes',
+        );
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('stages a single file', done => {
@@ -150,18 +147,6 @@ describe('RepoCommitSection', () => {
       expect(vm.$el.querySelector('.ide-commit-list-container').textContent).not.toContain('file1');
       expect(vm.$el.querySelector('.ide-commit-list-container').querySelectorAll('li').length).toBe(
         1,
-      );
-
-      done();
-    });
-  });
-
-  it('removes all staged files', done => {
-    vm.$el.querySelectorAll('.ide-staged-action-btn')[1].click();
-
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelectorAll('.ide-commit-list-container')[1].textContent).toContain(
-        'No changes',
       );
 
       done();
