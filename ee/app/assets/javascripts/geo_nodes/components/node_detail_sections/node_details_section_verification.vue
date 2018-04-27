@@ -2,7 +2,7 @@
   import { s__ } from '~/locale';
   import { numberToHumanSize } from '~/lib/utils/number_utils';
 
-  import { VALUE_TYPE } from '../../constants';
+  import { VALUE_TYPE, HELP_INFO_URLS } from '../../constants';
 
   import GeoNodeDetailItem from '../geo_node_detail_item.vue';
   import SectionRevealButton from './section_reveal_button.vue';
@@ -55,7 +55,11 @@
               successLabel: s__('GeoNodes|Checksummed'),
               neutraLabel: s__('GeoNodes|Not checksummed'),
               failureLabel: s__('GeoNodes|Failed'),
-              helpText: s__('GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes'),
+              helpInfo: {
+                title: s__('GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes'),
+                url: HELP_INFO_URLS.REPOSITORY_VERIFICATION,
+                urlText: s__('GeoNodes|Learn more about Repository checksum progress'),
+              },
             },
             {
               itemTitle: s__('GeoNodes|Wiki checksum progress'),
@@ -64,7 +68,11 @@
               successLabel: s__('GeoNodes|Checksummed'),
               neutraLabel: s__('GeoNodes|Not checksummed'),
               failureLabel: s__('GeoNodes|Failed'),
-              helpText: s__('GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes'),
+              helpInfo: {
+                title: s__('GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes'),
+                url: HELP_INFO_URLS.REPOSITORY_VERIFICATION,
+                urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
+              },
             },
           );
         }
@@ -101,7 +109,11 @@
             successLabel: s__('GeoNodes|Verified'),
             neutraLabel: s__('GeoNodes|Unverified'),
             failureLabel: s__('GeoNodes|Failed'),
-            helpText: s__('GeoNodes|Repositories verified with their counterparts on the Primary node'),
+            helpInfo: {
+              title: s__('GeoNodes|Repositories verified with their counterparts on the Primary node'),
+              url: HELP_INFO_URLS.REPOSITORY_VERIFICATION,
+              urlText: s__('GeoNodes|Learn more about Repository checksum progress'),
+            },
           },
           {
             itemTitle: s__('GeoNodes|Wiki verification progress'),
@@ -110,7 +122,11 @@
             successLabel: s__('GeoNodes|Verified'),
             neutraLabel: s__('GeoNodes|Unverified'),
             failureLabel: s__('GeoNodes|Failed'),
-            helpText: s__('GeoNodes|Wikis verified with their counterparts on the Primary node'),
+            helpInfo: {
+              title: s__('GeoNodes|Wikis verified with their counterparts on the Primary node'),
+              url: HELP_INFO_URLS.CHECKSUMS,
+              urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
+            },
           },
         ];
 
@@ -149,7 +165,7 @@
           :neutral-label="nodeDetailItem.neutraLabel"
           :failure-label="nodeDetailItem.failureLabel"
           :custom-type="nodeDetailItem.customType"
-          :help-text="nodeDetailItem.helpText"
+          :help-info="nodeDetailItem.helpInfo"
         />
       </div>
     </template>

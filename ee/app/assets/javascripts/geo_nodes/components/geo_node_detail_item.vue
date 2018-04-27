@@ -1,23 +1,23 @@
 <script>
   import { s__ } from '~/locale';
-  import tooltip from '~/vue_shared/directives/tooltip';
+  import popover from '~/vue_shared/directives/popover';
   import Icon from '~/vue_shared/components/icon.vue';
-  import stackedProgressBar from '~/vue_shared/components/stacked_progress_bar.vue';
+  import StackedProgressBar from '~/vue_shared/components/stacked_progress_bar.vue';
 
   import { VALUE_TYPE, CUSTOM_TYPE } from '../constants';
 
-  import geoNodeSyncSettings from './geo_node_sync_settings.vue';
-  import geoNodeEventStatus from './geo_node_event_status.vue';
+  import GeoNodeSyncSettings from './geo_node_sync_settings.vue';
+  import GeoNodeEventStatus from './geo_node_event_status.vue';
 
   export default {
     components: {
       Icon,
-      stackedProgressBar,
-      geoNodeSyncSettings,
-      geoNodeEventStatus,
+      StackedProgressBar,
+      GeoNodeSyncSettings,
+      GeoNodeEventStatus,
     },
     directives: {
-      tooltip,
+      popover,
     },
     props: {
       itemTitle: {
@@ -62,15 +62,15 @@
         required: false,
         default: false,
       },
-      helpText: {
-        type: String,
+      helpInfo: {
+        type: [Boolean, Object],
         required: false,
-        default: '',
+        default: false,
       },
     },
     computed: {
-      hasHelpText() {
-        return this.helpText !== '';
+      hasHelpInfo() {
+        return typeof this.helpInfo === 'object';
       },
       isValueTypePlain() {
         return this.itemValueType === VALUE_TYPE.PLAIN;
@@ -84,6 +84,26 @@
       isCustomTypeSync() {
         return this.customType === CUSTOM_TYPE.SYNC;
       },
+      popoverConfig() {
+        return {
+          html: true,
+          trigger: 'click',
+          placement: 'top',
+          template: `
+            <div class="popover geo-node-detail-popover" role="tooltip">
+              <div class="arrow"></div>
+              <p class="popover-title"></p>
+              <div class="popover-content"></div>
+            </div>
+          `,
+          title: this.helpInfo.title,
+          content: `
+            <a href="${this.helpInfo.url}">
+              ${this.helpInfo.urlText}
+            </a>
+          `,
+        };
+      },
     },
   };
 </script>
@@ -95,12 +115,11 @@
         {{ itemTitle }}
       </span>
       <icon
-        v-tooltip
-        v-if="hasHelpText"
+        v-popover="popoverConfig"
+        v-if="hasHelpInfo"
         css-classes="node-detail-help-text prepend-left-5"
         name="question"
         :size="12"
-        :title="helpText"
       />
     </div>
     <div

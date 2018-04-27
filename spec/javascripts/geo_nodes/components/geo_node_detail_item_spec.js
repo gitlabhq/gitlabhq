@@ -37,13 +37,13 @@ describe('GeoNodeDetailItemComponent', () => {
       vm.$destroy();
     });
 
-    it('renders item title help text icon and tooltip', () => {
-      const helpText = 'Foo title tooltip';
-      const vm = createComponent({ helpText });
-      const helpTextEl = vm.$el.querySelector('.node-detail-help-text');
+    it('renders item title help info icon and popover with help info', () => {
+      const helpInfo = { title: 'Foo title tooltip', url: 'https://docs.gitlab.com', urlText: 'Help' };
+      const vm = createComponent({ helpInfo });
+      const helpTextIconEl = vm.$el.querySelector('.node-detail-help-text');
 
-      expect(helpTextEl).not.toBeNull();
-      expect(helpTextEl.dataset.originalTitle).toBe(helpText);
+      expect(helpTextIconEl).not.toBeNull();
+      expect(helpTextIconEl.querySelector('use').getAttribute('xlink:href')).toContain('question');
       vm.$destroy();
     });
 
