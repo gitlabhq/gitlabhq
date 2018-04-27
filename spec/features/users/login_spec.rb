@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Login' do
+  include TermsHelper
+
   scenario 'Successful user signin invalidates password reset token' do
     user = create(:user)
 
@@ -411,6 +413,43 @@ feature 'Login' do
 
     def ensure_one_active_pane
       expect(page).to have_selector('.tab-pane.active', count: 1)
+    end
+  end
+
+  context 'when terms are enforced' do
+    let(:user) { create(:user) }
+
+    before do
+      enforce_terms
+    end
+
+    it 'asks to accept the terms on first login' do
+      visit new_user_session_path
+
+      fill_in 'user_login', with: user.email
+      fill_in 'user_password', with: '12345678'
+
+      click_button 'Sign in'
+
+      expect_to_be_on_terms_page
+
+      click_button 'Accept terms'
+
+      expect(current_path).to eq(root_path)
+      expect(page).not_to have_content('You are already signed in.')
+    end
+
+    it 'does not ask for terms when the user already accepted them' do
+      accept_terms(user)
+
+      visit new_user_session_path
+
+      fill_in 'user_login', with: user.email
+      fill_in 'user_password', with: '12345678'
+
+      click_button 'Sign in'
+
+      expect(current_path).to eq(root_path)
     end
   end
 end

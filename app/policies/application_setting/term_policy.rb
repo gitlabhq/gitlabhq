@@ -2,17 +2,15 @@ class ApplicationSetting
   class TermPolicy < BasePolicy
     include Gitlab::Utils::StrongMemoize
 
-    condition(:logged_in, scope: :user) { @user }
-
     condition(:current_terms, scope: :subject) do
       Gitlab::CurrentSettings.current_application_settings.latest_terms == @subject
     end
 
-    condition(:terms_accepted, scope: :user, score: 1) do
+    condition(:terms_accepted, score: 1) do
       agreement&.accepted
     end
 
-    rule { logged_in & current_terms }.policy do
+    rule { ~anonymous & current_terms }.policy do
       enable :accept_terms
       enable :decline_terms
     end

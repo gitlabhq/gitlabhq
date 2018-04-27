@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-25 17:57+0200\n"
-"PO-Revision-Date: 2018-04-25 17:57+0200\n"
+"POT-Creation-Date: 2018-05-03 10:13+0200\n"
+"PO-Revision-Date: 2018-05-03 10:13+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -203,6 +203,9 @@ msgstr ""
 msgid "Abuse reports"
 msgstr ""
 
+msgid "Accept terms"
+msgstr ""
+
 msgid "Accepted MR"
 msgstr ""
 
@@ -219,6 +222,9 @@ msgid "Account and limit settings"
 msgstr ""
 
 msgid "Active"
+msgstr ""
+
+msgid "Active Sessions"
 msgstr ""
 
 msgid "Activity"
@@ -1736,6 +1742,12 @@ msgstr ""
 msgid "Current node"
 msgstr ""
 
+msgid "CurrentUser|Profile"
+msgstr ""
+
+msgid "CurrentUser|Settings"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr ""
 
@@ -1779,6 +1791,9 @@ msgid "Dec"
 msgstr ""
 
 msgid "December"
+msgstr ""
+
+msgid "Decline and sign out"
 msgstr ""
 
 msgid "Default classification label"
@@ -2207,9 +2222,6 @@ msgid "February"
 msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
-msgstr ""
-
-msgid "File name"
 msgstr ""
 
 msgid "Files"
@@ -2663,6 +2675,9 @@ msgstr ""
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
+msgid "Include a Terms of Service agreement that all users must accept."
+msgstr ""
+
 msgid "Install Runner on Kubernetes"
 msgstr ""
 
@@ -2914,6 +2929,9 @@ msgid "March"
 msgstr ""
 
 msgid "Mark todo as done"
+msgstr ""
+
+msgid "Markdown enabled"
 msgstr ""
 
 msgid "Maximum git storage failures"
@@ -3548,6 +3566,9 @@ msgstr ""
 msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again."
 msgstr ""
 
+msgid "Please accept the Terms of Service before continuing."
+msgstr ""
+
 msgid "Please select at least one filter to see results"
 msgstr ""
 
@@ -3965,6 +3986,9 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Require all users to accept Terms of Service when they access GitLab."
+msgstr ""
+
 msgid "Reset git storage health information"
 msgstr ""
 
@@ -4207,6 +4231,9 @@ msgid "Sidebar|None"
 msgstr ""
 
 msgid "Sidebar|Weight"
+msgstr ""
+
+msgid "Sign out"
 msgstr ""
 
 msgid "Sign-in restrictions"
@@ -4518,6 +4545,12 @@ msgid "Target branch"
 msgstr ""
 
 msgid "Team"
+msgstr ""
+
+msgid "Terms of Service"
+msgstr ""
+
+msgid "Terms of Service Agreement"
 msgstr ""
 
 msgid "Thanks! Don't show me this again"
@@ -5146,6 +5179,9 @@ msgid "Weight"
 msgstr ""
 
 msgid "Weight %{weight}"
+msgstr ""
+
+msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
 
 msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
