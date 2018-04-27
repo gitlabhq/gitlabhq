@@ -5,28 +5,6 @@ class FillFileStore < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Build < ActiveRecord::Base
-    include EachBatch
-    self.table_name = 'ci_builds'
-    BATCH_SIZE = 10_000
-
-    def self.queue_background_migration
-      self.class.where(artifacts_file_store: nil).tap do |relation|
-        queue_background_migration_jobs_by_range_at_intervals(relation,
-          'FillFileStoreBuildArchive',
-          5.minutes,
-          batch_size: BATCH_SIZE)
-      end
-
-      self.class.where(artifacts_metadata_store: nil).tap do |relation|
-        queue_background_migration_jobs_by_range_at_intervals(relation,
-          'FillFileStoreBuildMetadata',
-          5.minutes,
-          batch_size: BATCH_SIZE)
-      end
-    end
-  end
-
   class JobArtifact < ActiveRecord::Base
     include EachBatch
     self.table_name = 'ci_job_artifacts'
@@ -75,15 +53,13 @@ class FillFileStore < ActiveRecord::Migration
   def up
     disable_statement_timeout
 
-    # Schedule background migrations that fill 'NULL' value by '1' on `file_store`, `store`, `artifacts_file_store` columns
-    # '1' represents ObjectStorage::Store::LOCAL
-    # ci_builds.artifacts_file_store
-    # ci_builds.artifacts_metadata_store
-    # ci_job_artifacts.file_store
-    # lfs_objects.file_store
-    # uploads.store
+    # NOTE: Schedule background migrations that fill 'NULL' value by '1'(ObjectStorage::Store::LOCAL) on `file_store`, `store` columns
+    # 
+    # Here are the target columns
+    # - ci_job_artifacts.file_store
+    # - lfs_objects.file_store
+    # - uploads.store
 
-    FillFileStore::Build.queue_background_migration
     FillFileStore::JobArtifact.queue_background_migration
     FillFileStore::LfsObject.queue_background_migration
     FillFileStore::Upload.queue_background_migration
