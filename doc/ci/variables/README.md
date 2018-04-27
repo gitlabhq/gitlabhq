@@ -572,7 +572,7 @@ You can find a full list of unsupported variables below:
 - `CI_DEPLOY_USER`
 - `CI_DEPLOY_PASSWORD`
 
-These variables are also not supported in a contex of a
+These variables are also not supported in a context of a
 [dynamic environment name][dynamic-environments].
 
 ### Secret variables with an environment scope

@@ -102,7 +102,7 @@ On the field **Filter by name**, type the project or group name you want to find
 will filter them for you as you type.
 
 You can also look for the projects you starred (**Starred projects**), and **Explore** all
-public and internal projects available in GitLab.com, from which you can filter by visibitily,
+public and internal projects available in GitLab.com, from which you can filter by visibility,
 through **Trending**, best rated with **Most starts**, or **All** of them.
 
 You can also sort them by **Name**, **Last created**, **Oldest created**, **Last updated**,

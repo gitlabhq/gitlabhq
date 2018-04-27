@@ -41,7 +41,9 @@ module QA
             resource.project = project
             resource.file_name = 'README.md'
             resource.commit_message = 'Add readme'
-            resource.branch_name = "master:#{@branch_name}"
+            resource.branch_name = 'master'
+            resource.new_branch = false
+            resource.remote_branch = @branch_name
           end
 
           Page::Project::Show.act { wait_for_push }

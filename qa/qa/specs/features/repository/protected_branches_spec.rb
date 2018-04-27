@@ -49,7 +49,7 @@ module QA
       project.visit!
 
       Git::Repository.perform do |repository|
-        repository.location = location
+        repository.uri = location.uri
         repository.use_default_credentials
 
         repository.act do
