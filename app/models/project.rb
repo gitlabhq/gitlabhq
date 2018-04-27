@@ -1292,8 +1292,12 @@ class Project < ActiveRecord::Base
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end
 
+  def shared_runners_available?
+    shared_runners_enabled?
+  end
+
   def shared_runners
-    @shared_runners ||= shared_runners_enabled? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
   end
 
   def group_runners
