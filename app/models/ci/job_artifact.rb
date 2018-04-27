@@ -17,7 +17,7 @@ module Ci
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
-    validates :file_store, presence: true
+    validates :file_store, presence: true, if: :file_changed?
 
     delegate :exists?, :open, to: :file
 

@@ -8,7 +8,7 @@ class LfsObject < ActiveRecord::Base
   scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
 
   validates :oid, presence: true, uniqueness: true
-  validates :file_store, presence: true
+  validates :file_store, presence: true, if: :file_changed?
 
   mount_uploader :file, LfsObjectUploader
 

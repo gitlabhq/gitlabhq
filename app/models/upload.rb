@@ -8,7 +8,7 @@ class Upload < ActiveRecord::Base
   validates :path, presence: true
   validates :model, presence: true
   validates :uploader, presence: true
-  validates :store, presence: true
+  validates :store, presence: true, if: :mount_point_changed?
 
   scope :with_files_stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
 
