@@ -140,7 +140,7 @@ stages:
 # Jobs that only need to pull cache
 .dedicated-no-docs-pull-cache-job: &dedicated-no-docs-pull-cache-job
   <<: *dedicated-runner
-  <<: *except-docs-and-qa
+  <<: *except-docs
   <<: *pull-cache
   dependencies:
     - setup-test-env
@@ -151,6 +151,10 @@ stages:
   <<: *dedicated-no-docs-pull-cache-job
   variables:
     SETUP_DB: "false"
+
+.dedicated-no-docs-and-no-qa-pull-cache-job: &dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
+  <<: *except-docs-and-qa
 
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -310,7 +314,7 @@ stages:
     - master@gitlab/gitlab-ee
 
 .gitlab-setup: &gitlab-setup
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg
   variables:
     SETUP_DB: "false"
@@ -351,12 +355,12 @@ stages:
 
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   script:
     - bundle exec rake db:migrate:reset
 
 .migration-paths: &migration-paths
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   variables:
     CREATE_DB_USER: "true"
   script:
@@ -768,7 +772,7 @@ migration:path-mysql:
   <<: *use-mysql
 
 .db-rollback: &db-rollback
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   script:
     - bundle exec rake db:migrate VERSION=20170523121229
     - bundle exec rake db:migrate
@@ -781,10 +785,9 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-db:rollback-pg-geo: &db-rollback
+db:rollback-pg-geo:
   <<: *db-rollback
   <<: *use-pg
-  <<: *except-docs
   script:
     - bundle exec rake geo:db:migrate VERSION=20170627195211
     - bundle exec rake geo:db:migrate
@@ -799,7 +802,7 @@ gitlab:setup-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -820,7 +823,7 @@ gitlab:assets:compile:
       - webpack-report/
 
 karma:
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg
   dependencies:
     - compile-assets
@@ -944,7 +947,7 @@ coverage:
     - coverage/assets/
 
 lint:javascript:report:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   stage: post-test
   dependencies:
     - compile-assets
