@@ -53,16 +53,16 @@ export default {
     },
     beforeEnterTransition() {
       const elHeight = this.isCompact
-        ? this.$refs.formEl.offsetHeight
-        : this.$refs.compactEl.offsetHeight;
+        ? this.$refs.formEl && this.$refs.formEl.offsetHeight
+        : this.$refs.compactEl && this.$refs.compactEl.offsetHeight;
 
       this.componentHeight = elHeight + 32;
     },
     enterTransition() {
       this.$nextTick(() => {
         const elHeight = this.isCompact
-          ? this.$refs.compactEl.offsetHeight
-          : this.$refs.formEl.offsetHeight;
+          ? this.$refs.compactEl && this.$refs.compactEl.offsetHeight
+          : this.$refs.formEl && this.$refs.formEl.offsetHeight;
 
         this.componentHeight = elHeight + 32;
       });

@@ -170,35 +170,24 @@ export default {
   },
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
     const key = `${keyPrefix}-${file.key}`;
-    const pendingTab = state.openFiles.find(f => f.key === key && f.pending);
-    let openFiles = state.openFiles.map(f => Object.assign(f, { active: false, opened: false }));
 
-    if (!pendingTab) {
-      const openFile = openFiles.find(f => f.path === file.path);
-
-      openFiles = openFiles.concat(openFile ? null : file).reduce((acc, f) => {
-        if (!f) return acc;
-
-        if (f.path === file.path) {
-          return acc.concat({
-            ...f,
-            content: file.content,
-            active: true,
-            pending: true,
-            opened: true,
-            key,
-          });
-        }
-
-        return acc.concat(f);
-      }, []);
-    } else {
-      openFiles = state.openFiles.map(f =>
-        Object.assign(f, { active: f.key === key, opened: f.key === key }),
-      );
-    }
-
-    Object.assign(state, { openFiles });
+    Object.assign(state, {
+      entries: Object.assign(state.entries, {
+        [file.path]: Object.assign(state.entries[file.path], {
+          opened: false,
+          active: false,
+        }),
+      }),
+      openFiles: [
+        {
+          ...file,
+          key,
+          pending: true,
+          opened: true,
+          active: true,
+        },
+      ],
+    });
   },
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {
