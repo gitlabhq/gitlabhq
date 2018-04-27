@@ -603,8 +603,6 @@ GEM
       atomic (>= 1.0.0)
       mysql2
       peek
-    peek-performance_bar (1.3.1)
-      peek (>= 0.1.0)
     peek-pg (1.3.0)
       concurrent-ruby
       concurrent-ruby-ext
@@ -1130,7 +1128,6 @@ DEPENDENCIES
   peek (~> 1.0.1)
   peek-gc (~> 0.0.2)
   peek-mysql2 (~> 1.1.0)
-  peek-performance_bar (~> 1.3.0)
   peek-pg (~> 1.3.0)
   peek-rblineprof (~> 0.2.0)
   peek-redis (~> 1.2.0)
