@@ -57,9 +57,9 @@ export default {
     },
     toggleWhitespacePath() {
       if (this.whitespaceVisible) {
-        return mergeUrlParams({w: 1}, window.location.href);
+        return mergeUrlParams({ w: 1 }, window.location.href);
       }
-      return mergeUrlParams({w: 0}, window.location.href);
+      return mergeUrlParams({ w: 0 }, window.location.href);
     },
   },
   mounted() {
@@ -207,8 +207,8 @@ export default {
           v-show="filteredDiffFiles.length === 0"
           class="dropdown-menu-empty-item"
         >
-          <a href="javascript:void(0)">
-            No files found
+          <a>
+            {{ __('No files found') }}
           </a>
         </li>
       </ul>

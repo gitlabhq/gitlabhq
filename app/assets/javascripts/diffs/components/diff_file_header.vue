@@ -105,11 +105,7 @@ export default {
   },
   methods: {
     handleToggle(e, checkTarget) {
-      if (checkTarget) {
-        if (e.target === this.$refs.header) {
-          this.$emit('toggleFile');
-        }
-      } else {
+      if (!checkTarget || e.target === this.$refs.header) {
         this.$emit('toggleFile');
       }
     },
@@ -147,7 +143,7 @@ export default {
           >
             {{ diffFile.oldPath }}
           </strong>
-          &rarr;
+          →
           <strong
             class="file-title-name"
             v-tooltip
@@ -173,7 +169,7 @@ export default {
       </component>
 
       <clipboard-button
-        title="Copy file path to clipboard"
+        :title="__('Copy file path to clipboard')"
         :text="diffFile.filePath"
         css-class="btn-default btn-transparent btn-clipboard"
       />

@@ -10,66 +10,73 @@ export default {
   props: {
     otherVersions: {
       type: Array,
+      required: false,
       default: () => [],
     },
     latestVersion: {
       type: Object,
       required: false,
-      default: undefined,
+      default: null,
     },
     baseVersion: {
       type: Object,
       required: false,
-      default: undefined,
+      default: null,
     },
     selectedIndex: {
       type: Number,
+      required: false,
       default: 0,
     },
   },
   computed: {
     targetVersions() {
       if (this.latestVersion) {
-        return [
-          this.latestVersion,
-          ...this.otherVersions,
-        ];
+        return [this.latestVersion, ...this.otherVersions];
       }
-      return [
-        ...this.otherVersions,
-        this.baseVersion,
-      ];
+      return [...this.otherVersions, this.baseVersion];
     },
     baseVersionSelected() {
-      return this.baseVersion && (this.baseVersion.versionIndex === this.selectedIndex || !this.selectedIndex);
+      return (
+        this.baseVersion &&
+        (this.baseVersion.versionIndex === this.selectedIndex || !this.selectedIndex)
+      );
     },
     latestVersionSelected() {
-      return this.latestVersion && (this.latestVersion.versionIndex === this.selectedIndex || !this.selectedIndex);
+      return (
+        this.latestVersion &&
+        (this.latestVersion.versionIndex === this.selectedIndex || !this.selectedIndex)
+      );
     },
     selectedVersionName() {
-      const selectedVersion = this.baseVersionSelected ? this.baseVersion : this.targetVersions[this.selectedIndex];
+      const selectedVersion = this.baseVersionSelected
+        ? this.baseVersion
+        : this.targetVersions[this.selectedIndex];
       return this.versionName(selectedVersion);
     },
   },
   methods: {
     versionName(version) {
-      if (this.latestVersion && version.versionIndex === this.latestVersion.versionIndex) {
+      if (this.isLatest(version)) {
         return 'latest version';
       }
-      if (this.baseVersion && version.versionIndex === this.baseVersion.versionIndex) {
+      if (this.isBase(version)) {
         return this.baseVersion.branchName;
       }
-      return `version ${version.versionIndex}`
+      return `version ${version.versionIndex}`;
     },
     isActive(version) {
-      if (this.latestVersion && version.versionIndex === this.latestVersion.versionIndex) {
-        return true;
-      }
-      if (this.baseVersion && version.versionIndex === this.baseVersion.versionIndex) {
+      if (this.isLatest(version) || this.isBase(version)) {
         return true;
       }
       return version.versionIndex === this.selectedIndex;
-    }
+    },
+    isBase(version) {
+      return this.baseVersion && version.versionIndex === this.baseVersion.versionIndex;
+    },
+    isLatest(version) {
+      return this.latestVersion && version.versionIndex === this.latestVersion.versionIndex;
+    },
   },
 };
 </script>
@@ -102,7 +109,7 @@ export default {
               <div>
                 <strong>
                   {{ versionName(version) }}
-                  <template v-if="version == baseVersion">
+                  <template v-if="isBase(version)">
                     (base)
                   </template>
                 </strong>

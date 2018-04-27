@@ -91,13 +91,13 @@ export default {
       class="nothing-here-block diff-collapsed"
     >
       This diff is collapsed.
-      <a
+      <button
         @click.prevent="handleToggle"
-        class="click-to-expand"
-        href="#"
+        class="btn btn-link click-to-expand"
+        type="button"
       >
         Click to expand it.
-      </a>
+      </button>
     </div>
   </div>
 </template>
