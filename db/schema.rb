@@ -2621,6 +2621,7 @@ ActiveRecord::Schema.define(version: 20180502125859) do
     t.integer "email_opted_in_source_id"
     t.datetime "email_opted_in_at"
     t.integer "theme_id", limit: 2
+    t.integer "accepted_term_id"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2896,6 +2897,7 @@ ActiveRecord::Schema.define(version: 20180502125859) do
   add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
+  add_foreign_key "users", "application_setting_terms", column: "accepted_term_id", name: "fk_789cd90b35", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
