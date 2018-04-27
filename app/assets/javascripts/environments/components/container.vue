@@ -43,6 +43,7 @@
   <div class="environments-container">
 
     <loading-icon
+      class="prepend-top-default"
       label="Loading environments"
       v-if="isLoading"
       size="3"
