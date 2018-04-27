@@ -19,6 +19,13 @@ module QA
       Page::Main::Login.act { sign_in_using_credentials }
     end
 
+    after do
+      # We need to clear localStorage because we're using it for the dropdown,
+      # and capybara doesn't do this for us.
+      # https://github.com/teamcapybara/capybara/issues/1702
+      Capybara.execute_script 'localStorage.clear()'
+    end
+
     scenario 'user is able to protect a branch' do
       protected_branch = Factory::Resource::Branch.fabricate! do |resource|
         resource.branch_name = branch_name
