@@ -122,6 +122,10 @@ stages:
   variables:
     SETUP_DB: "false"
 
+.dedicated-no-docs-and-no-qa-pull-cache-job: &dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
+  <<: *except-docs-and-qa
+
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
   script:
@@ -222,7 +226,7 @@ stages:
     - master@gitlab/gitlab-ee
 
 .gitlab-setup: &gitlab-setup
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg
   variables:
     CREATE_DB_USER: "true"
@@ -262,12 +266,12 @@ stages:
 
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   script:
     - bundle exec rake db:migrate:reset
 
 .migration-paths: &migration-paths
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   variables:
     CREATE_DB_USER: "true"
   script:
@@ -647,7 +651,7 @@ migration:path-mysql:
   <<: *use-mysql
 
 .db-rollback: &db-rollback
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   script:
     - bundle exec rake db:migrate VERSION=20170523121229
     - bundle exec rake db:migrate
@@ -670,7 +674,7 @@ gitlab:setup-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -691,7 +695,7 @@ gitlab:assets:compile:
       - webpack-report/
 
 karma:
-  <<: *dedicated-no-docs-pull-cache-job
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg
   dependencies:
     - compile-assets
