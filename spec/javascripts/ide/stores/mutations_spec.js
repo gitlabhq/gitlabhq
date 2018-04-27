@@ -87,6 +87,28 @@ describe('Multi-file store mutations', () => {
     });
   });
 
+  describe('UPDATE_ACTIVITY_BAR_VIEW', () => {
+    it('updates currentActivityBar', () => {
+      mutations.UPDATE_ACTIVITY_BAR_VIEW(localState, 'test');
+
+      expect(localState.currentActivityView).toBe('test');
+    });
+  });
+
+  describe('SET_EMPTY_STATE_SVGS', () => {
+    it('updates empty state SVGs', () => {
+      mutations.SET_EMPTY_STATE_SVGS(localState, {
+        emptyStateSvgPath: 'emptyState',
+        noChangesStateSvgPath: 'noChanges',
+        committedStateSvgPath: 'commited',
+      });
+
+      expect(localState.emptyStateSvgPath).toBe('emptyState');
+      expect(localState.noChangesStateSvgPath).toBe('noChanges');
+      expect(localState.committedStateSvgPath).toBe('commited');
+    });
+  });
+
   describe('TOGGLE_FILE_FINDER', () => {
     it('updates fileFindVisible', () => {
       mutations.TOGGLE_FILE_FINDER(localState, true);

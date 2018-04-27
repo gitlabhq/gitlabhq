@@ -34,6 +34,8 @@ feature 'Multi-file editor new file', :js do
 
     wait_for_requests
 
+    find('.js-ide-commit-mode').click
+
     click_button 'Stage all'
 
     fill_in('commit-message', with: 'commit message ide')

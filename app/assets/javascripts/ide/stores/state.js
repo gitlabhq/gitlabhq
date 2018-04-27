@@ -1,3 +1,5 @@
+import { activityBarViews } from '../constants';
+
 export default () => ({
   currentProjectId: '',
   currentBranchId: '',
@@ -18,5 +20,6 @@ export default () => ({
   entries: {},
   viewer: 'editor',
   delayViewerUpdated: false,
+  currentActivityView: activityBarViews.edit,
   fileFindVisible: false,
 });

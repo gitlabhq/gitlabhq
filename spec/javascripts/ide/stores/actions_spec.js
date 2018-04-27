@@ -1,4 +1,11 @@
-import actions, { stageAllChanges, unstageAllChanges, toggleFileFinder } from '~/ide/stores/actions';
+import actions, {
+  stageAllChanges,
+  unstageAllChanges,
+  toggleFileFinder,
+  setCurrentBranchId,
+  setEmptyStateSvgs,
+  updateActivityBarView,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
@@ -337,6 +344,45 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateActivityBarView', () => {
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
+      testAction(
+        updateActivityBarView,
+        'test',
+        {},
+        [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setEmptyStateSvgs', () => {
+    it('commits setEmptyStateSvgs', done => {
+      testAction(
+        setEmptyStateSvgs,
+        'svg',
+        {},
+        [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setCurrentBranchId', () => {
+    it('commits setCurrentBranchId', done => {
+      testAction(
+        setCurrentBranchId,
+        'branchId',
+        {},
+        [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
+        [],
+        done,
+      );
     });
   });
 

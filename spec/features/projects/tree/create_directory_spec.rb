@@ -44,11 +44,15 @@ feature 'Multi-file editor new directory', :js do
 
     wait_for_requests
 
+    find('.js-ide-commit-mode').click
+
     click_button 'Stage all'
 
     fill_in('commit-message', with: 'commit message ide')
 
     click_button('Commit')
+
+    find('.js-ide-edit-mode').click
 
     expect(page).to have_content('folder name')
   end

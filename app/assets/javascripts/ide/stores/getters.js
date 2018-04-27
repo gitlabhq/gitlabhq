@@ -1,5 +1,3 @@
-import { __ } from '~/locale';
-
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
@@ -30,15 +28,12 @@ export const currentMergeRequest = state => {
   return null;
 };
 
-// eslint-disable-next-line no-confusing-arrow
-export const collapseButtonIcon = state =>
-  state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
+export const currentProject = state => state.projects[state.currentProjectId];
+
+export const currentTree = state =>
+  state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
 export const hasChanges = state => !!state.changedFiles.length || !!state.stagedFiles.length;
-
-// eslint-disable-next-line no-confusing-arrow
-export const collapseButtonTooltip = state =>
-  state.rightPanelCollapsed ? __('Expand sidebar') : __('Collapse sidebar');
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 

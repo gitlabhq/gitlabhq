@@ -1,16 +1,14 @@
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import ListItem from './list_item.vue';
-import ListCollapsed from './list_collapsed.vue';
 
 export default {
   components: {
     Icon,
     ListItem,
-    ListCollapsed,
   },
   directives: {
     tooltip,
@@ -23,11 +21,6 @@ export default {
     fileList: {
       type: Array,
       required: true,
-    },
-    showToggle: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     iconName: {
       type: String,
@@ -52,8 +45,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed']),
-    ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
     titleText() {
       return sprintf(__('%{title} changes'), {
         title: this.title,
@@ -61,7 +52,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleRightPanelCollapsed', 'stageAllChanges', 'unstageAllChanges']),
+    ...mapActions(['stageAllChanges', 'unstageAllChanges']),
     actionBtnClicked() {
       this[this.action]();
     },
@@ -72,19 +63,12 @@ export default {
 <template>
   <div
     class="ide-commit-list-container"
-    :class="{
-      'is-collapsed': rightPanelCollapsed,
-    }"
   >
     <header
       class="multi-file-commit-panel-header"
     >
       <div
-        v-if="!rightPanelCollapsed"
         class="multi-file-commit-panel-header-title"
-        :class="{
-          'append-right-10': showToggle,
-        }"
       >
         <icon
           v-once
@@ -100,52 +84,28 @@ export default {
           {{ actionBtnText }}
         </button>
       </div>
-      <button
-        v-if="showToggle"
-        v-tooltip
-        :title="collapseButtonTooltip"
-        data-container="body"
-        data-placement="left"
-        type="button"
-        class="btn btn-transparent multi-file-commit-panel-collapse-btn"
-        :aria-label="__('Toggle sidebar')"
-        @click.stop="toggleRightPanelCollapsed"
-      >
-        <icon
-          :name="collapseButtonIcon"
-          :size="18"
-        />
-      </button>
     </header>
-    <list-collapsed
-      v-if="rightPanelCollapsed"
-      :files="fileList"
-      :icon-name="iconName"
-      :title="title"
-    />
-    <template v-else>
-      <ul
-        v-if="fileList.length"
-        class="multi-file-commit-list list-unstyled append-bottom-0"
+    <ul
+      v-if="fileList.length"
+      class="multi-file-commit-list list-unstyled append-bottom-0"
+    >
+      <li
+        v-for="file in fileList"
+        :key="file.key"
       >
-        <li
-          v-for="file in fileList"
-          :key="file.key"
-        >
-          <list-item
-            :file="file"
-            :action-component="itemActionComponent"
-            :key-prefix="title"
-            :staged-list="stagedList"
-          />
-        </li>
-      </ul>
-      <p
-        v-else
-        class="multi-file-commit-list help-block"
-      >
-        {{ __('No changes') }}
-      </p>
-    </template>
+        <list-item
+          :file="file"
+          :action-component="itemActionComponent"
+          :key-prefix="title"
+          :staged-list="stagedList"
+        />
+      </li>
+    </ul>
+    <p
+      v-else
+      class="multi-file-commit-list help-block"
+    >
+      {{ __('No changes') }}
+    </p>
   </div>
 </template>

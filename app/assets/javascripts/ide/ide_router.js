@@ -63,6 +63,8 @@ router.beforeEach((to, from, next) => {
         const fullProjectId = `${to.params.namespace}/${to.params.project}`;
 
         if (to.params.branch) {
+          store.dispatch('setCurrentBranchId', to.params.branch);
+
           store.dispatch('getBranchData', {
             projectId: fullProjectId,
             branchId: to.params.branch,

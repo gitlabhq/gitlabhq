@@ -192,6 +192,10 @@ export default {
 
         return acc.concat(f);
       }, []);
+    } else {
+      openFiles = state.openFiles.map(f =>
+        Object.assign(f, { active: f.key === key, opened: f.key === key }),
+      );
     }
 
     Object.assign(state, { openFiles });

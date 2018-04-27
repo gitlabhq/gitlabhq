@@ -23,18 +23,8 @@ export default {
   directives: {
     tooltip,
   },
-  props: {
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
-    ...mapState(['changedFiles', 'stagedFiles', 'rightPanelCollapsed']),
+    ...mapState(['changedFiles', 'stagedFiles']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
   },
@@ -86,13 +76,11 @@ export default {
         action="unstageAllChanges"
         :action-btn-text="__('Unstage all')"
         item-action-component="unstage-button"
-        :show-toggle="false"
         :staged-list="true"
       />
       <form
         class="form-horizontal multi-file-commit-form"
         @submit.prevent.stop="commitChanges"
-        v-if="!rightPanelCollapsed"
       >
         <commit-message-field
           :text="commitMessage"
@@ -120,8 +108,6 @@ export default {
     </template>
     <empty-state
       v-else
-      :no-changes-state-svg-path="noChangesStateSvgPath"
-      :committed-state-svg-path="committedStateSvgPath"
     />
   </div>
 </template>
