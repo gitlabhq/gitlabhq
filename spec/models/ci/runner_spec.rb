@@ -166,7 +166,7 @@ describe Ci::Runner do
       expect(described_class.belonging_to_group(specific_project.id)).to eq [specific_runner]
     end
 
-    it 'returns the group runner from a parent group' do
+    it 'returns the group runner from a parent group', :nested_groups do
       parent_group = create :group
       group = create :group, parent: parent_group
       project = create :project, group: group
@@ -824,7 +824,7 @@ describe Ci::Runner do
       expect(project_runner.reload.accessible_projects).to eq [project_project]
     end
 
-    it 'returns the projects with a group and nested group runner' do
+    it 'returns the projects with a group and nested group runner', :nested_groups do
       expect(group_runner.reload.accessible_projects).to eq [group_project, nested_group_project]
     end
 
