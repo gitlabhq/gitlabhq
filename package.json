@@ -70,7 +70,6 @@
     "raphael": "^2.2.7",
     "raven-js": "^3.22.1",
     "raw-loader": "^0.5.1",
-    "react-dev-utils": "^5.0.0",
     "sanitize-html": "^1.16.1",
     "select2": "3.5.2-browserify",
     "sql.js": "^0.4.0",
@@ -92,8 +91,8 @@
     "vuex": "^3.0.1",
     "webpack": "^4.6.0",
     "webpack-bundle-analyzer": "^2.11.0",
-    "webpack-cli": "^2.0.14",
-    "webpack-stats-plugin": "^0.1.5",
+    "webpack-cli": "^2.0.15",
+    "webpack-stats-plugin": "^0.2.1",
     "worker-loader": "^1.1.1"
   },
   "devDependencies": {

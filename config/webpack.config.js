@@ -7,7 +7,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const NameAllModulesPlugin = require('name-all-modules-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -272,29 +271,30 @@ if (IS_DEV_SERVER) {
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD,
   };
-  config.plugins.push(
-    // watch node_modules for changes if we encounter a missing module compile error
-    // new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules')),
+  config.plugins.push({
+    apply(compiler) {
+      compiler.hooks.emit.tapAsync('WatchForChangesPlugin', (compilation, callback) => {
+        const missingDeps = Array.from(compilation.missingDependencies);
+        const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
+        const hasMissingNodeModules = missingDeps.some(
+          file => file.indexOf(nodeModulesPath) !== -1
+        );
 
-    // watch for changes to our automatic entry point modules
-    {
-      apply(compiler) {
-        compiler.plugin('emit', (compilation, callback) => {
-          compilation.contextDependencies = [
-            ...compilation.contextDependencies,
-            ...watchAutoEntries,
-          ];
+        // watch for changes to missing node_modules
+        if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
 
-          // report our auto-generated bundle count
-          console.log(
-            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
-          );
+        // watch for changes to automatic entrypoints
+        watchAutoEntries.forEach(watchPath => compilation.contextDependencies.add(watchPath));
 
-          callback();
-        });
-      },
-    }
-  );
+        // report our auto-generated bundle count
+        console.log(
+          `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+        );
+
+        callback();
+      });
+    },
+  });
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
   }
