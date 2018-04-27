@@ -1,4 +1,12 @@
 .terms {
+  .alert-wrapper {
+    min-height: $header-height + $gl-padding;
+  }
+
+  .content {
+    padding-top: $gl-padding;
+  }
+
   .panel {
     .panel-heading {
       display: -webkit-flex;
@@ -7,17 +15,15 @@
       justify-content: space-between;
 
       .title {
-        display: -webkit-flex;
         display: flex;
         align-items: center;
-        padding: 2px 8px;
-        margin: 5px 2px 5px -8px;
-        border-radius: 4px;
 
         .logo-text {
           width: 55px;
           height: 24px;
-          margin: 0 15px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
       }
 
@@ -31,15 +37,19 @@
     }
 
     .panel-content {
-      padding: 0 $gl-padding;
+      padding: $gl-padding;
+
+      *:first-child {
+        margin-top: 0;
+      }
+
+      *:last-child {
+        margin-bottom: 0;
+      }
     }
 
     .footer-block {
       margin: 0;
-
-      .btn {
-        margin-left: 5px;
-      }
     }
   }
 }

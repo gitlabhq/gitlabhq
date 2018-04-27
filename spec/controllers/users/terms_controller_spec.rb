@@ -36,6 +36,30 @@ describe Users::TermsController do
 
       expect(response).to redirect_to(groups_path)
     end
+
+    it 'redirects to the referer when no redirect specified' do
+      request.env["HTTP_REFERER"] = groups_url
+
+      post :accept, id: term.id
+
+      expect(response).to redirect_to(groups_path)
+    end
+
+    context 'redirecting to another domain' do
+      it 'is prevented when passing a redirect param' do
+        post :accept, id: term.id, redirect: '//example.com/random/path'
+
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'is prevented when redirecting to the referer' do
+        request.env["HTTP_REFERER"] = 'http://example.com/and/a/path'
+
+        post :accept, id: term.id
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
   end
 
   describe 'POST #decline' do

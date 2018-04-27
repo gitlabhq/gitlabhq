@@ -1,5 +1,8 @@
 module Users
   class TermsController < ApplicationController
+    include InternalRedirect
+
+    skip_before_action :enforce_terms!
     before_action :terms
 
     layout 'terms'
@@ -46,11 +49,18 @@ module Users
     end
 
     def redirect_path
-      referer = if request.referer && !request.referer.include?(terms_path)
-                  URI(request.referer).path
-                end
+      redirect_to_path = safe_redirect_path(params[:redirect]) || safe_redirect_path_for_url(request.referer)
 
-      params[:redirect] || referer || root_path
+      if redirect_to_path &&
+          excluded_redirect_paths.none? { |excluded| redirect_to_path.include?(excluded) }
+        redirect_to_path
+      else
+        root_path
+      end
+    end
+
+    def excluded_redirect_paths
+      [terms_path, new_user_session_path]
     end
   end
 end
