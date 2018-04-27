@@ -5,7 +5,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
   let(:raw_data) { nil }
-  
+
   let(:build_trace_chunk) do
     described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
