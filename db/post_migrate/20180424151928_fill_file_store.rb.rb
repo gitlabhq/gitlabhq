@@ -10,13 +10,8 @@ class FillFileStore < ActiveRecord::Migration
     self.table_name = 'ci_job_artifacts'
     BATCH_SIZE = 10_000
 
-    def self.queue_background_migration
-      self.class.where(file_store: nil).tap do |relation|
-        queue_background_migration_jobs_by_range_at_intervals(relation,
-          'FillFileStoreJobArtifact',
-          5.minutes,
-          batch_size: BATCH_SIZE)
-      end
+    def self.params_for_background_migration
+      yield self.where(file_store: nil), 'FillFileStoreJobArtifact', 5.minutes, BATCH_SIZE
     end
   end
 
@@ -25,13 +20,8 @@ class FillFileStore < ActiveRecord::Migration
     self.table_name = 'lfs_objects'
     BATCH_SIZE = 10_000
 
-    def self.queue_background_migration
-      self.class.where(file_store: nil).tap do |relation|
-        queue_background_migration_jobs_by_range_at_intervals(relation,
-          'FillFileStoreLfsObject',
-          5.minutes,
-          batch_size: BATCH_SIZE)
-      end
+    def self.params_for_background_migration
+      yield self.where(file_store: nil), 'FillFileStoreLfsObject', 5.minutes, BATCH_SIZE
     end
   end
 
@@ -40,13 +30,8 @@ class FillFileStore < ActiveRecord::Migration
     self.table_name = 'uploads'
     BATCH_SIZE = 10_000
 
-    def self.queue_background_migration
-      self.class.where(store: nil).tap do |relation|
-        queue_background_migration_jobs_by_range_at_intervals(relation,
-          'FillFileStoreUpload',
-          5.minutes,
-          batch_size: BATCH_SIZE)
-      end
+    def self.params_for_background_migration
+      yield self.where(store: nil), 'FillFileStoreUpload', 5.minutes, BATCH_SIZE
     end
   end
 
@@ -60,9 +45,26 @@ class FillFileStore < ActiveRecord::Migration
     # - lfs_objects.file_store
     # - uploads.store
 
-    FillFileStore::JobArtifact.queue_background_migration
-    FillFileStore::LfsObject.queue_background_migration
-    FillFileStore::Upload.queue_background_migration
+    FillFileStore::JobArtifact.params_for_background_migration do |relation, class_name, delay_interval, batch_size|
+      queue_background_migration_jobs_by_range_at_intervals(relation,
+        class_name,
+        delay_interval,
+        batch_size: batch_size)
+    end
+
+    FillFileStore::LfsObject.params_for_background_migration do |relation, class_name, delay_interval, batch_size|
+      queue_background_migration_jobs_by_range_at_intervals(relation,
+        class_name,
+        delay_interval,
+        batch_size: batch_size)
+    end
+
+    FillFileStore::Upload.params_for_background_migration do |relation, class_name, delay_interval, batch_size|
+      queue_background_migration_jobs_by_range_at_intervals(relation,
+        class_name,
+        delay_interval,
+        batch_size: batch_size)
+    end
   end
 
   def down
