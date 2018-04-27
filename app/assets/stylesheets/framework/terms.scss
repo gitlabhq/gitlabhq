@@ -33,5 +33,13 @@
     .panel-content {
       padding: 0 $gl-padding;
     }
+
+    .footer-block {
+      margin: 0;
+
+      .btn {
+        margin-left: 5px;
+      }
+    }
   }
 }
