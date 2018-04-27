@@ -3,11 +3,18 @@
 %html{ lang: I18n.locale, class: page_class }
   = render "layouts/head"
 
-  %body{ class: "#{user_application_theme} #{@body_class}", data: { page: body_data_page } }
+  %body{ data: { page: body_data_page } }
     = render 'peek/bar'
     .layout-page.terms
       .content-wrapper
-        %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
+        .mobile-overlay
+        .alert-wrapper
+          = render "layouts/broadcast"
+          = render 'layouts/header/read_only_banner'
+          = yield :flash_message
+          = render "layouts/flash"
+
+        %div{ class: "#{container_class}" }
           .content{ id: "content-body" }
             .panel.panel-default
               .panel-heading

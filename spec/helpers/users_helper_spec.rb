@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe UsersHelper do
+  include TermsHelper
+
   let(:user) { create(:user) }
 
   describe '#user_link' do
@@ -50,6 +52,16 @@ describe UsersHelper do
       expect(helper).to receive(:can?).with(user, :read_user, user) { true }
 
       expect(items).to include(:profile)
+    end
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it 'hides the profile and the settings tab' do
+        expect(items).not_to include(:settings, :profile, :help)
+      end
     end
   end
 end
