@@ -18,6 +18,13 @@ describe Gitlab::QueryLimiting::ActiveSupportSubscriber do
         .once
     end
 
+    it 'ignores Rails schema loads' do
+      ActiveRecord::Base.connection.column_exists?(:users, :id)
+
+      expect(transaction)
+        .not_to have_received(:increment)
+    end
+
     context 'when the query is actually a rails cache hit' do
       it 'does not increment the number of executed SQL queries' do
         ActiveRecord::Base.connection.cache do
