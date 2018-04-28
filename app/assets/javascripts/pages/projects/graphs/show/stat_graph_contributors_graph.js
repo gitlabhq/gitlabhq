@@ -109,7 +109,7 @@ export const ContributorsMasterGraph = (function(superClass) {
 
     this.data = data1;
     this.update_content = this.update_content.bind(this);
-    this.width = $('.content').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
+    this.width = $('.stat-graph').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
     this.height = 200;
     this.x = null;
     this.y = null;
@@ -218,12 +218,15 @@ export const ContributorsAuthorGraph = (function(superClass) {
   extend(ContributorsAuthorGraph, superClass);
 
   function ContributorsAuthorGraph(data1) {
+    const $parentElements = $('.person');
+    const parentPadding = parseFloat($parentElements.css('padding-left')) + parseFloat($parentElements.css('padding-right'));
+
     this.data = data1;
     // Don't split graph size in half for mobile devices.
     if ($(window).width() < 768) {
-      this.width = $('.content').width() - 80;
+      this.width = $('.stat-graph').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
     } else {
-      this.width = ($('.content').width() / 2) - 100;
+      this.width = ($('.stat-graph').width() / 2) - parentPadding - (this.MARGIN.left + this.MARGIN.right);
     }
     this.height = 200;
     this.x = null;
