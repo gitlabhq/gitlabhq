@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
+/* eslint-disable func-names, space-before-function-paren, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -13,7 +13,7 @@ import { dateTickFormat } from '~/lib/utils/tick_formats';
 
 const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
 
-const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+const extend = function(child, parent) { for (const key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;
 
 export const ContributorsGraph = (function() {
@@ -122,8 +122,7 @@ export const ContributorsMasterGraph = (function(superClass) {
   }
 
   ContributorsMasterGraph.prototype.process_dates = function(data) {
-    var dates;
-    dates = this.get_dates(data);
+    const dates = this.get_dates(data);
     this.parse_dates(data);
     return ContributorsGraph.set_dates(dates);
   };
@@ -133,8 +132,7 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.parse_dates = function(data) {
-    var parseDate;
-    parseDate = d3.timeParse("%Y-%m-%d");
+    const parseDate = d3.timeParse("%Y-%m-%d");
     return data.forEach(function(d) {
       return d.date = parseDate(d.date);
     });
@@ -252,8 +250,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
 
   ContributorsAuthorGraph.prototype.create_area = function(x, y) {
     return this.area = d3.area().x(function(d) {
-      var parseDate;
-      parseDate = d3.timeParse("%Y-%m-%d");
+      const parseDate = d3.timeParse("%Y-%m-%d");
       return x(parseDate(d));
     }).y0(this.height).y1((function(_this) {
       return function(d) {
@@ -267,7 +264,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
   };
 
   ContributorsAuthorGraph.prototype.create_svg = function() {
-    var persons = document.querySelectorAll('.person');
+    const persons = document.querySelectorAll('.person');
     this.list_item = persons[persons.length - 1];
     return this.svg = d3.select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
   };
