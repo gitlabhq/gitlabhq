@@ -232,6 +232,9 @@ Settings.pages['external_http']     ||= false unless Settings.pages['external_ht
 Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
 Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 
+Settings.pages['admin'] ||= Settingslogic.new({})
+Settings.pages.admin['certificate'] ||= ''
+
 #
 # Geo
 #

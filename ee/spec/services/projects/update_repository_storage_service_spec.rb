@@ -19,6 +19,9 @@ describe Projects::UpdateRepositoryStorageService do
       stub_storage_settings(storages)
 
       allow(Time).to receive(:now).and_return(time)
+
+      # This will force the creation of the repository and bypass Gitaly
+      allow_any_instance_of(Gitlab::Git::Repository).to receive(:exists?).and_return(false)
     end
 
     after do
@@ -64,7 +67,9 @@ describe Projects::UpdateRepositoryStorageService do
       let(:wiki_repository_double) { double(:repository) }
 
       before do
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:exists?).and_return(false)
         project.create_wiki
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:exists?).and_return(true)
 
         # Default stub for non-specified params
         allow(Gitlab::Git::Repository).to receive(:new).and_call_original

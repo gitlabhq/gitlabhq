@@ -142,15 +142,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-          if enabled
-            gitaly_repository_client.exists?
-          else
-            circuit_breaker.perform do
-              File.exist?(File.join(path, 'refs'))
-            end
-          end
-        end
+        gitaly_repository_client.exists?
       end
 
       # Returns an Array of branch names
