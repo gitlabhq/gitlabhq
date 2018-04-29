@@ -14,6 +14,7 @@ class PipelinesFinder
     items = by_scope(items)
     items = by_status(items)
     items = by_ref(items)
+    items = by_sha(items)
     items = by_name(items)
     items = by_username(items)
     items = by_yaml_errors(items)
@@ -64,6 +65,14 @@ class PipelinesFinder
   def by_ref(items)
     if params[:ref].present?
       items.where(ref: params[:ref])
+    else
+      items
+    end
+  end
+
+  def by_sha(items)
+    if params[:sha].present?
+      items.where(sha: params[:sha])
     else
       items
     end
