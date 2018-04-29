@@ -13,8 +13,8 @@ import { dateTickFormat } from '~/lib/utils/tick_formats';
 
 const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
 
-const extend = function(child, parent) { for (const key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;
+const extend = function(child, parent) { for (const key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 export const ContributorsGraph = (function() {
   function ContributorsGraph() {}
@@ -31,6 +31,12 @@ export const ContributorsGraph = (function() {
   ContributorsGraph.prototype.y_domain = null;
 
   ContributorsGraph.prototype.dates = [];
+
+  ContributorsGraph.prototype.determine_width = function(baseWidth, $parentElement) {
+    const parentPaddingWidth = parseFloat($parentElement.css('padding-left')) + parseFloat($parentElement.css('padding-right'));
+    const marginWidth = this.MARGIN.left + this.MARGIN.right;
+    return baseWidth - parentPaddingWidth - marginWidth;
+  };
 
   ContributorsGraph.set_x_domain = function(data) {
     return ContributorsGraph.prototype.x_domain = data;
@@ -105,11 +111,10 @@ export const ContributorsMasterGraph = (function(superClass) {
 
   function ContributorsMasterGraph(data1) {
     const $parentElement = $('#contributors-master');
-    const parentPadding = parseFloat($parentElement.css('padding-left')) + parseFloat($parentElement.css('padding-right'));
 
     this.data = data1;
     this.update_content = this.update_content.bind(this);
-    this.width = $('.stat-graph').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
+    this.width = this.determine_width($('.stat-graph').width(), $parentElement);
     this.height = 200;
     this.x = null;
     this.y = null;
@@ -217,14 +222,13 @@ export const ContributorsAuthorGraph = (function(superClass) {
 
   function ContributorsAuthorGraph(data1) {
     const $parentElements = $('.person');
-    const parentPadding = parseFloat($parentElements.css('padding-left')) + parseFloat($parentElements.css('padding-right'));
 
     this.data = data1;
     // Don't split graph size in half for mobile devices.
     if ($(window).width() < 768) {
-      this.width = $('.stat-graph').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
+      this.width = this.determine_width($('.stat-graph').width(), $parentElements);
     } else {
-      this.width = ($('.stat-graph').width() / 2) - parentPadding - (this.MARGIN.left + this.MARGIN.right);
+      this.width = this.determine_width($('.stat-graph').width() / 2, $parentElements);
     }
     this.height = 200;
     this.x = null;
