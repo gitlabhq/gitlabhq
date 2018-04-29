@@ -56,9 +56,9 @@ export default {
           type="button"
           class="ide-sidebar-link js-ide-review-mode"
           :class="{
-            active: currentActivityView === $options.ActivityBarViews.review
+            active: currentActivityView === $options.activityBarViews.review
           }"
-          @click.prevent="updateActivityBarView($options.ActivityBarViews.review)"
+          @click.prevent="updateActivityBarView($options.activityBarViews.review)"
         >
           <icon
             name="file-modified"
