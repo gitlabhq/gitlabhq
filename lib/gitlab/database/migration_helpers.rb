@@ -1,6 +1,8 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      include Gitlab::Database::ArelMethods
+
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
@@ -314,7 +316,7 @@ module Gitlab
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+          update_arel = arel_update_manager
             .table(table)
             .set([[table[column], value]])
             .where(table[:id].gteq(start_id))
