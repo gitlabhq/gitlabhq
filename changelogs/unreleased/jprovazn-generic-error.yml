@@ -1,0 +1,6 @@
+---
+title: Display only generic message on merge error to avoid exposing any potentially
+  sensitive or user unfriendly backend messages.
+merge_request:
+author:
+type: fixed
