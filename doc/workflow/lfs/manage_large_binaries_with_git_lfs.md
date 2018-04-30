@@ -243,7 +243,7 @@ GitLab checks files to detect LFS pointers on push. If LFS pointers are detected
 
 Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
 
-If you are storing LFS files outside of GitLab you can disable LFS on the project by settting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).
+If you are storing LFS files outside of GitLab you can disable LFS on the project by setting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).
 
 ### Hosting LFS objects externally
 

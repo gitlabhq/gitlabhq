@@ -92,7 +92,7 @@ class ProjectMember < Member
   private
 
   def send_invite
-    notification_service.invite_project_member(self, @raw_invite_token)
+    run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) }
 
     super
   end
@@ -100,7 +100,7 @@ class ProjectMember < Member
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
-      notification_service.new_project_member(self)
+      run_after_commit_or_now { notification_service.new_project_member(self) }
     end
 
     super
@@ -108,7 +108,7 @@ class ProjectMember < Member
 
   def post_update_hook
     if access_level_changed?
-      notification_service.update_project_member(self)
+      run_after_commit { notification_service.update_project_member(self) }
     end
 
     super

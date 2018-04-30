@@ -36,5 +36,6 @@
             = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
             .help-block
               = s_('CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.')
+              = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-devops-base-domain'), target: '_blank'
 
           = f.submit 'Save changes', class: "btn btn-success prepend-top-15"

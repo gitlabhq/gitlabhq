@@ -15,8 +15,8 @@ To understand what features you have access to, check the [GitLab subscriptions]
 
 | General documentation | GitLab CI/CD docs |
 | :----- | :----- |
-| [User documentation](user/index.md) | [GitLab CI/CD](ci/README.md) |
-| [Administrator documentation](administration/index.md) | [GitLab CI/CD quick start guide](ci/quick_start/README.md) |
+| [User documentation](user/index.md) | [GitLab CI/CD quick start guide](ci/quick_start/README.md) |
+| [Administrator documentation](administration/index.md) | [GitLab CI/CD examples](ci/examples/README.md) |
 | [Contributor documentation](#contributor-documentation) | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) |
 | [Getting started with GitLab](#getting-started-with-gitlab) | [Using Docker images](ci/docker/using_docker_images.md) |
 | [API](api/README.md) | [Auto DevOps](topics/autodevops/index.md) |
@@ -90,6 +90,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Create a file](user/project/repository/web_editor.md#create-a-file)
   - [Upload a file](user/project/repository/web_editor.md#upload-a-file)
   - [File templates](user/project/repository/web_editor.md#template-dropdowns)
+  - [Jupyter Notebook files](user/project/repository/index.md#jupyter-notebook-files)
   - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
   - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
 - [Branches](user/project/repository/branches/index.md)
@@ -99,6 +100,14 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
 - [Commits](user/project/repository/index.md#commits)
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
+
+#### Merge Requests
+
+- [Merge Requests](user/project/merge_requests/index.md)
+  - [Work In Progress "WIP" Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
+  - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
+  - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 
 #### Integrations
 
@@ -113,18 +122,16 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 ### Verify
 
-Spot errors sooner and shorten feedback cycles with built-in code review, code testing,
-Code Quality, and Review Apps. Customize your approval workflow controls, automatically
-test the quality of your code, and spin up a staging environment for every code change.
-GitLab Continuous Integration is the most popular next generation testing system that
-auto scales to run your tests faster.
+Spot errors sooner, improve security and shorten feedback cycles with built-in
+static code analysis, code testing, code quality, dependency checking and review
+apps. Customize your approval workflow controls, automatically test the quality
+of your code, and spin up a staging environment for every code change. GitLab
+Continuous Integration is the most popular next generation testing system that
+scales to run your tests faster.
 
-- [Merge Requests](user/project/merge_requests/index.md)
-  - [Work In Progress Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
-  - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
-  - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
-  - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
+- [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
+- [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
 
 ### Package
 
@@ -132,7 +139,6 @@ GitLab Container Registry gives you the enhanced security and access controls of
 custom Docker images without 3rd party add-ons. Easily upload and download images
 from GitLab CI/CD with full Git repository management integration.
 
-- [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
 - [GitLab Container Registry](user/project/container_registry.md): Learn how to use GitLab's built-in Container Registry.
 
 ### Release
@@ -141,9 +147,11 @@ Spend less time configuring your tools, and more time creating. Whether you’re
 deploying to one server or thousands, build, test, and release your code
 confidently and securely with GitLab’s built-in Continuous Delivery and Deployment.
 
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy a static site directly from GitLab.
 - [Auto Deploy](topics/autodevops/index.md#auto-deploy): Configure GitLab CI for the deployment of your application.
 - [Environments and deployments](ci/environments.md): With environments, you can control the continuous deployment of your software within GitLab.
+- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy a static site directly from GitLab.
+- [Scheduled Pipelines](user/project/pipelines/schedules.md)
+- [Protected Runners](ci/runners/README.md#protected-runners)
 
 ### Configure
 
@@ -152,6 +160,9 @@ Auto Devops. Best practice templates get you started with minimal to zero
 configuration. Then customize everything from buildpacks to CI/CD.
 
 - [Auto DevOps](topics/autodevops/index.md)
+- [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
+- [Protected secret variables](ci/variables/README.md#protected-secret-variables)
+- [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
 
 ### Monitor
 
