@@ -18,6 +18,7 @@
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
 - cronjob:trending_projects
+- cronjob:issue_due_scheduler
 
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_provision
@@ -38,6 +39,9 @@
 - github_importer:github_import_stage_import_notes
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
+
+- mail_scheduler:mail_scheduler_issue_due
+- mail_scheduler:mail_scheduler_notification_service
 
 - object_storage_upload
 - object_storage:object_storage_background_move

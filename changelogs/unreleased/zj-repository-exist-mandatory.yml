@@ -1,0 +1,5 @@
+---
+title: Repository#exists? is always executed through Gitaly
+merge_request:
+author:
+type: performance

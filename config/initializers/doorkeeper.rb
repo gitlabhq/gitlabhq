@@ -104,5 +104,5 @@ Doorkeeper.configure do
   # set to true if you want this to be allowed
   # wildcard_redirect_uri false
 
-  base_controller 'ApplicationController'
+  base_controller '::Gitlab::BaseDoorkeeperController'
 end

@@ -1,0 +1,5 @@
+---
+title: Fix redirection error for applications using OpenID
+merge_request: 18599
+author:
+type: fixed

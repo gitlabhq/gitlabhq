@@ -11,7 +11,7 @@ describe ProjectWiki do
   subject { project_wiki }
 
   it { is_expected.to delegate_method(:empty?).to :pages }
-  it { is_expected.to delegate_method(:repository_storage_path).to :project }
+  it { is_expected.to delegate_method(:repository_storage).to :project }
   it { is_expected.to delegate_method(:hashed_storage?).to :project }
 
   describe "#full_path" do
@@ -377,7 +377,7 @@ describe ProjectWiki do
   end
 
   def commit_details
-    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
+    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "test commit")
   end
 
   def create_page(name, content)

@@ -36,6 +36,7 @@ Set the title to: `[Security] Description of the original issue`
 - [ ] Find out the versions affected (the Git history of the files affected may help you with this) and add them to the [details section](#details)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
+- [ ] Add the nickname of the external user who found the issue (and/or HackerOne profile) to the Thanks row in the [details section](#details)
 
 ### Summary
 #### Links
@@ -61,8 +62,9 @@ Set the title to: `[Security] Description of the original issue`
 | Upgrade notes | | |
 | GitLab Settings updated | Yes/No| |
 | Migration required | Yes/No | |
+| Thanks | | |
 
-[security process for developers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/process.md
+[security process for developers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md
 [RM list]:  https://about.gitlab.com/release-managers/
 
 /label ~security 

@@ -200,7 +200,7 @@ describe Projects::UpdateService do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do

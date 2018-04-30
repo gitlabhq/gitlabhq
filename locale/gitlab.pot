@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-17 11:44+0200\n"
-"PO-Revision-Date: 2018-04-17 11:44+0200\n"
+"POT-Creation-Date: 2018-04-24 13:19+0000\n"
+"PO-Revision-Date: 2018-04-24 13:19+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1776,6 +1776,9 @@ msgstr ""
 msgid "Failed to change the owner"
 msgstr ""
 
+msgid "Failed to check related branches."
+msgstr ""
+
 msgid "Failed to remove issue from board, please try again."
 msgstr ""
 
@@ -3131,6 +3134,9 @@ msgid "Secret variables"
 msgstr ""
 
 msgid "Select Archive Format"
+msgstr ""
+
+msgid "Select a namespace to fork the project"
 msgstr ""
 
 msgid "Select a timezone"

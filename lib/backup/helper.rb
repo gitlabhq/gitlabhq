@@ -13,5 +13,19 @@ module Backup
       EOS
       raise message
     end
+
+    def resource_busy_error(path)
+      message = <<~EOS
+
+      ### NOTICE ###
+      As part of restore, the task tried to rename `#{path}` before restoring.
+      This could not be completed, perhaps `#{path}` is a mountpoint?
+
+      To complete the restore, please move the contents of `#{path}` to a
+      different location and run the restore task again.
+
+      EOS
+      raise message
+    end
   end
 end

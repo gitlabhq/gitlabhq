@@ -81,6 +81,20 @@ module Gitlab
         ]
       end
 
+      def send_git_snapshot(repository)
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'GetSnapshotRequest' => Gitaly::GetSnapshotRequest.new(
+            repository: repository.gitaly_repository
+          ).to_json
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-snapshot:#{encode(params)}"
+        ]
+      end
+
       def send_git_diff(repository, diff_refs)
         params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
                    {

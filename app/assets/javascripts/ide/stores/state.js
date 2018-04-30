@@ -3,6 +3,7 @@ export default () => ({
   currentBranchId: '',
   currentMergeRequestId: '',
   changedFiles: [],
+  stagedFiles: [],
   endpoints: {},
   lastCommitMsg: '',
   lastCommitPath: '',
@@ -17,4 +18,5 @@ export default () => ({
   entries: {},
   viewer: 'editor',
   delayViewerUpdated: false,
+  fileFindVisible: false,
 });

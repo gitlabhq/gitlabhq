@@ -68,6 +68,11 @@ class Project < ActiveRecord::Base
 
   after_save :update_project_statistics, if: :namespace_id_changed?
   after_create :create_project_feature, unless: :project_feature
+
+  after_create :create_ci_cd_settings,
+    unless: :ci_cd_settings,
+    if: proc { ProjectCiCdSetting.available? }
+
   after_create :set_last_activity_at
   after_create :set_last_repository_updated_at
   after_update :update_forks_visibility_level
@@ -138,11 +143,11 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
 
   # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link, foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project, -> { auto_include(false) }, through:   :forked_project_link
+  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
+  has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks, -> { auto_include(false) }, through: :forked_project_links, source: :forked_to_project
+  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
   # TODO: replace these relations with the fork network versions
 
   has_one :root_of_fork_network,
@@ -150,7 +155,7 @@ class Project < ActiveRecord::Base
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
-  has_one :fork_network, -> { auto_include(false) }, through: :fork_network_member
+  has_one :fork_network, through: :fork_network_member
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -167,27 +172,27 @@ class Project < ActiveRecord::Base
   has_many :protected_tags
 
   has_many :project_authorizations
-  has_many :authorized_users, -> { auto_include(false) }, through: :project_authorizations, source: :user, class_name: 'User'
+  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   alias_method :members, :project_members
-  has_many :users, -> { auto_include(false) }, through: :project_members
+  has_many :users, through: :project_members
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
-  has_many :deploy_keys, -> { auto_include(false) }, through: :deploy_keys_projects
+  has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects
-  has_many :starrers, -> { auto_include(false) }, through: :users_star_projects, source: :user
+  has_many :starrers, through: :users_star_projects, source: :user
   has_many :releases
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :lfs_objects, -> { auto_include(false) }, through: :lfs_objects_projects
+  has_many :lfs_objects, through: :lfs_objects_projects
   has_many :lfs_file_locks
   has_many :project_group_links
-  has_many :invited_groups, -> { auto_include(false) }, through: :project_group_links, source: :group
+  has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
@@ -199,7 +204,7 @@ class Project < ActiveRecord::Base
   has_one :statistics, class_name: 'ProjectStatistics'
 
   has_one :cluster_project, class_name: 'Clusters::Project'
-  has_many :clusters, -> { auto_include(false) }, through: :cluster_project, class_name: 'Clusters::Cluster'
+  has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -216,21 +221,22 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
-  has_many :runners, -> { auto_include(false) }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
   has_many :project_deploy_tokens
-  has_many :deploy_tokens, -> { auto_include(false) }, through: :project_deploy_tokens
+  has_many :deploy_tokens, through: :project_deploy_tokens
 
-  has_many :active_runners, -> { active.auto_include(false) }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   has_many :project_badges, class_name: 'ProjectBadge'
+  has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
@@ -510,10 +516,6 @@ class Project < ActiveRecord::Base
 
   def empty_repo?
     repository.empty?
-  end
-
-  def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]&.legacy_disk_path
   end
 
   def team
@@ -1041,13 +1043,6 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
-  def user_can_push_to_empty_repo?(user)
-    return false unless empty_repo?
-    return false unless Ability.allowed?(user, :push_code, self)
-
-    !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
-  end
-
   def forked?
     return true if fork_network && fork_network.root_project != self
 
@@ -1106,7 +1101,7 @@ class Project < ActiveRecord::Base
   # Check if repository already exists on disk
   def check_repository_path_availability
     return true if skip_disk_validation
-    return false unless repository_storage_path
+    return false unless repository_storage
 
     expires_full_path_cache # we need to clear cache to validate renames correctly
 
@@ -1637,7 +1632,7 @@ class Project < ActiveRecord::Base
 
   def container_registry_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      return variables unless Gitlab.config.registry.enabled
+      break variables unless Gitlab.config.registry.enabled
 
       variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port)
 
@@ -1875,6 +1870,14 @@ class Project < ActiveRecord::Base
     memoized_results[cache_key]
   end
 
+  def licensed_features
+    []
+  end
+
+  def gitlab_deploy_token
+    @gitlab_deploy_token ||= deploy_tokens.gitlab_deploy_token
+  end
+
   private
 
   def storage
@@ -1903,14 +1906,14 @@ class Project < ActiveRecord::Base
   def check_repository_absence!
     return if skip_disk_validation
 
-    if repository_storage_path.blank? || repository_with_same_path_already_exists?
+    if repository_storage.blank? || repository_with_same_path_already_exists?
       errors.add(:base, 'There is already a repository with that name on disk')
       throw :abort
     end
   end
 
   def repository_with_same_path_already_exists?
-    gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+    gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
   # set last_activity_at to the same as created_at
@@ -2000,10 +2003,11 @@ class Project < ActiveRecord::Base
 
   def fetch_branch_allows_maintainer_push?(user, branch_name)
     check_access = -> do
+      next false if empty_repo?
+
       merge_request = source_of_merge_requests.opened
                         .where(allow_maintainer_to_push: true)
                         .find_by(source_branch: branch_name)
-
       merge_request&.can_be_merged_by?(user)
     end
 

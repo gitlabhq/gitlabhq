@@ -1,4 +1,4 @@
-require_relative '../support/repo_helpers'
+require_relative '../support/helpers/repo_helpers'
 
 include ActionDispatch::TestProcess
 

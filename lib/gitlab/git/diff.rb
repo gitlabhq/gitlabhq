@@ -249,7 +249,7 @@ module Gitlab
 
             if size >= SIZE_LIMIT
               too_large!
-              return true
+              return true # rubocop:disable Cop/AvoidReturnFromBlocks
             end
           end
         end

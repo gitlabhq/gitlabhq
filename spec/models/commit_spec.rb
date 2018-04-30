@@ -450,6 +450,11 @@ eos
       it "returns nil if the path doesn't exists" do
         expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
       end
+
+      it 'is nil if the path is nil or empty' do
+        expect(commit.uri_type(nil)).to be_nil
+        expect(commit.uri_type("")).to be_nil
+      end
     end
 
     context 'when Gitaly commit_tree_entry feature is enabled' do

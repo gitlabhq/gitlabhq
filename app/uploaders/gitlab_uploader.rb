@@ -65,6 +65,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
     !!model
   end
 
+  def local_url
+    File.join('/', self.class.base_dir, dynamic_segment, filename)
+  end
+
   private
 
   # Designed to be overridden by child uploaders that have a dynamic path
