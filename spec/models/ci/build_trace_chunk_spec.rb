@@ -5,7 +5,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
   let(:raw_data) { nil }
-  
+
   let(:build_trace_chunk) do
     described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
@@ -46,7 +46,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#set_data' do
-    subject { build_trace_chunk.set_data(value) }
+    subject { build_trace_chunk.send(:set_data, value) }
 
     let(:value) { 'Sample data' }
 
@@ -131,13 +131,17 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       context 'when offset is negative' do
         let(:offset) { -1 }
 
-        it { expect { subject }.to raise_error('Offset is out of bound') }
+        it { expect { subject }.to raise_error('Offset is out of range') }
       end
 
       context 'when offset is bigger than data size' do
         let(:offset) { data.bytesize + 1 }
 
-        it { expect { subject }.to raise_error('Offset is out of bound') }
+        it do
+          expect_any_instance_of(described_class).not_to receive(:append) { }
+
+          subject
+        end
       end
 
       context 'when offset is 10' do
@@ -182,19 +186,19 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       context 'when offset is negative' do
         let(:offset) { -1 }
 
-        it { expect { subject }.to raise_error('Offset is out of bound') }
+        it { expect { subject }.to raise_error('Offset is out of range') }
       end
 
       context 'when offset is bigger than data size' do
         let(:offset) { data.bytesize + 1 }
 
-        it { expect { subject }.to raise_error('Offset is out of bound') }
+        it { expect { subject }.to raise_error('Offset is out of range') }
       end
 
       context 'when offset is bigger than data size' do
         let(:new_data) { 'a' * (described_class::CHUNK_SIZE + 1) }
 
-        it { expect { subject }.to raise_error('Outside of chunk size') }
+        it { expect { subject }.to raise_error('Chunk size overflow') }
       end
 
       context 'when offset is EOF' do
@@ -320,7 +324,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   describe 'ExclusiveLock' do
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
-      stub_const('Ci::BuildTraceChunk::LOCK_RETRY', 1)
+      stub_const('Ci::BuildTraceChunk::WRITE_LOCK_RETRY', 1)
     end
 
     it 'raise an error' do
@@ -333,43 +337,36 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     before do
       pipeline = create(:ci_pipeline, project: project)
-      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
-      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
-      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      @build_ids = []
+      @build_ids << create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project).id
+      @build_ids << create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project).id
+      @build_ids << create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project).id
     end
 
     shared_examples_for 'deletes all build_trace_chunk and data in redis' do
       it do
-        project.builds.each do |build|
+        @build_ids.each do |build_id|
           Gitlab::Redis::SharedState.with do |redis|
-            redis.scan_each(match: "gitlab:ci:trace:#{build.id}:chunks:?") do |key|
+            redis.scan_each(match: "gitlab:ci:trace:#{build_id}:chunks:?") do |key|
               expect(redis.exists(key)).to be_truthy
             end
           end
         end
 
-        expect(described_class.count).not_to eq(0)
+        expect(described_class.count).to eq(3)
 
         subject
 
         expect(described_class.count).to eq(0)
 
-        project.builds.each do |build|
+        @build_ids.each do |build_id|
           Gitlab::Redis::SharedState.with do |redis|
-            redis.scan_each(match: "gitlab:ci:trace:#{build.id}:chunks:?") do |key|
+            redis.scan_each(match: "gitlab:ci:trace:#{build_id}:chunks:?") do |key|
               expect(redis.exists(key)).to be_falsey
             end
           end
         end
       end
-    end
-
-    context 'when build_trace_chunk is destroyed' do
-      let(:subject) do
-        project.builds.each { |build| build.chunks.destroy_all }
-      end
-
-      it_behaves_like 'deletes all build_trace_chunk and data in redis'
     end
 
     context 'when build is destroyed' do

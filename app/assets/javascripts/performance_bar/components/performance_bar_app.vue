@@ -5,7 +5,6 @@ import PerformanceBarService from '../services/performance_bar_service';
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
 import simpleMetric from './simple_metric.vue';
-import upstreamPerformanceBar from './upstream_performance_bar.vue';
 
 import Flash from '../../flash';
 
@@ -14,7 +13,6 @@ export default {
     detailedMetric,
     requestSelector,
     simpleMetric,
-    upstreamPerformanceBar,
   },
   props: {
     store: {
@@ -128,9 +126,6 @@ export default {
           {{ currentRequest.details.host.hostname }}
         </span>
       </div>
-      <upstream-performance-bar
-        v-if="initialRequest && currentRequest.details"
-      />
       <detailed-metric
         v-for="metric in $options.detailedMetrics"
         :key="metric.metric"
