@@ -101,7 +101,11 @@ class ProjectMember < Member
   end
 
   def send_invite
+<<<<<<< HEAD
     run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) } unless @skip_notification
+=======
+    run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) }
+>>>>>>> upstream/master
 
     super
   end
@@ -109,7 +113,11 @@ class ProjectMember < Member
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
+<<<<<<< HEAD
       run_after_commit_or_now { notification_service.new_project_member(self) } unless @skip_notification
+=======
+      run_after_commit_or_now { notification_service.new_project_member(self) }
+>>>>>>> upstream/master
     end
 
     super
@@ -117,7 +125,11 @@ class ProjectMember < Member
 
   def post_update_hook
     if access_level_changed?
+<<<<<<< HEAD
       run_after_commit { notification_service.update_project_member(self) } unless @skip_notification
+=======
+      run_after_commit { notification_service.update_project_member(self) }
+>>>>>>> upstream/master
     end
 
     super

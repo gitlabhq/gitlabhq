@@ -42,20 +42,32 @@ class GroupMember < Member
   private
 
   def send_invite
+<<<<<<< HEAD
     run_after_commit_or_now { notification_service.invite_group_member(self, @raw_invite_token) } unless @skip_notification
+=======
+    run_after_commit_or_now { notification_service.invite_group_member(self, @raw_invite_token) }
+>>>>>>> upstream/master
 
     super
   end
 
   def post_create_hook
+<<<<<<< HEAD
     run_after_commit_or_now { notification_service.new_group_member(self) } unless @skip_notification
+=======
+    run_after_commit_or_now { notification_service.new_group_member(self) }
+>>>>>>> upstream/master
 
     super
   end
 
   def post_update_hook
     if access_level_changed?
+<<<<<<< HEAD
       run_after_commit { notification_service.update_group_member(self) } unless @skip_notification
+=======
+      run_after_commit { notification_service.update_group_member(self) }
+>>>>>>> upstream/master
     end
 
     super
