@@ -66,7 +66,7 @@ describe('IDE activity bar', () => {
     it('calls updateActivityBarView with review value on click', () => {
       vm.$el.querySelector('.js-ide-review-mode').click();
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(ActivityBarViews.review);
+      expect(vm.updateActivityBarView).toHaveBeenCalledWith(activityBarViews.review);
     });
   });
 
