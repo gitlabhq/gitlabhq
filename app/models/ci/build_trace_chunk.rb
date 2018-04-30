@@ -21,7 +21,7 @@ module Ci
 
     def self.delayed_cleanup_blk
       ids = all.redis.pluck(:build_id, :chunk_index).map do |data|
-        "gitlab:ci:trace:#{data.first}:chunks:#{data.second}:data"
+        "gitlab:ci:trace:#{data.first}:chunks:#{data.second}"
       end
 
       puts "before cleanup: #{ids.count}"

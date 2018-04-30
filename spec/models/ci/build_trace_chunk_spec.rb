@@ -360,9 +360,11 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when build is destroyed' do
+    context 'when traces are archived' do
       let(:subject) do
-        project.builds.destroy_all
+        project.builds.each do |build|
+          build.success!
+        end
       end
 
       it_behaves_like 'deletes all build_trace_chunk and data in redis'
