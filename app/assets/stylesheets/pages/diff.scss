@@ -44,6 +44,12 @@
       }
     }
 
+    .note-text {
+      table {
+        font-family: $font-family-sans-serif;
+      }
+    }
+
     table {
       width: 100%;
       font-family: $monospace_font;
