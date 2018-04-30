@@ -147,7 +147,7 @@ module Ci
     end
 
     def redis_data_key
-      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}:data"
+      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
     end
 
     def redis_lock_key
