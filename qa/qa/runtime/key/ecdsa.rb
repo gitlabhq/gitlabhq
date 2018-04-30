@@ -1,3 +1,4 @@
+# rubocop:disable Naming/FileName
 module QA
   module Runtime
     module Key
