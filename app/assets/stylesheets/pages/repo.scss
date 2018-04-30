@@ -610,10 +610,12 @@
 }
 
 .multi-file-commit-form {
+  position: relative;
   padding: $gl-padding;
   background-color: $white-light;
   border-top: 1px solid $white-dark;
   border-left: 1px solid $white-dark;
+  transition: all 0.3s ease;
 
   .btn {
     font-size: $gl-font-size;
@@ -771,10 +773,10 @@
   flex-direction: column;
   width: 100%;
   min-height: 140px;
-}
 
-.ide-commit-list-container.is-first {
-  border-bottom: 1px solid $white-dark;
+  &.is-first {
+    border-bottom: 1px solid $white-dark;
+  }
 }
 
 .ide-commit-file-count {
@@ -965,11 +967,6 @@
     top: 3px;
     margin-top: -1px;
   }
-}
-
-.multi-file-commit-form {
-  position: relative;
-  transition: all 0.3s ease;
 }
 
 .commit-form-compact {
