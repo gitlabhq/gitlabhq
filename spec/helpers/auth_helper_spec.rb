@@ -12,6 +12,11 @@ describe AuthHelper do
       expect(helper.button_based_providers).to include(:twitter)
     end
 
+    it 'excludes group_saml' do
+      allow(helper).to receive(:auth_providers) { [:group_saml] }
+      expect(helper.button_based_providers).to eq([])
+    end
+
     it 'returns empty array' do
       allow(helper).to receive(:auth_providers) { [] }
       expect(helper.button_based_providers).to eq([])
@@ -27,6 +32,11 @@ describe AuthHelper do
     it 'excludes ldap providers' do
       allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
       expect(helper.providers_for_base_controller).not_to include(:ldapmain)
+    end
+
+    it 'excludes group_saml' do
+      allow(helper).to receive(:auth_providers) { [:group_saml] }
+      expect(helper.providers_for_base_controller).to eq([])
     end
   end
 
