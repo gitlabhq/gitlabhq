@@ -219,7 +219,7 @@ Blocks are a way to group related information.
 
 #### Content blocks
 
-Content blocks (`.content-block`) are the basic grouping of content. They are commonly used in [lists](#lists), and are separated by a botton border.
+Content blocks (`.content-block`) are the basic grouping of content. They are commonly used in [lists](#lists), and are separated by a button border.
 
 ![Content block](img/components-contentblock.png)
 
@@ -281,7 +281,7 @@ Modals are only used for having a conversation and confirmation with the user. T
 
 | Modal with 2 actions | Modal with 3 actions | Special confirmation |
 | --------------------- | --------------------- | -------------------- |
-| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
+| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons.png) | ![special-confirmation](img/modals-special-confimation-dialog.png) |
 
 > TODO: Special case for modal.
 

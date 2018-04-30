@@ -18,8 +18,8 @@ describe Projects::DestroyService do
     it 'deletes the project' do
       expect(Project.unscoped.all).not_to include(project)
 
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, path + '.git')).to be_falsey
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path + '.git')).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, path + '.git')).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path + '.git')).to be_falsey
     end
   end
 
@@ -252,21 +252,21 @@ describe Projects::DestroyService do
     let(:path) { project.disk_path + '.git' }
 
     before do
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, path)).to be_truthy
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
 
       # Dont run sidekiq to check if renamed repository exists
       Sidekiq::Testing.fake! { destroy_project(project, user, {}) }
 
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, path)).to be_falsey
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage, path)).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path)).to be_truthy
     end
 
     it 'restores the repositories' do
       Sidekiq::Testing.fake! { described_class.new(project, user).attempt_repositories_rollback }
 
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, path)).to be_truthy
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
     end
   end
 

@@ -69,7 +69,7 @@ GitHub will generate an application ID and secret key for you to use.
           "name" => "github",
           "app_id" => "YOUR_APP_ID",
           "app_secret" => "YOUR_APP_SECRET",
-          "url" => "https://github.com/",
+          "url" => "https://github.example.com/",
           "args" => { "scope" => "user:email" }
         }
       ]
@@ -125,7 +125,7 @@ For omnibus package:
       "name" => "github",
       "app_id" => "YOUR_APP_ID",
       "app_secret" => "YOUR_APP_SECRET",
-      "url" => "https://github.com/",
+      "url" => "https://github.example.com/",
       "verify_ssl" => false,
       "args" => { "scope" => "user:email" }
     }

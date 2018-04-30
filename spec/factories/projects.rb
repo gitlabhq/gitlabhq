@@ -147,7 +147,8 @@ FactoryBot.define do
 
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
+        project.gitlab_shell.rm_directory(project.repository_storage,
+                                          File.join("#{project.disk_path}.git", 'hooks'))
       end
     end
 
@@ -172,7 +173,8 @@ FactoryBot.define do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
 
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'refs'))
+        project.gitlab_shell.rm_directory(project.repository_storage,
+                                          File.join("#{project.disk_path}.git", 'refs'))
       end
     end
 

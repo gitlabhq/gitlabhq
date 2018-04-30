@@ -6,6 +6,7 @@ self.addEventListener('message', e => {
 
   const treeList = [];
   let file;
+  let parentPath;
   const entries = data.reduce((acc, path) => {
     const pathSplit = path.split('/');
     const blobName = pathSplit.pop().trim();
@@ -17,6 +18,8 @@ self.addEventListener('message', e => {
         const foundEntry = acc[folderPath];
 
         if (!foundEntry) {
+          parentPath = parentFolder ? parentFolder.path : null;
+
           const tree = decorateData({
             projectId,
             branchId,
@@ -30,6 +33,7 @@ self.addEventListener('message', e => {
             tempFile,
             changed: tempFile,
             opened: tempFile,
+            parentPath,
           });
 
           Object.assign(acc, {
@@ -53,6 +57,8 @@ self.addEventListener('message', e => {
 
     if (blobName !== '') {
       const fileFolder = acc[pathSplit.join('/')];
+      parentPath = fileFolder ? fileFolder.path : null;
+
       file = decorateData({
         projectId,
         branchId,
@@ -68,6 +74,7 @@ self.addEventListener('message', e => {
         content,
         base64,
         previewMode: viewerInformationForPath(blobName),
+        parentPath,
       });
 
       Object.assign(acc, {
@@ -88,5 +95,6 @@ self.addEventListener('message', e => {
     entries,
     treeList: sortTree(treeList),
     file,
+    parentPath,
   });
 });

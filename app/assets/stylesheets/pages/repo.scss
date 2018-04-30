@@ -55,6 +55,7 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       max-width: inherit;
+      line-height: 22px;
 
       svg {
         vertical-align: middle;
@@ -67,9 +68,24 @@
       }
     }
 
+<<<<<<< HEAD
+=======
+    .ide-file-icon-holder {
+      display: flex;
+      align-items: center;
+    }
+
+    .ide-file-changed-icon {
+      margin-left: auto;
+
+      > svg {
+        display: block;
+      }
+    }
+
+>>>>>>> master
     .ide-new-btn {
       display: none;
-      margin-bottom: -4px;
       margin-right: -8px;
     }
 
@@ -82,10 +98,8 @@
       }
     }
 
-    &.folder {
-      svg {
-        fill: $gl-text-color-secondary;
-      }
+    .folder-icon {
+      fill: $gl-text-color-secondary;
     }
   }
 
@@ -103,6 +117,7 @@
 .file-col-commit-message {
   display: flex;
   overflow: visible;
+  align-items: center;
   padding: 6px 12px;
 }
 
@@ -430,7 +445,7 @@
   .projects-sidebar {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
 
     .context-header {
       width: auto;
@@ -964,4 +979,8 @@
   display: flex;
   align-items: center;
   font-size: 12px;
+}
+
+.ide-new-modal-label {
+  line-height: 34px;
 }
