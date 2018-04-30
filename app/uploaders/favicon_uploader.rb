@@ -11,7 +11,7 @@ class FaviconUploader < AttachmentUploader
   end
 
   def extension_whitelist
-    UploaderHelper::IMAGE_EXT
+    %w[png ico]
   end
 
   private
