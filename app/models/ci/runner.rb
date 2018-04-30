@@ -67,6 +67,12 @@ module Ci
       ref_protected: 1
     }
 
+    enum runner_type: {
+      instance_type: 1,
+      group_type: 2,
+      project_type: 3
+    }
+
     cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout

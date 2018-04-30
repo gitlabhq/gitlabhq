@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425131009) do
+ActiveRecord::Schema.define(version: 20180430143705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -479,6 +479,7 @@ ActiveRecord::Schema.define(version: 20180425131009) do
     t.integer "access_level", default: 0, null: false
     t.string "ip_address"
     t.integer "maximum_timeout"
+    t.integer "runner_type"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree

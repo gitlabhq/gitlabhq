@@ -23,13 +23,13 @@ module API
         runner =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            Ci::Runner.create(attributes.merge(is_shared: true))
+            Ci::Runner.create(attributes.merge(is_shared: true, runner_type: :instance_type))
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for the project
-            project.runners.create(attributes)
+            project.runners.create(attributes.merge(runner_type: :project_type))
           elsif group = Group.find_by(runners_token: params[:token])
             # Create a specific runner for the group
-            group.runners.create(attributes)
+            group.runners.create(attributes.merge(runner_type: :group_type))
           end
 
         break forbidden! unless runner
