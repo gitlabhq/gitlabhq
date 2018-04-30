@@ -3,7 +3,9 @@ module QA
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch, :remote_branch
+                      :branch_name, :new_branch
+
+        attr_writer :remote_branch
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-code'

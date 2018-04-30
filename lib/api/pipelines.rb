@@ -19,6 +19,7 @@ module API
         optional :status,   type: String, values: HasStatus::AVAILABLE_STATUSES,
                             desc: 'The status of pipelines'
         optional :ref,      type: String, desc: 'The ref of pipelines'
+        optional :sha,      type: String, desc: 'The sha of pipelines'
         optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations'
         optional :name,     type: String, desc: 'The name of the user who triggered pipelines'
         optional :username, type: String, desc: 'The username of the user who triggered pipelines'
