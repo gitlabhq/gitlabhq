@@ -52,11 +52,11 @@ module Geo
     end
 
     def move_project_repository
-      gitlab_shell.mv_repository(project.repository_storage_path, old_disk_path, new_disk_path)
+      gitlab_shell.mv_repository(project.repository_storage, old_disk_path, new_disk_path)
     end
 
     def move_wiki_repository
-      gitlab_shell.mv_repository(project.repository_storage_path, "#{old_disk_path}.wiki", "#{new_disk_path}.wiki")
+      gitlab_shell.mv_repository(project.repository_storage, "#{old_disk_path}.wiki", "#{new_disk_path}.wiki")
     end
   end
 end

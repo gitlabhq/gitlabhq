@@ -3,6 +3,26 @@ module EE
     module Helpers
       extend ::Gitlab::Utils::Override
 
+      def require_node_to_be_enabled!
+        forbidden! 'Geo node is disabled.' unless ::Gitlab::Geo.current_node&.enabled?
+      end
+
+      def gitlab_geo_node_token?
+        headers['Authorization']&.start_with?(::Gitlab::Geo::BaseRequest::GITLAB_GEO_AUTH_TOKEN_TYPE)
+      end
+
+      def authenticate_by_gitlab_geo_node_token!
+        auth_header = headers['Authorization']
+
+        begin
+          unless auth_header && ::Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
+            unauthorized!
+          end
+        rescue ::Gitlab::Geo::InvalidDecryptionKeyError, ::Gitlab::Geo::InvalidSignatureTimeError => e
+          render_api_error!(e.to_s, 401)
+        end
+      end
+
       override :current_user
       def current_user
         strong_memoize(:current_user) do

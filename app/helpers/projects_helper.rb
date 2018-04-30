@@ -451,7 +451,8 @@ module ProjectsHelper
     exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
     filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
 
-    filtered_message.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
+    disk_path = Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
+    filtered_message.gsub(disk_path.chomp('/'), "[REPOS PATH]")
   end
 
   def project_child_container_class(view_path)

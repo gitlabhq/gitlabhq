@@ -255,7 +255,7 @@ otherwise it will raise a `TypeError`.
 ## Adding Indexes
 
 Adding indexes is an expensive process that blocks INSERT and UPDATE queries for
-the duration. When using PostgreSQL one can work arounds this by using the
+the duration. When using PostgreSQL one can work around this by using the
 `CONCURRENTLY` option:
 
 ```sql

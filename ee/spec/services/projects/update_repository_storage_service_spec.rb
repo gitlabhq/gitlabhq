@@ -19,6 +19,9 @@ describe Projects::UpdateRepositoryStorageService do
       stub_storage_settings(storages)
 
       allow(Time).to receive(:now).and_return(time)
+
+      # This will force the creation of the repository and bypass Gitaly
+      allow_any_instance_of(Gitlab::Git::Repository).to receive(:exists?).and_return(false)
     end
 
     after do
@@ -34,9 +37,7 @@ describe Projects::UpdateRepositoryStorageService do
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_repository_as_mirror)
             .with(project.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
-            .with(:mv_repository,
-              File.absolute_path('tmp/tests/storage_a'),
-              project.disk_path,
+            .with(:mv_repository, 'a', project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           subject.execute('b')
@@ -66,7 +67,9 @@ describe Projects::UpdateRepositoryStorageService do
       let(:wiki_repository_double) { double(:repository) }
 
       before do
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:exists?).and_return(false)
         project.create_wiki
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:exists?).and_return(true)
 
         # Default stub for non-specified params
         allow(Gitlab::Git::Repository).to receive(:new).and_call_original
@@ -87,17 +90,13 @@ describe Projects::UpdateRepositoryStorageService do
           expect(repository_double).to receive(:fetch_repository_as_mirror)
             .with(project.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
-            .with(:mv_repository,
-              File.absolute_path('tmp/tests/storage_a'),
-              project.disk_path,
+            .with(:mv_repository, "a", project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           expect(wiki_repository_double).to receive(:fetch_repository_as_mirror)
             .with(project.wiki.repository.raw).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
-            .with(:mv_repository,
-              File.absolute_path('tmp/tests/storage_a'),
-              project.wiki.disk_path,
+            .with(:mv_repository, "a", project.wiki.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}.wiki")
 
           subject.execute('b')

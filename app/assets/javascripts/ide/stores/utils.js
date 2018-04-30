@@ -15,6 +15,7 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
+  staged: false,
   lastCommitPath: '',
   lastCommit: {
     id: '',
@@ -32,6 +33,7 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
+  parentPath: '',
   renderError: false,
   base64: false,
   editorRow: 1,
@@ -41,6 +43,7 @@ export const dataStructure = () => ({
   viewMode: 'edit',
   previewMode: null,
   size: 0,
+  lastOpenedAt: 0,
 });
 
 export const decorateData = entity => {
@@ -63,6 +66,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath = '',
   } = entity;
 
   return {
@@ -79,6 +83,7 @@ export const decorateData = entity => {
     opened,
     active,
     parentTreeUrl,
+    parentPath,
     changed,
     renderError,
     content,
@@ -101,7 +106,7 @@ export const setPageTitle = title => {
 export const createCommitPayload = (branch, newBranch, state, rootState) => ({
   branch,
   commit_message: state.commitMessage,
-  actions: rootState.changedFiles.map(f => ({
+  actions: rootState.stagedFiles.map(f => ({
     action: f.tempFile ? 'create' : 'update',
     file_path: f.path,
     content: f.content,
@@ -119,8 +124,8 @@ const sortTreesByTypeAndName = (a, b) => {
   } else if (a.type === 'blob' && b.type === 'tree') {
     return 1;
   }
-  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+  if (a.name < b.name) return -1;
+  if (a.name > b.name) return 1;
   return 0;
 };
 

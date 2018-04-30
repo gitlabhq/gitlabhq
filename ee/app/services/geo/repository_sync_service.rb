@@ -62,5 +62,9 @@ module Geo
 
       repository.copy_gitattributes(project.default_branch)
     end
+
+    def schedule_repack
+      GitGarbageCollectWorker.perform_async(@project.id, :full_repack, lease_key)
+    end
   end
 end

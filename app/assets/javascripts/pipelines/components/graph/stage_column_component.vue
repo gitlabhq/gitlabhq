@@ -30,10 +30,10 @@ export default {
       default: '',
     },
 
-    actionDisabled: {
+    requestFinishedFor: {
       type: String,
       required: false,
-      default: null,
+      default: '',
     },
     hasTriggeredBy: {
       type: Boolean,
@@ -81,12 +81,12 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
-            :action-disabled="actionDisabled"
           />
 
           <dropdown-job-component
             v-if="job.size > 1"
             :job="job"
+            :request-finished-for="requestFinishedFor"
           />
 
         </li>

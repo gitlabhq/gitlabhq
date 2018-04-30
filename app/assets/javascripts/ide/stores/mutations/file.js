@@ -4,6 +4,7 @@ export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
     Object.assign(state.entries[path], {
       active,
+      lastOpenedAt: new Date().getTime(),
     });
 
     if (active && !state.entries[path].pending) {
@@ -57,7 +58,9 @@ export default {
     });
   },
   [types.UPDATE_FILE_CONTENT](state, { path, content }) {
-    const changed = content !== state.entries[path].raw;
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
+    const rawContent = stagedFile ? stagedFile.content : state.entries[path].raw;
+    const changed = content !== rawContent;
 
     Object.assign(state.entries[path], {
       content,
@@ -91,8 +94,10 @@ export default {
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
+
     Object.assign(state.entries[path], {
-      content: state.entries[path].raw,
+      content: stagedFile ? stagedFile.content : state.entries[path].raw,
       changed: false,
     });
   },
@@ -106,16 +111,67 @@ export default {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
     });
   },
+  [types.STAGE_CHANGE](state, path) {
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
+
+    Object.assign(state, {
+      changedFiles: state.changedFiles.filter(f => f.path !== path),
+      entries: Object.assign(state.entries, {
+        [path]: Object.assign(state.entries[path], {
+          staged: true,
+          changed: false,
+        }),
+      }),
+    });
+
+    if (stagedFile) {
+      Object.assign(stagedFile, {
+        ...state.entries[path],
+      });
+    } else {
+      Object.assign(state, {
+        stagedFiles: state.stagedFiles.concat({
+          ...state.entries[path],
+        }),
+      });
+    }
+  },
+  [types.UNSTAGE_CHANGE](state, path) {
+    const changedFile = state.changedFiles.find(f => f.path === path);
+    const stagedFile = state.stagedFiles.find(f => f.path === path);
+
+    if (!changedFile && stagedFile) {
+      Object.assign(state.entries[path], {
+        ...stagedFile,
+        key: state.entries[path].key,
+        active: state.entries[path].active,
+        opened: state.entries[path].opened,
+        changed: true,
+      });
+
+      Object.assign(state, {
+        changedFiles: state.changedFiles.concat(state.entries[path]),
+      });
+    }
+
+    Object.assign(state, {
+      stagedFiles: state.stagedFiles.filter(f => f.path !== path),
+      entries: Object.assign(state.entries, {
+        [path]: Object.assign(state.entries[path], {
+          staged: false,
+        }),
+      }),
+    });
+  },
   [types.TOGGLE_FILE_CHANGED](state, { file, changed }) {
     Object.assign(state.entries[file.path], {
       changed,
     });
   },
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
-    const pendingTab = state.openFiles.find(f => f.path === file.path && f.pending);
-    let openFiles = state.openFiles.map(f =>
-      Object.assign(f, { active: f.path === file.path, opened: false }),
-    );
+    const key = `${keyPrefix}-${file.key}`;
+    const pendingTab = state.openFiles.find(f => f.key === key && f.pending);
+    let openFiles = state.openFiles.map(f => Object.assign(f, { active: false, opened: false }));
 
     if (!pendingTab) {
       const openFile = openFiles.find(f => f.path === file.path);
@@ -126,10 +182,11 @@ export default {
         if (f.path === file.path) {
           return acc.concat({
             ...f,
+            content: file.content,
             active: true,
             pending: true,
             opened: true,
-            key: `${keyPrefix}-${f.key}`,
+            key,
           });
         }
 

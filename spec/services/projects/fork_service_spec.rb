@@ -112,7 +112,7 @@ describe Projects::ForkService do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          gitlab_shell.remove_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         it 'does not allow creation' do

@@ -1,14 +1,15 @@
 module EE
   module OmniauthCallbacksController
+    extend ::Gitlab::Utils::Override
+
     protected
 
-    def fail_login
-      log_failed_login(@user.username, oauth['provider']) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    override :fail_login
+    def fail_login(user)
+      log_failed_login(user.username, oauth['provider'])
 
       super
     end
-
-    alias_method :fail_ldap_login, :fail_login
 
     private
 

@@ -48,6 +48,8 @@
     - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
     %span All issues for this milestone are closed. #{close_msg}
 
+= render 'shared/milestones/burndown', milestone: @milestone, project: @project
+
 - if is_dynamic_milestone
   .table-holder
     %table.table

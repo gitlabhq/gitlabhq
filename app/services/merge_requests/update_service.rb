@@ -34,6 +34,7 @@ module MergeRequests
       merge_request
     end
 
+    # rubocop:disable Metrics/AbcSize
     def handle_changes(merge_request, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
@@ -57,8 +58,11 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('assignee_id')
+        old_assignee_id = merge_request.previous_changes['assignee_id'].first
+        old_assignee = User.find(old_assignee_id) if old_assignee_id
+
         create_assignee_note(merge_request)
-        notification_service.reassigned_merge_request(merge_request, current_user)
+        notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignee)
         todo_service.reassigned_merge_request(merge_request, current_user)
       end
 
@@ -69,7 +73,7 @@ module MergeRequests
 
       added_labels = merge_request.labels - old_labels
       if added_labels.present?
-        notification_service.relabeled_merge_request(
+        notification_service.async.relabeled_merge_request(
           merge_request,
           added_labels,
           current_user
@@ -78,13 +82,14 @@ module MergeRequests
 
       added_mentions = merge_request.mentioned_users - old_mentioned_users
       if added_mentions.present?
-        notification_service.new_mentions_in_merge_request(
+        notification_service.async.new_mentions_in_merge_request(
           merge_request,
           added_mentions,
           current_user
         )
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def merge_from_quick_action(merge_request)
       last_diff_sha = params.delete(:merge)

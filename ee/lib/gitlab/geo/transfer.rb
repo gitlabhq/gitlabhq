@@ -106,10 +106,13 @@ module Gitlab
         body = File.read(temp_file.path) if File.exist?(temp_file.path)
 
         if response.code == 404 && body.present?
-          json_response = JSON.parse(body)
-          json_response['geo_code'] == Gitlab::Geo::FileUploader::FILE_NOT_FOUND_GEO_CODE
+          begin
+            json_response = JSON.parse(body)
+            return json_response['geo_code'] == Gitlab::Geo::FileUploader::FILE_NOT_FOUND_GEO_CODE
+          rescue JSON::ParserError
+          end
         end
-      rescue JSON::ParserError
+
         false
       end
 

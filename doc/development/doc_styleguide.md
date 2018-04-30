@@ -4,7 +4,7 @@ The documentation style guide defines the markup structure used in
 GitLab documentation. Check the
 [documentation guidelines](writing_documentation.md) for general development instructions.
 
-Check the GitLab hanbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
 ## Text
 
@@ -19,7 +19,7 @@ Check the GitLab hanbook for the [writing styles guidelines](https://about.gitla
 - Unless there's a logical reason not to, add documents in alphabetical order
 - Write in US English
 - Use [single spaces][] instead of double spaces
-- Jump a line between different markups (e.g., after every paragraph, hearder, list, etc)
+- Jump a line between different markups (e.g., after every paragraph, header, list, etc)
 - Capitalize "G" and "L" in GitLab
 - Capitalize feature, products, and methods names. E.g.: GitLab Runner, Geo,
 Issue Boards, Git, Prometheus, Continuous Integration.

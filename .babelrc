@@ -1,6 +1,9 @@
 {
   "presets": [["latest", { "es2015": { "modules": false } }], "stage-2"],
   "env": {
+    "karma": {
+      "plugins": ["rewire"]
+    },
     "coverage": {
       "plugins": [
         [
@@ -14,7 +17,8 @@
           {
             "process.env.BABEL_ENV": "coverage"
           }
-        ]
+        ],
+        "rewire"
       ]
     }
   }

@@ -167,8 +167,8 @@ module IssuableCollections
                                   [:project, :author, :assignees, :labels, :milestone, project: :namespace]
                                 when 'MergeRequest'
                                   [
-                                    :source_project, :target_project, :author, :assignee, :labels, :milestone,
-                                    head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits
+                                    :target_project, :author, :assignee, :labels, :milestone,
+                                    source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits
                                   ]
                                 end
   end

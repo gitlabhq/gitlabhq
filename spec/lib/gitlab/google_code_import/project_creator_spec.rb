@@ -9,7 +9,7 @@ describe Gitlab::GoogleCodeImport::ProjectCreator do
       "repositoryUrls" => ["https://vim.googlecode.com/git/"]
     )
   end
-  let(:namespace) { create(:group, owner: user) }
+  let(:namespace) { create(:group) }
 
   before do
     namespace.add_owner(user)

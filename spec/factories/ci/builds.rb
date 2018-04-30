@@ -62,6 +62,7 @@ FactoryBot.define do
     end
 
     trait :pending do
+      queued_at 'Di 29. Okt 09:50:59 CET 2013'
       status 'pending'
     end
 
@@ -241,6 +242,11 @@ FactoryBot.define do
     trait :script_failure do
       failed
       failure_reason 1
+    end
+
+    trait :api_failure do
+      failed
+      failure_reason 2
     end
   end
 end

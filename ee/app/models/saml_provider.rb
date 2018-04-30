@@ -21,6 +21,10 @@ class SamlProvider < ActiveRecord::Base
     NAME_IDENTIFIER_FORMAT
   end
 
+  def certificate_fingerprint=(value)
+    super(strip_left_to_right_chars(value))
+  end
+
   def settings
     {
       assertion_consumer_service_url: assertion_consumer_service_url,
@@ -43,5 +47,9 @@ class SamlProvider < ActiveRecord::Base
 
   def host
     @host ||= Gitlab.config.gitlab.url
+  end
+
+  def strip_left_to_right_chars(input)
+    input&.gsub(/[\u200E]/, '')
   end
 end

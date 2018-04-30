@@ -59,6 +59,7 @@ class License < ActiveRecord::Base
     commit_committer_check
     external_authorization_service
     ci_cd_projects
+    group_burndown_charts
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[

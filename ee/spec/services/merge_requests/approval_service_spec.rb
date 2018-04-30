@@ -71,9 +71,8 @@ describe MergeRequests::ApprovalService do
 
         before do
           expect(merge_request).to receive(:approvals_left).and_return(0)
-          allow(service).to receive(:notification_service).and_return(notification_service)
           allow(service).to receive(:execute_hooks)
-          allow(notification_service).to receive(:approve_mr)
+          allow(service).to receive(:notification_service).and_return(notification_service)
         end
 
         it 'fires a webhook' do
@@ -83,7 +82,7 @@ describe MergeRequests::ApprovalService do
         end
 
         it 'sends an email' do
-          expect(notification_service).to receive(:approve_mr).with(merge_request, user)
+          expect(notification_service).to receive_message_chain(:async, :approve_mr).with(merge_request, user)
 
           service.execute(merge_request)
         end

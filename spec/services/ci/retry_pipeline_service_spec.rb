@@ -235,6 +235,8 @@ describe Ci::RetryPipelineService, '#execute' do
   context 'when user is not allowed to trigger manual action' do
     before do
       project.add_developer(user)
+      create(:protected_branch, :masters_can_push,
+             name: pipeline.ref, project: project)
     end
 
     context 'when there is a failed manual action present' do

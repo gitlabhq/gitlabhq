@@ -1,4 +1,4 @@
 - default_label = s_('RepositorySettingsAccessLevel|Select')
 
 %div{ class: "#{input_basic_name}-container" }
-  = dropdown_tag(default_label, options: { toggle_class: "#{toggle_class} js-multiselect", dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true, data: { default_label: default_label, preselected_items: access_levels_data(access_levels) } })
+  = dropdown_tag(default_label, options: { toggle_class: "#{toggle_class} js-multiselect", disabled: local_assigns[:disabled], dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true, data: { default_label: default_label, preselected_items: access_levels_data(access_levels) } })

@@ -4,7 +4,7 @@
 
 - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
 .block.weight
-  .sidebar-collapsed-icon
+  .sidebar-collapsed-icon.has-tooltip{ title: milestone_weight_tooltip_text(total_weight), data: { container: 'body', placement: 'left' } }
     = icon('balance-scale')
     %span
       - unless total_weight.zero?

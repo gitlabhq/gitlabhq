@@ -1,5 +1,0 @@
----
-title: Avoid wrong closing dates being caught by the query on Burndown charts
-merge_request:
-author:
-type: fixed

@@ -36,6 +36,12 @@ describe Geo::RepositoryVerification::Secondary::SingleWorker, :postgresql, :cle
       expect { subject.perform(-1) }.not_to raise_error
     end
 
+    it 'does not raise an error when project could not be found' do
+      registry.update_column(:project_id, -1)
+
+      expect { subject.perform(registry.id) }.not_to raise_error
+    end
+
     it 'runs verification for both repository and wiki' do
       create(:repository_state, project: project, repository_verification_checksum: 'my_checksum', wiki_verification_checksum: 'my_checksum')
 

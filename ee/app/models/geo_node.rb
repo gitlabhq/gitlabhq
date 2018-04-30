@@ -105,6 +105,13 @@ class GeoNode < ActiveRecord::Base
     geo_api_url('status')
   end
 
+  def snapshot_url(repository)
+    url = api_url("projects/#{repository.project.id}/snapshot")
+    url += "?wiki=1" if repository.is_wiki
+
+    url
+  end
+
   def oauth_callback_url
     Gitlab::Routing.url_helpers.oauth_geo_callback_url(url_helper_args)
   end
@@ -185,7 +192,11 @@ class GeoNode < ActiveRecord::Base
   private
 
   def geo_api_url(suffix)
-    URI.join(uri, "#{uri.path}", "api/#{API::API.version}/geo/#{suffix}").to_s
+    api_url("geo/#{suffix}")
+  end
+
+  def api_url(suffix)
+    URI.join(uri, "#{uri.path}", "api/#{API::API.version}/#{suffix}").to_s
   end
 
   def ensure_access_keys!

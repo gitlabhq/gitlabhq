@@ -382,6 +382,32 @@ data before running `pg_basebackup`.
 
 The replication process is now over.
 
+## PGBouncer support (optional)
+
+1. First, enter the PostgreSQL console as an admin user.
+
+2. Then create the read-only user:
+
+    ```sql
+    -- NOTE: Use the password defined earlier
+    CREATE USER gitlab_geo_fdw WITH password 'mypassword';
+    GRANT CONNECT ON DATABASE gitlabhq_production to gitlab_geo_fdw;
+    GRANT USAGE ON SCHEMA public TO gitlab_geo_fdw;
+    GRANT SELECT ON ALL TABLES IN SCHEMA public TO gitlab_geo_fdw;
+    GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO gitlab_geo_fdw;
+
+    -- Tables created by "gitlab" should be made read-only for "gitlab_geo_fdw"
+    -- automatically.
+    ALTER DEFAULT PRIVILEGES FOR USER gitlab IN SCHEMA public GRANT SELECT ON TABLES TO gitlab_geo_fdw;
+    ALTER DEFAULT PRIVILEGES FOR USER gitlab IN SCHEMA public GRANT SELECT ON SEQUENCES TO gitlab_geo_fdw;
+    ```
+
+3. Enter the PostgreSQL console on the secondary tracking database and change the user mapping to this new user:
+
+    ```
+    ALTER USER MAPPING FOR gitlab_geo SERVER gitlab_secondary OPTIONS (SET user 'gitlab_geo_fdw')
+    ```
+
 ## MySQL replication
 
 MySQL replication is not supported for Geo.

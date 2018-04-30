@@ -18,6 +18,7 @@
     "sandbox": false,
     "setFixtures": false,
     "setStyleFixtures": false,
+    "spyOnDependency": false,
     "spyOnEvent": false,
     "ClassSpecHelper": false
   },

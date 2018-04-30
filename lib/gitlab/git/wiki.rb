@@ -290,7 +290,7 @@ module Gitlab
       end
 
       def committer_with_hooks(commit_details)
-        Gitlab::Wiki::CommitterWithHooks.new(self, commit_details.to_h)
+        Gitlab::Git::CommitterWithHooks.new(self, commit_details.to_h)
       end
 
       def with_committer_with_hooks(commit_details, &block)

@@ -34,7 +34,7 @@
         = s_('Branches|Cant find HEAD commit for this branch')
 
   - if branch.name != @repository.root_ref
-    .divergence-graph{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
+    .divergence-graph.hidden-xs{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
       default_branch: @repository.root_ref,
       number_commits_ahead: diverging_count_label(number_commits_ahead) } }
       .graph-side

@@ -15,8 +15,7 @@ module QA
         end
       end
 
-      def location=(address)
-        @location = address
+      def uri=(address)
         @uri = URI(address)
       end
 
@@ -41,6 +40,10 @@ module QA
 
       def checkout(branch_name)
         `git checkout "#{branch_name}"`
+      end
+
+      def checkout_new_branch(branch_name)
+        `git checkout -b "#{branch_name}"`
       end
 
       def shallow_clone

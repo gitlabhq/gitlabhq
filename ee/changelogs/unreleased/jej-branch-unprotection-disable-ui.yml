@@ -1,0 +1,5 @@
+---
+title: Unprotect and update disabled in UI when prevented by branch unprotect rules
+merge_request: 5296
+author:
+type: changed

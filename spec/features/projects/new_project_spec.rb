@@ -64,7 +64,7 @@ feature 'New project' do
     end
 
     context 'with group namespace' do
-      let(:group) { create(:group, :private, owner: user) }
+      let(:group) { create(:group, :private) }
 
       before do
         group.add_owner(user)
@@ -81,7 +81,7 @@ feature 'New project' do
     end
 
     context 'with subgroup namespace' do
-      let(:group) { create(:group, owner: user) }
+      let(:group) { create(:group) }
       let(:subgroup) { create(:group, parent: group) }
 
       before do

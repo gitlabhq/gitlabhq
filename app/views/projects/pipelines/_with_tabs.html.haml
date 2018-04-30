@@ -34,7 +34,7 @@
         %ul
           - pipeline.yaml_errors.split(",").each do |error|
             %li= error
-        You can also test your .gitlab-ci.yml in the #{link_to "Lint", ci_lint_path}
+        You can also test your .gitlab-ci.yml in the #{link_to "Lint", project_ci_lint_path(@project)}
 
     - if pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
       .bs-callout.bs-callout-warning

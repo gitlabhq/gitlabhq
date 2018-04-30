@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import addGitlabSlackApplication from 'ee/add_gitlab_slack_application/components/add_gitlab_slack_application.vue';
 import GitlabSlackService from 'ee/add_gitlab_slack_application/services/gitlab_slack_service';
-import * as UrlUtility from '~/lib/utils/url_utility';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('AddGitlabSlackApplication', () => {
@@ -113,7 +112,7 @@ describe('AddGitlabSlackApplication', () => {
     const addToSlackPromise = Promise.resolve({ data: { add_to_slack_link: redirectLink } });
 
     spyOn(GitlabSlackService, 'addToSlack').and.returnValue(addToSlackPromise);
-    spyOn(UrlUtility, 'redirectTo');
+    const redirectTo = spyOnDependency(addGitlabSlackApplication, 'redirectTo');
 
     vm.popupOpen = true;
 
@@ -121,7 +120,7 @@ describe('AddGitlabSlackApplication', () => {
       .then(() => vm.$el.querySelector('.js-add-button').click())
       .then(vm.$nextTick)
       .then(addToSlackPromise)
-      .then(() => expect(UrlUtility.redirectTo).toHaveBeenCalledWith(redirectLink))
+      .then(() => expect(redirectTo).toHaveBeenCalledWith(redirectLink))
       .then(done)
       .catch(done.fail);
   });

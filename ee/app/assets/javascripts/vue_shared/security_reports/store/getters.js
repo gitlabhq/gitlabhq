@@ -192,3 +192,6 @@ export const anyReportHasIssues = state =>
   state.dast.newIssues.length > 0 ||
   state.sastContainer.newIssues.length > 0 ||
   state.dependencyScanning.newIssues.length > 0;
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

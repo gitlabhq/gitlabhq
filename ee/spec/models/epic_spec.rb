@@ -20,7 +20,12 @@ describe Epic do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(NonatomicInternalId) }
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:epic) }
+      let(:scope_attrs) { { namespace: instance.group } }
+      let(:usage) { :epics }
+    end
   end
 
   describe '.order_start_or_end_date_asc' do
@@ -33,6 +38,48 @@ describe Epic do
       epic4 = create(:epic, group: group)
 
       expect(described_class.order_start_or_end_date_asc).to eq([epic4, epic1, epic3, epic2])
+    end
+  end
+
+  describe '#upcoming?' do
+    it 'returns true when start_date is in the future' do
+      epic = build(:epic, start_date: 1.month.from_now)
+
+      expect(epic.upcoming?).to be_truthy
+    end
+
+    it 'returns false when start_date is in the past' do
+      epic = build(:epic, start_date: Date.today.prev_year)
+
+      expect(epic.upcoming?).to be_falsey
+    end
+  end
+
+  describe '#expired?' do
+    it 'returns true when due_date is in the past' do
+      epic = build(:epic, end_date: Date.today.prev_year)
+
+      expect(epic.expired?).to be_truthy
+    end
+
+    it 'returns false when due_date is in the future' do
+      epic = build(:epic, end_date: Date.today.next_year)
+
+      expect(epic.expired?).to be_falsey
+    end
+  end
+
+  describe '#elapsed_days' do
+    it 'returns 0 if there is no start_date' do
+      epic = build(:epic)
+
+      expect(epic.elapsed_days).to eq(0)
+    end
+
+    it 'returns elapsed_days when start_date is present' do
+      epic = build(:epic, start_date: 7.days.ago)
+
+      expect(epic.elapsed_days).to eq(7)
     end
   end
 

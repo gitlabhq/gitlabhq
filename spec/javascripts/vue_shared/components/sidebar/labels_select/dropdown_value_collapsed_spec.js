@@ -29,7 +29,7 @@ describe('DropdownValueCollapsedComponent', () => {
     describe('labelsList', () => {
       it('returns empty text when `labels` prop is empty array', () => {
         const vmEmptyLabels = createComponent([]);
-        expect(vmEmptyLabels.labelsList).toBe('');
+        expect(vmEmptyLabels.labelsList).toBe('Labels');
         vmEmptyLabels.$destroy();
       });
 
@@ -52,6 +52,16 @@ describe('DropdownValueCollapsedComponent', () => {
 
       it('returns first label name when `labels` prop has only one item present', () => {
         expect(vm.labelsList).toBe('Foo Label');
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('handleClick', () => {
+      it('emits onValueClick event on component', () => {
+        spyOn(vm, '$emit');
+        vm.handleClick();
+        expect(vm.$emit).toHaveBeenCalledWith('onValueClick');
       });
     });
   });

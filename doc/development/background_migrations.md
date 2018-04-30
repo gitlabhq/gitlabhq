@@ -24,7 +24,7 @@ Some examples where background migrations can be useful:
 
 * Migrating events from one table to multiple separate tables.
 * Populating one column based on JSON stored in another column.
-* Migrating data that depends on the output of exernal services (e.g. an API).
+* Migrating data that depends on the output of external services (e.g. an API).
 
 ## Isolation
 
@@ -46,7 +46,7 @@ See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/
 for more details.
 
 Make sure that in case that your migration job is going to be retried data
-integrity is guarateed.
+integrity is guaranteed.
 
 ## How It Works
 
@@ -133,10 +133,18 @@ roughly be as follows:
 1. Release B:
   1. Deploy code so that the application starts using the new column and stops
      scheduling jobs for newly created data.
-  1. In a post-deployment migration you'll need to ensure no jobs remain. To do
-     so you can use `Gitlab::BackgroundMigration.steal` to process any remaining
-     jobs before continuing.
+  1. In a post-deployment migration you'll need to ensure no jobs remain.
+     1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
+        jobs in Sidekiq.
+     1. Reschedule the migration to be run directly (i.e. not through Sidekiq)
+        on any rows that weren't migrated by Sidekiq. This can happen if, for
+        instance, Sidekiq received a SIGKILL, or if a particular batch failed
+        enough times to be marked as dead.
   1. Remove the old column.
+
+This may also require a bump to the [import/export version][import-export], if
+importing a project from a prior version of GitLab requires the data to be in
+the new format.
 
 ## Example
 
@@ -296,3 +304,4 @@ for more details.
 [migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
 [issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351
 [reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-ce/issues/36791
+[import-export]: ../user/project/settings/import_export.md

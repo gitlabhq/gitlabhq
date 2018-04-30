@@ -1,6 +1,6 @@
 #js-pipeline-header-vue.pipeline-header-container
 - sast_artifact = @pipeline.sast_artifact
-- dependecy_artifact = @pipeline.dependency_scanning_artifact
+- dependency_artifact = @pipeline.dependency_scanning_artifact
 
 - if @commit.present?
   .commit-box
@@ -36,5 +36,5 @@
         = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
       = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
 
-    - if sast_artifact || dependecy_artifact
+    - if sast_artifact || dependency_artifact
       .js-sast-summary

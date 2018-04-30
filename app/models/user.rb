@@ -969,10 +969,13 @@ class User < ActiveRecord::Base
   end
 
   def manageable_groups
-    union = Gitlab::SQL::Union.new([owned_groups.select(:id),
-                                    masters_groups.select(:id)])
-    arel_union = Arel::Nodes::SqlLiteral.new(union.to_sql)
-    owned_and_master_groups = Group.where(Group.arel_table[:id].in(arel_union))
+    union_sql = Gitlab::SQL::Union.new([owned_groups.select(:id), masters_groups.select(:id)]).to_sql
+
+    # Update this line to not use raw SQL when migrated to Rails 5.2.
+    # Either ActiveRecord or Arel constructions are fine.
+    # This was replaced with the raw SQL construction because of bugs in the arel gem.
+    # Bugs were fixed in arel 9.0.0 (Rails 5.2).
+    owned_and_master_groups = Group.where("namespaces.id IN (#{union_sql})") # rubocop:disable GitlabSecurity/SqlInjection
 
     Gitlab::GroupHierarchy.new(owned_and_master_groups).base_and_descendants
   end

@@ -24,7 +24,7 @@ module Geo
         if use_legacy_queries?
           legacy_find_synced_wikis
         else
-          fdw_find_enabled_wikis
+          fdw_find_synced_wikis
         end
 
       relation.count
@@ -158,7 +158,7 @@ module Geo
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
-    def fdw_find_enabled_wikis
+    def fdw_find_synced_wikis
       Geo::ProjectRegistry.synced_wikis.where(fdw_enabled_wikis)
     end
 

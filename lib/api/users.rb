@@ -83,7 +83,7 @@ module API
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         unless current_user&.admin?
-          params.except!(:created_after, :created_before, :order_by, :sort)
+          params.except!(:created_after, :created_before, :order_by, :sort, :two_factor)
         end
 
         users = UsersFinder.new(current_user, params).execute

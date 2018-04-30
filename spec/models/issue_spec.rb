@@ -413,6 +413,48 @@ describe Issue do
     end
   end
 
+  describe '#suggested_branch_name' do
+    let(:repository) { double }
+
+    subject { build(:issue) }
+
+    before do
+      allow(subject.project).to receive(:repository).and_return(repository)
+    end
+
+    context '#to_branch_name does not exists' do
+      before do
+        allow(repository).to receive(:branch_exists?).and_return(false)
+      end
+
+      it 'returns #to_branch_name' do
+        expect(subject.suggested_branch_name).to eq(subject.to_branch_name)
+      end
+    end
+
+    context '#to_branch_name exists not ending with -index' do
+      before do
+        allow(repository).to receive(:branch_exists?).and_return(true)
+        allow(repository).to receive(:branch_exists?).with(/#{subject.to_branch_name}-\d/).and_return(false)
+      end
+
+      it 'returns #to_branch_name ending with -2' do
+        expect(subject.suggested_branch_name).to eq("#{subject.to_branch_name}-2")
+      end
+    end
+
+    context '#to_branch_name exists ending with -index' do
+      before do
+        allow(repository).to receive(:branch_exists?).and_return(true)
+        allow(repository).to receive(:branch_exists?).with("#{subject.to_branch_name}-3").and_return(false)
+      end
+
+      it 'returns #to_branch_name ending with max index + 1' do
+        expect(subject.suggested_branch_name).to eq("#{subject.to_branch_name}-3")
+      end
+    end
+  end
+
   describe '#has_related_branch?' do
     let(:issue) { create(:issue, title: "Blue Bell Knoll") }
     subject { issue.has_related_branch? }
@@ -460,6 +502,27 @@ describe Issue do
       issue = create(:issue, title: 'testing-issue', confidential: true)
       expect(issue.to_branch_name).to match /confidential-issue\z/
     end
+  end
+
+  describe '#can_be_worked_on?' do
+    let(:project) { build(:project) }
+    subject { build(:issue, :opened, project: project) }
+
+    context 'is closed' do
+      subject { build(:issue, :closed) }
+
+      it { is_expected.not_to be_can_be_worked_on }
+    end
+
+    context 'project is forked' do
+      before do
+        allow(project).to receive(:forked?).and_return(true)
+      end
+
+      it { is_expected.not_to be_can_be_worked_on }
+    end
+
+    it { is_expected.to be_can_be_worked_on }
   end
 
   describe '#participants' do

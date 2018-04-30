@@ -1,5 +1,0 @@
----
-title: Use singular in the diff stats if only one line has been changed
-merge_request: 17697
-author: Jan Beckmann
-type: fixed

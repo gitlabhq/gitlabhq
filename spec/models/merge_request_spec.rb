@@ -17,11 +17,17 @@ describe MergeRequest do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(NonatomicInternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:merge_request) }
+      let(:scope_attrs) { { project: instance.target_project } }
+      let(:usage) { :merge_requests }
+    end
   end
 
   describe 'validation' do

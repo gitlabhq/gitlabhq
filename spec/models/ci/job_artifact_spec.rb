@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::JobArtifact do
-  set(:artifact) { create(:ci_job_artifact, :archive) }
+  let(:artifact) { create(:ci_job_artifact, :archive) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
@@ -59,9 +59,31 @@ describe Ci::JobArtifact do
     end
   end
 
-  describe '#set_size' do
-    it 'sets the size' do
+  context 'creating the artifact' do
+    let(:project) { create(:project) }
+    let(:artifact) { create(:ci_job_artifact, :archive, project: project) }
+
+    it 'sets the size from the file size' do
       expect(artifact.size).to eq(106365)
+    end
+
+    it 'updates the project statistics' do
+      expect { artifact }
+        .to change { project.statistics.reload.build_artifacts_size }
+        .by(106365)
+    end
+  end
+
+  context 'updating the artifact file' do
+    it 'updates the artifact size' do
+      artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
+      expect(artifact.size).to eq(1062)
+    end
+
+    it 'updates the project statistics' do
+      expect { artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+        .to change { artifact.project.statistics.reload.build_artifacts_size }
+        .by(1062 - 106365)
     end
   end
 
@@ -116,6 +138,73 @@ describe Ci::JobArtifact do
       artifact.expire_in = '0'
 
       is_expected.to be_nil
+    end
+  end
+
+  context 'when destroying the artifact' do
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+    it 'updates the project statistics' do
+      artifact = build.job_artifacts.first
+
+      expect(ProjectStatistics)
+        .to receive(:increment_statistic)
+        .and_call_original
+
+      expect { artifact.destroy }
+        .to change { project.statistics.reload.build_artifacts_size }
+        .by(-106365)
+    end
+
+    context 'when it is destroyed from the project level' do
+      it 'does not update the project statistics' do
+        expect(ProjectStatistics)
+          .not_to receive(:increment_statistic)
+
+        project.update_attributes(pending_delete: true)
+        project.destroy!
+      end
+    end
+  end
+
+  describe 'file is being stored' do
+    subject { create(:ci_job_artifact, :archive) }
+
+    context 'when object has nil store' do
+      before do
+        subject.update_column(:file_store, nil)
+        subject.reload
+      end
+
+      it 'is stored locally' do
+        expect(subject.file_store).to be(nil)
+        expect(subject.file).to be_file_storage
+        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+      end
+    end
+
+    context 'when existing object has local store' do
+      it 'is stored locally' do
+        expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
+        expect(subject.file).to be_file_storage
+        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+      end
+    end
+
+    context 'when direct upload is enabled' do
+      before do
+        stub_artifacts_object_storage(direct_upload: true)
+      end
+
+      context 'when file is stored' do
+        it 'is stored remotely' do
+          expect(subject.file_store).to eq(ObjectStorage::Store::REMOTE)
+          expect(subject.file).not_to be_file_storage
+          expect(subject.file.object_store).to eq(ObjectStorage::Store::REMOTE)
+        end
+      end
     end
   end
 end

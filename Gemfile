@@ -51,7 +51,6 @@ gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
-gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -150,7 +149,7 @@ gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.6'
 gem 'asciidoctor-plantuml', '0.0.8'
-gem 'rouge', '~> 2.0'
+gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
@@ -295,7 +294,6 @@ gem 'batch-loader', '~> 1.2.1'
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
-gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
@@ -431,7 +429,7 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.97.0', require: 'gitaly'
-gem 'grpc', '~> 1.10.0'
+gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'

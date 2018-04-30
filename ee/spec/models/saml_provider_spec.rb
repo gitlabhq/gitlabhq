@@ -29,6 +29,10 @@ describe SamlProvider do
       expect(subject).not_to allow_value(invalid_characters).for(:certificate_fingerprint)
     end
 
+    it 'strips left-to-right marks from certificate_fingerprint' do
+      expect(subject).to allow_value("\u200E00 00 30 ED C2 85 E0 1D 6B 5E A3 30 10 A7 9A DD 14 2F 50 04‎").for(:certificate_fingerprint)
+    end
+
     it 'requires group to be top-level' do
       group = create(:group)
       nested_group = create(:group, :nested)

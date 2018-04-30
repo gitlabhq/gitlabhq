@@ -4,17 +4,18 @@
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar.milestone-sidebar
     .block.milestone-progress.issuable-sidebar-header
-      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+      %a.gutter-toggle.pull-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left' } }
         = sidebar_gutter_toggle_icon
-
-      .sidebar-collapsed-icon
-        %span== #{milestone.percent_complete(current_user)}%
-        = milestone_progress_bar(milestone)
       .title.hide-collapsed
         %strong.bold== #{milestone.percent_complete(current_user)}%
         %span.hide-collapsed
           complete
       .value.hide-collapsed
+        = milestone_progress_bar(milestone)
+
+    .block.milestone-progress.hide-expanded
+      .sidebar-collapsed-icon.has-tooltip{ title: milestone_progress_tooltip_text(milestone), data: { container: 'body', html: 1, placement: 'left' } }
+        %span== #{milestone.percent_complete(current_user)}%
         = milestone_progress_bar(milestone)
 
     .block.start_date.hide-collapsed
@@ -35,19 +36,25 @@
         %span.collapsed-milestone-date
           - if milestone.start_date && milestone.due_date
             - if milestone.start_date.year == milestone.due_date.year
-              .milestone-date= milestone.start_date.strftime('%b %-d')
+              .milestone-date.has-tooltip{ title: milestone_time_for(milestone.start_date, :start), data: { container: 'body', html: 1, placement: 'left' } }
+                = milestone.start_date.strftime('%b %-d')
             - else
-              .milestone-date= milestone.start_date.strftime('%b %-d %Y')
+              .milestone-date.has-tooltip{ title: milestone_time_for(milestone.start_date, :start), data: { container: 'body', html: 1, placement: 'left' } }
+                = milestone.start_date.strftime('%b %-d %Y')
             .date-separator -
-            .due_date= milestone.due_date.strftime('%b %-d %Y')
+            .due_date.has-tooltip{ title: milestone_time_for(milestone.due_date, :end), data: { container: 'body', html: 1, placement: 'left' } }
+              = milestone.due_date.strftime('%b %-d %Y')
           - elsif milestone.start_date
             From
-            .milestone-date= milestone.start_date.strftime('%b %-d %Y')
+            .milestone-date.has-tooltip{ title: milestone_time_for(milestone.start_date, :start), data: { container: 'body', html: 1, placement: 'left' } }
+              = milestone.start_date.strftime('%b %-d %Y')
           - elsif milestone.due_date
             Until
-            .milestone-date= milestone.due_date.strftime('%b %-d %Y')
+            .milestone-date.has-tooltip{ title: milestone_time_for(milestone.due_date, :end), data: { container: 'body', html: 1, placement: 'left' } }
+              = milestone.due_date.strftime('%b %-d %Y')
           - else
-            None
+            .has-tooltip{ title: milestone_time_for(milestone.start_date, :start), data: { container: 'body', html: 1, placement: 'left' } }
+              None
       .title.hide-collapsed
         Due date
         - if @project && can?(current_user, :admin_milestone, @project)
@@ -58,14 +65,14 @@
             %span.bold= milestone.due_date.to_s(:medium)
           - else
             %span.no-value No due date
-        - remaining_days = milestone_remaining_days(milestone)
+        - remaining_days = remaining_days_in_words(milestone)
         - if remaining_days.present?
           = surround '(', ')' do
             %span.remaining-days= remaining_days
 
     - if !project || can?(current_user, :read_issue, project)
       .block.issues
-        .sidebar-collapsed-icon
+        .sidebar-collapsed-icon.has-tooltip{ title: milestone_issues_tooltip_text(milestone), data: { container: 'body', html: 1, placement: 'left' } }
           %strong
             = custom_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
@@ -95,7 +102,7 @@
     = render 'shared/milestones/weight', milestone: milestone
 
     .block.merge-requests
-      .sidebar-collapsed-icon
+      .sidebar-collapsed-icon.has-tooltip{ title: milestone_merge_requests_tooltip_text(milestone), data: { container: 'body', html: 1, placement: 'left' } }
         %strong
           = custom_icon('mr_bold')
         %span= milestone.merge_requests.count

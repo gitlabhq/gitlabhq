@@ -12,14 +12,6 @@ describe('sidebarDatePicker', () => {
     });
   });
 
-  it('should emit toggleCollapse when collapsed toggle sidebar is clicked', () => {
-    const toggleCollapse = jasmine.createSpy();
-    vm.$on('toggleCollapse', toggleCollapse);
-
-    vm.$el.querySelector('.issuable-sidebar-header .gutter-toggle').click();
-    expect(toggleCollapse).toHaveBeenCalled();
-  });
-
   it('should render collapsed-calendar-icon', () => {
     expect(vm.$el.querySelector('.sidebar-collapsed-icon')).toBeDefined();
   });

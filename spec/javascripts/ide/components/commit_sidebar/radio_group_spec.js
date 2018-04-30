@@ -69,19 +69,6 @@ describe('IDE commit sidebar radio group', () => {
     });
   });
 
-  it('renders helpText tooltip', done => {
-    vm.helpText = 'help text';
-
-    Vue.nextTick(() => {
-      const help = vm.$el.querySelector('.help-block');
-
-      expect(help).not.toBeNull();
-      expect(help.getAttribute('data-original-title')).toBe('help text');
-
-      done();
-    });
-  });
-
   describe('with input', () => {
     beforeEach(done => {
       vm.$destroy();

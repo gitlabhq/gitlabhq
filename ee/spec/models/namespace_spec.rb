@@ -114,81 +114,11 @@ describe Namespace do
         allow(parent).to receive(:full_path).and_return(new_path)
 
         allow(gitlab_shell).to receive(:mv_namespace)
-          .with(project_legacy_storage.repository_storage_path, full_path_was, new_path)
+          .with(project_legacy_storage.repository_storage, full_path_was, new_path)
           .and_return(true)
 
         expect { parent.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(3)
       end
-    end
-  end
-
-  describe '#features' do
-    let(:plan_license) { :free_plan }
-    let(:group) { create(:group, plan: plan_license) }
-    let(:global_license) { create(:license) }
-
-    before do
-      allow(License).to receive(:current).and_return(global_license)
-      allow(global_license).to receive(:features).and_return([
-        :epics, # Gold only
-        :service_desk, # Silver and up
-        :audit_events, # Bronze and up
-        :geo, # Global feature, should not be checked at namespace level
-      ])
-    end
-
-    subject { group.features }
-
-    context 'when the namespace should be checked' do
-      before do
-        enable_namespace_license_check!
-      end
-
-      context 'when bronze' do
-        let(:plan_license) { :bronze_plan }
-
-        it 'filters for bronze features' do
-          is_expected.to contain_exactly(:audit_events, :geo)
-        end
-      end
-
-      context 'when silver' do
-        let(:plan_license) { :silver_plan }
-
-        it 'filters for silver features' do
-          is_expected.to contain_exactly(:service_desk, :audit_events, :geo)
-        end
-      end
-
-      context 'when gold' do
-        let(:plan_license) { :gold_plan }
-
-        it 'filters for gold features' do
-          is_expected.to contain_exactly(:epics, :service_desk, :audit_events, :geo)
-        end
-      end
-
-      context 'when free plan' do
-        let(:plan_license) { :free_plan }
-
-        it 'filters out paid features' do
-          is_expected.to contain_exactly(:geo)
-        end
-      end
-    end
-
-    context 'when namespace should not be checked' do
-      it 'includes all features in global license' do
-        is_expected.to contain_exactly(:epics, :service_desk, :audit_events, :geo)
-      end
-    end
-
-    context 'when there is no license' do
-      before do
-        allow(License).to receive(:current).and_return(nil)
-      end
-
-      it { is_expected.to be_empty }
     end
   end
 

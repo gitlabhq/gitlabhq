@@ -39,27 +39,15 @@ export default {
           groupName: this.groupName,
         },
       );
-      const missingFeatureWarn = sprintf(
-        s__(`Milestones|Group milestones are currently %{linkStart} missing features such as burndown charts. %{linkEnd}
-          You will not have these features once you've promoted a project milestone.
-          They will be available in future releases.`),
-        {
-          linkStart: `<a href="https://docs.gitlab.com/ee/user/project/milestones/"
-              target="_blank" rel="noopener noreferrer">`,
-          linkEnd: '</a>',
-        },
-        false,
-      );
       const finalWarning = s__('Milestones|This action cannot be reversed.');
 
       return sprintf(
         s__(
           `Milestones|<p>%{milestonePromotion}</p>
-          <p>%{missingFeatureWarn}</p>%{finalWarning}`,
+          %{finalWarning}`,
         ),
         {
           milestonePromotion,
-          missingFeatureWarn,
           finalWarning,
         },
         false,

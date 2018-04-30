@@ -4,6 +4,7 @@
   import $ from 'jquery';
   import { s__ } from '~/locale';
   import eventHub from '~/sidebar/event_hub';
+  import tooltip from '~/vue_shared/directives/tooltip';
   import icon from '~/vue_shared/components/icon.vue';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
@@ -11,6 +12,9 @@
     components: {
       icon,
       loadingIcon,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       fetching: {
@@ -80,6 +84,15 @@
       shouldShowWeight() {
         return !this.fetching && !this.shouldShowDropdown;
       },
+      tooltipTitle() {
+        let tooltipTitle = s__('Sidebar|Weight');
+
+        if (!this.checkIfNoValue(this.weight)) {
+          tooltipTitle += ` ${this.weight}`;
+        }
+
+        return tooltipTitle;
+      },
     },
     mounted() {
       $(this.$refs.weightDropdown).glDropdown({
@@ -144,6 +157,10 @@
   >
     <div
       class="sidebar-collapsed-icon js-weight-collapsed-block"
+      v-tooltip
+      data-container="body"
+      data-placement="left"
+      :title="tooltipTitle"
       @click="onCollapsedClick"
     >
       <icon

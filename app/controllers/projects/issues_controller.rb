@@ -138,11 +138,11 @@ class Projects::IssuesController < Projects::ApplicationController
   def can_create_branch
     can_create = current_user &&
       can?(current_user, :push_code, @project) &&
-      @issue.can_be_worked_on?(current_user)
+      @issue.can_be_worked_on?
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create, has_related_branch: @issue.has_related_branch? }
+        render json: { can_create_branch: can_create, suggested_branch_name: @issue.suggested_branch_name }
       end
     end
   end
@@ -181,7 +181,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def authorize_create_merge_request!
-    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
+    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?
   end
 
   def render_issue_json

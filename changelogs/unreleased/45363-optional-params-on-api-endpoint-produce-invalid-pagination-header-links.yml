@@ -1,6 +1,0 @@
----
-title: '[API] Fix URLs in the `Link` header for `GET /projects/:id/repository/contributors`
-  when no value is passed for `order_by` or `sort`'
-merge_request: 18393
-author:
-type: fixed
