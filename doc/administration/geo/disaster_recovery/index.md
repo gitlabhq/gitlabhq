@@ -218,7 +218,7 @@ and after that you also need two extra steps.
 
     ```
 
-    For more details about these settings you can read [Configure the primary server][configure-the-primary-server]
+    (For more details about these settings you can read [Configure the primary server][configure-the-primary-server])
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
