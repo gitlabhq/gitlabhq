@@ -1,23 +1,22 @@
 # GitLab Pages
 
-With GitLab Pages you can host your website at no cost.
-
-Your files live in a GitLab project's [repository](../repository/index.md),
-from which you can deploy [static websites](#explore-gitlab-pages).
-GitLab Pages supports all static site generators (SSGs).
+With GitLab Pages it's easy to publish your project website. GitLab Pages is a hosting service for static websites, at no additional cost.
 
 ## Getting Started
 
-Follow the steps below to get your website live. They shouldn't take more than
-5 minutes to complete:
+[Create a project from scratch](getting_started_part_two.md#create-a-project-from-scratch)
+to get you started quickly, or,
+alternatively, start from an existing project as follows:
 
-- 1. [Fork](../../../gitlab-basics/fork-project.md#how-to-fork-a-project) an [example project](https://gitlab.com/pages)
-- 2. Change a file to trigger a GitLab CI/CD pipeline
-- 3. Visit your project's **Settings > Pages** to see your **website link**, and click on it. Bam! Your website is live.
+- 1. [Fork](../../../gitlab-basics/fork-project.md#how-to-fork-a-project) an [example project](https://gitlab.com/pages):
+by forking a project, you create a copy of the codebase you're forking from to start from a template instead of starting from scratch.
+- 2. Change a file to trigger a GitLab CI/CD pipeline: GitLab CI/CD will build and deploy your site to GitLab Pages.
+- 3. Visit your project's **Settings > Pages** to see your **website link**, and click on it. Bam! Your website is live! :)
 
 _Further steps (optional):_
 
-- 4. Remove the [fork relationship](getting_started_part_two.md#fork-a-project-to-get-started-from) (_You don't need the relationship unless you intent to contribute back to the example project you forked from_).
+- 4. Remove the [fork relationship](getting_started_part_two.md#fork-a-project-to-get-started-from)
+(_You don't need the relationship unless you intent to contribute back to the example project you forked from_).
 - 5. Make it a [user/group website](getting_started_part_one.md#user-and-group-websites)
 
 **Watch a video with the steps above: https://www.youtube.com/watch?v=TWqh9MtT4Bg**
@@ -27,13 +26,22 @@ _Advanced options:_
 - [Use a custom domain](getting_started_part_three.md#adding-your-custom-domain-to-gitlab-pages)
 - Apply [SSL/TLS certification](getting_started_part_three.md#ssl-tls-certificates) to your custom domain
 
-## Explore GitLab Pages
+## How Does It Work?
 
 With GitLab Pages you can create [static websites](getting_started_part_one.md#what-you-need-to-know-before-getting-started)
-for your GitLab projects, groups, or user accounts. You can use any static
-website generator: Jekyll, Middleman, Hexo, Hugo, Pelican, you name it!
+for your GitLab projects, groups, or user accounts.
+
+It supports plain static content, such as HTML, and **all** [static site generators (SSGs)](https://about.gitlab.com/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/), such as Jekyll, Middleman, Hexo, Hugo, and Pelican.
+
 Connect as many custom domains as you like and bring your own TLS certificate
 to secure them.
+
+Your files live in a project [repository](../repository/index.md) on GitLab.
+[GitLab CI](../../../ci/README.md) picks up those files and makes them available at, typically,
+`http://<username>.gilab.io/<projectname>`. Please read through the docs on 
+[GitLab Pages domains](getting_started_part_one.md#gitlab-pages-domain) for more info.
+
+## Explore GitLab Pages
 
 Read the following tutorials to know more about:
 
