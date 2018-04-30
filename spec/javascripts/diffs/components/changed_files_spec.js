@@ -3,34 +3,10 @@ import { mountComponentWithStore } from 'spec/helpers';
 import store from '~/diffs/store';
 import ChangedFiles from '~/diffs/components/changed_files.vue';
 
-const vueMatchers = {
-  toContainText() {
-    return {
-      compare(vm, text) {
-        const result = {
-          pass: vm.$el.innerText.includes(text),
-        };
-        return result;
-      },
-    };
-  },
-  toRender() {
-    return {
-      compare(vm) {
-        const result = {
-          pass: vm.$el.nodeType !== Node.COMMENT_NODE,
-        };
-        return result;
-      },
-    };
-  },
-};
-
 describe('ChangedFiles', () => {
   const Component = Vue.extend(ChangedFiles);
 
   beforeEach(() => {
-    jasmine.addMatchers(vueMatchers);
     setFixtures(`
       <div id="dummy-element"></div>
       <div class="js-tabs-affix"></div>
