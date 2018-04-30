@@ -24,8 +24,8 @@ FactoryBot.define do
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
 
-      # we can't assign the delegated `#settings` attributes directly, as the
-      # `#settings` relation needs to be created first
+      # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
+      # `#ci_cd_settings` relation needs to be created first
       group_runners_enabled nil
     end
 
@@ -52,7 +52,7 @@ FactoryBot.define do
 
       project.group&.refresh_members_authorized_projects
 
-      # assign the delegated `#settings` attributes after create
+      # assign the delegated `#ci_cd_settings` attributes after create
       project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 

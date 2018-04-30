@@ -450,7 +450,6 @@ ActiveRecord::Schema.define(version: 20180425131009) do
 
   add_index "ci_runner_groups", ["group_id"], name: "index_ci_runner_groups_on_group_id", using: :btree
   add_index "ci_runner_groups", ["runner_id", "group_id"], name: "index_ci_runner_groups_on_runner_id_and_group_id", unique: true, using: :btree
-  add_index "ci_runner_groups", ["runner_id"], name: "index_ci_runner_groups_on_runner_id", using: :btree
 
   create_table "ci_runner_projects", force: :cascade do |t|
     t.integer "runner_id", null: false
@@ -1573,7 +1572,6 @@ ActiveRecord::Schema.define(version: 20180425131009) do
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
-    t.boolean "group_runners_enabled", default: true, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
