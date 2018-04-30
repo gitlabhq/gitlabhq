@@ -1304,10 +1304,13 @@ class Project < ActiveRecord::Base
     @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_group_of_project(self.id) : Ci::Runner.none
   end
 
+  def all_runners
+    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
+    Ci::Runner.from("(#{union.to_sql}) ci_runners")
+  end
+
   def any_runners?(&block)
-    union = Gitlab::SQL::Union.new([runners, shared_runners, group_runners])
-    runners = Ci::Runner.from("(#{union.to_sql}) ci_runners").active
-    runners.any?(&block)
+    all_runners.active.any?(&block)
   end
 
   def valid_runners_token?(token)
