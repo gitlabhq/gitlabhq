@@ -50,7 +50,7 @@
                 = sprite_icon('redo')
           .input-group
             = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
-            .input-group-btn
+            .input-group-append
               = clipboard_button(target: '#domain_verification', class: 'btn-default d-none d-sm-block')
           %p.form-text.text-muted
             - help_link = help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
