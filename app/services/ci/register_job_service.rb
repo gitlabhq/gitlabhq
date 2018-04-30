@@ -90,7 +90,7 @@ module Ci
 
     def builds_for_group_runner
       hierarchy_groups = Gitlab::GroupHierarchy.new(runner.groups).base_and_descendants
-      projects = Project.where(namespace_id: hierarchy_groups).without_deleted.with_builds_enabled
+      projects = Project.where(namespace_id: hierarchy_groups)
       new_builds.where(project: projects.without_deleted.with_builds_enabled).order('created_at ASC')
     end
 
