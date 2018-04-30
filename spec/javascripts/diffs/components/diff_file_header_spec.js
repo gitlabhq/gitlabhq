@@ -289,13 +289,23 @@ describe('diff_file_header', () => {
     describe('file paths', () => {
       const filePaths = () => vm.$el.querySelectorAll('.file-title-name');
 
-      it('displays the path of a deleted/added file', () => {
+      it('displays the path of a added file', () => {
         props.diffFile.renamedFile = false;
 
         vm = mountComponent(Component, props);
 
         expect(filePaths()).toHaveLength(1);
         expect(filePaths()[0]).toHaveText(props.diffFile.filePath);
+      });
+
+      it('displays path for deleted file', () => {
+        props.diffFile.renamedFile = false;
+        props.diffFile.deletedFile = true;
+
+        vm = mountComponent(Component, props);
+
+        expect(filePaths()).toHaveLength(1);
+        expect(filePaths()[0]).toHaveText(`${props.diffFile.filePath} deleted`);
       });
 
       it('displays old and new path if the file was renamed', () => {

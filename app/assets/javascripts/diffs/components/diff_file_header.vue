@@ -6,7 +6,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import EditButton from './edit_button.vue';
 
 export default {
@@ -67,6 +67,9 @@ export default {
     filePath() {
       if (this.diffFile.submodule) {
         return `${this.diffFile.filePath} @ ${truncateSha(this.diffFile.blob.id)}`;
+      }
+      if (this.diffFile.deletedFile) {
+        return sprintf(__('%{filePath} deleted'), { filePath: this.diffFile.filePath });
       }
 
       return this.diffFile.filePath;
@@ -179,9 +182,6 @@ export default {
           data-container="body"
         >
           {{ filePath }}
-          <span v-if="diffFile.deletedFile">
-            deleted
-          </span>
         </strong>
       </component>
 
