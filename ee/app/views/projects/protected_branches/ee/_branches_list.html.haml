@@ -1,4 +1,4 @@
 - can_admin_project = can?(current_user, :admin_project, @project)
 
 = render layout: 'projects/protected_branches/shared/branches_list', locals: { can_admin_project: can_admin_project } do
-  = render partial: 'projects/protected_branches/ee/protected_branch', collection: @protected_branches, locals: { can_admin_project: can_admin_project}
+  = render partial: 'projects/protected_branches/ee/protected_branch', collection: @protected_branches

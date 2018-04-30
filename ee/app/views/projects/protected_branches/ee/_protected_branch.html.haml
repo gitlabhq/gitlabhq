@@ -1,2 +1,4 @@
-= render layout: 'projects/protected_branches/shared/protected_branch', locals: { protected_branch: protected_branch } do
+- can_unprotect = can?(current_user, :destroy_protected_branch, protected_branch)
+
+= render layout: 'projects/protected_branches/shared/protected_branch', locals: { protected_branch: protected_branch, disabled: !can_unprotect } do
   = render partial: 'projects/protected_branches/ee/protected_branch_access_summary', locals: { protected_branch: protected_branch }
