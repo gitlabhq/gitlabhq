@@ -24,7 +24,7 @@ module Ci
     ##
     # Data is memoized for optimizing #size and #end_offset
     def data
-      @data ||= get_data
+      @data ||= get_data.to_s
     end
 
     def truncate(offset = 0)
@@ -32,11 +32,10 @@ module Ci
     end
 
     def append(new_data, offset)
-      current_data = self.data.to_s
-      raise ArgumentError, 'Offset is out of bound' if offset > current_data.bytesize || offset < 0
-      raise ArgumentError, 'Outside of chunk size' if CHUNK_SIZE < offset + new_data.bytesize
+      raise ArgumentError, 'Offset is out of range' if offset > data.bytesize || offset < 0
+      raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      set_data(current_data.byteslice(0, offset) + new_data)
+      set_data(data.byteslice(0, offset) + new_data)
     end
 
     def size
