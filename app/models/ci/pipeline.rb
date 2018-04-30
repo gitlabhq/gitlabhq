@@ -545,6 +545,13 @@ module Ci
       Gitlab.rails5? ? config_source.nil? : super
     end
 
+    ###
+    # AtomicInternalId forces to use :iid for routes as default
+    # However, pipeline pages are still using :id for each route
+    def to_param
+      id.to_s
+    end
+
     private
 
     def ci_yaml_from_repo

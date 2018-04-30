@@ -35,6 +35,15 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe 'modules' do
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:ci_pipeline) }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :ci_pipelines }
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
@@ -173,7 +182,7 @@ describe Ci::Pipeline, :mailer do
     it 'includes all predefined variables in a valid order' do
       keys = subject.map { |variable| variable[:key] }
 
-      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
+      expect(keys).to eq %w[CI_PIPELINE_ID CI_PIPELINE_IID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
     end
   end
 
