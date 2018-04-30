@@ -10,15 +10,12 @@ module EE
 
     prepended do
       include Elastic::ProjectsSearch
-      prepend ImportStatusStateMachine
       include EE::DeploymentPlatform
       include EachBatch
 
       before_validation :mark_remote_mirrors_for_removal
 
       before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.mirror_available }
-      after_save :create_mirror_data, if: ->(project) { project.mirror? && project.mirror_changed? }
-      after_save :destroy_mirror_data, if: ->(project) { !project.mirror? && project.mirror_changed? }
 
       after_update :remove_mirror_repository_reference,
         if: ->(project) { project.mirror? && project.import_url_updated? }
@@ -26,7 +23,6 @@ module EE
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
       has_one :repository_state, class_name: 'ProjectRepositoryState', inverse_of: :project
-      has_one :mirror_data, autosave: true, class_name: 'ProjectMirrorData'
       has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }
       has_one :index_status
       has_one :jenkins_service
@@ -47,10 +43,14 @@ module EE
 
       scope :mirror, -> { where(mirror: true) }
 
+      scope :inner_joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
+
       scope :mirrors_to_sync, ->(freeze_at) do
-        mirror.joins(:mirror_data).without_import_status(:scheduled, :started)
-          .where("next_execution_timestamp <= ?", freeze_at)
-          .where("project_mirror_data.retry_count <= ?", ::Gitlab::Mirror::MAX_RETRY)
+        mirror
+          .inner_joins_import_state
+          .where.not(import_state: { status: [:scheduled, :started] })
+          .where("import_state.next_execution_timestamp <= ?", freeze_at)
+          .where("import_state.retry_count <= ?", ::Gitlab::Mirror::MAX_RETRY)
       end
 
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
@@ -119,19 +119,56 @@ module EE
     def mirror_waiting_duration
       return unless mirror?
 
-      (mirror_data.last_update_started_at.to_i -
-        mirror_data.last_update_scheduled_at.to_i).seconds
+      (import_state.last_update_started_at.to_i -
+        import_state.last_update_scheduled_at.to_i).seconds
     end
 
     def mirror_update_duration
       return unless mirror?
 
       (mirror_last_update_at.to_i -
-        mirror_data.last_update_started_at.to_i).seconds
+        import_state.last_update_started_at.to_i).seconds
     end
 
     def mirror_with_content?
       mirror? && !empty_repo?
+    end
+
+    override :ensure_import_state
+    def ensure_import_state(param)
+      return unless self[param] && import_state.nil?
+
+      create_import_state(status: self[:import_status],
+                          jid: self[:import_jid],
+                          last_error: self[:import_error],
+                          last_update_at: self[:mirror_last_update_at],
+                          last_successful_update_at: self[:mirror_last_successful_update_at])
+
+      update(import_status: nil)
+    end
+
+    def mirror_last_update_at=(new_value)
+      return super unless import_state
+
+      import_state.last_update_at = new_value
+    end
+
+    def mirror_last_update_at
+      ensure_import_state(:mirror_last_update_at)
+
+      import_state&.last_update_at
+    end
+
+    def mirror_last_successful_update_at=(new_value)
+      return super unless import_state
+
+      import_state.last_successful_update_at = new_value
+    end
+
+    def mirror_last_successful_update_at
+      ensure_import_state(:mirror_last_successful_update_at)
+
+      import_state&.last_successful_update_at
     end
 
     override :import_in_progress?
@@ -145,7 +182,7 @@ module EE
       return false if mirror_hard_failed?
       return false if updating_mirror?
 
-      self.mirror_data.next_execution_timestamp <= Time.now
+      self.import_state.next_execution_timestamp <= Time.now
     end
 
     def updating_mirror?
@@ -175,7 +212,7 @@ module EE
     end
 
     def mirror_hard_failed?
-      self.mirror_data.retry_limit_exceeded?
+      self.import_state.retry_limit_exceeded?
     end
 
     def has_remote_mirror?
@@ -259,12 +296,12 @@ module EE
     def force_import_job!
       return if mirror_about_to_update? || updating_mirror?
 
-      mirror_data = self.mirror_data
+      import_state = self.import_state
 
-      mirror_data.set_next_execution_to_now
-      mirror_data.reset_retry_count if mirror_data.retry_limit_exceeded?
+      import_state.set_next_execution_to_now
+      import_state.reset_retry_count if import_state.retry_limit_exceeded?
 
-      mirror_data.save!
+      import_state.save!
 
       UpdateAllMirrorsWorker.perform_async
     end
@@ -530,10 +567,6 @@ module EE
       else
         globally_available
       end
-    end
-
-    def destroy_mirror_data
-      mirror_data.destroy
     end
 
     def validate_board_limit(board)

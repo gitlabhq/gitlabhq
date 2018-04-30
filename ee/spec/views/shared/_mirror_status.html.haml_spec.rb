@@ -52,7 +52,7 @@ describe 'shared/_mirror_status.html.haml' do
 
     context 'with a hard failed mirror' do
       it 'renders hard failed message' do
-        @project.mirror_data.retry_count = Gitlab::Mirror::MAX_RETRY + 1
+        @project.import_state.retry_count = Gitlab::Mirror::MAX_RETRY + 1
 
         render 'shared/mirror_status', raw_message: true
 

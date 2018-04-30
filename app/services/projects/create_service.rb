@@ -144,7 +144,7 @@ module Projects
 
       if @project
         @project.errors.add(:base, message)
-        @project.mark_import_as_failed(message) if @project.import?
+        @project.mark_import_as_failed(message) if @project.persisted? && @project.import?
       end
 
       @project

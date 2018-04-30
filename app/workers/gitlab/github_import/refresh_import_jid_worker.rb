@@ -31,7 +31,8 @@ module Gitlab
       end
 
       def find_project(id)
-        Project.select(:import_jid).import_started.find_by(id: id)
+        # TODO: select only import_jid
+        Project.import_started.find_by(id: id)
       end
     end
   end
