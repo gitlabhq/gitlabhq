@@ -332,25 +332,20 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe 'deletes data in redis after chunk record destroyed' do
+  describe 'deletes data in redis after a parent record destroyed' do
     let(:project) { create(:project) }
 
     before do
       pipeline = create(:ci_pipeline, project: project)
-      @build_ids = []
-      @build_ids << create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project).id
-      @build_ids << create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project).id
-      @build_ids << create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project).id
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
     end
 
     shared_examples_for 'deletes all build_trace_chunk and data in redis' do
       it do
-        @build_ids.each do |build_id|
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.scan_each(match: "gitlab:ci:trace:#{build_id}:chunks:?") do |key|
-              expect(redis.exists(key)).to be_truthy
-            end
-          end
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis.scan_each(match: "gitlab:ci:trace:?:chunks:?").to_a.count).to eq(3)
         end
 
         expect(described_class.count).to eq(3)
@@ -359,12 +354,8 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
         expect(described_class.count).to eq(0)
 
-        @build_ids.each do |build_id|
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.scan_each(match: "gitlab:ci:trace:#{build_id}:chunks:?") do |key|
-              expect(redis.exists(key)).to be_falsey
-            end
-          end
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis.scan_each(match: "gitlab:ci:trace:?:chunks:?").to_a.count).to eq(0)
         end
       end
     end
