@@ -93,7 +93,7 @@ feature 'Admin Appearance' do
     attach_file(:appearance_favicon, Rails.root.join('spec', 'fixtures', 'sanitized.svg'))
     click_button 'Save'
 
-    expect(page).to have_content 'Favicon You are not allowed to upload "svg" files, allowed types: png, jpg, jpeg, gif, bmp, tiff, ico'
+    expect(page).to have_content 'Favicon You are not allowed to upload "svg" files, allowed types: png, ico'
   end
 
   def expect_custom_sign_in_appearance(appearance)
