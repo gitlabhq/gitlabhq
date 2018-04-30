@@ -36,6 +36,8 @@ module Gitlab
         private
 
         def decorate_diff!(diff)
+          return diff if diff.is_a?(File)
+
           Gitlab::Diff::File.new(diff, repository: project.repository, diff_refs: diff_refs, fallback_diff_refs: fallback_diff_refs)
         end
       end
