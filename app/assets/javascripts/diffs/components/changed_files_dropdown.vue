@@ -31,7 +31,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInlineView', 'isParallelView']),
     sumAddedLines() {
       return this.sumValues('addedLines');
     },
@@ -56,10 +55,7 @@ export default {
       return __('Show whitespace changes');
     },
     toggleWhitespacePath() {
-      if (this.whitespaceVisible) {
-        return mergeUrlParams({ w: 1 }, window.location.href);
-      }
-      return mergeUrlParams({ w: 0 }, window.location.href);
+      return mergeUrlParams({ w: Number(this.whitespaceVisible) }, window.location.href);
     },
   },
   mounted() {
@@ -70,7 +66,6 @@ export default {
     document.removeEventListener('scroll', this.throttledHandleScroll);
   },
   methods: {
-    ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
     pluralize,
     handleScroll() {
       if (!this.$refs.stickyBar) return;
@@ -122,7 +117,7 @@ export default {
   <span>
     Showing
     <button
-      class="diff-stats-summary-toggler js-diff-stats-dropdown"
+      class="diff-stats-summary-toggler"
       data-toggle="dropdown"
       type="button"
       aria-expanded="false"

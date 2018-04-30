@@ -145,14 +145,14 @@ export default {
         aria-hidden="true"
         class="diff-toggle-caret"
       />
-      <component
-        ref="titleWrapper"
-        :is="titleTag"
+      <a
+        ref="titleWrapper""
         :href="titleLink"
       >
         <i
           class="fa fa-fw"
           :class="`fa-${icon}`"
+          aria-hidden="true"
         ></i>
         <span v-if="diffFile.renamedFile">
           <strong
@@ -183,7 +183,7 @@ export default {
         >
           {{ filePath }}
         </strong>
-      </component>
+      </a>
 
       <clipboard-button
         :title="__('Copy file path to clipboard')"
