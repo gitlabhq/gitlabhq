@@ -25,5 +25,6 @@ end
 module OmniAuth
   module Strategies
     autoload :Bitbucket, Rails.root.join('lib', 'omni_auth', 'strategies', 'bitbucket')
+    autoload :Jwt, Rails.root.join('lib', 'omni_auth', 'strategies', 'jwt')
   end
 end
